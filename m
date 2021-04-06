@@ -2,241 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F8C354E2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5765A354E45
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhDFH5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:57:02 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58762 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhDFH47 (ORCPT
+        id S237067AbhDFIHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236205AbhDFIHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:56:59 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1367ucl6016750;
-        Tue, 6 Apr 2021 02:56:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617695798;
-        bh=h6QVKj428OEb/p1tBMm9ko3uc+VMcXY9e5qV5qAQa6E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=x0orTvTXov2CRqnKBlSs3RXp8u9VQ85VhNgHV7DuKv778x4GVv4MCRItOLD0mbFrB
-         BdY7czmygXDezj2VvH+FFXJTizm5ARgnWHuk+IvFmICV8vmBuiHotf2pqGkU2IGT7T
-         t7bPVwr7MX7A6zTheXzi/6WyDKGa0caxqueRM/qs=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1367ucOw022870
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 02:56:38 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 02:56:37 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 02:56:37 -0500
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1367uZMT125228;
-        Tue, 6 Apr 2021 02:56:35 -0500
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
-To:     Michael Walle <michael@walle.cc>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-References: <20210318092406.5340-1-michael@walle.cc>
- <20210318092406.5340-3-michael@walle.cc>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <658af7ad-c4ee-1c25-b51b-1f66b657aade@ti.com>
-Date:   Tue, 6 Apr 2021 13:26:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 6 Apr 2021 04:07:42 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354EAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:07:32 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id q26so7462790wrz.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6gLMcm8AUrA0Q2uwmWu7QTYhzmtluEu0Sc3ZsLKSdUU=;
+        b=oR8K/ur+8w492vaSpjRXojAbyedPYr/+Y+OkD4K+li2Sji5cjLcw7WbP0jjAVrp6vn
+         p4joMWEYt8aRs9ury1VAvDMaiAB54evkNeY/qtBtEqeZlP+aF3A33RIJARzGOGwbwSy4
+         OjBK94BR3TflT9RDcGWMhSExiCk/EcVL0jCOM7PZ+3WxblPnKXibq+9s7Jsa5m6VH1lR
+         F6z2vgOsiUQep70gX0sgSoSHv02qNiyWCnfcT9B/32MEjFrF1dSxYsQCWRDMq3xdZUZE
+         Lak7TQKahYdue+11eBqP8v7NaqRhGU+SqyvAXeQZ8glOJrgx9gkW3zrssz/D/qoRtFZK
+         CZpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6gLMcm8AUrA0Q2uwmWu7QTYhzmtluEu0Sc3ZsLKSdUU=;
+        b=rMR3fVHtu9QTz4+qiucY5nCIyIq2NLhMPcughzQToO8udxiQbusb6xC2eitikxKsFn
+         MZTpwvHY29NfGgKotk4Tg/upRbophaZdG2pzxQI4z/oCfR98ZktyyaGR7nfa4qTw0CgR
+         HofBR4k8PhnhVeVZ126XZ74Ke9WbKUTAXIJi0D5sdsRbzotgKGQqHfJgwzqOVfsuyHA4
+         bXsbfAp3Q063aW+cS+oCUf6pj5h/GwAi05h2LtoUYyJDCn0WDXQnrR+pS58p62jrLVWP
+         ntZB7vssL+XWpcKGWWxkFZ522pg3OybMPii4y02xyGeZoBzr5cvNBsaS7zWs71SEcyyN
+         rNoA==
+X-Gm-Message-State: AOAM532H6K9tnVmt+sL93gQx/Sq80SAOA+iMugZTPaXdb1FdRmikhjp9
+        Nt6i5/ue0bkH39rNXsXczTUAbA==
+X-Google-Smtp-Source: ABdhPJwliCeV08eP6FOrU6E+gj/DTQLZ2EMzOu5/Q3pVo0qMOBjAHK08jnu7YlYh6db3AmtFVnZ1aQ==
+X-Received: by 2002:a5d:6907:: with SMTP id t7mr4542186wru.380.1617696450874;
+        Tue, 06 Apr 2021 01:07:30 -0700 (PDT)
+Received: from dell ([91.110.221.175])
+        by smtp.gmail.com with ESMTPSA id u63sm1904343wmg.24.2021.04.06.01.07.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 01:07:30 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 09:07:28 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     matthew.gerlach@linux.intel.com, hao.wu@intel.com, trix@redhat.com,
+        mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
+        jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        russell.h.weight@linux.intel.com
+Subject: Re: [PATCH 3/3] hwmon: intel-m10-bmc-hwmon: add sensor support of
+ Intel D5005 card
+Message-ID: <20210406080728.GO2916463@dell>
+References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
+ <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
+ <2bafe404-c708-a1eb-6584-2345225282dc@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20210318092406.5340-3-michael@walle.cc>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2bafe404-c708-a1eb-6584-2345225282dc@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 05 Apr 2021, Guenter Roeck wrote:
 
-On 3/18/21 2:54 PM, Michael Walle wrote:
-> Add support to show the name and JEDEC identifier as well as to dump the
-> SFDP table. Not all flashes list their SFDP table contents in their
-> datasheet. So having that is useful. It might also be helpful in bug
-> reports from users.
+> On 4/5/21 4:53 PM, matthew.gerlach@linux.intel.com wrote:
+> > From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > 
+> > Like the Intel N3000 card, the Intel D5005 has a MAX10 based
+> > BMC.  This commit adds support for the D5005 sensors that are
+> > monitored by the MAX10 BMC.
+> > 
+> > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > Signed-off-by: Russ Weight <russell.h.weight@linux.intel.com>
+> > ---
+> >  drivers/hwmon/intel-m10-bmc-hwmon.c | 122 ++++++++++++++++++++++++++++++++++++
+> >  drivers/mfd/intel-m10-bmc.c         |  10 +++
+> >  2 files changed, 132 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> > index 17d5e6b..bd7ed2e 100644
+> > --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
+> > +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> > @@ -99,6 +99,50 @@ struct m10bmc_hwmon {
+> >  	NULL
+> >  };
+> >  
+> > +static const struct m10bmc_sdata d5005bmc_temp_tbl[] = {
+> > +	{ 0x100, 0x104, 0x108, 0x10c, 0x0, 500, "Board Inlet Air Temperature" },
+> > +	{ 0x110, 0x114, 0x118, 0x0, 0x0, 500, "FPGA Core Temperature" },
+> > +	{ 0x11c, 0x120, 0x124, 0x128, 0x0, 500, "Board Exhaust Air Temperature" },
+> > +	{ 0x12c, 0x130, 0x134, 0x0, 0x0, 500, "FPGA Transceiver Temperature" },
+> > +	{ 0x138, 0x13c, 0x140, 0x144, 0x0, 500, "RDIMM0 Temperature" },
+> > +	{ 0x148, 0x14c, 0x150, 0x154, 0x0, 500, "RDIMM1 Temperature" },
+> > +	{ 0x158, 0x15c, 0x160, 0x164, 0x0, 500, "RDIMM2 Temperature" },
+> > +	{ 0x168, 0x16c, 0x170, 0x174, 0x0, 500, "RDIMM3 Temperature" },
+> > +	{ 0x178, 0x17c, 0x180, 0x0, 0x0, 500, "QSFP0 Temperature" },
+> > +	{ 0x188, 0x18c, 0x190, 0x0, 0x0, 500, "QSFP1 Temperature" },
+> > +	{ 0x1a0, 0x1a4, 0x1a8, 0x0, 0x0, 500, "3.3v Temperature" },
+> > +	{ 0x1bc, 0x1c0, 0x1c4, 0x0, 0x0, 500, "VCCERAM Temperature" },
+> > +	{ 0x1d8, 0x1dc, 0x1e0, 0x0, 0x0, 500, "VCCR Temperature" },
+> > +	{ 0x1f4, 0x1f8, 0x1fc, 0x0, 0x0, 500, "VCCT Temperature" },
+> > +	{ 0x210, 0x214, 0x218, 0x0, 0x0, 500, "1.8v Temperature" },
+> > +	{ 0x22c, 0x230, 0x234, 0x0, 0x0, 500, "12v Backplane Temperature" },
+> > +	{ 0x248, 0x24c, 0x250, 0x0, 0x0, 500, "12v AUX Temperature" },
+> > +};
+> > +
+> > +static const struct m10bmc_sdata d5005bmc_in_tbl[] = {
+> > +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QSFP0 Supply Voltage" },
+> > +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "QSFP1 Supply Voltage" },
+> > +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Voltage" },
+> > +	{ 0x1ac, 0x1b0, 0x1b4, 0x0, 0x0, 1, "3.3v Voltage" },
+> > +	{ 0x1c8, 0x1cc, 0x1d0, 0x0, 0x0, 1, "VCCERAM Voltage" },
+> > +	{ 0x1e4, 0x1e8, 0x1ec, 0x0, 0x0, 1, "VCCR Voltage" },
+> > +	{ 0x200, 0x204, 0x208, 0x0, 0x0, 1, "VCCT Voltage" },
+> > +	{ 0x21c, 0x220, 0x224, 0x0, 0x0, 1, "1.8v Voltage" },
+> > +	{ 0x238, 0x0, 0x0, 0x0, 0x23c, 1, "12v Backplane Voltage" },
+> > +	{ 0x254, 0x0, 0x0, 0x0, 0x258, 1, "12v AUX Voltage" },
+> > +};
+> > +
+> > +static const struct m10bmc_sdata d5005bmc_curr_tbl[] = {
+> > +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Current" },
+> > +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1, "3.3v Current" },
+> > +	{ 0x1d4, 0x0, 0x0, 0x0, 0x0, 1, "VCCERAM Current" },
+> > +	{ 0x1f0, 0x0, 0x0, 0x0, 0x0, 1, "VCCR Current" },
+> > +	{ 0x20c, 0x0, 0x0, 0x0, 0x0, 1, "VCCT Current" },
+> > +	{ 0x228, 0x0, 0x0, 0x0, 0x0, 1, "1.8v Current" },
+> > +	{ 0x240, 0x244, 0x0, 0x0, 0x0, 1, "12v Backplane Current" },
+> > +	{ 0x25c, 0x260, 0x0, 0x0, 0x0, 1, "12v AUX Current" },
+> > +};
+> > +
+> >  static const struct m10bmc_hwmon_board_data n3000bmc_hwmon_bdata = {
+> >  	.tables = {
+> >  		[hwmon_temp] = n3000bmc_temp_tbl,
+> > @@ -110,6 +154,80 @@ struct m10bmc_hwmon {
+> >  	.hinfo = n3000bmc_hinfo,
+> >  };
+> >  
+> > +static const struct hwmon_channel_info *d5005bmc_hinfo[] = {
+> > +	HWMON_CHANNEL_INFO(temp,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
+> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL,
+> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
+> > +			   HWMON_T_LABEL),
+> > +	HWMON_CHANNEL_INFO(in,
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
+> > +			   HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
+> > +			   HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
+> > +			   HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
+> > +			   HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
+> > +			   HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL,
+> > +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL),
+> > +	HWMON_CHANNEL_INFO(curr,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL,
+> > +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL),
+> > +	NULL
+> > +};
+> > +
+> > +static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
+> > +	.tables = {
+> > +		[hwmon_temp] = d5005bmc_temp_tbl,
+> > +		[hwmon_in] = d5005bmc_in_tbl,
+> > +		[hwmon_curr] = d5005bmc_curr_tbl,
+> > +	},
+> > +
+> > +	.hinfo = d5005bmc_hinfo,
+> > +};
+> > +
+> >  static umode_t
+> >  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+> >  			u32 attr, int channel)
+> > @@ -316,6 +434,10 @@ static int m10bmc_hwmon_probe(struct platform_device *pdev)
+> >  		.name = "n3000bmc-hwmon",
+> >  		.driver_data = (unsigned long)&n3000bmc_hwmon_bdata,
+> >  	},
+> > +	{
+> > +		.name = "d5005bmc-hwmon",
+> > +		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
+> > +	},
+> >  	{ }
+> >  };
+> >  
+> > diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
 > 
+> It may be better to split this patch into two parts to simplify
+> its review and scope of responsibility.
 
-Sorry for the delay..
+No need.
 
-There is already debugfs support for dumping JEDEC ID [1]. Any reason to
-add sysfs entry as well?
+Not withstanding significant changes:
 
-That brings up another question. Since SFDP dumps are more of a debug
-aid, should this be a debugfs entry rather than sysfs entry?
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-Note that sysfs entries are userspace ABIs just like syscalls and thus
-need to be documented in Documentation/ABI/testing/ or
-Documentation/ABI/stable. Thus need to be carefully designed compared to
-debugfs which are much more flexible.
-
-[1]drivers/mtd/spi-nor/core.c 3380
-
-Regards
-Vignesh
-
-> The idea behind the sysfs module is also to have raw access to the SPI
-> NOR flash device registers, which can also be useful for debugging.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/Makefile |  2 +-
->  drivers/mtd/spi-nor/core.c   |  5 +++
->  drivers/mtd/spi-nor/core.h   |  3 ++
->  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 95 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
-> 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..aff308f75987 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -spi-nor-objs			:= core.o sfdp.o
-> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->  spi-nor-objs			+= atmel.o
->  spi-nor-objs			+= catalyst.o
->  spi-nor-objs			+= eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4a315cb1c4db..2eaf4ba8c0f3 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spi_nor_sysfs_create(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->  				   data ? data->nr_parts : 0);
->  }
-> @@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->  
->  	spi_nor_restore(nor);
-> +	spi_nor_sysfs_remove(nor);
->  
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&nor->mtd);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 668f22011b1d..dd592f7b62d1 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -488,4 +488,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  	return mtd->priv;
->  }
->  
-> +int spi_nor_sysfs_create(struct spi_nor *nor);
-> +void spi_nor_sysfs_remove(struct spi_nor *nor);
-> +
->  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> new file mode 100644
-> index 000000000000..0de031e246c5
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "core.h"
-> +
-> +static ssize_t name_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sprintf(buf, "%s\n", nor->info->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static ssize_t jedec_id_show(struct device *dev,
-> +			     struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sprintf(buf, "%*phN\n", nor->info->id_len, nor->info->id);
-> +}
-> +static DEVICE_ATTR_RO(jedec_id);
-> +
-> +static struct attribute *spi_nor_sysfs_entries[] = {
-> +	&dev_attr_name.attr,
-> +	&dev_attr_jedec_id.attr,
-> +	NULL
-> +};
-> +
-> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-> +			 struct bin_attribute *bin_attr, char *buf,
-> +			 loff_t off, size_t count)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +	struct sfdp *sfdp = nor->sfdp;
-> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
-> +				       sfdp_size);
-> +}
-> +static BIN_ATTR_RO(sfdp, PAGE_SIZE);
-> +
-> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-> +	&bin_attr_sfdp,
-> +	NULL
-> +};
-> +
-> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> +					    struct bin_attribute *attr, int n)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	if (attr == &bin_attr_sfdp && nor->sfdp)
-> +		return 0444;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct attribute_group spi_nor_sysfs_attr_group = {
-> +	.name		= NULL,
-> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-> +	.attrs		= spi_nor_sysfs_entries,
-> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
-> +};
-> +
-> +int spi_nor_sysfs_create(struct spi_nor *nor)
-> +{
-> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> +
-> +void spi_nor_sysfs_remove(struct spi_nor *nor)
-> +{
-> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
