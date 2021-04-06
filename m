@@ -2,96 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC68F3549AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 02:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B68B3549AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 02:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242992AbhDFA3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 20:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237906AbhDFA3R (ORCPT
+        id S243001AbhDFA3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 20:29:20 -0400
+Received: from mail-pg1-f179.google.com ([209.85.215.179]:37573 "EHLO
+        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242987AbhDFA3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 20:29:17 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EA7C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 17:29:09 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id j20-20020a4ad6d40000b02901b66fe8acd6so3263094oot.7
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 17:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8JbhiHo6IOoY5iWGNqHOdb0xxqkEeapiHglvZ8VP2nU=;
-        b=KkEGFAt+IZ8fJezAe+1XPvtNZb7bQJDD8C51ZRGBkDP8HiWT6/xm2jk7/Tn44f9x0q
-         mPhOZRwHlBMSerJF0lFH19fvt18y6OIL2gnZ9VKsBVXg9dBSApe+4YsCYLufUYOs0yat
-         wUISM7EJn89C+HQQ3S4+Ughm77lWaoiivXMuM=
+        Mon, 5 Apr 2021 20:29:18 -0400
+Received: by mail-pg1-f179.google.com with SMTP id k8so9157477pgf.4;
+        Mon, 05 Apr 2021 17:29:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8JbhiHo6IOoY5iWGNqHOdb0xxqkEeapiHglvZ8VP2nU=;
-        b=fyj0yvn0kAquB3vM35t6R8xllJTzGCW85xS1FOhBsIbtA9YIdu8JpkxWPiUWr9IJwA
-         JB/9aajnBHCQ/5Y+25MLnlRuGeEauMNecmVvM8TEM65F4xJKIhPoiCb7tmOKlvH2f6x5
-         b6unlQCnVxTc6zNwXRFasm8TZp2iUrRfmWEBsNCvrzz+81YEVm4XCi9v1xBAujWouRbw
-         vrU8kjDTNtoIKVnbZH9uswNC6TBTzPv+0bRJc7FnisHTL5dIISiZjotZm1C9rZYYXJNX
-         2EdyrwbmqoX8Q1Vxq3uYbdRoMrvAhZEtDUkqy1komntHbGK/FzDatAiZsLyAskgNJozI
-         K7ww==
-X-Gm-Message-State: AOAM530ZQsHIYWWNjVS379Lju1dnYe63lZvGsCLVbSOAt3eV/tJrL9xU
-        bLX5pnVojzKQl7jTpQlgMhQynQ==
-X-Google-Smtp-Source: ABdhPJzt562iP/S34/FifCpvqG4SSFrzwLtRQ4GL4tiNzhV6BTiiBnEwmGlUds5ZIrlOaLpl7VltqQ==
-X-Received: by 2002:a4a:de56:: with SMTP id z22mr24202679oot.14.1617668949048;
-        Mon, 05 Apr 2021 17:29:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x20sm3339073oiv.35.2021.04.05.17.29.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 17:29:08 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/74] 5.4.110-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <76b47745-2ab2-9bc6-2aa1-7cfa1244d57e@linuxfoundation.org>
-Date:   Mon, 5 Apr 2021 18:29:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bpTDpMwxa167NjcxbJJbniTo0V4vg9vOXn8pffBW4T4=;
+        b=uT4x4vlUavRKSzeBdlPNLHyu34PV4kjVJ+4Vy7xONLAmYWxGFLjm+W5NCNyIxO1caD
+         SnKq5wJtCQ4vaiPD7sYefShbFlPswIL0d4I1sAC3lYjtjAnquWOMhwX1VUCbwV4yDGM2
+         fE8ywxPO0itR5w/UjJlr/asZoOMNOGNtobtZqgQccXlV4SalZ8DntWC1S8C5KM0pGZ9q
+         xFxaRAZxdSGAU5LmIbcn47OqX2fPp0DyPZQQdKWNHANvJvkhg+IMvBcIjUyjUjFb2qU+
+         TU4D/qzV65TXKKnXC3G0HD56fBGZKct7iRS+02REVLQEQcvYPJllluIhO+GRiDknsjLk
+         af/g==
+X-Gm-Message-State: AOAM532CURCkrYLr5bw+GXhdo6UVwSs2aGJ1M3gN8+rbZRfWQmSZgKhU
+        yCXJrp6JS0r3UVFuafTpJveA8I3oxdYRjA==
+X-Google-Smtp-Source: ABdhPJwb/1kNIyhCHO/72Z1GaZkbWKJ9Jab2a5CE8S13XqXSP0wnONtDOX996VGMBiXkHor/aBufMw==
+X-Received: by 2002:aa7:8648:0:b029:1fd:85ae:169b with SMTP id a8-20020aa786480000b02901fd85ae169bmr25935586pfo.28.1617668951346;
+        Mon, 05 Apr 2021 17:29:11 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id p11sm508754pjo.48.2021.04.05.17.29.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 17:29:10 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 9BAB5404D5; Tue,  6 Apr 2021 00:29:09 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 00:29:09 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210406002909.GY4332@42.do-not-panic.com>
+References: <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGtDzH0dEfEngCij@google.com>
+ <20210405190023.GX4332@42.do-not-panic.com>
+ <YGtrzXYDiO3Gf9Aa@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGtrzXYDiO3Gf9Aa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 2:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.110 release.
-> There are 74 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Apr 05, 2021 at 12:58:05PM -0700, Minchan Kim wrote:
+> On Mon, Apr 05, 2021 at 07:00:23PM +0000, Luis Chamberlain wrote:
+> > On Mon, Apr 05, 2021 at 10:07:24AM -0700, Minchan Kim wrote:
+> > > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> > > > And come to think of it the last patch I had sent with a new
+> > > > DECLARE_RWSEM(zram_unload) also has this same issue making most
+> > > > sysfs attributes rather fragile.
+> > > 
+> > > Thanks for looking the way. I agree the single zram_index_rwlock is
+> > > not the right approach to fix it. However, I still hope we find more
+> > > generic solution to fix them at once since I see it's zram instance
+> > > racing problem.
+> > 
+> > They are 3 separate different problems. Related, but different.
 > 
-> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.110-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> What are 3 different problems? I am asking since I remember only two:
+> one for CPU multistate and the other one for sysfs during rmmod.
 
-Compiled and booted on my test system. No dmesg regressions.
+The third one is the race to use sysfs attributes and those routines
+then derefernece th egendisk private_data.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> > If the idea then is to busy out rmmod if a sysfs attribute is being
+> > read, that could then mean rmmod can sometimes never complete. Hogging
+> > up / busying out sysfs attributes means the module cannto be removed.
+> 
+> It's true but is it a big problem? There are many cases that system
+> just return error if it's busy and rely on the admin. IMHO, rmmod should
+> be part of them.
 
-thanks,
--- Shuah
+It depends on existing userspace scripts which are used to test and
+expectations set. Consider existing tests, you would know better, and
+since you are the maintainer you decide.
+
+I at least know for many other types of device drivers an rmmod is
+a sledge hammer.
+
+You decide. I just thought it would be good to highlight the effect now
+rather than us considering it later.
+
+> > Which is why the *try_module_get()* I think is much more suitable, as
+> > it will always fails if we're already going down.
+> 
+> How does the try_module_get solved the problem?
+
+The try stuff only resolves the deadlock. The bget() / bdput() resolves
+the race to access to the gendisk private_data.
+
+> > > I see one of the problems is how I could make new zram object's
+> > > attribute group for zram knobs under /sys/block/zram0 since block
+> > > layer already made zram0 kobject via device_add_disk.
+> > 
+> > Right.. well the syfs attribute races uncovered here actually do
+> > apply to any block driver as well. And which is why I was aiming
+> > for something generic if possible.
+> 
+> It would be great but that's not the one we have atm so want to
+> proceed to fix anyway.
+
+What is not the one we have atm? I *do* have a proposed generic solution
+for 2/3 issues we have been disussing:
+
+ a) deadlock on sysfs access
+ b) gendisk private_data race
+
+But so far Greg does not see enough justification for a), so we can either
+show how wider this issue is (which I can do using coccinelle), or we
+just open code the try_module_get() / put on each driver that needs it
+for now. Either way it would resolve the issue.
+
+As for b), given that I think even you had missed my attempt to
+generialzie the bdget/bdput solution for any attribute type (did you see
+my dev_type_get() and dev_type_put() proposed changes?), I don't think
+this problem is yet well defined in a generic way for us to rule it out.
+It is however easier to simply open code this per driver that needs it
+for now given that I don't think Greg is yet convinced the deadlock is
+yet a widespread issue. I however am pretty sure both races races *do*
+exist outside of zram in many places.
+
+> > I am not sure if you missed the last hunks of the generic solution,
+> > but that would resolve the issue you noted. Here is the same approach
+> > but in a non-generic solution, specific to just one attribute so far
+> > and to zram:
+> 
+> So idea is refcount of the block_device's inode 
+
+Yes that itself prevents races against the gendisk private_data from
+being invalid. Why because a bdget() would not be successful after
+del_gendisk():
+
+del_gendisk() --> invalidate_partition() --> __invalidate_device() --> invalidate_inodes()
+
+> and module_exit path
+> checks also the inode refcount to make rmmod failure?
+
+They try_module_get() approach resolves the deadlock race, but it does
+so in a lazy way. I mean lazy in that then rmmod wins over sysfs knobs.
+So touching sysfs knobs won't make an rmmod fail. I think that's more
+typical expected behaviour. Why? Because I find it odd that looping
+forever touching sysfs attributes should prevent a module removal. But
+that's a personal preference.
+
+  Luis
