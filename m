@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA703355810
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02148355811
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243916AbhDFPfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:35:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345773AbhDFPdO (ORCPT
+        id S1345777AbhDFPfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243833AbhDFPdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:33:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617723186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EGxL8zigLDTIsv+13RyGOm4L5FHwAQFecgNMTrGBUxg=;
-        b=Yo20jjwChsJWxkIbllUQPxtapFXaBEXY4RH8d+8bi1gfe5jo1Stm8w44ODHJuFm2j8+h1s
-        MEvN/RCGbZGSDbZfSqw/Bz1RoX7FxWGkDWO3PLMYf6eZueUvBvfK+jzyik6FFM3pEL3lHX
-        fBWRh/EaNYbRNokrNj2fSqTCMeQCp+g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-e8XWgyLsMBahwui4ZHPonQ-1; Tue, 06 Apr 2021 11:33:02 -0400
-X-MC-Unique: e8XWgyLsMBahwui4ZHPonQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D40EE63CDF;
-        Tue,  6 Apr 2021 15:32:46 +0000 (UTC)
-Received: from [10.36.113.79] (ovpn-113-79.ams2.redhat.com [10.36.113.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 830C110016FC;
-        Tue,  6 Apr 2021 15:32:44 +0000 (UTC)
-Subject: Re: [PATCH v6 2/8] mm,memory_hotplug: Relax fully spanned sections
- check
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210406111115.8953-1-osalvador@suse.de>
- <20210406111115.8953-3-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <b915143d-a8df-ddfc-94a8-7578fdd5f7bc@redhat.com>
-Date:   Tue, 6 Apr 2021 17:32:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 6 Apr 2021 11:33:17 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59061C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:32:47 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id n2so16391150ejy.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ngPnB11Rpcpn6j95lYf0RFQG3fh878RPxrpeNe+ppTQ=;
+        b=In+em3Cagf76ZFfcAAnRPlOcDr63uCGRsKH+1ZNR9xGyg2hY6L2IgKzMc1DgENfYKc
+         PZTHLYIqAJDBRPPrq3mmAZ1M4NehV45GFYzXGsCtNnSiJdosoHNjK3IMNZCx8//heelt
+         1squCfmQMPxtLjQo/zMNJDCRjQilbxcvToByhW/93Q35Rgi6OhVBSuRJPMpVA2IcKxBO
+         SCjrVaO1EdMsSBaCKwJu+P8IY+atL+bLpgu/FLlCFqceXR4YnbkyxR5eEdOtDxSss213
+         /vlg7yRmFS5jNGBNUkHdkua8rQMFE96dEpiIcyYx3lJkFfKoXjL4cLm+2nLP6hbJuBos
+         ILgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ngPnB11Rpcpn6j95lYf0RFQG3fh878RPxrpeNe+ppTQ=;
+        b=FABoStL/qj7kiD/L+NQ+e8JwSUoXOgG+GMBal7cZHPgsyRY2V6fLuf7xP/WxFNpTKB
+         UR5utBevtuggg2rwUcV6yzouBH0S13OziKsx4+ZuveIDlXjZg7i7+AiZjtS0zvYB6vk+
+         lRm1YZnpYASrpU+agKOxTbLyR7iwUxLItOL2j4wQb6adPAdZ9j7v2aoNblJEo4aO7CbD
+         WuFun2u0GS9hk/d2aoqN5AxJc+qnpOsuuFjNdrhD/Fir8WBNkVKyvFO6wffADOoZraFJ
+         27B1YCLHvC17moQdp/3ki6pxWiEcmQgegbDdkxFc/KiU15z8g/xw9dA9pYQoUeKjJpJS
+         A5HA==
+X-Gm-Message-State: AOAM5319KViwa30FRr85/XfYq+i5CbEVGl4n6b+fUcMbbXyYdHasI6rN
+        GeLeYDBypTvJ9WaubDn3zc7hqQ==
+X-Google-Smtp-Source: ABdhPJxBTCrBfzzVEuMPpPm6mg4voiraukMpw00AzU44N+vDeOW/nX58Vtb5To6nYmviQM2bZTZSFA==
+X-Received: by 2002:a17:906:4d46:: with SMTP id b6mr8437549ejv.262.1617723165958;
+        Tue, 06 Apr 2021 08:32:45 -0700 (PDT)
+Received: from dell ([91.110.221.193])
+        by smtp.gmail.com with ESMTPSA id um13sm4757402ejb.84.2021.04.06.08.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 08:32:45 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 16:32:43 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        drbd-dev@lists.linbit.com,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        linux-block@vger.kernel.org,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 00/11] Rid W=1 warnings from Block
+Message-ID: <20210406153243.GV2916463@dell>
+References: <20210312105530.2219008-1-lee.jones@linaro.org>
+ <33a06c9d-58b6-c9bf-a119-6d2a3e37b955@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210406111115.8953-3-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <33a06c9d-58b6-c9bf-a119-6d2a3e37b955@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.04.21 13:11, Oscar Salvador wrote:
-> When using self-hosted vmemmap pages, the number of pages passed to
-> {online,offline}_pages might not fully span sections, but they always
-> fully span pageblocks.
-> Relax the check account for that case.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
->   mm/memory_hotplug.c | 16 ++++++++++++----
->   1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 0cdbbfbc5757..5fe3e3942b19 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -838,9 +838,13 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->   	int ret;
->   	struct memory_notify arg;
->   
-> -	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
-> +	/* We can only offline full sections (e.g., SECTION_IS_ONLINE).
-> +	 * However, when using e.g: memmap_on_memory, some pages are initialized
-> +	 * prior to calling in here. The remaining amount of pages must be
-> +	 * pageblock aligned.
-> +	 */
->   	if (WARN_ON_ONCE(!nr_pages ||
-> -			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
-> +			 !IS_ALIGNED(pfn | nr_pages, pageblock_nr_pages)))
->   		return -EINVAL;
->   
->   	mem_hotplug_begin();
-> @@ -1573,9 +1577,13 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
->   	int ret, node;
->   	char *reason;
->   
-> -	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
-> +	/* We can only offline full sections (e.g., SECTION_IS_ONLINE).
-> +	 * However, when using e.g: memmap_on_memory, some pages are initialized
-> +	 * prior to calling in here. The remaining amount of pages must be
-> +	 * pageblock aligned.
-> +	 */
->   	if (WARN_ON_ONCE(!nr_pages ||
-> -			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
-> +			 !IS_ALIGNED(start_pfn | nr_pages, pageblock_nr_pages)))
->   		return -EINVAL;
->   
->   	mem_hotplug_begin();
-> 
+On Tue, 06 Apr 2021, Jens Axboe wrote:
 
-I'd only relax start_pfn. That way the function is pretty much 
-impossible to abuse for sub-section onlining/offlining.
+> On 3/12/21 3:55 AM, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> 
+> Applied 2-11, 1 is already in the my tree.
 
-if (WARN_ON_ONCE(!nr_pages ||
-		 !IS_ALIGNED(start_pfn, pageblock_nr_pages))
-		 !IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION)))
+Superstar, thanks Jens.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
