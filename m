@@ -2,116 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C51B355BA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01454355BA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240062AbhDFSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237439AbhDFSoM (ORCPT
+        id S239267AbhDFSpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:45:34 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43379 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233898AbhDFSpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:44:12 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D98FC061761
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 11:44:03 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d8so7997236plh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 11:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
-        b=YAhhm9BkpY5y7HrE34KfvVWOVgEO0sYzWSUTiqziDNEK4+3Lral7Ghh0posJjIrz61
-         tfc63YozQ8TRMvb+TNGvA+LWvP4faXgXV6k8KT0Nv6y/u9B7f1LE4XzO3OjKob023F9j
-         xZGLdr3UYpKw1f93SAnQ8fSdVZaYmuMHTRPdw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
-        b=A15ww6E7Tw8vFyoe9mVcAUORgq0Ki68nVA6SWpaQeB/0+qXHwYPEYjNMujoFTIB07K
-         t4lb3ObOO9F220tttv/xejpv22dxQG9DddiAFd4Y3ncHmMPZoNr6Tw4KBQtnD6t7gCxZ
-         XkSDxPoSvEkYEOPk6sv/COBEFNNI1EbZwg9FucevtdlF8erHJhfpjlgyw5MYEiMtADm/
-         qy0OMbQPZfBQpQTs0DlTxXeTtDxq2LU995dZraROMXcH5pV5cWprNWtBT8RywoSvxdjK
-         K9cbMVzrzIdEnnYq4YbzQaOIaiCJaGpfohnfiilMxRZrluH49cPoO2G13nXCx16YAjTG
-         DmPA==
-X-Gm-Message-State: AOAM531JnHaQWRmEYS/LFTQiH7cLMNi5wBPagr1RaT1JRN80em+uy0lY
-        Uagnlw48HGivGDbYB5JW9IbC4A==
-X-Google-Smtp-Source: ABdhPJyp4uPolhdsa5/w7momD80MPZDhhBi9SUuWfIFW/E/FawC4pgs3YQmUW7xHztXcPiXJ8/E+QQ==
-X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr30088911plf.44.1617734642419;
-        Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i9sm3610423pjh.9.2021.04.06.11.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:44:01 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 11:44:00 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <202104061143.E11D2D0@keescook>
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+        Tue, 6 Apr 2021 14:45:24 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lTqhL-0008Js-3L; Tue, 06 Apr 2021 18:45:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>,
+        Paul Mundt <lethal@linux-sh.org>, linux-usb@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: gadget: r8a66597: Add missing null check on return from platform_get_resource
+Date:   Tue,  6 Apr 2021 19:45:10 +0100
+Message-Id: <20210406184510.433497-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
-> 
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-I like it! Do you have a multi-arch CI to do allmodconfig builds to
-double-check this?
+The call to platform_get_resource can potentially return a NULL pointer
+on failure, so add this check and return -EINVAL if it fails.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Addresses-Coverity: ("Dereference null return")
+Fixes: c41442474a26 ("usb: gadget: R8A66597 peripheral controller support.")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/usb/gadget/udc/r8a66597-udc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
--Kees
-
+diff --git a/drivers/usb/gadget/udc/r8a66597-udc.c b/drivers/usb/gadget/udc/r8a66597-udc.c
+index 896c1a016d55..65cae4883454 100644
+--- a/drivers/usb/gadget/udc/r8a66597-udc.c
++++ b/drivers/usb/gadget/udc/r8a66597-udc.c
+@@ -1849,6 +1849,8 @@ static int r8a66597_probe(struct platform_device *pdev)
+ 		return PTR_ERR(reg);
+ 
+ 	ires = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (!ires)
++		return -EINVAL;
+ 	irq = ires->start;
+ 	irq_trigger = ires->flags & IRQF_TRIGGER_MASK;
+ 
 -- 
-Kees Cook
+2.30.2
+
