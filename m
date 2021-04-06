@@ -2,473 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06A7354A19
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3862354A1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242076AbhDFBeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242073AbhDFBeG (ORCPT
+        id S243127AbhDFBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:35:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241988AbhDFBfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:34:06 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11742C061756;
-        Mon,  5 Apr 2021 18:34:00 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id l9so5599827ils.6;
-        Mon, 05 Apr 2021 18:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=58EPUjvc//5ZWoOYFPrgsk5ZSjrXwdDsAthn9PUF+9g=;
-        b=rUhLP/67UwaTE0HTr+qQdobVmRPNKmizF6+y4jjCQwt1tdvOSidOnbu6g7cOqTmALB
-         e1367jwmo4pWLS0RbQeJXsCDICRp8+onOcED+ln1ycU3OuGYIRUEaJgz83J5oCegdSBS
-         k1rKU7uWyiRGVCqvdH8gYxvo6cW3J1msi1oe4sHRbQ4Wgk4nCJMcLbJL6K4z+py2TlE9
-         8Rr563ON4qaoxyBCRqdd+lV35e2e+NxFavJRVZetcJaiFrMSPe9X4+44M/zNFFHVuQym
-         eVG25oAlbrQczfL5zs/GjAbtudE8965k6sZJAAJXNTu+zV4qVpdvQlEklyd8cA6iSIFE
-         vekw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=58EPUjvc//5ZWoOYFPrgsk5ZSjrXwdDsAthn9PUF+9g=;
-        b=HVe5th0WW0Lfte44AokiEPx+8bgAZ8jl5hGA5KQQKu4rweKJg9FeIGNngTRZ8Cntyb
-         KSXvyG369YG092G0cJkZGU9oYCkdMHlGCyjD7d+grOH/feRLS9c7lBXlzyGRvHVW/smg
-         0aozwTb7+p3RyBa7rQYDasI5FYBJgACssxv1DGFZm7eu6uJuo4ljFTmW/wEoXA628s7b
-         kfaTYlLzI5qG2lK5WdPU1T1tYI1tmtJoSXqcyMzPSZCV2uqXExvGIUUd2rfzYlf5O+F9
-         hgyNLp0748qeAbC/S5VeyDPSAOMRzvkmi7UIDf+A/cjbrOC1oauc7+3qF9NIF/bt8Ozb
-         0rKA==
-X-Gm-Message-State: AOAM530rr0/ao5nI6bCSoxTMlHrFwpurkp+Y3jybDwbPNETwtBzGShlM
-        RkRO91ysGBSmIL60NR2BsNQ=
-X-Google-Smtp-Source: ABdhPJzrCvl8mYXX9HRMNFbvz2QZ94+t3lPrKMHDUeS9+T2SC8VWb9rc9Rfasimq+u8Cae12W2WAJw==
-X-Received: by 2002:a05:6e02:1aab:: with SMTP id l11mr3247327ilv.150.1617672839312;
-        Mon, 05 Apr 2021 18:33:59 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:987f:5ec9:b10c:df19])
-        by smtp.gmail.com with ESMTPSA id s16sm11821167ilq.87.2021.04.05.18.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 18:33:58 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Adam Ford <aford173@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: imx8mm: Add spba1 and spba2 buses
-Date:   Mon,  5 Apr 2021 20:33:43 -0500
-Message-Id: <20210406013344.124255-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406013344.124255-1-aford173@gmail.com>
-References: <20210406013344.124255-1-aford173@gmail.com>
+        Mon, 5 Apr 2021 21:35:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617672938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kwZ8XyyzRZCBrGqzegCVhhjQ1Q2Ym617/sTrzH4w1XI=;
+        b=byXv0wBgeKoPa1BWCNAXfxIERfEsfOqyFT0OZWsTnTkg3yTkyL8yWoOWO92DkZ46G4HAko
+        vnFoH9bAJgA2C1QzdBMN3M4Bb11GhJ4Qt1jm/C5hKUWmjYN8jwIjTNJu6B9FkyUDb9ucRX
+        s7pJJJkp1ODQ5MgnJ66A7hiLKJoEOng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-M4zcdcyUNc24sYSeXmRvfQ-1; Mon, 05 Apr 2021 21:35:34 -0400
+X-MC-Unique: M4zcdcyUNc24sYSeXmRvfQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D2DB81744F;
+        Tue,  6 Apr 2021 01:35:32 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-96.pek2.redhat.com [10.72.13.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 35FB519C78;
+        Tue,  6 Apr 2021 01:35:18 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210319124645.GP2356281@nvidia.com> <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com> <20210319112221.5123b984@jacob-builder>
+ <20210322120300.GU2356281@nvidia.com> <20210324120528.24d82dbd@jacob-builder>
+ <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210405234230.GF7405@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
+Date:   Tue, 6 Apr 2021 09:35:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210405234230.GF7405@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8MM reference manual shows there are two spba busses.
-SPBA1 handles much of the serial interfaces, and SPBA2 covers much
-of the audio.
 
-Add both of them.
+ÔÚ 2021/4/6 ÉÏÎç7:42, Jason Gunthorpe Ð´µÀ:
+> On Fri, Apr 02, 2021 at 08:22:28AM +0000, Tian, Kevin wrote:
+>>> From: Jason Gunthorpe <jgg@nvidia.com>
+>>> Sent: Tuesday, March 30, 2021 9:29 PM
+>>>
+>>>> First, userspace may use ioasid in a non-SVA scenario where ioasid is
+>>>> bound to specific security context (e.g. a control vq in vDPA) instead of
+>>>> tying to mm. In this case there is no pgtable binding initiated from user
+>>>> space. Instead, ioasid is allocated from /dev/ioasid and then programmed
+>>>> to the intended security context through specific passthrough framework
+>>>> which manages that context.
+>>> This sounds like the exact opposite of what I'd like to see.
+>>>
+>>> I do not want to see every subsystem gaining APIs to program a
+>>> PASID. All of that should be consolidated in *one place*.
+>>>
+>>> I do not want to see VDPA and VFIO have two nearly identical sets of
+>>> APIs to control the PASID.
+>>>
+>>> Drivers consuming a PASID, like VDPA, should consume the PASID and do
+>>> nothing more than authorize the HW to use it.
+>>>
+>>> quemu should have general code under the viommu driver that drives
+>>> /dev/ioasid to create PASID's and manage the IO mapping according to
+>>> the guest's needs.
+>>>
+>>> Drivers like VDPA and VFIO should simply accept that PASID and
+>>> configure/authorize their HW to do DMA's with its tag.
+>>>
+>> I agree with you on consolidating things in one place (especially for the
+>> general SVA support). But here I was referring to an usage without
+>> pgtable binding (Possibly Jason. W can say more here), where the
+>> userspace just wants to allocate PASIDs, program/accept PASIDs to
+>> various workqueues (device specific), and then use MAP/UNMAP
+>> interface to manage address spaces associated with each PASID.
+>> I just wanted to point out that the latter two steps are through
+>> VFIO/VDPA specific interfaces.
+> No, don't do that.
+>
+> VFIO and VDPA has no buisness having map/unmap interfaces once we have
+> /dev/ioasid. That all belongs in the iosaid side.
+>
+> I know they have those interfaces today, but that doesn't mean we have
+> to keep using them for PASID use cases, they should be replaced with a
+> 'do dma from this pasid on /dev/ioasid' interface certainly not a
+> 'here is a pasid from /dev/ioasid, go ahead and configure it youself'
+> interface
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index a27e02bee6b4..64aa38fd2b6e 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -271,117 +271,125 @@ aips1: bus@30000000 {
- 			#size-cells = <1>;
- 			ranges = <0x30000000 0x30000000 0x400000>;
- 
--			sai1: sai@30010000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30010000 0x10000>;
--				interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI1_IPG>,
--					 <&clk IMX8MM_CLK_SAI1_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 0 2 0>, <&sdma2 1 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+			spba2: spba-bus@30000000 {
-+				compatible = "fsl,spba-bus", "simple-bus";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				reg = <0x30000000 0x100000>;
-+				ranges;
-+
-+				sai1: sai@30010000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30010000 0x10000>;
-+					interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI1_IPG>,
-+						 <&clk IMX8MM_CLK_SAI1_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 0 2 0>, <&sdma2 1 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai2: sai@30020000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30020000 0x10000>;
--				interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI2_IPG>,
--					<&clk IMX8MM_CLK_SAI2_ROOT>,
--					<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 2 2 0>, <&sdma2 3 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai2: sai@30020000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30020000 0x10000>;
-+					interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI2_IPG>,
-+						<&clk IMX8MM_CLK_SAI2_ROOT>,
-+						<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 2 2 0>, <&sdma2 3 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai3: sai@30030000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30030000 0x10000>;
--				interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI3_IPG>,
--					 <&clk IMX8MM_CLK_SAI3_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 4 2 0>, <&sdma2 5 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai3: sai@30030000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30030000 0x10000>;
-+					interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI3_IPG>,
-+						 <&clk IMX8MM_CLK_SAI3_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 4 2 0>, <&sdma2 5 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai5: sai@30050000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30050000 0x10000>;
--				interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI5_IPG>,
--					 <&clk IMX8MM_CLK_SAI5_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 8 2 0>, <&sdma2 9 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai5: sai@30050000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30050000 0x10000>;
-+					interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI5_IPG>,
-+						 <&clk IMX8MM_CLK_SAI5_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 8 2 0>, <&sdma2 9 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai6: sai@30060000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30060000 0x10000>;
--				interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI6_IPG>,
--					 <&clk IMX8MM_CLK_SAI6_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 10 2 0>, <&sdma2 11 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai6: sai@30060000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30060000 0x10000>;
-+					interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI6_IPG>,
-+						 <&clk IMX8MM_CLK_SAI6_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 10 2 0>, <&sdma2 11 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			micfil: audio-controller@30080000 {
--				compatible = "fsl,imx8mm-micfil";
--				reg = <0x30080000 0x10000>;
--				interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_PDM_IPG>,
--					 <&clk IMX8MM_CLK_PDM_ROOT>,
--					 <&clk IMX8MM_AUDIO_PLL1_OUT>,
--					 <&clk IMX8MM_AUDIO_PLL2_OUT>,
--					 <&clk IMX8MM_CLK_EXT3>;
--				clock-names = "ipg_clk", "ipg_clk_app",
--					      "pll8k", "pll11k", "clkext3";
--				dmas = <&sdma2 24 25 0x80000000>;
--				dma-names = "rx";
--				status = "disabled";
--			};
-+				micfil: audio-controller@30080000 {
-+					compatible = "fsl,imx8mm-micfil";
-+					reg = <0x30080000 0x10000>;
-+					interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-+						 <&clk IMX8MM_CLK_PDM_ROOT>,
-+						 <&clk IMX8MM_AUDIO_PLL1_OUT>,
-+						 <&clk IMX8MM_AUDIO_PLL2_OUT>,
-+						 <&clk IMX8MM_CLK_EXT3>;
-+					clock-names = "ipg_clk", "ipg_clk_app",
-+						      "pll8k", "pll11k", "clkext3";
-+					dmas = <&sdma2 24 25 0x80000000>;
-+					dma-names = "rx";
-+					status = "disabled";
-+				};
- 
--			spdif1: spdif@30090000 {
--				compatible = "fsl,imx35-spdif";
--				reg = <0x30090000 0x10000>;
--				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
--					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
--					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
--					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
--					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
--				clock-names = "core", "rxtx0",
--					      "rxtx1", "rxtx2",
--					      "rxtx3", "rxtx4",
--					      "rxtx5", "rxtx6",
--					      "rxtx7", "spba";
--				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
-+				spdif1: spdif@30090000 {
-+					compatible = "fsl,imx35-spdif";
-+					reg = <0x30090000 0x10000>;
-+					interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
-+						 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
-+						 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
-+						 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
-+						 <&clk IMX8MM_CLK_DUMMY>; /* spba */
-+					clock-names = "core", "rxtx0",
-+						      "rxtx1", "rxtx2",
-+						      "rxtx3", "rxtx4",
-+						      "rxtx5", "rxtx6",
-+						      "rxtx7", "spba";
-+					dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 			};
- 
- 			gpio1: gpio@30200000 {
-@@ -670,80 +678,88 @@ aips3: bus@30800000 {
- 			ranges = <0x30800000 0x30800000 0x400000>,
- 				 <0x8000000 0x8000000 0x10000000>;
- 
--			ecspi1: spi@30820000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+			spba1: spba-bus@30800000 {
-+				compatible = "fsl,spba-bus", "simple-bus";
- 				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30820000 0x10000>;
--				interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI1_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI1_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 0 7 1>, <&sdma1 1 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				#size-cells = <1>;
-+				reg = <0x30800000 0x100000>;
-+				ranges;
-+
-+				ecspi1: spi@30820000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30820000 0x10000>;
-+					interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI1_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI1_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 0 7 1>, <&sdma1 1 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			ecspi2: spi@30830000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30830000 0x10000>;
--				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI2_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI2_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 2 7 1>, <&sdma1 3 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				ecspi2: spi@30830000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30830000 0x10000>;
-+					interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI2_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI2_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 2 7 1>, <&sdma1 3 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			ecspi3: spi@30840000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30840000 0x10000>;
--				interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI3_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI3_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 4 7 1>, <&sdma1 5 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				ecspi3: spi@30840000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30840000 0x10000>;
-+					interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI3_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI3_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 4 7 1>, <&sdma1 5 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart1: serial@30860000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30860000 0x10000>;
--				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART1_ROOT>,
--					 <&clk IMX8MM_CLK_UART1_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				uart1: serial@30860000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30860000 0x10000>;
-+					interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART1_ROOT>,
-+						 <&clk IMX8MM_CLK_UART1_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart3: serial@30880000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30880000 0x10000>;
--				interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART3_ROOT>,
--					 <&clk IMX8MM_CLK_UART3_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 26 4 0>, <&sdma1 27 4 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				uart3: serial@30880000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30880000 0x10000>;
-+					interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART3_ROOT>,
-+						 <&clk IMX8MM_CLK_UART3_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 26 4 0>, <&sdma1 27 4 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart2: serial@30890000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30890000 0x10000>;
--				interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART2_ROOT>,
--					 <&clk IMX8MM_CLK_UART2_ROOT>;
--				clock-names = "ipg", "per";
--				status = "disabled";
-+				uart2: serial@30890000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30890000 0x10000>;
-+					interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART2_ROOT>,
-+						 <&clk IMX8MM_CLK_UART2_ROOT>;
-+					clock-names = "ipg", "per";
-+					status = "disabled";
-+				};
- 			};
- 
- 			crypto: crypto@30900000 {
--- 
-2.25.1
+So it looks like the PASID was bound to SVA in this design. I think it's 
+not necessairly the case:
+
+1) PASID can be implemented without SVA, in this case a map/unmap 
+interface is still required
+2) For the case that hypervisor want to do some mediation in the middle 
+for a virtqueue. e.g in the case of control vq that is implemented in 
+the VF/ADI/SF itself, the hardware virtqueue needs to be controlled by 
+Qemu, Though binding qemu's page table to cvq can work but it looks like 
+a overkill, a small dedicated buffers that is mapped for this PASID 
+seems more suitalbe.
+
+
+>
+> This is because PASID is *complicated* in the general case! For
+> instance all the two level stuff you are talking about must not leak
+> into every user!
+>
+> Jason
+
+
+So do you mean the device should not expose the PASID confiugration API 
+to guest? I think it could happen if we assign the whole device and let 
+guest to configure it for nested VMs.
+
+Thanks
+
+
+>
 
