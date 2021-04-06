@@ -2,176 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA09235598B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DB5355998
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238263AbhDFQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:48:01 -0400
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:44911 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbhDFQr7 (ORCPT
+        id S244323AbhDFQu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:50:59 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2771 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239936AbhDFQux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:47:59 -0400
-Received: by mail-oo1-f49.google.com with SMTP id p2-20020a4aa8420000b02901bc7a7148c4so3834382oom.11;
-        Tue, 06 Apr 2021 09:47:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KsEFQn5ynPj9Q6od5ymvE84NEzlALObqjlPA4SQWRs8=;
-        b=Caw06k2MWg1OwP78wZ8gxa1iBXixjWgwRK2lx5HicQ+kWOMh530QGvjE3JBelhmRd0
-         l07PZY89Xc+IP2Fe3Q07P00Zrud9P99oyC3rVkj5hNHogjeFOs2WXWYX6NHrkcS77WDB
-         P94qXGk/+0YrRAgXMMq1WAsVWu8yQuFD3GSljzjKlW2YkKn3Ln9bZZmwVfedZBvP9wye
-         sb+bJ+cmCDA7UEeKzcLBmFvfHHy+K6I9ZkNz1T//ij1po0BAvYPxqH/ngulIh+neVnwM
-         dBeZx5xLXFV3/2z9Ru2STWfxz+G2LpmUaRNkVTanJflI0gOfcrhU00ZS71tPKGEe4II+
-         yk1w==
-X-Gm-Message-State: AOAM533bh+Z9JfB6jSH1+OBEj7zpjZAA7gedjUbhfsCpclV+KT8gGytY
-        EzrbMCvb+rUCHrDKj0jiVw==
-X-Google-Smtp-Source: ABdhPJwPZn4vyuV4WbEQb7jrirEmMI3mRcpb+G+wNqe7KnEHeN8KG33o//cShwHkWNjdpn2Mmze2sA==
-X-Received: by 2002:a4a:d354:: with SMTP id d20mr27213126oos.12.1617727670969;
-        Tue, 06 Apr 2021 09:47:50 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m16sm4687480otj.11.2021.04.06.09.47.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 09:47:50 -0700 (PDT)
-Received: (nullmailer pid 1942347 invoked by uid 1000);
-        Tue, 06 Apr 2021 16:47:48 -0000
-Date:   Tue, 6 Apr 2021 11:47:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 12/18] of/address: Add infrastructure to declare MMIO
- as non-posted
-Message-ID: <20210406164748.GA1937719@robh.at.kernel.org>
-References: <20210402090542.131194-1-marcan@marcan.st>
- <20210402090542.131194-13-marcan@marcan.st>
+        Tue, 6 Apr 2021 12:50:53 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFCvw47XMz680X5;
+        Wed,  7 Apr 2021 00:41:16 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 18:50:44 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 17:50:43 +0100
+Subject: Re: [bug report] Memory leak from acpi_ev_install_space_handler()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <845f6ef8-d2a7-e491-8405-9526e4ba277a@huawei.com>
+ <CAJZ5v0gRm+jsd1KtLtSgT=4pc9oab=EtW=zqBuKjHLJ=ZcUkiA@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <752f16ed-29e3-840e-dc53-6fed24d73861@huawei.com>
+Date:   Tue, 6 Apr 2021 17:48:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402090542.131194-13-marcan@marcan.st>
+In-Reply-To: <CAJZ5v0gRm+jsd1KtLtSgT=4pc9oab=EtW=zqBuKjHLJ=ZcUkiA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 06:05:36PM +0900, Hector Martin wrote:
-> This implements the 'nonposted-mmio' boolean property. Placing this
-> property in a bus marks all direct child devices as requiring
-> non-posted MMIO mappings. If no such property is found, the default
-> is posted MMIO.
+On 06/04/2021 17:40, Rafael J. Wysocki wrote:
+> On Tue, Apr 6, 2021 at 5:51 PM John Garry <john.garry@huawei.com> wrote:
+>>
+>> Hi guys,
+>>
+>> On next-20210406, I enabled CONFIG_DEBUG_KMEMLEAK and
+>> CONFIG_DEBUG_TEST_DRIVER_REMOVE for my arm64 system, and see this:
 > 
-> of_mmio_is_nonposted() performs this check to determine if a given
-> device has requested non-posted MMIO.
-> 
-> of_address_to_resource() uses this to set the IORESOURCE_MEM_NONPOSTED
-> flag on resources that require non-posted MMIO.
-> 
-> of_iomap() and of_io_request_and_map() then use this flag to pick the
-> correct ioremap() variant.
-> 
-> This mechanism is currently restricted to builds that support Apple ARM
-> platforms, as an optimization.
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  drivers/of/address.c       | 43 ++++++++++++++++++++++++++++++++++++--
->  include/linux/of_address.h |  1 +
->  2 files changed, 42 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index 73ddf2540f3f..6485cc536e81 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -847,6 +847,9 @@ static int __of_address_to_resource(struct device_node *dev,
->  		return -EINVAL;
->  	memset(r, 0, sizeof(struct resource));
->  
-> +	if (of_mmio_is_nonposted(dev))
-> +		flags |= IORESOURCE_MEM_NONPOSTED;
-> +
->  	r->start = taddr;
->  	r->end = taddr + size - 1;
->  	r->flags = flags;
-> @@ -896,7 +899,10 @@ void __iomem *of_iomap(struct device_node *np, int index)
->  	if (of_address_to_resource(np, index, &res))
->  		return NULL;
->  
-> -	return ioremap(res.start, resource_size(&res));
-> +	if (res.flags & IORESOURCE_MEM_NONPOSTED)
-> +		return ioremap_np(res.start, resource_size(&res));
-> +	else
-> +		return ioremap(res.start, resource_size(&res));
->  }
->  EXPORT_SYMBOL(of_iomap);
->  
-> @@ -928,7 +934,11 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index,
->  	if (!request_mem_region(res.start, resource_size(&res), name))
->  		return IOMEM_ERR_PTR(-EBUSY);
->  
-> -	mem = ioremap(res.start, resource_size(&res));
-> +	if (res.flags & IORESOURCE_MEM_NONPOSTED)
-> +		mem = ioremap_np(res.start, resource_size(&res));
-> +	else
-> +		mem = ioremap(res.start, resource_size(&res));
-> +
->  	if (!mem) {
->  		release_mem_region(res.start, resource_size(&res));
->  		return IOMEM_ERR_PTR(-ENOMEM);
-> @@ -1094,3 +1104,32 @@ bool of_dma_is_coherent(struct device_node *np)
->  	return false;
->  }
->  EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-> +
-> +/**
-> + * of_mmio_is_nonposted - Check if device uses non-posted MMIO
-> + * @np:	device node
-> + *
-> + * Returns true if the "nonposted-mmio" property was found for
-> + * the device's bus.
-> + *
-> + * This is currently only enabled on builds that support Apple ARM devices, as
-> + * an optimization.
-> + */
-> +bool of_mmio_is_nonposted(struct device_node *np)
-> +{
-> +	struct device_node *parent;
-> +	bool nonposted;
-> +
-> +	if (!IS_ENABLED(CONFIG_ARCH_APPLE))
-> +		return false;
-> +
-> +	parent = of_get_parent(np);
-> +	if (!parent)
-> +		return false;
-> +
-> +	nonposted = of_property_read_bool(parent, "nonposted-mmio");
-> +
-> +	of_node_put(parent);
-> +	return nonposted;
-> +}
-> +EXPORT_SYMBOL_GPL(of_mmio_is_nonposted);
 
-Is this needed outside of of/address.c? If not, please make it static 
-and don't export.
+Hi Rafael,
 
-With that,
+> Why exactly do you think that acpi_ev_install_space_handler() leaks memory?
+> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I don't think that acpi_ev_install_space_handler() itself leaks memory, 
+but it seems that there is something missing in the code which is meant 
+to undo/clean up after that on the uninstall path - I did make the point 
+in writing "memory leak from", but maybe still not worded clearly.
+
+Anyway, I have not analyzed the problem fully - I'm just reporting.
+
+I don't mind looking further if requested.
+
+Thanks,
+John
+
+>> root@debian:/home/john# more /sys/kernel/debug/kmemleak
+>> unreferenced object 0xffff202803c11f00 (size 128):
+>> comm "swapper/0", pid 1, jiffies 4294894325 (age 337.524s)
+>> hex dump (first 32 bytes):
+>> 00 00 00 00 02 00 00 00 08 1f c1 03 28 20 ff ff............( ..
+>> 08 1f c1 03 28 20 ff ff 00 00 00 00 00 00 00 00....( ..........
+>> backtrace:
+>> [<00000000670a0938>] slab_post_alloc_hook+0x9c/0x2f8
+>> [<00000000a3f47b39>] kmem_cache_alloc+0x198/0x2a8
+>> [<000000002bdba864>] acpi_os_create_semaphore+0x54/0xe0
+>> [<00000000bcd513fe>] acpi_ev_install_space_handler+0x24c/0x300
+>> [<0000000002e116e2>] acpi_install_address_space_handler+0x64/0xb0
+>> [<00000000ba00abc5>] i2c_acpi_install_space_handler+0xd4/0x138
+>> [<000000008da42058>] i2c_register_adapter+0x368/0x910
+>> [<00000000c03f7142>] i2c_add_adapter+0x9c/0x100
+>> [<0000000000ba2fcf>] i2c_add_numbered_adapter+0x44/0x58
+>> [<000000007df22d67>] i2c_dw_probe_master+0x68c/0x900
+>> [<00000000682dfc98>] dw_i2c_plat_probe+0x460/0x640
+>> [<00000000ad2dd3ee>] platform_probe+0x8c/0x108
+>> [<00000000dd183e3f>] really_probe+0x190/0x670
+>> [<0000000066017341>] driver_probe_device+0x8c/0xf8
+>> [<00000000c441e843>] device_driver_attach+0x9c/0xa8
+>> [<00000000f91dc709>] __driver_attach+0x88/0x138
+>> unreferenced object 0xffff00280452c100 (size 128):
+>> comm "swapper/0", pid 1, jiffies 4294894558 (age 336.604s)
+>> hex dump (first 32 bytes):
+>> 00 00 00 00 02 00 00 00 08 c1 52 04 28 00 ff ff..........R.(...
+>> 08 c1 52 04 28 00 ff ff 00 00 00 00 00 00 00 00..R.(...........
+>> backtrace:
+>> [<00000000670a0938>] slab_post_alloc_hook+0x9c/0x2f8
+>> [<00000000a3f47b39>] kmem_cache_alloc+0x198/0x2a8
+>> [<000000002bdba864>] acpi_os_create_semaphore+0x54/0xe0
+>> [<00000000bcd513fe>] acpi_ev_install_space_handler+0x24c/0x300
+>> [<0000000002e116e2>] acpi_install_address_space_handler+0x64/0xb0
+>> [<00000000988d4f61>] acpi_gpiochip_add+0x20c/0x4a0
+>> [<0000000073d4faab>] gpiochip_add_data_with_key+0xd10/0x1680
+>> [<000000001d50b98a>] devm_gpiochip_add_data_with_key+0x30/0x78
+>> [<00000000fc3e7eaf>] dwapb_gpio_probe+0x828/0xb28
+>> [<00000000ad2dd3ee>] platform_probe+0x8c/0x108
+>> [<00000000dd183e3f>] really_probe+0x190/0x670
+>> [<0000000066017341>] driver_probe_device+0x8c/0xf8
+>> [<00000000c441e843>] device_driver_attach+0x9c/0xa8
+>> [<00000000f91dc709>] __driver_attach+0x88/0x138
+>> [<00000000d330caed>] bus_for_each_dev+0xec/0x160
+>> [<00000000eebc5f04>] driver_attach+0x34/0x48
+>> root@debian:/home/john#
+>>
+>> Thanks,
+>> John
+> .
+> 
+
