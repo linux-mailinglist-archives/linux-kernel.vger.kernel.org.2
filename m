@@ -2,177 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29CC355179
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F8C355177
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245321AbhDFLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:03:09 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2765 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhDFLDG (ORCPT
+        id S245318AbhDFLBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232292AbhDFLBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:03:06 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF4FW0Dffz686J2;
-        Tue,  6 Apr 2021 18:55:59 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 13:02:56 +0200
-Received: from [10.210.166.136] (10.210.166.136) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 12:02:55 +0100
-Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
- parsing test
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
-        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <irogers@google.com>, <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
-        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-3-git-send-email-john.garry@huawei.com>
- <YGXPdEAecos4iPVc@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
-Date:   Tue, 6 Apr 2021 12:00:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 6 Apr 2021 07:01:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B662C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:01:06 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617706863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S2O1k9yZlYySt7+8gnNrDK/Yp/8kwoWX62PxlbcqwbA=;
+        b=nl9GFkH778lC7VCrJOuaoV80FdfH0mtXyzGk6zcuRJPpzUbwbdCttQk6fZN0TWXbTNFRHS
+        9OP4F05zxprZGg/xrYgT3Dc78sX2wQoXJufiMTarERPRiF1HwtW87KNXnnLCLPBwAEUI8l
+        Lyi4cptRgwjQyWy4f5OzjrnYIUFDU3znx7RetH9ffo5pac9HdBj/wgI4zvpLnhJw7e2oAi
+        h34q2YaMqx653oO2+7Tqu8iGaVsxQwJhHRPYLrqPOAfOpobaf1NbF3s91jgtawE7IIWdKE
+        UV94lIL4ee0lGL/6gJg9KEoMtmeOBzCgkHyqOsp+irX0SlOmZB2rI9/coqhytg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617706863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S2O1k9yZlYySt7+8gnNrDK/Yp/8kwoWX62PxlbcqwbA=;
+        b=yzGkWAKS3iH7xchc7y3QLe7xFMXuhjofzIxtdxB9f2DojJ4aTiCvWNPgQVcmr4T/abFsf7
+        grBHNd4e9TDvqEDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
+In-Reply-To: <YGXV8LJarjUJDhvy@alley>
+References: <20210330153512.1182-1-john.ogness@linutronix.de> <20210330153512.1182-3-john.ogness@linutronix.de> <YGW63/elFr/gYW1u@alley> <87a6qiqgzr.fsf@jogness.linutronix.de> <YGXV8LJarjUJDhvy@alley>
+Date:   Tue, 06 Apr 2021 13:01:02 +0200
+Message-ID: <87im4zoexd.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YGXPdEAecos4iPVc@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.136]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/2021 14:49, Jiri Olsa wrote:
-> On Thu, Mar 25, 2021 at 06:33:14PM +0800, John Garry wrote:
-> 
-> SNIP
-> 
->> +struct metric {
->> +	struct list_head list;
->> +	struct metric_ref metric_ref;
->> +};
->> +
->> +static int resolve_metric_simple(struct expr_parse_ctx *pctx,
->> +				 struct list_head *compound_list,
->> +				 struct pmu_events_map *map,
->> +				 const char *metric_name)
->> +{
->> +	struct hashmap_entry *cur, *cur_tmp;
->> +	struct metric *metric, *tmp;
->> +	size_t bkt;
->> +	bool all;
->> +	int rc;
->> +
->> +	do {
->> +		all = true;
->> +		hashmap__for_each_entry_safe((&pctx->ids), cur, cur_tmp, bkt) {
->> +			struct metric_ref *ref;
->> +			struct pmu_event *pe;
->> +
->> +			pe = metrcgroup_find_metric(cur->key, map);
+On 2021-04-01, Petr Mladek <pmladek@suse.com> wrote:
+>> Caller-id solves this problem and is easy to sort for anyone with
+>> `grep'. Yes, it is a shame that `dmesg' does not show it, but
+>> directly using any of the printk interfaces does show it (kmsg_dump,
+>> /dev/kmsg, syslog, console).
+>
+> True but frankly, the current situation is _far_ from convenient:
+>
+>    + consoles do not show it by default
+>    + none userspace tool (dmesg, journalctl, crash) is able to show it
+>    + grep is a nightmare, especially if you have more than handful of CPUs
+>
+> Yes, everything is solvable but not easily.
+>
+>> >     I get this with "echo l >/proc/sysrq-trigger" and this patchset:
+>> 
+>> Of course. Without caller-id, it is a mess. But this has nothing to do
+>> with NMI. The same problem exists for WARN_ON() on multiple CPUs
+>> simultaneously. If the user is not using caller-id, they are
+>> lost. Caller-id is the current solution to the interlaced logs.
+>
+> Sure. But in reality, the risk of mixed WARN_ONs is small. While
+> this patch makes backtraces from all CPUs always unusable without
+> caller_id and non-trivial effort.
 
-*
+I would prefer we solve the situation for non-NMI as well, not just for
+the sysrq "l" case.
 
->> +			if (!pe)
->> +				continue;
->> +
->> +			if (!strcmp(metric_name, (char *)cur->key)) {
->> +				pr_warning("Recursion detected for metric %s\n", metric_name);
->> +				rc = -1;
->> +				goto out_err;
->> +			}
->> +
->> +			all = false;
->> +
->> +			/* The metric key itself needs to go out.. */
->> +			expr__del_id(pctx, cur->key);
->> +
->> +			metric = malloc(sizeof(*metric));
->> +			if (!metric) {
->> +				rc = -ENOMEM;
->> +				goto out_err;
->> +			}
->> +
->> +			ref = &metric->metric_ref;
->> +			ref->metric_name = pe->metric_name;
->> +			ref->metric_expr = pe->metric_expr;
->> +			list_add_tail(&metric->list, compound_list);
->> +
->> +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> 
+>> For the long term, we should introduce a printk-context API that allows
+>> callers to perfectly pack their multi-line output into a single
+>> entry. We discussed [0][1] this back in August 2020.
+>
+> We need a "short" term solution. There are currently 3 solutions:
+>
+> 1. Keep nmi_safe() and all the hacks around.
+>
+> 2. Serialize nmi_cpu_backtrace() by a spin lock and later by
+>    the special lock used also by atomic consoles.
+>
+> 3. Tell complaining people how to sort the messed logs.
 
-Hi Jirka,
+Or we look into the long term solution now. If caller-id's cannot not be
+used as the solution (because nobody turns it on, nobody knows about it,
+and/or distros do not enable it), then we should look at how to make at
+least the backtraces contiguous. I have a few ideas here.
 
-> so this might add new items to pctx->ids, I think you need
-> to restart the iteration as we do it in __resolve_metric
-> otherwise you could miss some new keys
-
-I thought that I was doing this. Indeed, this code is very much like 
-__resolve_metric() ;)
-
-So expr__find_other() may add a new item to pctx->ids, and we always 
-iterate again, and try to lookup any pmu_events, *, above. If none 
-exist, then we have broken down pctx into primitive events aliases and 
-unresolvable metrics, and stop iterating. And then unresolvable metrics 
-would be found in check_parse_cpu().
-
-As an example, we can deal with metric test1, below, which references 2x 
-other metrics:
-
-     {
-         "MetricExpr": "IDQ_UOPS_NOT_DELIVERED.CORE / (4 * (( ( 
-CPU_CLK_UNHALTED.THREAD / 2 ) * ( 1 + CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE 
-/ CPU_CLK_UNHALTED.REF_XCLK ) )))",
-       "MetricName": "Frontend_Bound",
-     },
-     {
-         "MetricExpr": "( UOPS_ISSUED.ANY - UOPS_RETIRED.RETIRE_SLOTS + 
-4 * INT_MISC.RECOVERY_CYCLES ) / (4 * cycles)",
-         "MetricName": "Bad_Speculation",
-     },
-     {
-         "MetricExpr": "Bad_Speculation + Frontend_Bound",
-         "MetricName": "test1",
-     },
-
-Does that satisfy your concern, or have I missed something?
-
-Thanks,
-John
-
-> 
-> jirka
-> 
->> +			if (rc)
->> +				goto out_err;
->> +		}
->> +	} while (!all);
->> +
->> +	return 0;
->> +
->> +out_err:
->> +	list_for_each_entry_safe(metric, tmp, compound_list, list)
->> +		free(metric);
->> +
->> +	return rc;
->> +
->> +}
-> 
-> SNIP
-> 
-> .
-> 
-
+John Ogness
