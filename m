@@ -2,211 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3C9354E04
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B355354E16
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235911AbhDFHlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S244437AbhDFHlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234487AbhDFHlH (ORCPT
+        with ESMTP id S235408AbhDFHlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:41:07 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A223C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:41:00 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id e14so20309853ejz.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 00:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nBGqA/M3Vak+IwmMaVk8X2rx3tclSvs0k42JLfwZRLQ=;
-        b=sbbnKZrC6hqH4sUwwG1zvNw0iayCAdDT9eUOORudr3/kBmIbv2grL2S1CXxVclBU8j
-         RAebTm6lNL3zmhDVGucU6sQ8Q9Q1PTG+wFoEruk2BQQNahOJHYfEQSoRjtWN7cje9z9G
-         Yn3Bj46HSKZxuIQjnU7R6PZqv1c8276WE5G4zFA/Y9XLgnUKJMVyImL9n0MVkPFpa3Zp
-         GId30KBAHc5Vp7RQxrnaWKgh0zZ0cjtJPKh4CnU0RPfBMAKQ8d8E7UHotE9JIjd9wMTY
-         N0nE3gNOhExOpOHxEJ9aEmaNX7gCUZ2XLZ1dbU37T7PBRXBRAyqHKer783J1zHEvCEil
-         9K/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nBGqA/M3Vak+IwmMaVk8X2rx3tclSvs0k42JLfwZRLQ=;
-        b=flNijGiV8K7I18RdTY0N2s4lzi5UTczpiiDZWh2UgWpOyqqwH3q3FYTF8mmAG1ZH8D
-         8r848FemFbCHzTMbT4fkLSTsIueaXi5M+DDvGjMaiWCtZpmo6rvE2LIb6saMtRc8/eAz
-         B26njtAv2ByfiICplxxhkV6roVj03DYB40ef/hHwPqDjb8XH7os9z1poWf1U+ctqUi4c
-         eK+GHhTvQGRxlxHGLExf1o7pe6mr9GYkaW2wZ4yMDagMUcEQBtUxLSp+cOZPlKpcIz9W
-         bpOeqFcidbT/JTfotDmomc4AWAIloBU+I7IlLepZJjfxK9J09p3JSMJgu6fmJHPuY256
-         wL8Q==
-X-Gm-Message-State: AOAM530830oZTe61U735l77O5Hggq+7gKjLnI4zoPiKr7AnpAXSupjZ1
-        FdjsRU1rF3q/04MaBDJwOWZvFJ+Ble80srpT0u+Jsg==
-X-Google-Smtp-Source: ABdhPJxpho/8WLwFhf/GE31J5akOJMd4S3Jm/MuEgDlLzmlpjvX9lhA1LKSKPpidGaSYdx5TgSrdDRADJOB4HJARYRY=
-X-Received: by 2002:a17:907:2509:: with SMTP id y9mr20075309ejl.170.1617694858892;
- Tue, 06 Apr 2021 00:40:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210405085018.871387942@linuxfoundation.org>
-In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 6 Apr 2021 13:10:47 +0530
-Message-ID: <CA+G9fYtN+Njtss0zP4S2Jpy+b6w6YS3vw8D4M1MC0JY7x+jm7A@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/35] 4.9.265-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tue, 6 Apr 2021 03:41:25 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216ECC0613D7
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NtENhIIYkJVIk6ChrHzMySoRycyrB0BINANzaoAFd3Y=; b=hhGShFz/7GeyDv/OFgPmJe24Zo
+        0dHRAKmhDb48t3MAMjMfI15Ybh5nnhUe/CM5i7RyIvwoFVEXNT0SvqfmKw2imfZMYpNB/cDgSzyIb
+        LQO3KFGoB0CmYAOYgeZ3dwBrWF7WSCddD53SWkdmY7QDTGe25BzuMdbj3xsTrl9YTioxGdQSptwyn
+        5FhPlzruu69FUfuEOBQBlovGgaZVoWnqNl8/aMGUfOdD65SglPWkghlH18dEqOi143r66m6l1rHF6
+        PYU4ygXiOcBJU+fOYitT2fEJIRrUkj2vr/WPPr0UQSh841wSQWuq60oDMq1oNoz8if3vOohfhCRdd
+        9VoNI2qQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTgKk-001oZr-Ve; Tue, 06 Apr 2021 07:41:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EA6F304D58;
+        Tue,  6 Apr 2021 09:41:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0BF732BAE8C28; Tue,  6 Apr 2021 09:41:10 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 09:41:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in copy_page_range
+Message-ID: <YGwQlnpKBbUrGaZm@hirez.programming.kicks-ass.net>
+References: <00000000000086695705bec87c9f@google.com>
+ <CACT4Y+YuKj_f8dy3UShSmzj4=D_3CgndbgDY6kcFbhb-EYw=dw@mail.gmail.com>
+ <YGQlHvte0BeKx0uV@hirez.programming.kicks-ass.net>
+ <CACT4Y+b1NsdnC1hqk54Y8zEs7r3y7+EnAqbG1eBmuhji_bfFqw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+b1NsdnC1hqk54Y8zEs7r3y7+EnAqbG1eBmuhji_bfFqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 at 14:27, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.265 release.
-> There are 35 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.265-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Mar 31, 2021 at 11:57:23AM +0200, Dmitry Vyukov wrote:
+> On Wed, Mar 31, 2021 at 9:31 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Mar 31, 2021 at 08:11:38AM +0200, Dmitry Vyukov wrote:
+> > > On Wed, Mar 31, 2021 at 12:26 AM syzbot
+> > > <syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    db24726b Merge tag 'integrity-v5.12-fix' of git://git.kern..
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=16c16b7cd00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=1a33233ccd8201ec2322
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com
+> > >
+> > > I think this is a LOCKDEP issue. +LOCKDEP maintainers.
+> > >
+> > > Another bug happened on another thread ("WARNING: possible circular
+> > > locking dependency detected"). Lockdep disabled lock tracking
+> > > ("debug_locks = 0" in the report), which probably made it miss
+> > > rcu_unlock somewhere, but it did not turn off reporting yet and
+> > > produced the false positive first.
+> > >
+> > > I think if LOCKDEP disables lock tracking, it must also disable
+> > > reporting of issues that require lock tracking. That would avoid false
+> > > positives.
+> >
+> > Still early and brain hasn't really booted yet, but features that
+> > require lock tracking are supposed to check debug_locks.
+> >
+> > And afaict debug_lockdep_rcu_enabled(), which is called by
+> > RCU_LOCKDEP_WARN(), which is called by rcu_sleep_check() does just that.
+> 
+> Right... yet it somehow happens.
+> Looking at a dozen of reports, all with 2 concurrent lockdep splats
+> and "debug_locks = 0" in the report, I am pretty sure there is some
+> kind of race in lockdep.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.9.265-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-4.9.y
-* git commit: 570fbad9f4ca61dfb49359b9c2627a97e41e2b4b
-* git describe: v4.9.264-36-g570fbad9f4ca
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-64-36-g570fbad9f4ca
-
-## No regressions (compared to v4.9.264-25-gea8146018e96)
-
-## No fixes (compared to v4.9.264-25-gea8146018e96)
-
-## Test result summary
- total: 58777, pass: 48253, fail: 593, skip: 9676, xfail: 255,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Aah, concurrent splats. Yes, that was per design. The theory was that
+concurrent splats are rare and this is much simpler code.
