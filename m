@@ -2,135 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F36354F95
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04B2354F90
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240655AbhDFJJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:09:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:64570 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbhDFJJo (ORCPT
+        id S240594AbhDFJJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:09:38 -0400
+Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:51279 "EHLO
+        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233626AbhDFJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:09:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617700173; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=F4jdbffDeZDNKhypu4nbWbPE4bfUYUk0a5UryZXysDE=; b=Iwu+Ro1lRqaealaSfacsMl5UVB0nTjYpoqS0JVZfyChIxRRGycdsYzeV1hi2u7CskKqGmf5i
- oFbL83gDRkcB+6d9NKjvbcnbUOZ3m7X3V8+MoTfJIo4xYpORCi3Hjn73kMIp96rqOW5T06PB
- D6Y19wzlA02SEuGN3aocaPcLdtY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 606c254cc06dd10a2d3fbeb2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 09:09:32
- GMT
-Sender: stummala=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0D61EC433C6; Tue,  6 Apr 2021 09:09:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44B04C43463;
-        Tue,  6 Apr 2021 09:09:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44B04C43463
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Sahitya Tummala <stummala@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] f2fs: fix the periodic wakeups of discard thread
-Date:   Tue,  6 Apr 2021 14:39:16 +0530
-Message-Id: <1617700156-19719-1-git-send-email-stummala@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20210316093406.GC8562@codeaurora.org>
-References: <20210316093406.GC8562@codeaurora.org>
+        Tue, 6 Apr 2021 05:09:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1617700170;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=VNu3Oxb0+wnZs4qKmrS/q4mFGlDFsROdeBbj4/ByVT4=;
+  b=O7KKIONIYP8J2FbrzOX0MU/5NxHxzsakt9c7uqYPit1V00rrygr5AwZx
+   0PGnBMxucsgxq9M2XBGspIfTo2VGCiprPmLhTcQ+3JAJxNWa5d/Mc/snX
+   Dz7hLRQOAxR8rOXjWr4WB0Q0NVTwF6lUIzsy40903cPYOEy4UAP/RHnpf
+   0=;
+Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: KjS5IpdQ5jlXtWB7FqaBEtSmtknOZjyadZOVxQ9cRTSSopydjPIGRZyozBe7FhbmLpUqNcOGeD
+ Nos5Wkq4OLFtBs6qv23wWY0YGSp3Bp5C8qQdKv6yTHqtJ9MycX3vjAE/v4kqi/4pmFczo2xWkB
+ DuZtA8ndGyTciy5wYY8ZOdhm5oENGbkeDhF/7R5HRaRDuBA+PhiHwELzh4U2TZBfHJos9t4vJs
+ f2DSSVI9hgz+dtcoEiMZ6Js3MjXG/4uhWVtsbpyxxj7hxdxzSLtKox7kN5H/LiVpGmL846O7UU
+ mZg=
+X-SBRS: 5.2
+X-MesageID: 40938035
+X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:n45OhagzEBTRt9P8W5/WrFvOGHBQX7N13DAbvn1ZSRFFG/Gwv8
+ qlkO0HkTr9jzgMUH8t8OrwX5Woa1m0z/FIyKMWOqqvWxSjnWOuIp1r44eK+UyHJwTV8OlB2a
+ B8N5VvEdGYNykBse/W6BS1euxQo+Wv37uvgY7loktFbQYvUK146hc8NwDzKDwTeCBjJb4UUK
+ WR/dBGoT3IQwVrUu2eCmMeV+bO4/3n/aiWAyIuPBIs5AmQgT7A0teTeHKl9ywTXD9VzbAp/X
+ KtqX2d2oyYr/q5xhXAvlW8071qmcDswtYGJMuAhtl9EFXRozuof4hoVvm+uik0qoiUiWoCrd
+ +kmXsdFvU2z0mUX2mu5TPxxgHr0V8Vmgbf4G7dpUGmnOvUa3YRDdFbiYdQbx3DgnBQxO1Uwe
+ ZMxGKWt51eEBPGkmD8/rHzJmpXqnY=
+X-IronPort-AV: E=Sophos;i="5.81,309,1610427600"; 
+   d="scan'208";a="40938035"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ck3cJktkKirISMHpSGmISpWGVlSipjdm9xI14M54jIIITBmN3JmI6yxHsLV3OsC4yZ/RfEs8Nd767H18jefqtUUJdo/eTK9kngDOxRpYw6g4lMEfngfAMQA4oARWC68WGy+RUG733jXjWbjQGHFGbqtfcwQnfwNcScODNxLdsYtfPXXHW1gYPJB8X4i9oYPNqtLHLAJHjD+QVvb4np/CaZX/Kbs1H7Om0PsOuDE3feymmf7Tx++bdKz/rT295uLZXCxLBcI2lh5XtBfKxOra6U3wajqAAF13EW5GmWlTTjavz/lNeHNLwEqxCWPDOph8UVN4COsIBVtoOdApMdIdsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7z7WMDrE7g3ZUqn8Gbw2JUMn4tnRJm1w3CiFvtFGwbU=;
+ b=Fzz172QEK0KAy/z+4RPY2j4y4w9Pq8NIYfRy8VdgRjo8UlxTTGHgMJh/D8xv8FDhaO4pg2SIY+XJ29GF4Hedxa+j/8cjUuTraRcOkHsT2TkjgkkS0FyhAz4XycToFZ0PMoUfPKsmx7hnJjMfglMHoZQ7O1sZX6NR5bhmJhI49AVTgCknB+fww84C3o+aO/GVQ64hyXfZhA6ho3bgDJDuDMuJ7D7KaAS5BdWoYZQlSFMl/iwLkOisfoO39UAWboRkc2JawD8cinMgHRAtgukohFxnuJyiLgQtoOmzVqtpUpZw7mDkQghJOlU/6RPYrnEI/5eBf3ytCkkCdc7fPr2xfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7z7WMDrE7g3ZUqn8Gbw2JUMn4tnRJm1w3CiFvtFGwbU=;
+ b=pFN4WGflltsAi/Xr2sRwQN+cw92vNGzoCY5Hlo0CGBLMwX1BTp8FtoIZUpQtKpIYC8WUG7nrolVUrEfbEYzjMiMupuI77M23bxoLzJMmtPpfgiw5BvVcyPC1dz37xRrV9tU8znbx3JNTJgaqVzvKjnoa8vV0G+X+OOubswIxkSM=
+Date:   Tue, 6 Apr 2021 11:09:19 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, <xen-devel@lists.xenproject.org>,
+        <linux-block@vger.kernel.org>
+Subject: Re: [PATCH 10/11] block: xen-blkfront: Demote kernel-doc abuses
+Message-ID: <YGwlP4hf5Nxgdjn+@Air-de-Roger>
+References: <20210312105530.2219008-1-lee.jones@linaro.org>
+ <20210312105530.2219008-11-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210312105530.2219008-11-lee.jones@linaro.org>
+X-ClientProxiedBy: MR2P264CA0034.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500::22)
+ To DS7PR03MB5608.namprd03.prod.outlook.com (2603:10b6:5:2c9::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db911e2a-8520-4476-3013-08d8f8dbad98
+X-MS-TrafficTypeDiagnostic: DM6PR03MB4476:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB4476D08BCA996628A7BE5D7B8F769@DM6PR03MB4476.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NB6ewCwzTzxrBmCk7Aa0YxsSwzzU+++x4rrM///D2KnhYVwWDdSzJkt95tBWOCtm+3we6jD4Q8b+NAvIhYRnkpouRiMzt/f9aspu+Fb+UCKUofLtIChFohLyZrqFIzTz0ka8nQdALooSFjIX1M2x4M/5yv7e4dawyFhr8cqy+PLedjhI4u7VyXigfEIY5EJNjE9k0oz1kL81EbyILQ7PCwp3phfs7f+pqh1Vxo4pyuImd1h9DSjrRxag0LKF/4OvnYQZgap8+I4kHt3v3p7Is6s15O+oiz31mhpEASZ/0uYWjaboE5jr0/9sWPLpldrRGrYJBJkGuTuvMmrwyzwxyA1XSoOwuimDUIKvq8eIZTtWbY5Nya2hHx67s3Od7DjXSRmP9/D1goIWdzvnZcJplwmmwDeHZajoaUQwe7tDqHWZ+MhgBvWlKgFKaWKLVFTdGnguLlZ4CdwNo0UWeSX3ppA3L6xC/TK5J5jOx3iQUH3ulODeqHccFsaBVq80XrXpkaBqrdQzNU3WWbqmpCsVSUTF8PPE/5B7q+cDTgGADDssBikYBMFwgj8csFKpYqftVWikqVRMa/M7f+b1DwVYHdc10KQzj6Ur892foVQwr3ysEl5AVBCRVBhfYvgtHW8Yb4lg/mFuEGN23wEoV6C5ccBLiNpJEYRzozHdhlZQz8c=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(39860400002)(136003)(396003)(346002)(376002)(4326008)(66946007)(85182001)(26005)(66556008)(8676002)(66476007)(478600001)(186003)(86362001)(38100700001)(83380400001)(9686003)(6666004)(2906002)(8936002)(6496006)(6486002)(54906003)(5660300002)(316002)(33716001)(6916009)(16526019)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dkVtajM3T3B4bTJNWkhUaTRFMHNybU9kMFVPcXZzUSszbEJ0UC9UNVM4VnBV?=
+ =?utf-8?B?YUgrSlRPQWhKUnhoQ3ZlQklmS2o4ZTFmOHJqQVRsN3JpQVQ5RnpTRVJjT20r?=
+ =?utf-8?B?Sk9vQU1vNEx6SmIzRytSdTRjYy9zRnZoM0dzRW54VXBXb0Z0MlpQT1NCV2ZZ?=
+ =?utf-8?B?bTY3bFFtYjBUTTltVnlvK1RBN0ZjWWRaWUlraENydklYcDhmdENKS3UwNHdz?=
+ =?utf-8?B?ZmI2SWMwQ0U1bU1kYUZheGVPUE5xMDNHTU55ZnF4eldZWlBEclJURkNFdjg5?=
+ =?utf-8?B?enVtUUprZjBUNDdNamxKNmx3bnM0VmxoT0VZNkNPMm13aEY1ays0R2hMVGVN?=
+ =?utf-8?B?RU1FaVRzMzVjUFZhRFJFWUxFdUFlTjZEaDJWUmc2WXUwSks5V0toMVdCTzBl?=
+ =?utf-8?B?Y2V1MFdHalRZNXlhS3kxM1hZYkluQUc0NTd6ZmVWUkdTVHJ1dy9CZ21TKytO?=
+ =?utf-8?B?dE4wMi9VSFp6bUhtVEpGL2tVQ2VrendjZHl2NmhueTh2cjBDWERkWk56cUsr?=
+ =?utf-8?B?bnJKYzkzRXAvM09XS0VLWjRoL1Y5djUyZktKQXN6L2p4RlQrVjFMSlp6bkhS?=
+ =?utf-8?B?Yk40Rk9sVFdlZStzOU5nUWNWNE5yVTdRaFFKMnlNcFZiZ2F2Y2pxQU5nV0Fm?=
+ =?utf-8?B?dE9QL2lmLy9LQU1nTVkzUWNWMWFNLzFxWXMyVU55T0xEdkR1Qk5jWVByZENR?=
+ =?utf-8?B?QWRDYnRxNEtWRFgzVmhUNklNeTFQdk9LY0l4citjcWZLZVFhelRMUzAvZjJs?=
+ =?utf-8?B?SUo2d3JyS2xIVWdyUE9xQ2ZMTjF2UUplczdVczNTOVFoUjFhWlREK2NrcVl2?=
+ =?utf-8?B?bWY0NGs2bFE1Nkt0dVljdnMrcjAwTjJGaVg1UGRNWUdZT2FDNGhGQ3BacDJJ?=
+ =?utf-8?B?MnNoMWtFRE9mM3ovL3dCUHpPMmswRmJkR3hWeDFkMklHNE5LWEVXbVVyc211?=
+ =?utf-8?B?OVYzQ3pPaVVVWGlRWXh6Z1hKNUJIWmhaYzZ4eUNLZitrbmlmd0FvUmR6cExF?=
+ =?utf-8?B?citxaE9zWHlabkxWdXdMWTg0cEZ5OG5raGpUT3NHRHZJenpoOEdiWkhIZUVW?=
+ =?utf-8?B?MkRWYWxvNDN5bUIrLzlVTWlza1lrNmk5UmJGUHRCVHIzQnJiNGNtOU9oN2JR?=
+ =?utf-8?B?WU9nU21FNFlUd0k5M3ZYNE04dnUxZjdwV05PWmczZ3hFM2V4V3hHNXNTY0t4?=
+ =?utf-8?B?bnZRYy9qUmwvWFRYNTFoRnNRWHh1UmtnWWlCQUVpRkdxWXhpeFpmWUU2bGJZ?=
+ =?utf-8?B?ODZmdVlUc0lJckE4ZC96OFhuUXYxZExuZDkzV1RKcy9lZ1pYZW9VMGVIZ2RE?=
+ =?utf-8?B?S0VkeXc1OWdLanlKRkdiWFFYTmpJbjYxelQ0Mm1wN3ZrSmVtN2RMMmtwRU1Q?=
+ =?utf-8?B?dEdodEdtZFVMaVlGaEp2WENsKzhFRlNtZTJiWEltZ041MlM5b1dxS0tha25V?=
+ =?utf-8?B?OUV4bTRObmxPSnVwYkhtcFAwTmlGMWl0RTRjU3dIZ1ZYVFlMWGdXR2lUUCtx?=
+ =?utf-8?B?K09CZ00zVjBObGdrKzNWaEdxbmk0M3lUbTdlc0Z2d0tjT1l3S2hYMnY4RlVT?=
+ =?utf-8?B?NjN0ZThPcXArSzdFdE9id1BoRHRFTlgwV2IzTEdieUFxcTlvOVVYUndscWNi?=
+ =?utf-8?B?T3ZBWXg3MEF3OW92L2dHVUMyOXgwNTdjbFNLNS9mcnlmR2Z5Q0lXdEwxeUc2?=
+ =?utf-8?B?ZzBhMkJDanFvaGFldFErc2dNOUh3d214SThlamZrdGlMN2JuUy9uUGlFcHAv?=
+ =?utf-8?Q?ULTzxNMYyndxc5cGGu0TfwbbzaMcxCMELdg6Ldq?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: db911e2a-8520-4476-3013-08d8f8dbad98
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 09:09:26.9163
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7TSWjgtC1ggF6EDuoJF4clzV9NqlRstH6nuTAL9A/bEK2bfHePB5410dK04WEPFKJePKalo00/uxHCClAty5zA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4476
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the unnecessary periodic wakeups of discard thread that happens under
-below two conditions -
+On Fri, Mar 12, 2021 at 10:55:29AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/block/xen-blkfront.c:1960: warning: Function parameter or member 'dev' not described in 'blkfront_probe'
+>  drivers/block/xen-blkfront.c:1960: warning: Function parameter or member 'id' not described in 'blkfront_probe'
+>  drivers/block/xen-blkfront.c:1960: warning: expecting prototype for Allocate the basic(). Prototype was for blkfront_probe() instead
+>  drivers/block/xen-blkfront.c:2085: warning: Function parameter or member 'dev' not described in 'blkfront_resume'
+>  drivers/block/xen-blkfront.c:2085: warning: expecting prototype for or a backend(). Prototype was for blkfront_resume() instead
+>  drivers/block/xen-blkfront.c:2444: warning: wrong kernel-doc identifier on line:
+> 
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: "Roger Pau Monné" <roger.pau@citrix.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-1. When f2fs is heavily utilized over 80%, the current discard policy
-sets the max sleep timeout of discard thread as 50ms
-(DEF_MIN_DISCARD_ISSUE_TIME). But this is set even when there are
-no pending discard commands to be issued.
+Acked-by: Roger Pau Monné <roger.pau@citrix.com>
 
-2. In the issue_discard_thread() path when there are no pending discard
-commands, it fails to reset the wait_ms to max timeout value.
-
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
----
-v2:
-- Fix the second scenario mentioned above in commit text
-
- fs/f2fs/segment.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index d7076796..59efec5 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -1112,6 +1112,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
- 				struct discard_policy *dpolicy,
- 				int discard_type, unsigned int granularity)
- {
-+	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-+
- 	/* common policy */
- 	dpolicy->type = discard_type;
- 	dpolicy->sync = true;
-@@ -1131,7 +1133,9 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
- 		dpolicy->ordered = true;
- 		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
- 			dpolicy->granularity = 1;
--			dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
-+			if (atomic_read(&dcc->discard_cmd_cnt))
-+				dpolicy->max_interval =
-+					DEF_MIN_DISCARD_ISSUE_TIME;
- 		}
- 	} else if (discard_type == DPOLICY_FORCE) {
- 		dpolicy->min_interval = DEF_MIN_DISCARD_ISSUE_TIME;
-@@ -1747,8 +1751,15 @@ static int issue_discard_thread(void *data)
- 	set_freezable();
- 
- 	do {
--		__init_discard_policy(sbi, &dpolicy, DPOLICY_BG,
--					dcc->discard_granularity);
-+		if (sbi->gc_mode == GC_URGENT_HIGH ||
-+			!f2fs_available_free_memory(sbi, DISCARD_CACHE))
-+			__init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
-+		else
-+			__init_discard_policy(sbi, &dpolicy, DPOLICY_BG,
-+						dcc->discard_granularity);
-+
-+		if (!atomic_read(&dcc->discard_cmd_cnt))
-+		       wait_ms = dpolicy.max_interval;
- 
- 		wait_event_interruptible_timeout(*q,
- 				kthread_should_stop() || freezing(current) ||
-@@ -1775,10 +1786,6 @@ static int issue_discard_thread(void *data)
- 		if (!atomic_read(&dcc->discard_cmd_cnt))
- 			continue;
- 
--		if (sbi->gc_mode == GC_URGENT_HIGH ||
--			!f2fs_available_free_memory(sbi, DISCARD_CACHE))
--			__init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
--
- 		sb_start_intwrite(sbi->sb);
- 
- 		issued = __issue_discard_cmd(sbi, &dpolicy);
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thanks, Roger.
