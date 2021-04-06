@@ -2,210 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AFF355770
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA9A35576B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345521AbhDFPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:12:03 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42958 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242532AbhDFPL6 (ORCPT
+        id S1345511AbhDFPLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242532AbhDFPLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:11:58 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136FBWKK052191;
-        Tue, 6 Apr 2021 10:11:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617721892;
-        bh=6UVsODFZg64LIzShPR6hP24Brbg1HkYTCLhHx1zXPE4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=MwVV8hp2kbqkcb5f9SL7LeJIDoqcPxxLzislu1O6PA8Y5M/9KsRrAZKDg/iuZ/+ZX
-         8SJJDTrnAZrKBbDhv8qHpH2W+Lm7v54f2pgb0f7zHjFTd09lP5/+O81+BEloFgFj+x
-         rpyorFSC2FjT4PE+S8g7xHzwNblXrd1+HD5Hl+u8=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136FBWVW086856
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 10:11:32 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 10:11:31 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 10:11:31 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136FBVbg120763;
-        Tue, 6 Apr 2021 10:11:31 -0500
-Date:   Tue, 6 Apr 2021 20:41:30 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 10/16] media: cadence: csi2rx: Add wrappers for subdev
- calls
-Message-ID: <20210406151128.etqmcanchvkgspgg@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-11-p.yadav@ti.com>
- <YGb2L7dq0fBma1or@pendragon.ideasonboard.com>
+        Tue, 6 Apr 2021 11:11:47 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C39FC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:11:39 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id b17so6927585pgh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wMg1tXo5GvHCGxwhu8OpzGcHgBM3RWJCydSk6NMOEDA=;
+        b=lQ+a9APS5AQlbbgHxBC5O48i5WwOH3t4pPGoOaG0U4ShcakCjIsOZlN8WwqQ42U9Nl
+         JUh5cWmm4FlbKBS7ZMHp5rmwIK+HvVD8gYudjaVLQDc6eahkVwjA3l2g4AtBJnt/GvGI
+         6Ott5YFVpUR2P2xiFDk1LRipYxhtktoNn7J9HX3HyvZgY2BKDVMNzkmbVx6Q02NZZ1dt
+         MXVMbRyVx2swtq4jwmACZwppxBsIFzX4AUgqabdamawz9trDfXz4CCHeO769Tv5WnCwj
+         v/hYDDK/lEfreugbDKEH8PgKnhOVsWAXY5VspwlbPN8EGmPIjTzinjgQfB4Tt9TqtZ+l
+         8EVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wMg1tXo5GvHCGxwhu8OpzGcHgBM3RWJCydSk6NMOEDA=;
+        b=tP+iZnjFyq9PsxBaEJP7sSFry1gtMmVg/1ajD2+FEuPmLgfLoU9iTkWqB67iT6yRNm
+         3I5hGjYT3IRy28ipdZ0S2/qdiP4kg1eXl06aKYFM9xlYZXw3CeqNbIZI5aItp/tA/hsD
+         Tzn/1DgogGinH0CPnlvt/Cq3fnWQ783/XAOJCBjTF7Qry9RShtYorcQ+9XhXxxd8fL0B
+         oEhJi8ap5/OfaP8A0jWiRF9EwY+27AIoLDv2fRa4ulEJ+O+q6KZ1gPN6HVyoIAT7iqgB
+         vr+xZTct7PvZqWItYseACc1gIOKSD+cNu/XxZRkPdKG9x+dJdAsqkBRo1VrJIfPmXIst
+         zzew==
+X-Gm-Message-State: AOAM532+VmNHBq2153SiuUexhQRTByRXuaAriuD+Q5uxFja91mbeITxy
+        HAxlaonFxBfD3jHSkKt4LHrhrA==
+X-Google-Smtp-Source: ABdhPJxZN10dqOxUDE5yq5Wyrimzq5bW7D/DDvbtu3+EqSK2qvD+9Tv2uh+u84Yon5Nj4QEJCUOvaQ==
+X-Received: by 2002:a05:6a00:1ad4:b029:216:aa9d:dcea with SMTP id f20-20020a056a001ad4b0290216aa9ddceamr27645348pfv.47.1617721898770;
+        Tue, 06 Apr 2021 08:11:38 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t1sm2839175pjo.45.2021.04.06.08.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 08:11:37 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 15:11:34 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Steve Rutherford <srutherford@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+Message-ID: <YGx6JqTVO97GUzn7@google.com>
+References: <cover.1617302792.git.ashish.kalra@amd.com>
+ <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+ <CABayD+fF7+sn444rMuE_SNwN-SYSPwJr1mrW3qRYw4H7ryi-aw@mail.gmail.com>
+ <20210406062248.GA22937@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGb2L7dq0fBma1or@pendragon.ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210406062248.GA22937@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:47PM, Laurent Pinchart wrote:
-> Hi Pratyush,
-> 
-> Thank you for the patch.
-
-Thank you for the review :-)
-
-> 
-> On Tue, Mar 30, 2021 at 11:03:42PM +0530, Pratyush Yadav wrote:
-> > When this bridge driver is being user by another platform driver, it
-> > might want to call subdev operations like getting format, setting
-> > format, enumerating format codes, etc. Add wrapper functions that pass
-> > that call through to the sensor.
+On Tue, Apr 06, 2021, Ashish Kalra wrote:
+> On Mon, Apr 05, 2021 at 01:42:42PM -0700, Steve Rutherford wrote:
+> > On Mon, Apr 5, 2021 at 7:28 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index f7d12fca397b..ef5c77d59651 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -8273,6 +8273,18 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+> > >                 kvm_sched_yield(vcpu->kvm, a0);
+> > >                 ret = 0;
+> > >                 break;
+> > > +       case KVM_HC_PAGE_ENC_STATUS: {
+> > > +               int r;
+> > > +
+> > > +               ret = -KVM_ENOSYS;
+> > > +               if (kvm_x86_ops.page_enc_status_hc) {
+> > > +                       r = kvm_x86_ops.page_enc_status_hc(vcpu, a0, a1, a2);
+> > > +                       if (r >= 0)
+> > > +                               return r;
+> > > +                       ret = r;
+> > Style nit: Why not just set ret, and return ret if ret >=0?
 > > 
-> > Currently wrappers are added only for the ops used by TI's platform
-> > driver. More can be added later as needed.
 > 
-> This isn't the direction we want to take. For new platforms, propagation
-> of subdev configuration should be handled by userspace, using the V4L2
-> userspace subdev API. This subdev should not call any subdev operation
-> from its source other than .s_stream().
+> But ret is "unsigned long", if i set ret and return, then i will return to guest
+> even in case of error above ?
 
-Right. I have replied to Tomi's message about this too. Will move the 
-driver to use the media controller API.
+As proposed, svm_page_enc_status_hc() already hooks complete_userspace_io(), so
+this could be hoisted out of the switch statement.
 
-> 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/media/platform/cadence/cdns-csi2rx.c | 77 ++++++++++++++++++++
-> >  1 file changed, 77 insertions(+)
-> > 
-> > diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-> > index 3385e1bc213e..2e8bbc53cb8b 100644
-> > --- a/drivers/media/platform/cadence/cdns-csi2rx.c
-> > +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-> > @@ -408,12 +408,89 @@ static int csi2rx_s_stream(struct v4l2_subdev *subdev, int enable)
-> >  	return ret;
-> >  }
-> >  
-> > +static int csi2rx_g_frame_interval(struct v4l2_subdev *subdev,
-> > +				   struct v4l2_subdev_frame_interval *fi)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, video, g_frame_interval,
-> > +				fi);
-> > +}
-> > +
-> > +static int csi2rx_s_frame_interval(struct v4l2_subdev *subdev,
-> > +				   struct v4l2_subdev_frame_interval *fi)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, video, s_frame_interval,
-> > +				fi);
-> > +}
-> > +
-> > +static int csi2rx_enum_mbus_code(struct v4l2_subdev *subdev,
-> > +				 struct v4l2_subdev_pad_config *cfg,
-> > +				 struct v4l2_subdev_mbus_code_enum *code)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, pad, enum_mbus_code,
-> > +				cfg, code);
-> > +}
-> > +
-> > +static int csi2rx_get_fmt(struct v4l2_subdev *subdev,
-> > +			  struct v4l2_subdev_pad_config *cfg,
-> > +			  struct v4l2_subdev_format *fmt)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, pad, get_fmt, cfg, fmt);
-> > +}
-> > +
-> > +static int csi2rx_set_fmt(struct v4l2_subdev *subdev,
-> > +			  struct v4l2_subdev_pad_config *cfg,
-> > +			  struct v4l2_subdev_format *fmt)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, pad, set_fmt, cfg, fmt);
-> > +}
-> > +
-> > +static int csi2rx_enum_frame_size(struct v4l2_subdev *subdev,
-> > +				  struct v4l2_subdev_pad_config *cfg,
-> > +				  struct v4l2_subdev_frame_size_enum *fse)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, pad, enum_frame_size,
-> > +				cfg, fse);
-> > +}
-> > +
-> > +static int csi2rx_enum_frame_interval(struct v4l2_subdev *subdev,
-> > +				      struct v4l2_subdev_pad_config *cfg,
-> > +				      struct v4l2_subdev_frame_interval_enum *fie)
-> > +{
-> > +	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
-> > +
-> > +	return v4l2_subdev_call(csi2rx->source_subdev, pad, enum_frame_interval,
-> > +				cfg, fie);
-> > +}
-> > +
-> >  static const struct v4l2_subdev_video_ops csi2rx_video_ops = {
-> >  	.s_stream	= csi2rx_s_stream,
-> > +	.g_frame_interval = csi2rx_g_frame_interval,
-> > +	.s_frame_interval = csi2rx_s_frame_interval,
-> > +};
-> > +
-> > +static const struct v4l2_subdev_pad_ops csi2rx_pad_ops = {
-> > +	.enum_mbus_code = csi2rx_enum_mbus_code,
-> > +	.get_fmt	= csi2rx_get_fmt,
-> > +	.set_fmt	= csi2rx_set_fmt,
-> > +	.enum_frame_size = csi2rx_enum_frame_size,
-> > +	.enum_frame_interval = csi2rx_enum_frame_interval,
-> >  };
-> >  
-> >  static const struct v4l2_subdev_ops csi2rx_subdev_ops = {
-> >  	.video		= &csi2rx_video_ops,
-> > +	.pad		= &csi2rx_pad_ops,
-> >  };
-> >  
-> >  static int csi2rx_async_bound(struct v4l2_async_notifier *notifier,
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 16fb39503296..794dde3adfab 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8261,6 +8261,10 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+                goto out;
+        }
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
++       /* comment goes here */
++       if (nr == KVM_HC_PAGE_ENC_STATUS && kvm_x86_ops.page_enc_status_hc)
++               return static_call(kvm_x86_page_enc_status_hc(vcpu, a0, a1, a2));
++
+        ret = -KVM_ENOSYS;
+
+        switch (nr) {
+
