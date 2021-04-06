@@ -2,114 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55CC355F9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E53355F8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbhDFXkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        id S237274AbhDFXjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242860AbhDFXix (ORCPT
+        with ESMTP id S232767AbhDFXjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:38:53 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E6BC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 16:38:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d8so8388090plh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xKeokKE1kz1HEO0UnYt1mqZsLpF9x5qqu5MSWBkuwBA=;
-        b=E6pWWfAN7lEHcTqU/cKkCPAQd2WXfKOq8bwVWhym88UzIeALEz8Yf3Y7Oj7iKZx8cz
-         mdCwjxbwWwweuu3aqUkLU2XDnIUZlQ6BKYJeVF1c7P59fFrl/eN1tfQVceFi86iQFgyS
-         2w9ylfPVhEblzLJRcuevzasIbUjpCXQVe/wKCLxhWuZPkjGsMkgcYHwIlW6xudV0i+jO
-         BpCqZcuDOtNHydp+LWKF8N6olLadL/gHYjkMrvOz++ZKNJw83BU9/bno1ZMHUSx44RP3
-         OREMWWcAMuKaw87Yf9OziLQ3MhXlQP+iErZEALQ+KuMc9IjYy2e38Kz3aakjZj0/CO88
-         aAUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xKeokKE1kz1HEO0UnYt1mqZsLpF9x5qqu5MSWBkuwBA=;
-        b=oBpB4WLksZlgVwa97SD66C8+iEM5HEGQxQDM2NyE5RmH/AVu9r/3w3dGYPMlsTfyA7
-         bunwd9OqV43wfQrwiV9za4Ntl8qqBtcYDXYYCP56P65/YRCp6Xq+gMeu2EoZ2LkkVrsa
-         vd4rzu17WeOzaCGcx1el1XX6J9Yfldgw0OidC3qonYDmhaGmAwqLGznh0P6I+1XfGufc
-         OR23wbqJLtAWE5Ts54rP2CfPu0Efcb1HCKt8oX26lT8/JnHKdLBuEPvcsP4z4qbOf1xB
-         Y1ORr6SPVax5mPbAUUwk4sCVc+oGYc79zVAte8/tf/muWo7TbSLHyZ/W7fCec1tgQnym
-         6VUA==
-X-Gm-Message-State: AOAM531mKTMm0KpP4xSBhMotBaUhqmABwuC4+1S4Vnv5ey5s+4SHZDxs
-        6hy1dBPLxivLJPGoYGF9JnDsJg==
-X-Google-Smtp-Source: ABdhPJyv6iDzPjqW36UJoRENw1GDU+MFhkdND3HAlMFiNu7p5+XFnIQ1JzH767P4R342Bei5MQnsBg==
-X-Received: by 2002:a17:902:ea10:b029:e8:e2e9:d9a5 with SMTP id s16-20020a170902ea10b02900e8e2e9d9a5mr487503plg.22.1617752324049;
-        Tue, 06 Apr 2021 16:38:44 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id g3sm18664540pfk.186.2021.04.06.16.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 16:38:43 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:38:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH] KVM: MMU: protect TDP MMU pages only down to required
- level
-Message-ID: <YGzw/77+zCNri22Z@google.com>
-References: <20210402121704.3424115-1-pbonzini@redhat.com>
- <8d9b028b-1e3a-b4eb-5d44-604ddab6560e@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d9b028b-1e3a-b4eb-5d44-604ddab6560e@huawei.com>
+        Tue, 6 Apr 2021 19:39:43 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CAAC06174A;
+        Tue,  6 Apr 2021 16:39:34 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 98B924D2493A4;
+        Tue,  6 Apr 2021 16:39:26 -0700 (PDT)
+Date:   Tue, 06 Apr 2021 16:39:21 -0700 (PDT)
+Message-Id: <20210406.163921.1678926610292877597.davem@davemloft.net>
+To:     mail@anirudhrb.com
+Cc:     kuba@kernel.org, oneukum@suse.com, kernel@esmil.dk,
+        geert@linux-m68k.org, zhengyongjun3@huawei.com, rkovhaev@gmail.com,
+        gregkh@linuxfoundation.org,
+        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: hso: fix null-ptr-deref during tty device
+ unregistration
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20210406124402.20930-1-mail@anirudhrb.com>
+References: <20210406124402.20930-1-mail@anirudhrb.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 06 Apr 2021 16:39:27 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021, Keqian Zhu wrote:
-> Hi Paolo,
-> 
-> I'm just going to fix this issue, and found that you have done this ;-)
-
-Ha, and meanwhile I'm having a serious case of deja vu[1].  It even received a
-variant of the magic "Queued, thanks"[2].  Doesn't appear in either of the 5.12
-pull requests though, must have gotten lost along the way.
-
-[1] https://lkml.kernel.org/r/20210213005015.1651772-3-seanjc@google.com
-[2] https://lkml.kernel.org/r/b5ab72f2-970f-64bd-891c-48f1c303548d@redhat.com
-
-> Please feel free to add:
-> 
-> Reviewed-by: Keqian Zhu <zhukeqian1@huawei.com>
-> 
-> Thanks,
-> Keqian
-> 
-> On 2021/4/2 20:17, Paolo Bonzini wrote:
-> > When using manual protection of dirty pages, it is not necessary
-> > to protect nested page tables down to the 4K level; instead KVM
-> > can protect only hugepages in order to split them lazily, and
-> > delay write protection at 4K-granularity until KVM_CLEAR_DIRTY_LOG.
-> > This was overlooked in the TDP MMU, so do it there as well.
-> > 
-> > Fixes: a6a0b05da9f37 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-> > Cc: Ben Gardon <bgardon@google.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index efb41f31e80a..0d92a269c5fa 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -5538,7 +5538,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> >  	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
-> >  				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
-> >  	if (is_tdp_mmu_enabled(kvm))
-> > -		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, PG_LEVEL_4K);
-> > +		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, start_level);
-> >  	write_unlock(&kvm->mmu_lock);
-> >  
-> >  	/*
-> > 
+RnJvbTogQW5pcnVkaCBSYXlhYmhhcmFtIDxtYWlsQGFuaXJ1ZGhyYi5jb20+DQpEYXRlOiBUdWUs
+ICA2IEFwciAyMDIxIDE4OjEzOjU5ICswNTMwDQoNCj4gTXVsdGlwbGUgdHR5cyB0cnkgdG8gY2xh
+aW0gdGhlIHNhbWUgdGhlIG1pbm9yIG51bWJlciBjYXVzaW5nIGEgZG91YmxlDQo+IHVucmVnaXN0
+cmF0aW9uIG9mIHRoZSBzYW1lIGRldmljZS4gVGhlIGZpcnN0IHVucmVnaXN0cmF0aW9uIHN1Y2Nl
+ZWRzDQo+IGJ1dCB0aGUgbmV4dCBvbmUgcmVzdWx0cyBpbiBhIG51bGwtcHRyLWRlcmVmLg0KPiAN
+Cj4gVGhlIGdldF9mcmVlX3NlcmlhbF9pbmRleCgpIGZ1bmN0aW9uIHJldHVybnMgYW4gYXZhaWxh
+YmxlIG1pbm9yIG51bWJlcg0KPiBidXQgZG9lc24ndCBhc3NpZ24gaXQgaW1tZWRpYXRlbHkuIFRo
+ZSBhc3NpZ25tZW50IGlzIGRvbmUgYnkgdGhlIGNhbGxlcg0KPiBsYXRlci4gQnV0IGJlZm9yZSB0
+aGlzIGFzc2lnbm1lbnQsIGNhbGxzIHRvIGdldF9mcmVlX3NlcmlhbF9pbmRleCgpDQo+IHdvdWxk
+IHJldHVybiB0aGUgc2FtZSBtaW5vciBudW1iZXIuDQo+IA0KPiBGaXggdGhpcyBieSBtb2RpZnlp
+bmcgZ2V0X2ZyZWVfc2VyaWFsX2luZGV4IHRvIGFzc2lnbiB0aGUgbWlub3IgbnVtYmVyDQo+IGlt
+bWVkaWF0ZWx5IGFmdGVyIG9uZSBpcyBmb3VuZCB0byBiZSBhbmQgcmVuYW1lIGl0IHRvIG9idGFp
+bl9taW5vcigpDQo+IHRvIGJldHRlciByZWZsZWN0IHdoYXQgaXQgZG9lcy4gU2ltaWxhcnksIHJl
+bmFtZSBzZXRfc2VyaWFsX2J5X2luZGV4KCkNCj4gdG8gcmVsZWFzZV9taW5vcigpIGFuZCBtb2Rp
+ZnkgaXQgdG8gZnJlZSB1cCB0aGUgbWlub3IgbnVtYmVyIG9mIHRoZQ0KPiBnaXZlbiBoc29fc2Vy
+aWFsLiBFdmVyeSBvYnRhaW5fbWlub3IoKSBzaG91bGQgaGF2ZSBjb3JyZXNwb25kaW5nDQo+IHJl
+bGVhc2VfbWlub3IoKSBjYWxsLg0KPiANCj4gUmVwb3J0ZWQtYnk6IHN5emJvdCtjNDlmZTYwODlm
+Mjk1YTA1ZTZmOEBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tDQo+IFRlc3RlZC1ieTogc3l6Ym90
+K2M0OWZlNjA4OWYyOTVhMDVlNmY4QHN5emthbGxlci5hcHBzcG90bWFpbC5jb20NCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IEFuaXJ1ZGggUmF5YWJoYXJhbSA8bWFpbEBhbmlydWRocmIuY29tPg0KDQpU
+aGlzIGFkZHMgYSBuZXcgYnVpbGQgd2FybmluZzoNCg0KICBDQyBbTV0gIGRyaXZlcnMvbmV0L3Vz
+Yi9oc28ubw0KZHJpdmVycy9uZXQvdXNiL2hzby5jOiBJbiBmdW5jdGlvbiChaHNvX3NlcmlhbF9j
+b21tb25fY3JlYXRlojoNCmRyaXZlcnMvbmV0L3VzYi9oc28uYzoyMjU2OjY6IHdhcm5pbmc6IHVu
+dXNlZCB2YXJpYWJsZSChbWlub3KiIFstV3VudXNlZC12YXJpYWJsZV0NCg0KUGxlYXNlIGZpeCB0
+aGlzIGFuZCBhZGQgYW4gYXBwcm9wcmlhdGUgRml4ZXM6IHRhZywgdGhhbmsgeW91Lg0K
