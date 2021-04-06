@@ -2,137 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D03354C51
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52346354C52
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243839AbhDFF2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        id S243845AbhDFF3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 01:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243832AbhDFF2n (ORCPT
+        with ESMTP id S242572AbhDFF3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 01:28:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AABC061574;
-        Mon,  5 Apr 2021 22:28:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v8so6834988plz.10;
-        Mon, 05 Apr 2021 22:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=oweqSXI9zzLcLYaaBGVQHnx3tRUf+Pnu2/QTPajj5oE=;
-        b=qZoLxtZxOYpze1aHGbkzm1qGMDAEqWEVmmNZOIHSm2gUVCGCYUaz191PXDKjW6Luou
-         MzFpfGFjWtzUjlVhiy3p3T9QgcdsCCDrEdTODJBT7fdPLxTWzHNZ1r4LXx4UjiePq6LM
-         SfUBnmBoURvFdE1QFKYNXrXZC3CGJ0+OE7VnIpm9mhaJuP2crha/shCGKpm3lFQKfjpU
-         gZmNIjtFmboyeHSDbPTMuqrW0A+nmsA0HhxQUPYw9vF6TTeKbw7GtAPGNNhmCf545GgI
-         WiTi312RkKmiXubsKNwrFtqiTGac6Dem7fSF9OLacQTNT/hwHOfWz0lVL0owhBrtZSaH
-         2Img==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oweqSXI9zzLcLYaaBGVQHnx3tRUf+Pnu2/QTPajj5oE=;
-        b=ZMs81fbUoVMDpQ86mEmd9AAihszeWiIchQhbx2FMu6BGxzCu9j/HamBto3nF1spw5H
-         Da9cpPqjRkCfbdVjcCewxPRm1UL44pZvIHcgPiK1vQQaaAcl9pUhAkF+sVFEc+7Gfttb
-         7/DuylzeGraSNqPZpwevQpG4We5VYhPvVi3YSgP3p6prGklbu7/fEanIa7kqBYgxBvMt
-         QcnM6anmfv10/Zgr6PGpnwjVQ4CmUO5YM+R6j16yopygtuyuOgeiqIKL5Om7SbgIQk1Z
-         Sc6hjt09VR289N2IkG16M/khAnnu4IxHiuv5cL4ZWV9oLKzOT7tCmr9YvL2U6Tx28tH+
-         +K1A==
-X-Gm-Message-State: AOAM533bRn7PBNxUhCpPaZFeVArdjHzbB/ezq8tZRB/dtFLeW1JgvE1L
-        r+1gyFTqR2uM18n2lNvGFlg=
-X-Google-Smtp-Source: ABdhPJzPepd+G668LiY+hmPGYRAYQwovSmQ3ea1n4Eda3CF0xIIIyAMuqKnCj0zMJ+E3v32i4gz8QQ==
-X-Received: by 2002:a17:902:d3ca:b029:e9:175c:c8ad with SMTP id w10-20020a170902d3cab02900e9175cc8admr6991459plb.4.1617686914652;
-        Mon, 05 Apr 2021 22:28:34 -0700 (PDT)
-Received: from localhost.localdomain ([96.44.140.50])
-        by smtp.gmail.com with ESMTPSA id r11sm1061533pjp.46.2021.04.05.22.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 22:28:34 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Sebastian Reichel <sre@kernel.org>, Milo Kim <milo.kim@ti.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH] power: supply: Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Tue,  6 Apr 2021 13:28:29 +0800
-Message-Id: <20210406052829.22826-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 6 Apr 2021 01:29:42 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2868EC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 22:29:34 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=63552)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@lam.works>)
+        id 1lTeHL-0001X1-9t
+        for linux-kernel@vger.kernel.org; Tue, 06 Apr 2021 07:29:31 +0200
+Subject: LNX, non-synesthesia version - Re: Fair Pay can be generalized as a
+ Non-Synesthesia project.
+References: <81fdcb66-7b0b-a806-1e38-5ff2faea1033@lam.works>
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@lam.works>
+Message-ID: <e5ef49ec-090e-0c6b-0acb-d652bede584b@lam.works>
+Date:   Tue, 6 Apr 2021 07:29:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <81fdcb66-7b0b-a806-1e38-5ff2faea1033@lam.works>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+And taking out the synesthesia of 'Linux' we get LNX Kernel, and instead 
+fair pay orientation.
 
-Coccinelle noticed:
- 1. drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR: Threaded IRQ
-    with no primary handler requested without IRQF_ONESHOT
- 2. drivers/power/supply/tps65090-charger.c:303:8-33: ERROR: Threaded IRQ
-    with no primary handler requested without IRQF_ONESHOT
- 3. drivers/power/supply/tps65217_charger.c:239:8-33: ERROR: Threaded IRQ
-    with no primary handler requested without IRQF_ONESHOT
- 4. drivers/power/supply/lp8788-charger.c:502:8-28: ERROR: Threaded IRQ
-    with no primary handler requested without IRQF_ONESHOT
+Serenity,
+Ywe Cærlyn
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
- drivers/power/supply/lp8788-charger.c   | 2 +-
- drivers/power/supply/pm2301_charger.c   | 2 +-
- drivers/power/supply/tps65090-charger.c | 3 ++-
- drivers/power/supply/tps65217_charger.c | 4 ++--
- 4 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index e7931ffb7151..397e5a03b7d9 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
- 
- 		ret = request_threaded_irq(virq, NULL,
- 					lp8788_charger_irq_thread,
--					0, name, pchg);
-+					IRQF_ONESHOT, name, pchg);
- 		if (ret)
- 			break;
- 	}
-diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
-index ac06ecf7fc9c..a3bfb9612b17 100644
---- a/drivers/power/supply/pm2301_charger.c
-+++ b/drivers/power/supply/pm2301_charger.c
-@@ -1089,7 +1089,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
- 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
- 				NULL,
- 				pm2xxx_charger_irq[0].isr,
--				pm2->pdata->irq_type,
-+				pm2->pdata->irq_type | IRQF_ONESHOT,
- 				pm2xxx_charger_irq[0].name, pm2);
- 
- 	if (ret != 0) {
-diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
-index 6b0098e5a88b..d55bcc341854 100644
---- a/drivers/power/supply/tps65090-charger.c
-+++ b/drivers/power/supply/tps65090-charger.c
-@@ -301,7 +301,8 @@ static int tps65090_charger_probe(struct platform_device *pdev)
- 
- 	if (irq != -ENXIO) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-+			tps65090_charger_isr, IRQF_ONESHOT,
-+			"tps65090-charger", cdata);
- 		if (ret) {
- 			dev_err(cdata->dev,
- 				"Unable to register irq %d err %d\n", irq,
-diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
-index 814c2b81fdfe..cba3967ff275 100644
---- a/drivers/power/supply/tps65217_charger.c
-+++ b/drivers/power/supply/tps65217_charger.c
-@@ -238,8 +238,8 @@ static int tps65217_charger_probe(struct platform_device *pdev)
- 	for (i = 0; i < NUM_CHARGER_IRQS; i++) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
- 						tps65217_charger_irq,
--						0, "tps65217-charger",
--						charger);
-+						IRQF_ONESHOT,
-+						"tps65217-charger", charger);
- 		if (ret) {
- 			dev_err(charger->dev,
- 				"Unable to register irq %d err %d\n", irq[i],
--- 
-2.17.1
-
+Den 03.04.2021 11:33, skrev Ywe Cærlyn:
+> Summarizing my posts on LKML, Fair Pay can be generalized as a 
+> Non-Synesthesia project, compatible with the muslim Maruf not Munkar 
+> principles (translated best in Cursive), and Alla'.
+> 
+> We support all instances of such things.
+> 
+> My media project always actually was this: 
+> https://www.youtube.com/channel/UCBzmdh-pG3_OEqNRz5Owtmw
+> 
+> Serenity,
+> Ywe Cærlyn
+> 
+> 
