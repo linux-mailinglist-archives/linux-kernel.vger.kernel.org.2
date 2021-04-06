@@ -2,119 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6893C3557CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249053557D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242341AbhDFP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:29:35 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50338 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhDFP3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:29:34 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136FNQiV187503;
-        Tue, 6 Apr 2021 15:29:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=KAMM11a306xM2ipfm54BMlxObG8E/8Ijj5e8EsmONzE=;
- b=MpoIHIooyGRktmg4ksXKOl6T6P94O/Z0gVu3MHdHV7OABYhNYh6w02zPnHCeu7IPeO8q
- KtWu6gZNp6shcLwF0nNmUs9PpdE/IgnjzskK4BJLZhpUet/n6zd0ywMXud9DE9QhGagw
- KtaAOqQdgmdKwBBzQga/3HVOkls5QD//4xs/l/hxjL4GR/ZwTLcAuyNQntXJVvir82OQ
- 5v5gGE2HWKeKvSgWjl5UzKCs3kFVINNL2ZsJbGLV1R0747uFeJlYilL3cxssWF7xnJRn
- Avlvp4EmNMQVd+GdRz7RQpGsZTaqZ0c1XJqtySwnQdMbm5M4N+g+49bMsfcBxlc/xN0S 4Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 37qfuxd91f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Apr 2021 15:29:16 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136FPtPI067450;
-        Tue, 6 Apr 2021 15:29:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 37qa3jkdjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Apr 2021 15:29:15 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 136FTAqb030579;
-        Tue, 6 Apr 2021 15:29:11 GMT
-Received: from ca-virt2-1.us.oracle.com (/10.211.11.111)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Apr 2021 08:29:10 -0700
-From:   =?UTF-8?q?=E2=80=9CWilliam=20Roche?= <william.roche@oracle.com>
-To:     bp@alien8.de
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, william.roche@oracle.com
-Subject: [PATCH v2] RAS/CEC: Memory Corrected Errors consistent event filtering
-Date:   Tue,  6 Apr 2021 11:28:59 -0400
-Message-Id: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <20210402170736.GJ28499@zn.tnic>
-References: <20210402170736.GJ28499@zn.tnic>
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 spamscore=0 phishscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060105
-X-Proofpoint-GUID: HFiLMbGVoIYpXqUlQrF-hDuRuKn4oBnD
-X-Proofpoint-ORIG-GUID: HFiLMbGVoIYpXqUlQrF-hDuRuKn4oBnD
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 malwarescore=0
- suspectscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- mlxlogscore=999 bulkscore=0 spamscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060105
+        id S1345666AbhDFPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:30:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35988 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhDFPaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:30:55 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTnf5-00F8jg-4x; Tue, 06 Apr 2021 17:30:39 +0200
+Date:   Tue, 6 Apr 2021 17:30:39 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
+Subject: Re: [RFC net-next 2/4] net: dsa: mt7530: add interrupt support
+Message-ID: <YGx+nyYkSY3Xu0Za@lunn.ch>
+References: <20210406141819.1025864-1-dqfext@gmail.com>
+ <20210406141819.1025864-3-dqfext@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406141819.1025864-3-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Roche <william.roche@oracle.com>
+On Tue, Apr 06, 2021 at 10:18:17PM +0800, DENG Qingfang wrote:
+> Add support for MT7530 interrupt controller to handle internal PHYs.
 
-The Corrected Error events collected by the cec_add_elem() have to be
-consistently filtered out.
-We fix the case where the value of find_elem() to find the slot of a pfn
-was mistakenly used as the return value of the function.
-Now the MCE notifiers chain relying on MCE_HANDLED_CEC would only report
-filtered corrected errors that reached the action threshold.
+Are the interrupts purely PHY interrupts? Or are there some switch
+operation interrupts, which are currently not used?
 
-Signed-off-by: William Roche <william.roche@oracle.com>
----
+I'm just wondering if it is correct to so closely tie interrupts and
+MDIO together.
 
-Notes:
-    This is the new patch version using an additional 'err' variable.
-    Unit tested it on a VM instance and a "Bare Metal" machine.
-    
-    No reporting is done by the MCE_HANDLED_CEC aware notifiers until
-    the action threshold is reached.
-
- drivers/ras/cec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index ddecf25..b926c67 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -312,8 +312,8 @@ static bool sanity_check(struct ce_array *ca)
- static int cec_add_elem(u64 pfn)
- {
- 	struct ce_array *ca = &ce_arr;
-+	int count, err, ret = 0;
- 	unsigned int to = 0;
--	int count, ret = 0;
- 
- 	/*
- 	 * We can be called very early on the identify_cpu() path where we are
-@@ -330,8 +330,8 @@ static int cec_add_elem(u64 pfn)
- 	if (ca->n == MAX_ELEMS)
- 		WARN_ON(!del_lru_elem_unlocked(ca));
- 
--	ret = find_elem(ca, pfn, &to);
--	if (ret < 0) {
-+	err = find_elem(ca, pfn, &to);
-+	if (err < 0) {
- 		/*
- 		 * Shift range [to-end] to make room for one more element.
- 		 */
--- 
-1.8.3.1
-
+     Andrew
