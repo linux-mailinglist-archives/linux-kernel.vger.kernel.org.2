@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C868C35512B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A587C35512D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245158AbhDFKtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
+        id S245170AbhDFKto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:49:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245157AbhDFKtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:49:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC99610C8;
-        Tue,  6 Apr 2021 10:49:04 +0000 (UTC)
+        id S245167AbhDFKtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21552610C8;
+        Tue,  6 Apr 2021 10:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617706148;
-        bh=DFk3dXLYmsPJjfudy+xMdqagxU7hU8tqH5bkWHWtwnI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFilJV3I5rZ6iIRvPY7OMr8e24p4PCHsJ9fqFmMwmXsdvnBPTAkgmmAIPf/axYU/N
-         SufOyO6rPvvJZOQaHEXlI3bdj/1iiYFIGiUOhM4BP6eOx1SbL6qBmVPNyBwtMrb2jM
-         TIxPbXUJ+7PrWAh2ApmOK7eNyBNRtKS+lnIZlo6KYt/oDT3hwlq1J+o4H/3SAbUJ/y
-         7LmZEbdSNm6hom2XkRJOl8t64xBHAGGxmoqC4l6dQZzDiN9gOYOVdXsvn/DD1UCfSD
-         QfiIBdJkKHppOI51tcu2aTQbDteQZifT+RS7ckx/FbFklYYMFveIoGVRL6kT0WOZf4
-         /q93FGDWKYBUg==
-From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Ray Jui <ray.jui@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Saenz Julienne <nsaenz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
-        tim.gover@raspberrypi.com, alcooperx@gmail.com,
-        nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org,
-        robh@kernel.org, stefan.wahren@i2se.com
-Subject: [PATCH 3/3] mmc: sdhci-iproc: Set SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN on BCM2711
-Date:   Tue,  6 Apr 2021 12:48:05 +0200
-Message-Id: <20210406104802.20898-4-nsaenz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210406104802.20898-1-nsaenz@kernel.org>
-References: <20210406104802.20898-1-nsaenz@kernel.org>
+        s=k20201202; t=1617706174;
+        bh=JIkmcTF37lX3G+3PpgxAgvLWFhCJ0Io86nDq84uP/fU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nJAtqK/YsYI16XtJE9NEMy+MAsGtX8JzUQJ+9AzJgx84lYoJOBS14YM8vGx6SpD20
+         ukKigpZeeKjw0HO9bNtk+aTxSDXaECl/fmBnAixeoQsKLj76JOxG8RKJ2MPkWh25V4
+         SPwyvWnvlYr42AdBpYYsjb5uod0RJyiumviL9d6mrY/mXvk9u8CVzxlc2UvNB1i0QF
+         O1cRsDF7toUsh4BcZcgLGz+BkGPIauzk3w/dwfCh6INI+xwvFhbsPSBG6NJFEXKT8A
+         bSo/A1n9QFcGjXqU8Wqw9G0sVXNrppGnVYT4fT43A+zrskPH+VN+zMdrXkmeDRcFwT
+         2M8HK0lSiG1Sg==
+Date:   Tue, 6 Apr 2021 12:49:27 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v1 2/2] i2c: designware: Get rid of legacy platform data
+Message-ID: <20210406104927.GA3532@ninjato>
+References: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
+ <20210331154851.8456-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <20210331154851.8456-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The controller doesn't seem to pick-up on clock changes, so set the
-SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN flag to query the clock frequency
-directly from the clock.
 
-Fixes: f84e411c85be ("mmc: sdhci-iproc: Add support for emmc2 of the BCM2711")
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
----
- drivers/mmc/host/sdhci-iproc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-index 1ef888e91f73..31f61ea474f0 100644
---- a/drivers/mmc/host/sdhci-iproc.c
-+++ b/drivers/mmc/host/sdhci-iproc.c
-@@ -295,7 +295,8 @@ static const struct sdhci_ops sdhci_iproc_bcm2711_ops = {
- };
- 
- static const struct sdhci_pltfm_data sdhci_bcm2711_pltfm_data = {
--	.quirks = SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12,
-+	.quirks = SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12 |
-+		  SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
- 	.ops = &sdhci_iproc_bcm2711_ops,
- };
- 
--- 
-2.30.2
+On Wed, Mar 31, 2021 at 06:48:51PM +0300, Andy Shevchenko wrote:
+> Platform data is a legacy interface to supply device properties
+> to the driver. In this case we don't have anymore in-kernel users
+> for it. Just remove it for good.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+Acked-by: Wolfram Sang <wsa@kernel.org>
+
+
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBsPLMACgkQFA3kzBSg
+KbZo0g//a9GRDS5oKzOQxOz3zI0uikyojKvAyUF8G2g5zmRKDZomzlbunCjX0OJQ
+mZQmT3K7qUJ5xLvEWbc9BTyRHXNmSpROhdou55oc0TelmOCiiZAvdH6Cx59wHHc7
+TP2BC/4BRNC4g5Lknez8BIVWT6LglOnrY0ii1lD5bS+rCQZKWb0wpXPHOenkL/02
+cZRp4UL9mgql0TUQruxaEuWO5lkIbStfzbfbYRErLTa9UTMsEQl8wq3sHGW3j16H
+XEslCsL1/sAYoEan/IATyqErxJlE8RJdL6td+SRb/M8crWPA7n1DiNNwJGrYj+cq
+0cmsXTJt10j7WgqQ0b1EIbyhB56cZxqoT1xvWHLAvAs45o5i0iTM2FqGtrEIQCRX
+Wt011jWdKMMdRc1CLWGJ88C6ZE7HgjPpeFe18fT/2tshDjFW2rqUoOvcBAT+8vtb
+nvL+OpUI5TwSIf6zI74rgPR4JBMRyLD6PiLyIPDbNrAqhHDcXWxxzbwOP+L8o3zB
+jvjynAESSytxvNxQQOdP/P5dYMf7M6FEo8f9IQSzB5+vTZwnuN+ewQMcmg6kqwph
+i4tTNSwN2MIpBTh/RjoEamFCJnQ0S4MSLaeToSwDrimNGzSFwsEm7mKxS0JFjBPZ
+RDKIqp33yjhUjSElwkUIkdVTeAPtpnaTW6gScjTibwZ8552pNqk=
+=s5vH
+-----END PGP SIGNATURE-----
+
+--5mCyUwZo2JvN/JJP--
