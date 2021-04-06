@@ -2,214 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EB7354A3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E87B354A3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238710AbhDFBjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:39:25 -0400
-Received: from mail-vi1eur05on2072.outbound.protection.outlook.com ([40.107.21.72]:37345
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232367AbhDFBjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:39:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fQaTaagLIYcZKcrWNF8cDf2A3lqonaiuhZPRTmgT1nd3cNchinojMzJ+NgqGlY6sHy7DpCgG+d6w5rMkMgLpfAJM/p/W13vRET4CD+mfLLXMlcr1CWWtCt+iYiOk3NLsW5a1+FRR8dwcdek2F+IY742XhQgQF8i9YxVckTKSvc3pCv4p7Mv2GW4cb15ghQ5RLHnTnyYND/5xxOPq8BL9Nh2kMMDmkerExWI/WWlUyV010G5tXknvP4k99AICLR4U9BC3klTcPZ1RKm7sVZgnmuQo5pg/Se7KT1VAzlMy0fSwMU+yReei6N7c9hoRGRBeqUUl14Xk8ygRXUyYa6xkfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/v3NkhcxQ+PWY8tHNjik5UA3ILLVIfJmLFSGdbeA97Q=;
- b=LPxmc9VF3yUFWI3OES4hVnawNGs51AO0XhnrUUaP6ybOm2/LJK4EG1n8/2G31vaGzkJM7NKEcOGnG9Lq+9LAEb2c6yquAlrD2ZhX2G2lM9ag3AFs0ag9NTgJsCWfzGnzhz0RpZpwpXmSvkVSL7AfMGHn4uXlXAIzhRKrlJ0ZNoXZFvcUjp+MpCZg2hk5rI+6Iu84rYH7zDvw8qL2tptH+UR75zWSKZXsiVnUY1Pd/Ht9JFIiaGx018Grai9/y7tf52rEmtpTaAz5ThwPe7SxslbiElHPbv5JUvPnyAc/JHAZbV9KkZ1Z5xgFgng+M9JNNZZoiugTlZzHpEvBvygtxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/v3NkhcxQ+PWY8tHNjik5UA3ILLVIfJmLFSGdbeA97Q=;
- b=WvPnhc72HpayTQ5NyLfrPTA3+99Y/K8BEBbq62eHXa8yLlMEX6n3usCywWwZb0ZSLHkyJdar8TyQs9fn4BME7UVQhWjqCp/cuREnXrYgUxJwl1NrF0ANMcRKfhFjouDOpzlO83qVhuk2ChF3MN2cHgyKAI2mdPaB9fjBj324zhs=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB5308.eurprd04.prod.outlook.com (2603:10a6:10:1d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
- 2021 01:39:01 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9598:ace0:4417:d1d5]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9598:ace0:4417:d1d5%5]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 01:39:01 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "christian.melki@t2data.com" <christian.melki@t2data.com>
-Subject: RE: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
- back
-Thread-Topic: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
- back
-Thread-Index: AQHXKTprONOHGtpeU0eiVA3RKY2nOaqkZbwAgACRNACAAb0k0A==
-Date:   Tue, 6 Apr 2021 01:39:00 +0000
-Message-ID: <DB8PR04MB6795EA96DD50305AAF84C9E6E6769@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
- <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
- <ed600136-2222-a261-bf08-522cc20fc141@gmail.com>
-In-Reply-To: <ed600136-2222-a261-bf08-522cc20fc141@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b56f879c-ad71-48fe-dd5e-08d8f89cc11c
-x-ms-traffictypediagnostic: DB7PR04MB5308:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB5308301912497C7CFE612BFFE6769@DB7PR04MB5308.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Wo97QXfl605KWuyhLRvOcwQhl1bt01NsQpJHcwt+eyeMooaFE4eKcoiZ7xYLQ/831NZDtVheQzoiprHQFrQ8PzMQyr+YTRpNoOMPmGfV8guCSXgTDWf6HBGNyR5dX0MWMmnftmLKvdVVk7h/tzBvJC7a7mQzjtEhPLYG6oodn4HnCw9Oeui3o+7Kz2DhYi6bkQR4TOI0uOe9h40eaRr39LrMtt2Aq2/ly/vmPdJng5KUAWtL460Rr2H5tyh2uIhD072fiMMCJgP7+TpfUUH35WQ+YagI+wy+H3cT2dGpA/PKSVFDS7q4ywUkn++/q34g0nZk+6mruGkLEOp0lZetkPGf5Nwe2z1Ovps/enlPsBRUU2uH3tKDmB1CPJztJHb/5BEQOy/DkZUCqorML5Cpp2S4JI5zKBByiy6u7SDOI93RMRpbPioxQD4SH7h+qcuv7a2OsobxSWC5GIeJZMT2f5qABdir0Y/L3uEiHghKOQ7PoXSeh0zmTCqhtJCs3MZIiNeB6UyepE4cZq3jKmlXPyeFWQSxrwws6o/11SuXCROOPjBo2fi+6WeV/G+9+0SdO5+3Sm4itPf0fcSpF51h8aefCjHoSc5rwKSfWVvYxQr12RaOCXJrowFlSUWvcNMlMjnCbgMzP2s3KEpkKns7Iic94qTJIWq46HPGDkcgiG8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(396003)(39860400002)(136003)(5660300002)(26005)(2906002)(66446008)(52536014)(76116006)(54906003)(478600001)(64756008)(66556008)(66476007)(53546011)(83380400001)(7696005)(38100700001)(186003)(71200400001)(33656002)(86362001)(55016002)(316002)(110136005)(4326008)(66946007)(6506007)(9686003)(8936002)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?SUVodDZ3Q2lGV3dPWVEzNkpHTzdhNnNQS1lNcGtOdHBhNW5vdUJ4WHhUdE4v?=
- =?utf-8?B?S0VOR3RobTkva1Y1QmtweTV4SS8vcjdSaGZQaTMxT2QvSUYzUFFFVm9WUlpz?=
- =?utf-8?B?OXZZOXVYQ3NnOUEwU29SOHdqWmVDbnJVTTk1V1NZSXBvOWJqWUQzUnNrU2tW?=
- =?utf-8?B?Y2xlaStPSm9HYWVuK2pOSXovTmYvdm9vVml5YU9kaU1CRXk4UXlmZXlKYWRV?=
- =?utf-8?B?b0k4cHRxNTM1citEVzRqL3BEYjFQT2JSZFdHRUlORDBaTmZVT243b2RDdWd0?=
- =?utf-8?B?OWhRL2JoR2psV0s5SGFlNys0S0Nnbm9FZ2l1emZyWjJyUmsyWDBzeVo0NXFp?=
- =?utf-8?B?TGpLUEtqQUdxMWhwRFdCRTRtTEZsZW9KQWpTTmJqSmhHNVRDSTBBTGZOUGpi?=
- =?utf-8?B?R1QzT1Y4dFJJdno4c3RoaU8zQWxESi81eEZqOEpqVWRCZW5VRHBVd1R3aWpr?=
- =?utf-8?B?VUMzTEJpKzFRR2czOFROZTFHcTlNbG1OU2RUTzFvNzNHR2VqdjhkTTRBR1hr?=
- =?utf-8?B?TkF2T29uMFEzK1RUcUNGOVFQeVE5cXdndjRqMVgrSzhEdnQ2bzUrMmV6LzV0?=
- =?utf-8?B?bmIrYjFHYytWcDVjRDFZMzZIRThBRlYycDF0R01uUTRpYVVqVTg2SVNIRzJX?=
- =?utf-8?B?b09SZUduN1Z4VFBJempoWlc5cU9KOFRDRTE3bDA5WFJkdXVTOWtVdlAvdDNn?=
- =?utf-8?B?WWIrNTNjcTZzdTNTeUt0WXJaYWNEdmNxWjRBMUFBaXA3Vkt6OTdYbXZDZGpl?=
- =?utf-8?B?Z0VMcVUwV3pyVlY4WmJvLzJjcTVUZmlXbEdwVWlqVzI2MDdjR2k2elFjMUFi?=
- =?utf-8?B?QnYwOW5ld25KdFlUZ2YzcmFvUWo5TVE1amo3UU5hN0R0bGUrVUVnNE9McTZB?=
- =?utf-8?B?RVZnQ2lEMGRxVUoxeDUwdjdDb0Y4R1BWTlVlTnRxZjkzaVgwclRaOG5KTlZT?=
- =?utf-8?B?UzJxenFFRmpCODlFcXFqTUtPV1ROVUd0VmFnRkpXbXZ5MkdTclRZK25yZklP?=
- =?utf-8?B?WFUwOWZtUFRWajhSK1NhVDZXd0U0SVRTZlMxZFU3YUNjbXAzajc5R0I2OEEz?=
- =?utf-8?B?dERrK2FpTmdEUGU4akJodCs3ZGwwZlVpeXRWa1M0a2NnTXhBYnRnV01aS2o4?=
- =?utf-8?B?R1QxTlVNZGpQUFR2b1RNSXRFeEErYVlLMzRpbm9aVFpVN1o1RVIxSHJML1pJ?=
- =?utf-8?B?NHBzVkFlOFBBd1gvUUsvMURJWU9DanVmMURGLzk2dDAwczBMZlNXenRvS1BJ?=
- =?utf-8?B?eDh5dThhMVNMUXVJanpoczV2THJ5Yno2aHM4K0F2N3NOdDBiUGY4V0h0emh6?=
- =?utf-8?B?SXJGajR2ZDA5RTJROE5sNUdkemMvV0RKallUK2wycTFKZWxFUDVIUFV3Wnc5?=
- =?utf-8?B?eGtZT2dJS0VoMGpkOGdhQWIvN2xMcXV4VFVPTHlQNmc0cEEwSWxQTmxyTUxp?=
- =?utf-8?B?UU1HNzZHSzJ2eGN2VjAxUGRCN1FTSHFuMWROZTN6RVlRSVQycWo3Z0JXckxS?=
- =?utf-8?B?UE52WWlXWG5HbmVJNEJ6TXdQNmJ0YUVRVXpJNVhNSTcweVlER1RlME8zVkJL?=
- =?utf-8?B?c3NpOFNDR1lSdzQ3WENuQkdxYm81NlRPNnRob2ZQWVM2WXlDMyt5c1pDYXRx?=
- =?utf-8?B?Z2VVQ2ptR2l5dlVLOXdwemFveVQrQ3RCUGxDTWg1SmJZaGgrREVVSEwwMEY0?=
- =?utf-8?B?emgxV21Uc3ozc0NWa2hGNDVkU2FVd3JYaTdPUGQ1dk5qWWxkWDJiZEgzQXNR?=
- =?utf-8?Q?BgWZyCBsSQcTt1+nYQfYB+pKYwn8X+aLuaSXkpA?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S239043AbhDFBjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238693AbhDFBjr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:39:47 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264E0C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 18:39:40 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id v26so13840301iox.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 18:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kshdm0ap+EBevJYwNXWZ87A2dwWzJNSVhby0IFpKUjE=;
+        b=DANlQeYZz2ut86OoHojEBFv6NeBzzNzeZxzDJDo2dYnDuY7a3P8SCSfkMLU8rHFzCV
+         sMYHOF/i0EdlmUpxfTWUrNAwPTFLQRgIktXI2/9olm76w+XkfK4QhCuD2bXXfwZg7GSw
+         jJEgfCdlsG5Y1XpUNkOpuCkba5Mq0ZqqPqKaKvYU4gk7YJcSXGRVLPx8roBpl7U/xXgY
+         D/LWVsarb/dQEM9chZpX639Ym030NOR3f02wVWLQWXG/zIQtEg6z1FjJAo3xh09h+WJm
+         XbK4sRLFPkIt3lWHW5GLsNtvqVRSHLAtGSVvev+x420lJksca8V7cZESQFY5hM3c5Gyd
+         hgYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kshdm0ap+EBevJYwNXWZ87A2dwWzJNSVhby0IFpKUjE=;
+        b=T4twrDtOqlXKywdT4mbdxwUzVuiHzfRUFEEqN3NKOpR+fGPmkK3CxzoWde0jNUcZD5
+         EWUlN1oVBruSuRvmtbBiroFyz4fzW0IusUFyE+uKmTVw+B9qPx0JtLybw7XB2p0487vb
+         W1sD2dmWerLl7fuI66i5m4VSiV7CVI4q4Pp8AZucsOjEgBT4kx+yx42n4/1pKEmOl+qb
+         HAfdxNmvqOqxLAo9s34xo7YNKOQ/GGc1RIAZMFlPknHUS389clITDhxVbRKo3vVrbagO
+         NBOZHNpIoqUE0eFhZZmcLrkVB1zJ45KklHlof1GTkEZCTsYzjPplYdG8OuSXtx8bA6jZ
+         ZBcw==
+X-Gm-Message-State: AOAM533IEtD8QzTDL7PogG4mGaueHMbCft/iBDJfLghgaf2HgVrod8zK
+        /hpu9R+mXImUQs4nW31oddc9Si7vcycEgyKGfEbQHQ==
+X-Google-Smtp-Source: ABdhPJxN+N9O0aLCS3WWAmy/8YPy6PoL8hK8sPoE9FoGWSPGhStJwZR8kNYyAYdEvnB/f7i+RQZUrBw18wjhFiWIncU=
+X-Received: by 2002:a6b:3118:: with SMTP id j24mr21659489ioa.205.1617673179308;
+ Mon, 05 Apr 2021 18:39:39 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b56f879c-ad71-48fe-dd5e-08d8f89cc11c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 01:39:01.0131
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: j0o15E6VUNwrl+S2Rm1zduhWDWtBZeGy+8rWqPjeMZS9q3wVcSIh+KIHB34QRpGSB6SCJFP8QzsGTp0qWF/IOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5308
+References: <cover.1617302792.git.ashish.kalra@amd.com> <69dd6d5c4f467e6c8a0f4f1065f7f2a3d25f37f8.1617302792.git.ashish.kalra@amd.com>
+In-Reply-To: <69dd6d5c4f467e6c8a0f4f1065f7f2a3d25f37f8.1617302792.git.ashish.kalra@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 5 Apr 2021 18:39:03 -0700
+Message-ID: <CABayD+f3RhXUTnsGRYEnkiJ7Ncr0whqowqujvU+VJiSJx0xrtg@mail.gmail.com>
+Subject: Re: [PATCH v11 10/13] KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION
+ feature & Custom MSR.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpIaSBIZWluZXIsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSGVp
-bmVyIEthbGx3ZWl0IDxoa2FsbHdlaXQxQGdtYWlsLmNvbT4NCj4gU2VudDogMjAyMeW5tDTmnIg1
-5pelIDY6NDkNCj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBh
-bmRyZXdAbHVubi5jaDsNCj4gbGludXhAYXJtbGludXgub3JnLnVrOyBkYXZlbUBkYXZlbWxvZnQu
-bmV0OyBrdWJhQGtlcm5lbC5vcmcNCj4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5j
-b20+OyBjaHJpc3RpYW4ubWVsa2lAdDJkYXRhLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBu
-ZXQ6IHBoeTogZml4IFBIWSBwb3NzaWJseSB1bndvcmsgYWZ0ZXIgTURJTyBidXMgcmVzdW1lDQo+
-IGJhY2sNCj4gDQo+IE9uIDA0LjA0LjIwMjEgMTY6MDksIEhlaW5lciBLYWxsd2VpdCB3cm90ZToN
-Cj4gPiBPbiAwNC4wNC4yMDIxIDEyOjA3LCBKb2FraW0gWmhhbmcgd3JvdGU6DQo+ID4+IGNvbW1p
-dCA0YzBkMmU5NmJhMDU1ICgibmV0OiBwaHk6IGNvbnNpZGVyIHRoYXQgc3VzcGVuZDJyYW0gbWF5
-IGN1dA0KPiA+PiBvZmYgUEhZIHBvd2VyIikgaW52b2tlcyBwaHlfaW5pdF9odygpIHdoZW4gTURJ
-TyBidXMgcmVzdW1lLCBpdCB3aWxsDQo+ID4+IHNvZnQgcmVzZXQgUEhZIGlmIFBIWSBkcml2ZXIg
-aW1wbGVtZW50cyBzb2Z0X3Jlc2V0IGNhbGxiYWNrLg0KPiA+PiBjb21taXQgNzY0ZDMxY2FjZmU0
-ICgibmV0OiBwaHk6IG1pY3JlbDogc2V0IHNvZnRfcmVzZXQgY2FsbGJhY2sgdG8NCj4gPj4gZ2Vu
-cGh5X3NvZnRfcmVzZXQgZm9yIEtTWjgwODEiKSBhZGRzIHNvZnRfcmVzZXQgZm9yIEtTWjgwODEu
-IEFmdGVyDQo+ID4+IHRoZXNlIHR3byBwYXRjaGVzLCBJIGZvdW5kIGkuTVg2VUwgMTR4MTQgRVZL
-IHdoaWNoIGNvbm5lY3RlZCB0bw0KPiA+PiBLU1o4MDgxUk5CIGRvZXNuJ3Qgd29yayBhbnkgbW9y
-ZSB3aGVuIHN5c3RlbSByZXN1bWUgYmFjaywgTUFDIGRyaXZlcg0KPiBpcyBmZWNfbWFpbi5jLg0K
-PiA+Pg0KPiA+PiBJdCdzIG9idmlvdXMgdGhhdCBpbml0aWFsaXppbmcgUEhZIGhhcmR3YXJlIHdo
-ZW4gTURJTyBidXMgcmVzdW1lIGJhY2sNCj4gPj4gd291bGQgaW50cm9kdWNlIHNvbWUgcmVncmVz
-c2lvbiB3aGVuIFBIWSBpbXBsZW1lbnRzIHNvZnRfcmVzZXQuIFdoZW4NCj4gPj4gSQ0KPiA+DQo+
-ID4gV2h5IGlzIHRoaXMgb2J2aW91cz8gUGxlYXNlIGVsYWJvcmF0ZSBvbiB3aHkgYSBzb2Z0IHJl
-c2V0IHNob3VsZCBicmVhaw0KPiA+IHNvbWV0aGluZy4NCj4gPg0KPiA+PiBhbSBkZWJ1Z2dpbmcs
-IEkgZm91bmQgUEhZIHdvcmtzIGZpbmUgaWYgTUFDIGRvZXNuJ3Qgc3VwcG9ydA0KPiA+PiBzdXNw
-ZW5kL3Jlc3VtZSBvciBwaHlfc3RvcCgpL3BoeV9zdGFydCgpIGRvZXNuJ3QgYmVlbiBjYWxsZWQg
-ZHVyaW5nDQo+ID4+IHN1c3BlbmQvcmVzdW1lLiBUaGlzIGxldCBtZSByZWFsaXplLCBQSFkgc3Rh
-dGUgbWFjaGluZQ0KPiA+PiBwaHlfc3RhdGVfbWFjaGluZSgpIGNvdWxkIGRvIHNvbWV0aGluZyBi
-cmVha3MgdGhlIFBIWS4NCj4gPj4NCj4gPj4gQXMgd2Uga25vd24sIE1BQyByZXN1bWUgZmlyc3Qg
-YW5kIHRoZW4gTURJTyBidXMgcmVzdW1lIHdoZW4gc3lzdGVtDQo+ID4+IHJlc3VtZSBiYWNrIGZy
-b20gc3VzcGVuZC4gV2hlbiBNQUMgcmVzdW1lLCB1c3VhbGx5IGl0IHdpbGwgaW52b2tlDQo+ID4+
-IHBoeV9zdGFydCgpIHdoZXJlIHRvIGNoYW5nZSBQSFkgc3RhdGUgdG8gUEhZX1VQLCB0aGVuIHRy
-aWdnZXIgdGhlDQo+ID4+IHN0YXQ+IG1hY2hpbmUgdG8gcnVuIG5vdy4gSW4gcGh5X3N0YXRlX21h
-Y2hpbmUoKSwgaXQgd2lsbA0KPiA+PiBzdGFydC9jb25maWcgYXV0by1uZWdvLCB0aGVuIGNoYW5n
-ZSBQSFkgc3RhdGUgdG8gUEhZX05PTElOSywgd2hhdCB0bw0KPiA+PiBuZXh0IGlzIHBlcmlvZGlj
-YWxseSBjaGVjayBQSFkgbGluayBzdGF0dXMuIFdoZW4gTURJTyBidXMgcmVzdW1lLCBpdA0KPiA+
-PiB3aWxsIGluaXRpYWxpemUgUEhZIGhhcmR3YXJlLCBpbmNsdWRpbmcgc29mdF9yZXNldCwgd2hh
-dCB3b3VsZA0KPiA+PiBzb2Z0X3Jlc2V0IGFmZmVjdCBzZWVtcyB2YXJpb3VzIGZyb20gZGlmZmVy
-ZW50IFBIWXMuIEZvciBLU1o4MDgxUk5CLA0KPiA+PiB3aGVuIGl0IGluIFBIWV9OT0xJTksgc3Rh
-dGUgYW5kIHRoZW4gcGVyZm9ybSBhIHNvZnQgcmVzZXQsIGl0IHdpbGwgbmV2ZXINCj4gY29tcGxl
-dGUgYXV0by1uZWdvLg0KPiA+DQo+ID4gV2h5PyBUaGF0IHdvdWxkIG5lZWQgdG8gYmUgY2hlY2tl
-ZCBpbiBkZXRhaWwuIE1heWJlIGNoaXAgZXJyYXRhDQo+ID4gZG9jdW1lbnRhdGlvbiBwcm92aWRl
-cyBhIGhpbnQuDQo+ID4NCj4gDQo+IFRoZSBLU1o4MDgxIHNwZWMgc2F5cyB0aGUgZm9sbG93aW5n
-IGFib3V0IGJpdCBCTUNSX1BET1dOOg0KPiANCj4gSWYgc29mdHdhcmUgcmVzZXQgKFJlZ2lzdGVy
-IDAuMTUpIGlzDQo+IHVzZWQgdG8gZXhpdCBwb3dlci1kb3duIG1vZGUNCj4gKFJlZ2lzdGVyIDAu
-MTEgPSAxKSwgdHdvIHNvZnR3YXJlDQo+IHJlc2V0IHdyaXRlcyAoUmVnaXN0ZXIgMC4xNSA9IDEp
-IGFyZQ0KPiByZXF1aXJlZC4gVGhlIGZpcnN0IHdyaXRlIGNsZWFycw0KPiBwb3dlci1kb3duIG1v
-ZGU7IHRoZSBzZWNvbmQNCj4gd3JpdGUgcmVzZXRzIHRoZSBjaGlwIGFuZCByZS1sYXRjaGVzDQo+
-IHRoZSBwaW4gc3RyYXBwaW5nIHBpbiB2YWx1ZXMuDQo+IA0KPiBNYXliZSB0aGlzIGNhdXNlcyB0
-aGUgaXNzdWUgeW91IHNlZSBhbmQgZ2VucGh5X3NvZnRfcmVzZXQoKSBpc24ndCBhcHByb3ByaWF0
-ZQ0KPiBmb3IgdGhpcyBQSFkuIFBsZWFzZSByZS10ZXN0IHdpdGggdGhlIEtTWjgwODEgc29mdCBy
-ZXNldCBmb2xsb3dpbmcgdGhlIHNwZWMNCj4gY29tbWVudC4NCg0KWWVzLCBJIGFsc28gbm90aWNl
-ZCB0aGlzIG5vdGUgaW4gc3BlYywgYW5kIHRyaWVkIHRvIHNvZnQgcmVzZXQgdHdpY2UgZnJvbSBQ
-SFkgZHJpdmVyLCBidXQgc3RpbGwgY2FuJ3Qgd29yay4NCg0KV2hhdCBpcyBzdHJhbmdlIGlzIHRo
-YXQsIGlmdXAvaWZkb3duIGNhbiB3b3JrIGZpbmUsIHdoaWNoIGlzIGFsbW9zdCB0aGUgc2FtZSBy
-b3V0ZSB3aXRoIHN1c3BlbmQvcmVzdW1lLA0KZXhjZXB0IHN1c3BlbmQvcmVzdW1lIGhhcyBzdGF0
-ZSBtYWNoaW5lIHJ1bm5pbmcuIA0KDQo+IA0KPiA+Pg0KPiA+PiBUaGlzIHBhdGNoIGNoYW5nZXMg
-UEhZIHN0YXRlIHRvIFBIWV9VUCB3aGVuIE1ESU8gYnVzIHJlc3VtZSBiYWNrLCBpdA0KPiA+PiBz
-aG91bGQgYmUgcmVhc29uYWJsZSBhZnRlciBQSFkgaGFyZHdhcmUgcmUtaW5pdGlhbGl6ZWQuIEFs
-c28gZ2l2ZQ0KPiA+PiBzdGF0ZSBtYWNoaW5lIGEgY2hhbmNlIHRvIHN0YXJ0L2NvbmZpZyBhdXRv
-LW5lZ28gYWdhaW4uDQo+ID4+DQo+ID4NCj4gPiBJZiB0aGUgTUFDIGRyaXZlciBjYWxscyBwaHlf
-c3RvcCgpIG9uIHN1c3BlbmQsIHRoZW4gcGh5ZGV2LT5zdXNwZW5kZWQNCj4gPiBpcyB0cnVlIGFu
-ZCBtZGlvX2J1c19waHlfbWF5X3N1c3BlbmQoKSByZXR1cm5zIGZhbHNlLiBBcyBhIGNvbnNlcXVl
-bmNlDQo+ID4gcGh5ZGV2LT5zdXNwZW5kZWRfYnlfbWRpb19idXMgaXMgZmFsc2UgYW5kIG1kaW9f
-YnVzX3BoeV9yZXN1bWUoKQ0KPiA+IHNraXBzIHRoZSBQSFkgaHcgaW5pdGlhbGl6YXRpb24uDQo+
-ID4gUGxlYXNlIGFsc28gbm90ZSB0aGF0IG1kaW9fYnVzX3BoeV9zdXNwZW5kKCkgY2FsbHMgcGh5
-X3N0b3BfbWFjaGluZSgpDQo+ID4gdGhhdCBzZXRzIHRoZSBzdGF0ZSB0byBQSFlfVVAuDQo+ID4N
-Cj4gDQo+IEZvcmdvdCB0aGF0IE1ESU8gYnVzIHN1c3BlbmQgaXMgZG9uZSBiZWZvcmUgTUFDIGRy
-aXZlciBzdXNwZW5kLg0KPiBUaGVyZWZvcmUgZGlzcmVnYXJkIHRoaXMgcGFydCBmb3Igbm93Lg0K
-DQpPSy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+ID4gSGF2aW5nIHNhaWQgdGhh
-dCB0aGUgY3VycmVudCBhcmd1bWVudGF0aW9uIGlzbid0IGNvbnZpbmNpbmcuIEknbSBub3QNCj4g
-PiBhd2FyZSBvZiBzdWNoIGlzc3VlcyBvbiBvdGhlciBzeXN0ZW1zLCB0aGVyZWZvcmUgaXQncyBs
-aWtlbHkgdGhhdA0KPiA+IHNvbWV0aGluZyBpcyBzeXN0ZW0tZGVwZW5kZW50Lg0KPiA+DQo+ID4g
-UGxlYXNlIGNoZWNrIHRoZSBleGFjdCBjYWxsIHNlcXVlbmNlIG9uIHlvdXIgc3lzdGVtLCBtYXli
-ZSBpdCBwcm92aWRlcw0KPiA+IGEgaGludC4NCj4gPg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBKb2Fr
-aW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KPiA+PiAtLS0NCj4gPj4gIGRyaXZl
-cnMvbmV0L3BoeS9waHlfZGV2aWNlLmMgfCA3ICsrKysrKysNCj4gPj4gIDEgZmlsZSBjaGFuZ2Vk
-LCA3IGluc2VydGlvbnMoKykNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3Bo
-eS9waHlfZGV2aWNlLmMNCj4gPj4gYi9kcml2ZXJzL25ldC9waHkvcGh5X2RldmljZS5jIGluZGV4
-IGNjMzhlMzI2NDA1YS4uMzEyYTZmNjYyNDgxDQo+ID4+IDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2
-ZXJzL25ldC9waHkvcGh5X2RldmljZS5jDQo+ID4+ICsrKyBiL2RyaXZlcnMvbmV0L3BoeS9waHlf
-ZGV2aWNlLmMNCj4gPj4gQEAgLTMwNiw2ICszMDYsMTMgQEAgc3RhdGljIF9fbWF5YmVfdW51c2Vk
-IGludA0KPiBtZGlvX2J1c19waHlfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPj4gIAly
-ZXQgPSBwaHlfcmVzdW1lKHBoeWRldik7DQo+ID4+ICAJaWYgKHJldCA8IDApDQo+ID4+ICAJCXJl
-dHVybiByZXQ7DQo+ID4+ICsNCj4gPj4gKwkvKiBQSFkgc3RhdGUgY291bGQgYmUgY2hhbmdlZCB0
-byBQSFlfTk9MSU5LIGZyb20gTUFDIGNvbnRyb2xsZXINCj4gcmVzdW1lDQo+ID4+ICsJICogcm91
-bnRlIHdpdGggcGh5X3N0YXJ0KCksIGhlcmUgY2hhbmdlIHRvIFBIWV9VUCBhZnRlciByZS1pbml0
-aWFsaXppbmcNCj4gPj4gKwkgKiBQSFkgaGFyZHdhcmUsIGxldCBQSFkgc3RhdGUgbWFjaGluZSB0
-byBzdGFydC9jb25maWcgYXV0by1uZWdvIGFnYWluLg0KPiA+PiArCSAqLw0KPiA+PiArCXBoeWRl
-di0+c3RhdGUgPSBQSFlfVVA7DQo+ID4+ICsNCj4gPj4gIG5vX3Jlc3VtZToNCj4gPj4gIAlpZiAo
-cGh5ZGV2LT5hdHRhY2hlZF9kZXYgJiYgcGh5ZGV2LT5hZGp1c3RfbGluaykNCj4gPj4gIAkJcGh5
-X3N0YXJ0X21hY2hpbmUocGh5ZGV2KTsNCj4gPj4NCj4gPg0KDQo=
+On Mon, Apr 5, 2021 at 7:30 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+>
+> From: Ashish Kalra <ashish.kalra@amd.com>
+>
+> Add new KVM_FEATURE_SEV_LIVE_MIGRATION feature for guest to check
+> for host-side support for SEV live migration. Also add a new custom
+> MSR_KVM_SEV_LIVE_MIGRATION for guest to enable the SEV live migration
+> feature.
+>
+> MSR is handled by userspace using MSR filters.
+>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  Documentation/virt/kvm/cpuid.rst     |  5 +++++
+>  Documentation/virt/kvm/msr.rst       | 12 ++++++++++++
+>  arch/x86/include/uapi/asm/kvm_para.h |  4 ++++
+>  arch/x86/kvm/cpuid.c                 |  3 ++-
+>  arch/x86/kvm/svm/svm.c               | 22 ++++++++++++++++++++++
+>  5 files changed, 45 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
+> index cf62162d4be2..0bdb6cdb12d3 100644
+> --- a/Documentation/virt/kvm/cpuid.rst
+> +++ b/Documentation/virt/kvm/cpuid.rst
+> @@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
+>                                                 before using extended destination
+>                                                 ID bits in MSI address bits 11-5.
+>
+> +KVM_FEATURE_SEV_LIVE_MIGRATION     16          guest checks this feature bit before
+> +                                               using the page encryption state
+> +                                               hypercall to notify the page state
+> +                                               change
+> +
+>  KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
+>                                                 per-cpu warps are expected in
+>                                                 kvmclock
+> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
+> index e37a14c323d2..020245d16087 100644
+> --- a/Documentation/virt/kvm/msr.rst
+> +++ b/Documentation/virt/kvm/msr.rst
+> @@ -376,3 +376,15 @@ data:
+>         write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
+>         and check if there are more notifications pending. The MSR is available
+>         if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
+> +
+> +MSR_KVM_SEV_LIVE_MIGRATION:
+> +        0x4b564d08
+> +
+> +       Control SEV Live Migration features.
+> +
+> +data:
+> +        Bit 0 enables (1) or disables (0) host-side SEV Live Migration feature,
+> +        in other words, this is guest->host communication that it's properly
+> +        handling the shared pages list.
+> +
+> +        All other bits are reserved.
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 950afebfba88..f6bfa138874f 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -33,6 +33,7 @@
+>  #define KVM_FEATURE_PV_SCHED_YIELD     13
+>  #define KVM_FEATURE_ASYNC_PF_INT       14
+>  #define KVM_FEATURE_MSI_EXT_DEST_ID    15
+> +#define KVM_FEATURE_SEV_LIVE_MIGRATION 16
+>
+>  #define KVM_HINTS_REALTIME      0
+>
+> @@ -54,6 +55,7 @@
+>  #define MSR_KVM_POLL_CONTROL   0x4b564d05
+>  #define MSR_KVM_ASYNC_PF_INT   0x4b564d06
+>  #define MSR_KVM_ASYNC_PF_ACK   0x4b564d07
+> +#define MSR_KVM_SEV_LIVE_MIGRATION     0x4b564d08
+>
+>  struct kvm_steal_time {
+>         __u64 steal;
+> @@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
+>  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
+>  #define KVM_PV_EOI_DISABLED 0x0
+>
+> +#define KVM_SEV_LIVE_MIGRATION_ENABLED BIT_ULL(0)
+> +
+>  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 6bd2f8b830e4..4e2e69a692aa 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -812,7 +812,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>                              (1 << KVM_FEATURE_PV_SEND_IPI) |
+>                              (1 << KVM_FEATURE_POLL_CONTROL) |
+>                              (1 << KVM_FEATURE_PV_SCHED_YIELD) |
+> -                            (1 << KVM_FEATURE_ASYNC_PF_INT);
+> +                            (1 << KVM_FEATURE_ASYNC_PF_INT) |
+> +                            (1 << KVM_FEATURE_SEV_LIVE_MIGRATION);
+>
+>                 if (sched_info_on())
+>                         entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 3cbf000beff1..1ac79e2f2a6c 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2800,6 +2800,17 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>         case MSR_F10H_DECFG:
+>                 msr_info->data = svm->msr_decfg;
+>                 break;
+> +       case MSR_KVM_SEV_LIVE_MIGRATION:
+> +               if (!sev_guest(vcpu->kvm))
+> +                       return 1;
+> +
+> +               if (!guest_cpuid_has(vcpu, KVM_FEATURE_SEV_LIVE_MIGRATION))
+> +                       return 1;
+> +
+> +               /*
+> +                * Let userspace handle the MSR using MSR filters.
+> +                */
+> +               return KVM_MSR_RET_FILTERED;
+>         default:
+>                 return kvm_get_msr_common(vcpu, msr_info);
+>         }
+> @@ -2996,6 +3007,17 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+>                 svm->msr_decfg = data;
+>                 break;
+>         }
+> +       case MSR_KVM_SEV_LIVE_MIGRATION:
+> +               if (!sev_guest(vcpu->kvm))
+> +                       return 1;
+> +
+> +               if (!guest_cpuid_has(vcpu, KVM_FEATURE_SEV_LIVE_MIGRATION))
+> +                       return 1;
+> +
+> +               /*
+> +                * Let userspace handle the MSR using MSR filters.
+> +                */
+> +               return KVM_MSR_RET_FILTERED;
+
+It's a little unintuitive to see KVM_MSR_RET_FILTERED here, since
+userspace can make this happen on its own without having an entry in
+this switch statement (by setting it in the msr filter bitmaps). When
+using MSR filters, I would only expect to get MSR filter exits for
+MSRs I specifically asked for.
+
+Not a huge deal, just a little unintuitive. I'm not sure other options
+are much better (you could put KVM_MSR_RET_INVALID, or you could just
+not have these entries in svm_{get,set}_msr).
+
+
+--Steve
