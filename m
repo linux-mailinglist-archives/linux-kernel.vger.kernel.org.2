@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760AD354AE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D448354AE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243373AbhDFCfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhDFCfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 753F7611C0;
-        Tue,  6 Apr 2021 02:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617676506;
-        bh=f9B2Cj+hZMbB5RuZ1sOGqngVS1EXgeT4YM4yx3FshDQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yom7z9fZfosZgKwqFBu1VcNKC2tWYb+vxAk/gfPCqtCFQT/LJfRFXN8Alqvz6sMnW
-         18LyYQJ88id/3NsvwzFOkaET6QhrhL3EaWKIdF4HzsO5bdvHCKtWJ7cQ7O9UJdKfEJ
-         dbQFUKf0jxpZ1h/7/8iyJdmx+RSdZJ+F+BosQhFPUDmG+3/rp5kDjzyiNnDDD2eXHA
-         JDRt4Wid4Q/m7RrLOkqmtG6PueQGEjnYd4kzqgDUKORsulJ/sjeYpPzagHaInBE2jL
-         jJlCyGoWqrFUONkqJmDGHbKavWEKzeKvZOzBfKXGzoZkzCo4E+9oVxPPdN82s97tGV
-         i5sKYWXGJPMjQ==
-Received: by mail-lf1-f52.google.com with SMTP id n138so20338593lfa.3;
-        Mon, 05 Apr 2021 19:35:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530zG5s3zpilvWCuL+ONq7Rug0QDvtsxes4E3SvMbofFsbZQxV71
-        q/HhLl2h8UdIpHGrKob/8qcuMxezpWRnyeZhX7g=
-X-Google-Smtp-Source: ABdhPJwkNqq3eNyWXjNY6FLAzSJ3Xq4BbMccPyJ1XTpHu76xQ2eqW+tnmCtDjTLnjfKKj522KdjfQH1WnRWnwTsTbg8=
-X-Received: by 2002:ac2:5e26:: with SMTP id o6mr19862530lfg.355.1617676504847;
- Mon, 05 Apr 2021 19:35:04 -0700 (PDT)
+        id S243406AbhDFCgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhDFCgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 22:36:11 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E491BC06174A;
+        Mon,  5 Apr 2021 19:36:04 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id z15so13567634oic.8;
+        Mon, 05 Apr 2021 19:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hRox+m0HCb4FpA/EUkWFuOtMM3ToOUYtmjxD+DRH/Zk=;
+        b=tgksicBzGTwv+4lr27tWfD7Sz8d41BnclMCik4S3ZhaI4KcPE91jCI+gpFgRVZXK1w
+         3kbsaYp922RsZP/XWMbkoWoF3EKn6cLRWw3ykIeQFRvj0URm8n7EG+LTpLS8xB1xgw0U
+         tuuLQwam8fXq20b6cgL64OmYukkypd94abBUowZZdifDsnck5a0MOGbM7kRn8+/AAuZh
+         3f9iNEU9xo3+TB5foE0/HUGMuhI1m4p7o37TnrN44XafVSESLuAGmpHTXURM0DIlBdgP
+         qUZU7tcc0DEGLkUvbNmaL9lgLekN8z2c8khpQK7U2KReOM5m8NDkI0acSHfrOFsnf3sQ
+         e9fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hRox+m0HCb4FpA/EUkWFuOtMM3ToOUYtmjxD+DRH/Zk=;
+        b=CcjWRqy8Xfa0wQrlFZMKZRQHZOgKglAX+bz44Td6H33aqww+XBvKS4HarcMi6lOS2I
+         PG5WCQnFks0WLcrTxeT1sbA/FIMfp299AKH1uCDtQhRBGLFdpowKfr+VoqEMeqq7rbA8
+         nvL4j5Pn6bYojb6hR2go3Zyaf+qc0bYozgwQnzsMZDeN3uaz6Yk/eAAMO7SJkls+ROf7
+         oJi9fhoRJa3zXd4sQnB+ujcMs2nQZpU+qhOItYlZD0KtF7BOADjVr6zEWJgip25d/Uxb
+         UYMy3IVld96HuV78cymvXcRcObhsQvNh3ZQML//sF9mqd9Exf/XtagTNayRJ2Zt5rjMt
+         6IDA==
+X-Gm-Message-State: AOAM533mIHCFH1SHosY0FYushLxCAmfM6vRCd+fCI9BiQZKf1FkOOS8n
+        vg5GfJBqgkp7p8yZpe/bOVU=
+X-Google-Smtp-Source: ABdhPJxWjfNE5zWQbDfPlN0GspOurtHhrnrEWCHTBvaJzl2TET6lapIsZYDkdc8OSKiEP41d4AjbZQ==
+X-Received: by 2002:aca:1e11:: with SMTP id m17mr1484928oic.61.1617676564228;
+        Mon, 05 Apr 2021 19:36:04 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g21sm3847456ooa.15.2021.04.05.19.36.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Apr 2021 19:36:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 5 Apr 2021 19:36:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/35] 4.9.265-rc1 review
+Message-ID: <20210406023602.GB20578@roeck-us.net>
+References: <20210405085018.871387942@linuxfoundation.org>
+ <20210405175629.GB93485@roeck-us.net>
+ <20210405235155.GA75187@roeck-us.net>
+ <20210406022200.GA20578@roeck-us.net>
 MIME-Version: 1.0
-References: <1617673695-102193-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1617673695-102193-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 6 Apr 2021 10:34:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRuW=TP6jZSAkDCNyq5aeEsbhZFpOQFTiCoapN3EU0ydw@mail.gmail.com>
-Message-ID: <CAJF2gTRuW=TP6jZSAkDCNyq5aeEsbhZFpOQFTiCoapN3EU0ydw@mail.gmail.com>
-Subject: Re: [PATCH] csky: remove unused including <linux/version.h>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     linux-csky@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406022200.GA20578@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked by
+On Mon, Apr 05, 2021 at 07:22:00PM -0700, Guenter Roeck wrote:
+> On Mon, Apr 05, 2021 at 04:51:55PM -0700, Guenter Roeck wrote:
+> > On Mon, Apr 05, 2021 at 10:56:29AM -0700, Guenter Roeck wrote:
+> > > On Mon, Apr 05, 2021 at 10:53:35AM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 4.9.265 release.
+> > > > There are 35 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > 
+> > > Build results:
+> > > 	total: 163 pass: 163 fail: 0
+> > > Qemu test results:
+> > > 	total: 383 pass: 382 fail: 1
+> > > Failed tests:
+> > > 	parisc:generic-32bit_defconfig:smp:net,pcnet:scsi[53C895A]:rootfs
+> > > 
+> > > In the failing test, the network interfcace instantiates but fails to get
+> > > an IP address. This is not a new problem but a new test. For some reason
+> > > it only happens with this specific network interface, this specific SCSI
+> > > controller, and with v4.9.y. No reason for concern; I'll try to track down
+> > > what is going on.
+> > > 
+> > 
+> > Interesting. The problem affects all kernels up to and including
+> > v4.19.y. Unlike I thought initially, the problem is not associated
+> > with the SCSI controller (that was coincidental) but with pcnet
+> > Ethernet interfaces. It has been fixed in the upstream kernel with
+> > commit 518a2f1925c3 ("dma-mapping: zero memory returned from
+> > dma_alloc_*"). This patch does not apply cleanly to any of the
+> > affected kernels. I backported part of it to v4.19.y and v4.9.y
+> > and confirmed that it fixes the problem in those branches.
+> > 
+> > Question is what we should do: try to backport 518a2f1925c3 to v4.19.y
+> > and earlier, or stop testing against this specific problem.
+> > 
+> 
+> Another update: The following code change fixes the problem as well.
+> Commit 518a2f1925c3 fixes it only as side effect since it clears
+> all DMA buffers.
+> 
+> diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+> index c22bf52d3320..7a25ec8390e4 100644
+> --- a/drivers/net/ethernet/amd/pcnet32.c
+> +++ b/drivers/net/ethernet/amd/pcnet32.c
+> @@ -1967,7 +1967,7 @@ static int pcnet32_alloc_ring(struct net_device *dev, const char *name)
+>                 return -ENOMEM;
+>         }
+> 
+> -       lp->rx_ring = pci_alloc_consistent(lp->pci_dev,
+> +       lp->rx_ring = pci_zalloc_consistent(lp->pci_dev,
+>                                            sizeof(struct pcnet32_rx_head) *
+>                                            lp->rx_ring_size,
+>                                            &lp->rx_ring_dma_addr);
+> 
+> I'll submit a patch implementing that; we'll see how it goes.
 
-On Tue, Apr 6, 2021 at 9:48 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Fix the following versioncheck warnings:
-> ./arch/csky/include/asm/io.h: 8 linux/version.h not needed.
-> ./arch/csky/include/asm/uaccess.h: 14 linux/version.h not needed.
-> ./arch/csky/kernel/process.c: 5 linux/version.h not needed.
-> ./arch/csky/mm/dma-mapping.c: 12 linux/version.h not needed.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/csky/include/asm/io.h      | 1 -
->  arch/csky/include/asm/uaccess.h | 1 -
->  arch/csky/kernel/process.c      | 1 -
->  arch/csky/mm/dma-mapping.c      | 1 -
->  4 files changed, 4 deletions(-)
->
-> diff --git a/arch/csky/include/asm/io.h b/arch/csky/include/asm/io.h
-> index f826540..ed53f0b 100644
-> --- a/arch/csky/include/asm/io.h
-> +++ b/arch/csky/include/asm/io.h
-> @@ -5,7 +5,6 @@
->
->  #include <linux/pgtable.h>
->  #include <linux/types.h>
-> -#include <linux/version.h>
->
->  /*
->   * I/O memory access primitives. Reads are ordered relative to any
-> diff --git a/arch/csky/include/asm/uaccess.h b/arch/csky/include/asm/uaccess.h
-> index 3dec272..841e421 100644
-> --- a/arch/csky/include/asm/uaccess.h
-> +++ b/arch/csky/include/asm/uaccess.h
-> @@ -11,7 +11,6 @@
->  #include <linux/types.h>
->  #include <linux/sched.h>
->  #include <linux/string.h>
-> -#include <linux/version.h>
->  #include <asm/segment.h>
->
->  static inline int access_ok(const void *addr, unsigned long size)
-> diff --git a/arch/csky/kernel/process.c b/arch/csky/kernel/process.c
-> index 3d0ca22..5de0470 100644
-> --- a/arch/csky/kernel/process.c
-> +++ b/arch/csky/kernel/process.c
-> @@ -2,7 +2,6 @@
->  // Copyright (C) 2018 Hangzhou C-SKY Microsystems co.,ltd.
->
->  #include <linux/module.h>
-> -#include <linux/version.h>
->  #include <linux/sched.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/sched/debug.h>
-> diff --git a/arch/csky/mm/dma-mapping.c b/arch/csky/mm/dma-mapping.c
-> index c3a775a..8244702 100644
-> --- a/arch/csky/mm/dma-mapping.c
-> +++ b/arch/csky/mm/dma-mapping.c
-> @@ -9,7 +9,6 @@
->  #include <linux/mm.h>
->  #include <linux/scatterlist.h>
->  #include <linux/types.h>
-> -#include <linux/version.h>
->  #include <asm/cache.h>
->
->  static inline void cache_op(phys_addr_t paddr, size_t size,
-> --
-> 1.8.3.1
->
+Sigh. That doesn't work; upstream uses dma_alloc_coherent().
+We could apply the patch making the switch, but dma_alloc_coherent()
+doesn't clear memory in older kernels (we are back to commit 518a2f1925c3
+which is introducing that). I'll just drop pcnet tests for kernels older
+than v5.4.
 
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Guenter
