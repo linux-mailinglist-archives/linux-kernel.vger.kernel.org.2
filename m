@@ -2,690 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14CA355807
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E25F35580F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345846AbhDFPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:32:53 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62240 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1345799AbhDFPcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:32:10 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136FFwA0027570;
-        Tue, 6 Apr 2021 11:32:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=HocIyLfWjWPr7qWYRmusdBMvTljcx0HEU8DUo4tnjKU=;
- b=A0hGdYG691DDlLJS1TYjxAKKUOyY5X1hiAonoVRn4g9KnUPaagc1sHot8NXliyEoOHSV
- Rg2ZkpjqFGNLWA7rqNjbvA8BOGL1uEm/aJWwlt4mCz7CANQ0HfBCszooXdNI1GjjG+SJ
- jzc2z7m5tKLdgMG00PTHOifYn+JuM8nhp9AXqlRF3siplGzZQD4x90RsNQeIt647fWug
- w/rkKGl0N5cPc18jwv0D+6i0izsWV5VPoKrQl/JoAZISlS+LfQwojxlTow/Fd8BKT4N7
- VDuV0ieszr53a6h1rGhJib2U8ThXhCnkuqNuvQav7y73URgmCZLUR3uKRhOKKur8+kH8 sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q605fngc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 11:32:00 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 136FGLQI030101;
-        Tue, 6 Apr 2021 11:32:00 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q605fnfu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 11:31:59 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136FQpa5018447;
-        Tue, 6 Apr 2021 15:31:59 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02wdc.us.ibm.com with ESMTP id 37q32mgmj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 15:31:59 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136FVtV227394480
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 15:31:55 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D651BE05A;
-        Tue,  6 Apr 2021 15:31:55 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E776ABE04F;
-        Tue,  6 Apr 2021 15:31:53 +0000 (GMT)
-Received: from cpe-172-100-182-241.stny.res.rr.com.com (unknown [9.85.175.110])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  6 Apr 2021 15:31:53 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, freude@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v15 13/13] s390/vfio-ap: update docs to include dynamic config support
-Date:   Tue,  6 Apr 2021 11:31:22 -0400
-Message-Id: <20210406153122.22874-14-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20210406153122.22874-1-akrowiak@linux.ibm.com>
-References: <20210406153122.22874-1-akrowiak@linux.ibm.com>
-MIME-Version: 1.0
+        id S243870AbhDFPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:35:12 -0400
+Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:41664
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1345850AbhDFPdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:33:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTzOvAsaGH45xlJd1T+efj9GdGLI7+JOQI+lWjouVAWSORX+i7ADUsBe85JHZkxlmze+pNoyHfXAtg5rm9VuC5Kyd1HcM8kH60G1MJ86GN6hDxaKj3aMax66qi7lvA0GFi27ZNwfD0GIfGLJrIzf7ScudSlHdlurDVUDzTpn4rBfyKyxr7eV6qZus/Umx6ltx3wTeFht3ZzZ9g8OSWxnkggqEYDwTuxyccnP2QutYmZuAabYe9ohEY4UaoD0iN7SfR5SwsnVRFRAqk5CBKBFpLFs2xlaMjVItK7f9vUX9Aa1OqBX7ALepBhsevKVyHQG2P6Zb5Ja1ygMrEpcPttDig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bdo6NpSrLCTj4s2AdDMj2QpYlPI5SZl1pJeJoKk6kuE=;
+ b=TZ+JmFkyocM27bwARqsJ53yY0MspNiz9EFOdYvOAA1JWvCmz62RTrTY74k5OnkNR0QI9tjfh0Lp/02QK2ToAbb8i+A99MWWfHRqjMhn0BcjiFmDc8qe7NMXkQ4PLA+00q87qAJJfbBLdM/pGrlkWvup5HUSogzQkwR+5IG9monch65sUgznuGUTUDTbMVc92bsRBVCqwKcVcpuZfNGYRhtbESjP2you2+a1WCI516zdv3AI1ZTo39qm5+XyOA4q6yBHi/Sk5yNN4F6UfAkmDhjUCCuIa7QWQOvhVrLtATlP0USBhhBm08vp8+Eqe6eZ6gxEJh2yO1DzC1wYvlBYIuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bdo6NpSrLCTj4s2AdDMj2QpYlPI5SZl1pJeJoKk6kuE=;
+ b=LGs6gpapi84nwZGnXPqy3Iv9IQkPPyDQzF/fpX5/Y/RnFG5uEjDyn7j1RE6Uj44QnxzgY4Bfb5iid6EQFAnU76bgFb/1VaM7Ft1ICaLcuFgQWqrjR4OXhqoTvUGDlaOaXJJ0cKK7BwwzccHWlLtbtBpcPQelrdT9t0qlYIkoHCE=
+Authentication-Results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB2008.namprd11.prod.outlook.com (2603:10b6:903:22::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Tue, 6 Apr
+ 2021 15:32:59 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 15:32:59 +0000
+From:   quanyang.wang@windriver.com
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     Rajan Vaja <rajan.vaja@xilinx.com>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [V3][PATCH] clk: zynqmp: pll: add set_pll_mode to check condition in zynqmp_pll_enable
+Date:   Tue,  6 Apr 2021 23:31:31 +0800
+Message-Id: <20210406153131.601701-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aha4bD4oRZUEebAMwHulaPq9d4_wlrT9
-X-Proofpoint-GUID: qEK6saTuDQbK9otlMah82uuJrEAlWrDi
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_04:2021-04-01,2021-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060104
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: BYAPR08CA0002.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::15) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by BYAPR08CA0002.namprd08.prod.outlook.com (2603:10b6:a03:100::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Tue, 6 Apr 2021 15:32:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5b5b441b-fb2a-460e-377f-08d8f91141c5
+X-MS-TrafficTypeDiagnostic: CY4PR11MB2008:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR11MB20080C459A57DC1DFC001383F0769@CY4PR11MB2008.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:345;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jaVJicnhJ+Pu5ckNx0RAQ9e/csi4/eE4ysWfMatpTGASGQr0B1NyZly2djpnUbGzwCRE//PfMrhYjtbfohEafnqQW8IWXtRnUCM99XdIEkrWRvObrlWOKRrQsoqO6NuwKdtp8JnEib89JTe5Z3wCSGKMVKue1U0xgCe1wjLALBDze5tPZ0H57AHQpkaiP4Dr0LaGzdbXrgMJ5PcutpUFlZt/N2qzSADoOGJt7+lpxcx+PEgTIoQA2wn9jTW9xf2j1a2ftUS5t7q6n/r+R78m9h+oddhZb8nN/45yldqhKl1uuZlM7CcJfgST8qcWAM1gVP2+BicmJIh092dZ0vE4CdRtsQC2QsM+X6mVkdNT1HaGoIbS/pJQUuNUjs7Y6ZsSQiVgncLMz+mXKKcke8y0+68lcQtfTt3/bvvhNq+oA/LW/p3WYs/dVDHK+80SLQxVpmnERc7c9qrZVGFyFou78VVII6VEcDmHYmJe8xEO3+NAKXWyarQpJ42kHV1gslBGYxNNY83+OJ9BCmFjqcHXCVlkLuqMvMgbChlnbfDNDRTuu1JNHPqVQE5tAKKYkbwP34UCTTsLlb+Bd9KSClcwxh2dEODzIoGawnmDsw0IEqfWeoABp9ByiANrC1rDDLOy5p6DOvcvJLdrtronDhKo9sLxluyCidlr9HFU8BHh4TzH4/Y9tfBfsKVeLGl0Amy5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(39850400004)(346002)(83380400001)(956004)(2616005)(1076003)(5660300002)(54906003)(6486002)(4326008)(110136005)(36756003)(8676002)(38350700001)(2906002)(9686003)(38100700001)(316002)(6506007)(16526019)(8936002)(26005)(86362001)(66946007)(6666004)(6512007)(52116002)(66556008)(7416002)(478600001)(186003)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ImVd6MQfgTAnZMUZoxIFf/kbRMB9DSh2VEnSxrRc+eFygqz+siEw2T8uaB6U?=
+ =?us-ascii?Q?ZZLCIWExIQ5ZYEWTZqOS9iy3ilj+FS+TSmNvX4Ni+/lXpD1sxs6KuPcVsnfe?=
+ =?us-ascii?Q?SkGwM1q1pWAydwZG2pkSupPoXT1NnHJbY9LddLYX2x6ENM/tMTZAlP4F1o7q?=
+ =?us-ascii?Q?PrJovaiuRsD+fskJU40N83oa1s/VgvMky2/YUOzsujdkNB4R1p3DkxRHfqB7?=
+ =?us-ascii?Q?SVfzIqmvdWtB08L366nbYDXOm84N9t/BwlV7CQqa0YHtCHmi5Q3m9WPrTTpZ?=
+ =?us-ascii?Q?ErmWfn7aSQkkLHhItUOhiXdbXp6dIuOFI+3avYb/ZDozxkT57ATsYsF/Cr//?=
+ =?us-ascii?Q?+c7XiNNhTKuid9UwzuchOwW3FWEwL/juva6AWzv3y3LC5fMat+qAPDjqFcga?=
+ =?us-ascii?Q?rvHIDwLU068OgHQ1SXtUCFLpvhquLZq9Itci+hGSClUwdGqcT2b1epSuLTa5?=
+ =?us-ascii?Q?ZlbhKPIHFhNBJcDsoe+S4+npTp1/S3alVdbyxnuBQdj0Lh2Snu6/CWRvLgLe?=
+ =?us-ascii?Q?HpoV4Lt4nj8eF+IdmODQHPRYLQOuGN38L2TBTvcEbuaXzad4poFEfdcQxLot?=
+ =?us-ascii?Q?KaSdroHfeJYfkCzustlWilu6Px7vNhEiIDrgM4gA7ErpC3LCpI/bGRuTA2H8?=
+ =?us-ascii?Q?VBtElmbcvXgq74iI7OM4rUCqdF/zg8CxKepjZfdRWU8x+Gpe+SUSrEcXNuak?=
+ =?us-ascii?Q?9wTBn6k0JH5mM/VSuf8EH5/EEuRkhJR7ovv7QwUYXARbOSZVNnI/qr6SiDNt?=
+ =?us-ascii?Q?UjyvQnlw5BEDnXLAPm/G6VdVCdoWpdqsZRyKAzrnPCGn0OWUQV7fWU02lLIL?=
+ =?us-ascii?Q?ZZUwKFxLPGiZiFqDaq2GwHFLqeS4Fm8dIFrrso2XQmiuaxv1UnWvF/JSqD1k?=
+ =?us-ascii?Q?izxYf7HrJDR7SF26fyfDMzSG+yb+uIbio3xg8QBtiwSIC2MRYZGt5yOgnVdL?=
+ =?us-ascii?Q?VT5Gzifo1UDgdQsMQZdcth6v4bY01W/xAEch0ZclBqrGsOmfU8zeCyR5nU1R?=
+ =?us-ascii?Q?8h+tHGywf4CzXSvqZ7V8awcCl39PKmyv9fC4kk5EQlNKwfZBBiZ1jp6qHXrI?=
+ =?us-ascii?Q?61J76jf9zJSMcu67E5LNc+4aUWiRYeBJruMqXGEOw0nbw2aioLp1ckNICMXO?=
+ =?us-ascii?Q?EP9FmduYUoIqqrXHRR4u7ap259FVpm93/NQlVJPPvnpsXlzEConI4ZZ1r+zk?=
+ =?us-ascii?Q?weR1Mh5JdO6PBZH00CLQhWozOTgj081eUxvPnM7khx4jWS74uA287Sy0I3KC?=
+ =?us-ascii?Q?fUFjPwPjw5y39fy5O17iTyPiRxS9thn4OgYGs21U/pyGzAHB5HkuD71sLfPY?=
+ =?us-ascii?Q?QgJiO38ExjWZKSnBYLXltf+y?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b5b441b-fb2a-460e-377f-08d8f91141c5
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:32:59.0786
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Je0qS4ahOw/RQRvPAb8EoY9F0Ej0uNoTB72WTQT3SOgS37F/4BHGe5xS6W4sEaUtPqu8yg6skx5/RPbBrZGKf5sDZpBPnMKZV/Yaa0ZIznQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB2008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation in vfio-ap.rst to include information about the
-AP dynamic configuration support (i.e., hot plug of adapters, domains
-and control domains via the matrix mediated device's sysfs assignment
-attributes).
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+If there is a IOCTL_SET_PLL_FRAC_MODE request sent to ATF ever,
+we shouldn't skip invoking PM_CLOCK_ENABLE fn even though this
+pll has been enabled. In ATF implementation, it will only assign
+the mode to the variable (struct pm_pll *)pll->mode when handling
+IOCTL_SET_PLL_FRAC_MODE call. Invoking PM_CLOCK_ENABLE can force
+ATF send request to PWU to set the pll mode to PLL's register.
+
+There is a scenario that happens in enabling VPLL_INT(clk_id:96):
+1) VPLL_INT has been enabled during booting.
+2) A driver calls clk_set_rate and according to the rate, the VPLL_INT
+   should be set to FRAC mode. Then zynqmp_pll_set_mode is called
+   to pass IOCTL_SET_PLL_FRAC_MODE to ATF. Note that at this point
+   ATF just stores the mode to a variable.
+3) This driver calls clk_prepare_enable and zynqmp_pll_enable is
+   called to try to enable VPLL_INT pll. Because of 1), the function
+   zynqmp_pll_enable just returns without doing anything after checking
+   that this pll has been enabled.
+
+In the scenario above, the pll mode of VPLL_INT will never be set
+successfully. So adding set_pll_mode to check condition to fix it.
+
+Fixes: 3fde0e16d016 ("drivers: clk: Add ZynqMP clock driver")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- Documentation/s390/vfio-ap.rst | 383 ++++++++++++++++++++++++---------
- 1 file changed, 284 insertions(+), 99 deletions(-)
+V3:
+ - add Fixes tag.
+V2:
+ - add Tested-by tag, thanks Laurent.
+ - fix typos in commit message and multiline code comments.
+---
+ drivers/clk/zynqmp/pll.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/s390/vfio-ap.rst b/Documentation/s390/vfio-ap.rst
-index e15436599086..031c2e5ee138 100644
---- a/Documentation/s390/vfio-ap.rst
-+++ b/Documentation/s390/vfio-ap.rst
-@@ -123,9 +123,9 @@ Let's now take a look at how AP instructions executed on a guest are interpreted
- by the hardware.
+diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
+index 92f449ed38e5..0d64268a4a84 100644
+--- a/drivers/clk/zynqmp/pll.c
++++ b/drivers/clk/zynqmp/pll.c
+@@ -14,10 +14,12 @@
+  * struct zynqmp_pll - PLL clock
+  * @hw:		Handle between common and hardware-specific interfaces
+  * @clk_id:	PLL clock ID
++ * @set_pll_mode:	Whether an IOCTL_SET_PLL_FRAC_MODE request be sent to ATF
+  */
+ struct zynqmp_pll {
+ 	struct clk_hw hw;
+ 	u32 clk_id;
++	bool set_pll_mode;
+ };
  
- A satellite control block called the Crypto Control Block (CRYCB) is attached to
--our main hardware virtualization control block. The CRYCB contains three fields
--to identify the adapters, usage domains and control domains assigned to the KVM
--guest:
-+our main hardware virtualization control block. The CRYCB contains an AP Control
-+Block (APCB) that has three fields to identify the adapters, usage domains and
-+control domains assigned to the KVM guest:
+ #define to_zynqmp_pll(_hw)	container_of(_hw, struct zynqmp_pll, hw)
+@@ -81,6 +83,8 @@ static inline void zynqmp_pll_set_mode(struct clk_hw *hw, bool on)
+ 	if (ret)
+ 		pr_warn_once("%s() PLL set frac mode failed for %s, ret = %d\n",
+ 			     __func__, clk_name, ret);
++	else
++		clk->set_pll_mode = true;
+ }
  
- * The AP Mask (APM) field is a bit mask that identifies the AP adapters assigned
-   to the KVM guest. Each bit in the mask, from left to right (i.e. from most
-@@ -192,7 +192,7 @@ The design introduces three new objects:
+ /**
+@@ -240,9 +244,15 @@ static int zynqmp_pll_enable(struct clk_hw *hw)
+ 	u32 clk_id = clk->clk_id;
+ 	int ret;
  
- 1. AP matrix device
- 2. VFIO AP device driver (vfio_ap.ko)
--3. VFIO AP mediated matrix pass-through device
-+3. VFIO AP mediated pass-through device
+-	if (zynqmp_pll_is_enabled(hw))
++	/*
++	 * Don't skip enabling clock if there is an IOCTL_SET_PLL_FRAC_MODE request
++	 * that has been sent to ATF.
++	 */
++	if (zynqmp_pll_is_enabled(hw) && (!clk->set_pll_mode))
+ 		return 0;
  
- The VFIO AP device driver
- -------------------------
-@@ -200,12 +200,13 @@ The VFIO AP (vfio_ap) device driver serves the following purposes:
- 
- 1. Provides the interfaces to secure APQNs for exclusive use of KVM guests.
- 
--2. Sets up the VFIO mediated device interfaces to manage a mediated matrix
-+2. Sets up the VFIO mediated device interfaces to manage a vfio_ap mediated
-    device and creates the sysfs interfaces for assigning adapters, usage
-    domains, and control domains comprising the matrix for a KVM guest.
- 
--3. Configures the APM, AQM and ADM in the CRYCB referenced by a KVM guest's
--   SIE state description to grant the guest access to a matrix of AP devices
-+3. Configures the APM, AQM and ADM in the APCB contained in the CRYCB referenced
-+   by a KVM guest's SIE state description to grant the guest access to a matrix
-+   of AP devices
- 
- Reserve APQNs for exclusive use of KVM guests
- ---------------------------------------------
-@@ -253,7 +254,7 @@ The process for reserving an AP queue for use by a KVM guest is:
- 1. The administrator loads the vfio_ap device driver
- 2. The vfio-ap driver during its initialization will register a single 'matrix'
-    device with the device core. This will serve as the parent device for
--   all mediated matrix devices used to configure an AP matrix for a guest.
-+   all vfio_ap mediated devices used to configure an AP matrix for a guest.
- 3. The /sys/devices/vfio_ap/matrix device is created by the device core
- 4. The vfio_ap device driver will register with the AP bus for AP queue devices
-    of type 10 and higher (CEX4 and newer). The driver will provide the vfio_ap
-@@ -269,7 +270,7 @@ The process for reserving an AP queue for use by a KVM guest is:
-    default zcrypt cex4queue driver.
- 8. The AP bus probes the vfio_ap device driver to bind the queues reserved for
-    it.
--9. The administrator creates a passthrough type mediated matrix device to be
-+9. The administrator creates a passthrough type vfio_ap mediated device to be
-    used by a guest
- 10. The administrator assigns the adapters, usage domains and control domains
-     to be exclusively used by a guest.
-@@ -279,14 +280,14 @@ Set up the VFIO mediated device interfaces
- The VFIO AP device driver utilizes the common interface of the VFIO mediated
- device core driver to:
- 
--* Register an AP mediated bus driver to add a mediated matrix device to and
-+* Register an AP mediated bus driver to add a vfio_ap mediated device to and
-   remove it from a VFIO group.
--* Create and destroy a mediated matrix device
--* Add a mediated matrix device to and remove it from the AP mediated bus driver
--* Add a mediated matrix device to and remove it from an IOMMU group
-+* Create and destroy a vfio_ap mediated device
-+* Add a vfio_ap mediated device to and remove it from the AP mediated bus driver
-+* Add a vfio_ap mediated device to and remove it from an IOMMU group
- 
- The following high-level block diagram shows the main components and interfaces
--of the VFIO AP mediated matrix device driver::
-+of the VFIO AP mediated device driver::
- 
-    +-------------+
-    |             |
-@@ -343,7 +344,7 @@ matrix device.
- 	* device_api:
- 	    the mediated device type's API
- 	* available_instances:
--	    the number of mediated matrix passthrough devices
-+	    the number of vfio_ap mediated passthrough devices
- 	    that can be created
- 	* device_api:
- 	    specifies the VFIO API
-@@ -351,29 +352,37 @@ matrix device.
-     This attribute group identifies the user-defined sysfs attributes of the
-     mediated device. When a device is registered with the VFIO mediated device
-     framework, the sysfs attribute files identified in the 'mdev_attr_groups'
--    structure will be created in the mediated matrix device's directory. The
--    sysfs attributes for a mediated matrix device are:
-+    structure will be created in the vfio_ap mediated device's directory. The
-+    sysfs attributes for a vfio_ap mediated device are:
- 
-     assign_adapter / unassign_adapter:
-       Write-only attributes for assigning/unassigning an AP adapter to/from the
--      mediated matrix device. To assign/unassign an adapter, the APID of the
-+      vfio_ap mediated device. To assign/unassign an adapter, the APID of the
-       adapter is echoed to the respective attribute file.
-     assign_domain / unassign_domain:
-       Write-only attributes for assigning/unassigning an AP usage domain to/from
--      the mediated matrix device. To assign/unassign a domain, the domain
-+      the vfio_ap mediated device. To assign/unassign a domain, the domain
-       number of the usage domain is echoed to the respective attribute
-       file.
-     matrix:
--      A read-only file for displaying the APQNs derived from the cross product
--      of the adapter and domain numbers assigned to the mediated matrix device.
-+      A read-only file for displaying the APQNs derived from the Cartesian
-+      product of the adapter and domain numbers assigned to the vfio_ap mediated
-+      device.
-+    guest_matrix:
-+      A read-only file for displaying the APQNs derived from the Cartesian
-+      product of the adapter and domain numbers assigned to the APM and AQM
-+      fields respectively of the KVM guest's CRYCB. This may differ from the
-+      the APQNs assigned to the vfio_ap mediated device if any APQN does not
-+      reference a queue device bound to the vfio_ap device driver (i.e., the
-+      queue is not in the host's AP configuration).
-     assign_control_domain / unassign_control_domain:
-       Write-only attributes for assigning/unassigning an AP control domain
--      to/from the mediated matrix device. To assign/unassign a control domain,
-+      to/from the vfio_ap mediated device. To assign/unassign a control domain,
-       the ID of the domain to be assigned/unassigned is echoed to the respective
-       attribute file.
-     control_domains:
-       A read-only file for displaying the control domain numbers assigned to the
--      mediated matrix device.
-+      vfio_ap mediated device.
- 
- * functions:
- 
-@@ -385,7 +394,7 @@ matrix device.
-       domains assigned via the corresponding sysfs attributes files
- 
-   remove:
--    deallocates the mediated matrix device's ap_matrix_mdev structure. This will
-+    deallocates the vfio_ap mediated device's ap_matrix_mdev structure. This will
-     be allowed only if a running guest is not using the mdev.
- 
- * callback interfaces
-@@ -397,24 +406,44 @@ matrix device.
-     for the mdev matrix device to the MDEV bus. Access to the KVM structure used
-     to configure the KVM guest is provided via this callback. The KVM structure,
-     is used to configure the guest's access to the AP matrix defined via the
--    mediated matrix device's sysfs attribute files.
-+    vfio_ap mediated device's sysfs attribute files.
-   release:
-     unregisters the VFIO_GROUP_NOTIFY_SET_KVM notifier callback function for the
-     mdev matrix device and deconfigures the guest's AP matrix.
- 
--Configure the APM, AQM and ADM in the CRYCB
---------------------------------------------
--Configuring the AP matrix for a KVM guest will be performed when the
-+Configure the guest's AP resources
-+----------------------------------
-+Configuring the AP resources for a KVM guest will be performed when the
- VFIO_GROUP_NOTIFY_SET_KVM notifier callback is invoked. The notifier
--function is called when QEMU connects to KVM. The guest's AP matrix is
--configured via it's CRYCB by:
-+function is called when QEMU connects to KVM. The guest's AP resources are
-+configured via it's APCB by:
- 
- * Setting the bits in the APM corresponding to the APIDs assigned to the
--  mediated matrix device via its 'assign_adapter' interface.
-+  vfio_ap mediated device via its 'assign_adapter' interface.
- * Setting the bits in the AQM corresponding to the domains assigned to the
--  mediated matrix device via its 'assign_domain' interface.
-+  vfio_ap mediated device via its 'assign_domain' interface.
- * Setting the bits in the ADM corresponding to the domain dIDs assigned to the
--  mediated matrix device via its 'assign_control_domains' interface.
-+  vfio_ap mediated device via its 'assign_control_domains' interface.
++	clk->set_pll_mode = false;
 +
-+The linux device model precludes passing a device through to a KVM guest that
-+is not bound to the device driver facilitating its pass-through. Consequently,
-+an APQN that does not reference a queue device bound to the vfio_ap device
-+driver will not be assigned to a KVM guest's matrix. The AP architecture,
-+however, does not provide a means to filter individual APQNs from the guest's
-+matrix, so the adapters, domains and control domains assigned to vfio_ap
-+mediated device via its sysfs 'assign_adapter', 'assign_domain' and
-+'assign_control_domain' interfaces will be filtered before providing the AP
-+configuration to a guest:
-+
-+* The APIDs of the adapters, the APQIs of the domains and the domain numbers of
-+  the control domains assigned to the matrix mdev that are not also assigned to
-+  the host's AP configuration will be filtered.
-+
-+* Each APQN derived from the Cartesian product of the APIDs and APQIs assigned
-+  to the vfio_ap mdev is examined and if any one of them does not reference a
-+  queue device bound to the vfio_ap device driver, the adapter will not be
-+  plugged into the guest (i.e., the bit corresponding to its APID will not be
-+  set in the APM of the guest's APCB).
- 
- The CPU model features for AP
- -----------------------------
-@@ -435,16 +464,20 @@ available to a KVM guest via the following CPU model features:
-    can be made available to the guest only if it is available on the host (i.e.,
-    facility bit 12 is set).
- 
-+4. apqi: Indicates AP queue interrupts are available on the guest. This facility
-+   can be made available to the guest only if it is available on the host (i.e.,
-+   facility bit 65 is set).
-+
- Note: If the user chooses to specify a CPU model different than the 'host'
- model to QEMU, the CPU model features and facilities need to be turned on
- explicitly; for example::
- 
--     /usr/bin/qemu-system-s390x ... -cpu z13,ap=on,apqci=on,apft=on
-+     /usr/bin/qemu-system-s390x ... -cpu z13,ap=on,apqci=on,apft=on,apqi=on
- 
- A guest can be precluded from using AP features/facilities by turning them off
- explicitly; for example::
- 
--     /usr/bin/qemu-system-s390x ... -cpu host,ap=off,apqci=off,apft=off
-+     /usr/bin/qemu-system-s390x ... -cpu host,ap=off,apqci=off,apft=off,apqi=off
- 
- Note: If the APFT facility is turned off (apft=off) for the guest, the guest
- will not see any AP devices. The zcrypt device drivers that register for type 10
-@@ -530,40 +563,56 @@ These are the steps:
- 
- 2. Secure the AP queues to be used by the three guests so that the host can not
-    access them. To secure them, there are two sysfs files that specify
--   bitmasks marking a subset of the APQN range as 'usable by the default AP
--   queue device drivers' or 'not usable by the default device drivers' and thus
--   available for use by the vfio_ap device driver'. The location of the sysfs
--   files containing the masks are::
-+   bitmasks marking a subset of the APQN range as usable only by the default AP
-+   queue device drivers. All remaining APQNs are available for use by
-+   any other device driver. The vfio_ap device driver is currently the only
-+   non-default device driver. The location of the sysfs files containing the
-+   masks are::
- 
-      /sys/bus/ap/apmask
-      /sys/bus/ap/aqmask
- 
-    The 'apmask' is a 256-bit mask that identifies a set of AP adapter IDs
--   (APID). Each bit in the mask, from left to right (i.e., from most significant
--   to least significant bit in big endian order), corresponds to an APID from
--   0-255. If a bit is set, the APID is marked as usable only by the default AP
--   queue device drivers; otherwise, the APID is usable by the vfio_ap
--   device driver.
-+   (APID). Each bit in the mask, from left to right, corresponds to an APID from
-+   0-255. If a bit is set, the APID belongs to the subset of APQNs marked as
-+   available only to the default AP queue device drivers.
- 
-    The 'aqmask' is a 256-bit mask that identifies a set of AP queue indexes
--   (APQI). Each bit in the mask, from left to right (i.e., from most significant
--   to least significant bit in big endian order), corresponds to an APQI from
--   0-255. If a bit is set, the APQI is marked as usable only by the default AP
--   queue device drivers; otherwise, the APQI is usable by the vfio_ap device
--   driver.
-+   (APQI). Each bit in the mask, from left to right, corresponds to an APQI from
-+   0-255. If a bit is set, the APQI belongs to the subset of APQNs marked as
-+   available only to the default AP queue device drivers.
-+
-+   The Cartesian product of the APIDs corresponding to the bits set in the
-+   apmask and the APQIs corresponding to the bits set in the aqmask comprise
-+   the subset of APQNs that can be used only by the host default device drivers.
-+   All other APQNs are available to the non-default device drivers such as the
-+   vfio_ap driver.
-+
-+   Take, for example, the following masks::
-+
-+      apmask:
-+      0x7d00000000000000000000000000000000000000000000000000000000000000
- 
--   Take, for example, the following mask::
-+      aqmask:
-+      0x8000000000000000000000000000000000000000000000000000000000000000
- 
--      0x7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-+   The masks indicate:
- 
--    It indicates:
-+   * Adapters 1, 2, 3, 4, 5, and 7 are available for use by the host default
-+     device drivers.
- 
--      1, 2, 3, 4, 5, and 7-255 belong to the default drivers' pool, and 0 and 6
--      belong to the vfio_ap device driver's pool.
-+   * Domain 0 is available for use by the host default device drivers
-+
-+   * The subset of APQNs available for use only by the default host device
-+     drivers are:
-+
-+     (1,0), (2,0), (3,0), (4.0), (5,0) and (7,0)
-+
-+   * All other APQNs are available for use by the non-default device drivers.
- 
-    The APQN of each AP queue device assigned to the linux host is checked by the
--   AP bus against the set of APQNs derived from the cross product of APIDs
--   and APQIs marked as usable only by the default AP queue device drivers. If a
-+   AP bus against the set of APQNs derived from the Cartesian product of APIDs
-+   and APQIs marked as available to the default AP queue device drivers. If a
-    match is detected,  only the default AP queue device drivers will be probed;
-    otherwise, the vfio_ap device driver will be probed.
- 
-@@ -627,11 +676,22 @@ These are the steps:
- 	    default drivers pool:    adapter 0-15, domain 1
- 	    alternate drivers pool:  adapter 16-255, domains 0, 2-255
- 
-+   Note ***:
-+   Changing a mask such that one or more APQNs will be taken from a vfio_ap
-+   mediated device (see below) will fail with an error (EBUSY). A message
-+   is logged to the kernel ring buffer which can be viewed with the 'dmesg'
-+   command. The output identifies each APQN flagged as 'in use' and identifies
-+   the vfio_ap mediated device to which it is assigned; for example:
-+
-+   Userspace may not re-assign queue 05.0054 already assigned to 62177883-f1bb-47f0-914d-32a22e3a8804
-+   Userspace may not re-assign queue 04.0054 already assigned to cef03c3c-903d-4ecc-9a83-40694cb8aee4
-+
- Securing the APQNs for our example
- ----------------------------------
-    To secure the AP queues 05.0004, 05.0047, 05.00ab, 05.00ff, 06.0004, 06.0047,
-    06.00ab, and 06.00ff for use by the vfio_ap device driver, the corresponding
--   APQNs can either be removed from the default masks::
-+   APQNs can be removed from the default masks using either of the following
-+   commands::
- 
-       echo -5,-6 > /sys/bus/ap/apmask
- 
-@@ -684,7 +744,7 @@ Securing the APQNs for our example
- 
-      /sys/devices/vfio_ap/matrix/
-      --- [mdev_supported_types]
--     ------ [vfio_ap-passthrough] (passthrough mediated matrix device type)
-+     ------ [vfio_ap-passthrough] (passthrough vfio_ap mediated device type)
-      --------- create
-      --------- [devices]
- 
-@@ -735,6 +795,9 @@ Securing the APQNs for our example
-      ----------------unassign_control_domain
-      ----------------unassign_domain
- 
-+   Note *****: The vfio_ap mdevs do not persist across reboots unless the
-+               mdevctl tool is used to create and persist them.
-+
- 4. The administrator now needs to configure the matrixes for the mediated
-    devices $uuid1 (for Guest1), $uuid2 (for Guest2) and $uuid3 (for Guest3).
- 
-@@ -775,17 +838,23 @@ Securing the APQNs for our example
-      higher than the maximum is specified, the operation will terminate with
-      an error (ENODEV).
- 
--   * All APQNs that can be derived from the adapter ID and the IDs of
--     the previously assigned domains must be bound to the vfio_ap device
--     driver. If no domains have yet been assigned, then there must be at least
--     one APQN with the specified APID bound to the vfio_ap driver. If no such
--     APQNs are bound to the driver, the operation will terminate with an
--     error (EADDRNOTAVAIL).
-+   * Each APQN derived from the Cartesian product of the APID of the adapter
-+     being assigned and the APQIs of the domains previously assigned:
- 
--     No APQN that can be derived from the adapter ID and the IDs of the
--     previously assigned domains can be assigned to another mediated matrix
--     device. If an APQN is assigned to another mediated matrix device, the
--     operation will terminate with an error (EADDRINUSE).
-+     - Must only be available to the vfio_ap device driver as specified in the
-+       sysfs /sys/bus/ap/apmask and /sys/bus/ap/aqmask attribute files. If even
-+       one APQN is reserved for use by the host device driver, the operation
-+       will terminate with an error (EADDRNOTAVAIL).
-+
-+     - Must NOT be assigned to another vfio_ap mediated device. If even one APQN
-+       is assigned to another vfio_ap mediated device, the operation will
-+       terminate with an error (EBUSY).
-+
-+     - Must NOT be assigned while the sysfs /sys/bus/ap/apmask and
-+       sys/bus/ap/aqmask attribute files are being edited or the operation may
-+       terminate with an error (EBUSY).
-+
-+       Must reference an AP queue device bound to the vfio_ap device driver.
- 
-    In order to successfully assign a domain:
- 
-@@ -794,41 +863,51 @@ Securing the APQNs for our example
-      higher than the maximum is specified, the operation will terminate with
-      an error (ENODEV).
- 
--   * All APQNs that can be derived from the domain ID and the IDs of
--     the previously assigned adapters must be bound to the vfio_ap device
--     driver. If no domains have yet been assigned, then there must be at least
--     one APQN with the specified APQI bound to the vfio_ap driver. If no such
--     APQNs are bound to the driver, the operation will terminate with an
--     error (EADDRNOTAVAIL).
-+    * Each APQN derived from the Cartesian product of the APQI of the domain
-+      being assigned and the APIDs of the adapters previously assigned:
-+
-+     - Must only be available to the vfio_ap device driver as specified in the
-+       sysfs /sys/bus/ap/apmask and /sys/bus/ap/aqmask attribute files. If even
-+       one APQN is reserved for use by the host device driver, the operation
-+       will terminate with an error (EADDRNOTAVAIL).
-+
-+     - Must NOT be assigned to another vfio_ap mediated device. If even one APQN
-+       is assigned to another vfio_ap mediated device, the operation will
-+       terminate with an error (EBUSY).
-+
-+     - Must NOT be assigned while the sysfs /sys/bus/ap/apmask and
-+       sys/bus/ap/aqmask attribute files are being edited or the operation may
-+       terminate with an error (EBUSY).
- 
--     No APQN that can be derived from the domain ID and the IDs of the
--     previously assigned adapters can be assigned to another mediated matrix
--     device. If an APQN is assigned to another mediated matrix device, the
--     operation will terminate with an error (EADDRINUSE).
-+       Must reference an AP queue device bound to the vfio_ap device driver.
- 
--   In order to successfully assign a control domain, the domain number
--   specified must represent a value from 0 up to the maximum domain number
--   configured for the system. If a control domain number higher than the maximum
--   is specified, the operation will terminate with an error (ENODEV).
-+   In order to successfully assign a control domain:
-+
-+   * The domain number specified must represent a value from 0 up to the maximum
-+     domain number configured for the system. If a control domain number higher
-+     than the maximum is specified, the operation will terminate with an
-+     error (ENODEV).
-+
-+   * The control domain must be assigned to the host's AP configuration.
- 
- 5. Start Guest1::
- 
--     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on \
-+     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on,apqi=on \
- 	-device vfio-ap,sysfsdev=/sys/devices/vfio_ap/matrix/$uuid1 ...
- 
- 7. Start Guest2::
- 
--     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on \
-+     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on,apqi=on \
- 	-device vfio-ap,sysfsdev=/sys/devices/vfio_ap/matrix/$uuid2 ...
- 
- 7. Start Guest3::
- 
--     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on \
-+     /usr/bin/qemu-system-s390x ... -cpu host,ap=on,apqci=on,apft=on,apqi=on \
- 	-device vfio-ap,sysfsdev=/sys/devices/vfio_ap/matrix/$uuid3 ...
- 
--When the guest is shut down, the mediated matrix devices may be removed.
-+When the guest is shut down, the vfio_ap mediated devices may be removed.
- 
--Using our example again, to remove the mediated matrix device $uuid1::
-+Using our example again, to remove the vfio_ap mediated device $uuid1::
- 
-    /sys/devices/vfio_ap/matrix/
-       --- [mdev_supported_types]
-@@ -844,23 +923,129 @@ Using our example again, to remove the mediated matrix device $uuid1::
- This will remove all of the mdev matrix device's sysfs structures including
- the mdev device itself. To recreate and reconfigure the mdev matrix device,
- all of the steps starting with step 3 will have to be performed again. Note
--that the remove will fail if a guest using the mdev is still running.
-+that the remove will fail if a guest using the vfio_ap mdev is still running.
- 
--It is not necessary to remove an mdev matrix device, but one may want to
-+It is not necessary to remove a vfio_ap mdev, but one may want to
- remove it if no guest will use it during the remaining lifetime of the linux
--host. If the mdev matrix device is removed, one may want to also reconfigure
-+host. If the vfio_ap mdev is removed, one may want to also reconfigure
- the pool of adapters and queues reserved for use by the default drivers.
- 
-+Hot plug support:
-+================
-+An adapter, domain or control domain may be hot plugged into a running KVM
-+guest by assigning it to the vfio_ap mediated device being used by the guest if
-+the following conditions are met:
-+
-+* The adapter, domain or control domain must also be assigned to the host's
-+  AP configuration.
-+
-+* To hot plug an adapter, each APQN derived from the Cartesian product
-+  comprised APID of the adapter being assigned and the APQIs of the domains
-+  assigned must reference a queue device bound to the vfio_ap device driver.
-+
-+* To hot plug a domain, each APQN derived from the Cartesian product
-+  comprised APQI of the domain being assigned and the APIDs of the adapters
-+  assigned must reference a queue device bound to the vfio_ap device driver.
-+
-+Over-provisioning of AP queues for a KVM guest:
-+==============================================
-+Over-provisioning is defined herein as the assignment of adapters or domains to
-+a vfio_ap mediated device that do not reference AP devices in the host's AP
-+configuration. The idea here is that when the adapter or domain becomes
-+available, it will be automatically hot-plugged into the KVM guest using
-+the vfio_ap mediated device to which it is assigned as long as each new APQN
-+resulting from plugging it in references a queue device bound to the vfio_ap
-+device driver.
-+
- Limitations
- ===========
--* The KVM/kernel interfaces do not provide a way to prevent restoring an APQN
--  to the default drivers pool of a queue that is still assigned to a mediated
--  device in use by a guest. It is incumbent upon the administrator to
--  ensure there is no mediated device in use by a guest to which the APQN is
--  assigned lest the host be given access to the private data of the AP queue
--  device such as a private key configured specifically for the guest.
-+Live guest migration is not supported for guests using AP devices without
-+intervention by a system administrator. Before a KVM guest can be migrated,
-+the vfio_ap mediated device must be removed. Unfortunately, it can not be
-+removed manually (i.e., echo 1 > /sys/devices/vfio_ap/matrix/$UUID/remove) while
-+the mdev is in use by a KVM guest. If the guest is being emulated by QEMU,
-+its mdev can be hot unplugged from the guest in one of two ways:
-+
-+1. If the KVM guest was started with libvirt, you can hot unplug the mdev via
-+   the following commands:
-+
-+      virsh detach-device <guestname> <path-to-device-xml>
-+
-+      For example, to hot unplug mdev 62177883-f1bb-47f0-914d-32a22e3a8804 from
-+      the guest named 'my-guest':
-+
-+         virsh detach-device my-guest ~/config/my-guest-hostdev.xml
-+
-+            The contents of my-guest-hostdev.xml:
-+
-+            <hostdev mode='subsystem' type='mdev' managed='no' model='vfio-ap'>
-+              <source>
-+                <address uuid='62177883-f1bb-47f0-914d-32a22e3a8804'/>
-+              </source>
-+            </hostdev>
-+
-+
-+      virsh qemu-monitor-command <guest-name> --hmp "device-del <device-id>"
-+
-+      For example, to hot unplug the vfio_ap mediated device identified on the
-+      qemu command line with 'id=hostdev0' from the guest named 'my-guest':
-+
-+         virsh qemu-monitor-command my-guest --hmp "device_del hostdev0"
-+
-+2. A vfio_ap mediated device can be hot unplugged by attaching the qemu monitor
-+   to the guest and using the following qemu monitor command:
-+
-+      (QEMU) device-del id=<device-id>
-+
-+      For example, to hot unplug the vfio_ap mediated device that was specified
-+      on the qemu command line with 'id=hostdev0' when the guest was started:
-+
-+         (QEMU) device-del id=hostdev0
-+
-+After live migration of the KVM guest completes, an AP configuration can be
-+restored to the KVM guest by hot plugging a vfio_ap mediated device on the target
-+system into the guest in one of two ways:
-+
-+1. If the KVM guest was started with libvirt, you can hot plug a matrix mediated
-+   device into the guest via the following virsh commands:
-+
-+   virsh attach-device <guestname> <path-to-device-xml>
-+
-+      For example, to hot plug mdev 62177883-f1bb-47f0-914d-32a22e3a8804 into
-+      the guest named 'my-guest':
-+
-+         virsh attach-device my-guest ~/config/my-guest-hostdev.xml
-+
-+            The contents of my-guest-hostdev.xml:
-+
-+            <hostdev mode='subsystem' type='mdev' managed='no' model='vfio-ap'>
-+              <source>
-+                <address uuid='62177883-f1bb-47f0-914d-32a22e3a8804'/>
-+              </source>
-+            </hostdev>
-+
-+
-+   virsh qemu-monitor-command <guest-name> --hmp \
-+   "device_add vfio-ap,sysfsdev=<path-to-mdev>,id=<device-id>"
-+
-+      For example, to hot plug the vfio_ap mediated device
-+      62177883-f1bb-47f0-914d-32a22e3a8804 into the guest named 'my-guest' with
-+      device-id hostdev0:
-+
-+      virsh qemu-monitor-command my-guest --hmp \
-+      "device_add vfio-ap,\
-+      sysfsdev=/sys/devices/vfio_ap/matrix/62177883-f1bb-47f0-914d-32a22e3a8804,\
-+      id=hostdev0"
-+
-+2. A vfio_ap mediated device can be hot plugged by attaching the qemu monitor
-+   to the guest and using the following qemu monitor command:
-+
-+      (qemu) device_add "vfio-ap,sysfsdev=<path-to-mdev>,id=<device-id>"
- 
--* Dynamically modifying the AP matrix for a running guest (which would amount to
--  hot(un)plug of AP devices for the guest) is currently not supported
-+      For example, to plug the vfio_ap mediated device
-+      62177883-f1bb-47f0-914d-32a22e3a8804 into the guest with the device-id
-+      hostdev0:
- 
--* Live guest migration is not supported for guests using AP devices.
-+         (QEMU) device-add "vfio-ap,\
-+         sysfsdev=/sys/devices/vfio_ap/matrix/62177883-f1bb-47f0-914d-32a22e3a8804,\
-+         id=hostdev0"
+ 	ret = zynqmp_pm_clock_enable(clk_id);
+ 	if (ret)
+ 		pr_warn_once("%s() clock enable failed for %s, ret = %d\n",
 -- 
-2.21.3
+2.25.1
 
