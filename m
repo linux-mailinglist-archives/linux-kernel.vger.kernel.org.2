@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08463355322
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168F8355326
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343696AbhDFMHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:07:01 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:41686 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232861AbhDFMG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:06:59 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lTkTj-0002Tk-UG; Tue, 06 Apr 2021 14:06:43 +0200
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
- <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
- <87r1jnohq6.fsf@codeaurora.org>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-Message-ID: <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
-Date:   Tue, 6 Apr 2021 14:06:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S1343710AbhDFMIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:08:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15612 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241628AbhDFMIm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:08:42 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF5pj1v00z1BFTX;
+        Tue,  6 Apr 2021 20:06:21 +0800 (CST)
+Received: from mdc.localdomain (10.175.104.57) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 20:08:24 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <huangguobin4@huawei.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@poochiereds.net>
+CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] NFSD: Use DEFINE_SPINLOCK() for spinlock
+Date:   Tue, 6 Apr 2021 20:08:18 +0800
+Message-ID: <1617710898-49064-1-git-send-email-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <87r1jnohq6.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.04.2021 12:00, Kalle Valo wrote:
-> "Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
-> 
->> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
->>> Hi,
->>>
->>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
->>> since the driver does not update its beacon to account for TIM changes,
->>> so a station that is sleeping will never learn that it has packets
->>> buffered at the AP.
->>>
->>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
->>> callback, nor does it explicitly update beacon data periodically, so it
->>> has no way to learn that it had changed.
->>>
->>> This results in the AP mode being virtually unusable with STAs that do
->>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
->>> etc.).
->>>
->>> I think the easiest fix here would be to implement set_tim() for example
->>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
->>> the beacon data on the device.
->>
->> Are there any plans to fix this?
->> The driver is listed as maintained by Ping-Ke.
-> 
-> Yeah, power save is hard and I'm not surprised that there are drivers
-> with broken power save mode support. If there's no fix available we
-> should stop supporting AP mode in the driver.
-> 
+From: Guobin Huang <huangguobin4@huawei.com>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/api
-clearly documents that "For AP mode, it must (...) react to the set_tim()
-callback or fetch each beacon from mac80211".
+spinlock can be initialized automatically with DEFINE_SPINLOCK()
+rather than explicitly calling spin_lock_init().
 
-The driver isn't doing either so no wonder the beacon it is sending
-isn't getting updated.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
+---
+ fs/nfsd/nfssvc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-As I have said above, it seems to me that all that needs to be done here
-is to queue a work in a set_tim() callback, then call
-send_beacon_frame() from rtlwifi/core.c from this work.
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index b2eef4112bc2..82ba034fa579 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -84,7 +84,7 @@ DEFINE_MUTEX(nfsd_mutex);
+  * version 4.1 DRC caches.
+  * nfsd_drc_pages_used tracks the current version 4.1 DRC memory usage.
+  */
+-spinlock_t	nfsd_drc_lock;
++DEFINE_SPINLOCK(nfsd_drc_lock);
+ unsigned long	nfsd_drc_max_mem;
+ unsigned long	nfsd_drc_mem_used;
+ 
+@@ -563,7 +563,6 @@ static void set_max_drc(void)
+ 	nfsd_drc_max_mem = (nr_free_buffer_pages()
+ 					>> NFSD_DRC_SIZE_SHIFT) * PAGE_SIZE;
+ 	nfsd_drc_mem_used = 0;
+-	spin_lock_init(&nfsd_drc_lock);
+ 	dprintk("%s nfsd_drc_max_mem %lu \n", __func__, nfsd_drc_max_mem);
+ }
+ 
 
-But I don't know the exact device semantics, maybe it needs some other
-notification that the beacon has changed, too, or even tries to
-manage the TIM bitmap by itself.
-
-It would be a shame to lose the AP mode for such minor thing, though.
-
-I would play with this myself, but unfortunately I don't have time
-to work on this right now.
-
-That's where my question to Realtek comes: are there plans to actually
-fix this?
-
-Maciej
