@@ -2,82 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC30F3555AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AF6355598
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344735AbhDFNt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:49:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232452AbhDFNty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:49:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABADD61241;
-        Tue,  6 Apr 2021 13:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617716986;
-        bh=givtkE6w970XJqu87v0fdB35fYmge8p/pZlS2XlOWOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ifTuBDBoh0Jwrue0jexOqECLiomd89qyNNgwZJRXFFUlGV6Sp6sRouovNUfPw/NS2
-         iaE9x7d7uivsvUF6dcEf0R/SIQ43DK/odMMI0Tq9i+OqRREcBIKi8w464+kRcnSMdk
-         Rho+oltZ+ED54HrzL514jSzYanR170Xq0w/BtC5k9oH8EMXcFBzJSXHeHA+hW3aBxn
-         qBM9H5oIdWbmprLJRMiDbx8uR5jMZqFVks4YVrFVyC7SgVvF1YV23gA6RF1lD1d+o8
-         7qGJx1yDJ0ghe4IOgm17qNc7NwvmObgpecDipY37uzbYLUyj9KFZmnNPZRr4TFGz1P
-         KhRvYMqHq9FrA==
-Date:   Tue, 6 Apr 2021 09:49:45 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 5.10 096/126] KVM: x86/mmu: Use atomic ops to set SPTEs
- in TDP MMU map
-Message-ID: <YGxm+WISdIqfwqXD@sashalap>
-References: <20210405085031.040238881@linuxfoundation.org>
- <20210405085034.229578703@linuxfoundation.org>
- <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com>
+        id S244157AbhDFNqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:46:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15140 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233242AbhDFNqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:46:15 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF7yd2RS8zpVMg;
+        Tue,  6 Apr 2021 21:43:21 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 21:46:02 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+CC:     <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>
+Subject: [PATCH -next] media: i2c: tda1997: Fix possible use-after-free in tda1997x_remove()
+Date:   Tue, 6 Apr 2021 21:49:45 +0800
+Message-ID: <20210406134945.2149969-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 08:09:26AM +0200, Paolo Bonzini wrote:
->On 05/04/21 10:54, Greg Kroah-Hartman wrote:
->>From: Ben Gardon <bgardon@google.com>
->>
->>[ Upstream commit 9a77daacc87dee9fd63e31243f21894132ed8407 ]
->>
->>To prepare for handling page faults in parallel, change the TDP MMU
->>page fault handler to use atomic operations to set SPTEs so that changes
->>are not lost if multiple threads attempt to modify the same SPTE.
->>
->>Reviewed-by: Peter Feiner <pfeiner@google.com>
->>Signed-off-by: Ben Gardon <bgardon@google.com>
->>
->Whoa no, you have included basically a whole new feature, except for 
->the final patch that actually enables the feature.  The whole new MMU 
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-Right, we would usually grab dependencies rather than modifying the
-patch. It means we diverge less with upstream, and custom backports tend
-to be buggier than just grabbing dependencies.
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
->is still not meant to be used in production and development is still 
->happening as of 5.13.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/media/i2c/tda1997x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Unrelated to this disucssion, but how are folks supposed to know which
-feature can and which feature can't be used in production? If it's a
-released kernel, in theory anyone can pick up 5.12 and use it in
-production.
-
->Were all these patches (82-97) included just to enable patch 98 ("KVM: 
->x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")?  
->Same for 105-120 in 5.11.
-
-Yup. Is there anything wrong with those patches?
-
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index a09bf0a39d05..89bb7e6dc7a4 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2804,7 +2804,7 @@ static int tda1997x_remove(struct i2c_client *client)
+ 	media_entity_cleanup(&sd->entity);
+ 	v4l2_ctrl_handler_free(&state->hdl);
+ 	regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
+-	cancel_delayed_work(&state->delayed_work_enable_hpd);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hpd);
+ 	mutex_destroy(&state->page_lock);
+ 	mutex_destroy(&state->lock);
+ 
 -- 
-Thanks,
-Sasha
+2.25.1
+
