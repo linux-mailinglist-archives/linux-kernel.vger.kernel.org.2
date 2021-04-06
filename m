@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C04355C2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F081E355C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241273AbhDFT2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S241301AbhDFTe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbhDFT2l (ORCPT
+        with ESMTP id S233527AbhDFTez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:28:41 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD4DC06174A;
-        Tue,  6 Apr 2021 12:28:32 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id c18so7540010iln.7;
-        Tue, 06 Apr 2021 12:28:32 -0700 (PDT)
+        Tue, 6 Apr 2021 15:34:55 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACD4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 12:34:47 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i18so11969891wrm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 12:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V+9IBnnDWwF5bA/uOPxMCh5R3le9aBNY4U0lwaK9R/w=;
-        b=adwamlucztIc0MSna8H9oes/oLiAN/OySUHgtAuhHRvhxzetLmHo+Z+cpsbZhOWVAF
-         +2Ez3O5x2unjOXI13majOCOiPDDxnoUhDE23FnNiWrswHIP6eguB05bX4vYKY2VceHHE
-         Zm+RoO9NaFqEi6o/+4E/3kld2u8Pt6ik8o1DE2+T0XTYXBISrn+I9AXK0I+aT20FxVGZ
-         BjOvdipncmX3hHTQj0OzNap6+BHa9Hqh4IBMyGT6wcmPismEK3DWjZ7PK0Z4BjSpQRBF
-         U+NyMR1h8a3+mnsD97AF+Gj/xqpUJVAHS3YNAngIDvGnXltCtLloDRbB3kHUNgFMSUWi
-         3bkQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8S3Uh23H+gQhsf7YASK94vXEdzHi8M0NhOcwtIIfD7A=;
+        b=K1jhGkT0rQRrxYrdUccc9LKWjwtNtE9JBvnSETUmCSElTHz3NOMDx9VPkZFkQy2V3A
+         CUvcwCNOaHGF6nFo9RaP8gIvxfiu+K9v2Ag/EaR3c9+GdJV21TX0oREV0piWy6RLVBvn
+         evaQ5igK6kZvhfi0Dn7DSZYTP/pF0x6twRofcg0OqKpQ0r/uaFe63z/ZWeVMkr/oviF2
+         TYPkZjPba4L358UAql88B6lSPqyq2FPTNyhwHN2jAKLQmiu8HN1Tyrkk18SQHEUWhz/J
+         ugkzJOXqhPH23SbPD0Iezga5dB6M2Fk48fMh4ThAQq4tMx7xH0oW0oSZQYIa8YDlNway
+         aKvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V+9IBnnDWwF5bA/uOPxMCh5R3le9aBNY4U0lwaK9R/w=;
-        b=eEd8oeWLPGUENSvKfkYfX72MiCL2XYdO/LQw7bdR0xhQAFDju6mjPXpJ/OIBWzqAAy
-         Cbz55FXWN2fzSYFTXKWoMSrfEnCfOpT+Vo8Z0b2paTbtRR4qbSOhGhNO1UJ6P8TNw6S/
-         MyHy86ygl6fHgC3XB4JLoGb82nPyo9UnvUbP1JmXr9UyjtHU8EoHsPAnNHU0T5xw8gU3
-         lqrAWoFWhRolVchyjSFASc9gQYFYE93kUJpd0cop1mQODPzmaiXiRXMGV0g0np804iZF
-         2O2IrwhOnsdlGoBOiNxTMG/4wgXYo9WzP8Sdh5UkCTMSCFG7t/AXtUKTZ3pjCLNlYXD9
-         KEfw==
-X-Gm-Message-State: AOAM530h0vC3xu/UxBAZqXPL84ckqo6cMK4tyEtHYPjAH1UtgqmR955H
-        41IbMR8el9+aTocZuVj1IdN+sMuWCNYs0b31Y2Q=
-X-Google-Smtp-Source: ABdhPJyqK17Dv9uOZS3bqIAfHhKcyL5NNUmYoe+6UcKRBsMoIbFQeSZA1n50HL6M3lTekmKnkesydMWPsOqyv/i/Qmk=
-X-Received: by 2002:a05:6e02:ec9:: with SMTP id i9mr5379002ilk.0.1617737312092;
- Tue, 06 Apr 2021 12:28:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8S3Uh23H+gQhsf7YASK94vXEdzHi8M0NhOcwtIIfD7A=;
+        b=HEsE806+AIoW2/awj669/zgnwYVeYoClAfzl9S8SG2o9mfyRLRiBM6mXqYWSly3/rG
+         4YSgMHbqwgtzc+dcU0PqCgIHyQJl1NiLKxFm948ZvV+fU9eX5qMwmDXr6yZe2YjKcu6W
+         zzdevf4BK35TzT3lwECX2KkNhHYv0snhhFTS+l6Uli1B7n6X6/o30/xDXnzH5U41Taic
+         Hnlc+sXtBCvVO6MRHXrvBVkN6KNbIrjTZE6WecdwzTcupe4akthGiK3i4GpmsoECEYTN
+         RoCNfC4oCf0OGHi64ilsIib0KeaFKhom+o4B4oLZckP28yf5LXO//LYsys7EnHKM8m2b
+         Ob7Q==
+X-Gm-Message-State: AOAM533MqGSGEPl5T8lALnXg+xYajBBuCAe5ICwVFhBAu74O0FL3Pr+k
+        HVp6S2HkagQ+qTk2uUWGT9I=
+X-Google-Smtp-Source: ABdhPJz/zZHte4xMj1qmO9PuPTWmA+ei+0MmuKjvvtqrQohhqJyFRgyEP6VSgVJ9ZwybUo9jhUllaA==
+X-Received: by 2002:adf:f645:: with SMTP id x5mr14835224wrp.314.1617737685884;
+        Tue, 06 Apr 2021 12:34:45 -0700 (PDT)
+Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:ef5c:3f2a:a646:d6ec])
+        by smtp.gmail.com with ESMTPSA id r11sm18793668wrp.70.2021.04.06.12.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 12:34:45 -0700 (PDT)
+From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+To:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org
+Cc:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Subject: [RESEND PATCH] staging: emxx_udc: Ending line with argument
+Date:   Tue,  6 Apr 2021 20:34:09 +0100
+Message-Id: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
- <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com>
- <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com> <20210406174050.GA1963300@robh.at.kernel.org>
-In-Reply-To: <20210406174050.GA1963300@robh.at.kernel.org>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Tue, 6 Apr 2021 12:28:21 -0700
-Message-ID: <CALCv0x2D6Y78XK7aeyyivcXqXZreHZd3kJc49tvtHx9eX+YH2w@mail.gmail.com>
-Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
-To:     Rob Herring <robh@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 10:40 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, Apr 05, 2021 at 01:18:56PM -0700, Saravana Kannan wrote:
-> > On Mon, Apr 5, 2021 at 1:10 PM Ilya Lipnitskiy
-> > <ilya.lipnitskiy@gmail.com> wrote:
-> > >
-> > > Hi Saravana,
-> > >
-> > > On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
-> > > > <ilya.lipnitskiy@gmail.com> wrote:
-> > > > >
-> > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > > > not configured by #gpio-cells and can't be parsed along with other
-> > > > > "*-gpios" properties.
-> > > > >
-> > > > > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
-> > > > > nr-gpio is not really special, so we only need to fix nr-gpios suffix
-> > > > > here.
-> > > >
-> > > > The only example of this that I see is "snps,nr-gpios".
-> > > arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
-> > > parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
-> > > drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
-> > > "nr-gpios" without any vendor prefix.
-> >
-> > Ah ok. I just grepped the DT files. I'm not sure what Rob's position
-> > is on supporting DT files not in upstream. Thanks for the
-> > clarification.
->
-> If it's something we had documented, then we have to support it
-Do I read this correctly as a sort-of Ack of my proposed [PATCH v2] in
-this thread, since it aligns the code with the published DT schema?
+Cleans up check of "Lines should not end with a '('"
+with argument present in next line in file emxx_udc.c
 
-Ilya
+Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+---
+ drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+index 741147a4f0fe..20f53cf6e20f 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.c
++++ b/drivers/staging/emxx_udc/emxx_udc.c
+@@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
+ 		i_word_length = length / sizeof(u32);
+ 		if (i_word_length > 0) {
+ 			for (i = 0; i < i_word_length; i++) {
+-				_nbu2ss_writel(
+-					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+-					p_buf_32->dw);
++				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
++					       p_buf_32->dw);
+ 
+ 				p_buf_32++;
+ 			}
+@@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
+ 		return;
+ 
+ 	if (ep->epnum > 0) {
+-		length = _nbu2ss_readl(
+-			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
++		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+ 
+ 		length &= EPN_LDATA;
+ 		if (length < ep->ep.maxpacket)
+@@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
+ 		for (limit_cnt = 0
+ 			; limit_cnt < IN_DATA_EMPTY_COUNT
+ 			; limit_cnt++) {
+-			regdata = _nbu2ss_readl(
+-				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
++			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+ 
+ 			if ((regdata & EPN_IN_DATA) == 0)
+ 				break;
+-- 
+2.25.1
+
