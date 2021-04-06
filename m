@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204E63554F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA3355500
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243794AbhDFNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:24:16 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:39543 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhDFNYP (ORCPT
+        id S1344431AbhDFNY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:24:28 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:43566 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344402AbhDFNYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:24:15 -0400
-Received: by mail-oo1-f54.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso3680991ooq.6;
-        Tue, 06 Apr 2021 06:24:07 -0700 (PDT)
+        Tue, 6 Apr 2021 09:24:23 -0400
+Received: by mail-ot1-f53.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so5671946otq.10;
+        Tue, 06 Apr 2021 06:24:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=c+dr09iEOiWwhlY6jark2BPva3mg8Ko55TUQeP3LOTQ=;
-        b=EuzLDUGrbzOhJkobvhvs+p/c3492kZO9W+NUVfGYx0fS87x/d6qKQmjeOYlqS8p3eC
-         dwlpKaZ1NOXUwjpkyjcjPLxUjhYMJSMKOm2vX683Av0Jec7ysaNU/1/tvRnal9OplCyi
-         M94aWs5iqcQmgFQaHx5WQwQXkga/5RS5H1uiYTspo6AU7I3PFTIUq7Qhq1N8QKLxtnfA
-         UZXQOANtz/pQ4HuA1lGw3b6s6ASvisMJQdgLy+DOQffhxzg8tDHgkfw9gjFF/pNST15Z
-         XSxDzvyHPDeP4HAGKksh/iW9lT8+apsr8hWxfEBbm/Qvk/MjjGGR5IsZd9iP6m+zj1DX
-         eo2Q==
-X-Gm-Message-State: AOAM5339gLncxRiAJcT/WE+upmeXsd9GYnxwHlV1qDJANSuZnJvafZA2
-        +MkTzO6GHCDXpC8gibSa1Q==
-X-Google-Smtp-Source: ABdhPJy1H5MC5AV5/1PLAVHXSI2VxCtDGeuzF+SPgq6I9rDImJ8MDbdc0BVD9MHBLEWkcFD5l/3FRg==
-X-Received: by 2002:a05:6820:58:: with SMTP id v24mr26459197oob.55.1617715447042;
-        Tue, 06 Apr 2021 06:24:07 -0700 (PDT)
+        bh=WMh9wsTtUk5bjoFe6rmnQ66dAMVkJoEObr181rNizCo=;
+        b=k2BBwCXCrqnKmf4rYaNDkoFS9rub1IHTFWArX9hVpNFaBjlgksrni7xZqtYEyQiCvi
+         NgVZZJAheUBqFkYy+9C+kf5gxZ7Evr7GTIHI+Xjxg0CzicDGNaEMiq4MryhVyjOs2xkF
+         9YmsKo1bpaiBaIcOevKwP2Yi+5rYc5JXMya5+T2G+P8T7zj1SMw8XJxUMsUODQgjTSTV
+         bPE3HotwX+N3wGCm9gjgSceF6D8asvkKaU9MIZvtouW7j5zLtq5yhrQHJiDH/m7rV83b
+         YoRTpSZtG6hHX9bUDpLJybhn8MtRrdwsSLt/A48YLcWI9FNIwj3A145bb9QUcKKigfRS
+         L1pA==
+X-Gm-Message-State: AOAM5330TbDBnt7a3Ijp4mvgxh8WZBJBwsIPvubqvPyeQTJQ2O7ay7J+
+        1RCQXVfmw0A2OBG9BUbq0Q==
+X-Google-Smtp-Source: ABdhPJw6oyIqrB/SR505G75yFdcsa0+9wxt1Z4y+VO2PXVEFRp/jBWqxZmcdvOjPgjDsqwojKjW6lw==
+X-Received: by 2002:a9d:5a97:: with SMTP id w23mr26569036oth.314.1617715455706;
+        Tue, 06 Apr 2021 06:24:15 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p3sm3638698oif.53.2021.04.06.06.24.05
+        by smtp.gmail.com with ESMTPSA id g2sm4623942otn.32.2021.04.06.06.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 06:24:06 -0700 (PDT)
-Received: (nullmailer pid 1674493 invoked by uid 1000);
+        Tue, 06 Apr 2021 06:24:14 -0700 (PDT)
+Received: (nullmailer pid 1674500 invoked by uid 1000);
         Tue, 06 Apr 2021 13:24:05 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>
-In-Reply-To: <1617346747-8611-2-git-send-email-manafm@codeaurora.org>
-References: <1617346747-8611-1-git-send-email-manafm@codeaurora.org> <1617346747-8611-2-git-send-email-manafm@codeaurora.org>
-Subject: Re: [RFC PATCH 1/2] dt-bindings: soc: qcom: Add SDPM clock monitor driver documentation in yaml
+        Peter Chen <peter.chen@nxp.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Michal Simek <michal.simek@xilinx.com>
+In-Reply-To: <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+References: <20210405201817.3977893-1-mka@chromium.org> <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+Subject: Re: [PATCH v6 1/5] dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
 Date:   Tue, 06 Apr 2021 08:24:05 -0500
-Message-Id: <1617715445.141060.1674492.nullmailer@robh.at.kernel.org>
+Message-Id: <1617715445.179283.1674499.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Apr 2021 12:29:06 +0530, Manaf Meethalavalappu Pallikunhi wrote:
-> Add yaml documentation for SDPM clock monitor driver which will
-> register for clock rate change notification and writes the clock rate
-> into SDPM CSR register.
+On Mon, 05 Apr 2021 13:18:13 -0700, Matthias Kaehlcke wrote:
+> The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
 > 
-> Signed-off-by: Ram Chandrasekar <rkumbako@codeaurora.org>
-> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+> This initial version of the binding only describes USB related
+> aspects of the RTS5411, it does not cover the option of
+> connecting the controller as an i2c slave.
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
->  .../devicetree/bindings/soc/qcom/qcom-sdpm.yaml    | 68 ++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml
+> 
+> Changes in v7:
+> - added type ref for 'companion-hub' property
+> 
+> Changes in v6:
+> - Realtek binding instead of generic onboard_usb_hub
+> - added 'companion-hub' property
+> - added reference to 'usb-device.yaml'
+> - 'fixed' indentation of compatible entries to keep yamllint happy
+> - added 'additionalProperties' entry
+> - updated commit message
+> 
+> Changes in v5:
+> - updated 'title'
+> - only use standard USB compatible strings
+> - deleted 'usb_hub' node
+> - renamed 'usb_controller' node to 'usb-controller'
+> - removed labels from USB nodes
+> - added 'vdd-supply' to USB nodes
+> 
+> Changes in v4:
+> - none
+> 
+> Changes in v3:
+> - updated commit message
+> - removed recursive reference to $self
+> - adjusted 'compatible' definition to support multiple entries
+> - changed USB controller phandle to be a node
+> 
+> Changes in v2:
+> - removed 'wakeup-source' and 'power-off-in-suspend' properties
+> - consistently use spaces for indentation in example
+> 
+>  .../bindings/usb/realtek,rts5411.yaml         | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml:31:11: [error] empty value in block mapping (empty-values)
-./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml:37:11: [error] empty value in block mapping (empty-values)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'anyOf' conditional failed, one must be fixed:
-	None is not of type 'object', 'boolean'
-	None is not of type 'array'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'anyOf' conditional failed, one must be fixed:
-	None is not of type 'object', 'boolean'
-	None is not of type 'array'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'oneOf' conditional failed, one must be fixed:
-	None is not of type 'object'
-	None is not of type 'array'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'oneOf' conditional failed, one must be fixed:
-	None is not of type 'object'
-	None is not of type 'array'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'oneOf' conditional failed, one must be fixed:
-	None is not of type 'object'
-	None is not of type 'array'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks: 'oneOf' conditional failed, one must be fixed:
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks: 'anyOf' conditional failed, one must be fixed:
-		'items' is not one of ['maxItems', 'description', 'deprecated']
-		'minItems' is not one of ['maxItems', 'description', 'deprecated']
-		'items' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-		'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-		'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-		/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'oneOf' conditional failed, one must be fixed:
-			None is not of type 'object'
-			None is not of type 'array'
-		1 was expected
-	'items' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-	'minItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-	'maxItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-	'type' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: ignoring, error in schema: properties: clocks: items
-warning: no schema found in file: ./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml
-Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.example.dts:19:18: fatal error: dt-bindings/clock/qcom,camcc-sc7280.h: No such file or directory
-   19 |         #include <dt-bindings/clock/qcom,camcc-sc7280.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1414: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@1: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@2: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
 
-See https://patchwork.ozlabs.org/patch/1461582
+See https://patchwork.ozlabs.org/patch/1462533
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
