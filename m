@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082733550AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04433550B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245023AbhDFKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S245050AbhDFKTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245052AbhDFKTI (ORCPT
+        with ESMTP id S242713AbhDFKTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:19:08 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCEBC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:19:00 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id v11so13576715wro.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IN4iWDpwIoW/geXUgD19n4BmDi3+Huz5BgzH8rQnEJY=;
-        b=qfpDyvBWpReaQR8CKhH2jY4SIL3IpltYqpE4ozjvKakYmTCJ50DLv87jcMoRnaRRFB
-         hFkVzJvYYTdTiZQPErGHFZc4KXxc3RJvJCxHkTYsGpDII/ykAqT+A7ejrRmabkumudB3
-         FTG7d+i/Ek2e0FOvkrWpEmUSPO/69kJJCQdGRKrXC/dZ7qD689u9+kRmJCkdbWftxUzI
-         NnTzIX0HIUrkBE0+CRHaxcjA7amNsEJ4DYjG829dKDqY4qEFpyPK57i20R9wNLC6PThu
-         Rx76T4V4A1ohUv/fAN+VMWpkw4V5aYQdFC5aiz+hiPDl0buTtYMR9gluV7u1Y6NehuMq
-         s2TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IN4iWDpwIoW/geXUgD19n4BmDi3+Huz5BgzH8rQnEJY=;
-        b=GGL2KPobvMIVzdtAozRxPiYat6B6u86amcB1a1cqIfDs1u+Q9Y1AUqXXIm8Vn3nKic
-         pLnZsf69ruvi1JRSd+PtE7Wbpf8Bcdz16wWWWnS5vPxctTcJXFU7wWkNG5w5A0MFJejv
-         6/Q8NA7jRWDmzTIElmSDjpiQhwoP7zeW6v5cK9v6z4bAAyLbYgd3WU94Tww3AVKZP24l
-         XuOrvq4i3yLk7qKTTUpiH6xOGuVKZSl7oqZPa7MZafS0OucnP0EaZvCG5cYHp66FDZzG
-         blV3FeuU87vvti84tlXrR4DZ/1dnH2so6RP05USs/Jn3+7NLbJRILqQpQIjhZ1Brk/No
-         CdvA==
-X-Gm-Message-State: AOAM532freHU+ea+PBUQzcqTAWEPon/eTTxAiEC2eDUi2noCdd9ySobb
-        8hSLmc+iRzeztT4O05JdynqrgQ==
-X-Google-Smtp-Source: ABdhPJzqJZrY42Rylpo/GVf1q3uBhqwGtJVMnDDrQ90UI6eEGZAOtjPaBMaUrAPJ706RQr37Si8SQA==
-X-Received: by 2002:adf:ec88:: with SMTP id z8mr16009553wrn.315.1617704339631;
-        Tue, 06 Apr 2021 03:18:59 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id k3sm11523998wrc.67.2021.04.06.03.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:18:58 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 11:18:55 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: tun: set tun->dev->addr_len during TUNSETLINK
- processing
-Message-ID: <YGw1jx5zO4+Wz5Md@equinox>
-References: <20210405113555.9419-1-phil@philpotter.co.uk>
- <20210405.145921.1248097047641627556.davem@davemloft.net>
+        Tue, 6 Apr 2021 06:19:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBDC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:19:43 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lTio6-0001jX-Hh; Tue, 06 Apr 2021 12:19:38 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lTio4-0005iA-DU; Tue, 06 Apr 2021 12:19:36 +0200
+Date:   Tue, 6 Apr 2021 12:19:36 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        matthias.bgg@gmail.com, linux-pwm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
+Subject: Re: [v3,PATCH 2/3] pwm: mtk_disp: convert the driver to atomic API
+Message-ID: <20210406101936.uscvtvrd6opm5pgf@pengutronix.de>
+References: <1617703062-4251-1-git-send-email-rex-bc.chen@mediatek.com>
+ <1617703062-4251-3-git-send-email-rex-bc.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qrbjywyivatj7v7m"
 Content-Disposition: inline
-In-Reply-To: <20210405.145921.1248097047641627556.davem@davemloft.net>
+In-Reply-To: <1617703062-4251-3-git-send-email-rex-bc.chen@mediatek.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 02:59:21PM -0700, David Miller wrote:
-> From: Phillip Potter <phil@philpotter.co.uk>
-> Date: Mon,  5 Apr 2021 12:35:55 +0100
-> 
-> > When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
-> > to match the appropriate type, using new tun_get_addr_len utility function
-> > which returns appropriate address length for given type. Fixes a
-> > KMSAN-found uninit-value bug reported by syzbot at:
-> > https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
-> > 
-> > Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > ---
-> >  drivers/net/tun.c | 48 +++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> > 
-> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > index 978ac0981d16..56c26339ee3b 100644
-> > --- a/drivers/net/tun.c
-> > +++ b/drivers/net/tun.c
-> > @@ -69,6 +69,14 @@
-> >  #include <linux/bpf.h>
-> >  #include <linux/bpf_trace.h>
-> >  #include <linux/mutex.h>
-> > +#include <linux/ieee802154.h>
-> > +#include <linux/if_ltalk.h>
-> > +#include <uapi/linux/if_fddi.h>
-> > +#include <uapi/linux/if_hippi.h>
-> > +#include <uapi/linux/if_fc.h>
-> > +#include <net/ax25.h>
-> > +#include <net/rose.h>
-> > +#include <net/6lowpan.h>
-> >  
-> >  #include <linux/uaccess.h>
-> >  #include <linux/proc_fs.h>
-> > @@ -2925,6 +2933,45 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> >  	return __tun_set_ebpf(tun, prog_p, prog);
-> >  }
-> >  
-> > +/* Return correct value for tun->dev->addr_len based on tun->dev->type. */
-> > +static inline unsigned char tun_get_addr_len(unsigned short type)
-> > +{
-> 
-> Please do not use inline in foo.c files, let the compiler decide.
-> 
-> Thanks.
 
-Dear David,
+--qrbjywyivatj7v7m
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the feedback, I will resend.
+Hello,
 
-Regards,
-Phil
+On Tue, Apr 06, 2021 at 05:57:41PM +0800, Rex-BC Chen wrote:
+> @@ -84,33 +86,47 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip,=
+ struct pwm_device *pwm,
+>  	 * period =3D (PWM_CLK_RATE * period_ns) / (10^9 * (clk_div + 1)) - 1
+>  	 * high_width =3D (PWM_CLK_RATE * duty_ns) / (10^9 * (clk_div + 1))
+>  	 */
+> +	if (!mdp->enabled) {
+> +		err =3D clk_prepare_enable(mdp->clk_main);
+> +		if (err < 0) {
+> +			dev_err(chip->dev, "Can't enable mdp->clk_main: %d\n",
+> +				err);
+
+Please use %pe, as this yields better readable error messages.
+
+Also it might be sensible to first use the fact that (without patch 1
+=66rom this series) the clocks are always on and then rework the clk usage
+in a separate patch.
+
+> +			return err;
+> +		}
+> +		err =3D clk_prepare_enable(mdp->clk_mm);
+> +		if (err < 0) {
+> +			dev_err(chip->dev, "Can't enable mdp->clk_mm: %d\n",
+> +				err);
+> +			clk_disable_unprepare(mdp->clk_main);
+> +			return err;
+> +		}
+> +	}
+>  	rate =3D clk_get_rate(mdp->clk_main);
+> -	clk_div =3D div_u64(rate * period_ns, NSEC_PER_SEC) >>
+> +	clk_div =3D div_u64(rate * state->period, NSEC_PER_SEC) >>
+>  			  PWM_PERIOD_BIT_WIDTH;
+
+rate * state->period might overflow, it would be great if this could be
+catched. (But I don't consider this a stopper for this series.)
+
+> -	if (clk_div > PWM_CLKDIV_MAX)
+> +	if (clk_div > PWM_CLKDIV_MAX) {
+> +		dev_err(chip->dev, "clock rate is too high: rate =3D %d Hz\n",
+> +			rate);
+
+rate is an u64, %d isn't the right format for it. Doesn't this result in
+a compiler warning?
+
+> +		clk_disable_unprepare(mdp->clk_mm);
+> +		clk_disable_unprepare(mdp->clk_main);
+>  		return -EINVAL;
+> -
+> +	}
+>  	div =3D NSEC_PER_SEC * (clk_div + 1);
+> -	period =3D div64_u64(rate * period_ns, div);
+> +	period =3D div64_u64(rate * state->period, div);
+>  	if (period > 0)
+>  		period--;
+> =20
+> -	high_width =3D div64_u64(rate * duty_ns, div);
+> +	high_width =3D div64_u64(rate * state->duty_cycle, div);
+>  	value =3D period | (high_width << PWM_HIGH_WIDTH_SHIFT);
+> -
+> -	err =3D clk_enable(mdp->clk_main);
+> -	if (err < 0)
+> -		return err;
+> -
+> -	err =3D clk_enable(mdp->clk_mm);
+> -	if (err < 0) {
+> -		clk_disable(mdp->clk_main);
+> -		return err;
+> -	}
+> +	polarity =3D 0;
+> +	if (state->polarity =3D=3D PWM_POLARITY_INVERSED)
+> +		polarity =3D PWM_POLARITY;
+
+I'm unsure if support for polarity should be added en passant in this
+patch. Maybe it would be clearer to add is separately.
+
+>  	mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
+>  				 PWM_CLKDIV_MASK,
+>  				 clk_div << PWM_CLKDIV_SHIFT);
+> +	mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
+> +				 PWM_POLARITY, polarity);
+>  	mtk_disp_pwm_update_bits(mdp, mdp->data->con1,
+>  				 PWM_PERIOD_MASK | PWM_HIGH_WIDTH_MASK,
+>  				 value);
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--qrbjywyivatj7v7m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBsNbUACgkQwfwUeK3K
+7Ak7fQf/XD3gpjbGn1v9+zAGRP2jQEV4pv4oZAXPh3XfOHQWHauvAoPO81WdA0le
+NrkVkX3fWnhpWRWTs360jrPenNfhc95Svv8ARekaI7WKBo2o6e4wEXIPnv94hk5l
+usjD5WN7JFRcF9AMSfaOZyeKHf1hJ5KNWZvUfDxfljLgarAQNVCDsmnQ+HDQXMiy
+osb93UYzmq6X5sKVKkP6kKja9qkkjQVQ1ydfBZU1LL7sZSCsCNEU9BE/lCEP/Cug
+uIRF7rzxgYCgDYQmB9g1N5MBwg75Ur9ZeZC2YU3h1L26im6avqmf+v8xpfcT9WVF
+hqrXsXRAZZodkucekqCFb1LCLMBLXw==
+=ROQI
+-----END PGP SIGNATURE-----
+
+--qrbjywyivatj7v7m--
