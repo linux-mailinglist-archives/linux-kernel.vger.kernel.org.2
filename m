@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD9F355C93
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF98355C9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhDFTy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233018AbhDFTy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:54:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2AAB613B8;
-        Tue,  6 Apr 2021 19:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617738859;
-        bh=25ULw3TRgMm3UNuExmKYaO/DK9UkholrM5ZS8OqPuj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUQOxf8NdNC4hX/NzA5uGhEeRHK9VNh9GlnhcRB1wnSehVRKjvvlggO7VO8M91GRY
-         2VusDJv+iVFZtQr2zZnapxPcAaQoBjy3C3Suos4fdCXUhxoTwo/HY83DhWxHAY/7oe
-         dQGPoFZu+Kr2C0j3m62tc/OmNq59J2PdaQkj1In/aV6Vwo9tjk7Xs/QU+fUiXe0hl/
-         7h8MVmFReeOZp9nVqOrJIi9ABkunKI3Qg0uA2pGujpGin6dJhOYmdXj33NoXc+UppB
-         ZGmUzlTfRlVYe1qRDUuQ/D6i8wrgjtFii4LFVHFtxYRD+8u38jKJP7B+C2qYuCf9vy
-         blESEQJX6EWFg==
-Date:   Tue, 6 Apr 2021 21:54:14 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
-        digetx@gmail.com, treding@nvidia.com,
-        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v6 2/5] i2c: core: add api to provide frequency mode
- strings
-Message-ID: <20210406195414.GG3122@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
-        digetx@gmail.com, treding@nvidia.com, jarkko.nikula@linux.intel.com,
-        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
-        john.garry@huawei.com, mika.westerberg@linux.intel.com,
-        prime.zeng@huawei.com, linuxarm@huawei.com
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
+        id S245141AbhDFT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233947AbhDFT4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:56:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDA7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 12:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SmuAICY7BfV2FQ+TWZqN5rr6C144dVwfzZ62LXjDgDI=; b=EhawNeEXpMRPlr1ZhJ3QQHx5Zf
+        +LoaIUlKOpitU0CxrCHiXJT68Dr645j4vuu6J0PZIqVtqW+RSRoyPzocyN6tBo86mm169kTIUAJtW
+        mOvce3s1KJ2x+9bIgfqJvCInxD1dYguBlOwvsXwYLNrYsw2sQwdODQCAeXh/5Uk5YWT2hnYX+XISl
+        jS62mWkspKvymAoUOuSRrTnQl85OXp9zr4dygdB0YHq7xCDExbcMdAGsxkascDc7hUSWDVFiYVg+F
+        o8KUXoNpkgVQcglfei6ujXuv5GOLqI99o4p2Gy25H/aLjM9VvyDckYLORCgvK7qj29C1PuVGB2CJE
+        Nm3geIqQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTroD-00DLMI-Tr; Tue, 06 Apr 2021 19:56:27 +0000
+Date:   Tue, 6 Apr 2021 20:56:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org
+Subject: Re: [Outreachy kernel] [RESEND PATCH] staging: emxx_udc: Ending line
+ with argument
+Message-ID: <20210406195621.GU2531743@casper.infradead.org>
+References: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Qf1oXS95uex85X0R"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
+In-Reply-To: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 06, 2021 at 08:34:09PM +0100, Beatriz Martins de Carvalho wrote:
+> Cleans up check of "Lines should not end with a '('"
+> with argument present in next line in file emxx_udc.c
 
---Qf1oXS95uex85X0R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I appreciate that you've removed the checkpatch warning, but this is
+still harder to read than the original used to be.
 
+> -				_nbu2ss_writel(
+> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+> -					p_buf_32->dw);
+> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+> +					       p_buf_32->dw);
 
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 10bd0b0..7268180 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -47,6 +47,26 @@ typedef int (*i2c_slave_cb_t)(struct i2c_client *clien=
-t,
->  #define I2C_MAX_HIGH_SPEED_MODE_FREQ	3400000
->  #define I2C_MAX_ULTRA_FAST_MODE_FREQ	5000000
-> =20
-> +static inline const char *i2c_freq_mode_string(u32 bus_freq_hz)
-> +{
-> +	switch (bus_freq_hz) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
-> +		return "Standard Mode (100 kHz)";
-> +	case I2C_MAX_FAST_MODE_FREQ:
-> +		return "Fast Mode (400 kHz)";
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> +		return "Fast Mode Plus (1.0 MHz)";
-> +	case I2C_MAX_TURBO_MODE_FREQ:
-> +		return "Turbo Mode (1.4 MHz)";
-> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> +		return "High Speed Mode (3.4 MHz)";
-> +	case I2C_MAX_ULTRA_FAST_MODE_FREQ:
-> +		return "Ultra Fast Mode (5.0 MHz)";
-> +	default:
-> +		return "Unknown Mode";
-> +	}
-> +}
+> -		length = _nbu2ss_readl(
+> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
 
-Any reason ehy this is an inline function? My gut feeling says it would
-be better added to the core?
+> -			regdata = _nbu2ss_readl(
+> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
 
+The real problem with this driver is that their abstraction layer is
+wrong.  For example:
 
---Qf1oXS95uex85X0R
-Content-Type: application/pgp-signature; name="signature.asc"
+        /* Interrupt Status */
+        status = _nbu2ss_readl(&udc->p_regs->EP_REGS[num].EP_STATUS);
 
------BEGIN PGP SIGNATURE-----
+        /* Interrupt Clear */
+        _nbu2ss_writel(&udc->p_regs->EP_REGS[num].EP_STATUS, ~status);
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBsvGYACgkQFA3kzBSg
-KbYCQA/+PdT6HVc/TnzGzmFsTSdFke1JlOrp/s6hCmRd/o5jLfbqm5csefgkiKpc
-A7EmrpisZtmzUSMhPgTbfjTnb4/FReCwc9cSljFAVv962tPFtKXDgJPtfMVrIMWo
-xjeHJk/pXNvTYH518vCzCoCzDETcY3J74rddiUjug7EV34/R//UpLfSA21DphCfd
-y0rd9cPyMeXvCeTJeCnltzU9TcM2RuCHrG9BibxXOiX875c++L5kZsMX77v5LolL
-lf2h2m++TxqcTu/bs9+LoS1UkrSWYJsQ6GsV/QSM//T+Y1uqoj2JppDMnI07GoXW
-UMeK9C/nQASvvkYHrG1eTj6OzaA5ucMa1oBVh3i7LP+uRRSIY6Iy72rbdiUm2DAj
-zjVtdEW3uy9r9HgCe5gChLkb3OJLxW0elHk2ZYqpp9aYzuhYpsoOr/lHOtszdadw
-GTe8msD+XaqjNPm2LaXNbOYYMIYdfzn3B5DrjivlSyq9TdYr22cmuXvAcvpvLdmk
-QPhpwj5x+r++ipOeuk1M/AbF7srYmA24BXg4PQYcipNviO2j1na4LcktBRqra62Z
-5C5R6tHApO30CFi4J6ueGB4PVl/qG2AK3krudOCjdUFK+4olbk2/4HHMQHbpBas4
-f6pfiaNVXwKTIUpB3rVsdtVG1t9PlCRAC019f+fUSLGs9Gs2pX4=
-=jouF
------END PGP SIGNATURE-----
+If instead this were:
 
---Qf1oXS95uex85X0R--
+	status = nbu2ss_read_ep_status(udc, num);
+	nbu2ss_write_ep_status(udc, num, ~status);
+
+that would be a lot shorter and clearer.  Cleanups along these lines
+would be a lot more useful, and would fix the 80 column warning.
+
