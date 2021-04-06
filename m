@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CF03557B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96523557B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345639AbhDFP0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:26:53 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:32874 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242400AbhDFP0w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:26:52 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lTnbC-0003Pk-GU; Tue, 06 Apr 2021 11:26:38 -0400
-Message-ID: <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
-Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
- differently
-From:   Rik van Riel <riel@surriel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Date:   Tue, 06 Apr 2021 11:26:37 -0400
-In-Reply-To: <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
-References: <20210321150358.71ef52b1@imladris.surriel.com>
-         <20210322110306.GE3697@techsingularity.net>
-         <20210326151932.2c187840@imladris.surriel.com>
-         <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-h2yb9mmylf3PhyRBn23s"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1345648AbhDFP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:27:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36436 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242400AbhDFP1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:27:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617722857; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=N2XZ7tfCbdSWcpcPpZVDCTg9WG6BB/yssYJITFghUsM=; b=pxed/bL+tpvVja0QhvFh+FKMB+HjDtrb9fTrsK3c3IuCECaMdVd/HSmsLe0A+w9AusvPY3z7
+ kd8Umm2qyNSBZ8NpyJZcYqr89WoFEVsLsZhICrM1h+IVAsrb1kxp+dlkhGS4iYlDtch6PAEj
+ 5MJN/EJyC+G4w1uEIWLA+mQuu4s=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 606c7ddbf34440a9d49be3ed (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 15:27:23
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6E34EC43462; Tue,  6 Apr 2021 15:27:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7B17CC433CA;
+        Tue,  6 Apr 2021 15:27:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7B17CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+Date:   Tue, 6 Apr 2021 20:57:15 +0530
+From:   Pavan Kondeti <pkondeti@codeaurora.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Quentin Perret <qperret@google.com>, Wei Wang <wvw@google.com>
+Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
+ of root cpu cgroup
+Message-ID: <20210406152715.GB21941@codeaurora.org>
+References: <1617714261-18111-1-git-send-email-pkondeti@codeaurora.org>
+ <YGxjwKbec68sCcqo@slm.duckdns.org>
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGxjwKbec68sCcqo@slm.duckdns.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tejun,
 
---=-h2yb9mmylf3PhyRBn23s
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 06, 2021 at 09:36:00AM -0400, Tejun Heo wrote:
+> Hello,
+> 
+> On Tue, Apr 06, 2021 at 06:34:21PM +0530, Pavankumar Kondeti wrote:
+> > In Android GKI, CONFIG_FAIR_GROUP_SCHED is enabled [1] to help prioritize
+> > important work. Given that CPU shares of root cgroup can't be changed,
+> > leaving the tasks inside root cgroup will give them higher share
+> > compared to the other tasks inside important cgroups. This is mitigated
+> > by moving all tasks inside root cgroup to a different cgroup after
+> > Android is booted. However, there are many kernel tasks stuck in the
+> > root cgroup after the boot.
+> > 
+> > We see all kworker threads are in the root cpu cgroup. This is because,
+> > tasks with PF_NO_SETAFFINITY flag set are forbidden from cgroup migration.
+> > This restriction is in place to avoid kworkers getting moved to a cpuset
+> > which conflicts with kworker affinity. Relax this restriction by explicitly
+> > checking if the task is moving out of a cpuset cgroup. This allows kworkers
+> > to be moved out root cpu cgroup when cpu and cpuset cgroup controllers
+> > are mounted on different hierarchies.
+> > 
+> > We also see kthreadd_task and any kernel thread created after the Android boot
+> > also stuck in the root cgroup. The current code prevents kthreadd_task moving
+> > out root cgroup to avoid the possibility of creating new RT kernel threads
+> > inside a cgroup with no RT runtime allocated. Apply this restriction when tasks
+> > are moving out of cpu cgroup under CONFIG_RT_GROUP_SCHED. This allows all
+> > kernel threads to be moved out of root cpu cgroup if the kernel does not
+> > enable RT group scheduling.
+> 
+> The fundamental reason why those kthreads are in the root cgroup is because
+> they're doing work on behalf of the entire system and their resource usages
+> can't be attributed to any specific cgroup. What we want to do is accounting
+> actual usages to the originating cgroups so that cpu cycles spent by kswapd
+> is charged to the originating cgroups, however well we can define them, and
+> then throttle the origin if the consumption is going over budget for that
+> cgroup's allocation. This is how we already handle shared IOs.
 
-On Tue, 2021-04-06 at 17:10 +0200, Vincent Guittot wrote:
-> On Fri, 26 Mar 2021 at 20:19, Rik van Riel <riel@surriel.com> wrote:
->=20
-> > -static int select_idle_cpu(struct task_struct *p, struct
-> > sched_domain *sd, int target)
-> > +static int select_idle_cpu(struct task_struct *p, struct
-> > sched_domain *sd, int prev, int target)
-> >  {
-> >         struct cpumask *cpus =3D
-> > this_cpu_cpumask_var_ptr(select_idle_mask);
-> >         int i, cpu, idle_cpu =3D -1, nr =3D INT_MAX;
-> > @@ -6136,23 +6163,32 @@ static int select_idle_cpu(struct
-> > task_struct *p, struct sched_domain *sd, int t
-> >=20
-> >         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> >=20
-> > -       if (sched_feat(SIS_PROP) && !smt) {
-> > -               u64 avg_cost, avg_idle, span_avg;
-> > +       if (!smt) {
-> > +               if (cpus_share_cache(prev, target)) {
->=20
-> Have you checked the impact on no smt system ? would worth a static
-> branch.
->=20
-> Also, this doesn't need to be in select_idle_cpu() which aims to loop
-> the sched_domain becaus you only compare  target and prev. So you can
-> move this call to select_idle_smt() in select_idle_sibling()
+Thanks for your reply. I understand the reasoning on why we don't allow
+kworkers to a custom cgroup.
 
-After Mel's rewrite, there no longer are calls to
-select_idle_core() or select_idle_smt() in select_idle_sibling().
+> 
+> The problem with the proposed patch is that it breaks the logical
+> organization of resource hierarchy in a way which hinders proper future
+> solutions.
+> 
+> If all you want is deprioritizing certain kworkers, please use workqueue
+> attrs instead.
+> 
+Yeah. The workqueue attrs comes in handy to reduce the nice/prio of a
+background workqueue if we identify that it is cpu intensive. However, this
+needs case by case analysis, tweaking etc. If there is no other alternative,
+we might end up chasing the background workers and reduce their nice value.
 
-Everything got folded into one single loop in select_idle_cpu()
+The problem at our hand (which you might be knowing already) is that, lets say
+we have 2 cgroups in our setup and we want to prioritize UX over background.
+IOW, reduce the cpu.shares of background cgroup. This helps in prioritizing
+Task-A and Task-B over Task-X and Task-Y. However, each individual kworker
+can potentially have CPU share equal to the entire UX cgroup.
 
-I would be happy to pull the static branch out of select_idle_smt()
-and place it into this if condition, though. You are right that
-would save some overhead on non-smt systems.
+-kworker/0:0
+-kworker/1:0
+- UX
+----Task-A
+----Task-B
+- background
+----Task-X
+----Task-Y
 
-Peter, would you prefer a follow-up patch for that or a version 4
-of the patch?
+Hence we want to move all kernel threads to another cgroup so that this cgroup
+will have CPU share equal to UX.
 
---=20
-All Rights Reversed.
+The patch presented here allows us to create the above setup. Any other
+alternative approaches to achieve the same without impacting any future
+designs/requirements?
 
---=-h2yb9mmylf3PhyRBn23s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmBsfa4ACgkQznnekoTE
-3oPVdwgAknAH01IMA1aQ5Y2oSZ6UL5PULzo4l3LekWhtXcBFnpezYdxo/Ya+a2lL
-ykdmlvDGVyu1UL42Qi59KWb/0licduWdV35mItRg3OJrHaY7JONAJf70fqExBhYc
-ZTnyn0O6wsrAFJWjphOEs3Ksw1D/FsiTvUtf28gAK2F94qvyng4wDdnA2FoK/rFQ
-gswLeNK8hII4UPFeFMszvPwLBRvZoSE3njNRhA/Ly9INmFmfxRjIHrvciDDnGJKx
-Gb5KqP9zr3Xs8C1Zw2AZfSd05hdoWcKQqH99oTE7lFqbN7w5OeK427ZHGzQ2Mkrs
-JzqofUv0hmKMzKzYadeHavEQ8KLLOA==
-=IISW
------END PGP SIGNATURE-----
-
---=-h2yb9mmylf3PhyRBn23s--
+Thanks,
+Pavan
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
