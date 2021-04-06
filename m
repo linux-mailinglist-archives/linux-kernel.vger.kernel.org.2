@@ -2,165 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04433550B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FE73550B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245050AbhDFKTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        id S245059AbhDFKUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242713AbhDFKTv (ORCPT
+        with ESMTP id S236072AbhDFKUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:19:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBDC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:19:43 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lTio6-0001jX-Hh; Tue, 06 Apr 2021 12:19:38 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lTio4-0005iA-DU; Tue, 06 Apr 2021 12:19:36 +0200
-Date:   Tue, 6 Apr 2021 12:19:36 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        matthias.bgg@gmail.com, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: Re: [v3,PATCH 2/3] pwm: mtk_disp: convert the driver to atomic API
-Message-ID: <20210406101936.uscvtvrd6opm5pgf@pengutronix.de>
-References: <1617703062-4251-1-git-send-email-rex-bc.chen@mediatek.com>
- <1617703062-4251-3-git-send-email-rex-bc.chen@mediatek.com>
+        Tue, 6 Apr 2021 06:20:52 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7208C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:20:44 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id f6so7513530wrv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bcefdudaPy/YI+OKTqE8aidgvlYBD0QZn69/G4d7ptU=;
+        b=k42kwbijED+nek4rwjT2eYPMSE6B3+1xLQvx9UTI9SshTJD3v84BfJVZEFjLOPYBJC
+         IoQsKOD6DzNmnJpfZugbl9hVRVqnO4EMHYW0cpbrd4FVtuNukCCmG/Cq88HkoeIw3pzI
+         vaCB3wm1DgJsZY2O/S29K3wLQjDsy0w0cjjqd4nVuREkjicEvtmJ//Uzqcvpa04KZKN/
+         HqYuYU3GuCAraZ9RiHdUW5OY3+eBHLXiMyZN2rIimKifq0GUh1bXH0CU1pjuxVFZi9yW
+         Pet5QfjwITn0I8KVgvkJ9JYNaoVtg2KMwG8JtpszWQ4htzP9kvQic1uGwKIxIBL0uo+2
+         Ub7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bcefdudaPy/YI+OKTqE8aidgvlYBD0QZn69/G4d7ptU=;
+        b=qPecW/ovHVmi55fusx7Y7ctIvz9v0itegMzjDTeH3AsWFWXiWnHeUBBRVZ8+C6FSZV
+         IBUAlANg/iJJ7/vIIpxG94PS/Yah21TQU2ZwvG75dkOWYA3pmJTTvMm+C9hx8ZhyoDlT
+         zDWRZVACy/RPQ4KeBIIFWoVUJL2KMSkMLqJXbiOH5VHcrzxNN9+UZ5kNW7MWPuFCd1KD
+         bGBNXygxwy5yCNbV25eGYaMq5bWoz25xBr7tOlvbF2ugEcwF0hPTNPdbUXo9BnyKoUHO
+         xwf8bgYDIXD4M2fBaLyllJp4lR5BFWmTkE1Nehycn1JLImKftk3qdBU3rGcqaZw9onD8
+         dOPw==
+X-Gm-Message-State: AOAM5301r0gKhBQ9/hO3pQI/iKcX1E1LD8BYylRuRwV4y2b3DM8jImfh
+        jwEMBVaFXdfNsLVpYOZH2PYPzQ==
+X-Google-Smtp-Source: ABdhPJxJVkIpA89rUaR8Fw2m4JV6uB6QMclzVKcvrYWcfp4fzIMR43EdfrRODU2sw+7Mtf7KKjG/NA==
+X-Received: by 2002:adf:8b45:: with SMTP id v5mr33654146wra.398.1617704443479;
+        Tue, 06 Apr 2021 03:20:43 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id u2sm32373544wrp.12.2021.04.06.03.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 03:20:43 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: tun: set tun->dev->addr_len during TUNSETLINK processing
+Date:   Tue,  6 Apr 2021 11:20:40 +0100
+Message-Id: <20210406102040.1122-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qrbjywyivatj7v7m"
-Content-Disposition: inline
-In-Reply-To: <1617703062-4251-3-git-send-email-rex-bc.chen@mediatek.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
+to match the appropriate type, using new tun_get_addr_len utility function
+which returns appropriate address length for given type. Fixes a
+KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 
---qrbjywyivatj7v7m
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
 
-Hello,
+V2: Removed inline specifier from tun_get_addr_len function.
 
-On Tue, Apr 06, 2021 at 05:57:41PM +0800, Rex-BC Chen wrote:
-> @@ -84,33 +86,47 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip,=
- struct pwm_device *pwm,
->  	 * period =3D (PWM_CLK_RATE * period_ns) / (10^9 * (clk_div + 1)) - 1
->  	 * high_width =3D (PWM_CLK_RATE * duty_ns) / (10^9 * (clk_div + 1))
->  	 */
-> +	if (!mdp->enabled) {
-> +		err =3D clk_prepare_enable(mdp->clk_main);
-> +		if (err < 0) {
-> +			dev_err(chip->dev, "Can't enable mdp->clk_main: %d\n",
-> +				err);
+---
+ drivers/net/tun.c | 48 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-Please use %pe, as this yields better readable error messages.
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 978ac0981d16..524a9f771b86 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -69,6 +69,14 @@
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
+ #include <linux/mutex.h>
++#include <linux/ieee802154.h>
++#include <linux/if_ltalk.h>
++#include <uapi/linux/if_fddi.h>
++#include <uapi/linux/if_hippi.h>
++#include <uapi/linux/if_fc.h>
++#include <net/ax25.h>
++#include <net/rose.h>
++#include <net/6lowpan.h>
+ 
+ #include <linux/uaccess.h>
+ #include <linux/proc_fs.h>
+@@ -2925,6 +2933,45 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+ 	return __tun_set_ebpf(tun, prog_p, prog);
+ }
+ 
++/* Return correct value for tun->dev->addr_len based on tun->dev->type. */
++static unsigned char tun_get_addr_len(unsigned short type)
++{
++	switch (type) {
++	case ARPHRD_IP6GRE:
++	case ARPHRD_TUNNEL6:
++		return sizeof(struct in6_addr);
++	case ARPHRD_IPGRE:
++	case ARPHRD_TUNNEL:
++	case ARPHRD_SIT:
++		return 4;
++	case ARPHRD_ETHER:
++		return ETH_ALEN;
++	case ARPHRD_IEEE802154:
++	case ARPHRD_IEEE802154_MONITOR:
++		return IEEE802154_EXTENDED_ADDR_LEN;
++	case ARPHRD_PHONET_PIPE:
++	case ARPHRD_PPP:
++	case ARPHRD_NONE:
++		return 0;
++	case ARPHRD_6LOWPAN:
++		return EUI64_ADDR_LEN;
++	case ARPHRD_FDDI:
++		return FDDI_K_ALEN;
++	case ARPHRD_HIPPI:
++		return HIPPI_ALEN;
++	case ARPHRD_IEEE802:
++		return FC_ALEN;
++	case ARPHRD_ROSE:
++		return ROSE_ADDR_LEN;
++	case ARPHRD_NETROM:
++		return AX25_ADDR_LEN;
++	case ARPHRD_LOCALTLK:
++		return LTALK_ALEN;
++	default:
++		return 0;
++	}
++}
++
+ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+ 			    unsigned long arg, int ifreq_len)
+ {
+@@ -3088,6 +3135,7 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+ 				break;
+ 			}
+ 			tun->dev->type = (int) arg;
++			tun->dev->addr_len = tun_get_addr_len(tun->dev->type);
+ 			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
+ 				   tun->dev->type);
+ 			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
+-- 
+2.30.2
 
-Also it might be sensible to first use the fact that (without patch 1
-=66rom this series) the clocks are always on and then rework the clk usage
-in a separate patch.
-
-> +			return err;
-> +		}
-> +		err =3D clk_prepare_enable(mdp->clk_mm);
-> +		if (err < 0) {
-> +			dev_err(chip->dev, "Can't enable mdp->clk_mm: %d\n",
-> +				err);
-> +			clk_disable_unprepare(mdp->clk_main);
-> +			return err;
-> +		}
-> +	}
->  	rate =3D clk_get_rate(mdp->clk_main);
-> -	clk_div =3D div_u64(rate * period_ns, NSEC_PER_SEC) >>
-> +	clk_div =3D div_u64(rate * state->period, NSEC_PER_SEC) >>
->  			  PWM_PERIOD_BIT_WIDTH;
-
-rate * state->period might overflow, it would be great if this could be
-catched. (But I don't consider this a stopper for this series.)
-
-> -	if (clk_div > PWM_CLKDIV_MAX)
-> +	if (clk_div > PWM_CLKDIV_MAX) {
-> +		dev_err(chip->dev, "clock rate is too high: rate =3D %d Hz\n",
-> +			rate);
-
-rate is an u64, %d isn't the right format for it. Doesn't this result in
-a compiler warning?
-
-> +		clk_disable_unprepare(mdp->clk_mm);
-> +		clk_disable_unprepare(mdp->clk_main);
->  		return -EINVAL;
-> -
-> +	}
->  	div =3D NSEC_PER_SEC * (clk_div + 1);
-> -	period =3D div64_u64(rate * period_ns, div);
-> +	period =3D div64_u64(rate * state->period, div);
->  	if (period > 0)
->  		period--;
-> =20
-> -	high_width =3D div64_u64(rate * duty_ns, div);
-> +	high_width =3D div64_u64(rate * state->duty_cycle, div);
->  	value =3D period | (high_width << PWM_HIGH_WIDTH_SHIFT);
-> -
-> -	err =3D clk_enable(mdp->clk_main);
-> -	if (err < 0)
-> -		return err;
-> -
-> -	err =3D clk_enable(mdp->clk_mm);
-> -	if (err < 0) {
-> -		clk_disable(mdp->clk_main);
-> -		return err;
-> -	}
-> +	polarity =3D 0;
-> +	if (state->polarity =3D=3D PWM_POLARITY_INVERSED)
-> +		polarity =3D PWM_POLARITY;
-
-I'm unsure if support for polarity should be added en passant in this
-patch. Maybe it would be clearer to add is separately.
-
->  	mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
->  				 PWM_CLKDIV_MASK,
->  				 clk_div << PWM_CLKDIV_SHIFT);
-> +	mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
-> +				 PWM_POLARITY, polarity);
->  	mtk_disp_pwm_update_bits(mdp, mdp->data->con1,
->  				 PWM_PERIOD_MASK | PWM_HIGH_WIDTH_MASK,
->  				 value);
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---qrbjywyivatj7v7m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBsNbUACgkQwfwUeK3K
-7Ak7fQf/XD3gpjbGn1v9+zAGRP2jQEV4pv4oZAXPh3XfOHQWHauvAoPO81WdA0le
-NrkVkX3fWnhpWRWTs360jrPenNfhc95Svv8ARekaI7WKBo2o6e4wEXIPnv94hk5l
-usjD5WN7JFRcF9AMSfaOZyeKHf1hJ5KNWZvUfDxfljLgarAQNVCDsmnQ+HDQXMiy
-osb93UYzmq6X5sKVKkP6kKja9qkkjQVQ1ydfBZU1LL7sZSCsCNEU9BE/lCEP/Cug
-uIRF7rzxgYCgDYQmB9g1N5MBwg75Ur9ZeZC2YU3h1L26im6avqmf+v8xpfcT9WVF
-hqrXsXRAZZodkucekqCFb1LCLMBLXw==
-=ROQI
------END PGP SIGNATURE-----
-
---qrbjywyivatj7v7m--
