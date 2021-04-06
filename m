@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C14355064
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D27C355062
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237762AbhDFJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:57:27 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2764 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbhDFJ5Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:57:25 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF2nk2nrMz686nr;
-        Tue,  6 Apr 2021 17:50:18 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 11:57:15 +0200
-Received: from [10.210.166.136] (10.210.166.136) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:57:14 +0100
-Subject: Re: [PATCH v2 1/6] perf metricgroup: Make find_metric() public with
- name change
-To:     Ian Rogers <irogers@google.com>
-CC:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
+        id S233792AbhDFJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:56:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56976 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233527AbhDFJ4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:56:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617702973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=656KuN9pjrhu4sCZqILrkK+S2NOZRWLCsVXRfCBqK70=;
+        b=pV5WDB56i74o7vVmZdBJd8BuNa3HoBvkalqJOjTkBoFnGpVXqkNklgKin3mrj+C13lsptW
+        vC4yPZ9or06QspUCvee4QAsrhrLFHTx7tXNxeLjsEgim30RN91GJ4jVlHimwFwYjio6aLg
+        L5K+yNmU6JumYn7l4Mbqy9fyeAOnCCM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8B8DB137;
+        Tue,  6 Apr 2021 09:56:12 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 11:56:11 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, <linuxarm@huawei.com>,
-        kajoljain <kjain@linux.ibm.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        <zhangshaokun@hisilicon.com>, "Paul Clarke" <pc@us.ibm.com>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-2-git-send-email-john.garry@huawei.com>
- <CAP-5=fVMfK5-rGtx1QjTLz6AQeGr0ruyxuwC3ADt4kriU9wz0A@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4b406e70-9ff6-dd26-d9b7-78b094041651@huawei.com>
-Date:   Tue, 6 Apr 2021 10:54:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 4/8] hugetlb: create remove_hugetlb_page() to separate
+ functionality
+Message-ID: <YGwwO0galuKQsD0J@dhcp22.suse.cz>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-5-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fVMfK5-rGtx1QjTLz6AQeGr0ruyxuwC3ADt4kriU9wz0A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.136]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405230043.182734-5-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/2021 00:16, Ian Rogers wrote:
-> On Thu, Mar 25, 2021 at 3:38 AM John Garry <john.garry@huawei.com> wrote:
->>
->> Function find_metric() is required for the metric processing in the
->> pmu-events testcase, so make it public. Also change the name to include
->> "metricgroup".
+On Mon 05-04-21 16:00:39, Mike Kravetz wrote:
+> The new remove_hugetlb_page() routine is designed to remove a hugetlb
+> page from hugetlbfs processing.  It will remove the page from the active
+> or free list, update global counters and set the compound page
+> destructor to NULL so that PageHuge() will return false for the 'page'.
+> After this call, the 'page' can be treated as a normal compound page or
+> a collection of base size pages.
 > 
-> Would it make more sense as "pmu_events_map__find_metric" ?
+> update_and_free_page no longer decrements h->nr_huge_pages{_node} as
+> this is performed in remove_hugetlb_page.  The only functionality
+> performed by update_and_free_page is to free the base pages to the lower
+> level allocators.
 > 
-
-So all functions apart from one in metricgroup.h are named 
-metricgroup__XXX, so I was trying to keep this style - apart from the 
-double-underscore (which can be remedied).
-
-Personally I don't think pmu_events_map__find_metric name fits with that 
-convention.
-
-Thanks,
-John
-
-> Thanks,
-> Ian
+> update_and_free_page is typically called after remove_hugetlb_page.
 > 
->> Signed-off-by: John Garry <john.garry@huawei.com>
->> ---
->>   tools/perf/util/metricgroup.c | 5 +++--
->>   tools/perf/util/metricgroup.h | 3 ++-
->>   2 files changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
->> index 6acb44ad439b..71a13406e0bd 100644
->> --- a/tools/perf/util/metricgroup.c
->> +++ b/tools/perf/util/metricgroup.c
->> @@ -900,7 +900,8 @@ static int __add_metric(struct list_head *metric_list,
->>                      (match_metric(__pe->metric_group, __metric) ||      \
->>                       match_metric(__pe->metric_name, __metric)))
->>
->> -static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *map)
->> +struct pmu_event *metrcgroup_find_metric(const char *metric,
->> +                                        struct pmu_events_map *map)
->>   {
->>          struct pmu_event *pe;
->>          int i;
->> @@ -985,7 +986,7 @@ static int __resolve_metric(struct metric *m,
->>                          struct expr_id *parent;
->>                          struct pmu_event *pe;
->>
->> -                       pe = find_metric(cur->key, map);
->> +                       pe = metrcgroup_find_metric(cur->key, map);
->>                          if (!pe)
->>                                  continue;
->>
->> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
->> index ed1b9392e624..1674c6a36d74 100644
->> --- a/tools/perf/util/metricgroup.h
->> +++ b/tools/perf/util/metricgroup.h
->> @@ -44,7 +44,8 @@ int metricgroup__parse_groups(const struct option *opt,
->>                                bool metric_no_group,
->>                                bool metric_no_merge,
->>                                struct rblist *metric_events);
->> -
->> +struct pmu_event *metrcgroup_find_metric(const char *metric,
->> +                                        struct pmu_events_map *map);
->>   int metricgroup__parse_groups_test(struct evlist *evlist,
->>                                     struct pmu_events_map *map,
->>                                     const char *str,
->> --
->> 2.26.2
->>
-> .
+> remove_hugetlb_page is to be called with the hugetlb_lock held.
 > 
+> Creating this routine and separating functionality is in preparation for
+> restructuring code to reduce lock hold times.  This commit should not
+> introduce any changes to functionality.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
+Btw. I would prefer to reverse the ordering of this and Oscar's
+patchset. This one is a bug fix which might be interesting for stable
+backports while Oscar's work can be looked as a general functionality
+improvement.
+
+> @@ -2298,6 +2312,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>  		/*
+>  		 * Freed from under us. Drop new_page too.
+>  		 */
+> +		remove_hugetlb_page(h, new_page, false);
+>  		update_and_free_page(h, new_page);
+>  		goto unlock;
+>  	} else if (page_count(old_page)) {
+> @@ -2305,6 +2320,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>  		 * Someone has grabbed the page, try to isolate it here.
+>  		 * Fail with -EBUSY if not possible.
+>  		 */
+> +		remove_hugetlb_page(h, new_page, false);
+>  		update_and_free_page(h, new_page);
+>  		spin_unlock(&hugetlb_lock);
+>  		if (!isolate_huge_page(old_page, list))
+
+the page is not enqued anywhere here so remove_hugetlb_page would blow
+when linked list debugging is enabled.
+-- 
+Michal Hocko
+SUSE Labs
