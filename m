@@ -2,45 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4361B3558EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FB43558EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346265AbhDFQMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhDFQMs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:12:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F1CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=XDFJgXxvtaM0UxLUX+LI+rLQMYimMFZh2bt7uDBXvbE=; b=j2nDF0dPDCY9lUwyW89h4s3zAr
-        abxywG3qlLdz1sw8WuvmociW9cTuWWXGIWMK3vUpuIxcctx+8QAczg1fO6RnOC7EUf13FWXS2XiOo
-        yVEEsl2WfbU7GyEjwggBKkvwFIyojQ147mfvLni8ZbWvvHLaPAo1UDuR53CnCyJUVoflAoUSQczGG
-        cXCHTMDmH0Rf1ibDpPhRcr3Rf+DQhlv2vp1Qn78G252Qd9NM1Cx99rNqi7yOWPg0Q6Xedwzk7ylFT
-        9n5T8xb6qqaRPi24S7VHUuABdzjtWUmUmN3JizMYn/AXbPIN8SdyvNSivIrJoGzFHlf8fKa76mINZ
-        Bp9G9UGQ==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lToJK-00D47P-DM; Tue, 06 Apr 2021 16:12:24 +0000
-Subject: Re: disk-io.c:undefined reference to `atomic64_set_386'
-To:     dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        Josef Bacik <josef@toxicpanda.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <202104010035.c4LXmhAY-lkp@intel.com>
- <20210406144303.GF7604@suse.cz>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <38f3b02c-6b0a-d986-1131-4b42d6d2eb7d@infradead.org>
-Date:   Tue, 6 Apr 2021 09:12:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1346285AbhDFQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:12:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11337 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230305AbhDFQM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:12:57 -0400
+IronPort-SDR: 76DiAruigFhf3X5RgVloK8f2rye6THl5CivzqHW5Exs6OIHDptAnIUGGc1Ub3tJZHe8HqqkDxg
+ nswVboSApYVA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="213472845"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="213472845"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:12:49 -0700
+IronPort-SDR: TLeps9LlecA4lJrW7o59YvCHo7nBOa2gkk8sgKRg+Q/9BGWSZOHwcf6Jk0A3KEPJmZ41d0WrQM
+ 02ZY+DADIPPw==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="447898724"
+Received: from hlalithk-mobl1.amr.corp.intel.com (HELO [10.209.146.228]) ([10.209.146.228])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:12:48 -0700
+Subject: Re: [RFC v1 22/26] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <76d1bc03ab6f12d1943f5bb83fcf0ff8eac55bc1.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <007362e2-a8df-050b-8c41-1756981bb071@intel.com>
+ <20210406155441.a6ez7ehw7wbc63tk@box>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c805df30-6ce6-6032-06b8-6b06e046744e@intel.com>
+Date:   Tue, 6 Apr 2021 09:12:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210406144303.GF7604@suse.cz>
+In-Reply-To: <20210406155441.a6ez7ehw7wbc63tk@box>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,35 +98,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 7:43 AM, David Sterba wrote:
-> On Thu, Apr 01, 2021 at 12:34:38AM +0800, kernel test robot wrote:
->> Hi Josef,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   5e46d1b78a03d52306f21f77a4e4a144b6d31486
->> commit: 8260edba67a2e6bd5e709d32188e23aa22cb4a38 btrfs: make the init of static elements in fs_info separate
->> date:   1 year ago
->> config: um-randconfig-r023-20210330 (attached as .config)
->> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
->> reproduce (this is a W=1 build):
->>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8260edba67a2e6bd5e709d32188e23aa22cb4a38
->>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>         git fetch --no-tags linus master
->>         git checkout 8260edba67a2e6bd5e709d32188e23aa22cb4a38
->>         # save the attached .config to linux build tree
->>         make W=1 ARCH=um 
+On 4/6/21 8:54 AM, Kirill A. Shutemov wrote:
+> On Thu, Apr 01, 2021 at 01:13:16PM -0700, Dave Hansen wrote:
+>>> @@ -56,6 +61,9 @@ static void tdx_get_info(void)
+>>>  
+>>>  	td_info.gpa_width = rcx & GENMASK(5, 0);
+>>>  	td_info.attributes = rdx;
+>>> +
+>>> +	/* Exclude Shared bit from the __PHYSICAL_MASK */
+>>> +	physical_mask &= ~tdx_shared_mask();
+>>>  }
+>> I wish we had all of these 'physical_mask' manipulations in a single
+>> spot.  Can we consolidate these instead of having TDX and SME poke at
+>> them individually?
+> SME has to do it very early -- from __startup_64() -- as it sets the bit
+> on all memory, except what used for communication. TDX can postpone as we
+> don't need any shared mapping in very early boot.
 > 
-> All the reports regarding atomic64_*_386 are from ARCH=um build, so
-> it needs to be fixed there.
+> Basically, to make it done from the same place we would need to move TDX
+> enumeration earlier into boot. It's risky: everything is more fragile
+> there.
 > 
+> I would rather keep it as is. We should be fine as long as we only allow
+> to clear bits from the mask.
 
-Robot, Please try this patch:
-https://marc.info/?l=linux-kernel&m=161756047331183&w=2
-
-
-thanks.
--- 
-~Randy
-
+I'll buy that.  Could you mention it in the changelog, please?
