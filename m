@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7DC354FF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A9F354FF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237190AbhDFJcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhDFJcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:32:41 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93135C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 02:32:33 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:99b7:c6e7:5cb7:6273])
-        by laurent.telenet-ops.be with bizsmtp
-        id pMYU2400B2foaxb01MYUCL; Tue, 06 Apr 2021 11:32:30 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lTi4R-00DU5H-Rn; Tue, 06 Apr 2021 11:32:27 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lTi4R-00ENAh-55; Tue, 06 Apr 2021 11:32:27 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S240604AbhDFJdp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 05:33:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:14984 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236696AbhDFJdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:33:43 -0400
+IronPort-SDR: nAQjvgOFpT76wHt/4rwAtdtVM+I8aU2LkBV0j3hYQEzISCCMCT9ZyS0fQq/9qKYWSduU4RCbMx
+ TwZF7dbCmFTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="172502141"
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="172502141"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:33:34 -0700
+IronPort-SDR: yNx+NRizR5mkR8GcZPzlI8J7Pj0MjByUv03J9PMpLpN8+8z9CtxNE4aHX/zeWYKFAFUMA0T4x4
+ hC15JwVa90TA==
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="457817452"
+Received: from oowomilo-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.55])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:33:03 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
         Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not default to m
-Date:   Tue,  6 Apr 2021 11:32:26 +0200
-Message-Id: <129d6bab29b47c265cf0e2a70545e7c0422ce7ba.1617701454.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>, linux-pwm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH] pwm: Rename pwm_get_state() to better reflect its semantic
+In-Reply-To: <20210406073036.26857-1-u.kleine-koenig@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210406073036.26857-1-u.kleine-koenig@pengutronix.de>
+Date:   Tue, 06 Apr 2021 12:32:58 +0300
+Message-ID: <87tuojlpv9.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
-Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
-ARCH_MXC, to prevent asking the user about this driver when configuring
-a kernel without i.MX8 support.
+On Tue, 06 Apr 2021, Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+> Given that lowlevel drivers usually cannot implement exactly what a
+> consumer requests with pwm_apply_state() there is some rounding involved.
+>
+> pwm_get_state() traditionally returned the setting that was requested most
+> recently by the consumer (opposed to what was actually implemented in
+> hardware in reply to the last request). To make this semantic obvious
+> rename the function.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
 
-Drop the "default m" (which means "default y" if CONFIG_MODULES is not
-enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
-additional code.
+>  drivers/gpu/drm/i915/display/intel_panel.c |  4 +--
 
-Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Really drop the "default m".
----
- drivers/media/platform/imx-jpeg/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
-diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
-index d875f7c88cdad125..2fdd648cda80af8e 100644
---- a/drivers/media/platform/imx-jpeg/Kconfig
-+++ b/drivers/media/platform/imx-jpeg/Kconfig
-@@ -1,11 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0
- config VIDEO_IMX8_JPEG
- 	tristate "IMX8 JPEG Encoder/Decoder"
-+	depends on ARCH_MXC || COMPILE_TEST
- 	depends on VIDEO_DEV && VIDEO_V4L2
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
- 	select V4L2_JPEG_HELPER
--	default m
- 	help
- 	  This is a video4linux2 driver for the i.MX8 QXP/QM integrated
- 	  JPEG encoder/decoder.
+
 -- 
-2.25.1
-
+Jani Nikula, Intel Open Source Graphics Center
