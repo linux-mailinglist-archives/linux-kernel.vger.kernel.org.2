@@ -2,53 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8735F354ACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB67F354ACD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243322AbhDFCPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:15:32 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:54863 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232976AbhDFCP0 (ORCPT
+        id S243328AbhDFCQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232976AbhDFCQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:15:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UUeS7-i_1617675317;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UUeS7-i_1617675317)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 06 Apr 2021 10:15:18 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     laurent.pinchart@ideasonboard.com
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] media: uvc: remove unused including <linux/version.h>
-Date:   Tue,  6 Apr 2021 10:15:15 +0800
-Message-Id: <1617675315-10453-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 5 Apr 2021 22:16:24 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BF5C06174A;
+        Mon,  5 Apr 2021 19:16:17 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so518516pjb.0;
+        Mon, 05 Apr 2021 19:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
+        b=t7WS9sG8PQeiSfkASPQaYoPl/uSTynldhpGbQPtB0/kEM9/0zM6PIGpoiBHzZwDcgK
+         fvvJCFntmIejETB3podNbAvKPRig4PklyRQDaxpbS9yduIrUM97Zl2bawLgtFXsZKIME
+         VU5WoS8YGTF+q1a4UZS5Ok7FB25I6lGoag0BwHe6tjR699psWFEk0T2t8UWwMknYgsln
+         XRp7pvtjqcBUwrPkRUNODh//+VKygNwao7f2yHhSDqITZUdgSk8XzOGuoNrqUYchplsy
+         wcOR1NwKXmr3oUNkypx08U8velXcvyRxR32ZPL40hLANpKTXaR7rj7xmkOgrRwaG/40/
+         F0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
+        b=IYuhtXPjY/NWDMIxnwsmWnmLVPz5OlhzDCNRcrA6aUwjv4fRUKruKaoEEXoldA/5Fy
+         3w4PyMyrLq6JT3vdmP1mn/CokQYgp50xrxA7yTLXwgsFpkwJ9am8EvRQPoQWqs685Cie
+         XaBtq6+CmtJEzT2+U6d5uodwplfrvcfAjp+sDPrD7kSAACdMh/mnclcGUJ5m3EISuYdG
+         ZFQb9in2D3kYlw3fEVcSSnU0N0oo2CrqKWgpommiZsBlt61QpFIvX09xlAPr+li8wWhR
+         qjdv8BfvhA6JogWyE6rz801uJWqNQkYBDV43hf4BBJCRMTD15NAeY2reZH497yis7Vtb
+         t5BQ==
+X-Gm-Message-State: AOAM530R2rcQc/NP+3NFOVISCS9h6yM5BmihV+bSXEYrGCs4Hga32+Ph
+        SnU2ciUnhw2ywydyLMc+St0ni2th0kUe+g==
+X-Google-Smtp-Source: ABdhPJz8qrHwRwTHzcMqT0HI5HoLf9ZzdSQAKV9+bEdXeU1rQW8QfzDQH1Ea4JJieivHFbPFmS0tbw==
+X-Received: by 2002:a17:90a:cb0a:: with SMTP id z10mr691091pjt.20.1617675377179;
+        Mon, 05 Apr 2021 19:16:17 -0700 (PDT)
+Received: from [10.43.90.134] ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id y68sm17905608pgy.5.2021.04.05.19.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 19:16:16 -0700 (PDT)
+Subject: Re: [PATCH] integrity/ima: Add declarations to init_once void
+ arguments.
+To:     serge@hallyn.com, jmorris@namei.org
+Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323013318.296993-1-unclexiaole@gmail.com>
+From:   Jiele Zhao <unclexiaole@gmail.com>
+Message-ID: <f97e397d-5d9f-31c3-c027-d9b89ba9637a@gmail.com>
+Date:   Tue, 6 Apr 2021 10:16:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210323013318.296993-1-unclexiaole@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following versioncheck warning:
-./drivers/media/usb/uvc/uvc_driver.c: 19 linux/version.h not needed.
+Ping.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/media/usb/uvc/uvc_driver.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 30ef2a3..9f9473d 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -16,7 +16,6 @@
- #include <linux/videodev2.h>
- #include <linux/vmalloc.h>
- #include <linux/wait.h>
--#include <linux/version.h>
- #include <asm/unaligned.h>
- 
- #include <media/v4l2-common.h>
--- 
-1.8.3.1
-
+On 2021/3/23 9:33, Jiele Zhao wrote:
+> init_once is a callback to kmem_cache_create. The parameter
+> type of this function is void *, so it's better to give a
+> explicit cast here.
+>
+> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
+> ---
+>   security/integrity/iint.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> index 1d20003243c3..5f3f2de997e1 100644
+> --- a/security/integrity/iint.c
+> +++ b/security/integrity/iint.c
+> @@ -152,7 +152,7 @@ void integrity_inode_free(struct inode *inode)
+>   
+>   static void init_once(void *foo)
+>   {
+> -	struct integrity_iint_cache *iint = foo;
+> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *)foo;
+>   
+>   	memset(iint, 0, sizeof(*iint));
+>   	iint->ima_file_status = INTEGRITY_UNKNOWN;
