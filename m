@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA926355925
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2A1355923
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346395AbhDFQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237387AbhDFQ00 (ORCPT
+        id S1346386AbhDFQ0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:26:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237387AbhDFQ0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:26:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E89BC06174A;
-        Tue,  6 Apr 2021 09:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ReC1A8LEcNA74MnXWjE1S8Le2jL7zE3sYBVCRscMRCs=; b=fx834GXHLWrbKbI/6uLgpgctFM
-        Q5KyQ0MFtvxJh6NlhE3d0eXK6x3CQugCROk+IFxmFqPLGA2qPvseVy/ls2tuS7hPms11iObLBCauI
-        OV7uHRQf7Ib9zGKIXKGbsYFT6Ra8bxC+RnIadJehDso2FLs/+cWo6UZ9vbgFuu/m62nepdJ2+qqM3
-        hWDUhYWehUlmEjiVsKsv0dKjn/3ibDjp1xFxH4zc3PQRHwRvr5J/AJqdmwa4RcUfllWWy/ilBGw4s
-        shHJ58BfrKh2KiEek2rfcG+9LJdKhTVSQASLZo5bcWwqYFXTXwm9vvMRLjbkaogq15yeyrkIABQ1/
-        E/r4rZwA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lToWA-00D5BK-1j; Tue, 06 Apr 2021 16:25:40 +0000
-Date:   Tue, 6 Apr 2021 17:25:30 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
-Message-ID: <20210406162530.GT2531743@casper.infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-2-willy@infradead.org>
- <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
- <20210406124807.GO2531743@casper.infradead.org>
- <20210406143150.GA3082513@infradead.org>
- <20210406144022.GR2531743@casper.infradead.org>
- <20210406144712.GA3087660@infradead.org>
- <20210406145511.GS2531743@casper.infradead.org>
- <20210406150550.GA3094215@infradead.org>
+        Tue, 6 Apr 2021 12:26:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617726354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=P7jEwhs3YhOUrc296WlQw+XsxeekSJAI8Ujivs9g9oE=;
+        b=T9T2e1COY+9z8FeWseITXuevS+NHC1FE+VX1UhrlO5+6VuoTSgJ1vrRwZXO5oEV48E+urx
+        KyucaSaI8wYSt7q9KTtAyKNo0tGc5SuHhoZmLrSMqHZLcUrkhZZpPIAmzGyd+dlg28ph/b
+        IcDzUbONdY+1RvqCzZlC6EfKoUn60wo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-v_K6orFjMZOwmJxfQNqNzQ-1; Tue, 06 Apr 2021 12:25:52 -0400
+X-MC-Unique: v_K6orFjMZOwmJxfQNqNzQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE7E51005D4F;
+        Tue,  6 Apr 2021 16:25:51 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 768F25D9DC;
+        Tue,  6 Apr 2021 16:25:51 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, stable@vger.kernel.org
+Subject: [PATCH] KVM: x86/mmu: preserve pending TLB flush across calls to kvm_tdp_mmu_zap_sp
+Date:   Tue,  6 Apr 2021 12:25:50 -0400
+Message-Id: <20210406162550.3732490-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406150550.GA3094215@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 04:05:50PM +0100, Christoph Hellwig wrote:
-> On Tue, Apr 06, 2021 at 03:55:11PM +0100, Matthew Wilcox wrote:
-> > Assuming we're getting rid of them all though, we have to include:
-> > 
-> > $ git grep 'page->mapping' fs |wc -l
-> > 358
-> > $ git grep 'page->index' fs |wc -l
-> > 355
-> 
-> Are they all going to stay?  Or are we going to clean up some of that
-> mess.  A lot of ->index should be page_offet, and on the mapping side
-> the page_mapping and page_file_mapping mess is also waiting to be
-> sorted..
+Right now, if a call to kvm_tdp_mmu_zap_sp returns false, the caller
+will skip the TLB flush, which is wrong.  There are two ways to fix
+it:
 
-About a third of ->index can be folio_offset(), based on a crude:
+- since kvm_tdp_mmu_zap_sp will not yield and therefore will not flush
+  the TLB itself, we could change the call to kvm_tdp_mmu_zap_sp to
+  use "flush |= ..."
 
-$ git grep 'page->index.*PAGE_' |wc -l
-101
+- or we can chain the flush argument through kvm_tdp_mmu_zap_sp down
+  to __kvm_tdp_mmu_zap_gfn_range.
 
-and I absolutely don't mind cleaning that up as part of the folio work,
-but that still leaves 200-250 instances that would need to be changed
-later.
+This patch does the former to simplify application to stable kernels.
 
-I don't want to change the page->mapping to calls to folio_mapping().
-That's a lot of extra work for a page which the filesystem knows belongs
-to it.  folio_mapping() only needs to be used for pages which might not
-belong to a filesystem.
+Cc: seanjc@google.com
+Fixes: 048f49809c526 ("KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")
+Cc: <stable@vger.kernel.org> # 5.10.x: 048f49809c: KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+Cc: <stable@vger.kernel.org> # 5.10.x: 33a3164161: KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-page_file_mapping() absolutely needs to go away.  The way to do that
-is to change swap-over-nfs to use direct IO, and then NFS can use
-folio->mapping like all other filesystems.  f2fs is just terminally
-confused and shouldn't be using page_file_mapping at all.  I'll fix
-that as part of the folio work.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 486aa94ecf1d..951dae4e7175 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5906,7 +5906,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+ 				      lpage_disallowed_link);
+ 		WARN_ON_ONCE(!sp->lpage_disallowed);
+ 		if (is_tdp_mmu_page(sp)) {
+-			flush = kvm_tdp_mmu_zap_sp(kvm, sp);
++			flush |= kvm_tdp_mmu_zap_sp(kvm, sp);
+ 		} else {
+ 			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
+ 			WARN_ON_ONCE(sp->lpage_disallowed);
+-- 
+2.26.2
+
