@@ -2,233 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6D4355A02
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3085C355A04
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346765AbhDFRIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51920 "EHLO mail.kernel.org"
+        id S1346770AbhDFRJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:09:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45674 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232822AbhDFRIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93F25610CC;
-        Tue,  6 Apr 2021 17:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617728915;
-        bh=edUzF5nJv0vwtrQnLt0WqWx2dJz93v6JQ8nfxVFT+Pg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EJEusLmGIB3wcSA1NdCl8ZZ5/H2kB+o0U7+LoQTb94T24cUw6JjuNEThslx1eBh/W
-         TPZ/qGrO7GPmm1itdIVr4TcXkZtyKem6lC5qBAwiZPQyxVmVkgmO1KvFE0yDdzPkUf
-         T6tyGxJrYRtiRzRIEeTdLXtrERmyzZgSLWC2oEMTRGtPQfND5hcclG7dIgH7x+0fK0
-         3nZS+FeWta12S4uqiOqy/oRBSs5nyB4b6r0JEFKPJWQ1U+i5A5C4DXave8AgO77YoV
-         BHkGoahkoI4CJ/zpcNGn8JmUp6Jceqkuq8o+Y2X0iUqTj30wBv5HE3nUaJXGLBm4bg
-         qkDYKuGQixrsQ==
-Date:   Tue, 6 Apr 2021 12:08:34 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Yue Wang <yue.wang@Amlogic.com>,
-        Jonathan Chocron <jonnyc@amazon.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] PCI: dwc: Change the inheritance between the abstracted
- structures
-Message-ID: <20210406170834.GA1716535@bjorn-Precision-5520>
+        id S1346779AbhDFRJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:09:09 -0400
+Received: from zn.tnic (p200300ec2f0a0d00e4e63576b95994ce.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:e4e6:3576:b959:94ce])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F13B71EC013E;
+        Tue,  6 Apr 2021 19:08:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617728940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=X/4il9+u5NGx6e8joEGNncq67rj1sofT2TPhRQbDZwU=;
+        b=AaUvkI0XbqUzMXBrdhT5EaG9z/qWVZ9lPo8sMa5BEmBRwAetBFc+iSrSEqK+y2RCLxa5dr
+        Db3PR7DPTGuB1yboTXPhaZoEoHIcdZ+le0Jcpj79fT+JAwF3zV34soN7lDqJGSh5GrEJqo
+        3bGbbqi0IlB7it3ISDdXxLHP7EuS6ng=
+Date:   Tue, 6 Apr 2021 19:08:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 13/25] x86/sgx: Add helpers to expose ECREATE and
+ EINIT to KVM
+Message-ID: <20210406170858.GN17806@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com>
+ <20210405090759.GB19485@zn.tnic>
+ <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
+ <20210406073917.GA17806@zn.tnic>
+ <20210406205958.084147e365d04d066e4357c1@intel.com>
+ <20210406090901.GH17806@zn.tnic>
+ <20210406212424.86d6d4533b144d4621ecb385@intel.com>
+ <20210406093211.GI17806@zn.tnic>
+ <20210406214152.8c4d40679bd6a5e9b632637f@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210406092825.24579-1-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20210406214152.8c4d40679bd6a5e9b632637f@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 05:28:25PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Tue, Apr 06, 2021 at 09:41:52PM +1200, Kai Huang wrote:
+> > Ok, I'll make the changes and you can redo the KVM rest ontop.
+> > 
 > 
-> Currently the core struct dw_pcie includes both struct pcie_port
-> and dw_pcie_ep and the RC and EP platform drivers directly
-> includes the dw_pcie. So it results in a RC or EP platform driver
-> has 2 indirect parents pcie_port and dw_pcie_ep, but it doesn't
-> make sense let RC platform driver includes the dw_pcie_ep and
-> so does the EP platform driver.
-> 
-> This patch makes the struct pcie_port and dw_pcie_ep includes
-> the core struct dw_pcie and the RC and EP platform drivers
-> include struct pcie_port and dw_pcie_ep respectively.
+> Thank you!
 
-I really like the way this patch is heading.  There's a lot of
-historical cruft in these drivers and this is a good step to cleaning
-it up.  Thanks a lot for working on this!
+I.e., something like this:
 
-What does this patch apply to?  It doesn't apply cleanly to either my
-"main" branch or the "next" branch.  Try to send things that apply to
-"main" and if it needs to apply on top of something else, mention what
-that is.
+---
+From: Sean Christopherson <sean.j.christopherson@intel.com>
+Date: Fri, 19 Mar 2021 20:23:08 +1300
+Subject: [PATCH] x86/sgx: Add helpers to expose ECREATE and EINIT to KVM
 
-> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-> index 12726c63366f..0e914df6eaba 100644
-> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
-> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-> @@ -85,7 +85,8 @@
->  #define PCIE_B0_B1_TSYNCEN				BIT(0)
->  
->  struct dra7xx_pcie {
-> -	struct dw_pcie		*pci;
-> +	struct pcie_port	*pp;
-> +	struct dw_pcie_ep	*ep;
+The host kernel must intercept ECREATE to impose policies on guests, and
+intercept EINIT to be able to write guest's virtual SGX_LEPUBKEYHASH MSR
+values to hardware before running guest's EINIT so it can run correctly
+according to hardware behavior.
 
-1) This is not related to your patch, but I think "pcie_port" used to
-   make more sense before we had endpoint drivers, but now it's the
-   wrong name.  Root Ports and Endpoints both have "PCIe Ports", but
-   IIUC "struct pcie_port" only applies to Root Ports, and "struct
-   dw_pcie_ep" is the analogue for Endpoints.
+Provide wrappers around __ecreate() and __einit() to hide the ugliness
+of overloading the ENCLS return value to encode multiple error formats
+in a single int.  KVM will trap-and-execute ECREATE and EINIT as part
+of SGX virtualization, and reflect ENCLS execution result to guest by
+setting up guest's GPRs, or on an exception, injecting the correct fault
+based on return value of __ecreate() and __einit().
 
-   It would be nice to coordinate these names with a separate patch,
-   e.g., maybe "dw_pcie_rc" (or "dw_pcie_rp") and "dw_pcie_ep".
+Use host userspace addresses (provided by KVM based on guest physical
+address of ENCLS parameters) to execute ENCLS/EINIT when possible.
+Accesses to both EPC and memory originating from ENCLS are subject to
+segmentation and paging mechanisms.  It's also possible to generate
+kernel mappings for ENCLS parameters by resolving PFN but using
+__uaccess_xx() is simpler.
 
-2) We allocate struct dra7xx_pcie for both RPs and EPs.  But IIUC, RPs
-   only use "struct pcie_port", and EPs only use "struct dw_pcie_ep".
-   It doesn't seem right to keep both pointers when only one is ever
-   used.
+ [ bp: Return early if the __user memory accesses fail. ]
 
-3) I'm not sure why these should be pointers at all.  Why can't they
-   be directly embedded, e.g., "struct pcie_port pp" instead of
-   "struct pcie_port *pp"?  Obviously this would have to be done in a
-   way that we allocate an RC-specific structure or an EP-specific
-   one.
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com
+---
+ arch/x86/include/asm/sgx.h     |   7 ++
+ arch/x86/kernel/cpu/sgx/virt.c | 117 +++++++++++++++++++++++++++++++++
+ 2 files changed, 124 insertions(+)
 
->  	void __iomem		*base;		/* DT ti_conf */
->  	int			phy_count;	/* DT phy-names count */
->  	struct phy		**phy;
+diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+index 3b025afec0a7..954042e04102 100644
+--- a/arch/x86/include/asm/sgx.h
++++ b/arch/x86/include/asm/sgx.h
+@@ -365,4 +365,11 @@ struct sgx_sigstruct {
+  * comment!
+  */
+ 
++#ifdef CONFIG_X86_SGX_KVM
++int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
++		     int *trapnr);
++int sgx_virt_einit(void __user *sigstruct, void __user *token,
++		   void __user *secs, u64 *lepubkeyhash, int *trapnr);
++#endif
++
+ #endif /* _ASM_X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 259cc46ad78c..7d221eac716a 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -257,3 +257,120 @@ int __init sgx_vepc_init(void)
+ 
+ 	return misc_register(&sgx_vepc_dev);
+ }
++
++/**
++ * sgx_virt_ecreate() - Run ECREATE on behalf of guest
++ * @pageinfo:	Pointer to PAGEINFO structure
++ * @secs:	Userspace pointer to SECS page
++ * @trapnr:	trap number injected to guest in case of ECREATE error
++ *
++ * Run ECREATE on behalf of guest after KVM traps ECREATE for the purpose
++ * of enforcing policies of guest's enclaves, and return the trap number
++ * which should be injected to guest in case of any ECREATE error.
++ *
++ * Return:
++ * -  0:	ECREATE was successful.
++ * - <0:	on error.
++ */
++int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
++		     int *trapnr)
++{
++	int ret;
++
++	/*
++	 * @secs is an untrusted, userspace-provided address.  It comes from
++	 * KVM and is assumed to be a valid pointer which points somewhere in
++	 * userspace.  This can fault and call SGX or other fault handlers when
++	 * userspace mapping @secs doesn't exist.
++	 *
++	 * Add a WARN() to make sure @secs is already valid userspace pointer
++	 * from caller (KVM), who should already have handled invalid pointer
++	 * case (for instance, made by malicious guest).  All other checks,
++	 * such as alignment of @secs, are deferred to ENCLS itself.
++	 */
++	if (WARN_ON_ONCE(!access_ok(secs, PAGE_SIZE)))
++		return -EINVAL;
++
++	__uaccess_begin();
++	ret = __ecreate(pageinfo, (void *)secs);
++	__uaccess_end();
++
++	if (encls_faulted(ret)) {
++		*trapnr = ENCLS_TRAPNR(ret);
++		return -EFAULT;
++	}
++
++	/* ECREATE doesn't return an error code, it faults or succeeds. */
++	WARN_ON_ONCE(ret);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(sgx_virt_ecreate);
++
++static int __sgx_virt_einit(void __user *sigstruct, void __user *token,
++			    void __user *secs)
++{
++	int ret;
++
++	/*
++	 * Make sure all userspace pointers from caller (KVM) are valid.
++	 * All other checks deferred to ENCLS itself.  Also see comment
++	 * for @secs in sgx_virt_ecreate().
++	 */
++#define SGX_EINITTOKEN_SIZE	304
++	if (WARN_ON_ONCE(!access_ok(sigstruct, sizeof(struct sgx_sigstruct)) ||
++			 !access_ok(token, SGX_EINITTOKEN_SIZE) ||
++			 !access_ok(secs, PAGE_SIZE)))
++		return -EINVAL;
++
++	__uaccess_begin();
++	ret = __einit((void *)sigstruct, (void *)token, (void *)secs);
++	__uaccess_end();
++
++	return ret;
++}
++
++/**
++ * sgx_virt_einit() - Run EINIT on behalf of guest
++ * @sigstruct:		Userspace pointer to SIGSTRUCT structure
++ * @token:		Userspace pointer to EINITTOKEN structure
++ * @secs:		Userspace pointer to SECS page
++ * @lepubkeyhash:	Pointer to guest's *virtual* SGX_LEPUBKEYHASH MSR values
++ * @trapnr:		trap number injected to guest in case of EINIT error
++ *
++ * Run EINIT on behalf of guest after KVM traps EINIT. If SGX_LC is available
++ * in host, SGX driver may rewrite the hardware values at wish, therefore KVM
++ * needs to update hardware values to guest's virtual MSR values in order to
++ * ensure EINIT is executed with expected hardware values.
++ *
++ * Return:
++ * -  0:	EINIT was successful.
++ * - <0:	on error.
++ */
++int sgx_virt_einit(void __user *sigstruct, void __user *token,
++		   void __user *secs, u64 *lepubkeyhash, int *trapnr)
++{
++	int ret;
++
++	if (!cpu_feature_enabled(X86_FEATURE_SGX_LC)) {
++		ret = __sgx_virt_einit(sigstruct, token, secs);
++	} else {
++		preempt_disable();
++
++		sgx_update_lepubkeyhash(lepubkeyhash);
++
++		ret = __sgx_virt_einit(sigstruct, token, secs);
++		preempt_enable();
++	}
++
++	/* Propagate up the error from the WARN_ON_ONCE in __sgx_virt_einit() */
++	if (ret == -EINVAL)
++		return ret;
++
++	if (encls_faulted(ret)) {
++		*trapnr = ENCLS_TRAPNR(ret);
++		return -EFAULT;
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sgx_virt_einit);
+-- 
+2.29.2
 
-> @@ -796,6 +798,17 @@ static int __init dra7xx_pcie_probe(struct platform_device *pdev)
->  
->  	switch (mode) {
->  	case DW_PCIE_RC_TYPE:
-> +		pp = devm_kzalloc(dev, sizeof(*pp), GFP_KERNEL);
+-- 
+Regards/Gruss,
+    Boris.
 
-We know "mode" right after the of_match_device() at the top of this
-function.  I think we should allocate the RC or EP structure way up
-there, ideally with a single alloc for everything we need
-(dra7xx_pcie, pcie_port, dw_pcie_ep, etc).  That would be fewer allocs
-and would simplify error handling because if the alloc fails we
-wouldn't have to undo anything.
-
-> +		if (!pp) {
-> +			ret = -ENOMEM;
-> +			goto err_gpio;
-> +		}
-> +
-> +		pci = &pp->pcie;
-> +		pci->dev = dev;
-> +		pci->ops = &dw_pcie_ops;
-> +		dra7xx->pp = pp;
-> +
->  		if (!IS_ENABLED(CONFIG_PCI_DRA7XX_HOST)) {
->  			ret = -ENODEV;
->  			goto err_gpio;
-> @@ -813,6 +826,17 @@ static int __init dra7xx_pcie_probe(struct platform_device *pdev)
->  			goto err_gpio;
->  		break;
->  	case DW_PCIE_EP_TYPE:
-> +		ep = devm_kzalloc(dev, sizeof(*ep), GFP_KERNEL);
-> +		if (!ep) {
-> +			ret = -ENOMEM;
-> +			goto err_gpio;
-> +		}
-> +
-> +		pci = &ep->pcie;
-> +		pci->dev = dev;
-> +		pci->ops = &dw_pcie_ops;
-> +		dra7xx->ep = ep;
-> +
->  		if (!IS_ENABLED(CONFIG_PCI_DRA7XX_EP)) {
->  			ret = -ENODEV;
->  			goto err_gpio;
-
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -171,12 +171,44 @@ enum dw_pcie_device_mode {
->  	DW_PCIE_RC_TYPE,
->  };
->  
-> +struct dw_pcie_ops {
-> +	u64	(*cpu_addr_fixup)(struct dw_pcie *pcie, u64 cpu_addr);
-> +	u32	(*read_dbi)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
-> +			    size_t size);
-> +	void	(*write_dbi)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
-> +			     size_t size, u32 val);
-> +	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
-> +			      size_t size, u32 val);
-> +	int	(*link_up)(struct dw_pcie *pcie);
-> +	int	(*start_link)(struct dw_pcie *pcie);
-> +	void	(*stop_link)(struct dw_pcie *pcie);
-> +};
-
-I *think* this is a pure code move.  It would make the patch easier to
-read if you did the move in a separate patch to reduce the size of
-this one.
-
-> +struct dw_pcie {
-> +	struct device		*dev;
-> +	void __iomem		*dbi_base;
-> +	void __iomem		*dbi_base2;
-> +	/* Used when iatu_unroll_enabled is true */
-> +	void __iomem		*atu_base;
-> +	size_t			atu_size;
-> +	u32			num_ib_windows;
-> +	u32			num_ob_windows;
-> +	const struct dw_pcie_ops *ops;
-> +	unsigned int		version;
-> +	int			num_lanes;
-> +	int			link_gen;
-> +	u8			n_fts[2];
-> +	bool			iatu_unroll_enabled: 1;
-> +	bool			io_cfg_atu_shared: 1;
-> +};
-
-Same here.
-
->  struct kirin_pcie {
-> -	struct dw_pcie	*pci;
-> -	void __iomem	*apb_base;
-> -	void __iomem	*phy_base;
-> -	struct regmap	*crgctrl;
-> -	struct regmap	*sysctrl;
-> -	struct clk	*apb_sys_clk;
-> -	struct clk	*apb_phy_clk;
-> -	struct clk	*phy_ref_clk;
-> -	struct clk	*pcie_aclk;
-> -	struct clk	*pcie_aux_clk;
-> -	int		gpio_id_reset;
-> +	struct pcie_port	*pp;
-> +	void __iomem		*apb_base;
-> +	void __iomem		*phy_base;
-> +	struct regmap		*crgctrl;
-> +	struct regmap		*sysctrl;
-> +	struct clk		*apb_sys_clk;
-> +	struct clk		*apb_phy_clk;
-> +	struct clk		*phy_ref_clk;
-> +	struct clk		*pcie_aclk;
-> +	struct clk		*pcie_aux_clk;
-> +	int			gpio_id_reset;
-
-Put reformats like this in a separate patch that doesn't actually
-change any code (no new or deleted members).  Then this patch will be
-smaller and the important changes will be more obvious.
+https://people.kernel.org/tglx/notes-about-netiquette
