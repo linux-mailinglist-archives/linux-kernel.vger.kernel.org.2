@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED85355593
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128C4355577
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244133AbhDFNo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237873AbhDFNoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:44:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B17C06174A;
-        Tue,  6 Apr 2021 06:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oCPXDXtMqE1iBbjtGFhAKOgXXmbi1VeB5Pwnd1OKQHk=; b=HyhqlYamzLQm+qtvlwj6xlPxsh
-        NRyXUpypC31oDyOZifkLLQUAf7aAokbqInobLmt1MHCc9ChAkafGqDul7uuae0v9vTHySHQeCa8q9
-        GdpMmjgCRLqdn4JPL6woBwwwIUZlg8rok/2TodmONzck+4da+uddu3J88b+SuvvX2ZSR623HZjoqt
-        aMTKE0kk+X868hgAUANH1Lg/x8Pi1DwEJEuh05c6XBE+ZZovN+HuXs/OIRUzocuuuPBB6jNG5P72/
-        etD8LUjGSmqQqGt7MKWZqCoozjDqMx79EESHUH8g/NSP7aJrMRI4GJea7yfS65u5ndLM7+1lsG09p
-        E+GZgkeg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTlxz-00CsSK-1D; Tue, 06 Apr 2021 13:42:39 +0000
-Date:   Tue, 6 Apr 2021 14:42:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 12/27] mm/filemap: Add folio_offset and
- folio_file_offset
-Message-ID: <20210406134203.GK3062550@infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-13-willy@infradead.org>
+        id S244084AbhDFNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:42:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhDFNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:42:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED662613C3;
+        Tue,  6 Apr 2021 13:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617716560;
+        bh=PNSRvRJY7wNXgKXcqn0h92KOJATNVLrIurobIv0tfbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QLE/JHP05sEEGqefrp80fT+YGjDp4aHuOFDI3i2gCl73iTeqePl1fbRqwdovdBTXB
+         MaHXHUkn4wLNTC8LgUtqftaonOvjyN4jlN+wF6EJNIEIC/XmH2xemqpSJ6aaWtajw9
+         NbMhvrscGCXv9MvM3a0pnONPahmsBSHghMGdrXeg=
+Date:   Tue, 6 Apr 2021 15:42:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: use printk_safe context at tty_msg()
+Message-ID: <YGxlTYinSceb6cyL@kroah.com>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <a7f5103f-0912-30e1-611c-36c18a1eefd6@kernel.org>
+ <62546379-a2b8-bbbb-0799-3afd9b15960a@i-love.sakura.ne.jp>
+ <YGwJZWwQCNQwlVLK@kroah.com>
+ <4898f140-d7ed-14d3-e24f-8f51fc6bc003@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331184728.1188084-13-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <4898f140-d7ed-14d3-e24f-8f51fc6bc003@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:47:13PM +0100, Matthew Wilcox (Oracle) wrote:
-> These are just wrappers around their page counterpart.
+On Tue, Apr 06, 2021 at 08:16:43PM +0900, Tetsuo Handa wrote:
+> On 2021/04/06 16:10, Greg Kroah-Hartman wrote:
+> > On Tue, Apr 06, 2021 at 02:31:43PM +0900, Tetsuo Handa wrote:
+> >> On 2021/04/06 13:51, Jiri Slaby wrote:
+> >>> On 03. 04. 21, 6:14, Tetsuo Handa wrote:
+> >>>> --- a/include/linux/tty.h
+> >>>> +++ b/include/linux/tty.h
+> >>>> @@ -14,6 +14,7 @@
+> >>>>   #include <uapi/linux/tty.h>
+> >>>>   #include <linux/rwsem.h>
+> >>>>   #include <linux/llist.h>
+> >>>> +#include <../../kernel/printk/internal.h>
+> >>>
+> >>> Including printk's internal header in linux/tty.h doesn't look correct to me.
+> >>>
+> >>
+> >> This is because this patch wants __printk_safe_enter()/__printk_safe_exit()
+> >> without #ifdef'ing CONFIG_PRINTK.
+> > 
+> > Then those functions need to be "properly" exported, not placed only in
+> > an "internal.h" file that obviously should not be included from anywhere
+> > like this.
+> > 
+> >> Peter and Sergey, what should we do?
+> >> Can we move printk_safe_enter_irqsave()/printk_safe_exit_irqrestore() to include/linux/printk.h ?
+> > 
+> > Are you sure that is the only way to resolve this?
+> 
+> Publishing printk_safe_enter_irqsave() etc. was once proposed at
+> https://lkml.kernel.org/r/20181016050428.17966-3-sergey.senozhatsky@gmail.com and
+> Peter Zijlstra did not like such change. But we reconfirmed that "tty_port lock must
+> switch to printk_safe" at https://lkml.kernel.org/r/20190219013254.GA20023@jagdpanzerIV .
+> 
+> Two years has elapsed since a completely new printk implementation which would not
+> use printk_safe context was proposed, but printk_safe context is still remaining.
+> Therefore, we might need to tolerate, with a warning that printk_safe_enter_irqsave()
+> etc. are not intended for general use, use of printk_safe context for tty_msg() and
+> tty_buffer_alloc().
 
-Looks good,
+The printk work is still ongoing, perhaps work with those developers on
+this?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+thanks,
+
+greg k-h
