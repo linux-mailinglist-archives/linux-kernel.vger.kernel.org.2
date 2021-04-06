@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8CB354DB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB05354DB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244244AbhDFHU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:20:58 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51822 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232943AbhDFHU5 (ORCPT
+        id S244256AbhDFHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:21:29 -0400
+Received: from hs01.dk-develop.de ([173.249.23.66]:40976 "EHLO
+        hs01.dk-develop.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232943AbhDFHV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:20:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UUfxBqa_1617693641;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUfxBqa_1617693641)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 06 Apr 2021 15:20:48 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     linus.walleij@linaro.org
-Cc:     bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] gpio: gpio-it87: remove unused code
-Date:   Tue,  6 Apr 2021 15:20:39 +0800
-Message-Id: <1617693639-49182-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 6 Apr 2021 03:21:28 -0400
+Date:   Tue, 6 Apr 2021 09:21:15 +0200
+From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+Message-ID: <YGwL67WBGKbWU3TH@arch-linux>
+References: <20210331183524.GV1463@shell.armlinux.org.uk>
+ <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
+ <20210401084857.GW1463@shell.armlinux.org.uk>
+ <YGZvGfNSBBq/92D+@arch-linux>
+ <20210402125858.GB1463@shell.armlinux.org.uk>
+ <YGoSS7llrl5K6D+/@arch-linux>
+ <YGsRwxwXILC1Tp2S@lunn.ch>
+ <YGtdv++nv3H5K43E@arch-linux>
+ <YGtksD5p5JVpnazu@lunn.ch>
+ <YGuPcNPXiQZkEehh@arch-linux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGuPcNPXiQZkEehh@arch-linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
-
-drivers/gpio/gpio-it87.c:128:20: warning: unused function 'superio_outw'
-[-Wunused-function].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpio/gpio-it87.c | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/drivers/gpio/gpio-it87.c b/drivers/gpio/gpio-it87.c
-index 8f1be34..f332341 100644
---- a/drivers/gpio/gpio-it87.c
-+++ b/drivers/gpio/gpio-it87.c
-@@ -125,14 +125,6 @@ static inline int superio_inw(int reg)
- 	return val;
- }
- 
--static inline void superio_outw(int val, int reg)
--{
--	outb(reg++, REG);
--	outb(val >> 8, VAL);
--	outb(reg, REG);
--	outb(val, VAL);
--}
--
- static inline void superio_set_mask(int mask, int reg)
- {
- 	u8 curr_val = superio_inb(reg);
--- 
-1.8.3.1
-
+On Tue, Apr 06, 2021 at 12:30:11AM +0200, Danilo Krummrich wrote:
+> On Mon, Apr 05, 2021 at 09:27:44PM +0200, Andrew Lunn wrote:
+> > > Now, instead of encoding this information of the bus' capabilities at both
+> > > places, I'd propose just checking the mii_bus->capabilities field in the
+> > > mdiobus_c45_*() functions. IMHO this would be a little cleaner, than having two
+> > > places where this information is stored. What do you think about that?
+> > 
+> > You will need to review all the MDIO bus drivers to make sure they
+> > correctly set the capabilities. There is something like 55 using
+> > of_mdiobus_register() and 45 using mdiobus_register(). So you have 100
+> > drivers to review.
+> Yes, but I think it would be enough to look at the drivers handling the
+> MII_ADDR_C45 flag, because those are either
+> - actually capable to do C45 bus transfers or
+> - do properly return -EOPNOTSUPP.
+> 
+> I counted 27 drivers handling the MII_ADDR_C45 flag. Setting the capabilities
+> for those should be pretty easy.
+> 
+> The remaining ones, which should be about 73 then, could be left untouched,
+> because the default capability MDIOBUS_NO_CAP would indicate they can C22 only.
+> Since they don't handle the MII_ADDR_C45 flag at all, this should be the
+> correct assumption.
+Forgot to mention, this would also automatically fixup that userspace C45
+requests for those "remaining" drivers results in garbage on the bus. :-)
+> > 
+> > 	Andrew
+> > 
