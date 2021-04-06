@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89917354DC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5200354DCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244301AbhDFHWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244297AbhDFHWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:22:30 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA489C06174A;
-        Tue,  6 Apr 2021 00:22:21 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 30so6630577qva.9;
-        Tue, 06 Apr 2021 00:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=94LGQmKu191Q4NjqlbEm8nCq1fepKQP22a6U6i4fvKM=;
-        b=d2wzKAuRhUOtQz3lioUTVhDmOVR6Sgf7i14zcUb4vuL0tjGr4wX2QnyUkRRm3RBkGr
-         G0faRMJ0gvEcQUULecavIK8hiMVMHGv32VrenMELE0kSPfj4FLAo0xg/zPo7FMpYZcXS
-         jhwF3pVWx5tBe+fi5N8Qex3WeVBcXRnRaYYtg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=94LGQmKu191Q4NjqlbEm8nCq1fepKQP22a6U6i4fvKM=;
-        b=WaYlDpYF8JDe9GDdXIN0O6rO1Ez7ftqyVbI5zrBsupWHvT2SVVTelZ12oGeRZ/Zgqh
-         +A5JkR0vX3++qKJZO6U6SLyQXZofoL5qj40KY7oKwbhpceWj7wDiMBJYzh/pOA1RMCUP
-         yz0TQFpj9/raJC8ScD5goQOL0KfiV4pdhvU6l0RTTefkNe4SZIEpSf0beD7QelxV42sD
-         9ikYO3QHqN88l6rv4RMrZOkbDGy9kqUPpXU25p+yNzcWVCn/zfBcTRwZ3DPnZH1jVmNZ
-         jeS4ub0CaWk6V2vsP8+nrqSLANxCojUatU42RPauiAvlFT9AKTXfIW2kYZ48dtk7JY6t
-         FJrQ==
-X-Gm-Message-State: AOAM5336fFtVO8blG0ec0Oqr8ZM+BlY7sGXBDJuWy2XVY64lsY7aTxhn
-        umZlmIIYz44HZ9CpMIevuRuoFfwPrQT4GC4gLzIiS9ctsgg=
-X-Google-Smtp-Source: ABdhPJxDBqEBj5jOidtLo+UqLFoNeCKgX5KSHphsBLUt31DQ5VmmSL+R0vv+5rpslZtCHNtaGXIMxYuYbBmEXgehBXU=
-X-Received: by 2002:a05:6214:2607:: with SMTP id gu7mr27129615qvb.18.1617693741145;
- Tue, 06 Apr 2021 00:22:21 -0700 (PDT)
+        id S233436AbhDFHYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:24:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:53241 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhDFHYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 03:24:53 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1C9C568B02; Tue,  6 Apr 2021 09:24:43 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 09:24:43 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] MIPS: Remove get_fs/set_fs
+Message-ID: <20210406072443.GA7626@lst.de>
+References: <20210401125639.42963-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-References: <20210209171235.20624-1-eajames@linux.ibm.com> <38abb74465bacad2ab4a62424d7cef06f344dc4c.camel@linux.ibm.com>
-In-Reply-To: <38abb74465bacad2ab4a62424d7cef06f344dc4c.camel@linux.ibm.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 6 Apr 2021 07:22:09 +0000
-Message-ID: <CACPK8XdWeJN9r3fsLLXn0OYxmM7NDAbONJvnKy+23sEFZMJaUw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] occ: fsi and hwmon: Fixes for polling un-initialized OCC
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-fsi@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 at 15:34, Eddie James <eajames@linux.ibm.com> wrote:
->
-> On Tue, 2021-02-09 at 11:12 -0600, Eddie James wrote:
-> > In the event that the OCC is not initialized when the driver sends a
-> > poll
-> > command, the driver may receive an invalid response. This isn't an
-> > error
-> > condition unless there is no valid response before the timeout
-> > expires. So
-> > change the starting sequence number and check for the un-initialized
-> > OCC
-> > state before returning the response in order to detect this condition
-> > and
-> > continue waiting if necessary.
->
-> Hi Joel,
->
-> Do you have any comments on the FSI side of this series?
+Btw, there is a bunch of cleanups that would fit in nicely on top of
+this:
 
-They look fine to me. Guenter, if you want to take the series through
-the hwmon tree I do not anticipate any conflicts.
+ - remove the unused __invoke_copy_from function
+ - fold __get_user_check into get_user as it is the only caller
+ - fold __get_user_nocheck into __get_user as it is the only caller
+ - fold __put_user_check into put_user as it is the only caller
+ - fold __put_user_nocheck into __put_user as it is the only caller
+ - implement get_user in terms of __get_user to document the difference
+   better and to remove __get_user_common
+ - implement put_user in terms of __put_user to document the difference
+   better and to remove __get_user_common
+ - remove __put_user_unknown/__get_user_unknown and replace them with
+   BUILD_BUG_ON()
 
-Cheers,
 
-Joel
+On Thu, Apr 01, 2021 at 02:56:33PM +0200, Thomas Bogendoerfer wrote:
+> This series replaces get_fs/set_fs and removes it from MIPS arch code.
+> 
+> Changes in v3:
+> - use get_user/get_kernel_nofault for helper functions
+> 
+> Changes in v2:
+> - added copy_from_kernel_nofault_allowed() for !EVA to restrict
+>   access of __get/__put_kernel_nofault
+> - replaced __get_data macro by helper functions
+> - removed leftover set_fs calls in ftrace.c
+> - further cleanup uaccess.h
+> 
+> Thomas Bogendoerfer (4):
+>   MIPS: kernel: Remove not needed set_fs calls
+>   MIPS: uaccess: Added __get/__put_kernel_nofault
+>   MIPS: uaccess: Remove get_fs/set_fs call sites
+>   MIPS: Remove get_fs/set_fs
+> 
+>  arch/mips/Kconfig                   |   1 -
+>  arch/mips/include/asm/processor.h   |   4 -
+>  arch/mips/include/asm/thread_info.h |   6 -
+>  arch/mips/include/asm/uaccess.h     | 436 +++++++++++-----------------
+>  arch/mips/kernel/access-helper.h    |  18 ++
+>  arch/mips/kernel/asm-offsets.c      |   1 -
+>  arch/mips/kernel/ftrace.c           |   8 -
+>  arch/mips/kernel/process.c          |   2 -
+>  arch/mips/kernel/scall32-o32.S      |   4 +-
+>  arch/mips/kernel/traps.c            | 105 +++----
+>  arch/mips/kernel/unaligned.c        | 199 +++++--------
+>  arch/mips/lib/memcpy.S              |  28 +-
+>  arch/mips/lib/memset.S              |   3 -
+>  arch/mips/lib/strncpy_user.S        |  48 +--
+>  arch/mips/lib/strnlen_user.S        |  44 +--
+>  arch/mips/mm/Makefile               |   4 +
+>  arch/mips/mm/maccess.c              |  10 +
+>  17 files changed, 357 insertions(+), 564 deletions(-)
+>  create mode 100644 arch/mips/kernel/access-helper.h
+>  create mode 100644 arch/mips/mm/maccess.c
+> 
+> -- 
+> 2.29.2
+---end quoted text---
