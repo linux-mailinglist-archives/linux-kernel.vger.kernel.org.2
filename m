@@ -2,269 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3248A355FA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FF2355FAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242854AbhDFXmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234385AbhDFXmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:42:20 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FFEC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 16:42:11 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id l76so11596819pga.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+e4R9WhLCCBJ4gDbadZQs4tZRpdpcvcJbhVk8v4Qqw4=;
-        b=IH7b9daRloX8JtyYrDtrasOOM1rOBc3PXLwvOJgBblhR8BDkCzBON39z0P3vMQCZJG
-         WGW2NBAve+ZZ5SZ/yPewgk/Gif7KDPbK+2Km8kKCrF6hwIjEQrq+iSzy+adDd5ZxQTtk
-         7HdNeTuPTAI5JsoEnMJ5mu1tC7dVTU4MYjx8V5NUtzU6WqAKMh3krxfVT0xuGTz1RmRj
-         iI8uCjBd1s6BSA2rfv7Rven/2nt5Arat7CeFho6tBIuqsGpUqhud91gLar5+gecB4lmI
-         9gUaSaQQYHEyPoowbsq49LtxbzPQnpPr2zjX/WHMM266ODHy1MMiv9hGDTsyl0XFPsNL
-         8iCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+e4R9WhLCCBJ4gDbadZQs4tZRpdpcvcJbhVk8v4Qqw4=;
-        b=qzVQUTLudx2+tAAD7gSxSbYqZpiOofoVIlnVTRh9OicQxQZpjxaYixH3B6PopTvZfc
-         IITF1CCzqqmD4o3q5kaAGl8Ex0DbRGLpDpx8MB9kPxmhSuY7jzWek4KnoLox6wetdjim
-         eBgi3q9Fkio3HUTJKWUjEVxavJ8REyvvwTCKXXlW6PwdxuTChZZjFVcTq5++g+bl7tV1
-         FerhqBzU43ixgxiMmprO5naCn/7bn2vmIs/snNODzhJGBb3Y3UdkBSisV9RlHfpCntMw
-         XC8iSErcsG8eEWF3W/Y123MP8LL0IBCzgigQ5V6p6zvJt04kJRya72FNY/CP9LnsPgl6
-         tSjw==
-X-Gm-Message-State: AOAM531F7NcFpgw5BihoA1ZFf8Ge8OeM4lr3+CtlVuNHTrSg8+BbMadA
-        EDbidO+Zb7sNNZHs+AUpZ/gc6w==
-X-Google-Smtp-Source: ABdhPJxnQBZeI+TY4AQhCk23FZRTQIvjxcXx09uUt2hV/+SQFx0KNOLF+8Ca4jqvlf5y6r7l69cdJw==
-X-Received: by 2002:a63:508:: with SMTP id 8mr603878pgf.220.1617752531098;
-        Tue, 06 Apr 2021 16:42:11 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c2sm19742305pfb.121.2021.04.06.16.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 16:42:10 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:42:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        wanghaibin.wang@huawei.com, Ben Gardon <bgardon@google.com>
-Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
-Message-ID: <YGzxzsRlqouaJv6a@google.com>
-References: <20200828081157.15748-1-zhukeqian1@huawei.com>
- <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
+        id S245166AbhDFXmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:42:53 -0400
+Received: from mga14.intel.com ([192.55.52.115]:2818 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231156AbhDFXmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 19:42:51 -0400
+IronPort-SDR: MqhIwWER+BprRSXEc6RgQZnbEr8DlXAl5RAWCBFcnNie++jaSrpuWze0ueKu2CnmYmWmU4XP4n
+ wXwZ2gyRyeeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="192718855"
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="192718855"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 16:42:43 -0700
+IronPort-SDR: DkcPvtxojHJVkntwpT9KU/HMKuS3RVxVSTgrNSu9VDA9bYM/3Qd1Qb4gjAFeNCzqL7wFCMaFWA
+ YapiBsF4YR9w==
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="418544647"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.211.218]) ([10.212.211.218])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 16:42:43 -0700
+Subject: Re: [PATCH v2 01/24] x86/resctrl: Split struct rdt_resource
+To:     James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20210312175849.8327-1-james.morse@arm.com>
+ <20210312175849.8327-2-james.morse@arm.com>
+ <4d2cabac-a3a8-68a1-381e-44df66b61345@intel.com>
+ <6a8ad187-119b-c279-3db9-0b074138fd9f@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <a0d56d3d-95aa-e3c2-5dff-23b7c23e242d@intel.com>
+Date:   Tue, 6 Apr 2021 16:42:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
+In-Reply-To: <6a8ad187-119b-c279-3db9-0b074138fd9f@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Ben
+Hi James,
 
-On Tue, Apr 06, 2021, Keqian Zhu wrote:
-> Hi Paolo,
+On 4/6/2021 10:13 AM, James Morse wrote:
+> On 31/03/2021 22:35, Reinette Chatre wrote:
+>> On 3/12/2021 9:58 AM, James Morse wrote:
+>>> resctrl is the defacto Linux ABI for SoC resource partitioning features.
+>>> To support it on another architecture, it needs to be abstracted from
+>>> the features provided by Intel RDT and AMD PQoS, and moved to /fs/.
+>>>
+>>> Start by splitting struct rdt_resource, (the name is kept to keep the noise
+>>> down), and add some type-trickery to keep the foreach helpers working.
 > 
-> I plan to rework this patch and do full test. What do you think about this idea
-> (enable dirty logging for huge pages lazily)?
+>> Could you please replace "add some type-trickery" with a description of the
+>> changes(tricks?) referred to? Comments in the code would be helpful also ... helping to
+>> avoid frowning at what at first glance seems like an out-of-bounds access.
+> 
+> Sure, this paragraph is rephrased:
+> | Start by splitting struct rdt_resource, into an arch specific 'hw'
+> | struct, which contains the common resctrl structure that would be used
+> | by any architecture.
+> |
+> | The foreach helpers are most commonly used by the filesystem code,
+> | and should return the common resctrl structure. for_each_rdt_resource()
+> | is changed to walk the common structure in its parent arch specific
+> | structure.
+> 
+> and a comment above for_each_rdt_resource():
+> | /*
+> |  * To return the common struct rdt_resource, which is contained in struct
+> |  * rdt_hw_resource, walk the resctrl member of struct rdt_hw_resource.
+> |  * This makes the limit the resctrl member past the end of the array.
+> |  */
 
-Ben, don't you also have something similar (or maybe the exact opposite?) in the
-hopper?  This sounds very familiar, but I can't quite connect the dots that are
-floating around my head...
- 
-> PS: As dirty log of TDP MMU has been supported, I should add more code.
+Thank you.
+
+
+>>> Move everything that is particular to resctrl into a new header
+>>> file, keeping the x86 hardware accessors where they are. resctrl code
+>>> paths touching a 'hw' struct indicates where an abstraction is needed.
+>>
+>> This establishes the significance of this patch. Here the rdt_resource struct is split up
+>> and it is this split that guides the subsequent abstraction. Considering this I find that
+>> this description does not explain the resulting split sufficiently.
+>>
+>> Specifically, after reading the above summary I expect fs information in rdt_resource and
+>> hw information in rdt_hw_resource but that does not seem to be the case. For example,
+>> num_rmid is a property obtained from hardware but is found in rdt_resource while other
+>> hardware properties initialized at the same time are found in rdt_hw_resource. It is
+>> interesting to look at when the hardware is discovered (for example, functions like
+>> cache_alloc_hsw_probe(), __get_mem_config_intel(), __rdt_get_mem_config_amd(),
+>> rdt_get_cache_alloc_cfg()). Note how some of the discovered values end up in rdt_resource
+>> and some in rdt_hw_resource.
 > 
-> On 2020/8/28 16:11, Keqian Zhu wrote:
-> > Currently during enable dirty logging, if we're with init-all-set,
-> > we just write protect huge pages and leave normal pages untouched,
-> > for that we can enable dirty logging for these pages lazily.
-> > 
-> > It seems that enable dirty logging lazily for huge pages is feasible
-> > too, which not only reduces the time of start dirty logging, also
-> > greatly reduces side-effect on guest when there is high dirty rate.
-> > 
-> > (These codes are not tested, for RFC purpose :-) ).
-> > 
-> > Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |  3 +-
-> >  arch/x86/kvm/mmu/mmu.c          | 65 ++++++++++++++++++++++++++-------
-> >  arch/x86/kvm/vmx/vmx.c          |  3 +-
-> >  arch/x86/kvm/x86.c              | 22 +++++------
-> >  4 files changed, 62 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 5303dbc5c9bc..201a068cf43d 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1296,8 +1296,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
-> >  
-> >  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
-> >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> > -				      struct kvm_memory_slot *memslot,
-> > -				      int start_level);
-> > +				      struct kvm_memory_slot *memslot);
-> >  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> >  				   const struct kvm_memory_slot *memslot);
-> >  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 43fdb0c12a5d..4b7d577de6cd 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1625,14 +1625,45 @@ static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
-> >  }
-> >  
-> >  /**
-> > - * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
-> > + * kvm_mmu_write_protect_largepage_masked - write protect selected largepages
-> >   * @kvm: kvm instance
-> >   * @slot: slot to protect
-> >   * @gfn_offset: start of the BITS_PER_LONG pages we care about
-> >   * @mask: indicates which pages we should protect
-> >   *
-> > - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> > - * logging we do not have any such mappings.
-> > + * @ret: true if all pages are write protected
-> > + */
-> > +static bool kvm_mmu_write_protect_largepage_masked(struct kvm *kvm,
-> > +				    struct kvm_memory_slot *slot,
-> > +				    gfn_t gfn_offset, unsigned long mask)
-> > +{
-> > +	struct kvm_rmap_head *rmap_head;
-> > +	bool protected, all_protected;
-> > +	gfn_t start_gfn = slot->base_gfn + gfn_offset;
-> > +	int i;
-> > +
-> > +	all_protected = true;
-> > +	while (mask) {
-> > +		protected = false;
-> > +		for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
-> > +			rmap_head = __gfn_to_rmap(start_gfn + __ffs(mask), i, slot);
-> > +			protectd |= __rmap_write_protect(kvm, rmap_head, false);
-> > +		}
-> > +
-> > +		all_protected &= protectd;
-> > +		/* clear the first set bit */
-> > +		mask &= mask - 1;
-> > +	}
-> > +
-> > +	return all_protected;
-> > +}
-> > +
-> > +/**
-> > + * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
-> > + * @kvm: kvm instance
-> > + * @slot: slot to protect
-> > + * @gfn_offset: start of the BITS_PER_LONG pages we care about
-> > + * @mask: indicates which pages we should protect
-> >   */
-> >  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
-> >  				     struct kvm_memory_slot *slot,
-> > @@ -1679,18 +1710,25 @@ EXPORT_SYMBOL_GPL(kvm_mmu_clear_dirty_pt_masked);
-> >  
-> >  /**
-> >   * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
-> > - * PT level pages.
-> > - *
-> > - * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
-> > - * enable dirty logging for them.
-> > - *
-> > - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> > - * logging we do not have any such mappings.
-> > + * dirty pages.
-> >   */
-> >  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
-> >  				struct kvm_memory_slot *slot,
-> >  				gfn_t gfn_offset, unsigned long mask)
-> >  {
-> > +	/*
-> > +	 * If we're with initial-all-set, huge pages are NOT
-> > +	 * write protected when we start dirty log, so we must
-> > +	 * write protect them here.
-> > +	 */
-> > +	if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> > +		if (kvm_mmu_write_protect_largepage_masked(kvm, slot,
-> > +					gfn_offset, mask))
-> > +			return;
-> > +	}
-> > +
-> > +	/* Then we can handle the 4K level pages */
-> > +
-> >  	if (kvm_x86_ops.enable_log_dirty_pt_masked)
-> >  		kvm_x86_ops.enable_log_dirty_pt_masked(kvm, slot, gfn_offset,
-> >  				mask);
-> > @@ -5906,14 +5944,13 @@ static bool slot_rmap_write_protect(struct kvm *kvm,
-> >  }
-> >  
-> >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> > -				      struct kvm_memory_slot *memslot,
-> > -				      int start_level)
-> > +				      struct kvm_memory_slot *memslot)
-> >  {
-> >  	bool flush;
-> >  
-> >  	spin_lock(&kvm->mmu_lock);
-> > -	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
-> > -				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
-> > +	flush = slot_handle_all_level(kvm, memslot, slot_rmap_write_protect,
-> > +				      false);
-> >  	spin_unlock(&kvm->mmu_lock);
-> >  
-> >  	/*
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 819c185adf09..ba871c52ef8b 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -7538,8 +7538,7 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int cpu)
-> >  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
-> >  				     struct kvm_memory_slot *slot)
-> >  {
-> > -	if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
-> > -		kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
-> > +	kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
-> >  	kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
-> >  }
-> >  
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index d39d6cf1d473..c31c32f1424b 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -10225,22 +10225,18 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
-> >  	 * is enabled the D-bit or the W-bit will be cleared.
-> >  	 */
-> >  	if (new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
-> > +		/*
-> > +		 * If we're with initial-all-set, we don't need
-> > +		 * to write protect any page because they're
-> > +		 * reported as dirty already.
-> > +		 */
-> > +		if (kvm_dirty_log_manual_protect_and_init_set(kvm))
-> > +			return;
-> > +
-> >  		if (kvm_x86_ops.slot_enable_log_dirty) {
-> >  			kvm_x86_ops.slot_enable_log_dirty(kvm, new);
-> >  		} else {
-> > -			int level =
-> > -				kvm_dirty_log_manual_protect_and_init_set(kvm) ?
-> > -				PG_LEVEL_2M : PG_LEVEL_4K;
-> > -
-> > -			/*
-> > -			 * If we're with initial-all-set, we don't need
-> > -			 * to write protect any small page because
-> > -			 * they're reported as dirty already.  However
-> > -			 * we still need to write-protect huge pages
-> > -			 * so that the page split can happen lazily on
-> > -			 * the first write to the huge page.
-> > -			 */
-> > -			kvm_mmu_slot_remove_write_access(kvm, new, level);
-> > +			kvm_mmu_slot_remove_write_access(kvm, new);
-> >  		}
-> >  	} else {
-> >  		if (kvm_x86_ops.slot_disable_log_dirty)
-> > 
+>> I was expecting these properties discovered from hardware to
+>> be in rdt_hw_resource.
+> 
+> Not all values discovered from the hardware are private to the architecture. They only
+> need to be private if there is some further abstraction involved.
+
+ok, but rdt_hw_resource is described as "hw attributes of a resctrl 
+resource" so this can be very confusing if rdt_hw_resource does _not_ 
+actually contain (all of) the hw attributes of a resctrl resource.
+
+Could you please expand the kernel doc for rdt_hw_resource to explain 
+that, apart from @resctrl (that I just noticed is missing a 
+description), it contains attributes needing abstraction for different 
+architectures as opposed to the actual hardware attributes?
+
+> There is a trade-off here. Everything could be accessed via helpers, but I think that
+> would result in a lot of boiler plate.
+> 
+
+I see.
+
+> On your specific example: the resctrl filesystem code allocates from num_rmid. Its meaning
+> doesn't change. num_closid on the other hand changes depending on whether CDP is in use.
+> 
+> Putting num_closid in resctrl's struct rdt_resource would work, but the value is wrong
+> once CDP is enabled. This would be annoying to debug, hiding the hardware value and
+> providing it via a helper avoids this, as by the end of the series there is only one
+> consumer: schemata_list_create().
+> 
+> For MPAM, the helper would return arm64's version of rdt_min_closid as there is only one
+> 'num_closid' for the system, regardless of the resource. The driver has to duplicate the
+> logic in closid_init() to find the minimum common value of all the resources, as not all
+> the resources are exposed to resctrl, and an out-of-range closid value triggers an error
+> interrupt.
+> 
+> 
+>> It is also not clear to me how these structures are intended to be used for related
+>> hardware properties. For example, rdt_resource keeps the properties
+>> alloc_capable/alloc_enabled/mon_capable/mon_enabled - but in this series companion
+>> properties of cdp_capable/cdp_enabled are introduced and placed in rdt_hw_resource.
+> 
+> There needs to be further abstraction around cdp_enabled. For Arm's MPAM CDP is emulated
+> by providing different closid for data-access and instruction-fetch. This is done in the
+> equivalent to IA32_PQR_ASSOC, so it affects all the resources.
+> 
+> For MPAM all resources would be cdp_capable, so the field doesn't need to exist.
+
+Will it be removed?
+
+> cdp_enabled has to be used via a helper, as its a global property for all the tasks that
+> resctrl is in control of, not a per-resource field.
+> 
+> (this is the reason the previous version tried to make the CDP state global, on the
+> assumption it would never appear on both L2 and L3 for x86 systems)
+> 
+> (The next patch after these removes alloc_enabled, as it no longer means anything once the
+> resources are merged. I didn't post it to try and keep the series small)
+>> That seems contradicting to me.
+> 
+>> Since this change is so foundational it would be very helpful if the resulting split could
+>> be explained in more detail.
+> 
+> Sure. I'll add a paragraph on where I think extra abstraction is needed for the members of
+> struct rdt_hw_resource. The two not described above are mon_scale and mbm_width.
+> 
+> Currently rephrased as:
+> 
+> | Move as much of the structure as possible into the common structure
+> | in the core code's header file. The x86 hardware accessors remain
+> | part of the architecture private code, as do num_closid, mon_scale
+> | and mbm_width.
+> | mon_scale and mbm_width are used to detect overflow of the hardware
+> | counters, and convert them from their native size to bytes. Any
+> | cross-architecture abstraction should be in terms of bytes, making
+> | these properties private.
+> | The hardware's num_closid is kept in the private structure to force
+> | the filesystem code to use a helper to access it. MPAM would return a
+> | single value for the system, regardless of the resource. Using the
+> | helper prevents this field from being confused with the version of
+> | num_closid that is being exposed to user-space (added in a later patch).
+> 
+
+This is very helpful. Thank you. I also think that adding a similar 
+per-property summary to the kernel-doc of rt_hw_resource would be very 
+helpful.
+
+Reinette
+
