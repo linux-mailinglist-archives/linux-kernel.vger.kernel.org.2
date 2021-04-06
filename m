@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B971435513E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C54C355138
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242843AbhDFKwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:52:23 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:31554 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhDFKwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:52:22 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 6DA4198011C;
-        Tue,  6 Apr 2021 18:52:12 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] perf: util/mem-events.h: Remove unnecessary struct declaration
-Date:   Tue,  6 Apr 2021 18:51:02 +0800
-Message-Id: <20210406105104.675879-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSB1KSUpPGhgdSkhLVkpNSkxMS01ISElMTk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MEk6PDo6Tz8JPC00Ii00LD1O
-        AT8KC0tVSlVKTUpMTEtNSEhIS0lCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJSU5LNwY+
-X-HM-Tid: 0a78a6cfb20fd992kuws6da4198011c
+        id S242840AbhDFKvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:51:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:40688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231156AbhDFKvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:51:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4F9531B;
+        Tue,  6 Apr 2021 03:51:25 -0700 (PDT)
+Received: from e125770.cambridge.arm.com (e125770.cambridge.arm.com [10.1.197.16])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D44A3F73D;
+        Tue,  6 Apr 2021 03:51:24 -0700 (PDT)
+From:   Luca Fancellu <luca.fancellu@arm.com>
+To:     sstabellini@kernel.org, jgross@suse.com, jgrall@amazon.com
+Cc:     boris.ostrovsky@oracle.com, tglx@linutronix.de, wei.liu@kernel.org,
+        jbeulich@suse.com, yyankovskyi@gmail.com,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, bertrand.marquis@arm.com
+Subject: [PATCH] xen/evtchn: Change irq_info lock to raw_spinlock_t
+Date:   Tue,  6 Apr 2021 11:51:04 +0100
+Message-Id: <20210406105105.10141-1-luca.fancellu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mem_info is defined at 22nd line.
-The declaration here is unnecessary. Remove it.
+Unmask operation must be called with interrupt disabled,
+on preempt_rt spin_lock_irqsave/spin_unlock_irqrestore
+don't disable/enable interrupts, so use raw_* implementation
+and change lock variable in struct irq_info from spinlock_t
+to raw_spinlock_t
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Cc: stable@vger.kernel.org
+Fixes: 25da4618af24 ("xen/events: don't unmask an event channel
+when an eoi is pending")
+
+Signed-off-by: Luca Fancellu <luca.fancellu@arm.com>
 ---
- tools/perf/util/mem-events.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/xen/events/events_base.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-index 755cef7e0625..5ddbeaa057b0 100644
---- a/tools/perf/util/mem-events.h
-+++ b/tools/perf/util/mem-events.h
-@@ -44,7 +44,6 @@ bool is_mem_loads_aux_event(struct evsel *leader);
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index 8236e2364eeb..7bbfd58958bc 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -110,7 +110,7 @@ struct irq_info {
+ 	unsigned short eoi_cpu; /* EOI must happen on this cpu-1 */
+ 	unsigned int irq_epoch; /* If eoi_cpu valid: irq_epoch of event */
+ 	u64 eoi_time;           /* Time in jiffies when to EOI. */
+-	spinlock_t lock;
++	raw_spinlock_t lock;
  
- void perf_mem_events__list(void);
+ 	union {
+ 		unsigned short virq;
+@@ -312,7 +312,7 @@ static int xen_irq_info_common_setup(struct irq_info *info,
+ 	info->evtchn = evtchn;
+ 	info->cpu = cpu;
+ 	info->mask_reason = EVT_MASK_REASON_EXPLICIT;
+-	spin_lock_init(&info->lock);
++	raw_spin_lock_init(&info->lock);
  
--struct mem_info;
- int perf_mem__tlb_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
- int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
- int perf_mem__snp_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
+ 	ret = set_evtchn_to_irq(evtchn, irq);
+ 	if (ret < 0)
+@@ -472,28 +472,28 @@ static void do_mask(struct irq_info *info, u8 reason)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&info->lock, flags);
++	raw_spin_lock_irqsave(&info->lock, flags);
+ 
+ 	if (!info->mask_reason)
+ 		mask_evtchn(info->evtchn);
+ 
+ 	info->mask_reason |= reason;
+ 
+-	spin_unlock_irqrestore(&info->lock, flags);
++	raw_spin_unlock_irqrestore(&info->lock, flags);
+ }
+ 
+ static void do_unmask(struct irq_info *info, u8 reason)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&info->lock, flags);
++	raw_spin_lock_irqsave(&info->lock, flags);
+ 
+ 	info->mask_reason &= ~reason;
+ 
+ 	if (!info->mask_reason)
+ 		unmask_evtchn(info->evtchn);
+ 
+-	spin_unlock_irqrestore(&info->lock, flags);
++	raw_spin_unlock_irqrestore(&info->lock, flags);
+ }
+ 
+ #ifdef CONFIG_X86
 -- 
-2.25.1
+2.17.1
 
