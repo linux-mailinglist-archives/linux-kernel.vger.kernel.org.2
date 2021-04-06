@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96F2355B9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614CA355B9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhDFSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233801AbhDFSnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:43:33 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1604C06174A;
-        Tue,  6 Apr 2021 11:43:24 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so1515471wmq.1;
-        Tue, 06 Apr 2021 11:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bmJ/NMJPsfNKo4mJ/3aPWwsMGqay1obgGTuBfQrC1A0=;
-        b=blORM0ejITE3SmIXDzz6Q0ooiaW1YJ5cdGLw2KlViB3sZ6IKgb53yjOmkal7QPhu71
-         +JN5enKCiNbwEHo28HiaEORuXOZ0JLf+5tGdV0GbYZckebybPUF7SLQv+NL6phm92agF
-         vgPnUQYS/+ub8Zlno7si6Q1J1sjmJ7IFONQsd2xSSwsW78EbrkysUu0EoaPZreZlSTl6
-         /Ver5OJBK0WVqiwBlshRVTkJMN6hEVtP0qMJky3odQq56uCsv1FhNEFPdkWXbLYPfhMJ
-         RXjaR55HpCDWghsTyRRoJig5I0euSoz9o+oyTVeanwINj5ppyslFcw66ZW9ffesa/U9B
-         I1Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bmJ/NMJPsfNKo4mJ/3aPWwsMGqay1obgGTuBfQrC1A0=;
-        b=T/QFWRx9ZLJjXplwJdQg/QnVui6LyIgZdvqXEbBCY/Q+hNLU3nF8hOuxDj5ZJ1mMGu
-         6/9Z2nCmxXmZihQdhdmDe81GxNXREBdjzmlFq4ZbznBMwTMhUAYFGgYbdHdiyXGlOpRA
-         FR62bUCe2xazbhhrP/FZbQxps1qDSwHkPikjXo0ngZCzkEnI1U9M6BGhFIPIWJ6RG8m0
-         VgJRi2yb9w93SNpjL+joXZKmMQttWlWKwdjvnnQKkIerSvl9a+EXV9mburP1oXnb31we
-         6nOGpijq4rVDp4dmzVQyWi6mHHBCk37fx/PeL2Jd49ht0jbG6kSK3f/DFLHzOYoPSACE
-         +f4w==
-X-Gm-Message-State: AOAM533Gsu0wJH+tTfnyj1cDhS/DLZJxtt3H+pOcnW1l6SyNd9HIQ0+D
-        m/e7+Dm1yfPanaXmIlMyx0nS+wQqvFNLBw==
-X-Google-Smtp-Source: ABdhPJzUyEhuO4iyKnQ2WTrNcgiidnxSgqyD8mpdDUj7O6hAg9cmOLEORNTX1iFSW5ctEI6+fbNsNA==
-X-Received: by 2002:a1c:7ec4:: with SMTP id z187mr5418176wmc.3.1617734603418;
-        Tue, 06 Apr 2021 11:43:23 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:c412:abea:9d68:569f? (p200300ea8f1fbb00c412abea9d68569f.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:c412:abea:9d68:569f])
-        by smtp.googlemail.com with ESMTPSA id v14sm33856964wrd.48.2021.04.06.11.43.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 11:43:22 -0700 (PDT)
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "christian.melki@t2data.com" <christian.melki@t2data.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
- <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
- <ed600136-2222-a261-bf08-522cc20fc141@gmail.com>
- <ff5719b4-acd7-cd27-2f07-d8150e2690c8@t2data.com>
- <010f896e-befb-4238-5219-01969f3581e3@gmail.com>
- <DB8PR04MB6795CC9AA84D14BA98FB6598E6769@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <0e6bd756-f46c-7caf-d45b-a19e7fb80b67@gmail.com>
- <DB8PR04MB6795D52C6FA54D17D43D1E99E6769@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <b34ccbf5-18eb-681b-3336-4c93325c2a43@gmail.com>
- <1ceca7ac-ed6f-de73-6afb-34fd0a7e5db3@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
- back
-Message-ID: <98f856a8-4c1e-d681-3ea2-0eff6519ccc4@gmail.com>
-Date:   Tue, 6 Apr 2021 20:43:18 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S238301AbhDFSoA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 14:44:00 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60347 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237439AbhDFSn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:43:59 -0400
+IronPort-SDR: 5e+8Ak6qeBjUBErsf+bB4YTmTDtVAiiPQksc3kIlmqCFeDNuHJaqABUtwib8y5zxsUIvRknHBE
+ Ypz76G3tMSTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180266624"
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="180266624"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 11:43:40 -0700
+IronPort-SDR: iz4vIEQNxPMT28j6X63dGxjwb7Cx2uHnsQjaWilU1Uafh/2GyZka7mbVKL2PdcglAhmewdiAnv
+ umwbtRshBWGw==
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="421339320"
+Received: from oowomilo-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.55])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 11:43:36 -0700
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     lyude@redhat.com, intel-gfx@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [Intel-gfx] [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless specified by VBT
+In-Reply-To: <4b95f72806c07348e4d26f1770326223b40fa845.camel@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210318170204.513000-1-lyude@redhat.com> <dfec442a4888c8387a6002b0424415ee5d8be343.camel@redhat.com> <87k0py3qya.fsf@intel.com> <4b95f72806c07348e4d26f1770326223b40fa845.camel@redhat.com>
+Date:   Tue, 06 Apr 2021 21:43:32 +0300
+Message-ID: <874kgjl0dn.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1ceca7ac-ed6f-de73-6afb-34fd0a7e5db3@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.04.2021 20:32, Florian Fainelli wrote:
-> 
-> 
-> On 4/6/2021 4:42 AM, Heiner Kallweit wrote:
->>
->> Waiting for ANEG_COMPLETE to be set wouldn't be a good option. Aneg may never
->> complete for different reasons, e.g. no physical link. And even if we use a
->> timeout this may add unwanted delays.
->>
->>> Do you have any other insights that can help me further locate the issue? Thanks.
->>>
->>
->> I think current MAC/PHY PM handling isn't perfect. Often we have the following
->> scenario:
->>
->> *suspend*
->> 1. PHY is suspended (mdio_bus_phy_suspend)
->> 2. MAC suspend callback (typically involving phy_stop())
->>
->> *resume*
->> 1. MAC resume callback (typically involving phy_start())
->> 2. PHY is resumed (mdio_bus_phy_resume), incl. calling phy_init_hw()
->>
->> Calling phy_init_hw() after phy_start() doesn't look right.
->> It seems to work in most cases, but there's a certain risk
->> that phy_init_hw() overwrites something, e.g. the advertised
->> modes.
->> I think we have two valid scenarios:
->>
->> 1. phylib PM callbacks are used, then the MAC driver shouldn't
->>    touch the PHY in its PM callbacks, especially not call
->>    phy_stop/phy_start.
->>
->> 2. MAC PM callbacks take care also of the PHY. Then I think we would
->>    need a flag at the phy_device telling it to make the PHY PM
->>    callbacks a no-op.
-> 
-> Maybe part of the problem is that the FEC is calling phy_{stop,start} in
-> its suspend/resume callbacks instead of phy_{suspend,resume} which would
-> play nice and tell the MDIO bus PM callbacks that the PHY has already
-> been suspended.
-> 
-This basically is what I just proposed to test.
+On Tue, 23 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
+> On Tue, 2021-03-23 at 16:06 +0200, Jani Nikula wrote:
+>> On Thu, 18 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
+>> > Actually-NAK this. I just realized I've been misreading the bug and that
+>> > this
+>> > doesn't actually seem to be fixed. Will resend once I figure out what's
+>> > going on
+>> 
+>> Well, I think there are actually multiple issues on multiple
+>> machines. This fixes the issue on ThinkPad X1 Titanium Gen1 [1].
+>> 
+>> I suspect reverting 98e497e203a5 ("drm/i915/dpcd_bl: uncheck PWM_PIN_CAP
+>> when detect eDP backlight capabilities") would too. But then that would
+>> break *other* machines that claim support for *both* eDP PWM pin and
+>> DPCD backlight control, I think.
+>> 
+>> I think there are issues with how we try setup DPCD backlight if the GOP
+>> has set up PWM backlight. For example, we don't set the backlight
+>> control mode correctly until the next disable/enable sequence. However,
+>> I tried to fix this, and I think I was doing all the right things, and
+>> DPCD reads seemed to confirm this, yet I was not able to control
+>> brightness using DPCD. I don't know what gives, but I do know eDP PWM
+>> pin control works.
+>
+> Should we go ahead and push the VESA fix for this then? If you're willing to
+> test future patches on that machine, we could give another shot at enabling this
+> in the future if we find reason to.
 
-> I am also suspicious about whether Wake-on-LAN actually works with the
-> FEC, you cannot wake from LAN if the PHY is stopped and powered down.
-> 
-phy_stop() calls phy_suspend() which checks for WoL. Therefore this
-should not be a problem.
+Yes, let's go with this first.
+
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+
+
+>
+>> 
+>> 
+>> BR,
+>> Jani.
+>> 
+>> 
+>> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/3158
+>> 
+>> 
+>> > 
+>> > On Thu, 2021-03-18 at 13:02 -0400, Lyude Paul wrote:
+>> > > Looks like that there actually are another subset of laptops on the market
+>> > > that don't support the Intel HDR backlight interface, but do advertise
+>> > > support for the VESA DPCD backlight interface despite the fact it doesn't
+>> > > seem to work.
+>> > > 
+>> > > Note though I'm not entirely clear on this - on one of the machines where
+>> > > this issue was observed, I also noticed that we appeared to be rejecting
+>> > > the VBT defined backlight frequency in
+>> > > intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
+>> > > 
+>> > > /* Use highest possible value of Pn for more granularity of brightness
+>> > >  * adjustment while satifying the conditions below.
+>> > >  * ...
+>> > >  * - FxP is within 25% of desired value.
+>> > >  *   Note: 25% is arbitrary value and may need some tweak.
+>> > >  */
+>> > > 
+>> > > So it's possible that this value might just need to be tweaked, but for
+>> > > now
+>> > > let's just disable the VESA backlight interface unless it's specified in
+>> > > the VBT just to be safe. We might be able to try enabling this again by
+>> > > default in the future.
+>> > > 
+>> > > Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces
+>> > > through
+>> > > enable_dpcd_backlight")
+>> > > Cc: Jani Nikula <jani.nikula@intel.com>
+>> > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>> > > Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
+>> > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+>> > > ---
+>> > >  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
+>> > >  1 file changed, 1 deletion(-)
+>> > > 
+>> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> > > b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> > > index 651884390137..4f8337c7fd2e 100644
+>> > > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> > > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> > > @@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct
+>> > > intel_connector *connector)
+>> > >                         break;
+>> > >                 case INTEL_BACKLIGHT_DISPLAY_DDI:
+>> > >                         try_intel_interface = true;
+>> > > -                       try_vesa_interface = true;
+>> > >                         break;
+>> > >                 default:
+>> > >                         return -ENODEV;
+>> 
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
