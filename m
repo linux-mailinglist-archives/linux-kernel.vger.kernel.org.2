@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614CA355B9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C51B355BA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238301AbhDFSoA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 14:44:00 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60347 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237439AbhDFSn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:43:59 -0400
-IronPort-SDR: 5e+8Ak6qeBjUBErsf+bB4YTmTDtVAiiPQksc3kIlmqCFeDNuHJaqABUtwib8y5zxsUIvRknHBE
- Ypz76G3tMSTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180266624"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="180266624"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 11:43:40 -0700
-IronPort-SDR: iz4vIEQNxPMT28j6X63dGxjwb7Cx2uHnsQjaWilU1Uafh/2GyZka7mbVKL2PdcglAhmewdiAnv
- umwbtRshBWGw==
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="421339320"
-Received: from oowomilo-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.55])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 11:43:36 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     lyude@redhat.com, intel-gfx@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [Intel-gfx] [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless specified by VBT
-In-Reply-To: <4b95f72806c07348e4d26f1770326223b40fa845.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210318170204.513000-1-lyude@redhat.com> <dfec442a4888c8387a6002b0424415ee5d8be343.camel@redhat.com> <87k0py3qya.fsf@intel.com> <4b95f72806c07348e4d26f1770326223b40fa845.camel@redhat.com>
-Date:   Tue, 06 Apr 2021 21:43:32 +0300
-Message-ID: <874kgjl0dn.fsf@intel.com>
+        id S240062AbhDFSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237439AbhDFSoM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:44:12 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D98FC061761
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 11:44:03 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d8so7997236plh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 11:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
+        b=YAhhm9BkpY5y7HrE34KfvVWOVgEO0sYzWSUTiqziDNEK4+3Lral7Ghh0posJjIrz61
+         tfc63YozQ8TRMvb+TNGvA+LWvP4faXgXV6k8KT0Nv6y/u9B7f1LE4XzO3OjKob023F9j
+         xZGLdr3UYpKw1f93SAnQ8fSdVZaYmuMHTRPdw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
+        b=A15ww6E7Tw8vFyoe9mVcAUORgq0Ki68nVA6SWpaQeB/0+qXHwYPEYjNMujoFTIB07K
+         t4lb3ObOO9F220tttv/xejpv22dxQG9DddiAFd4Y3ncHmMPZoNr6Tw4KBQtnD6t7gCxZ
+         XkSDxPoSvEkYEOPk6sv/COBEFNNI1EbZwg9FucevtdlF8erHJhfpjlgyw5MYEiMtADm/
+         qy0OMbQPZfBQpQTs0DlTxXeTtDxq2LU995dZraROMXcH5pV5cWprNWtBT8RywoSvxdjK
+         K9cbMVzrzIdEnnYq4YbzQaOIaiCJaGpfohnfiilMxRZrluH49cPoO2G13nXCx16YAjTG
+         DmPA==
+X-Gm-Message-State: AOAM531JnHaQWRmEYS/LFTQiH7cLMNi5wBPagr1RaT1JRN80em+uy0lY
+        Uagnlw48HGivGDbYB5JW9IbC4A==
+X-Google-Smtp-Source: ABdhPJyp4uPolhdsa5/w7momD80MPZDhhBi9SUuWfIFW/E/FawC4pgs3YQmUW7xHztXcPiXJ8/E+QQ==
+X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr30088911plf.44.1617734642419;
+        Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i9sm3610423pjh.9.2021.04.06.11.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 11:44:01 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 11:44:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
+        kexec@lists.infradead.org, rcu@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Corey Minyard <minyard@acm.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+Message-ID: <202104061143.E11D2D0@keescook>
+References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
-> On Tue, 2021-03-23 at 16:06 +0200, Jani Nikula wrote:
->> On Thu, 18 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
->> > Actually-NAK this. I just realized I've been misreading the bug and that
->> > this
->> > doesn't actually seem to be fixed. Will resend once I figure out what's
->> > going on
->> 
->> Well, I think there are actually multiple issues on multiple
->> machines. This fixes the issue on ThinkPad X1 Titanium Gen1 [1].
->> 
->> I suspect reverting 98e497e203a5 ("drm/i915/dpcd_bl: uncheck PWM_PIN_CAP
->> when detect eDP backlight capabilities") would too. But then that would
->> break *other* machines that claim support for *both* eDP PWM pin and
->> DPCD backlight control, I think.
->> 
->> I think there are issues with how we try setup DPCD backlight if the GOP
->> has set up PWM backlight. For example, we don't set the backlight
->> control mode correctly until the next disable/enable sequence. However,
->> I tried to fix this, and I think I was doing all the right things, and
->> DPCD reads seemed to confirm this, yet I was not able to control
->> brightness using DPCD. I don't know what gives, but I do know eDP PWM
->> pin control works.
->
-> Should we go ahead and push the VESA fix for this then? If you're willing to
-> test future patches on that machine, we could give another shot at enabling this
-> in the future if we find reason to.
+On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt to start cleaning it up by splitting out panic and
+> oops helpers.
+> 
+> At the same time convert users in header and lib folder to use new header.
+> Though for time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Yes, let's go with this first.
+I like it! Do you have a multi-arch CI to do allmodconfig builds to
+double-check this?
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Acked-by: Kees Cook <keescook@chromium.org>
 
-
->
->> 
->> 
->> BR,
->> Jani.
->> 
->> 
->> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/3158
->> 
->> 
->> > 
->> > On Thu, 2021-03-18 at 13:02 -0400, Lyude Paul wrote:
->> > > Looks like that there actually are another subset of laptops on the market
->> > > that don't support the Intel HDR backlight interface, but do advertise
->> > > support for the VESA DPCD backlight interface despite the fact it doesn't
->> > > seem to work.
->> > > 
->> > > Note though I'm not entirely clear on this - on one of the machines where
->> > > this issue was observed, I also noticed that we appeared to be rejecting
->> > > the VBT defined backlight frequency in
->> > > intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
->> > > 
->> > > /* Use highest possible value of Pn for more granularity of brightness
->> > >  * adjustment while satifying the conditions below.
->> > >  * ...
->> > >  * - FxP is within 25% of desired value.
->> > >  *   Note: 25% is arbitrary value and may need some tweak.
->> > >  */
->> > > 
->> > > So it's possible that this value might just need to be tweaked, but for
->> > > now
->> > > let's just disable the VESA backlight interface unless it's specified in
->> > > the VBT just to be safe. We might be able to try enabling this again by
->> > > default in the future.
->> > > 
->> > > Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces
->> > > through
->> > > enable_dpcd_backlight")
->> > > Cc: Jani Nikula <jani.nikula@intel.com>
->> > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
->> > > Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
->> > > Signed-off-by: Lyude Paul <lyude@redhat.com>
->> > > ---
->> > >  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
->> > >  1 file changed, 1 deletion(-)
->> > > 
->> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
->> > > b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
->> > > index 651884390137..4f8337c7fd2e 100644
->> > > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
->> > > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
->> > > @@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct
->> > > intel_connector *connector)
->> > >                         break;
->> > >                 case INTEL_BACKLIGHT_DISPLAY_DDI:
->> > >                         try_intel_interface = true;
->> > > -                       try_vesa_interface = true;
->> > >                         break;
->> > >                 default:
->> > >                         return -ENODEV;
->> 
+-Kees
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Kees Cook
