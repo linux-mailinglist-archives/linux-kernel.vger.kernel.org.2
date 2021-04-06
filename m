@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E962D355ECB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5481B355ED7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235883AbhDFW2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 18:28:19 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53128 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhDFW2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 18:28:18 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id B23C610429C2;
-        Wed,  7 Apr 2021 08:28:08 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lTuB5-00DU1q-T8; Wed, 07 Apr 2021 08:28:07 +1000
-Date:   Wed, 7 Apr 2021 08:28:07 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Bharata B Rao <bharata@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210406222807.GD1990290@dread.disaster.area>
-References: <20210405054848.GA1077931@in.ibm.com>
+        id S243971AbhDFWcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 18:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230160AbhDFWcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 18:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D702061284;
+        Tue,  6 Apr 2021 22:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617748328;
+        bh=eRMoe/YgEPTSiX+gZtg3ZTJaDtwdttX1NZsHhehUqKw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u7r8b316Z51vN/ImKoUHJZJIZ+RSuTHqPcc3w6453rqoHkQvV2Pti98F0YCIUbt+D
+         cEw//YckhzHJkq60bnWlaPvf5ws0Ry05lvivSPFvrifoclIQq0vxRrKIykHG+Lbs6t
+         0V5pNAHbrt9InUBwI29WZ9tTgrz7QAE0qYRlk6UG9JKfXvGUeBXQf+18DyyCe4QaOb
+         6dx0P27WoMOP9aUMMsfS0iJtVL0V4+FJXAh5BtHhHg1foz+YzhHajd6umTjKHrOhR0
+         9RFJb+zX2iRNsDwbYKX2TSgSMC8uLzCVd6iYAgh7+nkmwPaj/1QpTTswfLOY+hT/0e
+         jX/OzC6sJik6g==
+Received: by mail-ed1-f50.google.com with SMTP id ba6so10901639edb.1;
+        Tue, 06 Apr 2021 15:32:07 -0700 (PDT)
+X-Gm-Message-State: AOAM532fvjfdupny6WXskzXc+h2qEmRyo8H+mnEU2K86tBllBi7OwTQK
+        pLKLMy38CJe1XY9YPR953+1FrQXAlVzwEshzXw==
+X-Google-Smtp-Source: ABdhPJwdESgC/GU++8VxM2LyjZDtBJl2yGCxL1+YwvrHU66u1t6nMvF/pizCBzl6ayrp4J3Evz0YpZB8EYtB1A/kQKI=
+X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr736852edd.258.1617748326514;
+ Tue, 06 Apr 2021 15:32:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405054848.GA1077931@in.ibm.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_x
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=5kV5c3wLyvlqFobTF28A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+ <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
+ <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com>
+ <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
+ <20210406174050.GA1963300@robh.at.kernel.org> <CALCv0x2D6Y78XK7aeyyivcXqXZreHZd3kJc49tvtHx9eX+YH2w@mail.gmail.com>
+ <CAGETcx8aWReU=bv7FEujQGmJy91CORNQo6nY8x0+T3fOiN3YFQ@mail.gmail.com>
+In-Reply-To: <CAGETcx8aWReU=bv7FEujQGmJy91CORNQo6nY8x0+T3fOiN3YFQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 6 Apr 2021 17:31:54 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKAFRM3Zv7oMDY=AUO6kRtC-JRM1iJB-LM5PRd-o8zUOw@mail.gmail.com>
+Message-ID: <CAL_JsqKAFRM3Zv7oMDY=AUO6kRtC-JRM1iJB-LM5PRd-o8zUOw@mail.gmail.com>
+Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:18:48AM +0530, Bharata B Rao wrote:
-> Hi,
-> 
-> When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
-> server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
-> consumption increases quite a lot (around 172G) when the containers are
-> running. Most of it comes from slab (149G) and within slab, the majority of
-> it comes from kmalloc-32 cache (102G)
-> 
-> The major allocator of kmalloc-32 slab cache happens to be the list_head
-> allocations of list_lru_one list. These lists are created whenever a
-> FS mount happens. Specially two such lists are registered by alloc_super(),
-> one for dentry and another for inode shrinker list. And these lists
-> are created for all possible NUMA nodes and for all given memcgs
-> (memcg_nr_cache_ids to be particular)
-> 
-> If,
-> 
-> A = Nr allocation request per mount: 2 (one for dentry and inode list)
-> B = Nr NUMA possible nodes
-> C = memcg_nr_cache_ids
-> D = size of each kmalloc-32 object: 32 bytes,
-> 
-> then for every mount, the amount of memory consumed by kmalloc-32 slab
-> cache for list_lru creation is A*B*C*D bytes.
-> 
-> Following factors contribute to the excessive allocations:
-> 
-> - Lists are created for possible NUMA nodes.
-> - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
->   list_lrus are created when it grows. Thus we end up creating list_lru_one
->   list_heads even for those memcgs which are yet to be created.
->   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
->   a value of 12286.
+On Tue, Apr 6, 2021 at 4:28 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Tue, Apr 6, 2021 at 12:28 PM Ilya Lipnitskiy
+> <ilya.lipnitskiy@gmail.com> wrote:
+> >
+> > On Tue, Apr 6, 2021 at 10:40 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Mon, Apr 05, 2021 at 01:18:56PM -0700, Saravana Kannan wrote:
+> > > > On Mon, Apr 5, 2021 at 1:10 PM Ilya Lipnitskiy
+> > > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > > >
+> > > > > Hi Saravana,
+> > > > >
+> > > > > On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > >
+> > > > > > On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
+> > > > > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > > > > >
+> > > > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> > > > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> > > > > > > not configured by #gpio-cells and can't be parsed along with other
+> > > > > > > "*-gpios" properties.
+> > > > > > >
+> > > > > > > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
+> > > > > > > nr-gpio is not really special, so we only need to fix nr-gpios suffix
+> > > > > > > here.
+> > > > > >
+> > > > > > The only example of this that I see is "snps,nr-gpios".
+> > > > > arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
+> > > > > parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
+> > > > > drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
+> > > > > "nr-gpios" without any vendor prefix.
+> > > >
+> > > > Ah ok. I just grepped the DT files. I'm not sure what Rob's position
+> > > > is on supporting DT files not in upstream. Thanks for the
+> > > > clarification.
+> > >
+> > > If it's something we had documented, then we have to support it
+> > Do I read this correctly as a sort-of Ack of my proposed [PATCH v2] in
+> > this thread, since it aligns the code with the published DT schema?
+>
+> He's talking about the DT binding documentation in the kernel.
+>
+> I interpret Rob's reply as, you can do all of this:
+> 1. Just fix up all drivers that use "*nr-gpios" that don't have
+> binding documentation in the kernel. Change them to use ngpios.
+> 2. Try to switch away old defunct ARM server DTs from nr-gpios to
+> ngpios (both drivers and DT) and see if people notice.
+> 3. Change the fw_devlink parsing code to have exceptions only for
+> cases that are using nr-gpios after (1) and (2).
 
-So, by your numbers, we have 2 * 2 * 12286 * 32 = 1.5MB per mount.
+Yes, but (3) is not gated on (1) and (2). I'm applying v2.
 
-So for that to make up 100GB of RAM, you must have somewhere over
-500,000 mounted superblocks on the machine?
-
-That implies 50+ unique mounted superblocks per container, which
-seems like an awful lot.
-
-> - When a memcg goes offline, the list elements are drained to the parent
->   memcg, but the list_head entry remains.
-> - The lists are destroyed only when the FS is unmounted. So list_heads
->   for non-existing memcgs remain and continue to contribute to the
->   kmalloc-32 allocation. This is presumably done for performance
->   reason as they get reused when new memcgs are created, but they end up
->   consuming slab memory until then.
-> - In case of containers, a few file systems get mounted and are specific
->   to the container namespace and hence to a particular memcg, but we
->   end up creating lists for all the memcgs.
->   As an example, if 7 FS mounts are done for every container and when
->   10k containers are created, we end up creating 2*7*12286 list_lru_one
->   lists for each NUMA node. It appears that no elements will get added
->   to other than 2*7=14 of them in the case of containers.
-
-Yeah, at first glance this doesn't strike me as a problem with the
-list_lru structure, it smells more like a problem resulting from a
-huge number of superblock instantiations on the machine. Which,
-probably, mostly have no significant need for anything other than a
-single memcg awareness?
-
-Can you post a typical /proc/self/mounts output from one of these
-idle/empty containers so we can see exactly how many mounts and
-their type are being instantiated in each container?
-
-> One straight forward way to prevent this excessive list_lru_one
-> allocations is to limit the list_lru_one creation only to the
-> relevant memcg. However I don't see an easy way to figure out
-> that relevant memcg from FS mount path (alloc_super())
-
-Superblocks have to support an unknown number of memcgs after they
-have been mounted. bind mounts, child memcgs, etc, all mean that we
-can't just have a static, single mount time memcg instantiation.
-
-> As an alternative approach, I have this below hack that does lazy
-> list_lru creation. The memcg-specific list is created and initialized
-> only when there is a request to add an element to that particular
-> list. Though I am not sure about the full impact of this change
-> on the owners of the lists and also the performance impact of this,
-> the overall savings look good.
-
-Avoiding memory allocation in list_lru_add() was one of the main
-reasons for up-front static allocation of memcg lists. We cannot do
-memory allocation while callers are holding multiple spinlocks in
-core system algorithms (e.g. dentry_kill -> retain_dentry ->
-d_lru_add -> list_lru_add), let alone while holding an internal
-spinlock.
-
-Putting a GFP_ATOMIC allocation inside 3-4 nested spinlocks in a
-path we know might have memory demand in the *hundreds of GB* range
-gets an NACK from me. It's a great idea, but it's just not a
-feasible, robust solution as proposed. Work out how to put the
-memory allocation outside all the locks (including caller locks) and
-it might be ok, but that's messy.
-
-Another approach may be to identify filesystem types that do not
-need memcg awareness and feed that into alloc_super() to set/clear
-the SHRINKER_MEMCG_AWARE flag. This could be based on fstype - most
-virtual filesystems that expose system information do not really
-need full memcg awareness because they are generally only visible to
-a single memcg instance...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Rob
