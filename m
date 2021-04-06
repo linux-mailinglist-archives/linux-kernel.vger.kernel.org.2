@@ -2,124 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B9B355813
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CDC355815
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345803AbhDFPfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhDFPdx (ORCPT
+        id S233161AbhDFPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:35:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47376 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242518AbhDFPeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:33:53 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25232C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:33:45 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id d12so23420971lfv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9qgAQJ1wpHvLIvOj/hCuqnhy12lLUQbyhSNgCCd5h3Y=;
-        b=jzshJrGKrplUDKSSByFY7XuW1UsMlTVE6ma7NTX5tuTgTvpw2TiC6iTTA2qh2nWNlW
-         c9/njfJkvWjAHHoVNAg8pXjnsY1ARdkDZRD9WwRmnVbDjUeNH7Q+6ckWiueIILihfS2o
-         hC/JI6lGYOq3MTYjFYTj+ZfQ4RJwunwbjiQsmCrfsCZBnPxEhBwDfTCINKy6UCMeNtCY
-         yRPOKcRUe9Kgm61NL9NYfql33y1Iw/9znKSfduBMCWhwnfeRxEzW5zFQZZC7udGmRDUg
-         y9FaAnsIxed9khEefMsU/ZZQZnLKWAVcm6lIXcfRhlBHXRXYntInw7oQb3gHdOHAEFni
-         2GZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qgAQJ1wpHvLIvOj/hCuqnhy12lLUQbyhSNgCCd5h3Y=;
-        b=NzrfQTryj5JYPTlMB9vkOBAmT1CAWTCHSZq+/z3wgRs3VF+AvCEwGU1Z2VHtHbj5ie
-         1GRGi/+Dd+dknVBD9aIrSsixgNqyglS+N4SXWZux7fIHAFRiuC1S0T0diRI7oLAb0PQa
-         2xOB8zEDihDrj/axvZwbg6BAvBlVoVOSVhq/KfIB3iU5KdNjY4lZfKPrFDLM9VXNc28B
-         fl4tLFiG+AdUBuLbSvA6aXDkvzgNcUT8RTCx9kKho+Lb0n5/2r5eb9H5htujHhxF55lN
-         nxVEpdJoNiKdnA9fPcis+j9V8iZk5hJ3yiqabDHpXDqWRmtIaB1/YEcVQ8FwS4N/9Co/
-         33ug==
-X-Gm-Message-State: AOAM530BeeV+LiLzn6CqT83HhJyifl9rS5LdUFQCRoKZxbNeKOK9wpRj
-        lDspzNTtW3BCK5nUmpufzFIhSqpU7mDlvCAeVFVlxxSeEnL6HQ==
-X-Google-Smtp-Source: ABdhPJzKJhfjmRYHqQYrOlq/MLI0ShaxzU6HoTKlq/ijs2Y/zV+QWsp2fQ7mWJjplGeGkzzqOA55Jkal3wlLr8OLYDQ=
-X-Received: by 2002:a19:dc0b:: with SMTP id t11mr22037434lfg.233.1617723223596;
- Tue, 06 Apr 2021 08:33:43 -0700 (PDT)
+        Tue, 6 Apr 2021 11:34:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617723233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UllT1wJZcz9S7vr+x2CExpW1HWLr0CCgm56mVvgBvoA=;
+        b=BzprzjZdtvMh/shRyydmjzoyFfgb++FSp3bJzdrH9mrmEmYYITXnBXI8MmLB8Ewl4Q90bd
+        3XiDsO7MBdHOiWkwUYYuedTD8mIIiKWZwXRlYx5xD9WuW8Fsf0f3ZUVQ52jEFES4wk4N3g
+        CsIlXGN0rqgRONJ9ggduAIaer88XU8s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-YwRlmJ2YOdKvCANKKOlSDA-1; Tue, 06 Apr 2021 11:33:51 -0400
+X-MC-Unique: YwRlmJ2YOdKvCANKKOlSDA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C0391084C83;
+        Tue,  6 Apr 2021 15:33:49 +0000 (UTC)
+Received: from [10.36.113.79] (ovpn-113-79.ams2.redhat.com [10.36.113.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 23D035C729;
+        Tue,  6 Apr 2021 15:33:46 +0000 (UTC)
+Subject: Re: [PATCH v6 3/8] mm,memory_hotplug: Factor out adjusting present
+ pages into adjust_present_page_count()
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210406111115.8953-1-osalvador@suse.de>
+ <20210406111115.8953-4-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f2682c45-1a7d-cefa-ccf1-af54898421f1@redhat.com>
+Date:   Tue, 6 Apr 2021 17:33:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210321150358.71ef52b1@imladris.surriel.com> <20210322110306.GE3697@techsingularity.net>
- <20210326151932.2c187840@imladris.surriel.com> <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
- <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com> <CAKfTPtC2Cnr=SoD9t+dLh01ux_bc8PAcHTXxxiBqbqykLphBNw@mail.gmail.com>
-In-Reply-To: <CAKfTPtC2Cnr=SoD9t+dLh01ux_bc8PAcHTXxxiBqbqykLphBNw@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 6 Apr 2021 17:33:30 +0200
-Message-ID: <CAKfTPtDMnR+SdW1SXRyRp=JHKoiNuHOwWCvW-0ywiXaQF2Op9g@mail.gmail.com>
-Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but differently
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210406111115.8953-4-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 17:31, Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> On Tue, 6 Apr 2021 at 17:26, Rik van Riel <riel@surriel.com> wrote:
-> >
-> > On Tue, 2021-04-06 at 17:10 +0200, Vincent Guittot wrote:
-> > > On Fri, 26 Mar 2021 at 20:19, Rik van Riel <riel@surriel.com> wrote:
-> > >
-> > > > -static int select_idle_cpu(struct task_struct *p, struct
-> > > > sched_domain *sd, int target)
-> > > > +static int select_idle_cpu(struct task_struct *p, struct
-> > > > sched_domain *sd, int prev, int target)
-> > > >  {
-> > > >         struct cpumask *cpus =
-> > > > this_cpu_cpumask_var_ptr(select_idle_mask);
-> > > >         int i, cpu, idle_cpu = -1, nr = INT_MAX;
-> > > > @@ -6136,23 +6163,32 @@ static int select_idle_cpu(struct
-> > > > task_struct *p, struct sched_domain *sd, int t
-> > > >
-> > > >         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> > > >
-> > > > -       if (sched_feat(SIS_PROP) && !smt) {
-> > > > -               u64 avg_cost, avg_idle, span_avg;
-> > > > +       if (!smt) {
-> > > > +               if (cpus_share_cache(prev, target)) {
-> > >
-> > > Have you checked the impact on no smt system ? would worth a static
-> > > branch.
-> > >
-> > > Also, this doesn't need to be in select_idle_cpu() which aims to loop
-> > > the sched_domain becaus you only compare  target and prev. So you can
-> > > move this call to select_idle_smt() in select_idle_sibling()
-> >
-> > After Mel's rewrite, there no longer are calls to
-> > select_idle_core() or select_idle_smt() in select_idle_sibling().
->
-> select_idle_smt() had even disappeared that why it was not in
-> select_idle_sibling
->
-> >
-> > Everything got folded into one single loop in select_idle_cpu()
->
-> but this is done completely out of the loop so we don't need to
-> complify the function with unrelated stuff
+On 06.04.21 13:11, Oscar Salvador wrote:
+> From: David Hildenbrand <david@redhat.com>
+> 
+> Let's have a single place (inspired by adjust_managed_page_count()) where
+> we adjust present pages, to prepare for additional bookkeeping.
+
+Maybe in the context of this series, remove the "additional bookkeeping" 
+part.
+
+> In contrast to adjust_managed_page_count(), only memory onlining/offlining
+> is allowed to modify the number of present pages.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>   mm/memory_hotplug.c | 22 ++++++++++++----------
+>   1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 5fe3e3942b19..7411f6b5287d 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -829,6 +829,16 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+>   	return default_zone_for_pfn(nid, start_pfn, nr_pages);
+>   }
+>   
+> +static void adjust_present_page_count(struct zone *zone, long nr_pages)
+> +{
+> +	unsigned long flags;
+> +
+> +	zone->present_pages += nr_pages;
+> +	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> +	zone->zone_pgdat->node_present_pages += nr_pages;
+> +	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+> +}
+> +
+>   int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>   		       int online_type, int nid)
+>   {
+> @@ -881,11 +891,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>   	}
+>   
+>   	online_pages_range(pfn, nr_pages);
+> -	zone->present_pages += nr_pages;
+> -
+> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> -	zone->zone_pgdat->node_present_pages += nr_pages;
+> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+> +	adjust_present_page_count(zone, nr_pages);
+>   
+>   	node_states_set_node(nid, &arg);
+>   	if (need_zonelists_rebuild)
+> @@ -1699,11 +1705,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+>   
+>   	/* removal success */
+>   	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+> -	zone->present_pages -= nr_pages;
+> -
+> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> -	zone->zone_pgdat->node_present_pages -= nr_pages;
+> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+> +	adjust_present_page_count(zone, -nr_pages);
+>   
+>   	init_per_zone_wmark_min();
+>   
+> 
 
 
-s/complify/complexify/
+-- 
+Thanks,
 
->
-> >
-> > I would be happy to pull the static branch out of select_idle_smt()
-> > and place it into this if condition, though. You are right that
-> > would save some overhead on non-smt systems.
-> >
-> > Peter, would you prefer a follow-up patch for that or a version 4
-> > of the patch?
-> >
-> > --
-> > All Rights Reversed.
+David / dhildenb
+
