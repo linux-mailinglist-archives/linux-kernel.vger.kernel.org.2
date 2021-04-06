@@ -2,188 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232A8354BCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 06:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B1A354BCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 06:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243600AbhDFEsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 00:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243599AbhDFEsE (ORCPT
+        id S243627AbhDFEts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 00:49:48 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15131 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243599AbhDFEtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 00:48:04 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3CDC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 21:47:56 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id c2so4245972uaj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 21:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ClOiyYZKz95OIO54J0VorNj6tqXyN9Hb3E0W6gOaVhI=;
-        b=U887KtV1EvddId/O9RvxsuXKBXhf3+i8S1FqCjXp++g2o5QFeWRsDP4LeG+FA3gLvo
-         JZMNPUByMXQOcDRZ8ovj2XIARL8SMTJRPDzgA2Gln9kXXVSjOwYEJnO7cmOqjor/mZAA
-         3VlAN/Hlf5RZyxvNF+Wf499nC8BOfMp8t2+H4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ClOiyYZKz95OIO54J0VorNj6tqXyN9Hb3E0W6gOaVhI=;
-        b=m458hcQ/3Jpg6dPkhN2IvVY+hTF3+TExCQVG0dRn9sELNKEuVW06j0P+dz7hvAgthW
-         DQddGbGDNAUNV6Xr4jPwd4G5l6vc0wOo4UpTSaUb5iILwXh0vKYRfhbBAkqnhSnz6cO+
-         kxM1o8mnIsuTcwngS+pzFK1Kejuu1K8bYFzHuD5lu4px4ADLqhKOnsc0yszAFh+1wKd6
-         uCulen/iyMtCZ9wei7DxCn41cIsXqiL5ktNIOcy+Ncs6TjRvTKIV1hAuC1z6/sqeV+hh
-         3W1B22oMafK8YWmQeG+bjRcFmqmCZmx4zWcwTY2xt7/L8PxngZDyI81tCnV9eTHHDihX
-         Gy7A==
-X-Gm-Message-State: AOAM530qKO70+X9hDyU/c6TawVdh+fMBq5+R6gwL+5pAiCdBftfnTYqw
-        zwMLdi+3S6qFNs9mRqoQmhW6Dkq1SsYvF6nPn89GFw==
-X-Google-Smtp-Source: ABdhPJyB+i4AGUkCIU/V7q7e8lqa2S6L4kkRMUZ8IjPMo2GRduKRnjSxHUNwc3Tt2Z7FX4YgOyALK+2psTUEu0lbo0E=
-X-Received: by 2002:ab0:3c8f:: with SMTP id a15mr16303813uax.66.1617684475522;
- Mon, 05 Apr 2021 21:47:55 -0700 (PDT)
+        Tue, 6 Apr 2021 00:49:46 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDw3d2wc4zmctF;
+        Tue,  6 Apr 2021 12:46:53 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 12:49:29 +0800
+From:   Shixin Liu <liushixin2@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Shixin Liu <liushixin2@huawei.com>
+Subject: [PATCH -next v2 1/2] mm/debug_vm_pgtable: Move {pmd/pud}_huge_tests out of CONFIG_TRANSPARENT_HUGEPAGE
+Date:   Tue, 6 Apr 2021 12:48:59 +0800
+Message-ID: <20210406044900.2178705-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210405231344.1403025-1-grundler@chromium.org> <YGumuzcPl+9l5ZHV@lunn.ch>
-In-Reply-To: <YGumuzcPl+9l5ZHV@lunn.ch>
-From:   Grant Grundler <grundler@chromium.org>
-Date:   Tue, 6 Apr 2021 04:47:43 +0000
-Message-ID: <CANEJEGsYQm9EhqVLA4oedP2fuKrP=3bOUDV9=7owfdZzX7SpUA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 0/4] usbnet: speed reporting for devices
- without MDIO
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Grant Grundler <grundler@chromium.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Roland Dreier <roland@kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>, netdev <netdev@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 12:09 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Mon, Apr 05, 2021 at 04:13:40PM -0700, Grant Grundler wrote:
-> > This series introduces support for USB network devices that report
-> > speed as a part of their protocol, not emulating an MII to be accessed
-> > over MDIO.
-> >
-> > v2: rebased on recent upstream changes
-> > v3: incorporated hints on naming and comments
-> > v4: fix misplaced hunks; reword some commit messages;
-> >     add same change for cdc_ether
-> > v4-repost: added "net-next" to subject and Andrew Lunn's Reviewed-by
-> >
-> > I'm reposting Oliver Neukum's <oneukum@suse.com> patch series with
-> > fix ups for "misplaced hunks" (landed in the wrong patches).
-> > Please fixup the "author" if "git am" fails to attribute the
-> > patches 1-3 (of 4) to Oliver.
-> >
-> > I've tested v4 series with "5.12-rc3+" kernel on Intel NUC6i5SYB
-> > and + Sabrent NT-S25G. Google Pixelbook Go (chromeos-4.4 kernel)
-> > + Alpha Network AUE2500C were connected directly to the NT-S25G
-> > to get 2.5Gbps link rate:
-> > # ethtool enx002427880815
-> > Settings for enx002427880815:
-> >         Supported ports: [  ]
-> >         Supported link modes:   Not reported
-> >         Supported pause frame use: No
-> >         Supports auto-negotiation: No
-> >         Supported FEC modes: Not reported
-> >         Advertised link modes:  Not reported
-> >         Advertised pause frame use: No
-> >         Advertised auto-negotiation: No
-> >         Advertised FEC modes: Not reported
-> >         Speed: 2500Mb/s
-> >         Duplex: Half
-> >         Auto-negotiation: off
-> >         Port: Twisted Pair
-> >         PHYAD: 0
-> >         Transceiver: internal
-> >         MDI-X: Unknown
-> >         Current message level: 0x00000007 (7)
-> >                                drv probe link
-> >         Link detected: yes
-> >
-> >
-> > "Duplex" is a lie since we get no information about it.
->
-> You can ask the PHY. At least those using mii or phylib.  If you are
-> using mii, then mii_ethtool_get_link_ksettings() should set it
-> correctly. If you are using phylib, phy_ethtool_get_link_ksettings()
-> will correctly set it. If you are not using either of these, you are
-> on your own.
->
-> Speed: 2500Mb/s and Duplex: Half is very unlikely. You really only
-> ever see 10 Half and occasionally 100 Half. Anything above that will
-> be full duplex.
->
-> It is probably best to admit the truth and use DUPLEX_UNKNOWN.
+v1->v2:
+Modified the commit message.
 
-Agreed. I didn't notice this "lie" until I was writing the commit
-message and wasn't sure off-hand how to fix it. Decided a follow on
-patch could fix it up once this series lands.
+The functions {pmd/pud}_set_huge and {pmd/pud}_clear_huge ars not dependent on THP.
 
-You are right that DUPLEX_UNKNOWN is the safest (and usually correct) default.
-Additionally, if RX and TX speed are equal, I am willing to assume
-this is DUPLEX_FULL.
-I can propose something like this in a patch:
+Signed-off-by: Shixin Liu <liushixin2@huawei.com>
+---
+ mm/debug_vm_pgtable.c | 91 +++++++++++++++++++------------------------
+ 1 file changed, 39 insertions(+), 52 deletions(-)
 
-grundler <1637>git diff
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index 86eb1d107433..a7ad9a0fb6ae 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -978,6 +978,11 @@ int usbnet_get_link_ksettings_internal(struct
-net_device *net,
-        else
-                cmd->base.speed = SPEED_UNKNOWN;
-
-+       if (dev->rx_speed == dev->tx_speed)
-+               cmd->base.duplex = DUPLEX_FULL;
-+       else
-+               cmd->base.duplex =DUPLEX_UNKNOWN;
-+
-        return 0;
+diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+index 05efe98a9ac2..d3cf178621d9 100644
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -242,29 +242,6 @@ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+ 	WARN_ON(!pmd_leaf(pmd));
  }
- EXPORT_SYMBOL_GPL(usbnet_get_link_ksettings_internal);
+ 
+-#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+-static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+-{
+-	pmd_t pmd;
+-
+-	if (!arch_vmap_pmd_supported(prot))
+-		return;
+-
+-	pr_debug("Validating PMD huge\n");
+-	/*
+-	 * X86 defined pmd_set_huge() verifies that the given
+-	 * PMD is not a populated non-leaf entry.
+-	 */
+-	WRITE_ONCE(*pmdp, __pmd(0));
+-	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
+-	WARN_ON(!pmd_clear_huge(pmdp));
+-	pmd = READ_ONCE(*pmdp);
+-	WARN_ON(!pmd_none(pmd));
+-}
+-#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+-static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
+-#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+-
+ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+ {
+ 	pmd_t pmd = pfn_pmd(pfn, prot);
+@@ -379,30 +356,6 @@ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
+ 	pud = pud_mkhuge(pud);
+ 	WARN_ON(!pud_leaf(pud));
+ }
+-
+-#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+-static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+-{
+-	pud_t pud;
+-
+-	if (!arch_vmap_pud_supported(prot))
+-		return;
+-
+-	pr_debug("Validating PUD huge\n");
+-	/*
+-	 * X86 defined pud_set_huge() verifies that the given
+-	 * PUD is not a populated non-leaf entry.
+-	 */
+-	WRITE_ONCE(*pudp, __pud(0));
+-	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
+-	WARN_ON(!pud_clear_huge(pudp));
+-	pud = READ_ONCE(*pudp);
+-	WARN_ON(!pud_none(pud));
+-}
+-#else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+-static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
+-#endif /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+-
+ #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+ static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
+ static void __init pud_advanced_tests(struct mm_struct *mm,
+@@ -412,9 +365,6 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ {
+ }
+ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+-static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+-{
+-}
+ #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+ #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+ static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
+@@ -433,14 +383,51 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+ }
+ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
++static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot) { }
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+ static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+ {
++	pmd_t pmd;
++
++	if (!arch_vmap_pmd_supported(prot))
++		return;
++
++	pr_debug("Validating PMD huge\n");
++	/*
++	 * X86 defined pmd_set_huge() verifies that the given
++	 * PMD is not a populated non-leaf entry.
++	 */
++	WRITE_ONCE(*pmdp, __pmd(0));
++	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
++	WARN_ON(!pmd_clear_huge(pmdp));
++	pmd = READ_ONCE(*pmdp);
++	WARN_ON(!pmd_none(pmd));
+ }
++
+ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+ {
++	pud_t pud;
++
++	if (!arch_vmap_pud_supported(prot))
++		return;
++
++	pr_debug("Validating PUD huge\n");
++	/*
++	 * X86 defined pud_set_huge() verifies that the given
++	 * PUD is not a populated non-leaf entry.
++	 */
++	WRITE_ONCE(*pudp, __pud(0));
++	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
++	WARN_ON(!pud_clear_huge(pudp));
++	pud = READ_ONCE(*pudp);
++	WARN_ON(!pud_none(pud));
+ }
+-static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot) { }
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++#else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
++static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
++static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
++#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+ 
+ static void __init p4d_basic_tests(unsigned long pfn, pgprot_t prot)
+ {
+-- 
+2.25.1
 
-Probably should check that link speed is > 100Mbps to be more certain
-about this assumption (based on your comments above).
-
-I can send this out later once this series lands or you are welcome to
-post this with additional checks if you like.
-
-The messy case is when RX != TX speed and I didn't want to delay
-landing the current series to figure out DUPLEX.
-
-> > I expect "Auto-Negotiation" is always true for cdc_ncm and
-> > cdc_ether devices and perhaps someone knows offhand how
-> > to have ethtool report "true" instead.
->
-> ethtool_link_ksettings contains three bitmaps:
->
-> supported: The capabilities of this device.
-> advertising: What this device is telling the link peer it can do.
-> lp_advertising: What the link peer is telling us it can do.
->
-> So to get Supports auto-negotiation to be true you need to set bit
-> ETHTOOL_LINK_MODE_Autoneg_BIT in supported.
-> For Advertised auto-negotiation: you need to set the same bit in
-> advertising.
->
-> Auto-negotiation: off is i think from base.autoneg.
-
-Thanks for explaining! :)  I understand the three bitmaps. I just
-hadn't taken the time to figure out how to access/set those from
-link_ksettings API.
-
-If we want to assume autoneg is always on (regardless of which type of
-media cdc_ncm/cdc_ether are talking to), we could set both supported
-and advertising to AUTO and lp_advertising to UNKNOWN. But I would
-prefer to add more checks to prove this is correct (vs making "well
-intentioned" assumptions).
-
-cheers,
-grant
