@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DD535521C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75B35521F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbhDFL3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
+        id S238020AbhDFLc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhDFL3w (ORCPT
+        with ESMTP id S231544AbhDFLcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:29:52 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C38C06174A;
-        Tue,  6 Apr 2021 04:29:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FF50N1fWQz9sRK;
-        Tue,  6 Apr 2021 21:29:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617708581;
-        bh=G5FZ98R4fey2S1dGj4/abcLMMGcg1sMzqpv1R+DDjPw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pTy+lUGTgymAJ1h0y3FSdLSa9CMfriuobwt2KHfNp6KLNRylkMKlPdcjJ+pKaS2wA
-         qcod8YWTFrvHOOCHAyz/DwHeGyBOl1V4i4Y/RIT0jEMRy9Ze6v3c/2+0unCJNtSC/g
-         o/cpSOSmuLTHqbClfCH08ZbB5cdgJWla2Np2PGIbSNuWLRfEvkqYq6vY1zAqSswFnQ
-         iMKz1eiGd1jokLX9z04nRPszIaalb+xTAOuq828CctKpKOphdInCT0lEsS/T5pyLrD
-         lPMqkA881HUiJOZjpXv0yTgNMi7QBgd8/clmBtBr3AQn8FZyFE1Z2AZor5T8IgruLn
-         CS8V00sNVp2eQ==
-Date:   Tue, 6 Apr 2021 21:29:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Tejun Heo <tj@kernel.org>, Wang Qing <wangqing@vivo.com>
-Subject: linux-next: manual merge of the akpm-current tree with Linus' tree
-Message-ID: <20210406212939.3853c648@canb.auug.org.au>
+        Tue, 6 Apr 2021 07:32:55 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED310C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:32:47 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id f12so7857063wro.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1qsh1PvwVqT8YTPIyWFqgM3PFqlHjXtan502PwOLung=;
+        b=gSfEfvnlc0O2ZY6hXjjXUZkBGi0Fw9CFyePVeDT1hU50JJ0+I8DEvCv4Q4BzD3G9mq
+         WtZyCC6lCpaQyo094PNpjLfCzYlY+vgH5ZkBu0iU1H4QfnBsS0xmw2pVgbrnIpXMtoxg
+         kZ+lEffPE25KG/RRHbubTpt6CgoDwAs3EiY2KzGF3xLSOOrX3BJqms6DA/CMNr3IHAs6
+         w6Hg3aydYpilrCXeRLHhcbMbAe/7UODaEPH0IT6BXynb4tQH3M3kH+Hmk22feEj1nBx4
+         2EVB2mBuBVo90+ydGzw9VIt80mXTmeDo3vCwhUCe0s3UBv8iPxtrJb9rwSSCrq9E/m4P
+         Tp0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1qsh1PvwVqT8YTPIyWFqgM3PFqlHjXtan502PwOLung=;
+        b=Y/K73NcQHiYAi0l/3tOn2iA/gQ9vvbm9yKC2nBmf7IGNt6wDYqSqcc4ZfNkjHO7j+O
+         egdL83ZXI1vqYpAz/8A6uBO2shWIm7juVuB4HxMEc8UbLkFzD72sc081w9Jnr+a90Hrj
+         OxU7QX+kM32l+D0/knDeWqEXOej5Hf6s8OIKDG7iTFH1s0OBoNdVI8DkP2vdQszexgxL
+         6Rm2zwGi53AviHD1rWFgAkE6x8sQ1qcRpo7wIbRHqn5UVpu3u6w8m3jkvLcbywNMgPbC
+         VQPeg1Jy/r8oauQ1uKeuPlKOdC8iFYOvqSzJKFJQqg0gB0e1Hn3j8d982k20Eu0wDYo8
+         RAfg==
+X-Gm-Message-State: AOAM530s6gAahFA+qkQAMOqsreXFMcGz08QEy9rKuGNKjnpk2DlSSt7K
+        kXCHCuBH/7T8B6GuAFYP5UmuTw==
+X-Google-Smtp-Source: ABdhPJypWuWfiAIQZSjc/XoWLsa+fRwrHArjxR004q9Cf/LxGitUQGxR4w6WIGjxxI9MoVYL3kCdCg==
+X-Received: by 2002:a5d:5904:: with SMTP id v4mr34494614wrd.261.1617708766655;
+        Tue, 06 Apr 2021 04:32:46 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id j6sm2424229wmq.16.2021.04.06.04.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 04:32:46 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] =?UTF-8?q?=F0=9F=93=A4=20arm64:=20dts:=20mediatek:?= =?UTF-8?q?=20mt8167:=20add=20larb=20nodes?=
+Date:   Tue,  6 Apr 2021 13:32:40 +0200
+Message-Id: <20210406113243.2665847-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/..ajPmjgIO31L/PW0=7Sj51";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/..ajPmjgIO31L/PW0=7Sj51
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add larb nodes for MT8167:
+* larb0 is used for display (dsi and hdmi)
+* larb1 is used for camera (csi)
+* larb2 is used for the video hardware decoder
 
-Hi all,
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Note: This series is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/log/?h=v5.12-next/dts64-2
 
-  kernel/watchdog.c
+V2:
+	* Removed unneeded mediatek,larb-id property
 
-between commit:
+ arch/arm64/boot/dts/mediatek/mt8167.dtsi | 30 ++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-  89e28ce60cb6 ("workqueue/watchdog: Make unbound workqueues aware of touch=
-_softlockup_watchdog() 84;0;0c84;0;0c There are two workqueue-specific watc=
-hdog timestamps:")
+diff --git a/arch/arm64/boot/dts/mediatek/mt8167.dtsi b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+index 4b951f81db9e..bbddd4b22d3e 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8167.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+@@ -140,5 +140,35 @@ smi_common: smi@14017000 {
+ 			clock-names = "apb", "smi";
+ 			power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
+ 		};
++
++		larb0: larb@14016000 {
++			compatible = "mediatek,mt8167-smi-larb";
++			reg = <0 0x14016000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&mmsys CLK_MM_SMI_LARB0>,
++				 <&mmsys CLK_MM_SMI_LARB0>;
++			clock-names = "apb", "smi";
++			power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
++		};
++
++		larb1: larb@15001000 {
++			compatible = "mediatek,mt8167-smi-larb";
++			reg = <0 0x15001000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&imgsys CLK_IMG_LARB1_SMI>,
++				 <&imgsys CLK_IMG_LARB1_SMI>;
++			clock-names = "apb", "smi";
++			power-domains = <&spm MT8167_POWER_DOMAIN_ISP>;
++		};
++
++		larb2: larb@16010000 {
++			compatible = "mediatek,mt8167-smi-larb";
++			reg = <0 0x16010000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&vdecsys CLK_VDEC_CKEN>,
++				 <&vdecsys CLK_VDEC_LARB1_CKEN>;
++			clock-names = "apb", "smi";
++			power-domains = <&spm MT8167_POWER_DOMAIN_VDEC>;
++		};
+ 	};
+ };
+-- 
+2.31.0
 
-(pity about that commit subject)
-
-from Linus' tree and commit:
-
-  3dd2b5b9c268 ("watchdog/softlockup: report the overall time of softlockup=
-s")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/watchdog.c
-index 107bc38b1945,090b6bc4de79..000000000000
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@@ -278,10 -290,9 +290,10 @@@ void touch_all_softlockup_watchdogs(voi
-  	 * update as well, the only side effect might be a cycle delay for
-  	 * the softlockup check.
-  	 */
- -	for_each_cpu(cpu, &watchdog_allowed_mask)
- +	for_each_cpu(cpu, &watchdog_allowed_mask) {
-- 		per_cpu(watchdog_touch_ts, cpu) =3D SOFTLOCKUP_RESET;
-+ 		per_cpu(watchdog_report_ts, cpu) =3D SOFTLOCKUP_DELAY_REPORT;
- -	wq_watchdog_touch(-1);
- +		wq_watchdog_touch(cpu);
- +	}
-  }
- =20
-  void touch_softlockup_watchdog_sync(void)
-
---Sig_/..ajPmjgIO31L/PW0=7Sj51
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBsRiMACgkQAVBC80lX
-0GzOxgf9FTIX5om8IMI/Qz+J6JxUpd3mfcrOEps/Mlky8t16qxSljuXOGTz6ktmH
-/z3KGUE4dNMfFzKbKMQLDOIBOfhfbZ+w6YTxHtdSx59CPP7INTj+WAPObPHt/UKo
-iohSgDtMtBU1hVpmKhRrZabx8ky7sW9r0hN68T3tib5QVkv6jqGLInHKV8IQiXvj
-ltGNnd405KlKOgO3Tugz+G6eJ+AusgTNCQBkjovILDQ/d+unY56pIBT5fQ08QZ0f
-j2rZ/z9RBW3AGIPav9BmJZZTJc65PdbvmVopDwnjiC7xvBm1IEsXg+vHMv3EA+i1
-BZi5tncPaZkSLIzSINVVYDAgDSfliQ==
-=yZuv
------END PGP SIGNATURE-----
-
---Sig_/..ajPmjgIO31L/PW0=7Sj51--
