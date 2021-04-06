@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E1B35548D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545313554D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240666AbhDFNHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhDFNHH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:07:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7040FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 06:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j2c2vVMgDzxpq/NDOYVmtTlifBkvHOiRtuxxd/tOLOU=; b=Ixh7YWXW5iwUXA8g5hR5tO3hV3
-        wG45ru/AtScmmfh4oKJc7dIeVodRxISsutJcgwkG9yFZqkTlLA7CVe1Ec4w4Z1Hxk8qZWitgeSwsv
-        jcUHhpJp0bibrHmXorX+zDtP08l7w1Z6XhcuZmrlhIm8smsEC52HhCsXsba4MBSIetev/4n1s/HA9
-        /ta1+1Nwx6e1jr4cnU7gQwGVP1w9XL/DGbTU0kHlez817m9M3PEY/rTs5x+Q1BGdF1Cdn9r6w5OtB
-        QjXKrie7hTVeFyqazHLJ73n+/21Lx4lmXovm3/441fFWovu2Q4EYIoC21y58/rifTVfLwT15zcSA8
-        7y1mFazg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTlPY-002f9I-BA; Tue, 06 Apr 2021 13:06:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08F82304B54;
-        Tue,  6 Apr 2021 15:06:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 141002C1D2B56; Tue,  6 Apr 2021 13:18:09 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 13:18:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 3/4] sched/fair: Consider SMT in ASYM_PACKING load balance
-Message-ID: <YGxDcccJ1U9ru0kV@hirez.programming.kicks-ass.net>
-References: <20210406041108.7416-1-ricardo.neri-calderon@linux.intel.com>
- <20210406041108.7416-4-ricardo.neri-calderon@linux.intel.com>
+        id S243723AbhDFNS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:18:56 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59095 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243571AbhDFNSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:18:47 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lTlbJ-0006qP-00; Tue, 06 Apr 2021 15:18:37 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D82C5C24CD; Tue,  6 Apr 2021 14:59:45 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 14:59:45 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     hch@lst.de
+Subject: Re: [PATCH v3 0/4] MIPS: Remove get_fs/set_fs
+Message-ID: <20210406125945.GA9505@alpha.franken.de>
+References: <20210401125639.42963-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406041108.7416-4-ricardo.neri-calderon@linux.intel.com>
+In-Reply-To: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 09:11:07PM -0700, Ricardo Neri wrote:
-> +static bool cpu_group_is_smt(int cpu, struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +	if (!static_branch_likely(&sched_smt_present))
-> +		return false;
-> +
-> +	if (sg->group_weight == 1)
-> +		return false;
-> +
-> +	if (cpumask_weight(cpu_smt_mask(cpu)) == 1)
-> +		return false;
+On Thu, Apr 01, 2021 at 02:56:33PM +0200, Thomas Bogendoerfer wrote:
+> This series replaces get_fs/set_fs and removes it from MIPS arch code.
+> 
+> Changes in v3:
+> - use get_user/get_kernel_nofault for helper functions
+> 
+> Changes in v2:
+> - added copy_from_kernel_nofault_allowed() for !EVA to restrict
+>   access of __get/__put_kernel_nofault
+> - replaced __get_data macro by helper functions
+> - removed leftover set_fs calls in ftrace.c
+> - further cleanup uaccess.h
+> 
+> Thomas Bogendoerfer (4):
+>   MIPS: kernel: Remove not needed set_fs calls
+>   MIPS: uaccess: Added __get/__put_kernel_nofault
+>   MIPS: uaccess: Remove get_fs/set_fs call sites
+>   MIPS: Remove get_fs/set_fs
+> 
+>  arch/mips/Kconfig                   |   1 -
+>  arch/mips/include/asm/processor.h   |   4 -
+>  arch/mips/include/asm/thread_info.h |   6 -
+>  arch/mips/include/asm/uaccess.h     | 436 +++++++++++-----------------
+>  arch/mips/kernel/access-helper.h    |  18 ++
+>  arch/mips/kernel/asm-offsets.c      |   1 -
+>  arch/mips/kernel/ftrace.c           |   8 -
+>  arch/mips/kernel/process.c          |   2 -
+>  arch/mips/kernel/scall32-o32.S      |   4 +-
+>  arch/mips/kernel/traps.c            | 105 +++----
+>  arch/mips/kernel/unaligned.c        | 199 +++++--------
+>  arch/mips/lib/memcpy.S              |  28 +-
+>  arch/mips/lib/memset.S              |   3 -
+>  arch/mips/lib/strncpy_user.S        |  48 +--
+>  arch/mips/lib/strnlen_user.S        |  44 +--
+>  arch/mips/mm/Makefile               |   4 +
+>  arch/mips/mm/maccess.c              |  10 +
+>  17 files changed, 357 insertions(+), 564 deletions(-)
+>  create mode 100644 arch/mips/kernel/access-helper.h
+>  create mode 100644 arch/mips/mm/maccess.c
 
-Please explain this condition. Why is it required?
+series applied to mips-next.
 
-> +	return cpumask_equal(sched_group_span(sg), cpu_smt_mask(cpu));
-> +#else
-> +	return false;
-> +#endif
-> +}
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
