@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A3F354B1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC3A354B18
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243528AbhDFDGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:06:15 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15601 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239562AbhDFDGN (ORCPT
+        id S243524AbhDFDFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:05:36 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3934 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243510AbhDFDFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:06:13 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDsmp4C1Wz18H3v;
-        Tue,  6 Apr 2021 11:03:54 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
- 11:05:56 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-tegra@vger.kernel.org>, <swarren@nvidia.com>,
-        <perex@perex.cz>
-CC:     <linux-kernel@vger.kernel.org>, <john.wanghui@huawei.com>,
-        <abudankov@huawei.com>, <yz.yuzhou@huawei.com>
-Subject: [PATCH] ASoC: tegra: fix build warning
+        Mon, 5 Apr 2021 23:05:33 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FDsm209M2z5lm9;
+        Tue,  6 Apr 2021 11:03:14 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggeml405-hub.china.huawei.com (10.3.17.49) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 6 Apr 2021 11:05:22 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 11:05:22 +0800
+Subject: Re: [PATCH v6 00/10] KVM: selftests: some improvement and a new test
+ for kvm page table
+To:     Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Andrew Jones <drjones@redhat.com>, Ben Gardon <bgardon@google.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210330080856.14940-1-wangyanan55@huawei.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <31ab81be-bf14-62f3-d579-9685ccec578a@huawei.com>
 Date:   Tue, 6 Apr 2021 11:05:22 +0800
-Message-ID: <20210406030522.22941-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.28.241]
+In-Reply-To: <20210330080856.14940-1-wangyanan55@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following function may have no callers, so they're marked
-__maybe_unused to avoid warning:
+Kindly ping...
 
-sound/soc/tegra/tegra30_i2s.c:50:12: warning: ‘tegra30_i2s_runtime_resume’ defined but not used [-Wunused-function]
- static int tegra30_i2s_runtime_resume(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/tegra/tegra30_i2s.c:39:12: warning: ‘tegra30_i2s_runtime_suspend’ defined but not used [-Wunused-function]
- static int tegra30_i2s_runtime_suspend(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/tegra/tegra20_i2s.c:48:12: warning: ‘tegra20_i2s_runtime_resume’ defined but not used [-Wunused-function]
- static int tegra20_i2s_runtime_resume(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/tegra/tegra20_i2s.c:37:12: warning: ‘tegra20_i2s_runtime_suspend’ defined but not used [-Wunused-function]
- static int tegra20_i2s_runtime_suspend(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/tegra/tegra30_ahub.c:64:12: warning: ‘tegra30_ahub_runtime_resume’ defined but not used [-Wunused-function]
- static int tegra30_ahub_runtime_resume(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/tegra/tegra30_ahub.c:43:12: warning: ‘tegra30_ahub_runtime_suspend’ defined but not used [-Wunused-function]
- static int tegra30_ahub_runtime_suspend(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi Paolo,
+Will this series be picked up soon, or is there any other work for me to do?
 
-Fixes: 82ef0ae46b86 ('ASoC: tegra: add runtime PM support')
-Fixes: be944d42ccc1 ('ASoC: tegra: add tegra30-ahub driver')
-Fixes: 4fb0384f3dc6 ('ASoC: tegra: add tegra30-i2s driver')
+Regards,
+Yanan
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- sound/soc/tegra/tegra20_i2s.c  | 4 ++--
- sound/soc/tegra/tegra30_ahub.c | 4 ++--
- sound/soc/tegra/tegra30_i2s.c  | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 1b27f81c10fe..b280ebd72591 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -34,7 +34,7 @@
- 
- #define DRV_NAME "tegra20-i2s"
- 
--static int tegra20_i2s_runtime_suspend(struct device *dev)
-+static __maybe_unused int tegra20_i2s_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 
-@@ -45,7 +45,7 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int tegra20_i2s_runtime_resume(struct device *dev)
-+static __maybe_unused int tegra20_i2s_runtime_resume(struct device *dev)
- {
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index d1718f3af3cd..4692c70ed933 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -40,7 +40,7 @@ static inline void tegra30_audio_write(u32 reg, u32 val)
- 	regmap_write(ahub->regmap_ahub, reg, val);
- }
- 
--static int tegra30_ahub_runtime_suspend(struct device *dev)
-+static __maybe_unused int tegra30_ahub_runtime_suspend(struct device *dev)
- {
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 	regcache_cache_only(ahub->regmap_ahub, true);
-@@ -61,7 +61,7 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
-  * stopping streams should dynamically adjust the clock as required.  However,
-  * this is not yet implemented.
-  */
--static int tegra30_ahub_runtime_resume(struct device *dev)
-+static __maybe_unused int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 8730ffa0f691..36344f0a64c1 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -36,7 +36,7 @@
- 
- #define DRV_NAME "tegra30-i2s"
- 
--static int tegra30_i2s_runtime_suspend(struct device *dev)
-+static __maybe_unused int tegra30_i2s_runtime_suspend(struct device *dev)
- {
- 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
- 
-@@ -47,7 +47,7 @@ static int tegra30_i2s_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int tegra30_i2s_runtime_resume(struct device *dev)
-+static __maybe_unused int tegra30_i2s_runtime_resume(struct device *dev)
- {
- 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
--- 
-2.17.1
-
+On 2021/3/30 16:08, Yanan Wang wrote:
+> Hi,
+> This v6 series can mainly include two parts.
+> Rebased on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
+>
+> In the first part, all the known hugetlb backing src types specified
+> with different hugepage sizes are listed, so that we can specify use
+> of hugetlb source of the exact granularity that we want, instead of
+> the system default ones. And as all the known hugetlb page sizes are
+> listed, it's appropriate for all architectures. Besides, a helper that
+> can get granularity of different backing src types(anonumous/thp/hugetlb)
+> is added, so that we can use the accurate backing src granularity for
+> kinds of alignment or guest memory accessing of vcpus.
+>
+> In the second part, a new test is added:
+> This test is added to serve as a performance tester and a bug reproducer
+> for kvm page table code (GPA->HPA mappings), it gives guidance for the
+> people trying to make some improvement for kvm. And the following explains
+> what we can exactly do through this test.
+>
+> The function guest_code() can cover the conditions where a single vcpu or
+> multiple vcpus access guest pages within the same memory region, in three
+> VM stages(before dirty logging, during dirty logging, after dirty logging).
+> Besides, the backing src memory type(ANONYMOUS/THP/HUGETLB) of the tested
+> memory region can be specified by users, which means normal page mappings
+> or block mappings can be chosen by users to be created in the test.
+>
+> If ANONYMOUS memory is specified, kvm will create normal page mappings
+> for the tested memory region before dirty logging, and update attributes
+> of the page mappings from RO to RW during dirty logging. If THP/HUGETLB
+> memory is specified, kvm will create block mappings for the tested memory
+> region before dirty logging, and split the blcok mappings into normal page
+> mappings during dirty logging, and coalesce the page mappings back into
+> block mappings after dirty logging is stopped.
+>
+> So in summary, as a performance tester, this test can present the
+> performance of kvm creating/updating normal page mappings, or the
+> performance of kvm creating/splitting/recovering block mappings,
+> through execution time.
+>
+> When we need to coalesce the page mappings back to block mappings after
+> dirty logging is stopped, we have to firstly invalidate *all* the TLB
+> entries for the page mappings right before installation of the block entry,
+> because a TLB conflict abort error could occur if we can't invalidate the
+> TLB entries fully. We have hit this TLB conflict twice on aarch64 software
+> implementation and fixed it. As this test can imulate process from dirty
+> logging enabled to dirty logging stopped of a VM with block mappings,
+> so it can also reproduce this TLB conflict abort due to inadequate TLB
+> invalidation when coalescing tables.
+>
+> Links about the TLB conflict abort:
+> https://lore.kernel.org/lkml/20201201201034.116760-3-wangyanan55@huawei.com/
+>
+> ---
+>
+> Change logs:
+>
+> v5->v6:
+> - Address Andrew Jones's comments for v5 series
+> - Add Andrew Jones's R-b tags in some patches
+> - Rebased on newest kvm/queue tree
+> - v5: https://lore.kernel.org/lkml/20210323135231.24948-1-wangyanan55@huawei.com/
+>
+> v4->v5:
+> - Use synchronization(sem_wait) for time measurement
+> - Add a new patch about TEST_ASSERT(patch 4)
+> - Address Andrew Jones's comments for v4 series
+> - Add Andrew Jones's R-b tags in some patches
+> - v4: https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
+>
+> v3->v4:
+> - Add a helper to get system default hugetlb page size
+> - Add tags of Reviewed-by of Ben in the patches
+> - v3: https://lore.kernel.org/lkml/20210301065916.11484-1-wangyanan55@huawei.com/
+>
+> v2->v3:
+> - Add tags of Suggested-by, Reviewed-by in the patches
+> - Add a generic micro to get hugetlb page sizes
+> - Some changes for suggestions about v2 series
+> - v2: https://lore.kernel.org/lkml/20210225055940.18748-1-wangyanan55@huawei.com/
+>
+> v1->v2:
+> - Add a patch to sync header files
+> - Add helpers to get granularity of different backing src types
+> - Some changes for suggestions about v1 series
+> - v1: https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
+>
+> ---
+>
+> Yanan Wang (10):
+>    tools headers: sync headers of asm-generic/hugetlb_encode.h
+>    mm/hugetlb: Add a macro to get HUGETLB page sizes for mmap
+>    KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for timing
+>    KVM: selftests: Print the errno besides error-string in TEST_ASSERT
+>    KVM: selftests: Make a generic helper to get vm guest mode strings
+>    KVM: selftests: Add a helper to get system configured THP page size
+>    KVM: selftests: Add a helper to get system default hugetlb page size
+>    KVM: selftests: List all hugetlb src types specified with page sizes
+>    KVM: selftests: Adapt vm_userspace_mem_region_add to new helpers
+>    KVM: selftests: Add a test for kvm page table code
+>
+>   include/uapi/linux/mman.h                     |   2 +
+>   tools/include/asm-generic/hugetlb_encode.h    |   3 +
+>   tools/include/uapi/linux/mman.h               |   2 +
+>   tools/testing/selftests/kvm/.gitignore        |   1 +
+>   tools/testing/selftests/kvm/Makefile          |   3 +
+>   .../selftests/kvm/demand_paging_test.c        |   8 +-
+>   .../selftests/kvm/dirty_log_perf_test.c       |  14 +-
+>   .../testing/selftests/kvm/include/kvm_util.h  |   4 +-
+>   .../testing/selftests/kvm/include/test_util.h |  21 +-
+>   .../selftests/kvm/kvm_page_table_test.c       | 506 ++++++++++++++++++
+>   tools/testing/selftests/kvm/lib/assert.c      |   4 +-
+>   tools/testing/selftests/kvm/lib/kvm_util.c    |  59 +-
+>   tools/testing/selftests/kvm/lib/test_util.c   | 163 +++++-
+>   tools/testing/selftests/kvm/steal_time.c      |   4 +-
+>   14 files changed, 733 insertions(+), 61 deletions(-)
+>   create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
+>
