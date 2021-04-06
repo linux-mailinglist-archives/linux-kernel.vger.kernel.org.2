@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB67F354ACD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BE6354AD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243328AbhDFCQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhDFCQY (ORCPT
+        id S243343AbhDFCSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:18:45 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:46834 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238828AbhDFCSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:16:24 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BF5C06174A;
-        Mon,  5 Apr 2021 19:16:17 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so518516pjb.0;
-        Mon, 05 Apr 2021 19:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
-        b=t7WS9sG8PQeiSfkASPQaYoPl/uSTynldhpGbQPtB0/kEM9/0zM6PIGpoiBHzZwDcgK
-         fvvJCFntmIejETB3podNbAvKPRig4PklyRQDaxpbS9yduIrUM97Zl2bawLgtFXsZKIME
-         VU5WoS8YGTF+q1a4UZS5Ok7FB25I6lGoag0BwHe6tjR699psWFEk0T2t8UWwMknYgsln
-         XRp7pvtjqcBUwrPkRUNODh//+VKygNwao7f2yHhSDqITZUdgSk8XzOGuoNrqUYchplsy
-         wcOR1NwKXmr3oUNkypx08U8velXcvyRxR32ZPL40hLANpKTXaR7rj7xmkOgrRwaG/40/
-         F0yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
-        b=IYuhtXPjY/NWDMIxnwsmWnmLVPz5OlhzDCNRcrA6aUwjv4fRUKruKaoEEXoldA/5Fy
-         3w4PyMyrLq6JT3vdmP1mn/CokQYgp50xrxA7yTLXwgsFpkwJ9am8EvRQPoQWqs685Cie
-         XaBtq6+CmtJEzT2+U6d5uodwplfrvcfAjp+sDPrD7kSAACdMh/mnclcGUJ5m3EISuYdG
-         ZFQb9in2D3kYlw3fEVcSSnU0N0oo2CrqKWgpommiZsBlt61QpFIvX09xlAPr+li8wWhR
-         qjdv8BfvhA6JogWyE6rz801uJWqNQkYBDV43hf4BBJCRMTD15NAeY2reZH497yis7Vtb
-         t5BQ==
-X-Gm-Message-State: AOAM530R2rcQc/NP+3NFOVISCS9h6yM5BmihV+bSXEYrGCs4Hga32+Ph
-        SnU2ciUnhw2ywydyLMc+St0ni2th0kUe+g==
-X-Google-Smtp-Source: ABdhPJz8qrHwRwTHzcMqT0HI5HoLf9ZzdSQAKV9+bEdXeU1rQW8QfzDQH1Ea4JJieivHFbPFmS0tbw==
-X-Received: by 2002:a17:90a:cb0a:: with SMTP id z10mr691091pjt.20.1617675377179;
-        Mon, 05 Apr 2021 19:16:17 -0700 (PDT)
-Received: from [10.43.90.134] ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id y68sm17905608pgy.5.2021.04.05.19.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 19:16:16 -0700 (PDT)
-Subject: Re: [PATCH] integrity/ima: Add declarations to init_once void
- arguments.
-To:     serge@hallyn.com, jmorris@namei.org
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323013318.296993-1-unclexiaole@gmail.com>
-From:   Jiele Zhao <unclexiaole@gmail.com>
-Message-ID: <f97e397d-5d9f-31c3-c027-d9b89ba9637a@gmail.com>
-Date:   Tue, 6 Apr 2021 10:16:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 5 Apr 2021 22:18:43 -0400
+X-UUID: 70bab1c63fc84f59839b9713d3bc079d-20210406
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Gum8DmPKyJ1oZDVQaFVj6BihhQF1RHFD6805mHWOT9s=;
+        b=rlcrzLAJBK/n9wRRHdh9o93Z8ea1czFDyxkhqyEvkZRCov2RH1EGc/r58AliqoRvsrFEB+Npv0CR70ZjC1Uq4rEM+2qwXB1kZA1IYeOK3RiA7TCKdSn1aSyB2nNfji3jzxagZQ18npiaLuSGNGYCqWoAEV0lPv4fSzWuEqJegaw=;
+X-UUID: 70bab1c63fc84f59839b9713d3bc079d-20210406
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 483669413; Tue, 06 Apr 2021 10:18:18 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 6 Apr
+ 2021 10:18:12 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 6 Apr 2021 10:18:12 +0800
+Message-ID: <1617675492.22435.4.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/2] usb: xhci-mtk: remove unnecessary assignments in
+ periodic TT scheduler
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Ikjoon Jang <ikjn@chromium.org>, Yaqii Wu <Yaqii.Wu@mediatek.com>,
+        <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Tue, 6 Apr 2021 10:18:12 +0800
+In-Reply-To: <YGq2YfURFApdJLxb@kroah.com>
+References: <20210330080617.3746932-1-ikjn@chromium.org>
+         <20210330160508.1.I797d214790033d0402d19ff6b47a34aff60d3062@changeid>
+         <1617179455.2752.1.camel@mhfsdcap03> <YGq2YfURFApdJLxb@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210323013318.296993-1-unclexiaole@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: 79BB5D152F61C279504AE40E61C8FA02534BFF7A22CD66A437832A019CFDCF482000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
+T24gTW9uLCAyMDIxLTA0LTA1IGF0IDA5OjA0ICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIFdlZCwgTWFyIDMxLCAyMDIxIGF0IDA0OjMwOjU1UE0gKzA4MDAsIENodW5mZW5n
+IFl1biB3cm90ZToNCj4gPiBjYyBZYXFpaSBXdSA8WWFxaWkuV3VAbWVkaWF0ZWsuY29tPg0KPiA+
+IA0KPiA+IEknbGwgdGVzdCBpdCAsIHRoYW5rcw0KPiANCj4gRGlkIHlvdSB0ZXN0IHRoaXMgc2Vy
+aWVzIGFuZCBmaW5kIGFueSBwcm9ibGVtcz8gIElmIG5vdCwgSSdsbCBnbyBxdWV1ZQ0KPiB0aGVz
+ZSB1cC4uLg0KWWVzLCBmb3VuZCBhbiBpc3N1ZSBvbiB0aGUgc3RhcnQtc3BsaXQgdHJhbnNhY3Rp
+b24sIGJ1dCBub3QgZm91bmQgdGhlDQpyb290IGNhdXNlIHlldCA6KA0KDQo+IA0KPiB0aGFua3Ms
+DQo+IA0KPiBncmVnIGstaA0KDQo=
 
-On 2021/3/23 9:33, Jiele Zhao wrote:
-> init_once is a callback to kmem_cache_create. The parameter
-> type of this function is void *, so it's better to give a
-> explicit cast here.
->
-> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
-> ---
->   security/integrity/iint.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index 1d20003243c3..5f3f2de997e1 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -152,7 +152,7 @@ void integrity_inode_free(struct inode *inode)
->   
->   static void init_once(void *foo)
->   {
-> -	struct integrity_iint_cache *iint = foo;
-> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *)foo;
->   
->   	memset(iint, 0, sizeof(*iint));
->   	iint->ima_file_status = INTEGRITY_UNKNOWN;
