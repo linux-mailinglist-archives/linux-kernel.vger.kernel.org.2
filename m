@@ -2,108 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B8D3558CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4B3558D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346216AbhDFQHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232672AbhDFQHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:07:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0437F613CD;
-        Tue,  6 Apr 2021 16:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617725223;
-        bh=q0TkxKOZJRUCAT/XfYl1YgZ73jKyqtq9Ikqkmc/zUi0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GyMC15T1zs1/FkyzEWXhAoZRPjYf8iTv0ebdRrGUWbDRkWlLvORRumrMafdLcFCPg
-         QYAZApT/4mG9b41oyajNyffAC8dI7OmznHPc+ULgGQh2OqecWYYejnHKLedqaksmnJ
-         PP1659XHUsMr+O1Y/6e52Q9+lpjus3evEJ6fVn/B9eozisxj459ekoIp7vEDHVFHZV
-         lm2ubBW0wfV/VPYrf6t+4zRTnX3c4wmEQBb/nHHG+X9MDGsMD6e6/GGGLb34tFBGLk
-         xhOSYoPuGNxibwmqk6EXHR7Mm53VggW8AkrwLSI9FN6q6NkBEO7h9nxcxSwFaUVAwE
-         hixdnahlEquUQ==
-Received: by mail-ej1-f46.google.com with SMTP id l4so22791104ejc.10;
-        Tue, 06 Apr 2021 09:07:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532tCEc1ec/cqhIG6i5ecMjc0SJzqXvQN9hT38ry1bxlVS9Gy+96
-        t3V9h29VQZMAvALCDpqTiTrKCwKn8gF0m+PC1g==
-X-Google-Smtp-Source: ABdhPJzMoSMQygWRDajEWdidSk67pVGpnygV7Dy6GVwOgacbGBH3WitosU5sKMxxu8argY+oQjgYUzFyQ6EbAAfWYTg=
-X-Received: by 2002:a17:906:490e:: with SMTP id b14mr6455459ejq.303.1617725221514;
- Tue, 06 Apr 2021 09:07:01 -0700 (PDT)
+        id S1346225AbhDFQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244082AbhDFQHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:07:54 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACDAC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:07:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id c17so10751815pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T+v5IX4cEX9CUYKYtfkvuLP/FWpj0bDTli11un4lbv0=;
+        b=pviF+Jske75eIM5lqnUDaFVeWwFX3hgTYiikm0Q0Qq5BzbMJ75nxMKa9iNaylKyTPI
+         4TuSiBU7vBaOjGIi001q7ELkEl3+BRTIB+ilS+K6sp8XkF914tTAeM0GQxNvSpyFIf/R
+         XG/01KWEl894g+4NGovaSzDVgpF5lTB5vhFF2Q8IyA7IqcjsuUpcFe2pJS6Q7EphD2Q8
+         wYk2BqQFQbBGgWV7doP6ZWXVy9QpyWM8Yo5erUz2pHsHbYFqqDztGWMMOXPPu9DIAlFk
+         +NDfUmHukpBORvXgfdBgekL3TGl9WQ/U/+LOFEEY/SXs60VsU+SnCZp0DF5ePEac2zfl
+         KWiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T+v5IX4cEX9CUYKYtfkvuLP/FWpj0bDTli11un4lbv0=;
+        b=etZ1szomsy4ee9F7Gv4jaJCIBtUY7rMLMElHOo2IPXZC5we78b0ZfZBLYxE4oOidmQ
+         ACEl+6NFPrQdk3MqwZmb97NNXvx08HIjnkhLjHoZAwgfk0lF9/xp+dCvjtq7OZ/gr6Sl
+         EXVm/aIh1R7tmk7HN1j3pa7kaoEdbjsebik4q4WBjBJjWRJyqU/AQGhI5Z0Q81s4XX5N
+         NC5MT16PJz2kmDcZ6ZkSMewGi10hzY4ZpoO+IbrvuEIyDJIlrCeu+9UPPAain4HhzqME
+         QMOusy7/MKTdsNCNXJlM1pSz694PImBq861knRE2huf0p0qGt1uBcXvvg3nOwTa+f9Rc
+         Ajdw==
+X-Gm-Message-State: AOAM531YfL8cEh6SGSCE3zOm8r2m2e4ll+nnovyGvCWuI5s1WeVNT3aH
+        kvzgSrYf4mgFh7NKoEVscrpA0A==
+X-Google-Smtp-Source: ABdhPJyP7PyvexG6El1USINm0FiegJ3CvKHW7goT+7lfuuiY2ihzL4LiC69CbYev8715MyrOzTZ7Jg==
+X-Received: by 2002:a05:6a00:1344:b029:22b:948b:a548 with SMTP id k4-20020a056a001344b029022b948ba548mr27877718pfu.33.1617725266107;
+        Tue, 06 Apr 2021 09:07:46 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id d22sm2889002pjx.24.2021.04.06.09.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 09:07:45 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 16:07:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] KVM: x86: Fix a spurious -E2BIG in
+ KVM_GET_EMULATED_CPUID
+Message-ID: <YGyHTc0uJtrJY0gh@google.com>
+References: <20210406082642.20115-1-eesposit@redhat.com>
+ <20210406082642.20115-2-eesposit@redhat.com>
 MIME-Version: 1.0
-References: <20210406141819.1025864-1-dqfext@gmail.com> <20210406141819.1025864-2-dqfext@gmail.com>
- <CAAOTY_8snSTcguhyB9PJBWydqNaWZL3V4zXiYULVp5n48fN24w@mail.gmail.com> <CALW65jbbQSFbgjsMkKCyFWnbkLOenM_+2q6K7BQG5bc4-R0CpA@mail.gmail.com>
-In-Reply-To: <CALW65jbbQSFbgjsMkKCyFWnbkLOenM_+2q6K7BQG5bc4-R0CpA@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 7 Apr 2021 00:06:50 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__4CdGjD-66jJcQVCuzSWOUe7gLxrZ4GAfBAuaOcvX8wA@mail.gmail.com>
-Message-ID: <CAAOTY__4CdGjD-66jJcQVCuzSWOUe7gLxrZ4GAfBAuaOcvX8wA@mail.gmail.com>
-Subject: Re: [RFC net-next 1/4] net: phy: add MediaTek PHY driver
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-staging@lists.linux.dev, DTML <devicetree@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406082642.20115-2-eesposit@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DENG Qingfang <dqfext@gmail.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=886=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:57=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Apr 6, 2021 at 11:47 PM Chun-Kuang Hu <chunkuang.hu@kernel.org> w=
-rote:
-> >
-> > Hi, Qingfang:
-> >
-> > DENG Qingfang <dqfext@gmail.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=886=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:19=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > > --- a/drivers/net/phy/Kconfig
-> > > +++ b/drivers/net/phy/Kconfig
-> > > @@ -207,6 +207,11 @@ config MARVELL_88X2222_PHY
-> > >           Support for the Marvell 88X2222 Dual-port Multi-speed Ether=
-net
-> > >           Transceiver.
-> > >
-> > > +config MEDIATEK_PHY
-> >
-> > There are many Mediatek phy drivers in [1], so use a specific name.
->
-> So "MEDIATEK_MT7530_PHY" should be okay?
+On Tue, Apr 06, 2021, Emanuele Giuseppe Esposito wrote:
+> When retrieving emulated CPUID entries, check for an insufficient array
+> size if and only if KVM is actually inserting an entry.
+> If userspace has a priori knowledge of the exact array size,
+> KVM_GET_EMULATED_CPUID will incorrectly fail due to effectively requiring
+> an extra, unused entry.
+> 
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
 
-This is ok, but this name looks only for one SoC.
-MEDIATEK_ETHERNET_PHY could support more SoC, how do you think?
+Don't think it needs stable@, but I think it's worthwhile to add:
 
-Regards,
-Chun-Kuang.
+Fixes: 433f4ba19041 ("KVM: x86: fix out-of-bounds write in KVM_GET_EMULATED_CPUID (CVE-2019-19332)")
 
->
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/drivers/phy/mediatek?h=3Dv5.12-rc6
-> >
-> > Regards,
-> > Chun-Kuang.
+
+> ---
+>  arch/x86/kvm/cpuid.c | 33 ++++++++++++++++-----------------
+>  1 file changed, 16 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 6bd2f8b830e4..27059ddf9f0a 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -567,34 +567,33 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
+>  
+>  static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>  {
+> -	struct kvm_cpuid_entry2 *entry;
+> -
+> -	if (array->nent >= array->maxnent)
+> -		return -E2BIG;
+> +	struct kvm_cpuid_entry2 entry;
+>  
+> -	entry = &array->entries[array->nent];
+> -	entry->function = func;
+> -	entry->index = 0;
+> -	entry->flags = 0;
+> +	memset(&entry, 0, sizeof(entry));
+> +	entry.function = func;
+
+Deep into nitpick territory... I think it makes sense to set entry.function only
+after the switch statement, that way it'll be a bit more obvious that the default
+case doesn't actually consume "entry".
+
+>  
+>  	switch (func) {
+>  	case 0:
+> -		entry->eax = 7;
+> -		++array->nent;
+> +		entry.eax = 7;
+>  		break;
+>  	case 1:
+> -		entry->ecx = F(MOVBE);
+> -		++array->nent;
+> +		entry.ecx = F(MOVBE);
+>  		break;
+>  	case 7:
+> -		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+> -		entry->eax = 0;
+> -		entry->ecx = F(RDPID);
+> -		++array->nent;
+> -	default:
+> +		entry.flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+> +		entry.eax = 0;
+> +		entry.ecx = F(RDPID);
+>  		break;
+> +	default:
+> +		goto out;
+>  	}
+
+Maybe add a comment here to call out that the check is done if and only if there
+is a valid entry?
+
+> +	if (array->nent >= array->maxnent)
+> +		return -E2BIG;
+> +
+> +	memcpy(&array->entries[array->nent++], &entry, sizeof(entry));
+> +
+> +out:
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.30.2
+> 
