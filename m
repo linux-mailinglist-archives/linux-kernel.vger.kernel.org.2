@@ -2,283 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B26354CAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA40354C9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243942AbhDFGTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:19:33 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:34389 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237469AbhDFGTa (ORCPT
+        id S234309AbhDFGRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:17:20 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:46004 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232287AbhDFGRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:19:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1617689963; x=1649225963;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=YKo36mz0WOO559CkHJ079xEk2c4tAii2GEBFEjN2p44=;
-  b=BPtTzMt72BxWB/EDgpirGLVhNVN9lD/i4zyDhLH5Ij5LPj1eH97v4T3P
-   gc0VbGAuKc1QuM4N+5XJCHBtmsBUrkE7b9SMc8JF+mAq0/vTDLkCnuaFv
-   kxARD9U7Q/cyM2yvF2bpwdQ4N93mr1fnZqM7kutpqBZGZbuOW6WH2eslh
-   UJsoCoTb03OGOvRA3ltn61UOEE9Cl7DXhf43TNg+2ltLrEYJp/YtY2rCK
-   g0S0g3jRiGFB/niba9bQZ2DeVkkIAF6beFdiZX2o8ch5JKbSFCZ/mprEl
-   F5yqMcUHjzD6aO98ZcIN3tAKtXknM1Bw2KZRAWF7O+suJO+UogMcgazUa
-   w==;
-IronPort-SDR: TLVMcpTR0tPUg/Yda7+mviRhYmvlNyxHf6T8+fXRIezxQjUFjT+UQdkodidpdxCtt/i8XL144p
- Rn7PBdBr66Zn5TV1xk2J301cmtEPb/Fwr3DmCtYUgIHhf929kWLLU4h4JFUb/ylXUw/rByzsPj
- Mir286bCoSxPUdto5ky19b++CVv+CxeM3NQzJM8W5SiPjUuCM/6YNQLcek8SuohgCnBLr4lgKB
- H+pZ8DnhSRlUawbdB5UNMtqGHfRfoWjwhdrQov+IcevvLNk4ys/SIOSHt+v1E7LMvGO9HVeeJG
- ceA=
-X-IronPort-AV: E=Sophos;i="5.81,308,1610380800"; 
-   d="scan'208";a="268282832"
-Received: from mail-dm6nam10lp2103.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.103])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2021 14:16:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JEDqdplhPtT0eDlxndcwBFGARKnyNJRIIjEAYDKp8ez3gJWs2LRUavQxazMDIVcCXeZda1wfy8nrdKucFG5OTbCNp018RcuVqUCgg0J0iSKpWjOe2H0fvL1hZ1ZWBQ21MM183SKOnjPy3UcbOU5UpLT0ZiYVRHoLLwWJb+lXQrmWf1JsJ6amwzXpOdNCC37pUvc08yi9GDUq6cBv1LfLCTcDtE3I8rTQbhM3GP0T6nBv7VBhjuqENQAjp1ryKpnYbAQfv2AfRV3HkfV3rxeDAEiM+1TBmQF7SJfumc4wGTla0+IypMZx12OkLPuhKpCYXxw3OLISpbN3Yhdh9DOqvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yJqzW0HPhwj95fvSvZCVVIOq7jJ7qeXqH8QDmwC/dQ4=;
- b=coqEZAZXFLc7f/lkvqgLmvPIVRm4vfU30dscNgQQpKj1cjfPENmLcz3chag5IQCSnsPUFbjL+6d67NokcLx+ac2qWdeI+WXKmt6SJKc/i0h5Xqlm3ug5dSL+pKk6j4qIWgptYD4zS+FxjwNPxXURUoTLCAa7GzK5RJP5jmSbIlInOVPHY4XtAerFhSgz0zbJBgKG55vkFPbw8ZqjYvb44PTEvfzv0cFEPLObs33kln5p1IUK1X4lRbbSWOx3vbm/YRSt9fXRtK+X3hFY3EyRye6inlejY66ZMb9GKegiINliCQIIn0GxbWHSYgw9lDLarGI8TeOxEvBuFgqaqhZcjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yJqzW0HPhwj95fvSvZCVVIOq7jJ7qeXqH8QDmwC/dQ4=;
- b=wF51FZBoWg3fDCCg/DIuDHUPOY6XTflGd9ZpcnqPQaUKmObonqKOtTeEIqp4uzlEqlKMgQZsd+mmKaaT2AYl256g6DBadf34jq7jpUPUdF9b4xr4Ikz5HB5+Gb0ucITvrxHq1kKdR0YYWiOMUN+8Iz10UXWC7nD/o21PULe0iyU=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB6667.namprd04.prod.outlook.com (2603:10b6:5:247::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.28; Tue, 6 Apr 2021 06:16:59 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966%5]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 06:16:59 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: RE: [PATCH v7 06/11] scsi: ufshpb: Region inactivation in host mode
-Thread-Topic: [PATCH v7 06/11] scsi: ufshpb: Region inactivation in host mode
-Thread-Index: AQHXJgEueLuV4ularE+yUH8qPo3IjKqm9ZCAgAAHZsCAAAthAIAABAWQ
-Date:   Tue, 6 Apr 2021 06:16:59 +0000
-Message-ID: <DM6PR04MB65752BA21FA1857D6EA10B62FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210331073952.102162-1-avri.altman@wdc.com>
- <20210331073952.102162-7-avri.altman@wdc.com>
- <e29e33769f23036f936a6b60c7430387@codeaurora.org>
- <DM6PR04MB6575719C78D67B7FA1557C21FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
- <6bb2fd28feb0cd6372a32673d6cfa164@codeaurora.org>
-In-Reply-To: <6bb2fd28feb0cd6372a32673d6cfa164@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 05451cc8-e47b-4a2e-f4b6-08d8f8c39648
-x-ms-traffictypediagnostic: DM6PR04MB6667:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB6667015A2004722468FB7BF2FC769@DM6PR04MB6667.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CrjoAS0x9dQMTApYmcZl51Lozlmr8MQM6uPHCRVzFKv8JLC8lZ1j4LbHHoh7IVlkDDD/sRoR/F+QhIqB41jeuvLYSKyRjUe0fA3xHCP6SqI8EY+LUZ1yb9d9+uSGtQFLPUjKqN5akLM7ZHyWOnd87qKjlGmcRvO686hsAAE8ym/fLRu6LU/LIjdnF5foaUR6tNEDG61ai+sJwfvja7FbovSjCegQtUEUW/JWr3nTwsYuFd3z/OGO+0sJv2mvi0y+aMADXqq/+xUFYUYmoS3dKaaHrwZ3sEynRZgEYL8ycXpP73Lujq6OKgY0fmcjQXcLVEaySzQM2jds9KCAMAlU6J+hoQuVzrqVy7OyPPVAkXhkLkp2i/ExWzfa9fJzpqg23NoibNF99LVg7b1yd1bc4LQxQ+c1nzU6ek2J3fhfSvjWqOFs1lruFmuL/WD6Vn6zEmsEANockr4vNVTk+dQZgEJOM8SdETQLpIU4tS1ovpN6nsoGmeSJv/YaM8stk96CZtLtMuDaqwWauBSjIsW4Rq1xq5UJI3k52RuxF4NwJ2OtMsXGZ0RYhOntnXfBnYoGeKA/VCttxoyv1LmxW7fEaiOn0vuE8+IC2McxcpMrqkJJ7XGyHNXgPYQSgICeVd7gxfqLBVR1he+m/UuEZF9BiG/9B+kSzdP1uIlYoTUiYfM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(7416002)(2906002)(38100700001)(186003)(6916009)(8936002)(86362001)(66556008)(71200400001)(478600001)(66476007)(316002)(54906003)(7696005)(53546011)(6506007)(26005)(9686003)(76116006)(33656002)(5660300002)(52536014)(64756008)(55016002)(66946007)(66446008)(4326008)(8676002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?29xgQWMHzlW65TqRPgESE/VqpmLG41laVZ4mItBGoZRrLyvHkZJNF5EnOXsp?=
- =?us-ascii?Q?scwAcsX3tYhfEo3Z/rvDtGe6J6iGM2FnIwtghInhOrKwvUZ5K3AkxSriZLeX?=
- =?us-ascii?Q?09XelxsnUIi0t6wKKhx6tR36fCC4Li886zlaya3oadiGlKd54W13DEGNAB10?=
- =?us-ascii?Q?45qfM+KIUa3h0wbQk1vBOXPAzl+AejUnp8Dn7evPAmZcp/hbSfDnz9f/IxsO?=
- =?us-ascii?Q?o6mDrm8utSt3tBrMEWN3/80eVjg/XU6SootCdzaOwpYTyRwod7uDQRSrLoKu?=
- =?us-ascii?Q?Et4TDI9UAkrtIWCTuYqfF2yKjHXy+WgwWLFi5iCdTjD2sjpQaSXdAO1EMlO9?=
- =?us-ascii?Q?1ZEhYNqXiEV1La4jVbGTvABkKybpdwyvgySqb6ZrPk7u1/ELGTRk5D+EwQet?=
- =?us-ascii?Q?jl1+s+71BF0iW8Xt8di03sPeCSLezNUEKFcWndHusEPG+l169+QeVGZPoSSy?=
- =?us-ascii?Q?X0MYggKtT1r7EikCu4FCD5ohhr4LrmLJ7CM/2egFFgrJFksq2yE3Jemvoj//?=
- =?us-ascii?Q?xf3MSyt1eTiw+oJNeaZ8MdJMn2Uv+SfwAIfwgOn2iiGgrjeAPxhfxlrgsBOe?=
- =?us-ascii?Q?4LWpSSDSzrhnfLWe8gMe2m82Er0M5ZTU2n9IudHADhXJsf5miDApOnxKoL7C?=
- =?us-ascii?Q?+YAW5Ni5oKW5AZ6bWCVf5gWxty7kv34fjlk/9X8f61urqR26eBdOhBcjuokx?=
- =?us-ascii?Q?aK1SyHk79FPP+TRd9I7CrBFH0bVgJcRfrBa9ZXGYxVGIJ2PUAaqHRGwu/X7W?=
- =?us-ascii?Q?F/D/PloSKmmLHcGYwPqei10Iyw+wXGCnS0jhn45VAwy+PBFvdIsq0/YAMmNw?=
- =?us-ascii?Q?SzDm6/9OHU48tF+p27Sn3U6OQhZBSyHz7r0vCQwl/lh2DmHsFKfNwPqW/2lk?=
- =?us-ascii?Q?Bnh+Bt14s3l8sZF+Rgv/AizoCEMuET1bGDvTuQO76vsYsOhV8j63+eExm+PQ?=
- =?us-ascii?Q?qdwRpJT17hWKV+e5f2W0y7wWS7C5vpbbr/cFfatSBf65ZZ0+1rdn3rtU8CHR?=
- =?us-ascii?Q?uHSDjRzNvsH8AtZwtugw+1IGIv1XjNmcxt904QQ2H9oX14Gaa5yOLU49pCzK?=
- =?us-ascii?Q?P/LkfJOt3arK38tj97h0334HHZqccWiVPBb6K8zRSaAnA4QO8/oYCwWlLQeN?=
- =?us-ascii?Q?caY6TS1YYfD08Nd4qEoZV43/TB+UA/dc9x0zAfQfMmy6dNj/5Pxnmq9aCJqi?=
- =?us-ascii?Q?3MSO5iFHjrJTrK1pRZnz3UiwMxSvXz3IF5whlt5TonjHgdLPxCeI19kzVoU3?=
- =?us-ascii?Q?GxErPdnS4AJav2j05yHseP4VZSgiQtN6JCfqeFvUMLtNLY0ycCwsMT8ouMVq?=
- =?us-ascii?Q?m8MkE6X7CuHFWMJDEwFeOXMh?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 6 Apr 2021 02:17:18 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210406061710euoutp029017809439ef14202efe66721b9ba363~zMFRmmFy33006330063euoutp02C
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 06:17:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210406061710euoutp029017809439ef14202efe66721b9ba363~zMFRmmFy33006330063euoutp02C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617689830;
+        bh=6kxgouY+vTopnyddfeFYlz4bGmxSvwI6aXPtC0I4ymI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=ceti/8F3fRirnOqi6/7nV2YlBz2r0JCjiFtPn1oQfn/5ewxS1vNcoyfz1/9iK2Yrs
+         G/nDFsNRo0+gxpoLRYrcalPSNFke6uG//bViutZGDCtPBXwXhoxvcwL3bdrzihGESf
+         HGFQwOCnS1Llb6xOuBMUjo/MK2DqPqTI2akx4qpc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210406061710eucas1p1ccfa6bfa7b4eb73c6dcfc0b2c2397d3f~zMFRfFOK32975229752eucas1p1W;
+        Tue,  6 Apr 2021 06:17:10 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id EE.32.09444.5ECFB606; Tue,  6
+        Apr 2021 07:17:09 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210406061709eucas1p1e8c4a2ad214fc3eec6e3c91c09607fed~zMFRDu2ML2972829728eucas1p1D;
+        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210406061709eusmtrp2337a8e0a500d478fa32c67b0a23ee101~zMFRDINWU2270622706eusmtrp2o;
+        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
+X-AuditID: cbfec7f4-dbdff700000024e4-7f-606bfce5573a
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 23.6C.08705.5ECFB606; Tue,  6
+        Apr 2021 07:17:09 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210406061709eusmtip147463ca24a3bca8c6459eba331cb0e1e~zMFQv9cZ-0978709787eusmtip1g;
+        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
+Subject: Re: [PATCH] iio: buffer: use sysfs_attr_init() on allocated attrs
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     jic23@kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <6c77abb2-0b6f-a745-0950-0be34d41913e@samsung.com>
+Date:   Tue, 6 Apr 2021 08:17:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05451cc8-e47b-4a2e-f4b6-08d8f8c39648
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 06:16:59.5484
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /dt/PyclDA8J2UeJxVWwOJIsDnbFE+2i+LJDY5JlCGmoLyyBGXtUC+0Xab5LV1RzRgltKJjeDtnsXPyzBaqxTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6667
+In-Reply-To: <20210402174226.630346-1-aardelean@deviqon.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplleLIzCtJLcpLzFFi42LZduznOd2nf7ITDLoO2Fi0PVexeNC0isli
+        3pF3LBaXd81hc2DxWLVzHbPHplWdbB6fN8kFMEdx2aSk5mSWpRbp2yVwZfTsvsBWcJWv4u7K
+        jywNjMt4uhg5OSQETCTenehj72Lk4hASWMEo8enQfFYI5wujxLMpe6AynxklVr8+xg7T8rPz
+        PxtEYjmjxOU7e1ggnI+MEl9XnmADqRIW8JJYt+8WWIeIQKbErWm/WUFsZgERiY+9W8HibAKG
+        El1vu8DqeQXsJJ7PWsoIYrMIqEis+7EIrEZUIEli6aN/jBA1ghInZz5hAbE5BWwkNsycAzVT
+        XmL72znMELa4xK0n85lADpIQ2MEh8XTKQ0aIs10kDr5rg7KFJV4d3wL1jozE/50wDc2MEg/P
+        rWWHcHqAfmuaAdVhLXHn3C+gUzmAVmhKrN+lDxF2lLi4t48JJCwhwCdx460gxBF8EpO2TWeG
+        CPNKdLQJQVSrScw6vg5u7cELl5gnMCrNQvLaLCTvzELyziyEvQsYWVYxiqeWFuempxYb5aWW
+        6xUn5haX5qXrJefnbmIEppTT/45/2cG4/NVHvUOMTByMhxglOJiVRHh39GYnCPGmJFZWpRbl
+        xxeV5qQWH2KU5mBREudN2rImXkggPbEkNTs1tSC1CCbLxMEp1cA0vck6fuakR+1XBCbwXZmo
+        12+2ITjWcGUaW50Z84zZq/11+kRb1v5yLgsTK3hue/S9wv3Ds9mX/tS6JSU0SWfFzE/xrCFu
+        h8u3Tk4X/2YmcNRgivqN20+EnyrxH/Tnsvn2YvIyzStvLynJtDIEO03dqS4n6tzabX4/etnl
+        E+vq/zrYep+Ku/Ukf9GmM92urIZSDDw2QRNTWBZe3jyx79S6/2Fxhu+fFJwzWjmvxc8qoq+m
+        +NaDpU55vGYCnYwr7Hd+y7FKcsyQ3Dj/8GT1ZNHO+zk3Nat6XFf9v1d0q/K6Z8aFwuWCatWc
+        MkaFFYodGQ22rVNqkte8Oh29r0c18bflFAHNq8s2mIs7eUxYt12JpTgj0VCLuag4EQDvwIA0
+        mAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsVy+t/xu7pP/2QnGKx6rGTR9lzF4kHTKiaL
+        eUfesVhc3jWHzYHFY9XOdcwem1Z1snl83iQXwBylZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdk
+        YqlnaGwea2VkqqRvZ5OSmpNZllqkb5egl9Gz+wJbwVW+irsrP7I0MC7j6WLk5JAQMJH42fmf
+        rYuRi0NIYCmjxLwDPxghEjISJ6c1sELYwhJ/rnVBFb1nlFj+5AkLSEJYwEti3b5b7F2MHBwi
+        ApkSX995g4SZBUQkPvZuZQexhQT6GSWmnNEBsdkEDCW63oLM4eTgFbCTeD5rKdguFgEViXU/
+        FoHViwokSbTtnskOUSMocXImxCpOARuJDTPnsELMN5OYt/khM4QtL7H97RwoW1zi1pP5TBMY
+        hWYhaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIyfbcd+bt7BOO/V
+        R71DjEwcjIcYJTiYlUR4d/RmJwjxpiRWVqUW5ccXleakFh9iNAX6ZyKzlGhyPjCC80riDc0M
+        TA1NzCwNTC3NjJXEebfOXRMvJJCeWJKanZpakFoE08fEwSnVwKRwTOgB4+yzi+7YNXv36zt+
+        1maef31+Iv86m7zijtOhKpf/LTfdYnDi25I7D04lnftkx3Xo/haBtCsbM5u5RKYsn6Dsfeuf
+        d+X/FT80rx1SmyeY8f8Rr8lBRc9gJ4ZD/TMdPNUU9jaVLQ9zUtm9pO60a+MfB4OMVNXHnnv3
+        au3My5U1yY/cb1MQWD99YYr/FG/9H+dmKVmv6mrZXeKi4vJIQShuUeEG06KgBbLHBb/Kr7z+
+        s1vbosxSr2VS3hmeYlt3zsCdB/dFupW5b5504YvZmz8H3h4p3fZ5w/KM8nmBjCqP/rzNnVyR
+        qS+64CIfn++vZf4HuvZ9MTqW++vcv4keWg8jnC7+c3l8o7OVY4kSS3FGoqEWc1FxIgA5puS4
+        KAMAAA==
+X-CMS-MailID: 20210406061709eucas1p1e8c4a2ad214fc3eec6e3c91c09607fed
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210402174237eucas1p1b117ceaf744e851703a229e87725f776
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210402174237eucas1p1b117ceaf744e851703a229e87725f776
+References: <CGME20210402174237eucas1p1b117ceaf744e851703a229e87725f776@eucas1p1.samsung.com>
+        <20210402174226.630346-1-aardelean@deviqon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> On 2021-04-06 13:20, Avri Altman wrote:
-> >> > -static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
-> >> > -                               struct ufshpb_region *rgn)
-> >> > +static int __ufshpb_evict_region(struct ufshpb_lu *hpb,
-> >> > +                              struct ufshpb_region *rgn)
-> >> >  {
-> >> >       struct victim_select_info *lru_info;
-> >> >       struct ufshpb_subregion *srgn;
-> >> >       int srgn_idx;
-> >> >
-> >> > +     lockdep_assert_held(&hpb->rgn_state_lock);
-> >> > +
-> >> > +     if (hpb->is_hcm) {
-> >> > +             unsigned long flags;
-> >> > +             int ret;
-> >> > +
-> >> > +             spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> >>
-> >> Never seen a usage like this... Here flags is used without being
-> >> intialized.
-> >> The flag is needed when spin_unlock_irqrestore ->
-> >> local_irq_restore(flags) to
-> >> restore the DAIF register (in terms of ARM).
-> > OK.
->=20
-> Hi Avri,
->=20
-> Checked on my setup, this lead to compilation error. Will you fix it in
-> next version?
->=20
-> warning: variable 'flags' is uninitialized when used here
-> [-Wuninitialized]
-Yeah - I will pass it to __ufshpb_evict_region and drop the lockdep_assert =
-call.
+On 02.04.2021 19:42, Alexandru Ardelean wrote:
+> When dynamically allocating sysfs attributes, it's a good idea to call
+> sysfs_attr_init() on them to initialize lock_class_keys.
+> This change does that.
+>
+> The lock_class_keys are set when the CONFIG_DEBUG_LOCK_ALLOC symbol is
+> enabled. Which is [likely] one reason why I did not see this during
+> development.
+>
+> I also am not able to see this even with CONFIG_DEBUG_LOCK_ALLOC enabled,
+> so this may [likely] be reproduce-able on some system configurations.
+>
+> This was reported via:
+>    https://lore.kernel.org/linux-iio/CA+U=DsrsvGgXEF30-vXuXS_k=-mjSjiBwEEzwKb1hJVn1P98OA@mail.gmail.com/T/#u
+>
+> Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>
+> @Marek: could you maybe test this on your setup?
+>
+> I haven't been able to reproduce this on mine.
 
-I don't want to block your testing - are there any other things you want me=
- to change?
+Works fine with this fix. Thanks!
 
-Thanks,
-Avri
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
->=20
-> Thanks,
-> Can Guo.
->=20
-> >
-> > Thanks,
-> > Avri
-> >
-> >>
-> >> Thanks,
-> >>
-> >> Can Guo.
-> >>
-> >> > +             ret =3D ufshpb_issue_umap_single_req(hpb, rgn);
-> >> > +             spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> >> > +             if (ret)
-> >> > +                     return ret;
-> >> > +     }
-> >> > +
-> >> >       lru_info =3D &hpb->lru_info;
-> >> >
-> >> >       dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
-> >> > rgn->rgn_idx);
-> >> > @@ -1130,6 +1150,8 @@ static void __ufshpb_evict_region(struct
-> >> > ufshpb_lu *hpb,
-> >> >
-> >> >       for_each_sub_region(rgn, srgn_idx, srgn)
-> >> >               ufshpb_purge_active_subregion(hpb, srgn);
-> >> > +
-> >> > +     return 0;
-> >> >  }
-> >> >
-> >> >  static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct
-> >> > ufshpb_region *rgn)
-> >> > @@ -1151,7 +1173,7 @@ static int ufshpb_evict_region(struct ufshpb_l=
-u
-> >> > *hpb, struct ufshpb_region *rgn)
-> >> >                       goto out;
-> >> >               }
-> >> >
-> >> > -             __ufshpb_evict_region(hpb, rgn);
-> >> > +             ret =3D __ufshpb_evict_region(hpb, rgn);
-> >> >       }
-> >> >  out:
-> >> >       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> >> > @@ -1285,7 +1307,9 @@ static int ufshpb_add_region(struct ufshpb_lu
-> >> > *hpb, struct ufshpb_region *rgn)
-> >> >                               "LRU full (%d), choose victim %d\n",
-> >> >                               atomic_read(&lru_info->active_cnt),
-> >> >                               victim_rgn->rgn_idx);
-> >> > -                     __ufshpb_evict_region(hpb, victim_rgn);
-> >> > +                     ret =3D __ufshpb_evict_region(hpb, victim_rgn)=
-;
-> >> > +                     if (ret)
-> >> > +                             goto out;
-> >> >               }
-> >> >
-> >> >               /*
-> >> > @@ -1856,6 +1880,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
-> >> >  ufshpb_sysfs_attr_show_func(rb_active_cnt);
-> >> >  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
-> >> >  ufshpb_sysfs_attr_show_func(map_req_cnt);
-> >> > +ufshpb_sysfs_attr_show_func(umap_req_cnt);
-> >> >
-> >> >  static struct attribute *hpb_dev_stat_attrs[] =3D {
-> >> >       &dev_attr_hit_cnt.attr,
-> >> > @@ -1864,6 +1889,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
-=3D {
-> >> >       &dev_attr_rb_active_cnt.attr,
-> >> >       &dev_attr_rb_inactive_cnt.attr,
-> >> >       &dev_attr_map_req_cnt.attr,
-> >> > +     &dev_attr_umap_req_cnt.attr,
-> >> >       NULL,
-> >> >  };
-> >> >
-> >> > @@ -1988,6 +2014,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
-> >> > *hpb)
-> >> >       hpb->stats.rb_active_cnt =3D 0;
-> >> >       hpb->stats.rb_inactive_cnt =3D 0;
-> >> >       hpb->stats.map_req_cnt =3D 0;
-> >> > +     hpb->stats.umap_req_cnt =3D 0;
-> >> >  }
-> >> >
-> >> >  static void ufshpb_param_init(struct ufshpb_lu *hpb)
-> >> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> >> > index 87495e59fcf1..1ea58c17a4de 100644
-> >> > --- a/drivers/scsi/ufs/ufshpb.h
-> >> > +++ b/drivers/scsi/ufs/ufshpb.h
-> >> > @@ -191,6 +191,7 @@ struct ufshpb_stats {
-> >> >       u64 rb_inactive_cnt;
-> >> >       u64 map_req_cnt;
-> >> >       u64 pre_req_cnt;
-> >> > +     u64 umap_req_cnt;
-> >> >  };
-> >> >
-> >> >  struct ufshpb_lu {
+> Thanks
+> Alex
+>
+>   drivers/iio/industrialio-buffer.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index ee5aab9d4a23..06b2ea087408 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1309,6 +1309,7 @@ static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
+>   	iio_attr->buffer = buffer;
+>   	memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
+>   	iio_attr->dev_attr.attr.name = kstrdup_const(attr->name, GFP_KERNEL);
+> +	sysfs_attr_init(&iio_attr->dev_attr.attr);
+>   
+>   	list_add(&iio_attr->l, &buffer->buffer_attr_list);
+>   
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
