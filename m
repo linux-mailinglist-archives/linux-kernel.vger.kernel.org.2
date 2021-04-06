@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB5A35564A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83E435564C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344997AbhDFOQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344993AbhDFOQY (ORCPT
+        id S1345002AbhDFOQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244438AbhDFOQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:16:24 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E4BC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:16:15 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id c6so11261663qtc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7QNqnHfmfB+qZd6+/+JDJ7LdbsfNDRF6gz/dsivHuOw=;
-        b=syvpuZy1TSPELHcW35heDbPZa/1Jcb7gZQj2RYxy1FYI6j7LiXj06FDijFGMsf9BJN
-         lsCJ25o73ABAhqpN7B1N2/P9FAYixuiFbGGXsGANMnuojdqgoQI4lxhXCkrevnbdSQwY
-         pQkRHEQkDaRHtX7WsYqczlfY9LPPmJo0FyD4szgrKZ11LaB90m2+eJ+H91NCSAV0wU3b
-         ia++C8Hn6+HGzRuRa4hv39TyvtGCEwOjg0X2CJ3aLKn9TT9VcCRQ+GD/p7i9DaxY/L3u
-         OPDONWBLyliBXI34BaSZwvZ3v91MaBapfULx/+HgfcLl4q3KBZsjf/lgQ6luacZYcl6d
-         2ucw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7QNqnHfmfB+qZd6+/+JDJ7LdbsfNDRF6gz/dsivHuOw=;
-        b=BtlrJvcoGXf5biPQpDovvQy7M7UIMrpcfWQEvjE0fAI2Qx9kzkkqvP9YVmdRgz6rit
-         jZUPKnxmB7y4oBsFUiAec9E5pJO8eTCn1v9yEZzNc3SzmlxfkwkU9r2HN99MTj/BX6tk
-         0ijjHT5FMucfNZ0XRWSTfYZLNzrf6p5oq2HVoV0s/lX+8K4ggRU3DK9kUutmW9MKcSv2
-         T0XxHGNISZXl40gFjlz2EziiL0m6tzh2LjlP3uL3Ng33knhmjRRsjRfg3bQb8s9LdxFC
-         3ICxA5NN3JLp3VQdf0qbrbR2kEIJM7gH196EzHxX8AN6gBmj8DinMSfIpAGCaBETZfYm
-         iM9g==
-X-Gm-Message-State: AOAM5325hec2rU47eW8n4LL+blGvJ5ujY27engbfsU7+cvn7PwqY/v1u
-        f4FnURxfgDXbdVUnm5oodvA=
-X-Google-Smtp-Source: ABdhPJw19HPW7yN9Lsz6oCbcQm5hK83V1Sm59QcQJAqWlmEyNp5+UUaMuRZtHw7O3yJrMwnP3Hk1Sg==
-X-Received: by 2002:ac8:424b:: with SMTP id r11mr27930494qtm.311.1617718574197;
-        Tue, 06 Apr 2021 07:16:14 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id d18sm14065309qtd.85.2021.04.06.07.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 07:16:13 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 6 Apr 2021 10:16:12 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Zefan Li <lizefan.x@bytedance.com>
-Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
-Message-ID: <YGxtLOxCb4LO8kN0@slm.duckdns.org>
-References: <20210401131012.395311786@infradead.org>
- <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
- <CAEXW_YSS0ex8xK7t2R7c1jiE4eNbwxdwP2uyGPDK78YAaYQr5A@mail.gmail.com>
+        Tue, 6 Apr 2021 10:16:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617718593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TXQG7GfvF1Ng7FzSKt4ktIki+yjQeoa1qkYOKApty+c=;
+        b=JwiraQIcesN3lKZKzFLi/IqWLBYbZlQrwLEVLmxmd59SBb6HmOzi5EJ6diktEvz37uK//B
+        F6BFW5/bm0IOAbmIVE4WkZSAdGvjrg/fGjFkiqkuOkKQZXXJo4UhRnlTCMGdLfPgEbfYZQ
+        HsQKz29z6jKHdHlP3lIcY/aWd7DWRUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-VprOzs9nMXKakP89jFEt9w-1; Tue, 06 Apr 2021 10:16:29 -0400
+X-MC-Unique: VprOzs9nMXKakP89jFEt9w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01CEE108BD0F;
+        Tue,  6 Apr 2021 14:16:28 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-112-85.phx2.redhat.com [10.3.112.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 708FB19D61;
+        Tue,  6 Apr 2021 14:16:27 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 08:16:26 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <20210406081626.31f19c0f@x1.home.shazbot.org>
+In-Reply-To: <YGlzEA5HL6ZvNsB8@unreal>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
+        <YGW8Oe9jn+n9sVsw@unreal>
+        <20210401105616.71156d08@omen>
+        <YGlzEA5HL6ZvNsB8@unreal>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YSS0ex8xK7t2R7c1jiE4eNbwxdwP2uyGPDK78YAaYQr5A@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, 4 Apr 2021 11:04:32 +0300
+Leon Romanovsky <leon@kernel.org> wrote:
 
-On Mon, Apr 05, 2021 at 02:46:09PM -0400, Joel Fernandes wrote:
-> Yeah, its at http://lore.kernel.org/r/20200822030155.GA414063@google.com
-> as mentioned above, let me know if you need any more details about
-> usecase.
+> On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
+> > On Thu, 1 Apr 2021 15:27:37 +0300
+> > Leon Romanovsky <leon@kernel.org> wrote:
+> >   
+> > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:  
+> > > > Slot resets are bus resets with additional logic to prevent a device
+> > > > from being removed during the reset. Currently slot and bus resets have
+> > > > separate implementations in pci.c, complicating higher level logic. As
+> > > > discussed on the mailing list, they should be combined into a generic
+> > > > function which performs an SBR. This change adds a function,
+> > > > pci_reset_bus_function(), which first attempts a slot reset and then
+> > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
+> > > > single device agnostic function to perform an SBR.
+> > > > 
+> > > > This new function is also needed to add SBR reset quirks and therefore
+> > > > is exposed in pci.h.
+> > > > 
+> > > > Link: https://lkml.org/lkml/2021/3/23/911
+> > > > 
+> > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> > > > ---
+> > > >  drivers/pci/pci.c   | 17 +++++++++--------
+> > > >  include/linux/pci.h |  1 +
+> > > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > index 16a17215f633..12a91af2ade4 100644
+> > > > --- a/drivers/pci/pci.c
+> > > > +++ b/drivers/pci/pci.c
+> > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+> > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+> > > >  }
+> > > >  
+> > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> > > > +{
+> > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > +
+> > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;    
+> > > 
+> > > The previous coding style is preferable one in the Linux kernel.
+> > > int rc = pci_dev_reset_slot_function(dev, probe);
+> > > if (rc != -ENOTTY)
+> > >   return rc;
+> > > return pci_parent_bus_reset(dev, probe);  
+> > 
+> > 
+> > That'd be news to me, do you have a reference?  I've never seen
+> > complaints for ternaries previously.  Thanks,  
+> 
+> The complaint is not to ternaries, but to the function call as one of
+> the parameters, that makes it harder to read.
 
-Except for the unspecified reason in usecase 4, I don't see why cgroup is in
-the picture at all. This doesn't really have much to do with hierarchical
-resource distribution. Besides, yes, you can use cgroup for logical
-structuring and identificaiton purposes but in those cases the interactions
-and interface should be with the original subsystem while using cgroup IDs
-or paths as parameters - see tracing and bpf for examples.
+Sorry, I don't find a function call as a parameter to a ternary to be
+extraordinary, nor do I find it to be a discouraged usage model within
+the kernel.  This seems like a pretty low bar for hard to read code.
 
-Thanks.
-
--- 
-tejun
