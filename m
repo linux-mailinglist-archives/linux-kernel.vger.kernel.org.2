@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568BD354FB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB23354FC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244834AbhDFJTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:19:40 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16346 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244822AbhDFJTi (ORCPT
+        id S233977AbhDFJYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:24:47 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:51559 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234340AbhDFJYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:19:38 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FF23f67Xsz94Cl;
-        Tue,  6 Apr 2021 17:17:18 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 17:19:22 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
-        "Zhang Rui" <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Amit Kucheria" <amitk@kernel.org>,
-        linux-pm <linux-pm@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] thermal: ti-soc-thermal: Remove duplicated header file inclusion
-Date:   Tue, 6 Apr 2021 17:19:12 +0800
-Message-ID: <20210406091912.2583-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210406091912.2583-1-thunder.leizhen@huawei.com>
-References: <20210406091912.2583-1-thunder.leizhen@huawei.com>
+        Tue, 6 Apr 2021 05:24:20 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id ThwKl3zws43ycThwNlNMl6; Tue, 06 Apr 2021 11:24:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617701051; bh=6ltNW1Y1YoLa2xULgf+BpKnOllfDqYhoJ72xHtaUesI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=AQNMu50aeibY975qN4Yhq5zXrN0iyCg+4Dsmk5Cti8Yv2UYEixTLjGiNg6hFr90JS
+         D9bauakk3RWbLrfP5I/E6/6uGV6PFAbu31v+G2nzSzr8Bf/k6zcqW9TEKAHto0bEUV
+         yXWKErZm0fCmf7WiLg3o0M9sBs2LHXoSNQRNcEeiSoDbPJoyAb004Ov34mZLyf7hyP
+         IZyPdWZScrtNL1xxBrClegJLDHwWlqJszqW3eYYQWPOBYR4D7HAqIbgZy4PrdwYOKg
+         7PE0cRWqgY5P74Nf9luDZIuh8YtqFi71Gp2tMJd7wtU2XMjOhFxOFeL564fVPShxuT
+         3Nvgyh1wCv1Cw==
+Subject: Re: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not
+ default to m
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210331081735.367238-1-geert+renesas@glider.be>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
+Date:   Tue, 6 Apr 2021 11:24:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210331081735.367238-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfM9w8guDS0s68bUW6rlcl0Hz8og0HZGLM8aVwXHcCs1LctqG4skiEBKQc37st96e1fFBUbJVuG4VxpRCMu3vAGbThMezq/L1m2QfCvMsDQmNOeYrZqEn
+ 17yIe+68HSfInvq2rR855uyYZvrb6cah/RYD96XL/YDHBuefEjMoXo6JpKCorYpNLjEDf6cCVKDvfq3q5mbFnSUvp+H/Cnz+KNfd9FSpWWSMmZ12jlYI0u8r
+ sr220x3pW+eUrViKLiO/actVQCTSkxf5L/cBXMsUatvd9Xij8VY328wxWeTYJ1kUfdC/wckr/eM7JMCOnkMWTvgErC6QUzSbNzCetGGdqOl8AEVpYGziQgdn
+ RtsowWLcmLvn/8xXHyuvzyw8mUbXQtvKVmaANoqJMc2W2jJ8zXekLMOMVFI1+cPaBjH5oWVjdzGOBzCGDiYXqjmCWRolkG4YNCfsRfxRIk1U9/SxMLNlhRNi
+ WwDjvF5y+f9pNjfuWW1V3KH0s2wVw6KMCrZ/ymis7Y4zEWqifUfd+iXsZuRxgAgRCnADe/7evNSgASxh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete one of the header files <linux/of_device.h> that are included
-twice, all included header files are then rearranged alphabetically.
+Hi Geert,
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/thermal/ti-soc-thermal/ti-bandgap.c | 35 ++++++++++++++---------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+On 31/03/2021 10:17, Geert Uytterhoeven wrote:
+> The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
+> Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
+> ARCH_MXC, to prevent asking the user about this driver when configuring
+> a kernel without i.MX8 support.
+> 
+> Drop the "default m" (which means "default y" if CONFIG_MODULES is not
+> enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
+> additional code.
 
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-index 8a3646e26ddd208..5e7e80b4a8171c4 100644
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-@@ -9,30 +9,29 @@
-  *   Eduardo Valentin <eduardo.valentin@ti.com>
-  */
- 
--#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/cpu_pm.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
- #include <linux/export.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/init.h>
--#include <linux/kernel.h>
- #include <linux/interrupt.h>
--#include <linux/clk.h>
--#include <linux/gpio/consumer.h>
--#include <linux/platform_device.h>
--#include <linux/err.h>
--#include <linux/types.h>
--#include <linux/spinlock.h>
--#include <linux/sys_soc.h>
--#include <linux/reboot.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
--#include <linux/of_irq.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
--#include <linux/cpu_pm.h>
--#include <linux/device.h>
--#include <linux/pm_runtime.h>
--#include <linux/pm.h>
--#include <linux/of.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/reboot.h>
-+#include <linux/spinlock.h>
-+#include <linux/sys_soc.h>
-+#include <linux/types.h>
- 
- #include "ti-bandgap.h"
- 
--- 
-1.8.3
+You do not actually drop 'default m' in the patch. Either the patch or the
+commit message is wrong.
 
+Regards,
+
+	Hans
+
+> 
+> Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/media/platform/imx-jpeg/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
+> index d875f7c88cdad125..0e3269d06ded30ec 100644
+> --- a/drivers/media/platform/imx-jpeg/Kconfig
+> +++ b/drivers/media/platform/imx-jpeg/Kconfig
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  config VIDEO_IMX8_JPEG
+>  	tristate "IMX8 JPEG Encoder/Decoder"
+> +	depends on ARCH_MXC || COMPILE_TEST
+>  	depends on VIDEO_DEV && VIDEO_V4L2
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select V4L2_MEM2MEM_DEV
+> 
 
