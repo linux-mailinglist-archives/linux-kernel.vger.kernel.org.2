@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA97335533E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23F4355348
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343761AbhDFMKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:10:54 -0400
-Received: from mout.gmx.net ([212.227.15.18]:49799 "EHLO mout.gmx.net"
+        id S1343810AbhDFMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:11:22 -0400
+Received: from mout.gmx.net ([212.227.17.22]:58715 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241728AbhDFMKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:10:49 -0400
+        id S238665AbhDFMLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:11:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617711033;
-        bh=Ei6Pp9zGAH2UxGqGf1ILV9gplHFrtV0jN6b2w9XiUgQ=;
+        s=badeba3b8450; t=1617711038;
+        bh=fthXQXzWvCMySNmq6wm38LQ0LqGN8oEvRSStBerzpuU=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Uxe3CbSKpOm6Xjb/tBMqxVlX7pU8NGqAMR0U+WYWZYI+lpWh/DDTZ2XOzTX5VP+wa
-         5UYLTdFeEOTYzYiKMGMdu+FqOUzE15uvLGW9eVom6TiqK3dmWukPf9ZDDGmOfbaNEa
-         jZ/bqrk/MRxUPnPXZeplPaFMc7cOQG0FBbVHfj0E=
+        b=Xg/9ts60YSdd3/C6in+KG15rIxD4RevfSm7iAB+WGopCwxYxMZiXl2IK1QKl6k5C5
+         yv77tCYEnAa/kCNd5KLxQCOidFJcYid9BL6Q+1DIMI4H/Rj994JcnduqGnH+E7DKSX
+         8V1W10IJn/+YflUWxZOfI6oM4q1Szrfk/sea5Hws=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MAfYw-1lImAa3WiO-00B19K; Tue, 06
- Apr 2021 14:10:32 +0200
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MfpSb-1m5ZBs3tFp-00gKMF; Tue, 06
+ Apr 2021 14:10:38 +0200
 From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
 To:     openbmc@lists.ozlabs.org
 Cc:     Tomer Maimon <tmaimon77@gmail.com>, Joel Stanley <joel@jms.id.au>,
@@ -29,48 +29,54 @@ Cc:     Tomer Maimon <tmaimon77@gmail.com>, Joel Stanley <joel@jms.id.au>,
         linux-kernel@vger.kernel.org,
         =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
         Rob Herring <robh@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 03/10] dt-bindings: interrupt-controller: Add nuvoton,wpcm450-aic
-Date:   Tue,  6 Apr 2021 14:09:14 +0200
-Message-Id: <20210406120921.2484986-4-j.neuschaefer@gmx.net>
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v2 04/10] dt-bindings: watchdog: npcm: Add nuvoton,wpcm450-wdt
+Date:   Tue,  6 Apr 2021 14:09:15 +0200
+Message-Id: <20210406120921.2484986-5-j.neuschaefer@gmx.net>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
 References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:x8q4cLS4WXLc1W/b7u0t3d2Cr4ZR4ltZTViaG6lXP9IrQreiDst
- rG/QKW5K7k/Lk/7sEItyWuDsEgUNZ9YmmC0ef8sJdqjk0MIL9X1eL/QJ6NjUnm5B+XPM31t
- qxnDiLs66so9wJ7leLTgUkGl5MYNGfGIE8Es+WtQkS7YGovb0Vu0qFSxE8rc/7EK/L4nWxX
- oi63Di3OBHrx1aCGcFjkg==
+X-Provags-ID: V03:K1:yIfwVUR13YRMBQna2k6oVWyExk6FvAxtgtrGA4cgaIZWJEAyBsI
+ 0UqJFDwJUzYg1OvkIDG0+uOrS1WoglGzfKeTZEf4fuEXfRxNezopYkZxk/5qo9B6GYRzJyk
+ To7zZlSI2G6+kdkXEF7jIXxeN5jJpw0AI4KjQaHmooLPBbY/hVMeiLt8DKmb0fXZh9P1q0D
+ D2RJZwP5tPENqwcDztg2w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oud94XjFQk8=:AkDPv0gvTXmAqGIG2PIoa0
- h2C/XAU1oGpjhTLHyw/LxPQx5H9HPwf44y8JayyciXb1GBuhGVvjtyqDzv+AryPZTlGsurPzd
- +BXDvfG01y5+AZhaJ49E3KHEBRR1rDjjg0ufRNnIeSjKidqtu/jh4UjIrn+OClG6FCCbEr3rf
- 0jPEEH62kZ/U4pLtO1CltdVFz9UkstmwbLYuy3yyZzJxi7q+ySQyO4bfjGehKTv9QYVlkYuZ4
- fixVMJrgXUqazTPKtfvJuCyi+h4njd+pKCc5Ckji2DjKJFWbFqaTsuLtJg2Mx6FrLc6E5uRU0
- Liri9Q2snK/ka7aoI7sLvzyoxaBW3eTS761uN5R86EwUedGH3FYq7d/KMPVzkQ6iDhTIXRPIk
- fbM4hIrY2h0Vkp+s63ZV+w+TtTjMquVLliSzy2rQP1/tTyRXlZVjfK354YswngBQpg6EJS+vF
- wYfoTO3vf6R7Sqfdelaa64/Y4MSmjzNuO1xvvvvlxJbR/41OuW73Rl3WjxN5woC8ziK5kzf7O
- CVkbMN7Ybjfrdjv0aQR9r1aj6ZZuk5BBsF2NBGLAvK6jWRl74Sk4GZ9ZYon9y4U9/JbBC1Mdj
- F3Y9+ZJ3q+GFy8XT9idl+J1lhhEGuw/lfP5jgMhmgzMFjwcAzQja21vYg2QyoAZrLEAokcmk5
- C0szpssThPTJfmxUTo6GiZ+nDxKVlXJqsyZOT5AstjO4Odzv0SenN7CCaO1Q/z6cDa2wLuRrD
- /Bj7lrKo6zO+i8xEYUUO9vD90J6I941gWgwmcMhQVMtGnCNPCefEK7ZsvY769VWa2U39rWauW
- 6hM0xnl/5ik8IFVVzkosxw3G1MdqZ/vbc1q+ZRi9a6pKgi/K/obLvt/FT/rzw9XhIykVt9sPH
- N9c//MTpOovi026RTcaYM0y3jm2qhjbiGeJgS05BSP7e/ZLkxaz1zA+OPPHM90iajqR23u9Ma
- tmSelE/SpVmCCVwKkGFR/dRGnc+UadtDaZeQREw/M0M3pS4QajA3rP2EtHc6fYfhWwGkXM8Me
- PLKoSbvU4yUlDZlOib48VcLnw098v4cNShXRdJRDt1TwEbeFFHW1Np2qxQFcbVOtEXQn5X9ge
- qUx47oazeWve8Ic+Z+J+w4IBovrB9KCS4OYBxA1CaNJc0sSmQI63cxjWnGbgJQQDYr9OquiWJ
- 14N3qG5PJjxHh0je0iSsIcPEAim/JMeIrjKfoLcyvTNxXbgRGo4KlMx7V/YtXN79TOT3LmzCn
- TvnnwWogeqVq+7Bix
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K6urnD8rZBc=:mc+8NA74aIxaTrKe389mGS
+ wdioQ6Z6T/vZ07iTlnFwrTrxZkqIHt/akxC22dzsbh5LVgaa3l0eACbCnGoGiVvUq0nnbCNY4
+ OAETS0BMrMdxd7K2FcGJKoGAprFI/QRuPFqtdxpuQ6PKCU83jfDL6NWHBF0f3ly1V8Uz7DFAs
+ 5tNPlq/reQTqn0MIkHZsw1EsXeVzV4VIZohB2qfqg5pod96Ksl3vEH43+W9ZjvxQvwoNi4tlX
+ U+saA1H5fzScXroD891bDDk+o8wLIaFTbcPMAHBulwXHAqg38Fi1N3dO7HEkNY7SHv9uXLmOJ
+ XIWfpp+cbiysY0R36kft+xDJtpAEmp/8neH2j3NzGr2F2y7Q8Ap6G9VP0YZi8GUkFIKt/AQix
+ YJ52WfKtDWHWORUU7qENYT2Yz9bTau8y8e6zOz6CIS/jH1yth73nPzBc06jH4dSVGQHToUvQT
+ gFMsCFVzuvbkQd1+PmmGEda4ciheKtizSTzWDVe+IvBkna0q0x9x6jXwAjO5Vknio/kk57wOL
+ +F42aC4juHreCl2kuBSwujUzC5sCE1zjkNjbE89d9D+4cyl+pAXb8mNVzuUtQRRDPXLkanmha
+ HzPe1e0OQund+QAyIl/H+oKZh8mICimYtSDkx7vh1uoEZ3VGhb6nRJH8TxO5yD+O9qlthNRJY
+ jvO642QpTzveTkh5fngje6e5Q//dlhcYJY4dZi0HwE9X+P3YZbOJmHl7segvt0Fz5q90lzpaJ
+ VkGWUI6y2d/e7KrcDc2Xwt4ANyt+zrpdSEkSW7HgnFsMLXKWgseZAJuiuiLS6OW4tOiVi+mxm
+ HLBL6QdvTI2j5NF7oniKqfCW+T8ghm9Rm2KV05yQvVcqRKBw9qVjJ86zOHzt4DBeoVH6a5lnm
+ qWNpsChrD18TUx+aJuT6dhunxPDOKabhxjpBdOKWp4xsZ+WFO/Fx22vI63RsCCfwoEHvpZvy1
+ vkvjkmglBmVBcYefGDHNM9YsPnDK8uKfUCLvX3HaQuP0ExZ47FbFqb5vCjhJ9dK/6gXHEUO0E
+ XtTIXUCeHVtsU+XFPkCp6FzxhDnLg/5oeElZwuc9Ihv3IN3+W1Q/9AVaFroAaKLGJ0B15t1hQ
+ U1qiL7PTdES7/Cgle7QCWeYtrkF+ukkBirdQUhC+sGSMGYz5KE6Rybb1Dn6va/Ef3RXFLmgc0
+ 3n2FMuXXZotJPhtojWEcyYCSgJ5b+OIE51iNcZraosYxUilxQZNAaOXRykJiGHD/KbRhIZkrW
+ 3C8fliv3l88cHwtk5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WPCM450 AIC ("Advanced Interrupt Controller") is the interrupt
-controller found in the Nuvoton WPCM450 SoC and other Winbond/Nuvoton
-SoCs.
+Add a compatible string for the WPCM450 SoC, which has the same watchdog
+timer.
 
 Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
 Acked-by: Rob Herring <robh@kernel.org>
@@ -79,60 +85,25 @@ Acked-by: Rob Herring <robh@kernel.org>
 v2:
 - Added Rob's ACK
 =2D--
- .../nuvoton,wpcm450-aic.yaml                  | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller=
-/nuvoton,wpcm450-aic.yaml
+ .../devicetree/bindings/watchdog/nuvoton,npcm-wdt.txt          | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/nuvoto=
-n,wpcm450-aic.yaml b/Documentation/devicetree/bindings/interrupt-controlle=
-r/nuvoton,wpcm450-aic.yaml
-new file mode 100644
-index 0000000000000..9ce6804bdb999
-=2D-- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/nuvoton,wpcm4=
-50-aic.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/nuvoton,wpcm450-a=
-ic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Nuvoton WPCM450 Advanced Interrupt Controller bindings
-+
-+maintainers:
-+  - Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-+
-+properties:
-+  '#interrupt-cells':
-+    const: 2
-+
-+  compatible:
-+    const: nuvoton,wpcm450-aic
-+
-+  interrupt-controller: true
-+
-+  reg:
-+    maxItems: 1
-+
-+additionalProperties: false
-+
-+required:
-+  - '#interrupt-cells'
-+  - compatible
-+  - reg
-+  - interrupt-controller
-+
-+examples:
-+  - |
-+    aic: interrupt-controller@b8002000 {
-+        compatible =3D "nuvoton,wpcm450-aic";
-+        reg =3D <0xb8002000 0x1000>;
-+        interrupt-controller;
-+        #interrupt-cells =3D <2>;
-+    };
+diff --git a/Documentation/devicetree/bindings/watchdog/nuvoton,npcm-wdt.t=
+xt b/Documentation/devicetree/bindings/watchdog/nuvoton,npcm-wdt.txt
+index 6d593003c933b..9059f54dc023d 100644
+=2D-- a/Documentation/devicetree/bindings/watchdog/nuvoton,npcm-wdt.txt
++++ b/Documentation/devicetree/bindings/watchdog/nuvoton,npcm-wdt.txt
+@@ -5,7 +5,8 @@ The watchdog supports a pre-timeout interrupt that fires 1=
+0ms before the
+ expiry.
+
+ Required properties:
+=2D- compatible      : "nuvoton,npcm750-wdt" for NPCM750 (Poleg).
++- compatible      : "nuvoton,npcm750-wdt" for NPCM750 (Poleg), or
++                    "nuvoton,wpcm450-wdt" for WPCM450 (Hermon).
+ - reg             : Offset and length of the register set for the device.
+ - interrupts      : Contain the timer interrupt with flags for
+                     falling edge.
 =2D-
 2.30.2
 
