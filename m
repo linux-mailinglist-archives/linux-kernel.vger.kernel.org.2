@@ -2,119 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1705835583C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAA235583D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345894AbhDFPi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        id S1345916AbhDFPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345879AbhDFPiC (ORCPT
+        with ESMTP id S1345886AbhDFPiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 11:38:02 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87674C061760;
-        Tue,  6 Apr 2021 08:37:54 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id l9so7378258ils.6;
-        Tue, 06 Apr 2021 08:37:54 -0700 (PDT)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968C9C061761
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:37:54 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id u4so17005324ljo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:37:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kbb3/w5YJGsBeXToKy9zRKXFO7bV5Vr6+2zCWM3GMJs=;
-        b=PX9wRzFR3GLxYS+v7WJWcQ8w6OA7XNBTFoiOUuDUWcScUAV1KX84PKIhp1MbImARj7
-         zfDeUZS/HuyypOgx2s7g8xK+mZiK7QvljysRj8KrtAEqwzl+4q3KnN/sPnzx7utgVxAl
-         jHa9z+z3tV7CBTnEwTXN7UQfBShvTFIlms9BxIs6YZZQUVYqHp/YauRctCOH94KI8Byv
-         HZbF58xrNEp1QK9sQbUqKZTGxsz5QSUlE31cnd57TfRo+ep4RRsM+6Pl3fy28G5GztVU
-         ysc3tAldc1zDgy6wn7bd+LAT3JZM3asHq4gcSdAKF2RzWOQrywSQ2ghQi27IxS3avXbx
-         rqug==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B6AsOasHJ/8olkeybToj+AE1MYUVBlnM2zm/hIEcHPg=;
+        b=WgdqPBQQQxu2opddc9N2eoSga4ozGBsYmPRzBv+e9KfJyhdWdNnHcc8rOlhbN5ZVen
+         Bjv32lELnztqXLa+qeJA1FLDVRnM2Jh1p08o8YU8cfwc0r1S3MGf8jjF50zVnNr1M2MG
+         dYVD3/EFuq+hFuyZ6EafpeO6s/1m6hgI5rShr3Wl0tftcrqIS0X8IS+r5Omcy5iYlOqW
+         VgliObQ3v+JaiElzvUV8TS43lUE//YEbBU66FVRPH73XV1nmogfnxUM+dt33XZaVVzGJ
+         4oqjKw3khy4pmY7s5GwbryxBxrQnFLzjZLAW5ao2/fwNeobQymQFKEJ0eLxIHL4Xycm6
+         9b9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kbb3/w5YJGsBeXToKy9zRKXFO7bV5Vr6+2zCWM3GMJs=;
-        b=Z5ECdo3PdvyRhMLfXbiWXCmAh4UPCDhYFyd39RUdfAugD5iwKDgdin2j6QepitCXIg
-         bQK1+WH7Ov4d97w/NNkslJpV4anMlIg1bXzYMZ93yJAvU8zElnCNDWA1rx85kwbo5qzm
-         G11k8e69GUxIlhQ73l4+lqzN87AF8F9844hVOwA1YrkqfKeSwBHaC3vrOsas+0nUTJsb
-         p1HvBKNDzMZCdGXvcGVe6MCgbKBd4CR0mT6GNDt2f6Ks0UOBcDx7R/PnhxkEXCv/C57n
-         qDULHDX/l3TKnDUMQiBRXixojUppDvBNZQYjVAk6NkB2N32pCgeSbR5Du7m2BSHbI2O7
-         AvgA==
-X-Gm-Message-State: AOAM530Eq45XLrI77QFA4PNfAmAWK7F1AKMzYLVFDZq4CkdwIoMGeVZj
-        /G7H9JXvEj6ffg8DWMDjqFb53lOg3DA9zRFHVuo=
-X-Google-Smtp-Source: ABdhPJx0Q0y2VRt3hOxfDO1mtz1BBR0nzU1O4AzOcEj955FhecKBLwpJD1/qIY06hhsRlAjlNDN8j2jSd8GUczZS4mA=
-X-Received: by 2002:a92:de0c:: with SMTP id x12mr1946080ilm.169.1617723474053;
- Tue, 06 Apr 2021 08:37:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B6AsOasHJ/8olkeybToj+AE1MYUVBlnM2zm/hIEcHPg=;
+        b=oEVLOtyY298fFLI8tqd2fq4c0VM6YS5Y14TPOpOs4iL+xvNhS05nr81/Vf5TCCnzHv
+         Sqn2shEJjmbUYU1Vk7FwEC92+G8VfaBw5VQ3pcIhgPLWfwBmKmrs9xzM2cDNDkDn0U80
+         dOZyBVReOJwheDcb3raJ4xy3tMW5OdPuTk/R0m5OUMYh+DHQiiQfI8iWHekR9CYK50FY
+         R5z0KtiUj97OUo61UCFgtBxZ9D8tfCHDJYB5nDt7rh4EM4ez2A6CRFo1JyiJq2BzpVqb
+         faN4iQKT6Ur5fhhhYJZ/+5DaeWkTeusJf8YnuCgw44dJ+YAFnxg5ssBlRSwEU8YqAEZ9
+         ZGkg==
+X-Gm-Message-State: AOAM533jFp9lS6QyE4wIKDfQG1dzNmIK9IoAHTv06lJL+QIaMSMj+cyL
+        cMScwJi4mivFFRSV7FzcRpugAQ==
+X-Google-Smtp-Source: ABdhPJwatTbznV/bDAm+LlG6HNKt8oylfNKY8GznZTbUcruwp5L7zKtXzit3oaPvOAGHdoftEEdrkQ==
+X-Received: by 2002:a05:651c:211a:: with SMTP id a26mr19181870ljq.373.1617723473093;
+        Tue, 06 Apr 2021 08:37:53 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id u3sm2193843lfu.24.2021.04.06.08.37.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 08:37:52 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 3BCD2101FF7; Tue,  6 Apr 2021 18:37:55 +0300 (+03)
+Date:   Tue, 6 Apr 2021 18:37:55 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 21/26] x86/mm: Move force_dma_unencrypted() to common
+ code
+Message-ID: <20210406153755.evphkyms3bwo7scc@box>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <444fe9c7c035417f6abc3e0be2a4861cb573ab28.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d4eb7452-f6dd-2e0e-a790-76abdbbbfee9@intel.com>
 MIME-Version: 1.0
-References: <20210406141819.1025864-1-dqfext@gmail.com> <20210406141819.1025864-2-dqfext@gmail.com>
- <YGx8c5Jt2D7fB0cO@lunn.ch>
-In-Reply-To: <YGx8c5Jt2D7fB0cO@lunn.ch>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Tue, 6 Apr 2021 23:37:51 +0800
-Message-ID: <CALW65jYGpTs+30k7vxfLpQaK1sqHf4r7zosSOxp4W5U+Eh-Wvg@mail.gmail.com>
-Subject: Re: [RFC net-next 1/4] net: phy: add MediaTek PHY driver
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-staging@lists.linux.dev,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4eb7452-f6dd-2e0e-a790-76abdbbbfee9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 11:21 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Tue, Apr 06, 2021 at 10:18:16PM +0800, DENG Qingfang wrote:
-> > Add support for MediaTek PHYs found in MT7530 and MT7531 switches.
->
-> Do you know if this PHY is available standalone?
+On Thu, Apr 01, 2021 at 01:06:29PM -0700, Dave Hansen wrote:
+> On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
+> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > 
+> > Intel TDX doesn't allow VMM to access guest memory. Any memory that is
+> > required for communication with VMM suppose to be shared explicitly by
+> 
+> s/suppose to/must/
 
-Not that I know of.
+Right.
 
->
-> > +static int mt7531_phy_config_init(struct phy_device *phydev)
-> > +{
-> > +     mtk_phy_config_init(phydev);
+> > setting the bit in page table entry. The shared memory is similar to
+> > unencrypted memory in AMD SME/SEV terminology.
+> 
+> In addition to setting the page table bit, there's also a dance to go
+> through to convert the memory.  Please mention the procedure here at
+> least.  It's very different from SME.
+
+"
+  After setting the shared bit, the conversion must be completed with
+  MapGPA TDVMALL. The call informs VMM about the conversion and makes it
+  remove the GPA from the S-EPT mapping.
+"
+
+> > force_dma_unencrypted() has to return true for TDX guest. Move it out of
+> > AMD SME code.
+> 
+> You lost me here.  What does force_dma_unencrypted() have to do with
+> host/guest shared memory?
+
+"
+  AMD SEV makes force_dma_unencrypted() return true which triggers
+  set_memory_decrypted() calls on all DMA allocations. TDX will use the
+  same code path to make DMA allocations shared.
+"
+
+> > Introduce new config option X86_MEM_ENCRYPT_COMMON that has to be
+> > selected by all x86 memory encryption features.
+> 
+> Please also mention what will set it.  I assume TDX guest support will
+> set this option.  It's probably also worth a sentence to say that
+> force_dma_unencrypted() will have TDX-specific code added to it.  (It
+> will, right??)
+
+"
+  Only AMD_MEM_ENCRYPT uses the option now. TDX will be the second one.
+"
+
+> > This is preparation for TDX changes in DMA code.
+> 
+> Probably best to also mention that this effectively just moves code
+> around.  This patch should have no functional changes at runtime.
+
+Isn't it what the subject says? :P
+
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 0374d9f262a5..8fa654d61ac2 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1538,14 +1538,18 @@ config X86_CPA_STATISTICS
+> >  	  helps to determine the effectiveness of preserving large and huge
+> >  	  page mappings when mapping protections are changed.
+> >  
+> > +config X86_MEM_ENCRYPT_COMMON
+> > +	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+> > +	select DYNAMIC_PHYSICAL_MASK
+> > +	def_bool n
 > > +
-> > +     /* PHY link down power saving enable */
-> > +     phy_set_bits(phydev, 0x17, BIT(4));
-> > +     phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, 0xc6, 0x300);
+> >  config AMD_MEM_ENCRYPT
+> >  	bool "AMD Secure Memory Encryption (SME) support"
+> >  	depends on X86_64 && CPU_SUP_AMD
+> >  	select DMA_COHERENT_POOL
+> > -	select DYNAMIC_PHYSICAL_MASK
+> >  	select ARCH_USE_MEMREMAP_PROT
+> > -	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+> >  	select INSTRUCTION_DECODER
+> > +	select X86_MEM_ENCRYPT_COMMON
+> >  	help
+> >  	  Say yes to enable support for the encryption of system memory.
+> >  	  This requires an AMD processor that supports Secure Memory
+> > diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+> > index 30a3b30395ad..95e534cffa99 100644
+> > --- a/arch/x86/include/asm/io.h
+> > +++ b/arch/x86/include/asm/io.h
+> > @@ -257,10 +257,12 @@ static inline void slow_down_io(void)
+> >  
+> >  #endif
+> >  
+> > -#ifdef CONFIG_AMD_MEM_ENCRYPT
+> >  #include <linux/jump_label.h>
+> >  
+> >  extern struct static_key_false sev_enable_key;
+> 
+> This _looks_ odd.  sev_enable_key went from being under
+> CONFIG_AMD_MEM_ENCRYPT to being unconditionally referenced.
+
+Not referenced, but declared.
+
+> Could you explain a bit more?
+> 
+> I would have expected it tot at *least* be tied to the new #ifdef.
+
+Looks like a fixup got folded into a wrong patch. It supposed to be in
+"x86/kvm: Use bounce buffers for TD guest".
+
+This declaration allows to get away without any #ifdefs in
+mem_encrypt_init() when !CONFIG_AMD_MEM_ENCRYPT: sev_active() is
+false at compile-time and sev_enable_key never referenced.
+
+Sathya, could move it to the right patch?
+
+> > +#ifdef CONFIG_AMD_MEM_ENCRYPT
 > > +
-> > +     /* Set TX Pair delay selection */
-> > +     phy_write_mmd(phydev, MDIO_MMD_VEND1, 0x13, 0x404);
-> > +     phy_write_mmd(phydev, MDIO_MMD_VEND1, 0x14, 0x404);
->
-> This gets me worried about RGMII delays. We have had bad backwards
-> compatibility problems with PHY drivers which get RGMII delays wrong.
->
-> Since this is an internal PHY, i suggest you add a test to the
-> beginning of mt7531_phy_config_init():
->
->         if (phydev->interface != PHY_INTERFACE_MODE_INTERNAL)
->                 return -EINVAL;
+> >  static inline bool sev_key_active(void)
+> >  {
+> >  	return static_branch_unlikely(&sev_enable_key);
+> > diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+> > index 5864219221ca..b31cb52bf1bd 100644
+> > --- a/arch/x86/mm/Makefile
+> ...
 
-Okay. Will add it to v2.
-
->
-> We can then solve RGMII problems when somebody actually needs RGMII.
->
->    Andrew
+-- 
+ Kirill A. Shutemov
