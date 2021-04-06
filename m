@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEF1355EFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3D8355EFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344186AbhDFWuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 18:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S1344271AbhDFWu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 18:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344136AbhDFWuO (ORCPT
+        with ESMTP id S1344209AbhDFWuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 18:50:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324B3C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 15:50:06 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 131so22060511ybp.16
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 15:50:06 -0700 (PDT)
+        Tue, 6 Apr 2021 18:50:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CBDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 15:50:09 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i2so22050203ybl.21
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 15:50:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=29qkvQNMyHwLCHP8pXWRgWswaf/k2g0dTyIZhsX4Pvk=;
-        b=mUCDW8goB/BkfT+GMgye4Lbl4vbr0CWjFY7SeZiXn3jP2soqTvTb9NToTJe9mZv29V
-         697bWQTz0SxGedUF1HwLD0JFxJvs20ZajAvN5qgCNhk+5Wkyc1TqJZjxJ4O+0Y2u+937
-         wy4sxbq50hDa62jBWPsHBBDxUDYKJapcfE2lO37hms0Sm0NsKUBuf+St+Gb5/f42Ezml
-         eAe2CumEX7m0PTiQSq7OEXrbZ0w8TP2hSA9KfCv+DP0hI4IDeeFuVplbD7HFe4QuL2Y9
-         7l5yJmN9dl/lx9CQDk5TGNWLKUv3ZvNrHWqkDon/XSBNVfX4Lz4zdf5HoQgI2n3ZLhVr
-         /9ug==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=9unnZdwnJBhmIr85WtW6opdl6PIonHCZIupIJTvjWiM=;
+        b=TkbGpsapVhMM/9vNTvKB2L0fGV6FDhcQqCVGeETLXWxcwfezHG91/Q32wDXz4NNQzM
+         nc0exNLd9sY6ryGmhhmyHB1RRJGT8Chj3tHZWlz8EP2ltZ2XznhwfwqVrVa8wOWGyxx7
+         0q80IQ90Nro8z6l81DX7mZp32wgeHg/9fnbOVCWSN+TnbJo+T+psv21FIznZvp11IQSD
+         7OO9fnXsMk0l7y7GljMe9yy4UhNrmsgXxl6Vnzk+LjeuD/C1qm4zOXUElsRpln+otQI5
+         b1CaykelVe2JuM1a88H8nPQECvnwDlaUMgwiRCR90/JGzBaByfMcJAkkJv8tWLv1lKzC
+         aw8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=29qkvQNMyHwLCHP8pXWRgWswaf/k2g0dTyIZhsX4Pvk=;
-        b=I5bvkzmeu1ZTIT7n3f0mTweaYAdAcJR/wq44gM+/ijjBxRgDYfMww9OlJpfivJP6Zh
-         hPIvdPhAZRD+y7/uScWIDj/i9sQ3rOXaWE/wlecRI25XSZeC6eBaq/dbdG3EjCdZ3L9n
-         ARz/ikASDBGj1B11jPrSXEbN8pKSy8hKL1Y0vknWsIEAEZKD6byw1iK5c6aej5PHfqY1
-         QiQLCc6JO/4F3FRBIXBbfKvxstMF2Q3bkgnXMeAU/3c6b/qwzF2scGpq31j/cze2GZ6a
-         UZnmxx7KnLxf7iRFIb2clL8Nji2beguT8xWblgfskFI3/uiH56ODSsJ19GNzwTC5HYVh
-         JeyQ==
-X-Gm-Message-State: AOAM533+OBZ3mNsACFEAJO41Z7UZR6hw6He3n52VlEVWm1A6UM4CNtpy
-        TuEKi31ASC9We7BjM2AkEUkXokpssys=
-X-Google-Smtp-Source: ABdhPJzRouXKIhQs8EfMqHUio8a2b3cN1QJZ0wcW2fPXd72cKuXtNJvbuk4wCZqugfRujJJGfODyK2fcLA0=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=9unnZdwnJBhmIr85WtW6opdl6PIonHCZIupIJTvjWiM=;
+        b=tR4hF3hCDE2SLYwGnNwr4qoHMp0qK8ubpfPHQ9Z7QJRUa/kDNFspb/fxdSX8Jlwk+t
+         WzdhwgmRTe0eOlXk/Bl0x1GZNpyS2f/xiq0u+rOx94iUn4Yep1blDyQUqyjEN+H0vRdL
+         yjWYHUxK7Tcs4NpGUtiN2KletfW3hqPDDkFXP198zFJAoWVcjZppuZQ8OU8c9pUuxvC0
+         3VL8sRlYhzVARhtZbs6cho9IVqetj178FFquWsNdZJysh2iGAAFCf5NKc2T9I2GK+WwL
+         fWms6kchaeOuBSZNI1gqQemJ7T3JWbRsBJ6ZUyohq+3K9uUXV2rhfsytnDns+g32wjnA
+         5pBQ==
+X-Gm-Message-State: AOAM530XP6bwtzUrlQF0uwsF0N7DGt0vmdcs+YQu/XsZzur3HYVov42l
+        blUwZbJSJzHT9CAuZsh+dSeOLsx2KrE=
+X-Google-Smtp-Source: ABdhPJzlb0ZbdnN3YVCAvkv4hLaHNRneUSdCrOk9RA1gK+d59njBjzucCXv09ROJce8rsyMB2b1YQgaYp58=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:24a1:90fb:182b:777c])
- (user=seanjc job=sendgmr) by 2002:a25:2351:: with SMTP id j78mr536179ybj.102.1617749405370;
- Tue, 06 Apr 2021 15:50:05 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:b3c1:: with SMTP id x1mr517791ybf.506.1617749407346;
+ Tue, 06 Apr 2021 15:50:07 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  6 Apr 2021 15:49:44 -0700
-Message-Id: <20210406224952.4177376-1-seanjc@google.com>
+Date:   Tue,  6 Apr 2021 15:49:45 -0700
+In-Reply-To: <20210406224952.4177376-1-seanjc@google.com>
+Message-Id: <20210406224952.4177376-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210406224952.4177376-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v2 0/8] ccp: KVM: SVM: Use stack for SEV command buffers
+Subject: [PATCH v2 1/8] crypto: ccp: Free SEV device if SEV init fails
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Brijesh Singh <brijesh.singh@amd.com>,
@@ -68,47 +71,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series teaches __sev_do_cmd_locked() to gracefully handle vmalloc'd
-command buffers by copying _all_ incoming data pointers to an internal
-buffer before sending the command to the PSP.  The SEV driver and KVM are
-then converted to use the stack for all command buffers.
+Free the SEV device if later initialization fails.  The memory isn't
+technically leaked as it's tracked in the top-level device's devres
+list, but unless the top-level device is removed, the memory won't be
+freed and is effectively leaked.
 
-Tested everything except sev_ioctl_do_pek_import(), I don't know anywhere
-near enough about the PSP to give it the right input.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ drivers/crypto/ccp/sev-dev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-v2:
-  - Rebase to kvm/queue, commit f96be2deac9b ("KVM: x86: Support KVM VMs
-    sharing SEV context").
-  - Unconditionally copy @data to the internal buffer. [Christophe, Brijesh]
-  - Allocate a full page for the buffer. [Brijesh]
-  - Drop one set of the "!"s. [Christophe]
-  - Use virt_addr_valid() instead of is_vmalloc_addr() for the temporary
-    patch (definitely feel free to drop the patch if it's not worth
-    backporting). [Christophe]
-  - s/intput/input/. [Tom]
-  - Add a patch to free "sev" if init fails.  This is not strictly
-    necessary (I think; I suck horribly when it comes to the driver
-    framework).   But it felt wrong to not free cmd_buf on failure, and
-    even more wrong to free cmd_buf but not sev.
-
-v1:
-  - https://lkml.kernel.org/r/20210402233702.3291792-1-seanjc@google.com
-
-Sean Christopherson (8):
-  crypto: ccp: Free SEV device if SEV init fails
-  crypto: ccp: Detect and reject "invalid" addresses destined for PSP
-  crypto: ccp: Reject SEV commands with mismatching command buffer
-  crypto: ccp: Play nice with vmalloc'd memory for SEV command structs
-  crypto: ccp: Use the stack for small SEV command buffers
-  crypto: ccp: Use the stack and common buffer for status commands
-  crypto: ccp: Use the stack and common buffer for INIT command
-  KVM: SVM: Allocate SEV command structures on local stack
-
- arch/x86/kvm/svm/sev.c       | 262 +++++++++++++----------------------
- drivers/crypto/ccp/sev-dev.c | 197 +++++++++++++-------------
- drivers/crypto/ccp/sev-dev.h |   4 +-
- 3 files changed, 196 insertions(+), 267 deletions(-)
-
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index cb9b4c4e371e..ba240d33d26e 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -987,7 +987,7 @@ int sev_dev_init(struct psp_device *psp)
+ 	if (!sev->vdata) {
+ 		ret = -ENODEV;
+ 		dev_err(dev, "sev: missing driver data\n");
+-		goto e_err;
++		goto e_sev;
+ 	}
+ 
+ 	psp_set_sev_irq_handler(psp, sev_irq_handler, sev);
+@@ -1002,6 +1002,8 @@ int sev_dev_init(struct psp_device *psp)
+ 
+ e_irq:
+ 	psp_clear_sev_irq_handler(psp);
++e_sev:
++	devm_kfree(dev, sev);
+ e_err:
+ 	psp->sev_data = NULL;
+ 
 -- 
 2.31.0.208.g409f899ff0-goog
 
