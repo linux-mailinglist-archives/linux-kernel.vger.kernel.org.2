@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2715355073
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD001355076
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhDFKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:02:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:37150 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237486AbhDFKCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:02:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617703360; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=AxkI4O0vgqQfFbvB7SnO+C+rk9AJjNc9XgX9InDdib0=; b=nMBTbMbbDkJAvk4Ag0ndOdLGiQG6VH2LK41l71K4+hg/k2APRgUA9lOvpl9gzbCidi2oGLE0
- I8kpHiNhVh6ucxyTTdp6RU6dqKrFuu/FsaqOADmS7lNIR08F1k16nKmvreY6frkJJ4GyyhCk
- Dy/F/aSRsI/joMmiodTKAp/FFcw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 606c31478807bcde1d1b3a67 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 10:00:39
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19C47C43462; Tue,  6 Apr 2021 10:00:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED0D3C43461;
-        Tue,  6 Apr 2021 10:00:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED0D3C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
-        <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
-Date:   Tue, 06 Apr 2021 13:00:33 +0300
-In-Reply-To: <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
-        (Maciej S. Szmigiero's message of "Sun, 4 Apr 2021 20:06:06 +0200")
-Message-ID: <87r1jnohq6.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S241357AbhDFKFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233900AbhDFKFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:05:16 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B224C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:05:09 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id g8so21744695lfv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LCL0Idnlb7guUbYyS2ZyKusS1ukOTUVL+jvswqtN1Wg=;
+        b=aaikD3f927e+oV/TE/U42Sxn70A9IdaWcEDOH2UrA76DQZoQPFvEjH/LG9So/U+dQt
+         2ExzQjhEsYqE99acWYGpQTUTXkxigCQijGv5D77HF6DCAd/sfsEt2Kt9fyISL2HKBToX
+         NkYpj8lUJY9SUvWEyEe3QGIHukNJCUGbRnri3YgwzwQlcCXZEIgoG96wv5/c6HCkL4KD
+         GdFlHUFHZCIbC/vPzRJsGD+k3cB0eXTs/xyruP5cZ2GsZWxS/RtpFWlsda4jtkim4+Wv
+         PIC0Z/9TjX1dZDqfbb6MLwk1TVEbVMlwoGCffKWQfMAF23k+cPEaET1dUSFMcejOouvz
+         fXzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LCL0Idnlb7guUbYyS2ZyKusS1ukOTUVL+jvswqtN1Wg=;
+        b=FKusJ/1gCWK/b7aeAoDIAXaQIOXESu6rMIQ2UsM8SvYoAd7A6au1K8K13IHZXBitwy
+         x/1MBghzr5PAT7Uk/gKCmYNZoSVMITWSmN1KKHLAdSb01Ri1dHx8enX9azwkBNplaNrm
+         zC4nZhDW3dcCK6E6Z70xKQs0igVZp2/hn+LpbVzM8be2EUWbfsVnTYCurNkT70vtTeU/
+         lMcsi2E8Os7P/ItMbAPFG25i5CX9pWXuNHLVqUWEz9LY2FdXUwCIKDUVfpaDEnLjDkdj
+         zXZ50CFex/IZNsqc38T404SETI0XO8uMIcfEYYp6lw5BqVWIa9/dHeBaoHWyKTSMtzeI
+         CiAQ==
+X-Gm-Message-State: AOAM533iy5suA6fV9fpluZNRHziuqhLxKDwODpBtKzkwQM7vGcHunHZa
+        Y1IQk+v1TLJAqwm7Ca1PhjY=
+X-Google-Smtp-Source: ABdhPJxPPdZcMkC3i2xXr1wTU6pvbxIQa35/4FyLUpTTXusaeWJI5o5fphhP99qp8jsXBkRALamK4A==
+X-Received: by 2002:a05:6512:3087:: with SMTP id z7mr134699lfd.224.1617703507565;
+        Tue, 06 Apr 2021 03:05:07 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id y11sm2211287ljc.18.2021.04.06.03.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 03:05:06 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 6 Apr 2021 12:05:05 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH-next 2/5] lib/test_vmalloc.c: add a new 'nr_threads'
+ parameter
+Message-ID: <20210406100505.GA1880@pc638.lan>
+References: <20210402202237.20334-1-urezki@gmail.com>
+ <20210402202237.20334-2-urezki@gmail.com>
+ <20210402145934.719192be298eadbeecb321d2@linux-foundation.org>
+ <20210403123143.GA38147@pc638.lan>
+ <20210405193920.46d3792200ad05f4a7c66829@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405193920.46d3792200ad05f4a7c66829@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
+On Mon, Apr 05, 2021 at 07:39:20PM -0700, Andrew Morton wrote:
+> On Sat, 3 Apr 2021 14:31:43 +0200 Uladzislau Rezki <urezki@gmail.com> wrote:
+> 
+> > > 
+> > > We may need to replaced that kcalloc() with kmvalloc() though...
+> > >
+> > Yep. If we limit to USHRT_MAX, the maximum amount of memory for
+> > internal data would be ~12MB. Something like below:
+> > 
+> > diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+> > index d337985e4c5e..a5103e3461bf 100644
+> > --- a/lib/test_vmalloc.c
+> > +++ b/lib/test_vmalloc.c
+> > @@ -24,7 +24,7 @@
+> >         MODULE_PARM_DESC(name, msg)                             \
+> > 
+> >  __param(int, nr_threads, 0,
+> > -       "Number of workers to perform tests(min: 1 max: 1024)");
+> > +       "Number of workers to perform tests(min: 1 max: 65536)");
+> > 
+> >  __param(bool, sequential_test_order, false,
+> >         "Use sequential stress tests order");
+> > @@ -469,13 +469,13 @@ init_test_configurtion(void)
+> >  {
+> >         /*
+> >          * A maximum number of workers is defined as hard-coded
+> > -        * value and set to 1024. We add such gap just in case
+> > +        * value and set to 65536. We add such gap just in case
+> >          * and for potential heavy stressing.
+> >          */
+> > -       nr_threads = clamp(nr_threads, 1, 1024);
+> > +       nr_threads = clamp(nr_threads, 1, 65536);
+> > 
+> >         /* Allocate the space for test instances. */
+> > -       tdriver = kcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
+> > +       tdriver = kvcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
+> >         if (tdriver == NULL)
+> >                 return -1;
+> > 
+> > @@ -555,7 +555,7 @@ static void do_concurrent_test(void)
+> >                         i, t->stop - t->start);
+> >         }
+> > 
+> > -       kfree(tdriver);
+> > +       kvfree(tdriver);
+> >  }
+> > 
+> >  static int vmalloc_test_init(void)
+> > 
+> > Does it sound reasonable for you?
+> 
+> I think so.  It's a test thing so let's give testers more flexibility,
+> remembering that they don't need as much protection from their own
+> mistakes.
+> 
+OK. I will send one more extra patch then.
 
-> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
->> Hi,
->>
->> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
->> since the driver does not update its beacon to account for TIM changes,
->> so a station that is sleeping will never learn that it has packets
->> buffered at the AP.
->>
->> Looking at the code, the rtl8192cu driver implements neither the set_tim()
->> callback, nor does it explicitly update beacon data periodically, so it
->> has no way to learn that it had changed.
->>
->> This results in the AP mode being virtually unusable with STAs that do
->> PS and don't allow for it to be disabled (IoT devices, mobile phones,
->> etc.).
->>
->> I think the easiest fix here would be to implement set_tim() for example
->> the way rt2x00 driver does: queue a work or schedule a tasklet to update
->> the beacon data on the device.
->
-> Are there any plans to fix this?
-> The driver is listed as maintained by Ping-Ke.
-
-Yeah, power save is hard and I'm not surprised that there are drivers
-with broken power save mode support. If there's no fix available we
-should stop supporting AP mode in the driver.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--
+Vlad Rezki
