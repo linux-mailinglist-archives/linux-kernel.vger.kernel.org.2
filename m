@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A9F354FF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AD2354FF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240604AbhDFJdp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 05:33:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:14984 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236696AbhDFJdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:33:43 -0400
-IronPort-SDR: nAQjvgOFpT76wHt/4rwAtdtVM+I8aU2LkBV0j3hYQEzISCCMCT9ZyS0fQq/9qKYWSduU4RCbMx
- TwZF7dbCmFTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="172502141"
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="172502141"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:33:34 -0700
-IronPort-SDR: yNx+NRizR5mkR8GcZPzlI8J7Pj0MjByUv03J9PMpLpN8+8z9CtxNE4aHX/zeWYKFAFUMA0T4x4
- hC15JwVa90TA==
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="457817452"
-Received: from oowomilo-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:33:03 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        id S237287AbhDFJdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:33:23 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:41962 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236696AbhDFJdV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:33:21 -0400
+Received: by mail-vk1-f169.google.com with SMTP id o17so3043492vko.8;
+        Tue, 06 Apr 2021 02:33:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=grgIxmSma2JlieWtBX3rMxJzJxBIyz4KExnfhvygE5M=;
+        b=byuWXyERSSoZNxADdXcP7qj3Gh+lRcEXrhE/XKdlLO7AsPuVKfCdBKxL64ncn3nBi/
+         kAV4XYOj8w4i39dgrcNED8NsDHb1R0yA6U6txu5E6wC8t8UWuRVSiCf2t3yfZJ/AzrGG
+         s3rCOZyosY7SBBCEZGKAF7aBGlCJTYnyXFjsicTRQsQdqeYmn67cDsQditOkRkilNagh
+         9Rn+6qqeFR9ZZ+3QVlDhq/gxxAcxvG8sunBwAUO5esMPgP/nBDM9jJIjWq91M0QlxeUC
+         VzBbZFjYwwq41DdNLFzQA59eaP/roBD1P43tu5cr5AFPdAN7Zprmm6JxSqQI9dwK6IaG
+         /8wA==
+X-Gm-Message-State: AOAM530+dUhlV4msIUyoVoONjliCOvYa8nDSN2/xHn03aFBv2tfFjFXq
+        vPunDGV/4HHF7cnc8tCcqoyYLy41Y0Kp19We8lscidvf
+X-Google-Smtp-Source: ABdhPJzgJNbsIKr5NP1kHfRMwi9+BcmAuttYIVdrxWa1dLq56Xb06r6Zg7tF1EDTF5IKCMc00RB5P7qIa5UgLW9cGhU=
+X-Received: by 2002:a1f:2502:: with SMTP id l2mr16362671vkl.5.1617701593632;
+ Tue, 06 Apr 2021 02:33:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210331081735.367238-1-geert+renesas@glider.be> <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
+In-Reply-To: <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 6 Apr 2021 11:33:02 +0200
+Message-ID: <CAMuHMdXCjhDQhtAXir5zd7u=NCsCFhVvB6kmckWkmXbiQJix4A@mail.gmail.com>
+Subject: Re: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not
+ default to m
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>, linux-pwm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH] pwm: Rename pwm_get_state() to better reflect its semantic
-In-Reply-To: <20210406073036.26857-1-u.kleine-koenig@pengutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210406073036.26857-1-u.kleine-koenig@pengutronix.de>
-Date:   Tue, 06 Apr 2021 12:32:58 +0300
-Message-ID: <87tuojlpv9.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Apr 2021, Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
-> Given that lowlevel drivers usually cannot implement exactly what a
-> consumer requests with pwm_apply_state() there is some rounding involved.
+Hoi Hans,
+
+On Tue, Apr 6, 2021 at 11:24 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> On 31/03/2021 10:17, Geert Uytterhoeven wrote:
+> > The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
+> > Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
+> > ARCH_MXC, to prevent asking the user about this driver when configuring
+> > a kernel without i.MX8 support.
+> >
+> > Drop the "default m" (which means "default y" if CONFIG_MODULES is not
+> > enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
+> > additional code.
 >
-> pwm_get_state() traditionally returned the setting that was requested most
-> recently by the consumer (opposed to what was actually implemented in
-> hardware in reply to the last request). To make this semantic obvious
-> rename the function.
->
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
+> You do not actually drop 'default m' in the patch. Either the patch or the
+> commit message is wrong.
 
->  drivers/gpu/drm/i915/display/intel_panel.c |  4 +--
+Oops, the patch is wrong.
+V2 sent.
+Thanks!
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+Gr{oetje,eeting}s,
 
+                        Geert
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
