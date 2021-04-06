@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7D6355F35
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F39355F3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239291AbhDFXEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:04:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55872 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233379AbhDFXEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:04:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9457EB01F;
-        Tue,  6 Apr 2021 23:03:52 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Fix new sparse warning
-Date:   Wed,  7 Apr 2021 01:03:48 +0200
-Message-Id: <20210406230348.130713-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S235456AbhDFXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233608AbhDFXJ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 19:09:56 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B70C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 16:09:48 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i144so18054945ybg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y6OSfvw2JXRLchQT/g4OM5pjorvMrh2aWfsdWLGR9gE=;
+        b=ajc9PJAU/6AhhM0RhU0k1Mux2Yl+3pnFstkqg8+oM2TYiRXR+skoQr1Z1VkTCft7GN
+         AnYuq70p0b/LRP6MrmyKfs7O8sci7KHn8wkfT4m24ss3Xu0kIQmK2nCQxq3bhZt4+gwc
+         eVBeiZ0dMUn0s3nAnQtKH9D+zc2shuf6Q+agPMmGL6OLJigGjhzHrdDlEv2M62riuqlz
+         eZJMjz1ysW5Har69nUCu8X2s44NHjMjNx/py5ZtVUXxPID5rjZEyOP06GFDI3ZzrdKFs
+         JPKyD98eLlSssi71FnxAx8IVVgSHNGLiMa0L4w3ybM3yqKakpNNylvKlWT3RYFeplZJy
+         v/lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y6OSfvw2JXRLchQT/g4OM5pjorvMrh2aWfsdWLGR9gE=;
+        b=cT6H2/kLApHqJJ5UGkr7dnJUQ/mgBA2MH3C10JHEhadAQbpl14Jvinbfz1ca5s+Ha1
+         3YD0Br3WajZZCDpkMDCg/SJLhW6xjQ2o74imYrCJBJJEiPpL7iST0zFy+4EWczY8gKwj
+         atgaUc57wvxqxuK+rr9Zbzn/soSwluNWa/NKWHejSKf47vvz7NSK2PR/BE3B+ygTXPGc
+         ADqeqHgnizrEP/avS4DFi0FEIytOUBh9/Y3FkweuZvVrvgZps1sHMNJI5TPXAOjO0oib
+         h4HgAcEzknsdCr+t4sgKqUPdtrQ1oZ6RmgbvbAuC6uTLDURnonsFqdyLekJYaoD8+STd
+         IKeA==
+X-Gm-Message-State: AOAM532XCombxRDAaEDEYWn3Yjf1ALFtew6kVG/qiI/SSIAUrqG27134
+        mMgX5fJudSr2uvg66gHuGO8GCTCDR/Wq546f3zeQZQ==
+X-Google-Smtp-Source: ABdhPJwCdBdvb5yTh7D1SqaHPTDXJjMGadzUqlEpmyyfYz34QIUr5kDhWWv6sCMTO/prGFa0DpCneK2qiPBI53cOpgM=
+X-Received: by 2002:a25:6003:: with SMTP id u3mr651056ybb.96.1617750586821;
+ Tue, 06 Apr 2021 16:09:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com> <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 6 Apr 2021 16:09:10 -0700
+Message-ID: <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
+Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 45deb5faeb9e ("MIPS: uaccess: Remove get_fs/set_fs call sites")
-caused a few new sparse warning, fix them.
+On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
+<ilya.lipnitskiy@gmail.com> wrote:
+>
+> [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> not configured by #gpio-cells and can't be parsed along with other
+> "*-gpios" properties.
+>
+> nr-gpios without the "<vendor>," prefix is not allowed by the DT
+> spec[1], so only add exception for the ",nr-gpios" suffix and let the
+> error message continue being printed for non-compliant implementations.
+>
+> [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
+>  - gpio-adnp.txt
+>  - gpio-xgene-sb.txt
+>  - gpio-xlp.txt
+>  - snps,dw-apb-gpio.yaml
+>
+> [1]:
+> Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
+>
+> Fixes errors such as:
+>   OF: /palmbus@300000/gpio@600: could not find phandle
+>
+> Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: <stable@vger.kernel.org> # 5.5.x
+> ---
+>  drivers/of/property.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 2046ae311322..1793303e84ac 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+>  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+>  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+>  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
+> +
+> +static struct device_node *parse_gpios(struct device_node *np,
+> +                                      const char *prop_name, int index)
+> +{
+> +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
+> +               return NULL;
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/kernel/access-helper.h | 7 ++++---
- arch/mips/kernel/unaligned.c     | 6 +++---
- 2 files changed, 7 insertions(+), 6 deletions(-)
+Ah I somehow missed this patch. This gives a blanked exception for
+vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
+of ",nr-gpios" we are grandfathering in. Any future additions should
+be rejected. Can we do that please?
 
-diff --git a/arch/mips/kernel/access-helper.h b/arch/mips/kernel/access-helper.h
-index dd5b502813b8..590388031503 100644
---- a/arch/mips/kernel/access-helper.h
-+++ b/arch/mips/kernel/access-helper.h
-@@ -4,15 +4,16 @@
- 
- static inline int __get_addr(unsigned long *a, unsigned long *p, bool user)
- {
--	return user ? get_user(*a, p) : get_kernel_nofault(*a, p);
-+	return user ? get_user(*a, (unsigned long __user *)p) :
-+		      get_kernel_nofault(*a, p);
- }
- 
- static inline int __get_inst16(u16 *i, u16 *p, bool user)
- {
--	return user ? get_user(*i, p) : get_kernel_nofault(*i, p);
-+	return user ? get_user(*i, (u16 __user *)p) : get_kernel_nofault(*i, p);
- }
- 
- static inline int __get_inst32(u32 *i, u32 *p, bool user)
- {
--	return user ? get_user(*i, p) : get_kernel_nofault(*i, p);
-+	return user ? get_user(*i, (u32 __user *)p) : get_kernel_nofault(*i, p);
- }
-diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-index 1f3b20a8c377..df4b708c04a9 100644
---- a/arch/mips/kernel/unaligned.c
-+++ b/arch/mips/kernel/unaligned.c
-@@ -109,7 +109,7 @@ static u32 unaligned_action;
- extern void show_registers(struct pt_regs *regs);
- 
- static void emulate_load_store_insn(struct pt_regs *regs,
--	void __user *addr, unsigned int __user *pc)
-+	void __user *addr, unsigned int *pc)
- {
- 	unsigned long origpc, orig31, value;
- 	union mips_instruction insn;
-@@ -1475,7 +1475,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- asmlinkage void do_ade(struct pt_regs *regs)
- {
- 	enum ctx_state prev_state;
--	unsigned int __user *pc;
-+	unsigned int *pc;
- 
- 	prev_state = exception_enter();
- 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,
-@@ -1526,7 +1526,7 @@ asmlinkage void do_ade(struct pt_regs *regs)
- 
- 	if (unaligned_action == UNALIGNED_ACTION_SHOW)
- 		show_registers(regs);
--	pc = (unsigned int __user *)exception_epc(regs);
-+	pc = (unsigned int *)exception_epc(regs);
- 
- 	emulate_load_store_insn(regs, (void __user *)regs->cp0_badvaddr, pc);
- 
--- 
-2.29.2
+Rob, you okay with making this list more explicit?
 
+-Saravana
