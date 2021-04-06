@@ -2,107 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077B63552A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988D93552A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243226AbhDFLqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhDFLq1 (ORCPT
+        id S245759AbhDFLtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:49:47 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15610 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232884AbhDFLtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:46:27 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3928C06174A;
-        Tue,  6 Apr 2021 04:46:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FF5MX6Tj4z9sRK;
-        Tue,  6 Apr 2021 21:46:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617709577;
-        bh=+Wm34ejyav+nZTgQTO8sx0zmXJDuiB/juUfnoDNVFwY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bzq8ynUPK0rP/AEtvz2CHIuT88WTc9U3O18HEFW8mJs2kjdvV0aMCOdZpH5L0lVxs
-         PMkA9kfMaCL1amg7IrzuWW0x6HqmNZL7xAHZq/CB8d0cjTzAx0V2I53D57aBrdV2K7
-         tWa1bhGxCWSGjLfTvud1OCn6jRsECl7cMGzQte29EDnEPkkBYilDkHh+fpsT0i3HxB
-         Xpzc1EMGpHTermsoCHLxCAkUyIoTBwhZqtyUTZQJWhGohZU4gQp4xcf2Ni0x8IIE5R
-         wWEncZc0IFEfNtBiKLOwwUJKV0rsBltCQrj1vfBm2pDs/5PtPOQH+ioNvI3SLdgd7r
-         ukeIkfSmrXHJw==
-Date:   Tue, 6 Apr 2021 21:46:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the char-misc tree
-Message-ID: <20210406214615.40cf3493@canb.auug.org.au>
-In-Reply-To: <20210406214441.5744648c@canb.auug.org.au>
-References: <20210406214441.5744648c@canb.auug.org.au>
+        Tue, 6 Apr 2021 07:49:46 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF5Nt5gqSz1BFfh;
+        Tue,  6 Apr 2021 19:47:26 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 19:49:29 +0800
+Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20200828081157.15748-1-zhukeqian1@huawei.com>
+CC:     <wanghaibin.wang@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
+Date:   Tue, 6 Apr 2021 19:49:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gaL=GBrvSlPtm+Zv8YVMNpG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200828081157.15748-1-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gaL=GBrvSlPtm+Zv8YVMNpG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Paolo,
 
-Hi all,
+I plan to rework this patch and do full test. What do you think about this idea
+(enable dirty logging for huge pages lazily)?
 
-On Tue, 6 Apr 2021 21:44:41 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> After merging the char-misc tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> Documentation/misc-devices/dw-xdata-pcie.rst:20: WARNING: Unexpected inde=
-ntation.
-> Documentation/misc-devices/dw-xdata-pcie.rst:24: WARNING: Unexpected inde=
-ntation.
-> Documentation/misc-devices/dw-xdata-pcie.rst:25: WARNING: Block quote end=
-s without a blank line; unexpected unindent.
-> Documentation/misc-devices/dw-xdata-pcie.rst:30: WARNING: Unexpected inde=
-ntation.
-> Documentation/misc-devices/dw-xdata-pcie.rst:34: WARNING: Unexpected inde=
-ntation.
-> Documentation/misc-devices/dw-xdata-pcie.rst:35: WARNING: Block quote end=
-s without a blank line; unexpected unindent.
-> Documentation/misc-devices/dw-xdata-pcie.rst:40: WARNING: Unexpected inde=
-ntation.
->=20
-> Introduced by commit
->=20
->   e1181b5bbc3c ("Documentation: misc-devices: Add Documentation for dw-xd=
-ata-pcie driver")
+Best Regards,
+Keqian
 
-Also:
+PS: As dirty log of TDP MMU has been supported, I should add more code.
 
-Documentation/misc-devices/dw-xdata-pcie.rst: WARNING: document isn't inclu=
-ded in any toctree
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gaL=GBrvSlPtm+Zv8YVMNpG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBsSgcACgkQAVBC80lX
-0GzJQQgAkzuGr7f8+7nUfOzf0QJ9c7+tfyEZ/DWUiCSnk55a2c2zKpY4oueGMpmf
-Z2MQmO+F3YnWE2kDqZq3NeKhuQsDH8RpW/8aB+NeRq0dpxbMoz2ZhryrJmHhaZqD
-qbYgroXZCxmT1+SuZYsFJAAUywY+QxM2GxQ6YoWSds0ft0ua6zmLHSOqiJQRsXaA
-YtlxRHj1y2gaovtn4FqVa/+y9pVa4YQ+uTb1qdvNXRlyriEalRj9jYiBXiS93WKY
-B536EcIM4v7XpTQ7uBqb4uPVkWHMEB+jceDGFy0iqk5nXJ1VbiwcLNx63shywJHm
-ltTyxL0s6YjnzS0fHhqsCkCxYu3FRw==
-=JmDz
------END PGP SIGNATURE-----
-
---Sig_/gaL=GBrvSlPtm+Zv8YVMNpG--
+On 2020/8/28 16:11, Keqian Zhu wrote:
+> Currently during enable dirty logging, if we're with init-all-set,
+> we just write protect huge pages and leave normal pages untouched,
+> for that we can enable dirty logging for these pages lazily.
+> 
+> It seems that enable dirty logging lazily for huge pages is feasible
+> too, which not only reduces the time of start dirty logging, also
+> greatly reduces side-effect on guest when there is high dirty rate.
+> 
+> (These codes are not tested, for RFC purpose :-) ).
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  3 +-
+>  arch/x86/kvm/mmu/mmu.c          | 65 ++++++++++++++++++++++++++-------
+>  arch/x86/kvm/vmx/vmx.c          |  3 +-
+>  arch/x86/kvm/x86.c              | 22 +++++------
+>  4 files changed, 62 insertions(+), 31 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 5303dbc5c9bc..201a068cf43d 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1296,8 +1296,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
+>  
+>  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
+>  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> -				      struct kvm_memory_slot *memslot,
+> -				      int start_level);
+> +				      struct kvm_memory_slot *memslot);
+>  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>  				   const struct kvm_memory_slot *memslot);
+>  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 43fdb0c12a5d..4b7d577de6cd 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1625,14 +1625,45 @@ static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
+>  }
+>  
+>  /**
+> - * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+> + * kvm_mmu_write_protect_largepage_masked - write protect selected largepages
+>   * @kvm: kvm instance
+>   * @slot: slot to protect
+>   * @gfn_offset: start of the BITS_PER_LONG pages we care about
+>   * @mask: indicates which pages we should protect
+>   *
+> - * Used when we do not need to care about huge page mappings: e.g. during dirty
+> - * logging we do not have any such mappings.
+> + * @ret: true if all pages are write protected
+> + */
+> +static bool kvm_mmu_write_protect_largepage_masked(struct kvm *kvm,
+> +				    struct kvm_memory_slot *slot,
+> +				    gfn_t gfn_offset, unsigned long mask)
+> +{
+> +	struct kvm_rmap_head *rmap_head;
+> +	bool protected, all_protected;
+> +	gfn_t start_gfn = slot->base_gfn + gfn_offset;
+> +	int i;
+> +
+> +	all_protected = true;
+> +	while (mask) {
+> +		protected = false;
+> +		for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+> +			rmap_head = __gfn_to_rmap(start_gfn + __ffs(mask), i, slot);
+> +			protectd |= __rmap_write_protect(kvm, rmap_head, false);
+> +		}
+> +
+> +		all_protected &= protectd;
+> +		/* clear the first set bit */
+> +		mask &= mask - 1;
+> +	}
+> +
+> +	return all_protected;
+> +}
+> +
+> +/**
+> + * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+> + * @kvm: kvm instance
+> + * @slot: slot to protect
+> + * @gfn_offset: start of the BITS_PER_LONG pages we care about
+> + * @mask: indicates which pages we should protect
+>   */
+>  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
+>  				     struct kvm_memory_slot *slot,
+> @@ -1679,18 +1710,25 @@ EXPORT_SYMBOL_GPL(kvm_mmu_clear_dirty_pt_masked);
+>  
+>  /**
+>   * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
+> - * PT level pages.
+> - *
+> - * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
+> - * enable dirty logging for them.
+> - *
+> - * Used when we do not need to care about huge page mappings: e.g. during dirty
+> - * logging we do not have any such mappings.
+> + * dirty pages.
+>   */
+>  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
+>  				struct kvm_memory_slot *slot,
+>  				gfn_t gfn_offset, unsigned long mask)
+>  {
+> +	/*
+> +	 * If we're with initial-all-set, huge pages are NOT
+> +	 * write protected when we start dirty log, so we must
+> +	 * write protect them here.
+> +	 */
+> +	if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+> +		if (kvm_mmu_write_protect_largepage_masked(kvm, slot,
+> +					gfn_offset, mask))
+> +			return;
+> +	}
+> +
+> +	/* Then we can handle the 4K level pages */
+> +
+>  	if (kvm_x86_ops.enable_log_dirty_pt_masked)
+>  		kvm_x86_ops.enable_log_dirty_pt_masked(kvm, slot, gfn_offset,
+>  				mask);
+> @@ -5906,14 +5944,13 @@ static bool slot_rmap_write_protect(struct kvm *kvm,
+>  }
+>  
+>  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> -				      struct kvm_memory_slot *memslot,
+> -				      int start_level)
+> +				      struct kvm_memory_slot *memslot)
+>  {
+>  	bool flush;
+>  
+>  	spin_lock(&kvm->mmu_lock);
+> -	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
+> -				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
+> +	flush = slot_handle_all_level(kvm, memslot, slot_rmap_write_protect,
+> +				      false);
+>  	spin_unlock(&kvm->mmu_lock);
+>  
+>  	/*
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 819c185adf09..ba871c52ef8b 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7538,8 +7538,7 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int cpu)
+>  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
+>  				     struct kvm_memory_slot *slot)
+>  {
+> -	if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
+> -		kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+> +	kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+>  	kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
+>  }
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d39d6cf1d473..c31c32f1424b 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10225,22 +10225,18 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
+>  	 * is enabled the D-bit or the W-bit will be cleared.
+>  	 */
+>  	if (new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+> +		/*
+> +		 * If we're with initial-all-set, we don't need
+> +		 * to write protect any page because they're
+> +		 * reported as dirty already.
+> +		 */
+> +		if (kvm_dirty_log_manual_protect_and_init_set(kvm))
+> +			return;
+> +
+>  		if (kvm_x86_ops.slot_enable_log_dirty) {
+>  			kvm_x86_ops.slot_enable_log_dirty(kvm, new);
+>  		} else {
+> -			int level =
+> -				kvm_dirty_log_manual_protect_and_init_set(kvm) ?
+> -				PG_LEVEL_2M : PG_LEVEL_4K;
+> -
+> -			/*
+> -			 * If we're with initial-all-set, we don't need
+> -			 * to write protect any small page because
+> -			 * they're reported as dirty already.  However
+> -			 * we still need to write-protect huge pages
+> -			 * so that the page split can happen lazily on
+> -			 * the first write to the huge page.
+> -			 */
+> -			kvm_mmu_slot_remove_write_access(kvm, new, level);
+> +			kvm_mmu_slot_remove_write_access(kvm, new);
+>  		}
+>  	} else {
+>  		if (kvm_x86_ops.slot_disable_log_dirty)
+> 
