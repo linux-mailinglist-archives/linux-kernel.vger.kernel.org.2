@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12FC354EEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578ED354EEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244526AbhDFIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:47:38 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:43597 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232593AbhDFIrf (ORCPT
+        id S244537AbhDFIrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244528AbhDFIrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:47:35 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id ThMnl3oQo43ycThMqlNGVz; Tue, 06 Apr 2021 10:47:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617698846; bh=mfkZRE3IiV4Y6zCvybhFbJVgwZDIoc29jVODHYqsFdI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=oyEYPcl50nsYFhKGsXRRNGNGOKH5YMZ/54UqjpSZXjvZ3le2SznpWbPtmT3BPjjNS
-         smnMu5D4aP8m9y9Pcwp0CWFnXX+mK4jCGDvCy5wPrXUQc+Ep1H7CVi+NEwJXjgpInc
-         rjm5h9Ui/JSHsJjxHrCy4eQVRTYo332ZsSqRvYj0I46cFQ/QrJrG8ckMvUndalFRgy
-         jBqhEDR6yTDxPrOZ+yN/x8Mz1DKWR8XpK/ucb9+IuTZ+gmc+9uw7nUUOXoDx+X1sJl
-         l5Ar6bz3pScGyrVRTE2+OH66+NrMdihcTnsg4Sywky306vbJ+h1NbrnbFXbOScTRyX
-         nfwiadOYPF2gA==
-Subject: Re: [PATCH] media: usb: Remove duplicate declares
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20210327074247.1487713-1-wanjiabing@vivo.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <52a49728-5991-5a51-5001-06d6e3011c56@xs4all.nl>
-Date:   Tue, 6 Apr 2021 10:47:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Tue, 6 Apr 2021 04:47:39 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E01C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:47:32 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DFEE822235;
+        Tue,  6 Apr 2021 10:47:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617698850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RZRoz8Ro0cCt7fIaCtvweHH5BnfiGQ6TA020rkhXs0Y=;
+        b=jefZUP9IZoBTB8Uw1AVCKrV+CRyKkrLi/+JRybG+G7ykggqy5N6iJROLp+P5El5cIasfjk
+        lzyfmEn9XVfWe9ZPrvuorL1aWqtz/JDgSVN+jgzdzinZQ1Adzi+7XmOUcF0zPOcpJuC8QM
+        3GaouHHEo31VSVIYSS9t58VGhbpcctE=
 MIME-Version: 1.0
-In-Reply-To: <20210327074247.1487713-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJ2e9pbVV2H+aOoxIDFJhL6OXkX8qNnKp6jgrnx0oXWXax2YThOMu/Cdl7tSqMI/xo9aR0MNIm1ejq772kKCVbv6AI+kssHfip/3sz2NZbRcYSPgzeNL
- HKopQ5SO8mYaSPjaCoYiCCYvi6YBvYBsd0SvjrcBcE/N2s7ihL5cJVgV6JSIKbNyC9OKMEDvuLmIuJSKHmhfz1Vh30kzX0bV8nM49NnMCTy3rLTeDLI37Ucc
- DiIZ4PBTI4676uuW/moA9mpOvrBJFAyxon5LBI7W+9wJf0PBhOo9aEo/GVlu950ZcdC6FFC1yXb1kH6glrC8msLxlJR5blpai+R2lHKMOpE=
+Date:   Tue, 06 Apr 2021 10:47:29 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
+In-Reply-To: <658af7ad-c4ee-1c25-b51b-1f66b657aade@ti.com>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-3-michael@walle.cc>
+ <658af7ad-c4ee-1c25-b51b-1f66b657aade@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <4f1de957288118d5a627027ec4c37973@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please specify in the subject line which driver this patch changes.
+Hi,
 
-I also would prefer that this is split into two patches, one for each driver.
-
-Just saying 'media: usb:' makes it look like you have a media/usb subsystem patch,
-but that's not the case. Very confusing for code reviewers.
-
-Regards,
-
-	Hans
-
-On 27/03/2021 08:42, Wan Jiabing wrote:
-> struct cx231xx has been declared at 146th line.
-> struct em28xx has been declared at 219th line.
-> Remove the duplicate.
+Am 2021-04-06 09:56, schrieb Vignesh Raghavendra:
+> Hi,
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/media/usb/cx231xx/cx231xx.h | 2 --
->  drivers/media/usb/em28xx/em28xx.h   | 2 --
->  2 files changed, 4 deletions(-)
+> On 3/18/21 2:54 PM, Michael Walle wrote:
+>> Add support to show the name and JEDEC identifier as well as to dump 
+>> the
+>> SFDP table. Not all flashes list their SFDP table contents in their
+>> datasheet. So having that is useful. It might also be helpful in bug
+>> reports from users.
+>> 
 > 
-> diff --git a/drivers/media/usb/cx231xx/cx231xx.h b/drivers/media/usb/cx231xx/cx231xx.h
-> index b32eab641793..6929e4d97067 100644
-> --- a/drivers/media/usb/cx231xx/cx231xx.h
-> +++ b/drivers/media/usb/cx231xx/cx231xx.h
-> @@ -425,8 +425,6 @@ struct cx231xx_audio {
->  	u16 end_point_addr;
->  };
->  
-> -struct cx231xx;
-> -
->  /*****************************************************************/
->  /* set/get i2c */
->  /* 00--1Mb/s, 01-400kb/s, 10--100kb/s, 11--5Mb/s */
-> diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-> index 6648e11f1271..43227111d410 100644
-> --- a/drivers/media/usb/em28xx/em28xx.h
-> +++ b/drivers/media/usb/em28xx/em28xx.h
-> @@ -628,8 +628,6 @@ struct em28xx_audio {
->  	atomic_t       stream_started;	/* stream should be running if true */
->  };
->  
-> -struct em28xx;
-> -
->  enum em28xx_i2c_algo_type {
->  	EM28XX_I2C_ALGO_EM28XX = 0,
->  	EM28XX_I2C_ALGO_EM2800,
+> Sorry for the delay..
 > 
+> There is already debugfs support for dumping JEDEC ID [1]. Any reason 
+> to
+> add sysfs entry as well?
 
+This is per mtd while the sfdp is per flash device. IMHO both should
+be at the same place.
+
+> That brings up another question. Since SFDP dumps are more of a debug
+> aid, should this be a debugfs entry rather than sysfs entry?
+
+And you're not the first one asking that. My argument was that the
+debugfs might not be available just when you need it. A developer
+could easily rebuild a kernel, but imagine some user with a COTS
+distro and some problems, then it is not that easy anymore. But
+thats your call to make.
+
+> Note that sysfs entries are userspace ABIs just like syscalls and thus
+> need to be documented in Documentation/ABI/testing/ or
+> Documentation/ABI/stable. Thus need to be carefully designed compared 
+> to
+> debugfs which are much more flexible.
+
+Ok. But I don't see a problem adding these read-only files
+  /sfdp
+  /name
+  /jedec-id
+
+Do you?
+
+-michael
