@@ -2,222 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0914354CE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01253354CED
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243989AbhDFG0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:26:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20361 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237136AbhDFG0w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:26:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617690404; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=AuEdEz7a4c7X0SNDwicBOs0NZAtDHx29y3osgc4TNy8=;
- b=OMonIBj1d8B8sGSRosD4ux0SSa927SI7/aZ1FfJGc1c2g4hP6KTkl6GnDU6REgIEHWmyBYQR
- +/wYT0uK4PTcpsnoCeUxyX2OSwve0bKYSvWxLNibroLRUOwWLwDfQAj9Nt50ua0W6SHXn936
- UrZ6AWaZxsLuncRoOQHjRrnzsk4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 606bff1f0a4a07ffda861488 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 06:26:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3105C43461; Tue,  6 Apr 2021 06:26:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC65DC433CA;
-        Tue,  6 Apr 2021 06:26:37 +0000 (UTC)
+        id S244010AbhDFG3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237859AbhDFG26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 02:28:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE35D61165;
+        Tue,  6 Apr 2021 06:28:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617690530;
+        bh=6qxictHF+/YqQWcR0awtfiLtRYlib8mn/Dx9axjfKg4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i+8SC5R9QYYvQwgkzuDT4QnqR/LHddWxuZum0T0C3kxd6raLjcbfF1cvFl2Cec8Xm
+         KhScYX6h4r8XG5j8aUB+B2/jprzuuPXY9FqnyK2nKPB+vdLVfp9goj46Wy4uHK+0Ra
+         PZddOiDso6XZJeBYLq1uIw9rM48AGuy05sSGnzMZFNrnyCjZMGJCv51xn7hMBg++CF
+         +dca19jOJJKcipn2OWRYvnKC9ngkedpdr+ZBuojGR6Bu10dtubDRP/koLNLtLoA/lF
+         akfcfAruTov/1lG+Q+agKfPbZvwxlR1hCjO5x/uMyewyKscMUk4082lcCbzP0vJ/16
+         lfXW6Ibhc0a6A==
+Date:   Tue, 6 Apr 2021 09:28:46 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Tom Talpey <tom@talpey.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 02/10] RDMA/core: Enable Relaxed Ordering in
+ __ib_alloc_pd()
+Message-ID: <YGv/nne+E5xXHsME@unreal>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405052404.213889-3-leon@kernel.org>
+ <befc60f3-d28a-5420-b381-0f408bd7cca9@talpey.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 06 Apr 2021 14:26:37 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v7 06/11] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <DM6PR04MB65752BA21FA1857D6EA10B62FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210331073952.102162-1-avri.altman@wdc.com>
- <20210331073952.102162-7-avri.altman@wdc.com>
- <e29e33769f23036f936a6b60c7430387@codeaurora.org>
- <DM6PR04MB6575719C78D67B7FA1557C21FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
- <6bb2fd28feb0cd6372a32673d6cfa164@codeaurora.org>
- <DM6PR04MB65752BA21FA1857D6EA10B62FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <a11edfeed79b8f411dc1948aadae0f25@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <befc60f3-d28a-5420-b381-0f408bd7cca9@talpey.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-06 14:16, Avri Altman wrote:
->> 
->> On 2021-04-06 13:20, Avri Altman wrote:
->> >> > -static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
->> >> > -                               struct ufshpb_region *rgn)
->> >> > +static int __ufshpb_evict_region(struct ufshpb_lu *hpb,
->> >> > +                              struct ufshpb_region *rgn)
->> >> >  {
->> >> >       struct victim_select_info *lru_info;
->> >> >       struct ufshpb_subregion *srgn;
->> >> >       int srgn_idx;
->> >> >
->> >> > +     lockdep_assert_held(&hpb->rgn_state_lock);
->> >> > +
->> >> > +     if (hpb->is_hcm) {
->> >> > +             unsigned long flags;
->> >> > +             int ret;
->> >> > +
->> >> > +             spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> >>
->> >> Never seen a usage like this... Here flags is used without being
->> >> intialized.
->> >> The flag is needed when spin_unlock_irqrestore ->
->> >> local_irq_restore(flags) to
->> >> restore the DAIF register (in terms of ARM).
->> > OK.
->> 
->> Hi Avri,
->> 
->> Checked on my setup, this lead to compilation error. Will you fix it 
->> in
->> next version?
->> 
->> warning: variable 'flags' is uninitialized when used here
->> [-Wuninitialized]
-> Yeah - I will pass it to __ufshpb_evict_region and drop the 
-> lockdep_assert call.
+On Mon, Apr 05, 2021 at 02:01:16PM -0400, Tom Talpey wrote:
+> On 4/5/2021 1:23 AM, Leon Romanovsky wrote:
+> > From: Avihai Horon <avihaih@nvidia.com>
+> > 
+> > Enable Relaxed Ordering in __ib_alloc_pd() allocation of the
+> > local_dma_lkey.
+> > 
+> > This will take effect only for devices that don't pre-allocate the lkey
+> > but allocate it per PD allocation.
+> > 
+> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >   drivers/infiniband/core/verbs.c              | 3 ++-
+> >   drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c | 1 +
+> >   2 files changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> > index a1782f8a6ca0..9b719f7d6fd5 100644
+> > --- a/drivers/infiniband/core/verbs.c
+> > +++ b/drivers/infiniband/core/verbs.c
+> > @@ -287,7 +287,8 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
+> >   	if (device->attrs.device_cap_flags & IB_DEVICE_LOCAL_DMA_LKEY)
+> >   		pd->local_dma_lkey = device->local_dma_lkey;
+> >   	else
+> > -		mr_access_flags |= IB_ACCESS_LOCAL_WRITE;
+> > +		mr_access_flags |=
+> > +			IB_ACCESS_LOCAL_WRITE | IB_ACCESS_RELAXED_ORDERING;
 > 
+> So, do local_dma_lkey's get relaxed ordering unconditionally?
 
-Please paste the sample code/change here so that I can move forward 
-quickly.
+Yes, in mlx5, this lkey is created on the fly.
 
-> I don't want to block your testing - are there any other things you
-> want me to change?
-
-Currently, no. I will try to review and test this series these days and
-post comments at once.
-
-Thanks,
-Can Guo.
-
-> 
-> Thanks,
-> Avri
-> 
->> 
->> Thanks,
->> Can Guo.
->> 
->> >
->> > Thanks,
->> > Avri
->> >
->> >>
->> >> Thanks,
->> >>
->> >> Can Guo.
->> >>
->> >> > +             ret = ufshpb_issue_umap_single_req(hpb, rgn);
->> >> > +             spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->> >> > +             if (ret)
->> >> > +                     return ret;
->> >> > +     }
->> >> > +
->> >> >       lru_info = &hpb->lru_info;
->> >> >
->> >> >       dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->> >> > rgn->rgn_idx);
->> >> > @@ -1130,6 +1150,8 @@ static void __ufshpb_evict_region(struct
->> >> > ufshpb_lu *hpb,
->> >> >
->> >> >       for_each_sub_region(rgn, srgn_idx, srgn)
->> >> >               ufshpb_purge_active_subregion(hpb, srgn);
->> >> > +
->> >> > +     return 0;
->> >> >  }
->> >> >
->> >> >  static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct
->> >> > ufshpb_region *rgn)
->> >> > @@ -1151,7 +1173,7 @@ static int ufshpb_evict_region(struct ufshpb_lu
->> >> > *hpb, struct ufshpb_region *rgn)
->> >> >                       goto out;
->> >> >               }
->> >> >
->> >> > -             __ufshpb_evict_region(hpb, rgn);
->> >> > +             ret = __ufshpb_evict_region(hpb, rgn);
->> >> >       }
->> >> >  out:
->> >> >       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> >> > @@ -1285,7 +1307,9 @@ static int ufshpb_add_region(struct ufshpb_lu
->> >> > *hpb, struct ufshpb_region *rgn)
->> >> >                               "LRU full (%d), choose victim %d\n",
->> >> >                               atomic_read(&lru_info->active_cnt),
->> >> >                               victim_rgn->rgn_idx);
->> >> > -                     __ufshpb_evict_region(hpb, victim_rgn);
->> >> > +                     ret = __ufshpb_evict_region(hpb, victim_rgn);
->> >> > +                     if (ret)
->> >> > +                             goto out;
->> >> >               }
->> >> >
->> >> >               /*
->> >> > @@ -1856,6 +1880,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->> >> >  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->> >> >  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->> >> >  ufshpb_sysfs_attr_show_func(map_req_cnt);
->> >> > +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->> >> >
->> >> >  static struct attribute *hpb_dev_stat_attrs[] = {
->> >> >       &dev_attr_hit_cnt.attr,
->> >> > @@ -1864,6 +1889,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
->> >> >       &dev_attr_rb_active_cnt.attr,
->> >> >       &dev_attr_rb_inactive_cnt.attr,
->> >> >       &dev_attr_map_req_cnt.attr,
->> >> > +     &dev_attr_umap_req_cnt.attr,
->> >> >       NULL,
->> >> >  };
->> >> >
->> >> > @@ -1988,6 +2014,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->> >> > *hpb)
->> >> >       hpb->stats.rb_active_cnt = 0;
->> >> >       hpb->stats.rb_inactive_cnt = 0;
->> >> >       hpb->stats.map_req_cnt = 0;
->> >> > +     hpb->stats.umap_req_cnt = 0;
->> >> >  }
->> >> >
->> >> >  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->> >> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> >> > index 87495e59fcf1..1ea58c17a4de 100644
->> >> > --- a/drivers/scsi/ufs/ufshpb.h
->> >> > +++ b/drivers/scsi/ufs/ufshpb.h
->> >> > @@ -191,6 +191,7 @@ struct ufshpb_stats {
->> >> >       u64 rb_inactive_cnt;
->> >> >       u64 map_req_cnt;
->> >> >       u64 pre_req_cnt;
->> >> > +     u64 umap_req_cnt;
->> >> >  };
->> >> >
->> >> >  struct ufshpb_lu {
+Thanks
