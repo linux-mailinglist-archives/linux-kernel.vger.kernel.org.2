@@ -2,141 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1487355ADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C3D355AE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhDFR6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S235698AbhDFR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbhDFR63 (ORCPT
+        with ESMTP id S234333AbhDFR6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:58:29 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5155DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:58:18 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id n4so7076686ili.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:58:18 -0700 (PDT)
+        Tue, 6 Apr 2021 13:58:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78CFC06174A;
+        Tue,  6 Apr 2021 10:58:34 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id ay2so7944299plb.3;
+        Tue, 06 Apr 2021 10:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vGkQibEhIMdD/p8ZIvDkxPOyyzWAR6ElrjD/hXxlZ+o=;
-        b=pwdcqtcQFLyaOUfrHtEFFwBrCsuNVSW0ieW/zjYyIO9wwYBCcLDmcRMoHi3L9Ml8gy
-         ieV8caoK32xe2eFZpQRBihOKHKGREk6/9Bbgfl4lLevVQx44IaKplPquArQBONPzI6PC
-         jVfarE6LPmYu0+RaTod/zz9pDa9QI+6Tr23RCLWNsH9YvvXCGSe450uPgLQo2HiNP+QY
-         kEeQdq5pyPp3RjdHdKersgHHDhwtwO8Af5r9B4zlFzRYRrHTEBMwQiyTM2QnuK31s4X8
-         RAnsMexNXGckLopIEYjKuk5NBqShLGWu+M7Aw+hh5Tw8KzmFsvkcnMzbibk4GKoOWg+5
-         hKkg==
+        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
+        b=O2M4esYxVNDD2b0CmxjVzfdmbRa5/2CdJ1KDx7k8gjjImYg1rGy9mtdBS9COtByQP2
+         3mSNJxLlvkVS8nWDv5Dom6fskBqP+6FeqAfFnWOrtq7XTzasxJ2gPQSI/S3e3/kQ+QuC
+         kUQg/iObwnXMthh5NRinOWCwarrIxVBLh4GslT1WjLcbnwYb7Hk4V9mlCOfoIob/GhnM
+         Ydk+iNK/LOedtw2ka9BBGiAS6z73oh6UV5Ua+1ZQZkmbbUzOJsoXm9mfd3lcSvDlL9BS
+         5OF2+r57j7YGE0t7atWGAs4VzECMnYK7Lngj91YlG9rCWWyrTKnaSet/7jkRlJLvXIer
+         qsFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vGkQibEhIMdD/p8ZIvDkxPOyyzWAR6ElrjD/hXxlZ+o=;
-        b=IOjq7VUwwt54zHwHRU/bsFTTCNzu/TY5cnkElOw6oDW4vmVqPmebLECTh4rGwVsWW/
-         /O4kDB0gcEg89L24bzYs/YszY1Zi8SaRRvg33adhskzEG2qSqrIUHhVBn4NnCfIQiPra
-         90IPOX8F1y9fwWmrcfmYB6yPm+c+vrTON02/uI9zJ1qHa+4m+96RbFralqZx+1XgnROR
-         45uzr3vIQ6cWpt3rMcwqmrdG8hc0Zdk8YWk9tQ2cN+ba3XN9iBeyxjiuvWz0DGMyViLs
-         nMxfPBzfWaCwhJNsa5Rv+Uz6blHYBd5EGbMB51Aavpvo+V/ydAD2hwvo62ZPaARh6Jnc
-         eThQ==
-X-Gm-Message-State: AOAM531sZgVIlWkaC16K+ahCNiW/gjRK79Xj2jBmO41zD2cQ/IgNYdjW
-        HQeYrv7vQHq4AMFzAoW02EptM/59CEv4OfLhlGiNnA==
-X-Google-Smtp-Source: ABdhPJycK7EacZ6QGGyp+/k0L/DeJEDPQRgAo3sYB0F8iOgth4YzomZToeNqcXEFJ+iqVdf4//lb4Ni5JFtSIjdFgnE=
-X-Received: by 2002:a05:6e02:1b0e:: with SMTP id i14mr24439552ilv.58.1617731897753;
- Tue, 06 Apr 2021 10:58:17 -0700 (PDT)
+        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
+        b=A8EKwyahpTYLzS/3dmVkiATXWCI8yLDQeUL413JDmtEoI50j8QexcFNnPEc5gQ0RjS
+         v1iZrBjzoeJnMVZuWzFBl9KI5LhxVZpoblBUU51h8iSCoMzn7Yr5Ta00UM0oBUfe67cR
+         OrfaE6IOwLLhR64UbMMIxByeZk5E/dr91px8KNcud57gcqTHFs2f7Rq+crEJRZWoUwj2
+         NiKmDKBSiwPlOS34KENWE4z+s87Eh3tLyKa2bnm1ogNVK4wsQnV1ZzNBUuQX7NnHsudB
+         mimuWWPFQCT1gXY81kRwFS7I+BxrViIi2cNDO48sg1H9NyAU9F2k1Tbm05MfwlFLe2Xo
+         GzQA==
+X-Gm-Message-State: AOAM533XgNtLV+FL7niWozs/ok24w9Nakg895OpTLYJI3zVQFt25r5Aa
+        5v2NfnZt5iPFo6R1tjeftyDdGDeNJcxez+VDchc=
+X-Google-Smtp-Source: ABdhPJzMKWH4LeMxZBkUQvZXRLpiJ+fJNytEmS2UWHGUQ7xi7GEyQxv2bnGTvcVHT0yX8JODLz4UgamvJPVNzYH7KQw=
+X-Received: by 2002:a17:902:8347:b029:e7:4a2d:6589 with SMTP id
+ z7-20020a1709028347b02900e74a2d6589mr30609818pln.64.1617731914383; Tue, 06
+ Apr 2021 10:58:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210405191757.283122-1-mathieu.poirier@linaro.org> <87o8erq0u2.wl-maz@kernel.org>
-In-Reply-To: <87o8erq0u2.wl-maz@kernel.org>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 6 Apr 2021 11:58:07 -0600
-Message-ID: <CANLsYkwijvqGv-EdSSC-F727LczXS0gjBbY-YwJ-0OZkKGTZsg@mail.gmail.com>
-Subject: Re: [GIT PULL] coresight: Add support for ETE and TRBE
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvmarm@lists.cs.columbia.edu
+References: <0000000000008872ff05bf40e4db@google.com>
+In-Reply-To: <0000000000008872ff05bf40e4db@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 6 Apr 2021 10:58:23 -0700
+Message-ID: <CAM_iQpU9gSy++6Ba0vfnHz_J4-FcGpAMG7yzFDFk+qTi1DJnwA@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in tcp_bpf_update_proto
+To:     syzbot <syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>, anton@tuxera.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>, jmattson@google.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "kvm@vger.kernel.org list" <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        pbonzini@redhat.com, rkovhaev@gmail.com, seanjc@google.com,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86 <x86@kernel.org>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 02:22, Marc Zyngier <maz@kernel.org> wrote:
+On Tue, Apr 6, 2021 at 2:44 AM syzbot
+<syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com> wrote:
 >
-> Hi Mathieu,
+> Hello,
 >
-> On Mon, 05 Apr 2021 20:17:57 +0100,
-> Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
-> >
-> > The following changes since commit a354a64d91eec3e0f8ef0eed575b480fd75b999c:
-> >
-> >   KVM: arm64: Disable guest access to trace filter controls (2021-03-24 17:26:38 +0000)
-> >
-> > are available in the Git repository at:
-> >
-> >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git next-ETE-TRBE
-> >
-> > for you to fetch changes up to 7885b4e43231048654c5a80c0a18844ce3185e64:
-> >
-> >   dts: bindings: Document device tree bindings for Arm TRBE (2021-04-05 11:38:04 -0600)
-> >
-> > ----------------------------------------------------------------
-> > Hi Marc,
-> >
-> > As previously agreed, here are the changes to support CoreSight
-> > ETE and TRBE components submitted here[1].
-> >
-> > I draw your attention to these:
-> >
-> > [PATCH v6 05/20] kvm: arm64: Handle access to TRFCR_EL1
-> > [PATCH v6 06/20] kvm: arm64: Move SPE availability check to VCPU load
-> > [PATCH v6 07/20] arm64: kvm: Enable access to TRBE support for host
-> >
-> > They are KVM specific and will need an SoB tag.
+> syzbot found the following issue on:
 >
-> There seem to be a disconnect here, because it works the other way
-> around.
+> HEAD commit:    514e1150 net: x25: Queue received packets in the drivers i..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=112a8831d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=320a3bc8d80f478c37e4
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1532d711d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f44c5ed00000
 >
-> If I pull this, I obviously cannot add anything to the patches that
-> are merged (changing stuff would result in changing the commit IDs,
-> which is exactly the opposite of what we are trying to achieve).
+> The issue was bisected to:
 >
-> This isn't a problem, as the act of pulling the branch means that I am
-> happy with that, and the git merge makes it traceable.
+> commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c
+> Author: Rustam Kovhaev <rkovhaev@gmail.com>
+> Date:   Wed Feb 24 20:00:30 2021 +0000
 >
-> However, some of the patches (the KVM ones) do not carry your own SoB,
-> which is a problem (if you are picking stuff off the list, you need to
-> add your own SoB). So for the couple of KVM patches, please add my
->
+>     ntfs: check for valid standard information attribute
 
-I wasn't clear on how to handle the KVM patches and as such decided to
-proceed conservatively...
-
->         Acked-by: Marc Zyngier <maz@kernel.org>
->
-> together with your SoB, resend the PR and I'll gladly merge it.
->
-
-And I didn't want to SoB those patches because I am not in a position
-to cast judgement on them, but with your Ack it changes everything.
-
-> And if you can make sure the subject lines are formatted as:
->
->         "KVM: arm64: Super Duper feature enablement"
-
-No problem.
+This is caused by one of my sockmap patches.
 
 >
-> that'd be absolutely awesome (but that's just me being annoying...).
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16207a81d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15207a81d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11207a81d00000
 >
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
+> Fixes: 4dfe6bd94959 ("ntfs: check for valid standard information attribute")
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.12.0-rc4-syzkaller #0 Not tainted
+> -----------------------------
+> include/linux/skmsg.h:286 suspicious rcu_dereference_check() usage!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 1
+> 1 lock held by syz-executor383/8454:
+>  #0: ffff888013a99b48 (clock-AF_INET){++..}-{2:2}, at: sk_psock_drop+0x2c/0x460 net/core/skmsg.c:788
+>
+> stack backtrace:
+> CPU: 1 PID: 8454 Comm: syz-executor383 Not tainted 5.12.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  sk_psock include/linux/skmsg.h:286 [inline]
+>  tcp_bpf_update_proto+0x530/0x5f0 net/ipv4/tcp_bpf.c:504
+>  sk_psock_restore_proto include/linux/skmsg.h:408 [inline]
+>  sk_psock_drop+0xdf/0x460 net/core/skmsg.c:789
+>  sk_psock_put include/linux/skmsg.h:446 [inline]
+>  tcp_bpf_recvmsg+0x42d/0x480 net/ipv4/tcp_bpf.c:208
+>  inet_recvmsg+0x11b/0x5d0 net/ipv4/af_inet.c:852
 
-I'll do a respin of this in a couple hours.
+Oddly, I have all relevant Kconfig enabled but never see this
+warning when running selftests for hours....
 
-> Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Anyway, let me see how this should be fixed.
+
+Thanks!
