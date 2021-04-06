@@ -2,173 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7D83557A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D823557A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345606AbhDFPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:22:52 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:44624 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhDFPWs (ORCPT
+        id S1345613AbhDFPXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhDFPXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:22:48 -0400
-Received: by mail-ot1-f53.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso14961660oti.11;
-        Tue, 06 Apr 2021 08:22:39 -0700 (PDT)
+        Tue, 6 Apr 2021 11:23:15 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6B4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:23:07 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id r193so13028864ior.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:23:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ppbe6LQ9TF76gGDx5T6QH1Iy2kgfPE2IIX9Z1B9X938=;
+        b=Jwt/SVcwNlKVS4QEhHXk3JPK3YRWolWv2Vjf4fdUNT3p34B3F0O/pcj/i0gSIy4MHu
+         l7igIoFaSnxnsp5jTfCVVEdH0LpHwcT848ekOT4T6zZ8JtySxNXI4xYllEyr6dTMIMoP
+         kdZ3JB1Mmi/6GTcQQlcotq8v33lIh62qAgq1VmEGAa+mbjl9TgMHA1P4nqXrNYyM88oR
+         JKC5ViozthygJxr+fU9Vpv+g79xsFM5036U9N4b5pjJ+03AD2nTZvuoG2xMtezTcfFFK
+         U1OAXzFL/Cm3i2XmWhJiPdeRDTT8LNApfRR7n98oYEGxgXgw45TFr7DN0tHSWC/k3/Ps
+         hGgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sXwcRig3tvZ+Z4uaFJyjbcZ77bloTOBAk/tXd58gGqg=;
-        b=oIERtfMfxiL/6WFEA9yX1IT8myMf4xQFDwD0x5xknZZoRGFHhqxodHhdD8nKosmf6p
-         jEgmseIVLDYxhlrAG0FxzviUxV9FA3oex/TB45xTMsSbV4fiSEUko9QvTwR0r+5GIqA9
-         Ng6WCEv12yvj4+XV4j+S6cQLyYdqWwg4TFzEU+b9flvNDi56GSxjn5d3d4coJi9QMXoH
-         /wY9/kCjM/z+wAxaIAZfjf8u7eE1hawezFJcw30TE0Wdecs8Y2unGGAukV76D8LdCtOV
-         /LGBrlaSmKSf1YyC9MVk+YVfQIfkaWQYJ+NilYiVH1H8QG2ZarlC9M53BYE0be43d5B8
-         Yx3w==
-X-Gm-Message-State: AOAM531xz4e2GzAyL9c6NPTimuzHT/L6GFFOT6k0rlG7fzD6xGfzI5d4
-        Dv1dgfoygukS/MFi7gkgZf1OnBWfEIfu1sVL3YY=
-X-Google-Smtp-Source: ABdhPJyAU3OaY8gRQ4/LiKT6/iD+IByZRCak85VRzGCbbqiiAqXMP3el70R2FFCVi3ltTRoozbuzNWYOl2YsOwnMYc4=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr26387265otb.260.1617722558727;
- Tue, 06 Apr 2021 08:22:38 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ppbe6LQ9TF76gGDx5T6QH1Iy2kgfPE2IIX9Z1B9X938=;
+        b=r1kmL5/zznbpnCJe4eFkcayNRvOkjp+eoaeQH9culNajdjg0RO5uJtVOCek2UAuJ30
+         9k1IO5nXqFVtuZJT894So5Sh5/M7qTs0QnVdtz+YyVthbb63hmo0VIrQypBcnpwLrXri
+         jPTdDhb619Ed+DxuENw2lH9RIfkeafL09xM1zJ87osRKOlZgl7POO5cryJQWVzKTc7ZY
+         MzKeRvdbG4Tv3GN3YeUcon+nqB+DDlnMHKhMwInFWtPinqkhue0GyUzOyUk9mfKRFJLg
+         xn3AhqoStOdrnadrCRe2WuGjLY0Gl13w4l3wyQKehOEYOhKFuAKCiaBpyxVqJu4d/QWj
+         VKMQ==
+X-Gm-Message-State: AOAM530GkUvFACDoVgzFMehBqzOj9vQtHdUYrUYNtcWmJjjvrYY98mbW
+        eTxxc0a4cWrxbZgjY7KlQEfdrn+551aJ81F7wrA=
+X-Google-Smtp-Source: ABdhPJzq1ydr+65frKdb//GhV/tEc8G4V3KC/HGsC4nwBJjx+eDKd0ZeSLJWcpgXpikA4FYmjkWq3tw2R6ywoeOq3rk=
+X-Received: by 2002:a02:b197:: with SMTP id t23mr2342179jah.125.1617722587412;
+ Tue, 06 Apr 2021 08:23:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406140005.554402-1-vkuznets@redhat.com>
-In-Reply-To: <20210406140005.554402-1-vkuznets@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 6 Apr 2021 17:22:27 +0200
-Message-ID: <CAJZ5v0ixuM0HfVrrn47+vmTaBq8RS9b3nyKbbTr9qKQps_buYg@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:a05:6e04:20aa:0:0:0:0 with HTTP; Tue, 6 Apr 2021 08:23:06
+ -0700 (PDT)
+Reply-To: solicitor.johnsonwilliams977@gmail.com
+From:   Johnson williams <georgewilly024@gmail.com>
+Date:   Tue, 6 Apr 2021 16:23:06 +0100
+Message-ID: <CAEVE6cLdvW_nVKajGSS--yuEd_O4v9-ERUS5p5Af48tnsb6fSQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 4:01 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
-> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
-> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
-> into acpi_idle_play_dead(). The problem is that these functions are not
-> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
->
-> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
-> (the later from assembly) but it seems putting the whole pattern into a
-> new function and exporting it instead is better.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
-> Cc: <stable@vger.kernel.org> # 5.10+
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
-> Changes since v1:
-> - Rename wakeup_cpu0() to cond_wakeup_cpu0() and fold wakeup_cpu0() in
->  as it has no other users [Rafael J. Wysocki]
-> ---
->  arch/x86/include/asm/smp.h    |  2 +-
->  arch/x86/kernel/smpboot.c     | 24 ++++++++++--------------
->  drivers/acpi/processor_idle.c |  4 +---
->  3 files changed, 12 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index 57ef2094af93..630ff08532be 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -132,7 +132,7 @@ void native_play_dead(void);
->  void play_dead_common(void);
->  void wbinvd_on_cpu(int cpu);
->  int wbinvd_on_all_cpus(void);
-> -bool wakeup_cpu0(void);
-> +void cond_wakeup_cpu0(void);
->
->  void native_smp_send_reschedule(int cpu);
->  void native_send_call_func_ipi(const struct cpumask *mask);
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index f877150a91da..147f1bba9736 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1659,13 +1659,15 @@ void play_dead_common(void)
->         local_irq_disable();
->  }
->
-> -bool wakeup_cpu0(void)
-> +/*
-> + * If NMI wants to wake up CPU0, start CPU0.
-> + */
+Ich hoffe, diese Mail findet Sie und Ihre Lieben sicher und gesund.
 
-Hasn't checkpatch.pl complained about this?
+Ich habe einen Brief an Ihre E-Mail geschickt, aber keine Antwort von
+Ihnen erhalten.
 
-A proper kerneldoc would be something like:
+Sie haben meine vorherige E-Mail erhalten? Bitte kommen Sie so schnell
+wie m=C3=B6glich zur=C3=BCck.
 
-/**
- * cond_wakeup_cpu0 - Wake up CPU0 if needed.
- *
- * If NMI wants to wake up CPU0, start CPU0.
- */
+Beste W=C3=BCnsche
 
-> +void cond_wakeup_cpu0(void)
->  {
->         if (smp_processor_id() == 0 && enable_start_cpu0)
-> -               return true;
-> -
-> -       return false;
-> +               start_cpu0();
->  }
-> +EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
->
->  /*
->   * We need to flush the caches before going to sleep, lest we have
-> @@ -1734,11 +1736,8 @@ static inline void mwait_play_dead(void)
->                 __monitor(mwait_ptr, 0, 0);
->                 mb();
->                 __mwait(eax, 0);
-> -               /*
-> -                * If NMI wants to wake up CPU0, start CPU0.
-> -                */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +
-> +               cond_wakeup_cpu0();
->         }
->  }
->
-> @@ -1749,11 +1748,8 @@ void hlt_play_dead(void)
->
->         while (1) {
->                 native_halt();
-> -               /*
-> -                * If NMI wants to wake up CPU0, start CPU0.
-> -                */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +
-> +               cond_wakeup_cpu0();
->         }
->  }
->
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 768a6b4d2368..4e2d76b8b697 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -544,9 +544,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
->                         return -ENODEV;
->
->  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-> -               /* If NMI wants to wake up CPU0, start CPU0. */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +               cond_wakeup_cpu0();
->  #endif
->         }
->
-> --
-> 2.30.2
->
+Johnson Williams.
