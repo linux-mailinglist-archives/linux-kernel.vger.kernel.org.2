@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E5635516B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EDA35516E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245284AbhDFK7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:59:08 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:51513
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234101AbhDFK7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:59:07 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Al9gs6qguLlDkq2Ib8TFDVPJlV3BQXgQji2hD?=
- =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLlkTp5YgBCpfmsGomlBUnd+5l8/JULMd6ZNzXOlW?=
- =?us-ascii?q?O0IOhZgrfK7CbnH0TFmNJ18YdFX+xABMbrDV585Pyb3CCdH8w7yNeKtICE7N2+?=
- =?us-ascii?q?815XQQtna75t4m5CY27wLmRNWAJECZAlfaDx2uN7oVObFEgqUg=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,309,1610406000"; 
-   d="scan'208";a="377853947"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 12:58:58 +0200
-Date:   Tue, 6 Apr 2021 12:58:58 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: rtl8712: Rewrite NULL
- comparisons
-In-Reply-To: <5d2db1d233030ececcdd4934ca9c46cb998c0c5b.1617705825.git.zhansayabagdaulet@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104061258040.2882@hadrien>
-References: <cover.1617705825.git.zhansayabagdaulet@gmail.com> <5d2db1d233030ececcdd4934ca9c46cb998c0c5b.1617705825.git.zhansayabagdaulet@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S245290AbhDFLAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:00:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24781 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234101AbhDFLAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:00:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617706793; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=V34Gl62R+ZKZkGqDlj2SaxJjLzUma8Qf6Yp9wpC1uIk=; b=R9hrZjLOGoM0c0nli3CbKxdd5ji02EA2mC2goad2FDQHz1+fcTRYhOxvGCB6xyuQKsaITUri
+ Mwl9q8SxDJcE801PVM6o0HCIoznxceX0U+i/vwm8AYyW3f9FdHSqj/j3mDvzf2N7pj3Zc9pQ
+ 2kSGREO7m9eLJGkJfTFZaTGJIqY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 606c3f1d8807bcde1d4929a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 10:59:41
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C013DC43462; Tue,  6 Apr 2021 10:59:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27FB5C433ED;
+        Tue,  6 Apr 2021 10:59:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 27FB5C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+From:   Pavankumar Kondeti <pkondeti@codeaurora.org>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Quentin Perret <qperret@google.com>, Wei Wang <wvw@google.com>,
+        Pavankumar Kondeti <pkondeti@codeaurora.org>
+Subject: [PATCH] cgroup: Relax restrictions on kernel threads moving out of root cpu cgroup
+Date:   Tue,  6 Apr 2021 16:29:13 +0530
+Message-Id: <1617706753-25349-1-git-send-email-pkondeti@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In Android GKI, CONFIG_FAIR_GROUP_SCHED is enabled [1] to help prioritize
+important work. Given that CPU shares of root cgroup can't be changed,
+leaving the tasks inside root cgroup will give them higher share
+compared to the other tasks inside important cgroups. This is mitigated
+by moving all tasks inside root cgroup to a different cgroup after
+Android is booted. However, there are many kernel tasks stuck in the
+root cgroup after the boot.
 
+We see all kworker threads are in the root cpu cgroup. This is because,
+tasks with PF_NO_SETAFFINITY flag set are forbidden from cgroup migration.
+This restriction is in place to avoid kworkers getting moved to a cpuset
+which conflicts with kworker affinity. Relax this restriction by explicitly
+checking if the task is moving out of a cpuset cgroup. This allows kworkers
+to be moved out root cpu cgroup.
 
-On Tue, 6 Apr 2021, Zhansaya Bagdauletkyzy wrote:
+We also see kthreadd_task and any kernel thread created after the Android boot
+also stuck in the root cgroup. The current code prevents kthreadd_task moving
+out root cgroup to avoid the possibility of creating new RT kernel threads
+inside a cgroup with no RT runtime allocated. Apply this restriction when tasks
+are moving out of cpu cgroup under CONFIG_RT_GROUP_SCHED. This allows all
+kernel threads to be moved out of root cpu cgroup if the kernel does not
+enable RT group scheduling.
 
-> Replace NULL comparisons with boolean negation.
+[1] https://android.googlesource.com/kernel/common/+/f08f049de11c15a4251cb1db08cf0bee20bd9b59
 
-This summarizes concisely what you did, which is helpful, but you could
-also say why.  For example, to make the code more concise or to improve
-readability or for consistency with the rest of the code base.
+Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
+---
+ kernel/cgroup/cgroup-internal.h |  3 ++-
+ kernel/cgroup/cgroup-v1.c       |  2 +-
+ kernel/cgroup/cgroup.c          | 24 +++++++++++++++++++-----
+ 3 files changed, 22 insertions(+), 7 deletions(-)
 
-julia
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index bfbeabc..a96ed9a 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -232,7 +232,8 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
+ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 		       bool threadgroup);
+ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+-					     bool *locked)
++					     bool *locked,
++					     struct cgroup *dst_cgrp)
+ 	__acquires(&cgroup_threadgroup_rwsem);
+ void cgroup_procs_write_finish(struct task_struct *task, bool locked)
+ 	__releases(&cgroup_threadgroup_rwsem);
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index a575178..d674a6c 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -497,7 +497,7 @@ static ssize_t __cgroup1_procs_write(struct kernfs_open_file *of,
+ 	if (!cgrp)
+ 		return -ENODEV;
+ 
+-	task = cgroup_procs_write_start(buf, threadgroup, &locked);
++	task = cgroup_procs_write_start(buf, threadgroup, &locked, cgrp);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9153b20..41864a8 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2744,7 +2744,8 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ }
+ 
+ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+-					     bool *locked)
++					     bool *locked,
++					     struct cgroup *dst_cgrp)
+ 	__acquires(&cgroup_threadgroup_rwsem)
+ {
+ 	struct task_struct *tsk;
+@@ -2784,15 +2785,28 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 		tsk = tsk->group_leader;
+ 
+ 	/*
++	 * RT kthreads may be born in a cgroup with no rt_runtime allocated.
++	 * Just say no.
++	 */
++#ifdef CONFIG_RT_GROUP_SCHED
++	if (tsk->no_cgroup_migration && (dst_cgrp->root->subsys_mask & (1U << cpu_cgrp_id))) {
++		tsk = ERR_PTR(-EINVAL);
++		goto out_unlock_threadgroup;
++	}
++#endif
++
++	/*
+ 	 * kthreads may acquire PF_NO_SETAFFINITY during initialization.
+ 	 * If userland migrates such a kthread to a non-root cgroup, it can
+-	 * become trapped in a cpuset, or RT kthread may be born in a
+-	 * cgroup with no rt_runtime allocated.  Just say no.
++	 * become trapped in a cpuset. Just say no.
+ 	 */
+-	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) {
++#ifdef CONFIG_CPUSETS
++	if ((tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) &&
++			(dst_cgrp->root->subsys_mask & (1U << cpuset_cgrp_id))) {
+ 		tsk = ERR_PTR(-EINVAL);
+ 		goto out_unlock_threadgroup;
+ 	}
++#endif
+ 
+ 	get_task_struct(tsk);
+ 	goto out_unlock_rcu;
+@@ -4740,7 +4754,7 @@ static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
+ 
+-	task = cgroup_procs_write_start(buf, threadgroup, &locked);
++	task = cgroup_procs_write_start(buf, threadgroup, &locked, dst_cgrp);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> Reported by checkpatch.
->
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
->  drivers/staging/rtl8712/rtl871x_recv.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/staging/rtl8712/rtl871x_recv.h b/drivers/staging/rtl8712/rtl871x_recv.h
-> index 7c9995060a6f..4aa39f4f3b84 100644
-> --- a/drivers/staging/rtl8712/rtl871x_recv.h
-> +++ b/drivers/staging/rtl8712/rtl871x_recv.h
-> @@ -135,7 +135,7 @@ int recv_func(struct _adapter *padapter, void *pcontext);
->  static inline u8 *get_rxmem(union recv_frame *precvframe)
->  {
->  	/* always return rx_head... */
-> -	if (precvframe == NULL)
-> +	if (!precvframe)
->  		return NULL;
->  	return precvframe->u.hdr.rx_head;
->  }
-> @@ -143,7 +143,7 @@ static inline u8 *get_rxmem(union recv_frame *precvframe)
->  static inline u8 *get_recvframe_data(union recv_frame *precvframe)
->  {
->  	/* always return rx_data */
-> -	if (precvframe == NULL)
-> +	if (!precvframe)
->  		return NULL;
->  	return precvframe->u.hdr.rx_data;
->  }
-> @@ -153,7 +153,7 @@ static inline u8 *recvframe_pull(union recv_frame *precvframe, sint sz)
->  	/* used for extract sz bytes from rx_data, update rx_data and return
->  	 * the updated rx_data to the caller
->  	 */
-> -	if (precvframe == NULL)
-> +	if (!precvframe)
->  		return NULL;
->  	precvframe->u.hdr.rx_data += sz;
->  	if (precvframe->u.hdr.rx_data > precvframe->u.hdr.rx_tail) {
-> @@ -170,7 +170,7 @@ static inline u8 *recvframe_put(union recv_frame *precvframe, sint sz)
->  	 * return the updated rx_tail to the caller
->  	 * after putting, rx_tail must be still larger than rx_end.
->  	 */
-> -	if (precvframe == NULL)
-> +	if (!precvframe)
->  		return NULL;
->  	precvframe->u.hdr.rx_tail += sz;
->  	if (precvframe->u.hdr.rx_tail > precvframe->u.hdr.rx_end) {
-> @@ -188,7 +188,7 @@ static inline u8 *recvframe_pull_tail(union recv_frame *precvframe, sint sz)
->  	 * updated rx_end to the caller
->  	 * after pulling, rx_end must be still larger than rx_data.
->  	 */
-> -	if (precvframe == NULL)
-> +	if (!precvframe)
->  		return NULL;
->  	precvframe->u.hdr.rx_tail -= sz;
->  	if (precvframe->u.hdr.rx_tail < precvframe->u.hdr.rx_data) {
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/5d2db1d233030ececcdd4934ca9c46cb998c0c5b.1617705825.git.zhansayabagdaulet%40gmail.com.
->
