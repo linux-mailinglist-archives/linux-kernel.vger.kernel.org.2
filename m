@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F348135528A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B4635528D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238787AbhDFLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:42:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:41616 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245690AbhDFLmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:42:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8548113E;
-        Tue,  6 Apr 2021 04:42:38 -0700 (PDT)
-Received: from [192.168.1.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF0F23F73D;
-        Tue,  6 Apr 2021 04:42:36 -0700 (PDT)
-Subject: Re: [PATCH] sched/cpupri: fix the task priority BUG_ON checks
-To:     Zeng Tao <prime.zeng@hisilicon.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     linuxarm@huawei.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <1616728512-54749-1-git-send-email-prime.zeng@hisilicon.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <ae49ad23-f577-d5d7-7541-42a5c056151e@arm.com>
-Date:   Tue, 6 Apr 2021 13:42:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S245726AbhDFLoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245690AbhDFLnz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:43:55 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4ADC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:43:46 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 15so16165206ljj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=fiBLuC1gzj2ls2HyWKhViI8KtJCaxzuMcUl0CY/vuso=;
+        b=h5BygVXjkeyDOJLKFavSWMkkqBOorjsWN/yyfRrVjSdu65YdNZ2DlxJIlhB2ZU9isc
+         OM9H68o1SrPrVLYhoUgxdj6NqaUSf6tqHiagb7C00A4fd1NpXkGFkO3MSxFyvUfwG1OB
+         AIoVKYqamHeNPATkIaLbrWjuJaaJbnjo1fDBbIfYW0n8xSzAbA6SLh+GxHg6H7At4SkM
+         sPYNoFGccduLxexSYkfkN4Edze83RL+SAMxFYom24zI6OfBp4l3FyEiqQp0vqOgshusP
+         eq3mjhFyv/UEf8+2aC78gpsSVgmaHRyCt4nTaEtCFlaBmCexQe23bgytdpit4HP4tK4Y
+         ygeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=fiBLuC1gzj2ls2HyWKhViI8KtJCaxzuMcUl0CY/vuso=;
+        b=l6A+sEGVL47hTDcD5QaYGM4KJqrqB5KS7JY6IM8lOk4Gg+R0AUX/Z3AMVeZ1iNft5F
+         Hi4AOnfVl7QcrywnmEnQbTyW4EQSR6kpTDjqTleauX2hGdmKJQPybttxTf0sh3H9btb8
+         GsLvLJB12YwPd7RMyYoGi+y7DkvdhoVOX5wuXO10bILaqUSOTf2w3rZT3+lKRestyCFy
+         mZTHbaNNvAmvRmuoUmohHLWUYHkZAyyMLsAIm9c0/StLt2teBF+fvFqQ25WR1bWGOUe+
+         E8cvz8G3xqtqDCJEa9XQKoYMjt7gY8ASrdD0ty6Ko3y8L091oos1lcQetpdwY8iQStJb
+         vD8g==
+X-Gm-Message-State: AOAM532qusks6Q0CCw+ILqpcM0gbH1OazKbssoDANp7X3pF3kEk3k4yx
+        n/ODQTkPgoZ575KT0YCGOAw=
+X-Google-Smtp-Source: ABdhPJwGOLCglN9gXSieTvFNrKRkT12uUWeNsOtzuSHL9gd3BSzcYqBNHELXxQsMKr/COMgVLXkzSg==
+X-Received: by 2002:a2e:9c8e:: with SMTP id x14mr19152814lji.312.1617709424591;
+        Tue, 06 Apr 2021 04:43:44 -0700 (PDT)
+Received: from zhans ([37.151.32.231])
+        by smtp.gmail.com with ESMTPSA id y16sm2121267lfy.252.2021.04.06.04.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 04:43:44 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 17:43:42 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: [PATCH v2 0/2] staging: rtl8712: rewrite comparisons and remove
+ blank lines
+Message-ID: <cover.1617708653.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1616728512-54749-1-git-send-email-prime.zeng@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/2021 04:15, Zeng Tao wrote:
-> The BUG_ON checks are intended to check if the task priotity is valid,
-> but in the function convert_prio, if the task priority is not valid, it
-> will be converted to an uninitialized stack variable. Fix it by moving
-> the BUG_ON checks to the default branch of convert_prio.
-> 
-> Fixes: 934fc3314b39 ("sched/cpupri: Remap CPUPRI_NORMAL to MAX_RT_PRIO-1")
-> Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
-> ---
->  kernel/sched/cpupri.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-> index ec9be78..c5a0e6e 100644
-> --- a/kernel/sched/cpupri.c
-> +++ b/kernel/sched/cpupri.c
-> @@ -60,6 +60,8 @@ static int convert_prio(int prio)
->  	case MAX_RT_PRIO:
->  		cpupri = CPUPRI_HIGHER;		/* 100 */
->  		break;
-> +	default:
-> +		BUG();
->  	}
->  
->  	return cpupri;
-> @@ -148,8 +150,6 @@ int cpupri_find_fitness(struct cpupri *cp, struct task_struct *p,
->  	int task_pri = convert_prio(p->prio);
->  	int idx, cpu;
->  
-> -	BUG_ON(task_pri >= CPUPRI_NR_PRIORITIES);
-> -
->  	for (idx = 0; idx < task_pri; idx++) {
->  
->  		if (!__cpupri_find(cp, p, lowest_mask, idx))
-> @@ -215,8 +215,6 @@ void cpupri_set(struct cpupri *cp, int cpu, int newpri)
->  
->  	newpri = convert_prio(newpri);
->  
-> -	BUG_ON(newpri >= CPUPRI_NR_PRIORITIES);
-> -
->  	if (newpri == oldpri)
->  		return;
->  
-> 
+This patchset replaces NULL comparisons with boolean negation and
+removes extra blank lines after an open brace.
 
-LGTM. Currently, convert_prio() is never called with prio <
-CPUPRI_INVALID (-1) or prio > MAX_RT_PRIO (100) but in case it would
-then this would be caught much easier with this patch.
+Changes since v1:
+	- more detailed descripton of the commit
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Zhansaya Bagdauletkyzy (2):
+  staging: rtl8712: Rewrite NULL comparisons
+  staging: rtl8712: Remove extra blank lines
+
+ drivers/staging/rtl8712/rtl871x_io.h   |  1 -
+ drivers/staging/rtl8712/rtl871x_mlme.h |  1 -
+ drivers/staging/rtl8712/rtl871x_recv.h | 11 +++++------
+ drivers/staging/rtl8712/sta_info.h     |  1 -
+ 4 files changed, 5 insertions(+), 9 deletions(-)
+
+-- 
+2.25.1
+
