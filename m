@@ -2,158 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3862354A1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6F5354A21
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243127AbhDFBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:35:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241988AbhDFBfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:35:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617672938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kwZ8XyyzRZCBrGqzegCVhhjQ1Q2Ym617/sTrzH4w1XI=;
-        b=byXv0wBgeKoPa1BWCNAXfxIERfEsfOqyFT0OZWsTnTkg3yTkyL8yWoOWO92DkZ46G4HAko
-        vnFoH9bAJgA2C1QzdBMN3M4Bb11GhJ4Qt1jm/C5hKUWmjYN8jwIjTNJu6B9FkyUDb9ucRX
-        s7pJJJkp1ODQ5MgnJ66A7hiLKJoEOng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-M4zcdcyUNc24sYSeXmRvfQ-1; Mon, 05 Apr 2021 21:35:34 -0400
-X-MC-Unique: M4zcdcyUNc24sYSeXmRvfQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D2DB81744F;
-        Tue,  6 Apr 2021 01:35:32 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-96.pek2.redhat.com [10.72.13.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35FB519C78;
-        Tue,  6 Apr 2021 01:35:18 +0000 (UTC)
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <20210319124645.GP2356281@nvidia.com> <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com> <20210319112221.5123b984@jacob-builder>
- <20210322120300.GU2356281@nvidia.com> <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210405234230.GF7405@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
-Date:   Tue, 6 Apr 2021 09:35:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        id S243112AbhDFBgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241929AbhDFBgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:36:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2C0B610CC;
+        Tue,  6 Apr 2021 01:36:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617673001;
+        bh=vAKgY/w88o4JyfifHbYX0gz1dz93+w7bT3qgEGRK2+g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BTtGcGh+zFemR4MouSS3Vp9rmKPyS0tvqRX6pInfYGcM69gWMmQhNYTrbXVW9aIKp
+         HN7i7GMMzsQJFGYOgDrNeTAH0bdVBL06oabV6ktBwh7LVcvnaCUFz5JqfwnJrNjgc0
+         eM/LhGT5aI+2cBKz+E/yJ6XCkgKB2Az3nCAI68+CgYtezmlqAerfex6cBbm8f4nHYk
+         af8pKYG+KwwbXIPoZd3gXj4D0XI0BYgCzI9RNY47GWe8So3xBE+1I7pqJbu4cvjt3z
+         524MJRKRuBeVE+g4kgQ0/isjeB8lqJLqv8R2an5H2u1roz1l/ynwPYgU3F7bD1397F
+         nU8Q6IOr25fhg==
+Received: by mail-il1-f178.google.com with SMTP id r17so3943534ilt.0;
+        Mon, 05 Apr 2021 18:36:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531Acu4i75fJuuxTMD/ob7TUwBPjxWcB62hgktKWiZ2LxwnNUwMh
+        ZeG5ZRUQS5uYlPzehpiV5Hprm2PGP77l6ARAiNg=
+X-Google-Smtp-Source: ABdhPJzWSmikNXg5FMS/wC0dVQ759wtwRUK+hMolhUWYKc1R/+lCAuh7T+qb1Tw/ng25rQu0VjJgRKtq5v7y4qpUYpQ=
+X-Received: by 2002:a05:6e02:1286:: with SMTP id y6mr21855088ilq.270.1617673000386;
+ Mon, 05 Apr 2021 18:36:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210405234230.GF7405@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210402155807.49976-1-pbonzini@redhat.com> <20210402155807.49976-3-pbonzini@redhat.com>
+ <CAAhV-H4wskLvGD1hhuS2ZDOBNenCcTd_K8GkYn1GOzwnEvTDXQ@mail.gmail.com> <aab8a915-6e73-3cba-5392-8f940479a011@redhat.com>
+In-Reply-To: <aab8a915-6e73-3cba-5392-8f940479a011@redhat.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 6 Apr 2021 09:36:28 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H72z9DbbV=_fEhCeeOaP8fQ_qtr4rQMD=f5n08ekG=Ygw@mail.gmail.com>
+Message-ID: <CAAhV-H72z9DbbV=_fEhCeeOaP8fQ_qtr4rQMD=f5n08ekG=Ygw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] KVM: MIPS: rework flush_shadow_* callbacks into one
+ that prepares the flush
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        seanjc@google.com, "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Paolo,
 
-ÔÚ 2021/4/6 ÉÏÎç7:42, Jason Gunthorpe Ð´µÀ:
-> On Fri, Apr 02, 2021 at 08:22:28AM +0000, Tian, Kevin wrote:
->>> From: Jason Gunthorpe <jgg@nvidia.com>
->>> Sent: Tuesday, March 30, 2021 9:29 PM
->>>
->>>> First, userspace may use ioasid in a non-SVA scenario where ioasid is
->>>> bound to specific security context (e.g. a control vq in vDPA) instead of
->>>> tying to mm. In this case there is no pgtable binding initiated from user
->>>> space. Instead, ioasid is allocated from /dev/ioasid and then programmed
->>>> to the intended security context through specific passthrough framework
->>>> which manages that context.
->>> This sounds like the exact opposite of what I'd like to see.
->>>
->>> I do not want to see every subsystem gaining APIs to program a
->>> PASID. All of that should be consolidated in *one place*.
->>>
->>> I do not want to see VDPA and VFIO have two nearly identical sets of
->>> APIs to control the PASID.
->>>
->>> Drivers consuming a PASID, like VDPA, should consume the PASID and do
->>> nothing more than authorize the HW to use it.
->>>
->>> quemu should have general code under the viommu driver that drives
->>> /dev/ioasid to create PASID's and manage the IO mapping according to
->>> the guest's needs.
->>>
->>> Drivers like VDPA and VFIO should simply accept that PASID and
->>> configure/authorize their HW to do DMA's with its tag.
->>>
->> I agree with you on consolidating things in one place (especially for the
->> general SVA support). But here I was referring to an usage without
->> pgtable binding (Possibly Jason. W can say more here), where the
->> userspace just wants to allocate PASIDs, program/accept PASIDs to
->> various workqueues (device specific), and then use MAP/UNMAP
->> interface to manage address spaces associated with each PASID.
->> I just wanted to point out that the latter two steps are through
->> VFIO/VDPA specific interfaces.
-> No, don't do that.
+On Sat, Apr 3, 2021 at 6:43 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> VFIO and VDPA has no buisness having map/unmap interfaces once we have
-> /dev/ioasid. That all belongs in the iosaid side.
+> On 03/04/21 04:31, Huacai Chen wrote:
+> > Hi, Paolo,
+> >
+> > TE mode has been removed in the MIPS tree, can we also remove it in
+> > KVM tree before this rework?
 >
-> I know they have those interfaces today, but that doesn't mean we have
-> to keep using them for PASID use cases, they should be replaced with a
-> 'do dma from this pasid on /dev/ioasid' interface certainly not a
-> 'here is a pasid from /dev/ioasid, go ahead and configure it youself'
-> interface
+> I tried the merge and it will be enough for Linus to remove
+> arch/mips/kvm/trap_emul.c.  So I will leave it as is, but next time I'd
+> prefer KVM MIPS changes to go through either my tree or a common topic
+> branch.
+Emmm, the TE removal series is done by Thomas, not me. :)
 
-
-So it looks like the PASID was bound to SVA in this design. I think it's 
-not necessairly the case:
-
-1) PASID can be implemented without SVA, in this case a map/unmap 
-interface is still required
-2) For the case that hypervisor want to do some mediation in the middle 
-for a virtqueue. e.g in the case of control vq that is implemented in 
-the VF/ADI/SF itself, the hardware virtqueue needs to be controlled by 
-Qemu, Though binding qemu's page table to cvq can work but it looks like 
-a overkill, a small dedicated buffers that is mapped for this PASID 
-seems more suitalbe.
-
-
+Huacai
 >
-> This is because PASID is *complicated* in the general case! For
-> instance all the two level stuff you are talking about must not leak
-> into every user!
+> Paolo
 >
-> Jason
-
-
-So do you mean the device should not expose the PASID confiugration API 
-to guest? I think it could happen if we assign the whole device and let 
-guest to configure it for nested VMs.
-
-Thanks
-
-
->
-
