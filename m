@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB3E355D09
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106E3355D0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245589AbhDFUnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:43:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25131 "EHLO
+        id S1347208AbhDFUoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:44:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52192 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235692AbhDFUnR (ORCPT
+        by vger.kernel.org with ESMTP id S1347213AbhDFUoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:43:17 -0400
+        Tue, 6 Apr 2021 16:44:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617741788;
+        s=mimecast20190719; t=1617741837;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ABBXBhlUARaxNFBWCMnGkuMbTapmBL2uS8R+F500nIk=;
-        b=JTwZZGs8FKHaasPCYUYfA7h/HAzfgEkDNYAw1MDyv+dPdB15igL15/P6AvMhY0ECOxz4Fq
-        zoBOcDW+976/3XPf8kakhPn40K+fL5jh3V9faGBiuzQ+IOdzxdgJblUSWw5uF3zTpVBEnn
-        HO7TbVp2F33/S66eaC10fbiNuXrwbGQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-xry_VL0APIWRqAdGTpadlg-1; Tue, 06 Apr 2021 16:43:04 -0400
-X-MC-Unique: xry_VL0APIWRqAdGTpadlg-1
-Received: by mail-wr1-f71.google.com with SMTP id l3so5736965wrp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:43:04 -0700 (PDT)
+        bh=9gAUBSas1c2zynPZGsm5lpmI/COC2SlQ+0LwpbtGnEY=;
+        b=UGNajZKAOC5jW0A7vvOsN1FNUSuKF+iS4WtGV99902Q0m1CIE8rTRs4NpAhmsiQEz64LaF
+        nEm9ClsfmpEHcA9zhcfWaIHw0DbY6pJlRX9usGNXwkeNxqN+2kY6cUBMVYQhchp8Bz3ilb
+        GA/rLvyC7Gw4c1UOCn4Eyr83SvogTbs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-kfPI0sUKOwyeW5VaSgKpuQ-1; Tue, 06 Apr 2021 16:43:55 -0400
+X-MC-Unique: kfPI0sUKOwyeW5VaSgKpuQ-1
+Received: by mail-ej1-f72.google.com with SMTP id k26so2380316ejs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:43:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=ABBXBhlUARaxNFBWCMnGkuMbTapmBL2uS8R+F500nIk=;
-        b=XUR4CkxomDMdry9SJFlWlUoo+HDLax3vvZfzunIHX2laa04la8Mh7gGvC5CLXgwrMT
-         F62JgelbIo8L7sCVscOpOM8Xfzd4nzeM8uuBPu4q0P+eB5tFn9Q/DRjPWdPVolsmbqn1
-         Apkv21QR+UTH7FYcdzVuXka8TKgsCKxEdhMCqKdgfxYPGWcPfT664YwPfE/4h9SnOt5H
-         o4329XrUWrJbq14ZhbDbIk9XKedY7cZbwjgZFXkDp0YDQz6Gyi6udW5YhKKLi0VqBLlH
-         n7B3ET5S6NmQQHVRFg8yf0jfL5+0bQxsszhDXnOXw7v3l3Gs0eEwBef5EdpzNNaMa5cS
-         7YZw==
-X-Gm-Message-State: AOAM533a4yf3kVag7rzZdc8sE4ZjfyBvg2nAD5RrKfo3DmCpxWh63GxH
-        IRvWNezXi61SkHpQ3bMDlHxVDbF+hzos2PxGMU1ANtRsCeACJhQK4oh37IcGVvOV2GzsGm/cboe
-        IPsR9P4pkDZr6eTUfb7nCvZ2m
-X-Received: by 2002:a1c:2781:: with SMTP id n123mr3351445wmn.64.1617741783532;
-        Tue, 06 Apr 2021 13:43:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzi8P3V1Fc945skdd7Z39U7VGP6wyqLM61CVsa2i65JB/d0PTHRzVoE1kDrMQA3cxs62iQfMA==
-X-Received: by 2002:a1c:2781:: with SMTP id n123mr3351436wmn.64.1617741783308;
-        Tue, 06 Apr 2021 13:43:03 -0700 (PDT)
-Received: from [192.168.3.108] (p5b0c64ee.dip0.t-ipconnect.de. [91.12.100.238])
-        by smtp.gmail.com with ESMTPSA id v189sm4609990wme.39.2021.04.06.13.43.02
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9gAUBSas1c2zynPZGsm5lpmI/COC2SlQ+0LwpbtGnEY=;
+        b=I7Kd2DVCgWoA5H/uN4ANkkgCkvS6d535lDsM/SU/fBWD5z40ICcPXoKMetHqEgut1F
+         QXrK88mB87kLrMiqfRo4Wbe+e1gh9P097WSXhCGihVfJq/pISARiPZ+IMVMDpwIKlvl3
+         XlHBLZ39P2brMJeytiay/v6+vDt+oyzeBoXuGehPJM5Rbcud2/RB2XI20snChYNt3u7J
+         Keh6r6UQBO3S93XQV14spSdRQFNa+Zp+scH5lb9SaxZO6V/EgWNg4+u5OtSeEFNHX5e8
+         //kC6V8yCwspd0womYP8NEA4ePWiswXiajgOwBAPKjEz2SJx/OCV0OLFUg+lAyrc9cWO
+         Jl0g==
+X-Gm-Message-State: AOAM532qLZqM9sjCsjD17c7yMBWZqFJZXp1HAwe+eEIHcnsZH+9ac79e
+        Qi+KR2aFvRN9xFgH0DC7Ovur6dWgFfVApxQmZRiK9ddMplntBSAE2PX6Kz2LcM1tgwpSypwAdLV
+        +ZqDhylmS5vrr3WhKRdwqyoB/
+X-Received: by 2002:a17:906:5203:: with SMTP id g3mr35123524ejm.95.1617741834522;
+        Tue, 06 Apr 2021 13:43:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxB8CQ5zi2U8KCqc/sM5wQa7uXbbaNHIZF+GVJ7SPEwuoOJKAUWSWazNJSLH7SJOhDH8dQOSA==
+X-Received: by 2002:a17:906:5203:: with SMTP id g3mr35123507ejm.95.1617741834348;
+        Tue, 06 Apr 2021 13:43:54 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s12sm9340838edx.18.2021.04.06.13.43.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 13:43:02 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v6 2/8] mm,memory_hotplug: Relax fully spanned sections check
-Date:   Tue, 6 Apr 2021 22:43:01 +0200
-Message-Id: <59A04B1D-08D6-4E71-A382-F5503A6E0AF7@redhat.com>
-References: <df9bdb5157d6ad2f4a922d396ddf0c07@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <df9bdb5157d6ad2f4a922d396ddf0c07@suse.de>
-To:     Oscar Salvador <osalvador@suse.de>
-X-Mailer: iPhone Mail (18D70)
+        Tue, 06 Apr 2021 13:43:53 -0700 (PDT)
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Peter Feiner <pfeiner@google.com>,
+        Ben Gardon <bgardon@google.com>
+References: <20210405085031.040238881@linuxfoundation.org>
+ <20210405085034.229578703@linuxfoundation.org>
+ <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com> <YGxm+WISdIqfwqXD@sashalap>
+ <fd2030f3-55ba-6088-733b-ac6a551e2170@redhat.com> <YGyiDC2iP4CmWgUJ@sashalap>
+ <81059969-e146-6ed3-01b6-341cbcf1b3ae@redhat.com> <YGy6EVb+JeNu7EOs@sashalap>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 5.10 096/126] KVM: x86/mmu: Use atomic ops to set SPTEs in
+ TDP MMU map
+Message-ID: <b2b05936-f545-9272-714b-845d54fa78eb@redhat.com>
+Date:   Tue, 6 Apr 2021 22:43:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YGy6EVb+JeNu7EOs@sashalap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/04/21 21:44, Sasha Levin wrote:
+> On Tue, Apr 06, 2021 at 08:28:27PM +0200, Paolo Bonzini wrote:
+>> If a patch doesn't (more or less trivially) apply, the maintainer 
+>> should take action.  Distro maintainers can also jump in and post the 
+>> backport to subsystem mailing lists.  If the stable kernel loses a 
+>> patch because a maintainer doesn't have the time to do a backport, 
+>> it's not the end of the world.
+> 
+> This quickly went from a "world class" to "fuck it".
 
-> Am 06.04.2021 um 18:34 schrieb Oscar Salvador <osalvador@suse.de>:
->=20
-> =EF=BB=BFOn 2021-04-06 17:32, David Hildenbrand wrote:
->> I'd only relax start_pfn. That way the function is pretty much
->> impossible to abuse for sub-section onlining/offlining.
->> if (WARN_ON_ONCE(!nr_pages ||
->>         !IS_ALIGNED(start_pfn, pageblock_nr_pages))
->>         !IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION)))
->=20
-> But this is not going to work.
-> When using memmap_on_memory, the nr of pages that online_pages() and offli=
-ne_pages() get might be less than PAGES_PER_SECTION, so this check will alwa=
-ys blow us up.
+Known bugs are better than unknown bugs.  If something is reported on 
+4.19 and the stable@ backports were only done up to 5.4 because the 
+backport was a bit more messy, it's okay.  If a user comes up with a 
+weird bug that I've never seen and that it's caused by a botched 
+backport, it's much worse.
 
-But not end_pfn as given in my version or what am I missing?
+In this specific case we're talking of 5.10; but in many cases users of 
+really old kernels, let's say 4.4-4.9 at this point, won't care about 
+having *all* bugfixes.  Some newer (and thus more buggy) features may be 
+so distant from the mainline in those kernels, or so immature, that no 
+one will consider them while staying on such an old kernel.
 
+Again, kernel necrophilia pays my bills, so I have some experience there. :)
 
-> --=20
-> Oscar Salvador
-> SUSE L3
->=20
+> It's understandable that maintainers don't have all the time in the
+> world for this, but are you really asking not to backport fixes to
+> stable trees because you don't have the time for it and don't want
+> anyone else to do it instead?
+
+If a bug is serious I *will* do the backport; I literally did this 
+specific backport on the first working day after the failure report. 
+But not all bugs are created equal and neither are all stable@-worthy 
+bugs.  I try to use the "Fixes" tag correctly, but sometimes a bug that 
+*technically* is 10-years-old may not be worthwhile or even possible to 
+fix even in 5.4.
+
+That said... one thing that would be really, really awesome would be a 
+website where you navigate a Linux checkout and for each directory you 
+can choose to get a list of stable patches that were Cc-ed to stable@ 
+and failed to apply.  A pipedream maybe, but also a great internship 
+project. :)
+
+Paolo
+
+> Maybe consider designating someone who knows the subsystem well and does
+> have time for this?
 
