@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7534D355A72
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3225355A76
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbhDFRdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:33:45 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:54671 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234742AbhDFRdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:33:45 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id B1DFC5C0058;
-        Tue,  6 Apr 2021 13:33:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 06 Apr 2021 13:33:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=lKW3+Kz2r3tCzE9CmGmOiirLpMq
-        E5TAqeRkWaI12qbc=; b=er+B5LebyDyIdez4OkJnA1rY+fxOPahNm1VNyb14qXB
-        QY+zoVlC4UXnWxqD5Lf6Q3uFWNKd4TW2kMaAlLZtn97dr+56zjN2dMsn7dZyKjyW
-        9atB2R5fesm8DYm9nsnFoPXEURgTgkRXcxSrSMBiTQ66YEmRl8KBYJwcgmAGSvaq
-        Fq9jx7pxJmII5goAiujF2TE9zpCT/7uQe/pIgu2EICmfyDreM91elSqFJjkKl+ZZ
-        0APv/li8PA5sF/gJ0EXUpusx217yfgaeFgxqJwe3o36c0VSSxn2w58w1yUL2F2we
-        HGY8E10UeQazeobWpU0S/Ri3gX/ZoQJDwoq2Z36uamA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lKW3+K
-        z2r3tCzE9CmGmOiirLpMqE5TAqeRkWaI12qbc=; b=GqdGncb06QzwEame2zLYCW
-        zIL13L21XdFHhCqG4C4A7zFlwmqhpCMpDQQhay+DZaKFBWPJcqhw58HOsHca3dZz
-        GlU4oZB3ZBNddom9viVvMSOFw68M5GewauAsMolYxpmVpBONXuODYfKdmDStm+M7
-        7bvqJoqii+sAXligazH/zqU9I9r0b0myMs52tbo6nc97COPR8chzQgTjWAgLbc/b
-        q/limGsIuYVCQCCTpJodFIRcxGq/pDphgycbz/pC5ej0KwfYBcgYm5yyV1mtyPWe
-        lWih/vqEssMRkwdH7yuohiuvHA86qHz91b/NpqGgwmgPcgYrQhrixBjnEMb6rKJA
-        ==
-X-ME-Sender: <xms:b5tsYPuwaxfcXjmyj2922LOATN7yT1nnPce2IM-yB0TXs5MIojViKQ>
-    <xme:b5tsYAZetfPMsgBaujRJAKUKaZGFgOpUZW_VmvTduatC2PZTZPsiuIKHgiL1CTLt4
-    pkRZmCNc06kZw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejhedgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:b5tsYPphXzk5vaXIqii9H8caPLrg1zBYTmE-vyXmq4wCiwT6U6BrHg>
-    <xmx:b5tsYF9Axv9mAIecey_cFwNtajDLp39pu1Lqdwp_78a03jtJjUYfcg>
-    <xmx:b5tsYO_L0c0hBJZu_H4qHSs-9LmeyblJ2GOsYZMzNdJsI7jlM2UG9Q>
-    <xmx:cJtsYM60vB0ad8CpjHmaJGcuYZj4FUBUaXheyrigWBAcbRvBdpq2wQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 44E64108005F;
-        Tue,  6 Apr 2021 13:33:35 -0400 (EDT)
-Date:   Tue, 6 Apr 2021 19:33:33 +0200
-From:   Greg KH <greg@kroah.com>
+        id S244776AbhDFReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244730AbhDFReM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:34:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DAA5613DE;
+        Tue,  6 Apr 2021 17:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617730444;
+        bh=2BJ3z9VA1NfEv8PmUpsTWkMzbB7AVDenNhbsdlNeaCY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SZ/Tz1UKqbmmrOtLho4pKYHy9TMyYfQdmgAdSFfoP11mLiQEkw6N9KA7Mvk41pBjU
+         3gTSCyFZJja9Vr2QeO5/n7OZtwNyKekgHQttYPIyIoqd51Haf5kR9WbkyXdvfB/Xtp
+         I3bw4PwY1feFSiUR7xtayBFHq+eqnmeduEhl4tW0=
+Date:   Tue, 6 Apr 2021 19:34:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the char-misc tree
-Message-ID: <YGybbb/jFLRIrS6t@kroah.com>
-References: <20210406214441.5744648c@canb.auug.org.au>
- <YGxrG16+8n8Wxs/c@kroah.com>
- <DM5PR12MB18350439051E4E90BD0287F4DA769@DM5PR12MB1835.namprd12.prod.outlook.com>
- <YGxtDDm7nV1AuTqo@kroah.com>
- <DM5PR12MB18350E4A7E4207611F9C93CFDA769@DM5PR12MB1835.namprd12.prod.outlook.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v11 0/4] misc: Add Synopsys DesignWare xData IP driver
+Message-ID: <YGybivASLNlAymk0@kroah.com>
+References: <cover.1617729785.git.gustavo.pimentel@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DM5PR12MB18350E4A7E4207611F9C93CFDA769@DM5PR12MB1835.namprd12.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1617729785.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 05:28:36PM +0000, Gustavo Pimentel wrote:
-> On Tue, Apr 6, 2021 at 15:15:40, Greg KH <greg@kroah.com> wrote:
+On Tue, Apr 06, 2021 at 07:26:45PM +0200, Gustavo Pimentel wrote:
+> This patch series adds a new driver called xData-pcie for the Synopsys
+> DesignWare PCIe prototype.
 > 
-> > On Tue, Apr 06, 2021 at 02:13:53PM +0000, Gustavo Pimentel wrote:
-> > > On Tue, Apr 6, 2021 at 15:7:23, Greg KH <greg@kroah.com> wrote:
-> > > 
-> > > > On Tue, Apr 06, 2021 at 09:44:41PM +1000, Stephen Rothwell wrote:
-> > > > > Hi all,
-> > > > > 
-> > > > > After merging the char-misc tree, today's linux-next build (htmldocs)
-> > > > > produced this warning:
-> > > > > 
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:20: WARNING: Unexpected indentation.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:24: WARNING: Unexpected indentation.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:25: WARNING: Block quote ends without a blank line; unexpected unindent.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:30: WARNING: Unexpected indentation.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:34: WARNING: Unexpected indentation.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:35: WARNING: Block quote ends without a blank line; unexpected unindent.
-> > > > > Documentation/misc-devices/dw-xdata-pcie.rst:40: WARNING: Unexpected indentation.
-> > > > > 
-> > > > > Introduced by commit
-> > > > > 
-> > > > >   e1181b5bbc3c ("Documentation: misc-devices: Add Documentation for dw-xdata-pcie driver")
-> > > > 
-> > > > Gustavo, can you send a follow-on patch to fix this up?
-> > > 
-> > > Yes, I have already made a fix for it.
-> > > My apologies for my ignorance on this matter, there is some way to check 
-> > > if my fixes are okay through some script or other way as Stephen has 
-> > > done?
-> > 
-> > Yes, run 'make htmldocs' in the kernel tree with your change applied and
-> > see if the warnings go away.
+> The driver configures and enables the Synopsys DesignWare PCIe traffic
+> generator IP inside of prototype Endpoint which will generate upstream
+> and downstream PCIe traffic. This allows to quickly test the PCIe link
+> throughput speed and check is the prototype solution has some limitation
+> or not.
 > 
-> Done. I submitted now the v11 with the fixes.
+> Changes:
+>  V2: Rework driver according to Greg Kroah-Hartman' feedback
+>      - Replace module parameter by sysfs use.
+>      - Replace bit fields structure with macros and masks use.
+>      - Removed SET() and GET() macros by the writel() and readl().
+>      - Removed some noisy info messages.
+>  V3: Fixed issues detected while running on 64 bits platforms
+>      Rebased patches on top of v5.11-rc1 version
+>  V4: Rework driver according to Greg Kroah-Hartman' feedback
+>      - Add the ABI doc related to the sysfs implemented on this driver
+>  V5: Rework driver accordingly to Leon Romanovsky' feedback
+>      - Removed "default n" on Kconfig
+>      Rework driver accordingly to Krzysztof Wilczyński' feedback
+>      - Added some explanatory comments for some steps
+>      - Added some bit defines instead of magic numbers
+>  V6: Rework driver according to Greg Kroah-Hartman' feedback
+>      - Squashed patches #2 and #3
+>      - Removed units (MB/s) on the sys file
+>      - Reduced mutex scope on the functions called by sysfs
+>      Rework driver accordingly to Krzysztof Wilczyński' feedback
+>      - Fix typo "DesignWare"
+>  V7: Rework driver according to Greg Kroah-Hartman' feedback
+>      - Created a sub device (misc device) that will be associated with the PCI driver
+>      - sysfs group is now associated with the misc drivers instead of the PCI driver
+>  V8: Rework driver according to Greg Kroah-Hartman' feedback
+>      - Added more detail to the version changes on the cover letter
+>      - Squashed patches #1 and #2
+>      - Removed struct device from the dw_xdata_pcie structure
+>      - Replaced the pci_*() use by dev_*()
+>      - Added free call for the misc driver name allocation
+>      - Added reference counting
+>      - Removed snps_edda_data structure and their usage
+>      Rebased patches on top of v5.12-rc4 version
+>  V9: Squashed temporary development patch #5 into the driver patch #1
+>  V10: Reworked the write_store() and read_store() to validate the input using kstrtobool()
+>      Removed stop_store()
+>      Update ABI documentation accordingly
+>  V11: Fixed the documentation based on the warnings detected by Stephen Rothwell
 
-I can not take these as your patches are already in my public tree.  I
-can revert the existing ones, but that's a mess, just send me a set of
-patches to fix this issue, like you would for any future change to this
-driver.
+As mentioned on the other thread, I can't take these as I took your v10
+into my public tree.  Please send fixes on top of that.
 
 thanks,
 
