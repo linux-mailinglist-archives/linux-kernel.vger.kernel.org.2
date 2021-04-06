@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531D9354ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB96354AB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243335AbhDFCRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:17:20 -0400
-Received: from mo-csw-fb1115.securemx.jp ([210.130.202.174]:38840 "EHLO
-        mo-csw-fb.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238828AbhDFCRS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:17:18 -0400
-Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1115) id 1361lpr0002650; Tue, 6 Apr 2021 10:47:52 +0900
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 1361lUwb008479; Tue, 6 Apr 2021 10:47:30 +0900
-X-Iguazu-Qid: 2wGrBJasm3hdJ6uKHL
-X-Iguazu-QSIG: v=2; s=0; t=1617673650; q=2wGrBJasm3hdJ6uKHL; m=GP88N+NcFEyBcPCzzwJsFRf8/vyZgOZVf7KUXtPOf0U=
-Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
-        by relay.securemx.jp (mx-mr1113) id 1361lSqw038187
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 6 Apr 2021 10:47:29 +0900
-Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id CFF6B1000AC;
-        Tue,  6 Apr 2021 10:47:28 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 1361lS6q013306;
-        Tue, 6 Apr 2021 10:47:28 +0900
-From:   Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] Fix the issue for clearing status process
-Date:   Tue,  6 Apr 2021 10:47:26 +0900
-X-TSB-HOP: ON
-Message-Id: <e52bf38913c20467e96c66ddf058129a5f063273.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
-References: <cover.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
+        id S243282AbhDFCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:01:09 -0400
+Received: from m12-15.163.com ([220.181.12.15]:40077 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239052AbhDFCBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 22:01:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=gSBuEX2ErbkPyQOP3a
+        xEn93QZdKdrES4nKAlW9TbMNw=; b=gc/G+26HRkYHUNWPf3AU5sZJWLR25N27t6
+        k5cBsDVwQ/uJbzycEjIUBEObWCe8oeDZewV+tyBOI2hTs8d755859uhWMyc+BUwp
+        tNQLkg7gFnlbINiy4no55cCiouLLwIz4hIBllR+Or1q3U7jGlOq9/p587FvRrKJZ
+        ESgsnl0Ac=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowADX+8ycwGtg77vMAQ--.23S2;
+        Tue, 06 Apr 2021 10:00:25 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     krzysztof.kozlowski@canonical.com, k.opasiak@samsung.com
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH v2] nfc: s3fwrn5: remove unnecessary label
+Date:   Tue,  6 Apr 2021 09:59:54 +0800
+Message-Id: <20210406015954.10988-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: D8CowADX+8ycwGtg77vMAQ--.23S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrtrW3Xw43uF4rAFWrGr48JFb_yoW8Jr4DpF
+        Z8Ka4xCFy8KF1rG340yr4jvF9I93y3GFyxG3yjvws7A3y5Zw4vvrnFyFyYkrykCrWUGFy3
+        JF42qrn8uFy7tw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jllkxUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqgVssVr7syzLpgAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the unlikely event of bad block,
-it should update its block status to BBT, 
-In this case, there are 2 kind of issue for handling
-a) Mark bad block status to BBT:  It was fixed by Patric's patch
-b) Clear status to BBT:  I posted patch for this issue 
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Patch:
-Issue of handing BBT (Bad Block Table) for 
-some particular blocks (Ex:10, 11)
-Updating status is, first clear status, second set bad block status.
-Patrick's patch is only fixed the issue for setting status process,
-so this patch fix the clearing status process.
+In function s3fwrn5_nci_post_setup, the variable ret is assigned then
+goto out label, which just return ret, so we use return to replace it.
+Other goto sentences are similar, we use return sentences to replace
+goto sentences and delete out label.
 
-Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 ---
- drivers/mtd/nand/bbt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nfc/s3fwrn5/core.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-index 64af6898131d..0780896eaafe 100644
---- a/drivers/mtd/nand/bbt.c
-+++ b/drivers/mtd/nand/bbt.c
-@@ -112,11 +112,13 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
- 			     ((entry * bits_per_block) / BITS_PER_LONG);
- 	unsigned int offs = (entry * bits_per_block) % BITS_PER_LONG;
- 	unsigned long val = status & GENMASK(bits_per_block - 1, 0);
-+	unsigned long shift = ((bits_per_block + offs <= BITS_PER_LONG) ?
-+					(offs + bits_per_block - 1) : (BITS_PER_LONG - 1));
+diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
+index c00b7a0..865d3e3 100644
+--- a/drivers/nfc/s3fwrn5/core.c
++++ b/drivers/nfc/s3fwrn5/core.c
+@@ -124,13 +124,12 @@ static int s3fwrn5_nci_post_setup(struct nci_dev *ndev)
  
- 	if (entry >= nanddev_neraseblocks(nand))
- 		return -ERANGE;
+ 	if (s3fwrn5_firmware_init(info)) {
+ 		//skip bootloader mode
+-		ret = 0;
+-		goto out;
++		return 0;
+ 	}
  
--	pos[0] &= ~GENMASK(offs + bits_per_block - 1, offs);
-+	pos[0] &= ~GENMASK(shift, offs);
- 	pos[0] |= val << offs;
+ 	ret = s3fwrn5_firmware_update(info);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
  
- 	if (bits_per_block + offs > BITS_PER_LONG) {
+ 	/* NCI core reset */
+ 
+@@ -139,12 +138,9 @@ static int s3fwrn5_nci_post_setup(struct nci_dev *ndev)
+ 
+ 	ret = nci_core_reset(info->ndev);
+ 	if (ret < 0)
+-		goto out;
+-
+-	ret = nci_core_init(info->ndev);
++		return ret;
+ 
+-out:
+-	return ret;
++	return nci_core_init(info->ndev);
+ }
+ 
+ static struct nci_ops s3fwrn5_nci_ops = {
 -- 
-2.25.1
+1.9.1
 
