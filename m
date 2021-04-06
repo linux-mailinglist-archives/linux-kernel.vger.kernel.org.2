@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB87355590
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDA135556F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344681AbhDFNou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:44:50 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:43233 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344659AbhDFNon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:44:43 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 136DhfCQ018008
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 15:43:41 +0200
-Received: from md1za8fc.ad001.siemens.net ([167.87.42.66])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 136De2KZ031989;
-        Tue, 6 Apr 2021 15:40:02 +0200
-Date:   Tue, 6 Apr 2021 15:40:01 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        "Jim Quinlan" <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, <hdegoede@redhat.com>
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <20210406154001.3eec0698@md1za8fc.ad001.siemens.net>
-In-Reply-To: <3f33a178-3002-e93e-89f1-8cf05097da25@metux.net>
-References: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
-        <20210309014221.GA1831206@bjorn-Precision-5520>
-        <20210309094252.396b7f2d@md1za8fc.ad001.siemens.net>
-        <3f33a178-3002-e93e-89f1-8cf05097da25@metux.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1344612AbhDFNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344599AbhDFNlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:41:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FFAC06174A;
+        Tue,  6 Apr 2021 06:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5WGX/4XZK0Rd6sfw0XR95V1AU8BPKD/yOGchifwvwPA=; b=CZ5VIwmvVukE8OEo4nVv3ytYTX
+        0OI2EcBX6Qoh15sl5XcaW25p/FUvJHCl87q+PMSGhBHKkDRDsXr0uGIko2amI5WFQxYvc5d7FHE9a
+        vgfyRSh7GgeqNy5MyDyuTTTtIOoXpTj8Ov25WMnRV8a/+0TQd0KNt5B/OQ9HqGg3RPv3z93VpPXxy
+        kDjDSyDidmlZF/WIBRBuElkAhFIOdzqJ2DAZCPRs+U1l5WmC1jYZ+XT1mD+0OSZSYgAR6Zx1V87E5
+        X8N9TNAAwIgzHjLqH7D2IgIwPwyhO1RXofZX13MN+87LrT1U/QZfypjJhVQBWPGb4NpOhmzTr/pqN
+        SpF3c6EQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTlwA-00CsJS-PO; Tue, 06 Apr 2021 13:40:17 +0000
+Date:   Tue, 6 Apr 2021 14:40:10 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 11/27] mm/filemap: Add folio_next_index
+Message-ID: <20210406134010.GJ3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-12-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331184728.1188084-12-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 2 Apr 2021 15:09:12 +0200
-schrieb "Enrico Weigelt, metux IT consult" <lkml@metux.net>:
+On Wed, Mar 31, 2021 at 07:47:12PM +0100, Matthew Wilcox (Oracle) wrote:
+> This helper returns the page index of the next folio in the file (ie
+> the end of this folio, plus one).
 
-> On 09.03.21 09:42, Henning Schild wrote:
-> 
-> > The device will respond to MMIO while being hidden. I am afraid
-> > nothing stops a collision, except for the assumption that the BIOS
-> > is always right and PCI devices never get remapped. But just
-> > guessing here.  
-> 
-> What could go wrong if it is remapped, except that this driver would
-> write to the wrong mmio space ?
-> 
-> If it's unhidden, pci-core should see it and start the usual probing,
-> right ?
+Looks good,
 
-I have seen this guy exposed to Linux on coreboot machines. No issues.
-But i can imagine BIOSs that somehow make use of the device and assume
-it wont move. So we would at least need a parameter to allow keeping
-that device hidden, or "fixed" in memory.
-
-Henning
-
-> 
-> --mtx
-> 
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
