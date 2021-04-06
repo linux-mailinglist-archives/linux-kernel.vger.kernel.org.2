@@ -2,226 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2812355B0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247CD355B13
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbhDFSN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:13:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37596 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbhDFSN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:13:56 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136IDTQG078969;
-        Tue, 6 Apr 2021 13:13:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617732809;
-        bh=fh4SyDkyDF5oOs9/MrTaThouEwEq+Fqg8/szP7jmyyI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ySz+hZqrkYzWlzi+prP49lK3udwRZoiu9r8SrsW9p+nV6K7nmHuBiB17HhkY/t0lH
-         b1YnS776YNDvp7d8TZokVMzAy6Frex3kV9dq2zu+1WDKQ+k/vIJ+3LN+Z0nqC5u5kA
-         LOWxycaAnPgnF4Su83MLU83ZiQmzOoTs/4hfnC/8=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136IDTC6015000
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 13:13:29 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 13:13:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 13:13:28 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136IDSfI068727;
-        Tue, 6 Apr 2021 13:13:28 -0500
-Date:   Tue, 6 Apr 2021 23:43:27 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 12/16] dt-bindings: media: Add DT bindings for TI CSI2RX
- driver
-Message-ID: <20210406181325.62htotc2y4eag4ar@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-13-p.yadav@ti.com>
- <20210401155201.GA488101@robh.at.kernel.org>
- <YGbrcKPA9K8Ws0lv@pendragon.ideasonboard.com>
+        id S236123AbhDFSOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232876AbhDFSOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:14:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D406124C;
+        Tue,  6 Apr 2021 18:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617732837;
+        bh=I0f6571V+w1pmYWIQVIfSoPz4rhPcp0S3WPxD7utrOM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=AlKBpkvT6CuBNnAj7t6KDGjOvgj8B6vde3RS3i9exuXV46VU/PYtPL0mw17akq1F6
+         xrPZIb87Yg9owDePTbTlD/lJACf14S8pfZlwgOFUd7UiTx6+VGA7bp6o0DsVtLko3p
+         b/r/el1PgVSNg96cZGtb/KtWjiSgCLAyy4JG2msFuXBBrFOf9dgx89eNJQIIXaNIz7
+         gMQ5HPiPfBhZ5IUJtZehtnTH6nGEamMA+fYxyhkIWKYDYPC1Ut/o36/Ht3ia3OCWHX
+         DRImrIS2UvGYMc/7307wm80dKOOmYFqDGQOekFdcDag9vrrD1JURFCzxT1YpBvHKv1
+         1nwIe9kxveYDA==
+Subject: Re: [PATCH] clk: socfpga: arria10: Fix memory leak of socfpga_clk on
+ error return
+To:     Colin King <colin.king@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210406170115.430990-1-colin.king@canonical.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <8ad43a2d-ac0f-8c19-6e1a-82811a9d4495@kernel.org>
+Date:   Tue, 6 Apr 2021 13:13:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YGbrcKPA9K8Ws0lv@pendragon.ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210406170115.430990-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:01PM, Laurent Pinchart wrote:
-> On Thu, Apr 01, 2021 at 10:52:01AM -0500, Rob Herring wrote:
-> > On Tue, Mar 30, 2021 at 11:03:44PM +0530, Pratyush Yadav wrote:
-> > > TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> > > capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
-> > > parts together.
-> > > 
-> > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > > ---
-> > >  .../devicetree/bindings/media/ti,csi2rx.yaml  | 70 +++++++++++++++++++
-> > >  1 file changed, 70 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/media/ti,csi2rx.yaml b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > new file mode 100644
-> > > index 000000000000..ebd894364391
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > @@ -0,0 +1,70 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/ti,csi2rx.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: TI CSI2RX Wrapper Device Tree Bindings
-> > > +
-> 
-> A description would be useful, especially given that the TRM doesn't
-> mention "CSI2RX".
 
-Ok.
 
+On 4/6/21 12:01 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> > > +maintainers:
-> > > +  - Pratyush Yadav <p.yadav@ti.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    items:
-> > > +      - const: ti,csi2rx
-> > > +
-> > > +  dmas:
-> > > +    description: RX DMA Channel 0
-> > 
-> > items:
-> >   - description: RX DMA Channel 0
-> > 
-> > Or just 'maxItems: 1'
-> > 
-> > > +
-> > > +  dma-names:
-> > > +    items:
-> > > +      - const: rx0
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +    description: Base address and size of the TI wrapper registers.
-> > 
-> > That's all 'reg' properties, drop 'description'.
+> There is an error return path that is not kfree'ing socfpga_clk leading
+> to a memory leak. Fix this by adding in the missing kfree call.
 > 
-> According to SPRUIL1B, there are four register banks for the CSI_RX_IF,
-> and two register banks for the DPHY_RX. What's your plan to support
-> these ? Not everything need to be implemented at once, but backward
-> compatibility need to be taken into account in the design.
+> Addresses-Coverity: ("Resource leak")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/clk/socfpga/clk-gate-a10.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clk/socfpga/clk-gate-a10.c b/drivers/clk/socfpga/clk-gate-a10.c
+> index f5cba8298712..738c53391e39 100644
+> --- a/drivers/clk/socfpga/clk-gate-a10.c
+> +++ b/drivers/clk/socfpga/clk-gate-a10.c
+> @@ -146,6 +146,7 @@ static void __init __socfpga_gate_init(struct device_node *node,
+>   		if (IS_ERR(socfpga_clk->sys_mgr_base_addr)) {
+>   			pr_err("%s: failed to find altr,sys-mgr regmap!\n",
+>   					__func__);
+> +			kfree(socfpga_clk);
+>   			return;
+>   		}
+>   	}
+> 
 
-The CSI_RX_IF0_ECC_AGGR_CFG register bank is for safety requirements. 
-The driver does not use them. The CSI_RX_IF0_RX_SHIM_VBUSP_MMR_CSI2RXIF 
-register bank is for the TI wrapper around the Cadence CSI2RX bridge 
-that deals with DMA threads. This bank is what this binding is concerned 
-with. The CSI_RX_IF0_VBUS2APB_WRAP_VBUS_APB_CSI2RX bank is for the 
-Cadence CSI2RX bridge. The Cadence schema should deal with that. And 
-lastly, I don't know what the CSI_RX_IF0_CP_INTD_CFG_INTD_CFG bank is 
-for. The driver does not use it.
-
-I don't forsee the first and last bank being used in Kernel, but if we 
-want to be safe I can change maxItems to 3. Sounds good?
-
-> 
-> > > +
-> > > +  power-domains:
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      PM domain provider node and an args specifier containing
-> > > +      the device id value.
-> > 
-> > Drop.
-> > 
-> > > +
-> > > +  ranges: true
-> > > +
-> > > +  "#address-cells":
-> > > +    const: 2
-> > > +
-> > > +  "#size-cells":
-> > > +    const: 2
-> > > +
-> > > +patternProperties:
-> > > +  "csi-bridge@":
-> > 
-> > "^csi-bridge@"
-> > 
-> > > +    type: object
-> > > +    description: CSI2 bridge node.
-> > 
-> > Just an empty node?
-> 
-> Even if the node is optional, it would be useful to include it in the
-> example below, to show how it's supposed to be used.
-
-It is not optional. It should be the Cadence CSI2RX bridge node. Will 
-add it in the example. I also need to see if there is any way to make a 
-patternProperty a required property.
-
-> 
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - dmas
-> > > +  - dma-names
-> > > +  - power-domains
-> > > +  - "#address-cells"
-> > > +  - "#size-cells"
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> > > +
-> > > +    ti_csi2rx0: ticsi2rx {
-> > > +        compatible = "ti,csi2rx";
-> > > +        dmas = <&main_udmap 0x4940>;
-> > > +        dma-names = "rx0";
-> > > +        reg = <0x0 0x4500000 0x0 0x1000>;
-> > > +        power-domains = <&k3_pds 26 TI_SCI_PD_EXCLUSIVE>;
-> > > +        #address-cells = <2>;
-> > > +        #size-cells = <2>;
-> > > +    };
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
