@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE1C355147
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1999435514D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245217AbhDFKxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhDFKxV (ORCPT
+        id S234094AbhDFKzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:55:06 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:50643 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231339AbhDFKzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:53:21 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB65C06174A;
-        Tue,  6 Apr 2021 03:53:13 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id i18so10254048wrm.5;
-        Tue, 06 Apr 2021 03:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UW4SBvk4siFv9zFuBrGL9HNGyyN/dS4WBxMX1QWTZM8=;
-        b=RqwwVIngnJInbW616xuEiRHUTETVRR42D4lHIX03HdrtnCcD1V8G5J302yq0IzkTAQ
-         aAsAeCOQ1XZNfbbtNsxHvfJ0QH1Lla/valtxl62ZjozBrnHRzC5NOyItOuyB4djHff4u
-         mfBcnWNpe97n1JBA5p1W0pSY+0To407VG5rUC5MPA3ZmLtzQ8T4+uGJWGD3nRsvxW9R2
-         vaj71h2BZZuAid7IhY00fiNk0xPhaGgC0lBHjQRFq9hG8eNU4+cPWRcQ0ThDzGIxaoeX
-         X7d1uJRz+t7Rl+L/pSamR4V7udhSn0Mgo1ZIuB/EFIvh/0qw39NRO8Qk0YujTCTvByrB
-         PMrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UW4SBvk4siFv9zFuBrGL9HNGyyN/dS4WBxMX1QWTZM8=;
-        b=JKmKpRFboQwCCtJ31o0ff3YyZ0pLrHOnVihc912w+2XkWkMHGuNnNx7oA9t2zPLaDk
-         SGZeXXw21JSglijiIBOG27+eD/nqZpwM+lvFUD44iyEEIsFE8+FpTk2mrCQiAp/urrNw
-         5ZXhJZ5SyMwh/cdPut/x2oVJtRnfRuZ8ZFh6xMzyQKgAAoFgAkKPC7XqtggoHHtYj89B
-         cQHkyLqY1bi25Ovlqsi746h4tFTEb8ktARcy3XqAIXRDqo0ceMlrwKhKCT2T9pkZ254W
-         siFDpNBLjW4zw7EbHEexJ4qDUCKPgWKnJS4BCH1xcn2zHELarQRBXa9ofD7YPY4O/lqD
-         R7Ig==
-X-Gm-Message-State: AOAM532P4QIugzTAAQ6TL/BBCLyvMaO/7AcL9bXkRByGknURi+OOS3fy
-        adCqhxUJeAhoqycbcISiSsk=
-X-Google-Smtp-Source: ABdhPJyEcWxQjakzL4UBY/hSPfKVA9z+I4/Fts1uNiYoCieQ/sPpv7fJrL0XRGTcNHoTn2bhWLT6MA==
-X-Received: by 2002:a5d:47c4:: with SMTP id o4mr33792030wrc.138.1617706392307;
-        Tue, 06 Apr 2021 03:53:12 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id c131sm2416442wma.37.2021.04.06.03.53.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 03:53:11 -0700 (PDT)
-Subject: Re: [PATCH v2 1/8] dt-bindings: timer: Add compatible for Mediatek
- MT8195
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
-References: <20210319023427.16711-1-seiya.wang@mediatek.com>
- <20210319023427.16711-3-seiya.wang@mediatek.com>
- <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
- <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <251f6d99-a7f6-ddbe-096a-95998b86dbed@gmail.com>
-Date:   Tue, 6 Apr 2021 12:53:10 +0200
+        Tue, 6 Apr 2021 06:55:05 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id TjMBl4T2r43ycTjMElNcue; Tue, 06 Apr 2021 12:54:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617706496; bh=KGNqE7vtP9+apsVEQYS3HwyvXAaxHklSuPGEUI1hzkQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=LYdeDXQeL/YsRcoQOgNGrpvRBN20u1hq4XiQFUszeYziYxHO0c4NkZ4k0tamDh6Ec
+         bCFrNmZ5OAUqW858uwUMB9ebAIQLBrhaAI4WVFTL9fvuMUDxXdzuC1rCTVJA/CmgFA
+         DSNW0VJAIuAX4Yj76V/KywFh0ik88bWKggyDlnu/++MGMNZ94id3BwQ9V9kVSW/Fit
+         4mMHIdAbCaGaUMcskiGL1nPi9hO/RbThkAiC0PTH+O63o3Q3ltERt9TwZbDQDh2fkT
+         lzJWRX03q6ZylNvmQsND/9gBaJYTqq3Ulx89yQ+t5gki3BzcyzEpGCVory3SH855Xq
+         aMl6BOdHm3F+g==
+Subject: Re: [PATCH v8 01/13] dt-bindings: mfd: Add 'nxp,imx8mq-vpu-ctrl' to
+ syscon list
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com, Rob Herring <robh@kernel.org>
+References: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
+ <20210401160003.88803-2-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <430b380d-a437-dfdc-5fe7-c5cfe2a44935@xs4all.nl>
+Date:   Tue, 6 Apr 2021 12:54:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
+In-Reply-To: <20210401160003.88803-2-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNUlMbdwNq3v4AT78E7WX19Tqn0ScOtvTMR8PCQm+vYaaalzuFAzpeW+uB2V06rsoPQims10Rzebi13I8RHuqiXt9oWnHoZIYvyVbTfW1xD7azqfQp5c
+ iOyxlx6fz9UrHgY63yuJl/Lgk28DiSLwqC1cr3J0KA0UM58ynYIUo6RehsTEKopyStCLRsL4ClIsecG4mZfZ7yAG20nTrjE4+f8rJnUXxwGyFIeTYY88C8WC
+ kZxbvQRj/MaKFw/8R9jnFhLJGl6MGhL6FvYGkpG4Ed3IAVN8vkTR6LxnwdKHxrgtf1ol+izQwb1PUn7pYiIsUNQ+9+DJPdj3SZmuKqPGRj1tCu1E8XvwjIKP
+ /e0nYfaXyI9EKStq7GUCuteTqchAWihH1iMuQ2VjRKlI0PR9qlpHrs/9CfcbIBZt9CLcCTrFT/iNVrMV8f2lxk2XWGawrF9Cj7K+PSQHWg2js3Sxm1x6DWU9
+ 3s7AobvTnc1/fcUZFs8G0hYqSer4oWCE9PzyyBQ4iaWTHfUowzEzdL34eHpGm2KiWuMknDRd4BYbVnU15qUx7IC/aPgfzX1pEg7T9vaY4Amg7Ko5s6syoz5i
+ oGH9gbZdkpjpeSpbt62iY/KOiuoeenqFD2jVEuGU+AbyF272+/hFkW04Rf2qIaLpDbtn/dnlDshDCgux1cepO6Sydh8zigIWTngD3FGTgyJQQUafKn5czBca
+ dGjH3GY3f1ZT6V5uXFoVRM25JJjPawa7kmfLba1XHs2bGnVLJuoF8LiIfGX6T+aVN1zhpHEk63IQHRuQElyPFQnLsbBi8W1YPQuQgWaRXRNSU0qbOGNuC/mr
+ bHWdSpsF5j+eKlAVbS+6+vvpTDHyGtlc+7b932u08S3cpK8QX+ZYVt1j0DizwGN9yzE0NsBcFsNz5IvF5ZPs6yQGkx2/p3D2dsVQZycerAYqNNUzmdfYedlw
+ PP0leHqZpMSMW3rOpnKvdkn7nN/GW4knsg6G80nVFO73qwS/YX94MAAOY9HXat35ZzLbx0eslDm1lHQGMUgEeY+ll/ol6Qyos1GFWE7THMuFPq0T
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi Benjamin,
 
-On 04/04/2021 22:33, Daniel Lezcano wrote:
-> On 29/03/2021 13:52, Matthias Brugger wrote:
->>
->>
->> On 19/03/2021 03:34, Seiya Wang wrote:
->>> This commit adds dt-binding documentation of timer for Mediatek MT8195 SoC
->>> Platform.
->>>
->>> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
->>
->> Applied to v5.12-next/dts64
-> 
-> Usually bindings go through the subsystem maintainer.
-> 
+The commit logs in this series have a few too many grammatical
+mistakes. And since I want some other changes as well, I'll just
+review the text so it can be fixed in v9.
 
-Yes I know, although not all maintainers are taking them. I'll coordinate with
-you the next time, sorry for any inconvenience caused by this.
+On 01/04/2021 17:59, Benjamin Gaignard wrote:
+> Add 'nxp,imx8mq-vpu-ctrl' in the list of possible syscon.
+
+in -> to
+
+> It will used to access to the VPU control registers.
+
+to the -> the
 
 Regards,
-Matthias
+
+	Hans
+
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+> ---
+> version 8:
+>  - Add Lee ack
+> 
+> version 7:
+>  - Add Rob ack
+> 
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index f14ae6da0068..ae22c4730613 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -44,6 +44,7 @@ properties:
+>                - hisilicon,peri-subctrl
+>                - microchip,sparx5-cpu-syscon
+>                - mstar,msc313-pmsleep
+> +              - nxp,imx8mq-vpu-ctrl
+>                - rockchip,px30-qos
+>                - rockchip,rk3066-qos
+>                - rockchip,rk3288-qos
+> 
+
