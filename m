@@ -2,101 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CB2354C42
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE00A354C46
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243818AbhDFFYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
+        id S243786AbhDFF0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 01:26:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233036AbhDFFY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 01:24:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C791061246;
-        Tue,  6 Apr 2021 05:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617686662;
-        bh=8JS7ICrS7uuaOPO5yu1JQVUjSFQhPCTd44gGpGT7I58=;
+        id S232874AbhDFF0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 01:26:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B57561246;
+        Tue,  6 Apr 2021 05:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617686788;
+        bh=SmVeK0AzoGvnM/oVSClhxdFpdRkFXOYQtTI6gWclCvc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WP6roTKoemOABplgHbwEmALlcxPzQzk1VbK173QYlDO+W72Tqsl3QybZGH7mcYNPA
-         sIqDKBp3YOpMkHNnk/3JPYBD7mhhDoyIOwkSzz9U7Ybbo39TsDKDHXYcvhB1mk3sTs
-         EgFzyjGi6Bkf64w27QYc6W0VfNGWgAFhwkpES0d/uM5z9UuYVrxYbcZUHaFHoDjeNh
-         Tir4/ma0P28qer+50bxnn0mTHUSGy0Q9vNs7nA2JhgcI4/RzZhpmMHoiGnDb/s5PM1
-         XUvQLrP2qGOcaVDaSUONUlsCyMSYQHwX9xPpKcrNSnLiwCkC3VX6avNGwAUs1G12bh
-         8m1JEEsTKunpw==
-Date:   Tue, 6 Apr 2021 08:24:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to ib_alloc_mr()
- and ib_mr_pool_init()
-Message-ID: <YGvwgrIR70oqNKUk@unreal>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405052404.213889-2-leon@kernel.org>
- <20210405134618.GA22895@lst.de>
+        b=TXS6ap2HESrw9shecjMTxGQh5jxSPKvPO+smESiwctRKnpV6WpvNKWmq9PTc+mk/h
+         nbGKTFYFDGNzK54Ul6+wmLHt3nq4UiWnJhtHAThCjhM6hbXgJtGy1kl149R1GHRDeq
+         jqf9KKj1Hn0ZsLFZbObhdvHkgNv85iVxQGuQ4gU4=
+Date:   Tue, 6 Apr 2021 07:26:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     balbi@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: aspeed: Remove unnecessary version.h
+ includes
+Message-ID: <YGvxAmHIgnRMcyuq@kroah.com>
+References: <1617681598-28165-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405134618.GA22895@lst.de>
+In-Reply-To: <1617681598-28165-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 03:46:18PM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 05, 2021 at 08:23:55AM +0300, Leon Romanovsky wrote:
-> > From: Avihai Horon <avihaih@nvidia.com>
-> > 
-> > Add access flags parameter to ib_alloc_mr() and to ib_mr_pool_init(),
-> > and refactor relevant code. This parameter is used to pass MR access
-> > flags during MR allocation.
-> > 
-> > In the following patches, the new access flags parameter will be used
-> > to enable Relaxed Ordering for ib_alloc_mr() and ib_mr_pool_init() users.
+On Tue, Apr 06, 2021 at 11:59:58AM +0800, Jiapeng Chong wrote:
+> "make versioncheck" shows:
 > 
-> So this weirds up a new RELAXED_ORDERING flag without ever mentioning
-> that flag in the commit log, never mind what it actually does.
+> ./drivers/usb/gadget/udc/aspeed-vhub/hub.c: 33 linux/version.h not
+> needed.
 
-We will improve commit messages.
+Then you need to fix the tool, and always test-build patches before you
+send them out, as this is obviously wrong :(
 
-Thanks
