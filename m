@@ -2,252 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5765A354E45
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9E2354E54
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237067AbhDFIHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236205AbhDFIHm (ORCPT
+        id S233409AbhDFILj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:11:39 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:15850 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232131AbhDFILg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:07:42 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354EAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:07:32 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q26so7462790wrz.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6gLMcm8AUrA0Q2uwmWu7QTYhzmtluEu0Sc3ZsLKSdUU=;
-        b=oR8K/ur+8w492vaSpjRXojAbyedPYr/+Y+OkD4K+li2Sji5cjLcw7WbP0jjAVrp6vn
-         p4joMWEYt8aRs9ury1VAvDMaiAB54evkNeY/qtBtEqeZlP+aF3A33RIJARzGOGwbwSy4
-         OjBK94BR3TflT9RDcGWMhSExiCk/EcVL0jCOM7PZ+3WxblPnKXibq+9s7Jsa5m6VH1lR
-         F6z2vgOsiUQep70gX0sgSoSHv02qNiyWCnfcT9B/32MEjFrF1dSxYsQCWRDMq3xdZUZE
-         Lak7TQKahYdue+11eBqP8v7NaqRhGU+SqyvAXeQZ8glOJrgx9gkW3zrssz/D/qoRtFZK
-         CZpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6gLMcm8AUrA0Q2uwmWu7QTYhzmtluEu0Sc3ZsLKSdUU=;
-        b=rMR3fVHtu9QTz4+qiucY5nCIyIq2NLhMPcughzQToO8udxiQbusb6xC2eitikxKsFn
-         MZTpwvHY29NfGgKotk4Tg/upRbophaZdG2pzxQI4z/oCfR98ZktyyaGR7nfa4qTw0CgR
-         HofBR4k8PhnhVeVZ126XZ74Ke9WbKUTAXIJi0D5sdsRbzotgKGQqHfJgwzqOVfsuyHA4
-         bXsbfAp3Q063aW+cS+oCUf6pj5h/GwAi05h2LtoUYyJDCn0WDXQnrR+pS58p62jrLVWP
-         ntZB7vssL+XWpcKGWWxkFZ522pg3OybMPii4y02xyGeZoBzr5cvNBsaS7zWs71SEcyyN
-         rNoA==
-X-Gm-Message-State: AOAM532H6K9tnVmt+sL93gQx/Sq80SAOA+iMugZTPaXdb1FdRmikhjp9
-        Nt6i5/ue0bkH39rNXsXczTUAbA==
-X-Google-Smtp-Source: ABdhPJwliCeV08eP6FOrU6E+gj/DTQLZ2EMzOu5/Q3pVo0qMOBjAHK08jnu7YlYh6db3AmtFVnZ1aQ==
-X-Received: by 2002:a5d:6907:: with SMTP id t7mr4542186wru.380.1617696450874;
-        Tue, 06 Apr 2021 01:07:30 -0700 (PDT)
-Received: from dell ([91.110.221.175])
-        by smtp.gmail.com with ESMTPSA id u63sm1904343wmg.24.2021.04.06.01.07.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 01:07:30 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 09:07:28 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     matthew.gerlach@linux.intel.com, hao.wu@intel.com, trix@redhat.com,
-        mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
-        jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        russell.h.weight@linux.intel.com
-Subject: Re: [PATCH 3/3] hwmon: intel-m10-bmc-hwmon: add sensor support of
- Intel D5005 card
-Message-ID: <20210406080728.GO2916463@dell>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
- <2bafe404-c708-a1eb-6584-2345225282dc@roeck-us.net>
+        Tue, 6 Apr 2021 04:11:36 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1368BRhl016265
+        for <linux-kernel@vger.kernel.org>; Tue, 6 Apr 2021 11:11:27 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1617696682; x=1620288682;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2r0QMkSyPkhE8Ev1lT1DRSw293cf5b3ZEKEW8v8rynY=;
+        b=p0WyOp2TyUEvFHDEbdhJTxNDzwMbMhuPcUMVTbMIOWiMEQiQeeYhhQYoIxbLjA+3
+        jOZ3D+Ao95NTsgx81NBzSKV+xOGwtyyv+mkGgfZT0bJQjgs7hReDBWIM1eyd/UFi
+        c53AnzImYMCcJcGL/xn4PayOaujdK9MlQVKi9oasLO0RA+T+1p9MAYVl2uGE7N+F
+        5gZshlSIweY5mJEYfDLGSnyl7Sf8agy264/09xgUgwL9bPnIXayHyGLzz75JwW2L
+        F4kRqm61v55hQHKAALjcZuwkbjHS42ZGB3YhCfSaT/TQurpHvfanf+2r2MqKQoYX
+        0lHISwWipULW5IThJfyGQA==;
+X-AuditID: 8b5b014d-a4c337000000209f-d5-606c17aaeef5
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 4F.01.08351.AA71C606; Tue,  6 Apr 2021 11:11:22 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2bafe404-c708-a1eb-6584-2345225282dc@roeck-us.net>
+Date:   Tue, 06 Apr 2021 11:11:22 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/5] RISC-V: Improve init_resources
+Organization: FORTH
+In-Reply-To: <CAMuHMdWi+wo0+PCR6B1wyXVesG-kL9NQt8XFBuWhZ3SdVUaLZg@mail.gmail.com>
+References: <20210405085712.1953848-1-mick@ics.forth.gr>
+ <20210405085712.1953848-4-mick@ics.forth.gr>
+ <CAMuHMdWi+wo0+PCR6B1wyXVesG-kL9NQt8XFBuWhZ3SdVUaLZg@mail.gmail.com>
+Message-ID: <5a09d1f0ded4581c9e7458f546db9329@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsXSHT1dWXeVeE6Cwaef6hbPbu1lsri8aw6b
+        xbbPLWwWze/OsVu8vNzDbNE2i9+BzePNy5csHg83XWLyOHS4g9Fj85J6j0vN19k9Pm+SC2CL
+        4rJJSc3JLEst0rdL4Mo4M3UPa8Ed8Yrzk56wNjCuEupi5OSQEDCR+L1oA1MXIxeHkMBRRonT
+        ew6zQCRMJWbv7WQEsXkFBCVOznwCFmcWsJCYemU/I4QtL9G8dTYziM0ioCqx6e4EdhCbTUBT
+        Yv6lg0D1HBwiAroSc36CzWcW6GSS+LF+E1ivsICVxISZ/5hAbH4BYYlPdy+ygticAoESP59O
+        gTpoHaPE8YZv7BBHuEgc/9/EDnGcisSH3w/YQRaIAtmb5ypNYBScheTUWUhOnYXk1AWMzKsY
+        BRLLjPUyk4v10vKLSjL00os2MYLDndF3B+PtzW/1DjEycTAeYpTgYFYS4d3Rm50gxJuSWFmV
+        WpQfX1Sak1p8iFGag0VJnJdXb0K8kEB6YklqdmpqQWoRTJaJg1OqgclTT25pxiJzlYYddYYr
+        v7bpHlGonxgcVhTIv+UuQ83Pr489nnvNuf65UuTxln5dkYOHn3jcs1K7v+rZ0c1e895OF/Ep
+        e1RuGB9fPuvcTnfBaxb6rp8ndx48NvHfg3VuE/fXhW5uy+lfwv2/4p7Eo6boUwu3vPeoMNQo
+        dk+P8+cvu9+q6HbmbqdplsHZ9sqNW27IPApb1hjxOPHiqudTXCT8y39IXshl1G3eYLStKNtM
+        ajPf8o9Gs523eUz/Envi2rWtng3fHGY7T+u24jq/KbP/7uKL27o4Ni96PnGhgbCUS/CnP7yK
+        Mi57WjJ1y85XfGbOC5m4V+nqFZnKjV78lmLlaY8ubTHf0Rb7K6JYa7cSS3FGoqEWc1FxIgB2
+        H1ll5gIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Apr 2021, Guenter Roeck wrote:
+Hello Geert,
 
-> On 4/5/21 4:53 PM, matthew.gerlach@linux.intel.com wrote:
-> > From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > 
-> > Like the Intel N3000 card, the Intel D5005 has a MAX10 based
-> > BMC.  This commit adds support for the D5005 sensors that are
-> > monitored by the MAX10 BMC.
-> > 
-> > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > Signed-off-by: Russ Weight <russell.h.weight@linux.intel.com>
-> > ---
-> >  drivers/hwmon/intel-m10-bmc-hwmon.c | 122 ++++++++++++++++++++++++++++++++++++
-> >  drivers/mfd/intel-m10-bmc.c         |  10 +++
-> >  2 files changed, 132 insertions(+)
-> > 
-> > diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> > index 17d5e6b..bd7ed2e 100644
-> > --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-> > +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> > @@ -99,6 +99,50 @@ struct m10bmc_hwmon {
-> >  	NULL
-> >  };
-> >  
-> > +static const struct m10bmc_sdata d5005bmc_temp_tbl[] = {
-> > +	{ 0x100, 0x104, 0x108, 0x10c, 0x0, 500, "Board Inlet Air Temperature" },
-> > +	{ 0x110, 0x114, 0x118, 0x0, 0x0, 500, "FPGA Core Temperature" },
-> > +	{ 0x11c, 0x120, 0x124, 0x128, 0x0, 500, "Board Exhaust Air Temperature" },
-> > +	{ 0x12c, 0x130, 0x134, 0x0, 0x0, 500, "FPGA Transceiver Temperature" },
-> > +	{ 0x138, 0x13c, 0x140, 0x144, 0x0, 500, "RDIMM0 Temperature" },
-> > +	{ 0x148, 0x14c, 0x150, 0x154, 0x0, 500, "RDIMM1 Temperature" },
-> > +	{ 0x158, 0x15c, 0x160, 0x164, 0x0, 500, "RDIMM2 Temperature" },
-> > +	{ 0x168, 0x16c, 0x170, 0x174, 0x0, 500, "RDIMM3 Temperature" },
-> > +	{ 0x178, 0x17c, 0x180, 0x0, 0x0, 500, "QSFP0 Temperature" },
-> > +	{ 0x188, 0x18c, 0x190, 0x0, 0x0, 500, "QSFP1 Temperature" },
-> > +	{ 0x1a0, 0x1a4, 0x1a8, 0x0, 0x0, 500, "3.3v Temperature" },
-> > +	{ 0x1bc, 0x1c0, 0x1c4, 0x0, 0x0, 500, "VCCERAM Temperature" },
-> > +	{ 0x1d8, 0x1dc, 0x1e0, 0x0, 0x0, 500, "VCCR Temperature" },
-> > +	{ 0x1f4, 0x1f8, 0x1fc, 0x0, 0x0, 500, "VCCT Temperature" },
-> > +	{ 0x210, 0x214, 0x218, 0x0, 0x0, 500, "1.8v Temperature" },
-> > +	{ 0x22c, 0x230, 0x234, 0x0, 0x0, 500, "12v Backplane Temperature" },
-> > +	{ 0x248, 0x24c, 0x250, 0x0, 0x0, 500, "12v AUX Temperature" },
-> > +};
-> > +
-> > +static const struct m10bmc_sdata d5005bmc_in_tbl[] = {
-> > +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QSFP0 Supply Voltage" },
-> > +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "QSFP1 Supply Voltage" },
-> > +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Voltage" },
-> > +	{ 0x1ac, 0x1b0, 0x1b4, 0x0, 0x0, 1, "3.3v Voltage" },
-> > +	{ 0x1c8, 0x1cc, 0x1d0, 0x0, 0x0, 1, "VCCERAM Voltage" },
-> > +	{ 0x1e4, 0x1e8, 0x1ec, 0x0, 0x0, 1, "VCCR Voltage" },
-> > +	{ 0x200, 0x204, 0x208, 0x0, 0x0, 1, "VCCT Voltage" },
-> > +	{ 0x21c, 0x220, 0x224, 0x0, 0x0, 1, "1.8v Voltage" },
-> > +	{ 0x238, 0x0, 0x0, 0x0, 0x23c, 1, "12v Backplane Voltage" },
-> > +	{ 0x254, 0x0, 0x0, 0x0, 0x258, 1, "12v AUX Voltage" },
-> > +};
-> > +
-> > +static const struct m10bmc_sdata d5005bmc_curr_tbl[] = {
-> > +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Current" },
-> > +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1, "3.3v Current" },
-> > +	{ 0x1d4, 0x0, 0x0, 0x0, 0x0, 1, "VCCERAM Current" },
-> > +	{ 0x1f0, 0x0, 0x0, 0x0, 0x0, 1, "VCCR Current" },
-> > +	{ 0x20c, 0x0, 0x0, 0x0, 0x0, 1, "VCCT Current" },
-> > +	{ 0x228, 0x0, 0x0, 0x0, 0x0, 1, "1.8v Current" },
-> > +	{ 0x240, 0x244, 0x0, 0x0, 0x0, 1, "12v Backplane Current" },
-> > +	{ 0x25c, 0x260, 0x0, 0x0, 0x0, 1, "12v AUX Current" },
-> > +};
-> > +
-> >  static const struct m10bmc_hwmon_board_data n3000bmc_hwmon_bdata = {
-> >  	.tables = {
-> >  		[hwmon_temp] = n3000bmc_temp_tbl,
-> > @@ -110,6 +154,80 @@ struct m10bmc_hwmon {
-> >  	.hinfo = n3000bmc_hinfo,
-> >  };
-> >  
-> > +static const struct hwmon_channel_info *d5005bmc_hinfo[] = {
-> > +	HWMON_CHANNEL_INFO(temp,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL,
-> > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > +			   HWMON_T_LABEL),
-> > +	HWMON_CHANNEL_INFO(in,
-> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> > +			   HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> > +			   HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> > +			   HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> > +			   HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> > +			   HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL,
-> > +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL),
-> > +	HWMON_CHANNEL_INFO(curr,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL,
-> > +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL),
-> > +	NULL
-> > +};
-> > +
-> > +static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
-> > +	.tables = {
-> > +		[hwmon_temp] = d5005bmc_temp_tbl,
-> > +		[hwmon_in] = d5005bmc_in_tbl,
-> > +		[hwmon_curr] = d5005bmc_curr_tbl,
-> > +	},
-> > +
-> > +	.hinfo = d5005bmc_hinfo,
-> > +};
-> > +
-> >  static umode_t
-> >  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-> >  			u32 attr, int channel)
-> > @@ -316,6 +434,10 @@ static int m10bmc_hwmon_probe(struct platform_device *pdev)
-> >  		.name = "n3000bmc-hwmon",
-> >  		.driver_data = (unsigned long)&n3000bmc_hwmon_bdata,
-> >  	},
-> > +	{
-> > +		.name = "d5005bmc-hwmon",
-> > +		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
-> > +	},
-> >  	{ }
-> >  };
-> >  
-> > diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+Στις 2021-04-06 10:19, Geert Uytterhoeven έγραψε:
+> Hi Nick,
 > 
-> It may be better to split this patch into two parts to simplify
-> its review and scope of responsibility.
+> Thanks for your patch!
+> 
+> On Mon, Apr 5, 2021 at 10:57 AM Nick Kossifidis <mick@ics.forth.gr> 
+> wrote:
+>> * Kernel region is always present and we know where it is, no
+>> need to look for it inside the loop, just ignore it like the
+>> rest of the reserved regions within system's memory.
+>> 
+>> * Don't call memblock_free inside the loop, if called it'll split
+>> the region of pre-allocated resources in two parts, messing things
+>> up, just re-use the previous pre-allocated resource and free any
+>> unused resources after both loops finish.
+>> 
+>> * memblock_alloc may add a region when called, so increase the
+>> number of pre-allocated regions by one to be on the safe side
+>> (reported and patched by Geert Uytterhoeven)
+>> 
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> Where does this SoB come from?
+> 
+>> Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
+> 
+>> --- a/arch/riscv/kernel/setup.c
+>> +++ b/arch/riscv/kernel/setup.c
+> 
+>> @@ -129,53 +139,42 @@ static void __init init_resources(void)
+>>         struct resource *res = NULL;
+>>         struct resource *mem_res = NULL;
+>>         size_t mem_res_sz = 0;
+>> -       int ret = 0, i = 0;
+>> -
+>> -       code_res.start = __pa_symbol(_text);
+>> -       code_res.end = __pa_symbol(_etext) - 1;
+>> -       code_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>> -
+>> -       rodata_res.start = __pa_symbol(__start_rodata);
+>> -       rodata_res.end = __pa_symbol(__end_rodata) - 1;
+>> -       rodata_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>> -
+>> -       data_res.start = __pa_symbol(_data);
+>> -       data_res.end = __pa_symbol(_edata) - 1;
+>> -       data_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>> +       int num_resources = 0, res_idx = 0;
+>> +       int ret = 0;
+>> 
+>> -       bss_res.start = __pa_symbol(__bss_start);
+>> -       bss_res.end = __pa_symbol(__bss_stop) - 1;
+>> -       bss_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>> +       /* + 1 as memblock_alloc() might increase 
+>> memblock.reserved.cnt */
+>> +       num_resources = memblock.memory.cnt + memblock.reserved.cnt + 
+>> 1;
+>> +       res_idx = num_resources - 1;
+>> 
+>> -       mem_res_sz = (memblock.memory.cnt + memblock.reserved.cnt) * 
+>> sizeof(*mem_res);
+> 
+> Oh, you incorporated my commit ce989f1472ae350e ("RISC-V: Fix 
+> out-of-bounds
+> accesses in init_resources()") (from v5.12-rc4) into your patch.
+> Why? This means your patch does not apply against upstream.
+> 
 
-No need.
+Sorry if this looks awkward, I'm under the impression that new features 
+go on for-next instead of fixes and your patch hasn't been merged on 
+for-next yet. I thought it would be cleaner to have one patch to merge 
+for init_resources instead of two, and simpler for people to test the 
+series. I can rebase this on top of fixes if that works better for you 
+or Palmer.
 
-Not withstanding significant changes:
-
-Acked-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
+Nick
