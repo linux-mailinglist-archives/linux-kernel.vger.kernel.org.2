@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A321C355067
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2715355073
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240916AbhDFJ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:58:31 -0400
-Received: from gateway34.websitewelcome.com ([192.185.148.204]:17850 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232630AbhDFJ63 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:58:29 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id DDDF6318DA
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:58:21 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id TiTVljnrjPkftTiTVlAA25; Tue, 06 Apr 2021 04:58:21 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IzX4cfcD3Tvkceqwxmn15aHQjEVS0LM4NuODycgrcRc=; b=CfuDp3DThsr1ONZhKaEbg5gMUV
-        POcXAFzPlHfMbaky6nNSQoi5IhqTFz2EpvJphGf04kifcK/rAQmbv9tHGX+yIop4DExpqcvnRsIMh
-        ca4XAHWdeouVltU/t5rmvBpeqaxbuDP9q/zwoDZt1ro0vffGScxvMNUHpVLbUyb/9g96+cdK/46QR
-        o+za4txpmLA4k+SS8uLovSWV5QX5uKx21jbcEgRAhsi3X6sUzt9K8+WEECTAIMFTDMB6Uwvs7AwN1
-        bz0JtUp85sXn3Kn83F2H8BsOn7+6kED17a8RpIhX+9ccLFL6hXJmDGqR+TGsLMlIFqvxWWPsXdfc2
-        fYdpvQIw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43894 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lTiTU-000uuI-Rb; Tue, 06 Apr 2021 04:58:21 -0500
-Subject: Re: [PATCH][next] scsi: mptlan: Replace one-element array with
- flexible-array member
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com
-References: <20210324233344.GA99059@embeddedor>
- <161768454092.32082.2593948568576658600.b4-ty@oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <b1354342-e9c9-5fea-ab50-e996fb790a5f@embeddedor.com>
-Date:   Tue, 6 Apr 2021 04:58:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232372AbhDFKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:02:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37150 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237486AbhDFKCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:02:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617703360; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=AxkI4O0vgqQfFbvB7SnO+C+rk9AJjNc9XgX9InDdib0=; b=nMBTbMbbDkJAvk4Ag0ndOdLGiQG6VH2LK41l71K4+hg/k2APRgUA9lOvpl9gzbCidi2oGLE0
+ I8kpHiNhVh6ucxyTTdp6RU6dqKrFuu/FsaqOADmS7lNIR08F1k16nKmvreY6frkJJ4GyyhCk
+ Dy/F/aSRsI/joMmiodTKAp/FFcw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 606c31478807bcde1d1b3a67 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 10:00:39
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 19C47C43462; Tue,  6 Apr 2021 10:00:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED0D3C43461;
+        Tue,  6 Apr 2021 10:00:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED0D3C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
+        <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
+Date:   Tue, 06 Apr 2021 13:00:33 +0300
+In-Reply-To: <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
+        (Maciej S. Szmigiero's message of "Sun, 4 Apr 2021 20:06:06 +0200")
+Message-ID: <87r1jnohq6.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <161768454092.32082.2593948568576658600.b4-ty@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lTiTU-000uuI-Rb
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:43894
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+"Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
 
-On 4/5/21 23:53, Martin K. Petersen wrote:
-> On Wed, 24 Mar 2021 18:33:44 -0500, Gustavo A. R. Silva wrote:
-> 
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
+> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
+>> Hi,
 >>
->> Refactor the code according to the use of a flexible-array member in
->> struct _SGE_TRANSACTION32 instead of one-element array.
+>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
+>> since the driver does not update its beacon to account for TIM changes,
+>> so a station that is sleeping will never learn that it has packets
+>> buffered at the AP.
 >>
->> [...]
-> 
-> Applied to 5.13/scsi-queue, thanks!
-> 
-> [1/1] scsi: mptlan: Replace one-element array with flexible-array member
->       https://git.kernel.org/mkp/scsi/c/4e2e619f3c9e
-> 
+>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
+>> callback, nor does it explicitly update beacon data periodically, so it
+>> has no way to learn that it had changed.
+>>
+>> This results in the AP mode being virtually unusable with STAs that do
+>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
+>> etc.).
+>>
+>> I think the easiest fix here would be to implement set_tim() for example
+>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
+>> the beacon data on the device.
+>
+> Are there any plans to fix this?
+> The driver is listed as maintained by Ping-Ke.
 
-Thanks for this.
+Yeah, power save is hard and I'm not surprised that there are drivers
+with broken power save mode support. If there's no fix available we
+should stop supporting AP mode in the driver.
 
-Could you apply this one, too:
-https://lore.kernel.org/lkml/20210304203822.GA102218@embeddedor/
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-This was my last reply to the thread:
-https://lore.kernel.org/lkml/d79bde59-16c5-e006-0e31-c33c17f0ce3d@embeddedor.com/
-
-Thanks!
---
-Gustavo
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
