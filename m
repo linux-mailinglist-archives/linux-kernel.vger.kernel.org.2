@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106E3355D0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3757355D0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347208AbhDFUoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:44:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347213AbhDFUoG (ORCPT
+        id S1347194AbhDFUoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245575AbhDFUoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:44:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617741837;
+        Tue, 6 Apr 2021 16:44:16 -0400
+Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DF4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 13:44:08 -0700 (PDT)
+Received: from [IPv6:2003:e9:d71d:a9d1:9fa1:9dd5:9888:d937] (p200300e9d71da9d19fa19dd59888d937.dip0.t-ipconnect.de [IPv6:2003:e9:d71d:a9d1:9fa1:9dd5:9888:d937])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id 71BA9C00BF;
+        Tue,  6 Apr 2021 22:43:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
+        s=2021; t=1617741839;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9gAUBSas1c2zynPZGsm5lpmI/COC2SlQ+0LwpbtGnEY=;
-        b=UGNajZKAOC5jW0A7vvOsN1FNUSuKF+iS4WtGV99902Q0m1CIE8rTRs4NpAhmsiQEz64LaF
-        nEm9ClsfmpEHcA9zhcfWaIHw0DbY6pJlRX9usGNXwkeNxqN+2kY6cUBMVYQhchp8Bz3ilb
-        GA/rLvyC7Gw4c1UOCn4Eyr83SvogTbs=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-kfPI0sUKOwyeW5VaSgKpuQ-1; Tue, 06 Apr 2021 16:43:55 -0400
-X-MC-Unique: kfPI0sUKOwyeW5VaSgKpuQ-1
-Received: by mail-ej1-f72.google.com with SMTP id k26so2380316ejs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:43:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9gAUBSas1c2zynPZGsm5lpmI/COC2SlQ+0LwpbtGnEY=;
-        b=I7Kd2DVCgWoA5H/uN4ANkkgCkvS6d535lDsM/SU/fBWD5z40ICcPXoKMetHqEgut1F
-         QXrK88mB87kLrMiqfRo4Wbe+e1gh9P097WSXhCGihVfJq/pISARiPZ+IMVMDpwIKlvl3
-         XlHBLZ39P2brMJeytiay/v6+vDt+oyzeBoXuGehPJM5Rbcud2/RB2XI20snChYNt3u7J
-         Keh6r6UQBO3S93XQV14spSdRQFNa+Zp+scH5lb9SaxZO6V/EgWNg4+u5OtSeEFNHX5e8
-         //kC6V8yCwspd0womYP8NEA4ePWiswXiajgOwBAPKjEz2SJx/OCV0OLFUg+lAyrc9cWO
-         Jl0g==
-X-Gm-Message-State: AOAM532qLZqM9sjCsjD17c7yMBWZqFJZXp1HAwe+eEIHcnsZH+9ac79e
-        Qi+KR2aFvRN9xFgH0DC7Ovur6dWgFfVApxQmZRiK9ddMplntBSAE2PX6Kz2LcM1tgwpSypwAdLV
-        +ZqDhylmS5vrr3WhKRdwqyoB/
-X-Received: by 2002:a17:906:5203:: with SMTP id g3mr35123524ejm.95.1617741834522;
-        Tue, 06 Apr 2021 13:43:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxB8CQ5zi2U8KCqc/sM5wQa7uXbbaNHIZF+GVJ7SPEwuoOJKAUWSWazNJSLH7SJOhDH8dQOSA==
-X-Received: by 2002:a17:906:5203:: with SMTP id g3mr35123507ejm.95.1617741834348;
-        Tue, 06 Apr 2021 13:43:54 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s12sm9340838edx.18.2021.04.06.13.43.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 13:43:53 -0700 (PDT)
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Ben Gardon <bgardon@google.com>
-References: <20210405085031.040238881@linuxfoundation.org>
- <20210405085034.229578703@linuxfoundation.org>
- <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com> <YGxm+WISdIqfwqXD@sashalap>
- <fd2030f3-55ba-6088-733b-ac6a551e2170@redhat.com> <YGyiDC2iP4CmWgUJ@sashalap>
- <81059969-e146-6ed3-01b6-341cbcf1b3ae@redhat.com> <YGy6EVb+JeNu7EOs@sashalap>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 5.10 096/126] KVM: x86/mmu: Use atomic ops to set SPTEs in
- TDP MMU map
-Message-ID: <b2b05936-f545-9272-714b-845d54fa78eb@redhat.com>
-Date:   Tue, 6 Apr 2021 22:43:52 +0200
+        bh=tlgBoaL+vctmwHsEHYSEqQ5I9wqONxWSV632d4u05iE=;
+        b=TIYmRswcDPiMSc3Dgwig5xnQGuPkG/h7cM78u4XkaDyMOba6gt5XBr5wSd3Yn9vgNKo8M4
+        tEdX8yeb6RzTmt2twp3zKECeVHDxbBi2UVwLAYDvGSBIKz+ZdMv6DjekjVSYeVAtmQftgo
+        6FJxYc8qBnkgFLQQRKGiRRfakOY36yYBAAP5LJzWoRoAYLjpDfiuZLaFDxlTnN8qtHsQix
+        FiK5BRgisTmVAMOiNgjbo9/Xn1ewAWLb8uUV9xSY+0bLJfjs7n3i4648d9jx3ABcgjxpdJ
+        UryqJHFHcpqYEKmjE3nQeo7aQvHpokZ0JOibP7ybKscBelXpKiHsiRRk8mh4vA==
+Subject: Re: [PATCH v2] net: mac802154: Fix general protection fault
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+References: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
+ <20210304152125.1052825-1-paskripkin@gmail.com>
+ <CAB_54W6BmSuRo5pwGEH_Xug3Fo5cBMjmMAGjd3aaWJaGZpSsHQ@mail.gmail.com>
+ <9435f1052a2c785b49757a1d3713733c7e9cee0e.camel@gmail.com>
+ <CAB_54W6Js5JD126Bduf1FjDLpOiCYmLX+MZzqP9dVupSUDO8tw@mail.gmail.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <151ad0e0-3502-e0a0-1651-8d1778e48de1@datenfreihafen.org>
+Date:   Tue, 6 Apr 2021 22:43:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YGy6EVb+JeNu7EOs@sashalap>
+In-Reply-To: <CAB_54W6Js5JD126Bduf1FjDLpOiCYmLX+MZzqP9dVupSUDO8tw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/21 21:44, Sasha Levin wrote:
-> On Tue, Apr 06, 2021 at 08:28:27PM +0200, Paolo Bonzini wrote:
->> If a patch doesn't (more or less trivially) apply, the maintainer 
->> should take action.  Distro maintainers can also jump in and post the 
->> backport to subsystem mailing lists.  If the stable kernel loses a 
->> patch because a maintainer doesn't have the time to do a backport, 
->> it's not the end of the world.
+Hello.
+
+On 05.04.21 13:50, Alexander Aring wrote:
+> Hi,
 > 
-> This quickly went from a "world class" to "fuck it".
+> On Mon, 5 Apr 2021 at 01:45, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>>
+>> Hi!
+>>
+> ...
+>>>
+>>
+>> I forgot to check the patch with ./scripts/checkpatch.pl :(
+>>
+>>> Dumb question: What is the meaning of it?
+>>
+>> This is for gerrit code review. This is required to push changes to
+>> gerrit public mirror. I'm using it to check patches with syzbot. Change
+>> ids are useless outside gerrit, so it shouldn't be here.
+>>
+>> Btw, should I sent v2 or this is already fixed?
+> 
+> Otherwise the patch looks good. May Stefan can fix this.
+> 
+> Acked-by: Alexander Aring <aahringo@redhat.com>
 
-Known bugs are better than unknown bugs.  If something is reported on 
-4.19 and the stable@ backports were only done up to 5.4 because the 
-backport was a bit more messy, it's okay.  If a user comes up with a 
-weird bug that I've never seen and that it's caused by a botched 
-backport, it's much worse.
+I removed the Change-ID locally here.
 
-In this specific case we're talking of 5.10; but in many cases users of 
-really old kernels, let's say 4.4-4.9 at this point, won't care about 
-having *all* bugfixes.  Some newer (and thus more buggy) features may be 
-so distant from the mainline in those kernels, or so immature, that no 
-one will consider them while staying on such an old kernel.
+This patch has been applied to the wpan tree and will be
+part of the next pull request to net. Thanks!
 
-Again, kernel necrophilia pays my bills, so I have some experience there. :)
-
-> It's understandable that maintainers don't have all the time in the
-> world for this, but are you really asking not to backport fixes to
-> stable trees because you don't have the time for it and don't want
-> anyone else to do it instead?
-
-If a bug is serious I *will* do the backport; I literally did this 
-specific backport on the first working day after the failure report. 
-But not all bugs are created equal and neither are all stable@-worthy 
-bugs.  I try to use the "Fixes" tag correctly, but sometimes a bug that 
-*technically* is 10-years-old may not be worthwhile or even possible to 
-fix even in 5.4.
-
-That said... one thing that would be really, really awesome would be a 
-website where you navigate a Linux checkout and for each directory you 
-can choose to get a list of stable patches that were Cc-ed to stable@ 
-and failed to apply.  A pipedream maybe, but also a great internship 
-project. :)
-
-Paolo
-
-> Maybe consider designating someone who knows the subsystem well and does
-> have time for this?
-
+regards
+Stefan Schmidt
