@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7351E354F32
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ACE354F4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhDFI6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:58:01 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:36450 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbhDFI6A (ORCPT
+        id S244721AbhDFJAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:00:03 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15607 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240448AbhDFJAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:58:00 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 582D39801A9;
-        Tue,  6 Apr 2021 16:57:51 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] em28xx/em28xx.h: Remove duplicate struct declaration
-Date:   Tue,  6 Apr 2021 16:57:37 +0800
-Message-Id: <20210406085737.646015-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 6 Apr 2021 05:00:02 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF1d24YNgz1BFZL;
+        Tue,  6 Apr 2021 16:57:42 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.179.202) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 16:59:46 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/1] net/mlx5: Remove duplicated header file inclusion
+Date:   Tue, 6 Apr 2021 16:58:53 +0800
+Message-ID: <20210406085854.2424-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSUtLSRgeSE8dS0lIVkpNSkxNQkJPTEpNSEJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBg6Eww6LD8XSy00VisjDy4B
-        LFFPFE1VSlVKTUpMTUJCT0xKQklMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKT0JPNwY+
-X-HM-Tid: 0a78a66700a4d992kuws582d39801a9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct em28xx is declared at 219th line.
-The declaration here is unnecessary. Remove it.
+v1 --> v2:
+Arrange all included header files in alphabetical order.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/media/usb/em28xx/em28xx.h | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 6648e11f1271..43227111d410 100644
---- a/drivers/media/usb/em28xx/em28xx.h
-+++ b/drivers/media/usb/em28xx/em28xx.h
-@@ -628,8 +628,6 @@ struct em28xx_audio {
- 	atomic_t       stream_started;	/* stream should be running if true */
- };
- 
--struct em28xx;
--
- enum em28xx_i2c_algo_type {
- 	EM28XX_I2C_ALGO_EM28XX = 0,
- 	EM28XX_I2C_ALGO_EM2800,
+Zhen Lei (1):
+  net/mlx5: Remove duplicated header file inclusion
+
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
 -- 
-2.25.1
+1.8.3
+
 
