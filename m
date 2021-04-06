@@ -2,142 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695CE355AD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFCF355ADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347115AbhDFRy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:54:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52216 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347125AbhDFRx6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:53:58 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136HrTfw115653;
-        Tue, 6 Apr 2021 12:53:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617731609;
-        bh=LA7VQv3A9JWbmuuofLpTAukY9+6Pt/CKyjnIiSE3bVA=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tLW1V9b3hVe0zIyrKxs2pD062AVxvBpx3WKB6ayqg8csg/x0iHDtHUTcypV1JgZLb
-         eUkKGM4owNep1gcYM/raftDG/5DplPLkrMRBtdfcE7Nbd+aQtmVFS2ETbkPRyH3JmU
-         XClo4NYwtNSLHv/xlubFiTdjwCySyEalOgJq9Ol8=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136HrTAe107173
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 12:53:29 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 12:53:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 12:53:29 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136HrSna103034;
-        Tue, 6 Apr 2021 12:53:29 -0500
-Date:   Tue, 6 Apr 2021 23:23:27 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 09/16] media: cadence: csi2rx: Turn subdev power on
- before starting stream
-Message-ID: <20210406175325.rgmjgk4suggeldaz@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-10-p.yadav@ti.com>
- <YGb4J5q9N0ExOgn9@pendragon.ideasonboard.com>
+        id S234631AbhDFR5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:57:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43794 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234333AbhDFR5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:57:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DECA4B230;
+        Tue,  6 Apr 2021 17:57:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YGb4J5q9N0ExOgn9@pendragon.ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Date:   Tue, 06 Apr 2021 19:57:41 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 4/8] hugetlb: create remove_hugetlb_page() to separate
+ functionality
+In-Reply-To: <b684d7bc-4c59-0beb-3af7-a75e76e77a87@oracle.com>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-5-mike.kravetz@oracle.com>
+ <YGwwO0galuKQsD0J@dhcp22.suse.cz>
+ <b684d7bc-4c59-0beb-3af7-a75e76e77a87@oracle.com>
+User-Agent: Roundcube Webmail
+Message-ID: <cc941b98368dba12334b9948eb89b3b3@suse.de>
+X-Sender: osalvador@suse.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:55PM, Laurent Pinchart wrote:
-> Hi Pratyush,
+On 2021-04-06 18:49, Mike Kravetz wrote:
 > 
-> Thank you for the patch.
-> 
-> On Tue, Mar 30, 2021 at 11:03:41PM +0530, Pratyush Yadav wrote:
-> > The subdevice power needs to be turned on before the stream is started.
-> > Otherwise it might not be in the proper state to stream the data. Turn
-> > it off when stopping the stream.
-> 
-> The .s_power() operation is deprecated. Subdev drivers should control
-> power internally in their .s_stream() operation, and they should use
-> runtime PM to do so (this will allow usage of runtime PM autosuspend, to
-> avoid expensive power off/on cycles when stopping and restarting video
-> capture).
+> Andrew, can we make this happen?  It would require removing Oscar's
+> series until it can be modified to work on top of this.
+> There is only one small issue with this series as it originally went
+> into mmotm.  There is a missing conversion of spin_lock to 
+> spin_lock_irq
+> in patch 7.  In addition, there are some suggested changes from Oscar 
+> to
+> this patch.  I do not think they are necessary, but I could make those
+> as well.  Let me know what I can do to help make this happen.
 
-The s_power documentation in v4l2-subdev.h does not mention that it is 
-depreciated. A documentation update is in order. I will send a separate 
-patch to do it.
+I agree that it might not be necesary to make such changes, but I still 
+would like to see an explanation on the points I raised(excluding the 
+list_del() as you already proved that is not necesary), just to be sure 
+I am not missing anything.
 
-I tested this with OV5640. Not doing an s_power() operation before 
-s_stream() does not work. The application freezes forever waiting for 
-the first frame. So the OV5640 driver needs to be updated to use runtime 
-PM to do this, right?
-
-> 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/media/platform/cadence/cdns-csi2rx.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-> > index 7d1ac51e0698..3385e1bc213e 100644
-> > --- a/drivers/media/platform/cadence/cdns-csi2rx.c
-> > +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-> > @@ -256,6 +256,10 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
-> >  
-> >  	writel(reg, csi2rx->base + CSI2RX_STATIC_CFG_REG);
-> >  
-> > +	ret = v4l2_subdev_call(csi2rx->source_subdev, core, s_power, true);
-> > +	if (ret && ret != -ENOIOCTLCMD)
-> > +		goto err_disable_pclk;
-> > +
-> >  	ret = v4l2_subdev_call(csi2rx->source_subdev, video, s_stream, true);
-> >  	if (ret)
-> >  		goto err_disable_pclk;
-> > @@ -358,6 +362,10 @@ static void csi2rx_stop(struct csi2rx_priv *csi2rx)
-> >  	if (v4l2_subdev_call(csi2rx->source_subdev, video, s_stream, false))
-> >  		dev_warn(csi2rx->dev, "Couldn't disable our subdev\n");
-> >  
-> > +	ret = v4l2_subdev_call(csi2rx->source_subdev, core, s_power, false);
-> > +	if (ret && ret != -ENOIOCTLCMD)
-> > +		dev_warn(csi2rx->dev, "Couldn't power off subdev\n");
-> > +
-> >  	if (csi2rx->dphy) {
-> >  		writel(0, csi2rx->base + CSI2RX_DPHY_LANE_CTRL_REG);
-> >  
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Oscar Salvador
+SUSE L3
