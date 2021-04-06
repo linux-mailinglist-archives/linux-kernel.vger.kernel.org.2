@@ -2,96 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F093335590D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A799935590E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhDFQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhDFQUd (ORCPT
+        id S235258AbhDFQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:21:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51386 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233438AbhDFQVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:20:33 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B33CC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:20:24 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id i143so8772104yba.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BfGN9I6trd5BkeqeFDlqe8gVjdVzdmFU44UO56dxZA=;
-        b=FyHsXimFgxNgg4LXZcpB/jQYPZPdVvLWdFqr+x2Q1emEnpcHxOqcf8bFw9699Zti9L
-         N0sR2lSJLjyEw4ljxx5/DWU50f+8C3ZdwTpNEYiUM1semfFwCcE57T8AUpewIC3VSKLq
-         T3+zQZyE4nHlrmMdBS5Tf4nt7abPowfjltZLkf7M6y72eoexwI0N0UwPkFXu6PzvPU5b
-         5oWLBDyRr4Pu+Pd8YMj3dOm05KYmG4UKG1sgu8gNUDT79MxpI4IwKAzI2CcbGM4ORSQQ
-         YbrjdY/Tsk6xH9EUipBKayUHOU5t4x0huMldy08I/QWBIyWaQKjuT212cWGQMQ1SP5wH
-         aaMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BfGN9I6trd5BkeqeFDlqe8gVjdVzdmFU44UO56dxZA=;
-        b=VoDgQqTHxoIQJP0URxBs5me554bN4O9YKyg2cnKNw/n3HcFbGXLFNmnkqSukwJpcrw
-         eCUcENH9QuT94j2RqtHLJnY4Ch46sJ/rc96npZsVD8mV1Ut0NXI4QI2ueOzKxFVrLDHv
-         lTPthL1L6+32flpIvKuUx0iZGMTbRaV0VYwdSDDPdWvW6PqUiyXsURRMpsN9xf3WSnmv
-         quQqXY27mMVsAtJNulG4a7FZx8rnrbrJTRkveMMggfziCabbYVirx6S5DOi08UayRLOw
-         C0ZscKSVJjtgORXVfjxx13o/YVdaR7p3C6lLrRMU/zxxWYmNW7c2eNMK9lgGC6IhShsB
-         2lLA==
-X-Gm-Message-State: AOAM530ets9B+EBIBM9VuAWNsoMXBUPB3TeQqPrsX7wWMP4tAMbyGQsO
-        D3T4Syyuq51gOhjzeV2bEO4owW/Ny4IPr/5EXMhHIA==
-X-Google-Smtp-Source: ABdhPJymluBRZe0ZRl/0Ybrf9Y3OpI0vaW7hM8e2UvJc8sGk7d30GCtnl4Qw+A7Twj0wuUyAl7G2mgKWdOfasYjUHj8=
-X-Received: by 2002:a25:58d5:: with SMTP id m204mr43146231ybb.32.1617726023335;
- Tue, 06 Apr 2021 09:20:23 -0700 (PDT)
+        Tue, 6 Apr 2021 12:21:50 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136G7aAp150753;
+        Tue, 6 Apr 2021 12:21:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
+ from : in-reply-to : date : cc : message-id : references : to :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=8irR3ZwSZ+/j2G1DtNcj8fk37Rd/c7OtNqWduMO/Eek=;
+ b=fASIU+H1yJYP7tkbuslT7l5JvwepGnqDTckYeKavo9giE7Kd9iu/D+KgJf14agVt5PAK
+ DYlVccK3qiB6gayoyTawWJ1YfdaRG8mg8a+8ffFfpMqvkz2ivVahcOetYIZzdt7B4Kr9
+ dMgm7cZQjVYkZCNyF5t7HUoeh2LSZnciZUcMfZhz8ahJOqy2pDfdhaty/5ODqEsZmB4R
+ 6meytd0P1Cgq3sD3FXhH+7JVf6zCeSAQ9ALFtotIZLgkvTI/h5DdFYqE10HYdCYNWRhN
+ kiFlkcw6EwBZY7E+rp8uPDv97wEDKjjoFrrwksnU4wDJ64ChbB81A07JXn0DFvRcQqka cw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dvgd92-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 12:21:29 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136GDUpD021687;
+        Tue, 6 Apr 2021 16:21:26 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 37q2q5ja8r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 16:21:26 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136GL3pF37224714
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Apr 2021 16:21:04 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 861B9A404D;
+        Tue,  6 Apr 2021 16:21:24 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F95CA4051;
+        Tue,  6 Apr 2021 16:21:23 +0000 (GMT)
+Received: from [9.79.187.191] (unknown [9.79.187.191])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  6 Apr 2021 16:21:23 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Subject: Re: [PATCH] powerpc/perf: prevent mixed EBB and non-EBB events
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <F791C89D-E644-43D3-8229-3618AF7DE2C2@linux.vnet.ibm.com>
+Date:   Tue, 6 Apr 2021 21:51:21 +0530
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-kernel@vger.kernel.org
+Message-Id: <0D709DAB-1C5A-4526-9BAB-11BE27E8DBCB@linux.vnet.ibm.com>
+References: <20210224122116.221120-1-cascardo@canonical.com>
+ <F791C89D-E644-43D3-8229-3618AF7DE2C2@linux.vnet.ibm.com>
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: otPe-JK_96deTIe4c7SmpVOhFaHlCZn2
+X-Proofpoint-ORIG-GUID: otPe-JK_96deTIe4c7SmpVOhFaHlCZn2
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210406181945.2ae6fed1@canb.auug.org.au> <YGwly0cRvxGpt26D@kroah.com>
-In-Reply-To: <YGwly0cRvxGpt26D@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 6 Apr 2021 09:19:47 -0700
-Message-ID: <CAGETcx_JT+1_ZorCeF3CW2T1vGDM2p7uNm3drHeAMFLZTz0JCg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the driver-core tree with the
- devicetree tree
-To:     Greg KH <greg@kroah.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rob Herring <robherring2@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-06_04:2021-04-06,2021-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ impostorscore=0 suspectscore=0 clxscore=1015 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104030000
+ definitions=main-2104060105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:11 AM Greg KH <greg@kroah.com> wrote:
->
-> On Tue, Apr 06, 2021 at 06:19:45PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Today's linux-next merge of the driver-core tree got a conflict in:
-> >
-> >   drivers/of/property.c
-> >
-> > between commit:
-> >
-> >   3915fed92365 ("of: property: Provide missing member description and remove excess param")
-> >
-> > from the devicetree tree and commit:
-> >
-> >   f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
-> >
-> > from the driver-core tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
->
-> Change looks good to me, thanks!
 
-LGTM too.
 
--Saravana
+> On 05-Mar-2021, at 11:20 AM, Athira Rajeev <atrajeev@linux.vnet.ibm.com> =
+wrote:
+>=20
+>=20
+>=20
+>> On 24-Feb-2021, at 5:51 PM, Thadeu Lima de Souza Cascardo <cascardo@cano=
+nical.com> wrote:
+>>=20
+>> EBB events must be under exclusive groups, so there is no mix of EBB and
+>> non-EBB events on the same PMU. This requirement worked fine as perf core
+>> would not allow other pinned events to be scheduled together with exclus=
+ive
+>> events.
+>>=20
+>> This assumption was broken by commit 1908dc911792 ("perf: Tweak
+>> perf_event_attr::exclusive semantics").
+>>=20
+>> After that, the test cpu_event_pinned_vs_ebb_test started succeeding aft=
+er
+>> read_events, but worse, the task would not have given access to PMC1, so
+>> when it tried to write to it, it was killed with "illegal instruction".
+>>=20
+>> Preventing mixed EBB and non-EBB events from being add to the same PMU w=
+ill
+>> just revert to the previous behavior and the test will succeed.
+>=20
+>=20
+> Hi,
+>=20
+> Thanks for checking this. I checked your patch which is fixing =E2=80=9Cc=
+heck_excludes=E2=80=9D to make
+> sure all events must agree on EBB. But in the PMU group constraints, we a=
+lready have check for
+> EBB events. This is in arch/powerpc/perf/isa207-common.c ( isa207_get_con=
+straint function ).
+>=20
+> <<>>
+> mask  |=3D CNST_EBB_VAL(ebb);
+> value |=3D CNST_EBB_MASK;
+> <<>>
+>=20
+> But the above setting for mask and value is interchanged. We actually nee=
+d to fix here.
+>=20
+
+Hi,
+
+I have sent a patch for fixing this EBB mask/value setting.
+This is the link to patch:
+
+powerpc/perf: Fix PMU constraint check for EBB events
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=3D237669
+
+Thanks
+Athira
+
+> Below patch should fix this:
+>=20
+> diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207=
+-common.c
+> index e4f577da33d8..8b5eeb6fb2fb 100644
+> --- a/arch/powerpc/perf/isa207-common.c
+> +++ b/arch/powerpc/perf/isa207-common.c
+> @@ -447,8 +447,8 @@ int isa207_get_constraint(u64 event, unsigned long *m=
+askp, unsigned long *valp,
+>         * EBB events are pinned & exclusive, so this should never actually
+>         * hit, but we leave it as a fallback in case.
+>         */
+> -       mask  |=3D CNST_EBB_VAL(ebb);
+> -       value |=3D CNST_EBB_MASK;
+> +       mask  |=3D CNST_EBB_MASK;
+> +       value |=3D CNST_EBB_VAL(ebb);
+>=20
+>        *maskp =3D mask;
+>        *valp =3D value;
+>=20
+>=20
+> Can you please try with this patch.
+>=20
+> Thanks
+> Athira
+>=20
+>=20
+>>=20
+>> Fixes: 1908dc911792 (perf: Tweak perf_event_attr::exclusive semantics)
+>> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+>> ---
+>> arch/powerpc/perf/core-book3s.c | 20 ++++++++++++++++----
+>> 1 file changed, 16 insertions(+), 4 deletions(-)
+>>=20
+>> diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-bo=
+ok3s.c
+>> index 43599e671d38..d767f7944f85 100644
+>> --- a/arch/powerpc/perf/core-book3s.c
+>> +++ b/arch/powerpc/perf/core-book3s.c
+>> @@ -1010,9 +1010,25 @@ static int check_excludes(struct perf_event **ctr=
+s, unsigned int cflags[],
+>> 			  int n_prev, int n_new)
+>> {
+>> 	int eu =3D 0, ek =3D 0, eh =3D 0;
+>> +	bool ebb =3D false;
+>> 	int i, n, first;
+>> 	struct perf_event *event;
+>>=20
+>> +	n =3D n_prev + n_new;
+>> +	if (n <=3D 1)
+>> +		return 0;
+>> +
+>> +	first =3D 1;
+>> +	for (i =3D 0; i < n; ++i) {
+>> +		event =3D ctrs[i];
+>> +		if (first) {
+>> +			ebb =3D is_ebb_event(event);
+>> +			first =3D 0;
+>> +		} else if (is_ebb_event(event) !=3D ebb) {
+>> +			return -EAGAIN;
+>> +		}
+>> +	}
+>> +
+>> 	/*
+>> 	 * If the PMU we're on supports per event exclude settings then we
+>> 	 * don't need to do any of this logic. NB. This assumes no PMU has both
+>> @@ -1021,10 +1037,6 @@ static int check_excludes(struct perf_event **ctr=
+s, unsigned int cflags[],
+>> 	if (ppmu->flags & PPMU_ARCH_207S)
+>> 		return 0;
+>>=20
+>> -	n =3D n_prev + n_new;
+>> -	if (n <=3D 1)
+>> -		return 0;
+>> -
+>> 	first =3D 1;
+>> 	for (i =3D 0; i < n; ++i) {
+>> 		if (cflags[i] & PPMU_LIMITED_PMC_OK) {
+>> --=20
+>> 2.27.0
+
