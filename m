@@ -2,125 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA39354E57
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D83354E60
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbhDFIQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhDFIQN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:16:13 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22427C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:16:04 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b4so21344199lfi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:16:04 -0700 (PDT)
+        id S235620AbhDFIR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:17:58 -0400
+Received: from mail-bn8nam12on2068.outbound.protection.outlook.com ([40.107.237.68]:60417
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232032AbhDFIRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:17:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mz/86Kimzh/HrLgdjE7fCQTJV20b7flu31ANSxA5LH1kzxAJWVk5DKY7l7JQ/gqFNzQbJiq/9v1VMsv6zXyPzuzSmSAenwm+oytUIjQdIDbzyVPAzbsOQjgcaqjbMMGeTzD2MR71yOUubYUrg//peqInFGnm9kDgPG2+995dhxd7pyhiWXBh19dQqzhJz9E6E4fXJE2Bv/guXacClRlMe7BQQKA3WEYaVfpqWFoZmSaJxdwBZKPwXZejl/dgLf05ppfYq+/9fgZY9SftdeZjHjqmEpT3Kdqp2R4YnMw/v1gNuWFg9DxgIE+TQck3Z33t2Mtlq8vJMe3UlueAl7kXmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Foz4TuuCUhDKZnQ3rbTqcllMnG3kVsZqIgcQSLJKPd0=;
+ b=balOkl5jn+LdSrwX73aWrzkvRUzRpci1TMhbplzMfr9rHTnSa6qKRwHXhDdUeSm/X9g65U8uP55ABuJ5SyJdTUrJj6v5P0PSlKPWG/7eHf4QKE9ucxcX0/0sf5BAKpoxlELuF/YwA0hg9q82vfeNg0uAkPiIo2H3rc/07bvqpPMi8zy+3CcwC2gKM2JujZq5qfkIMNIP7RlJZxlh0gWqHJYNNAHtpvjVqm5JUjoMkbdyaRejteHDcHRkvtzMcgmcgu8svFAW05UBILvUCOW+cqnSRdT0JqZPc0UmrqjfvHxfyijo68wUvssFwiopOWOvurettaWPGiEbzAuYME08ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=isZ5kV3hcGyVHNx3xikshGr05T2fizU/DZiP3qKBK38=;
-        b=xt7xX1sxO+zKckULPY9hGfIdjtQlAEODi6Anjq6kzJ2pdqY6UIq9Hl/PRdM6+amm9+
-         mmojXPazGYpsaVAa3tYF7N0jAMD3CEtRgeMUczYZ952hDturVQmbqrjLRmbTwXQYeGho
-         6g5bGSPzrA9pfGFp5ZGDHPnLB3Id5CgC7SUuJZHiN5JntF0nyWByMYfs7FozN3amOrBy
-         knllXWukmSvQElREjw/RAQFDNul95IRh1WIgCVW9do1Exn0WXSVjbSC6IpDuAWZF5t+v
-         UIjmuhzGIS8G8w3en36frU5+2lRQz8C0jJJE0Of7CWxdmN0M33CMuvBHXemInrEDglRK
-         OpFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=isZ5kV3hcGyVHNx3xikshGr05T2fizU/DZiP3qKBK38=;
-        b=t5CNeB9M37FmWBGrSumpDoCpkLDAFTQv0VDohS4s5CfLYE04NwmpqQOcn8qsnfdTML
-         zNxzdDMHivAxfXUVBfaVEfbN4E6yUGSuQyh/xCxL698H1DIu1MnJHVRH+H3NkgemHtKW
-         CDYhTEMAeQSQKGjlUAJIuiO+SYuV8gIuY1VGhoKQf4EyfkmU51j0+DuGnIrMMnMehktn
-         SWmt8wj9G04GkDFUXOaeliBQc6cCo2MfreqzqJBVTAIEuUEEgv/2HWQVjxB8uWaIhfRw
-         bkqFgMfCT5Iue6PtOHrmWcNTxvwMOrApCeyYBTGt+nZRshOrtpUlRn87qtylpQgp0jNV
-         mUuQ==
-X-Gm-Message-State: AOAM531SMOzYfe5rWHW6xJmR5Gcq8UNobR7j++lWKrKokoe3qXO/5C4h
-        R7PxUT4UJaFtIr/57Pt1gNpK/25jJ0mVN/+u+kzEEA==
-X-Google-Smtp-Source: ABdhPJwxS7CHhzRoQDnRr3aeh9w4hgYoOYYNMDiEWtk2i2LnkDyvmFz59K5jVqWPK6TCRTr0VOnQ/YAGAyXMn0UG7hg=
-X-Received: by 2002:a19:ef18:: with SMTP id n24mr1928131lfh.291.1617696962602;
- Tue, 06 Apr 2021 01:16:02 -0700 (PDT)
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Foz4TuuCUhDKZnQ3rbTqcllMnG3kVsZqIgcQSLJKPd0=;
+ b=eDXJk89x+ozVDjQFDKs59jJcoD4J8speYcLETNS4CeL9zSSXUUiYy2sIchqr3n9Rw+hbGOegg0OCIqjOISD18M0/WcSFtJXPrfFWBuIEJyffsnqehAa2XZhaP30ggqEqBmxxRJZZBfj6+MgdZaqo7tz0LKIE+i54tYcTrOQvzVU=
+Received: from DM6PR11MB4441.namprd11.prod.outlook.com (2603:10b6:5:200::11)
+ by DM6PR11MB3595.namprd11.prod.outlook.com (2603:10b6:5:142::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Tue, 6 Apr
+ 2021 08:17:43 +0000
+Received: from DM6PR11MB4441.namprd11.prod.outlook.com
+ ([fe80::9400:9b03:a7b3:446b]) by DM6PR11MB4441.namprd11.prod.outlook.com
+ ([fe80::9400:9b03:a7b3:446b%7]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 08:17:42 +0000
+From:   Pho Tran <Pho.Tran@silabs.com>
+To:     'Greg KH' <gregkh@linuxfoundation.org>,
+        'Pho Tran' <photranvan0712@gmail.com>
+CC:     "'johan@kernel.org'" <johan@kernel.org>,
+        "'linux-usb@vger.kernel.org'" <linux-usb@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>,
+        Tung Pham <Tung.Pham@silabs.com>,
+        'Kernel test robot' <lkp@intel.com>
+Subject: RE: [PATCH v7] USB: serial: cp210x: Add support for GPIOs on CP2108
+Thread-Topic: [PATCH v7] USB: serial: cp210x: Add support for GPIOs on CP2108
+Thread-Index: AQHXKpm+rbC2wNO7d0GjPcy5lZODOqqm8kwAgAArBNA=
+Date:   Tue, 6 Apr 2021 08:17:42 +0000
+Message-ID: <DM6PR11MB44414602F10C6C991A65D48CE3769@DM6PR11MB4441.namprd11.prod.outlook.com>
+References: <20210406040238.1850-1-photranvan0712@gmail.com>
+ <YGvuQlxyorJt+ErG@kroah.com>
+In-Reply-To: <YGvuQlxyorJt+ErG@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=silabs.com;
+x-originating-ip: [210.245.53.9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 210bf933-45b5-4733-d9f2-08d8f8d473aa
+x-ms-traffictypediagnostic: DM6PR11MB3595:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB359518E63A194C3CC656A068E3769@DM6PR11MB3595.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6sQYVERQc6l4Emq85g/LVSwwWAZHip0Ig3sRiEqq19k4nNpsvFZKV5BSyuy4LHfGYU1m8rX5sCbRW1NzAkS6Q0qm3PS+NjcgQhx58Mr4c3JUGNgKVsLYDCrASxYq/5mmSBjZe4PH3Y+HkmfEaRrQyGBZRLNyRcX+4iWc2S2XpmVo3TGonfnbFkIlw5qZ29iUkub1zL837SNfKCPIL3XhA9mJOvWMQOMVgMDN/Vmdt9W2wl6JfTKCjxHPJfgoP90be9pNt62J8xL34LWbf+ZWTicM/Ry/NIQc+rwhtSRTuLWA4LFK1IxxJoiUCNnJroZsmQ+YSiqwbumtw39n93FXCna7OEQ3sMCcNAi6nLeOaYrYGcxS7omA23VadwoNxpT5kKEOerFf3NIzzShPsY73wbxfwmnteBvzuVQ4r+6kXdQxday00sDBKZru4c0Oz24obTXIknIEZuKrF6FdnsLoElbeWKoftA5T8HL6o4kayClX0ZRhY3/iFCLAoDe8dQX+KAr3hIeIgGU/ofijYp+yjCSuuKg4HVZ1MEvkc0Qm5I1dQk84BsdNjOFNPLwxghC8c61hQW1fRyKpgY2aaiKobwAnEG5JcreW9MgTBi4p3P9J9y18yjhXc4FbfwnqsCGCErGvIuaWFIOaeWkUcNiHdg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4441.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(39850400004)(346002)(376002)(8676002)(66476007)(86362001)(7696005)(38100700001)(64756008)(5660300002)(66556008)(53546011)(52536014)(4326008)(66946007)(6506007)(66446008)(9686003)(71200400001)(55016002)(26005)(478600001)(316002)(76116006)(8936002)(186003)(54906003)(110136005)(33656002)(83380400001)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?6JTpOLScCJ4WDOdzrgY+of2+5gjpGqFaCzyhgg0FgjQ9jbajbtTr5x5ytxrL?=
+ =?us-ascii?Q?c5WiJHrTlsEdecNY28L3gsMDjRbaWf18xaMf4KzsE0zglGmfEpsmA1EufoHA?=
+ =?us-ascii?Q?sfAoNo1vE8PzV7spgVe4YROQ1DkoxjdEU6XmKKq4lHPc6SVoE7ntATp3fLzf?=
+ =?us-ascii?Q?KzjxhfG7xzwGMIIWxmHAWLBAqfU7F69mHIp0fYEe8q93/IbMqQYsr9ZL5+TX?=
+ =?us-ascii?Q?8pwCcbL0uqtMaB+4DQz3JWEErVSKrueUBRPmQSVEFuOxU2R8epyXmlXF06j3?=
+ =?us-ascii?Q?mdWR21XoUos0Y8ykW8bGRxBAAW0MZDuIoudthYm+2HLPqit/XUS0kzuf+9If?=
+ =?us-ascii?Q?gLsJOrR/sB1OeTAPAA3zwWaGUJoZ/td5i/8IwYpU+Y0fLe5du10VQmMitobB?=
+ =?us-ascii?Q?BuyFyCj8dDRXrJrjmwspXYkpwfBuhUoo17sBKwgpZ/S+Sn8BOAiSlEbPpfuA?=
+ =?us-ascii?Q?QdkpW+zZYV+/mitAv1FtTXzKJP4K+XLcUn1RgFBbF2kG1DirsjNwLalgTwMN?=
+ =?us-ascii?Q?Nnr69wKsampNcdHfNUG8lc5yK4EsSAAWFSV0ydfxvN0xQjgkm8Yda5gnhMI7?=
+ =?us-ascii?Q?LGQCjERxf6FagY6IZvPPd+4ncjvL4w7dZGkzq1T0AQ1ismGm3MobGbTEPg1v?=
+ =?us-ascii?Q?ZAwm0i/+pIk19+HlQ+5vSCpK6vkX4x+FYlxQDevm1o2bog3j+9KEE7bx7y6b?=
+ =?us-ascii?Q?5rDaENr6wAHCjXORblxr3VVhzgic3mFTZ3vefg/obqSPHlllwitbXVksE5QU?=
+ =?us-ascii?Q?PYlHtgIrJK4ktkqtX9Rs0t37FPhMbXhGjKJTBeq8KFoxJp5SYsnRlqKeDV/T?=
+ =?us-ascii?Q?SMbet0BP+/05hMGkMzEs24DmuF+kRD7+aBtlyMUYgeGGJ2Ousk6DfnBpz7sC?=
+ =?us-ascii?Q?6malQOvk1GSHPDIOvujy/5h22VjHVSYIFLDrUcZ5HYstsqvKlFLInOX+KQEe?=
+ =?us-ascii?Q?ty9dalc6R0QSY6/XmEtJtpWqICXixLlgBtd9kLjstmiaG003yUaOnGTMRUHR?=
+ =?us-ascii?Q?EBJae11bvbWbnanOZ0CwabT76OZ2NVQnOcVB6QvpcIFPginKLDfJJUOYPJiF?=
+ =?us-ascii?Q?WRm1Pc2Con0MdkRnuBIqbK0N00BCYuuCkWxBq2rs9MBsVm0ejbn+mfjKUGMy?=
+ =?us-ascii?Q?3C8EQPUTggX32OZLJjGFLoem6eDby6tr8vJh5J7FmFJoqaEWB93H9pwpNMkn?=
+ =?us-ascii?Q?jWJmyQ0EofzWiUhpfPMJAounyhSckpv7G9BwhlYDBJDmdBZWdkNVrV+Tn2r6?=
+ =?us-ascii?Q?TENqRo6dwFiXbOdliJYbF7mhoOFq7kgEfJGqeYsxp4/EYjoWmN5FY0mfy19s?=
+ =?us-ascii?Q?eic=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <YGtZeofmBv7hXK+a@Red>
-In-Reply-To: <YGtZeofmBv7hXK+a@Red>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 6 Apr 2021 10:15:51 +0200
-Message-ID: <CACRpkdZ_barDrLvD2UBKo+GA-F+g72uMQx8CfRK2YLRodpeyUA@mail.gmail.com>
-Subject: Re: gemini: sl3516: Mainlining of NS 2502
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4441.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 210bf933-45b5-4733-d9f2-08d8f8d473aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 08:17:42.7988
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Wo1VgBj3XGx8M9Gl+hlM7PAZCe9UqXFf7vsaxDSdnjbx4b9o5f9/cyketCjwfXMlvd3SVS/0tVZ2ObCqKogPXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3595
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 8:39 PM Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+Hi Greg!
+I am grateful for your promptly reply!
+ Yesterday, I got the response from the kernel test robot with this message=
+:=20
+" If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>".=20
+It's a reason why I added "Reported-by: kernel test robot <lkp@intel.com>"=
+=20
+to my new Patch.
+Could you tell me what I need to do in the next step to submit this patch t=
+o the kernel mainline?
+Once again, Thank you a lot!
 
-> I own an Edimax NS 2502, which is a NAS based on StormLinix 3516.
-> I successfully upgraded it with a recent Linux.
+-----Original Message-----
+From: Greg KH <gregkh@linuxfoundation.org>=20
+Sent: Tuesday, April 6, 2021 12:15 PM
+To: Pho Tran <photranvan0712@gmail.com>
+Cc: johan@kernel.org; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.o=
+rg; Hung Nguyen <Hung.Nguyen@silabs.com>; Tung Pham <Tung.Pham@silabs.com>;=
+ Pho Tran <Pho.Tran@silabs.com>; Kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7] USB: serial: cp210x: Add support for GPIOs on CP210=
+8
 
-Pretty cool!
-
->         mdio0: ethernet-phy {
->                 compatible = "virtual,mdio-gpio";
->                 gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
->                         <&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 phy0: ethernet-phy@1 {
->                         reg = <1>;
->                         device_type = "ethernet-phy";
->                 };
->         };
-
-This looks like the most typical way to attach an MDIO phy.
-
-I always try to identify the exact component used on the board. Do you have
- a high res board photo?
-
-Realtek RTL82111 is the most common configuration.
-
-Compare to the D-Linux DNS-313 DTS:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/gemini-dlink-dns-313.dts
-
-Try just copying the whole pinctrl-gmii section!
+CAUTION: This email originated from outside of the organization. Do not cli=
+ck links or open attachments unless you recognize the sender and know the c=
+ontent is safe.
 
 
->                 syscon: syscon@40000000 {
->                         pinctrl {
->                                 /*
->                                  * gpio0agrp cover line 0-4
->                                  * gpio0bgrp cover line 5
->                                  */
->                                 gpio0_default_pins: pinctrl-gpio0 {
->                                         mux {
->                                                 function = "gpio0";
->                                                 groups = "gpio0agrp",
->                                                 "gpio0bgrp";
->                                         };
->                                 };
+On Tue, Apr 06, 2021 at 11:02:38AM +0700, Pho Tran wrote:
+> From: Pho Tran <pho.tran@silabs.com>
+>
+> Similar to other CP210x devices, GPIO interfaces (gpiochip) should be=20
+> supported for CP2108.
+>
+> CP2108 has 4 serial interfaces but only 1 set of GPIO pins are shared=20
+> to all of those interfaces. So, just need to initialize GPIOs of=20
+> CP2108 with only one interface (I use interface 0). It means just only=20
+> 1 gpiochip device file will be created for CP2108.
+>
+> CP2108 has 16 GPIOs, So data types of several variables need to be is=20
+> u16 instead of u8(in struct cp210x_serial_private). This doesn't=20
+> affect other CP210x devices.
+>
+> Because CP2108 has 16 GPIO pins, the parameter passed by cp210x=20
+> functions will be different from other CP210x devices. So need to=20
+> check part number of the device to use correct data format  before=20
+> sending commands to devices.
+>
+> Like CP2104, CP2108 have GPIO pins with configurable options.=20
+> Therefore, should be mask all pins which are not in GPIO mode in=20
+> cp2108_gpio_init() function.
+>
+> Fix build test WARNING reported by kernel test robot.
+>
+> Reported-by: Kernel test robot <lkp@intel.com>
 
-Change groups to
+The kernel test robot did not report this needed support :(
 
-groups = "gpio0agrp", "gpio0bgrp", "gpio0hgrp";
-
-So you mux in group h which is where the GPIO 21, 22 go out
-to the MDIO on 3516 IIUC. The right mux out is pretty important,
-if you have vendor source code, please share so I can check how
-they set it up.
-
-> BUT neither ethernet nor USB works.
-
-For USB try this patch:
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/commit/?h=gemini-usb&id=cbaf6cdf770b90de5f10bfa5112c679f1dffe948
-
-Pls report progress! I hope we can mainline this device.
-
-Yours,
-Linus Walleij
