@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D952135532D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8A2355335
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343723AbhDFMJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:09:54 -0400
-Received: from mout.gmx.net ([212.227.15.19]:57681 "EHLO mout.gmx.net"
+        id S1343773AbhDFMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:10:31 -0400
+Received: from mout.gmx.net ([212.227.17.22]:46353 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238224AbhDFMJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:09:51 -0400
+        id S1343744AbhDFMKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:10:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617710975;
-        bh=zBnK+44syl2uM55jlmjjhLfGyr8wgn/qMopLwX5egrE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=j5k0R4DQ1kRBLqfA+046ax+BoSURWxsp2AaWWDFK2O8gXmyMcWEBn5fLM6sOODC0m
-         bCTprcavOvyYgsQ9xHx8CWPDiLb0nrtS78dKv+tto3xcajc0DJdKp8ppXS+BCLpt9y
-         mheezDBTpSVVpnmZDyK/HDUabIQ6F/Xa/Z5PDgqk=
+        s=badeba3b8450; t=1617710991;
+        bh=KpTYS8atLjrE/4GNwFDukd12JiHZ0ZOeahsrryBdGeY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=VOWC7DerThJgvFhCt8RxD7pp5S6I4aIKd0D002IqRdT4/YJnWBLx/OS0DIILJwhJ1
+         /RqgxYfGx9bB8VS8MVIsagBTqc7ImG22nlpy0RH76dsFjBaTEwsOqyS1NxpV6c3M08
+         Vd4pQ/hrt7XOQGcchoCcv1CDZpwRJZLsIk5AIB4c=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MuDc7-1liNWc0LEL-00uazz; Tue, 06
- Apr 2021 14:09:35 +0200
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysRu-1lqNif2hHO-00vvIO; Tue, 06
+ Apr 2021 14:09:51 +0200
 From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
 To:     openbmc@lists.ozlabs.org
 Cc:     Tomer Maimon <tmaimon77@gmail.com>, Joel Stanley <joel@jms.id.au>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Subject: [PATCH v2 00/10] Initial support for Nuvoton WPCM450 BMC SoC
-Date:   Tue,  6 Apr 2021 14:09:11 +0200
-Message-Id: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        allen <allen.chen@ite.com.tw>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 01/10] dt-bindings: vendor-prefixes: Add Supermicro
+Date:   Tue,  6 Apr 2021 14:09:12 +0200
+Message-Id: <20210406120921.2484986-2-j.neuschaefer@gmx.net>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:n2PD0E0/Wi/cSfWgAnOHj8Pd6UsuT4wLld5XbnNo0UwDKU4q0+W
- I+BMIjHcMr8I1g5i39X3dK8Je1qhvLbD3LqaiJLEXLVhlMJSOjvXncxF6KjrHI1PPJhjUXf
- oh6bzrIEBxR+JLbNlKVI/kJz02DYCpzoVkNrO6rvv7Xf4IUZlXpEAq8RG25ZitCENpFZl5a
- qb9IhMnuXr0I0dz/FHXIA==
+X-Provags-ID: V03:K1:xocqc0oP8O7AxwukI4bLefxqkCMRGb4FL/sgNQpEhAp+uph5fYI
+ D6omEO3rn00+UPuneJf+sgpzGp8ZJSiwKPQrw3DuXxVwuv81/GMazUlxn+xeKenXBN2UdXH
+ l5PRwyQthYBA9eNRv2W0rp94r3Mim23DUvkwlnlmRdy7B7kLtwsCytIFJGDOTPIrHqxv9gp
+ Nj6ojZVbcAqVxU2v1FL5w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:deAxC+E8twU=:7cGBMKnUUtXQ/AXZvLd9Y5
- MQfjBJMKk2gowyxOI4HoOnN5wlZZ00IdG+VwUq1fzWbz6yL/c3gNeighkENwrcQ8A2TNQ30IA
- rFQj1QYYSE8VbAINcwM4h0088hIC+qs+vZ7ZsDleuLXTF1txDreNx0bfRw1wX7pcnTnNm405J
- +FX6gQptSgEWJpMUOofPOd4IIEM0ULRZNjQGHT4n9xzuyslL/jFqvjvG/VGtCo+FJ9rGxF6nO
- NlIu2vTlurUJG94kQzCx5pImBeoKVV33MP3b08FVxisxMcDAW8Ds8U+WeVFsaQYxwC5F+TnY1
- E6TY9VL5Q57GKXOriBAvdaT7D7qZsw51tJzIkCxLik8LrUcjM1x/PAJ/7ul9FgVu3GnXHVvD4
- hNmiRwThC6GyUf+P5lhL34VWVPFqYH6KzaxgMh1ujoarRCEtdNZx3KKsvd88QEbKL++l1ERVi
- FJ2eIzIFGKkzU9iYlEUHW7b9RvZsgdHpSLFESogYkUqZRmYt5OrAKZqFStzpB4tGKO78bPRzQ
- CIyVKUbOmrzrKU5RqYxStoM6RdvS39so4lVX9mvG34DlqHOtpHvpKHpsi3/8Up+qYbGvtAC7h
- 2vG95DjNkOygQajEm3UEA77+2FvY9co6kWYT9dIehael6dvq1D6iTCiZAKCH7slgIYMXyz8tn
- MTeN2vscmQcJk7pTq7RseLHR1CkI+bTZgNWEYipxEe3IP0/8aVnN0aFDo4Y/2rVmVIchSkbTc
- CmzR+9Wp96neuLBHghmEKFt2ypZfLJ/Hpki2afx74rY1RnGWBjysZ/gtNlBAf884SARYUh7ZJ
- 0JremgqlxDx9bdo7+viAlIzjx0ZZr5ywt7d1aeNm72prdjfqGO5OaMU1qhtesw4CoYr5NHIv+
- jls8X1YinaC/9wGg28WI/tFHp6+7DSMbVIKHym7omwRdjAkoSagjCt/Ii2X8HIOdAatZT1//2
- Uvz1cFI9vA13ozw4moAiXAdYkAxmc8tD9qvAyNOxAGQlKA9Zvp7rJFJeLTGachaqcTt67QJ5G
- C3unwo71JCtr9y1vlBwi/978TD42H15BS8lSCtSVzaUH05hwjS7Qu/H6VbSAapCDogUmGTaow
- oxUEWvQZtvXZKp/LqMHKV8Y4jFR/nWrQHO6R9SIBQmPXCgaAXgYUdlPxM4ic2h7uCY1UEJrPb
- b2SVuMH1sKpcxcbl57H5E7aLuqnEIOHm0U5wogk3Yd2CSTehxHoOO63eYCybd0C+UIzodHZI9
- YBSuY6C7yeVfLFror
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JBmt0AXMpgA=:YRX6SCRLEUtZR2eUPydmdp
+ SGn+s9gkZtj3wuJaNR5weqUqEMO7Ku5FHoXdqaPbBFK4pwN6rl9ZjtUQMfmM/qK/U9mY42+F7
+ 89SNFwsDpPjzLSpfoAAySB/kQONKChL6enlzTqzidrXUvB5iLbG/wo6FP4QrHkTMWb97HeVbx
+ eovEzVlGhwc9ID9s0lrfwXHLNlYPFdekcIcGOnxC79GE8DFrek0Z9NfGUipXm8jWcDxmQm+3i
+ RbTpC7LkRdYQ2WHRd8Zqh9sTjWYqvnNY7t0n97ud68gcpyj5kIOifDRB7m2uvdBg1+XaVV3p2
+ l/5KXg7IMpEKB5I5CyY7YaOMHe8ir+6FkvMl/Ezh8dDLcywwdkb+LluoGfvs/wfXS7hdJrgrn
+ bh36JOspR3wt2B8x1clKNWJ273Q+3dP0+JodNXhdJw0diml7OpYj+Dur1Jmq8gX17Hl8tBjii
+ NvhpthVU2wN+37XSTsOo7snIixLfPRZN+jkGR/ekRScftq9v7N5D5AfWrAWOwyKZcak0vrzU+
+ ZRw6K0SBm7zdedYGyNSu9SmXtsnNuGFPCIf+swfG1Uf2XEmBa8PFdGiEEPYe8HUM4z4avDxMm
+ IqxMReaBi1aRxaAORAtyx+Z7boHHxAB8YSc+mv6J9fJAHO8diVkuj8StkNRRQqkrgTvzlPNYQ
+ mysV0kyEIKGgNG+Vr6xIu+syc/RPTpIXkkVLbP73rkShjtwfcw2aVJ2ynJTYz97x67B1INp5E
+ m99kt0D2NC0+5ujAFwCp33410qBUZV65fVzZJU4VGxZU/ebnUtzRXnkMjI3CfEKjx6RYyczqk
+ KTnajlMjeHaLl+MEGIsgR97eVh+bvTkOqpH79srqe6PaYSWoLGq8dcfgLxp6IaKFrzc4n+b2m
+ 3zPqHT4/rqNPqXmQVIL/YXFUzYs1DUbKtqnmVpXlIw7HMebH+HuHwtU4qrPSklLwBZeMWSWkY
+ qfQhwfFrNtNcIWbjanVpyp2Dnof/FJq2KIw6Aef9yeIXIzVjA4TQKtNg4vn6CeZBMfLYm6QbJ
+ NaB6ZjCbnMrpr+yPjurh4ivOaotgza5Q1zmN5D8lcXns/XRk1lNkQrcQGPc+pjgU7qV75kHcu
+ F1pcjdaFgHeS44XItSUmnjbK6seIz1MAXIGhWXt6Q40pJUSZR4ASAtrRxRh/FbS2bSohQqtwh
+ cTAfdSh1B7pwt+z6bZhJZ5jm23bBD3F2mDd58N/F3/tiSEA5JSX8fErZCKri0yUdSYjQ67ji+
+ er17GmZHybhb5Zbgu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an ol=
-der
-SoC but still commonly found on eBay, mostly in Supermicro X9 server board=
-s.
+Super Micro Computer, Inc. (https://www.supermicro.com/en/), commonly
+known as Supermicro, is a manufacturer of server hardware.
 
-Third-party documentation is available at: https://github.com/neuschaefer/=
-wpcm450/wiki
-
-Patches 1-4 add devicetree bindings for the WPCM450 SoC and its various pa=
-rts.
-Patches 5-7 add arch and driver support. Patches 8 and 9 add a devicetree =
-for
-the SoC and a board based on it. Patch 10 finally updates the MAINTAINERS =
-file.
-
-Patch 2 requires "dt-bindings: arm: Convert nuvoton,npcm750 binding to YAM=
-L"
-(https://lore.kernel.org/lkml/20210320164023.614059-1-j.neuschaefer@gmx.ne=
-t/)
-
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Acked-by: Rob Herring <robh@kernel.org>
+=2D--
 
 v2:
-- Various improvements to the AIC irqchip driver, thanks to Marc Zyngier's=
- review
-- I dropped the timer patches, which have been applied by Daniel Lezcano
-- I dropped the serial patches, which have been applied to tty-next by Gre=
-g KH
+- Added Rob's ACK
+=2D--
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v1:
-- https://lore.kernel.org/lkml/20210320181610.680870-1-j.neuschaefer@gmx.n=
-et/
-
-Jonathan Neusch=C3=A4fer (10):
-  dt-bindings: vendor-prefixes: Add Supermicro
-  dt-bindings: arm: npcm: Add nuvoton,wpcm450 compatible string
-  dt-bindings: interrupt-controller: Add nuvoton,wpcm450-aic
-  dt-bindings: watchdog: npcm: Add nuvoton,wpcm450-wdt
-  ARM: npcm: Introduce Nuvoton WPCM450 SoC
-  irqchip: Add driver for WPCM450 interrupt controller
-  watchdog: npcm: Add support for WPCM450
-  ARM: dts: Add devicetree for Nuvoton WPCM450 BMC chip
-  ARM: dts: Add devicetree for Supermicro X9SCi-LN4F based on WPCM450
-  MAINTAINERS: Add entry for Nuvoton WPCM450
-
- .../devicetree/bindings/arm/npcm/npcm.yaml    |   6 +
- .../nuvoton,wpcm450-aic.yaml                  |  39 +++++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- .../bindings/watchdog/nuvoton,npcm-wdt.txt    |   3 +-
- MAINTAINERS                                   |   9 +
- arch/arm/boot/dts/Makefile                    |   2 +
- .../nuvoton-wpcm450-supermicro-x9sci-ln4f.dts |  40 +++++
- arch/arm/boot/dts/nuvoton-wpcm450.dtsi        |  76 +++++++++
- arch/arm/mach-npcm/Kconfig                    |  13 +-
- arch/arm/mach-npcm/Makefile                   |   1 +
- arch/arm/mach-npcm/wpcm450.c                  |  13 ++
- drivers/irqchip/Kconfig                       |   6 +
- drivers/irqchip/Makefile                      |   1 +
- drivers/irqchip/irq-wpcm450-aic.c             | 161 ++++++++++++++++++
- drivers/watchdog/npcm_wdt.c                   |   1 +
- 15 files changed, 371 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller=
-/nuvoton,wpcm450-aic.yaml
- create mode 100644 arch/arm/boot/dts/nuvoton-wpcm450-supermicro-x9sci-ln4=
-f.dts
- create mode 100644 arch/arm/boot/dts/nuvoton-wpcm450.dtsi
- create mode 100644 arch/arm/mach-npcm/wpcm450.c
- create mode 100644 drivers/irqchip/irq-wpcm450-aic.c
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Docu=
+mentation/devicetree/bindings/vendor-prefixes.yaml
+index f6064d84a424d..ec6d6ccfbbb3b 100644
+=2D-- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1085,6 +1085,8 @@ patternProperties:
+     description: Shenzhen Sunchip Technology Co., Ltd
+   "^SUNW,.*":
+     description: Sun Microsystems, Inc
++  "^supermicro,.*":
++    description: Super Micro Computer, Inc.
+   "^silvaco,.*":
+     description: Silvaco, Inc.
+   "^swir,.*":
 =2D-
 2.30.2
 
