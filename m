@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4016935563F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D1E355644
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344973AbhDFOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:15:54 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40473 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244391AbhDFOPx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:15:53 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 558915C0198;
-        Tue,  6 Apr 2021 10:15:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 06 Apr 2021 10:15:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Df60/D28v21JXoc5V1rC9GHtmmL
-        qCuwl38fCVV5rIdo=; b=tghY3MwOGS9LDjx/lOYVs2sO8q7LgfXQ50yPEZKdJOc
-        jJ6dogfjYqMCsBwKXKCvpo8DBXs2wU59wohrP6VQD2Nc1lF4yiLlg4rmjRzJkLy+
-        bUfbWj8vp2hxL1pd9X1Nlz4iVQNCK/xdgfgTic1rN2jsnFNTc7i/oWo/UzMkijOa
-        Y5HfG0bf2m3tTNKQo5XHLjx/JLwML5GYf2guzZHPs+FkJqnve7FHF92G7IGHkGEy
-        fBdRCT30oMKHZAEO4ie7Rs/vEXCgNRo/aaYV7mCHj9WXGIuQ/eSsfOebZCQZieHN
-        gUlnRYSc8eWSJhstTzjQaghYGT7yGBWKHwLNKJsonrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Df60/D
-        28v21JXoc5V1rC9GHtmmLqCuwl38fCVV5rIdo=; b=RvRqE73zFwp5yOc706DaRN
-        XQdrF8kwZUPGJJyn6YR91pG6lAwMP8K/Qd0FubRBBvCoQlTAh6OZRPIq4kAdP+0V
-        ge2nK16aU2ntWCCt+hAXqCRKpUlXT9ERosIfa1ktoaTBANxXNTfuAFmbi30I2Urp
-        f52hG9NoAPPLHCSpNfP4GDgT0pcaRo3x9I1Y+2XYgSUbKAh5cvt1bbSTvv84c7WR
-        xmWVt3XyNfkr7CCIMpEVhyojeX2inO27bRz5iAuGAKgUF2OhK8Sw2v4lpuWMz2Yf
-        iQUXYl0MBXrRsgRgOIMDuEOVAVpEJR5u8VdsDSvp5T5mommqZC6WvtNFxViwFCCA
-        ==
-X-ME-Sender: <xms:D21sYGHqNC6V9nHJV_NIDJMzC9rOnmOb5SbfmFWaOzTCpu7l8Xv8kw>
-    <xme:D21sYFQ5wLzmnseNdz_e8U5mphoY4jBbaAOJgfSskUj3X2JQMg6LdKUYBiwnUn2kn
-    0TUPbAryJY9Bg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejhedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:D21sYCciO7ooRMi5q0_XUrW2vNT5VzQ86ReREwSmoC9WynW9eF_cgQ>
-    <xmx:D21sYErvkwKldR7Z1jxqJ6WathZvLdCPSOj9fxxNsDvLd6JTSa1xUw>
-    <xmx:D21sYD_OHqoy87iQzUBPgkPVYNvUkvcYSzLMpLeCxF037rPiQGxowg>
-    <xmx:EW1sYF5OL0u0Y4zkQGikWa8Eldt5iNXZ6oFuy3lxbSUgc0Q0rxNdLA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2998D24005D;
-        Tue,  6 Apr 2021 10:15:43 -0400 (EDT)
-Date:   Tue, 6 Apr 2021 16:15:40 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the char-misc tree
-Message-ID: <YGxtDDm7nV1AuTqo@kroah.com>
-References: <20210406214441.5744648c@canb.auug.org.au>
- <YGxrG16+8n8Wxs/c@kroah.com>
- <DM5PR12MB18350439051E4E90BD0287F4DA769@DM5PR12MB1835.namprd12.prod.outlook.com>
+        id S1344987AbhDFOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:16:09 -0400
+Received: from verein.lst.de ([213.95.11.211]:54694 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235455AbhDFOQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:16:06 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id F328F68B02; Tue,  6 Apr 2021 16:15:52 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 16:15:52 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
+ ib_alloc_mr() and ib_mr_pool_init()
+Message-ID: <20210406141552.GA4936@lst.de>
+References: <20210405052404.213889-1-leon@kernel.org> <20210405052404.213889-2-leon@kernel.org> <c21edd64-396c-4c7c-86f8-79045321a528@acm.org> <YGvwUI022t/rJy5U@unreal> <20210406052717.GA4835@lst.de> <YGv4niuc31WnqpEJ@unreal> <20210406121312.GK7405@nvidia.com> <20210406123034.GA28930@lst.de> <20210406140437.GR7405@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM5PR12MB18350439051E4E90BD0287F4DA769@DM5PR12MB1835.namprd12.prod.outlook.com>
+In-Reply-To: <20210406140437.GR7405@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:13:53PM +0000, Gustavo Pimentel wrote:
-> On Tue, Apr 6, 2021 at 15:7:23, Greg KH <greg@kroah.com> wrote:
+On Tue, Apr 06, 2021 at 11:04:37AM -0300, Jason Gunthorpe wrote:
+> It might be idiodic, but I have to keep the uverbs thing working
+> too.
 > 
-> > On Tue, Apr 06, 2021 at 09:44:41PM +1000, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > After merging the char-misc tree, today's linux-next build (htmldocs)
-> > > produced this warning:
-> > > 
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:20: WARNING: Unexpected indentation.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:24: WARNING: Unexpected indentation.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:25: WARNING: Block quote ends without a blank line; unexpected unindent.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:30: WARNING: Unexpected indentation.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:34: WARNING: Unexpected indentation.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:35: WARNING: Block quote ends without a blank line; unexpected unindent.
-> > > Documentation/misc-devices/dw-xdata-pcie.rst:40: WARNING: Unexpected indentation.
-> > > 
-> > > Introduced by commit
-> > > 
-> > >   e1181b5bbc3c ("Documentation: misc-devices: Add Documentation for dw-xdata-pcie driver")
-> > 
-> > Gustavo, can you send a follow-on patch to fix this up?
+> There is a lot of assumption baked in to all the drivers that
+> user/kernel is the same thing, we'd have to go in and break this.
 > 
-> Yes, I have already made a fix for it.
-> My apologies for my ignorance on this matter, there is some way to check 
-> if my fixes are okay through some script or other way as Stephen has 
-> done?
+> Essentially #2 ends up as deleting IB_ACCESS_RELAXED_ORDERING kernel
+> side and instead doing some IB_ACCESS_DISABLE_RO in kernel,
+> translating uverbs IBV_ACCESS_* to this then finding and inverting all
+> the driver logic and also finding and unblocking all the places that
+> enforce valid access flags in the drivers. It is complicated enough
 
-Yes, run 'make htmldocs' in the kernel tree with your change applied and
-see if the warnings go away.
+Inverting the polarity of a flag at the uapi boundary is pretty
+trivial and we already do it all over the kernel.
 
-thanks,
-
-greg k-h
+Do we actually ever need the strict ordering semantics in the kernel?
