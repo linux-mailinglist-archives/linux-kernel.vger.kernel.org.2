@@ -2,197 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5E8355161
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4E7355168
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245252AbhDFK6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:58:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245237AbhDFK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:58:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BEFFAB14C;
-        Tue,  6 Apr 2021 10:57:55 +0000 (UTC)
-To:     Marco Elver <elver@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     glittao@gmail.com, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210331085156.5028-1-glittao@gmail.com>
- <YGWPdFywfNUl4d3S@elver.google.com>
- <CAGS_qxpWtNLJ7_i5pDYhiGq_Jy+oPPc+HpWjNTJKAPyvQf+gsQ@mail.gmail.com>
- <CANpmjNPhWUsQrG62Z2jchdqzgSOfVYOsD1QDJpRghJwzwRZcQA@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v3 1/2] kunit: add a KUnit test for SLUB debugging
- functionality
-Message-ID: <11886d4f-8826-0cd6-b5fd-defc65470ed5@suse.cz>
-Date:   Tue, 6 Apr 2021 12:57:54 +0200
+        id S245271AbhDFK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:58:27 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:58755 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245259AbhDFK60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:58:26 -0400
+Received: from [141.14.14.84] (v084.vpnx.molgen.mpg.de [141.14.14.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 13CFF206473CA;
+        Tue,  6 Apr 2021 12:58:16 +0200 (CEST)
+Subject: =?UTF-8?B?UmU6IFtyZWdyZXNzaW9uIDUuNC45NyDihpIgNS4xMC4yNF06IHJhaWQ2?=
+ =?UTF-8?Q?_avx2x4_speed_drops_from_18429_MB/s_to_6155_MB/s?=
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, it+linux-x86@molgen.mpg.de,
+        =?UTF-8?Q?Krzysztof_Ol=c4=99dzki?= <ole@ans.pl>,
+        Andy Lutomirski <luto@kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>
+References: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
+ <20210402140554.GG28499@zn.tnic>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <05dbb237-1d23-df32-e4ed-6bc7b47f42dc@molgen.mpg.de>
+Date:   Tue, 6 Apr 2021 12:58:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNPhWUsQrG62Z2jchdqzgSOfVYOsD1QDJpRghJwzwRZcQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210402140554.GG28499@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Borislav,
 
-On 4/1/21 11:24 PM, Marco Elver wrote:
-> On Thu, 1 Apr 2021 at 21:04, Daniel Latypov <dlatypov@google.com> wrote:
->> >         }
->> >         #else
->> >         static inline bool slab_add_kunit_errors(void) { return false; }
->> >         #endif
->> >
->> > And anywhere you want to increase the error count, you'd call
->> > slab_add_kunit_errors().
->> >
->> > Another benefit of this approach is that if KUnit is disabled, there is
->> > zero overhead and no additional code generated (vs. the current
->> > approach).
+
+Am 02.04.21 um 16:05 schrieb Borislav Petkov:
+> On Fri, Apr 02, 2021 at 10:33:51AM +0200, Paul Menzel wrote:
+
+>> On an two socket AMD EPYC 7601, we noticed a decrease in raid6 avx2x4 speed
+>> shown at the beginning of the boot.
 >>
->> The resource approach looks really good, but...
->> You'd be picking up a dependency on
->> https://lore.kernel.org/linux-kselftest/20210311152314.3814916-2-dlatypov@google.com/
->> current->kunit_test will always be NULL unless CONFIG_KASAN=y &&
->> CONFIG_KUNIT=y at the moment.
->> My patch drops the CONFIG_KASAN requirement and opens it up to all tests.
+>>                         5.4.95        5.10.24
+>> ----------------------------------------------
+>> raid6: avx2x4 gen()   18429 MB/s     6155 MB/s
+>> raid6: avx2x4 xor()    6644 MB/s     4274 MB/s
+>> raid6: avx2x2 gen()   17894 MB/s    18744 MB/s
+>> raid6: avx2x2 xor()   11642 MB/s    11950 MB/s
+>> raid6: avx2x1 gen()   13992 MB/s    17112 MB/s
+>> raid6: avx2x1 xor()   10855 MB/s    11143 MB/s
 > 
-> Oh, that's a shame, but hopefully it'll be in -next soon.
+> Looks like those two might help:
 > 
->> At the moment, it's just waiting another look over from Brendan or David.
->> Any ETA on that, folks? :)
->>
->> So if you don't want to get blocked on that for now, I think it's fine to add:
->>   #ifdef CONFIG_SLUB_KUNIT_TEST
->>   int errors;
->>   #endif
-> 
-> Until kunit fixes setting current->kunit_test, a cleaner workaround
-> that would allow to do the patch with kunit_resource, is to just have
-> an .init/.exit function that sets it ("current->kunit_test = test;").
-> And then perhaps add a note ("FIXME: ...") to remove it once the above
-> patch has landed.
-> 
-> At least that way we get the least intrusive change for mm/slub.c, and
-> the test is the only thing that needs a 2-line patch to clean up
-> later.
+> 49200d17d27d x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
+> e45122893a98 x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
 
-So when testing internally Oliver's new version with your suggestions (thanks
-again for those), I got lockdep splats because slab_add_kunit_errors is called
-also from irq disabled contexts, and kunit_find_named_resource will call
-spin_lock(&test->lock) that's not irq safe. Can we make the lock irq safe? I
-tried the change below and it makde the problem go away. If you agree, the
-question is how to proceed - make it part of Oliver's patch series and let
-Andrew pick it all with eventually kunit team's acks on this patch, or whatnot.
+I booted Linux 5.12-rc6, containing these commits, on a Dell OptiPlex 
+5055 with AMD Ryzen 5 PRO 1500 Quad-Core Processor, and the regression 
+is still present for `avx2x4 xor()`:
 
-----8<----
+                         5.4.95       5.10.24
+----------------------------------------------
+raid6: avx2x4 gen()    23964 MB/s   24540 MB/s 
 
-commit ab28505477892e9824c57ac338c88aec2ec0abce
-Author: Vlastimil Babka <vbabka@suse.cz>
-Date:   Tue Apr 6 12:28:07 2021 +0200
+raid6: avx2x4 xor()    13101 MB/s    8354 MB/s
+raid6: avx2x2 gen()    22746 MB/s   26972 MB/s
+raid6: avx2x2 xor()    14917 MB/s   16463 MB/s
+raid6: avx2x1 gen()    17519 MB/s   24394 MB/s
+raid6: avx2x1 xor()    14091 MB/s   15330 MB/s
+raid6: sse2x4 gen()    16867 MB/s   16136 MB/s
+raid6: sse2x4 xor()     9667 MB/s    8176 MB/s
+raid6: sse2x2 gen()    14996 MB/s   18234 MB/s
+raid6: sse2x2 xor()    10765 MB/s   10455 MB/s
+raid6: sse2x1 gen()     7667 MB/s   13769 MB/s
+raid6: sse2x1 xor()     7818 MB/s    7741 MB/s
 
-    kunit: make test->lock irq safe
+What system are you using, and what results do you get with 5.4 and 
+5.12-rc6?
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 49601c4b98b8..524d4789af22 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -515,8 +515,9 @@ kunit_find_resource(struct kunit *test,
- 		    void *match_data)
- {
- 	struct kunit_resource *res, *found = NULL;
-+	unsigned long flags;
- 
--	spin_lock(&test->lock);
-+	spin_lock_irqsave(&test->lock, flags);
- 
- 	list_for_each_entry_reverse(res, &test->resources, node) {
- 		if (match(test, res, (void *)match_data)) {
-@@ -526,7 +527,7 @@ kunit_find_resource(struct kunit *test,
- 		}
- 	}
- 
--	spin_unlock(&test->lock);
-+	spin_unlock_irqrestore(&test->lock, flags);
- 
- 	return found;
- }
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index ec9494e914ef..2c62eeb45b82 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -442,6 +442,7 @@ int kunit_add_resource(struct kunit *test,
- 		       void *data)
- {
- 	int ret = 0;
-+	unsigned long flags;
- 
- 	res->free = free;
- 	kref_init(&res->refcount);
-@@ -454,10 +455,10 @@ int kunit_add_resource(struct kunit *test,
- 		res->data = data;
- 	}
- 
--	spin_lock(&test->lock);
-+	spin_lock_irqsave(&test->lock, flags);
- 	list_add_tail(&res->node, &test->resources);
- 	/* refcount for list is established by kref_init() */
--	spin_unlock(&test->lock);
-+	spin_unlock_irqrestore(&test->lock, flags);
- 
- 	return ret;
- }
-@@ -515,9 +516,11 @@ EXPORT_SYMBOL_GPL(kunit_alloc_and_get_resource);
- 
- void kunit_remove_resource(struct kunit *test, struct kunit_resource *res)
- {
--	spin_lock(&test->lock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&test->lock, flags);
- 	list_del(&res->node);
--	spin_unlock(&test->lock);
-+	spin_unlock_irqrestore(&test->lock, flags);
- 	kunit_put_resource(res);
- }
- EXPORT_SYMBOL_GPL(kunit_remove_resource);
-@@ -597,6 +600,7 @@ EXPORT_SYMBOL_GPL(kunit_kfree);
- void kunit_cleanup(struct kunit *test)
- {
- 	struct kunit_resource *res;
-+	unsigned long flags;
- 
- 	/*
- 	 * test->resources is a stack - each allocation must be freed in the
-@@ -608,9 +612,9 @@ void kunit_cleanup(struct kunit *test)
- 	 * protect against the current node being deleted, not the next.
- 	 */
- 	while (true) {
--		spin_lock(&test->lock);
-+		spin_lock_irqsave(&test->lock, flags);
- 		if (list_empty(&test->resources)) {
--			spin_unlock(&test->lock);
-+			spin_unlock_irqrestore(&test->lock, flags);
- 			break;
- 		}
- 		res = list_last_entry(&test->resources,
-@@ -621,7 +625,7 @@ void kunit_cleanup(struct kunit *test)
- 		 * resource, and this can't happen if the test->lock
- 		 * is held.
- 		 */
--		spin_unlock(&test->lock);
-+		spin_unlock_irqrestore(&test->lock, flags);
- 		kunit_remove_resource(test, res);
- 	}
- #if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+
+Kind regards,
+
+Paul
