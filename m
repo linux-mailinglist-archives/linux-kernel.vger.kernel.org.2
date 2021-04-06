@@ -2,204 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49211355555
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDDC355558
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344560AbhDFNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:37:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344551AbhDFNhe (ORCPT
+        id S1344564AbhDFNiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233252AbhDFNiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:37:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617716246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMiNBtEMrQvnxIoUeX1bu77l5Tzq/22mbIKvwOxGjy8=;
-        b=S2Ck+GB4FlHcl6LCvKZ76X15GJg7YQXN1caSU5YmqCV36zALqraBUT3MvmGFO4FxMyJznt
-        fTJL8vAzAXqkfLSiNwOe3J96njqceBm65FGbPk69ykOY06pN6EdX9j00UTJM3Yf2urhzKq
-        JJ3gVBH/EvcYOrl+xiRN+WX4qOGjFxo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-YLTHE9_eN0auV2AdnM3v7A-1; Tue, 06 Apr 2021 09:37:24 -0400
-X-MC-Unique: YLTHE9_eN0auV2AdnM3v7A-1
-Received: by mail-ej1-f69.google.com with SMTP id l1so1413920eji.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 06:37:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=dMiNBtEMrQvnxIoUeX1bu77l5Tzq/22mbIKvwOxGjy8=;
-        b=Cai7Eg3LLrYSS0nLNz9QBersjVxJZWuy8O7KvEAYVFN4LeItHIriPtT8jy7WNNvf4b
-         tV2Ccj6remC86Sy/vYx0J11+3TNVDmlEsPfPPsym/lcV2ZdtSw/75VqWv6x0lhqnd2gi
-         M1u1fP97YHuLxOqu2hMarC6gZ1AnEYOnB5TG6b4jHdc8rqMHnm/t5Q3YsQ9KREwdhu3g
-         kmFCsgGoLA4UyXSD+5A8VDbgYcKTfItXHOWuTn/ht9ANltj5/FhwlKdMoy2Ayl5xqpTN
-         v7UEuVozutCtickY6zIKaveVofNTr0LHqzCn32H/MGNJdh0vrstIGe7z823hG1zIQLPW
-         7fHg==
-X-Gm-Message-State: AOAM533S/aVASCAqDnkGOP1WutbU5wi1IVzLqU/GEfmD5m6tm2LqoeqP
-        aIVKfoDupmutOvmzIwdTwOR6m+1/lfojgqtP7rA1efdlWQQh5w90qzBHFExAMRdqCWSPT4u2KYL
-        2ox0G/3OT2ufzCup59kSRcjd7ekIc5B3p5elKNVn0DuhBa21hcqIsd8qbf02L+yrvZpYTZRHERy
-        MZ
-X-Received: by 2002:a17:907:629c:: with SMTP id nd28mr34632049ejc.267.1617716243205;
-        Tue, 06 Apr 2021 06:37:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPlX5I+as++Bo8KruxUM9wb9AZX5YYNyyxHZGmZWQjUSiI0DOUwwJMY80ynUyPN+ZY2HHTFg==
-X-Received: by 2002:a17:907:629c:: with SMTP id nd28mr34632009ejc.267.1617716242875;
-        Tue, 06 Apr 2021 06:37:22 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id t14sm11010189ejc.121.2021.04.06.06.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 06:37:22 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-In-Reply-To: <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
-References: <20210406125047.547501-1-vkuznets@redhat.com>
- <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
-Date:   Tue, 06 Apr 2021 15:37:21 +0200
-Message-ID: <87mtubcz5a.fsf@vitty.brq.redhat.com>
+        Tue, 6 Apr 2021 09:38:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B40C06174A;
+        Tue,  6 Apr 2021 06:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=adZ0C3cJ4lKQ8eG5ef+dmxnQo6NCZF8rtMgKAkFVbGA=; b=su4rnebOFB0EX6o6PmYWp05R/8
+        AeHyBIFkxxLWf2bzlXH1bYtGWgyiz89SlKo3dieqkCuGtRbIfo6jFVtQMU6bKeqeHpT9QhlWUcNnz
+        LGrNqnHzmLdr9LyPPTSKPIwBL3LHI6JVWWkI2uR/Ich8su5XtvON5yYWmmfMFQX7MTO7+h8qoI5Ru
+        1kuH+1UJSU4/rzGUW4vpCxT560GTybyMsMcQm7RSz+1PKCtuHlonUb9EiclUAvDgOa3Utqqu0Mqmk
+        3RxPjJVPePD8odi5kCAkM5OAtEqnTkVpVIXOJ8Sja/ESOJCrhBHXOYUQ3FYUF1jFUasqjN7yItfv/
+        FmSNlgyQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTltd-00Cs71-Vz; Tue, 06 Apr 2021 13:37:40 +0000
+Date:   Tue, 6 Apr 2021 14:37:33 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 09/27] mm: Handle per-folio private data
+Message-ID: <20210406133733.GH3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-10-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331184728.1188084-10-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Rafael J. Wysocki" <rafael@kernel.org> writes:
+On Wed, Mar 31, 2021 at 07:47:10PM +0100, Matthew Wilcox (Oracle) wrote:
+> Add folio_private() and set_folio_private() which mirror page_private()
+> and set_page_private() -- ie folio private data is the same as page
+> private data.  The only difference is that these return a void *
+> instead of an unsigned long, which matches the majority of users.
+> 
+> Turn attach_page_private() into attach_folio_private() and reimplement
+> attach_page_private() as a wrapper.  No filesystem which uses page private
+> data currently supports compound pages, so we're free to define the rules.
+> attach_page_private() may only be called on a head page; if you want
+> to add private data to a tail page, you can call set_page_private()
+> directly (and shouldn't increment the page refcount!  That should be
+> done when adding private data to the head page / folio).
+> 
+> This saves 597 bytes of text with the distro-derived config that I'm
+> testing due to removing the calls to compound_head() in get_page()
+> & put_page().
 
-> On Tue, Apr 6, 2021 at 2:50 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->>
->> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
->> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
->> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
->> into acpi_idle_play_dead(). The problem is that these functions are not
->> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
->>
->> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
->> (the later from assembly) but it seems putting the whole pattern into a
->> new function and exporting it instead is better.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
->> Cc: <stable@vger.kernel.org> # 5.10+
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/include/asm/smp.h    |  2 +-
->>  arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
->>  drivers/acpi/processor_idle.c |  3 +--
->>  3 files changed, 12 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
->> index 57ef2094af93..6f79deb1f970 100644
->> --- a/arch/x86/include/asm/smp.h
->> +++ b/arch/x86/include/asm/smp.h
->> @@ -132,7 +132,7 @@ void native_play_dead(void);
->>  void play_dead_common(void);
->>  void wbinvd_on_cpu(int cpu);
->>  int wbinvd_on_all_cpus(void);
->> -bool wakeup_cpu0(void);
->> +void wakeup_cpu0_if_needed(void);
->>
->>  void native_smp_send_reschedule(int cpu);
->>  void native_send_call_func_ipi(const struct cpumask *mask);
->> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
->> index f877150a91da..9547d870ee27 100644
->> --- a/arch/x86/kernel/smpboot.c
->> +++ b/arch/x86/kernel/smpboot.c
->> @@ -1659,7 +1659,7 @@ void play_dead_common(void)
->>         local_irq_disable();
->>  }
->>
->> -bool wakeup_cpu0(void)
->> +static bool wakeup_cpu0(void)
->>  {
->>         if (smp_processor_id() == 0 && enable_start_cpu0)
->>                 return true;
->> @@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
->>         return false;
->>  }
->>
->> +void wakeup_cpu0_if_needed(void)
->> +{
->> +       if (wakeup_cpu0())
->> +               start_cpu0();
->
-> Note that all of the callers of wakeup_cpu0 do the above, so maybe
-> make them all use the new function?
->
-> In which case it can be rewritten in the following way
->
-> void cond_wakeup_cpu0(void)
-> {
->         if (smp_processor_id() == 0 && enable_start_cpu0)
->                 start_cpu0();
-> }
-> EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
->
+Except that this seems to be the first patch that uses a field in the
+non-struct page union leg in struct folio, which could be trivially
+avoided this looks good:
 
-Sure, separate wakeup_cpu0() is no longer needed.
-
-> Also please add a proper kerneldoc comment to it and maybe drop the
-> comments at the call sites?
-
-Also a good idea. v2 is coming, thanks!
-
->
->
->> +}
->> +EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
->> +
->>  /*
->>   * We need to flush the caches before going to sleep, lest we have
->>   * dirty data in our caches when we come back up.
->> @@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
->>                 /*
->>                  * If NMI wants to wake up CPU0, start CPU0.
->>                  */
->> -               if (wakeup_cpu0())
->> -                       start_cpu0();
->> +               wakeup_cpu0_if_needed();
->>         }
->>  }
->>
->> @@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
->>                 /*
->>                  * If NMI wants to wake up CPU0, start CPU0.
->>                  */
->> -               if (wakeup_cpu0())
->> -                       start_cpu0();
->> +               wakeup_cpu0_if_needed();
->>         }
->>  }
->>
->> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
->> index 768a6b4d2368..de15116b754a 100644
->> --- a/drivers/acpi/processor_idle.c
->> +++ b/drivers/acpi/processor_idle.c
->> @@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
->>
->>  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
->>                 /* If NMI wants to wake up CPU0, start CPU0. */
->> -               if (wakeup_cpu0())
->> -                       start_cpu0();
->> +               wakeup_cpu0_if_needed();
->>  #endif
->>         }
->>
->> --
->> 2.30.2
->>
->
-
--- 
-Vitaly
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
