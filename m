@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6D33559CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B000A3559D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346706AbhDFQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:56:58 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:34517 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244303AbhDFQ4z (ORCPT
+        id S240203AbhDFQ7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232131AbhDFQ7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:56:55 -0400
-Received: by mail-ot1-f50.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so15314482otn.1;
-        Tue, 06 Apr 2021 09:56:47 -0700 (PDT)
+        Tue, 6 Apr 2021 12:59:37 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40C2C06174A;
+        Tue,  6 Apr 2021 09:59:28 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so15318482oto.2;
+        Tue, 06 Apr 2021 09:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U0vcjmfkxT+FMarvJR1c5UkvtHgWk27fUbHRkWTwpuM=;
+        b=bjJ+VuGbGdU5iyhiJDxbr+3vL4o+9DMITQG2zj1EM0kfv32Y0hkTrqs4fU1RaOtulB
+         ttQ+4VD1SKKqhuKvcAxUzcH7aTbVPAUNSUztgCXhOcCNPuXdgU5tndnEv3+o1N/wF0hw
+         fIauUESFLFhfOcZTArCr1pHrlpYcgmspekQtGvyPlFSogto54TQJ4BvpWM9iohB3oKTB
+         w5u6hhWK2bP5+rKRPeHTCjq4yK9FtStpblsBsmfQ4rIzwOnG153D4Dkm49dhc8n/jp8K
+         Pv4Mzj4HwequtKzhQPV+iEdx49+xnZ9Wpk57AnF6yWlKO0REeSAKGAvkl89d2QhsCn19
+         4l/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tw0RwiCoCBJBLCCQqWVxF82QKnUlb6tubclo5gd7EQs=;
-        b=FAi3EaISmRvoOVK+A/2FL5Jkp39dndzKJmBIYJ18R6/TnGJ5U+iqOfTc9mmZtZ/WbV
-         otedU8fHCsHkYKICRwyU4Xnh5VO+a2m3cOnJFB8eboMlSFV3jj0akQdyZ4R+VUZiKk0J
-         To/Dak85EJrvkA8pwdPcAq3DJOe7wIDkAi/2pfKlkGWKDkLQeW8eab7sJbwrk7a95AqM
-         MG3m032nzM/LGsZJHks4X2yC/ItHYUxOfETBnrYseATR0h75DC7Pl1ypEu2eOG3ZT4ZX
-         Fij3OFA/0OtkFjAvXZzjfBTCFqOdUMn3d8EkjCaBtyD+sjV+lw02bT16T4WxEnBRt0Qi
-         bLqg==
-X-Gm-Message-State: AOAM531xmR+KnP5k/z/l1pCTN7xKcI0AXvRqpMuY8R5b9G0FkwzetdSL
-        niWxwrH8p287AFr2Ywrm4m8pbAt1Uw==
-X-Google-Smtp-Source: ABdhPJwuTaLBj6OVzKDmR7D6lssAr7pKAt8+c7cwsu0N0mLd6fP4Ld2cWsAeBv7ptocA7Ga09sQE2w==
-X-Received: by 2002:a9d:7086:: with SMTP id l6mr27135972otj.187.1617728207079;
-        Tue, 06 Apr 2021 09:56:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a16sm4808802otk.62.2021.04.06.09.56.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 09:56:46 -0700 (PDT)
-Received: (nullmailer pid 1960990 invoked by uid 1000);
-        Tue, 06 Apr 2021 16:56:45 -0000
-Date:   Tue, 6 Apr 2021 11:56:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 18/18] arm64: apple: Add initial Apple Mac mini (M1,
- 2020) devicetree
-Message-ID: <20210406165645.GA1942466@robh.at.kernel.org>
-References: <20210402090542.131194-1-marcan@marcan.st>
- <20210402090542.131194-19-marcan@marcan.st>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U0vcjmfkxT+FMarvJR1c5UkvtHgWk27fUbHRkWTwpuM=;
+        b=BYAIW9oLII/labOPE8HWbLCZMJ16h8+uicdZE3jXnQK8QajWQPNag5/dqmang+pxkh
+         0PZ2/mq5epRRm6oWTS9naOkelffkBSw5H4zxCeVhpNtXrcQFMLhKqerqCfHc2IPh7yAa
+         7/heo9HRJ1fREOL137SqjtXvJqGvYQjH0Vep/7nKwDNR/FJyS/5yjb30ZYEpiCeRH7ua
+         3tQPrui7+SrrKk2tAaZVxjRpQc/Df36UiAy8qpnWFV7YaNUOh7bYNDYSGax8Fq0xlUtf
+         TO1wYaEXo4HBtLZvvx9E0hjxmcKF/yXV7b4LAKiyB6iGksnKSZ22Yd2iuAjgGrltX1zC
+         5Viw==
+X-Gm-Message-State: AOAM5334qh0HkNk9O6yIFgYp64P0tGMvxXfT+O3zVZhClaJe5QCBCyHv
+        G/XJzKSgABEF5K45+5te5P2E0XHxXPxmwP5nbb4=
+X-Google-Smtp-Source: ABdhPJz5iJqO3rF79/N/EJoRF+CC6lbD3Jutm2e+GIHzkqN6Fzqr+bxXVIEyl+oz8Fhr2p3cPfT4QSL1G44JtAagyiA=
+X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr27819767otg.17.1617728368316;
+ Tue, 06 Apr 2021 09:59:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402090542.131194-19-marcan@marcan.st>
+References: <20210401212148.47033-1-jim2101024@gmail.com> <20210401212148.47033-4-jim2101024@gmail.com>
+ <20210406163439.GL6443@sirena.org.uk>
+In-Reply-To: <20210406163439.GL6443@sirena.org.uk>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Tue, 6 Apr 2021 12:59:16 -0400
+Message-ID: <CANCKTBvP66su2bXNMbawMfe3T7mpiQsRsG5xLfSPL2BWPNYFyw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] PCI: brcmstb: Add control of slot0 device voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 06:05:42PM +0900, Hector Martin wrote:
-> This currently supports:
-> 
-> * SMP (via spin-tables)
-> * AIC IRQs
-> * Serial (with earlycon)
-> * Framebuffer
-> 
-> A number of properties are dynamic, and based on system firmware
-> decisions that vary from version to version. These are expected
-> to be filled in by the loader.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  MAINTAINERS                              |   1 +
->  arch/arm64/boot/dts/Makefile             |   1 +
->  arch/arm64/boot/dts/apple/Makefile       |   2 +
->  arch/arm64/boot/dts/apple/t8103-j274.dts |  45 ++++++++
->  arch/arm64/boot/dts/apple/t8103.dtsi     | 135 +++++++++++++++++++++++
->  5 files changed, 184 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/apple/Makefile
->  create mode 100644 arch/arm64/boot/dts/apple/t8103-j274.dts
->  create mode 100644 arch/arm64/boot/dts/apple/t8103.dtsi
+On Tue, Apr 6, 2021 at 12:34 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Apr 01, 2021 at 05:21:43PM -0400, Jim Quinlan wrote:
+>
+> > +     /* Look for specific pcie regulators in the RC DT node. */
+> > +     for_each_property_of_node(np, pp) {
+> > +             for (i = 0; i < ns; i++)
+> > +                     if (strcmp(supplies[i], pp->name) == 0)
+>
+> This is broken, the driver knows which supplies are expected, the device
+> can't function without these supplies so the driver should just
+> unconditionally request them like any other supply.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi  Mark,
+Some boards require the regulators, some do not.  So the driver is
+only  sure what the names may be if they are present.  If  I put these
+names in my struct regulator_bulk_data array and do a
+devm_regulator_bulk_get(), I will get the following for the boards
+that do not need the regulators (e.g. the RPi SOC):
+
+[    6.823820] brcm-pcie xxx.pcie: supply vpcie12v-supply not found,
+using dummy regulator
+[    6.832265] brcm-pcie xxx.pcie: supply vpcie3v3-supply not found,
+using dummy regulator
+
+IIRC you consider this a debug feature?  Be that as it may, these
+lines will confuse our customers and I'd like that they not be printed
+if possible.
+
+So I ask you to allow the code as is.  If you still insist, I will
+change and resubmit.
+
+Regards,
+Jim Quinlan
+Broadcom STB
