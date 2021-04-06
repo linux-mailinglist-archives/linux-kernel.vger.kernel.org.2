@@ -2,171 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF783559DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA093559DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346723AbhDFRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:00:28 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51337 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244335AbhDFRA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:00:26 -0400
-IronPort-SDR: G6wfDRzCp3YQhPghdUJ5jSX5OhzTiLd4XrTvv7skceQOWoX2GK4mLETcA9yBHAlZ+oyrI1tQeh
- 7ITjU+CfRr4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180244174"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="180244174"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 10:00:18 -0700
-IronPort-SDR: Bi4XXDjYUHkQcLs60b4dkVume3SIafGVc/aGNsWyBvPdshVaM0KfkOV4EM/x77F51gaCRhtAik
- 4uu8uQ2Dhf7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="447913574"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP; 06 Apr 2021 10:00:17 -0700
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:00:17 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 6 Apr 2021 10:00:17 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:00:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=URkREPaQwq1ayqiULjWGfkDgTFAePNVMf5FBxBcJHotPYaAo+vYmtzY3niAUwOO/NL9xeGVzULjgS64KU2CAMqbSlr0DCoQG6YH9ZqH/nUAdmowUTul539D4hmKCzssdu1YgUmGOJAnPDmCN/P+KETGrH2Pn7LAIBRCFdVqKd5vvb+LWL+hF7o3mBr9ynyux8Pi5FnBO2U7660x/grGFNW/oKbYPn6xepNRdgT7peOzL/zQjJW4+Cu8omhmrXOUJ0w+U+ciNm7Bw8wK/L2PBy3aIYSvT9w5x7EnwWjMKTFGS5XvZIzFF+etBurOAFWCBcANShCCMPQbcccm5vBt0bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WRyNxrGYgx5hdvoO7WcMFsDW+HM1Yv12Fvyilru3BL4=;
- b=WyFtE3qdBz8BEelFeBlZ7YMuaDYYi2FkRvSRQXGkRXUGapJCcq/fqb+kY8J9ZPg+lIP8LPBPiwYjZfbFKqUoaf+Ug5SpUkkOSU4/YNltv5WX0rVlTkPjOMXWlFayzyzOPVeRoF8WsuPZOa91t4ZSjkveCUNA2hZkoWaZAzgJIEnd949B3vYjDKKNCFOdRcuh7F7JfoN07jUKfy2fZqD6RhazxcJQuZGrlZG1BKTSOVhSFHy9F1cKlJ/QsfM3u4ZjtKbg8eTUxvn3NbLevNN+KqNRhfyRK288cvG43j85uP9ky34fPjk1DSzUt3cDM6z7cGInCwMTdbDLO8P9Pa38vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WRyNxrGYgx5hdvoO7WcMFsDW+HM1Yv12Fvyilru3BL4=;
- b=XtGd6qKF3XzH+l0205gOpcnQbldhPlB7Hld781fuUF7iGYv3jNSKnWWLfEU3uhfJZNJGWTv0qFhvQL4JpqL6lariN8SWmyZXATu0x+tXvIhN+Il5/KN/0UCiwaLU8Y+Q29AoHRiCdxE5ITntj7S15eLrnHH1HX8f7HrqnMwElfM=
-Received: from DM6PR11MB3993.namprd11.prod.outlook.com (2603:10b6:5:19c::10)
- by DM5PR1101MB2268.namprd11.prod.outlook.com (2603:10b6:4:53::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Tue, 6 Apr
- 2021 17:00:08 +0000
-Received: from DM6PR11MB3993.namprd11.prod.outlook.com
- ([fe80::460:f79e:577:f515]) by DM6PR11MB3993.namprd11.prod.outlook.com
- ([fe80::460:f79e:577:f515%7]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 17:00:08 +0000
-From:   "Corona, Ernesto" <ernesto.corona@intel.com>
-To:     Paul Fertser <fercerpav@gmail.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
-CC:     "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v29 0/6] JTAG driver introduction
-Thread-Topic: [PATCH v29 0/6] JTAG driver introduction
-Thread-Index: AQHXKufVV6kHcwtW80SH2VUQMGUC1qqnfUgAgAA5GZA=
-Date:   Tue, 6 Apr 2021 17:00:08 +0000
-Message-ID: <DM6PR11MB399360880403A83FFECD597D8B769@DM6PR11MB3993.namprd11.prod.outlook.com>
-References: <20200413222920.4722-1-ernesto.corona@intel.com>
- <20210115104635.GA2971@home.paul.comp> <YGxgfFBUr6eHJ1Qi@smile.fi.intel.com>
- <20210406133420.GY10267@home.paul.comp>
-In-Reply-To: <20210406133420.GY10267@home.paul.comp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [187.189.154.16]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60ba6048-1d0f-4415-ecbb-08d8f91d6f47
-x-ms-traffictypediagnostic: DM5PR1101MB2268:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB22684CB5578955EFC21667FD8B769@DM5PR1101MB2268.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y5meAibbpnMvin3KtzD96C6dNKMi1AEeAA7Df3lTztvONMIOjJ7KjuJYNmVzRnj5m2nlb5R2D3GT9NtRNBOm63QESJEnXzIIbKN0IYbxy0Tj5qatV7Ajm7CA80Oa+jePDDim5KYFQPlMQ1CLRuuYPt1sj7cfKyj4VcllQdY3DnK2seu2zIM0qJHToO6XHQBqN52EvXJMOuLbpGs+bgUO9u7G2SLZgu9t5AVrWr9S0aQrsWouZFAo0nHLuG1b8i3LVJOXTj4V9NySxrHcsVdkouwg57IwUzaL4OZH6lGnueEWEZNBzhI2wVRQDPRsEwPNdO9n1SZbS0mHG3Xjzkn69ddqJdUX10aGdq3TsURjzzQJZaLxsEQgDth//GWe3zzbCH/M9EkGWx0UyHzzBO+i2aHdw9Bc7iyPKp+LBV2PdobYd25N9mJu8u4nU9wucFOIIjrCFYDQk/e+aE0HSFSKcmWzkKfiEz18GlcypGYjeXJMlTFge1z6Q/d8ufn8/BEIrEfV9A3Pv+eBS/Nm7tMHwDtwZv8Hjg30GqmbxSuUafT0FSher/Crh6ppq2UIo7VD+9zPjCwWG/z2xeVTR6kJJZi41PmconMZI/8Gq+JDPMlSSJMB40hKyyJSTV2OcVHE4lEI0KVj946ccDbk3xy+JsdLOxcpKdsoxSX/rXq2ep83+YHZjOvEXwOJgN4nqqK/zD5jbprmlAao6iyVJYZsBXzZ9dgKkVGYMYIbIXrofmjl9+UazR8cPBNZmst2ADXM
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3993.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(396003)(39860400002)(478600001)(5660300002)(53546011)(7696005)(64756008)(316002)(2906002)(6506007)(66556008)(52536014)(4326008)(83380400001)(66946007)(4744005)(26005)(66476007)(8676002)(33656002)(38100700001)(186003)(71200400001)(66446008)(8936002)(9686003)(76116006)(6636002)(86362001)(55016002)(110136005)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NtxBXXVobjQOBNkkN8pIetZfHxpX/XO95YdKq00SZbZdj+y+GzGNhrMg8NPI?=
- =?us-ascii?Q?cJ97vtGKnmP/5LyJsCBsXVnqVIS2qLxtnBXJmP/cpNDQCG1zdz9SWcxNofnr?=
- =?us-ascii?Q?LkGYnU0zsKCAdJt+jb+xPSTCwAjgWgotZb4CsZ2OccCZeWidhnqB/RF68juM?=
- =?us-ascii?Q?B128v4rLmRAt1w+pMn144pzgoHYic5urr1D+cvcY48c/4Wy78B0MiBoA9/5S?=
- =?us-ascii?Q?3xLYBrDgKtGU4/tb5LwM9oavMv8AigS+8T+eWfZFpqHQsq5I66QeVkSpsAwH?=
- =?us-ascii?Q?zHsgw1wDab/MAG8zbsN1K3IN+Ni6bQlsZUrk3P2JVkEhifhEvVb7VgEEATq2?=
- =?us-ascii?Q?vkm4R3ZxILGi5EM8O8Q6vQSOYAdJdKCrf9a+gSudunB9H6yXz1zF+Rk20lwP?=
- =?us-ascii?Q?H0cyPvvef15TSKPN2NFxAthgPAape7XCpx3FGTkZ2K0yS4fhlQFX60WneL1s?=
- =?us-ascii?Q?0usRpRqlrVe43HgV2PMEGMFH2jUcsPEKEhSRKE44sAjBwJasU0wEDOka8Syq?=
- =?us-ascii?Q?+F12rNs9rjSJuRHCLgsVacDspGWvFVeEgIfyD4gBXZhIqC/Ix4fIn6xa2Smt?=
- =?us-ascii?Q?Uj+H7sTQYzn4GaDxazq2k6jqHZH0zkVwO1Gsmlh3bJuwoYiigYRdqIur7MkV?=
- =?us-ascii?Q?XCQgsmq3WRwyvMtZtGNwtCjoy2gvP15Mke8j+nEo4MCtLpP4mfzKrwdy9JGn?=
- =?us-ascii?Q?X1gILPYeuzZT7Zg1A3tq7YAg2ALcKNH/fqUK8WtE1Yhcmjx0fFUhzCIahGtD?=
- =?us-ascii?Q?HgYbg6a1E3ZE+y6aLMHnCpAc9tWURBvp4tokVirkhsu+VZpiTu/qbFSVMEaD?=
- =?us-ascii?Q?Kx31lFr6Xidc5ISiWZg7x3etOf21ZFpnWGWzefHB6c5EpcCtP1S5KHAxOAja?=
- =?us-ascii?Q?AmZQOrCrL+YNDxP8nVFg76rz4rmkjo0blcQvKhXd9CQPf8uomTXPGU503n7s?=
- =?us-ascii?Q?qSYXfwINnxdgnLcG2vkkmj96lu7R/GLVw1cGCgGfDDHi5vdBuZ1+E/FNnijI?=
- =?us-ascii?Q?gewNqiNrGN+q7Az783ZefFrzNTuBeRHWt+IYPyR8a1KaGu0ZsH748jcpRVy9?=
- =?us-ascii?Q?gdVoFYso+iZoptTvj3cKCwqjXJbnQrCoG/LeeAmUPzB7IYf/xVMazjQGLXXL?=
- =?us-ascii?Q?lZBSo/pWcFuXnF1f7MwQVAGY0tEuMVyCR48RuGVy7oaJ3Vu/dN/q8HVkHOAB?=
- =?us-ascii?Q?TB73dqGDAcKjUV6KE15ABmg7R7rGmAZajdrbDyqZwMzpWrMplnSAe/ZIzzGv?=
- =?us-ascii?Q?fpugcE8DhcoJV9OlHzNZVSB/vAP81KO2Oxh+h38yjeIVflqHgFju/Qze47UB?=
- =?us-ascii?Q?P4NQVW6y8mFsaE2Lus3+2Rx7?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1346730AbhDFRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346722AbhDFRA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:00:27 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7742C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:00:19 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id e14so23053467ejz.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rsQrfeO3uLE2PA252oecwt7Lh6zPwtoyCDmolD0D4nk=;
+        b=YeAM0Hajfpu73qo95J6l1tgCfjESwU1aXYDpqInX5kVF5SROGZmPtgf9EixKnNB5Pa
+         DQOn5DuZblwz5F/HhXRawjj476W3gjzQ40A9IhYjEebyyfSzcJ+YQedUHTMJIHHhNRmO
+         yA+FpoADyW3Hd2IP7jm9X8annb5sdTwwuzDtzb/DSOzzwV7mOpsS6rnaHepMj29t9oM6
+         G7CkgWbB401L43MXx//Em81/Frogr13cY42L4cfrVJKIt5wm0HBjI+Vtj5x8pVIvkriz
+         LK8v8ivQWOWcZtRYQOAPaJZ2v4ghzYdQX4pmoEhiVI9y2M5hLgPaZK1JtHncFtSK5yjD
+         dObw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rsQrfeO3uLE2PA252oecwt7Lh6zPwtoyCDmolD0D4nk=;
+        b=gCS9nG0G8Pm5BdqQcvS0/XvzbeLpbbrzOYNq/flu9M3eR1kAgM0ERF6Hd6Ru6y3eqB
+         bGjMFOSptCs07k4X6UmDP84Qe7LgVgNB1/05JIF9xPlrDkQhJaF9rMlE1P/vctwGE339
+         6ZKLPODOOkSO9wyMd9YcZwUqUg/WKOAmX8Y6tDF4zgigU2O7s+TndRHXV5uiW8BKKT9L
+         XI53INzY0ao/bI1zBsFhwlFwXWaQKE5t1yaTnWrLDS6ztsSgs/+mWi/fZ0ivFGDUFcwQ
+         9dQZQTdEo9Y5fVpOWeDqQgFR5586JoYlGNDjRJUKEyjwGtP17j+BOkeObhR9BxctNFPW
+         rRjw==
+X-Gm-Message-State: AOAM530osFbjH+SmjVh1n4MzlPgVNJJ714w+xLEJNaHvg86/biJI0asz
+        uPyz0NeasJScnzkR7doixEU=
+X-Google-Smtp-Source: ABdhPJxCPrCcnpKdvnfkLu7dpMrA72Erb2CBDWxaJUImNYtuJrJ4lmO7U2TcvquproKk1mKARhsRTw==
+X-Received: by 2002:a17:907:e8f:: with SMTP id ho15mr35740739ejc.541.1617728418413;
+        Tue, 06 Apr 2021 10:00:18 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id rh6sm4819338ejb.39.2021.04.06.10.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 10:00:17 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Add spaces around operators in HalBtc8723b2Ant.c
+Date:   Tue,  6 Apr 2021 19:00:11 +0200
+Message-Id: <20210406170011.20753-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3993.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60ba6048-1d0f-4415-ecbb-08d8f91d6f47
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 17:00:08.7998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WEfnPVFy8tJkzidcl42U0ffLvQZ9PXiX1Im9XicazRRGU+Ogd4xpNiKVFypvd6W01JuyCGj7OKUZouWmgJkZ295VwfUPzS4061IIn1SvSWQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2268
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Added spaces around operators in file HalBtc8723b2Ant.c. Issue detected
+by checkpatch.pl. Spaces are preferred to improve readibility.
 
-Paul is right. We already have a v30 and now after Paul's feedback we are d=
-oing some changes in preparation for v31.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ .../staging/rtl8723bs/hal/HalBtc8723b2Ant.c   | 78 +++++++++----------
+ 1 file changed, 39 insertions(+), 39 deletions(-)
 
-Regards,
+diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
+index 6edaefa47af1..4b570ec75e67 100644
+--- a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
++++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
+@@ -44,7 +44,7 @@ static u8 halbtc8723b2ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (btRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (btRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				btRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_BT_RSSI_STATE, ("[BTCoex], BT Rssi state switch to High\n"));
+ 			} else {
+@@ -70,7 +70,7 @@ static u8 halbtc8723b2ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (btRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (btRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				btRssiState = BTC_RSSI_STATE_MEDIUM;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_BT_RSSI_STATE, ("[BTCoex], BT Rssi state switch to Medium\n"));
+ 			} else {
+@@ -81,7 +81,7 @@ static u8 halbtc8723b2ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_MEDIUM) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_MEDIUM)
+ 		) {
+-			if (btRssi >= (rssiThresh1+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (btRssi >= (rssiThresh1 + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				btRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_BT_RSSI_STATE, ("[BTCoex], BT Rssi state switch to High\n"));
+ 			} else if (btRssi < rssiThresh) {
+@@ -125,7 +125,7 @@ static u8 halbtc8723b2ant_WifiRssiState(
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (wifiRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (wifiRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				wifiRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_WIFI_RSSI_STATE, ("[BTCoex], wifi RSSI state switch to High\n"));
+ 			} else {
+@@ -151,7 +151,7 @@ static u8 halbtc8723b2ant_WifiRssiState(
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (wifiRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (wifiRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				wifiRssiState = BTC_RSSI_STATE_MEDIUM;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_WIFI_RSSI_STATE, ("[BTCoex], wifi RSSI state switch to Medium\n"));
+ 			} else {
+@@ -162,7 +162,7 @@ static u8 halbtc8723b2ant_WifiRssiState(
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_MEDIUM) ||
+ 			(pCoexSta->preWifiRssiState[index] == BTC_RSSI_STATE_STAY_MEDIUM)
+ 		) {
+-			if (wifiRssi >= (rssiThresh1+BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
++			if (wifiRssi >= (rssiThresh1 + BTC_RSSI_COEX_THRESH_TOL_8723B_2ANT)) {
+ 				wifiRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_WIFI_RSSI_STATE, ("[BTCoex], wifi RSSI state switch to High\n"));
+ 			} else if (wifiRssi < rssiThresh) {
+@@ -222,11 +222,11 @@ static void halbtc8723b2ant_MonitorBtCtr(struct btc_coexist *pBtCoexist)
+ 
+ 	u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, regHPTxRx);
+ 	regHPTx = u4Tmp & bMaskLWord;
+-	regHPRx = (u4Tmp & bMaskHWord)>>16;
++	regHPRx = (u4Tmp & bMaskHWord) >> 16;
+ 
+ 	u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, regLPTxRx);
+ 	regLPTx = u4Tmp & bMaskLWord;
+-	regLPRx = (u4Tmp & bMaskHWord)>>16;
++	regLPRx = (u4Tmp & bMaskHWord) >> 16;
+ 
+ 	pCoexSta->highPriorityTx = regHPTx;
+ 	pCoexSta->highPriorityRx = regHPRx;
+@@ -1173,9 +1173,9 @@ static void halbtc8723b2ant_SetFwPstdma(
+ 		(
+ 			"[BTCoex], FW write 0x60(5bytes) = 0x%x%08x\n",
+ 			H2C_Parameter[0],
+-			H2C_Parameter[1]<<24|
+-			H2C_Parameter[2]<<16|
+-			H2C_Parameter[3]<<8|
++			H2C_Parameter[1] << 24 |
++			H2C_Parameter[2] << 16 |
++			H2C_Parameter[3] << 8 |
+ 			H2C_Parameter[4]
+ 		)
+ 	);
+@@ -1691,7 +1691,7 @@ static void halbtc8723b2ant_TdmaDurationAdjust(
+ 				if (m >= 20) /* m 最大值 = 20 ' 最大120秒 recheck是否調整 WiFi duration. */
+ 					m = 20;
+ 
+-				n = 3*m;
++				n = 3 * m;
+ 				up = 0;
+ 				dn = 0;
+ 				WaitCount = 0;
+@@ -1707,7 +1707,7 @@ static void halbtc8723b2ant_TdmaDurationAdjust(
+ 			if (m >= 20) /* m 最大值 = 20 ' 最大120秒 recheck是否調整 WiFi duration. */
+ 				m = 20;
+ 
+-			n = 3*m;
++			n = 3 * m;
+ 			up = 0;
+ 			dn = 0;
+ 			WaitCount = 0;
+@@ -2824,7 +2824,7 @@ void EXhalbtc8723b2ant_PowerOnSetting(struct btc_coexist *pBtCoexist)
+ 
+ 	/*  enable BB, REG_SYS_FUNC_EN such that we can write 0x948 correctly. */
+ 	u2Tmp = pBtCoexist->fBtcRead2Byte(pBtCoexist, 0x2);
+-	pBtCoexist->fBtcWrite2Byte(pBtCoexist, 0x2, u2Tmp|BIT0|BIT1);
++	pBtCoexist->fBtcWrite2Byte(pBtCoexist, 0x2, u2Tmp | BIT0 | BIT1);
+ 
+ 	/*  set GRAN_BT = 1 */
+ 	pBtCoexist->fBtcWrite1Byte(pBtCoexist, 0x765, 0x18);
+@@ -3019,7 +3019,7 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = %s", "BT Info A2DP rate", \
+-		(btInfoExt&BIT0) ? "Basic rate" : "EDR rate"
++		(btInfoExt & BIT0) ? "Basic rate" : "EDR rate"
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3126,7 +3126,7 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x", "0x778/0x880[29:25]", \
+ 		u1Tmp[0],
+-		(u4Tmp[0]&0x3e000000) >> 25
++		(u4Tmp[0] & 0x3e000000) >> 25
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3139,7 +3139,7 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "0x948/ 0x67[5] / 0x765", \
+ 		u4Tmp[0],
+-		((u1Tmp[0]&0x20)>>5),
++		((u1Tmp[0] & 0x20) >> 5),
+ 		u1Tmp[1]
+ 	);
+ 	CL_PRINTF(cliBuf);
+@@ -3151,9 +3151,9 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "0x92c[1:0]/ 0x930[7:0]/0x944[1:0]", \
+-		u4Tmp[0]&0x3,
+-		u4Tmp[1]&0xff,
+-		u4Tmp[2]&0x3
++		u4Tmp[0] & 0x3,
++		u4Tmp[1] & 0xff,
++		u4Tmp[2] & 0x3
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3166,10 +3166,10 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x/ 0x%x", "0x38[11]/0x40/0x4c[24:23]/0x64[0]", \
+-		((u1Tmp[0] & 0x8)>>3),
++		((u1Tmp[0] & 0x8) >> 3),
+ 		u1Tmp[1],
+-		((u4Tmp[0]&0x01800000)>>23),
+-		u1Tmp[2]&0x1
++		((u4Tmp[0] & 0x01800000) >> 23),
++		u1Tmp[2] & 0x1
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3190,7 +3190,7 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x", "0xc50(dig)/0x49c(null-drop)", \
+-		u4Tmp[0]&0xff,
++		u4Tmp[0] & 0xff,
+ 		u1Tmp[0]
+ 	);
+ 	CL_PRINTF(cliBuf);
+@@ -3204,10 +3204,10 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 	u1Tmp[1] = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0xa5c);
+ 
+ 	faOfdm =
+-		((u4Tmp[0]&0xffff0000) >> 16) +
+-		((u4Tmp[1]&0xffff0000) >> 16) +
++		((u4Tmp[0] & 0xffff0000) >> 16) +
++		((u4Tmp[1] & 0xffff0000) >> 16) +
+ 		(u4Tmp[1] & 0xffff) +  (u4Tmp[2] & 0xffff) + \
+-		((u4Tmp[3]&0xffff0000) >> 16) +
++		((u4Tmp[3] & 0xffff0000) >> 16) +
+ 		(u4Tmp[3] & 0xffff);
+ 
+ 	faCck = (u1Tmp[0] << 8) + u1Tmp[1];
+@@ -3216,7 +3216,7 @@ void EXhalbtc8723b2ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "OFDM-CCA/OFDM-FA/CCK-FA", \
+-		u4Tmp[0]&0xffff,
++		u4Tmp[0] & 0xffff,
+ 		faOfdm,
+ 		faCck
+ 	);
+@@ -3344,7 +3344,7 @@ void EXhalbtc8723b2ant_MediaStatusNotify(struct btc_coexist *pBtCoexist, u8 type
+ 		ALGO_TRACE_FW_EXEC,
+ 		(
+ 			"[BTCoex], FW write 0x66 = 0x%x\n",
+-			H2C_Parameter[0]<<16|H2C_Parameter[1]<<8|H2C_Parameter[2]
++			H2C_Parameter[0] << 16 | H2C_Parameter[1] << 8 | H2C_Parameter[2]
+ 		)
+ 	);
+ 
+@@ -3369,7 +3369,7 @@ void EXhalbtc8723b2ant_BtInfoNotify(
+ 
+ 	pCoexSta->bC2hBtInfoReqSent = false;
+ 
+-	rspSource = tmpBuf[0]&0xf;
++	rspSource = tmpBuf[0] & 0xf;
+ 	if (rspSource >= BT_INFO_SRC_8723B_2ANT_MAX)
+ 		rspSource = BT_INFO_SRC_8723B_2ANT_WIFI_FW;
+ 
+@@ -3381,7 +3381,7 @@ void EXhalbtc8723b2ant_BtInfoNotify(
+ 		if (i == 1)
+ 			btInfo = tmpBuf[i];
+ 
+-		if (i == length-1) {
++		if (i == length - 1) {
+ 			BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("0x%02x]\n", tmpBuf[i]));
+ 		} else {
+ 			BTC_PRINT(BTC_MSG_INTERFACE, INTF_NOTIFY, ("0x%02x, ", tmpBuf[i]));
+@@ -3394,13 +3394,13 @@ void EXhalbtc8723b2ant_BtInfoNotify(
+ 	}
+ 
+ 	if (BT_INFO_SRC_8723B_2ANT_WIFI_FW != rspSource) {
+-		pCoexSta->btRetryCnt = pCoexSta->btInfoC2h[rspSource][2]&0xf; /* [3:0] */
++		pCoexSta->btRetryCnt = pCoexSta->btInfoC2h[rspSource][2] & 0xf; /* [3:0] */
+ 
+-		pCoexSta->btRssi = pCoexSta->btInfoC2h[rspSource][3]*2+10;
++		pCoexSta->btRssi = pCoexSta->btInfoC2h[rspSource][3] * 2 + 10;
+ 
+ 		pCoexSta->btInfoExt = pCoexSta->btInfoC2h[rspSource][4];
+ 
+-		pCoexSta->bBtTxRxMask = (pCoexSta->btInfoC2h[rspSource][2]&0x40);
++		pCoexSta->bBtTxRxMask = (pCoexSta->btInfoC2h[rspSource][2] & 0x40);
+ 		pBtCoexist->fBtcSet(pBtCoexist, BTC_SET_BL_BT_TX_RX_MASK, &pCoexSta->bBtTxRxMask);
+ 		if (pCoexSta->bBtTxRxMask) {
+ 			/* BT into is responded by BT FW and BT RF REG 0x3C != 0x01 => Need to switch BT TRx Mask */
+@@ -3435,7 +3435,7 @@ void EXhalbtc8723b2ant_BtInfoNotify(
+ 		pCoexSta->bC2hBtInquiryPage = false;
+ 
+ 	/*  set link exist status */
+-	if (!(btInfo&BT_INFO_8723B_2ANT_B_CONNECTION)) {
++	if (!(btInfo & BT_INFO_8723B_2ANT_B_CONNECTION)) {
+ 		pCoexSta->bBtLinkExist = false;
+ 		pCoexSta->bPanExist = false;
+ 		pCoexSta->bA2dpExist = false;
+@@ -3463,19 +3463,19 @@ void EXhalbtc8723b2ant_BtInfoNotify(
+ 
+ 	halbtc8723b2ant_UpdateBtLinkInfo(pBtCoexist);
+ 
+-	if (!(btInfo&BT_INFO_8723B_2ANT_B_CONNECTION)) {
++	if (!(btInfo & BT_INFO_8723B_2ANT_B_CONNECTION)) {
+ 		pCoexDm->btStatus = BT_8723B_2ANT_BT_STATUS_NON_CONNECTED_IDLE;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT Non-Connected idle!!!\n"));
+ 	} else if (btInfo == BT_INFO_8723B_2ANT_B_CONNECTION)	{ /*  connection exists but no busy */
+ 		pCoexDm->btStatus = BT_8723B_2ANT_BT_STATUS_CONNECTED_IDLE;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT Connected-idle!!!\n"));
+ 	} else if (
+-		(btInfo&BT_INFO_8723B_2ANT_B_SCO_ESCO) ||
+-		(btInfo&BT_INFO_8723B_2ANT_B_SCO_BUSY)
++		(btInfo & BT_INFO_8723B_2ANT_B_SCO_ESCO) ||
++		(btInfo & BT_INFO_8723B_2ANT_B_SCO_BUSY)
+ 	) {
+ 		pCoexDm->btStatus = BT_8723B_2ANT_BT_STATUS_SCO_BUSY;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT SCO busy!!!\n"));
+-	} else if (btInfo&BT_INFO_8723B_2ANT_B_ACL_BUSY) {
++	} else if (btInfo & BT_INFO_8723B_2ANT_B_ACL_BUSY) {
+ 		pCoexDm->btStatus = BT_8723B_2ANT_BT_STATUS_ACL_BUSY;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT ACL busy!!!\n"));
+ 	} else {
+-- 
+2.30.2
 
-Ernesto
-
------Original Message-----
-From: Paul Fertser <fercerpav@gmail.com>=20
-Sent: Tuesday, April 6, 2021 8:34 AM
-To: Shevchenko, Andriy <andriy.shevchenko@intel.com>
-Cc: Corona, Ernesto <ernesto.corona@intel.com>; linux-aspeed@lists.ozlabs.o=
-rg; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; lin=
-ux-doc@vger.kernel.org
-Subject: Re: [PATCH v29 0/6] JTAG driver introduction
-
-Hi Andy,=20
-
-On Tue, Apr 06, 2021 at 04:22:04PM +0300, Andy Shevchenko wrote:
-> On Fri, Jan 15, 2021 at 01:46:35PM +0300, Paul Fertser wrote:
-> > I have to note that the current v29 version of the series is broken=20
-> > in several aspects:
->=20
-> Is it correct that this series is actually abandoned so far?
-
-I have an e-mail from Ernesto sent on 10 Feb 2021 stating they're going to =
-continue the work.
-
---
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
