@@ -2,74 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4F1354E01
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3C9354E04
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhDFHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
+        id S235911AbhDFHlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbhDFHku (ORCPT
+        with ESMTP id S234487AbhDFHlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:40:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E378C06174A;
-        Tue,  6 Apr 2021 00:40:39 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a0d00ba768637d7a9c90c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:ba76:8637:d7a9:c90c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D774D1EC01B5;
-        Tue,  6 Apr 2021 09:40:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617694837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=LKTE8PF9XH92NUe0ULUEFYJxn+bHhX2DcinJ7vfHwRE=;
-        b=RkbZUK0yp5udJRGhRSacLkmdpftlSe8pwJAn7EUK3d5j5PYCqIvLkK19Ic9tVy8rpIU/TK
-        wOmnaQGve3xzUabKQG1MYN3p8UDrwZKGnCdae9mjBxbXlm8pouxAG7VBJ4fpBdekXBzSiu
-        0pQkdtEIoLIqvqq01zVHxdNtoDKCcu4=
-Date:   Tue, 6 Apr 2021 09:40:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 13/25] x86/sgx: Add helpers to expose ECREATE and
- EINIT to KVM
-Message-ID: <20210406073917.GA17806@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com>
- <20210405090759.GB19485@zn.tnic>
- <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
+        Tue, 6 Apr 2021 03:41:07 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A223C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:41:00 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id e14so20309853ejz.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 00:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nBGqA/M3Vak+IwmMaVk8X2rx3tclSvs0k42JLfwZRLQ=;
+        b=sbbnKZrC6hqH4sUwwG1zvNw0iayCAdDT9eUOORudr3/kBmIbv2grL2S1CXxVclBU8j
+         RAebTm6lNL3zmhDVGucU6sQ8Q9Q1PTG+wFoEruk2BQQNahOJHYfEQSoRjtWN7cje9z9G
+         Yn3Bj46HSKZxuIQjnU7R6PZqv1c8276WE5G4zFA/Y9XLgnUKJMVyImL9n0MVkPFpa3Zp
+         GId30KBAHc5Vp7RQxrnaWKgh0zZ0cjtJPKh4CnU0RPfBMAKQ8d8E7UHotE9JIjd9wMTY
+         N0nE3gNOhExOpOHxEJ9aEmaNX7gCUZ2XLZ1dbU37T7PBRXBRAyqHKer783J1zHEvCEil
+         9K/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nBGqA/M3Vak+IwmMaVk8X2rx3tclSvs0k42JLfwZRLQ=;
+        b=flNijGiV8K7I18RdTY0N2s4lzi5UTczpiiDZWh2UgWpOyqqwH3q3FYTF8mmAG1ZH8D
+         8r848FemFbCHzTMbT4fkLSTsIueaXi5M+DDvGjMaiWCtZpmo6rvE2LIb6saMtRc8/eAz
+         B26njtAv2ByfiICplxxhkV6roVj03DYB40ef/hHwPqDjb8XH7os9z1poWf1U+ctqUi4c
+         eK+GHhTvQGRxlxHGLExf1o7pe6mr9GYkaW2wZ4yMDagMUcEQBtUxLSp+cOZPlKpcIz9W
+         bpOeqFcidbT/JTfotDmomc4AWAIloBU+I7IlLepZJjfxK9J09p3JSMJgu6fmJHPuY256
+         wL8Q==
+X-Gm-Message-State: AOAM530830oZTe61U735l77O5Hggq+7gKjLnI4zoPiKr7AnpAXSupjZ1
+        FdjsRU1rF3q/04MaBDJwOWZvFJ+Ble80srpT0u+Jsg==
+X-Google-Smtp-Source: ABdhPJxpho/8WLwFhf/GE31J5akOJMd4S3Jm/MuEgDlLzmlpjvX9lhA1LKSKPpidGaSYdx5TgSrdDRADJOB4HJARYRY=
+X-Received: by 2002:a17:907:2509:: with SMTP id y9mr20075309ejl.170.1617694858892;
+ Tue, 06 Apr 2021 00:40:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
+References: <20210405085018.871387942@linuxfoundation.org>
+In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Apr 2021 13:10:47 +0530
+Message-ID: <CA+G9fYtN+Njtss0zP4S2Jpy+b6w6YS3vw8D4M1MC0JY7x+jm7A@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/35] 4.9.265-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:44:21AM +1200, Kai Huang wrote:
-> The intention was to catch KVM bug, since KVM is the only caller, and in current
-> implementation KVM won't call this function if @secs is not a valid userspace
-> pointer. But yes we can also return here, but in this case an exception number
-> must also be specified to *trapnr so that KVM can inject to guest. It's not that
-> straightforward to decide which exception should we inject, but I think #GP
-> should be OK. Please see below.
+On Mon, 5 Apr 2021 at 14:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.265 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.265-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Why should you inject anything in that case?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-AFAICT, you can handle the return value in __handle_encls_ecreate() and
-inject only when the return value is EFAULT. If it is another negative
-error value, you pass it back up to its caller, handle_encls_ecreate()
-which returns other error values like -ENOMEM too. Which means, its
-callchain can stomach negative values just fine.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Regards/Gruss,
-    Boris.
+## Build
+* kernel: 4.9.265-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.9.y
+* git commit: 570fbad9f4ca61dfb49359b9c2627a97e41e2b4b
+* git describe: v4.9.264-36-g570fbad9f4ca
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+64-36-g570fbad9f4ca
 
-https://people.kernel.org/tglx/notes-about-netiquette
+## No regressions (compared to v4.9.264-25-gea8146018e96)
+
+## No fixes (compared to v4.9.264-25-gea8146018e96)
+
+## Test result summary
+ total: 58777, pass: 48253, fail: 593, skip: 9676, xfail: 255,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
