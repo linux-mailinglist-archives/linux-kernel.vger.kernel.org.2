@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD5E355739
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA2D35573C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345422AbhDFPFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:05:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345405AbhDFPFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:05:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DF58613C4;
-        Tue,  6 Apr 2021 15:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617721512;
-        bh=7iQanJzKQUiAwokRah7xkgA0KA/RfUKHf9XCaEnQ3I0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tLpDgW3GH0HOTPKgFGtybRIQ7aUXXnmj7Xu80t4Jc5y/NQmmYJZ8Xyv2fsrhwV3Pp
-         b2kJ+CmBVC8nkJxTbr/NI/vC43JrkkF//kP2EtTEKkmkWcFXpDCyDzr8Gl4TZ9iT2f
-         i+jOzBf1dOcCZtvlBDgsEiQ4UVQ1m7EX1EB+ZuQevrVUwt3wxd43WN3U1aisS3x0Rs
-         d0s0Y5ynNalJp/pw6IYnkSXuiy2g2YiFOPq5eZaPigKRkC7nAlzVDpzg7OrgE72mZM
-         cpJuF5iL5BOzbvU6rR2xL3gZUVGDegLsuboXL5N53R6GOi495gp5LMJzhuWaebz0nc
-         D5hC+6MzwkFDw==
-Received: by mail-ed1-f42.google.com with SMTP id z1so16986935edb.8;
-        Tue, 06 Apr 2021 08:05:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZmAy1u3zFyeo3vSJvuJFGCON6t0hAI/ZaHk7bkAa3o1cuYZKA
-        WFHmt9OPApW0Vy118usVR5VaxwBnf3Rlo7XaKQ==
-X-Google-Smtp-Source: ABdhPJy1oGbKaD5Eu/UpP1JvI7d/oPzMxONRy4B7sTEgebFMaVwAv+8uZ1k33axIYdoWmdnhcD93mzJGHFqyYUcVDDU=
-X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr39201278edd.258.1617721511023;
- Tue, 06 Apr 2021 08:05:11 -0700 (PDT)
+        id S1345431AbhDFPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230454AbhDFPFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:05:36 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40730C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:05:28 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id l12-20020a9d6a8c0000b0290238e0f9f0d8so14896271otq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DN+Pv7shK2P5BW650iRpB29dWVvYcWcUHF2JuKWInlk=;
+        b=Ku1nVe5iO8Xtqeg8NkdHqrYdN21nd8yNnCo+E/U016S9pQabMx3O8P+3jQ0YAykN+Z
+         yKuil8NO5EmGUWi+vPhbdxWBxGZC/HiGdyD6tgX2nK1hvA8HEnO8/mgbyl3fxXVfO96i
+         edZs8cxghO6icquJGY3+z9X7XlK8q+XJjH2b8hjrLv+yDS2vYOtZmAALPmiUfbFwqLDN
+         f0UVl3T8AcfL0fiHd6lnIXFeWc5PaFLiCoQ7bXuhN0sKUskgF1YxYo2Yvy/oAQC2B5Rd
+         LGqsZbaR2Aw4xXqPrdAMjv4hZQTcWUpnjiNQ38C6FrlhLNAHdHvxI39s1hsKY8N37ffB
+         yHaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DN+Pv7shK2P5BW650iRpB29dWVvYcWcUHF2JuKWInlk=;
+        b=WTUN6TUvwrU4bvEoiMULTGCOouplYhLZxI5FrikwqlTtjeRRzQabgFZA6dyEWTCgxJ
+         zbl0sHlww+qtn5n9R7tV/e2vUBPto7QjWah6yvKHzaQDB2UyZhfuyYxzTm2fvDMe/WBY
+         kpg0DqcKoLAHB7GOEvscLXuLX2LLJMTK6rVH94W1ZwRJRnb5X8D1x7bStxckbCcWj7kR
+         iwjsVnVYWDHFbSZBgB2PTeryN+mbq1nhc6/jfFzjH19kndxxH8UcVFDDVjNMvHCcgTAq
+         aJp5YbiIaVCaslKP+RbpZV5otxANc/OiKPqpaHMbtLHflRMi91+Mj1GizcpKiH74RhUg
+         OoEw==
+X-Gm-Message-State: AOAM5327WLMWrsMg+mUuAO5K/6Zlg8mNukznIRqvoAlne351HvLTFkpY
+        NiY5ofJcunonL+WlH3axvrD1i5zmw/0VxVAqHRM=
+X-Google-Smtp-Source: ABdhPJxMmR4LNN56EPbSCX8BVUWg86qNpB+y7ccxvarcSgUadi7QTQ2hahI9B6z8WD7xNHJJwllxLNzogaENQhQq868=
+X-Received: by 2002:a9d:7f8a:: with SMTP id t10mr26302185otp.239.1617721525118;
+ Tue, 06 Apr 2021 08:05:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1617279355.git.mchehab+huawei@kernel.org> <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
-In-Reply-To: <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 6 Apr 2021 10:04:57 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
-Message-ID: <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
-Subject: Re: [PATCH 29/32] docs: dt: update writing-schema.rst references
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210406130556.1417-1-fmdefrancesco@gmail.com>
+ <YGxsExq2fcQvrN99@kroah.com> <CAPj211u9MHgtjeZGUPsLxU3HkbJ8cr2EUL0v9HA7LE9-b1uUoA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2104061652590.2882@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2104061652590.2882@hadrien>
+From:   FMDF <fmdefrancesco@gmail.com>
+Date:   Tue, 6 Apr 2021 17:05:09 +0200
+Message-ID: <CAPj211uct7K7e2Kcz7drmWGcfuTRQYTWHFRvrA9ah-JmBTotsg@mail.gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: hal: Remove
+ camelcase in Hal8723BReg.h
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 7:17 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Tue, Apr 6, 2021 at 4:55 PM Julia Lawall <julia.lawall@inria.fr> wrote:
 >
-> Changeset b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> renamed: Documentation/devicetree/writing-schema.rst
-> to: Documentation/devicetree/bindings/writing-schema.rst.
 >
-> Update the cross-references accordingly.
 >
-> Fixes: b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/submitting-patches.rst | 2 +-
->  scripts/checkpatch.pl                                    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> On Tue, 6 Apr 2021, FMDF wrote:
 >
-> diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-> index ee4feb53f8d0..104fa8fb2c17 100644
-> --- a/Documentation/devicetree/bindings/submitting-patches.rst
-> +++ b/Documentation/devicetree/bindings/submitting-patches.rst
-> @@ -25,7 +25,7 @@ I. For patch submitters
+> > On Tue, Apr 6, 2021 at 4:11 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Apr 06, 2021 at 03:05:56PM +0200, Fabio M. De Francesco wrote:
+> > > > Remove camelcase in some symbols defined in Hal8723BReg.h. These symbols
+> > > > are not used anywhere else, therefore this patch does not break the driver.
+> > > >
+> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > ---
+> > > >  drivers/staging/rtl8723bs/hal/Hal8723BReg.h | 16 ++++++++--------
+> > > >  1 file changed, 8 insertions(+), 8 deletions(-)
+> > >
+> > > If this is "v2", you need to put below the --- line what changed from
+> > > v1.
+> >
+> > It is a v2 only because you made me notice that I forgot to cc
+> > linux-staging and linux-kernel.
+> > So I sent it again, but probably I shouldn't have changed the version
+> > number because nothing else had changed.
+> >
+> > > Please fix up and send a v3.
+> > >
+> >
+> > No problem at all. I can explain in the patch v3 what I wrote above.
+> > May you please confirm that a patch v3 is the correct solution even
+> > when nothing changes in the code?
 >
->         make dt_binding_check
+> When Greg acknowledges your patch, everyone who is concerned with the
+> patch should see it.  So he needs to pick up the right version of the
+> patch that has everyone in CC.  He can use the version number to choose
+> the most recent one.
 >
-> -     See Documentation/devicetree/writing-schema.rst for more details about
-> +     See Documentation/devicetree/bindings/writing-schema.rst for more details about
+> The version numbers don't appear anywhere once the code is committed.  So
+> it's not a problem to move up to the next version for any reason.  On the
+> other hand, if you skip a version, it can be a problem, because someone
+> may wonder if they missed some useful information.
+>
+> julia
+>
 
-We should make this a rSt link instead.
+Thanks for your clear explanation of these details of the workflow,
 
->       schema and tools setup.
->
->    3) DT binding files should be dual licensed. The preferred license tag is
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 4dbda85fd7e5..3870c8a01987 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3245,7 +3245,7 @@ sub process {
->                     ($line =~ /^new file mode\s*\d+\s*$/) &&
->                     ($realfile =~ m@^Documentation/devicetree/bindings/.*\.txt$@)) {
->                         WARN("DT_SCHEMA_BINDING_PATCH",
-> -                            "DT bindings should be in DT schema format. See: Documentation/devicetree/writing-schema.rst\n");
-> +                            "DT bindings should be in DT schema format. See: Documentation/devicetree/bindings/writing-schema.rst\n");
->                 }
->
->  # Check for wrappage within a valid hunk of the file
-> --
-> 2.30.2
->
+Fabio
+
+> >
+> > Thanks for your help,
+> >
+> > Fabio
+> >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/CAPj211u9MHgtjeZGUPsLxU3HkbJ8cr2EUL0v9HA7LE9-b1uUoA%40mail.gmail.com.
+> >
