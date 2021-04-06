@@ -2,51 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B9735502A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C79535502F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244981AbhDFJhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55060 "EHLO mail.kernel.org"
+        id S232787AbhDFJie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:38:34 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:4471 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244899AbhDFJg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:36:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FFD0613C9;
-        Tue,  6 Apr 2021 09:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617701805;
-        bh=J009fz95W1yp7dSEEvcQHAB/rNi9vWwOuHc1FlLXl0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oKQBQARblV68vQSDK3VKfeoxmvxv7g81RjXpQ8RzCHbVVtiEfZvwE+AMvGNbCLaPA
-         /NussvoRNsbHm53jXgIfSjGxUKGXv6jlUVZSBKf8qb6qRHx/fCexFNLvtBwio1lWZV
-         GVTzlP4Eg3YgQUcqFl/X1mTT49Xe86VKu7oi3qCw=
-Date:   Tue, 6 Apr 2021 11:36:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pavle Rohalj <pavle.rohalj@gmail.com>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: sm750fb: Convert camel case to snake case
-Message-ID: <YGwrqUkAUWzccKA2@kroah.com>
-References: <YGwncT6RGvYlL9yj@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGwncT6RGvYlL9yj@localhost.localdomain>
+        id S230071AbhDFJi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:38:28 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FF2Ws20CTz9txTJ;
+        Tue,  6 Apr 2021 11:38:17 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 03pPQZ_PdaOp; Tue,  6 Apr 2021 11:38:17 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FF2Ws0tTZz9txTH;
+        Tue,  6 Apr 2021 11:38:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 31CB78B79E;
+        Tue,  6 Apr 2021 11:38:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id KsXH1uIQ6ZeQ; Tue,  6 Apr 2021 11:38:18 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B9B068B796;
+        Tue,  6 Apr 2021 11:38:17 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 76C066766B; Tue,  6 Apr 2021 09:38:17 +0000 (UTC)
+Message-Id: <e1723a06c5a26398ff03cb669ec99de2516045a9.1617701875.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 1/2] powerpc/inst: ppc_inst_as_u64() becomes
+ ppc_inst_as_ulong()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        naveen.n.rao@linux.vnet.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue,  6 Apr 2021 09:38:17 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:18:41AM -0700, Pavle Rohalj wrote:
-> -	struct dvi_ctrl_device *pCurrentDviCtrl;
-> +	struct dvi_ctrl_device *p_current_dvi_ctrl;
+In order to simplify use on PPC32, change ppc_inst_as_u64()
+into ppc_inst_as_ulong() that returns the 32 bits instruction
+on PPC32.
 
-Does this change make sense?  Why keep the "p_" here?  We do not need or
-use, this type of variable naming in the kernel.
+Will be used when porting OPTPROBES to PPC32.
 
-Also, please break this up into a patch series where you do one
-structure change at a time.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/inst.h  | 13 +++++++------
+ arch/powerpc/kernel/optprobes.c  |  2 +-
+ arch/powerpc/lib/code-patching.c |  2 +-
+ arch/powerpc/xmon/xmon.c         |  2 +-
+ 4 files changed, 10 insertions(+), 9 deletions(-)
 
-thanks,
+diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
+index cc73c1267572..8ea0b503f32f 100644
+--- a/arch/powerpc/include/asm/inst.h
++++ b/arch/powerpc/include/asm/inst.h
+@@ -113,13 +113,14 @@ static inline struct ppc_inst *ppc_inst_next(void *location, struct ppc_inst *va
+ 	return location + ppc_inst_len(tmp);
+ }
+ 
+-static inline u64 ppc_inst_as_u64(struct ppc_inst x)
++static inline unsigned long ppc_inst_as_ulong(struct ppc_inst x)
+ {
+-#ifdef CONFIG_CPU_LITTLE_ENDIAN
+-	return (u64)ppc_inst_suffix(x) << 32 | ppc_inst_val(x);
+-#else
+-	return (u64)ppc_inst_val(x) << 32 | ppc_inst_suffix(x);
+-#endif
++	if (IS_ENABLED(CONFIG_PPC32))
++		return ppc_inst_val(x);
++	else if (IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
++		return (u64)ppc_inst_suffix(x) << 32 | ppc_inst_val(x);
++	else
++		return (u64)ppc_inst_val(x) << 32 | ppc_inst_suffix(x);
+ }
+ 
+ #define PPC_INST_STR_LEN sizeof("00000000 00000000")
+diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
+index 7f7cdbeacd1a..58fdb9f66e0f 100644
+--- a/arch/powerpc/kernel/optprobes.c
++++ b/arch/powerpc/kernel/optprobes.c
+@@ -264,7 +264,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
+ 	 * 3. load instruction to be emulated into relevant register, and
+ 	 */
+ 	temp = ppc_inst_read((struct ppc_inst *)p->ainsn.insn);
+-	patch_imm64_load_insns(ppc_inst_as_u64(temp), 4, buff + TMPL_INSN_IDX);
++	patch_imm64_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
+ 
+ 	/*
+ 	 * 4. branch back from trampoline
+diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
+index 65aec4d6d9ba..870b30d9be2f 100644
+--- a/arch/powerpc/lib/code-patching.c
++++ b/arch/powerpc/lib/code-patching.c
+@@ -26,7 +26,7 @@ static int __patch_instruction(struct ppc_inst *exec_addr, struct ppc_inst instr
+ 
+ 		__put_kernel_nofault(patch_addr, &val, u32, failed);
+ 	} else {
+-		u64 val = ppc_inst_as_u64(instr);
++		u64 val = ppc_inst_as_ulong(instr);
+ 
+ 		__put_kernel_nofault(patch_addr, &val, u64, failed);
+ 	}
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 3fe37495f63d..ff10a357d41d 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -2980,7 +2980,7 @@ generic_inst_dump(unsigned long adr, long count, int praddr,
+ 		if (!ppc_inst_prefixed(inst))
+ 			dump_func(ppc_inst_val(inst), adr);
+ 		else
+-			dump_func(ppc_inst_as_u64(inst), adr);
++			dump_func(ppc_inst_as_ulong(inst), adr);
+ 		printf("\n");
+ 	}
+ 	return adr - first_adr;
+-- 
+2.25.0
 
-greg k-h
