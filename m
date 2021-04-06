@@ -2,191 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72935355935
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323F355938
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346444AbhDFQaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:30:16 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:47068 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346426AbhDFQaM (ORCPT
+        id S238705AbhDFQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232385AbhDFQb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:30:12 -0400
-Received: by mail-oi1-f175.google.com with SMTP id m13so15695159oiw.13;
-        Tue, 06 Apr 2021 09:30:04 -0700 (PDT)
+        Tue, 6 Apr 2021 12:31:58 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E05C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:31:50 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 184so17204180ljf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CQbQjwiqS3Fuv2v9NiVnBs1PnLKQ/Au13bVVJ6VtmQo=;
+        b=S3TRJImHGHqA+aZZz7eYep7NHTFldhl/LmiyN9Vq3a5NaPbz1vXmNm+vh7CutT0FDL
+         lVaCdlQAd5AfS6mif41aB5q5YhFxAgNnjMJKLuqXntRIXxQfyLMfguAT1xlm+lR3qw3z
+         KdhrJSq87QI8Qcv9Xgo3+Vi1EzcEbqeozb7S3ufHRBVHKBGHWGYd9VGQKyeadwXm2m9y
+         QVG5FZbJfKX6G7M2NklrvoZpRd9bEB0nresuMd3RMAFD3sRKTOJfTKL1qH6oIr/OkO44
+         7YbvK5ONNtxt1sftEg1dzdL3GxBzEjGgn0dtfX0NDTVCIQBrlwLuE84wvRDcncAZFFxT
+         GiBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=D2hEsi6JFE07gneiywvOCYJVqCpw+M6VpQTy6q9ipN0=;
-        b=pfF6wwi++bpGU4/DTo8YmFud1p7chLLQD9G4LYZSe1yZDoyShAlKaQCsLjIwtn60OW
-         /irH9Lyvf69EZCV62kk3zk0NuyA7e27Yy37qrFB04W4GZT/+6jESKbYoLDW9gI6ZAPew
-         +v1B+tt4nr06fkuRVKrf7SaP1ycVJAf1sOYspPtd9qlUa7VUoMbaWURNkHdIAs4n7bKV
-         31b/SOF61ZjQkCqnwMY7q9UhI8LhevSZ/Bk+kVNQA+/yDbVED8RzjvkpjJqBnYDa9XNW
-         qh3hxDaluKbpe9Vvm2abCSEPnCVyuWl0yKbVujIUbkmR1XuG3QIUQhICykvqxWEKmfJb
-         7/2Q==
-X-Gm-Message-State: AOAM5325fZpbrvLr/5Y8CFq4SwGLoGEMNYiIJnHyB9omf6ZtXco9IgsY
-        +GbCSAFab7B9+5VUBRr5yQ==
-X-Google-Smtp-Source: ABdhPJzEkdAGtjLvNovj6nI0aO1oe6vveWO5yByt0P7mzz4mUHa6gSdQLq68mZ6NfcxanOtirCgnoQ==
-X-Received: by 2002:aca:b6d7:: with SMTP id g206mr3897766oif.53.1617726603711;
-        Tue, 06 Apr 2021 09:30:03 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d2sm4849681otl.48.2021.04.06.09.30.02
+        bh=CQbQjwiqS3Fuv2v9NiVnBs1PnLKQ/Au13bVVJ6VtmQo=;
+        b=pOnXYWHuA5lj4y3oPb4obQy7/SkCETtuoA/AHJPbBN94tmONBKEapSt1oo0vA171Kl
+         sDKkbdOCzhuU/OLqEd+DgdlC9wVPIOwYsD15ZvUM9pjezxi2SzM6DxI2mwAivcRwUUq9
+         Usmy6FKBrdnJvG58BDTMZR4AcWgium4bWcsd3YqDcVi3e5VgISR+Z/PElZ3F4qbtglBg
+         IDep8ERJGHbEDpap7dYaeK5F6Qbzm9aKpW2jpPoQZ1xBGApZ75THhl2eYWtI93jo3S6e
+         0sqadEhtfMNqgbjKIs+AoWp6MX3eSEqJxZA5WPLWHMIEDqz1g2ZMFBhFTbew1h3OMfnQ
+         1qYQ==
+X-Gm-Message-State: AOAM5322HiXUjVeJQIYcpGI89GNtEvwI2VVcBuex0zNT0B7rQoAOgW4a
+        yThzCbuB60RLTanM2NSxYU5I/w==
+X-Google-Smtp-Source: ABdhPJyKMp+huh2Pra2iFW6/A5WMkhrYQuNMnzSpSecl1gnQlx2Hc+xSjIussANa3uARnGVPSy+iUg==
+X-Received: by 2002:a2e:924e:: with SMTP id v14mr19966683ljg.362.1617726708491;
+        Tue, 06 Apr 2021 09:31:48 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id g10sm2250656lfe.90.2021.04.06.09.31.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 09:30:02 -0700 (PDT)
-Received: (nullmailer pid 1916137 invoked by uid 1000);
-        Tue, 06 Apr 2021 16:30:01 -0000
-Date:   Tue, 6 Apr 2021 11:30:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
+        Tue, 06 Apr 2021 09:31:47 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id AACE8101FF7; Tue,  6 Apr 2021 19:31:50 +0300 (+03)
+Date:   Tue, 6 Apr 2021 19:31:50 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-usb@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>, devicetree@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH v6 1/5] dt-bindings: usb: Add binding for Realtek RTS5411
- hub controller
-Message-ID: <20210406163001.GA1910748@robh.at.kernel.org>
-References: <20210405201817.3977893-1-mka@chromium.org>
- <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+        Kai Huang <kai.huang@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 25/26] x86/tdx: Make DMA pages shared
+Message-ID: <20210406163150.cbmcybnu6hu5alk7@box>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0bc9209a36760ee7c8591322327ddbfe87351b09.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <cc8e2e73-9d08-894c-47f9-ec82b0642789@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+In-Reply-To: <cc8e2e73-9d08-894c-47f9-ec82b0642789@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 01:18:13PM -0700, Matthias Kaehlcke wrote:
-> The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
+On Thu, Apr 01, 2021 at 02:01:15PM -0700, Dave Hansen wrote:
+> > +int tdx_map_gpa(phys_addr_t gpa, int numpages, bool private)
+> > +{
+> > +	int ret, i;
+> > +
+> > +	ret = __tdx_map_gpa(gpa, numpages, private);
+> > +	if (ret || !private)
+> > +		return ret;
+> > +
+> > +	for (i = 0; i < numpages; i++)
+> > +		tdx_accept_page(gpa + i*PAGE_SIZE);
+> > +
+> > +	return 0;
+> > +}
 > 
-> This initial version of the binding only describes USB related
-> aspects of the RTS5411, it does not cover the option of
-> connecting the controller as an i2c slave.
+> Please do something like this:
 > 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+> enum tdx_max_type {
+> 	TDX_MAP_PRIVATE,
+> 	TDX_MAP_SHARED
+> }
 > 
-> Changes in v7:
-> - added type ref for 'companion-hub' property
+> Then, your calls will look like:
 > 
-> Changes in v6:
-> - Realtek binding instead of generic onboard_usb_hub
-> - added 'companion-hub' property
-> - added reference to 'usb-device.yaml'
-> - 'fixed' indentation of compatible entries to keep yamllint happy
-> - added 'additionalProperties' entry
-> - updated commit message
+> 	tdx_map_gpa(gpa, nr, TDX_MAP_SHARED);
 > 
-> Changes in v5:
-> - updated 'title'
-> - only use standard USB compatible strings
-> - deleted 'usb_hub' node
-> - renamed 'usb_controller' node to 'usb-controller'
-> - removed labels from USB nodes
-> - added 'vdd-supply' to USB nodes
+> instead of:
 > 
-> Changes in v4:
-> - none
-> 
-> Changes in v3:
-> - updated commit message
-> - removed recursive reference to $self
-> - adjusted 'compatible' definition to support multiple entries
-> - changed USB controller phandle to be a node
-> 
-> Changes in v2:
-> - removed 'wakeup-source' and 'power-off-in-suspend' properties
-> - consistently use spaces for indentation in example
-> 
->  .../bindings/usb/realtek,rts5411.yaml         | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-> new file mode 100644
-> index 000000000000..b59001972749
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/realtek,rts5411.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binding for the Realtek RTS5411 USB 3.0 hub controller
-> +
-> +maintainers:
-> +  - Matthias Kaehlcke <mka@chromium.org>
-> +
-> +allOf:
-> +  - $ref: usb-device.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - usbbda,5411
-> +          - usbbda,411
-> +
+> 	tdx_map_gpa(gpa, nr, false);
 
-reg: true
+Okay, makes sense.
 
-to fix the error.
-
-> +  vdd-supply:
-> +    description:
-> +      phandle to the regulator that provides power to the hub.
-> +
-> +  companion-hub:
-> +    $ref: '/schemas/types.yaml#/definitions/phandle'
-> +    description:
-> +      phandle to the companion hub on the controller.
-
-This should be required I think. I suppose you could only hook up 2.0 
-ports, but why. And 3.0 only wouldn't be USB compliant, would it?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    usb-controller {
-
-'usb' is the standard name.
-
-> +        dr_mode = "host";
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        /* 2.0 hub on port 1 */
-> +        hub_2_0: hub@1 {
-> +            compatible = "usbbda,5411";
-> +            reg = <1>;
-> +            vdd-supply = <&pp3300_hub>;
-> +            companion-hub = <&hub_3_0>;
-> +        };
-> +
-> +        /* 3.0 hub on port 2 */
-> +        hub_3_0: hub@2 {
-> +            compatible = "usbbda,411";
-> +            reg = <2>;
-> +            vdd-supply = <&pp3300_hub>;
-> +            companion-hub = <&hub_2_0>;
-> +        };
-> +    };
-> -- 
-> 2.31.0.208.g409f899ff0-goog
+> >  static __cpuidle void tdx_halt(void)
+> >  {
+> >  	register long r10 asm("r10") = TDVMCALL_STANDARD;
+> > diff --git a/arch/x86/mm/mem_encrypt_common.c b/arch/x86/mm/mem_encrypt_common.c
+> > index 964e04152417..b6d93b0c5dcf 100644
+> > --- a/arch/x86/mm/mem_encrypt_common.c
+> > +++ b/arch/x86/mm/mem_encrypt_common.c
+> > @@ -15,9 +15,9 @@
+> >  bool force_dma_unencrypted(struct device *dev)
+> >  {
+> >  	/*
+> > -	 * For SEV, all DMA must be to unencrypted/shared addresses.
+> > +	 * For SEV and TDX, all DMA must be to unencrypted/shared addresses.
+> >  	 */
+> > -	if (sev_active())
+> > +	if (sev_active() || is_tdx_guest())
+> >  		return true;
+> >  
+> >  	/*
+> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> > index 16f878c26667..6f23a9816ef0 100644
+> > --- a/arch/x86/mm/pat/set_memory.c
+> > +++ b/arch/x86/mm/pat/set_memory.c
+> > @@ -27,6 +27,7 @@
+> >  #include <asm/proto.h>
+> >  #include <asm/memtype.h>
+> >  #include <asm/set_memory.h>
+> > +#include <asm/tdx.h>
+> >  
+> >  #include "../mm_internal.h"
+> >  
+> > @@ -1977,8 +1978,8 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> >  	struct cpa_data cpa;
+> >  	int ret;
+> >  
+> > -	/* Nothing to do if memory encryption is not active */
+> > -	if (!mem_encrypt_active())
+> > +	/* Nothing to do if memory encryption and TDX are not active */
+> > +	if (!mem_encrypt_active() && !is_tdx_guest())
+> >  		return 0;
 > 
+> So, this is starting to look like the "enc" naming is wrong, or at least
+> a little misleading.   Should we be talking about "protection" or
+> "guards" or something?
+
+Are you talking about the function argument or function name too?
+
+> >  	/* Should not be working on unaligned addresses */
+> > @@ -1988,8 +1989,14 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> >  	memset(&cpa, 0, sizeof(cpa));
+> >  	cpa.vaddr = &addr;
+> >  	cpa.numpages = numpages;
+> > -	cpa.mask_set = enc ? __pgprot(_PAGE_ENC) : __pgprot(0);
+> > -	cpa.mask_clr = enc ? __pgprot(0) : __pgprot(_PAGE_ENC);
+> > +	if (is_tdx_guest()) {
+> > +		cpa.mask_set = __pgprot(enc ? 0 : tdx_shared_mask());
+> > +		cpa.mask_clr = __pgprot(enc ? tdx_shared_mask() : 0);
+> > +	} else {
+> > +		cpa.mask_set = __pgprot(enc ? _PAGE_ENC : 0);
+> > +		cpa.mask_clr = __pgprot(enc ? 0 : _PAGE_ENC);
+> > +	}
+> 
+> OK, this is too hideous to live.  It sucks that the TDX and SEV/SME bits
+> are opposite polarity, but oh well.
+> 
+> To me, this gets a lot clearer, and opens up room for commenting if you
+> do something like:
+> 
+> 	if (is_tdx_guest()) {
+> 		mem_enc_bits   = 0;
+> 		mem_plain_bits = tdx_shared_mask();
+> 	} else {
+> 		mem_enc_bits   = _PAGE_ENC;
+> 		mem_plain_bits = 0
+> 	}
+> 
+> 	if (enc) {
+> 		cpa.mask_set = mem_enc_bits;
+> 		cpa.mask_clr = mem_plain_bits;  // clear "plain" bits
+> 	} else {
+> 		
+> 		cpa.mask_set = mem_plain_bits;
+> 		cpa.mask_clr = mem_enc_bits;	// clear encryption bits
+> 	}
+
+I'm not convinced that your approach it clearer. If you add the missing
+__pgprot() it going to as ugly as the original.
+
+But if a maintainer wants... :)
+
+> >  	cpa.pgd = init_mm.pgd;
+> >  
+> >  	/* Must avoid aliasing mappings in the highmem code */
+> > @@ -1999,7 +2006,8 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> >  	/*
+> >  	 * Before changing the encryption attribute, we need to flush caches.
+> >  	 */
+> > -	cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+> > +	if (!enc || !is_tdx_guest())
+> > +		cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+> 
+> That "!enc" looks wrong to me.  Caches would need to be flushed whenever
+> encryption attributes *change*, not just when they are set.
+> 
+> Also, cpa_flush() flushes caches *AND* the TLB.  How does TDX manage to
+> not need TLB flushes?
+
+I will double-check everthing, but I think we can skip *both* cpa_flush()
+for private->shared conversion. VMM and TDX module will take care about
+TLB and cache flush in response to MapGPA TDVMCALL.
+
+> >  	ret = __change_page_attr_set_clr(&cpa, 1);
+> >  
+> > @@ -2012,6 +2020,11 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> >  	 */
+> >  	cpa_flush(&cpa, 0);
+> >  
+> > +	if (!ret && is_tdx_guest()) {
+> > +		ret = tdx_map_gpa(__pa(addr), numpages, enc);
+> > +		// XXX: need to undo on error?
+> > +	}
+> 
+> Time to fix this stuff up if you want folks to take this series more
+> seriously.
+
+My bad, will fix it.
+
+-- 
+ Kirill A. Shutemov
