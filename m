@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBFC355CF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C874355CF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347157AbhDFUfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231488AbhDFUfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:35:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46D4B613D5;
-        Tue,  6 Apr 2021 20:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617741308;
-        bh=N/P/v83SVqNFY3Fry7EvoEZEpk4y/c7ESbkj/VS1lHg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CiNE4Z4BihALsyCnKHSZxUeDOGqCP4QtrZKYtJ0+3H7wfbdlejkzy4MtQ/LOQm9v7
-         Y4YEbo0XPX4LU3hpaZAIG1XgEnZ/tUbHzltHYCvZNfGYnUYmgOs9vEeC85Wdp4Nckf
-         s743+1JMPYonwGWYoqyezxwN/8qTZF73UE4s646s1bZ30gsXT9bZfLuda10Fx1+Ub0
-         9tK5P1svYqZd5d+o+SRXysnR9jSH4QMYsxgisLf8U3WxLWnEmwDck499AI4WOTVUVC
-         TLPVo3LZCI2x99IgIYoQFI/kOKKQSm3TXe7LbbzXqIFY0e+aL2yWMPnQQFT6cG5UO2
-         IQ1S5xCiXyruA==
-Received: by mail-qv1-f51.google.com with SMTP id 30so7862642qva.9;
-        Tue, 06 Apr 2021 13:35:08 -0700 (PDT)
-X-Gm-Message-State: AOAM5335GdCOpgOibbDJ8Plczoqa64hN6HGInSRdMaE04vsUet0wZh4U
-        QSkurOmr4oT9yR0bgUaLyQV+rMFyRuFnlf/IYg==
-X-Google-Smtp-Source: ABdhPJwg+M3sUpoOAcY6QNJB29EAcEzTm+oglmAhJGlpHQdhW52fxF5MqlsGat4RgDZvcKKE9l41rMv0BC2r+Cq+9Gc=
-X-Received: by 2002:a05:6214:18d2:: with SMTP id cy18mr30403123qvb.50.1617741307499;
- Tue, 06 Apr 2021 13:35:07 -0700 (PDT)
+        id S1347169AbhDFUfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231488AbhDFUfd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 16:35:33 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441B3C06174A;
+        Tue,  6 Apr 2021 13:35:25 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id j199-20020a1c23d00000b0290123bb155f6aso2798wmj.2;
+        Tue, 06 Apr 2021 13:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wMvPjW2QsAPyvCJfq+a499dbQHhdrOdxzTvFTum5SZ0=;
+        b=JHV20ae0MBX5q2tzrKWwlH9dQ9tYw9NPzWzoZPW5EH77drSNHHBWkJdHLsHNkj+XIT
+         fyoGMQ7+96mBli6Z5kBAbaT/ZrAduaeDAzdlUswg7hAYCct0mJqgopUhFnzTKH45fMOB
+         w7Zvvu9SvzrQoLNirNg0F6G6VUwTvN/dNMyxLg0TKDHVyquDYA27edurf8PI3IvwFGqQ
+         LZfQjF/tMT0uO+fk0Lv1O/PXdOx58E3H3n1bJU+f7bRpze5Ev78qN/II4oA107wxtLSM
+         /Dnsz6yHZuiNPCUlJAmGtM+BRB5ERQoAUSiQrjkrZv8HCnTevCGFloKTCxJh8Vt9hMHb
+         ApEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wMvPjW2QsAPyvCJfq+a499dbQHhdrOdxzTvFTum5SZ0=;
+        b=i6P3/ULlhh5dQCpL9DexThE0v9RC/74/6Vv85hcaEUIgh2e52k/Z2b1TgArBbrOn7V
+         vPlm0O2yGP+YeHbP3+WRJ6M3coH5Zk9lsAXReJsG6UqmGDQnWGgcOBQHnovQGXENoftR
+         hFSat72CE5rxcyC6vaG/HLZJE1k0KvRwaHYARFiY46I0eXI1PnQ8FUaarllddt4mGn0l
+         9ByAuqrw4p9k/BkXR3/9nGh08t8y9coPizThXt27VcSyArx0IHyniXcrFUi8rDboZeNZ
+         3U//q9fo0K2AdBCkgoJcOnvPu6FApV5x9MdcDCUVJeV4yIKC43Y8Zk6PthNW61CGN7pm
+         3peQ==
+X-Gm-Message-State: AOAM530+rUV8xnzcKYte0GPoxaDCQu5oFDs+yiRPRH7Y0ZfbihphpgXP
+        vy3HM2CQ2wDWuSGkxDnU6UA=
+X-Google-Smtp-Source: ABdhPJyQf/vCXmZnQsg/E6b6pMHI6gzqN5X4KCtRwWKlowKn3ffANf4uYT1j9HsA4D/c7lw5V2XFxQ==
+X-Received: by 2002:a1c:5446:: with SMTP id p6mr5750611wmi.44.1617741323902;
+        Tue, 06 Apr 2021 13:35:23 -0700 (PDT)
+Received: from localhost.localdomain (p200300f1370b4300428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:370b:4300:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id q14sm14040564wrg.64.2021.04.06.13.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 13:35:23 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     hauke@hauke-m.de, andrew@lunn.ch, f.fainelli@gmail.com,
+        vivien.didelot@gmail.com, olteanv@gmail.com, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC net 0/2] lantiq: GSWIP: two more fixes
+Date:   Tue,  6 Apr 2021 22:35:06 +0200
+Message-Id: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210222084732.21521-1-bharat.kumar.gogada@xilinx.com> <20210406142004.GA25082@lpieralisi>
-In-Reply-To: <20210406142004.GA25082@lpieralisi>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 6 Apr 2021 15:34:56 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+TKsZpHsjm0dBVTGdCMeDYLeOxqFBmNhuM_-xLizX6Fg@mail.gmail.com>
-Message-ID: <CAL_Jsq+TKsZpHsjm0dBVTGdCMeDYLeOxqFBmNhuM_-xLizX6Fg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic
- using CCI
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 9:20 AM Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> [+ Rob, Robin]
->
-> On Mon, Feb 22, 2021 at 02:17:31PM +0530, Bharat Kumar Gogada wrote:
-> > Add support for routing PCIe DMA traffic coherently when
-> > Cache Coherent Interconnect (CCI) is enabled in the system.
-> > The "dma-coherent" property is used to determine if CCI is enabled
-> > or not.
-> > Refer to https://developer.arm.com/documentation/ddi0470/k/preface
-> > for the CCI specification.
-> >
-> > Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-> > ---
-> >  drivers/pci/controller/pcie-xilinx-nwl.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-> > index 07e36661bbc2..8689311c5ef6 100644
-> > --- a/drivers/pci/controller/pcie-xilinx-nwl.c
-> > +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-> > @@ -26,6 +26,7 @@
-> >
-> >  /* Bridge core config registers */
-> >  #define BRCFG_PCIE_RX0                       0x00000000
-> > +#define BRCFG_PCIE_RX1                       0x00000004
-> >  #define BRCFG_INTERRUPT                      0x00000010
-> >  #define BRCFG_PCIE_RX_MSG_FILTER     0x00000020
-> >
-> > @@ -128,6 +129,7 @@
-> >  #define NWL_ECAM_VALUE_DEFAULT               12
-> >
-> >  #define CFG_DMA_REG_BAR                      GENMASK(2, 0)
-> > +#define CFG_PCIE_CACHE                       GENMASK(7, 0)
-> >
-> >  #define INT_PCI_MSI_NR                       (2 * 32)
-> >
-> > @@ -675,6 +677,11 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
-> >       nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
-> >                         BRCFG_PCIE_RX_MSG_FILTER);
-> >
-> > +     /* This routes the PCIe DMA traffic to go through CCI path */
-> > +     if (of_dma_is_coherent(dev->of_node))
-> > +             nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
-> > +                               CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
-> > +
->
-> This is weird. FW is telling us that the RC is DMA coherent hence
-> we have to program the RC so that it is indeed DMA coherent.
->
-> It does not make much sense. I think this is a set-up that should be
-> programmed by firmware and reported to the kernel via the standard
-> "dma-coherent" property. The kernel can read that register to check the
-> HW configuration complies with the DT property.
->
-> I'd like to get RobH/Robin thoughts on this before proceeding - they
-> have more insights about the DT dma-coherent usage/bindings and
-> expected behaviour.
+Hello,
 
-Without the above change or firmware setup, a DT with 'dma-coherent'
-and a kernel without it will be broken because the above register
-won't be configured, yet we'll be using coherent DMA ops.
+after my last patch got accepted and is now in net as commit
+3e6fdeb28f4c33 ("net: dsa: lantiq_gswip: Let GSWIP automatically set
+the xMII clock") [0] some more people from the OpenWrt community
+(many thanks to everyone involved) helped test the GSWIP driver: [1]
 
-Originally when I added 'dma-coherent' (for Calxeda h/w), I had to do
-all the coherent path setup in the kernel to ensure the h/w setup was
-in-sync with the DMA ops. Nowadays, it's probably safe to assume the
-OS has coherent support, but can we say that for sure for all OSs?
+It turns out that the previous fix does not work for all boards.
+There's no regression, but it doesn't fix as many problems as I
+thought. This is why two more fixes are needed:
+- the first one solves many (four known but probably there are
+  a few extra hidden ones) reported bugs with the GSWIP where no
+  traffic would flow. Not all circumstances are fully understood
+  but testing shows that switching away from PHY auto polling
+  solves all of them
+- while investigating the different problems which are addressed
+  by the first patch some small issues with the existing code were
+  found. These are addressed by the second patch
 
-It also is going to depend if this register survives resets of the
-module. If not, then it needs to be done in the kernel.
+Why am I sending this as RFC then?
+Because I am not sure where to place the link configuration bits
+in the first patch (as I don't understand why phylink_mac_config
+and also phylink_mac_link_up both have the required parameters
+to configure the link, just in differnet formats):
+- in gswip_phylink_mac_config
+- in gswip_phylink_mac_link_up
+- in both
 
-Rob
+Any feedback is very welcome on this topic!
+
+I have already gotten Hauke's Acked-by off-list. He's Cc'ed so he
+can speak up if he changes his opinion or finds some issue with
+the patches still.
+
+
+Best regards,
+Martin
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=3e6fdeb28f4c331acbd27bdb0effc4befd4ef8e8
+[1] https://github.com/openwrt/openwrt/pull/3085
+
+
+Martin Blumenstingl (2):
+  net: dsa: lantiq_gswip: Don't use PHY auto polling
+  net: dsa: lantiq_gswip: Configure all remaining GSWIP_MII_CFG bits
+
+ drivers/net/dsa/lantiq_gswip.c | 211 ++++++++++++++++++++++++++++-----
+ 1 file changed, 183 insertions(+), 28 deletions(-)
+
+-- 
+2.31.1
+
