@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171F63558FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43143355905
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346336AbhDFQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:15:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46999 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346327AbhDFQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:15:03 -0400
-IronPort-SDR: 09n966EIHF5EN3DKrLM6RPIaT0jjzlmgW99xc9tTpqOG/ppIX9EgPsM05Re+c+1EgBu6fino7F
- SYZ8jbXO9PTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180233996"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="180233996"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:14:55 -0700
-IronPort-SDR: DYHq2yPahU261G4H3YvtxkReM5529mLFjhqDqHGIRoR3pnVzs+KpaS0mb6XJP/e4sZ5aw24lwn
- MC01v4UXdfXw==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="447899438"
-Received: from hlalithk-mobl1.amr.corp.intel.com (HELO [10.209.146.228]) ([10.209.146.228])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:14:54 -0700
-Subject: Re: [RFC v1 23/26] x86/tdx: Make pages shared in ioremap()
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <17c692a8-72b3-526b-9190-8c41655fa13c@intel.com>
- <20210406160016.4rwy5pxojpohmspn@box>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2be9d20e-2d53-53da-972e-61401543aaa7@intel.com>
-Date:   Tue, 6 Apr 2021 09:14:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1346359AbhDFQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:15:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39033 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346354AbhDFQPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:15:43 -0400
+Received: from mail-lj1-f198.google.com ([209.85.208.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lToMZ-0005mp-2E
+        for linux-kernel@vger.kernel.org; Tue, 06 Apr 2021 16:15:35 +0000
+Received: by mail-lj1-f198.google.com with SMTP id v29so4629250ljd.23
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:15:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pc7Mc2iBHF1g8Xf3WZmYYKPrF2SwmZQ5FMyrEN7WVwU=;
+        b=isMM26Vi6hS/0ZflJU2SA0j/QECCSLhTH/WUWWl40dDosKV2wZhA6H4QOzd68JhBvu
+         OdtQhhRTeu5jsW1J/WtZHBJi69Yr3WRO9bj6mkLwsuw3bAbJP+KUNqLP4ngHJMHJ86cr
+         gJMk1hqUbOWnFwv9cimM0ymo1o9y7TUOjtiyC/uNyMmXlcglXbZLIBIFbd3qr9PHPg/M
+         dt7R6nd0oMNkWsm8+KGCY7SuvPd8nZYOLK3yx20G8o7nxzggOxo1c6PDrZI/YtyLOTxm
+         LPYaXbAEoATudgode+eV/kxS4TxCmY+9JkJOEPLAggbc4LfRC8h4sUzl3sStpuJPxssj
+         3kZg==
+X-Gm-Message-State: AOAM5330tJjtzvx246aQ39pMkGXlqdsX9Gkftyowua2JUUdEmVwdyMlg
+        LVcqYe9xevEbhhZgNNNfyUoVC9Qfaa/a/64FEYL2ycw9VK9VxTQ2YUnliWSl3RqAK6tCj5si9yk
+        +/l0uqJ002yMgSe0MPA5fJy4uPig1NkaRMqDLTL80ZpJXv3ulQ06l57jOZQ==
+X-Received: by 2002:a17:906:ff15:: with SMTP id zn21mr20674069ejb.296.1617725724099;
+        Tue, 06 Apr 2021 09:15:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw804Texr+Avxb2Xtww4+jktrq8ZbSClHDrPU8KBZum7liZCTe94GVIXgCnwrVcGVlgqfayCTK8SXCiOhy7+HI=
+X-Received: by 2002:a17:906:ff15:: with SMTP id zn21mr20674031ejb.296.1617725723902;
+ Tue, 06 Apr 2021 09:15:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406160016.4rwy5pxojpohmspn@box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
+ <20210311152545.1317581-9-krzysztof.kozlowski@canonical.com> <20210406160959.GA208060@roeck-us.net>
+In-Reply-To: <20210406160959.GA208060@roeck-us.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date:   Tue, 6 Apr 2021 18:15:13 +0200
+Message-ID: <CA+Eumj6C60r4DF24W2GobwB1GrQADLpm5YXLAzHjcjWmrrsE3g@mail.gmail.com>
+Subject: Re: [PATCH v3 08/15] arm64: socfpga: merge Agilex and N5X into ARCH_INTEL_SOCFPGA
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 9:00 AM, Kirill A. Shutemov wrote:
->>> --- a/arch/x86/mm/ioremap.c
->>> +++ b/arch/x86/mm/ioremap.c
->>> @@ -87,12 +87,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
->>>  }
->>>  
->>>  /*
->>> - * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
->>> - * there the whole memory is already encrypted.
->>> + * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
->>> + * private in TDX case) because there the whole memory is already encrypted.
->>>   */
->> But doesn't this mean that we can't ioremap() normal memory?
-> It's not allowed anyway: see (io_desc.flags & IORES_MAP_SYSTEM_RAM) in the
-> __ioremap_caller().
-> 
->> I was somehow expecting that we would need to do this for some
->> host<->guest communication pages.
-> It goes though DMA API, not ioremap().
+On Tue, 6 Apr 2021 at 18:10, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Thu, Mar 11, 2021 at 04:25:38PM +0100, Krzysztof Kozlowski wrote:
+> > Agilex, N5X and Stratix 10 share all quite similar arm64 hard cores and
+> > SoC-part.  Up to a point that N5X uses the same DTSI as Agilex.  From
+> > the Linux kernel point of view these are flavors of the same
+> > architecture so there is no need for three top-level arm64
+> > architectures.  Simplify this by merging all three architectures into
+> > ARCH_INTEL_SOCFPGA and dropping the other ARCH* arm64 Kconfig entries.
+> >
+> > The side effect is that the INTEL_STRATIX10_SERVICE will now be
+> > available for both 32-bit and 64-bit Intel SoCFPGA, even though it is
+> > used only for 64-bit.
+>
+> Did you try to compile, say, arm:allmodconfig with this patch applied ?
+> Because for me that results in:
+>
+> In file included from <command-line>:
+> drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
+> include/linux/compiler_types.h:320:38: error:
+>         call to '__compiletime_assert_177' declared with attribute error:
+>         FIELD_GET: type of reg too small for mask
+>
+> and lots of similar errors.
 
-Ahh, got it.  Thanks for the clarification.
+Thanks for the report. I fixed that already with:
+https://lore.kernel.org/lkml/20210321184650.10926-1-krzysztof.kozlowski@canonical.com/
+(and https://lore.kernel.org/lkml/20210404124609.122377-1-dinguyen@kernel.org/ )
+but for some reason it did not go to the same tree.
 
-It would help to make mention of that stuff in the changelog to make it
-more obvious going forward.
+Best regards,
+Krzysztof
