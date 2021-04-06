@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6769355F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09B2355F70
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344572AbhDFXaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36512 "EHLO mail.kernel.org"
+        id S1344289AbhDFXaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244125AbhDFXaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244103AbhDFXaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 19:30:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 69D78613D4;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 61087613C4;
         Tue,  6 Apr 2021 23:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617751810;
-        bh=P+vTaS+ZfQZZCxOlvG9FvZYU92LZmLA619RZyw2ZFAY=;
+        bh=CGOWuChaHNkIDx4ir35Rqv2cA1xcKQRLw+phIqPOarI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Y/txJCTOv5+esVXbqkQ1m8vRlUAUbb4anKi36GhEoJhFE6lJAh68rIJAd392yR9df
-         qMXh4qIr2LrotoNRBMqfytV8+smokVC3afw+h6FiNX8GzWwUbmNsa5JNuQw9TtNUs3
-         ib/THgUD5/LDGxACFZdV0U+btpEcw5n29pCjxF+OMijwoRdpVnGWADDtJc9vI9z9RG
-         E58qCOeedl7UKMujAUc1BNggGLP0HcXSrw+PoIorpykKSyHIItQHRnTsJHEKZePU0H
-         xwJIH7D5mb1rQkqxrutwfqtlyzgnWjZY0UT5Ag7QZG/ZRsDTe6xHx996M3PXVp9dFs
-         8jgeGtWy9+wkg==
+        b=SBfTDEjJpYEVex9Rmv1dZtOcty5hWa0ZFleujL8XfV+rURVlTrvvlm3yejALolkRB
+         9NOxyOw3V34gxFlYwM4KNVAHUoL2orqUbj3tdPtqLqiX2vQ1lN0xAa7jdk/yoOOe60
+         7lCqXGnvmGC78nslDUDcH9XabOO+j2PkjHixKd+i3+kpOQrKsGcC6ZpjMzyGYq77Su
+         rUAFOv5R/u1tFqh463exVuXCX7glopRsVwqKDDxQhQZnCknsWJ7alUjQSSolf2thNn
+         HcugPU9vpgTGzCQiGJuUM+2Bqpt378OjGE7+qX73ItE+f4KTv0O+I9QRd3S86kAbpV
+         A8qtfGK9x+QfA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6193C60978;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55F3860A50;
         Tue,  6 Apr 2021 23:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] netdevsim: remove unneeded semicolon
+Subject: Re: [PATCH net-next v4 0/4] usbnet: speed reporting for devices without
+ MDIO
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161775181039.15996.1066445461229083940.git-patchwork-notify@kernel.org>
+Message-Id: <161775181034.15996.11696477162112328110.git-patchwork-notify@kernel.org>
 Date:   Tue, 06 Apr 2021 23:30:10 +0000
-References: <20210406031813.7103-1-linqiheng@huawei.com>
-In-Reply-To: <20210406031813.7103-1-linqiheng@huawei.com>
-To:     Qiheng Lin <linqiheng@huawei.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210405231344.1403025-1-grundler@chromium.org>
+In-Reply-To: <20210405231344.1403025-1-grundler@chromium.org>
+To:     Grant Grundler <grundler@chromium.org>
+Cc:     oneukum@suse.com, kuba@kernel.org, roland@kernel.org,
+        nic_swsd@realtek.com, netdev@vger.kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 6 Apr 2021 11:18:13 +0800 you wrote:
-> Eliminate the following coccicheck warning:
->  drivers/net/netdevsim/fib.c:569:2-3: Unneeded semicolon
+On Mon,  5 Apr 2021 16:13:40 -0700 you wrote:
+> This series introduces support for USB network devices that report
+> speed as a part of their protocol, not emulating an MII to be accessed
+> over MDIO.
 > 
-> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
-> ---
->  drivers/net/netdevsim/fib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v2: rebased on recent upstream changes
+> v3: incorporated hints on naming and comments
+> v4: fix misplaced hunks; reword some commit messages;
+>     add same change for cdc_ether
+> v4-repost: added "net-next" to subject and Andrew Lunn's Reviewed-by
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] netdevsim: remove unneeded semicolon
-    https://git.kernel.org/netdev/net-next/c/be107538c529
+  - [net-next,v4,1/4] usbnet: add _mii suffix to usbnet_set/get_link_ksettings
+    https://git.kernel.org/netdev/net-next/c/77651900cede
+  - [net-next,v4,2/4] usbnet: add method for reporting speed without MII
+    https://git.kernel.org/netdev/net-next/c/956baa99571b
+  - [net-next,v4,3/4] net: cdc_ncm: record speed in status method
+    https://git.kernel.org/netdev/net-next/c/eb47c274d8c4
+  - [net-next,v4,4/4] net: cdc_ether: record speed in status method
+    https://git.kernel.org/netdev/net-next/c/d42ebcbb6353
 
 You are awesome, thank you!
 --
