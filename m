@@ -2,112 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7429354E1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B31F354E23
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhDFHo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:44:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24218 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232942AbhDFHo0 (ORCPT
+        id S234545AbhDFHst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232726AbhDFHss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:44:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617695058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FF1uXJ/ehFZn2D0SiRBmUa38k2IDpVhcvasGXt63J3A=;
-        b=YtmaRP3gkAc4e5P+fscZF15Ayy0LbUCXtcKnzKaM6SBSdthCvgZKkOqvXPe0I5g7x64ncq
-        DchLTckc8MtCyNeLoestE1BF4Z71q7Kf0INf7oR2EhNytH8gGMbxjxW5iYbdudakBnVIyo
-        vrReZLiSiXbhesFRf+Vywf+mWcMd3jo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-hwQxCJHxMGKyMmXMnWp8dQ-1; Tue, 06 Apr 2021 03:44:14 -0400
-X-MC-Unique: hwQxCJHxMGKyMmXMnWp8dQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBAB5612A2;
-        Tue,  6 Apr 2021 07:44:12 +0000 (UTC)
-Received: from [10.36.113.79] (ovpn-113-79.ams2.redhat.com [10.36.113.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6FED65D741;
-        Tue,  6 Apr 2021 07:44:08 +0000 (UTC)
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
-Message-ID: <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
-Date:   Tue, 6 Apr 2021 09:44:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 6 Apr 2021 03:48:48 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F841C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:48:40 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e7so15320594edu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 00:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2oQGEFkW3lPUirXohU2zbEuk0gCJ76AYXVbbRyvCBLI=;
+        b=cacPy+p9zw2j/+LNgB4wqihqzpZ1soO6cIhj+qoDgVv/RBIZxqe2Q4jxCShLg8AWwl
+         2APOIwLjU75e1Sjx6sDCZomCRq8QhpNu52nTbiRmAoqqBceR/IXVRTEM7zAj9gRgOP+0
+         JKpqp0a+uKuuuATp4pR7ksGbyzjC5gF6FSM39W7CpcBH6VfvaXz3Mi2dBhwF2B6IImzF
+         eMmiKEQ5tcgiRsJBB6Wh98MwzWsMWVze1OK8ENWsSN2mDUhWxXlQXK43HuMKWXWO2RSk
+         R/7LiZWigGVj6uUQAy8Dg240j/u4KqIJQr2Q0zPeQaOioCPBAr9Kv1E0LtZwNAoCxo9c
+         gdzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2oQGEFkW3lPUirXohU2zbEuk0gCJ76AYXVbbRyvCBLI=;
+        b=OsZsPiurTFlSSsAqk637BStZV0X6Lq1ws7OKVxKjffdKIlRADe+4vtRjxt8gEjROeH
+         CCGuzZhKvRgAqGYzXoio0vD4uJ0G+G8XP1Xtf7+jIh/+JbIJay7lc97kxMYcyxOAutdL
+         ydu12umNhgOE6vhT+sqheQteRXZ7PRt/SN5PpgFnYRzbXvcXd0265SrYjCzDUsU/iMk9
+         yQhBV4HcswfjWNny2axD3s3MQV+B/tipfj7/nu0fgxBMrKlV5TlPL1ewrpT+y8SlhqsX
+         q6Dh4FnMT9xqI5XSp0kzaDyVvfXc/P6u3UtLIoMMv9CXWaBqtdWnAr6aDGopRoeueFPe
+         9H/g==
+X-Gm-Message-State: AOAM533NpKUcTI4UOzlvqjxK4QoSd+vDrqsskTzVyT4jRnhSODTssnDW
+        mekBjshxCi6TbPKBzIMhm1VuDbCXZ8br77dAj6SBzA==
+X-Google-Smtp-Source: ABdhPJyVl/Zy8uyNY6ctCkZLIOzngxRSPCFgSUhH8RWWMH5hLbrimh78AOksICc3ilDgvO2yruG2oPyKDFP3vtDaF+c=
+X-Received: by 2002:a50:c3c2:: with SMTP id i2mr22333819edf.23.1617695318917;
+ Tue, 06 Apr 2021 00:48:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210405085017.012074144@linuxfoundation.org>
+In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Apr 2021 13:18:27 +0530
+Message-ID: <CA+G9fYtDnYFoRFOnMbhUgydcWXXa_6xFsx_Au7fF3em4=Bkg4A@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/28] 4.4.265-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.04.21 17:26, Kirill A. Shutemov wrote:
-> TDX architecture aims to provide resiliency against confidentiality and
-> integrity attacks. Towards this goal, the TDX architecture helps enforce
-> the enabling of memory integrity for all TD-private memory.
-> 
-> The CPU memory controller computes the integrity check value (MAC) for
-> the data (cache line) during writes, and it stores the MAC with the
-> memory as meta-data. A 28-bit MAC is stored in the ECC bits.
-> 
-> Checking of memory integrity is performed during memory reads. If
-> integrity check fails, CPU poisones cache line.
-> 
-> On a subsequent consumption (read) of the poisoned data by software,
-> there are two possible scenarios:
-> 
->   - Core determines that the execution can continue and it treats
->     poison with exception semantics signaled as a #MCE
-> 
->   - Core determines execution cannot continue,and it does an unbreakable
->     shutdown
-> 
-> For more details, see Chapter 14 of Intel TDX Module EAS[1]
-> 
-> As some of integrity check failures may lead to system shutdown host
-> kernel must not allow any writes to TD-private memory. This requirment
-> clashes with KVM design: KVM expects the guest memory to be mapped into
-> host userspace (e.g. QEMU).
+On Mon, 5 Apr 2021 at 14:26, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.265 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.265-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-So what you are saying is that if QEMU would write to such memory, it 
-could crash the kernel? What a broken design.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-"As some of integrity check failures may lead to system shutdown host" 
--- usually we expect to recover from an MCE by killing the affected 
-process, which would be the right thing to do here.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-How can it happen that "Core determines execution cannot continue,and it 
-does an unbreakable shutdown". Who is "Core"? CPU "core", MM "core" ? 
-And why would it decide to do a shutdown instead of just killing the 
-process?
+## Build
+* kernel: 4.4.265-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.4.y
+* git commit: 5bb7d387c8f89b4d3ff46f3e0ee3f0f00d026bde
+* git describe: v4.4.264-29-g5bb7d387c8f8
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+64-29-g5bb7d387c8f8
 
--- 
-Thanks,
+## No regressions (compared to v4.4.264-21-g8b29c729d1d8)
 
-David / dhildenb
+## Fixes (compared to v4.4.264-21-g8b29c729d1d8)
+No fixes found.
 
+## Test result summary
+ total: 44184, pass: 35929, fail: 472, skip: 7578, xfail: 205,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
