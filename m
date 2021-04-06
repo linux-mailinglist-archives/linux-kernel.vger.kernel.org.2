@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB73554C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E2C3554C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhDFNQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:16:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61660 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhDFNQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:16:12 -0400
-IronPort-SDR: 28aR9Ndg3QggjuRTc7P3AEws3HBIDK3W5F+1dpHiArApWemzs5fUMRwIQVpCkewGvc9YHaLjsu
- 7ilF0nX0SOnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180603079"
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="180603079"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 06:16:04 -0700
-IronPort-SDR: cxmOqNvzso+345A9Jb8aaTzeCyIwh88Megyz6sXpuIdsgAGxU+F/ZA0BYWBsbVPDy4xQwnnYM5
- JDz/vOVw8GFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="379399563"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 06 Apr 2021 06:16:03 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id C8E17B7; Tue,  6 Apr 2021 16:16:18 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] misc: pti: Remove Kconfig leftovers
-Date:   Tue,  6 Apr 2021 16:16:15 +0300
-Message-Id: <20210406131615.85432-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S242494AbhDFNQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhDFNQl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:16:41 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435E9C06174A;
+        Tue,  6 Apr 2021 06:16:33 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id n8so3922988lfh.1;
+        Tue, 06 Apr 2021 06:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=oK0EvQq5supIkmdytebd79wfYwhuD8P3BwaCXG7Z7hI=;
+        b=JwlFh059EWXARC3pWryr8G4rNFVgyPGcRFcZR3fc1UgSmW+vYxbhtLzBO+4CJ6B11T
+         +nQxQB1ezl2f0aEoqMYI/rwPLzu5Iw9feXGZqkS5LCAUws+2QhLEZ8ORgEYpagBJqfsB
+         sUq3rnvJbBNT08uEY+s8kNnzOmibxNNxrRxeIbXStWNmc5HIEJl0f/nfoRRgPFCD9tuK
+         tYPDue4tqXb7ytfEbotfk6cbw98fMsYZtEItNYm+w5WNkHDKyHJu9dOsN8ZSSbN3tfo4
+         dVl8WfepjQsBc9LdtMpvvHqSfsP45sKKPoGOjBA1m0/rdBeyGGlm2pdKGF31XhEdG4Bf
+         o0Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=oK0EvQq5supIkmdytebd79wfYwhuD8P3BwaCXG7Z7hI=;
+        b=jAJIluhf9XnmHn/r2DpWyVp9cZhWtV9WVphqmGL5BfBzV/7pRtBrHlnv7aGs/RDtjU
+         eOb+uqlvF0/+YMu45ffTWxxGEIIc1jW5sRy1uI7BS+VO9Wr81Fr1pg7lhd2+0wIakqOS
+         u5qpJJUAPFv3j01MBuUT3zIekrqbAr+QoTaPWOZsxJ7lJ75Fg0de5Tz2nxxjedGmsiO8
+         913G1kuY3pZxNSvqtmZAAWl3+DLQwN+D+dUqNv6CADiK18wibAON5gmI7QymzQXiQ7XJ
+         zqCEg/w8fBVFruyz5hCO3kPw3oE82UJCDIPqilQQlznSEaqD1FJNGpVL6yRzIPMtfu+G
+         xfxw==
+X-Gm-Message-State: AOAM533lP8HRiWEyByAalQL3fzKRbt0mgKLKMVTD3Q20eO+iqcDAzMGG
+        nbV6+q7L50S40Lop6QhtRgyacp3nDsaEfL+E
+X-Google-Smtp-Source: ABdhPJzDhp+uGFjyYrbpEJDXoTUzaRZ6JV3//HVJvbSnqFgMDmHs32s/CEiY0zu/w/kQgWc+yhkd6A==
+X-Received: by 2002:a19:242:: with SMTP id 63mr3139544lfc.0.1617714991761;
+        Tue, 06 Apr 2021 06:16:31 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.229.149])
+        by smtp.gmail.com with ESMTPSA id x27sm2158024lfn.95.2021.04.06.06.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 06:16:31 -0700 (PDT)
+Message-ID: <f8af54cece4150b2a0ac7db4e73bfcda36da5555.camel@gmail.com>
+Subject: Re: [PATCH] net: fix shift-out-of-bounds in nl802154_new_interface
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Alexander Aring <alex.aring@gmail.com>
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com>
+Date:   Tue, 06 Apr 2021 16:16:29 +0300
+In-Reply-To: <CAB_54W7R-27cwOTUw1Db1+kbWTMTtRn0X2EW1_9nKuiAWpLFfA@mail.gmail.com>
+References: <20210405195744.19386-1-paskripkin@gmail.com>
+         <CAB_54W7R-27cwOTUw1Db1+kbWTMTtRn0X2EW1_9nKuiAWpLFfA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 8ba59e9dee31 ("misc: pti: Remove driver for deprecated platform")
-got rid of deprecated drivers under TTY subsystem, but cleaned only one Kconfig
-entry. Remove Kconfig leftovers.
+On Tue, 2021-04-06 at 08:21 -0400, Alexander Aring wrote:
+> Hi,
+> 
+> On Mon, 5 Apr 2021 at 15:58, Pavel Skripkin <paskripkin@gmail.com>
+> wrote:
+> > 
+> > syzbot reported shift-out-of-bounds in nl802154_new_interface.
+> > The problem was in signed representation of enum nl802154_iftype
+> > 
+> > enum nl802154_iftype {
+> >         /* for backwards compatibility TODO */
+> >         NL802154_IFTYPE_UNSPEC = -1,
+> > ...
+> > 
+> > Since, enum has negative value in it, objects of this type
+> > will be represented as signed integer.
+> > 
+> >         type = nla_get_u32(info->attrs[NL802154_ATTR_IFTYPE]);
+> > 
+> > u32 will be casted to signed, which can cause negative value type.
+> > 
+> > Reported-by: syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> Yes, this patch will fix the issue but we discussed that the problem
+> is deeper than such a fix. The real problem is that we are using a -1
+> value which doesn't fit into the u32 netlink value and it gets
+> converted back and forward which we should avoid.
+> 
 
-Fixes: 8ba59e9dee31 ("misc: pti: Remove driver for deprecated platform")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/Kconfig | 30 ------------------------------
- 1 file changed, 30 deletions(-)
+OK, thanks for feedback!
 
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index 1d30add862af..f6a7fd6d3bb6 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -361,36 +361,6 @@ config NULL_TTY
- 
- 	  If unsure, say N.
- 
--config TRACE_ROUTER
--	tristate "Trace data router for MIPI P1149.7 cJTAG standard"
--	depends on TRACE_SINK
--	help
--	  The trace router uses the Linux tty line discipline framework to
--	  route trace data coming from a tty port (say UART for example) to
--	  the trace sink line discipline driver and to another tty port (say
--	  USB). This is part of a solution for the MIPI P1149.7, compact JTAG,
--	  standard, which is for debugging mobile devices. The PTI driver in
--	  drivers/misc/pti.c defines the majority of this MIPI solution.
--
--	  You should select this driver if the target kernel is meant for
--	  a mobile device containing a modem.  Then you will need to select
--	  "Trace data sink for MIPI P1149.7 cJTAG standard" line discipline
--	  driver.
--
--config TRACE_SINK
--	tristate "Trace data sink for MIPI P1149.7 cJTAG standard"
--	help
--	  The trace sink uses the Linux line discipline framework to receive
--	  trace data coming from the trace router line discipline driver
--	  to a user-defined tty port target, like USB.
--	  This is to provide a way to extract modem trace data on
--	  devices that do not have a PTI HW module, or just need modem
--	  trace data to come out of a different HW output port.
--	  This is part of a solution for the P1149.7, compact JTAG, standard.
--
--	  If you select this option, you need to select
--	  "Trace data router for MIPI P1149.7 cJTAG standard".
--
- config VCC
- 	tristate "Sun Virtual Console Concentrator"
- 	depends on SUN_LDOMS
--- 
-2.30.2
+> 
+> - Alex
+
+With regards,
+Pavel Skripkin
+
 
