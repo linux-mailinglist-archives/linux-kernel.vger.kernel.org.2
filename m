@@ -2,214 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F60235567F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3A1355680
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345057AbhDFOVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:21:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53321 "EHLO
+        id S1345100AbhDFOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:22:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29751 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237043AbhDFOVu (ORCPT
+        by vger.kernel.org with ESMTP id S237043AbhDFOWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:21:50 -0400
+        Tue, 6 Apr 2021 10:22:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617718902;
+        s=mimecast20190719; t=1617718914;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KOsrxh/c/aALPdi2ybytT46YAb20H79vEzFzq4fSRMk=;
-        b=L/kxy5RptYGlIf8EabtYFt97UBxSLCOvNY25coF+1kG5mqVhtvyd1xFEDEjAj6HravR1xU
-        AcosF8pL2WArjJsjKRbahaDNqLYo8Yt5W0bIMPkUk4WE896v2aoX9B4XFcTX6WY65GtgA2
-        Kk5qh7zgCDWrbHQejkZHPznZMZYR/So=
+        bh=jWG+3T4R82V+nNLoc/cnb3myLsmzT223wWW0Bef6Vg8=;
+        b=Eb913nqgS8MvEA12Ap9/NBNEF3nSd2Cu+qu/DNddhePKnM7S8bmHy1DGn2nz8Kl9V4OBV1
+        +tuK3hPtpdt5qm3DcOxvuULsJuYUIPstUBd8H1/8jvrAY8Fe8mVpFS0bmzXIldheZTztyA
+        LyEIrTBo0avE4/ogHZhq0/jxZphFwoQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-U0i9sBCBP--zvqFRYFXenA-1; Tue, 06 Apr 2021 10:21:40 -0400
-X-MC-Unique: U0i9sBCBP--zvqFRYFXenA-1
+ us-mta-412-tCMy5Zx6NHq0ZvXSawL3Zw-1; Tue, 06 Apr 2021 10:21:51 -0400
+X-MC-Unique: tCMy5Zx6NHq0ZvXSawL3Zw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 069B2190A7AD;
-        Tue,  6 Apr 2021 14:21:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2A7184B9A0;
+        Tue,  6 Apr 2021 14:21:49 +0000 (UTC)
 Received: from krava (unknown [10.40.195.36])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4C67919C45;
-        Tue,  6 Apr 2021 14:21:37 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 16:21:36 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1576719C44;
+        Tue,  6 Apr 2021 14:21:47 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 16:21:47 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Song Liu <song@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
         acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
         songliubraving@fb.com
-Subject: Re: [PATCH 1/2] perf util: move bperf definitions to a libperf header
-Message-ID: <YGxucIgiq+ogX687@krava>
+Subject: Re: [PATCH 2/2] perf-stat: introduce config stat.bpf-counter-events
+Message-ID: <YGxue1aHQUFj+UaG@krava>
 References: <20210403002938.390878-1-song@kernel.org>
+ <20210403002938.390878-2-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210403002938.390878-1-song@kernel.org>
+In-Reply-To: <20210403002938.390878-2-song@kernel.org>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 05:29:37PM -0700, Song Liu wrote:
-> By following the same protocol, other tools can share hardware PMCs with
-> perf. Move perf_event_attr_map_entry and BPERF_DEFAULT_ATTR_MAP_PATH to
-> bperf.h for other tools to use.
+On Fri, Apr 02, 2021 at 05:29:38PM -0700, Song Liu wrote:
+> Currently, to use BPF to aggregate perf event counters, the user uses
+> --bpf-counters option. Enable "use bpf by default" events with a config
+> option, stat.bpf-counter-events. This is limited to hardware events in
+> evsel__hw_names.
+> 
+> This also enables mixed BPF event and regular event in the same sesssion.
+> For example:
+> 
+>    perf config stat.bpf-counter-events=instructions
+>    perf stat -e instructions,cs
 
-hi,
-so is this necessary for some other tool now?
+hum, so this will effectively allow to mix 'bpf-shared' counters
+with normals ones.. I don't think we're ready for that ;-)
 
 > 
-> Also add bperf_attr_map_compatible() to check whether existing attr_map
-> is compatible with current perf binary.
-
-please separate this change
-
+> The second command will use BPF for "instructions" but not "cs".
 > 
 > Signed-off-by: Song Liu <song@kernel.org>
 > ---
->  tools/lib/perf/include/perf/bperf.h | 29 +++++++++++++++++++
->  tools/perf/util/bpf_counter.c       | 44 ++++++++++++++---------------
->  2 files changed, 50 insertions(+), 23 deletions(-)
->  create mode 100644 tools/lib/perf/include/perf/bperf.h
+>  tools/perf/Documentation/perf-stat.txt |  2 ++
+>  tools/perf/builtin-stat.c              | 41 ++++++++++++++++----------
+>  tools/perf/util/bpf_counter.c          | 11 +++++++
+>  tools/perf/util/config.c               | 32 ++++++++++++++++++++
+>  tools/perf/util/evsel.c                |  2 ++
+>  tools/perf/util/evsel.h                |  1 +
+>  tools/perf/util/target.h               |  5 ----
+>  7 files changed, 74 insertions(+), 20 deletions(-)
 > 
-> diff --git a/tools/lib/perf/include/perf/bperf.h b/tools/lib/perf/include/perf/bperf.h
-> new file mode 100644
-> index 0000000000000..02b2fd5e50c75
-> --- /dev/null
-> +++ b/tools/lib/perf/include/perf/bperf.h
-
-I wonder we want to call it bpf_perf.h to be more generic?
-or best just bpf.h ... but that might give us some conflict
-headache in future ;-)
-
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> +#ifndef __LIBPERF_BPERF_H
-> +#define __LIBPERF_BPERF_H
-> +
+> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+> index 744211fa8c186..6d4733eaac170 100644
+> --- a/tools/perf/Documentation/perf-stat.txt
+> +++ b/tools/perf/Documentation/perf-stat.txt
+> @@ -97,6 +97,8 @@ report::
+>  	Use BPF programs to aggregate readings from perf_events.  This
+>  	allows multiple perf-stat sessions that are counting the same metric (cycles,
+>  	instructions, etc.) to share hardware counters.
+> +	To use BPF programs on common hardware events by default, use
+> +	"perf config stat.bpf-counter-events=<list_of_events>".
+>  
+>  --bpf-attr-map::
+>  	With option "--bpf-counters", different perf-stat sessions share
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 4bb48c6b66980..5adfa708ffe68 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -423,17 +423,28 @@ static int read_affinity_counters(struct timespec *rs)
+>  	return 0;
+>  }
+>  
 > +/*
-> + * bperf uses a hashmap, the attr_map, to track all the leader programs.
-> + * The hashmap is pinned in bpffs. flock() on this file is used to ensure
-> + * no concurrent access to the attr_map.  The key of attr_map is struct
-> + * perf_event_attr, and the value is struct perf_event_attr_map_entry.
-> + *
-> + * struct perf_event_attr_map_entry contains two __u32 IDs, bpf_link of the
-> + * leader prog, and the diff_map. Each perf-stat session holds a reference
-> + * to the bpf_link to make sure the leader prog is attached to sched_switch
-> + * tracepoint.
-> + *
-> + * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-> + * does not hold any references to the leader program. Once all perf-stat
-> + * sessions of these events exit, the leader prog, its maps, and the
-> + * perf_events will be freed.
+> + * Returns:
+> + *     0   if all events use BPF;
+> + *     1   if some events do NOT use BPF;
+> + *     < 0 on errors;
 > + */
-> +struct perf_event_attr_map_entry {
-> +	__u32 link_id;
-> +	__u32 diff_map_id;
-> +};
+>  static int read_bpf_map_counters(void)
+>  {
+> +	bool has_none_bpf_events = false;
+>  	struct evsel *counter;
+>  	int err;
+>  
+>  	evlist__for_each_entry(evsel_list, counter) {
+> +		if (!counter->bpf_counter_ops) {
+> +			has_none_bpf_events = true;
+> +			continue;
+> +		}
+>  		err = bpf_counter__read(counter);
+>  		if (err)
+>  			return err;
+>  	}
+> -	return 0;
+> +	return has_none_bpf_events ? 1 : 0;
+>  }
+>  
+>  static void read_counters(struct timespec *rs)
+> @@ -442,9 +453,10 @@ static void read_counters(struct timespec *rs)
+>  	int err;
+>  
+>  	if (!stat_config.stop_read_counter) {
+> -		if (target__has_bpf(&target))
+> -			err = read_bpf_map_counters();
+> -		else
+> +		err = read_bpf_map_counters();
+> +		if (err < 0)
+> +			return;
+> +		if (err)
+>  			err = read_affinity_counters(rs);
 
-this header file should be self contained,
-so you need __u32 definitions
+so read_affinity_counters will read also 'bpf-shared' counters no?
+as long as it was separated, I did not see a problem, now we have
+counters that either have bpf ops set or have not
 
+it'd be great to do some generic separation.. I was thinking to move
+bpf_counter_ops into some generic counter ops and we would just fill
+in the proper ops for the counter.. buuut the affinity readings are
+not compatible with what we are doing in bperf_read and the profiler
+bpf read
 
-> +
-> +/* pin the map at sysfs__mountpoint()/BPERF_DEFAULT_ATTR_MAP_PATH */
-> +#define BPERF_DEFAULT_ATTR_MAP_PATH "fs/bpf/perf_attr_map"
+so I think the solution will be just to skip those events in
+read_affinity_counters and all the other code, and have some
+helper like:
 
-if we are going to expose this, I think we should expose just
-"perf_attr_map" ... without the 'fs/bpf' part, because that
-could be mounted anywhere
+   bool evsel__is_bpf(evsel)
+
+so it's clear why it's skipped
 
 thanks,
 jirka
-
-> +
-> +#endif /* __LIBPERF_BPERF_H */
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index 81d1df3c4ec0e..df70c8dcf7850 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -14,6 +14,7 @@
->  #include <bpf/btf.h>
->  #include <bpf/libbpf.h>
->  #include <api/fs/fs.h>
-> +#include <perf/bperf.h>
->  
->  #include "bpf_counter.h"
->  #include "counts.h"
-> @@ -29,28 +30,6 @@
->  #include "bpf_skel/bperf_leader.skel.h"
->  #include "bpf_skel/bperf_follower.skel.h"
->  
-> -/*
-> - * bperf uses a hashmap, the attr_map, to track all the leader programs.
-> - * The hashmap is pinned in bpffs. flock() on this file is used to ensure
-> - * no concurrent access to the attr_map.  The key of attr_map is struct
-> - * perf_event_attr, and the value is struct perf_event_attr_map_entry.
-> - *
-> - * struct perf_event_attr_map_entry contains two __u32 IDs, bpf_link of the
-> - * leader prog, and the diff_map. Each perf-stat session holds a reference
-> - * to the bpf_link to make sure the leader prog is attached to sched_switch
-> - * tracepoint.
-> - *
-> - * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-> - * does not hold any references to the leader program. Once all perf-stat
-> - * sessions of these events exit, the leader prog, its maps, and the
-> - * perf_events will be freed.
-> - */
-> -struct perf_event_attr_map_entry {
-> -	__u32 link_id;
-> -	__u32 diff_map_id;
-> -};
-> -
-> -#define DEFAULT_ATTR_MAP_PATH "fs/bpf/perf_attr_map"
->  #define ATTR_MAP_SIZE 16
->  
->  static inline void *u64_to_ptr(__u64 ptr)
-> @@ -333,6 +312,20 @@ static __u32 bpf_map_get_id(int fd)
->  	return map_info.id;
->  }
->  
-> +static bool bperf_attr_map_compatible(int attr_map_fd)
-> +{
-> +	struct bpf_map_info map_info = {0};
-> +	__u32 map_info_len = sizeof(map_info);
-> +	int err;
-> +
-> +	err = bpf_obj_get_info_by_fd(attr_map_fd, &map_info, &map_info_len);
-> +
-> +	if (err)
-> +		return false;
-> +	return (map_info.key_size == sizeof(struct perf_event_attr)) &&
-> +		(map_info.value_size == sizeof(struct perf_event_attr_map_entry));
-> +}
-> +
->  static int bperf_lock_attr_map(struct target *target)
->  {
->  	char path[PATH_MAX];
-> @@ -342,7 +335,7 @@ static int bperf_lock_attr_map(struct target *target)
->  		scnprintf(path, PATH_MAX, "%s", target->attr_map);
->  	} else {
->  		scnprintf(path, PATH_MAX, "%s/%s", sysfs__mountpoint(),
-> -			  DEFAULT_ATTR_MAP_PATH);
-> +			  BPERF_DEFAULT_ATTR_MAP_PATH);
->  	}
->  
->  	if (access(path, F_OK)) {
-> @@ -367,6 +360,11 @@ static int bperf_lock_attr_map(struct target *target)
->  			return -1;
->  	}
->  
-> +	if (!bperf_attr_map_compatible(map_fd)) {
-> +		close(map_fd);
-> +		return -1;
-> +
-> +	}
->  	err = flock(map_fd, LOCK_EX);
->  	if (err) {
->  		close(map_fd);
-> -- 
-> 2.30.2
-> 
 
