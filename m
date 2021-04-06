@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83E435564C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532C0355661
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345002AbhDFOQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:16:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37476 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244438AbhDFOQl (ORCPT
+        id S1345061AbhDFOTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345015AbhDFOSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:16:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617718593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TXQG7GfvF1Ng7FzSKt4ktIki+yjQeoa1qkYOKApty+c=;
-        b=JwiraQIcesN3lKZKzFLi/IqWLBYbZlQrwLEVLmxmd59SBb6HmOzi5EJ6diktEvz37uK//B
-        F6BFW5/bm0IOAbmIVE4WkZSAdGvjrg/fGjFkiqkuOkKQZXXJo4UhRnlTCMGdLfPgEbfYZQ
-        HsQKz29z6jKHdHlP3lIcY/aWd7DWRUw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-VprOzs9nMXKakP89jFEt9w-1; Tue, 06 Apr 2021 10:16:29 -0400
-X-MC-Unique: VprOzs9nMXKakP89jFEt9w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01CEE108BD0F;
-        Tue,  6 Apr 2021 14:16:28 +0000 (UTC)
-Received: from x1.home.shazbot.org (ovpn-112-85.phx2.redhat.com [10.3.112.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 708FB19D61;
-        Tue,  6 Apr 2021 14:16:27 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 08:16:26 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
-Message-ID: <20210406081626.31f19c0f@x1.home.shazbot.org>
-In-Reply-To: <YGlzEA5HL6ZvNsB8@unreal>
-References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
-        <YGW8Oe9jn+n9sVsw@unreal>
-        <20210401105616.71156d08@omen>
-        <YGlzEA5HL6ZvNsB8@unreal>
-Organization: Red Hat
+        Tue, 6 Apr 2021 10:18:40 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD4BC06174A;
+        Tue,  6 Apr 2021 07:18:29 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id y2so7586786plg.5;
+        Tue, 06 Apr 2021 07:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oHeyYOhTyr/Pj14dswoKpegMv2vJUh025+BN2sVtXu8=;
+        b=RtwbzxaLtNZ0nmdC4WJ/Cx9sZwXO1DHJ8WqQYOxbxvHGlQneXoT8hZHtjuYkmAPLAn
+         +6JTWU6Ws84uztBHt7NYBcbVcXDde3Fj5zcCJ5ssBJQDm9xUC4IaYY0HcCH+8YFW/sDo
+         4mu6CsmLrotTPSTK9y77uxPSMmLcL3qJBaJhRafv9kEsBXP62g+trAQjsOGilTI0c00Y
+         zQmg6e8jMR4cMxkGHgs4R7BFQA+O035RKOVNLgcCWxHlWwMBKQRC3FavgUGBJ8WpE974
+         ui3F38lBrgyaZ5tDeXKuR/6umDgfaSsfj+ifEIs2c1ddA3B9/Z4FrDCcvKIa7ONX2wu2
+         dJ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oHeyYOhTyr/Pj14dswoKpegMv2vJUh025+BN2sVtXu8=;
+        b=QoUuAFOPNBXwkcUZsdE0XjKAIX0M1gh/gIakny+WcMe9D26pvolFgdmfjrokHwgAYT
+         9pT02UGEb8iiCtzNEAcK8jE5uhP47RYv8VJVs5dWQ1u1nwjk9T2+IevnBRFlpbkTxySC
+         neB68ZXtGOJxHYYC8n/zsqN+7/CSs10FhLqYkgqwb58L4vPH8a/xFOXEdK4EF5KbF4UG
+         /anwduQcTaZXRpgaDADLQL/sCg4bh9HHkbQ/jDOH/pP8gKp4DQsYCQ0d7jMP+IPF70pG
+         OJYoyIjpzQqDRrBytzfA8kPIDI0jopCTbljOUmSHpE9/VwdaPW3a91Tqvww7CWKYekFX
+         ckWA==
+X-Gm-Message-State: AOAM530z/LXAeNzdcdz54wSvQVTHH8lQGbyBIiswg66OOMHO2PFleznu
+        +CHkmK9wTrNUXzCSFa1wd5s=
+X-Google-Smtp-Source: ABdhPJycUf08xH7qOZt9syoGWZKCK/ZFzVK3LiVHhby8ua9De8vgDPchYrwqPZAbqEJIvB6LOhGhgw==
+X-Received: by 2002:a17:90a:314:: with SMTP id 20mr4735746pje.72.1617718709461;
+        Tue, 06 Apr 2021 07:18:29 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id u1sm18337581pgg.11.2021.04.06.07.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 07:18:28 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>
+Subject: [RFC net-next 0/4] MT7530 interrupt support
+Date:   Tue,  6 Apr 2021 22:18:15 +0800
+Message-Id: <20210406141819.1025864-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 4 Apr 2021 11:04:32 +0300
-Leon Romanovsky <leon@kernel.org> wrote:
+Add support for MT7530 interrupt controller.
 
-> On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
-> > On Thu, 1 Apr 2021 15:27:37 +0300
-> > Leon Romanovsky <leon@kernel.org> wrote:
-> >   
-> > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:  
-> > > > Slot resets are bus resets with additional logic to prevent a device
-> > > > from being removed during the reset. Currently slot and bus resets have
-> > > > separate implementations in pci.c, complicating higher level logic. As
-> > > > discussed on the mailing list, they should be combined into a generic
-> > > > function which performs an SBR. This change adds a function,
-> > > > pci_reset_bus_function(), which first attempts a slot reset and then
-> > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
-> > > > single device agnostic function to perform an SBR.
-> > > > 
-> > > > This new function is also needed to add SBR reset quirks and therefore
-> > > > is exposed in pci.h.
-> > > > 
-> > > > Link: https://lkml.org/lkml/2021/3/23/911
-> > > > 
-> > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > > > ---
-> > > >  drivers/pci/pci.c   | 17 +++++++++--------
-> > > >  include/linux/pci.h |  1 +
-> > > >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > index 16a17215f633..12a91af2ade4 100644
-> > > > --- a/drivers/pci/pci.c
-> > > > +++ b/drivers/pci/pci.c
-> > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-> > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-> > > >  }
-> > > >  
-> > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> > > > +{
-> > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > +
-> > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;    
-> > > 
-> > > The previous coding style is preferable one in the Linux kernel.
-> > > int rc = pci_dev_reset_slot_function(dev, probe);
-> > > if (rc != -ENOTTY)
-> > >   return rc;
-> > > return pci_parent_bus_reset(dev, probe);  
-> > 
-> > 
-> > That'd be news to me, do you have a reference?  I've never seen
-> > complaints for ternaries previously.  Thanks,  
-> 
-> The complaint is not to ternaries, but to the function call as one of
-> the parameters, that makes it harder to read.
+DENG Qingfang (4):
+  net: phy: add MediaTek PHY driver
+  net: dsa: mt7530: add interrupt support
+  dt-bindings: net: dsa: add MT7530 interrupt controller binding
+  staging: mt7621-dts: enable MT7530 interrupt controller
 
-Sorry, I don't find a function call as a parameter to a ternary to be
-extraordinary, nor do I find it to be a discouraged usage model within
-the kernel.  This seems like a pretty low bar for hard to read code.
+ .../devicetree/bindings/net/dsa/mt7530.txt    |   5 +
+ drivers/net/dsa/mt7530.c                      | 203 ++++++++++++++++--
+ drivers/net/dsa/mt7530.h                      |  18 +-
+ drivers/net/phy/Kconfig                       |   5 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/mediatek.c                    | 109 ++++++++++
+ drivers/staging/mt7621-dts/mt7621.dtsi        |   3 +
+ 7 files changed, 323 insertions(+), 21 deletions(-)
+ create mode 100644 drivers/net/phy/mediatek.c
+
+-- 
+2.25.1
 
