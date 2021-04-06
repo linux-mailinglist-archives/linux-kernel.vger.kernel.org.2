@@ -2,98 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334E3355E3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9685F355E47
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243206AbhDFVwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:52:39 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:42949 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238486AbhDFVwh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:52:37 -0400
-Received: by mail-ot1-f48.google.com with SMTP id c24-20020a9d6c980000b02902662e210895so15596947otr.9;
-        Tue, 06 Apr 2021 14:52:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SZYgSptA3ZzQ3t6TtpWVpGXzldK/l7dPJJEKGwpB+bk=;
-        b=SjxbpVi9DSvDd7++IPTHXEfzFN6cL7eag1erjhqqlwbU+JN/rU5AhHQKmT2ISyh+il
-         GYh2VjlAyEuHQVORaKV2iVUh8D+bJ70ukzOwXkqGkeNwDwlDpNGT8xJqX8WCcwloK43s
-         NjGMkYGbnQCzM9NDouJnP6xAc6lTa72h4n98FeYZz0TulhDw07ilBXCXWBF4LzGIXId/
-         KmY9MrWCrwvRU9BkCtRPRd+ySLszyz9eYBGPNkVvGmEVSIWOmmtr7k8ZaTgBOybL6KLi
-         GNjRJgx5wSiFPfSBIUYxIq3cMZiPVD+UJW0GsFBZeTv31u6Jy1ehDHXI18sV409wqcU8
-         kT8g==
-X-Gm-Message-State: AOAM532/HNUXsxKv71MpRuoNsiizfOum8JQSlTlqI9ajczdFP95C2+oa
-        61RvaKJAC8U/dyfmQg7gmxtpMZsYHWc=
-X-Google-Smtp-Source: ABdhPJwdooz2Y7uz3cXkCptffNZbmAgNq/gCfJ7Apu5L8QIclBqafGGgx+cZAbD3z/3dQVH1Jvd1rw==
-X-Received: by 2002:a9d:2f24:: with SMTP id h33mr177021otb.128.1617745947601;
-        Tue, 06 Apr 2021 14:52:27 -0700 (PDT)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com. [209.85.167.172])
-        by smtp.gmail.com with ESMTPSA id m19sm4350392oop.6.2021.04.06.14.52.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 14:52:26 -0700 (PDT)
-Received: by mail-oi1-f172.google.com with SMTP id w70so16748188oie.0;
-        Tue, 06 Apr 2021 14:52:26 -0700 (PDT)
-X-Received: by 2002:aca:53cb:: with SMTP id h194mr4992128oib.175.1617745946741;
- Tue, 06 Apr 2021 14:52:26 -0700 (PDT)
+        id S238988AbhDFV7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:59:17 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57219 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232975AbhDFV7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 17:59:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617746340;
+        bh=HTprFb9yvRvBoW3G9/dHX/fAH1KOecMkyEVg4p7DniY=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=ZJ63vrne6ocuY+SPF3t/R1FivYXLy591gJug7O57oIqsTqhLaFrghJ0BOaHU1RBYe
+         S2LvC+hFgXMYsMNQjRCi4fbYzmqK109n6Havy1k4wqsPNx7QuhfKz75uZtf6rdLD5B
+         kHutqOCrMnkXXiDppTYxXqYnd3THBTFtC5rRC/2Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfYPi-1m58E0081w-00fy9g; Tue, 06
+ Apr 2021 23:59:00 +0200
+Date:   Tue, 6 Apr 2021 23:58:57 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/10] Initial support for Nuvoton WPCM450 BMC SoC
+Message-ID: <YGzZofPvT80b5gS5@latitude>
+References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+ <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1615053848.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1615053848.git.christophe.leroy@csgroup.eu>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Tue, 6 Apr 2021 16:52:14 -0500
-X-Gmail-Original-Message-ID: <CADRPPNSx=sbWu9FGujp7=EV7d=dTn+ukvKAgpEHQ5u0vNwR+QQ@mail.gmail.com>
-Message-ID: <CADRPPNSx=sbWu9FGujp7=EV7d=dTn+ukvKAgpEHQ5u0vNwR+QQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] Remove qe_io{read,write}* IO accessors
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Qiang Zhao <qiang.zhao@nxp.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Timur Tabi <timur@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WN3Z533fK2dw1UDf"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
+X-Provags-ID: V03:K1:5gcOpCHQmH2HH66wHlC3bdbl5uTQY68EaHslQFlMiXdwu1yPMGu
+ XAZOwdk8oXIK9z0Mq3J2eD6QiO+K24Z4WIcQGjnOv7DDxr0C08MTAuPsRQe0Ztl9Fd0n1vU
+ Y399EkErkUPzQwjmRICQPQQoStkG62g0HnWFpta2wwMupvF+e9YHjP4w7IgLElXNEsm3MRW
+ Yx3pl3jKTNt0ELRrwtTbg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lwS1WdEU8AI=:AgUACw6w7/JwB/hgyaWAKV
+ GaNzw+AyvPWWXF4SBfzVn3otv+6VJzWvTAi+xc9QrVaXserhQxCksqGEPLj32XmzIfFoCp7G5
+ rAPCkYAq3aGQ6pnlu/74O9DdMj8l0PeX/98c4Tsw2OjrX+dlgTi2/JqVwTl5oBjOD4wd0BpLD
+ ZqOzPKnf7XGhP8gFZ3BL6M3Ag+HMbqJ3z8s/4O2M/Q3qjLLYymv4LPLOL0pG8V1+UtLNE/00d
+ /K6Nc0BlINjOu0ue0DRsUjAlnPi54azecv9V2MIhXpGiJKVuGoa0ITJG2NTmtChUqMfM41Ot3
+ bjqT5X3Z/TxjrPA+Sc9p24ifc1i3MAzzSPnMXJsH44qDgHCgc4bFfcCvwSeuVsw2t5Rm+MYlS
+ lykBDpuFxVok6REdoI7JpcmYW7otQRYABFFQjK8RIsnX9hITMY6WvGkQv17AXT+cQvGR1LGpa
+ fFj4WM2cbwrBUQz1YhX0GUzYjegrUGeOJISd42JjcKWbUpiSaAAeQlDWOWcr4j9dgjeucj3Vk
+ IdW22rEZ0TKHlyxiJawJciAhWitHMFTsEMXFnTDbD1Mxigk2O/bVRZvh99D0ZiP270UIvelts
+ LYlN7hAsiKeReyqoBbA3gK5oPt4iQjyXqJ9potZOg8B5L71gkQEbdQhpmd1ovVXW16fixMuf4
+ 8wpxwXXKC8PLy0Hu6ODBHDhEBaU5XM6bkBUeJipr2SiVm5cs2lrxDL2LzWt+bB58ZFjMX3f7u
+ f7lrl/qSH+EcNEHMF9gw6lD6e+ZQI0EN/0OonZQAgY3pSv2qJs2+xzlneIPLDASdEX2YtAE3w
+ XT5i4w9SaPrjg3USRX2VGmrID3D4TfMO/9BXDqSD2EhFQI5+KTF7b+F6tAcjrxu99eflaZGYy
+ GdTw4wCjB0Cd/wcWkYXHjtYBB4NXmBdTcPFpN8/sO9L8Bypj4fP36/TdpR5UUrQ3vYjODRqSy
+ htxSX+ZQL1DAfCj+bvrn+1DHWzfnqXG166eXNoJ7diEyH9S0ASQJVp8DunuIQwtliD8wJWGLw
+ oOs19Ed9DXMMpeRvgJF6J0cScoS+eYJg3fMLZDOQPdiBzz3oxBy0nzJpWjK4O4aFX1tT30IiE
+ t2fckz4ADTpsP5ad6G7menqFZn+miL89AAGnXKj46lfeXPSfhkWhLZgMFqrzlWqNhni1SJN9/
+ YTW6Qgf3YgjVkxURbujSe4oIywYCODJQ5b3L6rXA/x3Fo3CzgRnY3KISMqhzJLW9NQbzFNBhn
+ qG1nHPjyHBbIZlr5d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 12:11 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> Commit 6ac9b61786cc ("soc: fsl: qe: introduce qe_io{read,write}*
-> wrappers") added specific I/O accessors for qe because at that
-> time ioread/iowrite functions were sub-optimal on powerpc/32
-> compared to the architecture specific in_/out_ IO accessors.
->
-> But as ioread/iowrite accessors are now equivalent since
-> commit 894fa235eb4c ("powerpc: inline iomap accessors"),
-> use them in order to allow removal of the qe specific ones.
->
-> Christophe Leroy (3):
->   soc: fsl: qe: replace qe_io{read,write}* wrappers by generic
->     io{read,write}*
->   tty: serial: ucc_uart: replace qe_io{read,write}* wrappers by generic
->     io{read,write}*
->   Revert "soc: fsl: qe: introduce qe_io{read,write}* wrappers"
 
-Series applied.  Thanks.
+--WN3Z533fK2dw1UDf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
->  drivers/soc/fsl/qe/gpio.c     |  20 +++---
->  drivers/soc/fsl/qe/qe.c       |  24 +++----
->  drivers/soc/fsl/qe/qe_ic.c    |   4 +-
->  drivers/soc/fsl/qe/qe_io.c    |  36 +++++-----
->  drivers/soc/fsl/qe/ucc_fast.c |  68 +++++++++----------
->  drivers/soc/fsl/qe/ucc_slow.c |  42 ++++++------
->  drivers/tty/serial/ucc_uart.c | 124 +++++++++++++++++-----------------
->  include/soc/fsl/qe/qe.h       |  34 +++-------
->  8 files changed, 168 insertions(+), 184 deletions(-)
->
-> --
-> 2.25.0
->
+On Tue, Apr 06, 2021 at 05:15:01PM +0200, Arnd Bergmann wrote:
+> On Tue, Apr 6, 2021 at 2:09 PM Jonathan Neusch=C3=A4fer
+> <j.neuschaefer@gmx.net> wrote:
+> >
+> > This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an=
+ older
+> > SoC but still commonly found on eBay, mostly in Supermicro X9 server bo=
+ards.
+> >
+> > Third-party documentation is available at: https://github.com/neuschaef=
+er/wpcm450/wiki
+> >
+> > Patches 1-4 add devicetree bindings for the WPCM450 SoC and its various=
+ parts.
+> > Patches 5-7 add arch and driver support. Patches 8 and 9 add a devicetr=
+ee for
+> > the SoC and a board based on it. Patch 10 finally updates the MAINTAINE=
+RS file.
+> >
+> > Patch 2 requires "dt-bindings: arm: Convert nuvoton,npcm750 binding to =
+YAML"
+> > (https://lore.kernel.org/lkml/20210320164023.614059-1-j.neuschaefer@gmx=
+=2Enet/)
+>=20
+> Hi Jonathan,
+>=20
+> It appears these patches are doing roughly the right thing, and we may st=
+ill
+> be able to get them into v5.13, but I'm not sure what your plan for maint=
+aining
+> them is. The two options are that you either send your patches to be pick=
+ed up
+> by Joel, or you send everything directly to soc@kernel.org once it's fully
+> reviewed.
+
+The route via Joel sounds alright with me. I've Cc'd him on this version
+of the series.
+
+> I only noticed your series when patch 9/10 made it into the soc@kernel.org
+> patchwork because of the Cc, but none of the other ones did.
+>=20
+> If you end up with the second option, we can go through what this involves
+> off-list.
+>=20
+> Regarding the Cc:soc@kernel.org, please add that only for patches that
+> are already reviewed and ready to be picked up, ideally with a cover lett=
+er
+> that describes what the plan is for merging. If you need me to review the
+> platform code, use my arnd@arndb.de or arnd@kernel.org addresses.
+
+Ah sorry, soc@kernel.org slipped in automatically because of get_maintainer=
+s.pl.
+
+The platform code[1] is rather simple, essentially just hooking up the
+nuvoton,wpcm450 compatible string.
+
+
+Thanks,
+Jonathan
+
+
+[1]: https://lore.kernel.org/lkml/20210406120921.2484986-6-j.neuschaefer@gm=
+x.net/
+
+--WN3Z533fK2dw1UDf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBs2Y0ACgkQCDBEmo7z
+X9suURAAuUHlH2kJ/uuM/4HlCCKWBuZ/sYW7xJ61HDfk1IAUiWMQiz8scjXpwJwS
+K+79pQaCaxHvjReE8KAkziPdG0pkgyCg0HNojFs5F9ihpm5BS3BPgNTnofsVUBr5
+UCSe/EKJSgOuGiPs3CXQMYnqbnIbBpLgqpce0QyOlxUjzU/5GV2QHvsksgO1z296
+vgEYRwj11fveE4mtlEjvKPZ+gKUjuwvzDOXCGtmmVPTj+ogC2IRFxDGkmky67z2g
+FSE9v6Esljj9kBCKkScpRqASIkk7EzSf06D/IR7VP39E5NjnR/JtuyLCnlRplDAl
+Pigvs6mVp+NJNqfMwmHcsUwfEg/fmLOhhSM25w10DYHrCM7Sb5zoqotdZyl5Vp9A
+f9p/sYeUrCqBrBCBud6W19pIZwIKPk5b5z22cjEayJJD0+KZ9snC8acrhTLBHvhx
+KU6Gn3K9bXiqGJKbH1SlsFcympSs9/8YjeY8RiM7xL10Rq37xH7D7+V8pLwyciNv
+6hNQotcNgV87mg71nvwdblt7dZUAyUwvIae+MU8q8TrNkvssZzYGZRR07FSDEpk6
+Hx/AiAxGK3pXpD/ycfoDUXd6Xyp8vftGISold3qGpmDp/3iky8Ot66YpXVzDZ3Hn
+oiymkHp0epFTY0p3D2bieAbruGpYzAbN2cfF7evnXiqOOOp49Uc=
+=BEFd
+-----END PGP SIGNATURE-----
+
+--WN3Z533fK2dw1UDf--
