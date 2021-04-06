@@ -2,128 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2001D355552
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49211355555
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344549AbhDFNh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:37:29 -0400
-Received: from mout.gmx.net ([212.227.17.20]:41181 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233252AbhDFNh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:37:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617716231;
-        bh=W+UtVtp8aM/GVU9D1YF/wcU0c2NsWAGAV4/H08vIA+o=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=XNb813X1/hhfJXpSMO7YaLu0OTDnVf3MnbAMLI769t3J4DreI+741Sum3BIeqxqeR
-         YeHom9xa1gUcC+7jSSkcCGy7iZg8j/d7Lsx0f/o5M5IC5AcnBdQRGyvyKnfWDZxxqf
-         8gzPlwidvGwzxKC/dbwN1r5jlobXDg7s6Sods7jo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1wpt-1lagu62wfZ-012EiF; Tue, 06
- Apr 2021 15:37:11 +0200
-Date:   Tue, 6 Apr 2021 15:37:11 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
-Message-ID: <YGxkB6icZSJfx/VB@latitude>
-References: <YGbc7Qbu6s659Mx4@latitude>
- <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
- <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
+        id S1344560AbhDFNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:37:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33163 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344551AbhDFNhe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:37:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617716246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMiNBtEMrQvnxIoUeX1bu77l5Tzq/22mbIKvwOxGjy8=;
+        b=S2Ck+GB4FlHcl6LCvKZ76X15GJg7YQXN1caSU5YmqCV36zALqraBUT3MvmGFO4FxMyJznt
+        fTJL8vAzAXqkfLSiNwOe3J96njqceBm65FGbPk69ykOY06pN6EdX9j00UTJM3Yf2urhzKq
+        JJ3gVBH/EvcYOrl+xiRN+WX4qOGjFxo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-YLTHE9_eN0auV2AdnM3v7A-1; Tue, 06 Apr 2021 09:37:24 -0400
+X-MC-Unique: YLTHE9_eN0auV2AdnM3v7A-1
+Received: by mail-ej1-f69.google.com with SMTP id l1so1413920eji.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 06:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=dMiNBtEMrQvnxIoUeX1bu77l5Tzq/22mbIKvwOxGjy8=;
+        b=Cai7Eg3LLrYSS0nLNz9QBersjVxJZWuy8O7KvEAYVFN4LeItHIriPtT8jy7WNNvf4b
+         tV2Ccj6remC86Sy/vYx0J11+3TNVDmlEsPfPPsym/lcV2ZdtSw/75VqWv6x0lhqnd2gi
+         M1u1fP97YHuLxOqu2hMarC6gZ1AnEYOnB5TG6b4jHdc8rqMHnm/t5Q3YsQ9KREwdhu3g
+         kmFCsgGoLA4UyXSD+5A8VDbgYcKTfItXHOWuTn/ht9ANltj5/FhwlKdMoy2Ayl5xqpTN
+         v7UEuVozutCtickY6zIKaveVofNTr0LHqzCn32H/MGNJdh0vrstIGe7z823hG1zIQLPW
+         7fHg==
+X-Gm-Message-State: AOAM533S/aVASCAqDnkGOP1WutbU5wi1IVzLqU/GEfmD5m6tm2LqoeqP
+        aIVKfoDupmutOvmzIwdTwOR6m+1/lfojgqtP7rA1efdlWQQh5w90qzBHFExAMRdqCWSPT4u2KYL
+        2ox0G/3OT2ufzCup59kSRcjd7ekIc5B3p5elKNVn0DuhBa21hcqIsd8qbf02L+yrvZpYTZRHERy
+        MZ
+X-Received: by 2002:a17:907:629c:: with SMTP id nd28mr34632049ejc.267.1617716243205;
+        Tue, 06 Apr 2021 06:37:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPlX5I+as++Bo8KruxUM9wb9AZX5YYNyyxHZGmZWQjUSiI0DOUwwJMY80ynUyPN+ZY2HHTFg==
+X-Received: by 2002:a17:907:629c:: with SMTP id nd28mr34632009ejc.267.1617716242875;
+        Tue, 06 Apr 2021 06:37:22 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t14sm11010189ejc.121.2021.04.06.06.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 06:37:22 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+In-Reply-To: <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
+References: <20210406125047.547501-1-vkuznets@redhat.com>
+ <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
+Date:   Tue, 06 Apr 2021 15:37:21 +0200
+Message-ID: <87mtubcz5a.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9WUZB2G+sPhVyB7j"
-Content-Disposition: inline
-In-Reply-To: <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
-X-Provags-ID: V03:K1:ZwLG6T1+PLZ8a4BRXNhawlEcNxwpZ5xzDSjFTT/38p33fMLvmuU
- 1qrLhvNhxa3kpkyvF8YcUaQ3ZDB/O7cdZH3oO7+Gs6Epnoky8oo4isNCs0N7HryVOTjqeNe
- aD/JKFTSK75l982EELoloRS5+s17HGLIxh3LzHG7A4wzTHXGptqTXoiJ2Y2xE2YI0ECiTBy
- qAUF6VpqaEq8Vff7IsRIg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OUFskwDCf28=:bxAP6ALs5g9byp5dd1+nsm
- zMRMYZRrtfe2/BZTdiKNt3DOQiNlFe75qc8AO+IR/VXihGJuYL0Tc3eNiQ+EgnXn6WS9Uu2Hk
- Koo3xi0hP6FBLMLlwpHJm+jA3t5gMna9UAoM7mD3X7W9Jrw/r9GKiXVydrEFwIl6int2+vHID
- BEKst3eEYlnKXEJZ8SDuuLPptaDMhHRK9Q08S0+lothZ3w02dMU4ENSIvb7bygw8SljwAqrXY
- KalMRwzuNn/twZLnTai4AhGQoDBn72pkVSGxNFlvEz+tjJ2i6bB9880tmSwCvUkntc2B1Y9ZG
- 9biQ1FsHip2O71hvOvPcxyFT+tT5K+c7r73lHdd7u3oSDSmz6BZA3VSP8L3QmFLWJJeYQ3JYw
- ACrKuAEN9hErC4ttiNU9dnSh1dzmprizDzBvN640DYImGHxLw72bZVdavEsVTx0+7v8IGMS15
- 9AnYgVFQ4zLX9WBAqjYNpy0DRg5YSpbHVtjr3lsir0wmDvmcc07SouTYY6EBJsHwF/W7bGuEU
- F2EA9PGjiHoCL+jxwz0cW639jfSthKHf19UcV5XGbZ0Lce630F3m97oewVRvX0ENarXPNPF/h
- 9KDK6UW1kME3R+vCGH9pNRJ0dvQ4Kb+5rZU1q1EDpIoFD9L6CySjehMC4Quli3M4mSPSrU1B0
- EE34M0EDXdaJMcdQp7OBnWanZCaAtZZ5pw1OfPI6GA4QhM975xxa0lhlakOZIY0aAlDvZhaMX
- 263piW+lOnS6AJ7/vfaeJNQzqjAv2MwekPbiICoWQBRPMy2Ufz/EhrxcmqSSWakZtaw6IrifR
- BjhjZeawRRy/J77wb7yxBftsf0UgO1PQMZt2l+3qit/zIvQwZqdWyessvMNUY3eaW9kz3G9Ze
- c2psD6MKBMZDYR0dSR1UU5vtO3pViYhpV3p3+72IYeiPJ0Jd5muSsDq3H3ZrHE9U4UmHmhAWT
- EZofinXlNHLpJY8MKXG8gAScyG4fciqdfNx5Wzv4DoqBTek0Vmvp695AxQ2b0o+Dqs4vutpE4
- ti5CzVQJ5gY+czp3e9fmiFaCwji1CL6YwAItbiRDDuBo9OJvmFF6iPaCi7IDEvvR5z2dnxSd2
- UNkIUHxn5p10rFRVYKZe5yjaLgWlYdb2q2cQuUat58ydYKu7bzq2e/KsoBTsgZwf+ZqIqXsvR
- LpLq4tWGHsRr3Bvo1W/G3Kn8GENjphhvwXe7637QrhOsEm17QyWaO1X1UCsqgsjun9eBcqtpR
- eSqu/mcDM1Z3Mrmfi
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"Rafael J. Wysocki" <rafael@kernel.org> writes:
 
---9WUZB2G+sPhVyB7j
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Apr 6, 2021 at 2:50 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>>
+>> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
+>> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
+>> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
+>> into acpi_idle_play_dead(). The problem is that these functions are not
+>> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
+>>
+>> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
+>> (the later from assembly) but it seems putting the whole pattern into a
+>> new function and exporting it instead is better.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+>> Cc: <stable@vger.kernel.org> # 5.10+
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/include/asm/smp.h    |  2 +-
+>>  arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
+>>  drivers/acpi/processor_idle.c |  3 +--
+>>  3 files changed, 12 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+>> index 57ef2094af93..6f79deb1f970 100644
+>> --- a/arch/x86/include/asm/smp.h
+>> +++ b/arch/x86/include/asm/smp.h
+>> @@ -132,7 +132,7 @@ void native_play_dead(void);
+>>  void play_dead_common(void);
+>>  void wbinvd_on_cpu(int cpu);
+>>  int wbinvd_on_all_cpus(void);
+>> -bool wakeup_cpu0(void);
+>> +void wakeup_cpu0_if_needed(void);
+>>
+>>  void native_smp_send_reschedule(int cpu);
+>>  void native_send_call_func_ipi(const struct cpumask *mask);
+>> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+>> index f877150a91da..9547d870ee27 100644
+>> --- a/arch/x86/kernel/smpboot.c
+>> +++ b/arch/x86/kernel/smpboot.c
+>> @@ -1659,7 +1659,7 @@ void play_dead_common(void)
+>>         local_irq_disable();
+>>  }
+>>
+>> -bool wakeup_cpu0(void)
+>> +static bool wakeup_cpu0(void)
+>>  {
+>>         if (smp_processor_id() == 0 && enable_start_cpu0)
+>>                 return true;
+>> @@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
+>>         return false;
+>>  }
+>>
+>> +void wakeup_cpu0_if_needed(void)
+>> +{
+>> +       if (wakeup_cpu0())
+>> +               start_cpu0();
+>
+> Note that all of the callers of wakeup_cpu0 do the above, so maybe
+> make them all use the new function?
+>
+> In which case it can be rewritten in the following way
+>
+> void cond_wakeup_cpu0(void)
+> {
+>         if (smp_processor_id() == 0 && enable_start_cpu0)
+>                 start_cpu0();
+> }
+> EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
+>
 
-In the binding:
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - hycon,hycon-hy4613
-> +      - hycon,hycon-hy4614
-> +      - hycon,hycon-hy4621
-> +      - hycon,hycon-hy4623
-> +      - hycon,hycon-hy4633
-> +      - hycon,hycon-hy4635
+Sure, separate wakeup_cpu0() is no longer needed.
 
-In the example:
-> +      hycon-hy4633@1c {
-> +        compatible =3D "hycon,hy4633";
-> +        reg =3D <0x1c>;
-> +        interrupt-parent =3D <&gpio2>;
-> +        interrupts =3D <5 IRQ_TYPE_EDGE_FALLING>;
-> +        reset-gpios =3D <&gpio2 6 GPIO_ACTIVE_LOW>;
-> +      };
+> Also please add a proper kerneldoc comment to it and maybe drop the
+> comments at the call sites?
 
+Also a good idea. v2 is coming, thanks!
 
-Rob's devicetree lint bot detected the mismatch in compatible string
-here.
+>
+>
+>> +}
+>> +EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
+>> +
+>>  /*
+>>   * We need to flush the caches before going to sleep, lest we have
+>>   * dirty data in our caches when we come back up.
+>> @@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
+>>                 /*
+>>                  * If NMI wants to wake up CPU0, start CPU0.
+>>                  */
+>> -               if (wakeup_cpu0())
+>> -                       start_cpu0();
+>> +               wakeup_cpu0_if_needed();
+>>         }
+>>  }
+>>
+>> @@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
+>>                 /*
+>>                  * If NMI wants to wake up CPU0, start CPU0.
+>>                  */
+>> -               if (wakeup_cpu0())
+>> -                       start_cpu0();
+>> +               wakeup_cpu0_if_needed();
+>>         }
+>>  }
+>>
+>> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+>> index 768a6b4d2368..de15116b754a 100644
+>> --- a/drivers/acpi/processor_idle.c
+>> +++ b/drivers/acpi/processor_idle.c
+>> @@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+>>
+>>  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+>>                 /* If NMI wants to wake up CPU0, start CPU0. */
+>> -               if (wakeup_cpu0())
+>> -                       start_cpu0();
+>> +               wakeup_cpu0_if_needed();
+>>  #endif
+>>         }
+>>
+>> --
+>> 2.30.2
+>>
+>
 
-I personally think 'hycon,hy4633' looks better than 'hycon,hycon-hy4633',
-because it isn't so redundant.
+-- 
+Vitaly
 
-
-Best regards,
-Jonathan Neusch=C3=A4fer
-
---9WUZB2G+sPhVyB7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBsY/8ACgkQCDBEmo7z
-X9sc1A/+JDPo7yRNDI99ucYWvxeTkPEwZTnSP9hUmPOOqOGoz5ZbXHb0IR8uUMK9
-+e8kwQu+yBCOc3I7i+908w6gvOmVjrPJoVXSH3YnTBcFvajCn+onOMK7SRkG0THb
-ISaw4jxduV+2RJ+EwFUKsdDj99zpLTl1d7SV+wB3JXTSjl+P/neEWWOeVPEFD2hH
-ZYDgBASHRO7v8lLmJ6fdI3LMtBx3YZBcIRcpHHbP9HM+XoI29gQQSNA0/FuX30hI
-kBbtYh/o0k/6Xi5jGjmzhpkLLJ5NwDdwhoGhjG9R5YkbNUp9uhuNCfhHXGm3wMvX
-oBzRHZYarUaJa34NJDiluCmrorhV6mfY1214UDiABUOxcO6f4duMXidBtMiboI2p
-WEW3O1iUufgopuiIkLcFQZNRhj3Rc6pdSE0pNPlgeDS9/FNs2hnRmbs6QAlxhr0V
-qyQAlRI9Atj9Bd4Eop/dBXKTF7oJlQc4diDzbKHv3QgM1CLSBx35vUIjKV5Imnh6
-k5wzntzPJu5h9jHmQ58CR4LlKWBq75LytQ0ea304XOA4QSwjeYY6UJXiAy5WmgAf
-kEz/WK+2z7yw+TavxUiUgXuq5J4Pl6m2BIGegsPkE+u+SeqX7OlaXbpwcXOi3NOh
-mXIgAK6tH/IkLC7hjP7LF5FszKdVGhFQh3iTv4tpjrJM4WGv17M=
-=ciuX
------END PGP SIGNATURE-----
-
---9WUZB2G+sPhVyB7j--
