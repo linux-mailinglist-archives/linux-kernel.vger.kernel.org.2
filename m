@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4E7355168
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C11835516A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245271AbhDFK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:58:27 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:58755 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245259AbhDFK60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:58:26 -0400
-Received: from [141.14.14.84] (v084.vpnx.molgen.mpg.de [141.14.14.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 13CFF206473CA;
-        Tue,  6 Apr 2021 12:58:16 +0200 (CEST)
-Subject: =?UTF-8?B?UmU6IFtyZWdyZXNzaW9uIDUuNC45NyDihpIgNS4xMC4yNF06IHJhaWQ2?=
- =?UTF-8?Q?_avx2x4_speed_drops_from_18429_MB/s_to_6155_MB/s?=
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org, it+linux-x86@molgen.mpg.de,
-        =?UTF-8?Q?Krzysztof_Ol=c4=99dzki?= <ole@ans.pl>,
-        Andy Lutomirski <luto@kernel.org>,
-        Krzysztof Mazur <krzysiek@podlesie.net>
-References: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
- <20210402140554.GG28499@zn.tnic>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <05dbb237-1d23-df32-e4ed-6bc7b47f42dc@molgen.mpg.de>
-Date:   Tue, 6 Apr 2021 12:58:15 +0200
+        id S245276AbhDFK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234101AbhDFK6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:58:42 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F34C06174A;
+        Tue,  6 Apr 2021 03:58:33 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id t24so3641061pjw.4;
+        Tue, 06 Apr 2021 03:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3IuYdRBsCZ+Y5lWM9na+Xuq5U89d/EyLy2gspRBPEb4=;
+        b=FsziQaUOv1JbF7KynLcN+6pB3PVIbPFR+bGV752KNJ3skTa5AW8O1A9ap3zp78AEca
+         5MdyCKup+QqoikJdNpxq0BTsB8fRLylzK6nXv2cGr4zBWn4lcJ1VJwIfGJ8/6CQnHyfi
+         lRtVL4ogwkwT2qqEJc4+tjS8YjWDRPCE8QsUNy8rxl+uZRSV1Qkmnl0SIWNjUj4n/ZVK
+         BPcnoI/flie4X0c1pMGU1DR9aWB7LchawUTu9pExkTUwTpLAttRxlNsFpFypW77kHTM6
+         Vjfi7vJYoPjgPoh/xr9BzOBaRhY1vfsqmNQy20rZH26fqHj3xIZPfNFX3DlO6O45BJIc
+         gdOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3IuYdRBsCZ+Y5lWM9na+Xuq5U89d/EyLy2gspRBPEb4=;
+        b=Ep3xhLH/OAWynnfjzmr4DmhqRnp7EbbZQfRhUpuWfxIubA0lYscJqSGKTNeOjRsL55
+         uXcBWK3IRruL/OTUvePaemGNbcREYIdLtDnLDJgX8sE8nmP66A535MaYRIQWkUSzumdi
+         Y24ytaUnrCw2d9AI/kMHy0ZpzxlInj5H8/6a2+sefewKMltgw/6g5m0bd7NLri0kSojT
+         hf2gGeI9EmvWyz9aFrTHH4WJnavuIpFdeQ4fb8IBD9XLp11PzRaymWIjv6tkAA2C5UQe
+         d7eXxISm7WFSt8ByKmDbCURZxziZQWjbnplayzH7SjtVJi3KoOe9ig6seuj8YIMzk708
+         94fQ==
+X-Gm-Message-State: AOAM5332bAL4p7/bxpWkSbWSmaiJAt1/rB+/zQPDSz85vEtWg+uultHS
+        wOt36VVUvXs1t3TlOlTktHc=
+X-Google-Smtp-Source: ABdhPJxjVxXlX98oAykoBDIlIyV+I6TAUjpWJ6VdilYsvNOBpM5pg6/IPv7OlHUAQlBWx9FT+L7Nqg==
+X-Received: by 2002:a17:902:d706:b029:e6:90aa:24e0 with SMTP id w6-20020a170902d706b02900e690aa24e0mr28592949ply.42.1617706713246;
+        Tue, 06 Apr 2021 03:58:33 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id q2sm1630689pfk.143.2021.04.06.03.58.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 03:58:32 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] dt-bindings: mediatek: mmsys: add mt8167 binding
+To:     Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     mkorpershoek@baylibre.com, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210405200354.2194930-1-fparent@baylibre.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <10e5739f-dfdf-d734-57a6-2b46e5d15220@gmail.com>
+Date:   Tue, 6 Apr 2021 12:58:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210402140554.GG28499@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210405200354.2194930-1-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Borislav,
 
 
-Am 02.04.21 um 16:05 schrieb Borislav Petkov:
-> On Fri, Apr 02, 2021 at 10:33:51AM +0200, Paul Menzel wrote:
-
->> On an two socket AMD EPYC 7601, we noticed a decrease in raid6 avx2x4 speed
->> shown at the beginning of the boot.
->>
->>                         5.4.95        5.10.24
->> ----------------------------------------------
->> raid6: avx2x4 gen()   18429 MB/s     6155 MB/s
->> raid6: avx2x4 xor()    6644 MB/s     4274 MB/s
->> raid6: avx2x2 gen()   17894 MB/s    18744 MB/s
->> raid6: avx2x2 xor()   11642 MB/s    11950 MB/s
->> raid6: avx2x1 gen()   13992 MB/s    17112 MB/s
->> raid6: avx2x1 xor()   10855 MB/s    11143 MB/s
+On 05/04/2021 22:03, Fabien Parent wrote:
+> Add binding documentation for MT8167 SoC.
 > 
-> Looks like those two might help:
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Applied both patches to v5.12-next/soc-2
+
+Thanks!
+
+> ---
+> V2: Rebased + fix typo in commit message.
 > 
-> 49200d17d27d x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
-> e45122893a98 x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
-
-I booted Linux 5.12-rc6, containing these commits, on a Dell OptiPlex 
-5055 with AMD Ryzen 5 PRO 1500 Quad-Core Processor, and the regression 
-is still present for `avx2x4 xor()`:
-
-                         5.4.95       5.10.24
-----------------------------------------------
-raid6: avx2x4 gen()    23964 MB/s   24540 MB/s 
-
-raid6: avx2x4 xor()    13101 MB/s    8354 MB/s
-raid6: avx2x2 gen()    22746 MB/s   26972 MB/s
-raid6: avx2x2 xor()    14917 MB/s   16463 MB/s
-raid6: avx2x1 gen()    17519 MB/s   24394 MB/s
-raid6: avx2x1 xor()    14091 MB/s   15330 MB/s
-raid6: sse2x4 gen()    16867 MB/s   16136 MB/s
-raid6: sse2x4 xor()     9667 MB/s    8176 MB/s
-raid6: sse2x2 gen()    14996 MB/s   18234 MB/s
-raid6: sse2x2 xor()    10765 MB/s   10455 MB/s
-raid6: sse2x1 gen()     7667 MB/s   13769 MB/s
-raid6: sse2x1 xor()     7818 MB/s    7741 MB/s
-
-What system are you using, and what results do you get with 5.4 and 
-5.12-rc6?
-
-
-Kind regards,
-
-Paul
+>  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.txt          | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+> index d8c9108c3b4a..78c50733985c 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+> @@ -13,6 +13,7 @@ Required Properties:
+>  	- "mediatek,mt6779-mmsys", "syscon"
+>  	- "mediatek,mt6797-mmsys", "syscon"
+>  	- "mediatek,mt7623-mmsys", "mediatek,mt2701-mmsys", "syscon"
+> +	- "mediatek,mt8167-mmsys", "syscon"
+>  	- "mediatek,mt8173-mmsys", "syscon"
+>  	- "mediatek,mt8183-mmsys", "syscon"
+>  - #clock-cells: Must be 1
+> 
