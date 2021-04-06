@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB5B354B50
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67D9354B60
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242306AbhDFDlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:41:21 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16343 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbhDFDlL (ORCPT
+        id S243566AbhDFDr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:47:29 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53289 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233639AbhDFDr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:41:11 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FDtY65y1Qz9wb4;
-        Tue,  6 Apr 2021 11:38:50 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
- 11:40:58 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <speakup@linux-speakup.org>
-CC:     <gregkh@linuxfoundation.org>
-Subject: [PATCH -next v2] speakup: i18n: Switch to kmemdup_nul() in spk_msg_set()
-Date:   Tue, 6 Apr 2021 11:44:34 +0800
-Message-ID: <20210406034434.442251-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+        Mon, 5 Apr 2021 23:47:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UUea06T_1617680821;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUea06T_1617680821)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 06 Apr 2021 11:47:19 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bfields@fieldses.org
+Cc:     chuck.lever@oracle.com, trond.myklebust@hammerspace.com,
+        anna.schumaker@netapp.com, davem@davemloft.net, kuba@kernel.org,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] sunrpc: Remove unused function ip_map_lookup
+Date:   Tue,  6 Apr 2021 11:46:59 +0800
+Message-Id: <1617680819-9058-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kmemdup_nul() helper instead of open-coding to
-simplify the code in spk_msg_set().
+Fix the following clang warnings:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-V2:
-   change the tile and commit log.
----
- drivers/accessibility/speakup/i18n.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+net/sunrpc/svcauth_unix.c:306:30: warning: unused function
+'ip_map_lookup' [-Wunused-function].
 
-diff --git a/drivers/accessibility/speakup/i18n.c b/drivers/accessibility/speakup/i18n.c
-index ee240d36f947..46bd50f3c3a4 100644
---- a/drivers/accessibility/speakup/i18n.c
-+++ b/drivers/accessibility/speakup/i18n.c
-@@ -548,12 +548,10 @@ ssize_t spk_msg_set(enum msg_index_t index, char *text, size_t length)
- 	if ((index < MSG_FIRST_INDEX) || (index >= MSG_LAST_INDEX))
- 		return -EINVAL;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ net/sunrpc/svcauth_unix.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/net/sunrpc/svcauth_unix.c b/net/sunrpc/svcauth_unix.c
+index 97c0bdd..35b7966 100644
+--- a/net/sunrpc/svcauth_unix.c
++++ b/net/sunrpc/svcauth_unix.c
+@@ -303,15 +303,6 @@ static struct ip_map *__ip_map_lookup(struct cache_detail *cd, char *class,
+ 		return NULL;
+ }
  
--	newstr = kmalloc(length + 1, GFP_KERNEL);
-+	newstr = kmemdup_nul(text, length, GFP_KERNEL);
- 	if (!newstr)
- 		return -ENOMEM;
- 
--	memcpy(newstr, text, length);
--	newstr[length] = '\0';
- 	if (index >= MSG_FORMATTED_START &&
- 	    index <= MSG_FORMATTED_END &&
- 	    !fmt_validate(speakup_default_msgs[index], newstr)) {
+-static inline struct ip_map *ip_map_lookup(struct net *net, char *class,
+-		struct in6_addr *addr)
+-{
+-	struct sunrpc_net *sn;
+-
+-	sn = net_generic(net, sunrpc_net_id);
+-	return __ip_map_lookup(sn->ip_map_cache, class, addr);
+-}
+-
+ static int __ip_map_update(struct cache_detail *cd, struct ip_map *ipm,
+ 		struct unix_domain *udom, time64_t expiry)
+ {
 -- 
-2.25.1
+1.8.3.1
 
