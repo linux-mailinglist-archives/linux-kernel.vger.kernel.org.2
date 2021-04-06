@@ -2,175 +2,589 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E32355510
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9784E35551D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344450AbhDFN2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
+        id S1344462AbhDFN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243770AbhDFN2C (ORCPT
+        with ESMTP id S231919AbhDFN3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:28:02 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5D9C06174A;
-        Tue,  6 Apr 2021 06:27:55 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id b10so15539003iot.4;
-        Tue, 06 Apr 2021 06:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RXjsPBr0qX/pSOJq0XHrLuh8funEyjUuOd/nR4meJJI=;
-        b=fuL3qBLf0jFhr6qwSVz/eh93yoVvaHXCBkLyIzsejTjO5ncEASIHYSJnREfyqpxHkp
-         /h8WgyCXeE0O9CuEd2RCnH+PgoA9krqnXyN1mleaTzT8xXMDRstaxKwzdfBDxphMmVnu
-         4xLJGty3imSjacAOOw1wa0rTjNv2FcmXph6POAabsxpuvbP7dJFZVYDyw2OK/UclJ9qS
-         iwRObqAEU5W1vW9QTNfU7hsASBHbZC1bVbK4tfdBGXm2sH8U/wKhclcZIT+n3Rvh23Om
-         Z/F3CGUJLCF7iJrnq+OzbuDlMa79DlGoP+meIDEkjc4WcujFJfVIOZWbHkz8PX03Ca18
-         Jm+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RXjsPBr0qX/pSOJq0XHrLuh8funEyjUuOd/nR4meJJI=;
-        b=VL90O2BKhqY2wNV/5bv+XcMmPy/2lOBz9DJElNBLhBckC3j9WIwtrCUvY7Md09Ta4f
-         ZfsopPT7lRsSnBcau0hOIyx/wfMdD7NG72M4gj5Af3rgwq1OhE9zd2RabXmuib8e80q8
-         1KOORQgu0C9OgTBUSfPY1AQIGRk18+4AZLHigAGyTrc7dQqWMZyPOcnMRhg+gcTaT/0Q
-         eJ5AONWQFDiq5qEk+MHOus0LJRn/FlNoyuT3uEPLrlZD9sKUoAD5GL+NMfJYIfcV8YRf
-         hVe7ES+Y31N+CtYmxITpNK915wuNam+l0Q/cbjCkmNak6tWe50Q2FNSMaK894WNQvGnU
-         PS5Q==
-X-Gm-Message-State: AOAM533UJ/92Jqx2icHnr5+JsrgdUz28dt4+aTBvbhns5D8dq5UEL2Y/
-        Q/jlItkYDzTfef4hu2Qkk8qlOygwlsRjyYlt0Q==
-X-Google-Smtp-Source: ABdhPJzQPzkhvdBjCOUpNphQ/hqTE5QA+ozLmJP1bIMAl4Rm2pkdhOWuHf6AuWU/8nXmGHXHgubc26bSrYtaxIf7IK8=
-X-Received: by 2002:a5e:a508:: with SMTP id 8mr24251361iog.135.1617715674703;
- Tue, 06 Apr 2021 06:27:54 -0700 (PDT)
+        Tue, 6 Apr 2021 09:29:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8E0C06174A;
+        Tue,  6 Apr 2021 06:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1q2gcNgaImp6JkC5/ZdC6lQTQXsW+poOXS8osNA5qbE=; b=LgxU4zVwI9kEgwzIBL2FZ96q5+
+        XbDDSMXE9Om/DbaHgg0M1d/vUN+uW+j6ez6taKWNXXV31lqyZeVjllCMlL2qxiDu41afleeJEmTuD
+        FHjfOBzgLw90ogF7Q3S/AZXoS98vONyZNavX6pDmCb8e6oTRjEWmMvADUPt8deS8ejxHoO3WKctDh
+        qFq5P09k2PDmgldk/tR3mDs5I0hiIO5RKWiODldZOxtBrr3mtpUss0LRfdO7gFerATqX9fum+yfQF
+        8aiYtUEZPyMCQTc8niJL2XYAhKtdoeZmJB9C5JAM8iJebT6lArQti6NO9X9b6ZEbhJe0bnDQUrAFD
+        Oq8rgwgQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTlkw-00CrLq-20; Tue, 06 Apr 2021 13:28:55 +0000
+Date:   Tue, 6 Apr 2021 14:28:34 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com, tglx@linutronix.de,
+        bigeasy@linutronix.de, hch@infradead.org, npiggin@kernel.dk
+Subject: bl_list and lockdep
+Message-ID: <20210406132834.GP2531743@casper.infradead.org>
+References: <20210406123343.1739669-1-david@fromorbit.com>
+ <20210406123343.1739669-4-david@fromorbit.com>
 MIME-Version: 1.0
-References: <CACkBjsZW5Sp4jB51+C5mrMssgq73x8iEko_EV6CTXVvtVa7KPQ@mail.gmail.com>
- <20210406123232.GD19407@quack2.suse.cz>
-In-Reply-To: <20210406123232.GD19407@quack2.suse.cz>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 6 Apr 2021 21:27:48 +0800
-Message-ID: <CACkBjsZgEi5peFFn0vx34F8A1wROjNgpERXigOtznB7ox9mWVQ@mail.gmail.com>
-Subject: Re: KCSAN: data-race in __jbd2_journal_file_buffer / jbd2_journal_dirty_metadata
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406123343.1739669-4-david@fromorbit.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Thanks for report but I'm not sure what KCSAN is complaining about - isn'=
-t the report truncated?
+On Tue, Apr 06, 2021 at 10:33:43PM +1000, Dave Chinner wrote:
+> +++ b/fs/inode.c
+> @@ -57,8 +57,7 @@
+>  
+>  static unsigned int i_hash_mask __read_mostly;
+>  static unsigned int i_hash_shift __read_mostly;
+> -static struct hlist_head *inode_hashtable __read_mostly;
+> -static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
+> +static struct hlist_bl_head *inode_hashtable __read_mostly;
 
-Yes, the full KCSAN report is available in the attached log file.
-Here is the report :
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-BUG: KCSAN: data-race in __jbd2_journal_file_buffer /
-jbd2_journal_dirty_metadata
+I'm a little concerned that we're losing a lockdep map here.  
 
-write to 0xffff88800af6da38 of 8 bytes by task 4822 on cpu 1:
- __jbd2_journal_file_buffer+0x18d/0x370
- __jbd2_journal_refile_buffer+0x155/0x230
- jbd2_journal_commit_transaction+0x24c6/0x3200
- kjournald2+0x253/0x470
- kthread+0x1f0/0x220
- ret_from_fork+0x1f/0x30
+Nobody seems to have done this for list_bl yet, and I'd be reluctant
+to gate your patch on "Hey, Dave, solve this problem nobody else has
+done yet".
 
-read to 0xffff88800af6da38 of 8 bytes by task 1955 on cpu 0:
- jbd2_journal_dirty_metadata+0x17f/0x670
- __ext4_handle_dirty_metadata+0xc6/0x590
- ext4_mark_iloc_dirty+0x12dd/0x16e0
- __ext4_mark_inode_dirty+0x4d2/0x5d0
- ext4_writepages+0x1262/0x1e50
- do_writepages+0x7b/0x150
- __writeback_single_inode+0x84/0x4e0
- writeback_sb_inodes+0x69f/0x1020
- __writeback_inodes_wb+0xb0/0x2a0
- wb_writeback+0x290/0x650
- wb_do_writeback+0x582/0x5d0
- wb_workfn+0xb8/0x410
- process_one_work+0x3e1/0x940
- worker_thread+0x64a/0xaa0
- kthread+0x1f0/0x220
- ret_from_fork+0x1f/0x30
+But maybe we can figure out how to do this?  I think we want one lockdep
+map for the entire hashtable (it's split for performance, not because
+they're logically separate locks).  So something like ...
 
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 1955 Comm: kworker/u5:2 Not tainted 5.11.0+ #5
+static struct lockdep_map inode_hash_map =
+	STATIC_LOCKDEP_MAP_INIT("inode_hash", &inode_hash_map);
 
+and add:
 
-Sorry, I couldn't symbolize it because the original Linux binary was lost.
-Do you think this is an actual bug?
+static inline void hlist_bl_lock_map(struct hlist_bl_head *b,
+					struct lockdep_map *map)
+{
+	bit_spin_lock(0, (unsigned long *)b);
+	spin_acquire(map, 0, 0, _RET_IP_);
+}
 
-Hao
+then use hlist_bl_lock_map() throughout.  Would that work?
+Adding lockdep experts for opinions.
 
-Jan Kara <jack@suse.cz> =E4=BA=8E2021=E5=B9=B44=E6=9C=886=E6=97=A5=E5=91=A8=
-=E4=BA=8C =E4=B8=8B=E5=8D=888:32=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hello!
->
-> On Sun 04-04-21 17:40:44, Hao Sun wrote:
-> > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
-> > the Linux kernel, I found a data-race vulnerability in
-> > __jbd2_journal_file_buffer / jbd2_journal_dirty_metadata.
-> > Sorry, data-race is usually difficult to reproduce. I cannot provide
-> > you with a reproducing program.
-> > I hope that the call stack information in the crash log can help you
-> > locate the problem.
-> > Kernel config and full log can be found in the attachment.
-> >
-> > Here is the detailed information:
-> > commit:   3b9cdafb5358eb9f3790de2f728f765fef100731
-> > version:   linux 5.11
-> > git tree:    upstream
-> > report:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KCSAN: data-race in __jbd2_journal_file_buffer /
-> > jbd2_journal_dirty_metadata
-> > write to 0xffff88800af6da38 of 8 bytes by task 4822 on cpu 1:
-> >  __jbd2_journal_file_buffer+0x18d/0x370 linux/fs/jbd2/transaction.c:251=
-8
-> >  __jbd2_journal_refile_buffer+0x155/0x230 linux/fs/jbd2/transaction.c:2=
-612
-> >  jbd2_journal_commit_transaction+0x24c6/0x3200 linux/fs/jbd2/commit.c:1=
-084
-> >  kjournald2+0x253/0x470 linux/fs/jbd2/journal.c:213
-> >  kthread+0x1f0/0x220 linux/kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 linux/arch/x86/entry/entry_64.S:294
->
-> Thanks for report but I'm not sure what KCSAN is complaining about - isn'=
-t
-> the report truncated? I'm missing 'read' part of the report... The compla=
-int
-> is on line:
->
-> jh->b_transaction =3D transaction;
->
-> I would guess the complaint is because of the check:
->
->         /*
->          * This and the following assertions are unreliable since we may =
-see jh
->          * in inconsistent state unless we grab bh_state lock. But this i=
-s
->          * crucial to catch bugs so let's do a reliable check until the
->          * lockless handling is fully proven.
->          */
->         if (jh->b_transaction !=3D transaction &&
->             jh->b_next_transaction !=3D transaction) {
->
-> And the comment explains, why we do this unreliable check. Again, if we
-> wanted to silence KCSAN, we could use data_race() macro but AFAIU Ted isn=
-'t
-> very fond of that annotation.
->
->                                                                 Honza
->
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+>  static unsigned long hash(struct super_block *sb, unsigned long hashval)
+>  {
+> @@ -70,7 +69,7 @@ static unsigned long hash(struct super_block *sb, unsigned long hashval)
+>  	return tmp & i_hash_mask;
+>  }
+>  
+> -static inline struct hlist_head *i_hash_head(struct super_block *sb,
+> +static inline struct hlist_bl_head *i_hash_head(struct super_block *sb,
+>  		unsigned int hashval)
+>  {
+>  	return inode_hashtable + hash(sb, hashval);
+> @@ -407,7 +406,7 @@ EXPORT_SYMBOL(address_space_init_once);
+>  void inode_init_once(struct inode *inode)
+>  {
+>  	memset(inode, 0, sizeof(*inode));
+> -	INIT_HLIST_NODE(&inode->i_hash);
+> +	INIT_HLIST_BL_NODE(&inode->i_hash);
+>  	INIT_LIST_HEAD(&inode->i_devices);
+>  	INIT_LIST_HEAD(&inode->i_io_list);
+>  	INIT_LIST_HEAD(&inode->i_wb_list);
+> @@ -491,6 +490,17 @@ static inline void inode_sb_list_del(struct inode *inode)
+>  	}
+>  }
+>  
+> +/*
+> + * Ensure that we store the hash head in the inode when we insert the inode into
+> + * the hlist_bl_head...
+> + */
+> +static inline void
+> +__insert_inode_hash_head(struct inode *inode, struct hlist_bl_head *b)
+> +{
+> +	hlist_bl_add_head_rcu(&inode->i_hash, b);
+> +	inode->i_hash_head = b;
+> +}
+> +
+>  /**
+>   *	__insert_inode_hash - hash an inode
+>   *	@inode: unhashed inode
+> @@ -501,13 +511,13 @@ static inline void inode_sb_list_del(struct inode *inode)
+>   */
+>  void __insert_inode_hash(struct inode *inode, unsigned long hashval)
+>  {
+> -	struct hlist_head *b = inode_hashtable + hash(inode->i_sb, hashval);
+> +	struct hlist_bl_head *b = i_hash_head(inode->i_sb, hashval);
+>  
+> -	spin_lock(&inode_hash_lock);
+> +	hlist_bl_lock(b);
+>  	spin_lock(&inode->i_lock);
+> -	hlist_add_head_rcu(&inode->i_hash, b);
+> +	__insert_inode_hash_head(inode, b);
+>  	spin_unlock(&inode->i_lock);
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_unlock(b);
+>  }
+>  EXPORT_SYMBOL(__insert_inode_hash);
+>  
+> @@ -519,11 +529,44 @@ EXPORT_SYMBOL(__insert_inode_hash);
+>   */
+>  void __remove_inode_hash(struct inode *inode)
+>  {
+> -	spin_lock(&inode_hash_lock);
+> -	spin_lock(&inode->i_lock);
+> -	hlist_del_init_rcu(&inode->i_hash);
+> -	spin_unlock(&inode->i_lock);
+> -	spin_unlock(&inode_hash_lock);
+> +	struct hlist_bl_head *b = inode->i_hash_head;
+> +
+> +	/*
+> +	 * There are some callers that come through here without synchronisation
+> +	 * and potentially with multiple references to the inode. Hence we have
+> +	 * to handle the case that we might race with a remove and insert to a
+> +	 * different list. Coda, in particular, seems to have a userspace API
+> +	 * that can directly trigger "unhash/rehash to different list" behaviour
+> +	 * without any serialisation at all.
+> +	 *
+> +	 * Hence we have to handle the situation where the inode->i_hash_head
+> +	 * might point to a different list than what we expect, indicating that
+> +	 * we raced with another unhash and potentially a new insertion. This
+> +	 * means we have to retest the head once we have everything locked up
+> +	 * and loop again if it doesn't match.
+> +	 */
+> +	while (b) {
+> +		hlist_bl_lock(b);
+> +		spin_lock(&inode->i_lock);
+> +		if (b != inode->i_hash_head) {
+> +			hlist_bl_unlock(b);
+> +			b = inode->i_hash_head;
+> +			spin_unlock(&inode->i_lock);
+> +			continue;
+> +		}
+> +		/*
+> +		 * Need to set the pprev pointer to NULL after list removal so
+> +		 * that both RCU traversals and hlist_bl_unhashed() work
+> +		 * correctly at this point.
+> +		 */
+> +		hlist_bl_del_rcu(&inode->i_hash);
+> +		inode->i_hash.pprev = NULL;
+> +		inode->i_hash_head = NULL;
+> +		spin_unlock(&inode->i_lock);
+> +		hlist_bl_unlock(b);
+> +		break;
+> +	}
+> +
+>  }
+>  EXPORT_SYMBOL(__remove_inode_hash);
+>  
+> @@ -813,26 +856,28 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
+>  	return freed;
+>  }
+>  
+> -static void __wait_on_freeing_inode(struct inode *inode);
+> +static void __wait_on_freeing_inode(struct hlist_bl_head *b,
+> +				struct inode *inode);
+>  /*
+>   * Called with the inode lock held.
+>   */
+>  static struct inode *find_inode(struct super_block *sb,
+> -				struct hlist_head *head,
+> +				struct hlist_bl_head *b,
+>  				int (*test)(struct inode *, void *),
+>  				void *data)
+>  {
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode = NULL;
+>  
+>  repeat:
+> -	hlist_for_each_entry(inode, head, i_hash) {
+> +	hlist_bl_for_each_entry(inode, node, b, i_hash) {
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		if (!test(inode, data))
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+>  		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> -			__wait_on_freeing_inode(inode);
+> +			__wait_on_freeing_inode(b, inode);
+>  			goto repeat;
+>  		}
+>  		if (unlikely(inode->i_state & I_CREATING)) {
+> @@ -851,19 +896,20 @@ static struct inode *find_inode(struct super_block *sb,
+>   * iget_locked for details.
+>   */
+>  static struct inode *find_inode_fast(struct super_block *sb,
+> -				struct hlist_head *head, unsigned long ino)
+> +				struct hlist_bl_head *b, unsigned long ino)
+>  {
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode = NULL;
+>  
+>  repeat:
+> -	hlist_for_each_entry(inode, head, i_hash) {
+> +	hlist_bl_for_each_entry(inode, node, b, i_hash) {
+>  		if (inode->i_ino != ino)
+>  			continue;
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+>  		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> -			__wait_on_freeing_inode(inode);
+> +			__wait_on_freeing_inode(b, inode);
+>  			goto repeat;
+>  		}
+>  		if (unlikely(inode->i_state & I_CREATING)) {
+> @@ -1072,26 +1118,26 @@ EXPORT_SYMBOL(unlock_two_nondirectories);
+>   * return it locked, hashed, and with the I_NEW flag set. The file system gets
+>   * to fill it in before unlocking it via unlock_new_inode().
+>   *
+> - * Note both @test and @set are called with the inode_hash_lock held, so can't
+> - * sleep.
+> + * Note both @test and @set are called with the inode hash chain lock held,
+> + * so can't sleep.
+>   */
+>  struct inode *inode_insert5(struct inode *inode, unsigned long hashval,
+>  			    int (*test)(struct inode *, void *),
+>  			    int (*set)(struct inode *, void *), void *data)
+>  {
+> -	struct hlist_head *head = i_hash_head(inode->i_sb, hashval);
+> +	struct hlist_bl_head *b = i_hash_head(inode->i_sb, hashval);
+>  	struct inode *old;
+>  	bool creating = inode->i_state & I_CREATING;
+>  
+>  again:
+> -	spin_lock(&inode_hash_lock);
+> -	old = find_inode(inode->i_sb, head, test, data);
+> +	hlist_bl_lock(b);
+> +	old = find_inode(inode->i_sb, b, test, data);
+>  	if (unlikely(old)) {
+>  		/*
+>  		 * Uhhuh, somebody else created the same inode under us.
+>  		 * Use the old inode instead of the preallocated one.
+>  		 */
+> -		spin_unlock(&inode_hash_lock);
+> +		hlist_bl_unlock(b);
+>  		if (IS_ERR(old))
+>  			return NULL;
+>  		wait_on_inode(old);
+> @@ -1113,12 +1159,12 @@ struct inode *inode_insert5(struct inode *inode, unsigned long hashval,
+>  	 */
+>  	spin_lock(&inode->i_lock);
+>  	inode->i_state |= I_NEW;
+> -	hlist_add_head_rcu(&inode->i_hash, head);
+> +	__insert_inode_hash_head(inode, b);
+>  	spin_unlock(&inode->i_lock);
+>  	if (!creating)
+>  		inode_sb_list_add(inode);
+>  unlock:
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_unlock(b);
+>  
+>  	return inode;
+>  }
+> @@ -1179,12 +1225,12 @@ EXPORT_SYMBOL(iget5_locked);
+>   */
+>  struct inode *iget_locked(struct super_block *sb, unsigned long ino)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, ino);
+> +	struct hlist_bl_head *b = i_hash_head(sb, ino);
+>  	struct inode *inode;
+>  again:
+> -	spin_lock(&inode_hash_lock);
+> -	inode = find_inode_fast(sb, head, ino);
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_lock(b);
+> +	inode = find_inode_fast(sb, b, ino);
+> +	hlist_bl_unlock(b);
+>  	if (inode) {
+>  		if (IS_ERR(inode))
+>  			return NULL;
+> @@ -1200,17 +1246,17 @@ struct inode *iget_locked(struct super_block *sb, unsigned long ino)
+>  	if (inode) {
+>  		struct inode *old;
+>  
+> -		spin_lock(&inode_hash_lock);
+> +		hlist_bl_lock(b);
+>  		/* We released the lock, so.. */
+> -		old = find_inode_fast(sb, head, ino);
+> +		old = find_inode_fast(sb, b, ino);
+>  		if (!old) {
+>  			inode->i_ino = ino;
+>  			spin_lock(&inode->i_lock);
+>  			inode->i_state = I_NEW;
+> -			hlist_add_head_rcu(&inode->i_hash, head);
+> +			__insert_inode_hash_head(inode, b);
+>  			spin_unlock(&inode->i_lock);
+>  			inode_sb_list_add(inode);
+> -			spin_unlock(&inode_hash_lock);
+> +			hlist_bl_unlock(b);
+>  
+>  			/* Return the locked inode with I_NEW set, the
+>  			 * caller is responsible for filling in the contents
+> @@ -1223,7 +1269,7 @@ struct inode *iget_locked(struct super_block *sb, unsigned long ino)
+>  		 * us. Use the old inode instead of the one we just
+>  		 * allocated.
+>  		 */
+> -		spin_unlock(&inode_hash_lock);
+> +		hlist_bl_unlock(b);
+>  		destroy_inode(inode);
+>  		if (IS_ERR(old))
+>  			return NULL;
+> @@ -1247,10 +1293,11 @@ EXPORT_SYMBOL(iget_locked);
+>   */
+>  static int test_inode_iunique(struct super_block *sb, unsigned long ino)
+>  {
+> -	struct hlist_head *b = i_hash_head(sb, ino);
+> +	struct hlist_bl_head *b = i_hash_head(sb, ino);
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode;
+>  
+> -	hlist_for_each_entry_rcu(inode, b, i_hash) {
+> +	hlist_bl_for_each_entry_rcu(inode, node, b, i_hash) {
+>  		if (inode->i_ino == ino && inode->i_sb == sb)
+>  			return 0;
+>  	}
+> @@ -1334,12 +1381,12 @@ EXPORT_SYMBOL(igrab);
+>  struct inode *ilookup5_nowait(struct super_block *sb, unsigned long hashval,
+>  		int (*test)(struct inode *, void *), void *data)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, hashval);
+> +	struct hlist_bl_head *b = i_hash_head(sb, hashval);
+>  	struct inode *inode;
+>  
+> -	spin_lock(&inode_hash_lock);
+> -	inode = find_inode(sb, head, test, data);
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_lock(b);
+> +	inode = find_inode(sb, b, test, data);
+> +	hlist_bl_unlock(b);
+>  
+>  	return IS_ERR(inode) ? NULL : inode;
+>  }
+> @@ -1389,12 +1436,12 @@ EXPORT_SYMBOL(ilookup5);
+>   */
+>  struct inode *ilookup(struct super_block *sb, unsigned long ino)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, ino);
+> +	struct hlist_bl_head *b = i_hash_head(sb, ino);
+>  	struct inode *inode;
+>  again:
+> -	spin_lock(&inode_hash_lock);
+> -	inode = find_inode_fast(sb, head, ino);
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_lock(b);
+> +	inode = find_inode_fast(sb, b, ino);
+> +	hlist_bl_unlock(b);
+>  
+>  	if (inode) {
+>  		if (IS_ERR(inode))
+> @@ -1438,12 +1485,13 @@ struct inode *find_inode_nowait(struct super_block *sb,
+>  					     void *),
+>  				void *data)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, hashval);
+> +	struct hlist_bl_head *b = i_hash_head(sb, hashval);
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode, *ret_inode = NULL;
+>  	int mval;
+>  
+> -	spin_lock(&inode_hash_lock);
+> -	hlist_for_each_entry(inode, head, i_hash) {
+> +	hlist_bl_lock(b);
+> +	hlist_bl_for_each_entry(inode, node, b, i_hash) {
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		mval = match(inode, hashval, data);
+> @@ -1454,7 +1502,7 @@ struct inode *find_inode_nowait(struct super_block *sb,
+>  		goto out;
+>  	}
+>  out:
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_unlock(b);
+>  	return ret_inode;
+>  }
+>  EXPORT_SYMBOL(find_inode_nowait);
+> @@ -1483,13 +1531,14 @@ EXPORT_SYMBOL(find_inode_nowait);
+>  struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
+>  			     int (*test)(struct inode *, void *), void *data)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, hashval);
+> +	struct hlist_bl_head *b = i_hash_head(sb, hashval);
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode;
+>  
+>  	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
+>  			 "suspicious find_inode_rcu() usage");
+>  
+> -	hlist_for_each_entry_rcu(inode, head, i_hash) {
+> +	hlist_bl_for_each_entry_rcu(inode, node, b, i_hash) {
+>  		if (inode->i_sb == sb &&
+>  		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)) &&
+>  		    test(inode, data))
+> @@ -1521,13 +1570,14 @@ EXPORT_SYMBOL(find_inode_rcu);
+>  struct inode *find_inode_by_ino_rcu(struct super_block *sb,
+>  				    unsigned long ino)
+>  {
+> -	struct hlist_head *head = i_hash_head(sb, ino);
+> +	struct hlist_bl_head *b = i_hash_head(sb, ino);
+> +	struct hlist_bl_node *node;
+>  	struct inode *inode;
+>  
+>  	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
+>  			 "suspicious find_inode_by_ino_rcu() usage");
+>  
+> -	hlist_for_each_entry_rcu(inode, head, i_hash) {
+> +	hlist_bl_for_each_entry_rcu(inode, node, b, i_hash) {
+>  		if (inode->i_ino == ino &&
+>  		    inode->i_sb == sb &&
+>  		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)))
+> @@ -1541,39 +1591,42 @@ int insert_inode_locked(struct inode *inode)
+>  {
+>  	struct super_block *sb = inode->i_sb;
+>  	ino_t ino = inode->i_ino;
+> -	struct hlist_head *head = i_hash_head(sb, ino);
+> +	struct hlist_bl_head *b = i_hash_head(sb, ino);
+>  
+>  	while (1) {
+> -		struct inode *old = NULL;
+> -		spin_lock(&inode_hash_lock);
+> -		hlist_for_each_entry(old, head, i_hash) {
+> -			if (old->i_ino != ino)
+> +		struct hlist_bl_node *node;
+> +		struct inode *old = NULL, *t;
+> +
+> +		hlist_bl_lock(b);
+> +		hlist_bl_for_each_entry(t, node, b, i_hash) {
+> +			if (t->i_ino != ino)
+>  				continue;
+> -			if (old->i_sb != sb)
+> +			if (t->i_sb != sb)
+>  				continue;
+> -			spin_lock(&old->i_lock);
+> -			if (old->i_state & (I_FREEING|I_WILL_FREE)) {
+> -				spin_unlock(&old->i_lock);
+> +			spin_lock(&t->i_lock);
+> +			if (t->i_state & (I_FREEING|I_WILL_FREE)) {
+> +				spin_unlock(&t->i_lock);
+>  				continue;
+>  			}
+> +			old = t;
+>  			break;
+>  		}
+>  		if (likely(!old)) {
+>  			spin_lock(&inode->i_lock);
+>  			inode->i_state |= I_NEW | I_CREATING;
+> -			hlist_add_head_rcu(&inode->i_hash, head);
+> +			__insert_inode_hash_head(inode, b);
+>  			spin_unlock(&inode->i_lock);
+> -			spin_unlock(&inode_hash_lock);
+> +			hlist_bl_unlock(b);
+>  			return 0;
+>  		}
+>  		if (unlikely(old->i_state & I_CREATING)) {
+>  			spin_unlock(&old->i_lock);
+> -			spin_unlock(&inode_hash_lock);
+> +			hlist_bl_unlock(b);
+>  			return -EBUSY;
+>  		}
+>  		__iget(old);
+>  		spin_unlock(&old->i_lock);
+> -		spin_unlock(&inode_hash_lock);
+> +		hlist_bl_unlock(b);
+>  		wait_on_inode(old);
+>  		if (unlikely(!inode_unhashed(old))) {
+>  			iput(old);
+> @@ -2046,17 +2099,18 @@ EXPORT_SYMBOL(inode_needs_sync);
+>   * wake_up_bit(&inode->i_state, __I_NEW) after removing from the hash list
+>   * will DTRT.
+>   */
+> -static void __wait_on_freeing_inode(struct inode *inode)
+> +static void __wait_on_freeing_inode(struct hlist_bl_head *b,
+> +				struct inode *inode)
+>  {
+>  	wait_queue_head_t *wq;
+>  	DEFINE_WAIT_BIT(wait, &inode->i_state, __I_NEW);
+>  	wq = bit_waitqueue(&inode->i_state, __I_NEW);
+>  	prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+>  	spin_unlock(&inode->i_lock);
+> -	spin_unlock(&inode_hash_lock);
+> +	hlist_bl_unlock(b);
+>  	schedule();
+>  	finish_wait(wq, &wait.wq_entry);
+> -	spin_lock(&inode_hash_lock);
+> +	hlist_bl_lock(b);
+>  }
+>  
+>  static __initdata unsigned long ihash_entries;
+> @@ -2082,7 +2136,7 @@ void __init inode_init_early(void)
+>  
+>  	inode_hashtable =
+>  		alloc_large_system_hash("Inode-cache",
+> -					sizeof(struct hlist_head),
+> +					sizeof(struct hlist_bl_head),
+>  					ihash_entries,
+>  					14,
+>  					HASH_EARLY | HASH_ZERO,
+> @@ -2108,7 +2162,7 @@ void __init inode_init(void)
+>  
+>  	inode_hashtable =
+>  		alloc_large_system_hash("Inode-cache",
+> -					sizeof(struct hlist_head),
+> +					sizeof(struct hlist_bl_head),
+>  					ihash_entries,
+>  					14,
+>  					HASH_ZERO,
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index ec8f3ddf4a6a..89c9e49a71a6 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -664,7 +664,8 @@ struct inode {
+>  	unsigned long		dirtied_when;	/* jiffies of first dirtying */
+>  	unsigned long		dirtied_time_when;
+>  
+> -	struct hlist_node	i_hash;
+> +	struct hlist_bl_node	i_hash;
+> +	struct hlist_bl_head	*i_hash_head;
+>  	struct list_head	i_io_list;	/* backing dev IO list */
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+>  	struct bdi_writeback	*i_wb;		/* the associated cgroup wb */
+> @@ -730,7 +731,7 @@ static inline unsigned int i_blocksize(const struct inode *node)
+>  
+>  static inline int inode_unhashed(struct inode *inode)
+>  {
+> -	return hlist_unhashed(&inode->i_hash);
+> +	return hlist_bl_unhashed(&inode->i_hash);
+>  }
+>  
+>  /*
+> @@ -741,7 +742,7 @@ static inline int inode_unhashed(struct inode *inode)
+>   */
+>  static inline void inode_fake_hash(struct inode *inode)
+>  {
+> -	hlist_add_fake(&inode->i_hash);
+> +	hlist_bl_add_fake(&inode->i_hash);
+>  }
+>  
+>  /*
+> @@ -3065,7 +3066,7 @@ static inline void insert_inode_hash(struct inode *inode)
+>  extern void __remove_inode_hash(struct inode *);
+>  static inline void remove_inode_hash(struct inode *inode)
+>  {
+> -	if (!inode_unhashed(inode) && !hlist_fake(&inode->i_hash))
+> +	if (!inode_unhashed(inode) && !hlist_bl_fake(&inode->i_hash))
+>  		__remove_inode_hash(inode);
+>  }
+>  
+> -- 
+> 2.31.0
+> 
