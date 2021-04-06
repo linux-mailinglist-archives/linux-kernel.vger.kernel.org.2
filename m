@@ -2,384 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0488354C93
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B4C354C96
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhDFGJZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 02:09:25 -0400
-Received: from mail-eopbgr1320125.outbound.protection.outlook.com ([40.107.132.125]:48864
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230125AbhDFGJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:09:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bquQJVI/VdaU+tBsrbc1CHkB7Ia2boqq8mbi6pW6IWppoQclpQcJoa5uaXII3fSeu9OW3VwLee/tQteOrXsmlup2Ppvd7S4KOEznfN5OPPqcWSmu4PDNmqweq/oW/Fg/UXJBNzWSGRPncwiYIyUGwyoHCMGvNtR3o4ZU/veLfy5t4rWO8f8A8i1sIyZBDW+LgkoNY2hpqczpA2tzkntDRGsSRc0pVZKcsyYyva4qXkKC+vxijQA4Y5EVpPuKOc+SvfBE3DxAkfSVj4rLIqqZ21+uEAr4haaBpRsGLlvFEKiuod7PK8r90Ip7x8n+4WosxO+fg+qsmhGaOPfVr7rhEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8RaYoeKY4LG7cfN1Y4s7AoP/rWst4MVjFqq55TFmQRI=;
- b=nqgaAO4fxVpiclU88fS2oHlTJQGQB31O7taYk8uAp4E2wNUEmTHX8qjNpNjmxFTCHuHjZ+2eQOm69/ZtWLb1c6J8t2moCscwvfhuvN4p+rdsY8y3iWMjyr511Nk88k5E2st6pXm2dFapDdF7VQRLIp3Hi0smOt+TGCQMthCcziIaUO1/jN/ogfP3+gTRiANjOhnfh3qhginOaWjgAqpsvCJRcUmJsbq/000WEt9DPBmmLW+Fs2HsHWVtW1kAp5hccNoZlVHk2rSjcep1igcDWeYIAUV/gMhL0u2tQa21xZPOb00JkRaPdYzndxaw/gaW5vqCHasLD/Ijzuzxbt58zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK0PR06MB3668.apcprd06.prod.outlook.com (2603:1096:203:b7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
- 2021 06:09:12 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::20c8:80da:5b1d:fc06]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::20c8:80da:5b1d:fc06%4]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 06:09:12 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "minyard@acm.org" <minyard@acm.org>
-CC:     "joel@jms.id.au" <joel@jms.id.au>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "venture@google.com" <venture@google.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "benjaminfair@google.com" <benjaminfair@google.com>
-Subject: RE: [PATCH v2 21/21] ipmi: kcs_bmc_aspeed: Optionally apply status
- address
-Thread-Topic: [PATCH v2 21/21] ipmi: kcs_bmc_aspeed: Optionally apply status
- address
-Thread-Index: AQHXHIla9MoZtxcSoU+tfUZbCeW/RaqnHWVA
-Date:   Tue, 6 Apr 2021 06:09:12 +0000
-Message-ID: <HK0PR06MB3779BE4C5C6E2758DC60FDCA91769@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-21-andrew@aj.id.au>
-In-Reply-To: <20210319062752.145730-21-andrew@aj.id.au>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 128f78fe-39c3-4749-9615-08d8f8c27fef
-x-ms-traffictypediagnostic: HK0PR06MB3668:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB366809CEB906989F6582ABC091769@HK0PR06MB3668.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gaeEJXIs4gLScJaF2uQCCwh3DTzjWOckUa2zW/LkDVQvZ8e9Tf+V/+MHyl/BSnObsPz89tEzfHeK+TnXIHai6Z5XFNz8p9HMPdC+Nqfyu/4kzKnZN87sUdoufjbdrOK0lwZp4aq5Iukd6nBsSy24dC+GRc8YunMIL0dSGmkv/eqIgkUf0jAcP8HZNe9zq7OvFayCjGOGGyA/6YbfH3fRYxFJlqQKqyHoJ7YmWGs8OqsOQADCyCmqKIxKl6pX42+LaKpMVOk4j7TeiCxA/odbl8RYsM9C7LVjjV5n6y2TAl34+KCV0bHdYMBT34KahiM/CIj/+CxQcLanjHs2S9nZ+6c7ObSk15x68coqpH7c64Igf1K2778YNGb9L6t+YmZAhsmOSyDOw+hND0/ooFTUFP6p3XcFpGucXdn0vysKwgbdiGqKnuPZQj0ny/+4n0gTBNs9CVNIDRMBGtZFUH/8lrCi7kIggYUQeE6LRqncVTfEZwduJ3nTGfNGNbK55URTrBXUJ24pyA3nMs0XCcKZ6bhSTx12DhfFMvgQrWE+shwowL5cVyWLDiBYs3bZFXaMPqH4j7En0kBhDwFfA+rsZlrKO/BV56oj77deOIuGxm4y03/MvJxJiRRYH7y+upAErtih4TD2CI4iV9mAAgS9RfNtoozRvbzfO4WGrBwxuRI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(376002)(346002)(366004)(136003)(396003)(76116006)(52536014)(64756008)(53546011)(38100700001)(66446008)(2906002)(66556008)(66476007)(55236004)(83380400001)(66946007)(7696005)(26005)(8676002)(7416002)(54906003)(86362001)(186003)(4326008)(33656002)(55016002)(316002)(110136005)(6506007)(71200400001)(5660300002)(9686003)(8936002)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XzwimQh/hnyMcABh7YONLUoco53Gavsm5VDbw1aNq7oyO/ZivQBTb3BxDGw0?=
- =?us-ascii?Q?D/p3cK7b/37BdbQ1kD8xqDY7UsxC5PQD8Sy2eeb9bo7y0dcg86809z1M7hPf?=
- =?us-ascii?Q?2aBG0jSSlr1SH2y6I0ZMD1+wbT3KhdDv7/JIfrZUsv5S/ruk2cTQuhK60Z6x?=
- =?us-ascii?Q?JEe642u7f+/F2INotw3xfDQj082Y3W6Yor/p2ZkxWJtmgm18oEIqDC3yZv21?=
- =?us-ascii?Q?dmGbNomP9tbi/jmMD1L3ICAcyv6ccb+VaEt7BEQQOTCTm/ZGX4q3wZuLPGmz?=
- =?us-ascii?Q?KFYrD+io5Ql6v+uQk72P4R+BAd1Df+W3ck0XavOBNO1fQ7AJgq+iKR8HYMpX?=
- =?us-ascii?Q?KDZHFbL81pjCrEDqQzTXGr7EBxLzWZbTRZ8yf4mDsIr0spz9X0g4/YD32Sry?=
- =?us-ascii?Q?FTB0PmPEh5/hQLrZb1A4Pckixo7caorCAxtwGboNX/y/vkfikKKGHzj3JslA?=
- =?us-ascii?Q?Rmw5wgEirbtBzpF/woBpQffAXcv28RR7o5s2pNmHJOU0a6PvGqFVmy8zAzUa?=
- =?us-ascii?Q?qdy0793eGJtfCD5y8kiNsbGki/eoPokeoh8PuO7vdin+YnHp37HIfvRXx88Q?=
- =?us-ascii?Q?HgzrcfRNczraeDH4N3oeA8Yh1HFMHKiC7CKlb4w6p3WN9yG9duhy6fReoX8p?=
- =?us-ascii?Q?OvZHAYG8W+CUGbj6qXqbeW8y3Hp0b9UMR+Ht2RZfkLVAL+dn0QPDep2rAVno?=
- =?us-ascii?Q?vsYi3tywMlRFJkvsA/ShUYkniGXGX29DndxONV63LHqiXMnk7NAs3C78SrzW?=
- =?us-ascii?Q?lY6kG3VpjWeGADv/Dpi4uW8qhOy7WhHbyB7luO3XTczSU1usW8YOVpqCXfQr?=
- =?us-ascii?Q?q/qKIDDPZD/Kxmt70JYiONpF9yxQQ8e2KjLnbH/6fHk3/vKCGLwwPS5GmtbX?=
- =?us-ascii?Q?pf/nFJzhEk6bvMKiGpz7albWUuexncjV1hC2tvD9tDVKhTKUGhXwGaKaWiLY?=
- =?us-ascii?Q?mzG87MCTpCS2We7kyRXKVKN2XZrdGni1dojNXGhZyY7pN+uXxtjJaMCiHZOo?=
- =?us-ascii?Q?uG7ok7lZP51wr+BzG4bGU3BhgXw79nafYtLIlEXdj4DjKxgLTjKKQ0tENjiJ?=
- =?us-ascii?Q?0ppHyeolpF4+5bNyJxOmAfiXWK+TSgcK1xkuseU6K6EzGYauhCTVVYWhfJCC?=
- =?us-ascii?Q?d1ePag+QTUypZRET3xyDpK9TAMRkzO3h+sVwkXhm/MlOB+yTCAzuB/6I3ysl?=
- =?us-ascii?Q?P3xWD2ov3ACNS73Zh+7hU813Iu9F9byn/Bn15gDG1ADuHJXQwz0ToscgpP05?=
- =?us-ascii?Q?g9cWH1VT9Qx0ziJjvLF4JhNOXzBnxKUsO8VGq8gfqNC8lNMjbsIF/s8I2PhZ?=
- =?us-ascii?Q?a7Uce2uf2se4PwBwepD+EFer?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S233552AbhDFGJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:09:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27818 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233272AbhDFGJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 02:09:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617689371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QivBVbOG5v21FlaMXX9/5DY8mlhE7eZfYka8iBisMVI=;
+        b=Fkudkx9825/KJVHdLEPQNHBSe7Dq+SVIhdOlkNs9+CM4bQ4rwVR9FzJ7TGHAHiPVO78ZR/
+        EEBy2qqr+sj2JSxOw6yCLKmS2knwapiTKVQ59Nw+UgzI33gipMpt6CGgQ2mQU8Cgszs29+
+        6scz1ALeEdaLFETQWM3E4UyuxAcjzQc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-Knc1LBr2OXG7x9Ls6nnH1Q-1; Tue, 06 Apr 2021 02:09:29 -0400
+X-MC-Unique: Knc1LBr2OXG7x9Ls6nnH1Q-1
+Received: by mail-ej1-f72.google.com with SMTP id a22so4989564ejx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 23:09:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QivBVbOG5v21FlaMXX9/5DY8mlhE7eZfYka8iBisMVI=;
+        b=G/+3r2oKtHOjjKw5gGQoATVNVoA5MArJajK3o94C9jyMOecA6xP22Y2hOfF/MwnedY
+         A1Ja/FXd0Z62/smFV1pAIRkPSvGpBqnDONCtFZkzV9ygS+chYP8dqc1D6r282+W+40Ob
+         ot3iBRGEtd7Cy3ICtSKMyGVyjj+hCB+ckImcLRod+mt/mwSzKkUeuFZ12YumhdZKkAC/
+         vjo8CxpNUlhYQqOrG5bp0yjmH1w64Lj7CgSWs49hkOO52EHXwYmtk5L39JoFOEqE2ppm
+         K7Ii1j3mtmeD0haeuQn4zoTEBD3lyLV7Q3xQYRe2iBFIKHpnccrAd74TfsYOSNDNYMHs
+         IlGg==
+X-Gm-Message-State: AOAM530V0B17myLzv5w2+jOiHafnKOEj3EtfZJLZpe/5S7pKbuXeeRrd
+        17qdZ2hmha/lrtpJDYXZWKsYZ3kFfDFEzUcvn+wbtMPrIIoyeCCVaIvOZ5SVhBhZoCBGjj1pEgV
+        dm1r6hD76YeONoFAZp++N+Tnz
+X-Received: by 2002:a50:ec8c:: with SMTP id e12mr22126843edr.249.1617689368282;
+        Mon, 05 Apr 2021 23:09:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR/yMoDpxdvJidvpMiFKcac0lKa5a3szoG/TK1tOUjjdt0Susgx91SIbFuoVmzLNKqTpA6gg==
+X-Received: by 2002:a50:ec8c:: with SMTP id e12mr22126826edr.249.1617689368012;
+        Mon, 05 Apr 2021 23:09:28 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id bq18sm6303805ejb.27.2021.04.05.23.09.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 23:09:27 -0700 (PDT)
+Subject: Re: [PATCH 5.10 096/126] KVM: x86/mmu: Use atomic ops to set SPTEs in
+ TDP MMU map
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210405085031.040238881@linuxfoundation.org>
+ <20210405085034.229578703@linuxfoundation.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com>
+Date:   Tue, 6 Apr 2021 08:09:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 128f78fe-39c3-4749-9615-08d8f8c27fef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 06:09:12.5427
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AYey/+Gh5z2DY5L8NKMPLcQIjBY3/drh4GXTtiZWtfHRZqTGofSA9M4nOvLWOiCs4BDTY78H7Pc1F/bfEoh6TDacJoydY0N/l7tpQSavz/Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB3668
+In-Reply-To: <20210405085034.229578703@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-
-> -----Original Message-----
-> From: Andrew Jeffery <andrew@aj.id.au>
-> Sent: Friday, March 19, 2021 2:28 PM
-> To: openipmi-developer@lists.sourceforge.net; openbmc@lists.ozlabs.org;
-> minyard@acm.org
-> Subject: [PATCH v2 21/21] ipmi: kcs_bmc_aspeed: Optionally apply status
-> address
+On 05/04/21 10:54, Greg Kroah-Hartman wrote:
+> From: Ben Gardon <bgardon@google.com>
 > 
-> Some Aspeed KCS devices can derive the status register address from the
-> address of the data register. As such, the address of the status register can be
-> implicit in the configuration if desired. On the other hand, sometimes address
-> schemes might be requested that are incompatible with the default addressing
-> scheme. Allow these requests where possible if the devicetree specifies the
-> status register address.
+> [ Upstream commit 9a77daacc87dee9fd63e31243f21894132ed8407 ]
 > 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> To prepare for handling page faults in parallel, change the TDP MMU
+> page fault handler to use atomic operations to set SPTEs so that changes
+> are not lost if multiple threads attempt to modify the same SPTE.
+> 
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> 
+> Message-Id: <20210202185734.1680553-21-bgardon@google.com>
+> [Document new locking rules. - Paolo]
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  drivers/char/ipmi/kcs_bmc_aspeed.c | 113 +++++++++++++++++++++--------
->  1 file changed, 81 insertions(+), 32 deletions(-)
+>   Documentation/virt/kvm/locking.rst |   9 +-
+>   arch/x86/include/asm/kvm_host.h    |  13 +++
+>   arch/x86/kvm/mmu/tdp_mmu.c         | 142 ++++++++++++++++++++++-------
+>   3 files changed, 130 insertions(+), 34 deletions(-)
 > 
-> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> index 7334b1f51dcc..98789b837690 100644
-> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> @@ -83,6 +83,8 @@
->  #define LPC_STR2             0x040
->  #define LPC_STR3             0x044
->  #define LPC_HICRB            0x100
-> +#define     LPC_HICRB_EN16LADR2      BIT(5)
-> +#define     LPC_HICRB_EN16LADR1      BIT(4)
->  #define     LPC_HICRB_IBFIE4         BIT(1)
->  #define     LPC_HICRB_LPC4E          BIT(0)
->  #define LPC_HICRC            0x104
-> @@ -96,6 +98,11 @@
->  #define LPC_IDR4             0x114
->  #define LPC_ODR4             0x118
->  #define LPC_STR4             0x11C
-> +#define LPC_LSADR12	     0x120
-> +#define     LPC_LSADR12_LSADR2_MASK  GENMASK(31, 16)
-> +#define     LPC_LSADR12_LSADR2_SHIFT 16
-> +#define     LPC_LSADR12_LSADR1_MASK  GENMASK(15, 0)
-> +#define     LPC_LSADR12_LSADR1_SHIFT 0
-> 
->  #define OBE_POLL_PERIOD	     (HZ / 2)
-> 
-> @@ -123,7 +130,7 @@ struct aspeed_kcs_bmc {
-> 
->  struct aspeed_kcs_of_ops {
->  	int (*get_channel)(struct platform_device *pdev);
-> -	int (*get_io_address)(struct platform_device *pdev);
-> +	int (*get_io_address)(struct platform_device *pdev, u32 addrs[2]);
->  };
-> 
->  static inline struct aspeed_kcs_bmc *to_aspeed_kcs_bmc(struct
-> kcs_bmc_device *kcs_bmc) @@ -217,38 +224,64 @@ static void
-> aspeed_kcs_updateb(struct kcs_bmc_device *kcs_bmc, u32 reg, u8 mask,
->   *     C. KCS4
->   *        D / C : CA4h / CA5h
->   */
-> -static void aspeed_kcs_set_address(struct kcs_bmc_device *kcs_bmc, u16
-> addr)
-> +static int aspeed_kcs_set_address(struct kcs_bmc_device *kcs_bmc, u32
-> +addrs[2], int nr_addrs)
->  {
->  	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> 
-> -	switch (kcs_bmc->channel) {
-> +	if (WARN_ON(nr_addrs < 1 || nr_addrs > 2))
-> +		return -EINVAL;
+> diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+> index b21a34c34a21..0aa4817b466d 100644
+> --- a/Documentation/virt/kvm/locking.rst
+> +++ b/Documentation/virt/kvm/locking.rst
+> @@ -16,7 +16,14 @@ The acquisition orders for mutexes are as follows:
+>   - kvm->slots_lock is taken outside kvm->irq_lock, though acquiring
+>     them together is quite rare.
+>   
+> -On x86, vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock.
+> +On x86:
 > +
-> +	switch (priv->kcs_bmc.channel) {
->  	case 1:
-> -		regmap_update_bits(priv->map, LPC_HICR4,
-> -				LPC_HICR4_LADR12AS, 0);
-> -		regmap_write(priv->map, LPC_LADR12H, addr >> 8);
-> -		regmap_write(priv->map, LPC_LADR12L, addr & 0xFF);
-> +		regmap_update_bits(priv->map, LPC_HICR4, LPC_HICR4_LADR12AS,
-> 0);
-> +		regmap_write(priv->map, LPC_LADR12H, addrs[0] >> 8);
-> +		regmap_write(priv->map, LPC_LADR12L, addrs[0] & 0xFF);
-> +		if (nr_addrs == 2) {
-> +			regmap_update_bits(priv->map, LPC_LSADR12,
-> LPC_LSADR12_LSADR1_MASK,
-> +					   addrs[1] << LPC_LSADR12_LSADR1_SHIFT);
+> +- vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock
 > +
-> +			regmap_update_bits(priv->map, LPC_HICRB,
-> LPC_HICRB_EN16LADR1,
-> +					   LPC_HICRB_EN16LADR1);
+> +- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock is
+> +  taken inside kvm->arch.mmu_lock, and cannot be taken without already
+> +  holding kvm->arch.mmu_lock (typically with ``read_lock``, otherwise
+> +  there's no need to take kvm->arch.tdp_mmu_pages_lock at all).
+>   
+>   Everything else is a leaf: no other lock is taken inside the critical
+>   sections.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 02d4c74d30e2..47cd8f9b3fe7 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1014,6 +1014,19 @@ struct kvm_arch {
+>   	struct list_head tdp_mmu_roots;
+>   	/* List of struct tdp_mmu_pages not being used as roots */
+>   	struct list_head tdp_mmu_pages;
+> +
+> +	/*
+> +	 * Protects accesses to the following fields when the MMU lock
+> +	 * is held in read mode:
+> +	 *  - tdp_mmu_pages (above)
+> +	 *  - the link field of struct kvm_mmu_pages used by the TDP MMU
+> +	 *  - lpage_disallowed_mmu_pages
+> +	 *  - the lpage_disallowed_link field of struct kvm_mmu_pages used
+> +	 *    by the TDP MMU
+> +	 * It is acceptable, but not necessary, to acquire this lock when
+> +	 * the thread holds the MMU lock in write mode.
+> +	 */
+> +	spinlock_t tdp_mmu_pages_lock;
+>   };
+>   
+>   struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 14d69c01c710..eb38f74af3f2 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -7,6 +7,7 @@
+>   #include "tdp_mmu.h"
+>   #include "spte.h"
+>   
+> +#include <asm/cmpxchg.h>
+>   #include <trace/events/kvm.h>
+>   
+>   #ifdef CONFIG_X86_64
+> @@ -33,6 +34,7 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
+>   	kvm->arch.tdp_mmu_enabled = true;
+>   
+>   	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
+> +	spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
+>   	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
+>   }
+>   
+> @@ -225,7 +227,8 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
+>   }
+>   
+>   static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+> -				u64 old_spte, u64 new_spte, int level);
+> +				u64 old_spte, u64 new_spte, int level,
+> +				bool shared);
+>   
+>   static int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
+>   {
+> @@ -267,17 +270,26 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+>    *
+>    * @kvm: kvm instance
+>    * @sp: the new page
+> + * @shared: This operation may not be running under the exclusive use of
+> + *	    the MMU lock and the operation must synchronize with other
+> + *	    threads that might be adding or removing pages.
+>    * @account_nx: This page replaces a NX large page and should be marked for
+>    *		eventual reclaim.
+>    */
+>   static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+> -			      bool account_nx)
+> +			      bool shared, bool account_nx)
+>   {
+> -	lockdep_assert_held_write(&kvm->mmu_lock);
+> +	if (shared)
+> +		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> +	else
+> +		lockdep_assert_held_write(&kvm->mmu_lock);
+>   
+>   	list_add(&sp->link, &kvm->arch.tdp_mmu_pages);
+>   	if (account_nx)
+>   		account_huge_nx_page(kvm, sp);
+> +
+> +	if (shared)
+> +		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+>   }
+>   
+>   /**
+> @@ -285,14 +297,24 @@ static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+>    *
+>    * @kvm: kvm instance
+>    * @sp: the page to be removed
+> + * @shared: This operation may not be running under the exclusive use of
+> + *	    the MMU lock and the operation must synchronize with other
+> + *	    threads that might be adding or removing pages.
+>    */
+> -static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> +static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+> +				bool shared)
+>   {
+> -	lockdep_assert_held_write(&kvm->mmu_lock);
+> +	if (shared)
+> +		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> +	else
+> +		lockdep_assert_held_write(&kvm->mmu_lock);
+>   
+>   	list_del(&sp->link);
+>   	if (sp->lpage_disallowed)
+>   		unaccount_huge_nx_page(kvm, sp);
+> +
+> +	if (shared)
+> +		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+>   }
+>   
+>   /**
+> @@ -300,28 +322,39 @@ static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+>    *
+>    * @kvm: kvm instance
+>    * @pt: the page removed from the paging structure
+> + * @shared: This operation may not be running under the exclusive use
+> + *	    of the MMU lock and the operation must synchronize with other
+> + *	    threads that might be modifying SPTEs.
+>    *
+>    * Given a page table that has been removed from the TDP paging structure,
+>    * iterates through the page table to clear SPTEs and free child page tables.
+>    */
+> -static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt)
+> +static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+> +					bool shared)
+>   {
+>   	struct kvm_mmu_page *sp = sptep_to_sp(pt);
+>   	int level = sp->role.level;
+>   	gfn_t gfn = sp->gfn;
+>   	u64 old_child_spte;
+> +	u64 *sptep;
+>   	int i;
+>   
+>   	trace_kvm_mmu_prepare_zap_page(sp);
+>   
+> -	tdp_mmu_unlink_page(kvm, sp);
+> +	tdp_mmu_unlink_page(kvm, sp, shared);
+>   
+>   	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+> -		old_child_spte = READ_ONCE(*(pt + i));
+> -		WRITE_ONCE(*(pt + i), 0);
+> +		sptep = pt + i;
+> +
+> +		if (shared) {
+> +			old_child_spte = xchg(sptep, 0);
+> +		} else {
+> +			old_child_spte = READ_ONCE(*sptep);
+> +			WRITE_ONCE(*sptep, 0);
 > +		}
->  		break;
-> 
->  	case 2:
-> -		regmap_update_bits(priv->map, LPC_HICR4,
-> -				LPC_HICR4_LADR12AS, LPC_HICR4_LADR12AS);
-> -		regmap_write(priv->map, LPC_LADR12H, addr >> 8);
-> -		regmap_write(priv->map, LPC_LADR12L, addr & 0xFF);
-> +		regmap_update_bits(priv->map, LPC_HICR4, LPC_HICR4_LADR12AS,
-> LPC_HICR4_LADR12AS);
-> +		regmap_write(priv->map, LPC_LADR12H, addrs[0] >> 8);
-> +		regmap_write(priv->map, LPC_LADR12L, addrs[0] & 0xFF);
-> +		if (nr_addrs == 2) {
-> +			regmap_update_bits(priv->map, LPC_LSADR12,
-> LPC_LSADR12_LSADR2_MASK,
-> +					   addrs[1] << LPC_LSADR12_LSADR2_SHIFT);
+>   		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
+>   			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+> -			old_child_spte, 0, level - 1);
+> +			old_child_spte, 0, level - 1, shared);
+>   	}
+>   
+>   	kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> @@ -338,12 +371,16 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt)
+>    * @old_spte: The value of the SPTE before the change
+>    * @new_spte: The value of the SPTE after the change
+>    * @level: the level of the PT the SPTE is part of in the paging structure
+> + * @shared: This operation may not be running under the exclusive use of
+> + *	    the MMU lock and the operation must synchronize with other
+> + *	    threads that might be modifying SPTEs.
+>    *
+>    * Handle bookkeeping that might result from the modification of a SPTE.
+>    * This function must be called for all TDP SPTE modifications.
+>    */
+>   static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+> -				u64 old_spte, u64 new_spte, int level)
+> +				  u64 old_spte, u64 new_spte, int level,
+> +				  bool shared)
+>   {
+>   	bool was_present = is_shadow_present_pte(old_spte);
+>   	bool is_present = is_shadow_present_pte(new_spte);
+> @@ -413,18 +450,51 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>   	 */
+>   	if (was_present && !was_leaf && (pfn_changed || !is_present))
+>   		handle_removed_tdp_mmu_page(kvm,
+> -				spte_to_child_pt(old_spte, level));
+> +				spte_to_child_pt(old_spte, level), shared);
+>   }
+>   
+>   static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+> -				u64 old_spte, u64 new_spte, int level)
+> +				u64 old_spte, u64 new_spte, int level,
+> +				bool shared)
+>   {
+> -	__handle_changed_spte(kvm, as_id, gfn, old_spte, new_spte, level);
+> +	__handle_changed_spte(kvm, as_id, gfn, old_spte, new_spte, level,
+> +			      shared);
+>   	handle_changed_spte_acc_track(old_spte, new_spte, level);
+>   	handle_changed_spte_dirty_log(kvm, as_id, gfn, old_spte,
+>   				      new_spte, level);
+>   }
+>   
+> +/*
+> + * tdp_mmu_set_spte_atomic - Set a TDP MMU SPTE atomically and handle the
+> + * associated bookkeeping
+> + *
+> + * @kvm: kvm instance
+> + * @iter: a tdp_iter instance currently on the SPTE that should be set
+> + * @new_spte: The value the SPTE should be set to
+> + * Returns: true if the SPTE was set, false if it was not. If false is returned,
+> + *	    this function will have no side-effects.
+> + */
+> +static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
+> +					   struct tdp_iter *iter,
+> +					   u64 new_spte)
+> +{
+> +	u64 *root_pt = tdp_iter_root_pt(iter);
+> +	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
+> +	int as_id = kvm_mmu_page_as_id(root);
 > +
-> +			regmap_update_bits(priv->map, LPC_HICRB,
-> LPC_HICRB_EN16LADR2,
-> +					   LPC_HICRB_EN16LADR2);
-> +		}
->  		break;
-> 
->  	case 3:
-> -		regmap_write(priv->map, LPC_LADR3H, addr >> 8);
-> -		regmap_write(priv->map, LPC_LADR3L, addr & 0xFF);
-> +		if (nr_addrs == 2) {
-> +			dev_err(priv->kcs_bmc.dev,
-> +				"Channel 3 only supports inferred status IO address\n");
-> +			return -EINVAL;
-> +		}
+> +	lockdep_assert_held_read(&kvm->mmu_lock);
 > +
-> +		regmap_write(priv->map, LPC_LADR3H, addrs[0] >> 8);
-> +		regmap_write(priv->map, LPC_LADR3L, addrs[0] & 0xFF);
->  		break;
-> 
->  	case 4:
-> -		regmap_write(priv->map, LPC_LADR4, ((addr + 1) << 16) |
-> -			addr);
-> +		if (nr_addrs == 1)
-> +			regmap_write(priv->map, LPC_LADR4, ((addrs[0] + 1) << 16) |
-> addrs[0]);
-> +		else
-> +			regmap_write(priv->map, LPC_LADR4, (addrs[1] << 16) |
-> addrs[0]);
+> +	if (cmpxchg64(rcu_dereference(iter->sptep), iter->old_spte,
+> +		      new_spte) != iter->old_spte)
+> +		return false;
 > +
->  		break;
-> 
->  	default:
-> -		break;
-> +		return -EINVAL;
->  	}
+> +	handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
+> +			    iter->level, true);
 > +
-> +	return 0;
->  }
-> 
->  static inline int aspeed_kcs_map_serirq_type(u32 dt_type) @@ -462,18
-> +495,18 @@ static int aspeed_kcs_of_v1_get_channel(struct platform_device
-> *pdev)
->  	return channel;
->  }
-> 
-> -static int aspeed_kcs_of_v1_get_io_address(struct platform_device *pdev)
-> +static int
-> +aspeed_kcs_of_v1_get_io_address(struct platform_device *pdev, u32
-> +addrs[2])
->  {
-> -	u32 slave;
->  	int rc;
-> 
-> -	rc = of_property_read_u32(pdev->dev.of_node, "kcs_addr", &slave);
-> -	if (rc || slave > 0xffff) {
-> +	rc = of_property_read_u32(pdev->dev.of_node, "kcs_addr", addrs);
-> +	if (rc || addrs[0] > 0xffff) {
->  		dev_err(&pdev->dev, "no valid 'kcs_addr' configured\n");
->  		return -EINVAL;
->  	}
-> 
-> -	return slave;
-> +	return 1;
->  }
-> 
->  static int aspeed_kcs_of_v2_get_channel(struct platform_device *pdev) @@
-> -509,16 +542,27 @@ static int aspeed_kcs_of_v2_get_channel(struct
-> platform_device *pdev)
->  	return -EINVAL;
->  }
-> 
-> -static int aspeed_kcs_of_v2_get_io_address(struct platform_device *pdev)
-> +static int
-> +aspeed_kcs_of_v2_get_io_address(struct platform_device *pdev, u32
-> +addrs[2])
->  {
-> -	uint32_t slave;
->  	int rc;
-> 
-> -	rc = of_property_read_u32(pdev->dev.of_node, "aspeed,lpc-io-reg",
-> &slave);
-> -	if (rc || slave > 0xffff)
-> +	rc = of_property_read_variable_u32_array(pdev->dev.of_node,
-> +						 "aspeed,lpc-io-reg",
-> +						 addrs, 1, 2);
-> +	if (rc < 0)
-> +		return rc;
+> +	return true;
+> +}
 > +
-> +	if (WARN_ON(rc == 0))
-> +		return -EINVAL;
 > +
-> +	if (addrs[0] > 0xffff)
-> +		return -EINVAL;
+>   /*
+>    * __tdp_mmu_set_spte - Set a TDP MMU SPTE and handle the associated bookkeeping
+>    * @kvm: kvm instance
+> @@ -454,7 +524,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+>   	WRITE_ONCE(*rcu_dereference(iter->sptep), new_spte);
+>   
+>   	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
+> -			      iter->level);
+> +			      iter->level, false);
+>   	if (record_acc_track)
+>   		handle_changed_spte_acc_track(iter->old_spte, new_spte,
+>   					      iter->level);
+> @@ -629,23 +699,18 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+>   	int ret = 0;
+>   	int make_spte_ret = 0;
+>   
+> -	if (unlikely(is_noslot_pfn(pfn))) {
+> +	if (unlikely(is_noslot_pfn(pfn)))
+>   		new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+> -		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
+> -				     new_spte);
+> -	} else {
+> +	else
+>   		make_spte_ret = make_spte(vcpu, ACC_ALL, iter->level, iter->gfn,
+>   					 pfn, iter->old_spte, prefault, true,
+>   					 map_writable, !shadow_accessed_mask,
+>   					 &new_spte);
+> -		trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+> -				       rcu_dereference(iter->sptep));
+> -	}
+>   
+>   	if (new_spte == iter->old_spte)
+>   		ret = RET_PF_SPURIOUS;
+> -	else
+> -		tdp_mmu_set_spte(vcpu->kvm, iter, new_spte);
+> +	else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
+> +		return RET_PF_RETRY;
+>   
+>   	/*
+>   	 * If the page fault was caused by a write but the page is write
+> @@ -659,8 +724,13 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+>   	}
+>   
+>   	/* If a MMIO SPTE is installed, the MMIO will need to be emulated. */
+> -	if (unlikely(is_mmio_spte(new_spte)))
+> +	if (unlikely(is_mmio_spte(new_spte))) {
+> +		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
+> +				     new_spte);
+>   		ret = RET_PF_EMULATE;
+> +	} else
+> +		trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+> +				       rcu_dereference(iter->sptep));
+>   
+>   	trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+>   			       rcu_dereference(iter->sptep));
+> @@ -719,7 +789,8 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>   		 */
+>   		if (is_shadow_present_pte(iter.old_spte) &&
+>   		    is_large_pte(iter.old_spte)) {
+> -			tdp_mmu_set_spte(vcpu->kvm, &iter, 0);
+> +			if (!tdp_mmu_set_spte_atomic(vcpu->kvm, &iter, 0))
+> +				break;
+>   
+>   			kvm_flush_remote_tlbs_with_address(vcpu->kvm, iter.gfn,
+>   					KVM_PAGES_PER_HPAGE(iter.level));
+> @@ -736,19 +807,24 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>   			sp = alloc_tdp_mmu_page(vcpu, iter.gfn, iter.level);
+>   			child_pt = sp->spt;
+>   
+> -			tdp_mmu_link_page(vcpu->kvm, sp,
+> -					  huge_page_disallowed &&
+> -					  req_level >= iter.level);
+> -
+>   			new_spte = make_nonleaf_spte(child_pt,
+>   						     !shadow_accessed_mask);
+>   
+> -			trace_kvm_mmu_get_page(sp, true);
+> -			tdp_mmu_set_spte(vcpu->kvm, &iter, new_spte);
+> +			if (tdp_mmu_set_spte_atomic(vcpu->kvm, &iter,
+> +						    new_spte)) {
+> +				tdp_mmu_link_page(vcpu->kvm, sp, true,
+> +						  huge_page_disallowed &&
+> +						  req_level >= iter.level);
 > +
-> +	if (rc == 2 && addrs[1] > 0xffff)
->  		return -EINVAL;
+> +				trace_kvm_mmu_get_page(sp, true);
+> +			} else {
+> +				tdp_mmu_free_sp(sp);
+> +				break;
+> +			}
+>   		}
+>   	}
+>   
+> -	if (WARN_ON(iter.level != level)) {
+> +	if (iter.level != level) {
+>   		rcu_read_unlock();
+>   		return RET_PF_RETRY;
+>   	}
 > 
-> -	return slave;
-> +	return rc;
->  }
-> 
->  static int aspeed_kcs_probe(struct platform_device *pdev) @@ -527,9
-> +571,11 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
->  	struct kcs_bmc_device *kcs_bmc;
->  	struct aspeed_kcs_bmc *priv;
->  	struct device_node *np;
-> -	int rc, channel, addr;
->  	bool have_upstream_irq;
->  	u32 upstream_irq[2];
-> +	int rc, channel;
-> +	int nr_addrs;
-> +	u32 addrs[2];
-> 
->  	np = pdev->dev.of_node->parent;
->  	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") && @@ -547,9
-> +593,9 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
->  	if (channel < 0)
->  		return channel;
-> 
-> -	addr = ops->get_io_address(pdev);
-> -	if (addr < 0)
-> -		return addr;
-> +	nr_addrs = ops->get_io_address(pdev, addrs);
-> +	if (nr_addrs < 0)
-> +		return nr_addrs;
-> 
->  	np = pdev->dev.of_node;
->  	rc = of_property_read_u32_array(np, "aspeed,lpc-interrupts",
-> upstream_irq, 2); @@ -578,7 +624,9 @@ static int aspeed_kcs_probe(struct
-> platform_device *pdev)
->  	priv->obe.remove = false;
->  	timer_setup(&priv->obe.timer, aspeed_kcs_check_obe, 0);
-> 
-> -	aspeed_kcs_set_address(kcs_bmc, addr);
-> +	rc = aspeed_kcs_set_address(kcs_bmc, addrs, nr_addrs);
-> +	if (rc)
-> +		return rc;
-> 
->  	/* Host to BMC IRQ */
->  	rc = aspeed_kcs_config_downstream_irq(kcs_bmc, pdev); @@ -600,7
-> +648,8 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
->  	if (rc < 0)
->  		return rc;
-> 
-> -	dev_info(&pdev->dev, "Initialised channel %d at 0x%x\n",
-> kcs_bmc->channel, addr);
-> +	dev_info(&pdev->dev, "Initialised channel %d at 0x%x\n",
-> +			kcs_bmc->channel, addrs[0]);
-> 
->  	return 0;
->  }
-> --
-> 2.27.0
+
+Whoa no, you have included basically a whole new feature, except for the 
+final patch that actually enables the feature.  The whole new MMU is 
+still not meant to be used in production and development is still 
+happening as of 5.13.
+
+Were all these patches (82-97) included just to enable patch 98 ("KVM: 
+x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")?  Same 
+for 105-120 in 5.11.
+
+Paolo
 
