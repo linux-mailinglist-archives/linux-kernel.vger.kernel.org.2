@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D6C354F23
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61E9354F26
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhDFI4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S244640AbhDFI4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbhDFI4S (ORCPT
+        with ESMTP id S233699AbhDFI4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:56:18 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A00BC061761
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:56:10 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a12so3542612wrq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:56:10 -0700 (PDT)
+        Tue, 6 Apr 2021 04:56:38 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98558C06174A;
+        Tue,  6 Apr 2021 01:56:30 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d8so7099954plh.11;
+        Tue, 06 Apr 2021 01:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=k0R/CpFQIO0LutUTt6whAWYDSEEYWanyJgecDTp2qS4=;
-        b=OUtsvTywwF0/bDjP4cBmo4dT9qHLCQLOTKohdrUdMDdMtVgNZ88XIn0SLwDK4A4/qG
-         EwEU/kFbpjoldb1LlsU7Sqe+FySEhPAaMbHfWEcGqojHKt4e7wg+lkYfX7k+1mdJfOVx
-         AjbNMxpoKsRjSZwo0SNnNf4pUy1J3mi5/xwF4b9nJ8LW3P74wuWx4TkCXBTstUnV4lA7
-         s0BPsgsPGkujSf2teVKDJ6yAKtQsmGArOMiabQxqM/i+PjKovEJjU6RlXGqdh4zTEWgS
-         VM+UO6/Fxg6nQHnz7gGc/T35KZHHmhVOm5MYpNnNbtSejPeRXePMPVHTzDl4t2JCGmVy
-         HLwQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9xdIx72BUryR8S57j/82YwQXQXS2KpU1UgBOV30ECIY=;
+        b=TgIHqrGywgKnXMNklZnPmsxbnxfQhVs1/eip8i8YiMxdQR4RjRlUfUxvxL630b2ohO
+         rj2MijmqaoRwFrfwquFATd9n3hub69GPxaoNcqnBz2I7sZK6VJYlluvXsDtx5mHIhdhs
+         ZNb8vVejIeFztXXuQziXLhO2PBkkuOPLaeAZQ1hJVhNn/vgj04P4CaddpoOm6SftW7YY
+         mCSjyGZWcprkJpY1wYgKpI/0r6PjQN0c36Ji2kzFWI7fulQOkeaQxbkYvtYeOHDTT01N
+         oSjFXgnoLMaxPKM3mKNKMvqL16eyPYfI2+5st9Fnd4OUC03rXpzroRXoDUX8jVZr9GwA
+         DHYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=k0R/CpFQIO0LutUTt6whAWYDSEEYWanyJgecDTp2qS4=;
-        b=By61t46H3CWCiCpaf2VNw/Dsn2hPnHg/L2Huz4pK30Wr8KCnyTBfDwPs4EknFIVWYu
-         m2R1WCHbIJwVU1nW4ddIJF9a31O9Z5nz4H1zjfsGTgWl2erW3ZoxeBwBtPWcpzE+fwvF
-         JSz3adFgND8l8VtVHf5HbS9kMQtnXFIJkeZjGL3rYcis732jmH8FpDQdSG7kuJ3g+loX
-         rKtGBBwi1yMaGQ9rhIyaFwyjZndlnfIP0ClJy7X/uqi5MjAy/1HtzaEwEbcSCrl/krT7
-         exnRjc4hLKYPCeFMvNkWZIw7UHHOGWT6+dAHFD/cu5nhSHQChaRWQJbKsNAp29QYumDa
-         c+0Q==
-X-Gm-Message-State: AOAM531p0JefauoztD1rEKcYs8QnuWwrpm4MZFJov0iq1cIlF7s6XJmm
-        2SdvSS5iQvSqboIauYV9a22GGXUYtlORV2qI
-X-Google-Smtp-Source: ABdhPJy5liwwM3Ot+2W70tIkjSPkDW++gyVE8uJhSgWpBItS06FaUlff1OXTLSFd9M921fWjlzp4KQ==
-X-Received: by 2002:a5d:6b89:: with SMTP id n9mr33668042wrx.236.1617699367868;
-        Tue, 06 Apr 2021 01:56:07 -0700 (PDT)
-Received: from dell ([91.110.221.193])
-        by smtp.gmail.com with ESMTPSA id u12sm5987318wro.51.2021.04.06.01.56.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9xdIx72BUryR8S57j/82YwQXQXS2KpU1UgBOV30ECIY=;
+        b=lII6vAxennsFxOCVPzre1p0/Dp+vtziFsq+ahJoAtHgP5TL+ChpG6ms2Rlim6elxnF
+         Y8peYr4dJ7bc3pTEg7e7+5wCOmbkqv5IKy2v7TzFKpi9YaIgOjsGWtCwQOZHWXl+s8Vm
+         Giy7mJOdrSDIPqsred7S1g3a0UOtoHQ4qy8PUrf6XalVmgLPMYhJGbNQaHlAA262y4pa
+         g3ZoafCKx+ZiCJILzQ/Znh0TgGPuLmaJGtIXzkevf6k+AtJLxkyHj0Lp1o0G5lxSNBK3
+         0vRIi4ur3NH0ZauOQKwKAHSnnX6vAIyF3qex5ww7mysy1W1lBNIIKyJjV5dGVObHEQhl
+         Kyuw==
+X-Gm-Message-State: AOAM532ePoRQ1MOi33WH1ANZE4Tlt4yDtfVTVpRRMCw19J35Qp6ijklN
+        FMYoSJtvWL0gBAhD5nyzWGY=
+X-Google-Smtp-Source: ABdhPJzAV+gapYt2uFLFIiAFJ65qO40DcQUfQ8+y2O+oaBxM0IvPkfh4oGm033rNZm2YGkXRZY273A==
+X-Received: by 2002:a17:902:d30b:b029:e8:dc10:86fb with SMTP id b11-20020a170902d30bb02900e8dc1086fbmr13105385plc.46.1617699390137;
+        Tue, 06 Apr 2021 01:56:30 -0700 (PDT)
+Received: from localhost (g139.124-45-193.ppp.wakwak.ne.jp. [124.45.193.139])
+        by smtp.gmail.com with ESMTPSA id s2sm2010583pjs.49.2021.04.06.01.56.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 01:56:07 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 09:56:05 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Anssi Hannula <anssi.hannula@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Drubin <daniel.drubin@intel.com>,
-        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, Lopez Casado <nlopezcasad@logitech.com>,
-        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
-        Masaki Ota <masaki.ota@jp.alps.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        message to <vojtech@ucw.cz>,
-        Michael Haboustak <mike-@cinci.rr.com>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Zhang Lixu <lixu.zhang@intel.com>
-Subject: Re: [RESEND 00/25] Rid W=1 warnings from HID
-Message-ID: <20210406085605.GS2916463@dell>
-References: <20210326143458.508959-1-lee.jones@linaro.org>
+        Tue, 06 Apr 2021 01:56:29 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 17:56:26 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <20210406085626.GE3288043@lianli.shorne-pla.net>
+References: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+ <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+ <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
+ <YGNNCEAMSWbBU+hd@hirez.programming.kicks-ass.net>
+ <20210330223514.GE1171117@lianli.shorne-pla.net>
+ <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
+ <CAJF2gTRxPMURTE3M5WMQ_0q1yZ6K8nraGsFjGLUmpG9nYS_hng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
+In-Reply-To: <CAJF2gTRxPMURTE3M5WMQ_0q1yZ6K8nraGsFjGLUmpG9nYS_hng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021, Lee Jones wrote:
-
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On Tue, Apr 06, 2021 at 11:50:38AM +0800, Guo Ren wrote:
+> On Wed, Mar 31, 2021 at 3:23 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Wed, Mar 31, 2021 at 12:35 AM Stafford Horne <shorne@gmail.com> wrote:
+> > >
+> > > I just want to chime in here, there may be a better spot in the thread to
+> > > mention this but, for OpenRISC I did implement some generic 8/16-bit xchg code
+> > > which I have on my todo list somwhere to replace the other generic
+> > > implementations like that in mips.
+> > >
+> > >   arch/openrisc/include/asm/cmpxchg.h
+> > >
+> > > The idea would be that architectures just implement these methods:
+> > >
+> > >   long cmpxchg_u32(*ptr,old,new)
+> > >   long xchg_u32(*ptr,val)
+> > >
+> > > Then the rest of the generic header would implement cmpxchg.
+> >
+> > I like the idea of generalizing it a little further. I'd suggest staying a
+> > little closer to the existing naming here though, as we already have
+> > cmpxchg() for the type-agnostic version, and cmpxchg64() for the
+> > fixed-length 64-bit version.
+> >
+> > I think a nice interface between architecture-specific and architecture
+> > independent code would be to have architectures provide
+> > arch_cmpxchg32()/arch_xchg32() as the most basic version, as well
+> > as arch_cmpxchg8()/arch_cmpxchg16()/arch_xchg8()/arch_xchg16()
+> > if they have instructions for those.
+> >
+> > The common code can then build cmpxchg16()/xchg16() on top of
+> > either the 16-bit or the 32-bit primitives, and build the cmpxchg()/xchg()
+> > wrapper around those (or alternatively we can decide to have them
+> > only deal with fixed-32-bit and long/pointer sized atomics).
+> I think these emulation codes are suitable for some architectures but not riscv.
 > 
-> Lee Jones (25):
->   HID: intel-ish-hid: Remove unused variable 'err'
->   HID: ishtp-hid-client: Move variable to where it's actually used
->   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
->   HID: intel-ish: Supply some missing param descriptions
->   HID: intel-ish: Fix a naming disparity and a formatting error
->   HID: usbhid: Repair a formatting issue in a struct description
->   HID: intel-ish-hid: Fix a little doc-rot
->   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
->   HID: hid-alps: Correct struct misnaming
->   HID: intel-ish-hid: Fix potential copy/paste error
->   HID: hid-core: Fix incorrect function name in header
->   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
->     header
->   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
->   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
->   HID: hid-picolcd_core: Remove unused variable 'ret'
->   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
->     abuses
->   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
->   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
->   HID: hid-uclogic-params: Ensure function names are present and correct
->     in kernel-doc headers
->   HID: hid-sensor-custom: Remove unused variable 'ret'
->   HID: wacom_sys: Demote kernel-doc abuse
->   HID: hid-sensor-hub: Remove unused struct member 'quirks'
->   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
->     definition
->   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
->   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
+> We shouldn't export xchg16/cmpxchg16(emulated by lr.w/sc.w) in riscv,
+> We should forbid these sub-word atomic primitive and lets the
+> programmers consider their atomic design.
 
-These have been on the list for a couple of weeks now.
+Fair enough, having the generic sub-word emulation would be something that
+an architecture can select to use/export.
 
-Is there anything I can do to help expedite their merge?
-
-I'm concerned since -rc6 has just been released.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+-Stafford
