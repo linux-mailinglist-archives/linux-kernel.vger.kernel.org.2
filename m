@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053E3354EE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282EF354EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244471AbhDFIpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:45:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13152 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244417AbhDFIpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:45:10 -0400
-IronPort-SDR: lHG7cnUsRlPRyBca8alj83PDGKetGrNeb5HxMEHRYVO256dZBcZddIK1iXEtm+93ZMneF6okS/
- GYnUHLWo48Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="180152156"
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="180152156"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:45:03 -0700
-IronPort-SDR: Dj6hVveqLK/PFJOSjVdTlEInJUKchM6ygtBa7FhhJ7pAH8Kx9OMRXXBIT0QrgLRHBn4r5KJgdE
- EoNAK+rDXz+w==
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="421121773"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.164]) ([10.249.228.164])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:45:00 -0700
-Subject: [PATCH v4 04/12] perf record: stop threads in the end of trace
- streaming
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <3113338a-a17e-cc3e-2d1a-fb1b468d5dcd@linux.intel.com>
-Date:   Tue, 6 Apr 2021 11:44:57 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S244473AbhDFIpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234159AbhDFIpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:45:32 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC739C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:45:24 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 15so15594542ljj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YLqQGd/T46D5zGOlykZcGAUvnOsHHqPoJRmoNN6xMvY=;
+        b=ulSxid11kzmFSepZFCYx9snxXUw8kuxz7TyIiG3q/zhkOYukdIEERyp7D0yTCdby3O
+         P9Wif3THUTcJJyYyG3Vc47vwYOUBD4nfce540PDzkY3pxGvi4pQ3SV2uvEGPUyygip9D
+         5xTmjV+s8dx7zNZ7aMy8VmvL1WuY7+/bsFj7ZeH7lp1H1cfjZfZ2njkpHz750Jzs8zHc
+         5uVMeQg9Khmx6C4gEHDCF8PAVCU5TISoErOe+ZvTLg7DOShkKjdeZZ9TxgpcZB9KNcBq
+         8E78duyPdw5l6qyVqE6pPB+sxrd8RjAbQGHJbKPT5r+xmZBSMEmE38SgB11aQmwtyGbw
+         zayw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YLqQGd/T46D5zGOlykZcGAUvnOsHHqPoJRmoNN6xMvY=;
+        b=NMLQAYLgyxi+DueCJK6X+2AOg32b0PWnvwz1eqm9/k23jPTxPtx9pMK+wOtjJlwchH
+         wYXW/tzA15aFcj6lJf2IsHUNoN/ZXzUNy7G409RZ5bQtmx6Hkml26W4zcFyspPP+QtNM
+         e9ForR/k9wVyFsbc++ffDBYacsvDvvUyaGSJ1MBRw+HyWtF27jHNPQ8WY+MEtmI1sy8D
+         aWmESaFiDFZgiIMsk6ZrqonBxNvz7PdBUUJO3Snk6F4ilQmR7ZWfZBHVXg263/uhVZgV
+         iPSuxwbaqxWWvAj9zxtZyi6v4/nHKTBYsfMpDTKvfVJKzTQvyS6J6R0Cosdt/is+KOFc
+         0x7A==
+X-Gm-Message-State: AOAM531CoUetGKjV7ttIbo6Ow8HAZMuEmioy/etxGTnkcg0RpxfOoI3R
+        DLWLnxpIzInMvUsmWX/yfJo=
+X-Google-Smtp-Source: ABdhPJxKp6VmTi/7ptEmpnj7Xjt67ejAcc7ZV7+cZb7sszoycP5DJgP3JuQmCqDyMlCEK+CQ1sR0zg==
+X-Received: by 2002:a2e:9f08:: with SMTP id u8mr19268358ljk.50.1617698723125;
+        Tue, 06 Apr 2021 01:45:23 -0700 (PDT)
+Received: from zhans ([37.151.32.231])
+        by smtp.gmail.com with ESMTPSA id n7sm2077713lft.65.2021.04.06.01.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 01:45:22 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 14:45:21 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: [PATCH 0/4] staging: rtl8712: clean up coding style issues
+Message-ID: <cover.1617697237.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+To fix style issues, this patchset removes blank lines, adds and removes
+spaces, and matches paretheses alignment.
 
-Signal thread to terminate by closing write fd of msg pipe.
-Receive THREAD_MSG__READY message as the confirmation of the
-thread's termination. Stop threads created for parallel trace
-streaming prior their stats processing.
+Zhansaya Bagdauletkyzy (4):
+  staging: rtl8712: add spaces around operators
+  staging: rtl8712: match parentheses alignment
+  staging: rtl8712: remove extra blank lines
+  staging: rtl8712: remove spaces after a cast
 
-Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
----
- tools/perf/builtin-record.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c |  6 ++---
+ drivers/staging/rtl8712/rtl871x_recv.c        | 22 +++++++++----------
+ drivers/staging/rtl8712/rtl871x_security.c    | 10 ++++-----
+ drivers/staging/rtl8712/rtl871x_security.h    |  4 ++--
+ drivers/staging/rtl8712/rtl871x_xmit.h        | 12 +++++-----
+ drivers/staging/rtl8712/wifi.h                |  2 +-
+ drivers/staging/rtl8712/xmit_osdep.h          |  8 +++----
+ 7 files changed, 31 insertions(+), 33 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index ecb6bf33ed85..4612314853c1 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -110,6 +110,16 @@ struct thread_data {
- 
- static __thread struct thread_data *thread;
- 
-+enum thread_msg {
-+	THREAD_MSG__UNDEFINED = 0,
-+	THREAD_MSG__READY,
-+	THREAD_MSG__MAX,
-+};
-+
-+static const char *thread_msg_tags[THREAD_MSG__MAX] = {
-+	"UNDEFINED", "READY"
-+};
-+
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -1820,6 +1830,23 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
- 	}
- }
- 
-+static int record__terminate_thread(struct thread_data *thread_data)
-+{
-+	int res;
-+	enum thread_msg ack = THREAD_MSG__UNDEFINED;
-+	pid_t tid = thread_data->tid;
-+
-+	close(thread_data->pipes.msg[1]);
-+	res = read(thread_data->pipes.ack[0], &ack, sizeof(ack));
-+	if (res != -1)
-+		pr_debug2("threads[%d]: sent %s\n", tid, thread_msg_tags[ack]);
-+	else
-+		pr_err("threads[%d]: failed to recv msg=%s from tid=%d\n",
-+		       thread->tid, thread_msg_tags[ack], tid);
-+
-+	return 0;
-+}
-+
- static int record__start_threads(struct record *rec)
- {
- 	struct thread_data *thread_data = rec->thread_data;
-@@ -1836,6 +1863,9 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
- 	int t;
- 	struct thread_data *thread_data = rec->thread_data;
- 
-+	for (t = 1; t < rec->nr_threads; t++)
-+		record__terminate_thread(&thread_data[t]);
-+
- 	for (t = 0; t < rec->nr_threads; t++) {
- 		rec->samples += thread_data[t].samples;
- 		*waking += thread_data[t].waking;
 -- 
-2.19.0
-
+2.25.1
 
