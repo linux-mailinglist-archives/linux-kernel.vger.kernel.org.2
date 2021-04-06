@@ -2,130 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8A0354DA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BA8354D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244208AbhDFHQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhDFHQ6 (ORCPT
+        id S239843AbhDFHQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:16:39 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:48502 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232063AbhDFHQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:16:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5BFC06174A;
-        Tue,  6 Apr 2021 00:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aRGRQBCE7ZKsjbhrcqSn4Jo3nc9IkKbKN4abWLlyP80=; b=WvzcNuYnVyRbah4nxnWcWdoNU6
-        H5wHYaDBfCISTQvHzRpzGRn91lc03dCUXiBbEEUDCPEB4Yeq63GiV6lLq8i8AZn/tWpZxZYSuhctd
-        jzf6VVp1NOue0hMTMWxQ6mga6cVW6N5Z42Buoy8IX/h0NKUa+zFqx39wB3zP83mikjucbNP8MchX1
-        FwnadXNwysORLciBkvj7UA/dLnA6M1F8WphRWx/kc45XKGGoqNFHveQGY09rmNhpPwFkIBPB2rDgH
-        euma4zKdRl019WHxYogGJ9bTOK8qADgmVesbRspJNMCQ2pQLQNFFeKHZtm1/fK0PL76zCDW9f+atv
-        w96mJ69g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTfwF-00CQIw-Vj; Tue, 06 Apr 2021 07:16:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7762301324;
-        Tue,  6 Apr 2021 09:15:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 79FD12C1D199B; Tue,  6 Apr 2021 09:15:50 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 09:15:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org>
- <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+        Tue, 6 Apr 2021 03:16:38 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 1A3299800BD;
+        Tue,  6 Apr 2021 15:16:29 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] [v2] ubi: Remove unnecessary struct declaration
+Date:   Tue,  6 Apr 2021 15:16:18 +0800
+Message-Id: <20210406071619.644057-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGU8fQkkZHxgfS0hCVkpNSkxNQkhIQ0JIQ05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6K006GQw5Mj8PCi1WExUJN1E4
+        SzEwCU1VSlVKTUpMTUJISENCTU9MVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTE5KNwY+
+X-HM-Tid: 0a78a60a31fbd992kuws1a3299800bd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:22:35PM +0800, Guo Ren wrote:
-> On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
-> > > u32 a = 0x55aa66bb;
-> > > u16 *ptr = &a;
-> > >
-> > > CPU0                       CPU1
-> > > =========             =========
-> > > xchg16(ptr, new)     while(1)
-> > >                                     WRITE_ONCE(*(ptr + 1), x);
-> > >
-> > > When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
-> >
-> > Then I think your LL/SC is broken.
-> No, it's not broken LR.W/SC.W. Quote <8.3 Eventual Success of
-> Store-Conditional Instructions>:
-> 
-> "As a consequence of the eventuality guarantee, if some harts in an
-> execution environment are executing constrained LR/SC loops, and no
-> other harts or devices in the execution environment execute an
-> unconditional store or AMO to that reservation set, then at least one
-> hart will eventually exit its constrained LR/SC loop. By contrast, if
-> other harts or devices continue to write to that reservation set, it
-> is not guaranteed that any hart will exit its LR/SC loop."
+struct ubi_wl_entry is defined at 178th line.
+The declaration here is unnecessary. Remove it.
 
-(there, reflowed it for you)
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Add reviewer info and modify the subject line.
+---
+ drivers/mtd/ubi/ubi.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-That just means your arch spec is broken too :-)
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c2da77163f94..7c083ad58274 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -388,8 +388,6 @@ struct ubi_volume_desc {
+ 	int mode;
+ };
+ 
+-struct ubi_wl_entry;
+-
+ /**
+  * struct ubi_debug_info - debugging information for an UBI device.
+  *
+-- 
+2.25.1
 
-> So I think it's a feature of LR/SC. How does the above code (also use
-> ll.w/sc.w to implement xchg16) running on arm64?
-> 
-> 1: ldxr
->     eor
->     cbnz ... 2f
->     stxr
->     cbnz ... 1b   // I think it would deadlock for arm64.
-> 
-> "LL/SC fwd progress" which you have mentioned could guarantee stxr
-> success? How hardware could do that?
-
-I'm not a hardware person; I've never actually build anything larger
-than a 4 bit adder with nand gates (IIRC, 25+ years ago). And I'll let
-Will answer the ARM64 part.
-
-That said, I think the idea is that if you lock the line (load-locked is
-a clue ofcourse) to the core until either: an exception (or anything
-else that is guaranteed to fail LL/SC), SC or N instructions, then a
-competing LL/SC will stall in the LL while the first core makes
-progress.
-
-This same principle is key to hardware progress for cmpxchg/cas loops,
-don't instantly yield the exclusive hold on the cacheline, keep it
-around for a while.
-
-Out-of-order CPUs can do even better I think, by virtue of them being
-able to see tight loops.
-
-
-Anyway, given you have such a crap architecture (and here I thought
-RISC-V was supposed to be a modern design *sigh*), you had better go
-look at the sparc64 atomic implementation which has a software backoff
-for failed CAS in order to make fwd progress.
