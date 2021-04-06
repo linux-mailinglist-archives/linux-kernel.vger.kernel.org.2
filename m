@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC953552DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2853552E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343577AbhDFLys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239224AbhDFLyr (ORCPT
+        id S1343590AbhDFLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:55:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28201 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343579AbhDFLzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:54:47 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427EDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:54:38 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id k8so8780778edn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=P/I/9NNIAgEX5lkRCmtPUDKKe3W6gL5/TflW7Rsi0Nw=;
-        b=Pb4E2oWtOFWejlo0GZjBrnYjxLR2/OkVilXUolxI3XdsBuW3hBtm8+ZF2y97zX2Nv5
-         NNlfk4teO2hMuu4Lkt02A6/RuG/gNMS2BCQ1jUPLR4Di65oAZfMd6tCVHGRhtHRXUdwi
-         kSKxB7V/c1LU8YQEsb6oYs6ZCVj+k/HMKKdBEjy+wcIu1+fn17NHQ3PdaTQRteSSQ7UF
-         96JZ84bkW3JurcLzuhNHKtdHh03Oz6x81uuxzjV2xXt5T1bt0mp3zJRZ7uaj+FqkJOqC
-         Cf42qefg+VSQGMd74l3wEHwDQ0KF6viRK/EWPpFba2Cp78CCdJ1UfYWSf+5xU0LZ1dYA
-         42Sw==
+        Tue, 6 Apr 2021 07:55:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617710112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zk7owICe1peTttMqo4Erpsflm67yyAvd+UqYuEsUbmk=;
+        b=cLBqsD6jCcX7knfHDDMhm1h6AJC3Ir6urEURlAMhDjYfso8j9o1qKyG/QuWhd4lGDUW/jO
+        2q1Z0AW2a9uTJ9paR6cD46NQCE+KK3JYKBqikNtN8B3nv+X7Mo6XTGQPG4Lwil1gGuOg6B
+        JJpd9Hkz6J5FB+2EI4lyKdU1DEM7/GI=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-KwBAICdzNj2LQefWJILyLw-1; Tue, 06 Apr 2021 07:55:09 -0400
+X-MC-Unique: KwBAICdzNj2LQefWJILyLw-1
+Received: by mail-ej1-f71.google.com with SMTP id d6so5334860ejd.15
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:55:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=P/I/9NNIAgEX5lkRCmtPUDKKe3W6gL5/TflW7Rsi0Nw=;
-        b=R+Dt8h1h/cGW2BwxhylvypCmyJqjPimLaj/hkK320/nmVegcIjpavxcyZkv39//AFA
-         wLUmIto3rr1r0zeosyQqgY5Eyvcan5gHtRjbcC7UKBuVXWw6QimCpNHthnjDj+SODFOX
-         pGsoWkmdP2p3wfpwYdH8+Y6tX5axfXqs5qIUOHcBXcLFwkES5G2+akgbpeXQge8QeX6Z
-         a8iaIgJuLkB2niBUsMsNVqR+1LL5FheJIhAJDfjylUWWFoFPiP8U7p/eCle4GX/Db0/J
-         VPqxp7m208oZun/ENCLo5SNzDoaq4cs2rbqbDUI1MHJ6mG4XHfazLvksiOhC/LYIkXI8
-         m4Jw==
-X-Gm-Message-State: AOAM533fKr5VI5V2MCVoAOjG7EIOt8iJphFUZk05KiIFdVoVdG9mobc7
-        yXvskPMvsqSlyGVI/yANt44AqA==
-X-Google-Smtp-Source: ABdhPJwlz0v/o0dBfE+fx5/my+wmBnuj8s9AG2PFWxzJ7csKDnO6LPJGHCtvbTQ0rqW0OkRgQ/VHvA==
-X-Received: by 2002:a05:6402:3125:: with SMTP id dd5mr8486514edb.9.1617710077020;
-        Tue, 06 Apr 2021 04:54:37 -0700 (PDT)
-Received: from dell ([91.110.221.193])
-        by smtp.gmail.com with ESMTPSA id h17sm13432298eds.26.2021.04.06.04.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 04:54:36 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 12:54:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Bob Peterson <rpeterso@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH 00/18] Rid W=1 warnings from GFS2
-Message-ID: <20210406115434.GU2916463@dell>
-References: <20210326091151.311647-1-lee.jones@linaro.org>
- <20210406091126.GT2916463@dell>
- <468723920.4255981.1617709446972.JavaMail.zimbra@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zk7owICe1peTttMqo4Erpsflm67yyAvd+UqYuEsUbmk=;
+        b=P6ZAEooTUWveM7IuHM2KI4p34Uv1aZVcwgEgVJsRBpNN539yLoz0Ypcpd2nd8U4Gdi
+         B6zxobGqBMUTTwJjCJemuupqtYYmuL8ci/RuAC0pcOveq1rW/fOKUspiVojaHb4WeXW5
+         tzT+KdvELsmPzmnby8wyu6o27IOnmBCj47klhcsBc22L3gCusCjwcWjGB3fmcaclI7Jm
+         rrnXABr6NPrYzDAWsoFrUo9Vu+WCfCzSOha+NXJIqAEl4BDdtor1DcWM2WKQ3EPj0K9W
+         jhv7Wr2Fl1grSpBLbPVRjhdkTMV+WT1guXUhx2H4IXxqtIWLmzTrrJvGzbX2d2th3dtq
+         JLjQ==
+X-Gm-Message-State: AOAM532ed9qFHxsod7BrIY38S9Og0xEvHALQD8Hvs9hFx6ouRl41pFl7
+        oHZ/jJZWUyScVxQ7Mb6zcdAzwCIn74tSuHNNbwG4dv9pZ8aHrn087ZlXLd1m7Dc3FRxWnJEsser
+        12lH5nRey1oIvEynGVo9iS8BE
+X-Received: by 2002:a05:6402:1051:: with SMTP id e17mr37550605edu.42.1617710108543;
+        Tue, 06 Apr 2021 04:55:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzt7vEfqu3E+EtKca7ic/h5hAW9ZOPJVZtu/P5HkIDCwYCqlti8U5tedxVhNiXf8T7tpyjU7A==
+X-Received: by 2002:a05:6402:1051:: with SMTP id e17mr37550593edu.42.1617710108364;
+        Tue, 06 Apr 2021 04:55:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w25sm8547061edq.66.2021.04.06.04.55.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 04:55:07 -0700 (PDT)
+Subject: Re: [PATCH 2/4] KVM: MIPS: rework flush_shadow_* callbacks into one
+ that prepares the flush
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        seanjc@google.com, "open list:MIPS" <linux-mips@vger.kernel.org>
+References: <20210402155807.49976-1-pbonzini@redhat.com>
+ <20210402155807.49976-3-pbonzini@redhat.com>
+ <CAAhV-H4wskLvGD1hhuS2ZDOBNenCcTd_K8GkYn1GOzwnEvTDXQ@mail.gmail.com>
+ <aab8a915-6e73-3cba-5392-8f940479a011@redhat.com>
+ <CAAhV-H72z9DbbV=_fEhCeeOaP8fQ_qtr4rQMD=f5n08ekG=Ygw@mail.gmail.com>
+ <510e59e7-91b0-6754-8fb5-6a936ef47b3c@redhat.com>
+ <20210406113957.GB8277@alpha.franken.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c0b70a90-3388-858d-2da7-4d7b62fda6db@redhat.com>
+Date:   Tue, 6 Apr 2021 13:55:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <468723920.4255981.1617709446972.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20210406113957.GB8277@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Apr 2021, Bob Peterson wrote:
-
-> ----- Original Message -----
-> > On Fri, 26 Mar 2021, Lee Jones wrote:
-> > 
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > > 
-> > > Lee Jones (18):
-> > >   fs: gfs2: dir: Finish off mostly complete headers demote others
-> > >   fs: gfs2: xattr: Help out some kernel-doc header demote non-conformant
-> > >     ones
-> > >   fs: gfs2: bmap: Demote half-complete kernel-doc headers fix others
-> > >   fs: gfs2: glops: Fix a couple of kernel-doc misdemeanours demote
-> > >     others
-> > >   fs: gfs2: log: Fix a couple of param descriptions and demote
-> > >     non-conformant headers
-> > >   fs: gfs2: lops: Help out worthy kernel-doc headers and demote others
-> > >   fs: gfs2: glock: Fix some deficient kernel-doc headers and demote
-> > >     non-conformant ones
-> > >   fs: gfs2: aops: Fix a little potential doc-rot
-> > >   fs: gfs2: meta_io: Add missing description for 'rahead' param
-> > >   fs: gfs2: inode: Fix worthy function headers demote others
-> > >   fs: gfs2: file: Strip out superflouous param description and demote
-> > >     kernel-doc abuse
-> > >   fs: gfs2: ops_fstype: Fix a little doc-rot
-> > >   fs: gfs2: quota: Fix incorrect param name in 'gfs2_quotad'
-> > >   fs: gfs2: rgrp: Fix a few kernel-doc misdemeanours
-> > >   fs: gfs2: recovery: Provide missing param descriptions and remove one
-> > >     other
-> > >   fs: gfs2: super: Fix kernel-doc issues where feasible demote one other
-> > >   fs: gfs2: util: Fix one conformant kernel-doc header and demote a
-> > >     bunch of abuses
-> > >   fs: gfs2: lock_dlm: Demote incomplete kernel-doc header
-> > 
-> > These have been on the list for a couple of weeks now.
-> >   
-> > Is there anything I can do to help expedite their merge?
-> >   
-> > I'm concerned since -rc6 has just been released.
+On 06/04/21 13:39, Thomas Bogendoerfer wrote:
+> On Tue, Apr 06, 2021 at 08:05:40AM +0200, Paolo Bonzini wrote:
+>> On 06/04/21 03:36, Huacai Chen wrote:
+>>>> I tried the merge and it will be enough for Linus to remove
+>>>> arch/mips/kvm/trap_emul.c.  So I will leave it as is, but next time I'd
+>>>> prefer KVM MIPS changes to go through either my tree or a common topic
+>>>> branch.
+>>> Emmm, the TE removal series is done by Thomas, not me.:)
+>>
+>> Sure, sorry if the sentence sounded like it was directed to you.  No matter
+>> who wrote the code, synchronization between trees is only the maintainers'
+>> task. :)
 > 
-> Hi Lee,
-> 
-> Thanks for your patches. Andreas and I have a slight disagreement about them.
-> I wanted to merge them, but Andreas is concerned that there may be some
-> cases in which we should get rid of parameter descriptions altogether.
-> So I've been waiting for Andreas to review them all before we push them.
-> Also, the dir.c patch might be out of date because of a patch I recently did that
-> was recently added to for-next. I'll work with Andreas to expedite them so
-> they can go into the next merge window.
+> Sorry about the mess. I'll leave arch/mips/kvm to go via your tree then.
 
-Thanks for the update Bob.
+No problem.  In this specific case, at some point I'll pull from 
+mips-next, prior to sending the pull request to Linus.  It will look 
+just like other KVM submaintainer pulls.
 
-My initial response to that would be; this patch-set ensures all of
-the warnings are taken care of.  Removal of superfluous documentation
-could be easily undertaken as part of a subsequent effort.
+Paolo
 
-It would be good to have these warnings quashed for v5.13.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
