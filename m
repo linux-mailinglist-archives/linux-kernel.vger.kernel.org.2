@@ -2,197 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D3A354C6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CA9354C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243894AbhDFGBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:01:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56523 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhDFGA7 (ORCPT
+        id S243905AbhDFGCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:02:10 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:60186 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhDFGCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:00:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617688852; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zVvDrghM7JFU1bfKo/fdPpx8ufnljDWLYH8Sfh6TgSw=;
- b=D5xIflM8+jqB5+K1ImzXL5AefVZjTjygqAvaSaKEEl8Yi/uW6yPKB30fB5v9Fa4XuVsU9Tk8
- tV5AJnjlSG6p2E2tnpCitD2zFhmnxHT35VdRQ15WfL5VDgwOHGASgAMqinCOThGLm2egEXVl
- a4KE02eb5c0rXnxAecf6f/9maq4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 606bf90dc06dd10a2dc7bafe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 06:00:45
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36A79C433CA; Tue,  6 Apr 2021 06:00:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 06F89C433C6;
-        Tue,  6 Apr 2021 06:00:42 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 06 Apr 2021 14:00:42 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v7 06/11] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <DM6PR04MB6575719C78D67B7FA1557C21FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210331073952.102162-1-avri.altman@wdc.com>
- <20210331073952.102162-7-avri.altman@wdc.com>
- <e29e33769f23036f936a6b60c7430387@codeaurora.org>
- <DM6PR04MB6575719C78D67B7FA1557C21FC769@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <6bb2fd28feb0cd6372a32673d6cfa164@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Tue, 6 Apr 2021 02:02:08 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 05 Apr 2021 23:02:01 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Apr 2021 23:01:59 -0700
+X-QCInternal: smtphost
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 06 Apr 2021 11:31:39 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id 0459B21B31; Tue,  6 Apr 2021 11:31:37 +0530 (IST)
+From:   Krishna Manikandan <mkrishn@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        kalyan_t@codeaurora.org, dianders@chromium.org
+Subject: [PATCH v1 0/3] Add irq support to accommodate SC7280 target 
+Date:   Tue,  6 Apr 2021 11:31:32 +0530
+Message-Id: <1617688895-26275-1-git-send-email-mkrishn@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-06 13:20, Avri Altman wrote:
->> > -static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
->> > -                               struct ufshpb_region *rgn)
->> > +static int __ufshpb_evict_region(struct ufshpb_lu *hpb,
->> > +                              struct ufshpb_region *rgn)
->> >  {
->> >       struct victim_select_info *lru_info;
->> >       struct ufshpb_subregion *srgn;
->> >       int srgn_idx;
->> >
->> > +     lockdep_assert_held(&hpb->rgn_state_lock);
->> > +
->> > +     if (hpb->is_hcm) {
->> > +             unsigned long flags;
->> > +             int ret;
->> > +
->> > +             spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> 
->> Never seen a usage like this... Here flags is used without being
->> intialized.
->> The flag is needed when spin_unlock_irqrestore ->
->> local_irq_restore(flags) to
->> restore the DAIF register (in terms of ARM).
-> OK.
+The changes in this series adds all the irq related changes which are needed to
+support EDP interface coming on sc7280 target.
 
-Hi Avri,
+Changes in this series:
+        - Currently each interrupt register has a range of 32 indexes only.
+          But with the introduction of VSYNC and UNDERRUN irq for INTF_5,
+          the number of irqs under INTR_STATUS will exceed this value.
+          Increase the range of each interrupt register to 64 indexes
+          to handle this.
 
-Checked on my setup, this lead to compilation error. Will you fix it in 
-next version?
+        - Changes are added to enable the vsync and underrun irqs for INTF_5 which
+          is required for edp panel.
 
-warning: variable 'flags' is uninitialized when used here 
-[-Wuninitialized]
+        - Some irqs which are applicable for sdm845 target are obsolete for sc7180
+          and sc7280 targets. Support is added to skip all the obsolete irqs based on
+          the target.
 
-Thanks,
-Can Guo.
+Krishna Manikandan (3):
+  drm/msm/disp/dpu1: increase the range of interrupts in dpu_irq_map
+  drm/msm/disp/dpu1: add vsync and underrun irqs for INTF_5
+  drm/msm/disp/dpu1: add flags to indicate obsolete irqs
 
-> 
-> Thanks,
-> Avri
-> 
->> 
->> Thanks,
->> 
->> Can Guo.
->> 
->> > +             ret = ufshpb_issue_umap_single_req(hpb, rgn);
->> > +             spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->> > +             if (ret)
->> > +                     return ret;
->> > +     }
->> > +
->> >       lru_info = &hpb->lru_info;
->> >
->> >       dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->> > rgn->rgn_idx);
->> > @@ -1130,6 +1150,8 @@ static void __ufshpb_evict_region(struct
->> > ufshpb_lu *hpb,
->> >
->> >       for_each_sub_region(rgn, srgn_idx, srgn)
->> >               ufshpb_purge_active_subregion(hpb, srgn);
->> > +
->> > +     return 0;
->> >  }
->> >
->> >  static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct
->> > ufshpb_region *rgn)
->> > @@ -1151,7 +1173,7 @@ static int ufshpb_evict_region(struct ufshpb_lu
->> > *hpb, struct ufshpb_region *rgn)
->> >                       goto out;
->> >               }
->> >
->> > -             __ufshpb_evict_region(hpb, rgn);
->> > +             ret = __ufshpb_evict_region(hpb, rgn);
->> >       }
->> >  out:
->> >       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> > @@ -1285,7 +1307,9 @@ static int ufshpb_add_region(struct ufshpb_lu
->> > *hpb, struct ufshpb_region *rgn)
->> >                               "LRU full (%d), choose victim %d\n",
->> >                               atomic_read(&lru_info->active_cnt),
->> >                               victim_rgn->rgn_idx);
->> > -                     __ufshpb_evict_region(hpb, victim_rgn);
->> > +                     ret = __ufshpb_evict_region(hpb, victim_rgn);
->> > +                     if (ret)
->> > +                             goto out;
->> >               }
->> >
->> >               /*
->> > @@ -1856,6 +1880,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->> >  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->> >  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->> >  ufshpb_sysfs_attr_show_func(map_req_cnt);
->> > +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->> >
->> >  static struct attribute *hpb_dev_stat_attrs[] = {
->> >       &dev_attr_hit_cnt.attr,
->> > @@ -1864,6 +1889,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
->> >       &dev_attr_rb_active_cnt.attr,
->> >       &dev_attr_rb_inactive_cnt.attr,
->> >       &dev_attr_map_req_cnt.attr,
->> > +     &dev_attr_umap_req_cnt.attr,
->> >       NULL,
->> >  };
->> >
->> > @@ -1988,6 +2014,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->> > *hpb)
->> >       hpb->stats.rb_active_cnt = 0;
->> >       hpb->stats.rb_inactive_cnt = 0;
->> >       hpb->stats.map_req_cnt = 0;
->> > +     hpb->stats.umap_req_cnt = 0;
->> >  }
->> >
->> >  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> > index 87495e59fcf1..1ea58c17a4de 100644
->> > --- a/drivers/scsi/ufs/ufshpb.h
->> > +++ b/drivers/scsi/ufs/ufshpb.h
->> > @@ -191,6 +191,7 @@ struct ufshpb_stats {
->> >       u64 rb_inactive_cnt;
->> >       u64 map_req_cnt;
->> >       u64 pre_req_cnt;
->> > +     u64 umap_req_cnt;
->> >  };
->> >
->> >  struct ufshpb_lu {
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c      |   4 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |   9 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 773 +++++++++++++++++++---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h |   5 +-
+ 5 files changed, 692 insertions(+), 101 deletions(-)
+
+-- 
+2.7.4
+
