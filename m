@@ -2,127 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB5D354FEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7DC354FF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhDFJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
+        id S237190AbhDFJcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhDFJca (ORCPT
+        with ESMTP id S231701AbhDFJcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:32:30 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839F0C061756;
-        Tue,  6 Apr 2021 02:32:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FF2Nz0jk5z9sVt;
-        Tue,  6 Apr 2021 19:32:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617701540;
-        bh=S08Vx8wx+Wq6UMrUKYOOcBq87ywRJlNCrnJwVQnkSjo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GsGNbCmN9mLN0VJ7YFGsdxP+okOwrsLcd3mjt8KCjQGrtknciO/M5i0r+AC9Qh8B1
-         eL+/FoE6co/GpxA/PDNEbXh1E51/FLLLm4gt41/oDNEFdsb/do5J29rWEvuSEyyCJJ
-         dypWSu3p+YoctY7xqSOwUSPsQBOxknX77hMGxGReHu/xCz/DLuJIHB0UEfU3JXN9QU
-         2EY+ZTdS0ET7Z6PaE4s6EQDchJYGB+0wwMmduao+1Xwf73hnikMX8m4IWhvRAu+8jI
-         tyfd4l1E8OXzq5qws+yvvvrXcC/3Y7gF2sneMMxRGYYECNtOHvWogq8m6MRRS9JMW4
-         crZWfTZq5J9ig==
-Date:   Tue, 6 Apr 2021 19:32:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Can Guo <cang@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the scsi-mkp tree with the scsi-fixes,
- scsi trees
-Message-ID: <20210406193218.2f9aa7a4@canb.auug.org.au>
+        Tue, 6 Apr 2021 05:32:41 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93135C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 02:32:33 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:99b7:c6e7:5cb7:6273])
+        by laurent.telenet-ops.be with bizsmtp
+        id pMYU2400B2foaxb01MYUCL; Tue, 06 Apr 2021 11:32:30 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lTi4R-00DU5H-Rn; Tue, 06 Apr 2021 11:32:27 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lTi4R-00ENAh-55; Tue, 06 Apr 2021 11:32:27 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not default to m
+Date:   Tue,  6 Apr 2021 11:32:26 +0200
+Message-Id: <129d6bab29b47c265cf0e2a70545e7c0422ce7ba.1617701454.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TF4_dJWPOj8A1DFOxnvdyeZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TF4_dJWPOj8A1DFOxnvdyeZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
+Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
+ARCH_MXC, to prevent asking the user about this driver when configuring
+a kernel without i.MX8 support.
 
-Hi all,
+Drop the "default m" (which means "default y" if CONFIG_MODULES is not
+enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
+additional code.
 
-Today's linux-next merge of the scsi-mkp tree got a conflict in:
+Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Really drop the "default m".
+---
+ drivers/media/platform/imx-jpeg/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  drivers/scsi/ufs/ufshcd.c
+diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
+index d875f7c88cdad125..2fdd648cda80af8e 100644
+--- a/drivers/media/platform/imx-jpeg/Kconfig
++++ b/drivers/media/platform/imx-jpeg/Kconfig
+@@ -1,11 +1,11 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config VIDEO_IMX8_JPEG
+ 	tristate "IMX8 JPEG Encoder/Decoder"
++	depends on ARCH_MXC || COMPILE_TEST
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
+ 	select V4L2_JPEG_HELPER
+-	default m
+ 	help
+ 	  This is a video4linux2 driver for the i.MX8 QXP/QM integrated
+ 	  JPEG encoder/decoder.
+-- 
+2.25.1
 
-between commit:
-
-  4b42d557a8ad ("scsi: ufs: core: Fix wrong Task Tag used in task managemen=
-t request UPIUs")
-
-from the scsi-fixes, scsi trees and commit:
-
-  1352eec8c0da ("scsi: ufs: core: Fix out-of-bounds warnings in ufshcd_exec=
-_raw_upiu_cmd()")
-
-from the scsi-mkp tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/scsi/ufs/ufshcd.c
-index a5f3ae3b6170,58d7f264c664..000000000000
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@@ -6392,16 -6398,17 +6396,16 @@@ static int __ufshcd_issue_tm_cmd(struc
-  	ufshcd_hold(hba, false);
- =20
-  	spin_lock_irqsave(host->host_lock, flags);
- -	task_tag =3D hba->nutrs + free_slot;
- +	blk_mq_start_request(req);
- =20
- +	task_tag =3D req->tag;
-- 	treq->req_header.dword_0 |=3D cpu_to_be32(task_tag);
-+ 	treq->upiu_req.req_header.dword_0 |=3D cpu_to_be32(task_tag);
- =20
- -	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
- -	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
- +	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
- +	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
- =20
-  	/* send command to the controller */
- -	__set_bit(free_slot, &hba->outstanding_tasks);
- +	__set_bit(task_tag, &hba->outstanding_tasks);
- =20
-  	/* Make sure descriptors are ready before ringing the task doorbell */
-  	wmb();
-
---Sig_/TF4_dJWPOj8A1DFOxnvdyeZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBsKqIACgkQAVBC80lX
-0GxV1Qf8CXu26sJoTCo7JarrTAtEtRh+YaHw/5OaS8CgN9UhvuQs39hnk57XM66z
-lkSg8XfwDuPgrWkyR2uC+oZCxFEZbv/3zdhHhDiAFdv5fV3ZeqdNiyqY5QTQ9sC/
-EHY892M/WoQllpyF7aDvwYXM+xwc5PO30i2xQqljvcisLcdBfF4RAKEUY32DbzUq
-oARqlKQq0mOfjedN4JfTwSyLjMOzeinWX9tQ3pH8m2QJy75Nb/bwMkEfvU9JD98B
-HwiSS9f+rkB5NQ35LzDMWTIeeaNy2NN6hcd8NLRa9p1fL/oGebhg+f7Sx31f+ple
-Y/J3VRO59bjOhbFM6h7EpGNyODpBHw==
-=XaKr
------END PGP SIGNATURE-----
-
---Sig_/TF4_dJWPOj8A1DFOxnvdyeZ--
