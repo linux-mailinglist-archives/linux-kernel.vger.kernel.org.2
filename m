@@ -2,205 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECF4355AB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D840355AC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244395AbhDFRsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbhDFRsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:48:39 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E69C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:48:31 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b14so24065274lfv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yOoUOFLQlh9034N4v2oxQm9jcLLVDu90iggICUK0ZwU=;
-        b=Xj4N0+f8XD0nqzF0OAFU2U4HQQ/DjDUY32w6YY++lalFjLWRxLVEabRedpQUGzrwVz
-         qr6s8T6wNbCAnllM9mSMDgF/j5vJ/z3Mt+U7cumXlq5uFuOTmSNVrJayVfpSunM0MdsM
-         MMkQ4zfe7ZXBIyCKak30FfQSnxcti49a0sjbK0fRozzTFgQ/wWA3t/FXfxGMu1HiPuv9
-         GrCO/COPrBeNLy67WEFaYAT3S/J6xW4BxND74LUJ1s0tqgPHWzDGW+Bgb/utlu2iGsiE
-         wCiIprAwpb05wtwxed/3JLdUNbkLHR/66fUc8+kqC5JRyteVZ+TMO7bKCnn1Y+4xkc92
-         z1aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yOoUOFLQlh9034N4v2oxQm9jcLLVDu90iggICUK0ZwU=;
-        b=KaviNt7SE0zFFLQG6ajWrh7xFIGjSNWbzqkggSrMPsqVcNZL5MSg5sa/Cysgeetlxy
-         WNysH55s4ZvHG8DFtz9STz8RJy6kRLYG4lMOyYK//DXAiTi8MCV5NUjez9pwzM1uSHg+
-         GeGDoZsqfm9SPWOW+shROdwZruxxUcjyJoP7jx0xa+RVtLt+DwHdCwX3oSCE6eGpXLzD
-         IgyXUA+e2osxE6K+l+AmprI8enDPUw5MB/82hb/R1BbseoOoFD0+ToucqT4jRix13QcR
-         dHvLwQqDJfpWU0DwGU08mz9BehAaFYa47DOzD4zw2RuvDZ/ZKXkEj/NdJlYiPBq+ldC9
-         Ur6g==
-X-Gm-Message-State: AOAM531lbPrbPT5LonyeatRb7Uq3pu05rt4JvdGSM8O9qt/2VAshr7Vm
-        jhIKCk8R75MvYWzXMCW61Pj7wXoO9HtEzY46CCaM9Q==
-X-Google-Smtp-Source: ABdhPJxDqtgpQyqgh72HvpE69l5zhTy4yTOsu9t6se5EOU92Iep9NLmH2O3TqOSCrYWSwyyZdbgKQKDddR6CrshbfB8=
-X-Received: by 2002:a05:6512:11c2:: with SMTP id h2mr21959123lfr.94.1617731309356;
- Tue, 06 Apr 2021 10:48:29 -0700 (PDT)
+        id S244541AbhDFRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:52:26 -0400
+Received: from mail-bn8nam11on2085.outbound.protection.outlook.com ([40.107.236.85]:13473
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233394AbhDFRwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:52:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gu5MazYBeBDMY1Gg6g3UGkXZJ+v9cbLaNosennKNcNZhQN8ceuPSg76BDX4AvX2CByHGDuMinQeUlpFey0sUGBFy/cQfYKTe5QTWxoZVQmClxxKuN3dP2BfKjRbRJAQqlvSdsDZO9wdScNWgdukqoPyfy1yuGU9hSFYbOe4pdPnlEoksk8VVgjZedQ4gmpkMenmrLwkIrA/yejSJIPLNeGo0VbVO9B7uCU5diXH0CFYoHXQxnJDTBExyThu24JdKKzidGND5cDULURw3Ag9YJKOleRSnech4yVQXwFpG6xXdWPCPTAPaTkGPQGIb+D7rrnHWxqZPq/erP0/aZyFxHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J07O/g1WXwuutY5olApjQnSH9Kp/3+z3epHSYkz2tI8=;
+ b=JxYnlzJ2fo22UFzgKt1k5ownEPnHMAsN8MD32ZjOS0ncPlYuIq6sOax2Qf4qN3u0u3gkAoPGlqgg0ev416KQAOY/YEcI6wrt87bE4pbYTYrcAjz0zs6Pj+rTuXHpekuulGWdfAnpbM2Sxp2BZono/IY7YRgVbMcqF+tv2jra0QIURd0chi9nWxHT5Oyn8QjU0Hq9QhouWhfeIlIKB0I9uvlj7/DumjbUdboa2GBTCdUtapxlrIg5CF6gcFtv9VzDdtcM0SAi7ES+h4Wc1lnRnM+WxvdDwYryKTag1kSvUjKgXhq6FpC9UWUTl+DB4csPAvyJ+hi9b5OipIwLHsJQ8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J07O/g1WXwuutY5olApjQnSH9Kp/3+z3epHSYkz2tI8=;
+ b=ZcApLYsURpIWJ7JIRHGn4E5J1gdTuROfjOtDxIWaSjNsuz4yOKz2hQgaRsuBNpL5hjgd+ljkNgvbyJUnRoW32Eyi7RJIiLEjutuZcDXqi/tdVDFIGDwvGzGPcxGnsCE0rfJTpH9YdC8WHSdMq8NaTM11SQ2+BaP9T7YHrJrrPB0=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3577.namprd12.prod.outlook.com (2603:10b6:5:3a::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3999.27; Tue, 6 Apr 2021 17:52:13 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::c9b6:a9ce:b253:db70]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::c9b6:a9ce:b253:db70%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 17:52:13 +0000
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+To:     Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
+ <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <d69b4eae-870c-efcc-4d76-a625018b9c9b@amd.com>
+Date:   Tue, 6 Apr 2021 12:52:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN4PR0701CA0018.namprd07.prod.outlook.com
+ (2603:10b6:803:28::28) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-References: <20210322215823.962758-1-cfijalkovich@google.com>
- <CAL+PeoEpuOMOOL7=TTu7dKhHxO3Yb5CoTiMFeYGskx23bXkXhg@mail.gmail.com> <7CC369CF-66F6-4362-BCA8-0C1CAE350CDF@oracle.com>
-In-Reply-To: <7CC369CF-66F6-4362-BCA8-0C1CAE350CDF@oracle.com>
-From:   Collin Fijalkovich <cfijalkovich@google.com>
-Date:   Tue, 6 Apr 2021 10:48:18 -0700
-Message-ID: <CAL+PeoHrnVT5rFWxhShLPxQU_dgOqK24FCdcJ2s18596sS8jqw@mail.gmail.com>
-Subject: Re: [PATCH] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
-To:     William Kucharski <william.kucharski@oracle.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN4PR0701CA0018.namprd07.prod.outlook.com (2603:10b6:803:28::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Tue, 6 Apr 2021 17:52:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 371bc81f-10c8-4d13-548e-08d8f924b5ba
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3577:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB35775EABE365CAD9C3843DAFEC769@DM6PR12MB3577.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rZMO933UiSk9Q4YGE9a2xcTnulEoyf6QaqYWdYyLX444iUBOwEHl/GG0InmfSyFW7TdFCaNb1h66Ur/YthxieXSSnrJbOsUvOugn38zKaHJBLw9Jwi8e9Q/QSfwazmPKEpQMZp9wMgKEJ3Be11mzC2gxKvTUmb2ABXt8Q/mje2nifPEYhtzPWWqhQdnKjy2Y0ozh1tipas2LaFG4tTIhUIIPcFVxqJJksKjfkKKvfbXSNjzaGysaQbYnWMbbSrOVP4z25j16acmYeKh0veVO31gNKAJAvLOLFVRdvFlKeYZPtN7GQ8sy1YZt9RLZbpEkjjv0+waFhbV2GpHfZ3ewSfciGuJ2uZ7cr68TV9Jpo+mM64IGvJtiyeEVJ73pqXuu7pIp8pdAyVjjT5R7zhtXUz0HqSxUc3WU5ITFgL4EHPmhfgBAHvXrEWysYP5MUEIftejBTDatMW8aP9VjA6sdGDwO8E4EirWBi/yH0vhBpHIseJGEjOjl5UR3eeICWa9m7qkCFrA3y9ePIgGwQOtefl1xtfb6MK3NA/g9Sdvf1iEcw8r95uCyuu7zK1fdURj0jwyxdL7BtPXZ4dpBVD90nv0+RdFO8tkXkuZu+fM6/MiJIcF3d+SmYubOOQFnKJVlADxrq6F6dWu/TY5Y98KzTMOgjHKSq9ua1N3kCPK81ZkCcrTVfDIBmSPw97HexOccri/IsDTI+NFLoPohsxULTeAqNlJWa/R4FYVMq1/g2qk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(39860400002)(376002)(396003)(478600001)(36756003)(16526019)(86362001)(31686004)(2616005)(66556008)(8676002)(83380400001)(6486002)(110136005)(31696002)(6512007)(26005)(186003)(53546011)(316002)(54906003)(956004)(38100700001)(7416002)(5660300002)(66946007)(6506007)(2906002)(4326008)(8936002)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q1pyZGRjYWt5OHFqQ3FyUVZkd2RXSWN5Zml0bVVnekxPa1lNUDJHM1JGTUZ1?=
+ =?utf-8?B?NUdYc0Y2cnNGeFp1L3NnOU0vaGNKMnBPRy9aUWtTWDJMOGpWais2dVZJV1RI?=
+ =?utf-8?B?WFd1bTVEKysxSGFzV2hMcCsyNlVFdWlzRzFIcThyWW80RllpRzVyS0NySjNx?=
+ =?utf-8?B?bEJBdzVyYnN2VFhVL3J2WFFrOXFzMnZuWHRzWDNwWDR4NFBycjM1OFh5Y1JP?=
+ =?utf-8?B?TmhYQ09obzV0ekZBZHpYWEFGTGdDMW5NODdiU2NWZXd3c3JuRWJMSmlKeTRX?=
+ =?utf-8?B?M21GYU1aMldPaENMZHhMYW1salFRR25Ka3FsVmwreEhpaC91MnpNMEJ3VDlZ?=
+ =?utf-8?B?RTR0bXRSMEorOUZJNm44WmxKTkxzais4Zi84Y2lZdCtUeG1uOFUwaFlNaXNI?=
+ =?utf-8?B?bThlTGE4UW11T1ZRcGE0N01FTldJVXFoRWdwTmEwSFBJazFHWklDSjNGenlS?=
+ =?utf-8?B?S09sS1pFWm5IaEpKWFU2T1ZXTGVoT1FQMHp5N0ZSNkllWk4yUTgrNXJ0VFNr?=
+ =?utf-8?B?NzBZeWQwMG9wY20zc3VGUkdvYmM3aFgrM1l1MjB3L3ArbDI5VGR2V0tzS0RD?=
+ =?utf-8?B?N3hZTjJZTWlkb25jTDh0OTFOK2RLNEpaV0ZiWHdjVVhtaEUvQ1RiSU1hYXhB?=
+ =?utf-8?B?ODFrNktIcllSQ21MMnRzZTdDaWlMM3VhZFpvaG96Yk5tOWMrQzdrbW1wQkh3?=
+ =?utf-8?B?VGI3OHBMYVppNmVsaHN2MGEycTZ2QzVVVmo4c1VJQzRSa1B6RHBRZTVKTGZw?=
+ =?utf-8?B?V0tvRzZvYktlNWlqaEM5ZERrM3piQ29IZENjK2s5VUVXL096RG5jRHN1YVk2?=
+ =?utf-8?B?b01jb3ErUGpiYXIrUzJRWmFHejh4L3Y0LzEwcXAzZmVQd0YrVUZtZ0tXZ1JS?=
+ =?utf-8?B?OUpNM2VjRndsRGx6Zkg3LzQ0VjE0ZXVhMkF6SWorcmprUXpCdWgrQnlnREZm?=
+ =?utf-8?B?clc2WXlUK2tMRjBYcFNjKzQwRko5NnFlalNNQ1dIcDVWbDZ4OUlmWXZqRUho?=
+ =?utf-8?B?OVdkejVITFc3OUtHT21BS0grUnVYMkxTVzBxZDlWVzVGaUtjQ3kxSWtobkFQ?=
+ =?utf-8?B?Zmt1MTFzUTBwZDg1ZUJmRTl1ZXVsWkI4Zk5vYTJ3cDY1WG1JRGZBdU1XME0v?=
+ =?utf-8?B?dnpwcm9hNlJ0cjFSbGlYRU5oai94NkxVWU16Umd4L0JqVVlxMjJ2TjVhZVFB?=
+ =?utf-8?B?Nko4dmYxaUhCNEpJdVBTOEM4Ui9iRFlYbVBMS2FQSzRjQWdXZDRjTmhQakxq?=
+ =?utf-8?B?VEd0VVZzcUhGdE9SYU5Ednk3K0hpNFlCbUhxekhkajcyekhFUS9nWG1vVzJv?=
+ =?utf-8?B?ZVZLOUhvN0xLZWlEV0RuYmRmRzZCS1NWK0gvMFA2Tk00dngxcnJweFVYNnAy?=
+ =?utf-8?B?dU5wQnRmT1I4d2IrRXlEK0FOSDlIc0lOd0NtdWxndnFYQnR1MkZieG4zVDlK?=
+ =?utf-8?B?eTYzUlUrVzcxbmNUR3M0SFdIK2dUamZ1VFQwYWN2MjdFMmtqeXo3bjVYQ2lW?=
+ =?utf-8?B?aDlISmgyWVRUN1Z6K3RXRHNnejcvRVJGeGFxRUpQd3dFNlNFQk5FKzJvRDNW?=
+ =?utf-8?B?M3VGN2UyQTlFcUpLanhGM0lYVFhRaEszSjMwKzBLdmwrcnEzcGxyeUpVekho?=
+ =?utf-8?B?RTVkZFdLcVpvVStWRytlR0Z3MVJGODJ4RVFmQTAxbEppSUt1RmRtRmhsWFZ1?=
+ =?utf-8?B?N2h4dzRwRGtueGZhVTBjRkZyRUZiUlZvNlZjeFZZSHVjRG1wU0FON3lmYkxi?=
+ =?utf-8?Q?lU3SmsA9O22K/BgShUuudkHRnDveaWJby56/7GV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 371bc81f-10c8-4d13-548e-08d8f924b5ba
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 17:52:13.7230
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zq5qH56GrtFw5F7++vfJmE1Vyh0dKIzmLXukOnxKGVkwH/GIFX3rxlFCSveiTQ3qkI13AYsKRGQqAdKdkBoxBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3577
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instrumenting filemap_nr_thps_inc() should be sufficient for ensuring
-writable file mappings will not be THP-backed.
+On 4/6/21 9:33 AM, Dave Hansen wrote:
+> On 4/6/21 12:44 AM, David Hildenbrand wrote:
+>> On 02.04.21 17:26, Kirill A. Shutemov wrote:
+>>> TDX architecture aims to provide resiliency against confidentiality and
+>>> integrity attacks. Towards this goal, the TDX architecture helps enforce
+>>> the enabling of memory integrity for all TD-private memory.
+>>>
+>>> The CPU memory controller computes the integrity check value (MAC) for
+>>> the data (cache line) during writes, and it stores the MAC with the
+>>> memory as meta-data. A 28-bit MAC is stored in the ECC bits.
+>>>
+>>> Checking of memory integrity is performed during memory reads. If
+>>> integrity check fails, CPU poisones cache line.
+>>>
+>>> On a subsequent consumption (read) of the poisoned data by software,
+>>> there are two possible scenarios:
+>>>
+>>>   - Core determines that the execution can continue and it treats
+>>>     poison with exception semantics signaled as a #MCE
+>>>
+>>>   - Core determines execution cannot continue,and it does an unbreakable
+>>>     shutdown
+>>>
+>>> For more details, see Chapter 14 of Intel TDX Module EAS[1]
+>>>
+>>> As some of integrity check failures may lead to system shutdown host
+>>> kernel must not allow any writes to TD-private memory. This requirment
+>>> clashes with KVM design: KVM expects the guest memory to be mapped into
+>>> host userspace (e.g. QEMU).
+>>
+>> So what you are saying is that if QEMU would write to such memory, it
+>> could crash the kernel? What a broken design.
+> 
+> IMNHO, the broken design is mapping the memory to userspace in the first
+> place.  Why the heck would you actually expose something with the MMU to
+> a context that can't possibly meaningfully access or safely write to it?
+> 
+> This started with SEV.  QEMU creates normal memory mappings with the SEV
+> C-bit (encryption) disabled.  The kernel plumbs those into NPT, but when
+> those are instantiated, they have the C-bit set.  So, we have mismatched
+> mappings.  Where does that lead?  The two mappings not only differ in
+> the encryption bit, causing one side to read gibberish if the other
+> writes: they're not even cache coherent.
 
-If filemap_nr_thps_dec() in unaccount_page_cache_page() and
-filemap_nr_thps() in do_dentry_open() race, the worst case is an
-unnecessary truncation. We could introduce a memory barrier in
-unaccount_page_cache_page(), but I'm unsure it would significantly
-mitigate the risk of spurious truncations. Barring synchronization
-between do_dentry_open() and ongoing page cache operations, there
-could be an in-progress delete_from_page_cache_batch() that has not
-yet updated accounting for THPs in its targeted range.
+QEMU is running on the hypervisor side, so even if the C-bit is set for
+its memory mappings, it would use the hypervisor key to access the memory,
+not the guest key. So it doesn't matter from a QEMU perspective whether it
+creates mappings with or without the C-bit. The C-bit in the NPT is only
+used if the guest is accessing the memory as shared/un-encrypted, in which
+case the the hypervisor key is then used.
 
--- Collin
+The latest EPYC hardware provides cache coherency for encrypted /
+non-encrypted accesses (X86_FEATURE_SME_COHERENT).
 
-On Mon, Apr 5, 2021 at 7:05 PM William Kucharski
-<william.kucharski@oracle.com> wrote:
->
->
-> I saw a similar change a few years ago with my prototype:
->
-> https://lore.kernel.org/linux-mm/5BB682E1-DD52-4AA9-83E9-DEF091E0C709@oracle.com/
->
-> the key being a very nice drop in iTLB-load-misses, so it looks like your code is
-> having the right effect.
->
-> What about the call to filemap_nr_thps_dec() in unaccount_page_cache_page() - does
-> that need an smp_mb() as well?
->
-> -- Bill
->
-> > On Apr 5, 2021, at 6:15 PM, Collin Fijalkovich <cfijalkovich@google.com> wrote:
-> >
-> > v2 has been uploaded with performance testing results:
-> > https://lore.kernel.org/patchwork/patch/1408266/
-> >
-> >
-> >
-> > On Mon, Mar 22, 2021 at 2:59 PM Collin Fijalkovich
-> > <cfijalkovich@google.com> wrote:
-> >>
-> >> Transparent huge pages are supported for read-only non-shmem filesystems,
-> >> but are only used for vmas with VM_DENYWRITE. This condition ensures that
-> >> file THPs are protected from writes while an application is running
-> >> (ETXTBSY).  Any existing file THPs are then dropped from the page cache
-> >> when a file is opened for write in do_dentry_open(). Since sys_mmap
-> >> ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
-> >> produced by execve().
-> >>
-> >> Systems that make heavy use of shared libraries (e.g. Android) are unable
-> >> to apply VM_DENYWRITE through the dynamic linker, preventing them from
-> >> benefiting from the resultant reduced contention on the TLB.
-> >>
-> >> This patch reduces the constraint on file THPs allowing use with any
-> >> executable mapping from a file not opened for write (see
-> >> inode_is_open_for_write()). It also introduces additional conditions to
-> >> ensure that files opened for write will never be backed by file THPs.
-> >>
-> >> Restricting the use of THPs to executable mappings eliminates the risk that
-> >> a read-only file later opened for write would encounter significant
-> >> latencies due to page cache truncation.
-> >>
-> >> The ld linker flag '-z max-page-size=(hugepage size)' can be used to
-> >> produce executables with the necessary layout. The dynamic linker must
-> >> map these file's segments at a hugepage size aligned vma for the mapping to
-> >> be backed with THPs.
-> >>
-> >> Signed-off-by: Collin Fijalkovich <cfijalkovich@google.com>
-> >> ---
-> >> fs/open.c       | 13 +++++++++++--
-> >> mm/khugepaged.c | 16 +++++++++++++++-
-> >> 2 files changed, 26 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/fs/open.c b/fs/open.c
-> >> index e53af13b5835..f76e960d10ea 100644
-> >> --- a/fs/open.c
-> >> +++ b/fs/open.c
-> >> @@ -852,8 +852,17 @@ static int do_dentry_open(struct file *f,
-> >>         * XXX: Huge page cache doesn't support writing yet. Drop all page
-> >>         * cache for this file before processing writes.
-> >>         */
-> >> -       if ((f->f_mode & FMODE_WRITE) && filemap_nr_thps(inode->i_mapping))
-> >> -               truncate_pagecache(inode, 0);
-> >> +       if (f->f_mode & FMODE_WRITE) {
-> >> +               /*
-> >> +                * Paired with smp_mb() in collapse_file() to ensure nr_thps
-> >> +                * is up to date and the update to i_writecount by
-> >> +                * get_write_access() is visible. Ensures subsequent insertion
-> >> +                * of THPs into the page cache will fail.
-> >> +                */
-> >> +               smp_mb();
-> >> +               if (filemap_nr_thps(inode->i_mapping))
-> >> +                       truncate_pagecache(inode, 0);
-> >> +       }
-> >>
-> >>        return 0;
-> >>
-> >> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> >> index a7d6cb912b05..4c7cc877d5e3 100644
-> >> --- a/mm/khugepaged.c
-> >> +++ b/mm/khugepaged.c
-> >> @@ -459,7 +459,8 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
-> >>
-> >>        /* Read-only file mappings need to be aligned for THP to work. */
-> >>        if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
-> >> -           (vm_flags & VM_DENYWRITE)) {
-> >> +           !inode_is_open_for_write(vma->vm_file->f_inode) &&
-> >> +           (vm_flags & VM_EXEC)) {
-> >>                return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> >>                                HPAGE_PMD_NR);
-> >>        }
-> >> @@ -1872,6 +1873,19 @@ static void collapse_file(struct mm_struct *mm,
-> >>        else {
-> >>                __mod_lruvec_page_state(new_page, NR_FILE_THPS, nr);
-> >>                filemap_nr_thps_inc(mapping);
-> >> +               /*
-> >> +                * Paired with smp_mb() in do_dentry_open() to ensure
-> >> +                * i_writecount is up to date and the update to nr_thps is
-> >> +                * visible. Ensures the page cache will be truncated if the
-> >> +                * file is opened writable.
-> >> +                */
-> >> +               smp_mb();
-> >> +               if (inode_is_open_for_write(mapping->host)) {
-> >> +                       result = SCAN_FAIL;
-> >> +                       __mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
-> >> +                       filemap_nr_thps_dec(mapping);
-> >> +                       goto xa_locked;
-> >> +               }
-> >>        }
-> >>
-> >>        if (nr_none) {
-> >> --
-> >> 2.31.0.rc2.261.g7f71774620-goog
-> >>
-> >
->
+> 
+> That's the situation *TODAY*, even ignoring TDX.
+> 
+> BTW, I'm pretty sure I know the answer to the "why would you expose this
+> to userspace" question: it's what QEMU/KVM did alreadhy for
+> non-encrypted memory, so this was the quickest way to get SEV working.
+> 
+> So, I don't like the #MC either.  But, this series is a step in the
+> right direction for TDX *AND* SEV.
+
+So, yes, this is a step in the right direction.
+
+Thanks,
+Tom
+
+> 
