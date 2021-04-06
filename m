@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1A355BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAA1355BFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235661AbhDFTFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbhDFTFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:05:50 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D668C06174A;
-        Tue,  6 Apr 2021 12:05:42 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p10so2901350pld.0;
-        Tue, 06 Apr 2021 12:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
-        b=TojC3B0s7I3+/nfSWs80/9xaTunkHwnkKDBu0qMg6TLU4XRxHMsgSdErm3Rmk3JsJU
-         mryDZ+lYvgfSbnj2+2DV+tNy2hSnZzx9JSrwv05R4WdMAhs0ldJA89oJuEcMaEwRndqS
-         MYny9f2VB0fXOvTK4N4sVcpxeE/Rj7Ws45TRD7hgPxX5eQIYECZ56yD1nAnqoFnWWeL1
-         eGCWd7lCWR1nvBSe7EnoOCkg/OH0bhhpF9SykB/kkPf0+nJ7MSvuSYGOY7shixqk36UC
-         Dj+tJMc9KRxOBwmpf6HwkJQicZBtHFvS1JDVL1le3a1DwLNXmIHGHzqKgTLlur+jthEJ
-         5ZcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
-        b=aodHXExjcJa1UBJzDo74A5a/hp4E2KMQgyZEk3RbMjZY9B6LgkjAUEukUKobmzxN/W
-         ts7IqeeqeV4WvyBEEG9UrJKjf7Z/V03Jc3z7CDokOkdq/BRfT4xpoD7D1g5P5Tz+Pz9Y
-         ww0vLStlrsYKbr2nqPVFImX5PGYo4KAiGTdO6HdHwA0EcOyl1FdJWZzhTZUVfFuyT17S
-         neLTCOuYKZaZp0Jm9kO5KIUF6hjs5o/zJYNNOoAubOsJIQswLsW9TTwqJQq+awStiSC5
-         YPu91F1yu7UD6kIw3tqN5ODkkbJyUWyUTKlsl8U956lJHbB0QnPJ2UujkLgD/0heq6lK
-         cuAw==
-X-Gm-Message-State: AOAM530ZjUeiCZgK+I5WHVwkuvRvmoxzfiRc7XeJKwCmxBcWUNA+3VHZ
-        WIyVoo12X0eUuunamjxouCE=
-X-Google-Smtp-Source: ABdhPJwlP3QmABh4/nIwmiUI0ymstaWn3umCEZUef0OvuVGmL6HHCgt6yYD9gjyKppqKOMZS8rnNyw==
-X-Received: by 2002:a17:90a:f2cc:: with SMTP id gt12mr5723370pjb.136.1617735941762;
-        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
-Received: from localhost ([47.9.169.206])
-        by smtp.gmail.com with ESMTPSA id l10sm18453586pfc.125.2021.04.06.12.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 00:35:38 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-Message-ID: <20210406190538.fdqo7g2tzolgckpy@apollo>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
+        id S237031AbhDFTHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:07:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235663AbhDFTHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFC4613D4;
+        Tue,  6 Apr 2021 19:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617736013;
+        bh=FGcYxgeewTXQrOq2RKbgoIlb1cdSsXxVmlWW2aBxIcw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=joQfnePUhrGsWfESJz8MdOZXGG00wppBCk0bD0RAOlEZpHTv8CbfoGS3m0cwJZwLE
+         /lfK7mjuOzh2HLRPQ40SJpbCMtAQcGz6Zr1tOpqU6xVAWFzxozvHcCYycEPrTw5WLd
+         WzLAqA9/Lscg/X/FvHKvrwoc8jr/TxC/F7bDuenQ=
+Date:   Tue, 6 Apr 2021 21:06:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86/mmu: preserve pending TLB flush across calls to
+ kvm_tdp_mmu_zap_sp
+Message-ID: <YGyxSpn3stNXd8TU@kroah.com>
+References: <20210406162550.3732490-1-pbonzini@redhat.com>
+ <YGynf54vwWpyxhz4@kroah.com>
+ <d93cb5c8-e54a-6f5a-c660-9d044ff2c743@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
+In-Reply-To: <d93cb5c8-e54a-6f5a-c660-9d044ff2c743@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 10:51:09PM IST, Andrii Nakryiko wrote:
-> > [...]
->
-> if _block variant is just a special ifindex value, then it should be
-> fine for users to know such a detail (we can leave a comment
-> mentioning this specifically), especially given it's not a very
-> popular thing. Almost doubling amount of APIs just for this doesn't
-> make much sense, IMO.
->
+On Tue, Apr 06, 2021 at 08:35:55PM +0200, Paolo Bonzini wrote:
+> On 06/04/21 20:25, Greg KH wrote:
+> > On Tue, Apr 06, 2021 at 12:25:50PM -0400, Paolo Bonzini wrote:
+> > > Right now, if a call to kvm_tdp_mmu_zap_sp returns false, the caller
+> > > will skip the TLB flush, which is wrong.  There are two ways to fix
+> > > it:
+> > > 
+> > > - since kvm_tdp_mmu_zap_sp will not yield and therefore will not flush
+> > >    the TLB itself, we could change the call to kvm_tdp_mmu_zap_sp to
+> > >    use "flush |= ..."
+> > > 
+> > > - or we can chain the flush argument through kvm_tdp_mmu_zap_sp down
+> > >    to __kvm_tdp_mmu_zap_gfn_range.
+> > > 
+> > > This patch does the former to simplify application to stable kernels.
+> > > 
+> > > Cc: seanjc@google.com
+> > > Fixes: 048f49809c526 ("KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")
+> > > Cc: <stable@vger.kernel.org> # 5.10.x: 048f49809c: KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+> > > Cc: <stable@vger.kernel.org> # 5.10.x: 33a3164161: KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > > ---
+> > >   arch/x86/kvm/mmu/mmu.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > Is this for only the stable kernels, or is it addressed toward upstream
+> > merges?
+> > 
+> > Confused,
+> 
+> It's for upstream.  I'll include it (with the expected "[ Upstream commit
+> abcd ]" header) when I post the complete backport.  I'll send this patch to
+> Linus as soon as I get a review even if I don't have anything else in the
+> queue, so (as a general idea) the full backport should be sent and tested on
+> Thursday-Friday.
 
-Ok.
+Ah, ok, thanks, got confused there.
 
->
-> If we know that we need variant with options, I'd vote for having just
-> one bpf_tc_attach() API which always takes options. Passing NULL for
-> opts is simple, no need for two APIs, I think.
->
-
-Ack.
-
->
-> Which parts of that id struct is the data that caller might not know
-> or can't know? Is it handle and chain_index? Or just one of them?
-> Or?... If there is something that has to be returned back, I'd keep
-> only that, instead of returning 6+ fields, most of which user should
-> already know.
->
-
-The user will know ifindex and parent_id, and perhaps protocol (it would be
-ETH_P_ALL if they don't supply one by default). Other fields like handle,
-priority and chain_index can all be kernel assigned, so keeping those still
-makes sense. I'll change this in v2.
-
---
-Kartikeya
+greg k-h
