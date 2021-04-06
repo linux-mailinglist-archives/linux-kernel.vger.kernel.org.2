@@ -2,76 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D3F355714
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC93C35571B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243441AbhDFO4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239544AbhDFO4T (ORCPT
+        id S1345357AbhDFO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:58:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45450 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233155AbhDFO6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:56:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA01BC06174A;
-        Tue,  6 Apr 2021 07:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=utRNYwnpm4FcBjJdhPy0mCfMjTjs+CQ5M9mPuIzGgp8=; b=B4sNd7sg32rPyOsIgv2PbVlcbN
-        7B2vtCRS2jWMF8YCT+TtOfptbT6vEn1bW7PoE1bej4VpqIMjJ3pIdZJPEgmxSADGJnPM5EHmY8XDu
-        WxXL3Zmryrp3/J1FbmZ9V0oI0sW16vJz/vTO0q4E4pe58/O2+ppfW0NZUCUBX8fVrtkeArPRr6rbh
-        Qkc0VfYUGABjpsksTr3+MSSlix59ar1rB3i+DDCf6+vlJiBycap5g1k2yuLgybWa1J7YOhWkOCVH/
-        9mL/XljMzMfdFySfO9lRTeLKvl3JoabCNYs9TCoQyiNzOT224PlpqWDMljOLGbzyyiG4JaqBTt86M
-        wbMHdHqQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTn6l-00CyKp-9l; Tue, 06 Apr 2021 14:55:30 +0000
-Date:   Tue, 6 Apr 2021 15:55:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
-Message-ID: <20210406145511.GS2531743@casper.infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-2-willy@infradead.org>
- <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
- <20210406124807.GO2531743@casper.infradead.org>
- <20210406143150.GA3082513@infradead.org>
- <20210406144022.GR2531743@casper.infradead.org>
- <20210406144712.GA3087660@infradead.org>
+        Tue, 6 Apr 2021 10:58:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617721075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JKDcOIFPZJ62VRJvhDT2hmTM6kAbID3Fjqmj7ekGUOQ=;
+        b=QWOcBxTot9ikVhkkKTuX2WPmgA9zqtsmn9ml90vrICeIy7l8yuRaDOdeqrsN4m0QyVZ8Ie
+        r8BJHlpzO/rj5fCUuBuO/l/lUA/jT6VjgqmtLa+WmCqY+ByfosMqgl6zH3r4BL/1MJtifR
+        uuez+XWpJCnKkihlFsB7OtW8MslSdlQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254-UtF-KEdZMee-b0oXQVGlcA-1; Tue, 06 Apr 2021 10:57:54 -0400
+X-MC-Unique: UtF-KEdZMee-b0oXQVGlcA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C323E99C4;
+        Tue,  6 Apr 2021 14:57:52 +0000 (UTC)
+Received: from [10.36.113.79] (ovpn-113-79.ams2.redhat.com [10.36.113.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 35E7A5D9D0;
+        Tue,  6 Apr 2021 14:57:47 +0000 (UTC)
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
+ <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+Message-ID: <d94d3042-098a-8df7-9ef6-b869851a4134@redhat.com>
+Date:   Tue, 6 Apr 2021 16:57:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406144712.GA3087660@infradead.org>
+In-Reply-To: <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 03:47:12PM +0100, Christoph Hellwig wrote:
-> On Tue, Apr 06, 2021 at 03:40:22PM +0100, Matthew Wilcox wrote:
-> > On Tue, Apr 06, 2021 at 03:31:50PM +0100, Christoph Hellwig wrote:
-> > > > > As Christoph, I'm not a fan of this :/
-> > > > 
-> > > > What would you prefer?
-> > > 
-> > > Looking at your full folio series on git.infradead.org, there are a
-> > > total of 12 references to non-page members of struct folio, assuming
-> > > my crude grep that expects a folio to be named folio did not miss any.
-> > 
-> > Hmm ... I count more in the filesystems:
+On 06.04.21 16:33, Dave Hansen wrote:
+> On 4/6/21 12:44 AM, David Hildenbrand wrote:
+>> On 02.04.21 17:26, Kirill A. Shutemov wrote:
+>>> TDX architecture aims to provide resiliency against confidentiality and
+>>> integrity attacks. Towards this goal, the TDX architecture helps enforce
+>>> the enabling of memory integrity for all TD-private memory.
+>>>
+>>> The CPU memory controller computes the integrity check value (MAC) for
+>>> the data (cache line) during writes, and it stores the MAC with the
+>>> memory as meta-data. A 28-bit MAC is stored in the ECC bits.
+>>>
+>>> Checking of memory integrity is performed during memory reads. If
+>>> integrity check fails, CPU poisones cache line.
+>>>
+>>> On a subsequent consumption (read) of the poisoned data by software,
+>>> there are two possible scenarios:
+>>>
+>>>    - Core determines that the execution can continue and it treats
+>>>      poison with exception semantics signaled as a #MCE
+>>>
+>>>    - Core determines execution cannot continue,and it does an unbreakable
+>>>      shutdown
+>>>
+>>> For more details, see Chapter 14 of Intel TDX Module EAS[1]
+>>>
+>>> As some of integrity check failures may lead to system shutdown host
+>>> kernel must not allow any writes to TD-private memory. This requirment
+>>> clashes with KVM design: KVM expects the guest memory to be mapped into
+>>> host userspace (e.g. QEMU).
+>>
+>> So what you are saying is that if QEMU would write to such memory, it
+>> could crash the kernel? What a broken design.
 > 
-> I only counted the ones that you actually did convert.
+> IMNHO, the broken design is mapping the memory to userspace in the first
+> place.  Why the heck would you actually expose something with the MMU to
+> a context that can't possibly meaningfully access or safely write to it?
+
+I'd say the broken design is being able to crash the machine via a 
+simple memory write, instead of only crashing a single process in case 
+you're doing something nasty. From the evaluation of the problem it 
+feels like this was a CPU design workaround: instead of properly 
+cleaning up when it gets tricky within the core, just crash the machine. 
+And that's a CPU "feature", not a kernel "feature". Now we have to fix 
+broken HW in the kernel - once again.
+
+However, you raise a valid point: it does not make too much sense to to 
+map this into user space. Not arguing against that; but crashing the 
+machine is just plain ugly.
+
+I wonder: why do we even *want* a VMA/mmap describing that memory? 
+Sounds like: for hacking support for that memory type into QEMU/KVM.
+
+This all feels wrong, but I cannot really tell how it could be better. 
+That memory can really only be used (right now?) with hardware 
+virtualization from some point on. From that point on (right from the 
+start?), there should be no VMA/mmap/page tables for user space anymore.
+
+Or am I missing something? Is there still valid user space access?
+
 > 
-> This add about 80 more.  IMHO still not worth doing the union.  I'd
-> rather sort this out properl if/when the structures get properly split.
+> This started with SEV.  QEMU creates normal memory mappings with the SEV
+> C-bit (encryption) disabled.  The kernel plumbs those into NPT, but when
+> those are instantiated, they have the C-bit set.  So, we have mismatched
+> mappings.  Where does that lead?  The two mappings not only differ in
+> the encryption bit, causing one side to read gibberish if the other
+> writes: they're not even cache coherent.
+> 
+> That's the situation *TODAY*, even ignoring TDX.
+> 
+> BTW, I'm pretty sure I know the answer to the "why would you expose this
+> to userspace" question: it's what QEMU/KVM did alreadhy for
+> non-encrypted memory, so this was the quickest way to get SEV working.
+> 
 
-Assuming we're getting rid of them all though, we have to include:
+Yes, I guess so. It was the fastest way to "hack" it into QEMU.
 
-$ git grep 'page->mapping' fs |wc -l
-358
-$ git grep 'page->index' fs |wc -l
-355
+Would we ever even want a VMA/mmap/process page tables for that memory? 
+How could user space ever do something *not so nasty* with that memory 
+(in the current context of VMs)?
+
+-- 
+Thanks,
+
+David / dhildenb
 
