@@ -2,113 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFFB355987
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA09235598B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhDFQri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232032AbhDFQre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:47:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D19C613CD;
-        Tue,  6 Apr 2021 16:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617727646;
-        bh=RR6kcUa5PzJFbUkRw8yao0Ic9pH7NeQRccRbZh4Aoy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bF73RoRjeTQuX67bN8v8T+azFdmn5c7r8wo8a9WpqbOO14EYwjT5DfLVu/SPtSAKA
-         4U00AZuk25Or4dEnP5HNVVYtBGEv+lkdO1Q3F0uUCbgg6UH9QCVrmDu2w7kPNNeuvu
-         OKQiTQioKd5uvX1jghKMkx5L4lZZweZUyo5W1QAc+933oAUk3SocByQiS76IxXhNgj
-         gQ7bblTd+fweF3koHSO9kGQyXDWu0J1VQMXtSU5avalLeyHKiYv4YCGaJBPQoBN1R+
-         7Xbl2NgJQQV7/Ql/5DRGsO0y1RhGz2ce8FdcE63tlg8h1eHqN069N2YxJ1o3Y2eRw/
-         AIU0PWKlkbgeg==
-Date:   Tue, 6 Apr 2021 17:47:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
- endpoint device voltage regulators
-Message-ID: <20210406164708.GM6443@sirena.org.uk>
-References: <20210401212148.47033-1-jim2101024@gmail.com>
- <20210401212148.47033-3-jim2101024@gmail.com>
+        id S238263AbhDFQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:48:01 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:44911 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232032AbhDFQr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:47:59 -0400
+Received: by mail-oo1-f49.google.com with SMTP id p2-20020a4aa8420000b02901bc7a7148c4so3834382oom.11;
+        Tue, 06 Apr 2021 09:47:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KsEFQn5ynPj9Q6od5ymvE84NEzlALObqjlPA4SQWRs8=;
+        b=Caw06k2MWg1OwP78wZ8gxa1iBXixjWgwRK2lx5HicQ+kWOMh530QGvjE3JBelhmRd0
+         l07PZY89Xc+IP2Fe3Q07P00Zrud9P99oyC3rVkj5hNHogjeFOs2WXWYX6NHrkcS77WDB
+         P94qXGk/+0YrRAgXMMq1WAsVWu8yQuFD3GSljzjKlW2YkKn3Ln9bZZmwVfedZBvP9wye
+         sb+bJ+cmCDA7UEeKzcLBmFvfHHy+K6I9ZkNz1T//ij1po0BAvYPxqH/ngulIh+neVnwM
+         dBeZx5xLXFV3/2z9Ru2STWfxz+G2LpmUaRNkVTanJflI0gOfcrhU00ZS71tPKGEe4II+
+         yk1w==
+X-Gm-Message-State: AOAM533bh+Z9JfB6jSH1+OBEj7zpjZAA7gedjUbhfsCpclV+KT8gGytY
+        EzrbMCvb+rUCHrDKj0jiVw==
+X-Google-Smtp-Source: ABdhPJwPZn4vyuV4WbEQb7jrirEmMI3mRcpb+G+wNqe7KnEHeN8KG33o//cShwHkWNjdpn2Mmze2sA==
+X-Received: by 2002:a4a:d354:: with SMTP id d20mr27213126oos.12.1617727670969;
+        Tue, 06 Apr 2021 09:47:50 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m16sm4687480otj.11.2021.04.06.09.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 09:47:50 -0700 (PDT)
+Received: (nullmailer pid 1942347 invoked by uid 1000);
+        Tue, 06 Apr 2021 16:47:48 -0000
+Date:   Tue, 6 Apr 2021 11:47:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/18] of/address: Add infrastructure to declare MMIO
+ as non-posted
+Message-ID: <20210406164748.GA1937719@robh.at.kernel.org>
+References: <20210402090542.131194-1-marcan@marcan.st>
+ <20210402090542.131194-13-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4oQnj4jcM03NhqPN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401212148.47033-3-jim2101024@gmail.com>
-X-Cookie: BARBARA STANWYCK makes me nervous!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210402090542.131194-13-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---4oQnj4jcM03NhqPN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 01, 2021 at 05:21:42PM -0400, Jim Quinlan wrote:
-> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> allows optional regulators to be attached and controlled by the PCIe RC
-> driver.  That being said, this driver searches in the DT subnode (the EP
-> node, eg pci@0,0) for the regulator property.
-
-> The use of a regulator property in the pcie EP subnode such as
-> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> file at
->=20
-> https://github.com/devicetree-org/dt-schema/pull/54
->=20
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+On Fri, Apr 02, 2021 at 06:05:36PM +0900, Hector Martin wrote:
+> This implements the 'nonposted-mmio' boolean property. Placing this
+> property in a bus marks all direct child devices as requiring
+> non-posted MMIO mappings. If no such property is found, the default
+> is posted MMIO.
+> 
+> of_mmio_is_nonposted() performs this check to determine if a given
+> device has requested non-posted MMIO.
+> 
+> of_address_to_resource() uses this to set the IORESOURCE_MEM_NONPOSTED
+> flag on resources that require non-posted MMIO.
+> 
+> of_iomap() and of_io_request_and_map() then use this flag to pick the
+> correct ioremap() variant.
+> 
+> This mechanism is currently restricted to builds that support Apple ARM
+> platforms, as an optimization.
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
->  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/D=
-ocumentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index f90557f6deb8..f2caa5b3b281 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -64,6 +64,9 @@ properties:
-> =20
->    aspm-no-l0s: true
-> =20
-> +  vpcie12v-supply: true
-> +  vpcie3v3-supply: true
+>  drivers/of/address.c       | 43 ++++++++++++++++++++++++++++++++++++--
+>  include/linux/of_address.h |  1 +
+>  2 files changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/of/address.c b/drivers/of/address.c
+> index 73ddf2540f3f..6485cc536e81 100644
+> --- a/drivers/of/address.c
+> +++ b/drivers/of/address.c
+> @@ -847,6 +847,9 @@ static int __of_address_to_resource(struct device_node *dev,
+>  		return -EINVAL;
+>  	memset(r, 0, sizeof(struct resource));
+>  
+> +	if (of_mmio_is_nonposted(dev))
+> +		flags |= IORESOURCE_MEM_NONPOSTED;
 > +
+>  	r->start = taddr;
+>  	r->end = taddr + size - 1;
+>  	r->flags = flags;
+> @@ -896,7 +899,10 @@ void __iomem *of_iomap(struct device_node *np, int index)
+>  	if (of_address_to_resource(np, index, &res))
+>  		return NULL;
+>  
+> -	return ioremap(res.start, resource_size(&res));
+> +	if (res.flags & IORESOURCE_MEM_NONPOSTED)
+> +		return ioremap_np(res.start, resource_size(&res));
+> +	else
+> +		return ioremap(res.start, resource_size(&res));
+>  }
+>  EXPORT_SYMBOL(of_iomap);
+>  
+> @@ -928,7 +934,11 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index,
+>  	if (!request_mem_region(res.start, resource_size(&res), name))
+>  		return IOMEM_ERR_PTR(-EBUSY);
+>  
+> -	mem = ioremap(res.start, resource_size(&res));
+> +	if (res.flags & IORESOURCE_MEM_NONPOSTED)
+> +		mem = ioremap_np(res.start, resource_size(&res));
+> +	else
+> +		mem = ioremap(res.start, resource_size(&res));
+> +
+>  	if (!mem) {
+>  		release_mem_region(res.start, resource_size(&res));
+>  		return IOMEM_ERR_PTR(-ENOMEM);
+> @@ -1094,3 +1104,32 @@ bool of_dma_is_coherent(struct device_node *np)
+>  	return false;
+>  }
+>  EXPORT_SYMBOL_GPL(of_dma_is_coherent);
+> +
+> +/**
+> + * of_mmio_is_nonposted - Check if device uses non-posted MMIO
+> + * @np:	device node
+> + *
+> + * Returns true if the "nonposted-mmio" property was found for
+> + * the device's bus.
+> + *
+> + * This is currently only enabled on builds that support Apple ARM devices, as
+> + * an optimization.
+> + */
+> +bool of_mmio_is_nonposted(struct device_node *np)
+> +{
+> +	struct device_node *parent;
+> +	bool nonposted;
+> +
+> +	if (!IS_ENABLED(CONFIG_ARCH_APPLE))
+> +		return false;
+> +
+> +	parent = of_get_parent(np);
+> +	if (!parent)
+> +		return false;
+> +
+> +	nonposted = of_property_read_bool(parent, "nonposted-mmio");
+> +
+> +	of_node_put(parent);
+> +	return nonposted;
+> +}
+> +EXPORT_SYMBOL_GPL(of_mmio_is_nonposted);
 
-No great problem with having these in the controller node (assming it
-accurately describes the hardware) but I do think we ought to also be
-able to describe these per slot.
+Is this needed outside of of/address.c? If not, please make it static 
+and don't export.
 
---4oQnj4jcM03NhqPN
-Content-Type: application/pgp-signature; name="signature.asc"
+With that,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBskIsACgkQJNaLcl1U
-h9CuRQf+PPRLBZm2k5aRqKu6YzjzBHgwKCDShu3P6RVk2NFkxe6LK68rU8YVuhaM
-NHNO2GFEQjgIFuIhBl6Gf5PjKfHYlFlIif9uJ8WF63oh06TpxkPdXXN0owL+WyOs
-+TR3XMqnNEZd5ESCeEvs9Tm+HUunfb2LE1Sjz6dgYd5Y4R9Xec5ImuSw/B0fPduw
-+iqcSKC+4bhWo1OV+9r/OeuBZsU5vTQOSAjZOj0cF4QZH1RbYmEVDDiTJh6CrB9I
-MbH1yITFOtzMnSAS9PB08RbrxPRwEs+arhdUTj3akupkM5k7Nndr5RHeto9sDTyQ
-u9GZXTKa3pr9GPoaERDZhx6l8XEhUg==
-=TxRf
------END PGP SIGNATURE-----
-
---4oQnj4jcM03NhqPN--
+Reviewed-by: Rob Herring <robh@kernel.org>
