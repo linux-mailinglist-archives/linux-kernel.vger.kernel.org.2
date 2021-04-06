@@ -2,209 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7AD355263
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDB7355245
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245709AbhDFLfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:35:07 -0400
-Received: from mail-vi1eur05on2043.outbound.protection.outlook.com ([40.107.21.43]:5955
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245723AbhDFLeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:34:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sar13/hU5sKw0l8QL9VDopbDo2wBqyfbR0Y1WhhxcnUIRbdoUTtjAg+YwNCuNPJwGsoPjOSpMPejeGRbzMgxvVCW8xiMtjHPvJUvqePQkCC7PTtbq+mgrVosBRR8iBuuYr7wGBDB5FdFob2H3d7o5c6NW19Qx//ri5GcBmAlwo9PTbNuAOJP70rs+xnyyWT5nh8cLR2YcMc2n5H+syyVX28f0qKYiXhlIAcdEYh21wdM0+u1sx3f4IbWn1Uskwf6gJcC5KZ6EAjWuNrv7NMJqzHVh7mzgrUqzvAkPfYmuZgM6GsHwMKkCdX8vd8ICQ+lgONizBvzThhrHlitFoVe/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JsMqRJ7b1swq7PgJZIFM+TvT0ckkLDGK5zgIUET/sWc=;
- b=LIVmunN25nqtQRHwdq72IjL5YfV8vDc1xtci73VggZtl/tyBbhp3xX5aIK635MHj519s6UrmfuQJ1wSVfBmfpI8BKL8PjYAt4OnAMwknCU1OeRIAyTZrKTnsHtZhbBjXhXQMcbRoKOZV94aNvkSKL339Q1EA10skV8maKT2Nt1Z1AAkW1XYWHoE4CWeUZEhsilsqqNFA8dF+fmU4GcLQ3BtmQZ4+X+ylKNXodq+XhqN8TrsVZeT+V3W8DX2kJHxMRgv8gOk1cTMsqzTmZqtF9FCIZRRYyE2dR13yYSeYqHQQRz0TyMQQS7HjJfjh3Kau3aLkJo0sMDR8eO8sTbppJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JsMqRJ7b1swq7PgJZIFM+TvT0ckkLDGK5zgIUET/sWc=;
- b=HqoG7Ws0FBgg9VD/O1VLu2+msTBIHPotFihHjGQne+KeNA50GE2C8pDWX9UtMI1UkAsQ27RMdPy02cl018QZEIX2Pbej5wPepyGiwY+xog2LRuDT1uSslJyUVXQy2JYKyomzR40GxJMIL4bclxdxddhjafBZ5y9595xSuUQiV6A=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
- by AS8PR04MB8359.eurprd04.prod.outlook.com (2603:10a6:20b:3b3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
- 2021 11:34:02 +0000
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::5cd9:3da7:144f:36f9]) by AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::5cd9:3da7:144f:36f9%3]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 11:34:02 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     aisheng.dong@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 18/18] i2c: imx-lpi2c: fix pio mode cannot send 256+ bytes in one frame
-Date:   Tue,  6 Apr 2021 19:33:06 +0800
-Message-Id: <20210406113306.2633595-19-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406113306.2633595-1-xiaoning.wang@nxp.com>
-References: <20210406113306.2633595-1-xiaoning.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: HK2PR0401CA0010.apcprd04.prod.outlook.com
- (2603:1096:202:2::20) To AM6PR04MB5623.eurprd04.prod.outlook.com
- (2603:10a6:20b:a9::13)
+        id S245622AbhDFLdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242922AbhDFLdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:33:36 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39008C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:33:27 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id n4so5939427ili.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WieXwc6mS+AtUYkNra6+bBu4m3Tu6pHMOzAqHJrznfc=;
+        b=QYJFNglHc4lpjNudI/R3Fey6LFOo8gdrDYe3kxhQLJrb0+M+rGQdOW2p+9lFaDnNTs
+         q2A+2Ze6SXEJSLdFwh9vIKuB3fmdXRvNjNusXf64VYb7esnp7NMlGqIMY1LM+K9nCdtR
+         aKkjPB6U+nnzVl1F3xuGkV5keyoxvBXAYm/JJoO9ILAWzCZ4U5pzJ6uClSE/zZd8Xhe0
+         mn1+XIin71hyZffexeG9qjkFUYDwArIBtNwnunLEufNjMlTsVg0R1gWAj0zb4oMpHhjm
+         ZrfqS2E249g88C/iIQebCUJbZ90gLWT9wpE1dytgvLpfc0JcvjQuKAR12281VSXLyXRy
+         tcUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WieXwc6mS+AtUYkNra6+bBu4m3Tu6pHMOzAqHJrznfc=;
+        b=euaFs3RXcLQAYZn/yfQLy9cHX9J+uGJ7GpdU6yGwLbyA6gOpVhLT4JnQb3M/BiZju9
+         DneijnjrQSrCQC3FAZhApdvJ/Z3wMZbkQopPNswO4gN6tE68yP7VPbaHPjHR4KfT7rRU
+         29S3WdllehXhaSYOfKyW3kNgPUFRhy4A9+Ldm1EBi3sK9woS7Y6ePC+1sjiMoM4SX7I/
+         etQD6b+BgBFqIK7aegJHZyB38dWBLZ57gnRQMa4+dqUFaxuznWrdfc1bpS/W0ida/8St
+         mPM2FqEUiG2qPvU6FOYVq9lphsiHeGL7qUPs7K9TW3NtuJtiE2GSzhHej30LWqZ1EmBI
+         4Xzg==
+X-Gm-Message-State: AOAM531rPY1uYiW788bivrruaD8SUjiMk7hC0UaLZXz/Vgr3tJumM3+d
+        DPxaivkkMtAYXGAHKPexFqiLLlFCJAC7kXFGd9vm6A7wfW5MyA==
+X-Google-Smtp-Source: ABdhPJwuT2aSBPHnn1aXEf6nMsd8tqPS91Ogr1ash1axfraDusRzGRBkAcnSY2IANo3i4D/q2nspZkzcmYKas9ccVxc=
+X-Received: by 2002:a92:7f03:: with SMTP id a3mr23464910ild.203.1617708806688;
+ Tue, 06 Apr 2021 04:33:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by HK2PR0401CA0010.apcprd04.prod.outlook.com (2603:1096:202:2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Tue, 6 Apr 2021 11:33:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bfca646-9492-46dd-4c84-08d8f8efe0a7
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8359:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AS8PR04MB8359A45D699B079931C8B2A8F3769@AS8PR04MB8359.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sqHaODDYzH52VY4z0kM0UeHWi3st90xv5lgC7kk5jMEVJBe42a6RyQydc6lhQpjA3ZnACVMs6jB7QPMOvU+7qx4pXlTjA65TUfqQlo7avfQIRBXBSPIFUmVop3I33R/lMbMMSuOH/8t5nQpg66khYCs/fIOmKYX/OrLd+ivpVbj6OsTdRA8NMkFZHF5rE0a1BkLRwliQI10x8T/tvHPkaXFRhVR6/qpIpAnQ3hbWBGARI2aSjv5CGlmctMd9W+sRdCZzg11I22NvC/SYleEUCrersHxrlH79fnsQg3L6gAtbH/Zu/+wGa9XO8SyMo2W1Mm0SYKIhXpYakXwZ4C6nB+eVtJhLGC+830cB8v5wCItf8tutSh6kW5rqco8GOycrZbyV9rXAFtZKzx5nwOoGoG++wrTu6bkHV+0MFlNEch3nua9bbpVrrleOW6Bz2d8VGX/Ny6EGv2FqQ8GWfbJaTngyRFBBbTBEyzId76aNIpIuzzqBDit7J9d+8MSsO8N7KSVLfIJvy36rZ44d8Vvp/tnB5PIE7NhaQW4WROINR7MPmv5CXHZ+vo4TyrMI93RUTRh5cHdnr8MnBsN5zOLB+D+HziciyT6VhC1a8msNVHJ/6yDsHs8fV85UFyIBnq/LkGgp9UDMCUP7k/Bi0xjNCjlxBxb54AmUbVrwjbd1ghG++vxnjoAsDNT74Ala1hCeRVIt1idCUT4+feL/u9gGGw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(5660300002)(8676002)(16526019)(86362001)(4326008)(8936002)(6506007)(52116002)(26005)(38350700001)(69590400012)(6666004)(186003)(83380400001)(2906002)(38100700001)(956004)(2616005)(36756003)(66476007)(6512007)(66946007)(66556008)(1076003)(498600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?1Vre4mo1yj7hEDJN6f4qPmTRYQUSngsYJpyTbC16Jq5G6rf56ED9onxzwIQ5?=
- =?us-ascii?Q?p7Tqs5d9QdQayt1qSSJVUWwiISibDOGi8LxTSm1oeWeCJtjqxR7qIMCeDi3i?=
- =?us-ascii?Q?R2M6lVw+j+NYT7P52KjBUu41irvTp6iQOEIXPCWXnpfwEdwY1V4LkqmE/1bh?=
- =?us-ascii?Q?kUQgBTHlV0xQkYSZQXGF3ysdrj8SlctWFJFgkqx5sfZbea94nsWuQHF42CjQ?=
- =?us-ascii?Q?ROlT6K+X6rLqJaBszxVcgI2mOJRfQ4fLp7Ggi/O9kX08/vIPcbidawXJECca?=
- =?us-ascii?Q?JhnXGQIb7bhGlOTBKQxXU4Lnqhnv7CbxzVM+MK89Dx8QrW6NMa4KdUZOsZta?=
- =?us-ascii?Q?oeH+ahd9A4VcHTZxnkZuddnq1CDdJ0cOz/1kd6PtWDYP7Trz+Lws/5KxX4Xw?=
- =?us-ascii?Q?eok9l+w5uGNZSgppnn0fykU3sWeKqKoSWyPNiE4zqVJC9SwVDvvt826l0mv3?=
- =?us-ascii?Q?J12sQFnXS1ldVIiFnCohZFcG1hpt/aHlgrKiy+M9oN2OPmzYIeeMp4cPTecc?=
- =?us-ascii?Q?R7ULR1/hydELJmEN4zRudYGkEvIpnvnmfQFztNmxjkWEyUnwEmqR+KpCIzaa?=
- =?us-ascii?Q?IsK3mmuT8XU6ddoRgv41DW4E4qQZb8wv8kzBvPPuQPRzkQOt0sogdiWYChXM?=
- =?us-ascii?Q?fM3iH8VvXkWGPYdAwagqY5HxwQG2+CuZNgAd3tpZgsejSRa3AiEqaWuX4wgb?=
- =?us-ascii?Q?z2GOXTh59FnwrcWrRwU77qRgXYT32xcFsaF2aHN0e4MdpUNtnTh20oJph+KR?=
- =?us-ascii?Q?B9bh1pRvshlRhj4AGF5hLdLnDQWi0FoEkht493vJKugcIvRLdhF1zeWdBx99?=
- =?us-ascii?Q?uMnL6ad/AsllqssX2lZ29/Js4nB4KMskask4I2k4xA/+vn2y+mkGm3VdUVyD?=
- =?us-ascii?Q?QNL02wMe9vIpDxf6nV0BzLOUb25zNpi947e3JO6JcKjJMMV+EJ8/PjJ4ywta?=
- =?us-ascii?Q?ev3C3IRmnJ0ULmD0fD3Ly/GriYCXsNj9zAoxxDNeogyW4H6ECwceTTvDpaNX?=
- =?us-ascii?Q?wpKLg1xn5IVAm00yOxXb4UC/2bqhM75+BA/D/aYDFJ/sQ1ITiJcvSohI5aaH?=
- =?us-ascii?Q?kkUgT29BVGgxiOCSF3OxjY/PbDIOnPwfTG+CFI5aZFM3cvsM6ki9PFwcquzD?=
- =?us-ascii?Q?MMIuhNHR+/omrvrd5vmlAiMEceNam3dB8cp8Fb7y2nfvdZGCUmgFjBjBeTVO?=
- =?us-ascii?Q?9d/q4S82jIxuRVC0QZs6UVt6ntzMs63KOg6riNr5oCbPMgoGA9s7/v4oS4Y7?=
- =?us-ascii?Q?FSystxwPL53EI5S8iKYsNYHDpdROnQ5bMuqB22lu+SpaBg81RFEKvVYN5d8T?=
- =?us-ascii?Q?Z/c2xdk2xJ7ksO0Wm6Po+jK1?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfca646-9492-46dd-4c84-08d8f8efe0a7
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 11:34:02.4856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N43EXGbYLaRMzDKhPwfIQ5ZHnou9jBGh6E99IeFW1hKuKsOdJCtxiiVKHQ7tlnjnn7/2HTnmxNXwV5trR7bZiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8359
+References: <20210406113243.2665847-1-fparent@baylibre.com>
+In-Reply-To: <20210406113243.2665847-1-fparent@baylibre.com>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Tue, 6 Apr 2021 13:33:15 +0200
+Message-ID: <CAOwMV_zSU9q71djtit1qK4muV3MDcVeYRmFwmGUvNf=9b_ufiw@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2MiAxLzNdIPCfk6QgYXJtNjQ6IGR0czogbWVkaWF0ZWs6IG10ODE2Nw==?=
+        =?UTF-8?B?OiBhZGQgbGFyYiBub2Rlcw==?=
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next MTDR command should be filled before the last receive command is
-fininshed. Otherwise, a NACK will be sent when the current MTDR command
-is finished. It causes lpi2c cannot send the next chunk data
-successfully.
+Oops, some unicode character ended up in the patch. Removing them in v3
 
-Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
----
-V2 changes:
- - New patch added in V2
----
- drivers/i2c/busses/i2c-imx-lpi2c.c | 43 +++++++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-index 3c0f16a79185..8d908b9b5112 100644
---- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-+++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-@@ -112,6 +112,7 @@ struct lpi2c_imx_struct {
- 	struct completion	complete;
- 	unsigned int		msglen;
- 	unsigned int		delivered;
-+	unsigned int		remain_chunk_num;
- 	unsigned int		block_data;
- 	unsigned int		bitrate;
- 	unsigned int		txfifosize;
-@@ -413,6 +414,28 @@ static void lpi2c_imx_write_txfifo(struct lpi2c_imx_struct *lpi2c_imx)
- 		complete(&lpi2c_imx->complete);
- }
- 
-+static void lpi2c_imx_pio_push_rx_cmd(struct lpi2c_imx_struct *lpi2c_imx)
-+{
-+	unsigned int remaining, temp;
-+	u8 last_chunk_num = lpi2c_imx->msglen % CHUNK_DATA;
-+
-+	if (lpi2c_imx->remain_chunk_num > 0 &&
-+		(lpi2c_imx->delivered % CHUNK_DATA) > (CHUNK_DATA >> 1)) {
-+		if ((readl(lpi2c_imx->base + LPI2C_MFSR) & 0xff) <=
-+						(lpi2c_imx->rxfifosize >> 1)) {
-+			if (last_chunk_num)
-+				remaining = (lpi2c_imx->remain_chunk_num - 1) *
-+					    CHUNK_DATA + last_chunk_num;
-+			else
-+				remaining = lpi2c_imx->remain_chunk_num * CHUNK_DATA;
-+			temp = (remaining > CHUNK_DATA ? CHUNK_DATA : remaining) - 1;
-+			temp |= (RECV_DATA << 8);
-+			writel(temp, lpi2c_imx->base + LPI2C_MTDR);
-+			lpi2c_imx->remain_chunk_num--;
-+		}
-+	}
-+}
-+
- static void lpi2c_imx_read_rxfifo(struct lpi2c_imx_struct *lpi2c_imx)
- {
- 	unsigned int blocklen, remaining;
-@@ -420,10 +443,16 @@ static void lpi2c_imx_read_rxfifo(struct lpi2c_imx_struct *lpi2c_imx)
- 
- 	do {
- 		data = readl(lpi2c_imx->base + LPI2C_MRDR);
--		if (data & MRDR_RXEMPTY)
--			break;
-+		if (data & MRDR_RXEMPTY) {
-+			if (lpi2c_imx->delivered == lpi2c_imx->msglen ||
-+			    lpi2c_imx->block_data)
-+				break;
-+			else
-+				continue;
-+		}
- 
- 		lpi2c_imx->rx_buf[lpi2c_imx->delivered++] = data & 0xff;
-+		lpi2c_imx_pio_push_rx_cmd(lpi2c_imx);
- 	} while (1);
- 
- 	/*
-@@ -451,13 +480,9 @@ static void lpi2c_imx_read_rxfifo(struct lpi2c_imx_struct *lpi2c_imx)
- 		temp = remaining;
- 		temp |= (RECV_DATA << 8);
- 		writel(temp, lpi2c_imx->base + LPI2C_MTDR);
--	} else if (!(lpi2c_imx->delivered & 0xff)) {
--		temp = (remaining > CHUNK_DATA ? CHUNK_DATA : remaining) - 1;
--		temp |= (RECV_DATA << 8);
--		writel(temp, lpi2c_imx->base + LPI2C_MTDR);
- 	}
- 
--	lpi2c_imx_intctrl(lpi2c_imx, MIER_RDIE);
-+	lpi2c_imx_intctrl(lpi2c_imx, MIER_RDIE | MIER_NDIE);
- }
- 
- static void lpi2c_imx_write(struct lpi2c_imx_struct *lpi2c_imx,
-@@ -477,6 +502,10 @@ static void lpi2c_imx_read(struct lpi2c_imx_struct *lpi2c_imx,
- 	lpi2c_imx->block_data = msgs->flags & I2C_M_RECV_LEN;
- 
- 	lpi2c_imx_set_rx_watermark(lpi2c_imx);
-+	if (msgs->len > CHUNK_DATA) {
-+		temp = CHUNK_DATA - 1;
-+		lpi2c_imx->remain_chunk_num = DIV_ROUND_UP(msgs->len, CHUNK_DATA) - 1;
-+	}
- 	temp = msgs->len > CHUNK_DATA ? CHUNK_DATA - 1 : msgs->len - 1;
- 	temp |= (RECV_DATA << 8);
- 	writel(temp, lpi2c_imx->base + LPI2C_MTDR);
--- 
-2.25.1
-
+On Tue, Apr 6, 2021 at 1:32 PM Fabien Parent <fparent@baylibre.com> wrote:
+>
+> Add larb nodes for MT8167:
+> * larb0 is used for display (dsi and hdmi)
+> * larb1 is used for camera (csi)
+> * larb2 is used for the video hardware decoder
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>
+> Note: This series is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/log/?h=v5.12-next/dts64-2
+>
+> V2:
+>         * Removed unneeded mediatek,larb-id property
+>
+>  arch/arm64/boot/dts/mediatek/mt8167.dtsi | 30 ++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8167.dtsi b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> index 4b951f81db9e..bbddd4b22d3e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> @@ -140,5 +140,35 @@ smi_common: smi@14017000 {
+>                         clock-names = "apb", "smi";
+>                         power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
+>                 };
+> +
+> +               larb0: larb@14016000 {
+> +                       compatible = "mediatek,mt8167-smi-larb";
+> +                       reg = <0 0x14016000 0 0x1000>;
+> +                       mediatek,smi = <&smi_common>;
+> +                       clocks = <&mmsys CLK_MM_SMI_LARB0>,
+> +                                <&mmsys CLK_MM_SMI_LARB0>;
+> +                       clock-names = "apb", "smi";
+> +                       power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
+> +               };
+> +
+> +               larb1: larb@15001000 {
+> +                       compatible = "mediatek,mt8167-smi-larb";
+> +                       reg = <0 0x15001000 0 0x1000>;
+> +                       mediatek,smi = <&smi_common>;
+> +                       clocks = <&imgsys CLK_IMG_LARB1_SMI>,
+> +                                <&imgsys CLK_IMG_LARB1_SMI>;
+> +                       clock-names = "apb", "smi";
+> +                       power-domains = <&spm MT8167_POWER_DOMAIN_ISP>;
+> +               };
+> +
+> +               larb2: larb@16010000 {
+> +                       compatible = "mediatek,mt8167-smi-larb";
+> +                       reg = <0 0x16010000 0 0x1000>;
+> +                       mediatek,smi = <&smi_common>;
+> +                       clocks = <&vdecsys CLK_VDEC_CKEN>,
+> +                                <&vdecsys CLK_VDEC_LARB1_CKEN>;
+> +                       clock-names = "apb", "smi";
+> +                       power-domains = <&spm MT8167_POWER_DOMAIN_VDEC>;
+> +               };
+>         };
+>  };
+> --
+> 2.31.0
+>
