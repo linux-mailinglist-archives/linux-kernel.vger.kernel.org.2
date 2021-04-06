@@ -2,129 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456EA35545D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A2E355465
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344243AbhDFM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:59:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15559 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242308AbhDFM66 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:58:58 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF6w35vTdzPnkh;
-        Tue,  6 Apr 2021 20:56:03 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 20:58:39 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        <liulongfang@huawei.com>, Weili Qian <qianweili@huawei.com>
-Subject: [PATCH] crypto: hisilicon/qm - add stop queue by hardware
-Date:   Tue, 6 Apr 2021 20:56:02 +0800
-Message-ID: <1617713762-52120-1-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1344255AbhDFM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:59:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239096AbhDFM7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:59:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5CE4613D0;
+        Tue,  6 Apr 2021 12:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617713980;
+        bh=MmM0Z9fxkhm9SnK1fIQO8WfodlzxxDy0XGkEAZogl2I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ced3vzglcPx9Dq5ivxegHloEXLqHUvr8HzmjUiElf9G8ZTMaTmyhNp0joHw1JKNqf
+         ZRM9DA+kHwYmohQHkWQqZ1mY5MX6JFQVwnqjFhTgpF6IBsYESfOJZOAf0RELyopPJq
+         LkabyEZF6sycaumizzGhgcJVYpUNNw9ZTxllksAQoGC0qwN2IigVSJRhHO1esBD9bc
+         k+MKBv2YFYHFbZfivBGsRSPcz2wvcaPmknHEprCzG4ndkuBInhHLDt5q5SbcJGQsSC
+         KmaNndJU8U3WBfgQ/3iyaX4nEl5Ndzt9vGN5HTeu6tYmP0JWsfixBFtjFrLGaL76Qi
+         pBcLmFQkBVvwQ==
+Received: by mail-oo1-f50.google.com with SMTP id p2-20020a4aa8420000b02901bc7a7148c4so3650862oom.11;
+        Tue, 06 Apr 2021 05:59:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532n7cYUjwAs6uDDoeTlXiHt6OUSQdczA6zxR19Aii4NhVMDTBPN
+        M7kefO9QCZAv1tmBjTkkciGwbH4QZw0KYyagFu0=
+X-Google-Smtp-Source: ABdhPJxDNCj1NGgcj5QYLyY5XEVb262+iXVbnwzUprYhCzBA1PE1J8t6rkdEDSwZ0xpnvPoJA7HzmVROrJw7qRz0qWw=
+X-Received: by 2002:a4a:bd97:: with SMTP id k23mr26482678oop.13.1617713980054;
+ Tue, 06 Apr 2021 05:59:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <20210401233216.2540591-1-samitolvanen@google.com>
+ <20210401233216.2540591-15-samitolvanen@google.com> <20210406115357.GE96480@C02TD0UTHF1T.local>
+In-Reply-To: <20210406115357.GE96480@C02TD0UTHF1T.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 6 Apr 2021 14:59:28 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFHm5rqKqku5=WF-NcsUNmWp4Ymxu7aO9=XkD-LhLr-dA@mail.gmail.com>
+Message-ID: <CAMj1kXFHm5rqKqku5=WF-NcsUNmWp4Ymxu7aO9=XkD-LhLr-dA@mail.gmail.com>
+Subject: Re: [PATCH v5 14/18] arm64: add __nocfi to functions that jump to a
+ physical address
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kunpeng930 could be able to stop queue by writing hardware registers,
-which will trigger tasks in device to be flushed out.
+On Tue, 6 Apr 2021 at 13:54, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> [adding Ard for EFI runtime services bits]
+>
+> On Thu, Apr 01, 2021 at 04:32:12PM -0700, Sami Tolvanen wrote:
+> > Disable CFI checking for functions that switch to linear mapping and
+> > make an indirect call to a physical address, since the compiler only
+> > understands virtual addresses and the CFI check for such indirect calls
+> > would always fail.
+>
+> What does physical vs virtual have to do with this? Does the address
+> actually matter, or is this just a general thing that when calling an
+> assembly function we won't have a trampoline that the caller expects?
+>
+> I wonder if we need to do something with asmlinkage here, perhaps?
+>
+> I didn't spot anything in the seriues handling EFI runtime services
+> calls, and I strongly suspect we need to do something for those, unless
+> they're handled implicitly by something else.
+>
 
-In order to be compatible with the kunpeng920 driver, add 'qm_hw_ops_v3' to
-adapt Kunpeng930. And 'stop_qp' callback is added in 'qm_hw_ops_v3' to
-write hardware registers. Call 'stop_qp' to drain the tasks in device
-before releasing queue.
+All indirect EFI calls are routed via a asm helper that I originally
+added to check whether x18 was corrupted by the firmware. So from the
+caller side, we should be fine.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+All callees are addresses that are provided by the firmware via tables
+in memory, so I would assume that this addresses the callee side as
+well. AFAICT, it is never left up to the compiler to emit these
+indirect calls, or take the address of a firmware routine.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index c91e57a..05f96aa 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -38,6 +38,7 @@
- #define QM_MB_CMD_SQC_BT		0x4
- #define QM_MB_CMD_CQC_BT		0x5
- #define QM_MB_CMD_SQC_VFT_V2		0x6
-+#define QM_MB_CMD_STOP_QP		0x8
- 
- #define QM_MB_CMD_SEND_BASE		0x300
- #define QM_MB_EVENT_SHIFT		8
-@@ -349,6 +350,7 @@ struct hisi_qm_hw_ops {
- 	void (*hw_error_init)(struct hisi_qm *qm, u32 ce, u32 nfe, u32 fe);
- 	void (*hw_error_uninit)(struct hisi_qm *qm);
- 	enum acc_err_result (*hw_error_handle)(struct hisi_qm *qm);
-+	int (*stop_qp)(struct hisi_qp *qp);
- };
- 
- struct qm_dfx_item {
-@@ -1711,6 +1713,11 @@ static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
- 	return ACC_ERR_RECOVERED;
- }
- 
-+static int qm_stop_qp(struct hisi_qp *qp)
-+{
-+	return qm_mb(qp->qm, QM_MB_CMD_STOP_QP, 0, qp->qp_id, 0);
-+}
-+
- static const struct hisi_qm_hw_ops qm_hw_ops_v1 = {
- 	.qm_db = qm_db_v1,
- 	.get_irq_num = qm_get_irq_num_v1,
-@@ -1726,6 +1733,16 @@ static const struct hisi_qm_hw_ops qm_hw_ops_v2 = {
- 	.hw_error_handle = qm_hw_error_handle_v2,
- };
- 
-+static const struct hisi_qm_hw_ops qm_hw_ops_v3 = {
-+	.get_vft = qm_get_vft_v2,
-+	.qm_db = qm_db_v2,
-+	.get_irq_num = qm_get_irq_num_v2,
-+	.hw_error_init = qm_hw_error_init_v2,
-+	.hw_error_uninit = qm_hw_error_uninit_v2,
-+	.hw_error_handle = qm_hw_error_handle_v2,
-+	.stop_qp = qm_stop_qp,
-+};
-+
- static void *qm_get_avail_sqe(struct hisi_qp *qp)
- {
- 	struct hisi_qp_status *qp_status = &qp->qp_status;
-@@ -2005,6 +2022,14 @@ static int qm_drain_qp(struct hisi_qp *qp)
- 	if (qm->err_status.is_qm_ecc_mbit || qm->err_status.is_dev_ecc_mbit)
- 		return 0;
- 
-+	/* Kunpeng930 supports drain qp by device */
-+	if (qm->ops->stop_qp) {
-+		ret = qm->ops->stop_qp(qp);
-+		if (ret)
-+			dev_err(dev, "Failed to stop qp(%u)!\n", qp->qp_id);
-+		return ret;
-+	}
-+
- 	addr = qm_ctx_alloc(qm, size, &dma_addr);
- 	if (IS_ERR(addr)) {
- 		dev_err(dev, "Failed to alloc ctx for sqc and cqc!\n");
-@@ -2565,8 +2590,10 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
- 
- 	if (qm->ver == QM_HW_V1)
- 		qm->ops = &qm_hw_ops_v1;
--	else
-+	else if (qm->ver == QM_HW_V2)
- 		qm->ops = &qm_hw_ops_v2;
-+	else
-+		qm->ops = &qm_hw_ops_v3;
- 
- 	pci_set_drvdata(pdev, qm);
- 	mutex_init(&qm->mailbox_lock);
--- 
-2.8.1
+But a test would be nice :-)
 
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  arch/arm64/include/asm/mmu_context.h | 2 +-
+> >  arch/arm64/kernel/cpu-reset.h        | 8 ++++----
+> >  arch/arm64/kernel/cpufeature.c       | 2 +-
+> >  3 files changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> > index 386b96400a57..d3cef9133539 100644
+> > --- a/arch/arm64/include/asm/mmu_context.h
+> > +++ b/arch/arm64/include/asm/mmu_context.h
+> > @@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
+> >   * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
+> >   * avoiding the possibility of conflicting TLB entries being allocated.
+> >   */
+> > -static inline void cpu_replace_ttbr1(pgd_t *pgdp)
+> > +static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
+>
+> Given these are inlines, what's the effect when these are inlined into a
+> function that would normally use CFI? Does CFI get supressed for the
+> whole function, or just the bit that got inlined?
+>
+> Is there an attribute that we could place on a function pointer to tell
+> the compiler to not check calls via that pointer? If that existed we'd
+> be able to scope this much more tightly.
+>
+
+I agree that it would be very helpful to be able to define a function
+pointer type that is exempt from CFI checks.
