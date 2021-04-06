@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406F0355F81
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481AA355FA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235976AbhDFXdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDFXdW (ORCPT
+        id S242682AbhDFXlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:41:37 -0400
+Received: from mta-p8.oit.umn.edu ([134.84.196.208]:45476 "EHLO
+        mta-p8.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234385AbhDFXld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:33:22 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F55C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 16:33:14 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id l76so11583629pga.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:33:14 -0700 (PDT)
+        Tue, 6 Apr 2021 19:41:33 -0400
+X-Greylist: delayed 361 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Apr 2021 19:41:33 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p8.oit.umn.edu (Postfix) with ESMTP id 4FFP5l538lz9vYw0
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:35:23 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p8.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bw8rtIorPqW6 for <linux-kernel@vger.kernel.org>;
+        Tue,  6 Apr 2021 18:35:23 -0500 (CDT)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 4FFP5l3SL8z9vYvp
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:35:23 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 4FFP5l3SL8z9vYvp
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 4FFP5l3SL8z9vYvp
+Received: by mail-il1-f197.google.com with SMTP id m8so1366462ilh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:35:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LRgGDa7UAPYiNMpF39Lh56jOssvyorq9ppnVgi31J/o=;
-        b=dol2GVi+MHXAlQjLNZRDGWiqiSTsM30xf7XFveOIDRMzyunh6Jdu+U5JHQcGZuJpFT
-         1Nt6iDXj+VGjUXmzEpBOly2AcwI29wifSBNVAaPnsZM3dBKPWK3Jr388aqNYDVw+FmZP
-         N8XsQQuVaPQf2rjP9vqafbggki2gcIVroQ6vLd0+bSmdL38sYop/zcaQIqgxy72tLy6S
-         mnj2jbtr9HeKqe6ym8YnbmfZ2+b93HoPmG6lCSVT8TG4y4c2wdYlUIWyjLOefUnhFpRo
-         0HmzNOW90h4nNv8WNiQy/IcGujauCci6RgEGtB9+LMc/vaV6Y7B+1IoE4sPtZrrsuMh4
-         cv2g==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JFBsXOVlHHjdSzZeWJyJvvBdMued/K0xOEkGtWU402Q=;
+        b=jw0JK6OAT3hKXrthWczTi8kJcQy2JrposNHUiEHoienPromNuX/6FDiFYTdHNKtFwO
+         IuZ1sVYvgK7ysivr4tQcIvOpxT7R2k45lK8OCc1Kq8CiYi2aqfag7FK2nQ/TATZkvFuB
+         TyRJms8yqv928MC35tBPy00HM3O8AbwScP0OAiPv3R/yaKb9ExXiFxZRlvTb7qEVsNgq
+         2vo9FwBN7/Osc73xCQYo+aMRBo5xhEvh/pyaCrGz/Iyslz5Gg+mo4bdedc6aC536kvr6
+         XoZ8Wb1OkX+FJVOAWs1phd/Tj0byJiuyLKvd8rdWz1RRJpcMfhM9BZsYZjXbsdD8EPx2
+         eHhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LRgGDa7UAPYiNMpF39Lh56jOssvyorq9ppnVgi31J/o=;
-        b=MXiWAQIBaBpxtCz1+jqaY5PYQufJxrbI/Q7MLFyoiR3/Gf2paSLwmRcW3bkED5AjEJ
-         FHweytCqlg91fjYlqwW2cwbxLLmTLSazPgvYCfM7AhMjBGglZ6YerwC8vvWuTOlqdQgN
-         W9VwakqaBP6ftMEYKtNZ/BCEZbQw9QjgWRDL/wfsqKdLdtspLFOZcD+B1DGuv3Mzn8Rc
-         IMejk3EC+nprexNK44Odg1pOedZups0qO55S0pimq3t2/X8NpzALGCmlrsTo0VS5oY1Z
-         Xl8+f8sRUktj31MjbMz9GID+5lNRmOOzKzLExZs1Nqmv7EDhuDmDfiAOD5VbN09N0ic8
-         PEUw==
-X-Gm-Message-State: AOAM530s1VmFheN2zEOtATyZ2kB9xNIYo7189yGJuG9wb5vYyy/Z6gVU
-        5agltHqKUYtLjVl9+F6OAdr8aA==
-X-Google-Smtp-Source: ABdhPJwrZ0lc01wGERI3BcvvrKoJqUHSE2Q747ublXsAoC/rukUPbzW2AAL5/9C6tWoe/P1U0YuLLQ==
-X-Received: by 2002:a63:fb12:: with SMTP id o18mr539600pgh.438.1617751993641;
-        Tue, 06 Apr 2021 16:33:13 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z3sm19557575pff.40.2021.04.06.16.33.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JFBsXOVlHHjdSzZeWJyJvvBdMued/K0xOEkGtWU402Q=;
+        b=fBfDAgBtw1qMc4Eo9tHEZ4sWERDK7MYaTixXSyXZVirWX6cv3QgRvvZP4mpNhhU1Gg
+         FpbOu0qu51qi0Je5KYoX8TnQZ3l86crlOcPdtfPQnZSfxi1xxY48EePF1Ow+lqiaEO1h
+         bln4+8qN6hu9DihmrmEB7RUTqvjwOQ/wxNV5cAp7L/3bv5U++KM8ei4oWSxHg+K8Cj6C
+         6bQtuwQ/+/lBweTJpyNqs0EGdI2V9hLAUZFRrx7/AxvI2dp3eA0Cuav3xoI+RUo66EQq
+         Gu7mBs99Pr755Evm5p6DdzOiiW+OmbG2Vh5bQ+XG3CNY5h9kygdYCxt8BtPw3f8lvCHL
+         6h8Q==
+X-Gm-Message-State: AOAM5339bCRjAMxObjZg6uW9oqRR8euMzJrHvJCRpwA4aAtV8ge6k7t7
+        ejOUHdXyphJESm3MoXeaVjk+yDT4dVh5kb/0pFpfbJ3k4QmxYT8fAsfJK71Ca5MDycd0UKRuv+f
+        BoTbH+RSvaitcVMSL8jnfYXlZjyyp
+X-Received: by 2002:a05:6e02:1a24:: with SMTP id g4mr541653ile.56.1617752123129;
+        Tue, 06 Apr 2021 16:35:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaO3ytfZodkyajwuLbl1Y4fWouzIS2WVmGek9UP7t+cDJ+s7ZY5VtwQFZ3Q8QArUTuCz1zEw==
+X-Received: by 2002:a05:6e02:1a24:: with SMTP id g4mr541645ile.56.1617752122966;
+        Tue, 06 Apr 2021 16:35:22 -0700 (PDT)
+Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:6ecd:6512:5d03:eeb6])
+        by smtp.googlemail.com with ESMTPSA id h128sm14399373ioa.32.2021.04.06.16.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 16:33:12 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 17:33:10 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] remoteproc: pru: Fix wrong success return value for
- fw events
-Message-ID: <20210406233310.GB330882@xps15>
-References: <20210323223839.17464-1-s-anna@ti.com>
- <20210323223839.17464-3-s-anna@ti.com>
+        Tue, 06 Apr 2021 16:35:22 -0700 (PDT)
+From:   Aditya Pakki <pakki001@umn.edu>
+To:     pakki001@umn.edu
+Cc:     kjlu@umn.edu, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] video: fbdev: sm501fb:  Fix deallocation of buffers order
+Date:   Tue,  6 Apr 2021 18:35:17 -0500
+Message-Id: <20210406233519.2205389-1-pakki001@umn.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323223839.17464-3-s-anna@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:38:38PM -0500, Suman Anna wrote:
-> The irq_create_fwspec_mapping() returns a proper virq value on success
-> and 0 upon any failure. The pru_handle_intrmap() treats this as an error
-> and disposes all firmware event mappings correctly, but is returning
-> this incorrect value as is, letting the pru_rproc_start() interpret it
-> as a success and boot the PRU.
-> 
+The resource release in sm501fb_remove() is not in the inverse order of
+sm501fb_probe(), for the buffers. Release the info object after
+deallocating the buffers.
 
-Very subtle...  I had to look twice to make sure.
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+---
+ drivers/video/fbdev/sm501fb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+diff --git a/drivers/video/fbdev/sm501fb.c b/drivers/video/fbdev/sm501fb.c
+index 6a52eba64559..4c32c9e88850 100644
+--- a/drivers/video/fbdev/sm501fb.c
++++ b/drivers/video/fbdev/sm501fb.c
+@@ -2060,11 +2060,11 @@ static int sm501fb_remove(struct platform_device *pdev)
+ 		unregister_framebuffer(fbinfo_pnl);
+ 
+ 	sm501fb_stop(info);
+-	kfree(info);
+ 
+ 	framebuffer_release(fbinfo_pnl);
+ 	framebuffer_release(fbinfo_crt);
+ 
++	kfree(info);
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-> Fix this by returning an error value back upon any such failure. While
-> at this, revise the error trace to print some meaningful info about the
-> failed event.
-> 
-> Fixes: c75c9fdac66e ("remoteproc: pru: Add support for PRU specific interrupt configuration")
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
->  drivers/remoteproc/pru_rproc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> index a9d07c0751be..87b43976c51b 100644
-> --- a/drivers/remoteproc/pru_rproc.c
-> +++ b/drivers/remoteproc/pru_rproc.c
-> @@ -339,8 +339,10 @@ static int pru_handle_intrmap(struct rproc *rproc)
->  
->  		pru->mapped_irq[i] = irq_create_fwspec_mapping(&fwspec);
->  		if (!pru->mapped_irq[i]) {
-> -			dev_err(dev, "failed to get virq\n");
-> -			ret = pru->mapped_irq[i];
-> +			dev_err(dev, "failed to get virq for fw mapping %d: event %d chnl %d host %d\n",
-> +				i, fwspec.param[0], fwspec.param[1],
-> +				fwspec.param[2]);
-> +			ret = -EINVAL;
->  			goto map_fail;
->  		}
->  	}
-> -- 
-> 2.30.1
-> 
