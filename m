@@ -2,148 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A15355543
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97693355542
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344528AbhDFNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:34:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243941AbhDFNeh (ORCPT
+        id S1344521AbhDFNen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233367AbhDFNef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:34:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617716069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h0Jdnzafbs6n+Z5KUUUKvvir1l+H0uK55dPK2XrwHg8=;
-        b=YYeIPdXgCeXgJr7dge274/7OP7FhwVNkWqu3vIOJjHxRlDtGu+4/1Ya1aK9B8VGGsaXirs
-        fusfovCxweIIKsy29IuISSunVvbX7aq1CU9NYVgfH/zJ8WcRUvE/rbSSU/4QFjvqb+1FO+
-        ntI/ZlSSNfk22ek6WoFj8kp1WkcHiNE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-JUHMKNzwPgWPqXPg9zEL_g-1; Tue, 06 Apr 2021 09:34:25 -0400
-X-MC-Unique: JUHMKNzwPgWPqXPg9zEL_g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1338C612AB;
-        Tue,  6 Apr 2021 13:34:22 +0000 (UTC)
-Received: from krava (unknown [10.40.195.36])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EB56D6EF42;
-        Tue,  6 Apr 2021 13:34:17 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 15:34:16 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, irogers@google.com, linuxarm@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        zhangshaokun@hisilicon.com, pc@us.ibm.com
-Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
- parsing test
-Message-ID: <YGxjWNdZGqWqL87r@krava>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-3-git-send-email-john.garry@huawei.com>
- <YGXPdEAecos4iPVc@krava>
- <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
- <YGxRbH0XWaj6AWfa@krava>
- <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
- <YGxaOnUZnNmDg/2P@krava>
- <49025439-f9e3-0d32-b0a3-ff9f9ff71835@huawei.com>
+        Tue, 6 Apr 2021 09:34:35 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C21C06174A;
+        Tue,  6 Apr 2021 06:34:26 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id d12so22761744lfv.11;
+        Tue, 06 Apr 2021 06:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jfELxhLa2jf8lj10pbubktTMfsQTY9avlQlTjAXXxHY=;
+        b=knu2bNyKEuX1p5cvPzyMd3Ye7+sj1nuJ8dISCbzkJI5VnRKk4KzE2qF6GFI5+tgzKX
+         0aoUntjS3KMf7MvPqwxGOKSPyn+gc49YEzGciDRsrAS2+CvBTueFLux9sUbMdbeuGpsU
+         J53UYJOtAm3unB1WBl+jdNoCiConqRZiLHhwbjkJBzQUdRj97HbbpQMz7oAja/eocWoN
+         T8DJJfOqLxsI/UE1rnfSEUBg5puPG11MdnTp/WeU984J2drSmkXbeewXogMNRpbbrQyH
+         caF/93QoOkijk52Ij7iwMTpUk48YeaLSy60QUvlWfRnMVxoYeh07jQ438pw/Zmdye1Bx
+         F6uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jfELxhLa2jf8lj10pbubktTMfsQTY9avlQlTjAXXxHY=;
+        b=iz2ux30yRY1qtpFxFoBhqX26Q4hfSjowoLak7hdQ940ZQuAF/Y7SVjYR24TYFmaQ5S
+         gittbANVffCJxau2FDHbGJQHgmev7piFOUHQqn1q1xwMh6xkgWb1aeAQ9/eP3jeDiodE
+         hx7j/tPsKReoGURIAxIjbXa6LeGrUapgJvzuuTtPUb3sVvUfyTuyT0KKvEecUMUUEMke
+         AVS+8oL4JHWH0h+JFnoUYumS9aP8h9Uow98og94tKa3itdyxdJuG7jcspTy1IkcDUdxl
+         f1SkkyD9en14JTbIRie5iS73oJmVlyighSvyTElxz3P7JEGzVV2WR9MT6loNexs803sC
+         uFhA==
+X-Gm-Message-State: AOAM531cENAZ/mZJ3PvkI+epl8u3yDmCNCr0Jbk2eYcGov5PP+a/wj45
+        S2sCUEfzcSHhFNS+NmgRqubhU+DzGlA=
+X-Google-Smtp-Source: ABdhPJyNNQx3yirCwBmkU20PgUiOqZScDo3PpPbHCSporh2uMB/Ym14zYpDJ/0Obk4uMEDdOh5HrPg==
+X-Received: by 2002:a05:6512:3484:: with SMTP id v4mr20736878lfr.137.1617716064777;
+        Tue, 06 Apr 2021 06:34:24 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id h10sm2157220lfc.266.2021.04.06.06.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 06:34:24 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 136DYLgT032012;
+        Tue, 6 Apr 2021 16:34:22 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 136DYLZu032011;
+        Tue, 6 Apr 2021 16:34:21 +0300
+Date:   Tue, 6 Apr 2021 16:34:20 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Ernesto Corona <ernesto.corona@intel.com>,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v29 0/6] JTAG driver introduction
+Message-ID: <20210406133420.GY10267@home.paul.comp>
+References: <20200413222920.4722-1-ernesto.corona@intel.com>
+ <20210115104635.GA2971@home.paul.comp>
+ <YGxgfFBUr6eHJ1Qi@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49025439-f9e3-0d32-b0a3-ff9f9ff71835@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YGxgfFBUr6eHJ1Qi@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:21:11PM +0100, John Garry wrote:
-> On 06/04/2021 13:55, Jiri Olsa wrote:
-> > > > > So expr__find_other() may add a new item to pctx->ids, and we always iterate
-> > > > > again, and try to lookup any pmu_events, *, above. If none exist, then we
-> > > > hm, I don't see that.. so, what you do is:
-> > > > 
-> > > > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
-> > > > 
-> > > > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> > > > 	}
-> > > > 
-> > > > and what I think we need to do is:
-> > > > 
-> > > > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
-> > > > 
-> > > > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> > > > 
-> > > > 		break;	
-> > > > 	}
-> > > > 
-> > > > each time you resolve another metric, you need to restart
-> > > > the pctx->ids iteration, because there will be new items,
-> > > > and we are in the middle of it
-> > > Sure, but we will restart anyway.
-> > hum, where? you call expr__find_other and continue to next
-> > pctx->ids item
-> 
-> We have:
-> 
-> resolve_metric_simple()
-> {
-> 	bool all;
-> 
-> 	do {
-> 		all = true;
-> 
-> 		hashmap__for_each_entry_safe(&pctx->ids, ...) {
-> 
-> 			pe = metricgroup_find_metric(cur->key, map);
-> 			if (!pe)
-> 				continue;
-> 
-> 			...
-> 			all = false;
-> 
-> 			expr_del_id(pctx, cur->key);
-> 
-> 			...
-> 			rc = expr__find_other(pe->metric_expr, pctx);
-> 			if (rc)
-> 				goto out_err;
-> 		}
-> 
-> 	} while (!all);
-> 
-> }
-> 
-> So once we evaluate a pmu_event in pctx->ids in @pe, @all is set false, and
-> we would loop again in the do-while loop, regardless of what
-> expr__find_other() does (apart from erroring), and so call
-> hashmap__for_each_entry_safe(&pctx->ids, ) again.
+Hi Andy, 
 
-ah ok, so it finishes the hash iteration first and
-then restarts it.. ok, I missed that, then it's fine
-
+On Tue, Apr 06, 2021 at 04:22:04PM +0300, Andy Shevchenko wrote:
+> On Fri, Jan 15, 2021 at 01:46:35PM +0300, Paul Fertser wrote:
+> > I have to note that the current v29 version of the series is broken in
+> > several aspects:
 > 
-> This is really what is done in __resolve_metric() - indeed, I would use that
-> function directly, but it looks hard to extract that from metricgroup.c .
+> Is it correct that this series is actually abandoned so far?
 
-yea, it's another world ;-) it's better to keep it separated
+I have an e-mail from Ernesto sent on 10 Feb 2021 stating they're
+going to continue the work.
 
-thanks,
-jirka
-
-> 
-> Thanks,
-> John
-> 
-> > 
-> > > Regardless of this, I don't think what I am doing is safe, i.e. adding new
-> > > items in the middle of the iter, so I will change in the way you suggest.
-> > it'll always add items in the middle of the iteration
-> 
-
+-- 
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
