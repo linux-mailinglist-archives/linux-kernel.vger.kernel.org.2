@@ -2,265 +2,819 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F87355CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE07355CBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbhDFUJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347162AbhDFUJM (ORCPT
+        id S235615AbhDFUMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:12:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47319 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232628AbhDFUMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:09:12 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED42EC06174A;
-        Tue,  6 Apr 2021 13:09:03 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so3981787ooe.9;
-        Tue, 06 Apr 2021 13:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AX6W2V3H2wUm9gL8P5cg3gNxKe6TSNhG0ajD+9l3ZZ0=;
-        b=kgX0tnjpuFgD8e+TwJm4BBNXMe9Z8STyhsZfewsWFnuw96dhOKDL/QwQnOzx5Hgkgk
-         GZ86yxoDjaWR2kkHj394MJvOYKA69TUKOSKJdFSV//kUruWWCUhbyU2JeNPH/wAlJALs
-         Z7l0AY3offqYt5jyNvAedgOHNUyQblJ/vl6ILDiBnQW2rYtbpx1bOgmXv8gJLqpeP6IK
-         SQb5spqmPkcp3gao82G6nfOGFWnvzCQztkiNKS/8FAJgQYocV3DD7ZeKUUpSVzVLU5T/
-         PPANRcnm+mY16tMfGMNDI8nnuX5zMfs34IOtys0eVVffrc1mW3pJ7+OkJ4YQN2oXWtcP
-         bqHQ==
+        Tue, 6 Apr 2021 16:12:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617739919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dDMbym+gcIHauWd8PLihhn251HnUOmYiBGfNa+GBcCs=;
+        b=XoAtnd1s1ywaI5BesRanC9Wz73znLyyZ6ooMLxwH9zVhxenmXP/AcebDkYhyxmbiVsKYRM
+        9b8vvIzrKrPTwvtD+VVDypqA5+Tn47OokRlOjdsTiquOSxdY3O49kj8/H/NA7P+Spb+4Ki
+        4h2eX6sdOaGe1OYLOMmjYbB7QyRdo2E=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-bkRRwH1zONKQ0oIAxrU2fg-1; Tue, 06 Apr 2021 16:11:56 -0400
+X-MC-Unique: bkRRwH1zONKQ0oIAxrU2fg-1
+Received: by mail-qv1-f70.google.com with SMTP id i7so11139293qvh.22
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:11:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AX6W2V3H2wUm9gL8P5cg3gNxKe6TSNhG0ajD+9l3ZZ0=;
-        b=dkx+LWWyqYuTT8Yv2nQHI2u41L6g7n2qABbXBBk8P62J/x+4xlb1vZIbDeWZAzXU9J
-         rFE0lIagUeDOKVeTsIgdULoAdWwcRW7HMNIo1jfR0xqpixxeoN+55i8JaKf5EOEGn6AC
-         6EIMGhUQrMFw3fFdpbEnsgWNAzSzu0Dpeusoca2zFD2WcfpEtjlF3onHsrYXqV3yrABI
-         ZifFxNcSrnJJOQw70r53lyAJX2U3q3JyKfi834K8It+jt5iH1KHyY9iUCEku/yf8klUE
-         kwdPOcTcWyxGZ45/+fN3CBzhp7CQOdjCySKjg83ge6pfx73Iw96hflpL+euaZScTPZVT
-         mKqg==
-X-Gm-Message-State: AOAM533FMhz3MOJWFWuDv5UPVNpqatR0lADYvEAJynrtghJdpQKvfC1k
-        qoPVJxIgXoJF5/9/QjPTRyNX6S8jYF8=
-X-Google-Smtp-Source: ABdhPJzR5yesO3MDLeLvOA0ilU3GAWgcqbBQD//DCSXd2yhJl9IOpMuxZaqqMjGVATFcmJb1xi2I3A==
-X-Received: by 2002:a4a:9843:: with SMTP id z3mr27804519ooi.51.1617739742891;
-        Tue, 06 Apr 2021 13:09:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v195sm3996112oia.38.2021.04.06.13.09.01
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=dDMbym+gcIHauWd8PLihhn251HnUOmYiBGfNa+GBcCs=;
+        b=PIO/kI0xf0X15TeAc19zj+2GUqUL2eqjaQjGHtxNwNgxX8k9GZv6Vo84+rO0TpUjYV
+         bIEQ4DWuz51dE6tgRH8vl61FoVX47nbhQM/eE3/Iev9lf4MC8kamQ/TmRhPPoZenhG1M
+         CAkR/IQEFDAtu3CBOh0+Oxe1GFbC2z6R3gKt1aGPMw5MfWEp6PBWSxms7B53H83mWmuF
+         DjUS2/oCjelbCj08LVBTq9BkMJi0zJzio/+amFFzEilNB4BZP0bzEPsaX/jodFUU5gwq
+         Hy3l3i+78YvO4UuiLmgt7WGk7XUJyWQa37xwWpVoSPxJFklv1VcW9bpfI9EzdiNDl57H
+         McPQ==
+X-Gm-Message-State: AOAM5318EYSHVrjTFV471TPXppyvPB0lczeARYdLcbzd1ieguewZhiaO
+        eak02vPwmNMZqiILeKhw1Q55oZkSM7ay+vaMW/0+W8pdoeC9lNSUONHK+y0BG8mDM00pMwqipNx
+        26FKEmjJ2ivfUo4Gws3Y6yZlo
+X-Received: by 2002:ac8:4508:: with SMTP id q8mr28199961qtn.48.1617739915064;
+        Tue, 06 Apr 2021 13:11:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEQJFL7g48DsPnyyjZK17NAdnzI59zs6YK97/yx6GfuuC01W8umdifU3DJmXIu0kDNL12ULQ==
+X-Received: by 2002:ac8:4508:: with SMTP id q8mr28199946qtn.48.1617739914713;
+        Tue, 06 Apr 2021 13:11:54 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v66sm16903014qkd.113.2021.04.06.13.11.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 13:09:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2] hwmon: (sbtsi) Don't read sensor more than once if it
- doesn't respond
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     Kun Yi <kunyi@google.com>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ed438518-66ad-6e08-2a1b-597ac3f2ae8d@roeck-us.net>
- <20210406181624.713-1-aladyshev22@gmail.com>
- <0ba1d271-78cd-c30a-e662-97ab8ba6451a@roeck-us.net>
- <CACSj6VUCgxCQeA9EF4Oz+pKY+TdF9Gp=DV1V=-TcVE4ixtg45Q@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <40d02688-d40c-fcdd-b8eb-580a1e44b244@roeck-us.net>
-Date:   Tue, 6 Apr 2021 13:09:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 06 Apr 2021 13:11:54 -0700 (PDT)
+Subject: Re: [PATCH V4 XRT Alveo 16/20] fpga: xrt: clock platform driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
+ <20210324052947.27889-17-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4d39d462-a75b-abd3-34c0-1d583185e550@redhat.com>
+Date:   Tue, 6 Apr 2021 13:11:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CACSj6VUCgxCQeA9EF4Oz+pKY+TdF9Gp=DV1V=-TcVE4ixtg45Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210324052947.27889-17-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 12:20 PM, Konstantin Aladyshev wrote:
-> Thanks for the comment.
-> Yes, you are correct, this patch adds an extra 'i2c_smbus_read_byte_data' call for the temp_max/temp_min reads.
-> I guess I did that intentionally because I just wanted to keep the restructured code concise. After all I thought, 'temp_input' generally is read more often than 'temp_max/temp_min'.
-> As I understand now, it seems like it is not acceptable. Therefore could you point me in the right direction about what I should do?
-> Should I just stick with the original driver version and simply add two more i2c call checks for the first operations for min/max?
-> 
 
-Correct, it is not acceptable. A normal use case for hwmon devices is to use the "sensors"
-command which _will_ read all attributes. i2c reads are expensive, and unnecessary read
-operations should be avoided.
+On 3/23/21 10:29 PM, Lizhi Hou wrote:
+> Add clock driver. Clock is a hardware function discovered by walking
+> xclbin metadata. A platform device node will be created for it. Other
+> part of driver configures clock through clock driver.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+> ---
+>   drivers/fpga/xrt/include/xleaf/clock.h |  29 ++
+>   drivers/fpga/xrt/lib/xleaf/clock.c     | 669 +++++++++++++++++++++++++
+>   2 files changed, 698 insertions(+)
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/clock.h
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clock.c
+>
+> diff --git a/drivers/fpga/xrt/include/xleaf/clock.h b/drivers/fpga/xrt/include/xleaf/clock.h
+> new file mode 100644
+> index 000000000000..6858473fd096
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/xleaf/clock.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Lizhi Hou <Lizhi.Hou@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_CLOCK_H_
+> +#define _XRT_CLOCK_H_
+> +
+> +#include "xleaf.h"
+> +#include <linux/xrt/xclbin.h>
+> +
+> +/*
+> + * CLOCK driver leaf calls.
+> + */
+> +enum xrt_clock_leaf_cmd {
+> +	XRT_CLOCK_SET = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+> +	XRT_CLOCK_GET,
+> +	XRT_CLOCK_VERIFY,
+> +};
+> +
+> +struct xrt_clock_get {
+> +	u16 freq;
+> +	u32 freq_cnter;
+> +};
+> +
+> +#endif	/* _XRT_CLOCK_H_ */
+> diff --git a/drivers/fpga/xrt/lib/xleaf/clock.c b/drivers/fpga/xrt/lib/xleaf/clock.c
+> new file mode 100644
+> index 000000000000..071485e4bf65
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/xleaf/clock.c
+> @@ -0,0 +1,669 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA Clock Wizard Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
+> + *      Sonal Santan <sonals@xilinx.com>
+> + *      David Zhang <davidzha@xilinx.com>
+> + */
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/io.h>
+> +#include "metadata.h"
+> +#include "xleaf.h"
+> +#include "xleaf/clock.h"
+> +#include "xleaf/clkfreq.h"
+> +
+> +/* XRT_CLOCK_MAX_NUM_CLOCKS should be a concept from XCLBIN_ in the future */
+> +#define XRT_CLOCK_MAX_NUM_CLOCKS	4
+> +#define XRT_CLOCK_STATUS_MASK		0xffff
+> +#define XRT_CLOCK_STATUS_MEASURE_START	0x1
+> +#define XRT_CLOCK_STATUS_MEASURE_DONE	0x2
+ok
+> +
+> +#define XRT_CLOCK_STATUS_REG		0x4
+> +#define XRT_CLOCK_CLKFBOUT_REG		0x200
+> +#define XRT_CLOCK_CLKOUT0_REG		0x208
+> +#define XRT_CLOCK_LOAD_SADDR_SEN_REG	0x25C
+> +#define XRT_CLOCK_DEFAULT_EXPIRE_SECS	1
+> +
+> +#define CLOCK_ERR(clock, fmt, arg...)	\
+> +	xrt_err((clock)->pdev, fmt "\n", ##arg)
+> +#define CLOCK_WARN(clock, fmt, arg...)	\
+> +	xrt_warn((clock)->pdev, fmt "\n", ##arg)
+> +#define CLOCK_INFO(clock, fmt, arg...)	\
+> +	xrt_info((clock)->pdev, fmt "\n", ##arg)
+> +#define CLOCK_DBG(clock, fmt, arg...)	\
+> +	xrt_dbg((clock)->pdev, fmt "\n", ##arg)
+> +
+> +#define XRT_CLOCK	"xrt_clock"
+> +
+> +static const struct regmap_config clock_regmap_config = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 4,
+> +	.max_register = 0x1000,
+> +};
+> +
+> +struct clock {
+> +	struct platform_device  *pdev;
+> +	struct regmap		*regmap;
+> +	struct mutex		clock_lock; /* clock dev lock */
+> +
+> +	const char		*clock_ep_name;
+> +};
+> +
+> +/*
+> + * Precomputed table with config0 and config2 register values together with
+> + * target frequency. The steps are approximately 5 MHz apart. Table is
+> + * generated by platform creation tool.
+ok
+> + */
+> +static const struct xmgmt_ocl_clockwiz {
+> +	/* target frequency */
+> +	u16 ocl;
+> +	/* config0 register */
+> +	u32 config0;
+> +	/* config2 register */
+> +	u32 config2;
+> +} frequency_table[] = {
+> +	/*1275.000*/ { 10, 0x02EE0C01, 0x0001F47F },
+ok
+> +	/*1575.000*/ { 15, 0x02EE0F01, 0x00000069},
+> +	/*1600.000*/ { 20, 0x00001001, 0x00000050},
+> +	/*1600.000*/ { 25, 0x00001001, 0x00000040},
+> +	/*1575.000*/ { 30, 0x02EE0F01, 0x0001F434},
+> +	/*1575.000*/ { 35, 0x02EE0F01, 0x0000002D},
+> +	/*1600.000*/ { 40, 0x00001001, 0x00000028},
+> +	/*1575.000*/ { 45, 0x02EE0F01, 0x00000023},
+> +	/*1600.000*/ { 50, 0x00001001, 0x00000020},
+> +	/*1512.500*/ { 55, 0x007D0F01, 0x0001F41B},
+> +	/*1575.000*/ { 60, 0x02EE0F01, 0x0000FA1A},
+> +	/*1462.500*/ { 65, 0x02710E01, 0x0001F416},
+> +	/*1575.000*/ { 70, 0x02EE0F01, 0x0001F416},
+> +	/*1575.000*/ { 75, 0x02EE0F01, 0x00000015},
+> +	/*1600.000*/ { 80, 0x00001001, 0x00000014},
+> +	/*1487.500*/ { 85, 0x036B0E01, 0x0001F411},
+> +	/*1575.000*/ { 90, 0x02EE0F01, 0x0001F411},
+> +	/*1425.000*/ { 95, 0x00FA0E01, 0x0000000F},
+> +	/*1600.000*/ { 100, 0x00001001, 0x00000010},
+> +	/*1575.000*/ { 105, 0x02EE0F01, 0x0000000F},
+> +	/*1512.500*/ { 110, 0x007D0F01, 0x0002EE0D},
+> +	/*1437.500*/ { 115, 0x01770E01, 0x0001F40C},
+> +	/*1575.000*/ { 120, 0x02EE0F01, 0x00007D0D},
+> +	/*1562.500*/ { 125, 0x02710F01, 0x0001F40C},
+> +	/*1462.500*/ { 130, 0x02710E01, 0x0000FA0B},
+> +	/*1350.000*/ { 135, 0x01F40D01, 0x0000000A},
+> +	/*1575.000*/ { 140, 0x02EE0F01, 0x0000FA0B},
+> +	/*1450.000*/ { 145, 0x01F40E01, 0x0000000A},
+> +	/*1575.000*/ { 150, 0x02EE0F01, 0x0001F40A},
+> +	/*1550.000*/ { 155, 0x01F40F01, 0x0000000A},
+> +	/*1600.000*/ { 160, 0x00001001, 0x0000000A},
+> +	/*1237.500*/ { 165, 0x01770C01, 0x0001F407},
+> +	/*1487.500*/ { 170, 0x036B0E01, 0x0002EE08},
+> +	/*1575.000*/ { 175, 0x02EE0F01, 0x00000009},
+> +	/*1575.000*/ { 180, 0x02EE0F01, 0x0002EE08},
+> +	/*1387.500*/ { 185, 0x036B0D01, 0x0001F407},
+> +	/*1425.000*/ { 190, 0x00FA0E01, 0x0001F407},
+> +	/*1462.500*/ { 195, 0x02710E01, 0x0001F407},
+> +	/*1600.000*/ { 200, 0x00001001, 0x00000008},
+> +	/*1537.500*/ { 205, 0x01770F01, 0x0001F407},
+> +	/*1575.000*/ { 210, 0x02EE0F01, 0x0001F407},
+> +	/*1075.000*/ { 215, 0x02EE0A01, 0x00000005},
+> +	/*1512.500*/ { 220, 0x007D0F01, 0x00036B06},
+> +	/*1575.000*/ { 225, 0x02EE0F01, 0x00000007},
+> +	/*1437.500*/ { 230, 0x01770E01, 0x0000FA06},
+> +	/*1175.000*/ { 235, 0x02EE0B01, 0x00000005},
+> +	/*1500.000*/ { 240, 0x00000F01, 0x0000FA06},
+> +	/*1225.000*/ { 245, 0x00FA0C01, 0x00000005},
+> +	/*1562.500*/ { 250, 0x02710F01, 0x0000FA06},
+> +	/*1275.000*/ { 255, 0x02EE0C01, 0x00000005},
+> +	/*1462.500*/ { 260, 0x02710E01, 0x00027105},
+> +	/*1325.000*/ { 265, 0x00FA0D01, 0x00000005},
+> +	/*1350.000*/ { 270, 0x01F40D01, 0x00000005},
+> +	/*1512.500*/ { 275, 0x007D0F01, 0x0001F405},
+> +	/*1575.000*/ { 280, 0x02EE0F01, 0x00027105},
+> +	/*1425.000*/ { 285, 0x00FA0E01, 0x00000005},
+> +	/*1450.000*/ { 290, 0x01F40E01, 0x00000005},
+> +	/*1475.000*/ { 295, 0x02EE0E01, 0x00000005},
+> +	/*1575.000*/ { 300, 0x02EE0F01, 0x0000FA05},
+> +	/*1525.000*/ { 305, 0x00FA0F01, 0x00000005},
+> +	/*1550.000*/ { 310, 0x01F40F01, 0x00000005},
+> +	/*1575.000*/ { 315, 0x02EE0F01, 0x00000005},
+> +	/*1600.000*/ { 320, 0x00001001, 0x00000005},
+> +	/*1462.500*/ { 325, 0x02710E01, 0x0001F404},
+> +	/*1237.500*/ { 330, 0x01770C01, 0x0002EE03},
+> +	/* 837.500*/ { 335, 0x01770801, 0x0001F402},
+> +	/*1487.500*/ { 340, 0x036B0E01, 0x00017704},
+> +	/* 862.500*/ { 345, 0x02710801, 0x0001F402},
+> +	/*1575.000*/ { 350, 0x02EE0F01, 0x0001F404},
+> +	/* 887.500*/ { 355, 0x036B0801, 0x0001F402},
+> +	/*1575.000*/ { 360, 0x02EE0F01, 0x00017704},
+> +	/* 912.500*/ { 365, 0x007D0901, 0x0001F402},
+> +	/*1387.500*/ { 370, 0x036B0D01, 0x0002EE03},
+> +	/*1500.000*/ { 375, 0x00000F01, 0x00000004},
+> +	/*1425.000*/ { 380, 0x00FA0E01, 0x0002EE03},
+> +	/* 962.500*/ { 385, 0x02710901, 0x0001F402},
+> +	/*1462.500*/ { 390, 0x02710E01, 0x0002EE03},
+> +	/* 987.500*/ { 395, 0x036B0901, 0x0001F402},
+> +	/*1600.000*/ { 400, 0x00001001, 0x00000004},
+> +	/*1012.500*/ { 405, 0x007D0A01, 0x0001F402},
+> +	/*1537.500*/ { 410, 0x01770F01, 0x0002EE03},
+> +	/*1037.500*/ { 415, 0x01770A01, 0x0001F402},
+> +	/*1575.000*/ { 420, 0x02EE0F01, 0x0002EE03},
+> +	/*1487.500*/ { 425, 0x036B0E01, 0x0001F403},
+> +	/*1075.000*/ { 430, 0x02EE0A01, 0x0001F402},
+> +	/*1087.500*/ { 435, 0x036B0A01, 0x0001F402},
+> +	/*1375.000*/ { 440, 0x02EE0D01, 0x00007D03},
+> +	/*1112.500*/ { 445, 0x007D0B01, 0x0001F402},
+> +	/*1575.000*/ { 450, 0x02EE0F01, 0x0001F403},
+> +	/*1137.500*/ { 455, 0x01770B01, 0x0001F402},
+> +	/*1437.500*/ { 460, 0x01770E01, 0x00007D03},
+> +	/*1162.500*/ { 465, 0x02710B01, 0x0001F402},
+> +	/*1175.000*/ { 470, 0x02EE0B01, 0x0001F402},
+> +	/*1425.000*/ { 475, 0x00FA0E01, 0x00000003},
+> +	/*1500.000*/ { 480, 0x00000F01, 0x00007D03},
+> +	/*1212.500*/ { 485, 0x007D0C01, 0x0001F402},
+> +	/*1225.000*/ { 490, 0x00FA0C01, 0x0001F402},
+> +	/*1237.500*/ { 495, 0x01770C01, 0x0001F402},
+> +	/*1562.500*/ { 500, 0x02710F01, 0x00007D03},
+> +	/*1262.500*/ { 505, 0x02710C01, 0x0001F402},
+> +	/*1275.000*/ { 510, 0x02EE0C01, 0x0001F402},
+> +	/*1287.500*/ { 515, 0x036B0C01, 0x0001F402},
+> +	/*1300.000*/ { 520, 0x00000D01, 0x0001F402},
+> +	/*1575.000*/ { 525, 0x02EE0F01, 0x00000003},
+> +	/*1325.000*/ { 530, 0x00FA0D01, 0x0001F402},
+> +	/*1337.500*/ { 535, 0x01770D01, 0x0001F402},
+> +	/*1350.000*/ { 540, 0x01F40D01, 0x0001F402},
+> +	/*1362.500*/ { 545, 0x02710D01, 0x0001F402},
+> +	/*1512.500*/ { 550, 0x007D0F01, 0x0002EE02},
+> +	/*1387.500*/ { 555, 0x036B0D01, 0x0001F402},
+> +	/*1400.000*/ { 560, 0x00000E01, 0x0001F402},
+> +	/*1412.500*/ { 565, 0x007D0E01, 0x0001F402},
+> +	/*1425.000*/ { 570, 0x00FA0E01, 0x0001F402},
+> +	/*1437.500*/ { 575, 0x01770E01, 0x0001F402},
+> +	/*1450.000*/ { 580, 0x01F40E01, 0x0001F402},
+> +	/*1462.500*/ { 585, 0x02710E01, 0x0001F402},
+> +	/*1475.000*/ { 590, 0x02EE0E01, 0x0001F402},
+> +	/*1487.500*/ { 595, 0x036B0E01, 0x0001F402},
+> +	/*1575.000*/ { 600, 0x02EE0F01, 0x00027102},
+> +	/*1512.500*/ { 605, 0x007D0F01, 0x0001F402},
+> +	/*1525.000*/ { 610, 0x00FA0F01, 0x0001F402},
+> +	/*1537.500*/ { 615, 0x01770F01, 0x0001F402},
+> +	/*1550.000*/ { 620, 0x01F40F01, 0x0001F402},
+> +	/*1562.500*/ { 625, 0x02710F01, 0x0001F402},
+> +	/*1575.000*/ { 630, 0x02EE0F01, 0x0001F402},
+> +	/*1587.500*/ { 635, 0x036B0F01, 0x0001F402},
+> +	/*1600.000*/ { 640, 0x00001001, 0x0001F402},
+> +	/*1290.000*/ { 645, 0x01F44005, 0x00000002},
+> +	/*1462.500*/ { 650, 0x02710E01, 0x0000FA02}
+> +};
+> +
+> +static u32 find_matching_freq_config(unsigned short freq,
+> +				     const struct xmgmt_ocl_clockwiz *table,
+> +				     int size)
+> +{
+> +	u32 end = size - 1;
+> +	u32 start = 0;
+> +	u32 idx;
+> +
+> +	if (freq < table[0].ocl)
+> +		return 0;
+> +
+> +	if (freq > table[size - 1].ocl)
+> +		return size - 1;
+ok
+> +
+> +	while (start < end) {
+> +		idx = (start + end) / 2;
+ok
+> +		if (freq == table[idx].ocl)
+> +			break;
+> +		if (freq < table[idx].ocl)
+> +			end = idx;
+> +		else
+> +			start = idx + 1;
+> +	}
+> +	if (freq < table[idx].ocl)
+> +		idx--;
+> +
+> +	return idx;
+> +}
+> +
+> +static u32 find_matching_freq(u32 freq,
+> +			      const struct xmgmt_ocl_clockwiz *freq_table,
+> +			      int freq_table_size)
+> +{
+> +	int idx = find_matching_freq_config(freq, freq_table, freq_table_size);
+> +
+> +	return freq_table[idx].ocl;
+> +}
+> +
+> +static inline int clock_wiz_busy(struct clock *clock, int cycle, int interval)
+> +{
+> +	u32 val = 0;
+> +	int count;
+> +	int ret;
+> +
+> +	for (count = 0; count < cycle; count++) {
+> +		ret = regmap_read(clock->regmap, XRT_CLOCK_STATUS_REG, &val);
+> +		if (ret) {
+> +			CLOCK_ERR(clock, "read status failed %d", ret);
+> +			return ret;
+> +		}
+> +		if (val == 1)
+> +			break;
+ok
+> +
+> +		mdelay(interval);
+> +	}
+> +	if (val != 1) {
+> +		CLOCK_ERR(clock, "clockwiz is (%u) busy after %d ms",
+> +			  val, cycle * interval);
+> +		return -EBUSY;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int get_freq(struct clock *clock, u16 *freq)
+> +{
+ok, #define removed
+> +	u32 mul_frac0 = 0;
+> +	u32 div_frac1 = 0;
+> +	u32 mul0, div0;
+> +	u64 input;
+> +	u32 div1;
+> +	u32 val;
+> +	int ret;
+> +
+> +	WARN_ON(!mutex_is_locked(&clock->clock_lock));
+> +
+> +	ret = regmap_read(clock->regmap, XRT_CLOCK_STATUS_REG, &val);
+ok, regs defined above
+> +	if (ret) {
+> +		CLOCK_ERR(clock, "read status failed %d", ret);
+> +		return ret;
+> +	}
+> +
+> +	if ((val & 0x1) == 0) {
+> +		CLOCK_ERR(clock, "clockwiz is busy %x", val);
+> +		*freq = 0;
+> +		return -EBUSY;
+> +	}
+> +
+> +	ret = regmap_read(clock->regmap, XRT_CLOCK_CLKFBOUT_REG, &val);
+> +	if (ret) {
+> +		CLOCK_ERR(clock, "read clkfbout failed %d", ret);
+> +		return ret;
+> +	}
+> +
+> +	div0 = val & 0xff;
+> +	mul0 = (val & 0xff00) >> 8;
+> +	if (val & BIT(26)) {
+> +		mul_frac0 = val >> 16;
+> +		mul_frac0 &= 0x3ff;
+> +	}
+> +
+> +	/*
+> +	 * Multiply both numerator (mul0) and the denominator (div0) with 1000
+> +	 * to account for fractional portion of multiplier
+> +	 */
+> +	mul0 *= 1000;
+> +	mul0 += mul_frac0;
+> +	div0 *= 1000;
+> +
+> +	ret = regmap_read(clock->regmap, XRT_CLOCK_CLKOUT0_REG, &val);
+> +	if (ret) {
+> +		CLOCK_ERR(clock, "read clkout0 failed %d", ret);
+> +		return ret;
+> +	}
+> +
+> +	div1 = val & 0xff;
+> +	if (val & BIT(18)) {
+> +		div_frac1 = val >> 8;
+> +		div_frac1 &= 0x3ff;
+> +	}
+> +
+> +	/*
+> +	 * Multiply both numerator (mul0) and the denominator (div1) with
+> +	 * 1000 to account for fractional portion of divider
+> +	 */
+> +
+> +	div1 *= 1000;
+> +	div1 += div_frac1;
+> +	div0 *= div1;
+> +	mul0 *= 1000;
+> +	if (div0 == 0) {
+> +		CLOCK_ERR(clock, "clockwiz 0 divider");
+> +		return 0;
+> +	}
+> +
+> +	input = mul0 * 100;
+> +	do_div(input, div0);
+> +	*freq = (u16)input;
+> +
+> +	return 0;
+> +}
+> +
+> +static int set_freq(struct clock *clock, u16 freq)
+> +{
+> +	int err = 0;
+> +	u32 idx = 0;
+> +	u32 val = 0;
+> +	u32 config;
+> +
+> +	mutex_lock(&clock->clock_lock);
+> +	idx = find_matching_freq_config(freq, frequency_table,
+> +					ARRAY_SIZE(frequency_table));
+> +
+> +	CLOCK_INFO(clock, "New: %d Mhz", freq);
+> +	err = clock_wiz_busy(clock, 20, 50);
+> +	if (err)
+> +		goto fail;
+> +
+> +	config = frequency_table[idx].config0;
+> +	err = regmap_write(clock->regmap, XRT_CLOCK_CLKFBOUT_REG, config);
+> +	if (err) {
+> +		CLOCK_ERR(clock, "write clkfbout failed %d", err);
+> +		goto fail;
+> +	}
+> +
+> +	config = frequency_table[idx].config2;
+> +	err = regmap_write(clock->regmap, XRT_CLOCK_CLKOUT0_REG, config);
+> +	if (err) {
+> +		CLOCK_ERR(clock, "write clkout0 failed %d", err);
+> +		goto fail;
+> +	}
+> +
+> +	mdelay(10);
+> +	err = regmap_write(clock->regmap, XRT_CLOCK_LOAD_SADDR_SEN_REG, 7);
+> +	if (err) {
+> +		CLOCK_ERR(clock, "write load_saddr_sen failed %d", err);
+> +		goto fail;
+> +	}
+> +
+> +	mdelay(1);
+> +	err = regmap_write(clock->regmap, XRT_CLOCK_LOAD_SADDR_SEN_REG, 2);
+> +	if (err) {
+> +		CLOCK_ERR(clock, "write saddr failed %d", err);
+> +		goto fail;
+> +	}
+> +
+> +	CLOCK_INFO(clock, "clockwiz waiting for locked signal");
+> +
+> +	err = clock_wiz_busy(clock, 100, 100);
+> +	if (err) {
+> +		CLOCK_ERR(clock, "clockwiz MMCM/PLL did not lock");
+> +		/* restore */
+> +		regmap_write(clock->regmap, XRT_CLOCK_LOAD_SADDR_SEN_REG, 4);
+> +		mdelay(10);
+> +		regmap_write(clock->regmap, XRT_CLOCK_LOAD_SADDR_SEN_REG, 0);
+> +		goto fail;
+> +	}
+> +	regmap_read(clock->regmap, XRT_CLOCK_CLKFBOUT_REG, &val);
+> +	CLOCK_INFO(clock, "clockwiz CONFIG(0) 0x%x", val);
+> +	regmap_read(clock->regmap, XRT_CLOCK_CLKOUT0_REG, &val);
+> +	CLOCK_INFO(clock, "clockwiz CONFIG(2) 0x%x", val);
+> +
+> +fail:
+> +	mutex_unlock(&clock->clock_lock);
+> +	return err;
+> +}
+> +
+> +static int get_freq_counter(struct clock *clock, u32 *freq)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(clock->pdev);
+> +	struct platform_device *pdev = clock->pdev;
+> +	struct platform_device *counter_leaf;
+> +	const void *counter;
+ok
+> +	int err;
+> +
+> +	WARN_ON(!mutex_is_locked(&clock->clock_lock));
+> +
+> +	err = xrt_md_get_prop(DEV(pdev), pdata->xsp_dtb, clock->clock_ep_name,
+> +			      NULL, XRT_MD_PROP_CLK_CNT, &counter, NULL);
+> +	if (err) {
+> +		xrt_err(pdev, "no counter specified");
+> +		return err;
+> +	}
+> +
+> +	counter_leaf = xleaf_get_leaf_by_epname(pdev, counter);
+> +	if (!counter_leaf) {
+> +		xrt_err(pdev, "can't find counter");
+> +		return -ENOENT;
+> +	}
+> +
+> +	err = xleaf_call(counter_leaf, XRT_CLKFREQ_READ, freq);
+> +	if (err)
+> +		xrt_err(pdev, "can't read counter");
+> +	xleaf_put_leaf(clock->pdev, counter_leaf);
+> +
+> +	return err;
+> +}
+> +
+> +static int clock_get_freq(struct clock *clock, u16 *freq, u32 *freq_cnter)
+> +{
+> +	int err = 0;
+> +
+> +	mutex_lock(&clock->clock_lock);
+> +
+> +	if (err == 0 && freq)
+> +		err = get_freq(clock, freq);
+> +
+> +	if (err == 0 && freq_cnter)
+> +		err = get_freq_counter(clock, freq_cnter);
+> +
+> +	mutex_unlock(&clock->clock_lock);
+> +	return err;
+> +}
+> +
+ok, clock_set_freq removed
+> +static int clock_verify_freq(struct clock *clock)
+> +{
+> +	u32 lookup_freq, clock_freq_counter, request_in_khz, tolerance;
+> +	int err = 0;
+> +	u16 freq;
+> +
+> +	mutex_lock(&clock->clock_lock);
+> +
+> +	err = get_freq(clock, &freq);
+> +	if (err) {
+> +		xrt_err(clock->pdev, "get freq failed, %d", err);
+> +		goto end;
+> +	}
+> +
+> +	err = get_freq_counter(clock, &clock_freq_counter);
+> +	if (err) {
+> +		xrt_err(clock->pdev, "get freq counter failed, %d", err);
+> +		goto end;
+> +	}
+> +
+> +	lookup_freq = find_matching_freq(freq, frequency_table,
+> +					 ARRAY_SIZE(frequency_table));
+> +	request_in_khz = lookup_freq * 1000;
+> +	tolerance = lookup_freq * 50;
+> +	if (tolerance < abs(clock_freq_counter - request_in_khz)) {
+> +		CLOCK_ERR(clock,
+> +			  "set clock(%s) failed, request %ukhz, actual %dkhz",
+> +			  clock->clock_ep_name, request_in_khz, clock_freq_counter);
+> +		err = -EDOM;
+> +	} else {
+> +		CLOCK_INFO(clock, "verified clock (%s)", clock->clock_ep_name);
+> +	}
+> +
+> +end:
+> +	mutex_unlock(&clock->clock_lock);
+> +	return err;
+> +}
+> +
+> +static int clock_init(struct clock *clock)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(clock->pdev);
+> +	const u16 *freq;
+> +	int err = 0;
+> +
+> +	err = xrt_md_get_prop(DEV(clock->pdev), pdata->xsp_dtb,
+> +			      clock->clock_ep_name, NULL, XRT_MD_PROP_CLK_FREQ,
+> +		(const void **)&freq, NULL);
+> +	if (err) {
+> +		xrt_info(clock->pdev, "no default freq");
+> +		return 0;
+> +	}
+> +
+> +	err = set_freq(clock, be16_to_cpu(*freq));
+> +
+> +	return err;
+> +}
+> +
+> +static ssize_t freq_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct clock *clock = platform_get_drvdata(to_platform_device(dev));
+> +	ssize_t count;
+> +	u16 freq = 0;
+> +
+> +	count = clock_get_freq(clock, &freq, NULL);
+> +	if (count < 0)
+> +		return count;
+> +
+> +	count = snprintf(buf, 64, "%u\n", freq);
 
-There are several ways to solve the problem. Checking return values after each
-read is the simple option. There are other possibilities, such as reading the limits
-and the read order only once during probe, but I don't know enough about the
-hardware to suggest a more sophisticated solution. For example, I don't know
-what "CPU is off" means. Offline ? Not present ? If it means "not present",
-or if the status is permanent, the condition should be handled in the is_visible
-function (or the driver should not be instantiated in the first place).
-Otherwise, the code should possibly return -ENODATA instead of -ETIMEDOUT
-on error. But, again, I can not really suggest a better solution since
-I don't know enough (nothing, actually) about the hardware (and the public
-part of the SBTSI specification doesn't say anything about expected behavior
-for offline CPUs or CPU cores).
+ok
 
-What I did find, though, is that the driver does not implement temperature
-offset support, and it that doesn't support reporting alerts. I'd have assumed
-this to be more important than optimizing error handling, but that is just
-my personal opinion.
+Thanks for the changes
 
-Thanks,
-Guenter
+Reviewed-by: Tom Rix <trix@redhat.com>
 
-> Best regards,
-> Konstantin Aladyshev
-> 
-> 
-> On Tue, Apr 6, 2021 at 9:42 PM Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
-> 
->     On 4/6/21 11:16 AM, Konstantin Aladyshev wrote:
->     > SBTSI sensors don't work when the CPU is off.
->     > In this case every 'i2c_smbus_read_byte_data' function would fail
->     > by a timeout.
->     > Currently temp1_max/temp1_min file reads can cause two such timeouts
->     > for every read.
->     > Restructure code so there will be no more than one timeout for every
->     > read operation.
->     >
->     > Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com <mailto:aladyshev22@gmail.com>>
->     > ---
->     > Changes in v2:
->     >   - Fix typo in a commit message
->     >   - Don't swap temp_int/temp_dec checks at the end of the 'sbtsi_read' function
->     >
-> 
->     This doesn't explain the reason for the extra read operation for
->     limits. Preventing a second read in error cases is not an argument
->     for adding an extra read for non-error cases.
-> 
->     Guenter
-> 
->     >  drivers/hwmon/sbtsi_temp.c | 55 +++++++++++++++++++-------------------
->     >  1 file changed, 27 insertions(+), 28 deletions(-)
->     >
->     > diff --git a/drivers/hwmon/sbtsi_temp.c b/drivers/hwmon/sbtsi_temp.c
->     > index e35357c48b8e..4ae48635bb31 100644
->     > --- a/drivers/hwmon/sbtsi_temp.c
->     > +++ b/drivers/hwmon/sbtsi_temp.c
->     > @@ -74,48 +74,47 @@ static int sbtsi_read(struct device *dev, enum hwmon_sensor_types type,
->     >                     u32 attr, int channel, long *val)
->     >  {
->     >       struct sbtsi_data *data = dev_get_drvdata(dev);
->     > +     u8 temp_int_reg, temp_dec_reg;
->     >       s32 temp_int, temp_dec;
->     >       int err;
->     > 
->     >       switch (attr) {
->     >       case hwmon_temp_input:
->     > -             /*
->     > -              * ReadOrder bit specifies the reading order of integer and
->     > -              * decimal part of CPU temp for atomic reads. If bit == 0,
->     > -              * reading integer part triggers latching of the decimal part,
->     > -              * so integer part should be read first. If bit == 1, read
->     > -              * order should be reversed.
->     > -              */
->     > -             err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
->     > -             if (err < 0)
->     > -                     return err;
->     > -
->     > -             mutex_lock(&data->lock);
->     > -             if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
->     > -                     temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
->     > -                     temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
->     > -             } else {
->     > -                     temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
->     > -                     temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
->     > -             }
->     > -             mutex_unlock(&data->lock);
->     > +             temp_int_reg = SBTSI_REG_TEMP_INT;
->     > +             temp_dec_reg = SBTSI_REG_TEMP_DEC;
->     >               break;
->     >       case hwmon_temp_max:
->     > -             mutex_lock(&data->lock);
->     > -             temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_INT);
->     > -             temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_DEC);
->     > -             mutex_unlock(&data->lock);
->     > +             temp_int_reg = SBTSI_REG_TEMP_HIGH_INT;
->     > +             temp_dec_reg = SBTSI_REG_TEMP_HIGH_DEC;
->     >               break;
->     >       case hwmon_temp_min:
->     > -             mutex_lock(&data->lock);
->     > -             temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_INT);
->     > -             temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_DEC);
->     > -             mutex_unlock(&data->lock);
->     > +             temp_int_reg = SBTSI_REG_TEMP_LOW_INT;
->     > +             temp_dec_reg = SBTSI_REG_TEMP_LOW_DEC;
->     >               break;
->     >       default:
->     >               return -EINVAL;
->     >       }
->     > 
->     > +     /*
->     > +      * ReadOrder bit specifies the reading order of integer and
->     > +      * decimal part of CPU temp for atomic reads. If bit == 0,
->     > +      * reading integer part triggers latching of the decimal part,
->     > +      * so integer part should be read first. If bit == 1, read
->     > +      * order should be reversed.
->     > +      */
->     > +     err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
->     > +     if (err < 0)
->     > +             return err;
->     > +
->     > +     mutex_lock(&data->lock);
->     > +     if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
->     > +             temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
->     > +             temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
->     > +     } else {
->     > +             temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
->     > +             temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
->     > +     }
->     > +     mutex_unlock(&data->lock);
->     > 
->     >       if (temp_int < 0)
->     >               return temp_int;
->     >
-> 
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RO(freq);
+> +
+> +static struct attribute *clock_attrs[] = {
+> +	&dev_attr_freq.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group clock_attr_group = {
+> +	.attrs = clock_attrs,
+> +};
+> +
+> +static int
+> +xrt_clock_leaf_call(struct platform_device *pdev, u32 cmd, void *arg)
+> +{
+> +	struct clock *clock;
+> +	int ret = 0;
+> +
+> +	clock = platform_get_drvdata(pdev);
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		/* Does not handle any event. */
+> +		break;
+> +	case XRT_CLOCK_SET: {
+> +		u16	freq = (u16)(uintptr_t)arg;
+> +
+> +		ret = set_freq(clock, freq);
+> +		break;
+> +	}
+> +	case XRT_CLOCK_VERIFY:
+> +		ret = clock_verify_freq(clock);
+> +		break;
+> +	case XRT_CLOCK_GET: {
+> +		struct xrt_clock_get *get =
+> +			(struct xrt_clock_get *)arg;
+> +
+> +		ret = clock_get_freq(clock, &get->freq, &get->freq_cnter);
+> +		break;
+> +	}
+> +	default:
+> +		xrt_err(pdev, "unsupported cmd %d", cmd);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int clock_remove(struct platform_device *pdev)
+> +{
+> +	sysfs_remove_group(&pdev->dev.kobj, &clock_attr_group);
+> +
+> +	return 0;
+> +}
+> +
+> +static int clock_probe(struct platform_device *pdev)
+> +{
+> +	struct clock *clock = NULL;
+> +	void __iomem *base = NULL;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	clock = devm_kzalloc(&pdev->dev, sizeof(*clock), GFP_KERNEL);
+> +	if (!clock)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, clock);
+> +	clock->pdev = pdev;
+> +	mutex_init(&clock->clock_lock);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		ret = -EINVAL;
+> +		goto failed;
+> +	}
+> +
+> +	base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(base)) {
+> +		ret = PTR_ERR(base);
+> +		goto failed;
+> +	}
+> +
+> +	clock->regmap = devm_regmap_init_mmio(&pdev->dev, base, &clock_regmap_config);
+> +	if (IS_ERR(clock->regmap)) {
+> +		CLOCK_ERR(clock, "regmap %pR failed", res);
+> +		ret = PTR_ERR(clock->regmap);
+> +		goto failed;
+> +	}
+> +	clock->clock_ep_name = res->name;
+> +
+> +	ret = clock_init(clock);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = sysfs_create_group(&pdev->dev.kobj, &clock_attr_group);
+> +	if (ret) {
+> +		CLOCK_ERR(clock, "create clock attrs failed: %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	CLOCK_INFO(clock, "successfully initialized Clock subdev");
+> +
+> +	return 0;
+> +
+> +failed:
+> +	return ret;
+> +}
+> +
+> +static struct xrt_subdev_endpoints xrt_clock_endpoints[] = {
+> +	{
+> +		.xse_names = (struct xrt_subdev_ep_names[]) {
+> +			{ .regmap_name = "clkwiz" },
+> +			{ NULL },
+> +		},
+> +		.xse_min_ep = 1,
+> +	},
+> +	{ 0 },
+> +};
+> +
+> +static struct xrt_subdev_drvdata xrt_clock_data = {
+> +	.xsd_dev_ops = {
+> +		.xsd_leaf_call = xrt_clock_leaf_call,
+> +	},
+> +};
+> +
+> +static const struct platform_device_id xrt_clock_table[] = {
+> +	{ XRT_CLOCK, (kernel_ulong_t)&xrt_clock_data },
+> +	{ },
+> +};
+> +
+> +static struct platform_driver xrt_clock_driver = {
+> +	.driver = {
+> +		.name = XRT_CLOCK,
+> +	},
+> +	.probe = clock_probe,
+> +	.remove = clock_remove,
+> +	.id_table = xrt_clock_table,
+> +};
+> +
+> +XRT_LEAF_INIT_FINI_FUNC(XRT_SUBDEV_CLOCK, clock);
 
