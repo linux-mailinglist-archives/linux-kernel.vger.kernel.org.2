@@ -2,306 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA03354F16
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D6C354F23
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244638AbhDFIxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:53:48 -0400
-Received: from mga03.intel.com ([134.134.136.65]:28944 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240689AbhDFIxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:53:47 -0400
-IronPort-SDR: V5GdoCFcye3ImF3aCsyxW2u5VvZ78qrycv63oZArVoJw913yHVDrRFo4JHFQ/dGtJrHetkRnTL
- 5BbiSwRv6NEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193063769"
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="193063769"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:53:39 -0700
-IronPort-SDR: 5SVblAfBOXDgu0edAkFGNLxEARuprTR9leZc/MnNXJIC49LN0vLjjeRBzGVqb8iI66YpPs2WJp
- /o/157qfl0AQ==
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="421124385"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.164]) ([10.249.228.164])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:53:36 -0700
-Subject: [PATCH v4 12/12] perf session: use reader functions to load perf data
- file
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <990c4b5f-6a30-2c71-2794-d900da71dba5@linux.intel.com>
-Date:   Tue, 6 Apr 2021 11:53:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233799AbhDFI4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhDFI4S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:56:18 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A00BC061761
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:56:10 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id a12so3542612wrq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=k0R/CpFQIO0LutUTt6whAWYDSEEYWanyJgecDTp2qS4=;
+        b=OUtsvTywwF0/bDjP4cBmo4dT9qHLCQLOTKohdrUdMDdMtVgNZ88XIn0SLwDK4A4/qG
+         EwEU/kFbpjoldb1LlsU7Sqe+FySEhPAaMbHfWEcGqojHKt4e7wg+lkYfX7k+1mdJfOVx
+         AjbNMxpoKsRjSZwo0SNnNf4pUy1J3mi5/xwF4b9nJ8LW3P74wuWx4TkCXBTstUnV4lA7
+         s0BPsgsPGkujSf2teVKDJ6yAKtQsmGArOMiabQxqM/i+PjKovEJjU6RlXGqdh4zTEWgS
+         VM+UO6/Fxg6nQHnz7gGc/T35KZHHmhVOm5MYpNnNbtSejPeRXePMPVHTzDl4t2JCGmVy
+         HLwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=k0R/CpFQIO0LutUTt6whAWYDSEEYWanyJgecDTp2qS4=;
+        b=By61t46H3CWCiCpaf2VNw/Dsn2hPnHg/L2Huz4pK30Wr8KCnyTBfDwPs4EknFIVWYu
+         m2R1WCHbIJwVU1nW4ddIJF9a31O9Z5nz4H1zjfsGTgWl2erW3ZoxeBwBtPWcpzE+fwvF
+         JSz3adFgND8l8VtVHf5HbS9kMQtnXFIJkeZjGL3rYcis732jmH8FpDQdSG7kuJ3g+loX
+         rKtGBBwi1yMaGQ9rhIyaFwyjZndlnfIP0ClJy7X/uqi5MjAy/1HtzaEwEbcSCrl/krT7
+         exnRjc4hLKYPCeFMvNkWZIw7UHHOGWT6+dAHFD/cu5nhSHQChaRWQJbKsNAp29QYumDa
+         c+0Q==
+X-Gm-Message-State: AOAM531p0JefauoztD1rEKcYs8QnuWwrpm4MZFJov0iq1cIlF7s6XJmm
+        2SdvSS5iQvSqboIauYV9a22GGXUYtlORV2qI
+X-Google-Smtp-Source: ABdhPJy5liwwM3Ot+2W70tIkjSPkDW++gyVE8uJhSgWpBItS06FaUlff1OXTLSFd9M921fWjlzp4KQ==
+X-Received: by 2002:a5d:6b89:: with SMTP id n9mr33668042wrx.236.1617699367868;
+        Tue, 06 Apr 2021 01:56:07 -0700 (PDT)
+Received: from dell ([91.110.221.193])
+        by smtp.gmail.com with ESMTPSA id u12sm5987318wro.51.2021.04.06.01.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 01:56:07 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 09:56:05 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Anssi Hannula <anssi.hannula@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Daniel Drubin <daniel.drubin@intel.com>,
+        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, Lopez Casado <nlopezcasad@logitech.com>,
+        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
+        Masaki Ota <masaki.ota@jp.alps.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        message to <vojtech@ucw.cz>,
+        Michael Haboustak <mike-@cinci.rr.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        Vojtech Pavlik <vojtech@suse.cz>,
+        Zhang Lixu <lixu.zhang@intel.com>
+Subject: Re: [RESEND 00/25] Rid W=1 warnings from HID
+Message-ID: <20210406085605.GS2916463@dell>
+References: <20210326143458.508959-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 26 Mar 2021, Lee Jones wrote:
 
-Use the reader functions to load data file similar to loading of
-data directory files.
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> Lee Jones (25):
+>   HID: intel-ish-hid: Remove unused variable 'err'
+>   HID: ishtp-hid-client: Move variable to where it's actually used
+>   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
+>   HID: intel-ish: Supply some missing param descriptions
+>   HID: intel-ish: Fix a naming disparity and a formatting error
+>   HID: usbhid: Repair a formatting issue in a struct description
+>   HID: intel-ish-hid: Fix a little doc-rot
+>   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
+>   HID: hid-alps: Correct struct misnaming
+>   HID: intel-ish-hid: Fix potential copy/paste error
+>   HID: hid-core: Fix incorrect function name in header
+>   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
+>     header
+>   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
+>   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
+>   HID: hid-picolcd_core: Remove unused variable 'ret'
+>   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
+>     abuses
+>   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
+>   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
+>   HID: hid-uclogic-params: Ensure function names are present and correct
+>     in kernel-doc headers
+>   HID: hid-sensor-custom: Remove unused variable 'ret'
+>   HID: wacom_sys: Demote kernel-doc abuse
+>   HID: hid-sensor-hub: Remove unused struct member 'quirks'
+>   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
+>     definition
+>   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
+>   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
 
-Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
----
- tools/perf/util/session.c | 215 ++++++++++++--------------------------
- 1 file changed, 66 insertions(+), 149 deletions(-)
+These have been on the list for a couple of weeks now.
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 26fffadfd6ef..e60b0212f64e 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2187,109 +2187,6 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
- 	return 0;
- }
- 
--static int
--reader__process_events(struct reader *rd, struct perf_session *session,
--		       struct ui_progress *prog)
--{
--	u64 data_size = rd->data_size;
--	u64 head, page_offset, file_offset, file_pos, size;
--	int err = 0, mmap_prot, mmap_flags, map_idx = 0;
--	size_t	mmap_size;
--	char *buf, *mmaps[NUM_MMAPS];
--	union perf_event *event;
--	s64 skip;
--
--	page_offset = page_size * (rd->data_offset / page_size);
--	file_offset = page_offset;
--	head = rd->data_offset - page_offset;
--
--	ui_progress__init_size(prog, data_size, "Processing events...");
--
--	data_size += rd->data_offset;
--
--	mmap_size = MMAP_SIZE;
--	if (mmap_size > data_size) {
--		mmap_size = data_size;
--		session->one_mmap = true;
--	}
--
--	memset(mmaps, 0, sizeof(mmaps));
--
--	mmap_prot  = PROT_READ;
--	mmap_flags = MAP_SHARED;
--
--	if (session->header.needs_swap) {
--		mmap_prot  |= PROT_WRITE;
--		mmap_flags = MAP_PRIVATE;
--	}
--remap:
--	buf = mmap(NULL, mmap_size, mmap_prot, mmap_flags, rd->fd,
--		   file_offset);
--	if (buf == MAP_FAILED) {
--		pr_err("failed to mmap file\n");
--		err = -errno;
--		goto out;
--	}
--	mmaps[map_idx] = buf;
--	map_idx = (map_idx + 1) & (ARRAY_SIZE(mmaps) - 1);
--	file_pos = file_offset + head;
--	if (session->one_mmap) {
--		session->one_mmap_addr = buf;
--		session->one_mmap_offset = file_offset;
--	}
--
--more:
--	event = fetch_mmaped_event(head, mmap_size, buf, session->header.needs_swap);
--	if (IS_ERR(event))
--		return PTR_ERR(event);
--
--	if (!event) {
--		if (mmaps[map_idx]) {
--			munmap(mmaps[map_idx], mmap_size);
--			mmaps[map_idx] = NULL;
--		}
--
--		page_offset = page_size * (head / page_size);
--		file_offset += page_offset;
--		head -= page_offset;
--		goto remap;
--	}
--
--	size = event->header.size;
--
--	skip = -EINVAL;
--
--	if (size < sizeof(struct perf_event_header) ||
--	    (skip = rd->process(session, event, file_pos, rd->path)) < 0) {
--		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
--		       file_offset + head, rd->path, event->header.size,
--		       event->header.type, strerror(-skip));
--		err = skip;
--		goto out;
--	}
--
--	if (skip)
--		size += skip;
--
--	head += size;
--	file_pos += size;
--
--	err = __perf_session__process_decomp_events(session);
--	if (err)
--		goto out;
--
--	ui_progress__update(prog, size);
--
--	if (session_done())
--		goto out;
--
--	if (file_pos < data_size)
--		goto more;
--
--out:
--	return err;
--}
--
- static s64 process_simple(struct perf_session *session,
- 			  union perf_event *event,
- 			  u64 file_offset,
-@@ -2298,52 +2195,6 @@ static s64 process_simple(struct perf_session *session,
- 	return perf_session__process_event(session, event, file_offset, file_path);
- }
- 
--static int __perf_session__process_events(struct perf_session *session)
--{
--	struct reader rd = {
--		.fd		= perf_data__fd(session->data),
--		.data_size	= session->header.data_size,
--		.data_offset	= session->header.data_offset,
--		.process	= process_simple,
--		.path		= session->data->file.path,
--	};
--	struct ordered_events *oe = &session->ordered_events;
--	struct perf_tool *tool = session->tool;
--	struct ui_progress prog;
--	int err;
--
--	perf_tool__fill_defaults(tool);
--
--	if (rd.data_size == 0)
--		return -1;
--
--	ui_progress__init_size(&prog, rd.data_size, "Processing events...");
--
--	err = reader__process_events(&rd, session, &prog);
--	if (err)
--		goto out_err;
--	/* do the final flush for ordered samples */
--	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
--	if (err)
--		goto out_err;
--	err = auxtrace__flush_events(session, tool);
--	if (err)
--		goto out_err;
--	err = perf_session__flush_thread_stacks(session);
--out_err:
--	ui_progress__finish();
--	if (!tool->no_warn)
--		perf_session__warn_about_errors(session);
--	/*
--	 * We may switching perf.data output, make ordered_events
--	 * reusable.
--	 */
--	ordered_events__reinit(&session->ordered_events);
--	auxtrace__free_events(session);
--	session->one_mmap = false;
--	return err;
--}
--
- static int
- reader__init(struct reader *rd, bool *one_mmap)
- {
-@@ -2460,6 +2311,72 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 	session->active_reader = NULL;;
- 	return ret;
- }
-+
-+static int __perf_session__process_events(struct perf_session *session)
-+{
-+	struct reader *rd;
-+	struct ordered_events *oe = &session->ordered_events;
-+	struct perf_tool *tool = session->tool;
-+	struct ui_progress prog;
-+	int err;
-+
-+	perf_tool__fill_defaults(tool);
-+
-+	rd = session->readers = zalloc(sizeof(struct reader));
-+	if (!rd)
-+		return -ENOMEM;
-+
-+	session->nr_readers = 1;
-+
-+	*rd = (struct reader) {
-+		.fd		= perf_data__fd(session->data),
-+		.data_size	= session->header.data_size,
-+		.data_offset	= session->header.data_offset,
-+		.process	= process_simple,
-+		.path		= session->data->file.path,
-+	};
-+
-+	ui_progress__init_size(&prog, rd->data_size, "Processing events...");
-+
-+	reader__init(rd, &session->one_mmap);
-+	if (reader__mmap(rd, session) != READER_OK)
-+		goto out_err;
-+
-+	while (true) {
-+		if (session_done())
-+			break;
-+
-+		err = reader__read_event(rd, session, &prog);
-+		if (err < 0)
-+			break;
-+		if (err == READER_EOF) {
-+			err = reader__mmap(rd, session);
-+			if (err <= 0)
-+				break;
-+		}
-+	}
-+
-+	/* do the final flush for ordered samples */
-+	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
-+	if (err)
-+		goto out_err;
-+	err = auxtrace__flush_events(session, tool);
-+	if (err)
-+		goto out_err;
-+	err = perf_session__flush_thread_stacks(session);
-+out_err:
-+	ui_progress__finish();
-+	if (!tool->no_warn)
-+		perf_session__warn_about_errors(session);
-+	/*
-+	 * We may switching perf.data output, make ordered_events
-+	 * reusable.
-+	 */
-+	ordered_events__reinit(&session->ordered_events);
-+	auxtrace__free_events(session);
-+	session->one_mmap = false;
-+	return err;
-+}
- /*
-  * This function reads, merge and process directory data.
-  * It assumens the version 1 of directory data, where each
+Is there anything I can do to help expedite their merge?
+
+I'm concerned since -rc6 has just been released.
+
 -- 
-2.19.0
-
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
