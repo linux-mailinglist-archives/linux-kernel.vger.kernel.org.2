@@ -2,232 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88278354B52
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB5B354B50
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242753AbhDFDnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233639AbhDFDnB (ORCPT
+        id S242306AbhDFDlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:41:21 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16343 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233205AbhDFDlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:43:01 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CDBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 20:42:52 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id m3so4950976edv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 20:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VMY7mUBdsG68kS0JiJFFUl5jnWAGVcKXBPoSy0XYHF4=;
-        b=ty45KpsG9G0ydy4hB0APvCnFSRg9IsLipa3HrzKs3YGxM1jO9Y6kvn+JAQu9KloLiU
-         57VhXPcwC4cjMBjxir/5BXnrdJ0epgDuu13dKVwY857HVX7lUexAXe6yo//c7VKhC5bq
-         UMPgPtHSWUfyFieBMWlMikh9giKxTFP2nkD3MTSlO1iTrR/eHL6lmDmI6+06fjiqRhET
-         OreHPW1wuDDX8capdldelSJ3LRn+tqP9jbNoukummlrp9mNJLDNQoWR/j6Mw2a4ydnCM
-         opGU9TGPonDWHW9ffcnaJ4QsBnP6uHuAraqy3aEiANzbl3F9RozFU+jtkAcW0AtvxF/T
-         AONA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VMY7mUBdsG68kS0JiJFFUl5jnWAGVcKXBPoSy0XYHF4=;
-        b=gwrJS4aZXGJihHVRYhpMj4gJGKzROUww9GHbTFMcNLNQZBpFl/EtIBqu1Fd0pW94mP
-         SzrSmX+kvE6X3yocgRQqrPqV0NFc+4A5fmioRiN0OureRhbgEbuXnuNtKahUZGR1n8hl
-         8byhviMjwo9738YbNCeG9qRSDQ8YxDV524IlFpt6SdKDsV69YpkJKRQD5fKnWhWlbOiR
-         h/Fz+HJJ8eO2d1TuRAgTu4PSS9/aft+MZmhUfb52Wt0CY+M5Q4XQ3Z+tKkOKHcgcdf3S
-         kASgB1Tifsnx92Un8B+f0CY7h+FqUTX92LYgEmUSXkcV6oobUODFcYXTbR+pgw2KfhK+
-         alFg==
-X-Gm-Message-State: AOAM533UMPYfUwtkL0wmoVF5xDn/KkMhdoOA9MNWHGZnkFze8BgdF8N7
-        iNCWrylrT+WC8W19J1MEcPSMhWedeqZadALIG6a/6R0TdLNjyCtZ
-X-Google-Smtp-Source: ABdhPJwVE79lZ76HuTrHYnCnff7nqRq4PigsZMJ0eSRQBjeLVG3HJoy8S70/ErZdsdBh9Pky7dFQt0MYdoo0iZYQYO0=
-X-Received: by 2002:aa7:dd99:: with SMTP id g25mr34713020edv.230.1617680571050;
- Mon, 05 Apr 2021 20:42:51 -0700 (PDT)
+        Mon, 5 Apr 2021 23:41:11 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FDtY65y1Qz9wb4;
+        Tue,  6 Apr 2021 11:38:50 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 11:40:58 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <speakup@linux-speakup.org>
+CC:     <gregkh@linuxfoundation.org>
+Subject: [PATCH -next v2] speakup: i18n: Switch to kmemdup_nul() in spk_msg_set()
+Date:   Tue, 6 Apr 2021 11:44:34 +0800
+Message-ID: <20210406034434.442251-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210405085024.703004126@linuxfoundation.org>
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 6 Apr 2021 09:12:36 +0530
-Message-ID: <CA+G9fYt6gqjmiyrPWbdg7B0Pyzovm0HenJcUWjBjYK-dig7vww@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/74] 5.4.110-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 at 14:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.110 release.
-> There are 74 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.110-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Use kmemdup_nul() helper instead of open-coding to
+simplify the code in spk_msg_set().
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+V2:
+   change the tile and commit log.
+---
+ drivers/accessibility/speakup/i18n.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/accessibility/speakup/i18n.c b/drivers/accessibility/speakup/i18n.c
+index ee240d36f947..46bd50f3c3a4 100644
+--- a/drivers/accessibility/speakup/i18n.c
++++ b/drivers/accessibility/speakup/i18n.c
+@@ -548,12 +548,10 @@ ssize_t spk_msg_set(enum msg_index_t index, char *text, size_t length)
+ 	if ((index < MSG_FIRST_INDEX) || (index >= MSG_LAST_INDEX))
+ 		return -EINVAL;
+ 
+-	newstr = kmalloc(length + 1, GFP_KERNEL);
++	newstr = kmemdup_nul(text, length, GFP_KERNEL);
+ 	if (!newstr)
+ 		return -ENOMEM;
+ 
+-	memcpy(newstr, text, length);
+-	newstr[length] = '\0';
+ 	if (index >= MSG_FORMATTED_START &&
+ 	    index <= MSG_FORMATTED_END &&
+ 	    !fmt_validate(speakup_default_msgs[index], newstr)) {
+-- 
+2.25.1
 
-## Build
-* kernel: 5.4.110-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.4.y
-* git commit: c6f7c5a01d5a9e0d0cfb721249d5378de5f00310
-* git describe: v5.4.109-75-gc6f7c5a01d5a
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-09-75-gc6f7c5a01d5a
-
-## No regressions (compared to v5.4.109)
-
-## No fixes (compared to v5.4.109)
-
-## Test result summary
- total: 71104, pass: 59473, fail: 795, skip: 10620, xfail: 216,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 191 total, 190 passed, 1 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 25 total, 25 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
