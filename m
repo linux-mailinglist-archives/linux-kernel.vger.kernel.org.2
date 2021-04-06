@@ -2,103 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EC4354D95
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DA4354D97
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhDFHOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:14:24 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:42707 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbhDFHOV (ORCPT
+        id S244189AbhDFHOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233999AbhDFHOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:14:21 -0400
-Received: by mail-lf1-f42.google.com with SMTP id o10so21093548lfb.9;
-        Tue, 06 Apr 2021 00:14:11 -0700 (PDT)
+        Tue, 6 Apr 2021 03:14:37 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D0CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:14:30 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id b7so20269929ejv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 00:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5o8F8pFpSh9SovEOCoJlZCcSPH/Bz3/ZuKM7tkIfuTg=;
+        b=Dqb9WCEpwD/fE/GfwGGwIsVYtDLVbctvrsCphUaZ34WNe7zaFe2o69exVFZY6W5cgz
+         S48BkSgZdTjbze8f5qdm6ndcVfoUxtC4ZQwyVLdzT1E2lLIVhdGRjivjEDaW17fkL/f9
+         CMIqrhfnsKnowXrqW1yoD2R1PoBry4Vl1QRiRLh1CeQaWSkCUDHhWrSdAK4XbE8znuci
+         mrOeBbdas8+LXJnWpW35nKEBR/owcT9SthjMcHL4CC4REQAwCOxj5OysoiXyM8rxvYEt
+         FrJolInrsnYjgpRzFwZ/VgugTVL9rDk9OinKQ6+s1eCwRMFc275PaCDdEiZigxNC/92x
+         IDqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7kQcHiL7FxmqddI0qJTkE8M2Db65qgn7MixWNdN02mg=;
-        b=KZIpFlx7yYBaQ78ibua4kvwlPG7cyp2h1B5oFNwjw5/slWtKpjsoBg4rhUsqvdkZmb
-         /gDR5rEWt4PukkjFY4jIbdG62Pi8RKpWBBSBL9DBs+73D0AMfeUPfo6muaYha3TP/Xiq
-         kFoH7v1i2c4UoWZyj4lOv625pfcnM8IjGWqeQmNIcjuvH8irdGSkMsvU6aO9DFwi+jMI
-         EWnkrtaBNT0HiXbzUlVawXjR87R/grR131mevqJ/SRv1KVe8wW2ysMNBQsi6q5BzYQAP
-         I808Kipc7/wbFw2mCwykewOcDKj9O4WWAde4R07NEGhAlFYt9/sBKfZvWyrdLceaA046
-         2rbw==
-X-Gm-Message-State: AOAM533I95iVyi1ZzWf4HT72SvXudeibUXNcVhKQ+SBkojK+izXTZ15b
-        z44H1jWTE8aDsc5ZozA3jOU=
-X-Google-Smtp-Source: ABdhPJyE6TVxgNpZ/tPchX0HSWI8gtW+G0PN77AMSXVK5qo5+1UqpIqoLt45KiZfq8UoUR3Z9r93JQ==
-X-Received: by 2002:ac2:4883:: with SMTP id x3mr19528278lfc.419.1617693251117;
-        Tue, 06 Apr 2021 00:14:11 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id e9sm2112251ljj.52.2021.04.06.00.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 00:14:10 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 10:14:04 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v4 5/7] dt-bindings: regulator: bd9576 add FET ON-resistance
- for OCW
-Message-ID: <34d37fcef80153b6c610826f885c0f6c36cdd93f.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5o8F8pFpSh9SovEOCoJlZCcSPH/Bz3/ZuKM7tkIfuTg=;
+        b=Z2c5MKBI1UoFRlnTmT8lPNyJb+2tuqvKGyed2tYWCYbLmuEs9PrNKfHJyzYdt6/CwX
+         3XvXgduvFUL5eGoSSA2Uyt04tW/mgHz5r6Fh58HCd84c+7tmGOsSN7Zxe12EhQZDR8iV
+         5lu5Uo1axNClecnlV4yVWmRBzCgKAIWdgsLuBjadEICRH6qpbv5ifLz+MKNzjdym8Xsw
+         9SY5/n15Q7cgaZE2WbdsdjNYHKGKl3fCzuFaUeIKZaZw1FoLX7B9w3Y8PKXxiR4ZaxS7
+         KuRTKkcuhnSMFfJ0OawbymjKd7DZB6tTRcNWsEq17WbUkLiatZxQAH7hx1cR0NdAe9tS
+         t/5Q==
+X-Gm-Message-State: AOAM531MhxbRV2hQgtzEfuejRtcjzVSo1vJgMnLO1W3n/Py+5OPZcWKS
+        g9h1vOOSgog03wHQc36t2/boFxWCE5q/IynbK7FXEw==
+X-Google-Smtp-Source: ABdhPJxvkgdf7NNPYXg1ME2HJt2DO3J0gWz9j/pgmOIhNy8OLcybUK4vzXag2jE36m8BcmkYbr/CRUNtrGcJSJstsW0=
+X-Received: by 2002:a17:907:2509:: with SMTP id y9mr19984250ejl.170.1617693268779;
+ Tue, 06 Apr 2021 00:14:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Apr 2021 12:44:16 +0530
+Message-ID: <CA+G9fYt2oX=297Hn75_9=3L1d-6LMMYA_p9EXA9Ejwc32Zvnnw@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/52] 4.14.229-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BD9576MUF provides over-current protection and detection. Current is
-measured as voltage loss over external FET. Allow specifying FET's on
-resistance so current monitoring limits can be converted to voltages.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- .../bindings/regulator/rohm,bd9576-regulator.yaml           | 6 ++++++
- 1 file changed, 6 insertions(+)
-v4:
-  - Fixed the description indentiation
-
-diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
-index b6515a0cee62..7cb74cc8c5d9 100644
---- a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
-@@ -27,6 +27,12 @@ patternProperties:
-       Properties for single regulator.
-     $ref: "regulator.yaml#"
- 
-+    properties:
-+      rohm,ocw-fet-ron-micro-ohms:
-+        description: |
-+          External FET's ON-resistance. Required if VoutS1 OCP/OCW is
-+          to be set.
-+
-     required:
-       - regulator-name
- 
--- 
-2.25.4
+On Mon, 5 Apr 2021 at 14:29, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.229 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.229-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.14.229-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.14.y
+* git commit: 9d1c6513551e6928da195e22c6b32ed0adf42593
+* git describe: v4.14.228-53-g9d1c6513551e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.228-53-g9d1c6513551e
+
+## No regressions (compared to v4.14.228)
+
+## No fixes (compared to v4.14.228)
+
+## Test result summary
+ total: 56301, pass: 46585, fail: 686, skip: 8844, xfail: 186,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 13 passed, 1 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
