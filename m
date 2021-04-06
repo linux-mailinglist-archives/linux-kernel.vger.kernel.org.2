@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECDA355920
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA926355925
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346339AbhDFQZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S1346395AbhDFQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233255AbhDFQZM (ORCPT
+        with ESMTP id S237387AbhDFQ00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:25:12 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D39AC06174A;
-        Tue,  6 Apr 2021 09:25:04 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id x207so15722220oif.1;
-        Tue, 06 Apr 2021 09:25:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dU5G8PR6W8uwjypO4WoRqS/gPC9d2EbpFn+extiOH5A=;
-        b=K7li2xaJli2tU6J3EoTCPkOSjcNLai2eFffxsqMT51/zC0fG+xkgj35fihSo5uKUWy
-         2wyO7epnZ1qFUqpnw4I3Jst7g1ksEkZi9Sbpx+W2AFic5JGmvsN9XaOxZiNKrrdAt9rG
-         stmWUc0Wd0zwJD8NLna8lRLn+X2hfZpSp0bfVKR7Zt32DdPIBye2kA/j1OEMpCr1RheK
-         M9cSOy8Thom7ar8g6O9u2DbkydeOieutnadyCEBDdqNO7Qvb0uz95o3T8jgEWXR/PIcE
-         FdIp4rUDvwfsnupOMkEJcT7Mree78hDxVXEVv/AvxqEVkGN2gCWwfGYURO6pucdhDxhN
-         GNBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dU5G8PR6W8uwjypO4WoRqS/gPC9d2EbpFn+extiOH5A=;
-        b=j0dXrhhSGHEJBbSncCZUSw1s6KP9orufMk3tZcMTyyJP/CBsALBE0Jdskzh67igYwz
-         BYg++T0FSV9R8QUE4gxCpUz+bSMAyu3urjZlf+byrAv/lq2I9k7slT3gYo49/et/d+zW
-         064TUwUZJpiTGa7g4UhDVgcvvRn5ninwj81sUCoYkftRaZXc5JnYIKlw73kHXJixaTFy
-         5WYdOujwO+5+dqex6Ppah86E+lq0r4WXySngxcrPbsenH5c2J3jRCHJTDDIHYUXG6T67
-         WWQ9lQrWUb7A0rsN021BMEfbW6k85UocPAEK7ScrCnASWT68qhM/9bkT0kfyxwRcym8g
-         h1uw==
-X-Gm-Message-State: AOAM532z2xm/ZIp1rihrGCDaqrIVjFHDPA606KtbbPFpRT4kI3EIlb9U
-        UXlMfHTUC0KcBY2UfzDkDn/REw8UbBw=
-X-Google-Smtp-Source: ABdhPJxIZcKqVl6qsfqf153ZSz4wmxMrNch0ghjvbnQr6V10BiULwl6KUSifLOtMm291fPLpcrJ20w==
-X-Received: by 2002:aca:aa41:: with SMTP id t62mr3897152oie.84.1617726303398;
-        Tue, 06 Apr 2021 09:25:03 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id z199sm4245543ooa.39.2021.04.06.09.25.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 09:25:02 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
- <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
- <87r1jnohq6.fsf@codeaurora.org>
- <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
-Date:   Tue, 6 Apr 2021 11:25:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 6 Apr 2021 12:26:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E89BC06174A;
+        Tue,  6 Apr 2021 09:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ReC1A8LEcNA74MnXWjE1S8Le2jL7zE3sYBVCRscMRCs=; b=fx834GXHLWrbKbI/6uLgpgctFM
+        Q5KyQ0MFtvxJh6NlhE3d0eXK6x3CQugCROk+IFxmFqPLGA2qPvseVy/ls2tuS7hPms11iObLBCauI
+        OV7uHRQf7Ib9zGKIXKGbsYFT6Ra8bxC+RnIadJehDso2FLs/+cWo6UZ9vbgFuu/m62nepdJ2+qqM3
+        hWDUhYWehUlmEjiVsKsv0dKjn/3ibDjp1xFxH4zc3PQRHwRvr5J/AJqdmwa4RcUfllWWy/ilBGw4s
+        shHJ58BfrKh2KiEek2rfcG+9LJdKhTVSQASLZo5bcWwqYFXTXwm9vvMRLjbkaogq15yeyrkIABQ1/
+        E/r4rZwA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lToWA-00D5BK-1j; Tue, 06 Apr 2021 16:25:40 +0000
+Date:   Tue, 6 Apr 2021 17:25:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
+Message-ID: <20210406162530.GT2531743@casper.infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-2-willy@infradead.org>
+ <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
+ <20210406124807.GO2531743@casper.infradead.org>
+ <20210406143150.GA3082513@infradead.org>
+ <20210406144022.GR2531743@casper.infradead.org>
+ <20210406144712.GA3087660@infradead.org>
+ <20210406145511.GS2531743@casper.infradead.org>
+ <20210406150550.GA3094215@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406150550.GA3094215@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 7:06 AM, Maciej S. Szmigiero wrote:
-> On 06.04.2021 12:00, Kalle Valo wrote:
->> "Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
->>
->>> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
->>>> Hi,
->>>>
->>>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
->>>> since the driver does not update its beacon to account for TIM changes,
->>>> so a station that is sleeping will never learn that it has packets
->>>> buffered at the AP.
->>>>
->>>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
->>>> callback, nor does it explicitly update beacon data periodically, so it
->>>> has no way to learn that it had changed.
->>>>
->>>> This results in the AP mode being virtually unusable with STAs that do
->>>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
->>>> etc.).
->>>>
->>>> I think the easiest fix here would be to implement set_tim() for example
->>>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
->>>> the beacon data on the device.
->>>
->>> Are there any plans to fix this?
->>> The driver is listed as maintained by Ping-Ke.
->>
->> Yeah, power save is hard and I'm not surprised that there are drivers
->> with broken power save mode support. If there's no fix available we
->> should stop supporting AP mode in the driver.
->>
+On Tue, Apr 06, 2021 at 04:05:50PM +0100, Christoph Hellwig wrote:
+> On Tue, Apr 06, 2021 at 03:55:11PM +0100, Matthew Wilcox wrote:
+> > Assuming we're getting rid of them all though, we have to include:
+> > 
+> > $ git grep 'page->mapping' fs |wc -l
+> > 358
+> > $ git grep 'page->index' fs |wc -l
+> > 355
 > 
-> https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/api
-> clearly documents that "For AP mode, it must (...) react to the set_tim()
-> callback or fetch each beacon from mac80211".
-> 
-> The driver isn't doing either so no wonder the beacon it is sending
-> isn't getting updated.
-> 
-> As I have said above, it seems to me that all that needs to be done here
-> is to queue a work in a set_tim() callback, then call
-> send_beacon_frame() from rtlwifi/core.c from this work.
-> 
-> But I don't know the exact device semantics, maybe it needs some other
-> notification that the beacon has changed, too, or even tries to
-> manage the TIM bitmap by itself.
-> 
-> It would be a shame to lose the AP mode for such minor thing, though.
-> 
-> I would play with this myself, but unfortunately I don't have time
-> to work on this right now.
-> 
-> That's where my question to Realtek comes: are there plans to actually
-> fix this?
+> Are they all going to stay?  Or are we going to clean up some of that
+> mess.  A lot of ->index should be page_offet, and on the mapping side
+> the page_mapping and page_file_mapping mess is also waiting to be
+> sorted..
 
-Yes, I am working on this. My only question is "if you are such an expert on the 
-problem, why do you not fix it?"
+About a third of ->index can be folio_offset(), based on a crude:
 
-The example in rx200 is not particularly useful, and I have not found any other 
-examples.
+$ git grep 'page->index.*PAGE_' |wc -l
+101
 
-Larry
+and I absolutely don't mind cleaning that up as part of the folio work,
+but that still leaves 200-250 instances that would need to be changed
+later.
 
+I don't want to change the page->mapping to calls to folio_mapping().
+That's a lot of extra work for a page which the filesystem knows belongs
+to it.  folio_mapping() only needs to be used for pages which might not
+belong to a filesystem.
+
+page_file_mapping() absolutely needs to go away.  The way to do that
+is to change swap-over-nfs to use direct IO, and then NFS can use
+folio->mapping like all other filesystems.  f2fs is just terminally
+confused and shouldn't be using page_file_mapping at all.  I'll fix
+that as part of the folio work.
