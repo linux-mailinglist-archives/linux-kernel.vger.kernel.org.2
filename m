@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD633557B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6893C3557CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhDFP1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345652AbhDFP1u (ORCPT
+        id S242341AbhDFP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:29:35 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50338 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhDFP3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:27:50 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E6FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:27:40 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so1467257pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=teujLeIT57PU4D6WHjfymxQZCq3L6iGxMlAJKaKbG+0=;
-        b=yf22qUb+YRX9s4PLuKSN5MkcxpKtBgmhFGO0UFROZkFxAS4R7A0N7BysESW4YImDUy
-         VxZjvIPIYgFn1JQCy/ShbhxBuNnxSSlWz8Khr9aOQJvNv8m+dCiHPwSagAa06L+hNHas
-         8hT17gGxqn8J5/TBTRKYJL7n5vFqwwgcgVqPLEhih9+Aft1Hi7X7uftbp1RyVzKRVYjw
-         e82GKjf8rRy0nN/JMzYkm/ro4Sji5iErHiWJeSpe1D7nF1lNOj3+/04d5aUcsCVm5Nsl
-         ESYj0uzgV9oyOdP1Oc7xvQ1V4jirXtv3SHCXmXJULHFfn7fNLecldLnfFhKptoo446JC
-         CtBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=teujLeIT57PU4D6WHjfymxQZCq3L6iGxMlAJKaKbG+0=;
-        b=B2PDPH3/9n/d7spSB+PmTKLBWrn4FR5NyGVaWRwR6U12CrAX96GhKmI4UiSHWVvLjC
-         fs9zjo3hOhFOXBAWcu+YyZZkiGqjf+bOfaV6/DtkNJFYtq6p4ks0ELliCvyY12sXaISI
-         XBXwx1N78wbGyii66WCO6GD2rU95Q0gpklatnvK4SMXIo5JlWjJgpvTXNOnmyzKv4K8N
-         +Y8upX1sVfWXMxDaacGyCqGI2CATLt86erpUKjUNqkKaYiX81pOG7mZcD3ZwoQ64Jx5v
-         3Mp/hV/9/YfO06u2oSiEdrWFJcY+nmP3tdOcK+c9UdQdnJBhRonuG9NxpSTV1NG2BBwd
-         Fvyg==
-X-Gm-Message-State: AOAM531YAdR7KA7CWnjD/EkPfdVgqptk/idDtH9OQDSuri4u+EUojo2t
-        C+oZ0W58nUd/GqFmBp6ju55lbw==
-X-Google-Smtp-Source: ABdhPJx5cwlVZ4C8U2nzBNJarhHwx7Cyi7BG9Ti2l4K+YRAAq0eVpHgxfNnEl0oXq1AYcCxoOy5x0A==
-X-Received: by 2002:a17:902:b188:b029:e8:bd90:3f99 with SMTP id s8-20020a170902b188b02900e8bd903f99mr19788771plr.6.1617722860475;
-        Tue, 06 Apr 2021 08:27:40 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id m1sm2813532pjk.24.2021.04.06.08.27.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 08:27:39 -0700 (PDT)
-Subject: Re: [PATCH 0/3] ata: Module parameter clean-ups for pata_legacy and
- pata_platform
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>, linux-ide@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>
-References: <alpine.DEB.2.21.2103202152120.21463@angie.orcam.me.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9d8c309b-a4b5-c152-7edb-3c74278b2d90@kernel.dk>
-Date:   Tue, 6 Apr 2021 09:27:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2103202152120.21463@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 6 Apr 2021 11:29:34 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136FNQiV187503;
+        Tue, 6 Apr 2021 15:29:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=KAMM11a306xM2ipfm54BMlxObG8E/8Ijj5e8EsmONzE=;
+ b=MpoIHIooyGRktmg4ksXKOl6T6P94O/Z0gVu3MHdHV7OABYhNYh6w02zPnHCeu7IPeO8q
+ KtWu6gZNp6shcLwF0nNmUs9PpdE/IgnjzskK4BJLZhpUet/n6zd0ywMXud9DE9QhGagw
+ KtaAOqQdgmdKwBBzQga/3HVOkls5QD//4xs/l/hxjL4GR/ZwTLcAuyNQntXJVvir82OQ
+ 5v5gGE2HWKeKvSgWjl5UzKCs3kFVINNL2ZsJbGLV1R0747uFeJlYilL3cxssWF7xnJRn
+ Avlvp4EmNMQVd+GdRz7RQpGsZTaqZ0c1XJqtySwnQdMbm5M4N+g+49bMsfcBxlc/xN0S 4Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37qfuxd91f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 15:29:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136FPtPI067450;
+        Tue, 6 Apr 2021 15:29:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 37qa3jkdjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 15:29:15 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 136FTAqb030579;
+        Tue, 6 Apr 2021 15:29:11 GMT
+Received: from ca-virt2-1.us.oracle.com (/10.211.11.111)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Apr 2021 08:29:10 -0700
+From:   =?UTF-8?q?=E2=80=9CWilliam=20Roche?= <william.roche@oracle.com>
+To:     bp@alien8.de
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, william.roche@oracle.com
+Subject: [PATCH v2] RAS/CEC: Memory Corrected Errors consistent event filtering
+Date:   Tue,  6 Apr 2021 11:28:59 -0400
+Message-Id: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <20210402170736.GJ28499@zn.tnic>
+References: <20210402170736.GJ28499@zn.tnic>
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 phishscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104030000 definitions=main-2104060105
+X-Proofpoint-GUID: HFiLMbGVoIYpXqUlQrF-hDuRuKn4oBnD
+X-Proofpoint-ORIG-GUID: HFiLMbGVoIYpXqUlQrF-hDuRuKn4oBnD
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 malwarescore=0
+ suspectscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 spamscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104030000 definitions=main-2104060105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 1:55 PM, Maciej W. Rozycki wrote:
-> Hi,
-> 
->  In the course of looking into Christoph's recent proposal to drop legacy 
-> IDE drivers I have come across a number of issues with module parameters 
-> of the pata_legacy and pata_platform drivers: errors in documentation 
-> present in the comment form, missing user-visible documentation, and 
-> unconditional poking at ISA I/O ports in pata_legacy that isn't there with 
-> the old ide-generic driver (the lack of `probe_mask' parameter).
-> 
->  Here's a small patch series that addresses these issues.  Overall I 
-> find the design of the pata_legacy driver's options a bit messy, e.g. the 
-> `all' vs the `probe_all' parameter, and the interpretation of masks where 
-> bits correspond to probed PATA locations in a particular system (rather 
-> than either all known or all existing), but it's been there long enough I 
-> think we have to keep it, so I merely tried to describe the current 
-> semantics.  See the individual change descriptions for details.
-> 
->  The changes have been run-time verified with an EISA system and a single 
-> ISA PATA adapter at the usual primary I/O location.  They have also been 
-> verified (mainly for the correctness of MODULE_PARM_DESC use) with an 
-> x86/PC build (for pata_legacy) and a MIPS/SWARM build (for pata_platform).
+From: William Roche <william.roche@oracle.com>
 
-Applied, thanks.
+The Corrected Error events collected by the cec_add_elem() have to be
+consistently filtered out.
+We fix the case where the value of find_elem() to find the slot of a pfn
+was mistakenly used as the return value of the function.
+Now the MCE notifiers chain relying on MCE_HANDLED_CEC would only report
+filtered corrected errors that reached the action threshold.
 
+Signed-off-by: William Roche <william.roche@oracle.com>
+---
+
+Notes:
+    This is the new patch version using an additional 'err' variable.
+    Unit tested it on a VM instance and a "Bare Metal" machine.
+    
+    No reporting is done by the MCE_HANDLED_CEC aware notifiers until
+    the action threshold is reached.
+
+ drivers/ras/cec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
+index ddecf25..b926c67 100644
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -312,8 +312,8 @@ static bool sanity_check(struct ce_array *ca)
+ static int cec_add_elem(u64 pfn)
+ {
+ 	struct ce_array *ca = &ce_arr;
++	int count, err, ret = 0;
+ 	unsigned int to = 0;
+-	int count, ret = 0;
+ 
+ 	/*
+ 	 * We can be called very early on the identify_cpu() path where we are
+@@ -330,8 +330,8 @@ static int cec_add_elem(u64 pfn)
+ 	if (ca->n == MAX_ELEMS)
+ 		WARN_ON(!del_lru_elem_unlocked(ca));
+ 
+-	ret = find_elem(ca, pfn, &to);
+-	if (ret < 0) {
++	err = find_elem(ca, pfn, &to);
++	if (err < 0) {
+ 		/*
+ 		 * Shift range [to-end] to make room for one more element.
+ 		 */
 -- 
-Jens Axboe
+1.8.3.1
 
