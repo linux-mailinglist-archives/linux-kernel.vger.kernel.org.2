@@ -2,217 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E87B354A3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667A2354A43
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239043AbhDFBjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        id S239257AbhDFBnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238693AbhDFBjr (ORCPT
+        with ESMTP id S238598AbhDFBnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:39:47 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264E0C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 18:39:40 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id v26so13840301iox.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 18:39:40 -0700 (PDT)
+        Mon, 5 Apr 2021 21:43:17 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6B1C06174A;
+        Mon,  5 Apr 2021 18:42:30 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id w2so8776798ilj.12;
+        Mon, 05 Apr 2021 18:42:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kshdm0ap+EBevJYwNXWZ87A2dwWzJNSVhby0IFpKUjE=;
-        b=DANlQeYZz2ut86OoHojEBFv6NeBzzNzeZxzDJDo2dYnDuY7a3P8SCSfkMLU8rHFzCV
-         sMYHOF/i0EdlmUpxfTWUrNAwPTFLQRgIktXI2/9olm76w+XkfK4QhCuD2bXXfwZg7GSw
-         jJEgfCdlsG5Y1XpUNkOpuCkba5Mq0ZqqPqKaKvYU4gk7YJcSXGRVLPx8roBpl7U/xXgY
-         D/LWVsarb/dQEM9chZpX639Ym030NOR3f02wVWLQWXG/zIQtEg6z1FjJAo3xh09h+WJm
-         XbK4sRLFPkIt3lWHW5GLsNtvqVRSHLAtGSVvev+x420lJksca8V7cZESQFY5hM3c5Gyd
-         hgYw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=PrSDtDYLYZ4HLqUStDekIt+fn6OzEwVC74efgP8t0E8=;
+        b=GJc/rD3kJ2ljFwr04aHOd0yq65Hx3XvI7M3N8iFEfwihNBeI722VrTGxaQRQLpwhmb
+         cgKB8hd6JMaD1Gomos/5R/fwlCkEvrkK63HgCo0J5VOlOEXiHGgcC5kZbjKHZClHNTPF
+         p3HLev563vwoBG9HJoQf1Ae75c8KzCrlYIMFnp/T5GaNB5HLzfijdS8gdpZx18pQyHwF
+         RzuZRrEHN0TJ3qgsZ8CvPsMiZKNsWEwQ68l5f7irMj36upkF5QjL1U600x8uBtX/5x2v
+         EqfvymZJVt5Z7awPQbR9R/6aSj2BBjMNMiwZk2oEF5oA5csfPGYxHV/JkGk0FGMrCj8D
+         cE5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kshdm0ap+EBevJYwNXWZ87A2dwWzJNSVhby0IFpKUjE=;
-        b=T4twrDtOqlXKywdT4mbdxwUzVuiHzfRUFEEqN3NKOpR+fGPmkK3CxzoWde0jNUcZD5
-         EWUlN1oVBruSuRvmtbBiroFyz4fzW0IusUFyE+uKmTVw+B9qPx0JtLybw7XB2p0487vb
-         W1sD2dmWerLl7fuI66i5m4VSiV7CVI4q4Pp8AZucsOjEgBT4kx+yx42n4/1pKEmOl+qb
-         HAfdxNmvqOqxLAo9s34xo7YNKOQ/GGc1RIAZMFlPknHUS389clITDhxVbRKo3vVrbagO
-         NBOZHNpIoqUE0eFhZZmcLrkVB1zJ45KklHlof1GTkEZCTsYzjPplYdG8OuSXtx8bA6jZ
-         ZBcw==
-X-Gm-Message-State: AOAM533IEtD8QzTDL7PogG4mGaueHMbCft/iBDJfLghgaf2HgVrod8zK
-        /hpu9R+mXImUQs4nW31oddc9Si7vcycEgyKGfEbQHQ==
-X-Google-Smtp-Source: ABdhPJxN+N9O0aLCS3WWAmy/8YPy6PoL8hK8sPoE9FoGWSPGhStJwZR8kNYyAYdEvnB/f7i+RQZUrBw18wjhFiWIncU=
-X-Received: by 2002:a6b:3118:: with SMTP id j24mr21659489ioa.205.1617673179308;
- Mon, 05 Apr 2021 18:39:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1617302792.git.ashish.kalra@amd.com> <69dd6d5c4f467e6c8a0f4f1065f7f2a3d25f37f8.1617302792.git.ashish.kalra@amd.com>
-In-Reply-To: <69dd6d5c4f467e6c8a0f4f1065f7f2a3d25f37f8.1617302792.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 5 Apr 2021 18:39:03 -0700
-Message-ID: <CABayD+f3RhXUTnsGRYEnkiJ7Ncr0whqowqujvU+VJiSJx0xrtg@mail.gmail.com>
-Subject: Re: [PATCH v11 10/13] KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION
- feature & Custom MSR.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=PrSDtDYLYZ4HLqUStDekIt+fn6OzEwVC74efgP8t0E8=;
+        b=FT/l5C5eBdd2i3jmdY0D4k9nzREzLix7FHwuuGOYsp0UUvJQBAUOMi4MihdVO1hxiV
+         vGKVfCo8tu9tx8lmpdhPnK2ThNxW20NMSWXrhM/FT5oMvqBbf1Sq1DNctqTSreicuz0G
+         dA8LK6QNVeBNjEPyYHb1aR7HGUylb2efn00ogLYIxu1hV7WN0nlSNmZgk+3j865Oiz1V
+         SeqaxJaHvygnw7OKpUzfIfZUcCPSCOhwbo2DGlGupisd1lPAKPrg0Lks5jjZBBGNIkzU
+         MVETqzKWSkgC9Ea+Wr90n2zhD24HWN9CMsEUAVUOvBEJKYuzCXxbAtNEPHzX5wtoLTKT
+         Sztw==
+X-Gm-Message-State: AOAM5310hfrh1Tx5FQaH0bAa38RKpS+xcEQ3cmOaG0B5jYQlUd5IkBaC
+        NJ0B8zFfim2erYW974rEa8c=
+X-Google-Smtp-Source: ABdhPJwIOD7eCg9Vve36yyS+GNc3QOioD/OAIB05JZ/Q/KPP5BBtqGonhE0XwZFN+SKpxTrX/1pNjQ==
+X-Received: by 2002:a92:c26e:: with SMTP id h14mr17219229ild.33.1617673349649;
+        Mon, 05 Apr 2021 18:42:29 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id r4sm1076219ilb.51.2021.04.05.18.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 18:42:29 -0700 (PDT)
+Date:   Mon, 05 Apr 2021 18:42:21 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Pedro Tammela <pctammela@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "(open list:BPF \\(Safe dynamic programs and tools\\))" 
+        <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org (open list:BPF \(Safe dynamic programs and tools\)),
+        "(open list:BPF \\(Safe dynamic programs and tools\\) open list)" 
+        <linux-kernel@vger.kernel.org>,
+        "(open list:BPF \\(Safe dynamic programs and tools\\) open list open
+        list:KERNEL SELFTEST FRAMEWORK)" <linux-kselftest@vger.kernel.org> (open
+        list:BPF \(Safe dynamic programs and tools\) open list open list:KERNEL
+        SELFTEST FRAMEWORK)
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <606bbc7db9d66_d464620822@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210404200256.300532-2-pctammela@mojatatu.com>
+References: <20210404200256.300532-1-pctammela@mojatatu.com>
+ <20210404200256.300532-2-pctammela@mojatatu.com>
+Subject: RE: [PATCH bpf-next 1/3] bpf: add batched ops support for percpu
+ array
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 7:30 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> Add new KVM_FEATURE_SEV_LIVE_MIGRATION feature for guest to check
-> for host-side support for SEV live migration. Also add a new custom
-> MSR_KVM_SEV_LIVE_MIGRATION for guest to enable the SEV live migration
-> feature.
->
-> MSR is handled by userspace using MSR filters.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Pedro Tammela wrote:
+> Suggested-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
 > ---
->  Documentation/virt/kvm/cpuid.rst     |  5 +++++
->  Documentation/virt/kvm/msr.rst       | 12 ++++++++++++
->  arch/x86/include/uapi/asm/kvm_para.h |  4 ++++
->  arch/x86/kvm/cpuid.c                 |  3 ++-
->  arch/x86/kvm/svm/svm.c               | 22 ++++++++++++++++++++++
->  5 files changed, 45 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-> index cf62162d4be2..0bdb6cdb12d3 100644
-> --- a/Documentation/virt/kvm/cpuid.rst
-> +++ b/Documentation/virt/kvm/cpuid.rst
-> @@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
->                                                 before using extended destination
->                                                 ID bits in MSI address bits 11-5.
->
-> +KVM_FEATURE_SEV_LIVE_MIGRATION     16          guest checks this feature bit before
-> +                                               using the page encryption state
-> +                                               hypercall to notify the page state
-> +                                               change
-> +
->  KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
->                                                 per-cpu warps are expected in
->                                                 kvmclock
-> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-> index e37a14c323d2..020245d16087 100644
-> --- a/Documentation/virt/kvm/msr.rst
-> +++ b/Documentation/virt/kvm/msr.rst
-> @@ -376,3 +376,15 @@ data:
->         write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
->         and check if there are more notifications pending. The MSR is available
->         if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
-> +
-> +MSR_KVM_SEV_LIVE_MIGRATION:
-> +        0x4b564d08
-> +
-> +       Control SEV Live Migration features.
-> +
-> +data:
-> +        Bit 0 enables (1) or disables (0) host-side SEV Live Migration feature,
-> +        in other words, this is guest->host communication that it's properly
-> +        handling the shared pages list.
-> +
-> +        All other bits are reserved.
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 950afebfba88..f6bfa138874f 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -33,6 +33,7 @@
->  #define KVM_FEATURE_PV_SCHED_YIELD     13
->  #define KVM_FEATURE_ASYNC_PF_INT       14
->  #define KVM_FEATURE_MSI_EXT_DEST_ID    15
-> +#define KVM_FEATURE_SEV_LIVE_MIGRATION 16
->
->  #define KVM_HINTS_REALTIME      0
->
-> @@ -54,6 +55,7 @@
->  #define MSR_KVM_POLL_CONTROL   0x4b564d05
->  #define MSR_KVM_ASYNC_PF_INT   0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK   0x4b564d07
-> +#define MSR_KVM_SEV_LIVE_MIGRATION     0x4b564d08
->
->  struct kvm_steal_time {
->         __u64 steal;
-> @@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
->  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
->  #define KVM_PV_EOI_DISABLED 0x0
->
-> +#define KVM_SEV_LIVE_MIGRATION_ENABLED BIT_ULL(0)
-> +
->  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..4e2e69a692aa 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -812,7 +812,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->                              (1 << KVM_FEATURE_PV_SEND_IPI) |
->                              (1 << KVM_FEATURE_POLL_CONTROL) |
->                              (1 << KVM_FEATURE_PV_SCHED_YIELD) |
-> -                            (1 << KVM_FEATURE_ASYNC_PF_INT);
-> +                            (1 << KVM_FEATURE_ASYNC_PF_INT) |
-> +                            (1 << KVM_FEATURE_SEV_LIVE_MIGRATION);
->
->                 if (sched_info_on())
->                         entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 3cbf000beff1..1ac79e2f2a6c 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2800,6 +2800,17 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->         case MSR_F10H_DECFG:
->                 msr_info->data = svm->msr_decfg;
->                 break;
-> +       case MSR_KVM_SEV_LIVE_MIGRATION:
-> +               if (!sev_guest(vcpu->kvm))
-> +                       return 1;
-> +
-> +               if (!guest_cpuid_has(vcpu, KVM_FEATURE_SEV_LIVE_MIGRATION))
-> +                       return 1;
-> +
-> +               /*
-> +                * Let userspace handle the MSR using MSR filters.
-> +                */
-> +               return KVM_MSR_RET_FILTERED;
->         default:
->                 return kvm_get_msr_common(vcpu, msr_info);
->         }
-> @@ -2996,6 +3007,17 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
->                 svm->msr_decfg = data;
->                 break;
->         }
-> +       case MSR_KVM_SEV_LIVE_MIGRATION:
-> +               if (!sev_guest(vcpu->kvm))
-> +                       return 1;
-> +
-> +               if (!guest_cpuid_has(vcpu, KVM_FEATURE_SEV_LIVE_MIGRATION))
-> +                       return 1;
-> +
-> +               /*
-> +                * Let userspace handle the MSR using MSR filters.
-> +                */
-> +               return KVM_MSR_RET_FILTERED;
 
-It's a little unintuitive to see KVM_MSR_RET_FILTERED here, since
-userspace can make this happen on its own without having an entry in
-this switch statement (by setting it in the msr filter bitmaps). When
-using MSR filters, I would only expect to get MSR filter exits for
-MSRs I specifically asked for.
+A commit message describing some of the change details and a note it uses
+the for-each cpu copies (same as normal syscall on percpu map) and not the
+per-cpu ones would be nice. I at least had to go and check the generic_map*
+batch operations.
 
-Not a huge deal, just a little unintuitive. I'm not sure other options
-are much better (you could put KVM_MSR_RET_INVALID, or you could just
-not have these entries in svm_{get,set}_msr).
+Also something about why generic_map_delete_batch is omitted?
+
+>  kernel/bpf/arraymap.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 463d25e1e67e..3c4105603f9d 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -698,6 +698,8 @@ const struct bpf_map_ops percpu_array_map_ops = {
+>  	.map_delete_elem = array_map_delete_elem,
+>  	.map_seq_show_elem = percpu_array_map_seq_show_elem,
+>  	.map_check_btf = array_map_check_btf,
+> +	.map_lookup_batch = generic_map_lookup_batch,
+> +	.map_update_batch = generic_map_update_batch,
+>  	.map_set_for_each_callback_args = map_set_for_each_callback_args,
+>  	.map_for_each_callback = bpf_for_each_array_elem,
+>  	.map_btf_name = "bpf_array",
+> -- 
+> 2.25.1
+> 
 
 
---Steve
