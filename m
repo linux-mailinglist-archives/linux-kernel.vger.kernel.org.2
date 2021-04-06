@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4F6354FEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11536354FEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbhDFJcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:32:03 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:50604 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhDFJcC (ORCPT
+        id S235921AbhDFJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231701AbhDFJcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:32:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5FkcxajTibeYdrCIX51k3meJRElahfxK2YPLhmX0I1c=; b=gmdRsi5f7JMJKFwJ+1YhLU0mvt
-        9E4WpZ2lQyLMWLK1YZ4nbgFn4Qv0c/n2CjsDB87410om8vgGJdLy7RqJOMklH46TnGYvA1k49U83D
-        xCG0fG7PtUX5UBGAlTLttKLhkw0nkH6CdwoBFTfr8mA6npBz/MIfIufgllDdYC0grlFI=;
-Received: from 198-48-224-11.cpe.pppoe.ca ([198.48.224.11] helo=[192.168.1.180])
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lTi3t-00053P-EA; Tue, 06 Apr 2021 04:31:53 -0500
-Subject: Re: [PATCH] perf data: Add JSON export
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>, linux-kernel@vger.kernel.org
-References: <c4d0b0f1-79f4-f08d-3d7e-00046120f845@codeweavers.com>
- <YGXIDGfCLVtFuxgT@krava>
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-Message-ID: <0831d8ee-12d5-dd28-dde4-a46e4781a76f@codeweavers.com>
-Date:   Tue, 6 Apr 2021 05:31:51 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 6 Apr 2021 05:32:25 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5C1C06174A;
+        Tue,  6 Apr 2021 02:32:17 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a0d00691dbdb0de837383.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:691d:bdb0:de83:7383])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 740C61EC01B5;
+        Tue,  6 Apr 2021 11:32:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617701531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=EkBp7ILwvimd3C86prFra1WB8w/qMaSUVhYcMDdNl68=;
+        b=N3vMBPppYmKzbzrswJa0ZU3bDrqSiKUleUIJPJsH55ucSLNdFuWCaENRrI8F/eynzDoEMv
+        4OzcblD9/RpY40sVQz6tI1iyjeMtSeArJuW2P98XvBp5KP8W0DZIgjssIMI58PjWzGRy/W
+        +jXJG3iTV9pmcKPKpdxh5XcajdsE3MM=
+Date:   Tue, 6 Apr 2021 11:32:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 13/25] x86/sgx: Add helpers to expose ECREATE and
+ EINIT to KVM
+Message-ID: <20210406093211.GI17806@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com>
+ <20210405090759.GB19485@zn.tnic>
+ <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
+ <20210406073917.GA17806@zn.tnic>
+ <20210406205958.084147e365d04d066e4357c1@intel.com>
+ <20210406090901.GH17806@zn.tnic>
+ <20210406212424.86d6d4533b144d4621ecb385@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YGXIDGfCLVtFuxgT@krava>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210406212424.86d6d4533b144d4621ecb385@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Tue, Apr 06, 2021 at 09:24:24PM +1200, Kai Huang wrote:
+> Such invalid input has already been handled in handle_encls_xx() before calling
+> the two helpers in this patch. KVM returns to Qemu and let it decide whether to
+> kill or not. The access_ok()s here are trying to catch KVM bug.
 
-Thanks again for the review. I've fixed the issues you mentioned. Some notes
-below:
+Whatever they try to do, you cannot continue creating an enclave using
+invalid input, no matter whether you've warned or not. People do not
+stare at dmesg all the time.
 
+> If so we'd better inject an exception to guest (and return 1) in KVM so guest
+> can continue to run. Otherwise basically KVM will return to Qemu and let it
+> decide (and basically it will kill guest).
+>
+> I think killing guest is also OK. KVM part patches needs to be updated, though,
+> anyway.
 
-On 2021-04-01 8:15 a.m., Jiri Olsa wrote:
-> I recall you did not add support for walltime clock,
-> don't you need it to sync with other events?
+Ok, I'll make the changes and you can redo the KVM rest ontop.
 
-Not necessarily. As long as the perf recording and the GPU trace are made from
-the same clock, the events should line up; the real time doesn't matter. I've
-added it anyway though since it's good to have. It now outputs "clockid",
-"clock-time" and "real-time" in the headers if clock info was included in the
-recording.
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
-On 2021-04-01 9:18 a.m., Jiri Olsa wrote:
-> also I will not push hard for test, becase we don't have any for CTF ;-)
-> but if you could think of any, that'd be great
-
-I'm not sure what kind of tests would be useful. We could include a small
-perf.data file and its JSON output and verify that they match. This is probably
-pointless because almost any change to the JSON code would be expected to
-change the output so we'd just be resetting the test on each change.
-
-
-> I was wondering how to make this \t mess more readable,
-> how about you define function like output_json:
-> 
-> 	output_json(FILE, level, field, format, ...);
-> 
-> and use it:
-> 
-> 	output_json(c->out, 3, "data-offset", "PRIu64", header->data_offset);
-> 	output_json(c->out, 3, "data-size", "PRIu64", header->data_size);
-> 	output_json(c->out, 3, "feat-offset", PRIu64, header->feat_offset);
-> 
-> similar way as we do for pr_debug -> eprintf
-
-I've cleaned up the output with some additional helper functions. This is
-essentially turning into its own mini JSON encoder which I was hoping to avoid
-but I suppose it's necessary to make the code maintainable.
-
-
-I'll be sending a new patch shortly.
-
-Nick
-
+https://people.kernel.org/tglx/notes-about-netiquette
