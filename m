@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35607355705
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDCA355710
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345331AbhDFOx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:53:28 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:42563 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239488AbhDFOx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:53:27 -0400
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7EA9D100008;
-        Tue,  6 Apr 2021 14:53:17 +0000 (UTC)
-Subject: Re: [PATCH] driver: of: Properly truncate command line if too long
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210316193820.3137-1-alex@ghiti.fr>
- <ee702ff7-f43c-745c-4157-b1cba53bb0b2@ghiti.fr>
- <CAL_JsqLeA2va05A78M893rAGoeMr-CztdiZouq-PSDFfsJ_-EA@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <f587170c-ab83-8b38-d59e-c0f51daa5f3c@ghiti.fr>
-Date:   Tue, 6 Apr 2021 10:53:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S243440AbhDFOzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:55:13 -0400
+Received: from verein.lst.de ([213.95.11.211]:54860 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239488AbhDFOzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:55:11 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6FA6868B02; Tue,  6 Apr 2021 16:54:57 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 16:54:57 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
+ ib_alloc_mr() and ib_mr_pool_init()
+Message-ID: <20210406145457.GA7790@lst.de>
+References: <20210405052404.213889-2-leon@kernel.org> <c21edd64-396c-4c7c-86f8-79045321a528@acm.org> <YGvwUI022t/rJy5U@unreal> <20210406052717.GA4835@lst.de> <YGv4niuc31WnqpEJ@unreal> <20210406121312.GK7405@nvidia.com> <20210406123034.GA28930@lst.de> <20210406140437.GR7405@nvidia.com> <20210406141552.GA4936@lst.de> <20210406144039.GS7405@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLeA2va05A78M893rAGoeMr-CztdiZouq-PSDFfsJ_-EA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406144039.GS7405@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 4/6/21 à 9:40 AM, Rob Herring a écrit :
-> On Sat, Apr 3, 2021 at 7:09 AM Alex Ghiti <alex@ghiti.fr> wrote:
->>
->> Hi,
->>
->> Le 3/16/21 à 3:38 PM, Alexandre Ghiti a écrit :
->>> In case the command line given by the user is too long, warn about it
->>> and truncate it to the last full argument.
->>>
->>> This is what efi already does in commit 80b1bfe1cb2f ("efi/libstub:
->>> Don't parse overlong command lines").
->>>
->>> Reported-by: Dmitry Vyukov <dvyukov@google.com>
->>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>> ---
->>>    drivers/of/fdt.c | 21 ++++++++++++++++++++-
->>>    1 file changed, 20 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
->>> index dcc1dd96911a..de4c6f9bac39 100644
->>> --- a/drivers/of/fdt.c
->>> +++ b/drivers/of/fdt.c
->>> @@ -25,6 +25,7 @@
->>>    #include <linux/serial_core.h>
->>>    #include <linux/sysfs.h>
->>>    #include <linux/random.h>
->>> +#include <linux/ctype.h>
->>>
->>>    #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
->>>    #include <asm/page.h>
->>> @@ -1050,9 +1051,27 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
->>>
->>>        /* Retrieve command line */
->>>        p = of_get_flat_dt_prop(node, "bootargs", &l);
->>> -     if (p != NULL && l > 0)
->>> +     if (p != NULL && l > 0) {
->>>                strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
->>>
->>> +             /*
->>> +              * If the given command line size is larger than
->>> +              * COMMAND_LINE_SIZE, truncate it to the last complete
->>> +              * parameter.
->>> +              */
->>> +             if (l > COMMAND_LINE_SIZE) {
->>> +                     char *cmd_p = (char *)data + COMMAND_LINE_SIZE - 1;
->>> +
->>> +                     while (!isspace(*cmd_p))
->>> +                             cmd_p--;
->>> +
->>> +                     *cmd_p = '\0';
->>> +
->>> +                     pr_err("Command line is too long: truncated to %d bytes\n",
->>> +                            (int)(cmd_p - (char *)data + 1));
->>> +             }
->>> +     }
->>> +
->>>        /*
->>>         * CONFIG_CMDLINE is meant to be a default in case nothing else
->>>         * managed to set the command line, unless CONFIG_CMDLINE_FORCE
->>>
->>
->> Any thought about that ?
+On Tue, Apr 06, 2021 at 11:40:39AM -0300, Jason Gunthorpe wrote:
+> Yes, but the complexity is how the drivers are constructed they are
+> designed to reject flags they don't know about..
 > 
-> It looks fine to me, but this will need to be adapted to the generic
-> command line support[1][2] when that is merged. So I've been waiting
-> to see if that's going to happen this cycle.
+> Hum, it looks like someone has already been in here and we now have a
+> IB_ACCESS_OPTIONAL concept. 
+> 
+> Something like this would be the starting point:
+>
+> [...]
+>
+> However I see only EFA actually uses IB_ACCESS_OPTIONAL, so the lead
+> up would be to audit all the drivers to process optional access_flags
+> properly. Maybe this was done, but I don't see much evidence of it..
+>
+> Sigh. It is a big mess cleaning adventure in drivers really.
 
-Ok I'll take a look then, thanks.
+Yes.  When passing flags to drivers we need to have a good pattern
+in place for distinguishing between mandatory and optional flags.
+That is something everyone gets wrong at first (yourself included)
+and which then later needs painful untangling.  So I think we need
+to do that anyway.
 
-Alex
+> > Do we actually ever need the strict ordering semantics in the kernel?
+> 
+> No, only for uverbs.
 
-> 
-> Rob
-> 
-> [1] https://lore.kernel.org/lkml/cover.1616765869.git.christophe.leroy@csgroup.eu/
-> [2] https://lore.kernel.org/lkml/41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com/
-> 
+Which is a pretty clear indicator that we should avoid all this ULP
+churn.  Note that the polarity of the the flag passed to the HCA
+driver doesn't really matter either - we should just avoid having to
+deal with it in the kernel ULP API.
