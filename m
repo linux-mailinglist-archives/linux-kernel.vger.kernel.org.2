@@ -2,241 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901B335597F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D80355965
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346613AbhDFQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:44:45 -0400
-Received: from mail.pqgruber.com ([52.59.78.55]:56130 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346637AbhDFQoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:44:23 -0400
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 92484C6AE5A;
-        Tue,  6 Apr 2021 18:44:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617727450;
-        bh=SwWr6JtkEkm6oQKOGFw763hxhxJctof+5K1+zKwSwMw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KL5LTOtVTSmHNkQpdiLgWq5FdrOJk2u0Nbvk5CBxtcW0V9chweYacbJndy3rKPwxz
-         mdBJsxRUdVRfUj4H2WA39fScGEhiL/D/xDPAbHMUkGma87U2/oXVblQkiBSKnqfFTM
-         44JT1eyZKoe5U/cvN+2Fmb7q55Dnka73GAO/jR9w=
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     linux-pwm@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: [PATCH v7 8/8] pwm: pca9685: Add error messages for failed regmap calls
-Date:   Tue,  6 Apr 2021 18:41:40 +0200
-Message-Id: <20210406164140.81423-8-clemens.gruber@pqgruber.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+        id S1346523AbhDFQmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhDFQm3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:42:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BD6C06174A;
+        Tue,  6 Apr 2021 09:42:20 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id qo10so12622790ejb.6;
+        Tue, 06 Apr 2021 09:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5FhGpD+W2qCTNTtz8r16NI+eTTgYQsJqj2294KSTYfg=;
+        b=O4mar5EJsHEnN3WGZVxrUQ0F0XF3kFlnGht20zddufgJZ7os++IvA0hgydkU4xbSDQ
+         +XOriaf9ISSqRf2vVB6revLl0hdy3av+65Kpxdkm41s2St9tXkPlSkBFkXx9bD1szhiU
+         wAspPAqPqAJsB9yRyIdy2/wZiflyFFxX0hzQPBIYIeGygO1XSMRBIJgwswmMKiS+sWFG
+         yF4ii2tYVlWWmwTVszEJK+vomRUD+tgLYq/KTzKtdalo8kPxU43JfVp4wmAfvaAddN+C
+         sP1K3RjL47NtXKKgky14aXscPq4mLN4XpNnLldlxuVStWnpAAoFPreeXMyNLUzYcz+6T
+         ntYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5FhGpD+W2qCTNTtz8r16NI+eTTgYQsJqj2294KSTYfg=;
+        b=X20lmT+QpMpBh04RFGTxQkVcfNb2gildPq2H9WhXkdyai50MEJM30MW67EJY/6fN89
+         HgLP16EnTczfzGsKjv0roD+pPrVIhL7iWjNI5uAHoHRnMJRGM+hRsBNtdW/qERM2JKKj
+         xddP4gJDRqpQZGBbATYQU7J4sUQBMd6YUUrHdPCWq/2X+2XjkZRFuA2PoD0k971SMahb
+         3U74rf5NVUWzYnSAycbi4urSxMo8vsoZGJvKbXd7/bqPLSXz4NEVTy19ZbeXduHn6+df
+         sQfB5VuGbuuKL7hzZtskywYuuTnP4y8y1wknhUEpApaaQiB/OOg3LghGdqaW7+GQDS5x
+         iMeQ==
+X-Gm-Message-State: AOAM532adqM6Km7Dp0bsJKc2iIQcRSBZkG55ZAnBLwJdVJtg81tvsb7U
+        3XkkiwUR5uMPLtfcn+OhI/79YWL+SlTILoffdok=
+X-Google-Smtp-Source: ABdhPJzGmpH9vtOSzDZ4/Y4obgIO+geB2MftQxr3dsbqxdiL5KplV4MIvAmDjQLurBc4ZwCpMsr6uQPYr8rBQRgCd0g=
+X-Received: by 2002:a17:906:b296:: with SMTP id q22mr13134681ejz.161.1617727339539;
+ Tue, 06 Apr 2021 09:42:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210329183312.178266-1-shy828301@gmail.com> <20210330164200.01a4b78f@thinkpad>
+ <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com>
+ <20210331134727.47bc1e6d@thinkpad> <CAHbLzkquYxq_eXoVhUCib9qu_aMS9U2XXjb5pop9JtJ8uco_vg@mail.gmail.com>
+ <20210406140251.2779c400@thinkpad>
+In-Reply-To: <20210406140251.2779c400@thinkpad>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 6 Apr 2021 09:42:07 -0700
+Message-ID: <CAHbLzkr2+CnY8+ENB_Hvt7kJPKNq3H2aG=RsOBmBE_dYciqstw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
+ hinting fault
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regmap operations can fail if the underlying subsystem is not working
-properly (e.g. hogged I2C bus, etc.)
-As this is useful information for the user, print an error message if it
-happens.
-Let probe fail if the first regmap_read or the first regmap_write fails.
+On Tue, Apr 6, 2021 at 5:03 AM Gerald Schaefer
+<gerald.schaefer@linux.ibm.com> wrote:
+>
+> On Thu, 1 Apr 2021 13:10:49 -0700
+> Yang Shi <shy828301@gmail.com> wrote:
+>
+> [...]
+> > > >
+> > > > Yes, it could be. The old behavior of migration was to return -ENOMEM
+> > > > if THP migration is not supported then split THP. That behavior was
+> > > > not very friendly to some usecases, for example, memory policy and
+> > > > migration lieu of reclaim (the upcoming). But I don't mean we restore
+> > > > the old behavior. We could split THP if it returns -ENOSYS and the
+> > > > page is THP.
+> > >
+> > > OK, as long as we don't get any broken PMD migration entries established
+> > > for s390, some extra THP splitting would be acceptable I guess.
+> >
+> > There will be no migration PMD installed. The current behavior is a
+> > no-op if THP migration is not supported.
+>
+> Ok, just for completeness, since Mel also replied that the split
+> was not done on other architectures "because the loss from splitting
+> exceeded the gain of improved locality":
+>
+> I did not mean to request extra splitting functionality for s390,
+> simply skipping / ignoring large PMDs would also be fine for s390,
+> no need to add extra complexity.
 
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
----
-Changes since v6:
-- Rebased
+Thank you. It could make life easier. The current code still converts
+huge PMD to RPOTNONE even though THP migration is not supported. It is
+easy to skip such PMDs hence cycles are saved for pointless NUMA
+hinting page faults.
 
- drivers/pwm/pwm-pca9685.c | 83 ++++++++++++++++++++++++++++-----------
- 1 file changed, 59 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-index cf0c98e4ef44..8a4993882b40 100644
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -107,6 +107,30 @@ static bool pca9685_prescaler_can_change(struct pca9685 *pca, int channel)
- 	return test_bit(channel, pca->pwms_enabled);
- }
- 
-+static int pca9685_read_reg(struct pca9685 *pca, unsigned int reg, unsigned int *val)
-+{
-+	struct device *dev = pca->chip.dev;
-+	int err;
-+
-+	err = regmap_read(pca->regmap, reg, val);
-+	if (err != 0)
-+		dev_err(dev, "regmap_read of register 0x%x failed: %d\n", reg, err);
-+
-+	return err;
-+}
-+
-+static int pca9685_write_reg(struct pca9685 *pca, unsigned int reg, unsigned int val)
-+{
-+	struct device *dev = pca->chip.dev;
-+	int err;
-+
-+	err = regmap_write(pca->regmap, reg, val);
-+	if (err != 0)
-+		dev_err(dev, "regmap_write to register 0x%x failed: %d\n", reg, err);
-+
-+	return err;
-+}
-+
- /* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=2048 -> 50%) */
- static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
- {
-@@ -115,12 +139,12 @@ static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int
- 
- 	if (duty == 0) {
- 		/* Set the full OFF bit, which has the highest precedence */
--		regmap_write(pca->regmap, REG_OFF_H(channel), LED_FULL);
-+		pca9685_write_reg(pca, REG_OFF_H(channel), LED_FULL);
- 		return;
- 	} else if (duty >= PCA9685_COUNTER_RANGE) {
- 		/* Set the full ON bit and clear the full OFF bit */
--		regmap_write(pca->regmap, REG_ON_H(channel), LED_FULL);
--		regmap_write(pca->regmap, REG_OFF_H(channel), 0);
-+		pca9685_write_reg(pca, REG_ON_H(channel), LED_FULL);
-+		pca9685_write_reg(pca, REG_OFF_H(channel), 0);
- 		return;
- 	}
- 
-@@ -138,11 +162,11 @@ static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int
- 	off = (on + duty) % PCA9685_COUNTER_RANGE;
- 
- 	/* Set ON time (clears full ON bit) */
--	regmap_write(pca->regmap, REG_ON_L(channel), on & 0xff);
--	regmap_write(pca->regmap, REG_ON_H(channel), (on >> 8) & 0xf);
-+	pca9685_write_reg(pca, REG_ON_L(channel), on & 0xff);
-+	pca9685_write_reg(pca, REG_ON_H(channel), (on >> 8) & 0xf);
- 	/* Set OFF time (clears full OFF bit) */
--	regmap_write(pca->regmap, REG_OFF_L(channel), off & 0xff);
--	regmap_write(pca->regmap, REG_OFF_H(channel), (off >> 8) & 0xf);
-+	pca9685_write_reg(pca, REG_OFF_L(channel), off & 0xff);
-+	pca9685_write_reg(pca, REG_OFF_H(channel), (off >> 8) & 0xf);
- }
- 
- static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channel)
-@@ -155,26 +179,26 @@ static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channel)
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off);
-+	pca9685_read_reg(pca, LED_N_OFF_H(channel), &off);
- 	if (off & LED_FULL) {
- 		/* Full OFF bit is set */
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_ON_H(channel), &on);
-+	pca9685_read_reg(pca, LED_N_ON_H(channel), &on);
- 	if (on & LED_FULL) {
- 		/* Full ON bit is set */
- 		return PCA9685_COUNTER_RANGE;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-+	pca9685_read_reg(pca, LED_N_OFF_L(channel), &val);
- 	off = ((off & 0xf) << 8) | (val & 0xff);
- 	if (!pwm->args.staggering_allowed)
- 		return off;
- 
- 	/* Read ON register to calculate duty cycle of staggered output */
- 	val = 0;
--	regmap_read(pca->regmap, LED_N_ON_L(channel), &val);
-+	pca9685_read_reg(pca, LED_N_ON_L(channel), &val);
- 	on = ((on & 0xf) << 8) | (val & 0xff);
- 	return (off - on) & (PCA9685_COUNTER_RANGE - 1);
- }
-@@ -317,8 +341,15 @@ static inline int pca9685_pwm_gpio_probe(struct pca9685 *pca)
- 
- static void pca9685_set_sleep_mode(struct pca9685 *pca, bool enable)
- {
--	regmap_update_bits(pca->regmap, PCA9685_MODE1,
--			   MODE1_SLEEP, enable ? MODE1_SLEEP : 0);
-+	struct device *dev = pca->chip.dev;
-+	int err = regmap_update_bits(pca->regmap, PCA9685_MODE1,
-+				     MODE1_SLEEP, enable ? MODE1_SLEEP : 0);
-+	if (err != 0) {
-+		dev_err(dev, "regmap_update_bits of register 0x%x failed: %d\n",
-+			PCA9685_MODE1, err);
-+		return;
-+	}
-+
- 	if (!enable) {
- 		/* Wait 500us for the oscillator to be back up */
- 		udelay(500);
-@@ -353,7 +384,7 @@ static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-+	pca9685_read_reg(pca, PCA9685_PRESCALE, &val);
- 	if (prescale != val) {
- 		if (!pca9685_prescaler_can_change(pca, pwm->hwpwm)) {
- 			dev_err(chip->dev,
-@@ -371,7 +402,7 @@ static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		pca9685_set_sleep_mode(pca, true);
- 
- 		/* Change the chip-wide output frequency */
--		regmap_write(pca->regmap, PCA9685_PRESCALE, (int)prescale);
-+		pca9685_write_reg(pca, PCA9685_PRESCALE, (int)prescale);
- 
- 		/* Wake the chip up */
- 		pca9685_set_sleep_mode(pca, false);
-@@ -408,7 +439,7 @@ static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	unsigned int val = 0;
- 
- 	/* Calculate (chip-wide) period from prescale value */
--	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-+	pca9685_read_reg(pca, PCA9685_PRESCALE, &val);
- 	/*
- 	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
- 	 * The following calculation is therefore only a multiplication
-@@ -507,7 +538,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 
- 	mutex_init(&pca->lock);
- 
--	regmap_read(pca->regmap, PCA9685_MODE2, &reg);
-+	ret = pca9685_read_reg(pca, PCA9685_MODE2, &reg);
-+	if (ret != 0)
-+		return ret;
- 
- 	if (device_property_read_bool(&client->dev, "invert"))
- 		reg |= MODE2_INVRT;
-@@ -519,18 +552,20 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 	else
- 		reg |= MODE2_OUTDRV;
- 
--	regmap_write(pca->regmap, PCA9685_MODE2, reg);
-+	ret = pca9685_write_reg(pca, PCA9685_MODE2, reg);
-+	if (ret != 0)
-+		return ret;
- 
- 	/* Disable all LED ALLCALL and SUBx addresses to avoid bus collisions */
--	regmap_read(pca->regmap, PCA9685_MODE1, &reg);
-+	pca9685_read_reg(pca, PCA9685_MODE1, &reg);
- 	reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
--	regmap_write(pca->regmap, PCA9685_MODE1, reg);
-+	pca9685_write_reg(pca, PCA9685_MODE1, reg);
- 
- 	/* Reset OFF/ON registers to POR default */
--	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_OFF_L, LED_FULL);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_OFF_H, LED_FULL);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_ON_L, 0);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_ON_H, 0);
- 
- 	pca->chip.ops = &pca9685_pwm_ops;
- 	/* Add an extra channel for ALL_LED */
--- 
-2.31.1
-
+Will do so in v2 if no objection from Mel as well.
