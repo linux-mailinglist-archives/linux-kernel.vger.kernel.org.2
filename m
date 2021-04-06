@@ -2,107 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30488355576
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED85355593
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344623AbhDFNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229911AbhDFNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:42:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6435A613C7;
-        Tue,  6 Apr 2021 13:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617716519;
-        bh=b1ThPDuwmdA5W2MfjKGQeqHfVHiU0Eh1TspdbnlE2sg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHPM1UQZS4hn2dl5kIKhIPIfhxk0ID8Z9Zjzxo+Bhgrp8uQzRkAkCxFS+m1p2Mgut
-         ndEcguSeiETeDElax3HkXcK9C8tfD3qsNrNMsrFUCkkyLJqcQltHG51m0zaJ7ySt7g
-         4Ii5L72Dqil52fieKMirRFPlkezah4OavQ2WzNww=
-Date:   Tue, 6 Apr 2021 15:41:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 013/247] cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag
- on setting cifs_sb->prepath.
-Message-ID: <YGxlJXv/+IPaErUr@kroah.com>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161032.337414143@linuxfoundation.org>
- <YGxIMCsclG4E1/ck@eldamar.lan>
+        id S244133AbhDFNo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237873AbhDFNoy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:44:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B17C06174A;
+        Tue,  6 Apr 2021 06:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oCPXDXtMqE1iBbjtGFhAKOgXXmbi1VeB5Pwnd1OKQHk=; b=HyhqlYamzLQm+qtvlwj6xlPxsh
+        NRyXUpypC31oDyOZifkLLQUAf7aAokbqInobLmt1MHCc9ChAkafGqDul7uuae0v9vTHySHQeCa8q9
+        GdpMmjgCRLqdn4JPL6woBwwwIUZlg8rok/2TodmONzck+4da+uddu3J88b+SuvvX2ZSR623HZjoqt
+        aMTKE0kk+X868hgAUANH1Lg/x8Pi1DwEJEuh05c6XBE+ZZovN+HuXs/OIRUzocuuuPBB6jNG5P72/
+        etD8LUjGSmqQqGt7MKWZqCoozjDqMx79EESHUH8g/NSP7aJrMRI4GJea7yfS65u5ndLM7+1lsG09p
+        E+GZgkeg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTlxz-00CsSK-1D; Tue, 06 Apr 2021 13:42:39 +0000
+Date:   Tue, 6 Apr 2021 14:42:03 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 12/27] mm/filemap: Add folio_offset and
+ folio_file_offset
+Message-ID: <20210406134203.GK3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-13-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGxIMCsclG4E1/ck@eldamar.lan>
+In-Reply-To: <20210331184728.1188084-13-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 01:38:24PM +0200, Salvatore Bonaccorso wrote:
-> Hi,
-> 
-> On Mon, Mar 01, 2021 at 05:10:33PM +0100, Greg Kroah-Hartman wrote:
-> > From: Shyam Prasad N <sprasad@microsoft.com>
-> > 
-> > [ Upstream commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b ]
-> > 
-> > While debugging another issue today, Steve and I noticed that if a
-> > subdir for a file share is already mounted on the client, any new
-> > mount of any other subdir (or the file share root) of the same share
-> > results in sharing the cifs superblock, which e.g. can result in
-> > incorrect device name.
-> > 
-> > While setting prefix path for the root of a cifs_sb,
-> > CIFS_MOUNT_USE_PREFIX_PATH flag should also be set.
-> > Without it, prepath is not even considered in some places,
-> > and output of "mount" and various /proc/<>/*mount* related
-> > options can be missing part of the device name.
-> > 
-> > Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-> > Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-> > Signed-off-by: Steve French <stfrench@microsoft.com>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  fs/cifs/connect.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-> > index 6285085195c15..632249ce61eba 100644
-> > --- a/fs/cifs/connect.c
-> > +++ b/fs/cifs/connect.c
-> > @@ -3882,6 +3882,7 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
-> >  		cifs_sb->prepath = kstrdup(pvolume_info->prepath, GFP_KERNEL);
-> >  		if (cifs_sb->prepath == NULL)
-> >  			return -ENOMEM;
-> > +		cifs_sb->mnt_cifs_flags |= CIFS_MOUNT_USE_PREFIX_PATH;
-> >  	}
-> >  
-> >  	return 0;
-> 
-> A user in Debian reported an issue with mounts of DFS shares after an
-> update in Debian from 4.19.177 to 4.181:
-> 
-> https://lists.debian.org/debian-user/2021/04/msg00062.html
-> 
-> In a test setup i was able to reproduce the issue with 4.19.184 itself
-> (but interestingly not withing the 5.10.y series, checked 5.10.26)
-> which both contain the above commit.
-> 
-> 4.19.184 with a738c93fb1c1 ("cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag
-> on setting cifs_sb->prepath.") reverted fixes the issue.
-> 
-> Is there probably some missing prerequisites missing in the 4.19.y
-> brach? I could not test othr versions, but maybe other versions are
-> affected as well as before 4.19.y, as the commit was backported to
-> 4.14.223 as well.
+On Wed, Mar 31, 2021 at 07:47:13PM +0100, Matthew Wilcox (Oracle) wrote:
+> These are just wrappers around their page counterpart.
 
-If there is a missing patch, we will be glad to take it, does 5.4 also
-have this problem?
+Looks good,
 
-thanks,
-
-greg k-h
+Reviewed-by: Christoph Hellwig <hch@lst.de>
