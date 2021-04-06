@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB6A355CE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D55F355CEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238086AbhDFUbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:31:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45798 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhDFUbG (ORCPT
+        id S232939AbhDFUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhDFUcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:31:06 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lTsLh-0005vk-S4
-        for linux-kernel@vger.kernel.org; Tue, 06 Apr 2021 20:30:57 +0000
-Received: by mail-wm1-f71.google.com with SMTP id c195-20020a1c9acc0000b029011b91a22942so1248794wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:30:57 -0700 (PDT)
+        Tue, 6 Apr 2021 16:32:09 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97887C06174A;
+        Tue,  6 Apr 2021 13:32:01 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x15so6354330wrq.3;
+        Tue, 06 Apr 2021 13:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iDSBevfnSHjqAh+8L9vGNjgbXl9qa9YYnJmRsxsIFBg=;
+        b=QaUYIV0eJSPkp+njCCbosiy/LsgJqkkiNdeIpM6wPHY2yAMZpXGBJrSmxm7nPIEcQd
+         CtFA7VUkLT87BfWNOgtQBWtO4r/HzIKM7HybwESMgISnl5Sdy4qoGOsmw8SpEsQPLhLO
+         sTKKezPtKz3zXjAeFI7GRcdLsVmhUdF/lKxh3wT5ZxJS/3gU1TcgUkC9dypwLh/QSmCk
+         ahH+mVtT/fz8eOxUD2tgdw2JUpP9RYfP0eXp/10vB9J+fCE5jQaY5lPF1O0ZenA0OMUK
+         pXnSBH5Li00BjghwCKJkJAfEiE2af2NZo6IXiOFj0XEuGk6nJmF/YgAOpoDy7BamkZzp
+         sw7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B7+94ZBJm+NXJ3TDW1eAiyPRLMTS6GuI8L2lEKPsy6k=;
-        b=lnImYb/eULK58Voyk2GG/7fasyyK3FO9lYj6IRXFa+7F9yNfJvQEb0sxl1DSitb3gH
-         qPHxGKi/5PX+bz/d92AqGR/CkxQ8qldi8k8k5ug6WffmR8TjKWDWWXQNAyFQFAdXllT0
-         kzAoER54Sm7T7leqtff4Y0YM8Ab612jSLXa5349caVXraS9LJnd03ur0Yc+YeGnnNgaX
-         y5Onke2qCM/gFie1RWK7hZ0TODuGNK82uwuV4hfM2rgxgyfHISZKoP977ss4iwvjKjTv
-         vCcNTHnYQffyXhE0xGocQ055gMwQkni5bV+3+l6r9G/lG5Jh/n5029aj4AW5bO6pJ2wi
-         HBVA==
-X-Gm-Message-State: AOAM5311gZQKtu33wQwPkPRrwIo/s0CVmxZXbDs5pkDkeQwolnWxWfcz
-        QfZL/lMZJpMAIR5OxwWDLyoJpAr1wxS4DHnKwvoyBPcbINv7sQr5dSiH1ljLHKq+B5lbH+h+e+U
-        FBYQPPFLdHZhFtocb3+Fx20PZV2POiyUBNeIs6O0B+Q==
-X-Received: by 2002:a1c:f605:: with SMTP id w5mr5759662wmc.66.1617741056940;
-        Tue, 06 Apr 2021 13:30:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBnGGIOJEWEgxIzcQNy0Vn7tOaFRBBj1SkjOKTIQQbKh6OtpW6JLsbpoc2kT2gebyRfxim2A==
-X-Received: by 2002:a1c:f605:: with SMTP id w5mr5759656wmc.66.1617741056797;
-        Tue, 06 Apr 2021 13:30:56 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id o5sm34551051wrx.60.2021.04.06.13.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 13:30:56 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: exynos: correct kernel doc in platsmp
-Date:   Tue,  6 Apr 2021 22:30:53 +0200
-Message-Id: <161774104755.124746.8536738781662816687.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210405181605.52612-1-krzysztof.kozlowski@canonical.com>
-References: <20210405181605.52612-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iDSBevfnSHjqAh+8L9vGNjgbXl9qa9YYnJmRsxsIFBg=;
+        b=J9GNbzwM3I912A411p9U5I9439cuRoTr1P//3P5RqFVUVuUJl6UmN18Ra7INF94/W7
+         5TP4HJvtCl1KzAGdbV5XnAvX3i5dcTjXrO4h7x0wRzAukVG6dcbqzKr9NY26lWafqt36
+         DIICa2n/Nk2kW844z4lEn+wRh7gMceKRPxoVjVcvrU1UvfgtWjVB5OeKS2B6OhOyxB8+
+         DdzXCs14NBsuObFCxr/tJKFzntjhSW4M1KFmQwlAIYs1biBMwK6bHWQw6vLhwcKyiCSO
+         z9+C6dQVvmhLAQqvI5W2s6NUQjTGtoaQA+NCzfCjir3dYEn8PZRD5AZz/c4tV0JAycAb
+         4q7w==
+X-Gm-Message-State: AOAM532BWmewgAKqyAciXNzlDxL8ThZNITgce5qNQ4p/wLS8nu52YBp5
+        xRaOScF1uM/6sc/fvV7zS7ZMT4nMfxE=
+X-Google-Smtp-Source: ABdhPJy7nOZQouOdH2nLn2BBzTjZ3rSa+21agDAmE2W8D6MrRbimJWKhgNVgskyHElIMTxIb5YVSlw==
+X-Received: by 2002:a05:6000:18cd:: with SMTP id w13mr86539wrq.20.1617741120204;
+        Tue, 06 Apr 2021 13:32:00 -0700 (PDT)
+Received: from [192.168.1.101] ([37.170.75.38])
+        by smtp.gmail.com with ESMTPSA id l21sm4321075wmg.41.2021.04.06.13.31.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 13:31:59 -0700 (PDT)
+Subject: Re: [PATCH v3] net: tun: set tun->dev->addr_len during TUNSETLINK
+ processing
+To:     Phillip Potter <phil@philpotter.co.uk>, davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210406174554.915-1-phil@philpotter.co.uk>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <cdf3dcac-38d8-e63f-d43a-029a9742ec4d@gmail.com>
+Date:   Tue, 6 Apr 2021 22:31:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210406174554.915-1-phil@philpotter.co.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 20:16:05 +0200, Krzysztof Kozlowski wrote:
-> Correct few kerneldoc issues, including W=1 compile warning:
+
+
+On 4/6/21 7:45 PM, Phillip Potter wrote:
+> When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
+> to match the appropriate type, using new tun_get_addr_len utility function
+> which returns appropriate address length for given type. Fixes a
+> KMSAN-found uninit-value bug reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 > 
->   arch/arm/mach-exynos/platsmp.c:89: warning:
->     expecting prototype for exynos_core_power_down(). Prototype was for exynos_cpu_power_down() instead
+> Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
+> Diagnosed-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
 
-Applied, thanks!
+SGTM, thanks a lot.
 
-[1/1] ARM: exynos: correct kernel doc in platsmp
-      commit: 6031008780efaada18087eba7ec84fe149f124a9
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
