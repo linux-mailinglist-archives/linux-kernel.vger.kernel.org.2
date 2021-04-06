@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3D3354B2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567EA354B2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243550AbhDFDTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:19:52 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52793 "EHLO mga04.intel.com"
+        id S239845AbhDFDU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:20:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52945 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243540AbhDFDTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:19:51 -0400
-IronPort-SDR: N+i8Aakfc9G/kr+dX+zRs7uz9TfIVzTtaBZCXrtPgZ+XkGDJCUUEy8Hut5LSxwCqO1zfWx1GhD
- DWOllQbGaHAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="190798965"
+        id S233575AbhDFDU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 23:20:58 -0400
+IronPort-SDR: ge9IpEWk4My/BhHWvCzxs1CeK25yxkq8DIJaI3rNLxi0Ts18GVK8BPu5K8HzH9XxQYw+2Xb1UX
+ FJp8BNVhWm5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193011711"
 X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="190798965"
+   d="scan'208";a="193011711"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 20:19:43 -0700
-IronPort-SDR: h22GGbqxnoL0TkLIntPMbQn0E8HGZmwifqpqJ55zX5XEQfpaysiRYKJaJNrWG0Loqo5u6DEj/a
- Gw3+25lo34tQ==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 20:20:51 -0700
+IronPort-SDR: tqd49xEk1OsNWBfQEaejPDdRwlwAgPqRCsjmpoccixY5JszEFP1Iids7nHVPS6BZVXkrvjNgWh
+ XmcszShwvjIA==
 X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="421005713"
+   d="scan'208";a="421006149"
 Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 20:19:40 -0700
-Subject: Re: [PATCH v4 00/11] KVM: x86/pmu: Guest Architectural LBR Enabling
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210314155225.206661-1-like.xu@linux.intel.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <8ab9709f-a866-a73e-2d78-70a0c17763be@intel.com>
-Date:   Tue, 6 Apr 2021 11:19:39 +0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 20:20:30 -0700
+Subject: Re: [PATCH v5 0/5] perf/x86: Some minor changes to support guest Arch
+ LBR
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     pbonzini@redhat.com, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Namhyung Kim <namhyung@kernel.org>
+References: <20210326011918.183685-1-like.xu@linux.intel.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <91102eac-a315-3165-1670-8313176657f1@linux.intel.com>
+Date:   Tue, 6 Apr 2021 11:20:09 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210314155225.206661-1-like.xu@linux.intel.com>
+In-Reply-To: <20210326011918.183685-1-like.xu@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi all, do we have any comments on this patch set?
 
-On 2021/3/14 23:52, Like Xu wrote:
-> Hi geniuses,
->
-> Please help review the new version of Arch LBR enabling patch set.
->
-> The Architectural Last Branch Records (LBRs) is publiced
-> in the 319433-040 release of Intel Architecture Instruction
-> Set Extensions and Future Features Programming Reference[0].
->
-> The main advantages for the Arch LBR users are [1]:
-> - Faster context switching due to XSAVES support and faster reset of
->    LBR MSRs via the new DEPTH MSR
-> - Faster LBR read for a non-PEBS event due to XSAVES support, which
->    lowers the overhead of the NMI handler.
-> - Linux kernel can support the LBR features without knowing the model
->    number of the current CPU.
->
-> It's based on the kvm/queue tree plus two commits from kvm/intel tree:
-> - 'fea4ab260645 ("KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS")'
-> - '0ccd14126cb2 ("KVM: x86: Report XSS as an MSR to be saved if there are supported features")'
->
+On 2021/3/26 9:19, Like Xu wrote:
+> Hi Peter,
+> 
+> Please help review these minor perf/x86 changes in this patch set,
+> and we need some of them to support Guest Architectural LBR in KVM.
+> 
+> This version keeps reserve_lbr_buffers() as is because the LBR xsave
+> buffer is a per-CPU buffer, not a per-event buffer. We only need to
+> allocate the buffer once when initializing the first event.
+> 
+> If you are interested in the KVM emulation, please check
+> https://lore.kernel.org/kvm/20210314155225.206661-1-like.xu@linux.intel.com/
+> 
 > Please check more details in each commit and feel free to comment.
->
-> [0] https://software.intel.com/content/www/us/en/develop/download/
-> intel-architecture-instruction-set-extensions-and-future-features-programming-reference.html
-> [1] https://lore.kernel.org/lkml/1593780569-62993-1-git-send-email-kan.liang@linux.intel.com/
->
-> ---
-> v3->v4 Changelog:
-> - Add one more host patch to reuse ARCH_LBR_CTL_MASK;
-> - Add reserve_lbr_buffers() instead of using GFP_ATOMIC;
-> - Fia a bug in the arch_lbr_depth_is_valid();
-> - Add LBR_CTL_EN to unify DEBUGCTLMSR_LBR and ARCH_LBR_CTL_LBREN;
-> - Add vmx->host_lbrctlmsr to save/restore host values;
-> - Add KVM_SUPPORTED_XSS to refactoring supported_xss;
-> - Clear Arch_LBR ans its XSS bit if it's not supported;
-> - Add negative testing to the related kvm-unit-tests;
-> - Refine code and commit messages;
->
+> 
 > Previous:
-> https://lore.kernel.org/kvm/20210303135756.1546253-1-like.xu@linux.intel.com/
->
-> Like Xu (11):
+> https://lore.kernel.org/lkml/20210322060635.821531-1-like.xu@linux.intel.com/
+> 
+> v4->v5 Changelog:
+> - Add "Tested-by: Kan Liang"
+> - Make the commit message simpler
+> - Make check_msr() to ignore msr==0
+> - Use kmem_cache_alloc_node() [Namhyung]
+> 
+> Like Xu (5):
 >    perf/x86/intel: Fix the comment about guest LBR support on KVM
 >    perf/x86/lbr: Simplify the exposure check for the LBR_INFO registers
->    perf/x86/lbr: Skip checking for the existence of LBR_TOS for Arch LBR
+>    perf/x86: Skip checking MSR for MSR 0x000
 >    perf/x86/lbr: Move cpuc->lbr_xsave allocation out of sleeping region
 >    perf/x86: Move ARCH_LBR_CTL_MASK definition to include/asm/msr-index.h
->    KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for Arch LBR
->    KVM: vmx/pmu: Add MSR_ARCH_LBR_CTL emulation for Arch LBR
->    KVM: vmx/pmu: Add Arch LBR emulation and its VMCS field
->    KVM: x86: Expose Architectural LBR CPUID leaf
->    KVM: x86: Refine the matching and clearing logic for supported_xss
->    KVM: x86: Add XSAVE Support for Architectural LBRs
->
->   arch/x86/events/core.c           |   8 ++-
->   arch/x86/events/intel/bts.c      |   2 +-
->   arch/x86/events/intel/core.c     |   6 +-
->   arch/x86/events/intel/lbr.c      |  28 +++++----
->   arch/x86/events/perf_event.h     |   8 ++-
->   arch/x86/include/asm/msr-index.h |   1 +
->   arch/x86/include/asm/vmx.h       |   4 ++
->   arch/x86/kvm/cpuid.c             |  25 +++++++-
->   arch/x86/kvm/vmx/capabilities.h  |  25 +++++---
->   arch/x86/kvm/vmx/pmu_intel.c     | 103 ++++++++++++++++++++++++++++---
->   arch/x86/kvm/vmx/vmx.c           |  50 +++++++++++++--
->   arch/x86/kvm/vmx/vmx.h           |   4 ++
->   arch/x86/kvm/x86.c               |   6 +-
->   13 files changed, 227 insertions(+), 43 deletions(-)
->
+> 
+>   arch/x86/events/core.c           |  8 +++++---
+>   arch/x86/events/intel/bts.c      |  2 +-
+>   arch/x86/events/intel/core.c     |  7 +++----
+>   arch/x86/events/intel/lbr.c      | 29 ++++++++++++++++++-----------
+>   arch/x86/events/perf_event.h     |  8 +++++++-
+>   arch/x86/include/asm/msr-index.h |  1 +
+>   6 files changed, 35 insertions(+), 20 deletions(-)
+> 
 
