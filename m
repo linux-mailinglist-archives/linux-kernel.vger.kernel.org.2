@@ -2,150 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E09355742
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E4335574C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345449AbhDFPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:05:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41390 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238539AbhDFPFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:05:50 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136F5HVr049644;
-        Tue, 6 Apr 2021 10:05:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617721517;
-        bh=XBmEDieA+skNRILQW4BZSH6UOH2I9m+4MVXEObgkjII=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=jE9/f/uhlbh+sMmXd4Bph/+0VuPORLT0b4j8h+VrTBHmT1MEGzGG2eXXnprL/Qr3R
-         YY2SEhc5a3LsvvvPB4kcG6WSyad6iKBmjjywBT597qlHdq5DrZ2gaB+npYktQ5guy3
-         0xfUOB5z/ulYyRT12LnsgVVDaI2uo9gATzRrOGAQ=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136F5HQ8075901
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 10:05:17 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 10:05:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 10:05:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136F5Gqn089797;
-        Tue, 6 Apr 2021 10:05:16 -0500
-Date:   Tue, 6 Apr 2021 20:35:15 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 13/16] media: ti-vpe: csi2rx: Add CSI2RX support
-Message-ID: <20210406150513.zj4g6zrtghgunvor@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-14-p.yadav@ti.com>
- <91bbf2a9-9d27-7f9b-1c17-ad6544a828f1@ideasonboard.com>
+        id S1345474AbhDFPGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:06:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345465AbhDFPGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:06:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B1BA613CD;
+        Tue,  6 Apr 2021 15:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617721562;
+        bh=oKiK4ApC93CrUYa67wbve2zbWOPAYFHVj94zM59y+yQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aVshd5xxVxPYitoUYR9v9ig/rMRIKsxhG9scO2HkQvZSxqe7k9TWmpvZBZFP+PlOm
+         Q6i6ghqzAQiZSY3QkacgL++PBoMOnRumNk+23sHS9yPK3o3HQ1Z8fp/nBhwOL3kHNr
+         AMHM1TdiA/3m3wCPrLFfF0LSa7WQJ1AONtUx/1y821t5uhT3snuZYjGu/H7b1TUA7s
+         lBi2VF1xmcj9qaIYudlFPUjjsO3LxI8xjo6FDlUpNlXaVhAQ4ncByOjGgv8G+0zh+S
+         Mw26Ssg3BlccZTF88ndfAyygomisjQwXQiPzs6+QdKV3ryRVR20NPsQCKw552k8ale
+         xFY+ZvvVRoI7Q==
+Received: by mail-ej1-f49.google.com with SMTP id ap14so22549470ejc.0;
+        Tue, 06 Apr 2021 08:06:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532P1e0Zi0Mr0ve9lQU75P4Pl8ptZ7Gkabzn3ZQMo5wqz1lg31Of
+        GHW2bX1PXPdOsH2366OZmg/FuBdM/pYw/Ntssg==
+X-Google-Smtp-Source: ABdhPJyxyDKARhPWHu4Jr+PfqF7dmXdHRhFbxyLKg+KVWqXlE18eXrf8KY6IuCJJBbg7kaluABfeLXvlp8S1qatvsx4=
+X-Received: by 2002:a17:906:55c9:: with SMTP id z9mr6780057ejp.360.1617721560689;
+ Tue, 06 Apr 2021 08:06:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <91bbf2a9-9d27-7f9b-1c17-ad6544a828f1@ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1617279355.git.mchehab+huawei@kernel.org> <22b7b53af1907f7cae27e26be725470c04b84725.1617279356.git.mchehab+huawei@kernel.org>
+In-Reply-To: <22b7b53af1907f7cae27e26be725470c04b84725.1617279356.git.mchehab+huawei@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 6 Apr 2021 10:05:47 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+d9nU8r_1tvrU9Yk4rCN3fve6D29JMLFN59jJxLWjhrA@mail.gmail.com>
+Message-ID: <CAL_Jsq+d9nU8r_1tvrU9Yk4rCN3fve6D29JMLFN59jJxLWjhrA@mail.gmail.com>
+Subject: Re: [PATCH 27/32] dt-bindings: i3c: update i3c.yaml references
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Przemys=C5=82aw_Gaj?= <pgaj@cadence.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vitor Soares <vitor.soares@synopsys.com>,
+        devicetree@vger.kernel.org, linux-i3c@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/03/21 09:06AM, Tomi Valkeinen wrote:
-> Hi,
-> 
-> On 30/03/2021 20:33, Pratyush Yadav wrote:
-> > TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> > capture over a CSI-2 bus.
-> > 
-> > The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
-> > the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
-> > called the SHIM layer. It takes in data from stream 0, repacks it, and
-> > sends it to memory over PSI-L DMA.
-> > 
-> > This driver acts as the "front end" to V4L2 client applications. It
-> > implements the required ioctls and buffer operations, passes the
-> > necessary calls on to the bridge, programs the SHIM layer, and performs
-> > DMA via the dmaengine API to finally return the data to a buffer
-> > supplied by the application.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >   MAINTAINERS                               |   7 +
-> >   drivers/media/platform/Kconfig            |  11 +
-> >   drivers/media/platform/ti-vpe/Makefile    |   1 +
-> >   drivers/media/platform/ti-vpe/ti-csi2rx.c | 964 ++++++++++++++++++++++
-> >   4 files changed, 983 insertions(+)
-> >   create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
-> 
-> Some quick comments:
-> 
-> "ti-vpe" directory is not correct, this has nothing to do with VPE. That
-> said, the directory has already been abused by having CAL driver there,
-> perhaps we should rename the directory just to "ti". But if we do that, I
-> think we should have subdirs for cal, vpe and this new one.
+On Thu, Apr 1, 2021 at 7:17 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Changeset 5e4cdca887fd ("dt-bindings: i3c: Convert the bus description to yaml")
+> renamed: Documentation/devicetree/bindings/i3c/i3c.txt
+> to: Documentation/devicetree/bindings/i3c/i3c.yaml.
+>
+> Update the cross-references accordingly.
+>
+> Fixes: 5e4cdca887fd ("dt-bindings: i3c: Convert the bus description to yaml")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt   | 6 +++---
+>  .../devicetree/bindings/i3c/snps,dw-i3c-master.txt          | 6 +++---
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 
-Right. I thought about doing this but then figured "let's just follow 
-what CAL does". Will move them into separate subdirectories.
+Ugg, I should have remembered this...
 
-> 
-> "ti-csi2rx" is rather generic name. TI has had CSI-2 RX IPs before (CAL) and
-> probably will also have new ones in the future. If there's no clear model
-> name for the IP, as I think is the case here, it's probably best to just use
-> the SoC model in the name. E.g. the DSS on J7 is "ti,j721e-dss".
-
-Ok.
-
-> 
-> This driver implements the legacy video API. I think it would be better (and
-> easier to maintain) to only implement the media-controller API, unless you
-> specifically need to support the legacy API for existing userspace.
-
-:-(
-
-I'm afraid the documentation has let me down here. There is no clear 
-mention about the fact that media controller API replaces the "legacy" 
-API. In fact, [0] seems to suggest that the media controller API is 
-optional.
-
-  Bridge drivers traditionally expose one or multiple video nodes to 
-  userspace, and control subdevices through the v4l2_subdev_ops 
-  operations in response to video node operations. This hides the 
-  complexity of the underlying hardware from applications. For complex 
-  devices, finer-grained control of the device than what the video nodes 
-  offer may be required. In those cases, bridge drivers that implement 
-  the media controller API may opt for making the subdevice operations 
-  directly accessible from userpace.
-
-Anyway, I don't think supporting the legacy API makes much sense since 
-this is a new driver. Will convert it to use the MC API. We can always 
-add the legacy API support if some application demands it.
-
-[0] https://www.kernel.org/doc/html/latest/driver-api/media/v4l2-subdev.html#v4l2-sub-device-userspace-api
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Acked-by: Rob Herring <robh@kernel.org>
