@@ -2,136 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD001355076
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7C4355079
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241357AbhDFKFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233900AbhDFKFQ (ORCPT
+        id S241689AbhDFKFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:05:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42478 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240979AbhDFKFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:05:16 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B224C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:05:09 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g8so21744695lfv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LCL0Idnlb7guUbYyS2ZyKusS1ukOTUVL+jvswqtN1Wg=;
-        b=aaikD3f927e+oV/TE/U42Sxn70A9IdaWcEDOH2UrA76DQZoQPFvEjH/LG9So/U+dQt
-         2ExzQjhEsYqE99acWYGpQTUTXkxigCQijGv5D77HF6DCAd/sfsEt2Kt9fyISL2HKBToX
-         NkYpj8lUJY9SUvWEyEe3QGIHukNJCUGbRnri3YgwzwQlcCXZEIgoG96wv5/c6HCkL4KD
-         GdFlHUFHZCIbC/vPzRJsGD+k3cB0eXTs/xyruP5cZ2GsZWxS/RtpFWlsda4jtkim4+Wv
-         PIC0Z/9TjX1dZDqfbb6MLwk1TVEbVMlwoGCffKWQfMAF23k+cPEaET1dUSFMcejOouvz
-         fXzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LCL0Idnlb7guUbYyS2ZyKusS1ukOTUVL+jvswqtN1Wg=;
-        b=FKusJ/1gCWK/b7aeAoDIAXaQIOXESu6rMIQ2UsM8SvYoAd7A6au1K8K13IHZXBitwy
-         x/1MBghzr5PAT7Uk/gKCmYNZoSVMITWSmN1KKHLAdSb01Ri1dHx8enX9azwkBNplaNrm
-         zC4nZhDW3dcCK6E6Z70xKQs0igVZp2/hn+LpbVzM8be2EUWbfsVnTYCurNkT70vtTeU/
-         lMcsi2E8Os7P/ItMbAPFG25i5CX9pWXuNHLVqUWEz9LY2FdXUwCIKDUVfpaDEnLjDkdj
-         zXZ50CFex/IZNsqc38T404SETI0XO8uMIcfEYYp6lw5BqVWIa9/dHeBaoHWyKTSMtzeI
-         CiAQ==
-X-Gm-Message-State: AOAM533iy5suA6fV9fpluZNRHziuqhLxKDwODpBtKzkwQM7vGcHunHZa
-        Y1IQk+v1TLJAqwm7Ca1PhjY=
-X-Google-Smtp-Source: ABdhPJxPPdZcMkC3i2xXr1wTU6pvbxIQa35/4FyLUpTTXusaeWJI5o5fphhP99qp8jsXBkRALamK4A==
-X-Received: by 2002:a05:6512:3087:: with SMTP id z7mr134699lfd.224.1617703507565;
-        Tue, 06 Apr 2021 03:05:07 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id y11sm2211287ljc.18.2021.04.06.03.05.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:05:06 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 6 Apr 2021 12:05:05 +0200
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH-next 2/5] lib/test_vmalloc.c: add a new 'nr_threads'
- parameter
-Message-ID: <20210406100505.GA1880@pc638.lan>
-References: <20210402202237.20334-1-urezki@gmail.com>
- <20210402202237.20334-2-urezki@gmail.com>
- <20210402145934.719192be298eadbeecb321d2@linux-foundation.org>
- <20210403123143.GA38147@pc638.lan>
- <20210405193920.46d3792200ad05f4a7c66829@linux-foundation.org>
+        Tue, 6 Apr 2021 06:05:33 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136A4bLg079159;
+        Tue, 6 Apr 2021 06:05:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=+ZfHBXPQ8eP2kF5pGgf8pvqbQp9Jh8p52njku2OHvv8=;
+ b=H8Mi/xl/Vb8+r2UUCElEWopvkQSmZoUGzDgudXy9q/hfUhuLJ+RdkPvJ6rEFrzG9ygEk
+ MeZuMDJLRtEkER56QHmqxDi65AwtlJFeso/r7Qx0MWXMZN88FcRb6SQDfzdrCORwsZyK
+ cAywhdIHkUK+91PErF5G8Hy5cwX+xYEt3uH2uY9IHX5ULwCdbGAfHhuxcPigaHD2oMSD
+ biER2AhaKUG6YUsraiwyIk7OMLhghosn1ZD7tY+FURcPC5V/AR/36ELcb8geUSP4YXZJ
+ xjF/el54dXHIbZmb6aZHBYNZpljyx5z9ttuE7/9Hk3EHlC8S3us381DJOFNeJlCzGXSL Zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dv5cjv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 06:05:21 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 136A556Y080453;
+        Tue, 6 Apr 2021 06:05:19 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dv5cht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 06:05:18 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136A1tFK003166;
+        Tue, 6 Apr 2021 10:05:16 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 37q3cf12b7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 10:05:16 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136A5DaJ21692832
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Apr 2021 10:05:13 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF44411C066;
+        Tue,  6 Apr 2021 10:05:13 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AFD511C050;
+        Tue,  6 Apr 2021 10:05:12 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.102.27.68])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  6 Apr 2021 10:05:11 +0000 (GMT)
+Date:   Tue, 6 Apr 2021 15:35:09 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+Message-ID: <20210406100509.GA1354243@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20210405054848.GA1077931@in.ibm.com>
+ <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405193920.46d3792200ad05f4a7c66829@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yMs0uwOTLyFEHBrzOUU3EdEX4ZoAYPQe
+X-Proofpoint-ORIG-GUID: z7uIG8nzW1HuGuxbN4yZImD4h_UjY-ta
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-06_02:2021-04-01,2021-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ impostorscore=0 suspectscore=0 clxscore=1011 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104030000
+ definitions=main-2104060067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 07:39:20PM -0700, Andrew Morton wrote:
-> On Sat, 3 Apr 2021 14:31:43 +0200 Uladzislau Rezki <urezki@gmail.com> wrote:
+On Mon, Apr 05, 2021 at 11:08:26AM -0700, Yang Shi wrote:
+> On Sun, Apr 4, 2021 at 10:49 PM Bharata B Rao <bharata@linux.ibm.com> wrote:
+> >
+> > Hi,
+> >
+> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
+> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
+> > consumption increases quite a lot (around 172G) when the containers are
+> > running. Most of it comes from slab (149G) and within slab, the majority of
+> > it comes from kmalloc-32 cache (102G)
+> >
+> > The major allocator of kmalloc-32 slab cache happens to be the list_head
+> > allocations of list_lru_one list. These lists are created whenever a
+> > FS mount happens. Specially two such lists are registered by alloc_super(),
+> > one for dentry and another for inode shrinker list. And these lists
+> > are created for all possible NUMA nodes and for all given memcgs
+> > (memcg_nr_cache_ids to be particular)
+> >
+> > If,
+> >
+> > A = Nr allocation request per mount: 2 (one for dentry and inode list)
+> > B = Nr NUMA possible nodes
+> > C = memcg_nr_cache_ids
+> > D = size of each kmalloc-32 object: 32 bytes,
+> >
+> > then for every mount, the amount of memory consumed by kmalloc-32 slab
+> > cache for list_lru creation is A*B*C*D bytes.
 > 
-> > > 
-> > > We may need to replaced that kcalloc() with kmvalloc() though...
-> > >
-> > Yep. If we limit to USHRT_MAX, the maximum amount of memory for
-> > internal data would be ~12MB. Something like below:
-> > 
-> > diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-> > index d337985e4c5e..a5103e3461bf 100644
-> > --- a/lib/test_vmalloc.c
-> > +++ b/lib/test_vmalloc.c
-> > @@ -24,7 +24,7 @@
-> >         MODULE_PARM_DESC(name, msg)                             \
-> > 
-> >  __param(int, nr_threads, 0,
-> > -       "Number of workers to perform tests(min: 1 max: 1024)");
-> > +       "Number of workers to perform tests(min: 1 max: 65536)");
-> > 
-> >  __param(bool, sequential_test_order, false,
-> >         "Use sequential stress tests order");
-> > @@ -469,13 +469,13 @@ init_test_configurtion(void)
-> >  {
-> >         /*
-> >          * A maximum number of workers is defined as hard-coded
-> > -        * value and set to 1024. We add such gap just in case
-> > +        * value and set to 65536. We add such gap just in case
-> >          * and for potential heavy stressing.
-> >          */
-> > -       nr_threads = clamp(nr_threads, 1, 1024);
-> > +       nr_threads = clamp(nr_threads, 1, 65536);
-> > 
-> >         /* Allocate the space for test instances. */
-> > -       tdriver = kcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
-> > +       tdriver = kvcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
-> >         if (tdriver == NULL)
-> >                 return -1;
-> > 
-> > @@ -555,7 +555,7 @@ static void do_concurrent_test(void)
-> >                         i, t->stop - t->start);
-> >         }
-> > 
-> > -       kfree(tdriver);
-> > +       kvfree(tdriver);
-> >  }
-> > 
-> >  static int vmalloc_test_init(void)
-> > 
-> > Does it sound reasonable for you?
+> Yes, this is exactly what the current implementation does.
 > 
-> I think so.  It's a test thing so let's give testers more flexibility,
-> remembering that they don't need as much protection from their own
-> mistakes.
+> >
+> > Following factors contribute to the excessive allocations:
+> >
+> > - Lists are created for possible NUMA nodes.
 > 
-OK. I will send one more extra patch then.
+> Yes, because filesystem caches (dentry and inode) are NUMA aware.
 
---
-Vlad Rezki
+True, but creating lists for possible nodes as against online nodes
+can hurt platforms where possible is typically higher than online.
+
+> 
+> > - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
+> >   list_lrus are created when it grows. Thus we end up creating list_lru_one
+> >   list_heads even for those memcgs which are yet to be created.
+> >   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
+> >   a value of 12286.
+> > - When a memcg goes offline, the list elements are drained to the parent
+> >   memcg, but the list_head entry remains.
+> > - The lists are destroyed only when the FS is unmounted. So list_heads
+> >   for non-existing memcgs remain and continue to contribute to the
+> >   kmalloc-32 allocation. This is presumably done for performance
+> >   reason as they get reused when new memcgs are created, but they end up
+> >   consuming slab memory until then.
+> 
+> The current implementation has list_lrus attached with super_block. So
+> the list can't be freed until the super block is unmounted.
+> 
+> I'm looking into consolidating list_lrus more closely with memcgs. It
+> means the list_lrus will have the same life cycles as memcgs rather
+> than filesystems. This may be able to improve some. But I'm supposed
+> the filesystem will be unmounted once the container exits and the
+> memcgs will get offlined for your usecase.
+
+Yes, but when the containers are still running, the lists that get
+created for non-existing memcgs and non-relavent memcgs are the main
+cause of increased memory consumption.
+
+> 
+> > - In case of containers, a few file systems get mounted and are specific
+> >   to the container namespace and hence to a particular memcg, but we
+> >   end up creating lists for all the memcgs.
+> 
+> Yes, because the kernel is *NOT* aware of containers.
+> 
+> >   As an example, if 7 FS mounts are done for every container and when
+> >   10k containers are created, we end up creating 2*7*12286 list_lru_one
+> >   lists for each NUMA node. It appears that no elements will get added
+> >   to other than 2*7=14 of them in the case of containers.
+> >
+> > One straight forward way to prevent this excessive list_lru_one
+> > allocations is to limit the list_lru_one creation only to the
+> > relevant memcg. However I don't see an easy way to figure out
+> > that relevant memcg from FS mount path (alloc_super())
+> >
+> > As an alternative approach, I have this below hack that does lazy
+> > list_lru creation. The memcg-specific list is created and initialized
+> > only when there is a request to add an element to that particular
+> > list. Though I am not sure about the full impact of this change
+> > on the owners of the lists and also the performance impact of this,
+> > the overall savings look good.
+> 
+> It is fine to reduce the memory consumption for your usecase, but I'm
+> not sure if this would incur any noticeable overhead for vfs
+> operations since list_lru_add() should be called quite often, but it
+> just needs to allocate the list for once (for each memcg +
+> filesystem), so the overhead might be fine.
+
+Let me run some benchmarks to measure the overhead. Any particular
+benchmark suggestion?
+ 
+> 
+> And I'm wondering how much memory can be saved for real life workload.
+> I don't expect most containers are idle in production environments.
+
+I don't think kmalloc-32 slab cache memory consumption from list_lru
+would be any different for real life workload compared to idle containers.
+
+> 
+> Added some more memcg/list_lru experts in this loop, they may have better ideas.
+
+Thanks.
+
+Regards,
+Bharata.
