@@ -2,166 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65363355029
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FD7355003
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244975AbhDFJhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:37:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
+        id S241188AbhDFJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:36:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45342 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244895AbhDFJg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:36:56 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DB06613D5;
-        Tue,  6 Apr 2021 09:36:28 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lTi8I-005owA-P4; Tue, 06 Apr 2021 10:36:27 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 8/9] powerpc: Convert irq_domain_add_legacy_isa use to irq_domain_add_legacy
-Date:   Tue,  6 Apr 2021 10:35:56 +0100
-Message-Id: <20210406093557.1073423-9-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210406093557.1073423-1-maz@kernel.org>
-References: <20210406093557.1073423-1-maz@kernel.org>
+        id S237208AbhDFJgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:36:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617701760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SRwipLY+b1q1Ng3CPB27+Kz4klgfyfup2vzIC/VRkiQ=;
+        b=Qr1DCsawXUipVa6pi5VbIAfveKswpPD63XOD8j/eDIdjWVfzTG3YcnfWXPXf2qxAXqV8HC
+        0VSdcnA3csvhK0Vq8Dg+u0gsK2lEaw96h6e03RHjSo8SklLubVtazN610qcIYbLD4ESvLP
+        Pgyhl+1Rcs8eliP9H7RXCdKSj7pHi64=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99584B12E;
+        Tue,  6 Apr 2021 09:35:59 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 11:35:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 1/8] mm/cma: change cma mutex to irq safe spinlock
+Message-ID: <YGwrfGcme4TW/pdW@dhcp22.suse.cz>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-2-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, daniel@zonque.org, robert.jarzmik@free.fr, haojian.zhuang@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org, tsbogend@alpha.franken.de, mpe@ellerman.id.au, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405230043.182734-2-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_domain_add_legacy_isa is a pain. It only exists for the benefit of
-two PPC-specific drivers, and creates an ugly dependency between asm/irq.h
-and linux/irqdomain.h
+On Mon 05-04-21 16:00:36, Mike Kravetz wrote:
+> cma_release is currently a sleepable operatation because the bitmap
+> manipulation is protected by cma->lock mutex. Hugetlb code which relies
+> on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
+> irq safe.
+> 
+> The lock doesn't protect any sleepable operation so it can be changed to
+> a (irq aware) spin lock. The bitmap processing should be quite fast in
+> typical case but if cma sizes grow to TB then we will likely need to
+> replace the lock by a more optimized bitmap implementation.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Instead, let's convert these two drivers to irq_domain_add_legacy(),
-stop using NUM_ISA_INTERRUPTS by directly setting NR_IRQS_LEGACY.
+I belive I have acked the previous version already. Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-The dependency cannot be broken yet as there is a lot of PPC-related
-code that depends on it, but that's the first step towards it.
+> ---
+>  mm/cma.c       | 18 +++++++++---------
+>  mm/cma.h       |  2 +-
+>  mm/cma_debug.c |  8 ++++----
+>  3 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index f3bca4178c7f..995e15480937 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -24,7 +24,6 @@
+>  #include <linux/memblock.h>
+>  #include <linux/err.h>
+>  #include <linux/mm.h>
+> -#include <linux/mutex.h>
+>  #include <linux/sizes.h>
+>  #include <linux/slab.h>
+>  #include <linux/log2.h>
+> @@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
+>  			     unsigned long count)
+>  {
+>  	unsigned long bitmap_no, bitmap_count;
+> +	unsigned long flags;
+>  
+>  	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
+>  	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+>  
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irqsave(&cma->lock, flags);
+>  	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irqrestore(&cma->lock, flags);
+>  }
+>  
+>  static void __init cma_activate_area(struct cma *cma)
+> @@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
+>  	     pfn += pageblock_nr_pages)
+>  		init_cma_reserved_pageblock(pfn_to_page(pfn));
+>  
+> -	mutex_init(&cma->lock);
+> +	spin_lock_init(&cma->lock);
+>  
+>  #ifdef CONFIG_CMA_DEBUGFS
+>  	INIT_HLIST_HEAD(&cma->mem_head);
+> @@ -392,7 +392,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>  	unsigned long nr_part, nr_total = 0;
+>  	unsigned long nbits = cma_bitmap_maxno(cma);
+>  
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>  	pr_info("number of available pages: ");
+>  	for (;;) {
+>  		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
+> @@ -407,7 +407,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>  		start = next_zero_bit + nr_zero;
+>  	}
+>  	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>  }
+>  #else
+>  static inline void cma_debug_show_areas(struct cma *cma) { }
+> @@ -454,12 +454,12 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+>  		goto out;
+>  
+>  	for (;;) {
+> -		mutex_lock(&cma->lock);
+> +		spin_lock_irq(&cma->lock);
+>  		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
+>  				bitmap_maxno, start, bitmap_count, mask,
+>  				offset);
+>  		if (bitmap_no >= bitmap_maxno) {
+> -			mutex_unlock(&cma->lock);
+> +			spin_unlock_irq(&cma->lock);
+>  			break;
+>  		}
+>  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+> @@ -468,7 +468,7 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+>  		 * our exclusive use. If the migration fails we will take the
+>  		 * lock again and unmark it.
+>  		 */
+> -		mutex_unlock(&cma->lock);
+> +		spin_unlock_irq(&cma->lock);
+>  
+>  		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
+>  		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 68ffad4e430d..2c775877eae2 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -15,7 +15,7 @@ struct cma {
+>  	unsigned long   count;
+>  	unsigned long   *bitmap;
+>  	unsigned int order_per_bit; /* Order of pages represented by one bit */
+> -	struct mutex    lock;
+> +	spinlock_t	lock;
+>  #ifdef CONFIG_CMA_DEBUGFS
+>  	struct hlist_head mem_head;
+>  	spinlock_t mem_head_lock;
+> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
+> index d5bf8aa34fdc..2e7704955f4f 100644
+> --- a/mm/cma_debug.c
+> +++ b/mm/cma_debug.c
+> @@ -36,10 +36,10 @@ static int cma_used_get(void *data, u64 *val)
+>  	struct cma *cma = data;
+>  	unsigned long used;
+>  
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>  	/* pages counter is smaller than sizeof(int) */
+>  	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>  	*val = (u64)used << cma->order_per_bit;
+>  
+>  	return 0;
+> @@ -53,7 +53,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>  	unsigned long start, end = 0;
+>  	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
+>  
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>  	for (;;) {
+>  		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
+>  		if (start >= bitmap_maxno)
+> @@ -61,7 +61,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>  		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
+>  		maxchunk = max(end - start, maxchunk);
+>  	}
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>  	*val = (u64)maxchunk << cma->order_per_bit;
+>  
+>  	return 0;
+> -- 
+> 2.30.2
+> 
 
-A followup patch will remove irq_domain_add_legacy_isa.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/powerpc/include/asm/irq.h         | 4 ++--
- arch/powerpc/platforms/ps3/interrupt.c | 4 ++--
- arch/powerpc/sysdev/i8259.c            | 3 ++-
- arch/powerpc/sysdev/mpic.c             | 2 +-
- arch/powerpc/sysdev/tsi108_pci.c       | 3 ++-
- arch/powerpc/sysdev/xics/xics-common.c | 2 +-
- 6 files changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/irq.h b/arch/powerpc/include/asm/irq.h
-index f3f264e441a7..aeb209144c68 100644
---- a/arch/powerpc/include/asm/irq.h
-+++ b/arch/powerpc/include/asm/irq.h
-@@ -23,8 +23,8 @@ extern atomic_t ppc_n_lost_interrupts;
- /* Total number of virq in the platform */
- #define NR_IRQS		CONFIG_NR_IRQS
- 
--/* Same thing, used by the generic IRQ code */
--#define NR_IRQS_LEGACY		NUM_ISA_INTERRUPTS
-+/* Number of irqs reserved for a legacy isa controller */
-+#define NR_IRQS_LEGACY		16
- 
- extern irq_hw_number_t virq_to_hw(unsigned int virq);
- 
-diff --git a/arch/powerpc/platforms/ps3/interrupt.c b/arch/powerpc/platforms/ps3/interrupt.c
-index 78f2339ed5cb..93e367a00452 100644
---- a/arch/powerpc/platforms/ps3/interrupt.c
-+++ b/arch/powerpc/platforms/ps3/interrupt.c
-@@ -45,7 +45,7 @@
-  * implementation equates HV plug value to Linux virq value, constrains each
-  * interrupt to have a system wide unique plug number, and limits the range
-  * of the plug values to map into the first dword of the bitmaps.  This
-- * gives a usable range of plug values of  {NUM_ISA_INTERRUPTS..63}.  Note
-+ * gives a usable range of plug values of  {NR_IRQS_LEGACY..63}.  Note
-  * that there is no constraint on how many in this set an individual thread
-  * can acquire.
-  *
-@@ -721,7 +721,7 @@ static unsigned int ps3_get_irq(void)
- 	}
- 
- #if defined(DEBUG)
--	if (unlikely(plug < NUM_ISA_INTERRUPTS || plug > PS3_PLUG_MAX)) {
-+	if (unlikely(plug < NR_IRQS_LEGACY || plug > PS3_PLUG_MAX)) {
- 		dump_bmp(&per_cpu(ps3_private, 0));
- 		dump_bmp(&per_cpu(ps3_private, 1));
- 		BUG();
-diff --git a/arch/powerpc/sysdev/i8259.c b/arch/powerpc/sysdev/i8259.c
-index c1d76c344351..dc1a151c63d7 100644
---- a/arch/powerpc/sysdev/i8259.c
-+++ b/arch/powerpc/sysdev/i8259.c
-@@ -260,7 +260,8 @@ void i8259_init(struct device_node *node, unsigned long intack_addr)
- 	raw_spin_unlock_irqrestore(&i8259_lock, flags);
- 
- 	/* create a legacy host */
--	i8259_host = irq_domain_add_legacy_isa(node, &i8259_host_ops, NULL);
-+	i8259_host = irq_domain_add_legacy(node, NR_IRQS_LEGACY, 0, 0,
-+					   &i8259_host_ops, NULL);
- 	if (i8259_host == NULL) {
- 		printk(KERN_ERR "i8259: failed to allocate irq host !\n");
- 		return;
-diff --git a/arch/powerpc/sysdev/mpic.c b/arch/powerpc/sysdev/mpic.c
-index b0426f28946a..995fb2ada507 100644
---- a/arch/powerpc/sysdev/mpic.c
-+++ b/arch/powerpc/sysdev/mpic.c
-@@ -602,7 +602,7 @@ static void __init mpic_scan_ht_pics(struct mpic *mpic)
- /* Find an mpic associated with a given linux interrupt */
- static struct mpic *mpic_find(unsigned int irq)
- {
--	if (irq < NUM_ISA_INTERRUPTS)
-+	if (irq < NR_IRQS_LEGACY)
- 		return NULL;
- 
- 	return irq_get_chip_data(irq);
-diff --git a/arch/powerpc/sysdev/tsi108_pci.c b/arch/powerpc/sysdev/tsi108_pci.c
-index 49f9541954f8..042bb38fa5c2 100644
---- a/arch/powerpc/sysdev/tsi108_pci.c
-+++ b/arch/powerpc/sysdev/tsi108_pci.c
-@@ -404,7 +404,8 @@ void __init tsi108_pci_int_init(struct device_node *node)
- {
- 	DBG("Tsi108_pci_int_init: initializing PCI interrupts\n");
- 
--	pci_irq_host = irq_domain_add_legacy_isa(node, &pci_irq_domain_ops, NULL);
-+	pci_irq_host = irq_domain_add_legacy(node, NR_IRQS_LEGACY, 0, 0,
-+					     &pci_irq_domain_ops, NULL);
- 	if (pci_irq_host == NULL) {
- 		printk(KERN_ERR "pci_irq_host: failed to allocate irq domain!\n");
- 		return;
-diff --git a/arch/powerpc/sysdev/xics/xics-common.c b/arch/powerpc/sysdev/xics/xics-common.c
-index 7e4305c01bac..fdf8db4444b6 100644
---- a/arch/powerpc/sysdev/xics/xics-common.c
-+++ b/arch/powerpc/sysdev/xics/xics-common.c
-@@ -201,7 +201,7 @@ void xics_migrate_irqs_away(void)
- 		struct ics *ics;
- 
- 		/* We can't set affinity on ISA interrupts */
--		if (virq < NUM_ISA_INTERRUPTS)
-+		if (virq < NR_IRQS_LEGACY)
- 			continue;
- 		/* We only need to migrate enabled IRQS */
- 		if (!desc->action)
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
