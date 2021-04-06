@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4495F354CA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ACD354CAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237220AbhDFGSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:18:11 -0400
-Received: from mxout70.expurgate.net ([194.37.255.70]:42135 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhDFGSI (ORCPT
+        id S234266AbhDFGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:22:49 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15602 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhDFGWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:18:08 -0400
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lTf2A-0000fP-GV; Tue, 06 Apr 2021 08:17:54 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lTf29-000Gsq-4z; Tue, 06 Apr 2021 08:17:53 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 7A345240041;
-        Tue,  6 Apr 2021 08:17:52 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id D1975240040;
-        Tue,  6 Apr 2021 08:17:51 +0200 (CEST)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 3851120046;
-        Tue,  6 Apr 2021 08:17:51 +0200 (CEST)
+        Tue, 6 Apr 2021 02:22:48 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDy7Z6wWWz18HRw;
+        Tue,  6 Apr 2021 14:20:26 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 14:22:31 +0800
+Subject: Re: [PATCH 04/10] tty: tty_jobctrl: Fix coding style issues of block
+ comments
+To:     Jiri Slaby <jirislaby@kernel.org>, <gregkh@linuxfoundation.org>
+References: <1617593662-25900-1-git-send-email-tanxiaofei@huawei.com>
+ <1617593662-25900-5-git-send-email-tanxiaofei@huawei.com>
+ <7af3cbf8-b19e-ab01-5cfe-3e3e187e9df9@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <cbd9d293-35f3-a6c5-3166-300e7395e80c@huawei.com>
+Date:   Tue, 6 Apr 2021 14:22:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <7af3cbf8-b19e-ab01-5cfe-3e3e187e9df9@kernel.org>
+Content-Type: text/plain; charset="iso-8859-2"; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 06 Apr 2021 08:17:51 +0200
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v5] net: x25: Queue received packets in the
- drivers instead of per-CPU queues
-Organization: TDT AG
-In-Reply-To: <CAJht_EO7ufuRPj2Bbp7PyXbBT+jrpxR2pckT9JOPyve_tWj9DA@mail.gmail.com>
-References: <20210402093000.72965-1-xie.he.0141@gmail.com>
- <CAJht_EO7ufuRPj2Bbp7PyXbBT+jrpxR2pckT9JOPyve_tWj9DA@mail.gmail.com>
-Message-ID: <f77ea411add46de10d1b9e72576a0ec2@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1617689873-000063FF-11509F12/0/0
-X-purgate-type: clean
-X-purgate: clean
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-05 21:34, Xie He wrote:
-> Hi Martin,
-> 
-> Could you ack? Thanks!
+Hi Jiri,
 
-Acked-by: Martin Schiller <ms@dev.tdt.de>
+On 2021/4/6 12:42, Jiri Slaby wrote:
+> On 05. 04. 21, 5:34, Xiaofei Tan wrote:
+>> Fix coding style issues of block comments, reported by checkpatch.pl.
+>>
+>> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+>> ---
+>>   drivers/tty/tty_jobctrl.c | 16 ++++++++++------
+>>   1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
+>> index 86070f7..4d78422 100644
+>> --- a/drivers/tty/tty_jobctrl.c
+>> +++ b/drivers/tty/tty_jobctrl.c
+>> @@ -204,8 +204,10 @@ int tty_signal_session_leader(struct tty_struct
+>> *tty, int exit_session)
+>>               spin_lock_irq(&p->sighand->siglock);
+>>               if (p->signal->tty == tty) {
+>>                   p->signal->tty = NULL;
+>> -                /* We defer the dereferences outside fo
+>> -                   the tasklist lock */
+>> +                /*
+>> +                 * We defer the dereferences outside fo
+>> +                 * the tasklist lock
+>
+> I don't know if it deserves its own patch, but fo -> of fix would be
+> nice. And add a period at the end of the sentence.
+>
 
-Just for the record: I'm certainly not always the fastest,
-but I don't work holidays or weekends. So you also need to have some
-patience.
+OK.I will add this fixes.
+
+>> +                 */
+>>                   refs++;
+>>               }
+>>               if (!p->signal->leader) {
+>> @@ -328,9 +330,11 @@ void disassociate_ctty(int on_exit)
+>>    */
+>>   void no_tty(void)
+>>   {
+>> -    /* FIXME: Review locking here. The tty_lock never covered any race
+>> -       between a new association and proc_clear_tty but possible we need
+>> -       to protect against this anyway */
+>> +    /*
+>> +     * FIXME: Review locking here. The tty_lock never covered any race
+>> +     * between a new association and proc_clear_tty but possible we need
+>
+> "possibly" or "it's possible", I think (as a non-native).
+>
+
+OK
+
+>> +     * to protect against this anyway
+>
+> Period.
+
+OK
+
+>
+>> +     */
+>>       struct task_struct *tsk = current;
+>>         disassociate_ctty(0);
+>> @@ -536,7 +540,7 @@ static int tiocgsid(struct tty_struct *tty, struct
+>> tty_struct *real_tty, pid_t _
+>>       /*
+>>        * (tty == real_tty) is a cheap way of
+>>        * testing if the tty is NOT a master pty.
+>> -    */
+>> +     */
+>>       if (tty == real_tty && current->signal->tty != real_tty)
+>>           return -ENOTTY;
+>>
+>
+>
 
