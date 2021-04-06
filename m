@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF98355C9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EDA355C9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245141AbhDFT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233947AbhDFT4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:56:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDA7C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 12:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SmuAICY7BfV2FQ+TWZqN5rr6C144dVwfzZ62LXjDgDI=; b=EhawNeEXpMRPlr1ZhJ3QQHx5Zf
-        +LoaIUlKOpitU0CxrCHiXJT68Dr645j4vuu6J0PZIqVtqW+RSRoyPzocyN6tBo86mm169kTIUAJtW
-        mOvce3s1KJ2x+9bIgfqJvCInxD1dYguBlOwvsXwYLNrYsw2sQwdODQCAeXh/5Uk5YWT2hnYX+XISl
-        jS62mWkspKvymAoUOuSRrTnQl85OXp9zr4dygdB0YHq7xCDExbcMdAGsxkascDc7hUSWDVFiYVg+F
-        o8KUXoNpkgVQcglfei6ujXuv5GOLqI99o4p2Gy25H/aLjM9VvyDckYLORCgvK7qj29C1PuVGB2CJE
-        Nm3geIqQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTroD-00DLMI-Tr; Tue, 06 Apr 2021 19:56:27 +0000
-Date:   Tue, 6 Apr 2021 20:56:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org
-Subject: Re: [Outreachy kernel] [RESEND PATCH] staging: emxx_udc: Ending line
- with argument
-Message-ID: <20210406195621.GU2531743@casper.infradead.org>
-References: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
+        id S1347118AbhDFT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:57:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47794 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233018AbhDFT5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:57:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 09872AF9A;
+        Tue,  6 Apr 2021 19:57:06 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 21:57:03 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: linux-next: Tree for Apr 6 (arch/x86/mm/init_64.c)
+Message-ID: <YGy9DwRZ+dFKi9/c@localhost.localdomain>
+References: <20210406223109.50ebe35a@canb.auug.org.au>
+ <58d0c74b-ef4d-447b-9285-3d2c192fd3eb@infradead.org>
+ <a7895e6e-b00a-4b75-6506-ca38af495829@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
+In-Reply-To: <a7895e6e-b00a-4b75-6506-ca38af495829@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 08:34:09PM +0100, Beatriz Martins de Carvalho wrote:
-> Cleans up check of "Lines should not end with a '('"
-> with argument present in next line in file emxx_udc.c
+On Tue, Apr 06, 2021 at 11:39:47AM -0700, Randy Dunlap wrote:
+ 
+> > Looks like that compound "if" is too much for gcc 7.5.0 to handle:
+> > 
+> > 			} else if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP) &&
+> > 				   vmemmap_pmd_is_unused(addr, next)) {
+> > 					free_hugepage_table(pmd_page(*pmd),
+> > 							    altmap);
+> > 					spin_lock(&init_mm.page_table_lock);
+> > 					pmd_clear(pmd);
+> > 					spin_unlock(&init_mm.page_table_lock);
+> > 			}
+> > 
+> > 
+> 
+> This is what I am using for now:
 
-I appreciate that you've removed the checkpatch warning, but this is
-still harder to read than the original used to be.
+Hi Randy
 
-> -				_nbu2ss_writel(
-> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> -					p_buf_32->dw);
-> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> +					       p_buf_32->dw);
+Yeah, that is what v4 was using [1].
+We decided to get rid of the ifdef for costimetic reasons but it seems
+it does not do the trick.
 
-> -		length = _nbu2ss_readl(
-> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
-> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+I will ask Andrew to squash that on top.
 
-> -			regdata = _nbu2ss_readl(
-> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
-> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20210301083230.30924-4-osalvador@suse.de/
 
-The real problem with this driver is that their abstraction layer is
-wrong.  For example:
+Thanks
 
-        /* Interrupt Status */
-        status = _nbu2ss_readl(&udc->p_regs->EP_REGS[num].EP_STATUS);
+> 
+> ---
+> ---
+>  arch/x86/mm/init_64.c |    6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> --- linux-next-20210406.orig/arch/x86/mm/init_64.c
+> +++ linux-next-20210406/arch/x86/mm/init_64.c
+> @@ -1123,14 +1123,16 @@ remove_pmd_table(pmd_t *pmd_start, unsig
+>  				pmd_clear(pmd);
+>  				spin_unlock(&init_mm.page_table_lock);
+>  				pages++;
+> -			} else if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP) &&
+> -				   vmemmap_pmd_is_unused(addr, next)) {
+> +			}
+> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
+> +			else if (vmemmap_pmd_is_unused(addr, next)) {
+>  					free_hugepage_table(pmd_page(*pmd),
+>  							    altmap);
+>  					spin_lock(&init_mm.page_table_lock);
+>  					pmd_clear(pmd);
+>  					spin_unlock(&init_mm.page_table_lock);
+>  			}
+> +#endif
+>  
+>  			continue;
+>  		}
+> 
 
-        /* Interrupt Clear */
-        _nbu2ss_writel(&udc->p_regs->EP_REGS[num].EP_STATUS, ~status);
-
-If instead this were:
-
-	status = nbu2ss_read_ep_status(udc, num);
-	nbu2ss_write_ep_status(udc, num, ~status);
-
-that would be a lot shorter and clearer.  Cleanups along these lines
-would be a lot more useful, and would fix the 80 column warning.
-
+-- 
+Oscar Salvador
+SUSE L3
