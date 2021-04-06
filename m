@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EAB355C3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA51355C41
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242469AbhDFThv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:37:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241315AbhDFThr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:37:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617737859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oN4lQwe39DmpzV8zNB7m8jKeorv4VWju//qpmvx/Crs=;
-        b=V8XAa/3lKMLWjWObyxy1Vn+gPVq1rrxUn4QmZgfyuKuuUUv8x9/Ka6exM0XYSNcHuJSHro
-        nnQd+64IJjvoep/mKF543NvOHhJdiQ4XRqbC0UpzPkmiLbALXgVcLwtBa3N4omX+6KzqaF
-        CEN5ta5iUXy77syxWmrI2+v5+dIdKuU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55--nz6wfRdN5enfZYvE3mBhA-1; Tue, 06 Apr 2021 15:37:34 -0400
-X-MC-Unique: -nz6wfRdN5enfZYvE3mBhA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58325911E4;
-        Tue,  6 Apr 2021 19:37:30 +0000 (UTC)
-Received: from omen (ovpn-112-85.phx2.redhat.com [10.3.112.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 381AA369A;
-        Tue,  6 Apr 2021 19:37:25 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 13:37:24 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     cohuck@redhat.com, kevin.tian@intel.com, akpm@linux-foundation.org,
-        peterx@redhat.com, giovanni.cabiddu@intel.com, walken@google.com,
-        jannh@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] vfio: pci: Spello fix in the file vfio_pci.c
-Message-ID: <20210406133724.38692cf3@omen>
-In-Reply-To: <20210314052925.3560-1-unixbhaskar@gmail.com>
-References: <20210314052925.3560-1-unixbhaskar@gmail.com>
+        id S241315AbhDFTiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242767AbhDFTh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:37:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 491F8613DE;
+        Tue,  6 Apr 2021 19:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617737869;
+        bh=nd3UOZmwQsenr/t5/raAf6Th3zxlHmqSgqlN32BosPg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sxPqIANlre6K5WxSqiF8Wz2DC62XErL/Oi3D6bPM69rFD4HfNEeL8mAS7w3c5wDAY
+         xgs+j8omDJSY+ms0zqOMnjtLJjuVqDDhL4qkwE6zuXMnXxvx8WorGkGNVz9HYy+5uH
+         xFTQy+OsILr0G1IBXQQHazwmWT3YoZ7PAK6m2dRKJCZvJgkDz2pJGXz2/YwH4TPxsk
+         5KHhIqen24+H3R+jPJS7GM7UZeAcyfmHdScwcNcl5T0IExfTQQwRxEEcH/SkQjNgqe
+         szBrsrN2iJWWdDW7UDhJgXJ1JW79OfGUEmB4yB+HwnWWZfsG+cgGR+q2vK2aG5Qntw
+         tVYa+cCNbMeNg==
+Date:   Tue, 6 Apr 2021 21:37:43 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/12] i2c: Adding support for software nodes
+Message-ID: <20210406193743.GA3122@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
+ <20210331092232.GL1025@ninjato>
+ <YGRMHf63aHniHIJW@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <YGRMHf63aHniHIJW@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Mar 2021 10:59:25 +0530
-Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 
-> s/permision/permission/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 706de3ef94bb..62f137692a4f 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -2411,7 +2411,7 @@ static int __init vfio_pci_init(void)
->  {
->  	int ret;
-> 
-> -	/* Allocate shared config space permision data used by all devices */
-> +	/* Allocate shared config space permission data used by all devices */
->  	ret = vfio_pci_init_perm_bits();
->  	if (ret)
->  		return ret;
-> --
-> 2.26.2
-> 
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Applied to vfio next branch for v5.13.  Thanks,
 
-Alex
+> I think these go via I2C tree.
 
+Good, I'll apply it this weekend. Until then, let's hope we can get some
+more acks.
+
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBsuIIACgkQFA3kzBSg
+KbYHRxAArxAukjo0VnVJCkwy+qPSDZvqOAzglvb+ezqnfimdn6dYHlnLwIB2MXeF
+U2JXXVHR6vJ5nXfZ9YYU5f5ZalXhhHJ02Td2s15vbe43I5jZ+Y44PNUATgQzsGwW
+35v39AGPlTJGeihl2c1TETfKHOFVI3lcJAntaZLlBeShCFBtdRzQeWdgMFcR7IiV
+3FaGCthx09nusoXw82a+2eGyk5BIRJtLycmmeK6LFVepJLRzX1p4Ua2+Onw7hSbr
+KTOrAl5RuykmDwuy0NjaYccecc4o0wkmPiayfl5vX4EVl3TwFmLuLo0wVY9CPLW5
+TcLIO1G9csL07ZD0xGdFNH2/8o/g7rPg7HHzose6D0qH45yAlPMhC4XD9ILaLWGz
+WjZFGZIh+8RGQ6m92X/JM7eaFiOJI5qATZLBObuvXUMLDrJSnTzgu8f2o3Vt+EBX
+pmunWVwjhsRU//lD2Gw+joxfGsUdH0yGTLf7vL1TyHhjFV5irO4DnM+xD5/f/Rcg
+WpD6xneU64Ot16Ua/EtyU+wasG6JT/k3EOGYToAngNaCcQLr2IHHIxYwTqPhMIh8
+Vq/rGgo1ANvmIi1nzwaCZMH5OzKhGtwlRqC5Vc6JQSNufH5MQ+NYah2aR0P1a0qr
+K6zzUlPe+cnnp/cFq4MKez8nObk7bZWhS4KpEzhEagx9pk0rsrw=
+=4twB
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
