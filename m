@@ -2,203 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7C4355079
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2705535507C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241689AbhDFKFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:05:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42478 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240979AbhDFKFd (ORCPT
+        id S241844AbhDFKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:06:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24400 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240979AbhDFKGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:05:33 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136A4bLg079159;
-        Tue, 6 Apr 2021 06:05:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=+ZfHBXPQ8eP2kF5pGgf8pvqbQp9Jh8p52njku2OHvv8=;
- b=H8Mi/xl/Vb8+r2UUCElEWopvkQSmZoUGzDgudXy9q/hfUhuLJ+RdkPvJ6rEFrzG9ygEk
- MeZuMDJLRtEkER56QHmqxDi65AwtlJFeso/r7Qx0MWXMZN88FcRb6SQDfzdrCORwsZyK
- cAywhdIHkUK+91PErF5G8Hy5cwX+xYEt3uH2uY9IHX5ULwCdbGAfHhuxcPigaHD2oMSD
- biER2AhaKUG6YUsraiwyIk7OMLhghosn1ZD7tY+FURcPC5V/AR/36ELcb8geUSP4YXZJ
- xjF/el54dXHIbZmb6aZHBYNZpljyx5z9ttuE7/9Hk3EHlC8S3us381DJOFNeJlCzGXSL Zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dv5cjv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 06:05:21 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 136A556Y080453;
-        Tue, 6 Apr 2021 06:05:19 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dv5cht-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 06:05:18 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136A1tFK003166;
-        Tue, 6 Apr 2021 10:05:16 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06fra.de.ibm.com with ESMTP id 37q3cf12b7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 10:05:16 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136A5DaJ21692832
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 10:05:13 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CF44411C066;
-        Tue,  6 Apr 2021 10:05:13 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0AFD511C050;
-        Tue,  6 Apr 2021 10:05:12 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.102.27.68])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  6 Apr 2021 10:05:11 +0000 (GMT)
-Date:   Tue, 6 Apr 2021 15:35:09 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210406100509.GA1354243@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
+        Tue, 6 Apr 2021 06:06:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617703588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
+        b=INDUQlMMCnNy7zUZKn1tS4/9uI+hySXS/W1TKZPDnDRdOmzXcXrAV531tyXZyVtRRgZDXf
+        xaKMsuda9LgWWeXxUAk5CMFkpWLiRMILR+eI9M0dBpPV3jMKuT0wnu6zEkXzkdgvvoLNDQ
+        5yN+o7ZQLICmWqCpO5sqfVdX3Xx1RzM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-2SvUCcR3Oru5f0oUNT4wAA-1; Tue, 06 Apr 2021 06:06:26 -0400
+X-MC-Unique: 2SvUCcR3Oru5f0oUNT4wAA-1
+Received: by mail-ed1-f72.google.com with SMTP id g7so1226174edp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:06:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
+        b=Jn3rCmGZKzxR1xBLBMl0ooZ4hjZJC+2+DD4yD9jGXYoaXqMkYMnxwlDbGFjE9NxjgQ
+         olk0/D3la1SzR4HiYFZh4S+9PEqnxb/xYfQ6QBnvdPoY5SHR8O2uMinPynhHWCYygzL3
+         tdVzOULxgr8F81uI6kZKFb85MjFiQr6XJGTlX24eSFO2HGvtANXMp9Mkhy7ZPTtTSS0Z
+         yzoVDMk3DijEIQgYnlMj77AvLnHAD0xJRbapvwiuoUl09dCEmUgEVrgmJsy/7rmNFUYw
+         06ZRLN1zsoik9XOGkAJgM3uSkuiWH40EKD1noyCv26kUKuHpi4d7vYf5NQ4OHQFrZE5K
+         a0zQ==
+X-Gm-Message-State: AOAM531E2R932xj6bGH/CAbXuFTKX5c+Ll+7s3lLF0RryJ5AYZ52yXl9
+        trJe6BzdRh5faC8VRgq5Vn9WJ949HelZvVc/dkaAMVaGX7sdzN78Q/fg9NO8yrupAzf8sVcOCWD
+        htTeVV6j61lYpZhGP66eoo/5T
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908383edb.62.1617703585740;
+        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwkFahB+GBVvfN5+4DjXC410VqB3rQQ1MthTGIdEaIgp48fePTzVnaVaxK/KzASTOExPeqmdA==
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908347edb.62.1617703585534;
+        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id y24sm13732387eds.23.2021.04.06.03.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 03:06:24 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5D5CF180300; Tue,  6 Apr 2021 12:06:24 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+References: <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+ <20210402190806.nhcgappm3iocvd3d@apollo>
+ <20210403174721.vg4wle327wvossgl@ast-mbp>
+ <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 06 Apr 2021 12:06:24 +0200
+Message-ID: <87blar4ti7.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yMs0uwOTLyFEHBrzOUU3EdEX4ZoAYPQe
-X-Proofpoint-ORIG-GUID: z7uIG8nzW1HuGuxbN4yZImD4h_UjY-ta
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_02:2021-04-01,2021-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- impostorscore=0 suspectscore=0 clxscore=1011 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104030000
- definitions=main-2104060067
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:08:26AM -0700, Yang Shi wrote:
-> On Sun, Apr 4, 2021 at 10:49 PM Bharata B Rao <bharata@linux.ibm.com> wrote:
-> >
-> > Hi,
-> >
-> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
-> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
-> > consumption increases quite a lot (around 172G) when the containers are
-> > running. Most of it comes from slab (149G) and within slab, the majority of
-> > it comes from kmalloc-32 cache (102G)
-> >
-> > The major allocator of kmalloc-32 slab cache happens to be the list_head
-> > allocations of list_lru_one list. These lists are created whenever a
-> > FS mount happens. Specially two such lists are registered by alloc_super(),
-> > one for dentry and another for inode shrinker list. And these lists
-> > are created for all possible NUMA nodes and for all given memcgs
-> > (memcg_nr_cache_ids to be particular)
-> >
-> > If,
-> >
-> > A = Nr allocation request per mount: 2 (one for dentry and inode list)
-> > B = Nr NUMA possible nodes
-> > C = memcg_nr_cache_ids
-> > D = size of each kmalloc-32 object: 32 bytes,
-> >
-> > then for every mount, the amount of memory consumed by kmalloc-32 slab
-> > cache for list_lru creation is A*B*C*D bytes.
-> 
-> Yes, this is exactly what the current implementation does.
-> 
-> >
-> > Following factors contribute to the excessive allocations:
-> >
-> > - Lists are created for possible NUMA nodes.
-> 
-> Yes, because filesystem caches (dentry and inode) are NUMA aware.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-True, but creating lists for possible nodes as against online nodes
-can hurt platforms where possible is typically higher than online.
+> On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wrote:
+>> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
+>> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> > > > [...]
+>> > >
+>> > > All of these things are messy because of tc legacy. bpf tried to follow tc style
+>> > > with cls and act distinction and it didn't quite work. cls with
+>> > > direct-action is the only
+>> > > thing that became mainstream while tc style attach wasn't really addressed.
+>> > > There were several incidents where tc had tens of thousands of progs attached
+>> > > because of this attach/query/index weirdness described above.
+>> > > I think the only way to address this properly is to introduce bpf_link style of
+>> > > attaching to tc. Such bpf_link would support ingress/egress only.
+>> > > direction-action will be implied. There won't be any index and query
+>> > > will be obvious.
+>> >
+>> > Note that we already have bpf_link support working (without support for pinning
+>> > ofcourse) in a limited way. The ifindex, protocol, parent_id, priority, handle,
+>> > chain_index tuple uniquely identifies a filter, so we stash this in the bpf_link
+>> > and are able to operate on the exact filter during release.
+>>
+>> Except they're not unique. The library can stash them, but something else
+>> doing detach via iproute2 or their own netlink calls will detach the prog.
+>> This other app can attach to the same spot a different prog and now
+>> bpf_link__destroy will be detaching somebody else prog.
+>>
+>> > > So I would like to propose to take this patch set a step further from
+>> > > what Daniel said:
+>> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>> > > and make this proposed api to return FD.
+>> > > To detach from tc ingress/egress just close(fd).
+>> >
+>> > You mean adding an fd-based TC API to the kernel?
+>>
+>> yes.
+>
+> I'm totally for bpf_link-based TC attachment.
+>
+> But I think *also* having "legacy" netlink-based APIs will allow
+> applications to handle older kernels in a much nicer way without extra
+> dependency on iproute2. We have a similar situation with kprobe, where
+> currently libbpf only supports "modern" fd-based attachment, but users
+> periodically ask questions and struggle to figure out issues on older
+> kernels that don't support new APIs.
 
-> 
-> > - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
-> >   list_lrus are created when it grows. Thus we end up creating list_lru_one
-> >   list_heads even for those memcgs which are yet to be created.
-> >   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
-> >   a value of 12286.
-> > - When a memcg goes offline, the list elements are drained to the parent
-> >   memcg, but the list_head entry remains.
-> > - The lists are destroyed only when the FS is unmounted. So list_heads
-> >   for non-existing memcgs remain and continue to contribute to the
-> >   kmalloc-32 allocation. This is presumably done for performance
-> >   reason as they get reused when new memcgs are created, but they end up
-> >   consuming slab memory until then.
-> 
-> The current implementation has list_lrus attached with super_block. So
-> the list can't be freed until the super block is unmounted.
-> 
-> I'm looking into consolidating list_lrus more closely with memcgs. It
-> means the list_lrus will have the same life cycles as memcgs rather
-> than filesystems. This may be able to improve some. But I'm supposed
-> the filesystem will be unmounted once the container exits and the
-> memcgs will get offlined for your usecase.
++1; I am OK with adding a new bpf_link-based way to attach TC programs,
+but we still need to support the netlink API in libbpf.
 
-Yes, but when the containers are still running, the lists that get
-created for non-existing memcgs and non-relavent memcgs are the main
-cause of increased memory consumption.
+> So I think we'd have to support legacy TC APIs, but I agree with
+> Alexei and Daniel that we should keep it to the simplest and most
+> straightforward API of supporting direction-action attachments and
+> setting up qdisc transparently (if I'm getting all the terminology
+> right, after reading Quentin's blog post). That coincidentally should
+> probably match how bpf_link-based TC API will look like, so all that
+> can be abstracted behind a single bpf_link__attach_tc() API as well,
+> right? That's the plan for dealing with kprobe right now, btw. Libbpf
+> will detect the best available API and transparently fall back (maybe
+> with some warning for awareness, due to inherent downsides of legacy
+> APIs: no auto-cleanup being the most prominent one).
 
-> 
-> > - In case of containers, a few file systems get mounted and are specific
-> >   to the container namespace and hence to a particular memcg, but we
-> >   end up creating lists for all the memcgs.
-> 
-> Yes, because the kernel is *NOT* aware of containers.
-> 
-> >   As an example, if 7 FS mounts are done for every container and when
-> >   10k containers are created, we end up creating 2*7*12286 list_lru_one
-> >   lists for each NUMA node. It appears that no elements will get added
-> >   to other than 2*7=14 of them in the case of containers.
-> >
-> > One straight forward way to prevent this excessive list_lru_one
-> > allocations is to limit the list_lru_one creation only to the
-> > relevant memcg. However I don't see an easy way to figure out
-> > that relevant memcg from FS mount path (alloc_super())
-> >
-> > As an alternative approach, I have this below hack that does lazy
-> > list_lru creation. The memcg-specific list is created and initialized
-> > only when there is a request to add an element to that particular
-> > list. Though I am not sure about the full impact of this change
-> > on the owners of the lists and also the performance impact of this,
-> > the overall savings look good.
-> 
-> It is fine to reduce the memory consumption for your usecase, but I'm
-> not sure if this would incur any noticeable overhead for vfs
-> operations since list_lru_add() should be called quite often, but it
-> just needs to allocate the list for once (for each memcg +
-> filesystem), so the overhead might be fine.
+Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
+high-level API auto-detect. That way users can also still use the
+netlink attach function if they don't want the fd-based auto-close
+behaviour of bpf_link.
 
-Let me run some benchmarks to measure the overhead. Any particular
-benchmark suggestion?
- 
-> 
-> And I'm wondering how much memory can be saved for real life workload.
-> I don't expect most containers are idle in production environments.
+-Toke
 
-I don't think kmalloc-32 slab cache memory consumption from list_lru
-would be any different for real life workload compared to idle containers.
-
-> 
-> Added some more memcg/list_lru experts in this loop, they may have better ideas.
-
-Thanks.
-
-Regards,
-Bharata.
