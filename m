@@ -2,322 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7212355CD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A58D355CD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbhDFU04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
+        id S1347162AbhDFU1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhDFU0y (ORCPT
+        with ESMTP id S245256AbhDFU1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:26:54 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D574DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 13:26:43 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id o16so17999102ljp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:26:43 -0700 (PDT)
+        Tue, 6 Apr 2021 16:27:35 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14EFC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 13:27:22 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id nh5so6332073pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FyxYTJq0hjg0lF4D+eRjh7iOhJYKtIuYcc2vlDiey1o=;
-        b=d/oAVJsTenaIPKUauQKNCycTdDa77daDCUpMXOfIhEl92kf6cCM2yUYe2UVySbOTCH
-         DzUSP/OuUjQPYyWcL71YQUHoEo3cmEuDwFf2wIom8A4ooxHBb+FCykmQAqf4JPLnjr/5
-         e7IXVyKmC5IFFI10dWZJdxSMfX/aX/7ZNXdgb/ycjzeJUgkV8FcZofd/zOETSs7lsAik
-         ydjUoUqLhxIhMSCu5TrHyHIf51AaOxN1uELR/H5azh4FrZOJ9uPI8ZJPHj43ZN09U86o
-         SqYpEueEzsuddZtS6s5Z9w2bYRn0hwtIOAzogiH699UNc5p1/lGvEJfuz+qzl1rxKUau
-         UiXQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B6bVwta59QdZJoFi3bJY0Ke48f3llQnoh7vx7Q+Q+vs=;
+        b=DzB7KSG3PFCjI3n3gM3q8U4FNZ8wynr2yb3Arl5bBRta1QbLZp+E3a99XDPv7mF7c7
+         QFDBtiC4sFH5XC/6M9WLt/U4WYYv4FujZHrt7eOoBr1kXYyYURd5wm7PM9/qAQHXvQy7
+         Tmpdb2MNgnHUAi2QR5K7aSuaERIojNrdpyyivCBpxmlsaJIkx/tcVrsrZOsMYrtNMt3G
+         yjdZXHv1aXduSEPEEnVLStvD5r0EAB7dU2NDN97tR1peFYKX+X0FqV5+CQ9ai0/6zda6
+         DZmGCCzLxtmekCY/v4HyiiU5978NyXxBHTqKs6x45USMwHOh4uwXp40U72+hgqfh0eW0
+         XiUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FyxYTJq0hjg0lF4D+eRjh7iOhJYKtIuYcc2vlDiey1o=;
-        b=OJNA2P0eqwx1pSkEYsMNuB1jAwtFh5rjSNHi8L2CigzwdEB+oJDirXMqDobSZ7l0hJ
-         UXnE2QAgHhh3ExTXGspcacoecZUfcOwL6rA7g1LUdtXgh55txSW4Ir6ylVeySnpYICMX
-         5Ok1V+eH74/b/UPhZxXxu3osTr2GYR57/GjTJtMLWdtiDL8JBnC6+JbXbUdM4D3hywLj
-         8P6LR+ApKBQNX1XoE9vpZal9RLkDTWvLUrHUyD+Qdu5lMJ9SjJs3sGqAwfqX3U1Xh7dM
-         7cptBq5fByLMLzUe8quMdMzyl9rBtORY4wiXmRApu/cEwy4lEtukDXP4CKrTR2AadkHr
-         yCbQ==
-X-Gm-Message-State: AOAM530ByK4uxYzZiLkCKACUQTy3QxZL2xcAHtQZHSX6qWpYLIu9w371
-        8iDtDPmtIGKfl7ofxUsSwXKd4tw/O4xf/SLWqfO5IA==
-X-Google-Smtp-Source: ABdhPJyEzFeVHuL3axVYxAmd/vRmCyPKTb4s2xSamvzatwjhi6r4/KiyWwak0226mOBVNcO85HbSSWDF0cyNzNoNpYM=
-X-Received: by 2002:a05:651c:1b9:: with SMTP id c25mr20238075ljn.155.1617740801882;
- Tue, 06 Apr 2021 13:26:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B6bVwta59QdZJoFi3bJY0Ke48f3llQnoh7vx7Q+Q+vs=;
+        b=ICRBuUwe6U0eqj28ajuQBnwS6dQn5eHeviwCSA5SNpptvBuajauLcRdBDDTjtl0kqE
+         40QG9u5ruXgzCF1IQpg49HswPdv2+ewJsfHfWiDAFEYHNyFsr0mjBYngq7t9yb31eoVM
+         8PYQc9JknYZ907B0rPlb2tg0XgRmIZz8MvGXWsip0pwpgr+q3XYrTyMKrSKWvewDCrzZ
+         x/YOcKuLkf/ulk9zkEFl4pokUJCbBX3eMEnX+XC1hoOt8PjqQV5AZsB7zWp4TeFOTPnD
+         eImTnEfQDB+t+ShulGWjL6rQSRtknIHRobX1UDdnxoqsAuXDl/dGYUldS6TUMQEUUCBV
+         s2MQ==
+X-Gm-Message-State: AOAM533894vXxRz3UyRTxb0fLOSgHIQKtZ6Xo9phPXxHLUhYHJDOMvWZ
+        fdukHeyERVb3sIVugFxlOHK7Nw==
+X-Google-Smtp-Source: ABdhPJzgs3cgB5/AeBk2yqXn2OYvazjX1N+GL1XhmIybHMvkc8guKgSNrH1PzJwcUYW6HCnGO+694Q==
+X-Received: by 2002:a17:90a:bb13:: with SMTP id u19mr5732203pjr.96.1617740842147;
+        Tue, 06 Apr 2021 13:27:22 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id w15sm3207908pja.18.2021.04.06.13.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 13:27:21 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 20:27:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+Message-ID: <YGzEJa8izE//+Niy@google.com>
+References: <cover.1617302792.git.ashish.kalra@amd.com>
+ <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+ <YGyCxGsC2+GAtJxy@google.com>
+ <20210406160758.GA24313@ashkalra_ubuntu_server>
+ <CABayD+f9o1CZTdak-ktKXpJnxcOAP4KPnYCDBzry91QcK6WVcw@mail.gmail.com>
 MIME-Version: 1.0
-References: <5035e2d0-8093-5570-88e0-01c81b9ae6ed@codeaurora.org> <1617265699-503-1-git-send-email-hangl@codeaurora.org>
-In-Reply-To: <1617265699-503-1-git-send-email-hangl@codeaurora.org>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Tue, 6 Apr 2021 13:26:28 -0700
-Message-ID: <CAHRSSEyp2ffVBaeJ4-uO=F02ppdh6j_jwf5AgxpFfNAHuwZXEw@mail.gmail.com>
-Subject: Re: [PATCH v2] binder: tell userspace to dump current backtrace when
- detecting oneway spamming
-To:     Hang Lu <hangl@codeaurora.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>, rdunlap@infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABayD+f9o1CZTdak-ktKXpJnxcOAP4KPnYCDBzry91QcK6WVcw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 1:29 AM Hang Lu <hangl@codeaurora.org> wrote:
->
-> When async binder buffer got exhausted, some normal oneway transaction
-> will also be discarded and finally caused system/app stop.
+On Tue, Apr 06, 2021, Steve Rutherford wrote:
+> On Tue, Apr 6, 2021 at 9:08 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > I see the following in Documentation/virt/kvm/api.rst :
+> > ..
+> > ..
+> > /* KVM_EXIT_HYPERCALL */
+> >                 struct {
+> >                         __u64 nr;
+> >                         __u64 args[6];
+> >                         __u64 ret;
+> >                         __u32 longmode;
+> >                         __u32 pad;
+> >                 } hypercall;
+> >
+> > Unused.  This was once used for 'hypercall to userspace'.  To implement
+> > such functionality, use KVM_EXIT_IO (x86) or KVM_EXIT_MMIO (all except s390).
+> >
+> > This mentions this exitcode to be unused and implementing this
+> > functionality using KVM_EXIT_IO for x86?
+> 
+> I suspect this description is historical. It was originally from 2009.
+> KVM_EXIT_IO is used for IO port reads/writes.
 
-"...be discarded and may cause system or application failures" ?
+The purpose of the comment is to discourage use of hypercalls for things that
+can instead be done via port I/O and/or MMIO.  The biggest advantage is that KVM
+doesn't need to act as an intermediary; userspace can define whatever paravirt
+shenanigans it so desires and KVM naturally handles the I/O accesses.
 
-> By that time,
-> the binder debug information we dump may not relevant to the root cause.
+MMIO in particular also allows for finer granularity of permissions in the guest,
+e.g. the guest kernel can expose the address to a userspace application to allow
+said application to make "hypercalls".  Port I/O technically has similar
+properties, but the I/O bitmaps are heinous.
 
-"may not be relevant"
+For this particular case, because we want to make a _KVM_ hypercall that just
+happens to get punted to userspace, and because there is no known or projected
+use case for letting guest userspace control memory encryption it makes sense to
+use a "real" hypercall.
 
-> And this issue is difficult to debug if without the backtrace of thread
-> sending spam.
+> Personally, I would prefer to stay the course and use a name similar
+> to KVM_EXIT_DMA_SHARE, say KVM_EXIT_MEM_SHARE and
+> KVM_EXIT_MEM_UNSHARE. These just seem very clear, which I appreciate.
+> Reusing hypercall would work, but shoehorning this into
+> KVM_EXIT_HYPERCALL when we don't have generic hypercall exits feels a
+> bit off in my mind. Note: that preference isn't particularly strong.
 
-"...backtrace of the thread..."
+I'm not against adding a new exit type, I'm against adding _two_ new exit types.
 
->
-> This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when detecting
-> oneway spamming, request to dump current backtrace.
-
-"to userspace when oneway spamming is detected
-
-> The detection will
-> happened only once when exceeding the threshold (target process dips
-
-"Oneway spamming will be reported only once..."
-
-> below 80% of its oneway space, and current process is responsible for
-> either more than 50 transactions, or more than 50% of the oneway space).
-> And the detection will restart when the async buffer has returned to a
-> healthy state.
->
-> Signed-off-by: Hang Lu <hangl@codeaurora.org>
-> ---
-> v2: make the detection on/off switch to be per-proc
->
->  drivers/android/binder.c            | 26 +++++++++++++++++++++++---
->  drivers/android/binder_alloc.c      | 15 ++++++++++++---
->  drivers/android/binder_alloc.h      |  8 +++++++-
->  drivers/android/binder_internal.h   |  4 ++++
->  include/uapi/linux/android/binder.h |  8 ++++++++
->  5 files changed, 54 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index c119736..93964d1 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -3007,7 +3007,10 @@ static void binder_transaction(struct binder_proc *proc,
->                         goto err_bad_object_type;
->                 }
->         }
-> -       tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
-> +       if (t->buffer->oneway_spam_suspect)
-> +               tcomplete->type = BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT;
-> +       else
-> +               tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
->         t->work.type = BINDER_WORK_TRANSACTION;
->
->         if (reply) {
-> @@ -3875,9 +3878,14 @@ static int binder_thread_read(struct binder_proc *proc,
->
->                         binder_stat_br(proc, thread, cmd);
->                 } break;
-> -               case BINDER_WORK_TRANSACTION_COMPLETE: {
-> +               case BINDER_WORK_TRANSACTION_COMPLETE:
-> +               case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT: {
-> +                       if (proc->oneway_spam_detection_enabled &&
-> +                                  w->type == BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT)
-> +                               cmd = BR_ONEWAY_SPAM_SUSPECT;
-
-Doesn't "BR_ONEWAY_SPAM_SUSPECT" need to be added to binder_return_strings[]?
-
-> +                       else
-> +                               cmd = BR_TRANSACTION_COMPLETE;
->                         binder_inner_proc_unlock(proc);
-> -                       cmd = BR_TRANSACTION_COMPLETE;
->                         kfree(w);
->                         binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
->                         if (put_user(cmd, (uint32_t __user *)ptr))
-> @@ -4727,6 +4735,18 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->                 }
->                 break;
->         }
-> +       case BINDER_ENABLE_ONEWAY_SPAM_DETECTION: {
-> +               uint32_t enable;
-> +
-> +               if (copy_from_user(&enable, ubuf, sizeof(enable))) {
-> +                       ret = -EINVAL;
-> +                       goto err;
-> +               }
-> +               binder_inner_proc_lock(proc);
-> +               proc->oneway_spam_detection_enabled = (bool)enable;
-> +               binder_inner_proc_unlock(proc);
-> +               break;
-> +       }
->         default:
->                 ret = -EINVAL;
->                 goto err;
-> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-> index 7caf74a..a09872b 100644
-> --- a/drivers/android/binder_alloc.c
-> +++ b/drivers/android/binder_alloc.c
-> @@ -338,7 +338,7 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
->         return vma;
->  }
->
-> -static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
-> +static bool debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
->  {
->         /*
->          * Find the amount and size of buffers allocated by the current caller;
-> @@ -366,13 +366,19 @@ static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
->
->         /*
->          * Warn if this pid has more than 50 transactions, or more than 50% of
-> -        * async space (which is 25% of total buffer size).
-> +        * async space (which is 25% of total buffer size). Oneway spam only
-> +        * detect once when exceed the threshold.
-
-"Oneway spam is only detected when the threshold is exceeded"
-
->          */
->         if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
->                 binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
->                              "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
->                               alloc->pid, pid, num_buffers, total_alloc_size);
-> +               if (!alloc->oneway_spam_detected) {
-> +                       alloc->oneway_spam_detected = true;
-> +                       return true;
-> +               }
->         }
-> +       return false;
->  }
->
->  static struct binder_buffer *binder_alloc_new_buf_locked(
-> @@ -525,6 +531,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
->         buffer->async_transaction = is_async;
->         buffer->extra_buffers_size = extra_buffers_size;
->         buffer->pid = pid;
-> +       buffer->oneway_spam_suspect = false;
->         if (is_async) {
->                 alloc->free_async_space -= size + sizeof(struct binder_buffer);
->                 binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
-> @@ -536,7 +543,9 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
->                          * of async space left (which is less than 10% of total
->                          * buffer size).
->                          */
-> -                       debug_low_async_space_locked(alloc, pid);
-> +                       buffer->oneway_spam_suspect = debug_low_async_space_locked(alloc, pid);
-> +               } else {
-> +                       alloc->oneway_spam_detected = false;
->                 }
->         }
->         return buffer;
-> diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
-> index 6e8e001..7dea57a 100644
-> --- a/drivers/android/binder_alloc.h
-> +++ b/drivers/android/binder_alloc.h
-> @@ -26,6 +26,8 @@ struct binder_transaction;
->   * @clear_on_free:      %true if buffer must be zeroed after use
->   * @allow_user_free:    %true if user is allowed to free buffer
->   * @async_transaction:  %true if buffer is in use for an async txn
-> + * @oneway_spam_suspect: %true if total async allocate size just exceed
-> + * spamming detect threshold
->   * @debug_id:           unique ID for debugging
->   * @transaction:        pointer to associated struct binder_transaction
->   * @target_node:        struct binder_node associated with this buffer
-> @@ -45,7 +47,8 @@ struct binder_buffer {
->         unsigned clear_on_free:1;
->         unsigned allow_user_free:1;
->         unsigned async_transaction:1;
-> -       unsigned debug_id:28;
-> +       unsigned oneway_spam_suspect:1;
-> +       unsigned debug_id:27;
->
->         struct binder_transaction *transaction;
->
-> @@ -87,6 +90,8 @@ struct binder_lru_page {
->   * @buffer_size:        size of address space specified via mmap
->   * @pid:                pid for associated binder_proc (invariant after init)
->   * @pages_high:         high watermark of offset in @pages
-> + * @oneway_spam_detected: %true if oneway spam detection fired, clear that
-> + * flag once the async buffer has returned to a healthy state
->   *
->   * Bookkeeping structure for per-proc address space management for binder
->   * buffers. It is normally initialized during binder_init() and binder_mmap()
-> @@ -107,6 +112,7 @@ struct binder_alloc {
->         uint32_t buffer_free;
->         int pid;
->         size_t pages_high;
-> +       bool oneway_spam_detected;
->  };
->
->  #ifdef CONFIG_ANDROID_BINDER_IPC_SELFTEST
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index 6cd7901..eb87669 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -174,6 +174,7 @@ struct binder_work {
->         enum binder_work_type {
->                 BINDER_WORK_TRANSACTION = 1,
->                 BINDER_WORK_TRANSACTION_COMPLETE,
-> +               BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT,
->                 BINDER_WORK_RETURN_ERROR,
->                 BINDER_WORK_NODE,
->                 BINDER_WORK_DEAD_BINDER,
-> @@ -396,6 +397,8 @@ struct binder_ref {
->   * @outer_lock:           no nesting under innor or node lock
->   *                        Lock order: 1) outer, 2) node, 3) inner
->   * @binderfs_entry:       process-specific binderfs log file
-> + * @oneway_spam_detection_enabled: process enabled oneway spam detection
-> + *                        or not
->   *
->   * Bookkeeping structure for binder processes
->   */
-> @@ -426,6 +429,7 @@ struct binder_proc {
->         spinlock_t inner_lock;
->         spinlock_t outer_lock;
->         struct dentry *binderfs_entry;
-> +       bool oneway_spam_detection_enabled;
->  };
->
->  /**
-> diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-> index ec84ad1..d0da772 100644
-> --- a/include/uapi/linux/android/binder.h
-> +++ b/include/uapi/linux/android/binder.h
-> @@ -227,6 +227,7 @@ struct binder_node_info_for_ref {
->  #define BINDER_GET_NODE_DEBUG_INFO     _IOWR('b', 11, struct binder_node_debug_info)
->  #define BINDER_GET_NODE_INFO_FOR_REF   _IOWR('b', 12, struct binder_node_info_for_ref)
->  #define BINDER_SET_CONTEXT_MGR_EXT     _IOW('b', 13, struct flat_binder_object)
-> +#define BINDER_ENABLE_ONEWAY_SPAM_DETECTION    _IOW('b', 15, __u32)
->
->  /*
->   * NOTE: Two special error codes you should check for when calling
-> @@ -408,6 +409,13 @@ enum binder_driver_return_protocol {
->          * The last transaction (either a bcTRANSACTION or
->          * a bcATTEMPT_ACQUIRE) failed (e.g. out of memory).  No parameters.
->          */
-> +
-> +       BR_ONEWAY_SPAM_SUSPECT = _IO('r', 19),
-> +       /*
-> +        * Current process sent too many oneway calls to target, and the last
-> +        * asynchronous transaction makes the allocated async buffer size exceed
-> +        * detection threshold.  No parameters.
-> +        */
->  };
->
->  enum binder_driver_command_protocol {
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+I also don't like using "(UN)SHARE" because there may be future use cases where
+the hypercall isn't used to "share' memory, but to inform the host of a change
+in state.  I don't have a concrete example, but it's not completely absurd to
+think that there might be a scenario where a guest has the ability to use multiple
+keys and needs to communicate key usage to the host.  Linux already has horrific
+(IMO) names for describing encrypted vs. "other" memory, I'd strongly prefer to
+avoid adding yet another potentially wrong name to the mix.
