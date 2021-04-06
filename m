@@ -2,118 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3990835506F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99716355065
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241356AbhDFJ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:59:13 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40628 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241262AbhDFJ7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:59:06 -0400
-X-UUID: a433c042379b4056a3ca568004468f46-20210406
-X-UUID: a433c042379b4056a3ca568004468f46-20210406
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1787102030; Tue, 06 Apr 2021 17:58:54 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 6 Apr 2021 17:58:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 6 Apr 2021 17:58:52 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <lee.jones@linaro.org>, <matthias.bgg@gmail.com>
-CC:     <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v3,PATCH 3/3] pwm: mtk_disp: implement .get_state()
-Date:   Tue, 6 Apr 2021 17:57:42 +0800
-Message-ID: <1617703062-4251-4-git-send-email-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1617703062-4251-1-git-send-email-rex-bc.chen@mediatek.com>
-References: <1617703062-4251-1-git-send-email-rex-bc.chen@mediatek.com>
+        id S241051AbhDFJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:57:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57782 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233842AbhDFJ55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:57:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617703068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PrzMnQvTadcMOrBNWUDd7HakkDHKU9nVmDx9/Wi5Qk0=;
+        b=W5G/DuRyRImzG7aKBi4/jd627pDCv4Q/QbHMycXee+ZsQhYVJNowiy7SwsMGNQpOnyDzNI
+        et8tKP+8IGLr2itDXAUOHSmOsBx6+yqeY9woEhZY9jM6l7gOw1F00aK5nU0ZUdqX4SNGOX
+        iFpMnauW6O6Ef9rzzJbsQiWm9pipbLM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A1A23B12E;
+        Tue,  6 Apr 2021 09:57:48 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 11:57:47 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 5/8] hugetlb: call update_and_free_page without
+ hugetlb_lock
+Message-ID: <YGwwm0EJHfPfpuW8@dhcp22.suse.cz>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-6-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405230043.182734-6-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-implement get_state function for pwm-mtk-disp
+On Mon 05-04-21 16:00:40, Mike Kravetz wrote:
+> With the introduction of remove_hugetlb_page(), there is no need for
+> update_and_free_page to hold the hugetlb lock.  Change all callers to
+> drop the lock before calling.
+> 
+> With additional code modifications, this will allow loops which decrease
+> the huge page pool to drop the hugetlb_lock with each page to reduce
+> long hold times.
+> 
+> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
+> a subsequent patch which restructures free_pool_huge_page.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
----
- drivers/pwm/pwm-mtk-disp.c | 46 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+Still looks good.
 
-diff --git a/drivers/pwm/pwm-mtk-disp.c b/drivers/pwm/pwm-mtk-disp.c
-index 502228adf718..166e0a8ca703 100644
---- a/drivers/pwm/pwm-mtk-disp.c
-+++ b/drivers/pwm/pwm-mtk-disp.c
-@@ -179,8 +179,54 @@ static int mtk_disp_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	return mtk_disp_pwm_enable(chip, state);
- }
- 
-+static void mtk_disp_pwm_get_state(struct pwm_chip *chip,
-+				   struct pwm_device *pwm,
-+				   struct pwm_state *state)
-+{
-+	struct mtk_disp_pwm *mdp = to_mtk_disp_pwm(chip);
-+	u32 clk_div, period, high_width, con0, con1;
-+	u64 rate;
-+	int err;
-+
-+	err = clk_prepare_enable(mdp->clk_main);
-+	if (err < 0) {
-+		dev_err(chip->dev, "Can't enable mdp->clk_main: %d\n", err);
-+		return;
-+	}
-+	err = clk_prepare_enable(mdp->clk_mm);
-+	if (err < 0) {
-+		dev_err(chip->dev, "Can't enable mdp->clk_mm: %d\n", err);
-+		clk_disable_unprepare(mdp->clk_main);
-+		return;
-+	}
-+
-+	rate = clk_get_rate(mdp->clk_main);
-+
-+	con0 = readl(mdp->base + mdp->data->con0);
-+	con1 = readl(mdp->base + mdp->data->con1);
-+
-+	state->polarity = con0 & PWM_POLARITY ?
-+			  PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
-+	state->enabled = !!(con0 & BIT(0));
-+
-+	clk_div = (con0 & PWM_CLKDIV_MASK) >> PWM_CLKDIV_SHIFT;
-+	period = con1 & PWM_PERIOD_MASK;
-+	state->period = div_u64(period * (clk_div + 1) * NSEC_PER_SEC, rate);
-+	high_width = (con1 & PWM_HIGH_WIDTH_MASK) >> PWM_HIGH_WIDTH_SHIFT;
-+	state->duty_cycle = div_u64(high_width * (clk_div + 1) * NSEC_PER_SEC,
-+				    rate);
-+
-+	if (!state->enabled) {
-+		clk_disable_unprepare(mdp->clk_mm);
-+		clk_disable_unprepare(mdp->clk_main);
-+	}
-+
-+	mdp->enabled = state->enabled;
-+}
-+
- static const struct pwm_ops mtk_disp_pwm_ops = {
- 	.apply = mtk_disp_pwm_apply,
-+	.get_state = mtk_disp_pwm_get_state,
- 	.owner = THIS_MODULE,
- };
- 
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/hugetlb.c | 43 +++++++++++++++++++++++++++++++++----------
+>  1 file changed, 33 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index df2a3d1f632b..be6031a8e2a9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1446,16 +1446,18 @@ static void __free_huge_page(struct page *page)
+>  
+>  	if (HPageTemporary(page)) {
+>  		remove_hugetlb_page(h, page, false);
+> +		spin_unlock(&hugetlb_lock);
+>  		update_and_free_page(h, page);
+>  	} else if (h->surplus_huge_pages_node[nid]) {
+>  		/* remove the page from active list */
+>  		remove_hugetlb_page(h, page, true);
+> +		spin_unlock(&hugetlb_lock);
+>  		update_and_free_page(h, page);
+>  	} else {
+>  		arch_clear_hugepage_flags(page);
+>  		enqueue_huge_page(h, page);
+> +		spin_unlock(&hugetlb_lock);
+>  	}
+> -	spin_unlock(&hugetlb_lock);
+>  }
+>  
+>  /*
+> @@ -1736,7 +1738,13 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>  				list_entry(h->hugepage_freelists[node].next,
+>  					  struct page, lru);
+>  			remove_hugetlb_page(h, page, acct_surplus);
+> +			/*
+> +			 * unlock/lock around update_and_free_page is temporary
+> +			 * and will be removed with subsequent patch.
+> +			 */
+> +			spin_unlock(&hugetlb_lock);
+>  			update_and_free_page(h, page);
+> +			spin_lock(&hugetlb_lock);
+>  			ret = 1;
+>  			break;
+>  		}
+> @@ -1805,8 +1813,9 @@ int dissolve_free_huge_page(struct page *page)
+>  		}
+>  		remove_hugetlb_page(h, page, false);
+>  		h->max_huge_pages--;
+> +		spin_unlock(&hugetlb_lock);
+>  		update_and_free_page(h, head);
+> -		rc = 0;
+> +		return 0;
+>  	}
+>  out:
+>  	spin_unlock(&hugetlb_lock);
+> @@ -2291,6 +2300,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>  	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
+>  	int nid = page_to_nid(old_page);
+>  	struct page *new_page;
+> +	struct page *page_to_free;
+>  	int ret = 0;
+>  
+>  	/*
+> @@ -2313,16 +2323,16 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>  		 * Freed from under us. Drop new_page too.
+>  		 */
+>  		remove_hugetlb_page(h, new_page, false);
+> -		update_and_free_page(h, new_page);
+> -		goto unlock;
+> +		page_to_free = new_page;
+> +		goto unlock_free;
+>  	} else if (page_count(old_page)) {
+>  		/*
+>  		 * Someone has grabbed the page, try to isolate it here.
+>  		 * Fail with -EBUSY if not possible.
+>  		 */
+>  		remove_hugetlb_page(h, new_page, false);
+> -		update_and_free_page(h, new_page);
+>  		spin_unlock(&hugetlb_lock);
+> +		update_and_free_page(h, new_page);
+>  		if (!isolate_huge_page(old_page, list))
+>  			ret = -EBUSY;
+>  		return ret;
+> @@ -2344,11 +2354,12 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+>  		 * enqueue_huge_page for new page.  Net result is no change.
+>  		 */
+>  		remove_hugetlb_page(h, old_page, false);
+> -		update_and_free_page(h, old_page);
+>  		enqueue_huge_page(h, new_page);
+> +		page_to_free = old_page;
+>  	}
+> -unlock:
+> +unlock_free:
+>  	spin_unlock(&hugetlb_lock);
+> +	update_and_free_page(h, page_to_free);
+>  
+>  	return ret;
+>  }
+> @@ -2671,22 +2682,34 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+>  						nodemask_t *nodes_allowed)
+>  {
+>  	int i;
+> +	struct page *page, *next;
+> +	LIST_HEAD(page_list);
+>  
+>  	if (hstate_is_gigantic(h))
+>  		return;
+>  
+> +	/*
+> +	 * Collect pages to be freed on a list, and free after dropping lock
+> +	 */
+>  	for_each_node_mask(i, *nodes_allowed) {
+> -		struct page *page, *next;
+>  		struct list_head *freel = &h->hugepage_freelists[i];
+>  		list_for_each_entry_safe(page, next, freel, lru) {
+>  			if (count >= h->nr_huge_pages)
+> -				return;
+> +				goto out;
+>  			if (PageHighMem(page))
+>  				continue;
+>  			remove_hugetlb_page(h, page, false);
+> -			update_and_free_page(h, page);
+> +			list_add(&page->lru, &page_list);
+>  		}
+>  	}
+> +
+> +out:
+> +	spin_unlock(&hugetlb_lock);
+> +	list_for_each_entry_safe(page, next, &page_list, lru) {
+> +		update_and_free_page(h, page);
+> +		cond_resched();
+> +	}
+> +	spin_lock(&hugetlb_lock);
+>  }
+>  #else
+>  static inline void try_to_free_low(struct hstate *h, unsigned long count,
+> -- 
+> 2.30.2
+> 
+
 -- 
-2.18.0
-
+Michal Hocko
+SUSE Labs
