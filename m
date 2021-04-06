@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E069355A36
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D7F355A34
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346889AbhDFRXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232593AbhDFRXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:23:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6676E613A3;
-        Tue,  6 Apr 2021 17:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617729817;
-        bh=NyyInCGNE1uoqUdzMm+iyXPpAi1wH034+5K530RbhVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aw1rFiIi9kuo8mcTCSms4+kYvK4ZKBCqmVUZSzPoRCYSCuDqBnv3lwm7DWUXjXe3i
-         GmegKho+YrvnC4RQkDRN3EUhoIe5QEjz1EEPXx5xlPLnLf43VJecf7Q39NPXNqytWX
-         +NFyvnZpWT4xo+sWfZvCGheMIQ3kQ7KBBnotbMh6i5S5iYhg6CfrWIKtt6s1ISLebv
-         Eu0wGvTjzS2xtW39v2fkQwq55rBVMj/crNYX8xgfoposk0d42xM2kzYNM3QvyHfhOz
-         tTAUqfW1mLzdBAycwrAbhrqe4BapVaf1ffu0bvjtC6FvXURKR55T51Oop7LUwDUt5o
-         gWk9IyuXx5DOg==
-Date:   Tue, 6 Apr 2021 18:23:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/6] PCI: brcmstb: Add control of slot0 device voltage
- regulators
-Message-ID: <20210406172320.GO6443@sirena.org.uk>
-References: <20210401212148.47033-1-jim2101024@gmail.com>
- <20210401212148.47033-4-jim2101024@gmail.com>
- <20210406163439.GL6443@sirena.org.uk>
- <CANCKTBvP66su2bXNMbawMfe3T7mpiQsRsG5xLfSPL2BWPNYFyw@mail.gmail.com>
+        id S1346875AbhDFRXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:23:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38727 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232593AbhDFRXm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:23:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617729813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kRqtUNrfsS+HN0qfeBVlZNBL6W5/ImsXWPSzbVRKt/s=;
+        b=RO4IpaVKqPxsFdb7Wx/Yi0Y76KDQ7oRpyPP5ID4Kt7VhSqFKNEwBg29t7BCxu1fAZsiTvk
+        Zh81qSwPIWiC3WBnn1h6ef5angQooYzyCBYocoSKqP4QoaNU2B0Ev/HnqBfNnsbeHs9RO5
+        OPHqCRiANgI8YGr4U1e3Iv5SWPZBrkg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-KqAku7wLMu2Mn_cMrPZxxQ-1; Tue, 06 Apr 2021 13:23:29 -0400
+X-MC-Unique: KqAku7wLMu2Mn_cMrPZxxQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1D3E1007468;
+        Tue,  6 Apr 2021 17:23:27 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.43])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4F74410016DB;
+        Tue,  6 Apr 2021 17:23:24 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  6 Apr 2021 19:23:27 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 19:23:23 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Hillf Danton <hdanton@sina.com>, Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        syzbot <syzbot+b804f902bbb6bcf290cb@syzkaller.appspotmail.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: perf_mmap_close() -> put_event() -> event.destroy() can deadlock
+Message-ID: <20210406172322.GA13270@redhat.com>
+References: <00000000000030aca605be6e0102@google.com>
+ <20210327042150.7460-1-hdanton@sina.com>
+ <20210328025217.7312-1-hdanton@sina.com>
+ <20210401092907.1098-1-hdanton@sina.com>
+ <20210402074636.1270-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y5wfsVCgeKAcINk2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANCKTBvP66su2bXNMbawMfe3T7mpiQsRsG5xLfSPL2BWPNYFyw@mail.gmail.com>
-X-Cookie: BARBARA STANWYCK makes me nervous!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210402074636.1270-1-hdanton@sina.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Song, Peter, please take a look.
 
---Y5wfsVCgeKAcINk2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 04/02, Hillf Danton wrote:
+>
+> On Thu, 1 Apr 2021 12:53:26  Oleg Nesterov wrote:
+> >
+> >Hmm, please correct me, but I don't think so. I think mmap_lock -> dup_mmap_sem
+> >is not possible.
+> >
+> Given perf_trace_destroy() in the report, it is a couple of steps in the
+> subsequent call chain that it likely takes to reach uprobe_unregister().
+>
+> perf_trace_destroy()
+>   perf_trace_event_unreg(p_event)
+>     tp_event->class->reg(tp_event, TRACE_REG_PERF_UNREGISTER, NULL);
+>       trace_uprobe_register()
 
-On Tue, Apr 06, 2021 at 12:59:16PM -0400, Jim Quinlan wrote:
-> On Tue, Apr 6, 2021 at 12:34 PM Mark Brown <broonie@kernel.org> wrote:
-> > On Thu, Apr 01, 2021 at 05:21:43PM -0400, Jim Quinlan wrote:
+Well, this is not possible, perf_trace_destroy() is only used by perf_tracepoint
+pmu. But you are right anyway, event.destroy == perf_uprobe_destroy can lead to
+uprobe_unregister(). Thanks.
 
-> > This is broken, the driver knows which supplies are expected, the device
-> > can't function without these supplies so the driver should just
-> > unconditionally request them like any other supply.
+-------------------------------------------------------------------------------
 
-> Some boards require the regulators, some do not.  So the driver is
+So. perf_mmap_close() does put_event(event) with mm->mmap_lock held. This can
+deadlock if event->destroy == perf_uprobe_destroy: perf_trace_event_close/unreg
+takes dup_mmap_sem.
 
-No, some boards have the supplies described in firmware and some do not.
 
-> only  sure what the names may be if they are present.  If  I put these
-> names in my struct regulator_bulk_data array and do a
-> devm_regulator_bulk_get(), I will get the following for the boards
-> that do not need the regulators (e.g. the RPi SOC):
->=20
-> [    6.823820] brcm-pcie xxx.pcie: supply vpcie12v-supply not found,
-> using dummy regulator
-> [    6.832265] brcm-pcie xxx.pcie: supply vpcie3v3-supply not found,
-> using dummy regulator
+perf_mmap_close() was added by 9bb5d40cd93c9 ("perf: Fix mmap() accounting hole")
+and this commit doesn't look right anyway, I'll write another email. However, it
+seems that this particular problem was added later by 33ea4b24277b0 ("perf/core:
+Implement the 'perf_uprobe' PMU").
 
-Sure, those are just warnings.
+Oleg.
 
-> IIRC you consider this a debug feature?  Be that as it may, these
-> lines will confuse our customers and I'd like that they not be printed
-> if possible.
-
-You can stop the warnings by updating your firmware to more completely
-describe the system - ideally all the supplies in the system would be
-described for future proofing.  Or if this is a custom software stack
-just delete whatever error checking and warnings you like.  The warnings
-are there in case we've not got something mapped properly (eg, if there
-were a typo in a property name) and things stop working, it's not great
-to just ignore errors.
-
-> So I ask you to allow the code as is.  If you still insist, I will
-> change and resubmit.
-
-Remove it, conditional code like this is just as bad in this driver as
-it is in every other one.
-
---Y5wfsVCgeKAcINk2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBsmQgACgkQJNaLcl1U
-h9DskAf/VoxLSYNHU72exjKJW5JNuftwTxIV64p9P+6X6YdAKyPe9hjIpEgRW4Or
-hLFl5JECdDbLp6+8pCfLwwOqapayysqV1xmDyFEz8aa4YNfEcMQ6oi+ON+577tV5
-o/BkG2BrsGSGgFnwRpaS3fMYpDQZotjJ0mNLdpFOej5kM0NQ42Lm/7m00Ac/YJAM
-Br5LGIpvPhVuCQdnZlTSS2eOp62zN0G6keC3Cqa/ZB3OsItyPEbbvyY4g/g3eO+7
-9CzNGFYfkde6XvvLL63FyDayAw1deqPzMlgWZEV5cCxKmWOM54dWL2bulCluwZFM
-TzoqocIqZAFCIgi5kUw4p0p2WlJNiQ==
-=olsV
------END PGP SIGNATURE-----
-
---Y5wfsVCgeKAcINk2--
