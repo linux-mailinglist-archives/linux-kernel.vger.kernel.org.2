@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8253549D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 02:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9913549DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243040AbhDFAzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 20:55:52 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3390 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhDFAzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 20:55:51 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FDpsk12p2z5lg1;
-        Tue,  6 Apr 2021 08:52:58 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 6 Apr 2021 08:55:41 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 6 Apr 2021
- 08:55:41 +0800
-Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
-To:     Jiri Kosina <jikos@kernel.org>, Hillf Danton <hdanton@sina.com>
-CC:     John Fastabend <john.fastabend@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Jike Song <albcamus@gmail.com>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        "David Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Michal Kubecek" <mkubecek@suse.cz>,
-        Netdev <netdev@vger.kernel.org>, Josh Hunt <johunt@akamai.com>
-References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
- <20200825032312.11776-1-hdanton@sina.com>
- <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
- <20200825162329.11292-1-hdanton@sina.com>
- <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
- <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
- <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
- <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com>
- <20200827125747.5816-1-hdanton@sina.com>
- <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
- <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
- <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
- <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
- <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
- <nycvar.YFH.7.76.2104022120050.12405@cbobk.fhfr.pm>
- <20210403003537.2032-1-hdanton@sina.com>
- <nycvar.YFH.7.76.2104031420470.12405@cbobk.fhfr.pm>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <eaff25bc-9b64-037e-b9bc-c06fc4a5a9fb@huawei.com>
-Date:   Tue, 6 Apr 2021 08:55:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S242087AbhDFBHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:07:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13651 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235769AbhDFBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:07:43 -0400
+IronPort-SDR: +1Bxe5pKf9d2d9+Yt4h7/cmdzCD7s9wZIWcFMZE8C2NmOuMa1U0yXKld9E9shqZ0zYU9jelPWk
+ orrXXUeNrE9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="173030537"
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="173030537"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:07:36 -0700
+IronPort-SDR: Wtwhc4FlTpvJsuXZDx/ruo9zOYrdhP9yb/4kWwe7nLyGVLSKtTejyMTw8aQadzl5gMAJGAKmyB
+ +fG8nCb/dG4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="440713227"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Apr 2021 18:07:34 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH v2 4/5] iommu/vt-d: Use user privilege for RID2PASID
+ translation
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+References: <20210320025415.641201-1-baolu.lu@linux.intel.com>
+ <20210320025415.641201-5-baolu.lu@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <84f0ca29-04e0-446b-745a-73e2f9e49f3b@linux.intel.com>
+Date:   Tue, 6 Apr 2021 08:58:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2104031420470.12405@cbobk.fhfr.pm>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210320025415.641201-5-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/3 20:23, Jiri Kosina wrote:
-> On Sat, 3 Apr 2021, Hillf Danton wrote:
+On 3/20/21 10:54 AM, Lu Baolu wrote:
+> When first-level page tables are used for IOVA translation, we use user
+> privilege by setting U/S bit in the page table entry. This is to make it
+> consistent with the second level translation, where the U/S enforcement
+> is not available. Clear the SRE (Supervisor Request Enable) field in the
+> pasid table entry of RID2PASID so that requests requesting the supervisor
+> privilege are blocked and treated as DMA remapping faults.
 > 
->>>>> Sure. Seems they crept in over time. I had some plans to write a
->>>>> lockless HTB implementation. But with fq+EDT with BPF it seems that
->>>>> it is no longer needed, we have a more generic/better solution.  So
->>>>> I dropped it. Also most folks should really be using fq, fq_codel,
->>>>> etc. by default anyways. Using pfifo_fast alone is not ideal IMO.
->>>>
->>>> Half a year later, we still have the NOLOCK implementation
->>>> present, and pfifo_fast still does set the TCQ_F_NOLOCK flag on itself.
->>>>
->>>> And we've just been bitten by this very same race which appears to be
->>>> still unfixed, with single packet being stuck in pfifo_fast qdisc
->>>> basically indefinitely due to this very race that this whole thread began
->>>> with back in 2019.
->>>>
->>>> Unless there are
->>>>
->>>> 	(a) any nice ideas how to solve this in an elegant way without
->>>> 	    (re-)introducing extra spinlock (Cong's fix) or
->>>>
->>>> 	(b) any objections to revert as per the argumentation above
->>>>
->>>> I'll be happy to send a revert of the whole NOLOCK implementation next
->>>> week.
->>>>
->>> Jiri
->>>
->>
->> Feel free to revert it as the scorch wont end without a deluge.
+> Suggested-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+We found some devices still require SRE to be set during internal tests.
+I will drop this patch from my queue for v5.13 for now.
+
+Best regards,
+baolu
+
+> ---
+>   drivers/iommu/intel/iommu.c | 7 +++++--
+>   drivers/iommu/intel/pasid.c | 3 ++-
+>   2 files changed, 7 insertions(+), 3 deletions(-)
 > 
-> I am still planning to have Yunsheng Lin's (CCing) fix [1] tested in the 
-> coming days. If it works, then we can consider proceeding with it, 
-> otherwise I am all for reverting the whole NOLOCK stuff.
-
-Hi, Jiri
-Do you have a reproducer that can be shared here?
-With reproducer, I can debug and test it myself too.
-
-Thanks.
-
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 868f195f55ff..7354f9ce47d8 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -2494,9 +2494,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+>   				    struct device *dev,
+>   				    u32 pasid)
+>   {
+> -	int flags = PASID_FLAG_SUPERVISOR_MODE;
+>   	struct dma_pte *pgd = domain->pgd;
+>   	int agaw, level;
+> +	int flags = 0;
+>   
+>   	/*
+>   	 * Skip top levels of page tables for iommu which has
+> @@ -2512,7 +2512,10 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+>   	if (level != 4 && level != 5)
+>   		return -EINVAL;
+>   
+> -	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
+> +	if (pasid != PASID_RID2PASID)
+> +		flags |= PASID_FLAG_SUPERVISOR_MODE;
+> +	if (level == 5)
+> +		flags |= PASID_FLAG_FL5LP;
+>   
+>   	return intel_pasid_setup_first_level(iommu, dev, (pgd_t *)pgd, pasid,
+>   					     domain->iommu_did[iommu->seq_id],
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index 0bf7e0a76890..dd69df5a188a 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -673,7 +673,8 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
+>   	 * Since it is a second level only translation setup, we should
+>   	 * set SRE bit as well (addresses are expected to be GPAs).
+>   	 */
+> -	pasid_set_sre(pte);
+> +	if (pasid != PASID_RID2PASID)
+> +		pasid_set_sre(pte);
+>   	pasid_set_present(pte);
+>   	pasid_flush_caches(iommu, pte, pasid, did);
+>   
 > 
-> [1] https://lore.kernel.org/linux-can/1616641991-14847-1-git-send-email-linyunsheng@huawei.com/T/#u
-> 
-
