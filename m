@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FE3355886
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0B535588F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346044AbhDFPvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhDFPvM (ORCPT
+        id S1346067AbhDFPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:54:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243616AbhDFPym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:51:12 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D55C061756;
-        Tue,  6 Apr 2021 08:51:04 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r9so206364ejj.3;
-        Tue, 06 Apr 2021 08:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Qj4ZbUSCwnNRsGsyd4823o8NwDOo/ZM9rO1POtn+Q7M=;
-        b=mMTsP8eKqHQw2U/phTGdhcue3frO4TNws7ugE+cWsrZeQtb0YH6uYR3KOUZEGH8tmq
-         sT3OOHCOJeJnSFSLmgn8qiV8O8kJ+4amDvi5kPSPZh7HwFqsxe7qGkJFGVV3Wyskrvbb
-         vX4nZROVWP1lFWuBdJN9i3vwL7qw7rZRBAzdKs7sHMB/KDp5GJrE2V/bQp6I0C/gAOB1
-         Q/PJiJpH1AZssOpVgcvm4+ujyKpjE8R+MwcngypfdJpTrWJSJd4hoWmXDRBivbZhAAYi
-         tDJaZjE/6RKGBRHtVgALilx7DtYjr5tUwW5yLRa7hev6k0oNKzJJaeRrYAunKPFY1zH1
-         Eyjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Qj4ZbUSCwnNRsGsyd4823o8NwDOo/ZM9rO1POtn+Q7M=;
-        b=Omi9XimasZ5kDm/u5k25DiiWbGWic/0xurgZnnHplinLcaR3pe03SSICEB7A+UfBh/
-         d8vqTwV1ddTJieAfeXcj6YdXdY6IvXLZRoAZSVxYKQwCLjway0PKzU+WJPYGWrqNtK1G
-         VlxeCtnZFQC3ZMNy3SydXxe9B4SGdHKZTgOFid0gXbRXVBs1FKlIz8QQztvnyw2xcXLZ
-         joNomIQuUWwmLa75SgPVZw0aRWgf826rtH1ENWdNlULBU6h65wcHAebYws5obeTbvwXa
-         6AkYmR1o1h7jmOMBZcJAjGWfSH+DExdMvkUCh49A8lY6qJ4uuUV20bEWW9l1zgSD5Agv
-         LtUQ==
-X-Gm-Message-State: AOAM530soilWdKgfqrtvnsvPkxXYEU61Shb4xFINHGyZVMtVpbKQXSbI
-        dLCG+dFG6TSHvgmxgjfyVqU=
-X-Google-Smtp-Source: ABdhPJyG2PqjLSzQz7sM421IaGpYPRDFTvC2MggBRpVNNsIld3uI8NWFbgb77DuQxdTZYdXa3dDQyQ==
-X-Received: by 2002:a17:906:6dc9:: with SMTP id j9mr17253967ejt.188.1617724262892;
-        Tue, 06 Apr 2021 08:51:02 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id h8sm13894327ede.25.2021.04.06.08.51.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Apr 2021 08:51:02 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] dt-bindings: pwm: add more compatible strings to pwm-rockchip.yaml
-Date:   Tue,  6 Apr 2021 17:50:53 +0200
-Message-Id: <20210406155053.29101-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210406155053.29101-1-jbx6244@gmail.com>
-References: <20210406155053.29101-1-jbx6244@gmail.com>
+        Tue, 6 Apr 2021 11:54:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617724474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GECg07lP5wsIqbFA2Q0Bw1H5A4ajMexc9b0QUtiEUWY=;
+        b=cI2GLgvon9l6hRkwem95ROnHMUL7bW2cNgEzkDXSVnzsQ17pAnpgejx0EtKygdbrB0gsT8
+        lbMNGLvo/gqXqBzc2+tAc84LgDXvyNcI6K9y8W2JtZXXKclVTCxNrwyncZTL95u3LgqtJT
+        awSHfEVxZYEI4JR9nLgU1R3jz0DqW9o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-CUodGpTdMkqgH90ht6jzIw-1; Tue, 06 Apr 2021 11:54:30 -0400
+X-MC-Unique: CUodGpTdMkqgH90ht6jzIw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94AA2800D53;
+        Tue,  6 Apr 2021 15:54:27 +0000 (UTC)
+Received: from treble (ovpn-116-68.rdu2.redhat.com [10.10.116.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F97310016FC;
+        Tue,  6 Apr 2021 15:54:25 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 10:54:23 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, mbenes@suse.com,
+        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
+        dhowells@redhat.com, hch@infradead.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210406155423.t7dagp24bupudv3p@treble>
+References: <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGbNpLKXfWpy0ZZa@kroah.com>
+ <20210402183016.GU4332@42.do-not-panic.com>
+ <YGgHg7XCHD3rATIK@kroah.com>
+ <20210406003152.GZ4332@42.do-not-panic.com>
+ <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compatible strings below are already in use in the Rockchip
-dtsi files, but were somehow never added to a document, so add
+On Tue, Apr 06, 2021 at 02:00:19PM +0200, Miroslav Benes wrote:
+> Hi,
+> 
+> > > Driver developers will simply have to open code these protections. In
+> > > light of what I see on LTP / fuzzing, I suspect the use case will grow
+> > > and we'll have to revisit this in the future. But for now, sure, we can
+> > > just open code the required protections everywhere to not crash on module
+> > > removal.
+> > 
+> > LTP and fuzzing too do not remove modules.  So I do not understand the
+> > root problem here, that's just something that does not happen on a real
+> > system.
+> 
+> If I am not mistaken, the issue that Luis tries to solve here was indeed 
+> found by running LTP.
+> 
+> > On Sat, Apr 03, 2021 at 08:13:23AM +0200, Greg KH wrote:
+> > > On Fri, Apr 02, 2021 at 06:30:16PM +0000, Luis Chamberlain wrote:
+> > > > On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
+> > > > > No, please no.  Module removal is a "best effort",
+> > > > 
+> > > > Not for live patching. I am not sure if I am missing any other valid
+> > > > use case?
+> > > 
+> > > live patching removes modules?  We have so many code paths that are
+> > > "best effort" when it comes to module unloading, trying to resolve this
+> > > one is a valiant try, but not realistic.
+> > 
+> > Miroslav, your input / help here would be valuable. I did the
+> > generalization work because you said it would be worthy for you too...
+> 
+> Yes, we have the option to revert and remove the existing live patch from 
+> the system. I am not sure how (if) it is used in practice.
+> 
+> At least at SUSE we do not support the option. But we are only one of the 
+> many downstream users. So yes, there is the option.
 
-"rockchip,rk3328-pwm"
+Same for Red Hat.  Unloading livepatch modules seems to work fine, but
+isn't officially supported.
 
-"rockchip,rk3036-pwm", "rockchip,rk2928-pwm"
+That said, if rmmod is just considered a development aid, and we're
+going to be ignoring bugs, we should make it official with a new
+TAINT_RMMOD.
 
-"rockchip,rk3368-pwm", "rockchip,rk3288-pwm"
-"rockchip,rk3399-pwm", "rockchip,rk3288-pwm"
-
-"rockchip,px30-pwm", "rockchip,rk3328-pwm"
-"rockchip,rk3308-pwm", "rockchip,rk3328-pwm"
-
-for pwm nodes to pwm-rockchip.yaml.
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-index cfd637d3e..3945d586c 100644
---- a/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-+++ b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-@@ -14,11 +14,22 @@ properties:
-     oneOf:
-       - const: rockchip,rk2928-pwm
-       - const: rockchip,rk3288-pwm
-+      - const: rockchip,rk3328-pwm
-       - const: rockchip,vop-pwm
-       - items:
-+          - const: rockchip,rk3036-pwm
-+          - const: rockchip,rk2928-pwm
-+      - items:
-           - enum:
-+              - rockchip,rk3368-pwm
-+              - rockchip,rk3399-pwm
-               - rockchip,rv1108-pwm
-           - const: rockchip,rk3288-pwm
-+      - items:
-+          - enum:
-+              - rockchip,px30-pwm
-+              - rockchip,rk3308-pwm
-+          - const: rockchip,rk3328-pwm
- 
-   reg:
-     maxItems: 1
 -- 
-2.11.0
+Josh
 
