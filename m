@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B541F354EDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053E3354EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244463AbhDFIo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:44:58 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:41320 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244417AbhDFIo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:44:57 -0400
-Received: from marcel-macbook.holtmann.net (p4ff9fed5.dip0.t-ipconnect.de [79.249.254.213])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D6E8ECED1D;
-        Tue,  6 Apr 2021 10:52:30 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 0/2] Bluetooth: Avoid centralized adv handle tracking for
- extended features
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210405233305.92431-1-danielwinkler@google.com>
-Date:   Tue, 6 Apr 2021 10:44:48 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        id S244471AbhDFIpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:45:12 -0400
+Received: from mga02.intel.com ([134.134.136.20]:13152 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244417AbhDFIpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:45:10 -0400
+IronPort-SDR: lHG7cnUsRlPRyBca8alj83PDGKetGrNeb5HxMEHRYVO256dZBcZddIK1iXEtm+93ZMneF6okS/
+ GYnUHLWo48Iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="180152156"
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="180152156"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:45:03 -0700
+IronPort-SDR: Dj6hVveqLK/PFJOSjVdTlEInJUKchM6ygtBa7FhhJ7pAH8Kx9OMRXXBIT0QrgLRHBn4r5KJgdE
+ EoNAK+rDXz+w==
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="421121773"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.164]) ([10.249.228.164])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:45:00 -0700
+Subject: [PATCH v4 04/12] perf record: stop threads in the end of trace
+ streaming
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <3113338a-a17e-cc3e-2d1a-fb1b468d5dcd@linux.intel.com>
+Date:   Tue, 6 Apr 2021 11:44:57 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Message-Id: <EAE9ED84-E693-4821-A44D-059FE3CE8665@holtmann.org>
-References: <20210405233305.92431-1-danielwinkler@google.com>
-To:     Daniel Winkler <danielwinkler@google.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-> This series addresses a race condition where an advertisement
-> registration can conflict with a software rotation advertisement
-> refresh. I found that this issue was only occurring with the new
-> extended MGMT advertising interface. A bad use of the
-> hdev->cur_adv_instance caused every new instance to be immediately sent
-> to the controller rather than queued for software rotation, opening a
-> path for the race to occur.
-> 
-> This series improves the way new extended advertising hci callbacks
-> track the relevant adv handle, removing the need for the
-> cur_adv_instance use. In a separate patch, the incorrect usage of
-> cur_adv_instance is removed, to align the extended MGMT commands to the
-> original add_advertising usage. The series was tested on both extended
-> and non-extended bluetooth controllers to confirm that the race
-> condition is resolved, and that multi- and single-advertising automated
-> test scenarios are still successful.
-> 
-> Thanks in advance,
-> Daniel
-> 
-> 
-> Daniel Winkler (2):
->  Bluetooth: Use ext adv handle from requests in CCs
->  Bluetooth: Do not set cur_adv_instance in adv param MGMT request
-> 
-> net/bluetooth/hci_event.c | 16 +++++++---------
-> net/bluetooth/mgmt.c      |  1 -
-> 2 files changed, 7 insertions(+), 10 deletions(-)
+Signal thread to terminate by closing write fd of msg pipe.
+Receive THREAD_MSG__READY message as the confirmation of the
+thread's termination. Stop threads created for parallel trace
+streaming prior their stats processing.
 
-both patches have been applied to bluetooth-next tree.
+Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-Regards
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index ecb6bf33ed85..4612314853c1 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -110,6 +110,16 @@ struct thread_data {
+ 
+ static __thread struct thread_data *thread;
+ 
++enum thread_msg {
++	THREAD_MSG__UNDEFINED = 0,
++	THREAD_MSG__READY,
++	THREAD_MSG__MAX,
++};
++
++static const char *thread_msg_tags[THREAD_MSG__MAX] = {
++	"UNDEFINED", "READY"
++};
++
+ struct record {
+ 	struct perf_tool	tool;
+ 	struct record_opts	opts;
+@@ -1820,6 +1830,23 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
+ 	}
+ }
+ 
++static int record__terminate_thread(struct thread_data *thread_data)
++{
++	int res;
++	enum thread_msg ack = THREAD_MSG__UNDEFINED;
++	pid_t tid = thread_data->tid;
++
++	close(thread_data->pipes.msg[1]);
++	res = read(thread_data->pipes.ack[0], &ack, sizeof(ack));
++	if (res != -1)
++		pr_debug2("threads[%d]: sent %s\n", tid, thread_msg_tags[ack]);
++	else
++		pr_err("threads[%d]: failed to recv msg=%s from tid=%d\n",
++		       thread->tid, thread_msg_tags[ack], tid);
++
++	return 0;
++}
++
+ static int record__start_threads(struct record *rec)
+ {
+ 	struct thread_data *thread_data = rec->thread_data;
+@@ -1836,6 +1863,9 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ 	int t;
+ 	struct thread_data *thread_data = rec->thread_data;
+ 
++	for (t = 1; t < rec->nr_threads; t++)
++		record__terminate_thread(&thread_data[t]);
++
+ 	for (t = 0; t < rec->nr_threads; t++) {
+ 		rec->samples += thread_data[t].samples;
+ 		*waking += thread_data[t].waking;
+-- 
+2.19.0
 
-Marcel
 
