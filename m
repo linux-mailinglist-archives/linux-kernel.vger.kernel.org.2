@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7866C355546
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABFF35555E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243960AbhDFNgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:36:00 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15615 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbhDFNf7 (ORCPT
+        id S1344569AbhDFNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:39:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33122 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238827AbhDFNjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:35:59 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF7lR2Hvdz19Kp5;
-        Tue,  6 Apr 2021 21:33:39 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
- 21:35:45 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>, <matrandg@cisco.com>
-Subject: [PATCH -next] media: tc358743: fix possible use-after-free in tc358743_remove()
-Date:   Tue, 6 Apr 2021 21:39:29 +0800
-Message-ID: <20210406133929.2143249-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 6 Apr 2021 09:39:48 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lTlvf-0003iY-Hg; Tue, 06 Apr 2021 13:39:39 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/msm: Fix spelling mistake "Purgable" -> "Purgeable"
+Date:   Tue,  6 Apr 2021 14:39:39 +0100
+Message-Id: <20210406133939.425987-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+From: Colin Ian King <colin.king@canonical.com>
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
+There is a spelling mistake in debugfs gem stats. Fix it. Also
+re-align output to cater for the extra 1 character.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/media/i2c/tc358743.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_gem.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 831b5b54fd78..1b309bb743c7 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -2193,7 +2193,7 @@ static int tc358743_remove(struct i2c_client *client)
- 		del_timer_sync(&state->timer);
- 		flush_work(&state->work_i2c_poll);
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index f146d9c5ba9c..4e2e0a93d17d 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -979,13 +979,13 @@ void msm_gem_describe_objects(struct list_head *list, struct seq_file *m)
+ 		msm_gem_describe(obj, m, &stats);
  	}
--	cancel_delayed_work(&state->delayed_work_enable_hotplug);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
- 	cec_unregister_adapter(state->cec_adap);
- 	v4l2_async_unregister_subdev(sd);
- 	v4l2_device_unregister_subdev(sd);
+ 
+-	seq_printf(m, "Total:    %4d objects, %9zu bytes\n",
++	seq_printf(m, "Total:     %4d objects, %9zu bytes\n",
+ 			stats.all.count, stats.all.size);
+-	seq_printf(m, "Active:   %4d objects, %9zu bytes\n",
++	seq_printf(m, "Active:    %4d objects, %9zu bytes\n",
+ 			stats.active.count, stats.active.size);
+-	seq_printf(m, "Purgable: %4d objects, %9zu bytes\n",
++	seq_printf(m, "Purgeable: %4d objects, %9zu bytes\n",
+ 			stats.purgable.count, stats.purgable.size);
+-	seq_printf(m, "Purged:   %4d objects, %9zu bytes\n",
++	seq_printf(m, "Purged:    %4d objects, %9zu bytes\n",
+ 			stats.purged.count, stats.purged.size);
+ }
+ #endif
 -- 
-2.25.1
+2.30.2
 
