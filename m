@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1942D355181
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FBD35517B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245345AbhDFLFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:05:17 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2766 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241641AbhDFLFO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:05:14 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF4L86QQXz682Z9;
-        Tue,  6 Apr 2021 19:00:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 13:05:05 +0200
-Received: from [10.210.166.136] (10.210.166.136) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 12:05:03 +0100
-Subject: Re: [PATCH v2 0/6] perf arm64 metricgroup support
-To:     kajoljain <kjain@linux.ibm.com>, "Paul A. Clarke" <pc@us.ibm.com>
-CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
-        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <irogers@google.com>, <linuxarm@huawei.com>,
-        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <zhangshaokun@hisilicon.com>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <dc17013d-2dcb-8ddf-a15a-e98cad3e2ae3@huawei.com>
- <20210329210717.GF8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <247e9484-34c8-544a-e268-b025ecb317fe@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <1d800da3-ec94-3a37-eca9-1d3cf8543ba6@huawei.com>
-Date:   Tue, 6 Apr 2021 12:02:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S245329AbhDFLDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231650AbhDFLDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B924061055;
+        Tue,  6 Apr 2021 11:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617706994;
+        bh=feVSVdneCF5Z0KFs4Mc8lgfRu23TV0mL2jYYWxBzMlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YuHT14mRco+dzf70WdkLcOIVfVU6oRTuJUkJYNQ3yDpzV3w9zWyIAePREROqXP6tX
+         WqJISse0+m/zI5QwVFK2OzII7oNMSc1ql0Skhr//j7lrkm66itj07bByKbRnQONmJs
+         wYHSqnS+JQAdHOut5WOhMx0KPdLTxlrjh9e3h1XciknW7U/dNdZUslegOhJah+J4l4
+         YSTsXTxPiLjrZVet0GBpjxQCoubxSPx745DQXo6Sm00NC4axz6ZBcYTihpxW4iM7K3
+         Wl3lL1icBZlAAodB0V/0PmIc6DuvwZu0lkBkDF/+D065Y7kHCnUQ4QAdQYoXfDK45q
+         9zH8MTmlOjugA==
+Date:   Tue, 6 Apr 2021 12:02:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the
+ stack trace unreliable
+Message-ID: <20210406110257.GA6443@sirena.org.uk>
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210330190955.13707-4-madvenka@linux.microsoft.com>
+ <20210401142759.GJ4758@sirena.org.uk>
+ <0bece48b-5fee-2bd1-752e-66d2b89cc5ad@linux.microsoft.com>
+ <20210401182810.GO4758@sirena.org.uk>
+ <2a56fe4b-9929-0d8b-aa49-c2b1c1b82b79@linux.microsoft.com>
+ <fe2f3b1e-8cb6-05ce-7968-216fed079fe4@linux.microsoft.com>
+ <9ebc341b-ba5a-db9a-c5e6-17b30d4b1fd4@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <247e9484-34c8-544a-e268-b025ecb317fe@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.136]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
+Content-Disposition: inline
+In-Reply-To: <9ebc341b-ba5a-db9a-c5e6-17b30d4b1fd4@linux.microsoft.com>
+X-Cookie: BARBARA STANWYCK makes me nervous!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/03/2021 07:41, kajoljain wrote:
-> 
-> 
-> On 3/30/21 2:37 AM, Paul A. Clarke wrote:
->> On Fri, Mar 26, 2021 at 10:57:40AM +0000, John Garry wrote:
->>> On 25/03/2021 20:39, Paul A. Clarke wrote:
->>>> On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
->>>>> Metric reuse support is added for pmu-events parse metric testcase.
->>>>> This had been broken on power9 recentlty:
->>>>> https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
->>>>
->>>> Much better.  Before:
->>>> --
->>>> $ perf test -v 10 2>&1 | grep -i error | wc -l
->>>> 112
->>>> --
->>>> After:
->>>> --
->>>> $ perf test -v 10 2>&1 | grep -i error | wc -l
->>>> 17
->>>> --
->>>>
->>>> And these seem like different types of issues:
->>>> --
->>>> $ perf test -v 10 2>&1 | grep -i error
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
->>>> --
->>>>
->>>
->>> This looks suspicious.
->>>
->>> Firstly, does /sys/bus/event_source/devices/nest_mcs01_imc (or others,
->>> above) exist on your system? I guess not.
->>>
->>> Secondly, checking Documentation/powerpc/imc.rst, we have examples of:
->>> nest_mcs01/PM_MCS01_64B_R...
->>>
->>> So is the PMU name correct in the metric file for nest_mcs01_imc? Looking at
->>> the kernel driver file, arch/powerpc/perf/imc-pmu.c, it seems to be correct.
->>> Not sure.
->>
->> I ran with a newer kernel, and the above errors disappeared, replaced with
->> about 10 of:
->> --
->> Error string 'Cannot find PMU `hv_24x7'. Missing kernel support?' help '(null)'
->> --
->>
->> ...but I was running without a hypervisor, so I tried the same kernel on a
->> PowerVM-virtualized system and the "hv_24x7" messages went away, but the
->> "nest" messages returned.  This may all be expected behavior... I confess
->> I haven't followed these new perf capabilities closely.
->>
-> 
-> Hi Paul/John,
->     This is something expected. For nest-imc we need bare-metal system and for
-> hv-24x7 we need VM environment. Since you are checking this test in VM machine,
-> there nest events are not supported and hence we are getting this error.
-> 
-> Thanks,
-> Kajol Jain
 
-Cool, so I hope that tested-by or similar can be provided :) [obviously 
-pending any changes that come from reviews]
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
+On Thu, Apr 01, 2021 at 02:47:11PM -0500, Madhavan T. Venkataraman wrote:
+> On 4/1/21 1:53 PM, Madhavan T. Venkataraman wrote:
 
-> 
->> It's extremely likely that none of these errors has anything to do with your
->> changes. :-
->>
->> PC
->>
-> .
-> 
+> > Alternatively, I could just move the SYM_INNER_LABEL(ftrace_graph_call..) to outside the ifdef.
 
+> Or, even better, I could just use ftrace_call+4 because that would be the return
+> address for the tracer function at ftrace_call:
+
+> I think that would be cleaner. And, I don't need the complicated comments for ftrace_graph_call.
+
+> Is this acceptable?
+
+I think either of those should be fine.
+
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBsP+AACgkQJNaLcl1U
+h9BAFwf7BcZKDmVjMobAlViTRTdrDIK11ry9Bg03OuKs5Ckpvl/iJqqi2JWu9P1Z
+Opj4gyGT1rGfThM8p8K03l+97zuQV7E7xD2MavLAkEQtR+DlOZ4b7stYtERSxgKL
+YkCRAGaQUFyOK6b7xAz64PW/i23MJ+1llUFGJNdxC+7akNAuvuUF+MX/TU0k82f9
+1KT+yQ1OwoCzyaGVHi4Cy+hormWNWDZBGwHg0MvSiPLw4taL7iyHnheB+LWUgA9r
+umqZnlMU9itzdWF0UR+iBH+vzeMlgWyV9jQk5WR0LxCCIxrhXv0WKQAAAjQxOW3I
+2Ly7um10NjRbLJ2kUCZ/TSYW5GI98w==
+=xD66
+-----END PGP SIGNATURE-----
+
+--HlL+5n6rz5pIUxbD--
