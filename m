@@ -2,162 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64AB355116
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FB8355118
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhDFKl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhDFKl4 (ORCPT
+        id S238168AbhDFKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:42:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15494 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhDFKmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:41:56 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11753C06174A;
-        Tue,  6 Apr 2021 03:41:48 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id d10so12627510ils.5;
-        Tue, 06 Apr 2021 03:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GqwLT9earkXIj3mKLKZrj+6hWxt8NrgkmSJhRhhjzAo=;
-        b=sDnJNWn7Z2IewJKMiE7LngPEyfOX1AUQyJ0/yucjC1+WUEHGez3FNZiO1u+0F7ImG1
-         2Cr2fS5v7V0g9ngBry9FuUmHNlVlwzXRf0WiAHde/ELtWf0HzHTb+9m2XxMidarWJPps
-         eyQhIoNXARE28XD0qH9X5KnHbMNFQpxQk5HjF/lFvstqUdThh8nluS1zJM2/xF8lyWsN
-         IKeaHgcD5c0ElpMhaegCTBGULOApasFOiZCFWe05Hd05JkNmoig2DOX5foPSflk5/sHj
-         VA6+arofL8TsPQeGHQ1x94clDQAYcR++1nVte7Vrrbpyf4NvDmKFMrcAxUNdrgFETFeF
-         4Cbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GqwLT9earkXIj3mKLKZrj+6hWxt8NrgkmSJhRhhjzAo=;
-        b=JHEs2h1DxYgjhz97vhDLV3DF3BrEkktxQEA9Ue0EUtbEmrnPSrwN+yy3q4vGKy8gjw
-         S/Ngac0UC2YlutFiofNEBzSe11P/+eC/IxI6ykSSQ1bYqmrlZ2h6WxrqZS5RkhpGAsX5
-         lpxeUXVHTohWbysCUb2TE0h5OiRH0uzd30hD3cXxK7gk/aLeHLqiAhziTChGBVyiThEx
-         Tp4KC5Myc1zaKVTso6ilOS0pdcH+Nu4zV5OZQaWzeQFHe7DO6UWkLTtcsZIcmwNW528n
-         /w45/TTfWONuXAThYHCuJIJRk1ifJWfjl2LkDHja0f6U/PRG/I7q0N1X9wRxEuXN9wEw
-         SPkg==
-X-Gm-Message-State: AOAM531pAJsDYtwByPlhXwu6YRPSlP4hM63uFdleoaLAk/q6eamXnZ39
-        1HroBeCz9cncRYFObpv6bfVA+sS2uqtCyZ52jmQ=
-X-Google-Smtp-Source: ABdhPJwUKY3YO+j9UScD0xU6VF/8JOy30l6n9KRq+55gtznilibWyOVPXz9J2I4HiITvypU+PyaqrAGdmRsMRvaeUvU=
-X-Received: by 2002:a92:7f03:: with SMTP id a3mr23311252ild.203.1617705707486;
- Tue, 06 Apr 2021 03:41:47 -0700 (PDT)
+        Tue, 6 Apr 2021 06:42:15 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF3ty6HsDzrd88;
+        Tue,  6 Apr 2021 18:39:54 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 18:41:54 +0800
+Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as
+ NODATA
+To:     Jolly Shah <jollys@google.com>
+CC:     John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <a.darwish@linutronix.de>,
+        <dan.carpenter@oracle.com>, <b.zolnierkie@samsung.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210318225632.2481291-1-jollys@google.com>
+ <5e7ea537-86ab-f654-1df4-765364116e18@huawei.com>
+ <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com>
+ <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
+ <CABGCNpBABSkdSQf=c2T9qMTGgJPL7Si9Ft_DvC8WiLtT_vmL1Q@mail.gmail.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <e7271655-c92f-1492-92ec-9ed7aed8df7c@huawei.com>
+Date:   Tue, 6 Apr 2021 18:41:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <20210327101254.56872-1-laoar.shao@gmail.com>
-In-Reply-To: <20210327101254.56872-1-laoar.shao@gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 6 Apr 2021 18:41:11 +0800
-Message-ID: <CALOAHbDZPo65Vc89sVCuYkJ6vr=zD-4ev=JN=j7ZAzKHzRibdA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] sched: support schedstats for RT sched class
-To:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, bristot@redhat.com
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CABGCNpBABSkdSQf=c2T9qMTGgJPL7Si9Ft_DvC8WiLtT_vmL1Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 6:13 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> We want to measure the latency of RT tasks in our production
-> environment with schedstats facility, but currently schedstats is only
-> supported for fair sched class. In order to support if for other sched
-> classes, we should make it independent of fair sched class. The struct
-> sched_statistics is the schedular statistics of a task_struct or a
-> task_group, both of which are independent of sched class. So we can move
-> struct sched_statistics into struct task_struct and struct task_group to
-> achieve the goal.
->
-> After the patchset, schestats are orgnized as follows,
-> struct task_struct {
->     ...
->     struct sched_statistics statistics;
->     ...
->     struct sched_entity *se;
->     struct sched_rt_entity *rt;
->     ...
-> };
->
-> struct task_group {                    |---> stats[0] : of CPU0
->     ...                                |
->     struct sched_statistics **stats; --|---> stats[1] : of CPU1
->     ...                                |
->                                        |---> stats[n] : of CPUn
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_entity **se;
->  #endif
->  #ifdef CONFIG_RT_GROUP_SCHED
->     struct sched_rt_entity  **rt_se;
->  #endif
->     ...
-> };
->
-> The sched_statistics members may be frequently modified when schedstats is
-> enabled, in order to avoid impacting on random data which may in the same
-> cacheline with them, the struct sched_statistics is defined as cacheline
-> aligned.
->
-> Then we can use schedstats to trace RT tasks as well, for example,
->                     Interface File
->  task schedstats :  /proc/[pid]/sched
->  group schedstats:  /proc/sched_debug
->  tracepoints     :  sched:sched_stat_{runtime, wait, sleep, iowait, blocked}
->
-> As PATCH #2 and #3 changes the core struct in the scheduler, so I did
-> 'perf bench sched pipe' to measure the sched performance before and after
-> the change, suggested by Mel. Below is the data, which are all in
-> usecs/op.
->                              Before             After
->   kernel.sched_schedstats=0  6.0~6.1            6.0~6.1
->   kernel.sched_schedstats=1  6.2~6.4            6.2~6.4
-> No obvious difference after the change.
->
-> Changes since v1:
-> - Fix the build failure reported by kernel test robot.
-> - Add the performance data with 'perf bench sched pipe', suggested by
->   Mel.
-> - Make the struct sched_statistics cacheline aligned.
-> - Introduce task block time in schedstats
->
-> Changes since RFC:
-> - improvement of schedstats helpers, per Mel.
-> - make struct schedstats independent of fair sched class
->
-> Yafang Shao (6):
->   sched, fair: use __schedstat_set() in set_next_entity()
->   sched: make struct sched_statistics independent of fair sched class
->   sched: make schedstats helpers independent of fair sched class
->   sched: introduce task block time in schedstats
->   sched, rt: support sched_stat_runtime tracepoint for RT sched class
->   sched, rt: support schedstats for RT sched class
->
->  include/linux/sched.h    |   7 +-
->  kernel/sched/core.c      |  24 +++--
->  kernel/sched/deadline.c  |   4 +-
->  kernel/sched/debug.c     |  90 +++++++++--------
->  kernel/sched/fair.c      | 210 ++++++++++++++++-----------------------
->  kernel/sched/rt.c        | 143 +++++++++++++++++++++++++-
->  kernel/sched/sched.h     |   3 +
->  kernel/sched/stats.c     | 104 +++++++++++++++++++
->  kernel/sched/stats.h     |  89 +++++++++++++++++
->  kernel/sched/stop_task.c |   4 +-
->  10 files changed, 489 insertions(+), 189 deletions(-)
->
-> --
-> 2.18.2
->
 
-Peter, Ingo, Mel,
+On 2021/4/2 6:34, Jolly Shah wrote:
+> Hi Luojiaxing,
+>
+>
+> On Mon, Mar 22, 2021 at 1:41 AM luojiaxing <luojiaxing@huawei.com> wrote:
+>>
+>> On 2021/3/20 20:14, John Garry wrote:
+>>> On 19/03/2021 01:43, Jason Yan wrote:
+>>>>
+>>>> 在 2021/3/19 6:56, Jolly Shah 写道:
+>>>>> When the cache_type for the scsi device is changed, the scsi layer
+>>>>> issues a MODE_SELECT command. The caching mode details are communicated
+>>>>> via a request buffer associated with the scsi command with data
+>>>>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+>>>>> reaches the libata layer, as a part of generic initial setup, libata
+>>>>> layer sets up the scatterlist for the command using the scsi command
+>>>>> (ata_scsi_qc_new). This command is then translated by the libata layer
+>>>>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+>>>>> treats this as a non data command (ata_mselect_caching), since it only
+>>>>> needs an ata taskfile to pass the caching on/off information to the
+>>>>> device. It does not need the scatterlist that has been setup, so it
+>>>>> does
+>>>>> not perform dma_map_sg on the scatterlist (ata_qc_issue).
+>>>>> Unfortunately,
+>>>>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+>>>>> layer sees it as a non data command with a scatterlist. It cannot
+>>>>> extract the correct dma length, since the scatterlist has not been
+>>>>> mapped with dma_map_sg for a DMA operation. When this partially
+>>>>> constructed SAS task reaches pm80xx LLDD, it results in below warning.
+>>>>>
+>>>>> "pm80xx_chip_sata_req 6058: The sg list address
+>>>>> start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+>>>>> end_addr_low=0xffffffff has crossed 4G boundary"
+>>>>>
+>>>>> This patch updates code to handle ata non data commands separately so
+>>>>> num_scatter and total_xfer_len remain 0.
+>>>>>
+>>>>> Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if
+>>>>> libata marks qc as NODATA")
+>>>>> Signed-off-by: Jolly Shah <jollys@google.com>
+>>> Reviewed-by: John Garry <john.garry@huawei.com>
+>>>
+>>> @luojiaxing, can you please test this?
+>>
+>> Sure, let me take a look, and reply the test result here later
+>>
+> Wanted to follow up on test results. Any updates?
 
-Any comments on this version ?
 
--- 
+Sorry for reply to you so late.
+
+
+I use sdparm to change cache type of SATA disk, and it's ok with my test.
+
+In addition, some other functional tests result have no problem too, So 
+I think this patch is ok to me.
+
+
+Tested-by: Luo Jiaxing <luojiaxing@huawei.com>
+
+
 Thanks
-Yafang
+
+Jiaxing
+
+
+>
+> Thanks,
+> Jolly
+>
+>> Thanks
+>>
+>> Jiaxing
+>>
+>>
+>>>>> ---
+>>>>> v2:
+>>>>> - reorganized code to avoid setting num_scatter twice
+>>>>>
+>>>>>    drivers/scsi/libsas/sas_ata.c | 9 ++++-----
+>>>>>    1 file changed, 4 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/scsi/libsas/sas_ata.c
+>>>>> b/drivers/scsi/libsas/sas_ata.c
+>>>>> index 024e5a550759..8b9a39077dba 100644
+>>>>> --- a/drivers/scsi/libsas/sas_ata.c
+>>>>> +++ b/drivers/scsi/libsas/sas_ata.c
+>>>>> @@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct
+>>>>> ata_queued_cmd *qc)
+>>>>>            memcpy(task->ata_task.atapi_packet, qc->cdb,
+>>>>> qc->dev->cdb_len);
+>>>>>            task->total_xfer_len = qc->nbytes;
+>>>>>            task->num_scatter = qc->n_elem;
+>>>>> +        task->data_dir = qc->dma_dir;
+>>>>> +    } else if (qc->tf.protocol == ATA_PROT_NODATA) {
+>>>>> +        task->data_dir = DMA_NONE;
+>>>> Hi Jolly & John,
+>>>>
+>>>> We only set DMA_NONE for ATA_PROT_NODATA, I'm curious about why
+>>>> ATA_PROT_NCQ_NODATA and ATAPI_PROT_NODATA do not need to set DMA_NONE?
+>>> So we can see something like atapi_eh_tur() -> ata_exec_internal(),
+>>> which is a ATAPI NONDATA and has DMA_NONE, so should be ok.
+>>>
+>>> Other cases, like those using the xlate function on the qc for
+>>> ATA_PROT_NCQ_NODATA, could be checked further.
+>>>
+>>> For now, we're just trying to fix the fix.
+>>>
+>>>> Thanks,
+>>>> Jason
+>>>>
+>>>>
+>>>>>        } else {
+>>>>>            for_each_sg(qc->sg, sg, qc->n_elem, si)
+>>>>>                xfer += sg_dma_len(sg);
+>>>>>            task->total_xfer_len = xfer;
+>>>>>            task->num_scatter = si;
+>>>>> -    }
+>>>>> -
+>>>>> -    if (qc->tf.protocol == ATA_PROT_NODATA)
+>>>>> -        task->data_dir = DMA_NONE;
+>>>>> -    else
+>>>>>            task->data_dir = qc->dma_dir;
+>>>>> +    }
+>>>>>        task->scatter = qc->sg;
+>>>>>        task->ata_task.retry_count = 1;
+>>>>>        task->task_state_flags = SAS_TASK_STATE_PENDING;
+>>>>>
+>>>> .
+>>>
+>>> .
+>>>
+> .
+>
+
