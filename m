@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEE0355C7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E670E355C84
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244870AbhDFTo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhDFTo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E5361284;
-        Tue,  6 Apr 2021 19:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617738258;
-        bh=WwLq/QVrVjQNF1a3ZAvV1+zpKjVAXeWGI8o0D6g2hzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RZKzqmoAtHJ0ybTC2thqDu2YUJ9XGD51zPHb/3P/PVf0U0KKXrOZ/rxf8uOefGo8E
-         ZD+LpMRkO3aC98mcEW7Dp2OCyUSHGgSirAr4l7JU0mXVKTufByii6/vsspNcpOuTAu
-         FxzTFrf6ijhGKuUIgfJLPGJyY3l+oXN7Fv58gPCTZOzQSEqMVD9xKxrtkuIg7EoTGB
-         y9wDJznrrkCpAEkNFenYIZSjqoLLMka9wLANVGCOGzyKsB7/5yHhYnPngpwimSvxmK
-         n32inJzui1jxCpC+4YipQ4dfTfImVgW1f8a8FkiWEmBodGsX1ka5VBnceK/BRyQmLp
-         dEdjDtCD1s3iQ==
-Date:   Tue, 6 Apr 2021 15:44:17 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 5.10 096/126] KVM: x86/mmu: Use atomic ops to set SPTEs
- in TDP MMU map
-Message-ID: <YGy6EVb+JeNu7EOs@sashalap>
-References: <20210405085031.040238881@linuxfoundation.org>
- <20210405085034.229578703@linuxfoundation.org>
- <98478382-23f8-57af-dc17-23c7d9899b9a@redhat.com>
- <YGxm+WISdIqfwqXD@sashalap>
- <fd2030f3-55ba-6088-733b-ac6a551e2170@redhat.com>
- <YGyiDC2iP4CmWgUJ@sashalap>
- <81059969-e146-6ed3-01b6-341cbcf1b3ae@redhat.com>
+        id S237460AbhDFTpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhDFTpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:45:20 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E9AC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 12:45:10 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id d191so7917418wmd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 12:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VxjAsv2lS45u88VYl/Ft34pezIndysKO7t4ScHYx7y0=;
+        b=Q2+p/w4chlXvSK0D1dnFBP9YOviJkh4M3AD6jqbAJdh0PvUPahDhte2vRkHekDD6k9
+         Edg8BD1CJ0Ax8QnaI1NR7j8EHnZVtaOsnpSgdG5VLWaUwlgct0Ws961dX/Ao4keVRGax
+         OvVzm7fm27WROD061isVXJ0C8wTjOwdErFIPDDc7z9P3r7sQfKSEDTr/PdusgWkcWiU0
+         0C46M74aXX3cY935CtSZborooeBXnBOhz40gQbmcB9MX5zn8SGQ0hac+E9P4HCCRE0Ty
+         0ZYgjIZPrF9GhC2nKKKGUBmDDtYjEtVhcYe/QO1EM4x/WP4ThPQ0K7L/JFV4fo18Z8mD
+         EyeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VxjAsv2lS45u88VYl/Ft34pezIndysKO7t4ScHYx7y0=;
+        b=TkRajp9ATuCq4qXKXavQTD2V8nHG/7iDfnVeGqutdUreDXp0C+4uinsypTNWFfyWZM
+         /v+RnplAck4O3HohImUoQPM9toLhezBGGteQO/7rXPL4+CMFWqlYVHexJZDxKuoxancI
+         Jjrha6NREIoBcb3fs0thCcdKWPfzf8yQ863W1htq1p9Pp1XTsVcLvgutVDMIICjVlcN2
+         oEis7qIoLNaTbdzhnCyYyo6SWRL26k5py6z+ypj2cunNJr84tKqtHyLRsmk0Mcd5tNrD
+         nnobK1ouCbDt2PEfMpUihqiujVlrNl/1RSBKdXk458InLxqDb1XGXAOg4QzjRHVhJ666
+         pjfA==
+X-Gm-Message-State: AOAM533r7Tab4Uq1Rx46OPGIQiNZqM4v8LckQ8XaAtT8J89rQhTQUFLX
+        WgPjCVvdYVNy9rrjWy0Hspx6Kw==
+X-Google-Smtp-Source: ABdhPJxbt2VqNOSCRyIyj1bIAgmjAlVLqrDBh+Q1AwQy0wqqPJDsFuO9IeZifjXD/CbdxOw9+gcnew==
+X-Received: by 2002:a05:600c:4f89:: with SMTP id n9mr5711921wmq.133.1617738308699;
+        Tue, 06 Apr 2021 12:45:08 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:90c5:36a9:5586:99b9? ([2a01:e34:ed2f:f020:90c5:36a9:5586:99b9])
+        by smtp.googlemail.com with ESMTPSA id 187sm6550429wma.0.2021.04.06.12.45.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 12:45:08 -0700 (PDT)
+Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
+ statistics from going stale
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, rui.zhang@intel.com
+References: <20210331163352.32416-1-lukasz.luba@arm.com>
+ <20210331163352.32416-2-lukasz.luba@arm.com>
+ <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
+ <1f0710d5-cd78-dfff-1ce2-bba5f6e469b7@arm.com>
+ <1a0b6e4a-1717-91d6-a664-d50e6aa8a809@linaro.org>
+ <d74b8e8e-64b0-d724-d572-f98eb597a60e@arm.com>
+ <cbc40019-8b2d-5d14-f0fd-b0018fb4a1f6@linaro.org>
+ <f7dfced2-23f6-8d3e-d23d-291de368f472@arm.com>
+ <7660a09b-51f8-c6f2-5678-77b6bff97af6@linaro.org>
+ <d1bacbb5-9a45-b06d-b646-11ba77510dad@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <fce446fb-e53e-40a3-d0a2-175cda0f73fe@linaro.org>
+Date:   Tue, 6 Apr 2021 21:45:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <81059969-e146-6ed3-01b6-341cbcf1b3ae@redhat.com>
+In-Reply-To: <d1bacbb5-9a45-b06d-b646-11ba77510dad@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 08:28:27PM +0200, Paolo Bonzini wrote:
->If a patch doesn't (more or less trivially) apply, the maintainer 
->should take action.  Distro maintainers can also jump in and post the 
->backport to subsystem mailing lists.  If the stable kernel loses a 
->patch because a maintainer doesn't have the time to do a backport, 
->it's not the end of the world.
+On 06/04/2021 20:38, Lukasz Luba wrote:
 
-This quickly went from a "world class" to "fuck it".
+[ ... ]
 
-It's understandable that maintainers don't have all the time in the
-world for this, but are you really asking not to backport fixes to
-stable trees because you don't have the time for it and don't want
-anyone else to do it instead?
+>> But there is still the polling delay because the governor is IPA in this
+>> case? There is also an additional trip-point0 which is not a target for
+>> a cooling device, just put there to ensure the IPA has enough data when
+>> reaching the second trip point which is the target.
+> 
+> It's just a configuration which was there for years. Some who wants to
+> use IPA have to be sure that it has this 2 trip points: switch_on and
+> control. If you are talking about a new design, then it's not for this
+> patch. The complete re-design of DT thermal zones, sensors, etc is
+> a huge topic.
 
-Maybe consider designating someone who knows the subsystem well and does
-have time for this?
+Right it is not for this patch. Just pointing out there is something
+wrong from my POV when polling is used for sampling.
+
+[ ... ]
+
+
 
 -- 
-Thanks,
-Sasha
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
