@@ -2,349 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7E13558BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B003558C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346165AbhDFQEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:04:22 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59161 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346170AbhDFQEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:04:12 -0400
-IronPort-SDR: 8tX+wG4eJ21LosM5G5BLjjFi6LigqEBdsNAm4xIlmOrwgsBnE6PDnxOYU9goqRsbP5OYqvW7J8
- rJmwss1X38iA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="254435527"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="254435527"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:04:02 -0700
-IronPort-SDR: Rb7m0pey3djCXNKrD+U+aSkhOdOHxfSsxbhriCeXsGKMnCoeyaYu/nCI7CsBL1M8aTy5vt0/WY
- fT7yVxgXKjwg==
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="421275012"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:04:00 -0700
-Date:   Tue, 6 Apr 2021 09:05:35 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     Moritz Fischer <mdf@kernel.org>
-cc:     hao.wu@intel.com, trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
-        jdelvare@suse.com, linux@roeck-us.net, lee.jones@linaro.org,
-        linux-hwmon@vger.kernel.org, russell.h.weight@linux.intel.com
-Subject: Re: [PATCH 2/3] fpga: dfl: Add DFL bus driver for Altera SPI
- Master
-In-Reply-To: <YGuvFYvJTMPPm2Jy@epycbox.lan>
-Message-ID: <alpine.DEB.2.22.394.2104060847030.208844@rhweight-WRK1>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com> <20210405235301.187542-3-matthew.gerlach@linux.intel.com> <YGuvFYvJTMPPm2Jy@epycbox.lan>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1346192AbhDFQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232672AbhDFQGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:06:23 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C302C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:06:15 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id v26so16091550iox.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vY6JnClDkARtO0aAGHxPqvNwM7pCMTipoPzXUvwcGqc=;
+        b=P1x2xiGRSeqFR5hckYfr28vFaA01M9irRjnxIYZ9HMYIqiy02x1t/ZXdWfbeNDXDAl
+         NOVuPJYpjC5+rkOM20yalSSdz00AwhMojSC5enzgmwtARMnrIITg/t86PjSYSE1XS/Qv
+         zwag9+AZICl34pDpPtpAGpJbRzFeSOgmcDDDk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vY6JnClDkARtO0aAGHxPqvNwM7pCMTipoPzXUvwcGqc=;
+        b=DcJuW5HprpbdRObEmjdq4R8DxrNqVIn7IlglhqZ+z+/97x2GPTNY49mUW4LNAmJrbt
+         JBnyAgJ5m0W88JzncJ8qDnPK4cnN1FbkPjEuQ0co42hbvwJBkv1EGOHBLdJunnYPioK2
+         wmJr1fNOvEv8gKFvTE2S6cH5OYdoUnPjRDVTtv/3eu9SlHNggeNg38uw0XWI+YBI95G3
+         GYdchuapen4JyoOMrV1TqoWbhWAR+3brKY9Zvn1xqT0aXt600Z9JCLwpz2loKOUEMNZK
+         G2/Vi9DgaSEjr2wP5BEbQQ2CzJ9QUBo6gKS/2KdyK9h3dltueJ2SkgU5Iyci4biNH6PX
+         Aebw==
+X-Gm-Message-State: AOAM533lMMWAgrv0YZ/0HOQt4QUs7c415JByhNQf4/nV87V9e9Y4G21w
+        VCgpTnIE0EgPfyw9Lh58TnfH9dfGJaoYzPlc4rAUUQ==
+X-Google-Smtp-Source: ABdhPJwjkT0ynVQGttZHICzNbt9+r7TOG6LMW2E8fz5JnZ0FwJxKxuPNYoEWcEy5/QFzsJ8PG4npn3mqt4j3GmJo808=
+X-Received: by 2002:a05:6638:606:: with SMTP id g6mr29895552jar.52.1617725174396;
+ Tue, 06 Apr 2021 09:06:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-4-revest@chromium.org>
+ <CAEf4Bzbfyd7r4cx8Lcjx7gm8beKxuf=wYW5StM1ZFaVaNL9U-g@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbfyd7r4cx8Lcjx7gm8beKxuf=wYW5StM1ZFaVaNL9U-g@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 6 Apr 2021 18:06:03 +0200
+Message-ID: <CABRcYm+3q7a64heRVHLUu+S6xqmTGg2TuyB=JwD6V8pFiFpz_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: Add a bpf_snprintf helper
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Moritz,
-
-On Mon, 5 Apr 2021, Moritz Fischer wrote:
-
-> Hi Matthew,
+On Fri, Mar 26, 2021 at 11:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
+> > The implementation takes inspiration from the existing bpf_trace_printk
+> > helper but there are a few differences:
+> >
+> > To allow for a large number of format-specifiers, parameters are
+> > provided in an array, like in bpf_seq_printf.
+> >
+> > Because the output string takes two arguments and the array of
+> > parameters also takes two arguments, the format string needs to fit in
+> > one argument. But because ARG_PTR_TO_CONST_STR guarantees to point to a
+> > NULL-terminated read-only map, we don't need a format string length arg.
+> >
+> > Because the format-string is known at verification time, we also move
+> > most of the format string validation, currently done in formatting
+> > helper calls, into the verifier logic. This makes debugging easier and
+> > also slightly improves the runtime performance.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > ---
+> >  include/linux/bpf.h            |  6 ++++
+> >  include/uapi/linux/bpf.h       | 28 ++++++++++++++++++
+> >  kernel/bpf/helpers.c           |  2 ++
+> >  kernel/bpf/verifier.c          | 41 +++++++++++++++++++++++++++
+> >  kernel/trace/bpf_trace.c       | 52 ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 28 ++++++++++++++++++
+> >  6 files changed, 157 insertions(+)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 7b5319d75b3e..f3d9c8fa60b3 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1893,6 +1893,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
+> >  extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
+> >  extern const struct bpf_func_proto bpf_copy_from_user_proto;
+> >  extern const struct bpf_func_proto bpf_snprintf_btf_proto;
+> > +extern const struct bpf_func_proto bpf_snprintf_proto;
+> >  extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+> >  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
+> >  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+> > @@ -2018,4 +2019,9 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+> >  struct btf_id_set;
+> >  bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
+> >
+> > +enum bpf_printf_mod_type;
+> > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
+> > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
+> > +                       u32 num_args);
+> > +
+> >  #endif /* _LINUX_BPF_H */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 2d3036e292a9..86af61e912c6 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -4660,6 +4660,33 @@ union bpf_attr {
+> >   *     Return
+> >   *             The number of traversed map elements for success, **-EINVAL** for
+> >   *             invalid **flags**.
+> > + *
+> > + * long bpf_snprintf(char *str, u32 str_size, const char *fmt, u64 *data, u32 data_len)
+> > + *     Description
+> > + *             Outputs a string into the **str** buffer of size **str_size**
+> > + *             based on a format string stored in a read-only map pointed by
+> > + *             **fmt**.
+> > + *
+> > + *             Each format specifier in **fmt** corresponds to one u64 element
+> > + *             in the **data** array. For strings and pointers where pointees
+> > + *             are accessed, only the pointer values are stored in the *data*
+> > + *             array. The *data_len* is the size of *data* in bytes.
+> > + *
+> > + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
+> > + *             memory. Reading kernel memory may fail due to either invalid
+> > + *             address or valid address but requiring a major memory fault. If
+> > + *             reading kernel memory fails, the string for **%s** will be an
+> > + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
 >
-> On Mon, Apr 05, 2021 at 04:53:00PM -0700, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> This patch adds DFL bus driver for the Altera SPI Master
->> controller.  The SPI master is connected to an Intel SPI Slave to
->> Avalon Master Bridge, inside an Intel MAX10 BMC Chip.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->>  drivers/fpga/Kconfig          |   9 ++
->>  drivers/fpga/Makefile         |   1 +
->>  drivers/fpga/dfl-spi-altera.c | 221 ++++++++++++++++++++++++++++++++++++++++++
->>  3 files changed, 231 insertions(+)
->>  create mode 100644 drivers/fpga/dfl-spi-altera.c
->>
->> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
->> index d591dd9..0a86994 100644
->> --- a/drivers/fpga/Kconfig
->> +++ b/drivers/fpga/Kconfig
->> @@ -210,6 +210,15 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
->>  	  the card. It also instantiates the SPI master (spi-altera) for
->>  	  the card's BMC (Board Management Controller).
->>
->> +config FPGA_DFL_SPI_ALTERA
->> +	tristate "FPGA DFL Altera SPI Master Driver"
->> +	depends on FPGA_DFL
->> +	select REGMAP
->> +	help
->> +	  This is a DFL bus driver for the Altera SPI master controller.
->> +	  The SPI master is connected to a SPI slave to Avalon Master
->> +	  bridge in a Intel MAX BMC.
->> +
->>  config FPGA_DFL_PCI
->>  	tristate "FPGA DFL PCIe Device Driver"
->>  	depends on PCI && FPGA_DFL
->> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
->> index 18dc9885..58a42ad 100644
->> --- a/drivers/fpga/Makefile
->> +++ b/drivers/fpga/Makefile
->> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
->>  dfl-afu-objs += dfl-afu-error.o
->>
->>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
->> +obj-$(CONFIG_FPGA_DFL_SPI_ALTERA)	+= dfl-spi-altera.o
->>
->>  # Drivers for FPGAs which implement DFL
->>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
->> diff --git a/drivers/fpga/dfl-spi-altera.c b/drivers/fpga/dfl-spi-altera.c
->> new file mode 100644
->> index 0000000..9bec25fd
->> --- /dev/null
->> +++ b/drivers/fpga/dfl-spi-altera.c
->> @@ -0,0 +1,221 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * DFL bus driver for Altera SPI Master
->> + *
->> + * Copyright (C) 2020 Intel Corporation, Inc.
->> + *
->> + * Authors:
->> + *   Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> + */
->> +
->> +#include <linux/types.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/stddef.h>
->> +#include <linux/errno.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/io.h>
->> +#include <linux/bitfield.h>
->> +#include <linux/io-64-nonatomic-lo-hi.h>
->> +#include <linux/regmap.h>
->> +#include <linux/spi/spi.h>
->> +#include <linux/spi/altera.h>
->> +#include <linux/dfl.h>
->> +
->> +struct dfl_altera_spi {
->> +	void __iomem *base;
->> +	struct regmap *regmap;
->> +	struct device *dev;
->> +	struct platform_device *altr_spi;
->> +};
->> +
->> +#define SPI_CORE_PARAMETER      0x8
->> +#define SHIFT_MODE              BIT_ULL(1)
->> +#define SHIFT_MODE_MSB          0
->> +#define SHIFT_MODE_LSB          1
->> +#define DATA_WIDTH              GENMASK_ULL(7, 2)
->> +#define NUM_CHIPSELECT          GENMASK_ULL(13, 8)
->> +#define CLK_POLARITY            BIT_ULL(14)
->> +#define CLK_PHASE               BIT_ULL(15)
->> +#define PERIPHERAL_ID           GENMASK_ULL(47, 32)
->> +#define SPI_CLK                 GENMASK_ULL(31, 22)
->> +#define SPI_INDIRECT_ACC_OFST   0x10
->> +
->> +#define INDIRECT_ADDR           (SPI_INDIRECT_ACC_OFST+0x0)
->> +#define INDIRECT_WR             BIT_ULL(8)
->> +#define INDIRECT_RD             BIT_ULL(9)
->> +#define INDIRECT_RD_DATA        (SPI_INDIRECT_ACC_OFST+0x8)
->> +#define INDIRECT_DATA_MASK      GENMASK_ULL(31, 0)
->> +#define INDIRECT_DEBUG          BIT_ULL(32)
->> +#define INDIRECT_WR_DATA        (SPI_INDIRECT_ACC_OFST+0x10)
->> +#define INDIRECT_TIMEOUT        10000
->> +
->> +static int indirect_bus_reg_read(void *context, unsigned int reg,
->> +				 unsigned int *val)
->> +{
->> +	struct dfl_altera_spi *aspi = context;
->> +	void __iomem *base = aspi->base;
->> +	int loops;
->> +	u64 v;
->> +
->> +	writeq((reg >> 2) | INDIRECT_RD, base + INDIRECT_ADDR);
->> +
->> +	loops = 0;
->> +	while ((readq(base + INDIRECT_ADDR) & INDIRECT_RD) &&
->> +	       (loops++ < INDIRECT_TIMEOUT))
->> +		cpu_relax();
->> +
->> +	if (loops >= INDIRECT_TIMEOUT) {
->> +		pr_err("%s timed out %d\n", __func__, loops);
->> +		return -ETIME;
->> +	}
->> +
->> +	v = readq(base + INDIRECT_RD_DATA);
->> +
->> +	*val = v & INDIRECT_DATA_MASK;
->> +
->> +	return 0;
->> +}
->> +
->> +static int indirect_bus_reg_write(void *context, unsigned int reg,
->> +				  unsigned int val)
->> +{
->> +	struct dfl_altera_spi *aspi = context;
->> +	void __iomem *base = aspi->base;
->> +	int loops;
->> +
->> +	writeq(val, base + INDIRECT_WR_DATA);
->> +	writeq((reg >> 2) | INDIRECT_WR, base + INDIRECT_ADDR);
->> +
->> +	loops = 0;
->> +	while ((readq(base + INDIRECT_ADDR) & INDIRECT_WR) &&
->> +	       (loops++ < INDIRECT_TIMEOUT))
->> +		cpu_relax();
->> +
->> +	if (loops >= INDIRECT_TIMEOUT) {
->> +		pr_err("%s timed out %d\n", __func__, loops);
->> +		return -ETIME;
->> +	}
->> +	return 0;
->> +}
->> +
->> +static const struct regmap_config indirect_regbus_cfg = {
->> +	.reg_bits = 32,
->> +	.reg_stride = 4,
->> +	.val_bits = 32,
->> +	.fast_io = true,
->> +
->> +	.reg_write = indirect_bus_reg_write,
->> +	.reg_read = indirect_bus_reg_read,
->> +};
->> +
->> +static struct spi_board_info m10_bmc_info = {
->> +	.modalias = "m10-d5005",
->> +	.max_speed_hz = 12500000,
->> +	.bus_num = 0,
->> +	.chip_select = 0,
->> +};
->> +
->> +static struct platform_device *create_cntrl(struct device *dev,
->> +					    void __iomem *base,
->> +					    struct spi_board_info *m10_info)
->> +{
->> +	struct altera_spi_platform_data pdata;
->> +	struct platform_device_info pdevinfo;
->> +	u64 v;
->> +
->> +	v = readq(base + SPI_CORE_PARAMETER);
->> +
->> +	memset(&pdata, 0, sizeof(pdata));
->> +	pdata.mode_bits = SPI_CS_HIGH;
->> +	if (FIELD_GET(CLK_POLARITY, v))
->> +		pdata.mode_bits |= SPI_CPOL;
->> +	if (FIELD_GET(CLK_PHASE, v))
->> +		pdata.mode_bits |= SPI_CPHA;
->> +
->> +	pdata.num_chipselect = FIELD_GET(NUM_CHIPSELECT, v);
->> +	pdata.bits_per_word_mask =
->> +		SPI_BPW_RANGE_MASK(1, FIELD_GET(DATA_WIDTH, v));
->> +
->> +	pdata.num_devices = 1;
->> +	pdata.devices = m10_info;
->> +
->> +	dev_dbg(dev, "%s cs %u bpm 0x%x mode 0x%x\n", __func__,
->> +		pdata.num_chipselect, pdata.bits_per_word_mask,
->> +		pdata.mode_bits);
->> +
->> +	memset(&pdevinfo, 0, sizeof(pdevinfo));
->> +
->> +	pdevinfo.name = "subdev_spi_altera";
->> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
->> +	pdevinfo.parent = dev;
->> +	pdevinfo.data = &pdata;
->> +	pdevinfo.size_data = sizeof(pdata);
->> +
->> +	return platform_device_register_full(&pdevinfo);
+> would it make sense for sleepable programs to allow memory fault when
+> reading memory?
+
+Probably yes. How would you do that ? I'm guessing that in
+bpf_trace_copy_string you would call either strncpy_from_X_nofault or
+strncpy_from_X depending on a condition but I'm not sure which one.
+
+> > + *             Not returning error to bpf program is consistent with what
+> > + *             **bpf_trace_printk**\ () does for now.
+> > + *
+> > + *     Return
+> > + *             The strictly positive length of the formatted string, including
+> > + *             the trailing zero character. If the return value is greater than
+> > + *             **str_size**, **str** contains a truncated string, guaranteed to
+> > + *             be zero-terminated.
 >
-> Should this be a SPI driver? I think looking at the UIO case we had
-> decided against this pattern?
+> Except when str_size == 0.
 
-This driver is similar in function to drivers/fpga/dfl-n3000-nios.c which 
-uses this design pattern.  Is it okay to keep this design pattern for 
-consistency?
+Right
 
-
+> > + *
+> > + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -4827,6 +4854,7 @@ union bpf_attr {
+> >         FN(sock_from_file),             \
+> >         FN(check_mtu),                  \
+> >         FN(for_each_map_elem),          \
+> > +       FN(snprintf),                   \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 074800226327..12f4cfb04fe7 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -750,6 +750,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+> >                 return &bpf_probe_read_kernel_str_proto;
+> >         case BPF_FUNC_snprintf_btf:
+> >                 return &bpf_snprintf_btf_proto;
+> > +       case BPF_FUNC_snprintf:
+> > +               return &bpf_snprintf_proto;
+> >         default:
+> >                 return NULL;
+> >         }
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 9e03608725b4..a89599dc51c9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -5729,6 +5729,41 @@ static int check_reference_leak(struct bpf_verifier_env *env)
+> >         return state->acquired_refs ? -EINVAL : 0;
+> >  }
+> >
+> > +static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+> > +                                  struct bpf_reg_state *regs)
+> > +{
+> > +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
+> > +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> > +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
+> > +       int err, fmt_map_off, num_args;
+> > +       u64 fmt_addr;
+> > +       char *fmt;
+> > +
+> > +       /* data must be an array of u64 so data_len must be a multiple of 8 */
+> > +       if (data_len_reg->var_off.value & 7)
 >
->> +}
->> +static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
->> +{
->> +	struct device *dev = &dfl_dev->dev;
->> +	struct dfl_altera_spi *aspi;
->> +
->> +	aspi = devm_kzalloc(dev, sizeof(*aspi), GFP_KERNEL);
->> +
->> +	if (!aspi)
->> +		return -ENOMEM;
->> +
->> +	dev_set_drvdata(dev, aspi);
->> +
->> +	aspi->dev = dev;
->> +
->> +	aspi->base = devm_ioremap_resource(dev, &dfl_dev->mmio_res);
->> +
->> +	if (IS_ERR(aspi->base)) {
->> +		dev_err(dev, "%s get mem resource fail!\n", __func__);
->> +		return PTR_ERR(aspi->base);
->> +	}
->> +
->> +	aspi->regmap = devm_regmap_init(dev, NULL, aspi, &indirect_regbus_cfg);
->> +	if (IS_ERR(aspi->regmap))
->> +		return PTR_ERR(aspi->regmap);
->> +
->> +	aspi->altr_spi = create_cntrl(dev, aspi->base, &m10_bmc_info);
->> +
->> +	if (IS_ERR(aspi->altr_spi)) {
->> +		dev_err(dev, "%s failed to create spi platform driver\n",
->> +			__func__);
->> +		return PTR_ERR(aspi->base);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
->> +{
->> +	struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
->> +
->> +	platform_device_unregister(aspi->altr_spi);
->> +}
->> +
->> +#define FME_FEATURE_ID_MAX10_SPI        0xe
->> +
->> +static const struct dfl_device_id dfl_spi_altera_ids[] = {
->> +	{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
->> +	{ }
->> +};
->
-> Maybe you can extend the Altera SPI driver with this part?
+> `% 8` is not cool anymore... :)
 
-The file, drivers/spi/spi-altera.c, already has platform MODULE_ related 
-code.  Wouldn't moving this code to that file produce conflicts?
+Haha, this is a leftover from bpf_seq_printf but I agree % 8 is nicer.
 
+> > +               return -EINVAL;
+> > +       num_args = data_len_reg->var_off.value / 8;
+> > +
+> > +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+> > +        * and map_direct_value_addr is set.
+> > +        */
+> > +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
+> > +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+> > +                                                 fmt_map_off);
+> > +       if (err)
+> > +               return err;
+> > +       fmt = (char *)fmt_addr + fmt_map_off;
+> > +
+> > +       /* We are also guaranteed that fmt+fmt_map_off is NULL terminated, we
+> > +        * can focus on validating the format specifiers.
+> > +        */
+> > +       err = bpf_printf_preamble(fmt, UINT_MAX, NULL, NULL, NULL, num_args);
+> > +       if (err < 0)
+> > +               verbose(env, "Invalid format string\n");
+> > +
+> > +       return err;
+> > +}
+> > +
+> >  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >                              int *insn_idx_p)
+> >  {
+> > @@ -5843,6 +5878,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >                         return -EINVAL;
+> >         }
+> >
+> > +       if (func_id == BPF_FUNC_snprintf) {
+> > +               err = check_bpf_snprintf_call(env, regs);
+> > +               if (err < 0)
+> > +                       return err;
+> > +       }
+> > +
+> >         /* reset caller saved regs */
+> >         for (i = 0; i < CALLER_SAVED_REGS; i++) {
+> >                 mark_reg_not_init(env, regs, caller_saved[i]);
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 0fdca94a3c9c..15cbc8b63206 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1230,6 +1230,56 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >         .arg5_type      = ARG_ANYTHING,
+> >  };
+> >
+> > +#define MAX_SNPRINTF_VARARGS           12
+> > +
+> > +BPF_CALL_5(bpf_snprintf, char *, str, u32, str_size, char *, fmt,
+> > +          const void *, data, u32, data_len)
+> > +{
+> > +       enum bpf_printf_mod_type mod[MAX_SNPRINTF_VARARGS];
+> > +       u64 args[MAX_SNPRINTF_VARARGS];
+> > +       int err, num_args;
+> > +
+> > +       if (data_len & 7 || data_len > MAX_SNPRINTF_VARARGS * 8 ||
+> > +           (data_len && !data))
+>
+> see previous patches, data_len > 0 should be iff data != NULL, I think
 
->> +
->> +static struct dfl_driver dfl_spi_altera_driver = {
->> +	.drv	= {
->> +		.name       = "dfl-spi-altera",
->> +	},
->> +	.id_table = dfl_spi_altera_ids,
->> +	.probe   = dfl_spi_altera_probe,
->> +	.remove  = dfl_spi_altera_remove,
->> +};
->> +
->> +module_dfl_driver(dfl_spi_altera_driver);
->> +
->> +MODULE_DEVICE_TABLE(dfl, dfl_spi_altera_ids);
->> +MODULE_DESCRIPTION("DFL spi altera driver");
->> +MODULE_AUTHOR("Intel Corporation");
->> +MODULE_LICENSE("GPL v2");
->> --
->> 1.8.3.1
->>
+Commented there.
+
+> > +               return -EINVAL;
+> > +       num_args = data_len / 8;
+> > +
+> > +       /* ARG_PTR_TO_CONST_STR guarantees that fmt is zero-terminated so we
+> > +        * can safely give an unbounded size.
+> > +        */
+> > +       err = bpf_printf_preamble(fmt, UINT_MAX, data, args, mod, num_args);
+> > +       if (err < 0)
+> > +               return err;
+> > +
+> > +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
+> > +        * all of them to snprintf().
+> > +        */
+> > +       err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
+> > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
+> > +               BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
+> > +               BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
+> > +               BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
+> > +               BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
+> > +               BPF_CAST_FMT_ARG(11, args, mod));
+> > +       if (str_size)
+> > +               str[str_size - 1] = '\0';
 >
-> - Moritz
->
+> hm... what if err < str_size ?
+
+Then there would be two zeroes, one set by snprintf in the middle and
+one set by us at the end. :| I was a bit lazy there, I agree it would
+be nicer if we'd do if (err >= str_size) instead.
+
+Also makes me wonder what if str == NULL and str_size != 0. I just
+assumed that the verifier would prevent that from happening but
+discussions in the other patches make me unsure now.
