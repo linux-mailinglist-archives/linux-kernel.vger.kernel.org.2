@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A489E354C2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0580354C2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243764AbhDFFOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242601AbhDFFOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S242637AbhDFFOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Apr 2021 01:14:52 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE94C061574;
-        Mon,  5 Apr 2021 22:14:44 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id 6so2350745ilt.9;
-        Mon, 05 Apr 2021 22:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:message-id:in-reply-to:references:subject:mime-version
-         :content-transfer-encoding;
-        bh=SevySIBPYqz+GGUbC4xMDqR9S4bpUfdhFldX1XZVVFg=;
-        b=Soy3X6XYJK6XGQA+cSTakoSKz/kobK+OetawsmdgeHBQ0DZbCtPelupJqctCI+LZYa
-         oqXSD3pcGKL0NGf0qXQ+Hidjb2JYJKQX8wojP5eSsPanXEeNb6OhqdBwLMYJVv3i/e8F
-         JjgERFFfc+UxX3QarvSV2NAFjYdwSDlwhssjPmSglmjUx1G1nMJFtkhPqTK2u82Dlm3f
-         Pf8Geu/LgNwLsSQtYV6Uv8YdNvnGVJKg6lEP3QOkXN1JsLNfO0rhjpzzjVB4qrcUbVPT
-         q0z5d4MzLJmchjS0+MkcP2EI2KmFsZa2jkIjTXbI8Tu/ORNEW7M4FznkPOIv+lWYGgr9
-         neIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:message-id:in-reply-to:references
-         :subject:mime-version:content-transfer-encoding;
-        bh=SevySIBPYqz+GGUbC4xMDqR9S4bpUfdhFldX1XZVVFg=;
-        b=tPv5BrgcleHdaI257dGRCkRQ/vcyI0XawYc8max5pifF1ZTlcQp7zmOFXUBmhyoI+o
-         RSottDHzHfzp/iqoo1iKrs5UuqDT4OOoaFGdXrReRKlLJoftbf6EJZdflmjj/MttHQCl
-         spI6ANusloznfRm3tfhDQ63p6w1OtQVArKkjv790SGq1UsJWwBzc9VhpgSR7YkyeQHCD
-         5fkEVktq84jjmGMflMabY1L+WBKiybmOF2XgBgBkctb0xQha9Zhx2GPRpX0y/j6fLZ6C
-         5poVGzvcPsRg7lDjWywnjUnWY0EFd4ifHVIOTsJZBA4AWVsPC2neLouC+4y0xlrbOT8s
-         ZeFQ==
-X-Gm-Message-State: AOAM532LDnPqgPoE3MknlqktK9Jx2XbVmvmX/l2ry9Xxu5NJBm3IA/dB
-        i+HGKdonfmcpZw/ttul3x7Y=
-X-Google-Smtp-Source: ABdhPJz6m6NHq0EJQDxo5EVdbsgQDjUA3ihC3p90SsyoLwUXIOb4Td00ohl5d/B3wLM9No3cwLsjeQ==
-X-Received: by 2002:a05:6e02:174d:: with SMTP id y13mr3092347ill.83.1617686084204;
-        Mon, 05 Apr 2021 22:14:44 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id o13sm13014914iob.17.2021.04.05.22.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 22:14:43 -0700 (PDT)
-Date:   Mon, 05 Apr 2021 22:14:37 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Pedro Tammela <pctammela@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        David Verbeiren <david.verbeiren@tessares.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "(open list:BPF \\(Safe dynamic programs and tools\\))" 
-        <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org (open list:BPF \(Safe dynamic programs and tools\)),
-        "(open list:BPF \\(Safe dynamic programs and tools\\) open list)" 
-        <linux-kernel@vger.kernel.org>,
-        "(open list:BPF \\(Safe dynamic programs and tools\\) open list open
-        list:KERNEL SELFTEST FRAMEWORK)" <linux-kselftest@vger.kernel.org> (open
-        list:BPF \(Safe dynamic programs and tools\) open list open list:KERNEL
-        SELFTEST FRAMEWORK)
-Message-ID: <606bee3dd51_d4646208fe@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210404200256.300532-3-pctammela@mojatatu.com>
-References: <20210404200256.300532-1-pctammela@mojatatu.com>
- <20210404200256.300532-3-pctammela@mojatatu.com>
-Subject: RE: [PATCH bpf-next 2/3] libbpf: selftests: refactor
- 'BPF_PERCPU_TYPE()' and 'bpf_percpu()' macros
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from mga11.intel.com ([192.55.52.93]:35436 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229808AbhDFFOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 01:14:50 -0400
+IronPort-SDR: J1XWIxW8FcRoXgOwybzjS4Zgbenxsw/oM3qTaNliG7cZKDpskCFdwwKSs976PhHZx05CEpPLKI
+ M5+a9sdW+jxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="189769885"
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="189769885"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 22:14:43 -0700
+IronPort-SDR: FQu7ewQkvFRmUhJFYhyikjPRL7SKJwWn+m4eOsgZ6RKoMQmy4coMCVDuAj42onYZyiXF0tqMSw
+ CrXiOTxornmw==
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="421039576"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 22:14:40 -0700
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+To:     "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Cc:     andi@firstfloor.org, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wei.w.wang@intel.com, x86@kernel.org, Like Xu <like.xu@intel.com>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+Date:   Tue, 6 Apr 2021 13:14:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <606BD46F.7050903@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pedro Tammela wrote:
-> This macro was refactored out of the bpf selftests.
-> 
-> Since percpu values are rounded up to '8' in the kernel, a careless
-> user in userspace might encounter unexpected values when parsing the
-> output of the batched operations.
-> 
-> Now that both array and hash maps have support for batched ops in the
-> percpu variant, let's provide a convenient macro to declare percpu map
-> value types.
-> 
-> Updates the tests to a "reference" usage of the new macro.
-> 
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> ---
+Hi Xiangdong,
 
-Other than the initial patch needing a bit of description the series
-looks good to me. Thanks.
+On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service Product 
+Dept.) wrote:
+> Hi，like.
+> Some questions about this new pebs patches set：
+> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/
+>
+> The new hardware facility supporting guest PEBS is only available
+> on Intel Ice Lake Server platforms for now.
+
+Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
+18.3.10.1 Processor Event Based Sampling (PEBS) Facility
+
+And again, this patch set doesn't officially support guest PEBS on the Skylake.
+
+>
+>
+> AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake 
+> doesn't.
+> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
+> counter in Skylake.
+
+For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
+mask the other unsupported bits in the pmu->pebs_enable_mask.
+
+> Is there anything else that only Icelake supports in this patches set?
+
+The PDIR counter on the Ice Lake is the fixed counter 0
+while the PDIR counter on the Sky Lake is the gp counter 1.
+
+You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
+
+>
+>
+> Besides, we have tried this patches set in Icelake.  We can use pebs(eg: 
+> "perf record -e cycles:pp")
+> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
+> minimum guest kernel version requirement?
+
+The Ice Lake CPU model has been added since v5.4.
+
+You may double check whether the stable tree(s) code has
+INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
+
+>
+>
+> Thanks,
+> Xiangdong Liu
+
