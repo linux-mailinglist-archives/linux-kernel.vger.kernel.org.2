@@ -2,181 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E16355D99
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2602355D9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243354AbhDFVFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhDFVFH (ORCPT
+        id S1343519AbhDFVFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:05:46 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:44847 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237710AbhDFVFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:05:07 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3D2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 14:04:59 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a25so1080664ejk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 14:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+joV+qmAQTX6W5D3ult4hJeoWrn1GtjQphIjc6QUDxI=;
-        b=o0Wne08IYo8GRQHbrIO11Ao58rWJ1IwKE8wsCtFNNWepfoVVyUe2rSMttI8A2tFlHv
-         rKndxv4Aiy/sGI78RU1VQsnJPZB+2/484cCVlFb/1W2uTtgmlq62eopat5LuicFaGshW
-         ONKxVO17t/L9ygq7tT4vAoURr+Qsz8qeaA4jboyLP8soPHzi7OjLo4OmaWFN3ZKrQT/q
-         pZT3xyOZV0EpW0zBjT8EASLMUfhNkVR1hQJOo1BtdpUq6Flc32pa+gj+bBo1N3cgoMhC
-         XvHGDqfiA42fBy2ciR/lpq+kwbrLO8SzyxNU0lYObrqVygxYqsImsdzawR3FvkU8Z878
-         DP9w==
+        Tue, 6 Apr 2021 17:05:39 -0400
+Received: by mail-pl1-f174.google.com with SMTP id d8so8201961plh.11;
+        Tue, 06 Apr 2021 14:05:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+joV+qmAQTX6W5D3ult4hJeoWrn1GtjQphIjc6QUDxI=;
-        b=bbNiOuEKLGJnAIZsfSudgxf5R4xvt0psRD+LlmE2S+vpr600Fvw2T7mx9fsW4hsNpO
-         wIbTAiA5MzNGFYpdOu+ipu7nCSL6YgnQ1TcWVB/Cao4iFB8jcUQ0ReQLZ7DK7YgXxBD1
-         GtjZYfq397U5ID8PBhnlGeb0qPGmzUoQ4Uvt0lb3OM8hG3xSC4BtqXOzsnJeDj5jJAcf
-         SPv0nLSm4teCQrLSvPTBZqQesGdPmDqY3Uz6CZtIrotyBufVBCf3KEqj94JAOMklkxJg
-         2q6FXmeTyoDbhS3E1lm8uZneHwh2OMO3fLaMPPZjM3Li3fWID8h+5PfAWQAWdt4cCP/S
-         waRg==
-X-Gm-Message-State: AOAM530VFCHk0cjo6NMC9cKB+B+QnLDgw/RjBd3VIucTAfIwA+A4UMX4
-        Qi3QQDJZSNbW82kiG/30Io4x+PZ8lovhTXRiNxk=
-X-Google-Smtp-Source: ABdhPJx++EtRbXkk8rcqprgz5WDhhuyU8NprIgw4QUprSaRB29XyhBJim/pfK9Zu3YxyrlFKXoAYsh3QZDS9EXv9bys=
-X-Received: by 2002:a17:906:a51:: with SMTP id x17mr36694251ejf.25.1617743098057;
- Tue, 06 Apr 2021 14:04:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xQtbHZh9mMJ8Gbu9gM4FnKVSS66GRXJs/SnLTdKoo7M=;
+        b=QFvBIDGWHLrDx94EDIcl2IqrnxO6i85u5ptglGN3/dzrIXD8/ulkeNBHXAUNBav+Zg
+         TwuEBx/lvEhHtV8AxvJpMlm4Bn+K1c5hmPJzYauMGeBcIqEwr4lL5BkSBRXzPoVZ6YTb
+         gWGhtYtW+qxlTyliO0pbfN3vbN1wElzy0Nvo673Pijh2xzdHDtAIGoHufe6p+LEdXNDI
+         1vQGEr46hguYdeje0aZh4DGAppUUh8W7AAanysmD+QnjG8pc4c3xIAuEET1yiV+Fvhck
+         Vih7PT8iPeRjbwHGu8e/Ev8voLGhSVLHkb0S2BiL6b2Zsl5hWVwpGBOC6MuLUZ8EwRLz
+         3oYA==
+X-Gm-Message-State: AOAM531Hibdxyw0m3X/69T4i5Qy7fv+ceyXK9/OgukXMq7S+vs1UKCGp
+        otPEAs2Xv1VrE/nlcoCUpwk=
+X-Google-Smtp-Source: ABdhPJwbAsNf7r8WrcbSmbRWJfBxaCqUr/jYwMNpWXvVtteJfOmZaO/tlRKiJyOsNZJHdBxgjFirUg==
+X-Received: by 2002:a17:90b:d8b:: with SMTP id bg11mr93448pjb.120.1617743130086;
+        Tue, 06 Apr 2021 14:05:30 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:277d:764e:de23:a2e8? ([2601:647:4000:d7:277d:764e:de23:a2e8])
+        by smtp.gmail.com with ESMTPSA id f2sm19720728pfq.129.2021.04.06.14.05.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 14:05:29 -0700 (PDT)
+Subject: Re: [RESEND PATCH v5 2/2] bio: add limit_bio_size sysfs
+To:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        gregkh@linuxfoundation.org, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+References: <20210316074401.4594-1-nanich.lee@samsung.com>
+ <CGME20210316080106epcas1p3522dda95e9c97fc39b40b008bbf87c04@epcas1p3.samsung.com>
+ <20210316074401.4594-2-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <7c8d9787-f0eb-9ef1-6ebf-f383c27b599a@acm.org>
+Date:   Tue, 6 Apr 2021 14:05:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210404153311.1460106-1-yanfei.xu@windriver.com>
- <20210404153311.1460106-3-yanfei.xu@windriver.com> <CAHbLzkrSaODz+SeT+GY3tOS6Jm8NSznmknP83RUCrn+Sr9cAAg@mail.gmail.com>
- <e0fa88df-ff8b-f820-e255-92fbeecc37e6@windriver.com> <6d188d5b-94d0-1606-52c2-a3e0b6455a27@windriver.com>
-In-Reply-To: <6d188d5b-94d0-1606-52c2-a3e0b6455a27@windriver.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 6 Apr 2021 14:04:46 -0700
-Message-ID: <CAHbLzkrzy+c2igYEW00bO6EqMNZMwntXQA6nyn0n_vUXyTXU0A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: khugepaged: check MMF_DISABLE_THP ahead of
- iterating over vmas
-To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210316074401.4594-2-nanich.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 8:05 PM Xu, Yanfei <yanfei.xu@windriver.com> wrote:
->
->
->
-> On 4/6/21 10:51 AM, Xu, Yanfei wrote:
-> >
-> >
-> > On 4/6/21 2:20 AM, Yang Shi wrote:
-> >> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> >>
-> >> On Sun, Apr 4, 2021 at 8:33 AM <yanfei.xu@windriver.com> wrote:
-> >>>
-> >>> From: Yanfei Xu <yanfei.xu@windriver.com>
-> >>>
-> >>> We could check MMF_DISABLE_THP ahead of iterating over all of vma.
-> >>> Otherwise if some mm_struct contain a large number of vma, there will
-> >>> be amounts meaningless cpu cycles cost.
-> >>>
-> >>> BTW, drop an unnecessary cond_resched(), because there is a another
-> >>> cond_resched() followed it and no consumed invocation between them.
-> >>>
-> >>> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> >>> ---
-> >>>   mm/khugepaged.c | 3 ++-
-> >>>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> >>> index 2efe1d0c92ed..c293ec4a94ea 100644
-> >>> --- a/mm/khugepaged.c
-> >>> +++ b/mm/khugepaged.c
-> >>> @@ -2094,6 +2094,8 @@ static unsigned int
-> >>> khugepaged_scan_mm_slot(unsigned int pages,
-> >>>           */
-> >>>          if (unlikely(!mmap_read_trylock(mm)))
-> >>>                  goto breakouterloop_mmap_lock;
-> >>> +       if (test_bit(MMF_DISABLE_THP, &mm->flags))
-> >>> +               goto breakouterloop_mmap_lock;
-> >>
-> >> It is fine to check this flag. But mmap_lock has been acquired so you
-> >> should jump to breakouterloop.
-> >
-> > Oops! It's my fault. Thank you for pointing out this.
-> > Will fix it in v2.
-> >
-> >>
-> >>>          if (likely(!khugepaged_test_exit(mm)))
-> >>>                  vma = find_vma(mm, khugepaged_scan.address);
-> >>>
-> >>> @@ -2101,7 +2103,6 @@ static unsigned int
-> >>> khugepaged_scan_mm_slot(unsigned int pages,
-> >>>          for (; vma; vma = vma->vm_next) {
-> >>>                  unsigned long hstart, hend;
-> >>>
-> >>> -               cond_resched();
-> >>
-> >> I don't have a strong opinion for removing this cond_resched(). But
-> >> IIUC khugepaged is a best effort job there is no harm to keep it IMHO.
-> >>
-> >
-> > Yes, keeping it is no harm. But I think we should add it when we need.
-> > Look at the blow codes, there are only some simple check between these
-> > two cond_resched().  And we still have some cond_resched() in the
-> > khugepaged_scan_file() and khugepaged_scan_pmd() which is the actual
-> > wrok about collapsing. So I think it is unnecessary.  :)
-> >
->
-> BTW, the original author add this cond_resched() might be worry about
-> the hugepage_vma_check() always return false due to the MMF_DISABLE_THP.
-> But now we have moved it out of the for loop of iterating vma.
+On 3/16/21 12:44 AM, Changheun Lee wrote:
+> Add limit_bio_size block sysfs node to limit bio size.
+> Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
+> And bio max size will be limited by queue max sectors via
+> QUEUE_FLAG_LIMIT_BIO_SIZE set.
+> 
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> ---
+>  Documentation/ABI/testing/sysfs-block | 10 ++++++++++
+>  Documentation/block/queue-sysfs.rst   |  7 +++++++
+>  block/blk-sysfs.c                     |  3 +++
+>  3 files changed, 20 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-block b/Documentation/ABI/testing/sysfs-block
+> index e34cdeeeb9d4..86a7b15410cf 100644
+> --- a/Documentation/ABI/testing/sysfs-block
+> +++ b/Documentation/ABI/testing/sysfs-block
+> @@ -316,3 +316,13 @@ Description:
+>  		does not complete in this time then the block driver timeout
+>  		handler is invoked. That timeout handler can decide to retry
+>  		the request, to fail it or to start a device recovery strategy.
+> +
+> +What:		/sys/block/<disk>/queue/limit_bio_size
+> +Date:		Feb, 2021
+> +Contact:	Changheun Lee <nanich.lee@samsung.com>
+> +Description:
+> +		(RW) Toggle for set/clear QUEUE_FLAG_LIMIT_BIO_SIZE queue flag.
+> +		Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size
+> +		is set. And bio max size will be limited by queue max sectors.
+> +		QUEUE_FLAG_LIMIT_BIO_SIZE will be cleared if limit_bio_size is
+> +		cleard. And limit of bio max size will be cleard.
+> diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
+> index 2638d3446b79..cd371a821855 100644
+> --- a/Documentation/block/queue-sysfs.rst
+> +++ b/Documentation/block/queue-sysfs.rst
+> @@ -273,4 +273,11 @@ devices are described in the ZBC (Zoned Block Commands) and ZAC
+>  do not support zone commands, they will be treated as regular block devices
+>  and zoned will report "none".
+>  
+> +limit_bio_size (RW)
+> +-------------------
+> +This indicates QUEUE_FLAG_LIMIT_BIO_SIZE queue flag value. And
+> +QUEUE_FLAG_LIMIT_BIO_SIZE can be changed via set(1)/clear(0) this node.
+> +bio max size will be limited by queue max sectors via set this node. And
+> +limit of bio max size will be cleard via clear this node.
+> +
+>  Jens Axboe <jens.axboe@oracle.com>, February 2009
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index b513f1683af0..840d97f427e6 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+>  QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+>  QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
+>  QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
+> +QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
+>  #undef QUEUE_SYSFS_BIT_FNS
+>  
+>  static ssize_t queue_zoned_show(struct request_queue *q, char *page)
+> @@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
+>  QUEUE_RW_ENTRY(queue_iostats, "iostats");
+>  QUEUE_RW_ENTRY(queue_random, "add_random");
+>  QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
+> +QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
+>  
+>  static struct attribute *queue_attrs[] = {
+>  	&queue_requests_entry.attr,
+> @@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
+>  	&queue_rq_affinity_entry.attr,
+>  	&queue_iostats_entry.attr,
+>  	&queue_stable_writes_entry.attr,
+> +	&queue_limit_bio_size_entry.attr,
+>  	&queue_random_entry.attr,
+>  	&queue_poll_entry.attr,
+>  	&queue_wc_entry.attr,
 
-A little bit of archeology showed the cond_resched() was there in the
-first place even before MMF_DISABLE_THP was introduced.
+Has it been considered to introduce a function to set the BIO size limit
+instead of introducing a new sysfs attribute? See also
+blk_queue_max_hw_sectors().
 
->
-> um.. That is my guess..
->
-> Thanks,
-> Yanfei
->
-> >          for (; vma; vma = vma->vm_next) {
-> >                  unsigned long hstart, hend;
-> >
-> >          cond_resched();                 //here
-> >                  if (unlikely(khugepaged_test_exit(mm))) {
-> >                          progress++;
-> >                          break;
-> >                  }
-> >                  if (!hugepage_vma_check(vma, vma->vm_flags)) {
-> > skip:
-> >                          progress++;
-> >                          continue;
-> >                  }
-> >                  hstart = ALIGN(vma->vm_start, HPAGE_PMD_SIZE);
-> >                  hend = ALIGN_DOWN(vma->vm_end, HPAGE_PMD_SIZE);
-> >                  if (hstart >= hend)
-> >                          goto skip;
-> >                  if (khugepaged_scan.address > hend)
-> >                          goto skip;
-> >                  if (khugepaged_scan.address < hstart)
-> >                          khugepaged_scan.address = hstart;
-> >                  VM_BUG_ON(!IS_ALIGNED(khugepaged_scan.address,
-> > HPAGE_PMD_SIZE));
-> >
-> >                  if (shmem_file(vma->vm_file) && !shmem_huge_enabled(vma))
-> >                          goto skip;
-> >
-> >                  while (khugepaged_scan.address < hend) {
-> >                          int ret;
-> >                          cond_resched();        //here
-> >
-> >
-> >>>                  if (unlikely(khugepaged_test_exit(mm))) {
-> >>>                          progress++;
-> >>>                          break;
-> >>> --
-> >>> 2.27.0
-> >>>
-> >>>
+Thanks,
+
+Bart.
