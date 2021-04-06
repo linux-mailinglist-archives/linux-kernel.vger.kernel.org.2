@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC67C354B63
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7E3354B67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243575AbhDFDt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:49:26 -0400
-Received: from ozlabs.org ([203.11.71.1]:39571 "EHLO ozlabs.org"
+        id S242431AbhDFDvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:51:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233639AbhDFDtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:49:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FDtn65N4Wz9sSC;
-        Tue,  6 Apr 2021 13:49:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617680955;
-        bh=2V41qytuS/O/lB46Y0+hixtZSve/HcH+r1+SdAlGDyw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bWEpKd1FZXu/0BmAT35fkgGDNFerfySzMTlXhSa2aR2h5EWchEBlFjdonYv0Pu0z1
-         IqK2tWoENJaoZxbkwNkGJJCZQ6WQf+C/1waNyskqdADwjOOd6aGOY8tqM+dvYqJnG0
-         kc3uFMdWCaepdIUdClsVQ0SMNpYgnhWfTcnWRU5OK+pTO27iKETZK+IjQ5YB8zJTcg
-         7rwE8D0aKSIC4QlDvwRyd3ioGsmiuTMMWvBdn5sPu7NQ8KOJz+ngOEp3R9nK+Yz+zW
-         bAPuki2Hcw5elikCVp52nKb2Yju8i6aeZGFIQwwcfFbxW3Y7tDQbj73ieqvee46P+A
-         uZy+e4CDz9vQQ==
-Date:   Tue, 6 Apr 2021 13:49:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210406134912.6a37cdcd@canb.auug.org.au>
+        id S233639AbhDFDu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 23:50:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D895D611EE;
+        Tue,  6 Apr 2021 03:50:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617681052;
+        bh=szRR4JcrQICDR26E7y2EmbZ8ojtgg1rHPlcrE0/d3ls=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Xh7LyhlX8SgYtaHo207MEW2YT8a8f1clTe8y0Yi2E7VuF9cUTfe3JNTF/XGwPyFR1
+         7J0Gpiyo8cIbAloHohpmQUYB4YgDXxaKIbx9OdCUDVq2Mfr7ffFqOl5g2SeEDwbRJp
+         kjeZVx00J+1BGWp5Uu85JuFeWRfHJDIk+Y9CTprTvQJ9+wtB9KeZgyeXFLxGYq+9UD
+         oUYNEKYxSHPACshu3nkz63R73hwAtR4zoTEqdh2ulp7EwSnwEN/5VZNrTZIXtGpeHz
+         C6yA+io5tq4xzb/4cKCGwLiVQjlYVXb7m29lq4j4/n9F1YwCFYKJZyxY5au3/vHiU6
+         Uz++RocqdA5lQ==
+Received: by mail-lf1-f46.google.com with SMTP id o126so20585175lfa.0;
+        Mon, 05 Apr 2021 20:50:51 -0700 (PDT)
+X-Gm-Message-State: AOAM533DWFYAOKbErtDhkmiv6Pt+TRtpTW4b1FbvGxLSC0Oa/IfKgI9I
+        udcqeKbkCI64nwa3zJq+0s/jfwjLDha9qFtXmbM=
+X-Google-Smtp-Source: ABdhPJxz7vekhbYxQi/US2gfIUiFffiADC+caHLoxoXMbnk8SvvFWk5EFQrEYzPpfuBRSNV+B6LNPvDCyqdYyVLCZPM=
+X-Received: by 2002:a19:f501:: with SMTP id j1mr20502473lfb.231.1617681050232;
+ Mon, 05 Apr 2021 20:50:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8sX8bvoQhgeb..HCd.THkED";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
+ <YGNNCEAMSWbBU+hd@hirez.programming.kicks-ass.net> <20210330223514.GE1171117@lianli.shorne-pla.net>
+ <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
+In-Reply-To: <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 6 Apr 2021 11:50:38 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRxPMURTE3M5WMQ_0q1yZ6K8nraGsFjGLUmpG9nYS_hng@mail.gmail.com>
+Message-ID: <CAJF2gTRxPMURTE3M5WMQ_0q1yZ6K8nraGsFjGLUmpG9nYS_hng@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Stafford Horne <shorne@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8sX8bvoQhgeb..HCd.THkED
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 31, 2021 at 3:23 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, Mar 31, 2021 at 12:35 AM Stafford Horne <shorne@gmail.com> wrote:
+> >
+> > I just want to chime in here, there may be a better spot in the thread to
+> > mention this but, for OpenRISC I did implement some generic 8/16-bit xchg code
+> > which I have on my todo list somwhere to replace the other generic
+> > implementations like that in mips.
+> >
+> >   arch/openrisc/include/asm/cmpxchg.h
+> >
+> > The idea would be that architectures just implement these methods:
+> >
+> >   long cmpxchg_u32(*ptr,old,new)
+> >   long xchg_u32(*ptr,val)
+> >
+> > Then the rest of the generic header would implement cmpxchg.
+>
+> I like the idea of generalizing it a little further. I'd suggest staying a
+> little closer to the existing naming here though, as we already have
+> cmpxchg() for the type-agnostic version, and cmpxchg64() for the
+> fixed-length 64-bit version.
+>
+> I think a nice interface between architecture-specific and architecture
+> independent code would be to have architectures provide
+> arch_cmpxchg32()/arch_xchg32() as the most basic version, as well
+> as arch_cmpxchg8()/arch_cmpxchg16()/arch_xchg8()/arch_xchg16()
+> if they have instructions for those.
+>
+> The common code can then build cmpxchg16()/xchg16() on top of
+> either the 16-bit or the 32-bit primitives, and build the cmpxchg()/xchg()
+> wrapper around those (or alternatively we can decide to have them
+> only deal with fixed-32-bit and long/pointer sized atomics).
+I think these emulation codes are suitable for some architectures but not riscv.
 
-Hi all,
+We shouldn't export xchg16/cmpxchg16(emulated by lr.w/sc.w) in riscv,
+We should forbid these sub-word atomic primitive and lets the
+programmers consider their atomic design.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+-- 
+Best Regards
+ Guo Ren
 
-  drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-
-between commit:
-
-  3ff3874fa0b2 ("net/mlx5e: Guarantee room for XSK wakeup NOP on async ICOS=
-Q")
-
-from the net tree and commits:
-
-  c276aae8c19d ("net/mlx5: Move mlx5e hw resources into a sub object")
-  b3a131c2a160 ("net/mlx5e: Move params logic into its dedicated file")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 5db63b9f3b70,773449c1424b..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@@ -1090,8 -1040,7 +1040,8 @@@ static int mlx5e_alloc_icosq(struct mlx
-  	int err;
- =20
-  	sq->channel   =3D c;
-- 	sq->uar_map   =3D mdev->mlx5e_res.bfreg.map;
-+ 	sq->uar_map   =3D mdev->mlx5e_res.hw_objs.bfreg.map;
- +	sq->reserved_room =3D param->stop_room;
- =20
-  	param->wq.db_numa_node =3D cpu_to_node(c->cpu);
-  	err =3D mlx5_wq_cyc_create(mdev, &param->wq, sqc_wq, wq, &sq->wq_ctrl);
-
---Sig_/8sX8bvoQhgeb..HCd.THkED
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBr2jgACgkQAVBC80lX
-0GyMqwf+JeRySGfwOKnE6szKkSCpgP3vQ2pxlsivZ4LzQYS1UHHWZCnIkYqtHaUh
-ozDRkBUNc3JqJXQC9X0rAjT7s+bgNz7YPmAK1h200bvZodvjv9QyhF8YK+jrUSNn
-dHwNd58nc6Gx1yNQuLyn4tb+1oZNyZs0me1CuVJnufb5elhQ+rcEEMDuyWam5vSF
-9jl5v5n9Zi+LuNKHlWtJBVVz7RNDz1122DaKYZ7SCn41SK4C53cDnYFmFDkyedsk
-P/4EpdG3moDpMaVQHGoeCsY6cIzND99nyxo4zYrFKRvXquNZ4+GD9nZE8yNQ4inz
-pZxNFXKvARNECeIeyiLeCIbDA2biMA==
-=Q8fT
------END PGP SIGNATURE-----
-
---Sig_/8sX8bvoQhgeb..HCd.THkED--
+ML: https://lore.kernel.org/linux-csky/
