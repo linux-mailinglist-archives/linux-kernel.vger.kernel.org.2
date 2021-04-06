@@ -2,224 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232B5355BF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F89355BF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhDFTEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbhDFTEm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:04:42 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A6EC06174A;
-        Tue,  6 Apr 2021 12:04:33 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id h10so17814980edt.13;
-        Tue, 06 Apr 2021 12:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LUs9XCcyO38dnpQfCCErPK9kbceKsMJW9AomZ2ltfZg=;
-        b=c06VSNerePCuaMgNeajGyGqs3sjrO1yx1Dg2G8q8SP7jjie93CVtIipY87mMEwQMLo
-         HD120wLUiXqIuLFkFkzYTA8qkycws1676OsS3V+2Ig3DFetSsNTiBF43oS6EVSkYU+cM
-         /asEvQPfM/OTYGtoycZjlu+FZ1qyKYqqu3HK5f1V2l4wtM6w2goLJyeVLRVlL3YaGlMb
-         JDeBAN554nuNG7wI490hy/oQk73W22tWf0+Kgh1jF1gwauv5sX2baa4MBpXHjUtfd0Hq
-         aeWVWhslHQSyWSB1MH+P3dN0EHUHUujzmoun0nd0Q9JglG8utSfbHt2iyyzREEbszKDN
-         ZN5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LUs9XCcyO38dnpQfCCErPK9kbceKsMJW9AomZ2ltfZg=;
-        b=Yw6B7WanU2x7Y3873N8K6RXMqXv7Rda6LcuFNExcw+qeALpLZOf/IH2dJbc3hhzijl
-         fZS93i00qt9WAfz1qyLLtMcWrMrPgoYcuAuZqbjGi2lBve7XFlmFDI9L/mQYF79bG/89
-         loGZOqwhMWzagC4vjiNdQA/eLz9a1aGdtRbMJ77A7VTVSvzpdlo35v+pbYfzFBqKFbpL
-         MM6P10r8qjeEpSCdJdypwebZkz1zTUAE9A7zMcVcLAFEEbBcp2vQjVSEQNQRNRkV8wIV
-         0D7ye6ZPiaU57eUOE0H1Ql+/pmEC4+n86rukTjB9gSER61Jd8pqzcjD1T6rNc365EH2s
-         vSHg==
-X-Gm-Message-State: AOAM5316CiwnPcz2dTAMqiWd/xfga0ZKSyd2v8fXyxATPtdnlOTrW9hk
-        hNqFfjvX/7NaFVwQE8+O7mI7e0SSKidI+Q==
-X-Google-Smtp-Source: ABdhPJwnwbybytM9+pESinCANbkSL/NZzrl3ilccwsjlyHnygG5SeKxP3e87GSHwhOU4fHnptGgj/w==
-X-Received: by 2002:a05:6402:3493:: with SMTP id v19mr41022098edc.355.1617735872135;
-        Tue, 06 Apr 2021 12:04:32 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id h17sm14037494eds.26.2021.04.06.12.04.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 12:04:31 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210406155053.29101-1-jbx6244@gmail.com>
-Message-ID: <8f05dc0d-8fb7-c200-5251-d9e147b1d00d@gmail.com>
-Date:   Tue, 6 Apr 2021 21:04:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S236926AbhDFTGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:06:01 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43883 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236040AbhDFTF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:05:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617735936;
+        bh=S5w76roMR9069RbtJkgU377LovVfOK0MpWKmGi2/kjk=;
+        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
+        b=YUvW0IUkEYFFBjdbWiLopC7be2NB6xosmAvZqw1+MYNWduVNaDmlVPE4efPOEFkwJ
+         Nn7C2tFhRSn52qW6QmPZUJ9ZzQK/kW7ZDno+mqxgg/oaQdYHIvffm1RQXYgoOvRoxv
+         1PQEWcPZ4EvNmficarqQZgkIvIpDk81npdW3ebLM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.123.35] ([62.143.247.63]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWigq-1l5gHP3Qk4-00X3ZS; Tue, 06
+ Apr 2021 21:05:35 +0200
+To:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [RFC] dt-bindings: riscv: enum for riscv,isa
+Message-ID: <5385012d-9f09-d7d9-7b6a-cef7de2d4056@gmx.de>
+Date:   Tue, 6 Apr 2021 21:05:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210406155053.29101-1-jbx6244@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ngX28VYtdWQlHye7iPLWOBYn1ApSoOWXfA3SALu5YrflY7O+Qr/
+ fZpezTIa/Nlhrsrdk9Lo/Y398bJ1h7tVl9oaPRkKRR+kMZWYWn3i+aFDp4GXpDdFXSeYAO2
+ ItcbGkvnpvqiJGS+nuHYiriX0p3XHuyUBtt8ChCTREYFCRTkLqB4aTiXu/0VqJCWib9iOs6
+ TkJj2Kcj5ofZ+TLHIVrxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UepjL+PZHsc=:BanShc5P6UyNbjSNcxkUNf
+ zFYy/wDiOrK+rPwaV2rT1KnHpgwY2GVujT30j25QUW5YoobHI9kwgoTm+Gf7S/7bFc/6W1qDi
+ p9AA6ZZnhQLeBWiJAaXE2FVMbUFsS+QfX2nCmYqzAWFl14OAFNvCtytuHS2TBklMymnESTpnb
+ NuJ2kcsXtuhkgCCyamft7+66Kc0q1R4rJ/6dKr5L6LQhqJrI6kPC3r/cpzDrDkAzo7XZrl2mC
+ XDACxBqFk3dUIgkqys4w4gRTg9iJiPn87JTR25jjwUVxAc8yUoi/6r5d6TutyuDuFMBMB2/Le
+ R6jrnuXCrNwp23PRH7fS3tV8DGFmjLhTICvp+P2BZ2LLq3hVNc8Y3fZvM2PJXfo63tUFBSzXF
+ V4wVsB2k/FuTjNE9vyg4UzvUMuArWX3VlR/Zj5/HKlRCjgCSkTMZCRSi/bvvfhpRcMbcXqM/3
+ xFfXqHufV6iP+zYG12jZoUtVHwqE7k1LwdzLJ8reufc9en3BZr0LFbDBwYUWj0ndBT5RBA85H
+ W99GkXuklomm8hH5zwC8jG5bpL9r2CscvZFcN9PUKzKBKKlSZwXUla7PGgNqwYYvQaaAWYcZ4
+ uGWyOX5I2OyfLv0rgeAHmr0DoEMgp4AfjDLgJuboZiEpdtCTTMd8K+WpKcPkfeB0xhAFQD2kU
+ 6O5IdeziwXrF9jVOktLRrabwTTUjr/u1K+0r5jGS1MIG2EVepDyldXGJzEchxt61hB9LBOWBR
+ W91WKo92D4j5xjtPJzDmLRjtqcy4phKeQFmFUhwP9nIddAw3tgfq/+X1CYbOhj+2KuVFkbhui
+ ruA4rbBWdULlNWmdYObMKIIDJRzvbUIShr8azks5hkzBsNVFviSAfnGffTcXUOf7GajM6U9bi
+ mUFJqGTvfArPoTsINPOFAMNLOtH7WCf81z8Jc79Q7EocxQJRSLlyyEwZUcypJbN3gRYu7nsW+
+ QPm+go/7A74UFcHZiliARwGqkoItSzSLGVm+ngzqzMFDpTbuuttKzkTZ8hHxm93GzuRYZFviL
+ 2ZXegoYj0QuxhdruAF+Vrq2LgQ1qGU8m7YewqD6jkMdouN2fD+sNRCRjYDp+8wr01icY6Hfb6
+ egGyQp63KAgHQ3GDzB+xj8mMg0RboqmGikpRuIHdE+xtHrzJaK4z/I3i7F8n0YwcREY+mlyVI
+ 1DFqbCQau0bxor+CmuQT1lQ/UCniF8wDt4xYlbqquPyEwr8aNaWLOWxZfDFd7PR4g1Cng=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In Documentation/devicetree/bindings/riscv/cpus.yaml I find for riscv,isa:
 
-Question for Heiko:
-rv1108.dtsi and rk3328.dtsi have a undocumented "interrupts" property
-AFAICT without driver support.
-Please advise what to do with it.
+     enum:
+       - rv64imac
+       - rv64imafdc
 
+This implies that 'rv64imafc' or 'rv64imafdqc' would be illegal values
+while these combinations of extensions would be compliant with "The
+RISC-V Instruction Set Manual".
 
-See build log:
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210406155053.29101-1-jbx6244@gmail.com/
+To me it does not make much sense to try to enumerate all permissible
+permutations of RISC-V extensions.
 
-====
+Shouldn't this enum be removed and replaced by examples?
 
-Question for Rob:
-It looks like that recent "improvements" with regard to checking for
-undocumented compatible strings make it almost impossible to do any
-useful dt_checking, let alone for the average user. Maybe reduce the
-notification blurb output a bit for things that have nothing to do with
-this document. Unable to fall back to previous versions for older kernels.
+Best regards
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master
---upgrade
-
-make ARCH=arm dtbs_check
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-
-make ARCH=arm64 dtbs_check
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-
-
-On 4/6/21 5:50 PM, Johan Jonker wrote:
-> Current dts files with 'pwm' nodes are manually verified.
-> In order to automate this process pwm-rockchip.txt
-> has to be converted to yaml.
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 ---------
->  .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 66 ++++++++++++++++++++++
->  2 files changed, 66 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt b/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
-> deleted file mode 100644
-> index f70956dea..000000000
-> --- a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
-> +++ /dev/null
-> @@ -1,27 +0,0 @@
-> -Rockchip PWM controller
-> -
-> -Required properties:
-> - - compatible: should be "rockchip,<name>-pwm"
-> -   "rockchip,rk2928-pwm": found on RK29XX,RK3066 and RK3188 SoCs
-> -   "rockchip,rk3288-pwm": found on RK3288 SOC
-> -   "rockchip,rv1108-pwm", "rockchip,rk3288-pwm": found on RV1108 SoC
-> -   "rockchip,vop-pwm": found integrated in VOP on RK3288 SoC
-> - - reg: physical base address and length of the controller's registers
-> - - clocks: See ../clock/clock-bindings.txt
-> -   - For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399):
-> -     - There is one clock that's used both to derive the functional clock
-> -       for the device and as the bus clock.
-> -   - For newer hardware (rk3328 and future socs): specified by name
-> -     - "pwm": This is used to derive the functional clock.
-> -     - "pclk": This is the APB bus clock.
-> - - #pwm-cells: must be 2 (rk2928) or 3 (rk3288). See pwm.yaml in this directory
-> -   for a description of the cell format.
-> -
-> -Example:
-> -
-> -	pwm0: pwm@20030000 {
-> -		compatible = "rockchip,rk2928-pwm";
-> -		reg = <0x20030000 0x10>;
-> -		clocks = <&cru PCLK_PWM01>;
-> -		#pwm-cells = <2>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-> new file mode 100644
-> index 000000000..cfd637d3e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/pwm-rockchip.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip PWM controller
-> +
-> +maintainers:
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: rockchip,rk2928-pwm
-> +      - const: rockchip,rk3288-pwm
-> +      - const: rockchip,vop-pwm
-> +      - items:
-> +          - enum:
-> +              - rockchip,rv1108-pwm
-> +          - const: rockchip,rk3288-pwm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 2
-> +    description:
-> +      For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399)
-> +        There is one clock that is used both to derive the functional clock
-> +        for the device and as the bus clock.
-> +      For newer hardware (rk3328 and future SoCs) that is also specified
-> +      with clock names.
-> +        "pwm" is used to derive the functional clock for the device.
-> +        "pclk" is used as the APB bus clock.
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    items:
-> +      - const: pwm
-> +      - const: pclk
-> +
-> +  "#pwm-cells":
-> +    enum: [2, 3]
-> +    description:
-> +      Must be 2 (rk2928) or 3 (rk3288).
-> +      See pwm.yaml for a description of the cell format.
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - "#pwm-cells"
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3188-cru-common.h>
-> +    pwm0: pwm@20030000 {
-> +      compatible = "rockchip,rk2928-pwm";
-> +      reg = <0x20030000 0x10>;
-> +      clocks = <&cru PCLK_PWM01>;
-> +      #pwm-cells = <2>;
-> +    };
-> 
-
+Heinrich
