@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52346354C52
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14424354C54
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243845AbhDFF3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242572AbhDFF3m (ORCPT
+        id S243851AbhDFFdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 01:33:04 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:50130 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242528AbhDFFdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 01:29:42 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2868EC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 22:29:34 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=63552)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@lam.works>)
-        id 1lTeHL-0001X1-9t
-        for linux-kernel@vger.kernel.org; Tue, 06 Apr 2021 07:29:31 +0200
-Subject: LNX, non-synesthesia version - Re: Fair Pay can be generalized as a
- Non-Synesthesia project.
-References: <81fdcb66-7b0b-a806-1e38-5ff2faea1033@lam.works>
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@lam.works>
-Message-ID: <e5ef49ec-090e-0c6b-0acb-d652bede584b@lam.works>
-Date:   Tue, 6 Apr 2021 07:29:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+        Tue, 6 Apr 2021 01:33:03 -0400
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1365Vjs3044279;
+        Tue, 6 Apr 2021 14:31:45 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Tue, 06 Apr 2021 14:31:45 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1365Vjg0044253
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 6 Apr 2021 14:31:45 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] tty: use printk_safe context at tty_msg()
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <a7f5103f-0912-30e1-611c-36c18a1eefd6@kernel.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <62546379-a2b8-bbbb-0799-3afd9b15960a@i-love.sakura.ne.jp>
+Date:   Tue, 6 Apr 2021 14:31:43 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <81fdcb66-7b0b-a806-1e38-5ff2faea1033@lam.works>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a7f5103f-0912-30e1-611c-36c18a1eefd6@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And taking out the synesthesia of 'Linux' we get LNX Kernel, and instead 
-fair pay orientation.
+On 2021/04/06 13:51, Jiri Slaby wrote:
+> On 03. 04. 21, 6:14, Tetsuo Handa wrote:
+>> --- a/include/linux/tty.h
+>> +++ b/include/linux/tty.h
+>> @@ -14,6 +14,7 @@
+>>   #include <uapi/linux/tty.h>
+>>   #include <linux/rwsem.h>
+>>   #include <linux/llist.h>
+>> +#include <../../kernel/printk/internal.h>
+> 
+> Including printk's internal header in linux/tty.h doesn't look correct to me.
+> 
 
-Serenity,
-Ywe Cærlyn
+This is because this patch wants __printk_safe_enter()/__printk_safe_exit()
+without #ifdef'ing CONFIG_PRINTK.
 
-Den 03.04.2021 11:33, skrev Ywe Cærlyn:
-> Summarizing my posts on LKML, Fair Pay can be generalized as a 
-> Non-Synesthesia project, compatible with the muslim Maruf not Munkar 
-> principles (translated best in Cursive), and Alla'.
-> 
-> We support all instances of such things.
-> 
-> My media project always actually was this: 
-> https://www.youtube.com/channel/UCBzmdh-pG3_OEqNRz5Owtmw
-> 
-> Serenity,
-> Ywe Cærlyn
-> 
-> 
+Peter and Sergey, what should we do?
+Can we move printk_safe_enter_irqsave()/printk_safe_exit_irqrestore() to include/linux/printk.h ?
+
