@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B8C355675
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F9F355678
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345139AbhDFOVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:21:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:43980 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345100AbhDFOUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:20:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C14941FB;
-        Tue,  6 Apr 2021 07:20:10 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9C303F73D;
-        Tue,  6 Apr 2021 07:20:09 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 15:20:04 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
-        robh@kernel.org, robin.murphy@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic
- using CCI
-Message-ID: <20210406142004.GA25082@lpieralisi>
-References: <20210222084732.21521-1-bharat.kumar.gogada@xilinx.com>
+        id S1345080AbhDFOVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235750AbhDFOUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:20:52 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278BCC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:20:44 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id n198so13535611iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NWxUyfH3SeVekRqeclwg32YztBUxlX380zmW2q6z0sI=;
+        b=qLYrftm7RzjRRbRb1vnKgz1smCgxFQ6dAm+0LRd8xp2oFBWd3xsioF6rCsNF1vws/K
+         6JV88tx4stuN0/a9T69U6tdVSwImIJzWSDXQ3iYx1du8DKg4T69xlRcZ3/Kne+7DvoNG
+         hHj3kQTdIIW8jZlOqb1VHsHgKSie9MyQ37e4mznc396ifjwEYPUH7mhGa4F0TxjC0A1a
+         fi86YFFDvgGNQqyesN0xXPsyATvNdfRKCIsADGb/bv+ICe64MzSljkmRK/hXa+w65l6J
+         yYiINJwGtFSmdgfpRy0jInt5F6nkvbhPHX3I8/qN1DDAlCKdGu9AdK6jaub5rerMqajs
+         dnJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NWxUyfH3SeVekRqeclwg32YztBUxlX380zmW2q6z0sI=;
+        b=pVhEy58h3MqW+nkKN22Abrn0jibISgNowBK3RkoHPVD16XW8B1lQcZRrTVIrGbgy2T
+         W/4OYDZG2mE+dQj1YMuiUALGOBm8IBNFv9+EHo9ghUN8s8NgTx3FOJZYjs49p9KYCCWg
+         Jdnr7LVmPalHAqf+Rbjv8238DM68JWHA0QEFNo9kPUtcJhrahu5MmZ5MS+6z6EA0e7u2
+         nWlArMZJgnfJ40W3R88QyVPgka+LDTbmI4LVFTKHVLvEc/SXoNjzpFrVCyHFl94HzT7o
+         7Broy2pelSDXtaki/V8CVUnjR3gEqUxDVboGTTEbAPXARBfvF2V9fLpyiZqI7pY0Q+hs
+         XGdg==
+X-Gm-Message-State: AOAM533i8lY3apNY0wrGtTj1AGEaPh0tvR6v340Ja4uifdeaDcQTILOv
+        vV/E0NzgQbVscavMQ4h0MroFUuSnyth5ocmZ92A=
+X-Google-Smtp-Source: ABdhPJyyYeFqj6+VZf2EN9b61Miw3IWC7vytDK8l5UZ2suFmygvEYLk2mPeYRscKcddeI5VDB6u300JhZcfJpUd8jE8=
+X-Received: by 2002:a5e:cb4b:: with SMTP id h11mr24367439iok.108.1617718843630;
+ Tue, 06 Apr 2021 07:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222084732.21521-1-bharat.kumar.gogada@xilinx.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210325120601.71584253@xhacker.debian> <20210330082617.GA971075@jade>
+ <CAEyMn7a1Ec6WZ24i5kCP-4AmM0=s2qEoOTXFpS72a7n+0P7uaw@mail.gmail.com> <CAHUa44HDrHP6-z=FRkNJtkSe8cVJY-acPDK_r7QrO5QgPwo+iA@mail.gmail.com>
+In-Reply-To: <CAHUa44HDrHP6-z=FRkNJtkSe8cVJY-acPDK_r7QrO5QgPwo+iA@mail.gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Tue, 6 Apr 2021 16:20:31 +0200
+Message-ID: <CAEyMn7br25J9kdZULWjryeXQ-n2w0Ap-O-KgVciBknJGfNmL8A@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: fix build error caused by recent optee
+ tracepoints feature
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+ Rob, Robin]
+Hi Jens,
 
-On Mon, Feb 22, 2021 at 02:17:31PM +0530, Bharat Kumar Gogada wrote:
-> Add support for routing PCIe DMA traffic coherently when
-> Cache Coherent Interconnect (CCI) is enabled in the system.
-> The "dma-coherent" property is used to determine if CCI is enabled
-> or not.
-> Refer to https://developer.arm.com/documentation/ddi0470/k/preface
-> for the CCI specification.
-> 
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-> ---
->  drivers/pci/controller/pcie-xilinx-nwl.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-> index 07e36661bbc2..8689311c5ef6 100644
-> --- a/drivers/pci/controller/pcie-xilinx-nwl.c
-> +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-> @@ -26,6 +26,7 @@
->  
->  /* Bridge core config registers */
->  #define BRCFG_PCIE_RX0			0x00000000
-> +#define BRCFG_PCIE_RX1			0x00000004
->  #define BRCFG_INTERRUPT			0x00000010
->  #define BRCFG_PCIE_RX_MSG_FILTER	0x00000020
->  
-> @@ -128,6 +129,7 @@
->  #define NWL_ECAM_VALUE_DEFAULT		12
->  
->  #define CFG_DMA_REG_BAR			GENMASK(2, 0)
-> +#define CFG_PCIE_CACHE			GENMASK(7, 0)
->  
->  #define INT_PCI_MSI_NR			(2 * 32)
->  
-> @@ -675,6 +677,11 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
->  	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
->  			  BRCFG_PCIE_RX_MSG_FILTER);
->  
-> +	/* This routes the PCIe DMA traffic to go through CCI path */
-> +	if (of_dma_is_coherent(dev->of_node))
-> +		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
-> +				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
-> +
+Am Di., 6. Apr. 2021 um 14:30 Uhr schrieb Jens Wiklander
+<jens.wiklander@linaro.org>:
+>
+> Hi Heiko,
+>
+> [+Arnd]
+>
+> On Tue, Apr 6, 2021 at 12:38 PM Heiko Thiery <heiko.thiery@gmail.com> wro=
+te:
+> >
+> > Hi Jens,
+> >
+> > Am Di., 30. M=C3=A4rz 2021 um 10:26 Uhr schrieb Jens Wiklander
+> > <jens.wiklander@linaro.org>:
+> > >
+> > > On Thu, Mar 25, 2021 at 12:06:01PM +0800, Jisheng Zhang wrote:
+> > > > If build kernel without "O=3Ddir", below error will be seen:
+> > > >
+> > > > In file included from drivers/tee/optee/optee_trace.h:67,
+> > > >                  from drivers/tee/optee/call.c:18:
+> > > > ./include/trace/define_trace.h:95:42: fatal error: ./optee_trace.h:=
+ No such file or directory
+> > > >    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> > > >       |                                          ^
+> > > > compilation terminated.
+> > > >
+> > > > Fix it by adding below line to Makefile:
+> > > > CFLAGS_call.o :=3D -I$(src)
+> > > >
+> > > > Tested with and without "O=3Ddir", both can build successfully.
+> > > >
+> > > > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > > > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> > > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > >
+> > > I've picked up this.
+> >
+> > For what tree did you pick this? I still see this build failure on the
+> > latest next tree (next-20210401).
+>
+> The next tree hasn't been updated since 1th of April so it's not
+> unexpected. The fix is supposed to be on its way to
+> https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/log/?h=3Darm/=
+drivers
+> , I can't see it there yet though.
 
-This is weird. FW is telling us that the RC is DMA coherent hence
-we have to program the RC so that it is indeed DMA coherent.
+Ah I see. Now it has been landed in the actual next tree.
 
-It does not make much sense. I think this is a set-up that should be
-programmed by firmware and reported to the kernel via the standard
-"dma-coherent" property. The kernel can read that register to check the
-HW configuration complies with the DT property.
-
-I'd like to get RobH/Robin thoughts on this before proceeding - they
-have more insights about the DT dma-coherent usage/bindings and
-expected behaviour.
-
-Thanks,
-Lorenzo
-
->  	err = nwl_wait_for_link(pcie);
->  	if (err)
->  		return err;
-> -- 
-> 2.17.1
-> 
+Thank you,
+Heiko
