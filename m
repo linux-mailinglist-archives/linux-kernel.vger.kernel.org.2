@@ -2,250 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CD2355872
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6B035588A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243771AbhDFPsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhDFPsd (ORCPT
+        id S1346063AbhDFPv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:51:29 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2770 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346059AbhDFPv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:48:33 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B547C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:48:25 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so1494969pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=laZeNbGTjzk/8Smqz2d9x68PxPq/3zkf2RQckeInUrc=;
-        b=vaMCcVuQU+xkQ7vHYGIarFeeBeCCKzlrZ2nfM2VXj9I8Wes92nRodmUF/F8HuSmt/H
-         tW1vk3pFAT1FlHDOHXUDwDiRE5ITDEGp7r+aajfeqwbNU4PkwLyasn2DyVjmM+vtupZD
-         CV1+/Xh4tC++VDO1/lTkzJm1uzOOWc4VhqSRtLFPcN/wlbNM+DxgPClNn4ejUTB0Vcwe
-         6lgph+AXHd/y5KuQY8hO+vUgDkknPqrfRj8Ljgq+aNOrZ0/BS/tCIAX21j0nwB9KYsNl
-         o0p1zpKo8npjiBSMfdbR2QhIVXuS2Keoaf4af47/Mv2fcTk3FUkfGc0OoYzrgkOafpih
-         7pcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=laZeNbGTjzk/8Smqz2d9x68PxPq/3zkf2RQckeInUrc=;
-        b=RdwW/OvXTeIKdvitk3JzEKcRGT5NhAymtrYlJqaWrUeSU5y9YgC9vVhrALA8kaYm1l
-         ksw0KdvZ0/0gNyjN5hJgA35LHCD/8CsvR4PODJwwLShL7OP+Lz++Z5oC5zMrvqHeNdu8
-         FmH1PwzxJF9mdbf6dBf8aLH5TCd4SYqcVZut1XDEtjjnzgV9naRm/0mpsvLp2Axo7fAl
-         ZW/Ddx9lC6HO5hdsDXev1QQFH40F4PO0KF9t0ZWZyqCFaBZXLm0CBZ5pDjuw0WCtqbBD
-         dl3LCkz8IHpqLMdrw7bmtCehvPFYUCdG/rqWJEKKRwqdQYA3hGaE6vPEWM3J8uBA2mY9
-         2b3w==
-X-Gm-Message-State: AOAM532rCghc5x4sEPLsR6Fkp5lMKiS55cxFcFLCNYeeeponl+kWxMyY
-        /xCVOGABk1lSdM6tZlmbUuPSIw==
-X-Google-Smtp-Source: ABdhPJzchvT4Z6SPilEJJK9qhUx/vsuSORYI0NpUvl8rZ2/gXSA8UroDZbeLwaLtfX9hyyufQRDCkg==
-X-Received: by 2002:a17:90a:5106:: with SMTP id t6mr5058538pjh.177.1617724104889;
-        Tue, 06 Apr 2021 08:48:24 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id u14sm2817113pji.15.2021.04.06.08.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 08:48:24 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 15:48:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com, will@kernel.org,
-        maz@kernel.org, qperret@google.com
-Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <YGyCxGsC2+GAtJxy@google.com>
-References: <cover.1617302792.git.ashish.kalra@amd.com>
- <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+        Tue, 6 Apr 2021 11:51:26 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFBhM5Kk1z687Q5;
+        Tue,  6 Apr 2021 23:46:11 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 17:51:16 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 16:51:15 +0100
+To:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Subject: [bug report] Memory leak from acpi_ev_install_space_handler()
+Message-ID: <845f6ef8-d2a7-e491-8405-9526e4ba277a@huawei.com>
+Date:   Tue, 6 Apr 2021 16:48:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
+Hi guys,
 
-...
+On next-20210406, I enabled CONFIG_DEBUG_KMEMLEAK and
+CONFIG_DEBUG_TEST_DRIVER_REMOVE for my arm64 system, and see this:
 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3768819693e5..78284ebbbee7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1352,6 +1352,8 @@ struct kvm_x86_ops {
->  	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->  
->  	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
-> +	int (*page_enc_status_hc)(struct kvm_vcpu *vcpu, unsigned long gpa,
-> +				  unsigned long sz, unsigned long mode);
->  };
->  
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index c9795a22e502..fb3a315e5827 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1544,6 +1544,67 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	return ret;
->  }
->  
-> +static int sev_complete_userspace_page_enc_status_hc(struct kvm_vcpu *vcpu)
-> +{
-> +	vcpu->run->exit_reason = 0;
-> +	kvm_rax_write(vcpu, vcpu->run->dma_sharing.ret);
-> +	++vcpu->stat.hypercalls;
-> +	return kvm_skip_emulated_instruction(vcpu);
-> +}
-> +
-> +int svm_page_enc_status_hc(struct kvm_vcpu *vcpu, unsigned long gpa,
-> +			   unsigned long npages, unsigned long enc)
-> +{
-> +	kvm_pfn_t pfn_start, pfn_end;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	gfn_t gfn_start, gfn_end;
-> +
-> +	if (!sev_guest(kvm))
-> +		return -EINVAL;
-> +
-> +	if (!npages)
-> +		return 0;
+root@debian:/home/john# more /sys/kernel/debug/kmemleak
+unreferenced object 0xffff202803c11f00 (size 128):
+comm "swapper/0", pid 1, jiffies 4294894325 (age 337.524s)
+hex dump (first 32 bytes):
+00 00 00 00 02 00 00 00 08 1f c1 03 28 20 ff ff............( ..
+08 1f c1 03 28 20 ff ff 00 00 00 00 00 00 00 00....( ..........
+backtrace:
+[<00000000670a0938>] slab_post_alloc_hook+0x9c/0x2f8
+[<00000000a3f47b39>] kmem_cache_alloc+0x198/0x2a8
+[<000000002bdba864>] acpi_os_create_semaphore+0x54/0xe0
+[<00000000bcd513fe>] acpi_ev_install_space_handler+0x24c/0x300
+[<0000000002e116e2>] acpi_install_address_space_handler+0x64/0xb0
+[<00000000ba00abc5>] i2c_acpi_install_space_handler+0xd4/0x138
+[<000000008da42058>] i2c_register_adapter+0x368/0x910
+[<00000000c03f7142>] i2c_add_adapter+0x9c/0x100
+[<0000000000ba2fcf>] i2c_add_numbered_adapter+0x44/0x58
+[<000000007df22d67>] i2c_dw_probe_master+0x68c/0x900
+[<00000000682dfc98>] dw_i2c_plat_probe+0x460/0x640
+[<00000000ad2dd3ee>] platform_probe+0x8c/0x108
+[<00000000dd183e3f>] really_probe+0x190/0x670
+[<0000000066017341>] driver_probe_device+0x8c/0xf8
+[<00000000c441e843>] device_driver_attach+0x9c/0xa8
+[<00000000f91dc709>] __driver_attach+0x88/0x138
+unreferenced object 0xffff00280452c100 (size 128):
+comm "swapper/0", pid 1, jiffies 4294894558 (age 336.604s)
+hex dump (first 32 bytes):
+00 00 00 00 02 00 00 00 08 c1 52 04 28 00 ff ff..........R.(...
+08 c1 52 04 28 00 ff ff 00 00 00 00 00 00 00 00..R.(...........
+backtrace:
+[<00000000670a0938>] slab_post_alloc_hook+0x9c/0x2f8
+[<00000000a3f47b39>] kmem_cache_alloc+0x198/0x2a8
+[<000000002bdba864>] acpi_os_create_semaphore+0x54/0xe0
+[<00000000bcd513fe>] acpi_ev_install_space_handler+0x24c/0x300
+[<0000000002e116e2>] acpi_install_address_space_handler+0x64/0xb0
+[<00000000988d4f61>] acpi_gpiochip_add+0x20c/0x4a0
+[<0000000073d4faab>] gpiochip_add_data_with_key+0xd10/0x1680
+[<000000001d50b98a>] devm_gpiochip_add_data_with_key+0x30/0x78
+[<00000000fc3e7eaf>] dwapb_gpio_probe+0x828/0xb28
+[<00000000ad2dd3ee>] platform_probe+0x8c/0x108
+[<00000000dd183e3f>] really_probe+0x190/0x670
+[<0000000066017341>] driver_probe_device+0x8c/0xf8
+[<00000000c441e843>] device_driver_attach+0x9c/0xa8
+[<00000000f91dc709>] __driver_attach+0x88/0x138
+[<00000000d330caed>] bus_for_each_dev+0xec/0x160
+[<00000000eebc5f04>] driver_attach+0x34/0x48
+root@debian:/home/john#
 
-Parth of me thinks passing a zero size should be an error not a nop.  Either way
-works, just feels a bit weird to allow this to be a nop.
-
-> +
-> +	gfn_start = gpa_to_gfn(gpa);
-
-This should check that @gpa is aligned.
-
-> +	gfn_end = gfn_start + npages;
-> +
-> +	/* out of bound access error check */
-> +	if (gfn_end <= gfn_start)
-> +		return -EINVAL;
-> +
-> +	/* lets make sure that gpa exist in our memslot */
-> +	pfn_start = gfn_to_pfn(kvm, gfn_start);
-> +	pfn_end = gfn_to_pfn(kvm, gfn_end);
-> +
-> +	if (is_error_noslot_pfn(pfn_start) && !is_noslot_pfn(pfn_start)) {
-> +		/*
-> +		 * Allow guest MMIO range(s) to be added
-> +		 * to the shared pages list.
-> +		 */
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (is_error_noslot_pfn(pfn_end) && !is_noslot_pfn(pfn_end)) {
-> +		/*
-> +		 * Allow guest MMIO range(s) to be added
-> +		 * to the shared pages list.
-> +		 */
-> +		return -EINVAL;
-> +	}
-
-I don't think KVM should do any checks beyond gfn_end <= gfn_start.  Just punt
-to userspace and give userspace full say over what is/isn't legal.
-
-> +
-> +	if (enc)
-> +		vcpu->run->exit_reason = KVM_EXIT_DMA_UNSHARE;
-> +	else
-> +		vcpu->run->exit_reason = KVM_EXIT_DMA_SHARE;
-
-Use a single exit and pass "enc" via kvm_run.  I also strongly dislike "DMA",
-there's no guarantee the guest is sharing memory for DMA.
-
-I think we can usurp KVM_EXIT_HYPERCALL for this?  E.g.
-
-	vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
-	vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
-	vcpu->run->hypercall.args[0]  = gfn_start << PAGE_SHIFT;
-	vcpu->run->hypercall.args[1]  = npages * PAGE_SIZE;
-	vcpu->run->hypercall.args[2]  = enc;
-	vcpu->run->hypercall.longmode = is_64_bit_mode(vcpu);
-
-> +
-> +	vcpu->run->dma_sharing.addr = gfn_start;
-
-Addresses and pfns are not the same thing.  If you're passing the size in bytes,
-then it's probably best to pass the gpa, not the gfn.  Same for the params from
-the guest, they should be in the same "domain".
-
-> +	vcpu->run->dma_sharing.len = npages * PAGE_SIZE;
-> +	vcpu->arch.complete_userspace_io =
-> +		sev_complete_userspace_page_enc_status_hc;
-
-I vote to drop the "userspace" part, it's already quite verbose.
-
-	vcpu->arch.complete_userspace_io = sev_complete_page_enc_status_hc;
-
-> +
-> +	return 0;
-> +}
-> +
-
-..
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index f7d12fca397b..ef5c77d59651 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8273,6 +8273,18 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->  		kvm_sched_yield(vcpu->kvm, a0);
->  		ret = 0;
->  		break;
-> +	case KVM_HC_PAGE_ENC_STATUS: {
-> +		int r;
-> +
-> +		ret = -KVM_ENOSYS;
-> +		if (kvm_x86_ops.page_enc_status_hc) {
-> +			r = kvm_x86_ops.page_enc_status_hc(vcpu, a0, a1, a2);
-
-Use static_call().
-
-> +			if (r >= 0)
-> +				return r;
-> +			ret = r;
-> +		}
-
-Hmm, an alternative to adding a kvm_x86_ops hook would be to tag the VM as
-supporting/allowing the hypercall.  That would clean up this code, ensure VMX
-and SVM don't end up creating a different userspace ABI, and make it easier to
-reuse the hypercall in the future (I'm still hopeful :-) ).  E.g.
-
-	case KVM_HC_PAGE_ENC_STATUS: {
-		u64 gpa = a0, nr_bytes = a1;
-
-		if (!vcpu->kvm->arch.page_enc_hc_enable)
-			break;
-
-		if (!PAGE_ALIGNED(gpa) || !PAGE_ALIGNED(nr_bytes) ||
-		    !nr_bytes || gpa + nr_bytes <= gpa)) {
-			ret = -EINVAL;
-			break;
-		}
-
-	        vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL; 
-        	vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS; 
-	        vcpu->run->hypercall.args[0]  = gpa;
-        	vcpu->run->hypercall.args[1]  = nr_bytes;
-	        vcpu->run->hypercall.args[2]  = enc;                                    
-        	vcpu->run->hypercall.longmode = op_64_bit;
-		vcpu->arch.complete_userspace_io = complete_page_enc_hc;
-		return 0;
-	}
-
-
-> +		break;
-> +	}
->  	default:
->  		ret = -KVM_ENOSYS;
->  		break;
+Thanks,
+John
