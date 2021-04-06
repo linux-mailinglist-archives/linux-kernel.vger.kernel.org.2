@@ -2,231 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC7C355DA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83BE355DAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhDFVKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
+        id S235527AbhDFVLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhDFVKG (ORCPT
+        with ESMTP id S232861AbhDFVLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:10:06 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB76C06174A;
-        Tue,  6 Apr 2021 14:09:58 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so6161747lfh.1;
-        Tue, 06 Apr 2021 14:09:58 -0700 (PDT)
+        Tue, 6 Apr 2021 17:11:38 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F6AC06174A;
+        Tue,  6 Apr 2021 14:11:30 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id h7so12275285qtx.3;
+        Tue, 06 Apr 2021 14:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cu63zw3Jc1zLiArccmWuZ4G8jjBA017gIZFbTJJD7eg=;
-        b=FY17gqMK5p7FC++PTxjlZS7AaAmCL1ulHVfeXeoAS+dE+k19fBXYk95PdApuVPs2np
-         Wxzf0F1Whz2ZbveNDO6za7POzGO+5A4H78JONzmy0eXuIUPzGjy8B8h7eq0nZoyiN/uC
-         ZAPFEME42eChdzhk/J4Lo1CC8ECJNV2s0JsR5S4EmO4pQm2MrV7NpSb5RKd9YBbXv843
-         meGRe0O/xguEGnKDtzRelvtEKm60XQOfVLf7hENxgk1isxeDmVahh4d+5mjRosuPQ+NW
-         iqrWqgU9q2dBbbMk/iQyu2ABuw6iDXX9lEP1BgGLlOimwYXsCUiF/9PS53jJHzXy8Ryw
-         DLFg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5oMy+AxrchMa7qNBGPpnhH2Zlo695zWTE08uCBLDOgg=;
+        b=U7AOIAmeZPyMFndmbgGGctXp4tWrR8AQhS7TppV+/uYwTJP5cFEbyNQfCMAR4oEog4
+         t8Xz0bOszImDDSa3CHGL5amtMUzI7G7cqW7vikEeqi7txTiBytmLYcv3pXlJKaO0GEWL
+         jUybfMPQkGF1PC7pQ+MFQtD3U6CwBNabjzP7Yz6wlMyeuBHc+8QCVNM1m1Nadr+UNoLz
+         pNagOYHVa3beUM9DfFTX/a/V5jiNAXKR2WztQJmY4ACQz12TDV+yiB6RASW25W/dk1Xh
+         BF5tO/uSK3CXs0qrnsfYoidAhatH3PJALHyTOyX2z03NrR6eWj7zWeZm/MxNZQq746PZ
+         /SfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cu63zw3Jc1zLiArccmWuZ4G8jjBA017gIZFbTJJD7eg=;
-        b=k4H/p46pFDNzq31/X0VWL+POPSzSZN8wbD0T61CcZVBaT3g5FnhGf2bv/P4+Zf/J+e
-         MpD0jWl0iNRGATmQNmvPgJ09lJyCjfcD8P3s9GJOmcIVKEcPn5gpgqFWiKXkEDqwz4W7
-         WKFycFcb0zujKVimBhUHHRvoAOsrfYmXd2RwAXx8TOki63ZNf+6g6zL0jv/URA2Qnn03
-         G+L1ENaNTlAco9FaElgDc66Ze2nTG1mv/rRCVeockko2H+hxcgpXrm2H2tSQcAf0yDpz
-         ydCfMsN72P2XntR+jL2r+6HZCM3I9grXU1CAxdnDSOG/Bcj+WuDTyRE5smTRLAASY7kw
-         3wWw==
-X-Gm-Message-State: AOAM533uqQdop/dfroISsanbKJmzUdEd3fhKeQVCwW4P47bQw9dG+6/n
-        ZM+vxYykGWiac5NnCvLc0E5vqVWv7Te9fm8Q4/Q=
-X-Google-Smtp-Source: ABdhPJycZ6FWv6soruD2b5zXd2wGs5LN1EqmC0xDhkXv2k4ldegOm2FoUZ0kGOpBZ7WC1MxZSMXf2TXr9/uNFEO8eks=
-X-Received: by 2002:a05:6512:3ac:: with SMTP id v12mr55641lfp.285.1617743396701;
- Tue, 06 Apr 2021 14:09:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5oMy+AxrchMa7qNBGPpnhH2Zlo695zWTE08uCBLDOgg=;
+        b=R0Evn1+IcYxqNotBhEmM7wcgTh1hb1XJzeaTZDXIyYjq+xqaknwEjFfeUMiOoWAWuI
+         eoJUmJyaoqMNZKNc23BRZ6rpcpYt90UNukFX7RdZrQ7i8KA+kwB0UObYtjtb7wAucsA6
+         1CRi28s/NWy/0vP4FRRigNAu9oiQ2DmpVIQ06yVTYIGH1CFUVVXhHgHRYUuEx/AfKzmr
+         WUVEvOACuSULAB/9j9PrR+pWb8SEVTqzrFCVvP3xW84wZwV99c3YJTMqKKnd+J9YcPLl
+         VVQvZlRkqsOKT1PgwKutbgdiKxM8DEeA2LF6jd8B6Ce8+OiI+3oFsVcVvbfMP1/v93kD
+         ylxw==
+X-Gm-Message-State: AOAM530J09SQDHGOBBf8pemC8fnqU/uwuFjVDnFq7f4arVv1aqTFnuij
+        /IPXMOaMQ1mnjOo7UvDcbkU=
+X-Google-Smtp-Source: ABdhPJyPCcC8Is/S1xJmNV+NFDhGvIIS29M76iqFYux8sAvPItCoQiIj4P9sRarK/4E5LpAT/fVjTQ==
+X-Received: by 2002:ac8:7fcc:: with SMTP id b12mr28732609qtk.343.1617743489361;
+        Tue, 06 Apr 2021 14:11:29 -0700 (PDT)
+Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
+        by smtp.gmail.com with ESMTPSA id g2sm15933477qtu.0.2021.04.06.14.11.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 14:11:28 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 17:11:26 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Whitney <enwlinux@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 004/126] ext4: shrink race window in
+ ext4_should_retry_alloc()
+Message-ID: <20210406211126.GA14411@localhost.localdomain>
+References: <20210405085031.040238881@linuxfoundation.org>
+ <20210405085031.189492366@linuxfoundation.org>
+ <20210405152908.GA32232@amd>
 MIME-Version: 1.0
-References: <ed438518-66ad-6e08-2a1b-597ac3f2ae8d@roeck-us.net>
- <20210406181624.713-1-aladyshev22@gmail.com> <0ba1d271-78cd-c30a-e662-97ab8ba6451a@roeck-us.net>
- <CACSj6VUCgxCQeA9EF4Oz+pKY+TdF9Gp=DV1V=-TcVE4ixtg45Q@mail.gmail.com> <40d02688-d40c-fcdd-b8eb-580a1e44b244@roeck-us.net>
-In-Reply-To: <40d02688-d40c-fcdd-b8eb-580a1e44b244@roeck-us.net>
-From:   Konstantin Aladyshev <aladyshev22@gmail.com>
-Date:   Wed, 7 Apr 2021 00:09:45 +0300
-Message-ID: <CACSj6VVjJ9Avd0Ni0Zp4-skv-7Dk9cQkhB5hrsEyb+0ZQR5eJg@mail.gmail.com>
-Subject: Re: [PATCH v2] hwmon: (sbtsi) Don't read sensor more than once if it
- doesn't respond
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Kun Yi <kunyi@google.com>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405152908.GA32232@amd>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the answer!
-Sorry for the confusion, by the "CPU is off" I meant "CPU is present,
-but currently it is in the powered off state".
-Therefore it is not possible to put these checks only in a probe
-function. And I don't know either if it is a good idea to cache
-config/min/max values.
+* Pavel Machek <pavel@ucw.cz>:
+> Hi!
+> 
+> > From: Eric Whitney <enwlinux@gmail.com>
+> 
+> > A per filesystem percpu counter exported via sysfs is added to allow
+> > users or developers to track the number of times the retry limit is
+> > exceeded without resorting to debugging methods.  This should provide
+> > some insight into worst case retry behavior.
+> 
+> This adds new counter exported via sysfs, but no documentation of that
+> counter...
+> 
+> Best regards,
+> 								Pavel
+> 
 
-I use this driver on an OpenBMC system, which uses other software
-rather than lm-sensors utility. I guess that is why my priorities are
-shifted.
+Thanks for the observation.  I'll check with Ted to see what he'd like.
 
-By the way, I've noticed that the mutex check is absent in a
-SBTSI_REG_CONFIG read call both in the original driver version and in
-my patch, is this an error?
-
-Best regards,
-Konstantin Aladyshev
+Eric
 
 
-On Tue, Apr 6, 2021 at 11:09 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 4/6/21 12:20 PM, Konstantin Aladyshev wrote:
-> > Thanks for the comment.
-> > Yes, you are correct, this patch adds an extra 'i2c_smbus_read_byte_data' call for the temp_max/temp_min reads.
-> > I guess I did that intentionally because I just wanted to keep the restructured code concise. After all I thought, 'temp_input' generally is read more often than 'temp_max/temp_min'.
-> > As I understand now, it seems like it is not acceptable. Therefore could you point me in the right direction about what I should do?
-> > Should I just stick with the original driver version and simply add two more i2c call checks for the first operations for min/max?
-> >
->
-> Correct, it is not acceptable. A normal use case for hwmon devices is to use the "sensors"
-> command which _will_ read all attributes. i2c reads are expensive, and unnecessary read
-> operations should be avoided.
->
-> There are several ways to solve the problem. Checking return values after each
-> read is the simple option. There are other possibilities, such as reading the limits
-> and the read order only once during probe, but I don't know enough about the
-> hardware to suggest a more sophisticated solution. For example, I don't know
-> what "CPU is off" means. Offline ? Not present ? If it means "not present",
-> or if the status is permanent, the condition should be handled in the is_visible
-> function (or the driver should not be instantiated in the first place).
-> Otherwise, the code should possibly return -ENODATA instead of -ETIMEDOUT
-> on error. But, again, I can not really suggest a better solution since
-> I don't know enough (nothing, actually) about the hardware (and the public
-> part of the SBTSI specification doesn't say anything about expected behavior
-> for offline CPUs or CPU cores).
->
-> What I did find, though, is that the driver does not implement temperature
-> offset support, and it that doesn't support reporting alerts. I'd have assumed
-> this to be more important than optimizing error handling, but that is just
-> my personal opinion.
->
-> Thanks,
-> Guenter
->
-> > Best regards,
-> > Konstantin Aladyshev
-> >
-> >
-> > On Tue, Apr 6, 2021 at 9:42 PM Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
-> >
-> >     On 4/6/21 11:16 AM, Konstantin Aladyshev wrote:
-> >     > SBTSI sensors don't work when the CPU is off.
-> >     > In this case every 'i2c_smbus_read_byte_data' function would fail
-> >     > by a timeout.
-> >     > Currently temp1_max/temp1_min file reads can cause two such timeouts
-> >     > for every read.
-> >     > Restructure code so there will be no more than one timeout for every
-> >     > read operation.
-> >     >
-> >     > Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com <mailto:aladyshev22@gmail.com>>
-> >     > ---
-> >     > Changes in v2:
-> >     >   - Fix typo in a commit message
-> >     >   - Don't swap temp_int/temp_dec checks at the end of the 'sbtsi_read' function
-> >     >
-> >
-> >     This doesn't explain the reason for the extra read operation for
-> >     limits. Preventing a second read in error cases is not an argument
-> >     for adding an extra read for non-error cases.
-> >
-> >     Guenter
-> >
-> >     >  drivers/hwmon/sbtsi_temp.c | 55 +++++++++++++++++++-------------------
-> >     >  1 file changed, 27 insertions(+), 28 deletions(-)
-> >     >
-> >     > diff --git a/drivers/hwmon/sbtsi_temp.c b/drivers/hwmon/sbtsi_temp.c
-> >     > index e35357c48b8e..4ae48635bb31 100644
-> >     > --- a/drivers/hwmon/sbtsi_temp.c
-> >     > +++ b/drivers/hwmon/sbtsi_temp.c
-> >     > @@ -74,48 +74,47 @@ static int sbtsi_read(struct device *dev, enum hwmon_sensor_types type,
-> >     >                     u32 attr, int channel, long *val)
-> >     >  {
-> >     >       struct sbtsi_data *data = dev_get_drvdata(dev);
-> >     > +     u8 temp_int_reg, temp_dec_reg;
-> >     >       s32 temp_int, temp_dec;
-> >     >       int err;
-> >     >
-> >     >       switch (attr) {
-> >     >       case hwmon_temp_input:
-> >     > -             /*
-> >     > -              * ReadOrder bit specifies the reading order of integer and
-> >     > -              * decimal part of CPU temp for atomic reads. If bit == 0,
-> >     > -              * reading integer part triggers latching of the decimal part,
-> >     > -              * so integer part should be read first. If bit == 1, read
-> >     > -              * order should be reversed.
-> >     > -              */
-> >     > -             err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
-> >     > -             if (err < 0)
-> >     > -                     return err;
-> >     > -
-> >     > -             mutex_lock(&data->lock);
-> >     > -             if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
-> >     > -                     temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
-> >     > -                     temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
-> >     > -             } else {
-> >     > -                     temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
-> >     > -                     temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
-> >     > -             }
-> >     > -             mutex_unlock(&data->lock);
-> >     > +             temp_int_reg = SBTSI_REG_TEMP_INT;
-> >     > +             temp_dec_reg = SBTSI_REG_TEMP_DEC;
-> >     >               break;
-> >     >       case hwmon_temp_max:
-> >     > -             mutex_lock(&data->lock);
-> >     > -             temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_INT);
-> >     > -             temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_DEC);
-> >     > -             mutex_unlock(&data->lock);
-> >     > +             temp_int_reg = SBTSI_REG_TEMP_HIGH_INT;
-> >     > +             temp_dec_reg = SBTSI_REG_TEMP_HIGH_DEC;
-> >     >               break;
-> >     >       case hwmon_temp_min:
-> >     > -             mutex_lock(&data->lock);
-> >     > -             temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_INT);
-> >     > -             temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_DEC);
-> >     > -             mutex_unlock(&data->lock);
-> >     > +             temp_int_reg = SBTSI_REG_TEMP_LOW_INT;
-> >     > +             temp_dec_reg = SBTSI_REG_TEMP_LOW_DEC;
-> >     >               break;
-> >     >       default:
-> >     >               return -EINVAL;
-> >     >       }
-> >     >
-> >     > +     /*
-> >     > +      * ReadOrder bit specifies the reading order of integer and
-> >     > +      * decimal part of CPU temp for atomic reads. If bit == 0,
-> >     > +      * reading integer part triggers latching of the decimal part,
-> >     > +      * so integer part should be read first. If bit == 1, read
-> >     > +      * order should be reversed.
-> >     > +      */
-> >     > +     err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
-> >     > +     if (err < 0)
-> >     > +             return err;
-> >     > +
-> >     > +     mutex_lock(&data->lock);
-> >     > +     if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
-> >     > +             temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
-> >     > +             temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
-> >     > +     } else {
-> >     > +             temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
-> >     > +             temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
-> >     > +     }
-> >     > +     mutex_unlock(&data->lock);
-> >     >
-> >     >       if (temp_int < 0)
-> >     >               return temp_int;
-> >     >
-> >
->
+> > @@ -257,6 +259,7 @@ static struct attribute *ext4_attrs[] = {
+> >  	ATTR_LIST(session_write_kbytes),
+> >  	ATTR_LIST(lifetime_write_kbytes),
+> >  	ATTR_LIST(reserved_clusters),
+> > +	ATTR_LIST(sra_exceeded_retry_limit),
+> >  	ATTR_LIST(inode_readahead_blks),
+> >  	ATTR_LIST(inode_goal),
+> >  	ATTR_LIST(mb_stats),
+> 
+> -- 
+> http://www.livejournal.com/~pavelmachek
+
+
