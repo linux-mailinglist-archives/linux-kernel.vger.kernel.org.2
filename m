@@ -2,188 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BAC3551EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F4E3551F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245469AbhDFLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:21:54 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:50885 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242052AbhDFLVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:21:51 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FF4q85Bqdz9tyP3;
-        Tue,  6 Apr 2021 13:21:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id ovHssQ0hJG_S; Tue,  6 Apr 2021 13:21:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FF4q83pBqz9tyP2;
-        Tue,  6 Apr 2021 13:21:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CE3E18B79D;
-        Tue,  6 Apr 2021 13:21:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id kW7nKdTIea_k; Tue,  6 Apr 2021 13:21:41 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D72F98B79B;
-        Tue,  6 Apr 2021 13:21:40 +0200 (CEST)
-Subject: Re: [PATCH 1/9] irqdomain: Reimplement irq_linear_revmap() with
- irq_find_mapping()
-To:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Daniel Mack <daniel@zonque.org>
-References: <20210406093557.1073423-1-maz@kernel.org>
- <20210406093557.1073423-2-maz@kernel.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <15be426f-4429-ebeb-1b4a-8342bce391e5@csgroup.eu>
-Date:   Tue, 6 Apr 2021 13:21:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S245474AbhDFLWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:22:39 -0400
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:44750 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241465AbhDFLWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:22:33 -0400
+Received: by mail-lj1-f174.google.com with SMTP id u9so16034915ljd.11;
+        Tue, 06 Apr 2021 04:22:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NUTRKCAJSPIjCVadXlxVAs0WfP1mvGI0BilMH14WAU8=;
+        b=hLLeBTZ8pOeIPZMttO4C3SuHIKwm7hZ82vaxvg9Lop1uoY4+cd5GaQ2GgAWe/AGCpY
+         FCcCbXwHoah2Mbp+ttc8tTNoU3MY2Sai4dprkvMtlrFNuNczE7+rmRgeEZNv6/K1Dlal
+         1HfFsxOZW3MtdMgeY2DXxt/rNSWjkBxihkV5N2WEz1mK5Z08iNBclg64EgbTgAjscfnD
+         Nar2MjvzwenZoVJTYzs+UxvBuFdy7Sb5PfDjbDlfoklB8VXTF3q+IzqMr+gd35V+rNk5
+         flg637ESvq4rJMR6QaPTKlLUBBwzr5E0XM0m826p6Mw+FmEjjO8dKqoT4rXzbyt6CMS0
+         GSyg==
+X-Gm-Message-State: AOAM532a/5Gt3A2vIJ+TWKhVfuKjmSDkqnmWC093DY9f6ZZsNkfr46zo
+        d7x2ezOcGf9S0N2f7AhLul4=
+X-Google-Smtp-Source: ABdhPJweNyZ+HsWqqvMEvfV+BksHJq1l3p6Da8bpB9jL5ZIvhHFUE6C+AJ7oyHUrEkongo7q2dOapA==
+X-Received: by 2002:a2e:b814:: with SMTP id u20mr18910317ljo.370.1617708144381;
+        Tue, 06 Apr 2021 04:22:24 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id b34sm2163537ljf.137.2021.04.06.04.22.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 04:22:23 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 14:22:18 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v5 7/7] regulator: bd9576: Fix the driver name in id table
+Message-ID: <6d527a928279d2346d2d413b3460c87b07852d40.1617707724.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617707724.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210406093557.1073423-2-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617707724.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Driver name was changed in MFD cell:
+https://lore.kernel.org/lkml/560b9748094392493ebf7af11b6cc558776c4fd5.1613031055.git.matti.vaittinen@fi.rohmeurope.com/
+Fix the ID table to match this.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+Please note - this patch is not really related to the series. This
+change is related to separate MFD driver change and was only added
+as part of this series to avoid the conflicts.
+
+No changes since RFC-v2
+
+ drivers/regulator/bd9576-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
+index 0d55d383d2aa..aeb816cf9ad3 100644
+--- a/drivers/regulator/bd9576-regulator.c
++++ b/drivers/regulator/bd9576-regulator.c
+@@ -1117,8 +1117,8 @@ static int bd957x_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct platform_device_id bd957x_pmic_id[] = {
+-	{ "bd9573-pmic", ROHM_CHIP_TYPE_BD9573 },
+-	{ "bd9576-pmic", ROHM_CHIP_TYPE_BD9576 },
++	{ "bd9573-regulator", ROHM_CHIP_TYPE_BD9573 },
++	{ "bd9576-regulator", ROHM_CHIP_TYPE_BD9576 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(platform, bd957x_pmic_id);
+-- 
+2.25.4
 
 
-Le 06/04/2021 à 11:35, Marc Zyngier a écrit :
-> irq_linear_revmap() is supposed to be a fast path for domain
-> lookups, but it only exposes low-level details of the irqdomain
-> implementation, details which are better kept private.
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-Can you elaborate with more details ?
-
-> 
-> The *overhead* between the two is only a function call and
-> a couple of tests, so it is likely that noone can show any
-> meaningful difference compared to the cost of taking an
-> interrupt.
-
-Do you have any measurement ?
-
-Can you make the "likely" a certitude ?
-
-> 
-> Reimplement irq_linear_revmap() with irq_find_mapping()
-> in order to preserve source code compatibility, and
-> rename the internal field for a measure.
-
-This is in complete contradiction with commit https://github.com/torvalds/linux/commit/d3dcb436
-
-At that time, irq_linear_revmap() was less complex than what irq_find_mapping() is today, and 
-nevertheless it was considered worth restoring in as a fast path. What has changed since then ?
-
-Can you also explain the reason for the renaming of "linear_revmap" into "revmap" ? What is that 
-"measure" ?
-
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->   include/linux/irqdomain.h | 22 +++++++++-------------
->   kernel/irq/irqdomain.c    |  6 +++---
->   2 files changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-> index 33cacc8af26d..b9600f24878a 100644
-> --- a/include/linux/irqdomain.h
-> +++ b/include/linux/irqdomain.h
-> @@ -154,9 +154,9 @@ struct irq_domain_chip_generic;
->    * Revmap data, used internally by irq_domain
->    * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
->    *                         support direct mapping
-> - * @revmap_size: Size of the linear map table @linear_revmap[]
-> + * @revmap_size: Size of the linear map table @revmap[]
->    * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
-> - * @linear_revmap: Linear table of hwirq->virq reverse mappings
-> + * @revmap: Linear table of hwirq->virq reverse mappings
->    */
->   struct irq_domain {
->   	struct list_head link;
-> @@ -180,7 +180,7 @@ struct irq_domain {
->   	unsigned int revmap_size;
->   	struct radix_tree_root revmap_tree;
->   	struct mutex revmap_tree_mutex;
-> -	unsigned int linear_revmap[];
-> +	unsigned int revmap[];
->   };
->   
->   /* Irq domain flags */
-> @@ -396,24 +396,20 @@ static inline unsigned int irq_create_mapping(struct irq_domain *host,
->   	return irq_create_mapping_affinity(host, hwirq, NULL);
->   }
->   
-> -
->   /**
-> - * irq_linear_revmap() - Find a linux irq from a hw irq number.
-> + * irq_find_mapping() - Find a linux irq from a hw irq number.
->    * @domain: domain owning this hardware interrupt
->    * @hwirq: hardware irq number in that domain space
-> - *
-> - * This is a fast path alternative to irq_find_mapping() that can be
-> - * called directly by irq controller code to save a handful of
-> - * instructions. It is always safe to call, but won't find irqs mapped
-> - * using the radix tree.
->    */
-> +extern unsigned int irq_find_mapping(struct irq_domain *host,
-> +				     irq_hw_number_t hwirq);
-> +
->   static inline unsigned int irq_linear_revmap(struct irq_domain *domain,
->   					     irq_hw_number_t hwirq)
->   {
-> -	return hwirq < domain->revmap_size ? domain->linear_revmap[hwirq] : 0;
-> +	return irq_find_mapping(domain, hwirq);
->   }
-> -extern unsigned int irq_find_mapping(struct irq_domain *host,
-> -				     irq_hw_number_t hwirq);
-> +
->   extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
->   extern int irq_create_strict_mappings(struct irq_domain *domain,
->   				      unsigned int irq_base,
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index d10ab1d689d5..dfa716305ea9 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -486,7 +486,7 @@ static void irq_domain_clear_mapping(struct irq_domain *domain,
->   				     irq_hw_number_t hwirq)
->   {
->   	if (hwirq < domain->revmap_size) {
-> -		domain->linear_revmap[hwirq] = 0;
-> +		domain->revmap[hwirq] = 0;
->   	} else {
->   		mutex_lock(&domain->revmap_tree_mutex);
->   		radix_tree_delete(&domain->revmap_tree, hwirq);
-> @@ -499,7 +499,7 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
->   				   struct irq_data *irq_data)
->   {
->   	if (hwirq < domain->revmap_size) {
-> -		domain->linear_revmap[hwirq] = irq_data->irq;
-> +		domain->revmap[hwirq] = irq_data->irq;
->   	} else {
->   		mutex_lock(&domain->revmap_tree_mutex);
->   		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
-> @@ -920,7 +920,7 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
->   
->   	/* Check if the hwirq is in the linear revmap. */
->   	if (hwirq < domain->revmap_size)
-> -		return domain->linear_revmap[hwirq];
-> +		return domain->revmap[hwirq];
->   
->   	rcu_read_lock();
->   	data = radix_tree_lookup(&domain->revmap_tree, hwirq);
-> 
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
