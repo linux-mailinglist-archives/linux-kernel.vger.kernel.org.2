@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A690355A8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40575355A9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236388AbhDFRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:41:01 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44771 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhDFRlA (ORCPT
+        id S1347034AbhDFRoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244858AbhDFRoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:41:00 -0400
-Received: by mail-oi1-f179.google.com with SMTP id a8so15935268oic.11;
-        Tue, 06 Apr 2021 10:40:52 -0700 (PDT)
+        Tue, 6 Apr 2021 13:44:11 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F17DC061761
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:44:03 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id k76so3367224vkk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EtQUUFH1idf1LCKyK4bnY5JsWaSl6wulsAadPAZ7yAY=;
+        b=k44fY36vdgSsXvuMKXVH2LPUy3SZsyFWOTycUHNSmOyjQKKd2jYRXyVswoQDx+BXc/
+         qbXVT6sU8A/aog8FxFGQmnA5OqijC8l7d4uKXWgAcKoYSY0f87EdOMdUKGccXRucONjM
+         kQuT9XA70rCkKLQps0fdWPpH+vpwXbGFnuA1rBrLaowSoqzpHxTPvmWAgZWPwrwjiRCP
+         EDsJHhTiPdQdRAMcx1879N1yM38qIuq7ue+gjrpg0ULB7XtmuX4WlsmNRC6gF7c8Oero
+         5G+Qe4AzXmDuJRsj/DVfwuCngDmnz4A5oZH11YIIOMykr0JDwT+RxONPGTfNr6cno1SG
+         C/9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6QPhKZsquLIEpX7e3NC/9vIpJz8EUh2fOFvHLn8Y5pw=;
-        b=S3wCtFSocVFiEJY5W0pFVjU3fELWkZGaczm9mnJMOcQ+jPjYVURLkpHEmxdw7HbTf7
-         MI+IkIMml2pWoJhzn3kNVP5KUUazFJb1FueZwSF0cJjZ+pddDWSiDsbZ0jAN7m9Mjw/g
-         LpSVpqmgvl8ckCfd+/pcCJXnbJEWwdGke3tg3bWGIx6k4nkctl+8+TkyidhnmTPTOGs8
-         C+fsMTCxue30HtTbzVderSMcL6K+kTPyR6G3bZkaeGHMcbSXOmLedwRZcJdYURT6MULL
-         8m4WCJ+zkWhzPhPnbuFDCzmhKbOuYI+0RfrGK9SZvD9LS4IgmTlYEz8n2jHmz85o1Oha
-         0giw==
-X-Gm-Message-State: AOAM533JKtNpOCBIJo0Rhx6KiYwUrzw3ehfH2DAiuGsF/KIsoqmavB0h
-        1xsnFauBpasuN92N3et24A==
-X-Google-Smtp-Source: ABdhPJz/exfIBW4WbDS+BnoTA5dhoXS7ju34vF4fJxbKbpRTNFrZPUs0M/kXJrc3/t6EM5pgq00sOA==
-X-Received: by 2002:aca:4187:: with SMTP id o129mr4173846oia.10.1617730852367;
-        Tue, 06 Apr 2021 10:40:52 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l81sm3876263oif.31.2021.04.06.10.40.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 10:40:51 -0700 (PDT)
-Received: (nullmailer pid 2016914 invoked by uid 1000);
-        Tue, 06 Apr 2021 17:40:50 -0000
-Date:   Tue, 6 Apr 2021 12:40:50 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
-Message-ID: <20210406174050.GA1963300@robh.at.kernel.org>
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
- <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com>
- <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EtQUUFH1idf1LCKyK4bnY5JsWaSl6wulsAadPAZ7yAY=;
+        b=KsDFjD8JptQvcdn5m1wBxIL3S/cXqnzz6jZHDWjW8sJL1f1IEb0DiBDj6lsDXMSzqi
+         ivzntFHyDUaQ1XK8Ye0A8/pWRHIEIR37t5MqYGPpIgIBHZ3XeSEm3g7BcdRshpKuDdUd
+         D4iWL5Bmj/gEoPGvVegnHin4K+l646OTf1YHk85HhWtuqxvLN64GX4TEVjODndlGIAeR
+         E4t2HD6R+NPtxzoWnQWIW3T/I9p/9rbMCJywNx5KDE0Wgdl3fSD6vmclGowoC1eZ8rfn
+         eVhSkYZjC7v3Jz8R4rhXC514sYWhIRX3Tr75eZENfMFP80d6YBiXy07awzkFnTas00SY
+         bsWw==
+X-Gm-Message-State: AOAM533wXfYfGQEru+BuqCKkR+Vodm+C/v39tyrx+1xm9/ntOfs/WusE
+        1GUmwZFjaXbmYWKaAlknFTT6NFjMMryc9ZQyxNxqOQ==
+X-Google-Smtp-Source: ABdhPJw/vL1B1lwxMga5y/GzF9RJd38fkIy6KReE2RxFlfigxn9W8Lc55czyHQX2OxWT1+hnyyz72VsWoaRuC/f5D4k=
+X-Received: by 2002:a1f:9345:: with SMTP id v66mr18088483vkd.22.1617731041913;
+ Tue, 06 Apr 2021 10:44:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
+References: <20210401233216.2540591-1-samitolvanen@google.com>
+ <20210401233216.2540591-15-samitolvanen@google.com> <20210406115357.GE96480@C02TD0UTHF1T.local>
+In-Reply-To: <20210406115357.GE96480@C02TD0UTHF1T.local>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 6 Apr 2021 10:43:50 -0700
+Message-ID: <CABCJKuchDg74Md_He1nKgXKUf=pVEmiaVr_yJXB_yX+tKNhByA@mail.gmail.com>
+Subject: Re: [PATCH v5 14/18] arm64: add __nocfi to functions that jump to a
+ physical address
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 01:18:56PM -0700, Saravana Kannan wrote:
-> On Mon, Apr 5, 2021 at 1:10 PM Ilya Lipnitskiy
-> <ilya.lipnitskiy@gmail.com> wrote:
-> >
-> > Hi Saravana,
-> >
-> > On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
-> > > <ilya.lipnitskiy@gmail.com> wrote:
-> > > >
-> > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > > not configured by #gpio-cells and can't be parsed along with other
-> > > > "*-gpios" properties.
-> > > >
-> > > > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
-> > > > nr-gpio is not really special, so we only need to fix nr-gpios suffix
-> > > > here.
-> > >
-> > > The only example of this that I see is "snps,nr-gpios".
-> > arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
-> > parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
-> > drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
-> > "nr-gpios" without any vendor prefix.
-> 
-> Ah ok. I just grepped the DT files. I'm not sure what Rob's position
-> is on supporting DT files not in upstream. Thanks for the
-> clarification.
+On Tue, Apr 6, 2021 at 4:54 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> [adding Ard for EFI runtime services bits]
+>
+> On Thu, Apr 01, 2021 at 04:32:12PM -0700, Sami Tolvanen wrote:
+> > Disable CFI checking for functions that switch to linear mapping and
+> > make an indirect call to a physical address, since the compiler only
+> > understands virtual addresses and the CFI check for such indirect calls
+> > would always fail.
+>
+> What does physical vs virtual have to do with this? Does the address
+> actually matter, or is this just a general thing that when calling an
+> assembly function we won't have a trampoline that the caller expects?
 
-If it's something we had documented, then we have to support it (also 
-conditioned on someone noticing). I'm hoping we can just delete APM and 
-other defunct ARM server DTs soon, but we could update them to use 
-'ngpios' instead.
+No, this is about the actual address. The compiler-generated runtime
+checks only know about EL1 virtual addresses, so if we switch to a
+different address space, all indirect calls will trip CFI.
 
-gpio-mockup doesn't have a binding, so no DT ABI. Hard to tell if 
-gpio-adnp.c has any users.
+> I wonder if we need to do something with asmlinkage here, perhaps?
+>
+> I didn't spot anything in the seriues handling EFI runtime services
+> calls, and I strongly suspect we need to do something for those, unless
+> they're handled implicitly by something else.
+>
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  arch/arm64/include/asm/mmu_context.h | 2 +-
+> >  arch/arm64/kernel/cpu-reset.h        | 8 ++++----
+> >  arch/arm64/kernel/cpufeature.c       | 2 +-
+> >  3 files changed, 6 insertions(+), 6 deletions(-)
+> >https://www.cnbc.com/2021/04/06/donald-trump-save-america-pac-has-85-million-on-hand-ahead-of-midterms.html
+> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> > index 386b96400a57..d3cef9133539 100644
+> > --- a/arch/arm64/include/asm/mmu_context.h
+> > +++ b/arch/arm64/include/asm/mmu_context.h
+> > @@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
+> >   * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
+> >   * avoiding the possibility of conflicting TLB entries being allocated.
+> >   */
+> > -static inline void cpu_replace_ttbr1(pgd_t *pgdp)
+> > +static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
+>
+> Given these are inlines, what's the effect when these are inlined into a
+> function that would normally use CFI? Does CFI get supressed for the
+> whole function, or just the bit that got inlined?
 
-Rob
+Just for the bit that gets inlined.
+
+> Is there an attribute that we could place on a function pointer to tell
+> the compiler to not check calls via that pointer? If that existed we'd
+> be able to scope this much more tightly.
+
+There isn't, but I do agree that this would be a useful feature.
+
+Sami
