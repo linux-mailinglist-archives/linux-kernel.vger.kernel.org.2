@@ -2,208 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C187F354DC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6BA354DC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244290AbhDFHW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:22:29 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:24380 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237823AbhDFHW1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:22:27 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1367H9g8013057;
-        Tue, 6 Apr 2021 09:21:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=F5cY1wCX5QADaPc2+6E44j3IcFjspCBtThZI4DS/1F4=;
- b=CnNItbGFYxPMh33jxdzFSVtznxJm4F3ppsekjHAbIvnuUBgrtyuOsuVcpA4GnvmZYTx1
- eQ383BHzZMGRaFArKxomkbmPTlXA9BGFqwCR3I582yZejloExFTBcQgD1Amyld077h5S
- cv7CrXDnLxDtjoYrOs7JrrrwqGBswk/RprCZufHlICeuAif7XVb/OrpsTCFwVza1zOWj
- URvl8G8VxbhzlKq7VhAnXXBcZ1Ql1PYL4rzrz5WcxSrADytd8icxsO1p4uh7uv/EKp/y
- H0CVxb3Rj7LcQIMY9/t7VMZGwuvVUAig9l/kwl7MvkYffWQBAoZzefnUfnIP6NkNm8pS RA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37ra7gacan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 09:21:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 18C12100039;
-        Tue,  6 Apr 2021 09:21:28 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0A02E21E666;
-        Tue,  6 Apr 2021 09:21:28 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 6 Apr 2021 09:21:27
- +0200
-From:   Erwan Le Ray <erwan.leray@foss.st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Erwan Le Ray" <erwan.leray@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>,
-        Erwan Le Ray <erwan.leray@st.com>
-Subject: [PATCH 2/2] serial: stm32: add fifo threshold configuration
-Date:   Tue, 6 Apr 2021 09:21:22 +0200
-Message-ID: <20210406072122.27384-3-erwan.leray@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210406072122.27384-1-erwan.leray@foss.st.com>
-References: <20210406072122.27384-1-erwan.leray@foss.st.com>
+        id S244282AbhDFHWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:22:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38678 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240089AbhDFHWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 03:22:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617693712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NaYy0uWjn0czkuwfMwjR10jkixk+b1OEP4FSJKarE1w=;
+        b=MNy/qD2vSam5wmc2g3CJoNcqtIq/nerZnfEURI68VwMgPi6w4o27wdnsCAoQ44FdWE88T1
+        CF9XZmIsDWftPUnopfkSfL7lMD5yVmfZBkEU6qX89FYNVuPnkxHC3V9h3djqING0Xh7orQ
+        m9Bmqn4lFIn4wF7A2HzHXr/P0nDzP+8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6AAFB090;
+        Tue,  6 Apr 2021 07:21:52 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 09:21:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Neil Sun <neilsun@yunify.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/vmscan.c: drop_slab_node with task's memcg
+Message-ID: <YGwMD3DOymOFJ7O5@dhcp22.suse.cz>
+References: <1617359934-7812-1-git-send-email-neilsun@yunify.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_01:2021-04-01,2021-04-06 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617359934-7812-1-git-send-email-neilsun@yunify.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+On Fri 02-04-21 18:38:54, Neil Sun wrote:
+> This patch makes shrink_slab() with task's memcg in drop_slab_node(),
+> so we can free reclaimable slab objects belongs to memcg /lxc/i-vbe1u8o7
+> with following command:
 
-Add the support for two optional DT properties, to configure RX and TX
-FIFO thresholds::
-- st,rx-fifo-threshold-bytes
-- st,tx-fifo-threshold-bytes
-This replaces hard-coded 8 bytes threshold. Keep 8 as the default value if
-not specified, for backward compatibility.
+You are changing semantic of the existing user interface. This knob has
+never been memcg aware and it is supposed to have a global impact. I do
+not think we can simply change that without some users being surprised
+or even breaking them.
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Signed-off-by: Erwan Le Ray <erwan.leray@st.com>
+> cgexec -g memory:/lxc/i-vbe1u8o7 sysctl vm.drop_caches=2
+> 
+> Test with following steps:
+> 
+> root@i-yl0pwrt8:~# free -h
+>               total        used        free      shared  buff/cache   available
+> Mem:           62Gi       265Mi        62Gi       1.0Mi       290Mi        61Gi
+> Swap:          31Gi          0B        31Gi
+> root@i-yl0pwrt8:~# (cd /tmp && /root/generate_slab_cache)
+> root@i-yl0pwrt8:~# free -h
+>               total        used        free      shared  buff/cache   available
+> Mem:           62Gi       266Mi        60Gi       1.0Mi       2.2Gi        61Gi
+> Swap:          31Gi          0B        31Gi
+> root@i-yl0pwrt8:~# cgcreate -g memory:/lxc/i-vbe1u8o7
+> root@i-yl0pwrt8:~# cgexec -g memory:/lxc/i-vbe1u8o7 /root/generate_slab_cache
+> root@i-yl0pwrt8:~# free -h
+>               total        used        free      shared  buff/cache   available
+> Mem:           62Gi       267Mi        58Gi       1.0Mi       4.1Gi        61Gi
+> Swap:          31Gi          0B        31Gi
+> root@i-yl0pwrt8:~# cgexec -g memory:/lxc/i-vbe1u8o7 sysctl vm.drop_caches=2
+> vm.drop_caches = 2
+> root@i-yl0pwrt8:~# free -h
+>               total        used        free      shared  buff/cache   available
+> Mem:           62Gi       268Mi        60Gi       1.0Mi       2.2Gi        61Gi
+> Swap:          31Gi          0B        31Gi
+> root@i-yl0pwrt8:~# sysctl vm.drop_caches=2
+> vm.drop_caches = 2
+> root@i-yl0pwrt8:~# free -h
+>               total        used        free      shared  buff/cache   available
+> Mem:           62Gi       267Mi        62Gi       1.0Mi       290Mi        61Gi
+> Swap:          31Gi          0B        31Gi
+> 
+> Signed-off-by: Neil Sun <neilsun@yunify.com>
+> ---
+>  mm/vmscan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 562e87cb..81d770a 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -702,7 +702,7 @@ void drop_slab_node(int nid)
+>  			return;
+>  
+>  		freed = 0;
+> -		memcg = mem_cgroup_iter(NULL, NULL, NULL);
+> +		memcg = mem_cgroup_from_task(current);
+>  		do {
+>  			freed += shrink_slab(GFP_KERNEL, nid, memcg, 0);
+>  		} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+> -- 
+> 2.7.4
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 4d277804c63e..1be5b69ee567 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -312,7 +312,7 @@ static void stm32_usart_tx_interrupt_enable(struct uart_port *port)
- 	 * Enables TX FIFO threashold irq when FIFO is enabled,
- 	 * or TX empty irq when FIFO is disabled
- 	 */
--	if (stm32_port->fifoen)
-+	if (stm32_port->fifoen && stm32_port->txftcfg >= 0)
- 		stm32_usart_set_bits(port, ofs->cr3, USART_CR3_TXFTIE);
- 	else
- 		stm32_usart_set_bits(port, ofs->cr1, USART_CR1_TXEIE);
-@@ -323,7 +323,7 @@ static void stm32_usart_tx_interrupt_disable(struct uart_port *port)
- 	struct stm32_port *stm32_port = to_stm32_port(port);
- 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
--	if (stm32_port->fifoen)
-+	if (stm32_port->fifoen && stm32_port->txftcfg >= 0)
- 		stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_TXFTIE);
- 	else
- 		stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_TXEIE);
-@@ -801,9 +801,10 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 	cr3 = readl_relaxed(port->membase + ofs->cr3);
- 	cr3 &= USART_CR3_TXFTIE | USART_CR3_RXFTIE;
- 	if (stm32_port->fifoen) {
--		cr3 &= ~(USART_CR3_TXFTCFG_MASK | USART_CR3_RXFTCFG_MASK);
--		cr3 |= USART_CR3_TXFTCFG_HALF << USART_CR3_TXFTCFG_SHIFT;
--		cr3 |= USART_CR3_RXFTCFG_HALF << USART_CR3_RXFTCFG_SHIFT;
-+		if (stm32_port->txftcfg >= 0)
-+			cr3 |= stm32_port->txftcfg << USART_CR3_TXFTCFG_SHIFT;
-+		if (stm32_port->rxftcfg >= 0)
-+			cr3 |= stm32_port->rxftcfg << USART_CR3_RXFTCFG_SHIFT;
- 	}
- 
- 	if (cflag & CSTOPB)
-@@ -833,7 +834,8 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 			, bits);
- 
- 	if (ofs->rtor != UNDEF_REG && (stm32_port->rx_ch ||
--				       stm32_port->fifoen)) {
-+				       (stm32_port->fifoen &&
-+					stm32_port->rxftcfg >= 0))) {
- 		if (cflag & CSTOPB)
- 			bits = bits + 3; /* 1 start bit + 2 stop bits */
- 		else
-@@ -1021,6 +1023,39 @@ static const struct uart_ops stm32_uart_ops = {
- 	.verify_port	= stm32_usart_verify_port,
- };
- 
-+/*
-+ * STM32H7 RX & TX FIFO threshold configuration (CR3 RXFTCFG / TXFTCFG)
-+ * Note: 1 isn't a valid value in RXFTCFG / TXFTCFG. In this case,
-+ * RXNEIE / TXEIE can be used instead of threshold irqs: RXFTIE / TXFTIE.
-+ * So, RXFTCFG / TXFTCFG bitfields values are encoded as array index + 1.
-+ */
-+static const u32 stm32h7_usart_fifo_thresh_cfg[] = { 1, 2, 4, 8, 12, 14, 16 };
-+
-+static void stm32_usart_get_ftcfg(struct platform_device *pdev, const char *p,
-+				  int *ftcfg)
-+{
-+	u32 bytes, i;
-+
-+	/* DT option to get RX & TX FIFO threshold (default to 8 bytes) */
-+	if (of_property_read_u32(pdev->dev.of_node, p, &bytes))
-+		bytes = 8;
-+
-+	for (i = 0; i < ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg); i++)
-+		if (stm32h7_usart_fifo_thresh_cfg[i] >= bytes)
-+			break;
-+	if (i >= ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg))
-+		i = ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg) - 1;
-+
-+	dev_dbg(&pdev->dev, "%s set to %d bytes\n", p,
-+		stm32h7_usart_fifo_thresh_cfg[i]);
-+
-+	/* Provide FIFO threshold ftcfg (1 is invalid: threshold irq unused) */
-+	if (i)
-+		*ftcfg = i - 1;
-+	else
-+		*ftcfg = -EINVAL;
-+}
-+
- static void stm32_usart_deinit_port(struct stm32_port *stm32port)
- {
- 	clk_disable_unprepare(stm32port->clk);
-@@ -1057,6 +1092,12 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
- 		of_property_read_bool(pdev->dev.of_node, "rx-tx-swap");
- 
- 	stm32port->fifoen = stm32port->info->cfg.has_fifo;
-+	if (stm32port->fifoen) {
-+		stm32_usart_get_ftcfg(pdev, "st,rx-fifo-threshold-bytes",
-+				      &stm32port->rxftcfg);
-+		stm32_usart_get_ftcfg(pdev, "st,tx-fifo-threshold-bytes",
-+				      &stm32port->txftcfg);
-+	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	port->membase = devm_ioremap_resource(&pdev->dev, res);
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index 77d1ac082e89..07ac291328cd 100644
---- a/drivers/tty/serial/stm32-usart.h
-+++ b/drivers/tty/serial/stm32-usart.h
-@@ -216,12 +216,6 @@ struct stm32_usart_info stm32h7_info = {
- #define USART_CR3_TXFTCFG_MASK	GENMASK(31, 29)	/* H7 */
- #define USART_CR3_TXFTCFG_SHIFT	29		/* H7 */
- 
--/* TX FIFO threashold set to half of its depth */
--#define USART_CR3_TXFTCFG_HALF	0x2
--
--/* RX FIFO threashold set to half of its depth */
--#define USART_CR3_RXFTCFG_HALF	0x2
--
- /* USART_GTPR */
- #define USART_GTPR_PSC_MASK	GENMASK(7, 0)
- #define USART_GTPR_GT_MASK	GENMASK(15, 8)
-@@ -273,6 +267,8 @@ struct stm32_port {
- 	bool hw_flow_control;
- 	bool swap;		 /* swap RX & TX pins */
- 	bool fifoen;
-+	int rxftcfg;		/* RX FIFO threshold CFG      */
-+	int txftcfg;		/* TX FIFO threshold CFG      */
- 	bool wakeup_src;
- 	int rdr_mask;		/* receive data register mask */
- 	struct mctrl_gpios *gpios; /* modem control gpios */
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
