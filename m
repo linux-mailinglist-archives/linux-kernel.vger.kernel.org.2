@@ -2,134 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D242135509A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C1935509C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245003AbhDFKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:12:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55108 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233987AbhDFKM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:12:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617703942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5DZOHw5xnAUj4vS/h0xMRQ76Ng9d8UzoQePr3Ea26wo=;
-        b=X2W6QzzlgXLwlRDzXzOTjumlQTqBYWPmGkkMl3Dm5xFU5VWSl5vPFl9gLXNoqLKZ5x660M
-        /RgsY4f6ayK5WubJlPW4aWnJgImOV/MxFV3DBtQltkaN2euOKP2HmBeNXSZq67fAQevg9H
-        QWctNXNz/CINPBylYRpifrMdGLRXz2Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-x6gvMrAgOKel0WNrbk0Anw-1; Tue, 06 Apr 2021 06:12:20 -0400
-X-MC-Unique: x6gvMrAgOKel0WNrbk0Anw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 750EF83DD3F;
-        Tue,  6 Apr 2021 10:12:18 +0000 (UTC)
-Received: from starship (unknown [10.35.206.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5840B59443;
-        Tue,  6 Apr 2021 10:12:14 +0000 (UTC)
-Message-ID: <8ffa121b8be00cd30c93830c476a448cee895abc.camel@redhat.com>
-Subject: Re: [PATCH 5/6] KVM: nSVM: avoid loading PDPTRs after migration
- when possible
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Date:   Tue, 06 Apr 2021 13:12:13 +0300
-In-Reply-To: <YGtCeiyzUrRbbNKG@google.com>
-References: <20210401141814.1029036-1-mlevitsk@redhat.com>
-         <20210401141814.1029036-6-mlevitsk@redhat.com>
-         <YGtCeiyzUrRbbNKG@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S245014AbhDFKNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:13:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:34228 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233987AbhDFKNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:13:10 -0400
+IronPort-SDR: nCyTWj2Ehr8rwnLIfxCZ2yKZkrDVjzjkYOfPvCvklPPq7RZNozTvpxGsD30UmTuMdLSx6Lz1GH
+ PENne2YBV6Ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193074139"
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="193074139"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 03:12:55 -0700
+IronPort-SDR: R+yYM16m9/NbCWKhvHzUaI9MU3w8pkApAg5iD1qfMiu0txZNazdqeCxogiUvOl/GuF952M6Yz+
+ mBCmAm9KB9tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="380863979"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 06 Apr 2021 03:12:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id C1FE4202; Tue,  6 Apr 2021 13:13:07 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Subject: [PATCH net-next v1 1/1] stmmac: intel: Drop duplicate ID in the list of PCI device IDs
+Date:   Tue,  6 Apr 2021 13:13:06 +0300
+Message-Id: <20210406101306.59162-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-05 at 17:01 +0000, Sean Christopherson wrote:
-> On Thu, Apr 01, 2021, Maxim Levitsky wrote:
-> > if new KVM_*_SREGS2 ioctls are used, the PDPTRs are
-> > part of the migration state and thus are loaded
-> > by those ioctls.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/nested.c | 15 +++++++++++++--
-> >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index ac5e3e17bda4..b94916548cfa 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -373,10 +373,9 @@ static int nested_svm_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3,
-> >  		return -EINVAL;
-> >  
-> >  	if (!nested_npt && is_pae_paging(vcpu) &&
-> > -	    (cr3 != kvm_read_cr3(vcpu) || pdptrs_changed(vcpu))) {
-> > +	    (cr3 != kvm_read_cr3(vcpu) || !kvm_register_is_available(vcpu, VCPU_EXREG_PDPTR)))
-> >  		if (CC(!load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3)))
-> 
-> What if we ditch the optimizations[*] altogether and just do:
-> 
-> 	if (!nested_npt && is_pae_paging(vcpu) &&
-> 	    CC(!load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
-> 		return -EINVAL;
-> 
-> Won't that obviate the need for KVM_{GET|SET}_SREGS2 since KVM will always load
-> the PDPTRs from memory?  IMO, nested migration with shadowing paging doesn't
-> warrant this level of optimization complexity.
+The PCI device IDs are defined with a prefix PCI_DEVICE_ID.
+There is no need to repeat the ID part at the end of each definition.
 
-Its not an optimization, it was done to be 100% within the X86 spec. 
-PDPTRs are internal cpu registers which are loaded only when
-CR3/CR0/CR4 are written by the guest, guest entry loads CR3, or 
-when guest exit loads CR3 (I checked both Intel and AMD manuals).
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 60 +++++++++----------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-In addition to that when NPT is enabled, AMD drops this siliness and 
-just treats PDPTRs as normal paging entries, while on Intel side 
-when EPT is enabled, PDPTRs are stored in VMCS.
-
-Nested migration is neither of these cases, thus PDPTRs should be 
-stored out of band.
-Same for non nested migration.
-
-This was requested by Jim Mattson, and I went ahead and 
-implemented it, even though I do understand that no sane OS 
-relies on PDPTRs to be unsync v.s the actual page
-table containing them.
-
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> [*] For some definitions of "optimization", since the extra pdptrs_changed()
->     check in the existing code is likely a net negative.
-> 
-> >  			return -EINVAL;
-> > -	}
-> >  
-> >  	/*
-> >  	 * TODO: optimize unconditional TLB flush/MMU sync here and in
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 3d9a57043af2..7f0ce373a63d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -1053,41 +1053,41 @@ static int __maybe_unused intel_eth_pci_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(intel_eth_pm_ops, intel_eth_pci_suspend,
+ 			 intel_eth_pci_resume);
+ 
+-#define PCI_DEVICE_ID_INTEL_QUARK_ID			0x0937
+-#define PCI_DEVICE_ID_INTEL_EHL_RGMII1G_ID		0x4b30
+-#define PCI_DEVICE_ID_INTEL_EHL_SGMII1G_ID		0x4b31
+-#define PCI_DEVICE_ID_INTEL_EHL_SGMII2G5_ID		0x4b32
++#define PCI_DEVICE_ID_INTEL_QUARK		0x0937
++#define PCI_DEVICE_ID_INTEL_EHL_RGMII1G		0x4b30
++#define PCI_DEVICE_ID_INTEL_EHL_SGMII1G		0x4b31
++#define PCI_DEVICE_ID_INTEL_EHL_SGMII2G5	0x4b32
+ /* Intel(R) Programmable Services Engine (Intel(R) PSE) consist of 2 MAC
+  * which are named PSE0 and PSE1
+  */
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE0_RGMII1G_ID		0x4ba0
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE0_SGMII1G_ID		0x4ba1
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE0_SGMII2G5_ID	0x4ba2
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE1_RGMII1G_ID		0x4bb0
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE1_SGMII1G_ID		0x4bb1
+-#define PCI_DEVICE_ID_INTEL_EHL_PSE1_SGMII2G5_ID	0x4bb2
+-#define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_0_ID		0x43ac
+-#define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_1_ID		0x43a2
+-#define PCI_DEVICE_ID_INTEL_TGL_SGMII1G_ID		0xa0ac
+-#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_0_ID		0x7aac
+-#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_1_ID		0x7aad
++#define PCI_DEVICE_ID_INTEL_EHL_PSE0_RGMII1G	0x4ba0
++#define PCI_DEVICE_ID_INTEL_EHL_PSE0_SGMII1G	0x4ba1
++#define PCI_DEVICE_ID_INTEL_EHL_PSE0_SGMII2G5	0x4ba2
++#define PCI_DEVICE_ID_INTEL_EHL_PSE1_RGMII1G	0x4bb0
++#define PCI_DEVICE_ID_INTEL_EHL_PSE1_SGMII1G	0x4bb1
++#define PCI_DEVICE_ID_INTEL_EHL_PSE1_SGMII2G5	0x4bb2
++#define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_0	0x43ac
++#define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_1	0x43a2
++#define PCI_DEVICE_ID_INTEL_TGL_SGMII1G		0xa0ac
++#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_0	0x7aac
++#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_1	0x7aad
+ 
+ static const struct pci_device_id intel_eth_pci_id_table[] = {
+-	{ PCI_DEVICE_DATA(INTEL, QUARK_ID, &quark_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_RGMII1G_ID, &ehl_rgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_SGMII1G_ID, &ehl_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_SGMII2G5_ID, &ehl_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_RGMII1G_ID, &ehl_pse0_rgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_SGMII1G_ID, &ehl_pse0_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_SGMII2G5_ID, &ehl_pse0_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_RGMII1G_ID, &ehl_pse1_rgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_SGMII1G_ID, &ehl_pse1_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_SGMII2G5_ID, &ehl_pse1_sgmii1g_info) },
+-	{ PCI_DEVICE_DATA(INTEL, TGL_SGMII1G_ID, &tgl_sgmii1g_phy0_info) },
+-	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_0_ID, &tgl_sgmii1g_phy0_info) },
+-	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1_ID, &tgl_sgmii1g_phy1_info) },
+-	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0_ID, &adls_sgmii1g_phy0_info) },
+-	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1_ID, &adls_sgmii1g_phy1_info) },
++	{ PCI_DEVICE_DATA(INTEL, QUARK, &quark_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_RGMII1G, &ehl_rgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_SGMII1G, &ehl_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_SGMII2G5, &ehl_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_RGMII1G, &ehl_pse0_rgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_SGMII1G, &ehl_pse0_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE0_SGMII2G5, &ehl_pse0_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_RGMII1G, &ehl_pse1_rgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_SGMII1G, &ehl_pse1_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, EHL_PSE1_SGMII2G5, &ehl_pse1_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, TGL_SGMII1G, &tgl_sgmii1g_phy0_info) },
++	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_0, &tgl_sgmii1g_phy0_info) },
++	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1, &tgl_sgmii1g_phy1_info) },
++	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0, &adls_sgmii1g_phy0_info) },
++	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1, &adls_sgmii1g_phy1_info) },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(pci, intel_eth_pci_id_table);
+-- 
+2.30.2
 
