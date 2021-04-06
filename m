@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56496355113
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64AB355116
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbhDFKjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:39:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:40582 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhDFKjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:39:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6737531B;
-        Tue,  6 Apr 2021 03:39:11 -0700 (PDT)
-Received: from [10.57.24.162] (unknown [10.57.24.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 275233F73D;
-        Tue,  6 Apr 2021 03:39:09 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
- statistics from going stale
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210331163352.32416-1-lukasz.luba@arm.com>
- <20210331163352.32416-2-lukasz.luba@arm.com>
- <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
- <1f0710d5-cd78-dfff-1ce2-bba5f6e469b7@arm.com>
- <1a0b6e4a-1717-91d6-a664-d50e6aa8a809@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d74b8e8e-64b0-d724-d572-f98eb597a60e@arm.com>
-Date:   Tue, 6 Apr 2021 11:39:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S234227AbhDFKl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhDFKl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:41:56 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11753C06174A;
+        Tue,  6 Apr 2021 03:41:48 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id d10so12627510ils.5;
+        Tue, 06 Apr 2021 03:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GqwLT9earkXIj3mKLKZrj+6hWxt8NrgkmSJhRhhjzAo=;
+        b=sDnJNWn7Z2IewJKMiE7LngPEyfOX1AUQyJ0/yucjC1+WUEHGez3FNZiO1u+0F7ImG1
+         2Cr2fS5v7V0g9ngBry9FuUmHNlVlwzXRf0WiAHde/ELtWf0HzHTb+9m2XxMidarWJPps
+         eyQhIoNXARE28XD0qH9X5KnHbMNFQpxQk5HjF/lFvstqUdThh8nluS1zJM2/xF8lyWsN
+         IKeaHgcD5c0ElpMhaegCTBGULOApasFOiZCFWe05Hd05JkNmoig2DOX5foPSflk5/sHj
+         VA6+arofL8TsPQeGHQ1x94clDQAYcR++1nVte7Vrrbpyf4NvDmKFMrcAxUNdrgFETFeF
+         4Cbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GqwLT9earkXIj3mKLKZrj+6hWxt8NrgkmSJhRhhjzAo=;
+        b=JHEs2h1DxYgjhz97vhDLV3DF3BrEkktxQEA9Ue0EUtbEmrnPSrwN+yy3q4vGKy8gjw
+         S/Ngac0UC2YlutFiofNEBzSe11P/+eC/IxI6ykSSQ1bYqmrlZ2h6WxrqZS5RkhpGAsX5
+         lpxeUXVHTohWbysCUb2TE0h5OiRH0uzd30hD3cXxK7gk/aLeHLqiAhziTChGBVyiThEx
+         Tp4KC5Myc1zaKVTso6ilOS0pdcH+Nu4zV5OZQaWzeQFHe7DO6UWkLTtcsZIcmwNW528n
+         /w45/TTfWONuXAThYHCuJIJRk1ifJWfjl2LkDHja0f6U/PRG/I7q0N1X9wRxEuXN9wEw
+         SPkg==
+X-Gm-Message-State: AOAM531pAJsDYtwByPlhXwu6YRPSlP4hM63uFdleoaLAk/q6eamXnZ39
+        1HroBeCz9cncRYFObpv6bfVA+sS2uqtCyZ52jmQ=
+X-Google-Smtp-Source: ABdhPJwUKY3YO+j9UScD0xU6VF/8JOy30l6n9KRq+55gtznilibWyOVPXz9J2I4HiITvypU+PyaqrAGdmRsMRvaeUvU=
+X-Received: by 2002:a92:7f03:: with SMTP id a3mr23311252ild.203.1617705707486;
+ Tue, 06 Apr 2021 03:41:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1a0b6e4a-1717-91d6-a664-d50e6aa8a809@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210327101254.56872-1-laoar.shao@gmail.com>
+In-Reply-To: <20210327101254.56872-1-laoar.shao@gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 6 Apr 2021 18:41:11 +0800
+Message-ID: <CALOAHbDZPo65Vc89sVCuYkJ6vr=zD-4ev=JN=j7ZAzKHzRibdA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] sched: support schedstats for RT sched class
+To:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, bristot@redhat.com
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 27, 2021 at 6:13 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> We want to measure the latency of RT tasks in our production
+> environment with schedstats facility, but currently schedstats is only
+> supported for fair sched class. In order to support if for other sched
+> classes, we should make it independent of fair sched class. The struct
+> sched_statistics is the schedular statistics of a task_struct or a
+> task_group, both of which are independent of sched class. So we can move
+> struct sched_statistics into struct task_struct and struct task_group to
+> achieve the goal.
+>
+> After the patchset, schestats are orgnized as follows,
+> struct task_struct {
+>     ...
+>     struct sched_statistics statistics;
+>     ...
+>     struct sched_entity *se;
+>     struct sched_rt_entity *rt;
+>     ...
+> };
+>
+> struct task_group {                    |---> stats[0] : of CPU0
+>     ...                                |
+>     struct sched_statistics **stats; --|---> stats[1] : of CPU1
+>     ...                                |
+>                                        |---> stats[n] : of CPUn
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>     struct sched_entity **se;
+>  #endif
+>  #ifdef CONFIG_RT_GROUP_SCHED
+>     struct sched_rt_entity  **rt_se;
+>  #endif
+>     ...
+> };
+>
+> The sched_statistics members may be frequently modified when schedstats is
+> enabled, in order to avoid impacting on random data which may in the same
+> cacheline with them, the struct sched_statistics is defined as cacheline
+> aligned.
+>
+> Then we can use schedstats to trace RT tasks as well, for example,
+>                     Interface File
+>  task schedstats :  /proc/[pid]/sched
+>  group schedstats:  /proc/sched_debug
+>  tracepoints     :  sched:sched_stat_{runtime, wait, sleep, iowait, blocked}
+>
+> As PATCH #2 and #3 changes the core struct in the scheduler, so I did
+> 'perf bench sched pipe' to measure the sched performance before and after
+> the change, suggested by Mel. Below is the data, which are all in
+> usecs/op.
+>                              Before             After
+>   kernel.sched_schedstats=0  6.0~6.1            6.0~6.1
+>   kernel.sched_schedstats=1  6.2~6.4            6.2~6.4
+> No obvious difference after the change.
+>
+> Changes since v1:
+> - Fix the build failure reported by kernel test robot.
+> - Add the performance data with 'perf bench sched pipe', suggested by
+>   Mel.
+> - Make the struct sched_statistics cacheline aligned.
+> - Introduce task block time in schedstats
+>
+> Changes since RFC:
+> - improvement of schedstats helpers, per Mel.
+> - make struct schedstats independent of fair sched class
+>
+> Yafang Shao (6):
+>   sched, fair: use __schedstat_set() in set_next_entity()
+>   sched: make struct sched_statistics independent of fair sched class
+>   sched: make schedstats helpers independent of fair sched class
+>   sched: introduce task block time in schedstats
+>   sched, rt: support sched_stat_runtime tracepoint for RT sched class
+>   sched, rt: support schedstats for RT sched class
+>
+>  include/linux/sched.h    |   7 +-
+>  kernel/sched/core.c      |  24 +++--
+>  kernel/sched/deadline.c  |   4 +-
+>  kernel/sched/debug.c     |  90 +++++++++--------
+>  kernel/sched/fair.c      | 210 ++++++++++++++++-----------------------
+>  kernel/sched/rt.c        | 143 +++++++++++++++++++++++++-
+>  kernel/sched/sched.h     |   3 +
+>  kernel/sched/stats.c     | 104 +++++++++++++++++++
+>  kernel/sched/stats.h     |  89 +++++++++++++++++
+>  kernel/sched/stop_task.c |   4 +-
+>  10 files changed, 489 insertions(+), 189 deletions(-)
+>
+> --
+> 2.18.2
+>
 
+Peter, Ingo, Mel,
 
-On 4/6/21 11:16 AM, Daniel Lezcano wrote:
-> On 06/04/2021 10:44, Lukasz Luba wrote:
->>
->>
->> On 4/2/21 4:54 PM, Daniel Lezcano wrote:
->>> On 31/03/2021 18:33, Lukasz Luba wrote:
->>>> When the temperature is below the first activation trip point the
->>>> cooling
->>>> devices are not checked, so they cannot maintain fresh statistics. It
->>>> leads into the situation, when temperature crosses first trip point, the
->>>> statistics are stale and show state for very long period.
->>>
->>> Can you elaborate the statistics you are referring to ?
->>>
->>> I can understand the pid controller needs temperature but I don't
->>> understand the statistics with the cooling device.
->>>
->>>
->>
->> The allocate_power() calls cooling_ops->get_requested_power(),
->> which is for CPUs cpufreq_get_requested_power() function.
->> In that cpufreq implementation for !SMP we still has the
->> issue of stale statistics. Viresh, when he introduced the usage
->> of sched_cpu_util(), he fixed that 'long non-meaningful period'
->> of the broken statistics and it can be found since v5.12-rc1.
->>
->> The bug is still there for the !SMP. Look at the way how idle time
->> is calculated in get_load() [1]. It relies on 'idle_time->timestamp'
->> for calculating the period. But when this function is not called,
->> the value can be very far away in time, e.g. a few seconds back,
->> when the last allocate_power() was called.
->>
->> The bug is there for both SMP and !SMP [2] for older kernels, which can
->> be used in Android or ChromeOS. I've been considering to put this simple
->> IPA fix also to some other kernels, because Viresh's change is more
->> a 'feature' and does not cover both platforms.
-> 
-> Ok, so IIUC, the temperature is needed as well as the power to do the
-> connection for the pid loop (temp vs power).
-> 
-> I'm trying to figure out how to delegate the mitigation switch on/off to
-> the core code instead of the governor (and kill tz->passive) but how
-> things are implemented for the IPA makes this very difficult.
-> 
-> AFAICT, this fix is not correct.
-> 
-> If the temperature is below the 'switch_on_temp' the passive is set to
-> zero and the throttle function is not called anymore (assuming it is
-> interrupt mode not polling mode), so the power number is not updated also.
+Any comments on this version ?
 
-IPA doesn't work well in asynchronous mode, because it needs this fixed
-length for the period. I have been experimenting with tsens IRQs and
-also both fixed polling + sporadic asynchronous IRQs, trying to fix it
-and have 'predictable' IPA, but without a luck.
-IPA needs synchronous polling events like we have for high temp e.g.
-100ms and low temp e.g. 1000ms. The asynchronous events are root of
-undesirable states (too low or to high) calculated and set for cooling
-devices. It's also harder to escape these states with asynchronous
-events. I don't recommend using IPA with asynchronous events from IRQs,
-for now. It might change in future, though.
-
-The patch 2/2 should calm down the unnecessary updates/notifications so
-your request.
-The longer polling, which we have for temperature below 'switch_on_temp'
-(e.g. every 1sec) shouldn't harm the performance of the system, but
-definitely makes IPA more predictable and stable.
-
+-- 
+Thanks
+Yafang
