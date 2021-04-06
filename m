@@ -2,321 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9BD355B5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1650355B63
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhDFS3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238333AbhDFS3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:29:20 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F15C06174A;
-        Tue,  6 Apr 2021 11:29:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id a12so11048043pfc.7;
-        Tue, 06 Apr 2021 11:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GIL7rCODKF/xXDJXa/SMy996Dbick98n/f2XKrRaD7U=;
-        b=Caaj1zABlixtHGW+cg9/Fzfai9mIWGQel39ECmacW7GjFbsqXuH+4ZXxojnEwieaDL
-         zYZy29t+GcOjD4OvzCzLEefEyjmrnAbOCp5p/tNzuBN0vejf81ho1pywPcsZGbwciGsj
-         WWCstTxS3YlsIWWplANMqsaxzFq/exROdpLRkGrinf0ex5v4IseGOyIucWjy30FiX4N7
-         VjbbKZI5nibx+R3gN1YKZijlfJRLWl+6x547+ZOMSY+NgUlGrYgEBw9N5JNTsHmqXuAk
-         zbEdOPZ0/VjZGa8x9/i6fg/2IyAeASXBaRFV6HQXD+KXhFuZiscuc5eaGafU5Uyxgxjm
-         TNvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GIL7rCODKF/xXDJXa/SMy996Dbick98n/f2XKrRaD7U=;
-        b=ZDrakz9OEUmPc69Oa70xc1PunpgFnKgC/YlnlNnWXGzbg2YJYrcoZsuwQ7lFeMWhp3
-         Ojad/tJeBpzyN/sGarcSdzfqOlUz7+aNYUsyxr2Qu4K32DeceJgxkCww8SY/TdQpQDCl
-         TRo9+3LMlXxq8YBnTBa96BnFkVKEC7vpcwi3tLgbTSpZ2E1p3/agWngzSPTCde5UtcFm
-         wtiAsAYPhq3yKZHYzRLy+TeWynnzXNX5o1COWnuqCo2sSh4bgo68w2m7pg1AOtz5P0su
-         mXDhgm8nsTpBrJCoDq2kMVr1NTy3bDcyezyQdutaKWmplePnYKzpRjvnzs/0IS8hEN6F
-         nyAw==
-X-Gm-Message-State: AOAM531vHj6+eWbRsTiDZ5tuKFvPAcUjjQ+o3/feuF0WOHy1eDlHk+LV
-        4pWLF+Gzip1b1nGkTl1XM6E=
-X-Google-Smtp-Source: ABdhPJzIuqvHcT3T4EW7OlWXJNKpGpbCCF9v+9JkoBV47e1xBym3cG4T6ZvqRuPUKtfmUqBoQR6qkg==
-X-Received: by 2002:a05:6a00:b89:b029:22f:dce:9fd5 with SMTP id g9-20020a056a000b89b029022f0dce9fd5mr28275846pfj.78.1617733752291;
-        Tue, 06 Apr 2021 11:29:12 -0700 (PDT)
-Received: from localhost.localdomain ([124.253.94.185])
-        by smtp.googlemail.com with ESMTPSA id x25sm19652383pfn.81.2021.04.06.11.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:29:11 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     alexandru.ardelean@analog.com, jic23@kernel.org,
-        devicetree@vger.kernel.org, knaack.h@gmx.de,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de, andy.shevchenko@gmail.com
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH v3 2/2] iio: temperature: add driver support for ti tmp117
-Date:   Tue,  6 Apr 2021 23:58:52 +0530
-Message-Id: <20210406182852.263605-3-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210406182852.263605-1-puranjay12@gmail.com>
-References: <20210406182852.263605-1-puranjay12@gmail.com>
+        id S239554AbhDFS3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:29:53 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:38006 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238613AbhDFS32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:29:28 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1lTqRr-0003Ku-8U; Tue, 06 Apr 2021 20:29:11 +0200
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
+ <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
+ <87r1jnohq6.fsf@codeaurora.org>
+ <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
+ <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+Message-ID: <1cec013f-1f30-ec40-ed73-1dea2dc74d5f@maciej.szmigiero.name>
+Date:   Tue, 6 Apr 2021 20:29:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TMP117 is a Digital temperature sensor with integrated NV memory.
-Add support for tmp117 driver in iio subsystem.
+On 06.04.2021 18:25, Larry Finger wrote:
+> On 4/6/21 7:06 AM, Maciej S. Szmigiero wrote:
+>> On 06.04.2021 12:00, Kalle Valo wrote:
+>>> "Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
+>>>
+>>>> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
+>>>>> Hi,
+>>>>>
+>>>>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
+>>>>> since the driver does not update its beacon to account for TIM changes,
+>>>>> so a station that is sleeping will never learn that it has packets
+>>>>> buffered at the AP.
+>>>>>
+>>>>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
+>>>>> callback, nor does it explicitly update beacon data periodically, so it
+>>>>> has no way to learn that it had changed.
+>>>>>
+>>>>> This results in the AP mode being virtually unusable with STAs that do
+>>>>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
+>>>>> etc.).
+>>>>>
+>>>>> I think the easiest fix here would be to implement set_tim() for example
+>>>>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
+>>>>> the beacon data on the device.
+>>>>
+>>>> Are there any plans to fix this?
+>>>> The driver is listed as maintained by Ping-Ke.
+>>>
+>>> Yeah, power save is hard and I'm not surprised that there are drivers
+>>> with broken power save mode support. If there's no fix available we
+>>> should stop supporting AP mode in the driver.
+>>>
+>>
+>> https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/api
+>> clearly documents that "For AP mode, it must (...) react to the set_tim()
+>> callback or fetch each beacon from mac80211".
+>>
+>> The driver isn't doing either so no wonder the beacon it is sending
+>> isn't getting updated.
+>>
+>> As I have said above, it seems to me that all that needs to be done here
+>> is to queue a work in a set_tim() callback, then call
+>> send_beacon_frame() from rtlwifi/core.c from this work.
+>>
+>> But I don't know the exact device semantics, maybe it needs some other
+>> notification that the beacon has changed, too, or even tries to
+>> manage the TIM bitmap by itself.
+>>
+>> It would be a shame to lose the AP mode for such minor thing, though.
+>>
+>> I would play with this myself, but unfortunately I don't have time
+>> to work on this right now.
+>>
+>> That's where my question to Realtek comes: are there plans to actually
+>> fix this?
+> 
+> Yes, I am working on this. My only question is "if you are such an expert on the problem, why do you not fix it?"
 
-Datasheet: https://www.ti.com/lit/gpn/tmp117
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- MAINTAINERS                      |   7 ++
- drivers/iio/temperature/Kconfig  |  10 ++
- drivers/iio/temperature/Makefile |   1 +
- drivers/iio/temperature/tmp117.c | 182 +++++++++++++++++++++++++++++++
- 4 files changed, 200 insertions(+)
- create mode 100644 drivers/iio/temperature/tmp117.c
+I don't think I am an expert here - I've tried to use a rtl8192cu USB
+dongle in AP mode but its STAs would become unreachable or disconnect
+after a short while, so I have started investigating the reason for such
+problems.
+Ultimately, I have traced it to DTIM in beacons not indicating there are
+frames buffered for connected stations.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 60ed2963e..c9b806b63 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16666,6 +16666,13 @@ F:	include/dt-bindings/soc/ti,sci_pm_domain.h
- F:	include/linux/soc/ti/ti_sci_inta_msi.h
- F:	include/linux/soc/ti/ti_sci_protocol.h
- 
-+TEXAS INSTRUMENTS' TMP117 TEMPERATURE SENSOR DRIVER
-+M:	Puranjay Mohan <puranjay12@gmail.com>
-+L:	linux-iio@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
-+F:	drivers/iio/temperature/tmp117.c
-+
- THANKO'S RAREMONO AM/FM/SW RADIO RECEIVER USB DRIVER
- M:	Hans Verkuil <hverkuil@xs4all.nl>
- L:	linux-media@vger.kernel.org
-diff --git a/drivers/iio/temperature/Kconfig b/drivers/iio/temperature/Kconfig
-index f1f2a1499..c5482983f 100644
---- a/drivers/iio/temperature/Kconfig
-+++ b/drivers/iio/temperature/Kconfig
-@@ -97,6 +97,16 @@ config TMP007
- 	  This driver can also be built as a module. If so, the module will
- 	  be called tmp007.
- 
-+config TMP117
-+	tristate "TMP117 Digital temperature sensor with integrated NV memory"
-+	depends on I2C
-+	help
-+	  If you say yes here you get support for the Texas Instruments
-+	  TMP117 Digital temperature sensor with integrated NV memory.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called tmp117.
-+
- config TSYS01
- 	tristate "Measurement Specialties TSYS01 temperature sensor using I2C bus connection"
- 	depends on I2C
-diff --git a/drivers/iio/temperature/Makefile b/drivers/iio/temperature/Makefile
-index 90c113115..e3392c4b2 100644
---- a/drivers/iio/temperature/Makefile
-+++ b/drivers/iio/temperature/Makefile
-@@ -12,5 +12,6 @@ obj-$(CONFIG_MLX90614) += mlx90614.o
- obj-$(CONFIG_MLX90632) += mlx90632.o
- obj-$(CONFIG_TMP006) += tmp006.o
- obj-$(CONFIG_TMP007) += tmp007.o
-+obj-$(CONFIG_TMP117) += tmp117.o
- obj-$(CONFIG_TSYS01) += tsys01.o
- obj-$(CONFIG_TSYS02D) += tsys02d.o
-diff --git a/drivers/iio/temperature/tmp117.c b/drivers/iio/temperature/tmp117.c
-new file mode 100644
-index 000000000..c3ff2913b
---- /dev/null
-+++ b/drivers/iio/temperature/tmp117.c
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Digital temperature sensor with integrated NV memory
-+ * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
-+ *
-+ * Driver for the Texas Instruments TMP117 Temperature Sensor
-+ * (7-bit I2C slave address (0x48 - 0x4B), changeable via ADD pins)
-+ *
-+ * Note: This driver assumes that the sensor has been calibrated beforehand.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/bitops.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+
-+#include <linux/iio/iio.h>
-+
-+#define TMP117_REG_TEMP			0x0
-+#define TMP117_REG_CFGR			0x1
-+#define TMP117_REG_HIGH_LIM		0x2
-+#define TMP117_REG_LOW_LIM		0x3
-+#define TMP117_REG_EEPROM_UL		0x4
-+#define TMP117_REG_EEPROM1		0x5
-+#define TMP117_REG_EEPROM2		0x6
-+#define TMP117_REG_TEMP_OFFSET		0x7
-+#define TMP117_REG_EEPROM3		0x8
-+#define TMP117_REG_DEVICE_ID		0xF
-+
-+#define TMP117_RESOLUTION_10UC		78125
-+#define TMP117_DEVICE_ID		0x0117
-+#define MICRODEGREE_PER_10MILLIDEGREE	10000
-+
-+struct tmp117_data {
-+	struct i2c_client *client;
-+	s16 calibbias;
-+};
-+
-+static int tmp117_read_raw(struct iio_dev *indio_dev,
-+		struct iio_chan_spec const *channel, int *val,
-+		int *val2, long mask)
-+{
-+	struct tmp117_data *data = iio_priv(indio_dev);
-+	s32 ret;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		ret = i2c_smbus_read_word_swapped(data->client,
-+						TMP117_REG_TEMP);
-+		if (ret < 0)
-+			return ret;
-+		*val = sign_extend32(ret, 15);
-+		return IIO_VAL_INT;
-+
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		ret = i2c_smbus_read_word_swapped(data->client,
-+					TMP117_REG_TEMP_OFFSET);
-+		if (ret < 0)
-+			return ret;
-+		*val = sign_extend32(ret, 15);
-+		return IIO_VAL_INT;
-+
-+	case IIO_CHAN_INFO_SCALE:
-+		/* Conversion from 10s of uC to mC
-+		 * as IIO reports temperature in mC
-+		 */
-+		*val = TMP117_RESOLUTION_10UC / MICRODEGREE_PER_10MILLIDEGREE;
-+		*val2 = (TMP117_RESOLUTION_10UC %
-+					MICRODEGREE_PER_10MILLIDEGREE) * 100;
-+
-+		return IIO_VAL_INT_PLUS_MICRO;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int tmp117_write_raw(struct iio_dev *indio_dev,
-+		struct iio_chan_spec const *channel, int val,
-+		int val2, long mask)
-+{
-+	struct tmp117_data *data = iio_priv(indio_dev);
-+	s16 off;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		off = clamp(val, -32768, 32767);
-+		if (off == data->calibbias)
-+			return 0;
-+		return i2c_smbus_write_word_swapped(data->client,
-+						TMP117_REG_TEMP_OFFSET, off);
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_chan_spec tmp117_channels[] = {
-+	{
-+		.type = IIO_TEMP,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+			BIT(IIO_CHAN_INFO_CALIBBIAS) | BIT(IIO_CHAN_INFO_SCALE),
-+	},
-+};
-+
-+static const struct iio_info tmp117_info = {
-+	.read_raw = tmp117_read_raw,
-+	.write_raw = tmp117_write_raw,
-+};
-+
-+static int tmp117_identify(struct i2c_client *client)
-+{
-+	int dev_id;
-+
-+	dev_id = i2c_smbus_read_word_swapped(client, TMP117_REG_DEVICE_ID);
-+	if (dev_id < 0)
-+		return dev_id;
-+	if (dev_id != TMP117_DEVICE_ID) {
-+		dev_err(&client->dev, "TMP117 not found\n");
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+static int tmp117_probe(struct i2c_client *client)
-+{
-+	struct tmp117_data *data;
-+	struct iio_dev *indio_dev;
-+	int ret;
-+
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WORD_DATA))
-+		return -EOPNOTSUPP;
-+
-+	ret = tmp117_identify(client);
-+	if (ret < 0)
-+		return ret;
-+
-+	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	data = iio_priv(indio_dev);
-+	data->client = client;
-+	data->calibbias = 0;
-+
-+	indio_dev->name = "tmp117";
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->info = &tmp117_info;
-+
-+	indio_dev->channels = tmp117_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(tmp117_channels);
-+
-+	return devm_iio_device_register(&client->dev, indio_dev);
-+}
-+
-+static const struct of_device_id tmp117_of_match[] = {
-+	{ .compatible = "ti,tmp117", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, tmp117_of_match);
-+
-+static const struct i2c_device_id tmp117_id[] = {
-+	{ "tmp117", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, tmp117_id);
-+
-+static struct i2c_driver tmp117_driver = {
-+	.driver = {
-+		.name	= "tmp117",
-+		.of_match_table = tmp117_of_match,
-+	},
-+	.probe_new	= tmp117_probe,
-+	.id_table	= tmp117_id,
-+};
-+module_i2c_driver(tmp117_driver);
-+
-+MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
-+MODULE_DESCRIPTION("TI TMP117 Temperature sensor driver");
-+MODULE_LICENSE("GPL");
--- 
-2.30.1
+Then I've looked how the beacon that is broadcast is supposed to get
+updated when it changes and seen there seems to be no existing mechanism
+for this in rtl8192cu driver.
+However, I had to stop at this point and post my findings as I could not
+commit more time to this issue due to other workload.
 
+> The example in rx200 is not particularly useful, and I have not found any other examples.
+
+That's why I thought it would be best if somebody from Realtek, with
+deep knowledge of both the driver and the hardware, could voice their
+opinion here.
+
+As I have stated earlier, just uploading new beacon to the hardware
+might not be enough for it to be (safely) updated.
+
+> Larry
+> 
+
+Thanks,
+Maciej
