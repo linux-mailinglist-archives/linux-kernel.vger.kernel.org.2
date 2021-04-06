@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E877355954
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ACF355956
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346506AbhDFQjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346496AbhDFQi7 (ORCPT
+        id S1346515AbhDFQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:39:06 -0400
+Received: from alln-iport-8.cisco.com ([173.37.142.95]:18432 "EHLO
+        alln-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346499AbhDFQjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:38:59 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E0CC06174A;
-        Tue,  6 Apr 2021 09:38:50 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id k8so10779251pgf.4;
-        Tue, 06 Apr 2021 09:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hm55f+wMNrLLLXsDJfgnrjHRXDjxwW49AbjwzREWMxA=;
-        b=DtcxrFaBoeivbflo7LEoLP0o71c6qCM/HG8b0iGP9rp/n8NSD3E5R8nv+ONVGTKMSJ
-         aE67dzQawDRvHyJ89T7w4PkRjulX8P2YrCOU9vNi/0WAsa0c/E37bucNp+Z41xzF2auQ
-         46sNK8ejFU0ud2ymiiioss+f9SSabe7cuJCi2BTU1F9X4zMpbYuvmRXZs28X+rzh3V+0
-         +Y4bS7D/HhdlNXdm5PuB236X5ktzr6Nj5LTO5z/j1JhoB4jrSdlD8cegJZB34e4TcISo
-         lozezLAGKRmlYWxlGTaHbSICl+vrLUNYi3dybBSfZuDvmM504YfWUDaMY0Mrc9O5p6GS
-         QbCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hm55f+wMNrLLLXsDJfgnrjHRXDjxwW49AbjwzREWMxA=;
-        b=B147fKZKjiSpSKiMjKpRqGUSxBSkNkozq9EQ9srBtx3+x9ONShyKzHoP38M93EC9iS
-         KDdPlJ2Px0MY6m1xr8dIl5m8cClFv+gxnbC/YYHyA4CyxRQlaExkU6iFRnFOTH/sWuyF
-         MvrEFNm0+MyyWRO2NImJ2asFkoVY2hzG76VP+0CiA79xzFZQ6fjsnGAjmGd1G6pLMExJ
-         36HkNtOGXQhD3k94i+4bbAgF3buY0zKiCu0Q9ouK39BVSpHm+U5x3MVMlVArqos5y+Yh
-         JS6duzSPDnyE1IKSSLtiHwkVh2bBXJ5ojfPuJ8W9q8Ya64vtwMXVbEK6mXrRFB+7tou6
-         9FGg==
-X-Gm-Message-State: AOAM531Hppdu/Z78S23QGCpv05WlfMY8tRJXMZnuxNbUsAp0vSkaXh9c
-        IafkgOWztkcgzEc5dyf2IXqFbaYbU8s=
-X-Google-Smtp-Source: ABdhPJwd6gf26SVn6vGXZnrrFka8G84S2Cc+5RdSKHjumAZeeoF+/jhY9yTV5BNC2rqWnl3CdAOJXw==
-X-Received: by 2002:a62:1757:0:b029:23e:9917:7496 with SMTP id 84-20020a6217570000b029023e99177496mr4047391pfx.51.1617727129891;
-        Tue, 06 Apr 2021 09:38:49 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x9sm13178189pfd.158.2021.04.06.09.38.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 09:38:48 -0700 (PDT)
-Subject: Re: [PATCH v5 0/2] ata: ahci_brcm: Fix use of BCM7216 reset
- controller
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, james.quinlan@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "open list:LIBATA SUBSYSTEM Serial and Parallel ATA drivers" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210312204556.5387-1-jim2101024@gmail.com>
- <161772368880.12349.1551046998078695154.b4-ty@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <be8892ed-cba6-e8c3-6e1d-5a9940af9440@gmail.com>
-Date:   Tue, 6 Apr 2021 09:38:46 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Tue, 6 Apr 2021 12:39:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=907; q=dns/txt; s=iport;
+  t=1617727134; x=1618936734;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Smn0mCx9dbvDRLHtP0dTWqRsaDRXRIB0PRh2q1rD0Lk=;
+  b=Iot4pCl9rsClUU/6MKDnsHdvF+f5tVFlqD9zruuAyZV/f/WAP69x74Mz
+   Axs7fgCnuoEVSSwNxLHR6QJeavuPnIS+YuuOpoQRACfZJLTK6MSeBgzPI
+   1k2JiR9n8IMclcgZB3PPeMP3D6plKJnaY4P2Cr0c62p6hvtNs6TCPRYs8
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,310,1613433600"; 
+   d="scan'208";a="690319628"
+Received: from alln-core-7.cisco.com ([173.36.13.140])
+  by alln-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 06 Apr 2021 16:38:52 +0000
+Received: from zorba ([10.24.14.212])
+        by alln-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 136GcoPb001265
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 6 Apr 2021 16:38:51 GMT
+Date:   Tue, 6 Apr 2021 09:38:49 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Will Deacon <will@kernel.org>, ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] CMDLINE: powerpc: convert to generic builtin command
+ line
+Message-ID: <20210406163849.GT2469518@zorba>
+References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
+ <e51a16e369f6a7dfae948c6de76061f3a061a375.1617126961.git.danielwa@cisco.com>
+ <366fd8d3-09c9-8cae-3f10-046c4a643792@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <161772368880.12349.1551046998078695154.b4-ty@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <366fd8d3-09c9-8cae-3f10-046c4a643792@csgroup.eu>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.14.212, [10.24.14.212]
+X-Outbound-Node: alln-core-7.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/6/2021 8:42 AM, Lorenzo Pieralisi wrote:
-> On Fri, 12 Mar 2021 15:45:53 -0500, Jim Quinlan wrote:
->> v5 -- Improved (I hope) commit description (Bjorn).
->>    -- Rnamed error labels (Krzyszt).
->>    -- Fixed typos.
->>
->> v4 -- does not rely on a pending commit, unlike v3.
->>
->> v3 -- discard commit from v2; instead rely on the new function
->>       reset_control_rearm provided in a recent commit [1] applied
->>       to reset/next.
->>    -- New commit to correct pcie-brcmstb.c usage of a reset controller
->>       to use reset/rearm verses deassert/assert.
->>
->> [...]
+On Fri, Apr 02, 2021 at 07:34:19PM +0200, Christophe Leroy wrote:
 > 
-> Applied to pci/brcmstb, thanks!
 > 
-> [1/2] ata: ahci_brcm: Fix use of BCM7216 reset controller
->       https://git.kernel.org/lpieralisi/pci/c/92b9cb55a9
-> [2/2] PCI: brcmstb: Use reset/rearm instead of deassert/assert
->       https://git.kernel.org/lpieralisi/pci/c/a24fd1d646
+> Le 30/03/2021 à 19:56, Daniel Walker a écrit :
+> > This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
+> > option.
+> > 
+> > This includes a scripted mass convert of the config files to use
+> > the new generic cmdline. There is a bit of a trim effect here.
+> > It would seems that some of the config haven't been trimmed in
+> > a while.
+> 
+> Sorry, this patch is not acceptable as is, the default for powerpc is
+> CMDLINE_FROM_BOOTLOADER, ie builtin-cmdline is taken if and only if none is
+> provided by the bootloader.
+> 
+> As far as I understand, that disappear with this patch.
 
-Thanks a lot!
--- 
-Florian
+We've talked about it previously. Maybe your not understanding the precedent of
+the command line options. I tried to explain that one before.
+
+What problems do you think are caused if this patch is applied ?
+
+Daniel
