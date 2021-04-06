@@ -2,98 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F003C355FA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3248A355FA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236454AbhDFXlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:41:35 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:43666 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbhDFXld (ORCPT
+        id S242854AbhDFXmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234385AbhDFXmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:41:33 -0400
-Received: by mail-wr1-f50.google.com with SMTP id x7so15927982wrw.10;
-        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
+        Tue, 6 Apr 2021 19:42:20 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FFEC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 16:42:11 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id l76so11596819pga.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 16:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+e4R9WhLCCBJ4gDbadZQs4tZRpdpcvcJbhVk8v4Qqw4=;
+        b=IH7b9daRloX8JtyYrDtrasOOM1rOBc3PXLwvOJgBblhR8BDkCzBON39z0P3vMQCZJG
+         WGW2NBAve+ZZ5SZ/yPewgk/Gif7KDPbK+2Km8kKCrF6hwIjEQrq+iSzy+adDd5ZxQTtk
+         7HdNeTuPTAI5JsoEnMJ5mu1tC7dVTU4MYjx8V5NUtzU6WqAKMh3krxfVT0xuGTz1RmRj
+         iI8uCjBd1s6BSA2rfv7Rven/2nt5Arat7CeFho6tBIuqsGpUqhud91gLar5+gecB4lmI
+         9gUaSaQQYHEyPoowbsq49LtxbzPQnpPr2zjX/WHMM266ODHy1MMiv9hGDTsyl0XFPsNL
+         8iCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WGIJa+EXD8Vc5DJNrcReg/z+0EimDhG6rdWhVbzOtFo=;
-        b=CQ0qDAptkIC6tW/QjkTYrwKTt0DT9a42qy4lPFnM4r8k/4F8gSOYBBIuxE740H2p17
-         RzmddTwaAv6ON0mKDDGrTQ6ejGZHjVorX9afl/5ZGJngAeB9LXBEdWJPOtKSHcClEYja
-         0GjWEUNfq94P3RHscsbNIMkuH9FGu2li59VWTnaAVpPcb4LCyp5zxjiF70kZ7aHou89A
-         A5ehGdBDBRM3f535in/qXuwptNZI9m7TKz+9vUC1WCUQPsnYxV5jcoDDQ8nW/hpGEKKf
-         eZS9buyKs29dE3EZCwG9rgsK/8mRQdPH3naKt8fipJEepHd10wqBgeYZGmdh3vQNY2v3
-         fL+w==
-X-Gm-Message-State: AOAM530oOUJ5jVaY3a5Wy5DIziWoTD0+ujeXIKTmzuteUQPdNU4wCtP5
-        65me661JHs864WiPuxyJDYg=
-X-Google-Smtp-Source: ABdhPJwgTgzHjDtAphSOcIvZkNyZiSytk4BvPsB6Agc23uPs67Vxh0ob67DGX16DGyXt0HXr4p5bpg==
-X-Received: by 2002:a5d:5612:: with SMTP id l18mr791487wrv.28.1617752483246;
-        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id f9sm4864133wmj.38.2021.04.06.16.41.22
+        bh=+e4R9WhLCCBJ4gDbadZQs4tZRpdpcvcJbhVk8v4Qqw4=;
+        b=qzVQUTLudx2+tAAD7gSxSbYqZpiOofoVIlnVTRh9OicQxQZpjxaYixH3B6PopTvZfc
+         IITF1CCzqqmD4o3q5kaAGl8Ex0DbRGLpDpx8MB9kPxmhSuY7jzWek4KnoLox6wetdjim
+         eBgi3q9Fkio3HUTJKWUjEVxavJ8REyvvwTCKXXlW6PwdxuTChZZjFVcTq5++g+bl7tV1
+         FerhqBzU43ixgxiMmprO5naCn/7bn2vmIs/snNODzhJGBb3Y3UdkBSisV9RlHfpCntMw
+         XC8iSErcsG8eEWF3W/Y123MP8LL0IBCzgigQ5V6p6zvJt04kJRya72FNY/CP9LnsPgl6
+         tSjw==
+X-Gm-Message-State: AOAM531F7NcFpgw5BihoA1ZFf8Ge8OeM4lr3+CtlVuNHTrSg8+BbMadA
+        EDbidO+Zb7sNNZHs+AUpZ/gc6w==
+X-Google-Smtp-Source: ABdhPJxnQBZeI+TY4AQhCk23FZRTQIvjxcXx09uUt2hV/+SQFx0KNOLF+8Ca4jqvlf5y6r7l69cdJw==
+X-Received: by 2002:a63:508:: with SMTP id 8mr603878pgf.220.1617752531098;
+        Tue, 06 Apr 2021 16:42:11 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c2sm19742305pfb.121.2021.04.06.16.42.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:41:21 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210406234121.4ebbaoxyrzdywdj4@liuwe-devbox-debian-v2>
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+        Tue, 06 Apr 2021 16:42:10 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:42:06 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        wanghaibin.wang@huawei.com, Ben Gardon <bgardon@google.com>
+Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
+Message-ID: <YGzxzsRlqouaJv6a@google.com>
+References: <20200828081157.15748-1-zhukeqian1@huawei.com>
+ <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
-> 
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++Ben
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+On Tue, Apr 06, 2021, Keqian Zhu wrote:
+> Hi Paolo,
+> 
+> I plan to rework this patch and do full test. What do you think about this idea
+> (enable dirty logging for huge pages lazily)?
+
+Ben, don't you also have something similar (or maybe the exact opposite?) in the
+hopper?  This sounds very familiar, but I can't quite connect the dots that are
+floating around my head...
+ 
+> PS: As dirty log of TDP MMU has been supported, I should add more code.
+> 
+> On 2020/8/28 16:11, Keqian Zhu wrote:
+> > Currently during enable dirty logging, if we're with init-all-set,
+> > we just write protect huge pages and leave normal pages untouched,
+> > for that we can enable dirty logging for these pages lazily.
+> > 
+> > It seems that enable dirty logging lazily for huge pages is feasible
+> > too, which not only reduces the time of start dirty logging, also
+> > greatly reduces side-effect on guest when there is high dirty rate.
+> > 
+> > (These codes are not tested, for RFC purpose :-) ).
+> > 
+> > Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> > ---
+> >  arch/x86/include/asm/kvm_host.h |  3 +-
+> >  arch/x86/kvm/mmu/mmu.c          | 65 ++++++++++++++++++++++++++-------
+> >  arch/x86/kvm/vmx/vmx.c          |  3 +-
+> >  arch/x86/kvm/x86.c              | 22 +++++------
+> >  4 files changed, 62 insertions(+), 31 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 5303dbc5c9bc..201a068cf43d 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1296,8 +1296,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
+> >  
+> >  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
+> >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> > -				      struct kvm_memory_slot *memslot,
+> > -				      int start_level);
+> > +				      struct kvm_memory_slot *memslot);
+> >  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+> >  				   const struct kvm_memory_slot *memslot);
+> >  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 43fdb0c12a5d..4b7d577de6cd 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1625,14 +1625,45 @@ static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
+> >  }
+> >  
+> >  /**
+> > - * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+> > + * kvm_mmu_write_protect_largepage_masked - write protect selected largepages
+> >   * @kvm: kvm instance
+> >   * @slot: slot to protect
+> >   * @gfn_offset: start of the BITS_PER_LONG pages we care about
+> >   * @mask: indicates which pages we should protect
+> >   *
+> > - * Used when we do not need to care about huge page mappings: e.g. during dirty
+> > - * logging we do not have any such mappings.
+> > + * @ret: true if all pages are write protected
+> > + */
+> > +static bool kvm_mmu_write_protect_largepage_masked(struct kvm *kvm,
+> > +				    struct kvm_memory_slot *slot,
+> > +				    gfn_t gfn_offset, unsigned long mask)
+> > +{
+> > +	struct kvm_rmap_head *rmap_head;
+> > +	bool protected, all_protected;
+> > +	gfn_t start_gfn = slot->base_gfn + gfn_offset;
+> > +	int i;
+> > +
+> > +	all_protected = true;
+> > +	while (mask) {
+> > +		protected = false;
+> > +		for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+> > +			rmap_head = __gfn_to_rmap(start_gfn + __ffs(mask), i, slot);
+> > +			protectd |= __rmap_write_protect(kvm, rmap_head, false);
+> > +		}
+> > +
+> > +		all_protected &= protectd;
+> > +		/* clear the first set bit */
+> > +		mask &= mask - 1;
+> > +	}
+> > +
+> > +	return all_protected;
+> > +}
+> > +
+> > +/**
+> > + * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+> > + * @kvm: kvm instance
+> > + * @slot: slot to protect
+> > + * @gfn_offset: start of the BITS_PER_LONG pages we care about
+> > + * @mask: indicates which pages we should protect
+> >   */
+> >  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
+> >  				     struct kvm_memory_slot *slot,
+> > @@ -1679,18 +1710,25 @@ EXPORT_SYMBOL_GPL(kvm_mmu_clear_dirty_pt_masked);
+> >  
+> >  /**
+> >   * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
+> > - * PT level pages.
+> > - *
+> > - * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
+> > - * enable dirty logging for them.
+> > - *
+> > - * Used when we do not need to care about huge page mappings: e.g. during dirty
+> > - * logging we do not have any such mappings.
+> > + * dirty pages.
+> >   */
+> >  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
+> >  				struct kvm_memory_slot *slot,
+> >  				gfn_t gfn_offset, unsigned long mask)
+> >  {
+> > +	/*
+> > +	 * If we're with initial-all-set, huge pages are NOT
+> > +	 * write protected when we start dirty log, so we must
+> > +	 * write protect them here.
+> > +	 */
+> > +	if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+> > +		if (kvm_mmu_write_protect_largepage_masked(kvm, slot,
+> > +					gfn_offset, mask))
+> > +			return;
+> > +	}
+> > +
+> > +	/* Then we can handle the 4K level pages */
+> > +
+> >  	if (kvm_x86_ops.enable_log_dirty_pt_masked)
+> >  		kvm_x86_ops.enable_log_dirty_pt_masked(kvm, slot, gfn_offset,
+> >  				mask);
+> > @@ -5906,14 +5944,13 @@ static bool slot_rmap_write_protect(struct kvm *kvm,
+> >  }
+> >  
+> >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> > -				      struct kvm_memory_slot *memslot,
+> > -				      int start_level)
+> > +				      struct kvm_memory_slot *memslot)
+> >  {
+> >  	bool flush;
+> >  
+> >  	spin_lock(&kvm->mmu_lock);
+> > -	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
+> > -				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
+> > +	flush = slot_handle_all_level(kvm, memslot, slot_rmap_write_protect,
+> > +				      false);
+> >  	spin_unlock(&kvm->mmu_lock);
+> >  
+> >  	/*
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 819c185adf09..ba871c52ef8b 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -7538,8 +7538,7 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int cpu)
+> >  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
+> >  				     struct kvm_memory_slot *slot)
+> >  {
+> > -	if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
+> > -		kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+> > +	kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+> >  	kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
+> >  }
+> >  
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index d39d6cf1d473..c31c32f1424b 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -10225,22 +10225,18 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
+> >  	 * is enabled the D-bit or the W-bit will be cleared.
+> >  	 */
+> >  	if (new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+> > +		/*
+> > +		 * If we're with initial-all-set, we don't need
+> > +		 * to write protect any page because they're
+> > +		 * reported as dirty already.
+> > +		 */
+> > +		if (kvm_dirty_log_manual_protect_and_init_set(kvm))
+> > +			return;
+> > +
+> >  		if (kvm_x86_ops.slot_enable_log_dirty) {
+> >  			kvm_x86_ops.slot_enable_log_dirty(kvm, new);
+> >  		} else {
+> > -			int level =
+> > -				kvm_dirty_log_manual_protect_and_init_set(kvm) ?
+> > -				PG_LEVEL_2M : PG_LEVEL_4K;
+> > -
+> > -			/*
+> > -			 * If we're with initial-all-set, we don't need
+> > -			 * to write protect any small page because
+> > -			 * they're reported as dirty already.  However
+> > -			 * we still need to write-protect huge pages
+> > -			 * so that the page split can happen lazily on
+> > -			 * the first write to the huge page.
+> > -			 */
+> > -			kvm_mmu_slot_remove_write_access(kvm, new, level);
+> > +			kvm_mmu_slot_remove_write_access(kvm, new);
+> >  		}
+> >  	} else {
+> >  		if (kvm_x86_ops.slot_disable_log_dirty)
+> > 
