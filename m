@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA51355C41
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6DF355C43
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241315AbhDFTiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242767AbhDFTh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:37:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 491F8613DE;
-        Tue,  6 Apr 2021 19:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617737869;
-        bh=nd3UOZmwQsenr/t5/raAf6Th3zxlHmqSgqlN32BosPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sxPqIANlre6K5WxSqiF8Wz2DC62XErL/Oi3D6bPM69rFD4HfNEeL8mAS7w3c5wDAY
-         xgs+j8omDJSY+ms0zqOMnjtLJjuVqDDhL4qkwE6zuXMnXxvx8WorGkGNVz9HYy+5uH
-         xFTQy+OsILr0G1IBXQQHazwmWT3YoZ7PAK6m2dRKJCZvJgkDz2pJGXz2/YwH4TPxsk
-         5KHhIqen24+H3R+jPJS7GM7UZeAcyfmHdScwcNcl5T0IExfTQQwRxEEcH/SkQjNgqe
-         szBrsrN2iJWWdDW7UDhJgXJ1JW79OfGUEmB4yB+HwnWWZfsG+cgGR+q2vK2aG5Qntw
-         tVYa+cCNbMeNg==
-Date:   Tue, 6 Apr 2021 21:37:43 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/12] i2c: Adding support for software nodes
-Message-ID: <20210406193743.GA3122@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
- <20210331092232.GL1025@ninjato>
- <YGRMHf63aHniHIJW@kuha.fi.intel.com>
+        id S244882AbhDFTiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:38:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242679AbhDFTiG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:38:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617737878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8dMs3nqHBT5cQBi5MtXM5AYMaRA0akJjO+wkzuphB+8=;
+        b=S9jnanZNsIo5IBZdzBX8AcuCsmAb993ZhrI07yQJQoPduLbFufq6FSDs6oJYnznDWvcLEZ
+        vMRhfYZBEaBTmlrllPBTZWG8KCUdowaf63i0EVKtJkZ5fqrimNYjqG3qJUtyZUN6NOhN0V
+        EtSlxI/KgTpUJhlVd8soXQ/uCZAyHk8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-ZMisu-1SPDqTSaMbVSPhWA-1; Tue, 06 Apr 2021 15:37:56 -0400
+X-MC-Unique: ZMisu-1SPDqTSaMbVSPhWA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEFDC881D7C;
+        Tue,  6 Apr 2021 19:37:53 +0000 (UTC)
+Received: from omen (ovpn-112-85.phx2.redhat.com [10.3.112.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38BAB60240;
+        Tue,  6 Apr 2021 19:37:45 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 13:37:44 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, kvm <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] vfio: fix a couple of spelling mistakes detected by
+ codespell tool
+Message-ID: <20210406133744.4c7dc047@omen>
+In-Reply-To: <20210326083528.1329-1-thunder.leizhen@huawei.com>
+References: <20210326083528.1329-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-In-Reply-To: <YGRMHf63aHniHIJW@kuha.fi.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 26 Mar 2021 16:35:24 +0800
+Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> This detection and correction covers the entire driver/vfio directory.
+> 
+> Zhen Lei (4):
+>   vfio/type1: fix a couple of spelling mistakes
+>   vfio/mdev: Fix spelling mistake "interal" -> "internal"
+>   vfio/pci: fix a couple of spelling mistakes
+>   vfio/platform: Fix spelling mistake "registe" -> "register"
+> 
+>  drivers/vfio/mdev/mdev_private.h                         | 2 +-
+>  drivers/vfio/pci/vfio_pci.c                              | 2 +-
+>  drivers/vfio/pci/vfio_pci_config.c                       | 2 +-
+>  drivers/vfio/pci/vfio_pci_nvlink2.c                      | 4 ++--
+>  drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c | 2 +-
+>  drivers/vfio/vfio_iommu_type1.c                          | 6 +++---
+>  6 files changed, 9 insertions(+), 9 deletions(-)
+> 
 
+Applied to vfio next branch for v5.13.  Thanks,
 
-> I think these go via I2C tree.
+Alex
 
-Good, I'll apply it this weekend. Until then, let's hope we can get some
-more acks.
-
-
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBsuIIACgkQFA3kzBSg
-KbYHRxAArxAukjo0VnVJCkwy+qPSDZvqOAzglvb+ezqnfimdn6dYHlnLwIB2MXeF
-U2JXXVHR6vJ5nXfZ9YYU5f5ZalXhhHJ02Td2s15vbe43I5jZ+Y44PNUATgQzsGwW
-35v39AGPlTJGeihl2c1TETfKHOFVI3lcJAntaZLlBeShCFBtdRzQeWdgMFcR7IiV
-3FaGCthx09nusoXw82a+2eGyk5BIRJtLycmmeK6LFVepJLRzX1p4Ua2+Onw7hSbr
-KTOrAl5RuykmDwuy0NjaYccecc4o0wkmPiayfl5vX4EVl3TwFmLuLo0wVY9CPLW5
-TcLIO1G9csL07ZD0xGdFNH2/8o/g7rPg7HHzose6D0qH45yAlPMhC4XD9ILaLWGz
-WjZFGZIh+8RGQ6m92X/JM7eaFiOJI5qATZLBObuvXUMLDrJSnTzgu8f2o3Vt+EBX
-pmunWVwjhsRU//lD2Gw+joxfGsUdH0yGTLf7vL1TyHhjFV5irO4DnM+xD5/f/Rcg
-WpD6xneU64Ot16Ua/EtyU+wasG6JT/k3EOGYToAngNaCcQLr2IHHIxYwTqPhMIh8
-Vq/rGgo1ANvmIi1nzwaCZMH5OzKhGtwlRqC5Vc6JQSNufH5MQ+NYah2aR0P1a0qr
-K6zzUlPe+cnnp/cFq4MKez8nObk7bZWhS4KpEzhEagx9pk0rsrw=
-=4twB
------END PGP SIGNATURE-----
-
---wRRV7LY7NUeQGEoC--
