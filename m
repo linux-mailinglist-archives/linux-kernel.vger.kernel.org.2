@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88631354BCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 06:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62828354BCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 06:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243620AbhDFEtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 00:49:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15130 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbhDFEtq (ORCPT
+        id S243629AbhDFEvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 00:51:50 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:40952 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242465AbhDFEvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 00:49:46 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDw3d3B6FzmctL;
-        Tue,  6 Apr 2021 12:46:53 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
- 12:49:29 +0800
-From:   Shixin Liu <liushixin2@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Shixin Liu <liushixin2@huawei.com>
-Subject: [PATCH -next v2 2/2] mm/debug_vm_pgtable: Remove redundant pfn_{pmd/pte}() and fix one comment mistake
-Date:   Tue, 6 Apr 2021 12:49:00 +0800
-Message-ID: <20210406044900.2178705-2-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406044900.2178705-1-liushixin2@huawei.com>
-References: <20210406044900.2178705-1-liushixin2@huawei.com>
+        Tue, 6 Apr 2021 00:51:48 -0400
+Received: by mail-wr1-f51.google.com with SMTP id v11so12679457wro.7
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 21:51:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9R9v6jduJsXDs1Ee5qjaXCVasduz+b0k+mS/nqmF/wQ=;
+        b=OStdaWSL18yuZwotRTEE+hbzU9QEIts0QI6/Gk/vAhRIrHH6gFgHCbhqKSEa5h7xxm
+         9uR++rx2KMIOvUkSYs3IX/8wzFpwkN5xAwvvss3UisEImqV1HnK8TzajnD4V9zSdiOjO
+         WoLPaexwVJRGKs+W9IT6j2AqhwC9L9KO/J6t1jD24NDtHzy9uBKF11voGzFBnjw8qJlt
+         NERzxzuRgvrEFNg8yEY7rFcpj4SXF+KBk6kFR6Sig+Aa34Fi6BS2GtXNvePNYF9KzCh7
+         fiNJm3wORWp+Z+21MhYE8SLMtkESbJk3WRAdtqPc2CWoPlu82dpDUb6XqVu+DyKT7lSj
+         leQw==
+X-Gm-Message-State: AOAM531kB8wVY5IkHCSLO5pxUQxF96CoYW02dmMtZ24JFVKcA3snNvKi
+        Ut5BBCcfks2fwUEXCSeBUiLw5Mf1Z1c=
+X-Google-Smtp-Source: ABdhPJwKhtsHvu8sx3V0r5GOJNrq6/e3K3oVpLXF8lh6l73sB2Q8sVAm5ZcoudXgrYIMma+SILHIbg==
+X-Received: by 2002:a5d:4683:: with SMTP id u3mr8865735wrq.358.1617684699072;
+        Mon, 05 Apr 2021 21:51:39 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id o14sm19066611wrc.3.2021.04.05.21.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 21:51:38 -0700 (PDT)
+Subject: Re: [PATCH] tty: use printk_safe context at tty_msg()
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a7f5103f-0912-30e1-611c-36c18a1eefd6@kernel.org>
+Date:   Tue, 6 Apr 2021 06:51:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1->v2:
-Remove redundant pfn_pte() and fold two patch to one.
+On 03. 04. 21, 6:14, Tetsuo Handa wrote:
+> syzbot is reporting circular locking dependency due to calling printk()
+> with port lock held [1]. When this problem was reported, we worried
+> whether printk_safe context will remain available in future kernels [2],
+> and then this problem was forgotten. But in order to utilize syzbot's
+> resource for finding other bugs/reproducers by closing this one of top
+> crashers, let's apply a patch which counts on availability of printk_safe
+> context.
+> 
+> syzbot is also reporting same dependency due to memory allocation fault
+> injection at tty_buffer_alloc(). Although __GFP_NOWARN cannot prevent
+> memory allocation fault injection from calling printk(), let's use
+> __GFP_NOWARN at tty_buffer_alloc() in addition to using printk_safe
+> context, for generating many lines of messages due to warn_alloc() is
+> annoying. If we want to report it, we can use pr_warn() instead.
+> 
+> [1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
+> [2] https://lkml.kernel.org/r/20190218054649.GA26686@jagdpanzerIV
+> 
+> Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+> Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Fixes: b6da31b2c07c46f2 ("tty: Fix data race in tty_insert_flip_string_fixed_flag")
+> Cc: <stable@vger.kernel.org> # 4.18+
+> ---
+>   drivers/tty/tty_buffer.c | 5 ++++-
+>   include/linux/tty.h      | 9 ++++++++-
+>   2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+> index 6d4995a5f318..d59f7873bc49 100644
+> --- a/drivers/tty/tty_buffer.c
+> +++ b/drivers/tty/tty_buffer.c
+> @@ -156,6 +156,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+>   {
+>   	struct llist_node *free;
+>   	struct tty_buffer *p;
+> +	unsigned long flags;
+>   
+>   	/* Round the buffer size out */
+>   	size = __ALIGN_MASK(size, TTYB_ALIGN_MASK);
+> @@ -172,7 +173,9 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+>   	   have queued and recycle that ? */
+>   	if (atomic_read(&port->buf.mem_used) > port->buf.mem_limit)
+>   		return NULL;
+> -	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC);
+> +	printk_safe_enter_irqsave(flags);
+> +	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC | __GFP_NOWARN);
+> +	printk_safe_exit_irqrestore(flags);
+>   	if (p == NULL)
+>   		return NULL;
+>   
+> diff --git a/include/linux/tty.h b/include/linux/tty.h
+> index 95fc2f100f12..7ae8eb46fec3 100644
+> --- a/include/linux/tty.h
+> +++ b/include/linux/tty.h
+> @@ -14,6 +14,7 @@
+>   #include <uapi/linux/tty.h>
+>   #include <linux/rwsem.h>
+>   #include <linux/llist.h>
+> +#include <../../kernel/printk/internal.h>
 
-Remove redundant pfn_{pmd/pte}() and fix one comment mistake.
+Including printk's internal header in linux/tty.h doesn't look correct 
+to me.
 
-Signed-off-by: Shixin Liu <liushixin2@huawei.com>
----
- mm/debug_vm_pgtable.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> @@ -773,7 +774,13 @@ static inline void proc_tty_unregister_driver(struct tty_driver *d) {}
+>   #endif
+>   
+>   #define tty_msg(fn, tty, f, ...) \
+> -	fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__)
+> +	do {						\
+> +		unsigned long flags;			\
+> +							\
+> +		printk_safe_enter_irqsave(flags);	\
+> +		fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__); \
+> +		printk_safe_exit_irqrestore(flags);	\
+> +	} while (0)
+>   
+>   #define tty_debug(tty, f, ...)	tty_msg(pr_debug, tty, f, ##__VA_ARGS__)
+>   #define tty_info(tty, f, ...)	tty_msg(pr_info, tty, f, ##__VA_ARGS__)
+> 
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index d3cf178621d9..e2f35db8ba69 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -91,7 +91,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot)
- {
--	pte_t pte = pfn_pte(pfn, prot);
-+	pte_t pte;
- 
- 	/*
- 	 * Architectures optimize set_pte_at by avoiding TLB flush.
-@@ -185,7 +185,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot, pgtable_t pgtable)
- {
--	pmd_t pmd = pfn_pmd(pfn, prot);
-+	pmd_t pmd;
- 
- 	if (!has_transparent_hugepage())
- 		return;
-@@ -300,7 +300,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot)
- {
--	pud_t pud = pfn_pud(pfn, prot);
-+	pud_t pud;
- 
- 	if (!has_transparent_hugepage())
- 		return;
-@@ -309,6 +309,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 	/* Align the address wrt HPAGE_PUD_SIZE */
- 	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
- 
-+	pud = pfn_pud(pfn, prot);
- 	set_pud_at(mm, vaddr, pudp, pud);
- 	pudp_set_wrprotect(mm, vaddr, pudp);
- 	pud = READ_ONCE(*pudp);
-@@ -742,12 +743,12 @@ static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
- 	WARN_ON(!pmd_swp_soft_dirty(pmd_swp_mksoft_dirty(pmd)));
- 	WARN_ON(pmd_swp_soft_dirty(pmd_swp_clear_soft_dirty(pmd)));
- }
--#else  /* !CONFIG_ARCH_HAS_PTE_DEVMAP */
-+#else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
- static void __init pmd_soft_dirty_tests(unsigned long pfn, pgprot_t prot) { }
- static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
- {
- }
--#endif /* CONFIG_ARCH_HAS_PTE_DEVMAP */
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
- static void __init pte_swap_tests(unsigned long pfn, pgprot_t prot)
- {
+
 -- 
-2.25.1
-
+js
