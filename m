@@ -2,114 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FCB355B49
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF7E355B4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbhDFS0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbhDFS0J (ORCPT
+        id S236398AbhDFS0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:26:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38856 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233156AbhDFS0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:26:09 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18427C06174A;
-        Tue,  6 Apr 2021 11:26:01 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so15591025otn.1;
-        Tue, 06 Apr 2021 11:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S+YrVHF4/ePuOuqqtVeXHUraWj9qRsuousQu2nUgUwY=;
-        b=gy164X6YSgASgLtXNiV0A9vOVIBKYTyWcyLcF3DpYEZh4wirzOP2hYxdlXvyhIr5D1
-         gk3B4MjQMlQWelgHFtX7QtWkB49FyDyKpC2+SlWe1JiD8C/LIC4OpuyT6rd1qHqMuP3M
-         dLij2UUrWupRlqAYfK2YIsEh/0bli4zeR1g43BSShibYToVxHcH7uwUWzkKR3o/jydQx
-         12c6leDYY1bT2SDcjKtnRxLPobCQPX/HOsigeM6sE4TpS78NIucpDlTU7GBE74jv46Hc
-         YXjtnr/RioHrvx+nQEtKQZjKK7c9M1XPcnclswNI5X/qAwKlvU1EWDbvQ0aSfhe1Koon
-         Gk0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S+YrVHF4/ePuOuqqtVeXHUraWj9qRsuousQu2nUgUwY=;
-        b=fDImMX6ZTAcMz1E7TNRmzfnvH5IB+6ZPqRqzCC3JZbz7qAaEFtfeBNWZ9V5qocQujM
-         FkPh8xVQiGP+sK2sJ3DtSTTMl+bkhB+xQ3RYgoZ8QaaP1NJmR9f3IxY+gg0SQaXDyHP+
-         f70Gb8sxkpF7sFxOBO9EzMjQ7lhJ0Jw1+iRT8JTdSkCK2djRpKZOcz1jeWfrCVmT2apF
-         7zFb7NgcKoc5Vc4Gx0SpMK4ffJe61NkhnqaglLVQYAlFYQxiDQQYNvV3lUKaEVqpe49C
-         60iOkozrDMYoLo5pDckDniz2+isKbb3OPMVaCoIYsn3EDOIfxRAcOQzSaLoFBuotM1na
-         s+pg==
-X-Gm-Message-State: AOAM532E7rlUVz5Lg0ADDlwJnb6KZFvctEgJSEU5LEsYPDklSuTQSXLU
-        NQ4nIx+40obRxXu9I1itLWttGaA07zMSm5wAS9o=
-X-Google-Smtp-Source: ABdhPJxwg9vd9+MahRWgSay31WWghgV7JzI7axm3jThr1fYHICcQZP169QbCdS0oklbH8a3X8ZgxFJxyij7UiRsyUzs=
-X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr28119450otg.17.1617733560549;
- Tue, 06 Apr 2021 11:26:00 -0700 (PDT)
+        Tue, 6 Apr 2021 14:26:31 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136IAcMl060224;
+        Tue, 6 Apr 2021 14:26:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=o2e05gUL5BXwF168Yo63EHVn9Ti6iJ5nLKTd1VqMfgw=;
+ b=V9lVLqrxBJb7yXe6GYaZ2AbFCmVlZ0VXI+xNYdQH4R4LP5KpMx8UrwAO2hN9HQMIaO8G
+ yvkVJ1fXBo+RdiIYXJqWICs5KS5rPU8YBOoQ0813q9Bt80dg9e/jzO8+kIK2CFZ2zr6q
+ jYJsyHypKytcw4tTsEPWPuKkQyvbWCN9148snlxZ8Sik5zilDrzJ/UwXz/7v0JBWsbN5
+ itLcVEFw30TKWGmf55+qWVsRJ5EJp1rIWeCoH6D5Jynsosq+KmHYezMcs/0sKYhebFKD
+ dzcH4wm3Rk254fDlo5ql5NSfsD/P39eoHW6o5tOXvxEDooWL8w4lpy0+bPlsncdjj/8f 3A== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpj0dva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 14:26:02 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136IH1eK017847;
+        Tue, 6 Apr 2021 18:26:00 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 37rvbu80t1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Apr 2021 18:26:00 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136IPaoB35782930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Apr 2021 18:25:36 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D71F34C040;
+        Tue,  6 Apr 2021 18:25:56 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 692CC4C046;
+        Tue,  6 Apr 2021 18:25:56 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.177.144])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Apr 2021 18:25:56 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        nathanl@linux.ibm.com
+Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] pseries: prevent free CPU ids to be reused on another node
+Date:   Tue,  6 Apr 2021 20:25:54 +0200
+Message-Id: <20210406182554.85197-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210401212148.47033-1-jim2101024@gmail.com> <20210401212148.47033-3-jim2101024@gmail.com>
- <20210406164708.GM6443@sirena.org.uk> <CANCKTBsiujTkOdh60etBqF_hE8exg6m9TDxkGHVVAGVS2SFCcQ@mail.gmail.com>
- <20210406173211.GP6443@sirena.org.uk>
-In-Reply-To: <20210406173211.GP6443@sirena.org.uk>
-From:   Jim Quinlan <jim2101024@gmail.com>
-Date:   Tue, 6 Apr 2021 14:25:49 -0400
-Message-ID: <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
- endpoint device voltage regulators
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Zu-PT6_r0Tnbl08TiDAM8t4qJXOhAHNk
+X-Proofpoint-GUID: Zu-PT6_r0Tnbl08TiDAM8t4qJXOhAHNk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-06_06:2021-04-06,2021-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104060124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 1:32 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Apr 06, 2021 at 01:26:51PM -0400, Jim Quinlan wrote:
-> > On Tue, Apr 6, 2021 at 12:47 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > No great problem with having these in the controller node (assming it
-> > > accurately describes the hardware) but I do think we ought to also be
-> > > able to describe these per slot.
->
-> > Can you explain what you think that would look like in the DT?
->
-> I *think* that's just some properties on the nodes for the endpoints,
-> note that the driver could just ignore them for now.  Not sure where or
-> if we document any extensions but child nodes are in section 4 of the
-> v2.1 PCI bus binding.
+When a CPU is hot added, the CPU ids are taken from the available mask from
+the lower possible set. If that set of values was previously used for CPU
+attached to a different node, this seems to application like if these CPUs
+have migrated from a node to another one which is not expected in real
+life.
 
-Hi Mark,
+To prevent this, it is needed to record the CPU ids used for each node and
+to not reuse them on another node. However, to prevent CPU hot plug to
+fail, in the case the CPU ids is starved on a node, the capability to reuse
+other nodes’ free CPU ids is kept. A warning is displayed in such a case
+to warn the user.
 
-I'm a little confused -- here is how I remember the chronology of the
-"DT bindings" commit reviews, please correct me if I'm wrong:
+A new CPU bit mask (node_recorded_ids_map) is introduced for each possible
+node. It is populated with the CPU onlined at boot time, and then when a
+CPU is hot plug to a node. The bits in that mask remain when the CPU is hot
+unplugged, to remind this CPU ids have been used for this node.
 
-o JimQ submitted a pullreq for using voltage regulators in the same
-style as the existing "rockport" PCIe driver.
-o After some deliberation, RobH preferred that the voltage regulators
-should go into the PCIe subnode device's DT node.
-o JimQ put the voltage regulators in the subnode device's DT node.
-o MarkB didn't like the fact that the code did a global search for the
-regulator since it could not provide the owning struct device* handle.
-o RobH relented, and said that if it is just two specific and standard
-voltage regulators, perhaps they can go in the parent DT node after
-all.
-o JimQ put the regulators back in the PCIe node.
-o MarkB now wants the regulators to go back into the child node again?
+The effect of this patch can be seen by removing and adding CPUs using the
+Qemu monitor. In the following case, the first CPU from the node 2 is
+removed, then the first one from the node 1 is removed too. Later, the
+first CPU of the node 2 is added back. Without that patch, the kernel will
+numbered these CPUs using the first CPU ids available which are the ones
+freed when removing the second CPU of the node 0. This leads to the CPU ids
+16-23 to move from the node 1 to the node 2. With the patch applied, the
+CPU ids 32-39 are used since they are the lowest free ones which have not
+been used on another node.
 
-Folks, please advise.
+At boot time:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
 
-Regards,
-Jim Quinlan
-Broadcom STB
+Vanilla kernel, after the CPU hot unplug/plug operations:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 24 25 26 27 28 29 30 31
+node 2 cpus: 16 17 18 19 20 21 22 23 40 41 42 43 44 45 46 47
+
+Patched kernel, after the CPU hot unplug/plug operations:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 24 25 26 27 28 29 30 31
+node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+
+Changes since V2, addressing Nathan's comments:
+ - Remove the retry feature
+ - Reduce the number of local variables (removing 'i')
+ - Add comment about the cpu_add_remove_lock protecting the added CPU mask.
+Changes since V1 (no functional changes):
+ - update the test's output in the commit's description
+ - node_recorded_ids_map should be static
+
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+ arch/powerpc/platforms/pseries/hotplug-cpu.c | 51 ++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 5 deletions(-)
+
+diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+index ec478f8a98ff..f3fd4807dc3e 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
++++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+@@ -39,6 +39,12 @@
+ /* This version can't take the spinlock, because it never returns */
+ static int rtas_stop_self_token = RTAS_UNKNOWN_SERVICE;
+ 
++/*
++ * Record the CPU ids used on each nodes.
++ * Protected by cpu_add_remove_lock.
++ */
++static cpumask_var_t node_recorded_ids_map[MAX_NUMNODES];
++
+ static void rtas_stop_self(void)
+ {
+ 	static struct rtas_args args;
+@@ -151,9 +157,9 @@ static void pseries_cpu_die(unsigned int cpu)
+  */
+ static int pseries_add_processor(struct device_node *np)
+ {
+-	unsigned int cpu;
++	unsigned int cpu, node;
+ 	cpumask_var_t candidate_mask, tmp;
+-	int err = -ENOSPC, len, nthreads, i;
++	int err = -ENOSPC, len, nthreads, nid;
+ 	const __be32 *intserv;
+ 
+ 	intserv = of_get_property(np, "ibm,ppc-interrupt-server#s", &len);
+@@ -163,9 +169,17 @@ static int pseries_add_processor(struct device_node *np)
+ 	zalloc_cpumask_var(&candidate_mask, GFP_KERNEL);
+ 	zalloc_cpumask_var(&tmp, GFP_KERNEL);
+ 
++	/*
++	 * Fetch from the DT nodes read by dlpar_configure_connector() the NUMA
++	 * node id the added CPU belongs to.
++	 */
++	nid = of_node_to_nid(np);
++	if (nid < 0 || !node_possible(nid))
++		nid = first_online_node;
++
+ 	nthreads = len / sizeof(u32);
+-	for (i = 0; i < nthreads; i++)
+-		cpumask_set_cpu(i, tmp);
++	for (cpu = 0; cpu < nthreads; cpu++)
++		cpumask_set_cpu(cpu, tmp);
+ 
+ 	cpu_maps_update_begin();
+ 
+@@ -173,6 +187,19 @@ static int pseries_add_processor(struct device_node *np)
+ 
+ 	/* Get a bitmap of unoccupied slots. */
+ 	cpumask_xor(candidate_mask, cpu_possible_mask, cpu_present_mask);
++
++	/*
++	 * Remove free ids previously assigned on the other nodes. We can walk
++	 * only online nodes because once a node became online it is not turned
++	 * offlined back.
++	 */
++	for_each_online_node(node) {
++		if (node == nid) /* Keep our node's recorded ids */
++			continue;
++		cpumask_andnot(candidate_mask, candidate_mask,
++			       node_recorded_ids_map[node]);
++	}
++
+ 	if (cpumask_empty(candidate_mask)) {
+ 		/* If we get here, it most likely means that NR_CPUS is
+ 		 * less than the partition's max processors setting.
+@@ -197,6 +224,9 @@ static int pseries_add_processor(struct device_node *np)
+ 		goto out_unlock;
+ 	}
+ 
++	/* Record the newly used CPU ids for the associate node. */
++	cpumask_or(node_recorded_ids_map[nid], node_recorded_ids_map[nid], tmp);
++
+ 	for_each_cpu(cpu, tmp) {
+ 		BUG_ON(cpu_present(cpu));
+ 		set_cpu_present(cpu, true);
+@@ -903,6 +933,7 @@ static struct notifier_block pseries_smp_nb = {
+ static int __init pseries_cpu_hotplug_init(void)
+ {
+ 	int qcss_tok;
++	unsigned int node;
+ 
+ #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+ 	ppc_md.cpu_probe = dlpar_cpu_probe;
+@@ -924,8 +955,18 @@ static int __init pseries_cpu_hotplug_init(void)
+ 	smp_ops->cpu_die = pseries_cpu_die;
+ 
+ 	/* Processors can be added/removed only on LPAR */
+-	if (firmware_has_feature(FW_FEATURE_LPAR))
++	if (firmware_has_feature(FW_FEATURE_LPAR)) {
++		for_each_node(node) {
++			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
++
++			/* Record ids of CPU added at boot time */
++			cpumask_or(node_recorded_ids_map[node],
++				   node_recorded_ids_map[node],
++				   node_to_cpumask_map[node]);
++		}
++
+ 		of_reconfig_notifier_register(&pseries_smp_nb);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.31.1
+
