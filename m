@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3F835510E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEBF355110
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242850AbhDFKiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:38:25 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37952 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhDFKiX (ORCPT
+        id S242886AbhDFKi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232905AbhDFKiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 06:38:23 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136Ac6bf078390;
-        Tue, 6 Apr 2021 05:38:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617705486;
-        bh=cDx/BwVmTsGaf5kP1m/T9FAofm5zp1u5vU0B5W3CTHs=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=ABkS/SKlqsRcbCliGG7T9RnRYUkShhDqgYSm9NfXTWValsqPvPUxwdwweFQBhKTk9
-         UIhLx1GwLtQPCvhqKMz7FEaYE0bKoMgaaNLKmr4lHc7XZRXHx3NK9/1tn49oeXU8dk
-         gqdJKPq8ci4lu2S5zdZhZg0KSVuk1oAxFUEfLJPM=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136Ac5Be026725
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 05:38:06 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 05:38:05 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 05:38:05 -0500
-Received: from [10.250.232.146] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136Ac1k7038264;
-        Tue, 6 Apr 2021 05:38:02 -0500
-Subject: Re: [PATCH v2 1/1] thermal: ti-soc-thermal: Remove duplicated header
- file inclusion
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-pm <linux-pm@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210406091912.2583-1-thunder.leizhen@huawei.com>
- <20210406091912.2583-2-thunder.leizhen@huawei.com>
-From:   "J, KEERTHY" <j-keerthy@ti.com>
-Message-ID: <a8471ca7-461d-2b78-1d95-cda8e384bd9e@ti.com>
-Date:   Tue, 6 Apr 2021 16:08:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97725C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:38:15 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id l9so6531061ils.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uMptppNT/3Ok+aPctNha5f1dBQCDEP+Ubyh7c7bxwiM=;
+        b=N/F5ICJAI3v/qvO/6IpYhTKFyNxn1kBAhB/hm6PCK/MuKyxnqWRNxfn6l8r7t4odIv
+         F4lpbVuaTNYyg9Yg+mC/kwCeU1vWREhcBFpiw8nvZMtRiick6plvpKbe8SAG96SzF8jR
+         4y7A2rxrqHoVz5mR+qDFBWJLGQaIpQ0bB2tCEmu2VhndcCwL29uZSuwH27j+wjnXNq8d
+         vRTumLHZCYIVwiqpzEgtXLVBjmpezxmvc81hC5OnavIim6wXDXzMe5x8sa6j+n9WrJYN
+         O+g7jFmofdjed0jow3ncW5P10TEHg9Ul61pJ6VLcA6INj1C9VT6XeeKnzO70m0Ml7VQC
+         bmfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uMptppNT/3Ok+aPctNha5f1dBQCDEP+Ubyh7c7bxwiM=;
+        b=IxdNv8f8VPuU8smjUZO989+ZDja/UaUaWtdP5Rxau+olL8YXrm2J46HmMomGs9pAOm
+         A96ysPKoY3du158O0GU5DA71A9D9S/nSnMBfGLGatOwj3FX/TgmEcN1gHYtu3YXUX1XC
+         USTqsTMWlfesC7y06Qu9llFLLIHdRnn5s4hrVeuWgNshLjzTlrV8NjN+Os2sG4Zs+UDC
+         Wr+xgt0DCgD14mpE9Vah5qB9O33kuzB3EAxFt9DmEHzVGZJYL9iOFvZ92nS0fOZfmfw8
+         EhvzWh7Uro0LBzUYllJSpKWuOMn9Oy8yNYDntHdcl1PRflLGKb0C5vdmnjIXx08u69fb
+         yuxA==
+X-Gm-Message-State: AOAM5311gC2AL9emY+Q7MOeUbzsosabT+NzGPCSufzB9FirS1YCXBVuw
+        85+HLvELzMedJeBBrT8kjHBRUfxfxnIdAhZRxAa7NeK74QafnA==
+X-Google-Smtp-Source: ABdhPJxdGXoWmlV97t8wyG/Gj5y7R6fri6iOROyo2m4fColbgFgDfjcIC85DQO9X4anQfYG7DIvEdUjGa9m9fwv0kLc=
+X-Received: by 2002:a92:d2cb:: with SMTP id w11mr4206061ilg.225.1617705495131;
+ Tue, 06 Apr 2021 03:38:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406091912.2583-2-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210325120601.71584253@xhacker.debian> <20210330082617.GA971075@jade>
+In-Reply-To: <20210330082617.GA971075@jade>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Tue, 6 Apr 2021 12:38:03 +0200
+Message-ID: <CAEyMn7a1Ec6WZ24i5kCP-4AmM0=s2qEoOTXFpS72a7n+0P7uaw@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: fix build error caused by recent optee
+ tracepoints feature
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jens,
 
+Am Di., 30. M=C3=A4rz 2021 um 10:26 Uhr schrieb Jens Wiklander
+<jens.wiklander@linaro.org>:
+>
+> On Thu, Mar 25, 2021 at 12:06:01PM +0800, Jisheng Zhang wrote:
+> > If build kernel without "O=3Ddir", below error will be seen:
+> >
+> > In file included from drivers/tee/optee/optee_trace.h:67,
+> >                  from drivers/tee/optee/call.c:18:
+> > ./include/trace/define_trace.h:95:42: fatal error: ./optee_trace.h: No =
+such file or directory
+> >    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> >       |                                          ^
+> > compilation terminated.
+> >
+> > Fix it by adding below line to Makefile:
+> > CFLAGS_call.o :=3D -I$(src)
+> >
+> > Tested with and without "O=3Ddir", both can build successfully.
+> >
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+>
+> I've picked up this.
 
-On 4/6/2021 2:49 PM, Zhen Lei wrote:
-> Delete one of the header files <linux/of_device.h> that are included
-> twice, all included header files are then rearranged alphabetically.
+For what tree did you pick this? I still see this build failure on the
+latest next tree (next-20210401).
 
-Reviewed-by: Keerthy <j-keerthy@ti.com>
+>
+> Thanks,
+> Jens
 
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->   drivers/thermal/ti-soc-thermal/ti-bandgap.c | 35 ++++++++++++++---------------
->   1 file changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> index 8a3646e26ddd208..5e7e80b4a8171c4 100644
-> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> @@ -9,30 +9,29 @@
->    *   Eduardo Valentin <eduardo.valentin@ti.com>
->    */
->   
-> -#include <linux/module.h>
-> +#include <linux/clk.h>
-> +#include <linux/cpu_pm.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
->   #include <linux/export.h>
-> +#include <linux/gpio/consumer.h>
->   #include <linux/init.h>
-> -#include <linux/kernel.h>
->   #include <linux/interrupt.h>
-> -#include <linux/clk.h>
-> -#include <linux/gpio/consumer.h>
-> -#include <linux/platform_device.h>
-> -#include <linux/err.h>
-> -#include <linux/types.h>
-> -#include <linux/spinlock.h>
-> -#include <linux/sys_soc.h>
-> -#include <linux/reboot.h>
-> -#include <linux/of_device.h>
-> -#include <linux/of_platform.h>
-> -#include <linux/of_irq.h>
->   #include <linux/io.h>
->   #include <linux/iopoll.h>
-> -#include <linux/cpu_pm.h>
-> -#include <linux/device.h>
-> -#include <linux/pm_runtime.h>
-> -#include <linux/pm.h>
-> -#include <linux/of.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
->   #include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/reboot.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/sys_soc.h>
-> +#include <linux/types.h>
->   
->   #include "ti-bandgap.h"
->   
-> 
+Thank you,
+Heiko
