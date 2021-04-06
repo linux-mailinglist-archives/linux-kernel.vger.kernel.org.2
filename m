@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC5B355132
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC1A355135
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245196AbhDFKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:50:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36682 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242695AbhDFKu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:50:29 -0400
-IronPort-SDR: eyEVuMdzHhPeiMFjex/7+UsIr2Jp/OGJxt6rCGD2Aa7wJmTn+ItZyGT/2iZaQZmQ1lFi6qdaZs
- DkHHKPPK97oA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193079682"
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="193079682"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 03:50:21 -0700
-IronPort-SDR: 8/Y2cr+OADla4TLlnAo6H5OCCTBNzsA8FTkB09gdeAgSuSL4k7U5bXGW5oOw1M/hz7Yw5EhgYD
- Y9x0mvzOWZuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="386530847"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Apr 2021 03:50:10 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id A3A4629D; Tue,  6 Apr 2021 13:50:24 +0300 (EEST)
-Date:   Tue, 6 Apr 2021 13:50:24 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210406105024.ikz5fbozwu476yba@black.fi.intel.com>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
- <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
+        id S245198AbhDFKu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235679AbhDFKuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:50:54 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CDBC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:50:46 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id u10so15950234lju.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=mxjXIZD5cMpbeMxIQK6zoS+Nrxtcej01ukleZy3/104=;
+        b=TvtBUrGZBuveLyuwoK28cpmMHuYCafy7qyDVB25cPH9Gvw0KcfcRo5WpUjzIVbJY4F
+         Fe5cdO3RYYai4zH9V8b0jQ6L6kHsnlMCw+c4RkcYXCQ8OCCV2oHjp1eGn7CfR6+xulnD
+         Hze3xgSDb1EFdgjo/uW5OL7aUNeCahZ6N5E/26ke7rugC/8OwDQ2KIcS/IsXbAqdmXAb
+         +04g4rdFrpuyvpZcjQSD563IXazFwATT+/ce4LUTkKHpkGCKygJROxKJCno8R9rsbP/q
+         GdkH4/1Pnj+5QjNxnI3MTJ3/99fDwgCwNWD+8UrrMYaRnj2EiLnSQouSuNnny+hDcTPD
+         IgSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=mxjXIZD5cMpbeMxIQK6zoS+Nrxtcej01ukleZy3/104=;
+        b=TKE9ThYiLspW1bzFtsj3947bvesTpP8i9Nq7YJ/F5PZMueVjr2dzjcbm2xzOVJeBDP
+         RW/qND99b7xgxTHm5KYc08wcfEtXrIGuGiawoNPSpVpqd+MDk2z74KfrhIhuuS9GX/kG
+         fp6tUFreuvZs1OKo9M4qxFbxKnT/QIat6lcEfYpblWLc+d1/T3YkTQLngn8PjnfJhs/f
+         yCxZwRzSnjeytefIOtiUTA8v9IOp7rZiig+vMgegKJDSr946+nqRizW+GBU5Cq8MC2NY
+         Spx5X91ZC3ya6tf1c+3H3JQcHVxNs6cbVN4cfwh+6fAuO8cRGm89bJFJv0McOUVm+Z5x
+         I4AQ==
+X-Gm-Message-State: AOAM530GtGlL6WtZtgupMI4UtJqRkjqeRO+tkWMELuuXIqfv7p56lJUg
+        FJgmtLuhrff6182w4OcfO/E=
+X-Google-Smtp-Source: ABdhPJwszNqJHkd6Wwj9WSqADVZBIUNJnW8kWai5GT27u9jt9CG4Q9QvyIkdfwzK8NxWrH0LuNtiHw==
+X-Received: by 2002:a2e:b0d4:: with SMTP id g20mr18916639ljl.127.1617706245366;
+        Tue, 06 Apr 2021 03:50:45 -0700 (PDT)
+Received: from zhans ([37.151.32.231])
+        by smtp.gmail.com with ESMTPSA id m16sm2117307lfo.17.2021.04.06.03.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 03:50:44 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 16:50:33 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: [PATCH 0/2] staging: rtl8712: rewrite comparisons and remove blank
+ lines
+Message-ID: <cover.1617705825.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:44:07AM +0200, David Hildenbrand wrote:
-> On 02.04.21 17:26, Kirill A. Shutemov wrote:
-> > TDX architecture aims to provide resiliency against confidentiality and
-> > integrity attacks. Towards this goal, the TDX architecture helps enforce
-> > the enabling of memory integrity for all TD-private memory.
-> > 
-> > The CPU memory controller computes the integrity check value (MAC) for
-> > the data (cache line) during writes, and it stores the MAC with the
-> > memory as meta-data. A 28-bit MAC is stored in the ECC bits.
-> > 
-> > Checking of memory integrity is performed during memory reads. If
-> > integrity check fails, CPU poisones cache line.
-> > 
-> > On a subsequent consumption (read) of the poisoned data by software,
-> > there are two possible scenarios:
-> > 
-> >   - Core determines that the execution can continue and it treats
-> >     poison with exception semantics signaled as a #MCE
-> > 
-> >   - Core determines execution cannot continue,and it does an unbreakable
-> >     shutdown
-> > 
-> > For more details, see Chapter 14 of Intel TDX Module EAS[1]
-> > 
-> > As some of integrity check failures may lead to system shutdown host
-> > kernel must not allow any writes to TD-private memory. This requirment
-> > clashes with KVM design: KVM expects the guest memory to be mapped into
-> > host userspace (e.g. QEMU).
-> 
-> So what you are saying is that if QEMU would write to such memory, it could
-> crash the kernel? What a broken design.
+This patchset replaces NULL comparisons with boolean negation and
+removes extra blank lines after an open brace.
 
-Cannot disagree. #MCE for integrity check is very questionable. But I'm not
-CPU engineer.
+Zhansaya Bagdauletkyzy (2):
+  staging: rtl8712: Rewrite NULL comparisons
+  staging: rtl8712: Remove extra blank lines
 
-> "As some of integrity check failures may lead to system shutdown host" --
-> usually we expect to recover from an MCE by killing the affected process,
-> which would be the right thing to do here.
-
-In the most cases that's what happen.
-
-> How can it happen that "Core determines execution cannot continue,and it
-> does an unbreakable shutdown". Who is "Core"? CPU "core", MM "core" ?
-
-CPU core.
-
-> And why would it decide to do a shutdown instead of just killing the
-> process?
-
-<As I said, I'm not CPU engineer. Below is my understanding of the issue.>
-
-If the CPU handles long flow instruction (involves microcode and doing
-multiple memory accesses), consuming poison somewhere in the middle leads
-to CPU not being able to get back into sane state and the only option is
-system shutdown.
+ drivers/staging/rtl8712/rtl871x_io.h   |  1 -
+ drivers/staging/rtl8712/rtl871x_mlme.h |  1 -
+ drivers/staging/rtl8712/rtl871x_recv.h | 11 +++++------
+ drivers/staging/rtl8712/sta_info.h     |  1 -
+ 4 files changed, 5 insertions(+), 9 deletions(-)
 
 -- 
- Kirill A. Shutemov
+2.25.1
+
