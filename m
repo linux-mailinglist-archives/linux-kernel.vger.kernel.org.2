@@ -2,123 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9363558F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171F63558FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346328AbhDFQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:15:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+        id S1346336AbhDFQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:15:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46999 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232664AbhDFQPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:15:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417D6613DE;
-        Tue,  6 Apr 2021 16:14:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617725692;
-        bh=e7fZVz6b0FMgjgCkbnNmNXBn1MD/C6gNDZ3usE0y5hc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=USE73gN/6PJf5bTwmAe+aEqN6RlKtxqQvoAKsF4cnQbuDuqs74aFV4L67qwrB1B1f
-         ASAuseMeo2vKHBrzGPD5ZkjbM2PZKOgQpY5IdRvPAlgU6nHf253ygstru7Mn1kiE5u
-         sUtwZxrU2QzHAcL6oaxTFfijDRsnFie0Lz8q1+efl0E+feU+vxKqM3+SHecqAXcS83
-         dhDlDZUi/LxctuCNKHqqD49sBmCYAw4LkrS+WWpRGld39qSWcgzUtk196LKQc5etVQ
-         PXsKhshbW02RyTa8jaoBIiQByJBgvRJcZ+nPQwDpvtC+tvBvJEIwOEhL45ssbdlo/a
-         xD1V7eSe6r45w==
-Received: by mail-ej1-f49.google.com with SMTP id mh7so12885730ejb.12;
-        Tue, 06 Apr 2021 09:14:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533tIljo3HbCc/pbYrLxQjpyWv+NIYLau+4Xo7NkqTOYtKFVeLgQ
-        aO2Z9YCtf/z8+EbTyUVlmAN+O0yY+e2xrBN7mg==
-X-Google-Smtp-Source: ABdhPJxus3vaJlBolyIDnwHcY8HUfh+bhu44dUc1lwfkvNdASWzEwWAgbEIKh7zaUEUIwYwhnk1eltD52lV6wsnPcD0=
-X-Received: by 2002:a17:906:490e:: with SMTP id b14mr6498315ejq.303.1617725690674;
- Tue, 06 Apr 2021 09:14:50 -0700 (PDT)
+        id S1346327AbhDFQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:15:03 -0400
+IronPort-SDR: 09n966EIHF5EN3DKrLM6RPIaT0jjzlmgW99xc9tTpqOG/ppIX9EgPsM05Re+c+1EgBu6fino7F
+ SYZ8jbXO9PTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180233996"
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="180233996"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:14:55 -0700
+IronPort-SDR: DYHq2yPahU261G4H3YvtxkReM5529mLFjhqDqHGIRoR3pnVzs+KpaS0mb6XJP/e4sZ5aw24lwn
+ MC01v4UXdfXw==
+X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
+   d="scan'208";a="447899438"
+Received: from hlalithk-mobl1.amr.corp.intel.com (HELO [10.209.146.228]) ([10.209.146.228])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 09:14:54 -0700
+Subject: Re: [RFC v1 23/26] x86/tdx: Make pages shared in ioremap()
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <17c692a8-72b3-526b-9190-8c41655fa13c@intel.com>
+ <20210406160016.4rwy5pxojpohmspn@box>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <2be9d20e-2d53-53da-972e-61401543aaa7@intel.com>
+Date:   Tue, 6 Apr 2021 09:14:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210406141819.1025864-1-dqfext@gmail.com> <20210406141819.1025864-2-dqfext@gmail.com>
- <CAAOTY_8snSTcguhyB9PJBWydqNaWZL3V4zXiYULVp5n48fN24w@mail.gmail.com> <YGyGFOrXwEsqCW/z@lunn.ch>
-In-Reply-To: <YGyGFOrXwEsqCW/z@lunn.ch>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 7 Apr 2021 00:14:39 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9feP7bBFJFVBWzNbnAK7xZQFLZJ=viFFncyS55JghP9A@mail.gmail.com>
-Message-ID: <CAAOTY_9feP7bBFJFVBWzNbnAK7xZQFLZJ=viFFncyS55JghP9A@mail.gmail.com>
-Subject: Re: [RFC net-next 1/4] net: phy: add MediaTek PHY driver
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        DENG Qingfang <dqfext@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-staging@lists.linux.dev, DTML <devicetree@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210406160016.4rwy5pxojpohmspn@box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Lunn <andrew@lunn.ch> =E6=96=BC 2021=E5=B9=B44=E6=9C=887=E6=97=A5 =
-=E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:02=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Apr 06, 2021 at 11:47:08PM +0800, Chun-Kuang Hu wrote:
-> > Hi, Qingfang:
-> >
-> > DENG Qingfang <dqfext@gmail.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=886=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:19=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > >
-> > > Add support for MediaTek PHYs found in MT7530 and MT7531 switches.
-> > > The initialization procedure is from the vendor driver, but due to la=
-ck
-> > > of documentation, the function of some register values remains unknow=
-n.
-> > >
-> > > Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> > > ---
-> > >  drivers/net/phy/Kconfig    |   5 ++
-> > >  drivers/net/phy/Makefile   |   1 +
-> > >  drivers/net/phy/mediatek.c | 109 +++++++++++++++++++++++++++++++++++=
-++
-> > >  3 files changed, 115 insertions(+)
-> > >  create mode 100644 drivers/net/phy/mediatek.c
-> > >
-> > > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> > > index a615b3660b05..edd858cec9ec 100644
-> > > --- a/drivers/net/phy/Kconfig
-> > > +++ b/drivers/net/phy/Kconfig
-> > > @@ -207,6 +207,11 @@ config MARVELL_88X2222_PHY
-> > >           Support for the Marvell 88X2222 Dual-port Multi-speed Ether=
-net
-> > >           Transceiver.
-> > >
-> > > +config MEDIATEK_PHY
-> >
-> > There are many Mediatek phy drivers in [1], so use a specific name.
->
-> Those are generic PHY drivers, where as this patch is add a PHY
-> driver. The naming used in this patch is consistent with other PHY
-> drivers. So i'm happy with this patch in this respect.
->
-> PHY drivers have been around a lot longer than generic PHY drivers. So
-> i would actually say the generic PHY driver naming should make it
-> clear they are generic PHYs, not PHYs.
->
+On 4/6/21 9:00 AM, Kirill A. Shutemov wrote:
+>>> --- a/arch/x86/mm/ioremap.c
+>>> +++ b/arch/x86/mm/ioremap.c
+>>> @@ -87,12 +87,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+>>>  }
+>>>  
+>>>  /*
+>>> - * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
+>>> - * there the whole memory is already encrypted.
+>>> + * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
+>>> + * private in TDX case) because there the whole memory is already encrypted.
+>>>   */
+>> But doesn't this mean that we can't ioremap() normal memory?
+> It's not allowed anyway: see (io_desc.flags & IORES_MAP_SYSTEM_RAM) in the
+> __ioremap_caller().
+> 
+>> I was somehow expecting that we would need to do this for some
+>> host<->guest communication pages.
+> It goes though DMA API, not ioremap().
 
-OK, so just ignore my comment.
+Ahh, got it.  Thanks for the clarification.
 
-> But lets not bike shed about this too much.
->
->       Andrew
+It would help to make mention of that stuff in the changelog to make it
+more obvious going forward.
