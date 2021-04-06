@@ -2,169 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2705535507C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CD0355080
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241844AbhDFKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:06:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24400 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240979AbhDFKGg (ORCPT
+        id S242654AbhDFKH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:07:57 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:57185 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236660AbhDFKHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:06:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617703588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
-        b=INDUQlMMCnNy7zUZKn1tS4/9uI+hySXS/W1TKZPDnDRdOmzXcXrAV531tyXZyVtRRgZDXf
-        xaKMsuda9LgWWeXxUAk5CMFkpWLiRMILR+eI9M0dBpPV3jMKuT0wnu6zEkXzkdgvvoLNDQ
-        5yN+o7ZQLICmWqCpO5sqfVdX3Xx1RzM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-2SvUCcR3Oru5f0oUNT4wAA-1; Tue, 06 Apr 2021 06:06:26 -0400
-X-MC-Unique: 2SvUCcR3Oru5f0oUNT4wAA-1
-Received: by mail-ed1-f72.google.com with SMTP id g7so1226174edp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:06:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
-        b=Jn3rCmGZKzxR1xBLBMl0ooZ4hjZJC+2+DD4yD9jGXYoaXqMkYMnxwlDbGFjE9NxjgQ
-         olk0/D3la1SzR4HiYFZh4S+9PEqnxb/xYfQ6QBnvdPoY5SHR8O2uMinPynhHWCYygzL3
-         tdVzOULxgr8F81uI6kZKFb85MjFiQr6XJGTlX24eSFO2HGvtANXMp9Mkhy7ZPTtTSS0Z
-         yzoVDMk3DijEIQgYnlMj77AvLnHAD0xJRbapvwiuoUl09dCEmUgEVrgmJsy/7rmNFUYw
-         06ZRLN1zsoik9XOGkAJgM3uSkuiWH40EKD1noyCv26kUKuHpi4d7vYf5NQ4OHQFrZE5K
-         a0zQ==
-X-Gm-Message-State: AOAM531E2R932xj6bGH/CAbXuFTKX5c+Ll+7s3lLF0RryJ5AYZ52yXl9
-        trJe6BzdRh5faC8VRgq5Vn9WJ949HelZvVc/dkaAMVaGX7sdzN78Q/fg9NO8yrupAzf8sVcOCWD
-        htTeVV6j61lYpZhGP66eoo/5T
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908383edb.62.1617703585740;
-        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkFahB+GBVvfN5+4DjXC410VqB3rQQ1MthTGIdEaIgp48fePTzVnaVaxK/KzASTOExPeqmdA==
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908347edb.62.1617703585534;
-        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id y24sm13732387eds.23.2021.04.06.03.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:06:24 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5D5CF180300; Tue,  6 Apr 2021 12:06:24 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
-References: <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
- <20210402190806.nhcgappm3iocvd3d@apollo>
- <20210403174721.vg4wle327wvossgl@ast-mbp>
- <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 06 Apr 2021 12:06:24 +0200
-Message-ID: <87blar4ti7.fsf@toke.dk>
+        Tue, 6 Apr 2021 06:07:55 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id TicYl4EOH43ycTicclNVCp; Tue, 06 Apr 2021 12:07:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617703666; bh=Smp4MRVLLNFUnOv70Z5XSGoIqeMHHh6mJ4G83RG34ns=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Yybzm13G/vqFcbp43DlPIrp8Gd0s+gHw3xJnpMbQbR7LFEM6Wu6TfqjqeeDfjGuNU
+         ib+QD0pN54obSN9VI/IYqAWaFXM93TvPbVFR26aXWdo5WmwS+AdxlZOfAT5Ws68/ks
+         MRkv6bohwIEewPtYutcroMCD/RFqNECEgYyuHMrfQmsoSWzksH3HrK6HxTKQukh9hV
+         guPjwY5jDuDABkYedfot35NEtZsSS6/Wja/c3CRRxD5A6iJFwU6AEaAM44GtBxFfQ4
+         unWbMgoM7o/lluxr4vOrfyh7EUUkVGn/c/m2a8ZB/i9thjajwwSPeWQmA/0XOCvwFL
+         sqmEchwwyw7QA==
+Subject: Re: [PATCH] media: em28xx: fix memory leak
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        dan.carpenter@oracle.com, gregkh@linuxfoundation.org,
+        skhan@linuxfoundation.org
+Cc:     syzkaller-bugs@googlegroups.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:EM28XX VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
+        stable@vger.kernel.org
+References: <20210324180753.GA410359@LEGION>
+ <675efa79414d2d8cb3696d3ca3a0c3be99bd92fa.camel@gmail.com>
+ <57f041d036a6a472c1463ab5d5274df5bb646920.camel@gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <3cd9808b-a684-f0f2-8ea0-81b404943239@xs4all.nl>
+Date:   Tue, 6 Apr 2021 12:07:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <57f041d036a6a472c1463ab5d5274df5bb646920.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfOjeiWIl6LzpQHXWGkDVKfhjL1RGlWcrFhZob03hVnI4BYGItPjLfQaKzqmZAtgM3FcS7pcebfi4XPDvDiDqFT1PUwVz2eKjpve5w11RTTm28M8POnNa
+ XR9nsO40iWnzf2raJRr7xpyqB5v5MhYodAPm3rHM5xzY9w6KrpmM/mB618g117/OABXUNeyqz0BsI0V2p4wdtc1NzocpM+a1D5JwEzjEBp9fp2W8IPcyEIoy
+ jLlYJAn06RROv+724oajy9RH65M7LUbMLYNsCbo+icRtxSU3lv1gC98l+1s6Kauq3H2tNJWurRRW58zGJ71YF0EpvYKw4Snh6xsRELyi6qsgyIbUJArrv/x+
+ ZXXNTlZBeLVbBGvfAG0BguIlTBUWLBCy0OL5mLNadwI4+lybKCjPXUXzpvym7bSepNoLnQ9UjzuIuOHTpVuc9zAyV6ZrYXb8TwXDlKjH6bpQWnkixUmohl6C
+ L4WE/wAlNFTdoarAZvgd2tOJkZ0di5a1EH+thh62A8PABIfas/wEhdaVULY0n5woEEGL1d1/xFv/gjBr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On 06/04/2021 11:44, Muhammad Usama Anjum wrote:
+> On Wed, 2021-03-31 at 13:22 +0500, Muhammad Usama Anjum wrote:
+>> On Wed, 2021-03-24 at 23:07 +0500, Muhammad Usama Anjum wrote:
+>>> If some error occurs, URB buffers should also be freed. If they aren't
+>>> freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
+>>> buffers as dvb is set to NULL. The function in which error occurs should
+>>> do all the cleanup for the allocations it had done.
+>>>
+>>> Tested the patch with the reproducer provided by syzbot. This patch
+>>> fixes the memleak.
+>>>
+>>> Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+>>> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+>>> ---
+>>> Resending the same path as some email addresses were missing from the
+>>> earlier email.
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
+>>>
+>>>  drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+>>> index 526424279637..471bd74667e3 100644
+>>> --- a/drivers/media/usb/em28xx/em28xx-dvb.c
+>>> +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+>>> @@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+>>>  	return result;
+>>>  
+>>>  out_free:
+>>> +	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
+>>>  	kfree(dvb);
+>>>  	dev->dvb = NULL;
+>>>  	goto ret;
 >>
->> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wrote:
->> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
->> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->> > > > [...]
->> > >
->> > > All of these things are messy because of tc legacy. bpf tried to follow tc style
->> > > with cls and act distinction and it didn't quite work. cls with
->> > > direct-action is the only
->> > > thing that became mainstream while tc style attach wasn't really addressed.
->> > > There were several incidents where tc had tens of thousands of progs attached
->> > > because of this attach/query/index weirdness described above.
->> > > I think the only way to address this properly is to introduce bpf_link style of
->> > > attaching to tc. Such bpf_link would support ingress/egress only.
->> > > direction-action will be implied. There won't be any index and query
->> > > will be obvious.
->> >
->> > Note that we already have bpf_link support working (without support for pinning
->> > ofcourse) in a limited way. The ifindex, protocol, parent_id, priority, handle,
->> > chain_index tuple uniquely identifies a filter, so we stash this in the bpf_link
->> > and are able to operate on the exact filter during release.
->>
->> Except they're not unique. The library can stash them, but something else
->> doing detach via iproute2 or their own netlink calls will detach the prog.
->> This other app can attach to the same spot a different prog and now
->> bpf_link__destroy will be detaching somebody else prog.
->>
->> > > So I would like to propose to take this patch set a step further from
->> > > what Daniel said:
->> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
->> > > and make this proposed api to return FD.
->> > > To detach from tc ingress/egress just close(fd).
->> >
->> > You mean adding an fd-based TC API to the kernel?
->>
->> yes.
->
-> I'm totally for bpf_link-based TC attachment.
->
-> But I think *also* having "legacy" netlink-based APIs will allow
-> applications to handle older kernels in a much nicer way without extra
-> dependency on iproute2. We have a similar situation with kprobe, where
-> currently libbpf only supports "modern" fd-based attachment, but users
-> periodically ask questions and struggle to figure out issues on older
-> kernels that don't support new APIs.
+>> I'd received the following notice and waiting for the review:
+>> On Thu, 2021-03-25 at 09:06 +0000, Patchwork wrote:
+>>> Hello,
+>>>
+>>> The following patch (submitted by you) has been updated in Patchwork:
+>>>
+>>>  * linux-media: media: em28xx: fix memory leak
+>>>      - http://patchwork.linuxtv.org/project/linux-media/patch/20210324180753.GA410359@LEGION/
+>>>      - for: Linux Media kernel patches
+>>>
+> This patch has been accepted. This bug was introduced by 27ba0dac.
+> Will it be backported and submitted for inclusion in stable release by
+> maintainer automatically?
 
-+1; I am OK with adding a new bpf_link-based way to attach TC programs,
-but we still need to support the netlink API in libbpf.
+That might not happen since there was no 'Fixes:' tag. Without that it
+will depend on the stable tree maintainers whether they'll pick it up or not.
 
-> So I think we'd have to support legacy TC APIs, but I agree with
-> Alexei and Daniel that we should keep it to the simplest and most
-> straightforward API of supporting direction-action attachments and
-> setting up qdisc transparently (if I'm getting all the terminology
-> right, after reading Quentin's blog post). That coincidentally should
-> probably match how bpf_link-based TC API will look like, so all that
-> can be abstracted behind a single bpf_link__attach_tc() API as well,
-> right? That's the plan for dealing with kprobe right now, btw. Libbpf
-> will detect the best available API and transparently fall back (maybe
-> with some warning for awareness, due to inherent downsides of legacy
-> APIs: no auto-cleanup being the most prominent one).
+Regards,
 
-Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
-high-level API auto-detect. That way users can also still use the
-netlink attach function if they don't want the fd-based auto-close
-behaviour of bpf_link.
-
--Toke
-
+	Hans
