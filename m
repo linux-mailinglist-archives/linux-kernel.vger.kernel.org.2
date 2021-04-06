@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236BD355442
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0592035544C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243337AbhDFMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:51:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25707 "EHLO
+        id S243362AbhDFMzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:55:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51193 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232927AbhDFMvD (ORCPT
+        by vger.kernel.org with ESMTP id S230248AbhDFMzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:51:03 -0400
+        Tue, 6 Apr 2021 08:55:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617713454;
+        s=mimecast20190719; t=1617713733;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LqmvLDyPcw5HvzsN9d3OA/0ZQ4y65craa/qJjjsW6V4=;
-        b=elZFzJrCjWDenxWshqbObmUy+MawQv/Jtz+NQfUbkeb/p09+3Sm/jPwshz5a6Y3Eu4IQ+b
-        gO83wm8JT4Ps87HUWNvwXzMCoTZZp2VhOj2nm5CdjuT3hSQ4I52KE0jvzphaUcD7JGc32/
-        ZFog/ILCp2zoKNk6Es6eiIw84zHDPDQ=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AMmsc41eqctpVkzPL+JoDmYt5x6xCyCRYplYE68RQiQ=;
+        b=NMyulwd7NU2Syfok57gX9T4+m6iyFeUXzHT4stlhrhsQv7BSEDN7kVbAGgQbXobwdGYUhz
+        KzBZESndJ9DisbmjcoNm/9nZGw4l2c8kgOkw8XNyEz+z3ctNVG6oxNmD+rlNWt+TUdLiQR
+        GYK1q1oSbzKcOjtZdSwmbX+aGI8X20o=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-LOHyKUCXMviH3Vb_XtLnIg-1; Tue, 06 Apr 2021 08:50:53 -0400
-X-MC-Unique: LOHyKUCXMviH3Vb_XtLnIg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-78-wnPWQRIdP3eCSTi9hvlIwQ-1; Tue, 06 Apr 2021 08:55:29 -0400
+X-MC-Unique: wnPWQRIdP3eCSTi9hvlIwQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DDB5800D53;
-        Tue,  6 Apr 2021 12:50:51 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8478860C4A;
-        Tue,  6 Apr 2021 12:50:48 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     x86@kernel.org, Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-Date:   Tue,  6 Apr 2021 14:50:47 +0200
-Message-Id: <20210406125047.547501-1-vkuznets@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E8E98189C7;
+        Tue,  6 Apr 2021 12:55:27 +0000 (UTC)
+Received: from krava (unknown [10.40.195.36])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DA49B1B528;
+        Tue,  6 Apr 2021 12:55:23 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 14:55:22 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, irogers@google.com, linuxarm@huawei.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        zhangshaokun@hisilicon.com, pc@us.ibm.com
+Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
+ parsing test
+Message-ID: <YGxaOnUZnNmDg/2P@krava>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <1616668398-144648-3-git-send-email-john.garry@huawei.com>
+ <YGXPdEAecos4iPVc@krava>
+ <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
+ <YGxRbH0XWaj6AWfa@krava>
+ <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
-acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
-wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
-into acpi_idle_play_dead(). The problem is that these functions are not
-exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
+On Tue, Apr 06, 2021 at 01:43:09PM +0100, John Garry wrote:
+> On 06/04/2021 13:17, Jiri Olsa wrote:
+> > > > > +			ref = &metric->metric_ref;
+> > > > > +			ref->metric_name = pe->metric_name;
+> > > > > +			ref->metric_expr = pe->metric_expr;
+> > > > > +			list_add_tail(&metric->list, compound_list);
+> > > > > +
+> > > > > +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
+> > > Hi Jirka,
+> > > 
+> > > > so this might add new items to pctx->ids, I think you need
+> > > > to restart the iteration as we do it in __resolve_metric
+> > > > otherwise you could miss some new keys
+> > > I thought that I was doing this. Indeed, this code is very much like
+> > > __resolve_metric();)
+> > > 
+> > > So expr__find_other() may add a new item to pctx->ids, and we always iterate
+> > > again, and try to lookup any pmu_events, *, above. If none exist, then we
+> > hm, I don't see that.. so, what you do is:
+> > 
+> > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
+> > 
+> > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
+> > 	}
+> > 
+> > and what I think we need to do is:
+> > 
+> > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
+> > 
+> > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
+> > 
+> > 		break;	
+> > 	}
+> > 
+> > each time you resolve another metric, you need to restart
+> > the pctx->ids iteration, because there will be new items,
+> > and we are in the middle of it
+> 
+> Sure, but we will restart anyway.
 
-The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
-(the later from assembly) but it seems putting the whole pattern into a
-new function and exporting it instead is better.
+hum, where? you call expr__find_other and continue to next
+pctx->ids item
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
-Cc: <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/smp.h    |  2 +-
- arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
- drivers/acpi/processor_idle.c |  3 +--
- 3 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> Regardless of this, I don't think what I am doing is safe, i.e. adding new
+> items in the middle of the iter, so I will change in the way you suggest.
 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 57ef2094af93..6f79deb1f970 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -132,7 +132,7 @@ void native_play_dead(void);
- void play_dead_common(void);
- void wbinvd_on_cpu(int cpu);
- int wbinvd_on_all_cpus(void);
--bool wakeup_cpu0(void);
-+void wakeup_cpu0_if_needed(void);
- 
- void native_smp_send_reschedule(int cpu);
- void native_send_call_func_ipi(const struct cpumask *mask);
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index f877150a91da..9547d870ee27 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1659,7 +1659,7 @@ void play_dead_common(void)
- 	local_irq_disable();
- }
- 
--bool wakeup_cpu0(void)
-+static bool wakeup_cpu0(void)
- {
- 	if (smp_processor_id() == 0 && enable_start_cpu0)
- 		return true;
-@@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
- 	return false;
- }
- 
-+void wakeup_cpu0_if_needed(void)
-+{
-+	if (wakeup_cpu0())
-+		start_cpu0();
-+}
-+EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
-+
- /*
-  * We need to flush the caches before going to sleep, lest we have
-  * dirty data in our caches when we come back up.
-@@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
- 		/*
- 		 * If NMI wants to wake up CPU0, start CPU0.
- 		 */
--		if (wakeup_cpu0())
--			start_cpu0();
-+		wakeup_cpu0_if_needed();
- 	}
- }
- 
-@@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
- 		/*
- 		 * If NMI wants to wake up CPU0, start CPU0.
- 		 */
--		if (wakeup_cpu0())
--			start_cpu0();
-+		wakeup_cpu0_if_needed();
- 	}
- }
- 
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index 768a6b4d2368..de15116b754a 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
- 
- #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
- 		/* If NMI wants to wake up CPU0, start CPU0. */
--		if (wakeup_cpu0())
--			start_cpu0();
-+		wakeup_cpu0_if_needed();
- #endif
- 	}
- 
--- 
-2.30.2
+it'll always add items in the middle of the iteration
+
+jirka
+
+> 
+> Thanks,
+> John
+> 
 
