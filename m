@@ -2,141 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A53355792
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303F235579A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345584AbhDFPUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345574AbhDFPUf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:20:35 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCE0C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:20:26 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id c204so6906242pfc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3nOOElHtuWxIjwzeA4Qinf+awOERwf/3FOuhhm/HNjs=;
-        b=DXRlea9AoD5zyghCYi8ymKEiSBVn7dC3We79fEcLjckA7HgurQXC9sPhgikxfaiDs2
-         8KAKCaBzmH481ePtDqo4g6kz7zbSRfyUx/DvlFAH6CHx5DUTBs5OP1BnjQOz+Gd3sg2M
-         zwJmQYLdw561TJwF7XJexozk62vjy/+h4lWXWt3MLea5Oz9wiBmthw0kvzrE0Cgm438+
-         XvxTUqmU0QJRsyQ7CyvCrUAt+JNXM35W2OdV4cdgBIrNAdrHCWKJuShFQXQdyoKzsTgw
-         E8SZ7jejXiHOFJqVmoQ2P8hCw3S952lQCIT7SwCj1dW1sI2OF48QOQhENP19wORlLoQH
-         0s0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3nOOElHtuWxIjwzeA4Qinf+awOERwf/3FOuhhm/HNjs=;
-        b=e7exPajVL+S3SqhzhxCzIIm6XT9W2hqGF9SlWMsbNEg38+J2V+PT0qqmkX6B3iwyZm
-         tZ/pxbrwtjJ3ZHALqUwTHKnRggQ0VotYtOpDp5482TwJlVqlbtq3RiVeMyHZ+aq1LOmh
-         /P1HIIk9dTa4WL4PssY/FZ62KpXMSdbpGUzvSdmlAgctTkm51Tbuqp82kdJGaT2Czf0w
-         7nwck+d/aAFLG5cKk35THOvmiv17H2YbbcgU8vQtV7m518nL7hWAuUr59VcPJQiY40q+
-         xcITXpZTr2WPB1zkei/z4m0+NUvjEAud8UfyQsZ9llBF0acWJcMXmMmxUGTg3bct7sDj
-         7yGA==
-X-Gm-Message-State: AOAM533px1Tiu9IgGv6OoBx2d5O5C9TNsSFZW9Fg0OB/45med/R2Rl3V
-        4nA9IjpHSl5i0Yv5Fa4PCihg8A==
-X-Google-Smtp-Source: ABdhPJwIlNMnMJhHkep8TJKMaoNN2Ei5py3EvYJq4iN+mOj72qEFF1vT7r+lHVAyRTf0ba12RUuvKQ==
-X-Received: by 2002:a63:4522:: with SMTP id s34mr27217308pga.250.1617722426232;
-        Tue, 06 Apr 2021 08:20:26 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id p22sm2882027pjg.39.2021.04.06.08.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 08:20:25 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 15:20:21 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Steve Rutherford <srutherford@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <YGx8NbG6TGm7LnQh@google.com>
-References: <cover.1617302792.git.ashish.kalra@amd.com>
- <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
- <CABayD+fF7+sn444rMuE_SNwN-SYSPwJr1mrW3qRYw4H7ryi-aw@mail.gmail.com>
- <20210406062248.GA22937@ashkalra_ubuntu_server>
- <YGx6JqTVO97GUzn7@google.com>
+        id S1345594AbhDFPVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:21:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35960 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233393AbhDFPVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:21:49 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTnW7-00F8gN-Pt; Tue, 06 Apr 2021 17:21:23 +0200
+Date:   Tue, 6 Apr 2021 17:21:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
+Subject: Re: [RFC net-next 1/4] net: phy: add MediaTek PHY driver
+Message-ID: <YGx8c5Jt2D7fB0cO@lunn.ch>
+References: <20210406141819.1025864-1-dqfext@gmail.com>
+ <20210406141819.1025864-2-dqfext@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGx6JqTVO97GUzn7@google.com>
+In-Reply-To: <20210406141819.1025864-2-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021, Sean Christopherson wrote:
-> On Tue, Apr 06, 2021, Ashish Kalra wrote:
-> > On Mon, Apr 05, 2021 at 01:42:42PM -0700, Steve Rutherford wrote:
-> > > On Mon, Apr 5, 2021 at 7:28 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
-> > > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > > index f7d12fca397b..ef5c77d59651 100644
-> > > > --- a/arch/x86/kvm/x86.c
-> > > > +++ b/arch/x86/kvm/x86.c
-> > > > @@ -8273,6 +8273,18 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> > > >                 kvm_sched_yield(vcpu->kvm, a0);
-> > > >                 ret = 0;
-> > > >                 break;
-> > > > +       case KVM_HC_PAGE_ENC_STATUS: {
-> > > > +               int r;
-> > > > +
-> > > > +               ret = -KVM_ENOSYS;
-> > > > +               if (kvm_x86_ops.page_enc_status_hc) {
-> > > > +                       r = kvm_x86_ops.page_enc_status_hc(vcpu, a0, a1, a2);
-> > > > +                       if (r >= 0)
-> > > > +                               return r;
-> > > > +                       ret = r;
-> > > Style nit: Why not just set ret, and return ret if ret >=0?
-> > > 
-> > 
-> > But ret is "unsigned long", if i set ret and return, then i will return to guest
-> > even in case of error above ?
-> 
-> As proposed, svm_page_enc_status_hc() already hooks complete_userspace_io(), so
-> this could be hoisted out of the switch statement.
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 16fb39503296..794dde3adfab 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8261,6 +8261,10 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->                 goto out;
->         }
-> 
-> +       /* comment goes here */
-> +       if (nr == KVM_HC_PAGE_ENC_STATUS && kvm_x86_ops.page_enc_status_hc)
-> +               return static_call(kvm_x86_page_enc_status_hc(vcpu, a0, a1, a2));
+On Tue, Apr 06, 2021 at 10:18:16PM +0800, DENG Qingfang wrote:
+> Add support for MediaTek PHYs found in MT7530 and MT7531 switches.
 
-Gah, the SEV implementation can also return -EINVAL, and that should fail the
-hypercall, not kill the guest.  Normally we try to avoid output params, but
-in this case it might be less ugly to do:
+Do you know if this PHY is available standalone?
 
-		case KVM_HC_PAGE_ENC_STATUS: {
-			if (!kvm_x86_ops.page_enc_status_hc)
-				break;
-
-			if (!static_call(kvm_x86_page_enc_status_hc(vcpu, a0, a1,
-								    a2, &ret));
-				return 0;
-			break;
-
+> +static int mt7531_phy_config_init(struct phy_device *phydev)
+> +{
+> +	mtk_phy_config_init(phydev);
 > +
->         ret = -KVM_ENOSYS;
-> 
->         switch (nr) {
-> 
+> +	/* PHY link down power saving enable */
+> +	phy_set_bits(phydev, 0x17, BIT(4));
+> +	phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, 0xc6, 0x300);
+> +
+> +	/* Set TX Pair delay selection */
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, 0x13, 0x404);
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, 0x14, 0x404);
+
+This gets me worried about RGMII delays. We have had bad backwards
+compatibility problems with PHY drivers which get RGMII delays wrong.
+
+Since this is an internal PHY, i suggest you add a test to the
+beginning of mt7531_phy_config_init():
+
+	if (phydev->interface != PHY_INTERFACE_MODE_INTERNAL)
+		return -EINVAL;
+
+We can then solve RGMII problems when somebody actually needs RGMII.
+
+   Andrew
