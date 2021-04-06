@@ -2,105 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5089355762
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2353355764
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345489AbhDFPKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:10:21 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:40685 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhDFPKT (ORCPT
+        id S1345495AbhDFPKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhDFPKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:10:19 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQ5nE-1lGVe444tE-00M82P; Tue, 06 Apr 2021 17:10:09 +0200
-Received: by mail-ot1-f42.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso14919233oti.11;
-        Tue, 06 Apr 2021 08:10:08 -0700 (PDT)
-X-Gm-Message-State: AOAM5339u61P3hcDQHSMv4Bb3Vc6UeOaPqfPKECpFig1uCct5fovZUts
-        XPwTqmkcSBGX/Hjod6hc9kc3/Hsfqq4PeYD4X4Y=
-X-Google-Smtp-Source: ABdhPJymivlM3E85H8Q+0NCLICsUYllvqqVKgV6xTox+xVrAvu7QQQ8spiRatNW1320IbQIk/CTiHARLx2Yc4o/NYxk=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr28037074otq.251.1617721807123;
- Tue, 06 Apr 2021 08:10:07 -0700 (PDT)
+        Tue, 6 Apr 2021 11:10:38 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBB3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:10:29 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id z8so16859908ljm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QHyCt3+3ROsg7DoWYdHlXlVTLvXgZLRc7i9sKG8h3XY=;
+        b=vplVZm/LkWI6XfVVnEVGwFjVh6Z9rokTELj8tYPDvoPGc4+bnEElq+0LanSpXzbOml
+         kf8B0f3LiyPs6PYi6iSapwKB8qrSluZlaNCCOAR+O1YsoRblPLeYOHn2mQbXbIC9GHZX
+         avuLHdboxP8uDX2VQwGSLbFqvaHOAL8yNuptA5ZgHpIBAVUGDvF3uBRWlbd2eupujiyC
+         fmAkiOTnOY7jy6m6g93HMJiS0fpypkt8TwdrHpS+e+zmXLBBysMQYxYcvSt+QJS/XaB4
+         hHNvfVnOJT254U7ps1Vdq6FlWzfzh2IA1WEB8OstQqzl5Y616rI1Z6Kfsk47mA6gJ0zH
+         O2vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QHyCt3+3ROsg7DoWYdHlXlVTLvXgZLRc7i9sKG8h3XY=;
+        b=tHNtObE5B7X1UsM4QoG3RhIrqn66Z8xHlVnittG7k1C93XGsQdNgnM2cfh62gYPM2E
+         zQNyVQVyI/yv9GkopZ0xW9IakFqQXTC0XxW8+pTds5v00SwVFYCreOXl9GmH1OyzNhG1
+         mM++U4lkAd+CxKP7zdejOfvrNdcKmd0CQCnAVPxuY5G/UQYl+sNLN8K2DMOESmuiDiSj
+         H23vqVEetN6ouD11jqXyYWJQqZ2EeYH6dvOaZaBhQDqq02fE+Dz11uTx8j7HTqLqy12L
+         +MLhSdzHeFAGg3k4XPZqsuHPjSm35DvHlnBhr9a/WOOpEnPH6qP2VQDNF775aMTkK2re
+         GZfA==
+X-Gm-Message-State: AOAM530ZpGq8+3dgGzPV03H0l/PnzQPm0XKn/dK7Bu5IxaKUX+HFvijm
+        idRMFek6NvOzY2NFl5SC9ejb4NFLim0I/cPBOUyPd/pJeaqoOA==
+X-Google-Smtp-Source: ABdhPJw0a8VnD6iKPgmP7qkFl6yXqLCO9xrUlajzUomQypCkGNkkUfH7Lpv+gT6k4CUsWArWCIoSjN4ne7sL/q23xcY=
+X-Received: by 2002:a2e:730b:: with SMTP id o11mr19337401ljc.221.1617721828007;
+ Tue, 06 Apr 2021 08:10:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 6 Apr 2021 17:09:50 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3PBvj_JEgxqSD6fg_J8kZzUz_KthZ66RdA5tF4CPPbdg@mail.gmail.com>
-Message-ID: <CAK8P3a3PBvj_JEgxqSD6fg_J8kZzUz_KthZ66RdA5tF4CPPbdg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
+References: <20210321150358.71ef52b1@imladris.surriel.com> <20210322110306.GE3697@techsingularity.net>
+ <20210326151932.2c187840@imladris.surriel.com>
+In-Reply-To: <20210326151932.2c187840@imladris.surriel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 6 Apr 2021 17:10:16 +0200
+Message-ID: <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
+Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but differently
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:j4MYXLrEq3uWqMv+X0D99JwRTObPxDHDhULsj99en1zd/J0IS/M
- 9DH+aY6RDqyTbtsxdBcUfZb+VnY8T9dkC4Ci3fV4yaKiT3GP45iRwVaY38uzag+7e1eYfKy
- q/Sp50e+En2buLkJEK/wbFqVNilXsvIYeIUaIPF0vQBDu1+1gy8WogTZT+70k09VATRurYk
- GmKsn/l8oe0Pk4pW5dtGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GP+1VYp8m50=:bsgZllEAEV+Im6+kBThy/N
- JRso7MC3s7MZECvcG6PxvLGm48/w8u+AwOaEEM1TpolGdUeWEn/hhpdt6UWGtWJGzy0NgHb1b
- ECWpueBJLTVs7fSSrUUnujvbDiNbQeSq3j5DI0JIYFPG8qaXZquoG+NcbGehYjTJtibfwbaa4
- MhR08FPn0d9M6hcsAB8DWsEtr0KwkviFgvGkVMxMp7zB46YO9hPgBKPRtUiGdXjiY35QA422Z
- pI220xkX3UXgAJmZlsfT8lnTiwhJ6goIM5u4qGHoy1wGPTrwW0CvNzx+k8+QpKfm/nEmZcla/
- AY6TjYhY9EjBCHJ7tEnvJf+fKCFAdKwrH0GRt8ecy2tD99Z62l4JNkIlY0FoL0FqrCGA5R3Tl
- N5lgSxJoiGwhOxR1ax5wKVmJ8zCsMuMh925Jl7s4XakMqWmL5Dg62rWCzcp1sDnC/q+1gTyps
- xxdNyBrccocNyELt3aLU2Tv7JuleTWM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 3:31 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Fri, 26 Mar 2021 at 20:19, Rik van Riel <riel@surriel.com> wrote:
 >
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
+> On Mon, 22 Mar 2021 11:03:06 +0000
+> Mel Gorman <mgorman@techsingularity.net> wrote:
 >
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Second, select_idle_smt() does not use the cpus mask so consider moving
+> > the cpus initialisation after select_idle_smt() has been called.
+> > Specifically this initialisation
+> >
+> >       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> >
+> > Alternatively, clear the bits in the SMT sibling scan to avoid checking
+> > the siblings twice. It's a tradeoff because initialising and clearing
+> > bits is not free and the cost is wasted if a sibling is free.
+>
+> I tried a number of different variations on moving the CPU mask
+> initialization, and clearing CPUs from the mask, and failed to
+> get any clear results from those in testing, even in workloads
+> with lots of context switches.
+>
+> Below is a simple version that seems to perform identically to
+> more complicated versions :)
+>
+> ---8<---
+> sched,fair: bring back select_idle_smt, but differently
+>
+> Mel Gorman did some nice work in 9fe1f127b913
+> ("sched/fair: Merge select_idle_core/cpu()"), resulting in the kernel
+> being more efficient at finding an idle CPU, and in tasks spending less
+> time waiting to be run, both according to the schedstats run_delay
+> numbers, and according to measured application latencies. Yay.
+>
+> The flip side of this is that we see more task migrations (about
+> 30% more), higher cache misses, higher memory bandwidth utilization,
+> and higher CPU use, for the same number of requests/second.
+>
+> This is most pronounced on a memcache type workload, which saw
+> a consistent 1-3% increase in total CPU use on the system, due
+> to those increased task migrations leading to higher L2 cache
+> miss numbers, and higher memory utilization. The exclusive L3
+> cache on Skylake does us no favors there.
+>
+> On our web serving workload, that effect is usually negligible.
+>
+> It appears that the increased number of CPU migrations is generally
+> a good thing, since it leads to lower cpu_delay numbers, reflecting
+> the fact that tasks get to run faster. However, the reduced locality
+> and the corresponding increase in L2 cache misses hurts a little.
+>
+> The patch below appears to fix the regression, while keeping the
+> benefit of the lower cpu_delay numbers, by reintroducing select_idle_smt
+> with a twist: when a socket has no idle cores, check to see if the
+> sibling of "prev" is idle, before searching all the other CPUs.
+>
+> This fixes both the occasional 9% regression on the web serving
+> workload, and the continuous 2% CPU use regression on the memcache
+> type workload.
+>
+> With Mel's patches and this patch together, task migrations are still
+> high, but L2 cache misses, memory bandwidth, and CPU time used are back
+> down to what they were before. The p95 and p99 response times for the
+> memcache type application improve by about 10% over what they were
+> before Mel's patches got merged.
+>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> ---
+>  kernel/sched/fair.c | 68 ++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 52 insertions(+), 16 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 794c2cb945f8..69680158963f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6098,6 +6098,28 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+>         return -1;
+>  }
+>
+> +/*
+> + * Scan the local SMT mask for idle CPUs.
+> + */
+> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int
+> +target)
+> +{
+> +       int cpu;
+> +
+> +       if (!static_branch_likely(&sched_smt_present))
+> +               return -1;
+> +
+> +       for_each_cpu(cpu, cpu_smt_mask(target)) {
+> +               if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+> +                   !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+> +                       continue;
+> +               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> +                       return cpu;
+> +       }
+> +
+> +       return -1;
+> +}
+> +
+>  #else /* CONFIG_SCHED_SMT */
+>
+>  static inline void set_idle_cores(int cpu, int val)
+> @@ -6114,6 +6136,11 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+>         return __select_idle_cpu(core);
+>  }
+>
+> +static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+> +{
+> +       return -1;
+> +}
+> +
+>  #endif /* CONFIG_SCHED_SMT */
+>
+>  /*
+> @@ -6121,7 +6148,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+>   * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+>   * average idle time for this rq (as found in rq->avg_idle).
+>   */
+> -static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
+> +static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int prev, int target)
+>  {
+>         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+>         int i, cpu, idle_cpu = -1, nr = INT_MAX;
+> @@ -6136,23 +6163,32 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>
+>         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>
+> -       if (sched_feat(SIS_PROP) && !smt) {
+> -               u64 avg_cost, avg_idle, span_avg;
+> +       if (!smt) {
+> +               if (cpus_share_cache(prev, target)) {
 
-Nice!
+Have you checked the impact on no smt system ? would worth a static branch.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Also, this doesn't need to be in select_idle_cpu() which aims to loop
+the sched_domain becaus you only compare  target and prev. So you can
+move this call to select_idle_smt() in select_idle_sibling() as part
+of all the others tests done on prev/target/recent_used_cpu before
+calling select_idle_cpu() and even save a useless  sd =
+rcu_dereference(per_cpu(sd_llc, target));
+
+
+> +                       /* No idle core. Check if prev has an idle sibling. */
+> +                       i = select_idle_smt(p, sd, prev);
+> +                       if ((unsigned int)i < nr_cpumask_bits)
+> +                               return i;
+> +               }
+>
+> -               /*
+> -                * Due to large variance we need a large fuzz factor;
+> -                * hackbench in particularly is sensitive here.
+> -                */
+> -               avg_idle = this_rq()->avg_idle / 512;
+> -               avg_cost = this_sd->avg_scan_cost + 1;
+> +               if (sched_feat(SIS_PROP)) {
+> +                       u64 avg_cost, avg_idle, span_avg;
+>
+> -               span_avg = sd->span_weight * avg_idle;
+> -               if (span_avg > 4*avg_cost)
+> -                       nr = div_u64(span_avg, avg_cost);
+> -               else
+> -                       nr = 4;
+> +                       /*
+> +                        * Due to large variance we need a large fuzz factor;
+> +                        * hackbench in particularly is sensitive here.
+> +                        */
+> +                       avg_idle = this_rq()->avg_idle / 512;
+> +                       avg_cost = this_sd->avg_scan_cost + 1;
+>
+> -               time = cpu_clock(this);
+> +                       span_avg = sd->span_weight * avg_idle;
+> +                       if (span_avg > 4*avg_cost)
+> +                               nr = div_u64(span_avg, avg_cost);
+> +                       else
+> +                               nr = 4;
+> +
+> +                       time = cpu_clock(this);
+> +               }
+>         }
+>
+>         for_each_cpu_wrap(cpu, cpus, target) {
+> @@ -6307,7 +6343,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>         if (!sd)
+>                 return target;
+>
+> -       i = select_idle_cpu(p, sd, target);
+> +       i = select_idle_cpu(p, sd, prev, target);
+>         if ((unsigned)i < nr_cpumask_bits)
+>                 return i;
+>
+> --
+> 2.25.4
+>
+>
