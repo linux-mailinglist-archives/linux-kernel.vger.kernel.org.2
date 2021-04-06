@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD8C355614
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380E3355616
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344907AbhDFOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:07:32 -0400
-Received: from smtpcmd01-sp1.aruba.it ([62.149.158.218]:41664 "EHLO
-        smtpcmd01-sp1.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhDFOHa (ORCPT
+        id S1344913AbhDFOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:07:36 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:50385 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233348AbhDFOHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:07:30 -0400
-Received: from [192.168.126.129] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id TmMSlNqy2TIb1TmMSl6TuV; Tue, 06 Apr 2021 16:07:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1617718041; bh=qnNqa3PMe4bx15r4Is7WmH19xKZdB1p4g61UEusxWAk=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=TWan4RDaktPxYOxjqxMW8xRiNVl6PcK0FCsdTsCq33PVswVzFFzjMBsgBewEp09LX
-         UQqCc7wYOq/8HAboLatFAD5M+2mVABZ4GEv70r67wVD4zjHxnx32qHHIXBYCWvOSIL
-         EdvQbl4uuuDgSyFMGwebUO+aH3o02XZ/OEmWcRxad2HG801OA0ceWAjJIoHYED1O1F
-         I4A///xHzoB5FJV+sGDpiVlwsH0vU1+p6SfhBFzrupVMnbcHad1/Lyiwd1XLJqy1ru
-         mxL4V734WVEWaqDBtbFi7q9xW9d8ccTHi2tcoZicZgoOq72YBr4WHE6viPbcwDVYEK
-         yG1fxLe2xEk7A==
-Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YGbc7Qbu6s659Mx4@latitude>
- <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
- <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
- <YGxkB6icZSJfx/VB@latitude>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <a7b384ac-55f4-931b-d8ce-0c74c70f07cd@benettiengineering.com>
-Date:   Tue, 6 Apr 2021 16:07:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 6 Apr 2021 10:07:35 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 82CC45C013A;
+        Tue,  6 Apr 2021 10:07:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 06 Apr 2021 10:07:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=/0Wz5dj/+IJAQKiJXxZGuUsNcOc
+        A/ivdlPyloiyjg7A=; b=C8Fx0OYhnahB2JZkXdAXd51Eo+c4hbTis0u4Rt35X0d
+        Fh5mttaU3nWqutgKa+/KgaIOfcyuvIah8UQPG/PnNhbzpEdvVt3nIkzyeDr/wLEN
+        5T6efiLYMKX7T1GaUSYE/qR+nePXzn1VKhJ17ZvoCLSDWO5IX4kgTEZk+kGjfXVb
+        XqIySIlJ7nM7O5R1h7KV3oNZBFJVbI2XghiGCP+sJKBREu01LtnroRt+enExB6lE
+        Ps7JYUALj2dkQmy9Wi4Wgtvu2SzaoDHq/pLw6qHjrbPk0z9ssJ9Un4ZTl25C+XuA
+        G9owpdVvOHbR8wAhhn3IIxZDSFvruMYXUnAULzGjjag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/0Wz5d
+        j/+IJAQKiJXxZGuUsNcOcA/ivdlPyloiyjg7A=; b=LocmciT57hPSRJ0mHcMZNG
+        bFnXj9a/8fLRb+R5wlnTXHvBjEFkmveVBh9bjbZUhGz71wnAobf3yjEJ1Dus79CC
+        rIuYGqQl6rjNy2zhWAlR95VE8+dNDGaLRszgzqXFbC1J/wsjKJxbWyrw3iryWTU8
+        vZy1/xOOpcwop1Ed9YHMQACSr6dh78I8iifn3IrNxptbyCD1Bu25H7n12cB7peBf
+        TAoM2fAbGBf8kYv5EgaGrC3TgDy6hofAHyYXBZ8bedQZmOtsOwTjazhgGzH+eV8H
+        eIjvpb+qR9tBBZP4NbukvG5AAqLSx/ehf14eAOgh0mzyh2QpJWeyeOJFpmYj9nUA
+        ==
+X-ME-Sender: <xms:HmtsYOR9knLYNl34TX8LJs7Czk9f0dI-pi2BD0mu5yOvFKrQS_PZBA>
+    <xme:HmtsYOV_lJk-RBmvtRuqxeT_bqM7ptxT8AwR51YvM88p3PeVFE7KAUvO8lXTsgego
+    u9-h_rMCMOTbg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejhedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:HmtsYIZAXiVaNIJuh3xc-WfKQDUpVCXqcNh-vfGOyzMNdDhn0EqIFw>
+    <xmx:HmtsYM0S4_PXHuSkXONVm4omJ20Xdydj8C4TfDO0fPKEfqjkvlEEjw>
+    <xmx:HmtsYCh9JUSuwGHfyQWCjA7YzByGrQaeiNgqFmjI-l_lZdi71qqTkg>
+    <xmx:H2tsYFNC8u19bFVASUVltO8J1rl4c4g_x8Eyx6NZQe9iZtYHZypErg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0263524005E;
+        Tue,  6 Apr 2021 10:07:25 -0400 (EDT)
+Date:   Tue, 6 Apr 2021 16:07:23 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the char-misc tree
+Message-ID: <YGxrG16+8n8Wxs/c@kroah.com>
+References: <20210406214441.5744648c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YGxkB6icZSJfx/VB@latitude>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfJtVFEwfrBGwgWRPXTt+otcGFjg32IsmdB3T+rIy/kGUyznTAvNtJeZ1uKEf+AeS7XWdnur8gLRH8KHyct3H8P44GL6xbRbLEEGcJHYEl2irFYMR+EPY
- PlGJWTZhLl3CLqVvURMXcg3hGC75IuTlHApB0H4Z2C/8gHNRXis8P5oqudvQxrgSpX0EjHMyk9h0CGz7u0jUahNVymk8xXceYPj/g1tFX7paBsEJMCy/OrTd
- 2f+PawskwYhBhqlmbOnJa4BVuFcuqosINqDEy+1MbL/Q4NFzhoexLFA512jcEXCAOEbrcqDctvHvZ7DhbAPG19uPId+/5oe1Eew4AXKWxQ2X1H8Ja1APWH9m
- zOKf1zJdvhrAEOP/mR94EeNz8UfimdQG9G1jJeVED/FAOC2ohSe2vqJkZaQRCtVfz33TWd82ppRKFFYt951T/O6STw+3bQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406214441.5744648c@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Tue, Apr 06, 2021 at 09:44:41PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the char-misc tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> Documentation/misc-devices/dw-xdata-pcie.rst:20: WARNING: Unexpected indentation.
+> Documentation/misc-devices/dw-xdata-pcie.rst:24: WARNING: Unexpected indentation.
+> Documentation/misc-devices/dw-xdata-pcie.rst:25: WARNING: Block quote ends without a blank line; unexpected unindent.
+> Documentation/misc-devices/dw-xdata-pcie.rst:30: WARNING: Unexpected indentation.
+> Documentation/misc-devices/dw-xdata-pcie.rst:34: WARNING: Unexpected indentation.
+> Documentation/misc-devices/dw-xdata-pcie.rst:35: WARNING: Block quote ends without a blank line; unexpected unindent.
+> Documentation/misc-devices/dw-xdata-pcie.rst:40: WARNING: Unexpected indentation.
+> 
+> Introduced by commit
+> 
+>   e1181b5bbc3c ("Documentation: misc-devices: Add Documentation for dw-xdata-pcie driver")
 
-On 4/6/21 3:37 PM, Jonathan Neuschäfer wrote:
-> In the binding:
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - hycon,hycon-hy4613
->> +      - hycon,hycon-hy4614
->> +      - hycon,hycon-hy4621
->> +      - hycon,hycon-hy4623
->> +      - hycon,hycon-hy4633
->> +      - hycon,hycon-hy4635
-> 
-> In the example:
->> +      hycon-hy4633@1c {
->> +        compatible = "hycon,hy4633";
->> +        reg = <0x1c>;
->> +        interrupt-parent = <&gpio2>;
->> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
->> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
->> +      };
-> 
-> 
-> Rob's devicetree lint bot detected the mismatch in compatible string
-> here.
-> 
-> I personally think 'hycon,hy4633' looks better than 'hycon,hycon-hy4633',
-> because it isn't so redundant.
-> 
+Gustavo, can you send a follow-on patch to fix this up?
 
-Thank you, I've realized it after submitting patches and waited for 
-other comments. I've already fixed it the way you've pointed.
+thanks,
 
-Kind regards
--- 
-Giulio Benetti
-Benetti Engineering sas
-> Best regards,
-> Jonathan Neuschäfer
-> 
-
+greg k-h
