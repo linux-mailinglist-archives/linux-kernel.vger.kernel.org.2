@@ -2,644 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CBC355A1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C82C355A1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346829AbhDFRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:15:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56024 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233879AbhDFRPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:15:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F21ECAD80;
-        Tue,  6 Apr 2021 17:15:41 +0000 (UTC)
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org
-References: <1617712064-12264-1-git-send-email-faiyazm@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v3] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <2e1f1771-0483-d311-7995-404c837372fc@suse.cz>
-Date:   Tue, 6 Apr 2021 19:15:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S238059AbhDFRQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233060AbhDFRQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:16:16 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6352FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:16:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ha17so8294725pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aePFuCa/3RjpudbNnyIqFR3Tp2mKK26MkG7GhSAOCSE=;
+        b=a+JRqPwydb7hONlU5nHtADjR9hY0BLIHdnapwSkrBffp8kIe1pjt9bMhGxJMjbpEG9
+         +z6Plhphoni/+JCioA+kiRBGxUZkKZQN0MJZjTgiz2X/BoAoVc2O08kBJgMwDXFiLl/f
+         4zjhAFAShQJFSnuho59Be6eSyko5d7Ggic148Ayo196m2yrVf6YHm7W6ryO+AFIcZvNy
+         BhbS4XmiyycP5KjXQOtigpzNGU48E+i8bRIdJlr6yS2di42gf7204tR0vKJhGFwT4/9c
+         PXW8Nkm5vxSsFiiqblZQmUs8OCyuRdbRGc8pgGN7MktQTLPuOjcqHic1ixwHLwl2xtYc
+         hAoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aePFuCa/3RjpudbNnyIqFR3Tp2mKK26MkG7GhSAOCSE=;
+        b=CZFjHIEe9zs4e+qC+T8lDOhrz3kaKZOECY29WrN0hafjK3bmGBb8p8eJxPbmYub5u5
+         75nj0TNUzJDS40yjYLaae7h8czUPC90rUvmXNhslElx1cLhFVPFaVHV6PJKynbxo53MJ
+         KeXXKI3+zBU9zP7crar4NhqVmP7Jp8y04vLxk8n65KKMvIirJpMhPgjvD3InC3ml+/Qo
+         40PaleBn6RsNy+JcfCTiGYGDX9OzPN+9W4KbVm4ZfhBryc7kurdZVqQD7zqVHt+wtyVh
+         zic/yI6FFunmqj1UBQrjiO0q1liCY3w1NvZ+g/Ep8AOdmBhSnplIMVNljprOoCKVGu9e
+         txvw==
+X-Gm-Message-State: AOAM533na5S9UvWcRpYNPOki/4mvHuKqhVMEXVCwo5uW6I3gUIZ77oSN
+        IS61z4GiPFVmQH9h+G+B8vsiWbxauOO9Dg==
+X-Google-Smtp-Source: ABdhPJwhOCxMBF3QoueIBZTAT1fJdEOVack0Ri3I3g7SSAx6hwioBUlv1bBu1SB/RLv+QgWAVc3Y1A==
+X-Received: by 2002:a17:90a:8813:: with SMTP id s19mr5212185pjn.94.1617729366796;
+        Tue, 06 Apr 2021 10:16:06 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x2sm18954218pfx.41.2021.04.06.10.16.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 10:16:06 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 17:16:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 25/26] x86/tdx: Make DMA pages shared
+Message-ID: <YGyXUkl4ftKi673H@google.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0bc9209a36760ee7c8591322327ddbfe87351b09.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <cc8e2e73-9d08-894c-47f9-ec82b0642789@intel.com>
+ <20210406163150.cbmcybnu6hu5alk7@box>
+ <6065a93b-6bcd-2038-e994-6ec7b7b4c891@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1617712064-12264-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6065a93b-6bcd-2038-e994-6ec7b7b4c891@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 2:27 PM, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+On Tue, Apr 06, 2021, Dave Hansen wrote:
+> On 4/6/21 9:31 AM, Kirill A. Shutemov wrote:
+> > On Thu, Apr 01, 2021 at 02:01:15PM -0700, Dave Hansen wrote:
+> >>> @@ -1999,7 +2006,8 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> >>>  	/*
+> >>>  	 * Before changing the encryption attribute, we need to flush caches.
+> >>>  	 */
+> >>> -	cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+> >>> +	if (!enc || !is_tdx_guest())
+> >>> +		cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+> >>
+> >> That "!enc" looks wrong to me.  Caches would need to be flushed whenever
+> >> encryption attributes *change*, not just when they are set.
+> >>
+> >> Also, cpa_flush() flushes caches *AND* the TLB.  How does TDX manage to
+> >> not need TLB flushes?
+> > 
+> > I will double-check everthing, but I think we can skip *both* cpa_flush()
+> > for private->shared conversion. VMM and TDX module will take care about
+> > TLB and cache flush in response to MapGPA TDVMCALL.
 
-Good direction, thanks. But I'm afraid we need a bit more:
+No, on both accounts.
 
-- I don't see debugfs_remove() (or _recursive) used anywhere. When a cache is
-destroyed, do the dirs/files just linger in debugfs referencing removed
-kmem_cache objects?
-- There's a simple debugfs_create_dir(s->name, ...), for each cache while the
-sysfs variant handles merged caches with symlinks etc. For consistency, the
-hiearchy should look the same in debugfs as it does in sysfs.
+The guest is always responsible for flushing so called "linear mappings", i.e.
+the gva -> gpa translations.  The VMM / TDX Module are responsible for flushing
+the "guest-physical mappings" and "combined mappings" when the shared EPT /
+secure EPT tables are modified.  E.g. the VMM could choose to keep separate
+memory pools for shared vs. private and not even touch EPT tables on conversion.
+But, the guest would still need to invalidate its virt->phys translations so
+that accesses from within the guest generate the correct gpa.
 
-Also could we avoid shifting the tracking code around mm/slub.c by leaving it in
-place and adding a nested #ifdef CONFIG_DEBUG_FS where needed?
+Regarding cache flushing, the guest is responsible for flushing the cache lines
+when converting from private to shared, and the VMM is responsible for flushing
+the cache lines when converting from shared to private.
 
-And possibly we could leave the old files around, but their content would be
-something along "Deprecated, use the equvalent under <debugfs>/slab/" ? We'll
-see if anyone complains. We can remove them completely after few years.
+For private->shared, the VMM _can't_ do a targeted flush, as it can't generate
+the correct physical address since stuffing a private key into its page tables
+will #PF.  The VMM could do a full WBINVD, but that's not the intended ABI.
+Hopefully this is documented in the GHCI...
 
-Thanks!
-Vlastimil
+For shared->private, the VMM is responsible for flushing the caches, assuming it
+reuses the same physical page.  The TDX module does not enforce this directly,
+rather TDX relies on integrity checks to detect if stale data (with the shared
+key) is written back to guest private memory.  I.e. if the VMM does not do the
+necessary flushing, the guest will get a poisoned memory #MC and die (or crash
+the host).
 
-> ---
->  mm/slub.c | 518 ++++++++++++++++++++++++++++++++++----------------------------
->  1 file changed, 286 insertions(+), 232 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3021ce9..4d20ee0 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -36,6 +36,7 @@
->  #include <linux/memcontrol.h>
->  #include <linux/random.h>
->  
-> +#include <linux/debugfs.h>
->  #include <trace/events/kmem.h>
->  
->  #include "internal.h"
-> @@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
->  							{ return 0; }
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_FS
-> +static void debugfs_slab_add(struct kmem_cache *);
-> +#else
-> +static inline void debugfs_slab_add(struct kmem_cache *) { }
-> +#endif
-> +
->  static inline void stat(const struct kmem_cache *s, enum stat_item si)
->  {
->  #ifdef CONFIG_SLUB_STATS
-> @@ -4542,6 +4549,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
->  	if (err)
->  		__kmem_cache_release(s);
->  
-> +	debugfs_slab_add(s);
-> +
->  	return err;
->  }
->  
-> @@ -4682,221 +4691,6 @@ static long validate_slab_cache(struct kmem_cache *s)
->  
->  	return count;
->  }
-> -/*
-> - * Generate lists of code addresses where slabcache objects are allocated
-> - * and freed.
-> - */
-> -
-> -struct location {
-> -	unsigned long count;
-> -	unsigned long addr;
-> -	long long sum_time;
-> -	long min_time;
-> -	long max_time;
-> -	long min_pid;
-> -	long max_pid;
-> -	DECLARE_BITMAP(cpus, NR_CPUS);
-> -	nodemask_t nodes;
-> -};
-> -
-> -struct loc_track {
-> -	unsigned long max;
-> -	unsigned long count;
-> -	struct location *loc;
-> -};
-> -
-> -static void free_loc_track(struct loc_track *t)
-> -{
-> -	if (t->max)
-> -		free_pages((unsigned long)t->loc,
-> -			get_order(sizeof(struct location) * t->max));
-> -}
-> -
-> -static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
-> -{
-> -	struct location *l;
-> -	int order;
-> -
-> -	order = get_order(sizeof(struct location) * max);
-> -
-> -	l = (void *)__get_free_pages(flags, order);
-> -	if (!l)
-> -		return 0;
-> -
-> -	if (t->count) {
-> -		memcpy(l, t->loc, sizeof(struct location) * t->count);
-> -		free_loc_track(t);
-> -	}
-> -	t->max = max;
-> -	t->loc = l;
-> -	return 1;
-> -}
-> -
-> -static int add_location(struct loc_track *t, struct kmem_cache *s,
-> -				const struct track *track)
-> -{
-> -	long start, end, pos;
-> -	struct location *l;
-> -	unsigned long caddr;
-> -	unsigned long age = jiffies - track->when;
-> -
-> -	start = -1;
-> -	end = t->count;
-> -
-> -	for ( ; ; ) {
-> -		pos = start + (end - start + 1) / 2;
-> -
-> -		/*
-> -		 * There is nothing at "end". If we end up there
-> -		 * we need to add something to before end.
-> -		 */
-> -		if (pos == end)
-> -			break;
-> -
-> -		caddr = t->loc[pos].addr;
-> -		if (track->addr == caddr) {
-> -
-> -			l = &t->loc[pos];
-> -			l->count++;
-> -			if (track->when) {
-> -				l->sum_time += age;
-> -				if (age < l->min_time)
-> -					l->min_time = age;
-> -				if (age > l->max_time)
-> -					l->max_time = age;
-> -
-> -				if (track->pid < l->min_pid)
-> -					l->min_pid = track->pid;
-> -				if (track->pid > l->max_pid)
-> -					l->max_pid = track->pid;
-> -
-> -				cpumask_set_cpu(track->cpu,
-> -						to_cpumask(l->cpus));
-> -			}
-> -			node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> -			return 1;
-> -		}
-> -
-> -		if (track->addr < caddr)
-> -			end = pos;
-> -		else
-> -			start = pos;
-> -	}
-> -
-> -	/*
-> -	 * Not found. Insert new tracking element.
-> -	 */
-> -	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
-> -		return 0;
-> -
-> -	l = t->loc + pos;
-> -	if (pos < t->count)
-> -		memmove(l + 1, l,
-> -			(t->count - pos) * sizeof(struct location));
-> -	t->count++;
-> -	l->count = 1;
-> -	l->addr = track->addr;
-> -	l->sum_time = age;
-> -	l->min_time = age;
-> -	l->max_time = age;
-> -	l->min_pid = track->pid;
-> -	l->max_pid = track->pid;
-> -	cpumask_clear(to_cpumask(l->cpus));
-> -	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
-> -	nodes_clear(l->nodes);
-> -	node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> -	return 1;
-> -}
-> -
-> -static void process_slab(struct loc_track *t, struct kmem_cache *s,
-> -		struct page *page, enum track_item alloc)
-> -{
-> -	void *addr = page_address(page);
-> -	void *p;
-> -	unsigned long *map;
-> -
-> -	map = get_map(s, page);
-> -	for_each_object(p, s, addr, page->objects)
-> -		if (!test_bit(__obj_to_index(s, addr, p), map))
-> -			add_location(t, s, get_track(s, p, alloc));
-> -	put_map(map);
-> -}
-> -
-> -static int list_locations(struct kmem_cache *s, char *buf,
-> -			  enum track_item alloc)
-> -{
-> -	int len = 0;
-> -	unsigned long i;
-> -	struct loc_track t = { 0, 0, NULL };
-> -	int node;
-> -	struct kmem_cache_node *n;
-> -
-> -	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> -			     GFP_KERNEL)) {
-> -		return sysfs_emit(buf, "Out of memory\n");
-> -	}
-> -	/* Push back cpu slabs */
-> -	flush_all(s);
-> -
-> -	for_each_kmem_cache_node(s, node, n) {
-> -		unsigned long flags;
-> -		struct page *page;
-> -
-> -		if (!atomic_long_read(&n->nr_slabs))
-> -			continue;
-> -
-> -		spin_lock_irqsave(&n->list_lock, flags);
-> -		list_for_each_entry(page, &n->partial, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		list_for_each_entry(page, &n->full, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		spin_unlock_irqrestore(&n->list_lock, flags);
-> -	}
-> -
-> -	for (i = 0; i < t.count; i++) {
-> -		struct location *l = &t.loc[i];
-> -
-> -		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
-> -
-> -		if (l->addr)
-> -			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
-> -		else
-> -			len += sysfs_emit_at(buf, len, "<not-available>");
-> -
-> -		if (l->sum_time != l->min_time)
-> -			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
-> -					     l->min_time,
-> -					     (long)div_u64(l->sum_time,
-> -							   l->count),
-> -					     l->max_time);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
-> -
-> -		if (l->min_pid != l->max_pid)
-> -			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
-> -					     l->min_pid, l->max_pid);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " pid=%ld",
-> -					     l->min_pid);
-> -
-> -		if (num_online_cpus() > 1 &&
-> -		    !cpumask_empty(to_cpumask(l->cpus)))
-> -			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
-> -					     cpumask_pr_args(to_cpumask(l->cpus)));
-> -
-> -		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> -			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
-> -					     nodemask_pr_args(&l->nodes));
-> -
-> -		len += sysfs_emit_at(buf, len, "\n");
-> -	}
-> -
-> -	free_loc_track(&t);
-> -	if (!t.count)
-> -		len += sysfs_emit_at(buf, len, "No data\n");
-> -
-> -	return len;
-> -}
->  #endif	/* CONFIG_SLUB_DEBUG */
->  
->  #ifdef SLUB_RESILIENCY_TEST
-> @@ -5346,21 +5140,6 @@ static ssize_t validate_store(struct kmem_cache *s,
->  }
->  SLAB_ATTR(validate);
->  
-> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_ALLOC);
-> -}
-> -SLAB_ATTR_RO(alloc_calls);
-> -
-> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_FREE);
-> -}
-> -SLAB_ATTR_RO(free_calls);
->  #endif /* CONFIG_SLUB_DEBUG */
->  
->  #ifdef CONFIG_FAILSLAB
-> @@ -5524,8 +5303,6 @@ static struct attribute *slab_attrs[] = {
->  	&poison_attr.attr,
->  	&store_user_attr.attr,
->  	&validate_attr.attr,
-> -	&alloc_calls_attr.attr,
-> -	&free_calls_attr.attr,
->  #endif
->  #ifdef CONFIG_ZONE_DMA
->  	&cache_dma_attr.attr,
-> @@ -5814,6 +5591,283 @@ static int __init slab_sysfs_init(void)
->  __initcall(slab_sysfs_init);
->  #endif /* CONFIG_SYSFS */
->  
-> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-> +/*
-> + * Generate lists of code addresses where slabcache objects are allocated
-> + * and freed.
-> + */
-> +
-> +struct location {
-> +	unsigned long count;
-> +	unsigned long addr;
-> +	long long sum_time;
-> +	long min_time;
-> +	long max_time;
-> +	long min_pid;
-> +	long max_pid;
-> +	DECLARE_BITMAP(cpus, NR_CPUS);
-> +	nodemask_t nodes;
-> +};
-> +
-> +struct loc_track {
-> +	unsigned long max;
-> +	unsigned long count;
-> +	struct location *loc;
-> +};
-> +
-> +static struct dentry *slab_debugfs_root;
-> +
-> +static struct dentry *slab_debugfs_cache;
-> +
-> +static void free_loc_track(struct loc_track *t)
-> +{
-> +	if (t->max)
-> +		free_pages((unsigned long)t->loc,
-> +			get_order(sizeof(struct location) * t->max));
-> +}
-> +
-> +static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
-> +{
-> +	struct location *l;
-> +	int order;
-> +
-> +	order = get_order(sizeof(struct location) * max);
-> +
-> +	l = (void *)__get_free_pages(flags, order);
-> +	if (!l)
-> +		return 0;
-> +
-> +	if (t->count) {
-> +		memcpy(l, t->loc, sizeof(struct location) * t->count);
-> +		free_loc_track(t);
-> +	}
-> +	t->max = max;
-> +	t->loc = l;
-> +	return 1;
-> +}
-> +
-> +static int add_location(struct loc_track *t, struct kmem_cache *s,
-> +				const struct track *track)
-> +{
-> +	long start, end, pos;
-> +	struct location *l;
-> +	unsigned long caddr;
-> +	unsigned long age = jiffies - track->when;
-> +
-> +	start = -1;
-> +	end = t->count;
-> +
-> +	for ( ; ; ) {
-> +		pos = start + (end - start + 1) / 2;
-> +
-> +		/*
-> +		 * There is nothing at "end". If we end up there
-> +		 * we need to add something to before end.
-> +		 */
-> +		if (pos == end)
-> +			break;
-> +
-> +		caddr = t->loc[pos].addr;
-> +		if (track->addr == caddr) {
-> +
-> +			l = &t->loc[pos];
-> +			l->count++;
-> +			if (track->when) {
-> +				l->sum_time += age;
-> +				if (age < l->min_time)
-> +					l->min_time = age;
-> +				if (age > l->max_time)
-> +					l->max_time = age;
-> +
-> +				if (track->pid < l->min_pid)
-> +					l->min_pid = track->pid;
-> +				if (track->pid > l->max_pid)
-> +					l->max_pid = track->pid;
-> +
-> +				cpumask_set_cpu(track->cpu,
-> +						to_cpumask(l->cpus));
-> +			}
-> +			node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> +			return 1;
-> +		}
-> +
-> +		if (track->addr < caddr)
-> +			end = pos;
-> +		else
-> +			start = pos;
-> +	}
-> +
-> +	/*
-> +	 * Not found. Insert new tracking element.
-> +	 */
-> +	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
-> +		return 0;
-> +
-> +	l = t->loc + pos;
-> +	if (pos < t->count)
-> +		memmove(l + 1, l,
-> +			(t->count - pos) * sizeof(struct location));
-> +	t->count++;
-> +	l->count = 1;
-> +	l->addr = track->addr;
-> +	l->sum_time = age;
-> +	l->min_time = age;
-> +	l->max_time = age;
-> +	l->min_pid = track->pid;
-> +	l->max_pid = track->pid;
-> +	cpumask_clear(to_cpumask(l->cpus));
-> +	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
-> +	nodes_clear(l->nodes);
-> +	node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> +	return 1;
-> +}
-> +
-> +static void process_slab(struct loc_track *t, struct kmem_cache *s,
-> +		struct page *page, enum track_item alloc)
-> +{
-> +	void *addr = page_address(page);
-> +	void *p;
-> +	unsigned long *map;
-> +
-> +	map = get_map(s, page);
-> +	for_each_object(p, s, addr, page->objects)
-> +		if (!test_bit(__obj_to_index(s, addr, p), map))
-> +			add_location(t, s, get_track(s, p, alloc));
-> +	put_map(map);
-> +}
-> +
-> +static int list_locations(struct seq_file *seq, struct kmem_cache *s,
-> +						enum track_item alloc)
-> +{
-> +	unsigned long i;
-> +	struct loc_track t = { 0, 0, NULL };
-> +	int node;
-> +	struct kmem_cache_node *n;
-> +
-> +	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> +			     GFP_KERNEL)) {
-> +		seq_puts(seq, "Out of memory\n");
-> +		return -ENOMEM;
-> +	}
-> +	/* Push back cpu slabs */
-> +	flush_all(s);
-> +
-> +	for_each_kmem_cache_node(s, node, n) {
-> +		unsigned long flags;
-> +		struct page *page;
-> +
-> +		if (!atomic_long_read(&n->nr_slabs))
-> +			continue;
-> +
-> +		spin_lock_irqsave(&n->list_lock, flags);
-> +		list_for_each_entry(page, &n->partial, slab_list)
-> +			process_slab(&t, s, page, alloc);
-> +		list_for_each_entry(page, &n->full, slab_list)
-> +			process_slab(&t, s, page, alloc);
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +	}
-> +
-> +	for (i = 0; i < t.count; i++) {
-> +		struct location *l = &t.loc[i];
-> +
-> +		seq_printf(seq, "%7ld ", l->count);
-> +
-> +		if (l->addr)
-> +			seq_printf(seq, "%pS", (void *)l->addr);
-> +		else
-> +			seq_puts(seq, "<not-available>");
-> +
-> +		if (l->sum_time != l->min_time) {
-> +			seq_printf(seq, " age=%ld/%ld/%ld",
-> +				l->min_time,
-> +				(long)div_u64(l->sum_time, l->count),
-> +				l->max_time);
-> +		} else
-> +			seq_printf(seq, " age=%ld",
-> +				l->min_time);
-> +
-> +		if (l->min_pid != l->max_pid)
-> +			seq_printf(seq, " pid=%ld-%ld",
-> +				l->min_pid, l->max_pid);
-> +		else
-> +			seq_printf(seq, " pid=%ld",
-> +				l->min_pid);
-> +
-> +		if (num_online_cpus() > 1 &&
-> +				!cpumask_empty(to_cpumask(l->cpus)))
-> +			seq_printf(seq, " cpus=%*pbl",
-> +					 cpumask_pr_args(to_cpumask(l->cpus)));
-> +
-> +		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> +			seq_printf(seq, " nodes=%*pbl",
-> +					 nodemask_pr_args(&l->nodes));
-> +
-> +		seq_puts(seq, "\n");
-> +	}
-> +
-> +	free_loc_track(&t);
-> +	if (!t.count)
-> +		seq_puts(seq, "No data\n");
-> +	return 0;
-> +}
-> +
-> +static int slab_debug_trace(struct seq_file *seq, void *ignored)
-> +{
-> +	struct kmem_cache *s = seq->private;
-> +
-> +	if (!(s->flags & SLAB_STORE_USER))
-> +		return 0;
-> +
-> +	if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_trace") == 0)
-> +		return list_locations(seq, s, TRACK_ALLOC);
-> +	else
-> +		return list_locations(seq, s, TRACK_FREE);
-> +
-> +	return 0;
-> +}
-> +
-> +static int slab_debug_trace_open(struct inode *inode, struct file *filp)
-> +{
-> +	return single_open(filp, slab_debug_trace,
-> +				file_inode(filp)->i_private);
-> +}
-> +
-> +static const struct file_operations slab_debug_fops = {
-> +	.open    = slab_debug_trace_open,
-> +	.read    = seq_read,
-> +	.llseek  = seq_lseek,
-> +	.release = single_release,
-> +};
-> +
-> +static void debugfs_slab_add(struct kmem_cache *s)
-> +{
-> +	if (unlikely(!slab_debugfs_root))
-> +		return;
-> +
-> +	slab_debugfs_cache = debugfs_create_dir(s->name, slab_debugfs_root);
-> +	if (!IS_ERR(slab_debugfs_cache)) {
-> +		debugfs_create_file("alloc_trace", 0400,
-> +			slab_debugfs_cache, s, &slab_debug_fops);
-> +
-> +		debugfs_create_file("free_trace", 0400,
-> +			slab_debugfs_cache, s, &slab_debug_fops);
-> +	}
-> +}
-> +
-> +static void __init slab_debugfs_init(void)
-> +{
-> +	struct kmem_cache *s;
-> +
-> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-> +	if (!IS_ERR(slab_debugfs_root))
-> +		list_for_each_entry(s, &slab_caches, list)
-> +			debugfs_slab_add(s);
-> +	else
-> +		pr_err("Cannot create slab debugfs.\n");
-> +
-> +}
-> +__initcall(slab_debugfs_init);
-> +#endif
->  /*
->   * The /proc/slabinfo ABI
->   */
-> 
+> Oh, interesting.  You might also want to double check if there are any
+> more places where X86_FEATURE_SME_COHERENT and TDX have similar properties.
+
 
