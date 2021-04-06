@@ -2,135 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A58D355CD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2757355CD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 22:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347162AbhDFU1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 16:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245256AbhDFU1f (ORCPT
+        id S232493AbhDFU1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 16:27:36 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:41534 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231339AbhDFU1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:27:35 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14EFC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 13:27:22 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id nh5so6332073pjb.5
+        Tue, 6 Apr 2021 16:27:30 -0400
+Received: by mail-il1-f198.google.com with SMTP id g11so12476767ilc.8
         for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 13:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B6bVwta59QdZJoFi3bJY0Ke48f3llQnoh7vx7Q+Q+vs=;
-        b=DzB7KSG3PFCjI3n3gM3q8U4FNZ8wynr2yb3Arl5bBRta1QbLZp+E3a99XDPv7mF7c7
-         QFDBtiC4sFH5XC/6M9WLt/U4WYYv4FujZHrt7eOoBr1kXYyYURd5wm7PM9/qAQHXvQy7
-         Tmpdb2MNgnHUAi2QR5K7aSuaERIojNrdpyyivCBpxmlsaJIkx/tcVrsrZOsMYrtNMt3G
-         yjdZXHv1aXduSEPEEnVLStvD5r0EAB7dU2NDN97tR1peFYKX+X0FqV5+CQ9ai0/6zda6
-         DZmGCCzLxtmekCY/v4HyiiU5978NyXxBHTqKs6x45USMwHOh4uwXp40U72+hgqfh0eW0
-         XiUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B6bVwta59QdZJoFi3bJY0Ke48f3llQnoh7vx7Q+Q+vs=;
-        b=ICRBuUwe6U0eqj28ajuQBnwS6dQn5eHeviwCSA5SNpptvBuajauLcRdBDDTjtl0kqE
-         40QG9u5ruXgzCF1IQpg49HswPdv2+ewJsfHfWiDAFEYHNyFsr0mjBYngq7t9yb31eoVM
-         8PYQc9JknYZ907B0rPlb2tg0XgRmIZz8MvGXWsip0pwpgr+q3XYrTyMKrSKWvewDCrzZ
-         x/YOcKuLkf/ulk9zkEFl4pokUJCbBX3eMEnX+XC1hoOt8PjqQV5AZsB7zWp4TeFOTPnD
-         eImTnEfQDB+t+ShulGWjL6rQSRtknIHRobX1UDdnxoqsAuXDl/dGYUldS6TUMQEUUCBV
-         s2MQ==
-X-Gm-Message-State: AOAM533894vXxRz3UyRTxb0fLOSgHIQKtZ6Xo9phPXxHLUhYHJDOMvWZ
-        fdukHeyERVb3sIVugFxlOHK7Nw==
-X-Google-Smtp-Source: ABdhPJzgs3cgB5/AeBk2yqXn2OYvazjX1N+GL1XhmIybHMvkc8guKgSNrH1PzJwcUYW6HCnGO+694Q==
-X-Received: by 2002:a17:90a:bb13:: with SMTP id u19mr5732203pjr.96.1617740842147;
-        Tue, 06 Apr 2021 13:27:22 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w15sm3207908pja.18.2021.04.06.13.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 13:27:21 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 20:27:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <YGzEJa8izE//+Niy@google.com>
-References: <cover.1617302792.git.ashish.kalra@amd.com>
- <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
- <YGyCxGsC2+GAtJxy@google.com>
- <20210406160758.GA24313@ashkalra_ubuntu_server>
- <CABayD+f9o1CZTdak-ktKXpJnxcOAP4KPnYCDBzry91QcK6WVcw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WWZMD3vE1shWWmcKMLVb3tL7TZhs/w4sb0DksWu1yo4=;
+        b=KMC1WgzKvVHwCSfLoWXkFhtQqNn4u4oDg1zlDg5g279fAof1RqQn0JDRgR/QrNSCEF
+         Q7mTQPMY/kk8ukyY/qh+UNcNLJmymsZFDoIhlxiHOo39MOCt78Z1s0X6LgOo6RMjhTT2
+         MbnJBJ2KF+tTHi6sYrC8DwW1iD0KYRJFEC30uj7vG4KP7BWT770zK1VQRB2pA0lWAejY
+         u3KdtHge6JIW4YrAAdQg1qLtz+QzJOmI6mDJ0mdTpHOBkoq3vLxtszxI/+TOBm7FFbbS
+         Hx9I9aDeD/NKh6VIc+g4oCtaUKnKzyGOj33W3Aw954+E6d6azGjBzDWYCdSbByCBgZ6B
+         wTAw==
+X-Gm-Message-State: AOAM531dua3+C0++jJhhma5u0Uj/0yxm4kE3+Dr9YYKTIhbB6BsqCgrb
+        7bRbdyVoxn5a8pdMOH807Wf5ikiX4pKELUnrmO2ZrJEuJ9Ft
+X-Google-Smtp-Source: ABdhPJz3WotH7oEOOHsVp0hC3ITf9FpTkVQlpuBbSLzB6d2rxa0sqNazLFH5jFNtQuNPrhI8AxGj0YiOYK0vZ/SAoTC1jGx/WNSf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABayD+f9o1CZTdak-ktKXpJnxcOAP4KPnYCDBzry91QcK6WVcw@mail.gmail.com>
+X-Received: by 2002:a6b:3c1a:: with SMTP id k26mr25172746iob.113.1617740842168;
+ Tue, 06 Apr 2021 13:27:22 -0700 (PDT)
+Date:   Tue, 06 Apr 2021 13:27:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003c794c05bf53a4b7@google.com>
+Subject: [syzbot] possible deadlock in team_device_event (2)
+From:   syzbot <syzbot+d6d7f5e816b836806b38@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jiri@resnulli.us, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021, Steve Rutherford wrote:
-> On Tue, Apr 6, 2021 at 9:08 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> > I see the following in Documentation/virt/kvm/api.rst :
-> > ..
-> > ..
-> > /* KVM_EXIT_HYPERCALL */
-> >                 struct {
-> >                         __u64 nr;
-> >                         __u64 args[6];
-> >                         __u64 ret;
-> >                         __u32 longmode;
-> >                         __u32 pad;
-> >                 } hypercall;
-> >
-> > Unused.  This was once used for 'hypercall to userspace'.  To implement
-> > such functionality, use KVM_EXIT_IO (x86) or KVM_EXIT_MMIO (all except s390).
-> >
-> > This mentions this exitcode to be unused and implementing this
-> > functionality using KVM_EXIT_IO for x86?
-> 
-> I suspect this description is historical. It was originally from 2009.
-> KVM_EXIT_IO is used for IO port reads/writes.
+Hello,
 
-The purpose of the comment is to discourage use of hypercalls for things that
-can instead be done via port I/O and/or MMIO.  The biggest advantage is that KVM
-doesn't need to act as an intermediary; userspace can define whatever paravirt
-shenanigans it so desires and KVM naturally handles the I/O accesses.
+syzbot found the following issue on:
 
-MMIO in particular also allows for finer granularity of permissions in the guest,
-e.g. the guest kernel can expose the address to a userspace application to allow
-said application to make "hypercalls".  Port I/O technically has similar
-properties, but the I/O bitmaps are heinous.
+HEAD commit:    bd78980b net: usb: ax88179_178a: initialize local variable..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1043f831d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6d7f5e816b836806b38
 
-For this particular case, because we want to make a _KVM_ hypercall that just
-happens to get punted to userspace, and because there is no known or projected
-use case for letting guest userspace control memory encryption it makes sense to
-use a "real" hypercall.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> Personally, I would prefer to stay the course and use a name similar
-> to KVM_EXIT_DMA_SHARE, say KVM_EXIT_MEM_SHARE and
-> KVM_EXIT_MEM_UNSHARE. These just seem very clear, which I appreciate.
-> Reusing hypercall would work, but shoehorning this into
-> KVM_EXIT_HYPERCALL when we don't have generic hypercall exits feels a
-> bit off in my mind. Note: that preference isn't particularly strong.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6d7f5e816b836806b38@syzkaller.appspotmail.com
 
-I'm not against adding a new exit type, I'm against adding _two_ new exit types.
+============================================
+WARNING: possible recursive locking detected
+5.12.0-rc4-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.2/10541 is trying to acquire lock:
+ffff888060ac8c78 (team->team_lock_key#3){+.+.}-{3:3}, at: team_port_change_check drivers/net/team/team.c:2970 [inline]
+ffff888060ac8c78 (team->team_lock_key#3){+.+.}-{3:3}, at: team_device_event+0x36a/0xa90 drivers/net/team/team.c:2996
 
-I also don't like using "(UN)SHARE" because there may be future use cases where
-the hypercall isn't used to "share' memory, but to inform the host of a change
-in state.  I don't have a concrete example, but it's not completely absurd to
-think that there might be a scenario where a guest has the ability to use multiple
-keys and needs to communicate key usage to the host.  Linux already has horrific
-(IMO) names for describing encrypted vs. "other" memory, I'd strongly prefer to
-avoid adding yet another potentially wrong name to the mix.
+but task is already holding lock:
+ffff888060ac8c78 (team->team_lock_key#3){+.+.}-{3:3}, at: team_del_slave+0x29/0x140 drivers/net/team/team.c:1981
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(team->team_lock_key#3);
+  lock(team->team_lock_key#3);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor.2/10541:
+ #0: ffffffff8d66d7a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
+ #0: ffffffff8d66d7a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5550
+ #1: ffff888060ac8c78 (team->team_lock_key#3){+.+.}-{3:3}, at: team_del_slave+0x29/0x140 drivers/net/team/team.c:1981
+
+stack backtrace:
+CPU: 1 PID: 10541 Comm: syz-executor.2 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+ check_deadlock kernel/locking/lockdep.c:2872 [inline]
+ validate_chain kernel/locking/lockdep.c:3661 [inline]
+ __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+ team_port_change_check drivers/net/team/team.c:2970 [inline]
+ team_device_event+0x36a/0xa90 drivers/net/team/team.c:2996
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
+ call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
+ call_netdevice_notifiers net/core/dev.c:2147 [inline]
+ dev_close_many+0x2ff/0x620 net/core/dev.c:1722
+ vlan_device_event+0x8eb/0x2020 net/8021q/vlan.c:453
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
+ call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
+ call_netdevice_notifiers net/core/dev.c:2147 [inline]
+ dev_close_many+0x2ff/0x620 net/core/dev.c:1722
+ dev_close net/core/dev.c:1744 [inline]
+ dev_close+0x16d/0x210 net/core/dev.c:1738
+ team_port_del+0x34e/0x960 drivers/net/team/team.c:1349
+ team_del_slave+0x34/0x140 drivers/net/team/team.c:1982
+ do_set_master+0xe1/0x220 net/core/rtnetlink.c:2505
+ do_setlink+0x920/0x3a70 net/core/rtnetlink.c:2715
+ __rtnl_newlink+0xdcf/0x1710 net/core/rtnetlink.c:3376
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f23b77d7188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000004
+RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007fff1a112cdf R14: 00007f23b77d7300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
