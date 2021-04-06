@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B1835584C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490DD355849
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244180AbhDFPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233999AbhDFPlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:41:50 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB91C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:41:41 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dd20so9924846edb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jdSXgDFnEhFp1GgWfxi+0AUKeEGMkg1AM1HZd0zVMr0=;
-        b=vV4v3Hdqx3j89pE9YeXti23kSKF0V308DmpUYyHicItE4bI6Cmm58T8RbbLF7H+Dfn
-         BV42yaCtpbvBoaBrCi/B2pHIX8WIzCmhAVLc19eFU4E6c2hLvytX9Ni5RpLy7IF35zHf
-         A/iuk6aKVQrGK5yyF/Yc11gUIhsHuitDoJHjq83sub7MTKINNGHgNfFlm9KjTpPbeyC5
-         +Lu8QueRG7Jsu/H6KCXG9j+ZhAHwrbZz1OOhdJwPIeHKOnRWY5+FIcy/YWqwk3cDMEax
-         iJ8yr80JKZDtgW4NiNMCU1eSXm7bbo2/qSeii4f3A5+5D7kifeUHSUuGCN7tXEQHXqFt
-         WYUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jdSXgDFnEhFp1GgWfxi+0AUKeEGMkg1AM1HZd0zVMr0=;
-        b=PqfATkNMCZcM9+pD33ki9hq0Nq44JDqD14Fp05spIb7V5dw91GeBlh+SWpxB8jrG21
-         fSHbJxbQiHR2ecomdJvYoqGE0Xuhw8kAd4qabDTmplByU9ICYt+IWP2BCIUFSlUGLmsX
-         CgXRY24s+SKovKxC78SJ5zfU+3hmPwSdZnImDgtU1XG5G+oa9p+YiTcD7RYLJYAbTilD
-         jdJA7ovNU9l5bKjQBdWonKUtoFDPcdccIU/ycSX6IzlkrZLuMa2OJXVGOyLrtqMWJVEC
-         vWs/Dsv/NBgyVWAdMt+tShkzLyRn/Plh+299GLmRZJX5f32Y/tk2u5q6KXg8GKRFYsPa
-         3FkA==
-X-Gm-Message-State: AOAM531HYxm8xneKzfnSYSb7Mzhg40ikJ60ZzMg4iVEw8GtnmpQKgGUm
-        fT6Bzs++7w3y0AxD1EN4BfP9nk4Un15QQ3eD
-X-Google-Smtp-Source: ABdhPJzTvV+CkENJn02Mi2f82o05WdPtMaVhazS4bj/gy03Y8sxkely8Q8OwU/CcrbqnLIuydy0IbQ==
-X-Received: by 2002:a05:6402:57:: with SMTP id f23mr37974237edu.323.1617723700259;
-        Tue, 06 Apr 2021 08:41:40 -0700 (PDT)
-Received: from dell ([91.110.221.193])
-        by smtp.gmail.com with ESMTPSA id w13sm1541566edx.15.2021.04.06.08.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 08:41:39 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 16:41:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] mfd: core: Use acpi_find_child_device() for child
- devices lookup
-Message-ID: <20210406154138.GX2916463@dell>
-References: <20210406123220.71075-1-andriy.shevchenko@linux.intel.com>
+        id S239498AbhDFPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:40:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:20852 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233351AbhDFPko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:40:44 -0400
+IronPort-SDR: 0t4QUhTWtomT8UekP8Yqu7m3lWfWKbf3yfLS39m3kq3ZL/+7MJRmdSTxbqnBipdOtQf/0jlGTw
+ Lm1tp8H1n69w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="173172504"
+X-IronPort-AV: E=Sophos;i="5.82,309,1613462400"; 
+   d="scan'208";a="173172504"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 08:40:36 -0700
+IronPort-SDR: /HFmnbYNjhZx1YxmCSWAUvfud0DDF3sX7LduM5lISPlmbBaLvDEZLmCBL/EhQQGlKFr1ygCfhN
+ hS4hd1XmHlyw==
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="414818258"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 08:40:35 -0700
+Date:   Tue, 6 Apr 2021 08:42:04 -0700 (PDT)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     Moritz Fischer <mdf@kernel.org>
+cc:     hao.wu@intel.com, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
+        jdelvare@suse.com, linux@roeck-us.net, lee.jones@linaro.org,
+        linux-hwmon@vger.kernel.org, russell.h.weight@linux.intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: Re: [PATCH 1/3] fpga: dfl: pci: add DID for D5005 PAC cards
+In-Reply-To: <YGuwDHuxQd01sLQu@epycbox.lan>
+Message-ID: <alpine.DEB.2.22.394.2104060841350.208844@rhweight-WRK1>
+References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com> <20210405235301.187542-2-matthew.gerlach@linux.intel.com> <YGuwDHuxQd01sLQu@epycbox.lan>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210406123220.71075-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Apr 2021, Andy Shevchenko wrote:
 
-> Use acpi_find_child_device() for child devices lookup in mfd_acpi_add_device()
-> instead of open coded approach. No functional change intended.
-> 
-> While at it, amend a note comment, since usage of _ADR is found on other
-> platforms and tables than Intel Galileo Gen 2, in particular USB wired devices
-> are using it, according to Microsoft specifications for embedded platforms.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> Validated on Intel Galileo Gen 2.
->  drivers/mfd/mfd-core.c | 22 +++++-----------------
->  1 file changed, 5 insertions(+), 17 deletions(-)
 
-Applied, thanks.
+On Mon, 5 Apr 2021, Moritz Fischer wrote:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> On Mon, Apr 05, 2021 at 04:52:59PM -0700, matthew.gerlach@linux.intel.com wrote:
+>> From: Russ Weight <russell.h.weight@intel.com>
+>>
+>> This patch adds the approved PCI Express Device IDs for the
+>> PF and VF for the card for D5005 PAC cards.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  drivers/fpga/dfl-pci.c | 18 +++++++++++-------
+>>  1 file changed, 11 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+>> index 04e47e2..b44523e 100644
+>> --- a/drivers/fpga/dfl-pci.c
+>> +++ b/drivers/fpga/dfl-pci.c
+>> @@ -69,14 +69,16 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
+>>  }
+>>
+>>  /* PCI Device ID */
+>> -#define PCIE_DEVICE_ID_PF_INT_5_X	0xBCBD
+>> -#define PCIE_DEVICE_ID_PF_INT_6_X	0xBCC0
+>> -#define PCIE_DEVICE_ID_PF_DSC_1_X	0x09C4
+>> -#define PCIE_DEVICE_ID_INTEL_PAC_N3000	0x0B30
+>> +#define PCIE_DEVICE_ID_PF_INT_5_X		0xBCBD
+>> +#define PCIE_DEVICE_ID_PF_INT_6_X		0xBCC0
+>> +#define PCIE_DEVICE_ID_PF_DSC_1_X		0x09C4
+>> +#define PCIE_DEVICE_ID_INTEL_PAC_N3000		0x0B30
+>> +#define PCIE_DEVICE_ID_INTEL_PAC_D5005		0x0B2B
+>>  /* VF Device */
+>> -#define PCIE_DEVICE_ID_VF_INT_5_X	0xBCBF
+>> -#define PCIE_DEVICE_ID_VF_INT_6_X	0xBCC1
+>> -#define PCIE_DEVICE_ID_VF_DSC_1_X	0x09C5
+>> +#define PCIE_DEVICE_ID_VF_INT_5_X		0xBCBF
+>> +#define PCIE_DEVICE_ID_VF_INT_6_X		0xBCC1
+>> +#define PCIE_DEVICE_ID_VF_DSC_1_X		0x09C5
+>> +#define PCIE_DEVICE_ID_INTEL_PAC_D5005_VF	0x0B2C
+>>
+>>  static struct pci_device_id cci_pcie_id_tbl[] = {
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_PF_INT_5_X),},
+>> @@ -86,6 +88,8 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_PF_DSC_1_X),},
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_VF_DSC_1_X),},
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_N3000),},
+>> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005),},
+>> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005_VF),},
+>>  	{0,}
+>>  };
+>>  MODULE_DEVICE_TABLE(pci, cci_pcie_id_tbl);
+>> --
+>> 1.8.3.1
+>>
+>
+> Applied to for-next,
+>
+> Thanks
+>
+
+Thank you for the review.
+
+Matthew
