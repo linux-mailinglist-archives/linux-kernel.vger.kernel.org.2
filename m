@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD222354EC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD1E354EC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244373AbhDFIge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbhDFIgb (ORCPT
+        id S244392AbhDFIgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:36:55 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2762 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234953AbhDFIgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:36:31 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2112C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:36:23 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id a6so7238196wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 01:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=krjAm4n3Rnt70NLkaNWfCxyQ3doFaMr0UZa20qd2rtE=;
-        b=J59oBO2VELBcORoIjQjQOHCx0RQmxyAmhThXoVPu0WdA4ant2pnnnbkxr095eQcs97
-         eIpJlZBcVU/dz7k4NWuEmfGKeWbTBv+Lh8UKzb6KfvvhtmGBywpQOCDPb7WIM7jT03rW
-         +s+rNVxueQJzb/iPmJWTyj0d/0ijCJqZIAdZ2D2URnlYR6uMPA3oYuhvzv05MLmb1smy
-         nbFyW0bo3zJDoRDomXqDk0hT4d2y5YwfZ1Ad/7wDwCBnNsgZdLNkHKqaafQ0iXfXO2FM
-         xjLPSNXeCUrwB52pr5yobYHWrecbmmHAjenoVo01/NVNBOoWN+/SlulHplKWEfFqDajb
-         JWyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=krjAm4n3Rnt70NLkaNWfCxyQ3doFaMr0UZa20qd2rtE=;
-        b=ZTFG1JT7nwiJeJ2Q0BL+veYkrLiHZmWS2MX6JEJnF6IokkUi7bYJgoi8GHYFyQMiLf
-         Vg1S3N68JWFnnyY/nhkJNGOAKQwg0YAkmcAT8ePOrTsY8cbYoy1fmDqtEhdfpUC4G++p
-         s/P+DMaK1dMrQb3xrjfpLcaG2krs6MEqceiGwFvGX8xPmiPmdLMMb9rj8UBTakalCB+g
-         CZbu6RqYkhERxAgRGmuCZfM+5I6U7BTpNZKR+1Rmm6laqoRIhgqSJtMSSPmG4oStCbT7
-         DyEXj5/ANCzOBDPw7meUx6EY1Kh3Ml81KmyNPoqMd3e8ed5UrsKfnm/NidLL3sGvw8UH
-         dzfg==
-X-Gm-Message-State: AOAM532Fko0Ab0S1PdVbEuj9+JUGo1oicFbZCIFSnqZTAyFWsLmDJnTl
-        /uBqTaxlevn95VEH+G3+r+pRAw==
-X-Google-Smtp-Source: ABdhPJy003W91hWNgbbo6oxoleK1/QXTVfHjUu8gALMBCd+eezArxHj1A3ZYOv1QqBgEcZZgK/rFIQ==
-X-Received: by 2002:adf:ff84:: with SMTP id j4mr2783587wrr.271.1617698182609;
-        Tue, 06 Apr 2021 01:36:22 -0700 (PDT)
-Received: from dell ([91.110.221.193])
-        by smtp.gmail.com with ESMTPSA id y22sm2383984wmc.18.2021.04.06.01.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 01:36:22 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 09:36:20 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 1/2] mfd: =?iso-8859-1?Q?int?=
- =?iso-8859-1?Q?el=5Fquark=5Fi2c=5Fgpio=3A_Convert_I=B2?= =?iso-8859-1?Q?C?=
- to use software nodes
-Message-ID: <20210406083620.GP2916463@dell>
-References: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
- <20210331154851.8456-2-andriy.shevchenko@linux.intel.com>
+        Tue, 6 Apr 2021 04:36:53 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF13007C3z687ZC;
+        Tue,  6 Apr 2021 16:31:40 +0800 (CST)
+Received: from lhreml707-chm.china.huawei.com (10.201.108.56) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 10:36:44 +0200
+Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
+ lhreml707-chm.china.huawei.com (10.201.108.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 09:36:43 +0100
+Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
+ lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2106.013;
+ Tue, 6 Apr 2021 09:36:43 +0100
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [Linuxarm]  Re: [PATCH net] net: hns3: Limiting the scope of
+ vector_ring_chain variable
+Thread-Topic: [Linuxarm]  Re: [PATCH net] net: hns3: Limiting the scope of
+ vector_ring_chain variable
+Thread-Index: AQHXKkE/K8at3CzCL0GXC2nZ4TjLkKqma5uAgAC7QdA=
+Date:   Tue, 6 Apr 2021 08:36:43 +0000
+Message-ID: <50c5a2d96e174e76afa4eada669c7b26@huawei.com>
+References: <20210405172825.28380-1-salil.mehta@huawei.com>
+ <161766060973.24414.1256394756703505340.git-patchwork-notify@kernel.org>
+In-Reply-To: <161766060973.24414.1256394756703505340.git-patchwork-notify@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.71.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210331154851.8456-2-andriy.shevchenko@linux.intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021, Andy Shevchenko wrote:
-
-> The driver can provide a software node group instead of
-> passing legacy platform data. This will allow to drop
-> the legacy platform data structures along with unifying
-> a child device driver to use same interface for all
-> property providers, i.e. Device Tree, ACPI, and board files.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mfd/intel_quark_i2c_gpio.c | 41 +++++++++++++++++++-----------
->  1 file changed, 26 insertions(+), 15 deletions(-)
-
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+SGkgRGF2ZSwNCkhvcGUgSSBhbSBub3QgbWlzc2luZyBzb21ldGhpbmcgYW5kIG5vdCBzdXJlIGhv
+dyB0aGlzIHBhdGNod29yayBib3Qgd29ya3MsDQp0aGUgcGF0Y2ggd2FzIHNlbnQgZm9yIC1uZXQg
+cmVwbyAoaS5lLiBidWcgZml4ZXMgYnJhbmNoKSBidXQgaXQgZ290IGFwcGxpZWQNCnRvIHRoZSAt
+bmV0LW5leHQgcmVwby4NCg0KPiBTdWJqZWN0OiBbTGludXhhcm1dIFJlOiBbUEFUQ0ggbmV0XSBu
+ZXQ6IGhuczM6IExpbWl0aW5nIHRoZSBzY29wZSBvZg0KPiB2ZWN0b3JfcmluZ19jaGFpbiB2YXJp
+YWJsZQ0KDQpbLi4uXQ0KDQo+IEhlbGxvOg0KPiANCj4gVGhpcyBwYXRjaCB3YXMgYXBwbGllZCB0
+byBuZXRkZXYvbmV0LW5leHQuZ2l0IChyZWZzL2hlYWRzL21hc3Rlcik6DQo+DQoNCkkgd2FzIHdv
+bmRlcmluZyBpZiBJIG1pc3NlZCBhbnl0aGluZyBpbiBteSBzdWJtaXNzaW9uIG9yIGJlY2F1c2Ug
+b2Ygc29tZQ0Kb3RoZXIgcmVhc29uIHRoaXMgcGF0Y2ggd2FzIGNob3NlbiB0byBiZSBhcHBsaWVk
+IHRvIHRoZSAtbmV0LW5leHQgcmVwbw0KaW5zdGVhZC4gUGVyaGFwcyB0aGlzIGlzIG5vdCBjbGFz
+c2lmaWVkIGFzIGJ1Zz8NCg0KTWFueSB0aGFua3MNClNhbGlsDQoNCj4gRnJvbTogcGF0Y2h3b3Jr
+LWJvdCtuZXRkZXZicGZAa2VybmVsLm9yZw0KPiBbbWFpbHRvOnBhdGNod29yay1ib3QrbmV0ZGV2
+YnBmQGtlcm5lbC5vcmddDQo+IFNlbnQ6IE1vbmRheSwgQXByaWwgNSwgMjAyMSAxMToxMCBQTQ0K
+PiBUbzogU2FsaWwgTWVodGEgPHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IENjOiBkYXZlbUBk
+YXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWku
+Y29tPjsNCj4gbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiBTdWJqZWN0OiBbTGludXhhcm1dIFJl
+OiBbUEFUQ0ggbmV0XSBuZXQ6IGhuczM6IExpbWl0aW5nIHRoZSBzY29wZSBvZg0KPiB2ZWN0b3Jf
+cmluZ19jaGFpbiB2YXJpYWJsZQ0KPiANCj4gSGVsbG86DQo+IA0KPiBUaGlzIHBhdGNoIHdhcyBh
+cHBsaWVkIHRvIG5ldGRldi9uZXQtbmV4dC5naXQgKHJlZnMvaGVhZHMvbWFzdGVyKToNCj4gDQo+
+IE9uIE1vbiwgNSBBcHIgMjAyMSAxODoyODoyNSArMDEwMCB5b3Ugd3JvdGU6DQo+ID4gTGltaXRp
+bmcgdGhlIHNjb3BlIG9mIHRoZSB2YXJpYWJsZSB2ZWN0b3JfcmluZ19jaGFpbiB0byB0aGUgYmxv
+Y2sgd2hlcmUgaXQNCj4gPiBpcyB1c2VkLg0KPiA+DQo+ID4gRml4ZXM6IDQyNGViODM0YTliZSAo
+Im5ldDogaG5zMzogVW5pZmllZCBITlMzIHtWRnxQRn0gRXRoZXJuZXQgRHJpdmVyIGZvciBoaXAw
+OA0KPiBTb0MiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFNhbGlsIE1laHRhIDxzYWxpbC5tZWh0YUBo
+dWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9oaXNpbGljb24v
+aG5zMy9obnMzX2VuZXQuYyB8IDMgKystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IEhlcmUgaXMgdGhlIHN1bW1hcnkgd2l0aCBsaW5r
+czoNCj4gICAtIFtuZXRdIG5ldDogaG5zMzogTGltaXRpbmcgdGhlIHNjb3BlIG9mIHZlY3Rvcl9y
+aW5nX2NoYWluIHZhcmlhYmxlDQo+ICAgICBodHRwczovL2dpdC5rZXJuZWwub3JnL25ldGRldi9u
+ZXQtbmV4dC9jL2QzOTJlY2QxYmMyOQ0KPiANCj4gWW91IGFyZSBhd2Vzb21lLCB0aGFuayB5b3Uh
+DQo+IC0tDQo+IERlZXQtZG9vdC1kb3QsIEkgYW0gYSBib3QuDQo+IGh0dHBzOi8va29yZy5kb2Nz
+Lmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3B3Ym90Lmh0bWwNCj4gDQo+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4YXJtIG1haWxpbmcgbGlzdCAt
+LSBsaW51eGFybUBvcGVuZXVsZXIub3JnDQo+IFRvIHVuc3Vic2NyaWJlIHNlbmQgYW4gZW1haWwg
+dG8gbGludXhhcm0tbGVhdmVAb3BlbmV1bGVyLm9yZw0K
