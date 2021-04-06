@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63335560E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD8C355614
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344902AbhDFOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233227AbhDFOGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:06:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10E3C613C4;
-        Tue,  6 Apr 2021 14:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617718003;
-        bh=CQkqAyjhsoQFZIyIYvLUOhXpo7lnAR7GuZPZMplquU0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C2gAYBhAs4KkkWQaRjE9U8Y8opCsV8drwkxrNX6Aicy/E4paHRHrkgbpS7N9ad8ul
-         hVEsKdiu8n3Fef9tB3mZjp/PH7lfSi2QrwnHkek2MviUmPg0VF7QxCdPXuQkZLenM1
-         cLQyPhweEDz9EKjtKXqrSAurIsrYz8DWyri4XE62SQ1gl1ncRTL3m3hZpTspgzemiO
-         UcytOZqB7J3MVcm1Lt/0umdE86aHK0OF31Y3rs4oSbyfjUDtf4weMARGo15b8SBpww
-         TeyLqCkT09bFfe+HhNU5zYG7IkRQvjkVnawjcJdyL9rbvGOAnxzx9Q9i1cJTEMCD4D
-         nnZyIVkPaertw==
-Received: by mail-ej1-f42.google.com with SMTP id a7so22181489ejs.3;
-        Tue, 06 Apr 2021 07:06:42 -0700 (PDT)
-X-Gm-Message-State: AOAM530EleuybtP1Ik/QFHu8jvbry3NFGgOhJXcaVem1jZevaxCaXD+s
-        u2bEC5su7vM0uGMQbGRSKse0+ROkk/6MA+Tmow==
-X-Google-Smtp-Source: ABdhPJx8rAyWkSOqiax6jgSsYlFFrVm8RG6wg33J9TbZWbMXhlJ12SFzPZSuwcTnZoc2ePClOpJGjMXyyDYnvArg+3A=
-X-Received: by 2002:a17:906:813:: with SMTP id e19mr7792178ejd.359.1617718001625;
- Tue, 06 Apr 2021 07:06:41 -0700 (PDT)
+        id S1344907AbhDFOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:07:32 -0400
+Received: from smtpcmd01-sp1.aruba.it ([62.149.158.218]:41664 "EHLO
+        smtpcmd01-sp1.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhDFOHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:07:30 -0400
+Received: from [192.168.126.129] ([146.241.148.6])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id TmMSlNqy2TIb1TmMSl6TuV; Tue, 06 Apr 2021 16:07:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1617718041; bh=qnNqa3PMe4bx15r4Is7WmH19xKZdB1p4g61UEusxWAk=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=TWan4RDaktPxYOxjqxMW8xRiNVl6PcK0FCsdTsCq33PVswVzFFzjMBsgBewEp09LX
+         UQqCc7wYOq/8HAboLatFAD5M+2mVABZ4GEv70r67wVD4zjHxnx32qHHIXBYCWvOSIL
+         EdvQbl4uuuDgSyFMGwebUO+aH3o02XZ/OEmWcRxad2HG801OA0ceWAjJIoHYED1O1F
+         I4A///xHzoB5FJV+sGDpiVlwsH0vU1+p6SfhBFzrupVMnbcHad1/Lyiwd1XLJqy1ru
+         mxL4V734WVEWaqDBtbFi7q9xW9d8ccTHi2tcoZicZgoOq72YBr4WHE6viPbcwDVYEK
+         yG1fxLe2xEk7A==
+Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <YGbc7Qbu6s659Mx4@latitude>
+ <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
+ <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
+ <YGxkB6icZSJfx/VB@latitude>
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Message-ID: <a7b384ac-55f4-931b-d8ce-0c74c70f07cd@benettiengineering.com>
+Date:   Tue, 6 Apr 2021 16:07:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210402192054.7934-1-dariobin@libero.it>
-In-Reply-To: <20210402192054.7934-1-dariobin@libero.it>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 6 Apr 2021 09:06:29 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
-Message-ID: <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YGxkB6icZSJfx/VB@latitude>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfJtVFEwfrBGwgWRPXTt+otcGFjg32IsmdB3T+rIy/kGUyznTAvNtJeZ1uKEf+AeS7XWdnur8gLRH8KHyct3H8P44GL6xbRbLEEGcJHYEl2irFYMR+EPY
+ PlGJWTZhLl3CLqVvURMXcg3hGC75IuTlHApB0H4Z2C/8gHNRXis8P5oqudvQxrgSpX0EjHMyk9h0CGz7u0jUahNVymk8xXceYPj/g1tFX7paBsEJMCy/OrTd
+ 2f+PawskwYhBhqlmbOnJa4BVuFcuqosINqDEy+1MbL/Q4NFzhoexLFA512jcEXCAOEbrcqDctvHvZ7DhbAPG19uPId+/5oe1Eew4AXKWxQ2X1H8Ja1APWH9m
+ zOKf1zJdvhrAEOP/mR94EeNz8UfimdQG9G1jJeVED/FAOC2ohSe2vqJkZaQRCtVfz33TWd82ppRKFFYt951T/O6STw+3bQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
->
->
-> The series comes from my commit in U-boot
-> d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
-> and from the subsequent exchange of emails at the end of which I was
-> suggested to send the patch to the linux kernel
-> (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
+Hi Jonathan,
 
-It's 'ranges' that determines translatable which is missing from the
-DT. This should have not had a 0 size either though maybe we could
-support that.
+On 4/6/21 3:37 PM, Jonathan Neuschäfer wrote:
+> In the binding:
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - hycon,hycon-hy4613
+>> +      - hycon,hycon-hy4614
+>> +      - hycon,hycon-hy4621
+>> +      - hycon,hycon-hy4623
+>> +      - hycon,hycon-hy4633
+>> +      - hycon,hycon-hy4635
+> 
+> In the example:
+>> +      hycon-hy4633@1c {
+>> +        compatible = "hycon,hy4633";
+>> +        reg = <0x1c>;
+>> +        interrupt-parent = <&gpio2>;
+>> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+>> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+>> +      };
+> 
+> 
+> Rob's devicetree lint bot detected the mismatch in compatible string
+> here.
+> 
+> I personally think 'hycon,hy4633' looks better than 'hycon,hycon-hy4633',
+> because it isn't so redundant.
+> 
 
-Does the DT have to be updated anyways for your spread spectrum support?
+Thank you, I've realized it after submitting patches and waited for 
+other comments. I've already fixed it the way you've pointed.
 
-> The second patch of the series aims to demonstrate that the first one, which
-> enables the translation of addresses also for crossings of DT nodes
-> with #size-cells = <0>, it really works.
+Kind regards
+-- 
+Giulio Benetti
+Benetti Engineering sas
+> Best regards,
+> Jonathan Neuschäfer
+> 
 
-I don't seem to have the 2nd patch... In any case, you should handle
-the special case for this platform in code for the platform.
-
-Rob
