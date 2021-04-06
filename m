@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84376355312
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AFB355310
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343670AbhDFMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:03:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54228 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235453AbhDFMD3 (ORCPT
+        id S242109AbhDFMDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:03:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15556 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235453AbhDFMDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:03:29 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136Ba4FE079777;
-        Tue, 6 Apr 2021 08:02:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=+uYQ7q44KFHwjVCmXGtKPxxr2jwoaS/fH9Dduu84SvE=;
- b=fxXz520qrjy5Y3WVsIXmlGsJKk3g2VXe9R9F3UYQN/769fsKXXekQVbPPxI8Zdm27ZO6
- MSwxgYbR/3nMvm2/b9gRTHlvYx5Tgf2/rTfe1mDwgB4qoxr802zK/1H6Ig/srVxEnYKg
- JDIPqsZpCP+3y6ZOdHveK/9F/XxaZ+A3jHb0oBYfYPZs0voaTFJpjykUq/a/t9GnZ8X+
- Hg3MxdLGCGtclqAgYTN0dARUIldEOyn3NCN+a7x7K+zZ9tEnS9SpMpt53sOCAet7DtOX
- vafIJYoaa3GsYW0qWDm5BK+gUDRqTIj+Qbwj7D/g95jAuu4Tvp3SQ+S9JL1NWAiorhd5 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q6058n55-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 08:02:59 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 136Ba2RI079604;
-        Tue, 6 Apr 2021 08:02:58 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q6058n42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 08:02:58 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136C2udl023436;
-        Tue, 6 Apr 2021 12:02:56 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 37q2q5j47n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 12:02:56 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136C2rV250528550
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 12:02:53 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F2A7A4064;
-        Tue,  6 Apr 2021 12:02:53 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFF0BA4060;
-        Tue,  6 Apr 2021 12:02:52 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.37.150])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  6 Apr 2021 12:02:52 +0000 (GMT)
-Date:   Tue, 6 Apr 2021 14:02:51 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
- hinting fault
-Message-ID: <20210406140251.2779c400@thinkpad>
-In-Reply-To: <CAHbLzkquYxq_eXoVhUCib9qu_aMS9U2XXjb5pop9JtJ8uco_vg@mail.gmail.com>
-References: <20210329183312.178266-1-shy828301@gmail.com>
-        <20210330164200.01a4b78f@thinkpad>
-        <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com>
-        <20210331134727.47bc1e6d@thinkpad>
-        <CAHbLzkquYxq_eXoVhUCib9qu_aMS9U2XXjb5pop9JtJ8uco_vg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 6 Apr 2021 08:03:19 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF5gs1HXDzPnrd;
+        Tue,  6 Apr 2021 20:00:25 +0800 (CST)
+Received: from mdc.localdomain (10.175.104.57) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 20:03:02 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <huangguobin4@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] crypto: ixp4xx -: use DEFINE_SPINLOCK() for spinlock
+Date:   Tue, 6 Apr 2021 20:02:57 +0800
+Message-ID: <1617710577-48660-1-git-send-email-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: q_zihSF78QLKrq41D9xh6d-N3kDj0peG
-X-Proofpoint-GUID: vq66MAHLKvi_HZbyGR0D4zY8xfe448cU
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_02:2021-04-01,2021-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=863
- impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060080
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 13:10:49 -0700
-Yang Shi <shy828301@gmail.com> wrote:
+From: Guobin Huang <huangguobin4@huawei.com>
 
-[...]
-> > >
-> > > Yes, it could be. The old behavior of migration was to return -ENOMEM
-> > > if THP migration is not supported then split THP. That behavior was
-> > > not very friendly to some usecases, for example, memory policy and
-> > > migration lieu of reclaim (the upcoming). But I don't mean we restore
-> > > the old behavior. We could split THP if it returns -ENOSYS and the
-> > > page is THP.
-> >
-> > OK, as long as we don't get any broken PMD migration entries established
-> > for s390, some extra THP splitting would be acceptable I guess.
-> 
-> There will be no migration PMD installed. The current behavior is a
-> no-op if THP migration is not supported.
+spinlock can be initialized automatically with DEFINE_SPINLOCK()
+rather than explicitly calling spin_lock_init().
 
-Ok, just for completeness, since Mel also replied that the split
-was not done on other architectures "because the loss from splitting
-exceeded the gain of improved locality":
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
+---
+ drivers/crypto/ixp4xx_crypto.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-I did not mean to request extra splitting functionality for s390,
-simply skipping / ignoring large PMDs would also be fine for s390,
-no need to add extra complexity.
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 8b0f17fc09fb..0616e369522e 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -265,7 +265,7 @@ static int setup_crypt_desc(void)
+ 	return 0;
+ }
+ 
+-static spinlock_t desc_lock;
++static DEFINE_SPINLOCK(desc_lock);
+ static struct crypt_ctl *get_crypt_desc(void)
+ {
+ 	int i;
+@@ -293,7 +293,7 @@ static struct crypt_ctl *get_crypt_desc(void)
+ 	}
+ }
+ 
+-static spinlock_t emerg_lock;
++static DEFINE_SPINLOCK(emerg_lock);
+ static struct crypt_ctl *get_crypt_desc_emerg(void)
+ {
+ 	int i;
+@@ -1379,9 +1379,6 @@ static int __init ixp_module_init(void)
+ 	if (IS_ERR(pdev))
+ 		return PTR_ERR(pdev);
+ 
+-	spin_lock_init(&desc_lock);
+-	spin_lock_init(&emerg_lock);
+-
+ 	err = init_ixp_crypto(&pdev->dev);
+ 	if (err) {
+ 		platform_device_unregister(pdev);
+
