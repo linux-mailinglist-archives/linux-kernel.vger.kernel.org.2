@@ -2,105 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7EB35546B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8439355472
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344269AbhDFNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:00:46 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35734 "EHLO vps0.lunn.ch"
+        id S1344275AbhDFNBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:01:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53197 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237885AbhDFNAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:00:44 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lTlJU-00F7Go-B3; Tue, 06 Apr 2021 15:00:12 +0200
-Date:   Tue, 6 Apr 2021 15:00:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Grant Grundler <grundler@chromium.org>
-Cc:     Oliver Neukum <oneukum@suse.com>, Jakub Kicinski <kuba@kernel.org>,
-        Roland Dreier <roland@kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>, netdev <netdev@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 0/4] usbnet: speed reporting for devices
- without MDIO
-Message-ID: <YGxbXOXquilXNV2W@lunn.ch>
-References: <20210405231344.1403025-1-grundler@chromium.org>
- <YGumuzcPl+9l5ZHV@lunn.ch>
- <CANEJEGsYQm9EhqVLA4oedP2fuKrP=3bOUDV9=7owfdZzX7SpUA@mail.gmail.com>
+        id S1344274AbhDFNBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:01:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617714063; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=sX/dPEAAoi06drO8Jv2y6lJBxs4XsNAHD4nrwcIcUQw=; b=FqnDVt6Z+sb64knADCAVkPk7rjrCIsz1UR6B11Wc1U28sYYpFMkpgzUNE6JDwlnGcjaJnqqT
+ oe4nBgMO4eUAES3ccZmlAhyl/9+DAAaYiCciWdg/7UXNTpocF3MnFnMcmMApfG5ciXyscZiL
+ +SenN/+9XlThfr0KLNWvJJGVTXg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 606c5b6dfebcffa80fa13663 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 13:00:29
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D831DC43461; Tue,  6 Apr 2021 13:00:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2867C433ED;
+        Tue,  6 Apr 2021 13:00:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2867C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+Date:   Tue, 6 Apr 2021 18:30:23 +0530
+From:   Pavan Kondeti <pkondeti@codeaurora.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Wei Wang <wvw@google.com>
+Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
+ of root cpu cgroup
+Message-ID: <20210406130023.GA21941@codeaurora.org>
+References: <1617706753-25349-1-git-send-email-pkondeti@codeaurora.org>
+ <YGxPwTVvpqYkkIMI@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANEJEGsYQm9EhqVLA4oedP2fuKrP=3bOUDV9=7owfdZzX7SpUA@mail.gmail.com>
+In-Reply-To: <YGxPwTVvpqYkkIMI@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Speed: 2500Mb/s and Duplex: Half is very unlikely. You really only
-> > ever see 10 Half and occasionally 100 Half. Anything above that will
-> > be full duplex.
-> >
-> > It is probably best to admit the truth and use DUPLEX_UNKNOWN.
+Hi Quentin,
+
+On Tue, Apr 06, 2021 at 12:10:41PM +0000, Quentin Perret wrote:
+> Hi Pavan,
 > 
-> Agreed. I didn't notice this "lie" until I was writing the commit
-> message and wasn't sure off-hand how to fix it. Decided a follow on
-> patch could fix it up once this series lands.
+> On Tuesday 06 Apr 2021 at 16:29:13 (+0530), Pavankumar Kondeti wrote:
+> > In Android GKI, CONFIG_FAIR_GROUP_SCHED is enabled [1] to help prioritize
+> > important work. Given that CPU shares of root cgroup can't be changed,
+> > leaving the tasks inside root cgroup will give them higher share
+> > compared to the other tasks inside important cgroups. This is mitigated
+> > by moving all tasks inside root cgroup to a different cgroup after
+> > Android is booted. However, there are many kernel tasks stuck in the
+> > root cgroup after the boot.
+> > 
+> > We see all kworker threads are in the root cpu cgroup. This is because,
+> > tasks with PF_NO_SETAFFINITY flag set are forbidden from cgroup migration.
+> > This restriction is in place to avoid kworkers getting moved to a cpuset
+> > which conflicts with kworker affinity. Relax this restriction by explicitly
+> > checking if the task is moving out of a cpuset cgroup. This allows kworkers
+> > to be moved out root cpu cgroup.
+> > 
+> > We also see kthreadd_task and any kernel thread created after the Android boot
+> > also stuck in the root cgroup. The current code prevents kthreadd_task moving
+> > out root cgroup to avoid the possibility of creating new RT kernel threads
+> > inside a cgroup with no RT runtime allocated. Apply this restriction when tasks
+> > are moving out of cpu cgroup under CONFIG_RT_GROUP_SCHED. This allows all
+> > kernel threads to be moved out of root cpu cgroup if the kernel does not
+> > enable RT group scheduling.
 > 
-> You are right that DUPLEX_UNKNOWN is the safest (and usually correct) default.
-> Additionally, if RX and TX speed are equal, I am willing to assume
-> this is DUPLEX_FULL.
-
-Is this same interface used by WiFi? Ethernet does not support
-different rates in each direction. So if RX and TX are different, i
-would actually say something is broken. 10 Half is still doing 10Mbps
-in each direction, it just cannot do both at the same time.
-WiFi can have asymmetric speeds.
-
-> I can propose something like this in a patch:
+> OK, so IIUC this only works with cgroup v1 -- the unified hierarchy in
+> v2 forces you to keep cpu and cpuset in 'sync'. But that should be fine,
+> so this looks like a nice improvement to me.
 > 
-> grundler <1637>git diff
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-> index 86eb1d107433..a7ad9a0fb6ae 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -978,6 +978,11 @@ int usbnet_get_link_ksettings_internal(struct
-> net_device *net,
->         else
->                 cmd->base.speed = SPEED_UNKNOWN;
+Yes. I will mention this in commit description.
+
+> >  
+> >  struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+> > -					     bool *locked)
+> > +					     bool *locked,
+> > +					     struct cgroup *dst_cgrp)
+> >  	__acquires(&cgroup_threadgroup_rwsem)
+> >  {
+> >  	struct task_struct *tsk;
+> > @@ -2784,15 +2785,28 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+> >  		tsk = tsk->group_leader;
+> >  
+> >  	/*
+> > +	 * RT kthreads may be born in a cgroup with no rt_runtime allocated.
+> > +	 * Just say no.
+> > +	 */
+> > +#ifdef CONFIG_RT_GROUP_SCHED
+> > +	if (tsk->no_cgroup_migration && (dst_cgrp->root->subsys_mask & (1U << cpu_cgrp_id))) {
+> > +		tsk = ERR_PTR(-EINVAL);
+> > +		goto out_unlock_threadgroup;
+> > +	}
+> > +#endif
+> > +
+> > +	/*
+> >  	 * kthreads may acquire PF_NO_SETAFFINITY during initialization.
+> >  	 * If userland migrates such a kthread to a non-root cgroup, it can
+> > -	 * become trapped in a cpuset, or RT kthread may be born in a
+> > -	 * cgroup with no rt_runtime allocated.  Just say no.
+> > +	 * become trapped in a cpuset. Just say no.
+> >  	 */
+> > -	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) {
+> > +#ifdef CONFIG_CPUSETS
+> > +	if ((tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) &&
+> > +			(dst_cgrp->root->subsys_mask & (1U << cpuset_cgrp_id))) {
+> >  		tsk = ERR_PTR(-EINVAL);
+> >  		goto out_unlock_threadgroup;
+> >  	}
+> > +#endif
 > 
-> +       if (dev->rx_speed == dev->tx_speed)
-> +               cmd->base.duplex = DUPLEX_FULL;
-> +       else
-> +               cmd->base.duplex =DUPLEX_UNKNOWN;
-> +
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(usbnet_get_link_ksettings_internal);
+> Nit: maybe move this #ifdefery out to a header?
+> 
+Agreed.
 
-So i would say this is wrong. I would just set DUPLEX_UNKNOWN and be
-done.
+Thanks,
+Pavan
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> I can send this out later once this series lands or you are welcome to
-> post this with additional checks if you like.
-
-Yes, this discussion should not prevent this patchset from being
-merged.
-
-> If we want to assume autoneg is always on (regardless of which type of
-> media cdc_ncm/cdc_ether are talking to), we could set both supported
-> and advertising to AUTO and lp_advertising to UNKNOWN.
-
-I pretty much agree autoneg has to be on. If it is not, and it is
-using a forced speed, there would need to be an additional API to set
-what it is forced to. There could be such proprietary calls, but the
-generic cdc_ncm/cdc_ether won't support them.
-
-But i also don't know how setting autoneg actually helps the user.
-Everybody just assumes it is supported. If you really know auto-neg is
-not supported and you can reliably indicate that autoneg is not
-supported, that would be useful. But i expect most users want to know
-if their USB 2.0 device is just doing 100Mbps, or if their USB 3.0
-device can do 2.5G. For that, you need to see what is actually
-supported.
-
-	Andrew
