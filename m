@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ABC355A89
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3592355A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347017AbhDFRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:40:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57096 "EHLO mail.kernel.org"
+        id S1347026AbhDFRkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:40:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233683AbhDFRkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A730613C4;
-        Tue,  6 Apr 2021 17:39:56 +0000 (UTC)
+        id S233683AbhDFRkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:40:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25FB3613D2;
+        Tue,  6 Apr 2021 17:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617730797;
-        bh=CJtEtoK6Usq5ZVb5Hps4tfMcaFeKs2V1/aok3sqZF6M=;
+        s=k20201202; t=1617730802;
+        bh=qeca+b4H0nIapO5UzP/YbMsJrZpQiO+jgLRy/koUfyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sely41ji6TP0/R3c6YoHBD1oVxObFry/ghjfuP4g46aSa2lM+7GL3y8VppwzXUa6P
-         M1AVKiu73EBR03gcSKD7+tJMcxV+PMbMcMp278v7umomzuzZ4xvhfnxoKHW7Yz3Cwx
-         wfiQQo6HiAcPyDe/giuH7f/Uqv5yHLSEaK/51zO8OAPgHIjfTPQGW8gcfYjU2PYMwo
-         jft0sTlwPXhhrsdH6QlfU/vymG4VJYXLpe0noR2tEP31G2MufrLMS0gvLyYizgau75
-         jkd2ZPLV8oPiHIiAASzrzjyxzHtgNqun4VjkkXhgpJ2pPeqYxMPG3QiSEN3TO+eQjQ
-         FG1dQCMzr2AXQ==
+        b=RxlaIqbdu+c5tgETxhAEuDDllk3hQ+aY68reEb5SSpf9DHFe7FxoNFKFwM6Xvfx64
+         C3Ga3Cm+WHhLRn0EG+q00K7s6kGSN21yau8FsCrKYVJoZ+MspTtj08/QoxLRdWTQUl
+         +g9GdMyzLmTmHC485UiU5T69BkLgWvNqbgwQ40gKdR45ia4yoQKH9208wsW+aHJ5h9
+         ZHuQMRR/pqjw3jc78ofJiVvOwplPw0TB4xzQx0q6Jfle7F4/RClXkcgEV79WJBTx7m
+         ZLKR0HfBTkG9FiVsbdgJQTgLOTSbMO2ZKQwVbq997IpcHVpEiil4ekDy/dxhZmEgB9
+         Gft/tBBSFZB0A==
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, ckeepax@opensource.cirrus.com, krzk@kernel.org,
-        geert@linux-m68k.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz,
-        rf@opensource.wolfsonmicro.com, lgirdwood@gmail.com,
-        nuno.sa@analog.com, alsa-devel@alsa-project.org,
-        jack.yu@realtek.com, shumingf@realtek.com,
-        Steve Lee <steves.lee@maximintegrated.com>
-Cc:     Mark Brown <broonie@kernel.org>, ryan.lee.maxim@gmail.com,
-        steves.lee.maxim@gmail.com
-Subject: Re: [PATCH] ASoC: max98390: Add support for tx slot configuration.
-Date:   Tue,  6 Apr 2021 18:39:37 +0100
-Message-Id: <161773049108.51713.10192288839186913998.b4-ty@kernel.org>
+To:     tiwai@suse.com, perex@perex.cz, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ak5558: Fix s/show/slow/ typo
+Date:   Tue,  6 Apr 2021 18:39:39 +0100
+Message-Id: <161773049108.51713.8947694519084093038.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210405143801.29770-1-steves.lee@maximintegrated.com>
-References: <20210405143801.29770-1-steves.lee@maximintegrated.com>
+In-Reply-To: <1617458365-23393-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1617458365-23393-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,8 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 23:38:01 +0900, Steve Lee wrote:
->  Update voltage/current tx slot configuration support.
+On Sat, 3 Apr 2021 21:59:25 +0800, Shengjiu Wang wrote:
+> s/show/slow/
 
 Applied to
 
@@ -55,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max98390: Add support for tx slot configuration.
-      commit: e5870bd0e40c749fd96a4e565497c789bee456bf
+[1/1] ASoC: ak5558: Fix s/show/slow/ typo
+      commit: a43508995a913893c5f303e56415d06432b15619
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
