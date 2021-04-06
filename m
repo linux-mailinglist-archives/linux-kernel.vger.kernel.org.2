@@ -2,67 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3383C3559B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB383559C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346678AbhDFQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:54:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40238 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346631AbhDFQyB (ORCPT
+        id S1346691AbhDFQ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:56:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2772 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244303AbhDFQ4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:54:01 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lToxX-00086R-4j; Tue, 06 Apr 2021 16:53:47 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Boris Pismenny <borisp@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Raed Salem <raeds@nvidia.com>, Huy Nguyen <huyn@mellanox.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net/mlx5: Fix bit-wise and with zero
-Date:   Tue,  6 Apr 2021 17:53:46 +0100
-Message-Id: <20210406165346.430535-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 6 Apr 2021 12:56:46 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFD2j4tTVz6824f;
+        Wed,  7 Apr 2021 00:47:09 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 18:56:37 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 17:56:35 +0100
+Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
+To:     Robin Murphy <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <1616160348-29451-2-git-send-email-john.garry@huawei.com>
+ <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
+ <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
+ <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
+ <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
+ <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4914d134-5a63-f683-b14b-25ab71a57cd4@huawei.com>
+Date:   Tue, 6 Apr 2021 17:54:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+>>>> So then we have the issue of how to dynamically increase this rcache
+>>>> threshold. The problem is that we may have many devices associated with
+>>>> the same domain. So, in theory, we can't assume that when we increase
+>>>> the threshold that some other device will try to fast free an IOVA 
+>>>> which
+>>>> was allocated prior to the increase and was not rounded up.
+>>>>
+>>>> I'm very open to better (or less bad) suggestions on how to do this ...
+>>> ...but yes, regardless of exactly where it happens, rounding up or not
+>>> is the problem for rcaches in general. I've said several times that my
+>>> preferred approach is to not change it that dynamically at all, but
+>>> instead treat it more like we treat the default domain type.
+>>>
+>>
+>> Can you remind me of that idea? I don't remember you mentioning using 
+>> default domain handling as a reference in any context.
+> 
 
-The bit-wise and of the action field with MLX5_ACCEL_ESP_ACTION_DECRYPT
-is incorrect as MLX5_ACCEL_ESP_ACTION_DECRYPT is zero and not intended
-to be a bit-flag. Fix this by using the == operator as was originally
-intended.
+Hi Robin,
 
-Addresses-Coverity: ("Logically dead code")
-Fixes: 7dfee4b1d79e ("net/mlx5: IPsec, Refactor SA handle creation and destruction")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Sorry if the phrasing was unclear there - the allusion to default 
+> domains is new, it just occurred to me that what we do there is in fact 
+> fairly close to what I've suggested previously for this. In that case, 
+> we have a global policy set by the command line, which *can* be 
+> overridden per-domain via sysfs at runtime, provided the user is willing 
+> to tear the whole thing down. Using a similar approach here would give a 
+> fair degree of flexibility but still mean that changes never have to be 
+> made dynamically to a live domain.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-index d43a05e77f67..0b19293cdd74 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-@@ -850,7 +850,7 @@ mlx5_fpga_ipsec_release_sa_ctx(struct mlx5_fpga_ipsec_sa_ctx *sa_ctx)
- 		return;
- 	}
- 
--	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action &
-+	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action ==
- 	    MLX5_ACCEL_ESP_ACTION_DECRYPT)
- 		ida_free(&fipsec->halloc, sa_ctx->sa_handle);
- 
--- 
-2.30.2
+So are you saying that we can handle it similar to how we now can handle 
+changing default domain for an IOMMU group via sysfs? If so, that just 
+is not practical here. Reason being that this particular DMA engine 
+provides the block device giving / mount point, so if we unbind the 
+driver, we lose / mount point.
 
+And I am not sure if the end user would even know how to set such a 
+tunable. Or, in this case, why the end user would not want the optimized 
+range configured always.
+
+I'd still rather if the device driver could provide info which can be 
+used to configure this before or during probing.
+
+Cheers,
+John
