@@ -2,168 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269E3355788
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F90935578B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhDFPQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:16:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:44524 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230424AbhDFPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:16:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 274F41FB;
-        Tue,  6 Apr 2021 08:16:11 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9373A3F792;
-        Tue,  6 Apr 2021 08:16:09 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 16:16:04 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jim Quinlan <jim2101024@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] ata: ahci_brcm: Fix use of BCM7216 reset
- controller
-Message-ID: <20210406151604.GA25862@lpieralisi>
-References: <20210312204556.5387-1-jim2101024@gmail.com>
- <20210312204556.5387-2-jim2101024@gmail.com>
+        id S1345569AbhDFPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:17:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44323 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345563AbhDFPRZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:17:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617722237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=soYidIvKsSOwqgZrinbzJOhQz2wKNaQ54JiSN4TC7cg=;
+        b=URu1f0IoeTQGecrEQT6vRLw7bIOTb9Sp3mjs2b/nblPKxqO1XnlvJSbRTl5FJNW5mQSdO1
+        6GmM/Zvp2o1p/XpA48DkNE4yHFu1rHl8p732kraliOrWciCVEmUSb8EpoFd5HGvTB+deg7
+        mcuFykGtK8aBRncuq5wuD5FabrU/W0g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-JR-AIwFJO2qci2j2pVIJMA-1; Tue, 06 Apr 2021 11:17:15 -0400
+X-MC-Unique: JR-AIwFJO2qci2j2pVIJMA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8939B107ACCA;
+        Tue,  6 Apr 2021 15:17:13 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-144.rdu2.redhat.com [10.10.117.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C771B5D9D0;
+        Tue,  6 Apr 2021 15:17:04 +0000 (UTC)
+Subject: Re: [PATCH v4] sched/debug: Use sched_debug_lock to serialize use of
+ cgroup_path[] only
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20210405234203.23526-1-longman@redhat.com>
+ <YGwmsePipAYoAI2H@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <c10d04c0-23f6-8bbb-2ba7-6d7e2ea0280e@redhat.com>
+Date:   Tue, 6 Apr 2021 11:17:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312204556.5387-2-jim2101024@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YGwmsePipAYoAI2H@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 03:45:54PM -0500, Jim Quinlan wrote:
-> This driver may use one of two resets controllers.  Keep them in separate
-> variables to keep things simple.  The reset controller "rescal" is shared
-> between the AHCI driver and the PCIe driver for the BrcmSTB 7216 chip.  Use
-> devm_reset_control_get_optional_shared() to handle this sharing.
-> 
-> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+On 4/6/21 5:15 AM, Peter Zijlstra wrote:
+> On Mon, Apr 05, 2021 at 07:42:03PM -0400, Waiman Long wrote:
+>> The handling of sysrq key can be activated by echoing the key to
+>> /proc/sysrq-trigger or via the magic key sequence typed into a terminal
+>> that is connected to the system in some way (serial, USB or other mean).
+>> In the former case, the handling is done in a user context. In the
+>> latter case, it is likely to be in an interrupt context.
+>> [ 7809.796281]  </NMI>
+>> [ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
+>> [ 7809.796283]  print_cpu+0x261/0x7c0
+>> [ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
+>> [ 7809.796284]  sysrq_handle_showstate+0xc/0x20
+>> [ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
+>> [ 7809.796285]  write_sysrq_trigger+0x2b/0x30
+>> [ 7809.796285]  proc_reg_write+0x39/0x60
+>> [ 7809.796286]  vfs_write+0xa5/0x1a0
+>> [ 7809.796286]  ksys_write+0x4f/0xb0
+>> [ 7809.796287]  do_syscall_64+0x5b/0x1a0
+>> [ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+>> [ 7809.796288] RIP: 0033:0x7fabe4ceb648
+>>
+>> The purpose of sched_debug_lock is to serialize the use of the global
+>> cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
+>> need serialization from sched_debug_lock.
+>> The print_cpu() function has two callers - sched_debug_show() and
+>> sysrq_sched_debug_show().
+> So what idiot is doing sysrq and that proc file at the same time? Why is
+> it a problem now?
+We got a customer bug report on watchdog panic because a process somehow 
+stay within the sched_debug_lock for too long. I don't know what exactly 
+the customer was doing, but we can reproduce the panic just by having 2 
+parallel "echo t > /proc/sysrq-trigger" commands. This happens on 
+certain selected systems. I was using some Dell systems for my testing. 
+Of course, it is not sensible to have more than one sysrq happening at 
+the same time. However, a parallel thread accessing /proc/sched_debug is 
+certainly possible. That invokes similar code path.
+>
+>> @@ -470,16 +468,49 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+>>   #endif
+>>   
+>>   #ifdef CONFIG_CGROUP_SCHED
+>> +static DEFINE_SPINLOCK(sched_debug_lock);
+>>   static char group_path[PATH_MAX];
+>> +static enum {
+>> +	TOKEN_NONE,
+>> +	TOKEN_ACQUIRED,
+>> +	TOKEN_NA	/* Not applicable */
+>> +} console_token = TOKEN_ACQUIRED;
+>> +/*
+>> + * All the print_cpu() callers from sched_debug_show() will be allowed
+>> + * to contend for sched_debug_lock and use group_path[] as their SEQ_printf()
+>> + * calls will be much faster. However only one print_cpu() caller from
+>> + * sysrq_sched_debug_show() which outputs to the console will be allowed
+>> + * to use group_path[]. Another parallel console writer will have to use
+>> + * a shorter stack buffer instead. Since the console output will be garbled
+>> + * anyway, truncation of some cgroup paths shouldn't be a big issue.
+>> + */
+>> +#define SEQ_printf_task_group_path(m, tg, fmt...)			\
+>> +{									\
+>> +	unsigned long flags;						\
+>> +	int token = m ? TOKEN_NA					\
+>> +		      : xchg_acquire(&console_token, TOKEN_NONE);	\
+>> +									\
+>> +	if (token == TOKEN_NONE) {					\
+>> +		char buf[128];						\
+>> +		task_group_path(tg, buf, sizeof(buf));			\
+>> +		SEQ_printf(m, fmt, buf);				\
+>> +	} else {							\
+>> +		spin_lock_irqsave(&sched_debug_lock, flags);		\
+>> +		task_group_path(tg, group_path, sizeof(group_path));	\
+>> +		SEQ_printf(m, fmt, group_path);				\
+>> +		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
+>> +		if (token == TOKEN_ACQUIRED)				\
+>> +			smp_store_release(&console_token, token);	\
+>> +	}								\
+>>   }
+> This is disgusting... you have an open-coded test-and-set lock like
+> thing *AND* a spinlock, what gives?
+>
+>
+> What's wrong with something simple like this?
+>
 > ---
->  drivers/ata/ahci_brcm.c | 46 ++++++++++++++++++++---------------------
->  1 file changed, 23 insertions(+), 23 deletions(-)
-
-Hi Jens,
-
-I am happy to take this series via the PCI tree but I'd need your
-ACK on this patch, please let me know if you are OK with it.
-
-Thanks,
-Lorenzo
-
-> diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
-> index 5b32df5d33ad..6e9c5ade4c2e 100644
-> --- a/drivers/ata/ahci_brcm.c
-> +++ b/drivers/ata/ahci_brcm.c
-> @@ -86,7 +86,8 @@ struct brcm_ahci_priv {
->  	u32 port_mask;
->  	u32 quirks;
->  	enum brcm_ahci_version version;
-> -	struct reset_control *rcdev;
-> +	struct reset_control *rcdev_rescal;
-> +	struct reset_control *rcdev_ahci;
->  };
->  
->  static inline u32 brcm_sata_readreg(void __iomem *addr)
-> @@ -352,8 +353,8 @@ static int brcm_ahci_suspend(struct device *dev)
->  	else
->  		ret = 0;
->  
-> -	if (priv->version != BRCM_SATA_BCM7216)
-> -		reset_control_assert(priv->rcdev);
-> +	reset_control_assert(priv->rcdev_ahci);
-> +	reset_control_rearm(priv->rcdev_rescal);
->  
->  	return ret;
->  }
-> @@ -365,10 +366,10 @@ static int __maybe_unused brcm_ahci_resume(struct device *dev)
->  	struct brcm_ahci_priv *priv = hpriv->plat_data;
->  	int ret = 0;
->  
-> -	if (priv->version == BRCM_SATA_BCM7216)
-> -		ret = reset_control_reset(priv->rcdev);
-> -	else
-> -		ret = reset_control_deassert(priv->rcdev);
-> +	ret = reset_control_deassert(priv->rcdev_ahci);
-> +	if (ret)
-> +		return ret;
-> +	ret = reset_control_reset(priv->rcdev_rescal);
->  	if (ret)
->  		return ret;
->  
-> @@ -434,7 +435,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  {
->  	const struct of_device_id *of_id;
->  	struct device *dev = &pdev->dev;
-> -	const char *reset_name = NULL;
->  	struct brcm_ahci_priv *priv;
->  	struct ahci_host_priv *hpriv;
->  	struct resource *res;
-> @@ -456,15 +456,15 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  	if (IS_ERR(priv->top_ctrl))
->  		return PTR_ERR(priv->top_ctrl);
->  
-> -	/* Reset is optional depending on platform and named differently */
-> -	if (priv->version == BRCM_SATA_BCM7216)
-> -		reset_name = "rescal";
-> -	else
-> -		reset_name = "ahci";
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 4b49cc2af5c4..2ac2977f3b96 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -8,8 +8,6 @@
+>    */
+>   #include "sched.h"
+>   
+> -static DEFINE_SPINLOCK(sched_debug_lock);
 > -
-> -	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
-> -	if (IS_ERR(priv->rcdev))
-> -		return PTR_ERR(priv->rcdev);
-> +	if (priv->version == BRCM_SATA_BCM7216) {
-> +		priv->rcdev_rescal = devm_reset_control_get_optional_shared(
-> +			&pdev->dev, "rescal");
-> +		if (IS_ERR(priv->rcdev_rescal))
-> +			return PTR_ERR(priv->rcdev_rescal);
+>   /*
+>    * This allows printing both to /proc/sched_debug and
+>    * to the console
+> @@ -470,6 +468,7 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+>   #endif
+>   
+>   #ifdef CONFIG_CGROUP_SCHED
+> +static DEFINE_SPINLOCK(group_path_lock);
+>   static char group_path[PATH_MAX];
+>   
+>   static char *task_group_path(struct task_group *tg)
+> @@ -481,6 +480,22 @@ static char *task_group_path(struct task_group *tg)
+>   
+>   	return group_path;
+>   }
+> +
+> +#define SEQ_printf_task_group_path(m, tg)				\
+> +do {									\
+> +	if (spin_trylock(&group_path_lock)) {				\
+> +		task_group_path(tg, group_path, sizeof(group_path));	\
+> +		SEQ_printf(m, "%s", group_path);			\
+> +		spin_unlock(&group_path_lock);				\
+> +	} else {							\
+> +		SEQ_printf(m, "looser!");				\
 > +	}
-> +	priv->rcdev_ahci = devm_reset_control_get_optional(&pdev->dev, "ahci");
-> +	if (IS_ERR(priv->rcdev_ahci))
-> +		return PTR_ERR(priv->rcdev_ahci);
->  
->  	hpriv = ahci_platform_get_resources(pdev, 0);
->  	if (IS_ERR(hpriv))
-> @@ -485,10 +485,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  		break;
->  	}
->  
-> -	if (priv->version == BRCM_SATA_BCM7216)
-> -		ret = reset_control_reset(priv->rcdev);
-> -	else
-> -		ret = reset_control_deassert(priv->rcdev);
-> +	ret = reset_control_reset(priv->rcdev_rescal);
-> +	if (ret)
-> +		return ret;
-> +	ret = reset_control_deassert(priv->rcdev_ahci);
->  	if (ret)
->  		return ret;
->  
-> @@ -539,8 +539,8 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  out_disable_clks:
->  	ahci_platform_disable_clks(hpriv);
->  out_reset:
-> -	if (priv->version != BRCM_SATA_BCM7216)
-> -		reset_control_assert(priv->rcdev);
-> +	reset_control_assert(priv->rcdev_ahci);
-> +	reset_control_rearm(priv->rcdev_rescal);
->  	return ret;
->  }
->  
-> -- 
-> 2.17.1
-> 
+> +} while (0)
+
+I have no problem with using this as a possible solution as long as 
+others agree. Of course, I won't use the term "looser". I will be more 
+polite:-)
+
+The current patch allows all /proc/sched_debug users and one sysrq user 
+to use the full group_path[] buffer. I can certainly change it to allow 
+1 user to use the full size path and the rests running the risk of path 
+truncation.
+
+Cheers,
+Longman
+
