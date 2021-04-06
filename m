@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE3E355BE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A840355BEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhDFS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
+        id S233983AbhDFTAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhDFS75 (ORCPT
+        with ESMTP id S231315AbhDFTAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:59:57 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0841BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 11:59:49 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f29so8591210pgm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 11:59:48 -0700 (PDT)
+        Tue, 6 Apr 2021 15:00:10 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC13C06174A;
+        Tue,  6 Apr 2021 12:00:01 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id q26so16095117qkm.6;
+        Tue, 06 Apr 2021 12:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=o/K/k7TMA0dim45MUt35sdwItRBULQE49yHai9MnD1o=;
-        b=KzmcnGjurr5EEPEluehzMcYb2wZZDh8gpR5aFdc2gPNCZhYvrxHbISKeCPlLNRFxS9
-         CMB/peeYBZORNXtSyfCZtbWA0FOztd+t2tmSePqLeQ1zcjwtZl/2pDj9LPA+GJGMZw4G
-         h4XS89UU36vddvcTKG7ff18HjenYr0SbCgh5T6lj79/rzadvUosYaZDtUb8t4InD7X98
-         Wsf4r+xpGTeipqLaCXZ408dzon6D9fD86lcKNReq3vzdRDFtDh7ft10q12HOmOvHFtDe
-         EjetBvNwCY2IPS0TLRcdf0TGnXoYBH6K49vGgfGJ8QIxuDO6NSheZrGTkH66TQUSg+oN
-         Enig==
+        bh=9ym7fnN02BGhD2IwZ2fakQvS1+eBOSpJm6r44NQnjAw=;
+        b=Yk5lNV2D7P99rW6gcaAWyO09heuCK21b7bv63CmrcUadS+lzOxteEzzS1KytJiSc2U
+         GQpHo1ajHLW/xrQkDYM8BKWvZKFr1klaFJCrjceNzmEsMiMlhC/ACq4fspQc9OuwR5L7
+         5wvblAeAlv4oePkxbqJQNfhjjFLJaejp/bvbnW6AbP57X4aPVb2TXn25qQmNV6QVMCPb
+         2lMH8Vyzc9J/7WFjqt9ZHlqatP61l/5mE5Kq6KV4GXtb3gexIOC2mMNnsLYrGSdkuwAL
+         AOvuieb4rlkM9PqX3qnikO4Zc2kfqIsog21nqV1cPlL6ZZfMawLvX9pZcGyRJmozuEuZ
+         FgRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=o/K/k7TMA0dim45MUt35sdwItRBULQE49yHai9MnD1o=;
-        b=JZSnHy9k3z2T7ohNiEJgz0sASBtWEkrC2sif8XrXWLkHqIPwzcH6sVgXmMXaSG3IIZ
-         h4Os+qRPbKsDoBVnzY6yB9VN0S5Prz2LSjKSSGDP6kyP3r0NJbUOwBVYHYS/GSDQhwOq
-         jDAc5DMlFuPiFUilKK5BnO1PE8dVWiiqusum1LxluisyI09t9OW7z6ZcrTIqtRWtjIHX
-         wLCROmaRQBc4aR39RGg9c0lvGpoT0Odnx9HwiCsOMWBJh40RO6/BLHYvyzUBFRVHsshm
-         KrWh5srFP71WiXy1To2PgRNBWdSWMkt4mFTaOwWHRpiAn8B7SaD435pqJFUmUB/0T/UG
-         v0pQ==
-X-Gm-Message-State: AOAM5327I7NHANPUaHIq2IxiNhH8ilo0K8UyLSVLSFSEzkzcAIKg46Jc
-        bz5X74UWtCeaNkk2xm79SJs1gkQR9kj50g==
-X-Google-Smtp-Source: ABdhPJyIk5vGhXdq5zQumhsts0/ms82m7PMKls76aAMgOHLCSFmyTEgoaXIvPjhMxKbNVnZrFVtveA==
-X-Received: by 2002:a62:1c93:0:b029:1fd:2216:fb45 with SMTP id c141-20020a621c930000b02901fd2216fb45mr28502785pfc.13.1617735588287;
-        Tue, 06 Apr 2021 11:59:48 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id hi21sm3087454pjb.36.2021.04.06.11.59.47
+        bh=9ym7fnN02BGhD2IwZ2fakQvS1+eBOSpJm6r44NQnjAw=;
+        b=AfWnYotx1g3Zj9C1epPrK4E40yTLJYx6oRPFie3etGIQYTolP72SnWVaBYBCKuXkXz
+         3BGyC9fyZqEYEh/0kWUKxUJfw2IWsReL4j7XH4LdO04BSV/F/EQnxet0CoefqMRDVhnQ
+         r+D/5bzXP1Z118eY+fijoH5O5iKIVZ1DjOJKpIrbFuZhw23qlEqAw1pnX+1FHn0QN3nS
+         MUfLZ9jbUHcaTGQfh4Tlos4rK4HJyq8P7KZ+QiCs/9JO18nwT2VOXIWJqxj0GKaJndc1
+         zOKLsGfYcYER8zK9ORdJBsUOftE0fLAEhBs545vqGtVay/ElbNXslPsxnJ4ppxujKlKH
+         jPHQ==
+X-Gm-Message-State: AOAM532JCKTIcQCiwR7DP4rt5rYCxf98K9h5lVBHom0WskpZzXrZ88ag
+        ZRHa6zkRRlq4cHWnPt07MRU=
+X-Google-Smtp-Source: ABdhPJyMXii2VgCL1K8Ppyi+s3pqEMJbOVpNbJZTNNpzPdYV/5yED4Tm0/lyoxOcGCObtnk++1PNkA==
+X-Received: by 2002:a37:b103:: with SMTP id a3mr31924660qkf.261.1617735600751;
+        Tue, 06 Apr 2021 12:00:00 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:438])
+        by smtp.gmail.com with ESMTPSA id d10sm16484412qko.70.2021.04.06.11.59.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:59:47 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 18:59:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: preserve pending TLB flush across calls to
- kvm_tdp_mmu_zap_sp
-Message-ID: <YGyvoF3WO4yjIuug@google.com>
-References: <20210406162550.3732490-1-pbonzini@redhat.com>
+        Tue, 06 Apr 2021 12:00:00 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 14:59:57 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/3] loop: Use worker per cgroup instead of kworker
+Message-ID: <YGyvra69F/DIa7KI@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
+ <20210403020902.1384-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406162550.3732490-1-pbonzini@redhat.com>
+In-Reply-To: <20210403020902.1384-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021, Paolo Bonzini wrote:
-> Right now, if a call to kvm_tdp_mmu_zap_sp returns false, the caller
-> will skip the TLB flush, which is wrong.  There are two ways to fix
-> it:
-> 
-> - since kvm_tdp_mmu_zap_sp will not yield and therefore will not flush
->   the TLB itself, we could change the call to kvm_tdp_mmu_zap_sp to
->   use "flush |= ..."
-> 
-> - or we can chain the flush argument through kvm_tdp_mmu_zap_sp down
->   to __kvm_tdp_mmu_zap_gfn_range.
-> 
-> This patch does the former to simplify application to stable kernels.
+Hi Hillf, thanks for the review
 
-Eh, that and passing flush down the stack is pointless because kvm_tdp_mmu_zap_sp()
-will never yield.  If you want to justify |= over passing flush, it probably
-makes sense to link to the discussion that led to me changing from passing flush
-to accumulating the result (well, tried to, doh).
-
-https://lkml.kernel.org/r/20210319232006.3468382-3-seanjc@google.com
-
-> Cc: seanjc@google.com
-> Fixes: 048f49809c526 ("KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")
-> Cc: <stable@vger.kernel.org> # 5.10.x: 048f49809c: KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
-> Cc: <stable@vger.kernel.org> # 5.10.x: 33a3164161: KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-
-> ---
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Apr 03, 2021 at 10:09:02AM +0800, Hillf Danton wrote:
+> On Fri,  2 Apr 2021 12:16:32 Dan Schatzberg wrote:
+> > +queue_work:
+> > +	if (worker) {
+> > +		/*
+> > +		 * We need to remove from the idle list here while
+> > +		 * holding the lock so that the idle timer doesn't
+> > +		 * free the worker
+> > +		 */
+> > +		if (!list_empty(&worker->idle_list))
+> > +			list_del_init(&worker->idle_list);
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 486aa94ecf1d..951dae4e7175 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5906,7 +5906,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
->  				      lpage_disallowed_link);
->  		WARN_ON_ONCE(!sp->lpage_disallowed);
->  		if (is_tdp_mmu_page(sp)) {
-> -			flush = kvm_tdp_mmu_zap_sp(kvm, sp);
-> +			flush |= kvm_tdp_mmu_zap_sp(kvm, sp);
->  		} else {
->  			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
->  			WARN_ON_ONCE(sp->lpage_disallowed);
-> -- 
-> 2.26.2
+> Nit, only queue work if the worker is inactive - otherwise it is taking
+> care of the cmd_list.
+
+By worker is inactive, you mean worker is on the idle_list? Yes, I
+think you're right that queue_work() is unnecessary in that case since
+each worker checks empty cmd_list then adds itself to idle_list under
+the lock.
+
 > 
+> > +		work = &worker->work;
+> > +		cmd_list = &worker->cmd_list;
+> > +	} else {
+> > +		work = &lo->rootcg_work;
+> > +		cmd_list = &lo->rootcg_cmd_list;
+> > +	}
+> > +	list_add_tail(&cmd->list_entry, cmd_list);
+> > +	queue_work(lo->workqueue, work);
+> > +	spin_unlock_irq(&lo->lo_work_lock);
+> >  }
+> [...]
+> > +	/*
+> > +	 * We only add to the idle list if there are no pending cmds
+> > +	 * *and* the worker will not run again which ensures that it
+> > +	 * is safe to free any worker on the idle list
+> > +	 */
+> > +	if (worker && !work_pending(&worker->work)) {
+> 
+> The empty cmd_list is a good enough reason for worker to become idle.
+
+This is only true with the above change to avoid a gratuitous
+queue_work(), right? Otherwise we run the risk of freeing a worker
+concurrently with loop_process_work() being invoked.
