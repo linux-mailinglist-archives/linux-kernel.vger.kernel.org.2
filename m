@@ -2,653 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F153553D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F58D3553DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242186AbhDFM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:29:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:42464 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242996AbhDFM26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:28:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617712130; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=effQEFURxdqJt1BBK4aWxVTZPYZzITIFFootcMMSufM=; b=XwB3nsglybmzWap8Tr+a8PeYds9W4jtVQaYjld39mpkmkz6U4ieGeBjACKpiUTpKqOhqeKH3
- 7ZMKPraa3yQm+R7IqFZlO0AQ3N0PiJ9E9fNzEoB1fqR3+4QSHGLoboOs7SyfvW+zpsjFgDn5
- wIRLlzzJjmtPaU2f9ZbVIMYc+/g=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 606c53f88166b7eff79cf0e6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 12:28:40
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5289CC433ED; Tue,  6 Apr 2021 12:28:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.108] (unknown [49.204.183.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D291BC433C6;
-        Tue,  6 Apr 2021 12:28:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D291BC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1617711959-11146-1-git-send-email-faiyazm@codeaurora.org>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <fdf23581-a5c2-c7ae-c84c-5d8ef82a6c5e@codeaurora.org>
-Date:   Tue, 6 Apr 2021 17:58:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S1343991AbhDFM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344014AbhDFM3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:29:33 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C221C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 05:29:18 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r8so4901100lfp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 05:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=57Sd0MjVPJwj9C8CqpwruZwhDWQJmwCtp4DcDbeYrF8=;
+        b=NEO1be9H9hw5hBSR23y/A5JCAtyboH9xWrlmgMhhWVhufIwYwiOazGbF2dO0NdwO9a
+         J9S3ZAMimrz0dT4/afoTSNsL7yhFFLAM/5RAfwzar2YtiFBrCX0IJQ4eYdF83RQPXqCJ
+         Y53J2sO3U9UPgBFY0gMoQy+CHfUdcIsf2Jto3OK3LXjGF4Yhjc14nC1ZTjpBA1Tr1wZG
+         DAoX9coVVL/3vi/e50Z3kAcixfdS3Wkh8OcAGfiy9c0ZlsrqxEyfEg/GWfkNjLpWvvVE
+         YqfewjWc0nwhmCKNStGOfPLlDg8uax4MQC9GhdDy5R2VEZf1LsoFYjw0GaK+YJBxl1sP
+         E9Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=57Sd0MjVPJwj9C8CqpwruZwhDWQJmwCtp4DcDbeYrF8=;
+        b=Z4z9GOtcLWFyJBrWvokOssSLQcrEbB95SvRQu3UifL2xZwYAVhtOge7AcUEvI4/Wbl
+         U5D72UCna/aaHFTU7UDTLG/30oSmvPk743qmc2D7WJ8vCbvjEKE0sXDLdYa01YUsryE0
+         i2yBwmRm38kKF39rhOViy3E2gxv1nm6EfHlK9V5vUC6aXY7tXp7s0JIOhCC2l0LYi/rV
+         szSe5QzaZMNhk5DmKtsTg5N7qa55ah8pARj3/KhKdLBB8ZCxsZSPwIsa2JdKVh+8ykRk
+         VZD9I4Iwcy/9Rj10FnMSW/vGnibnfKqg9WgNAtFbBzjn4zLtgJcfo4dhqzwfGbj4W7hz
+         LPDA==
+X-Gm-Message-State: AOAM530IBrt4tsQ8XzcnObUTdJpS2Wy40xqxPTYodfZTf7M0UmVBiD0o
+        cSfVS+ca1MzxmW3vHn+UXNpzVQ==
+X-Google-Smtp-Source: ABdhPJwN+7HNNe6vl5shpanay18CZEn+2wHwc1TZiipOq36OoeeDMJquiT51ffeyPvbSUxAjHkldig==
+X-Received: by 2002:a19:ee0d:: with SMTP id g13mr21536160lfb.38.1617712156785;
+        Tue, 06 Apr 2021 05:29:16 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q7sm2197962lfc.260.2021.04.06.05.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 05:29:16 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 9E879101FF7; Tue,  6 Apr 2021 15:29:18 +0300 (+03)
+Date:   Tue, 6 Apr 2021 15:29:18 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
+Message-ID: <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-2-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1617711959-11146-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331184728.1188084-2-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this patch!
-
-Thanks and regards,
-Mohammed Faiyaz.
-
-On 4/6/2021 5:55 PM, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-> ---
->  mm/slub.c | 518 ++++++++++++++++++++++++++++++++++----------------------------
->  1 file changed, 286 insertions(+), 232 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3021ce9..4d20ee0 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -36,6 +36,7 @@
->  #include <linux/memcontrol.h>
->  #include <linux/random.h>
->  
-> +#include <linux/debugfs.h>
->  #include <trace/events/kmem.h>
->  
->  #include "internal.h"
-> @@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
->  							{ return 0; }
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_FS
-> +static void debugfs_slab_add(struct kmem_cache *);
-> +#else
-> +static inline void debugfs_slab_add(struct kmem_cache *) { }
-> +#endif
-> +
->  static inline void stat(const struct kmem_cache *s, enum stat_item si)
->  {
->  #ifdef CONFIG_SLUB_STATS
-> @@ -4542,6 +4549,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
->  	if (err)
->  		__kmem_cache_release(s);
->  
-> +	debugfs_slab_add(s);
-> +
->  	return err;
->  }
->  
-> @@ -4682,221 +4691,6 @@ static long validate_slab_cache(struct kmem_cache *s)
->  
->  	return count;
->  }
-> -/*
-> - * Generate lists of code addresses where slabcache objects are allocated
-> - * and freed.
-> - */
-> -
-> -struct location {
-> -	unsigned long count;
-> -	unsigned long addr;
-> -	long long sum_time;
-> -	long min_time;
-> -	long max_time;
-> -	long min_pid;
-> -	long max_pid;
-> -	DECLARE_BITMAP(cpus, NR_CPUS);
-> -	nodemask_t nodes;
-> -};
-> -
-> -struct loc_track {
-> -	unsigned long max;
-> -	unsigned long count;
-> -	struct location *loc;
-> -};
-> -
-> -static void free_loc_track(struct loc_track *t)
-> -{
-> -	if (t->max)
-> -		free_pages((unsigned long)t->loc,
-> -			get_order(sizeof(struct location) * t->max));
-> -}
-> -
-> -static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
-> -{
-> -	struct location *l;
-> -	int order;
-> -
-> -	order = get_order(sizeof(struct location) * max);
-> -
-> -	l = (void *)__get_free_pages(flags, order);
-> -	if (!l)
-> -		return 0;
-> -
-> -	if (t->count) {
-> -		memcpy(l, t->loc, sizeof(struct location) * t->count);
-> -		free_loc_track(t);
-> -	}
-> -	t->max = max;
-> -	t->loc = l;
-> -	return 1;
-> -}
-> -
-> -static int add_location(struct loc_track *t, struct kmem_cache *s,
-> -				const struct track *track)
-> -{
-> -	long start, end, pos;
-> -	struct location *l;
-> -	unsigned long caddr;
-> -	unsigned long age = jiffies - track->when;
-> -
-> -	start = -1;
-> -	end = t->count;
-> -
-> -	for ( ; ; ) {
-> -		pos = start + (end - start + 1) / 2;
-> -
-> -		/*
-> -		 * There is nothing at "end". If we end up there
-> -		 * we need to add something to before end.
-> -		 */
-> -		if (pos == end)
-> -			break;
-> -
-> -		caddr = t->loc[pos].addr;
-> -		if (track->addr == caddr) {
-> -
-> -			l = &t->loc[pos];
-> -			l->count++;
-> -			if (track->when) {
-> -				l->sum_time += age;
-> -				if (age < l->min_time)
-> -					l->min_time = age;
-> -				if (age > l->max_time)
-> -					l->max_time = age;
-> -
-> -				if (track->pid < l->min_pid)
-> -					l->min_pid = track->pid;
-> -				if (track->pid > l->max_pid)
-> -					l->max_pid = track->pid;
-> -
-> -				cpumask_set_cpu(track->cpu,
-> -						to_cpumask(l->cpus));
-> -			}
-> -			node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> -			return 1;
-> -		}
-> -
-> -		if (track->addr < caddr)
-> -			end = pos;
-> -		else
-> -			start = pos;
-> -	}
-> -
-> -	/*
-> -	 * Not found. Insert new tracking element.
-> -	 */
-> -	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
-> -		return 0;
-> -
-> -	l = t->loc + pos;
-> -	if (pos < t->count)
-> -		memmove(l + 1, l,
-> -			(t->count - pos) * sizeof(struct location));
-> -	t->count++;
-> -	l->count = 1;
-> -	l->addr = track->addr;
-> -	l->sum_time = age;
-> -	l->min_time = age;
-> -	l->max_time = age;
-> -	l->min_pid = track->pid;
-> -	l->max_pid = track->pid;
-> -	cpumask_clear(to_cpumask(l->cpus));
-> -	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
-> -	nodes_clear(l->nodes);
-> -	node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> -	return 1;
-> -}
-> -
-> -static void process_slab(struct loc_track *t, struct kmem_cache *s,
-> -		struct page *page, enum track_item alloc)
-> -{
-> -	void *addr = page_address(page);
-> -	void *p;
-> -	unsigned long *map;
-> -
-> -	map = get_map(s, page);
-> -	for_each_object(p, s, addr, page->objects)
-> -		if (!test_bit(__obj_to_index(s, addr, p), map))
-> -			add_location(t, s, get_track(s, p, alloc));
-> -	put_map(map);
-> -}
-> -
-> -static int list_locations(struct kmem_cache *s, char *buf,
-> -			  enum track_item alloc)
-> -{
-> -	int len = 0;
-> -	unsigned long i;
-> -	struct loc_track t = { 0, 0, NULL };
-> -	int node;
-> -	struct kmem_cache_node *n;
-> -
-> -	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> -			     GFP_KERNEL)) {
-> -		return sysfs_emit(buf, "Out of memory\n");
-> -	}
-> -	/* Push back cpu slabs */
-> -	flush_all(s);
-> -
-> -	for_each_kmem_cache_node(s, node, n) {
-> -		unsigned long flags;
-> -		struct page *page;
-> -
-> -		if (!atomic_long_read(&n->nr_slabs))
-> -			continue;
-> -
-> -		spin_lock_irqsave(&n->list_lock, flags);
-> -		list_for_each_entry(page, &n->partial, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		list_for_each_entry(page, &n->full, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		spin_unlock_irqrestore(&n->list_lock, flags);
-> -	}
-> -
-> -	for (i = 0; i < t.count; i++) {
-> -		struct location *l = &t.loc[i];
-> -
-> -		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
-> -
-> -		if (l->addr)
-> -			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
-> -		else
-> -			len += sysfs_emit_at(buf, len, "<not-available>");
-> -
-> -		if (l->sum_time != l->min_time)
-> -			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
-> -					     l->min_time,
-> -					     (long)div_u64(l->sum_time,
-> -							   l->count),
-> -					     l->max_time);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
-> -
-> -		if (l->min_pid != l->max_pid)
-> -			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
-> -					     l->min_pid, l->max_pid);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " pid=%ld",
-> -					     l->min_pid);
-> -
-> -		if (num_online_cpus() > 1 &&
-> -		    !cpumask_empty(to_cpumask(l->cpus)))
-> -			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
-> -					     cpumask_pr_args(to_cpumask(l->cpus)));
-> -
-> -		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> -			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
-> -					     nodemask_pr_args(&l->nodes));
-> -
-> -		len += sysfs_emit_at(buf, len, "\n");
-> -	}
-> -
-> -	free_loc_track(&t);
-> -	if (!t.count)
-> -		len += sysfs_emit_at(buf, len, "No data\n");
-> -
-> -	return len;
-> -}
->  #endif	/* CONFIG_SLUB_DEBUG */
->  
->  #ifdef SLUB_RESILIENCY_TEST
-> @@ -5346,21 +5140,6 @@ static ssize_t validate_store(struct kmem_cache *s,
->  }
->  SLAB_ATTR(validate);
->  
-> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_ALLOC);
-> -}
-> -SLAB_ATTR_RO(alloc_calls);
-> -
-> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_FREE);
-> -}
-> -SLAB_ATTR_RO(free_calls);
->  #endif /* CONFIG_SLUB_DEBUG */
->  
->  #ifdef CONFIG_FAILSLAB
-> @@ -5524,8 +5303,6 @@ static struct attribute *slab_attrs[] = {
->  	&poison_attr.attr,
->  	&store_user_attr.attr,
->  	&validate_attr.attr,
-> -	&alloc_calls_attr.attr,
-> -	&free_calls_attr.attr,
->  #endif
->  #ifdef CONFIG_ZONE_DMA
->  	&cache_dma_attr.attr,
-> @@ -5814,6 +5591,283 @@ static int __init slab_sysfs_init(void)
->  __initcall(slab_sysfs_init);
->  #endif /* CONFIG_SYSFS */
->  
-> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-> +/*
-> + * Generate lists of code addresses where slabcache objects are allocated
-> + * and freed.
+On Wed, Mar 31, 2021 at 07:47:02PM +0100, Matthew Wilcox (Oracle) wrote:
+> +/**
+> + * folio_next - Move to the next physical folio.
+> + * @folio: The folio we're currently operating on.
+> + *
+> + * If you have physically contiguous memory which may span more than
+> + * one folio (eg a &struct bio_vec), use this function to move from one
+> + * folio to the next.  Do not use it if the memory is only virtually
+> + * contiguous as the folios are almost certainly not adjacent to each
+> + * other.  This is the folio equivalent to writing ``page++``.
+> + *
+> + * Context: We assume that the folios are refcounted and/or locked at a
+> + * higher level and do not adjust the reference counts.
+> + * Return: The next struct folio.
 > + */
-> +
-> +struct location {
-> +	unsigned long count;
-> +	unsigned long addr;
-> +	long long sum_time;
-> +	long min_time;
-> +	long max_time;
-> +	long min_pid;
-> +	long max_pid;
-> +	DECLARE_BITMAP(cpus, NR_CPUS);
-> +	nodemask_t nodes;
-> +};
-> +
-> +struct loc_track {
-> +	unsigned long max;
-> +	unsigned long count;
-> +	struct location *loc;
-> +};
-> +
-> +static struct dentry *slab_debugfs_root;
-> +
-> +static struct dentry *slab_debugfs_cache;
-> +
-> +static void free_loc_track(struct loc_track *t)
+> +static inline struct folio *folio_next(struct folio *folio)
 > +{
-> +	if (t->max)
-> +		free_pages((unsigned long)t->loc,
-> +			get_order(sizeof(struct location) * t->max));
-> +}
-> +
-> +static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
-> +{
-> +	struct location *l;
-> +	int order;
-> +
-> +	order = get_order(sizeof(struct location) * max);
-> +
-> +	l = (void *)__get_free_pages(flags, order);
-> +	if (!l)
-> +		return 0;
-> +
-> +	if (t->count) {
-> +		memcpy(l, t->loc, sizeof(struct location) * t->count);
-> +		free_loc_track(t);
-> +	}
-> +	t->max = max;
-> +	t->loc = l;
-> +	return 1;
-> +}
-> +
-> +static int add_location(struct loc_track *t, struct kmem_cache *s,
-> +				const struct track *track)
-> +{
-> +	long start, end, pos;
-> +	struct location *l;
-> +	unsigned long caddr;
-> +	unsigned long age = jiffies - track->when;
-> +
-> +	start = -1;
-> +	end = t->count;
-> +
-> +	for ( ; ; ) {
-> +		pos = start + (end - start + 1) / 2;
-> +
-> +		/*
-> +		 * There is nothing at "end". If we end up there
-> +		 * we need to add something to before end.
-> +		 */
-> +		if (pos == end)
-> +			break;
-> +
-> +		caddr = t->loc[pos].addr;
-> +		if (track->addr == caddr) {
-> +
-> +			l = &t->loc[pos];
-> +			l->count++;
-> +			if (track->when) {
-> +				l->sum_time += age;
-> +				if (age < l->min_time)
-> +					l->min_time = age;
-> +				if (age > l->max_time)
-> +					l->max_time = age;
-> +
-> +				if (track->pid < l->min_pid)
-> +					l->min_pid = track->pid;
-> +				if (track->pid > l->max_pid)
-> +					l->max_pid = track->pid;
-> +
-> +				cpumask_set_cpu(track->cpu,
-> +						to_cpumask(l->cpus));
-> +			}
-> +			node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> +			return 1;
-> +		}
-> +
-> +		if (track->addr < caddr)
-> +			end = pos;
-> +		else
-> +			start = pos;
-> +	}
-> +
-> +	/*
-> +	 * Not found. Insert new tracking element.
-> +	 */
-> +	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
-> +		return 0;
-> +
-> +	l = t->loc + pos;
-> +	if (pos < t->count)
-> +		memmove(l + 1, l,
-> +			(t->count - pos) * sizeof(struct location));
-> +	t->count++;
-> +	l->count = 1;
-> +	l->addr = track->addr;
-> +	l->sum_time = age;
-> +	l->min_time = age;
-> +	l->max_time = age;
-> +	l->min_pid = track->pid;
-> +	l->max_pid = track->pid;
-> +	cpumask_clear(to_cpumask(l->cpus));
-> +	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
-> +	nodes_clear(l->nodes);
-> +	node_set(page_to_nid(virt_to_page(track)), l->nodes);
-> +	return 1;
-> +}
-> +
-> +static void process_slab(struct loc_track *t, struct kmem_cache *s,
-> +		struct page *page, enum track_item alloc)
-> +{
-> +	void *addr = page_address(page);
-> +	void *p;
-> +	unsigned long *map;
-> +
-> +	map = get_map(s, page);
-> +	for_each_object(p, s, addr, page->objects)
-> +		if (!test_bit(__obj_to_index(s, addr, p), map))
-> +			add_location(t, s, get_track(s, p, alloc));
-> +	put_map(map);
-> +}
-> +
-> +static int list_locations(struct seq_file *seq, struct kmem_cache *s,
-> +						enum track_item alloc)
-> +{
-> +	unsigned long i;
-> +	struct loc_track t = { 0, 0, NULL };
-> +	int node;
-> +	struct kmem_cache_node *n;
-> +
-> +	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> +			     GFP_KERNEL)) {
-> +		seq_puts(seq, "Out of memory\n");
-> +		return -ENOMEM;
-> +	}
-> +	/* Push back cpu slabs */
-> +	flush_all(s);
-> +
-> +	for_each_kmem_cache_node(s, node, n) {
-> +		unsigned long flags;
-> +		struct page *page;
-> +
-> +		if (!atomic_long_read(&n->nr_slabs))
-> +			continue;
-> +
-> +		spin_lock_irqsave(&n->list_lock, flags);
-> +		list_for_each_entry(page, &n->partial, slab_list)
-> +			process_slab(&t, s, page, alloc);
-> +		list_for_each_entry(page, &n->full, slab_list)
-> +			process_slab(&t, s, page, alloc);
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +	}
-> +
-> +	for (i = 0; i < t.count; i++) {
-> +		struct location *l = &t.loc[i];
-> +
-> +		seq_printf(seq, "%7ld ", l->count);
-> +
-> +		if (l->addr)
-> +			seq_printf(seq, "%pS", (void *)l->addr);
-> +		else
-> +			seq_puts(seq, "<not-available>");
-> +
-> +		if (l->sum_time != l->min_time) {
-> +			seq_printf(seq, " age=%ld/%ld/%ld",
-> +				l->min_time,
-> +				(long)div_u64(l->sum_time, l->count),
-> +				l->max_time);
-> +		} else
-> +			seq_printf(seq, " age=%ld",
-> +				l->min_time);
-> +
-> +		if (l->min_pid != l->max_pid)
-> +			seq_printf(seq, " pid=%ld-%ld",
-> +				l->min_pid, l->max_pid);
-> +		else
-> +			seq_printf(seq, " pid=%ld",
-> +				l->min_pid);
-> +
-> +		if (num_online_cpus() > 1 &&
-> +				!cpumask_empty(to_cpumask(l->cpus)))
-> +			seq_printf(seq, " cpus=%*pbl",
-> +					 cpumask_pr_args(to_cpumask(l->cpus)));
-> +
-> +		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> +			seq_printf(seq, " nodes=%*pbl",
-> +					 nodemask_pr_args(&l->nodes));
-> +
-> +		seq_puts(seq, "\n");
-> +	}
-> +
-> +	free_loc_track(&t);
-> +	if (!t.count)
-> +		seq_puts(seq, "No data\n");
-> +	return 0;
-> +}
-> +
-> +static int slab_debug_trace(struct seq_file *seq, void *ignored)
-> +{
-> +	struct kmem_cache *s = seq->private;
-> +
-> +	if (!(s->flags & SLAB_STORE_USER))
-> +		return 0;
-> +
-> +	if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_trace") == 0)
-> +		return list_locations(seq, s, TRACK_ALLOC);
-> +	else
-> +		return list_locations(seq, s, TRACK_FREE);
-> +
-> +	return 0;
-> +}
-> +
-> +static int slab_debug_trace_open(struct inode *inode, struct file *filp)
-> +{
-> +	return single_open(filp, slab_debug_trace,
-> +				file_inode(filp)->i_private);
-> +}
-> +
-> +static const struct file_operations slab_debug_fops = {
-> +	.open    = slab_debug_trace_open,
-> +	.read    = seq_read,
-> +	.llseek  = seq_lseek,
-> +	.release = single_release,
-> +};
-> +
-> +static void debugfs_slab_add(struct kmem_cache *s)
-> +{
-> +	if (unlikely(!slab_debugfs_root))
-> +		return;
-> +
-> +	slab_debugfs_cache = debugfs_create_dir(s->name, slab_debugfs_root);
-> +	if (!IS_ERR(slab_debugfs_cache)) {
-> +		debugfs_create_file("alloc_trace", 0400,
-> +			slab_debugfs_cache, s, &slab_debug_fops);
-> +
-> +		debugfs_create_file("free_trace", 0400,
-> +			slab_debugfs_cache, s, &slab_debug_fops);
-> +	}
-> +}
-> +
-> +static void __init slab_debugfs_init(void)
-> +{
-> +	struct kmem_cache *s;
-> +
-> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-> +	if (!IS_ERR(slab_debugfs_root))
-> +		list_for_each_entry(s, &slab_caches, list)
-> +			debugfs_slab_add(s);
-> +	else
-> +		pr_err("Cannot create slab debugfs.\n");
-> +
-> +}
-> +__initcall(slab_debugfs_init);
+> +#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
+> +	return (struct folio *)nth_page(&folio->page, folio_nr_pages(folio));
+> +#else
+> +	return folio + folio_nr_pages(folio);
 > +#endif
->  /*
->   * The /proc/slabinfo ABI
->   */
-> 
+
+Do we really need the #if here?
+
+From quick look at nth_page() and memory_model.h, compiler should be able
+to simplify calculation for FLATMEM or SPARSEMEM_VMEMMAP to what you do in
+the #else. No?
+
+> @@ -224,6 +224,71 @@ struct page {
+>  #endif
+>  } _struct_page_alignment;
+>  
+> +/**
+> + * struct folio - Represents a contiguous set of bytes.
+> + * @flags: Identical to the page flags.
+> + * @lru: Least Recently Used list; tracks how recently this folio was used.
+> + * @mapping: The file this page belongs to, or refers to the anon_vma for
+> + *    anonymous pages.
+> + * @index: Offset within the file, in units of pages.  For anonymous pages,
+> + *    this is the index from the beginning of the mmap.
+> + * @private: Filesystem per-folio data (see attach_folio_private()).
+> + *    Used for swp_entry_t if FolioSwapCache().
+> + * @_mapcount: How many times this folio is mapped to userspace.  Use
+> + *    folio_mapcount() to access it.
+> + * @_refcount: Number of references to this folio.  Use folio_ref_count()
+> + *    to read it.
+> + * @memcg_data: Memory Control Group data.
+> + *
+> + * A folio is a physically, virtually and logically contiguous set
+> + * of bytes.  It is a power-of-two in size, and it is aligned to that
+> + * same power-of-two.  It is at least as large as %PAGE_SIZE.  If it is
+> + * in the page cache, it is at a file offset which is a multiple of that
+> + * power-of-two.
+> + */
+> +struct folio {
+> +	/* private: don't document the anon union */
+> +	union {
+> +		struct {
+> +	/* public: */
+> +			unsigned long flags;
+> +			struct list_head lru;
+> +			struct address_space *mapping;
+> +			pgoff_t index;
+> +			unsigned long private;
+> +			atomic_t _mapcount;
+> +			atomic_t _refcount;
+> +#ifdef CONFIG_MEMCG
+> +			unsigned long memcg_data;
+> +#endif
+
+As Christoph, I'm not a fan of this :/
+
+> +	/* private: the union with struct page is transitional */
+> +		};
+> +		struct page page;
+> +	};
+> +};
+
+-- 
+ Kirill A. Shutemov
