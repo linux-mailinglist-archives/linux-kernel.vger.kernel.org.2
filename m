@@ -2,131 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DBC3554F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF943554E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243741AbhDFNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:23:51 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2768 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhDFNXu (ORCPT
+        id S242748AbhDFNWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:22:31 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:45816 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242618AbhDFNW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:23:50 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF7K15VZLz686x7;
-        Tue,  6 Apr 2021 21:14:13 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 15:23:40 +0200
-Received: from [10.210.166.136] (10.210.166.136) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 14:23:39 +0100
-Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
- parsing test
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
-        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <irogers@google.com>, <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
-        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-3-git-send-email-john.garry@huawei.com>
- <YGXPdEAecos4iPVc@krava> <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
- <YGxRbH0XWaj6AWfa@krava> <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
- <YGxaOnUZnNmDg/2P@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <49025439-f9e3-0d32-b0a3-ff9f9ff71835@huawei.com>
-Date:   Tue, 6 Apr 2021 14:21:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 6 Apr 2021 09:22:28 -0400
+Received: by mail-ot1-f46.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so14550882oty.12;
+        Tue, 06 Apr 2021 06:22:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VoWY/s77zLLDu+Op6P265Vg8YKwWqy+Vh24Ks0b7ijw=;
+        b=JADnTbGDklp8ckWALguRNFBcgQocVHCWE164QOxNX7EBpl42mZRJeuJpPYneo3SX9K
+         UacS8GdAMwFFAfTSMsFIoWEiKMEGXCRTkUyN7q8TpHGiFnSh/geKphzvgaD9BrmDQ7Ol
+         len1TtUdy011uq3TYBbFbZ3wCsYuZezsiIv1g2SEMBWr2u6hlE8jeoOVRZqlp7p5+nZ7
+         sTo5KVVKt9FVhA/FhkfIMusxrdconYYEwUbfeoPoyoNUEUUvGZq6lhsEnDujUEuY9w8w
+         I4ta7VRYUgS7b4P1sal/nfvkdfO0/U6HSFvJpZQCeUcaqyHwC+83eEyrerdQoea9xedf
+         2S7g==
+X-Gm-Message-State: AOAM531vOlqqpO+wYmbU+0iD1G+lq3ObBp7Y1YbiS6s5Izqwwlx3ZzyM
+        sT6f2PNqtSmwwvvupYZOxUFO58UMbHcaVBzdTNA=
+X-Google-Smtp-Source: ABdhPJz2fyrytIoslGUKKUA2m10f98uEsyHqThzFXBrDG5t8ALIUf7K0wQGA9GduVuuduEo53PSsC6TXquOwEXFIy3k=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr25959514otb.260.1617715338923;
+ Tue, 06 Apr 2021 06:22:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YGxaOnUZnNmDg/2P@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.136]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210406125047.547501-1-vkuznets@redhat.com>
+In-Reply-To: <20210406125047.547501-1-vkuznets@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 6 Apr 2021 15:22:00 +0200
+Message-ID: <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/2021 13:55, Jiri Olsa wrote:
->>>> So expr__find_other() may add a new item to pctx->ids, and we always iterate
->>>> again, and try to lookup any pmu_events, *, above. If none exist, then we
->>> hm, I don't see that.. so, what you do is:
->>>
->>> 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
->>>
->>> 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
->>> 	}
->>>
->>> and what I think we need to do is:
->>>
->>> 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
->>>
->>> 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
->>>
->>> 		break;	
->>> 	}
->>>
->>> each time you resolve another metric, you need to restart
->>> the pctx->ids iteration, because there will be new items,
->>> and we are in the middle of it
->> Sure, but we will restart anyway.
-> hum, where? you call expr__find_other and continue to next
-> pctx->ids item
+On Tue, Apr 6, 2021 at 2:50 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
+> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
+> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
+> into acpi_idle_play_dead(). The problem is that these functions are not
+> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
+>
+> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
+> (the later from assembly) but it seems putting the whole pattern into a
+> new function and exporting it instead is better.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+> Cc: <stable@vger.kernel.org> # 5.10+
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/asm/smp.h    |  2 +-
+>  arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
+>  drivers/acpi/processor_idle.c |  3 +--
+>  3 files changed, 12 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+> index 57ef2094af93..6f79deb1f970 100644
+> --- a/arch/x86/include/asm/smp.h
+> +++ b/arch/x86/include/asm/smp.h
+> @@ -132,7 +132,7 @@ void native_play_dead(void);
+>  void play_dead_common(void);
+>  void wbinvd_on_cpu(int cpu);
+>  int wbinvd_on_all_cpus(void);
+> -bool wakeup_cpu0(void);
+> +void wakeup_cpu0_if_needed(void);
+>
+>  void native_smp_send_reschedule(int cpu);
+>  void native_send_call_func_ipi(const struct cpumask *mask);
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index f877150a91da..9547d870ee27 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1659,7 +1659,7 @@ void play_dead_common(void)
+>         local_irq_disable();
+>  }
+>
+> -bool wakeup_cpu0(void)
+> +static bool wakeup_cpu0(void)
+>  {
+>         if (smp_processor_id() == 0 && enable_start_cpu0)
+>                 return true;
+> @@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
+>         return false;
+>  }
+>
+> +void wakeup_cpu0_if_needed(void)
+> +{
+> +       if (wakeup_cpu0())
+> +               start_cpu0();
 
-We have:
+Note that all of the callers of wakeup_cpu0 do the above, so maybe
+make them all use the new function?
 
-resolve_metric_simple()
+In which case it can be rewritten in the following way
+
+void cond_wakeup_cpu0(void)
 {
-	bool all;
-
-	do {
-		all = true;
-
-		hashmap__for_each_entry_safe(&pctx->ids, ...) {
-
-			pe = metricgroup_find_metric(cur->key, map);
-			if (!pe)
-				continue;
-
-			...
-			all = false;
-
-			expr_del_id(pctx, cur->key);
-
-			...
-			rc = expr__find_other(pe->metric_expr, pctx);
-			if (rc)
-				goto out_err;
-		}
-
-	} while (!all);
-
+        if (smp_processor_id() == 0 && enable_start_cpu0)
+                start_cpu0();
 }
+EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
 
-So once we evaluate a pmu_event in pctx->ids in @pe, @all is set false, 
-and we would loop again in the do-while loop, regardless of what 
-expr__find_other() does (apart from erroring), and so call 
-hashmap__for_each_entry_safe(&pctx->ids, ) again.
+Also please add a proper kerneldoc comment to it and maybe drop the
+comments at the call sites?
 
-This is really what is done in __resolve_metric() - indeed, I would use 
-that function directly, but it looks hard to extract that from 
-metricgroup.c .
 
-Thanks,
-John
-
-> 
->> Regardless of this, I don't think what I am doing is safe, i.e. adding new
->> items in the middle of the iter, so I will change in the way you suggest.
-> it'll always add items in the middle of the iteration
-
+> +}
+> +EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
+> +
+>  /*
+>   * We need to flush the caches before going to sleep, lest we have
+>   * dirty data in our caches when we come back up.
+> @@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
+>                 /*
+>                  * If NMI wants to wake up CPU0, start CPU0.
+>                  */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +               wakeup_cpu0_if_needed();
+>         }
+>  }
+>
+> @@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
+>                 /*
+>                  * If NMI wants to wake up CPU0, start CPU0.
+>                  */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +               wakeup_cpu0_if_needed();
+>         }
+>  }
+>
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 768a6b4d2368..de15116b754a 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+>
+>  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+>                 /* If NMI wants to wake up CPU0, start CPU0. */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +               wakeup_cpu0_if_needed();
+>  #endif
+>         }
+>
+> --
+> 2.30.2
+>
