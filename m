@@ -2,156 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA40354C9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4495F354CA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbhDFGRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:17:20 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:46004 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhDFGRS (ORCPT
+        id S237220AbhDFGSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:18:11 -0400
+Received: from mxout70.expurgate.net ([194.37.255.70]:42135 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232287AbhDFGSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:17:18 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210406061710euoutp029017809439ef14202efe66721b9ba363~zMFRmmFy33006330063euoutp02C
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 06:17:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210406061710euoutp029017809439ef14202efe66721b9ba363~zMFRmmFy33006330063euoutp02C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617689830;
-        bh=6kxgouY+vTopnyddfeFYlz4bGmxSvwI6aXPtC0I4ymI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ceti/8F3fRirnOqi6/7nV2YlBz2r0JCjiFtPn1oQfn/5ewxS1vNcoyfz1/9iK2Yrs
-         G/nDFsNRo0+gxpoLRYrcalPSNFke6uG//bViutZGDCtPBXwXhoxvcwL3bdrzihGESf
-         HGFQwOCnS1Llb6xOuBMUjo/MK2DqPqTI2akx4qpc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210406061710eucas1p1ccfa6bfa7b4eb73c6dcfc0b2c2397d3f~zMFRfFOK32975229752eucas1p1W;
-        Tue,  6 Apr 2021 06:17:10 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id EE.32.09444.5ECFB606; Tue,  6
-        Apr 2021 07:17:09 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210406061709eucas1p1e8c4a2ad214fc3eec6e3c91c09607fed~zMFRDu2ML2972829728eucas1p1D;
-        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210406061709eusmtrp2337a8e0a500d478fa32c67b0a23ee101~zMFRDINWU2270622706eusmtrp2o;
-        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
-X-AuditID: cbfec7f4-dbdff700000024e4-7f-606bfce5573a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 23.6C.08705.5ECFB606; Tue,  6
-        Apr 2021 07:17:09 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210406061709eusmtip147463ca24a3bca8c6459eba331cb0e1e~zMFQv9cZ-0978709787eusmtip1g;
-        Tue,  6 Apr 2021 06:17:09 +0000 (GMT)
-Subject: Re: [PATCH] iio: buffer: use sysfs_attr_init() on allocated attrs
-To:     Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     jic23@kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <6c77abb2-0b6f-a745-0950-0be34d41913e@samsung.com>
-Date:   Tue, 6 Apr 2021 08:17:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.9.0
+        Tue, 6 Apr 2021 02:18:08 -0400
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lTf2A-0000fP-GV; Tue, 06 Apr 2021 08:17:54 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lTf29-000Gsq-4z; Tue, 06 Apr 2021 08:17:53 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 7A345240041;
+        Tue,  6 Apr 2021 08:17:52 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id D1975240040;
+        Tue,  6 Apr 2021 08:17:51 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 3851120046;
+        Tue,  6 Apr 2021 08:17:51 +0200 (CEST)
 MIME-Version: 1.0
-In-Reply-To: <20210402174226.630346-1-aardelean@deviqon.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplleLIzCtJLcpLzFFi42LZduznOd2nf7ITDLoO2Fi0PVexeNC0isli
-        3pF3LBaXd81hc2DxWLVzHbPHplWdbB6fN8kFMEdx2aSk5mSWpRbp2yVwZfTsvsBWcJWv4u7K
-        jywNjMt4uhg5OSQETCTenehj72Lk4hASWMEo8enQfFYI5wujxLMpe6AynxklVr8+xg7T8rPz
-        PxtEYjmjxOU7e1ggnI+MEl9XnmADqRIW8JJYt+8WWIeIQKbErWm/WUFsZgERiY+9W8HibAKG
-        El1vu8DqeQXsJJ7PWsoIYrMIqEis+7EIrEZUIEli6aN/jBA1ghInZz5hAbE5BWwkNsycAzVT
-        XmL72znMELa4xK0n85lADpIQ2MEh8XTKQ0aIs10kDr5rg7KFJV4d3wL1jozE/50wDc2MEg/P
-        rWWHcHqAfmuaAdVhLXHn3C+gUzmAVmhKrN+lDxF2lLi4t48JJCwhwCdx460gxBF8EpO2TWeG
-        CPNKdLQJQVSrScw6vg5u7cELl5gnMCrNQvLaLCTvzELyziyEvQsYWVYxiqeWFuempxYb5aWW
-        6xUn5haX5qXrJefnbmIEppTT/45/2cG4/NVHvUOMTByMhxglOJiVRHh39GYnCPGmJFZWpRbl
-        xxeV5qQWH2KU5mBREudN2rImXkggPbEkNTs1tSC1CCbLxMEp1cA0vck6fuakR+1XBCbwXZmo
-        12+2ITjWcGUaW50Z84zZq/11+kRb1v5yLgsTK3hue/S9wv3Ds9mX/tS6JSU0SWfFzE/xrCFu
-        h8u3Tk4X/2YmcNRgivqN20+EnyrxH/Tnsvn2YvIyzStvLynJtDIEO03dqS4n6tzabX4/etnl
-        E+vq/zrYep+Ku/Ukf9GmM92urIZSDDw2QRNTWBZe3jyx79S6/2Fxhu+fFJwzWjmvxc8qoq+m
-        +NaDpU55vGYCnYwr7Hd+y7FKcsyQ3Dj/8GT1ZNHO+zk3Nat6XFf9v1d0q/K6Z8aFwuWCatWc
-        MkaFFYodGQ22rVNqkte8Oh29r0c18bflFAHNq8s2mIs7eUxYt12JpTgj0VCLuag4EQDvwIA0
-        mAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsVy+t/xu7pP/2QnGKx6rGTR9lzF4kHTKiaL
-        eUfesVhc3jWHzYHFY9XOdcwem1Z1snl83iQXwBylZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdk
-        YqlnaGwea2VkqqRvZ5OSmpNZllqkb5egl9Gz+wJbwVW+irsrP7I0MC7j6WLk5JAQMJH42fmf
-        rYuRi0NIYCmjxLwDPxghEjISJ6c1sELYwhJ/rnVBFb1nlFj+5AkLSEJYwEti3b5b7F2MHBwi
-        ApkSX995g4SZBUQkPvZuZQexhQT6GSWmnNEBsdkEDCW63oLM4eTgFbCTeD5rKdguFgEViXU/
-        FoHViwokSbTtnskOUSMocXImxCpOARuJDTPnsELMN5OYt/khM4QtL7H97RwoW1zi1pP5TBMY
-        hWYhaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIyfbcd+bt7BOO/V
-        R71DjEwcjIcYJTiYlUR4d/RmJwjxpiRWVqUW5ccXleakFh9iNAX6ZyKzlGhyPjCC80riDc0M
-        TA1NzCwNTC3NjJXEebfOXRMvJJCeWJKanZpakFoE08fEwSnVwKRwTOgB4+yzi+7YNXv36zt+
-        1maef31+Iv86m7zijtOhKpf/LTfdYnDi25I7D04lnftkx3Xo/haBtCsbM5u5RKYsn6Dsfeuf
-        d+X/FT80rx1SmyeY8f8Rr8lBRc9gJ4ZD/TMdPNUU9jaVLQ9zUtm9pO60a+MfB4OMVNXHnnv3
-        au3My5U1yY/cb1MQWD99YYr/FG/9H+dmKVmv6mrZXeKi4vJIQShuUeEG06KgBbLHBb/Kr7z+
-        s1vbosxSr2VS3hmeYlt3zsCdB/dFupW5b5504YvZmz8H3h4p3fZ5w/KM8nmBjCqP/rzNnVyR
-        qS+64CIfn++vZf4HuvZ9MTqW++vcv4keWg8jnC7+c3l8o7OVY4kSS3FGoqEWc1FxIgA5puS4
-        KAMAAA==
-X-CMS-MailID: 20210406061709eucas1p1e8c4a2ad214fc3eec6e3c91c09607fed
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210402174237eucas1p1b117ceaf744e851703a229e87725f776
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210402174237eucas1p1b117ceaf744e851703a229e87725f776
-References: <CGME20210402174237eucas1p1b117ceaf744e851703a229e87725f776@eucas1p1.samsung.com>
-        <20210402174226.630346-1-aardelean@deviqon.com>
+Date:   Tue, 06 Apr 2021 08:17:51 +0200
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v5] net: x25: Queue received packets in the
+ drivers instead of per-CPU queues
+Organization: TDT AG
+In-Reply-To: <CAJht_EO7ufuRPj2Bbp7PyXbBT+jrpxR2pckT9JOPyve_tWj9DA@mail.gmail.com>
+References: <20210402093000.72965-1-xie.he.0141@gmail.com>
+ <CAJht_EO7ufuRPj2Bbp7PyXbBT+jrpxR2pckT9JOPyve_tWj9DA@mail.gmail.com>
+Message-ID: <f77ea411add46de10d1b9e72576a0ec2@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-ID: 151534::1617689873-000063FF-11509F12/0/0
+X-purgate-type: clean
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.04.2021 19:42, Alexandru Ardelean wrote:
-> When dynamically allocating sysfs attributes, it's a good idea to call
-> sysfs_attr_init() on them to initialize lock_class_keys.
-> This change does that.
->
-> The lock_class_keys are set when the CONFIG_DEBUG_LOCK_ALLOC symbol is
-> enabled. Which is [likely] one reason why I did not see this during
-> development.
->
-> I also am not able to see this even with CONFIG_DEBUG_LOCK_ALLOC enabled,
-> so this may [likely] be reproduce-able on some system configurations.
->
-> This was reported via:
->    https://lore.kernel.org/linux-iio/CA+U=DsrsvGgXEF30-vXuXS_k=-mjSjiBwEEzwKb1hJVn1P98OA@mail.gmail.com/T/#u
->
-> Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->
-> @Marek: could you maybe test this on your setup?
->
-> I haven't been able to reproduce this on mine.
+On 2021-04-05 21:34, Xie He wrote:
+> Hi Martin,
+> 
+> Could you ack? Thanks!
 
-Works fine with this fix. Thanks!
+Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-> Thanks
-> Alex
->
->   drivers/iio/industrialio-buffer.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index ee5aab9d4a23..06b2ea087408 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1309,6 +1309,7 @@ static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
->   	iio_attr->buffer = buffer;
->   	memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
->   	iio_attr->dev_attr.attr.name = kstrdup_const(attr->name, GFP_KERNEL);
-> +	sysfs_attr_init(&iio_attr->dev_attr.attr);
->   
->   	list_add(&iio_attr->l, &buffer->buffer_attr_list);
->   
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Just for the record: I'm certainly not always the fastest,
+but I don't work holidays or weekends. So you also need to have some
+patience.
 
