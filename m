@@ -2,273 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC9D3558B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0579F3558C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhDFQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
+        id S1346176AbhDFQEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346130AbhDFQDk (ORCPT
+        with ESMTP id S238586AbhDFQEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:03:40 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA24C06174A;
-        Tue,  6 Apr 2021 09:03:30 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id m13so15605007oiw.13;
-        Tue, 06 Apr 2021 09:03:30 -0700 (PDT)
+        Tue, 6 Apr 2021 12:04:47 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE85C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:04:39 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id o19so17245911edc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DXuMvybWpRt4PM+Qgqf16jsNWFOgCO9JLNdluWmfwc4=;
-        b=rSCmibMZ1dZuqDCb7K7iRXGaa8DLdSW4UpceS/oPeHg+aAa3Z5dA+LFLCLjP+BjCFr
-         pzg8FZHT4DPAPK5dQ5Hqx7gh6IraXjbGQl/mWrYWcEJhOpuDuNQnkLc8cEVurIJ+7qbc
-         ZDTTh7llH8wy3gRD8aGWRRRHICrI1AnHgo3Di5+K0fiPTayiM9VJzzrrDeikkbgndhoi
-         b9bBgIPbHAYOfmCffNl/DyIday9v8t4AuQ559y4y8zEQEbVM8uK/XLMobgkBuExjzARa
-         XilwGSaxZ4wGJKOwVg60GyAT7QLU9T8/g8beUCVGMhoO9xsC7SaLIIsI9oswNuEFVOvD
-         tWHw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y9UWeHSBoySzTHkOgKQzF5RiGebYchxO96+3Wf+rxXc=;
+        b=Xa3fFCTQCoUijqu6po9q3HjZRjXP27V6wL5ACYsFzPZbcSqjqqMU1RIM6ZZ7fDYhUg
+         inNmTU5i2JKGLgCVpqGzf5vmZ/SiLojWM338IOj+7vCfJ+o2ibNViO+2xg+rTQaCXNW6
+         n7jmS0tPAe4YlLmXaDge4BF8Tkua+GP0ZnJGA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DXuMvybWpRt4PM+Qgqf16jsNWFOgCO9JLNdluWmfwc4=;
-        b=pFeapIRO+AR1GyIJnjkmLFrttRnz5TNpb8gnY2bBG8cmGMUOWizcG26UiWb/Mnr8Bp
-         UzXvHvHxye7BPy8E4EqtYc8zbDWMHgEyQiQKza7XufVsj+CJzbyo+WKTdI29qKK+mYCC
-         6tY7VItm+cXaLqdbYN2XEDFFHtIS9iM7ISqAYCJ35S+kVkHeyZnvP3SUBcleN+wzI/R0
-         mQjZYOFhIWj9wnRCX+7zOk6ZZVBxi9bQ0ADFHaOkOdyEXLgYilL8EkfrI7gP8cFGsNcC
-         v2dzVPpn32Y665AcoCq39iMztxNrKApLwETd6puxxntCLNQFLRteyT6pMshMEJuAyl4M
-         Xo/w==
-X-Gm-Message-State: AOAM530IONOdKkTEPmnB7pPyO6MiMzqfKawyphLkdss3vmoaT/TKGTw0
-        W5zd0DC5t69aJIpiBXB0OiU=
-X-Google-Smtp-Source: ABdhPJwtPQ3FMWZbLH53D6bk91CTQ7Dnfs4MpY6aB20C8cA1Che99rkav8rsszNojUM6Cj43TZKsGw==
-X-Received: by 2002:aca:1b01:: with SMTP id b1mr3652063oib.177.1617725009996;
-        Tue, 06 Apr 2021 09:03:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f8sm4630528otp.71.2021.04.06.09.03.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Apr 2021 09:03:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 6 Apr 2021 09:03:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/13] lib: add fast path for find_first_*_bit() and
- find_last_bit()
-Message-ID: <20210406160327.GA180841@roeck-us.net>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-12-yury.norov@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y9UWeHSBoySzTHkOgKQzF5RiGebYchxO96+3Wf+rxXc=;
+        b=BnNsgovvpm6iU8IKAFcP/R2mCdyAaRm43yy6f/Hz4OyqT7ARba9zgwE6z/DBa5OOZL
+         eStsUobrWzEbsiA065o/ReA884Uv5ELBgiDPxzJ06jGOrz2BnvRWOxF1VnYDEP2zU/eE
+         WJYYBOUxUo9MGtu209M1uPg9EtfH/7Ozm0ZIir4Zmy4SpYj3/cxQWrBVxM0EiP9XRiv2
+         M1VjV5ZNmJ9cVQvw3ovbb03LkDLNry4Iy0GE5QnxABIvjp1n7Hmghf+FmC00pJXjOi+z
+         +3bQtk1RGxAbJJrW3myxIagUbRgd32j62Oa+Wnrl5GheHWLgO9F2wZjLlCF3t87hvE77
+         kS1A==
+X-Gm-Message-State: AOAM533iiOLgLOOj8/YnpdrLxdhM7knDVQn0kajatIVbema0/lDgArGt
+        8IUOe3xbkrdvdGQVLeFN8lRFUw==
+X-Google-Smtp-Source: ABdhPJyP6fqRB9nYYchphWa0F5/357LF8RkkaedmGdLVe2OQDDAEKML5Y1zJxywfpsUsfk80MJzHpA==
+X-Received: by 2002:a05:6402:c:: with SMTP id d12mr38059165edu.100.1617725078058;
+        Tue, 06 Apr 2021 09:04:38 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id hz24sm6411140ejc.119.2021.04.06.09.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 09:04:37 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        iommu@lists.linux-foundation.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
+Subject: [PATCH RESEND] lib/scatterlist: Fix NULL pointer deference
+Date:   Tue,  6 Apr 2021 18:04:35 +0200
+Message-Id: <20210406160435.206115-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316015424.1999082-12-yury.norov@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 06:54:22PM -0700, Yury Norov wrote:
-> Similarly to bitmap functions, users would benefit if we'll handle
-> a case of small-size bitmaps that fit into a single word.
-> 
-> While here, move the find_last_bit() declaration to bitops/find.h
-> where other find_*_bit() functions sit.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  include/asm-generic/bitops/find.h | 50 ++++++++++++++++++++++++++++---
->  include/linux/bitops.h            | 12 --------
->  lib/find_bit.c                    | 12 ++++----
->  3 files changed, 52 insertions(+), 22 deletions(-)
-> 
-> diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
-> index 4148c74a1e4d..8d818b304869 100644
-> --- a/include/asm-generic/bitops/find.h
-> +++ b/include/asm-generic/bitops/find.h
-> @@ -5,6 +5,9 @@
->  extern unsigned long _find_next_bit(const unsigned long *addr1,
->  		const unsigned long *addr2, unsigned long nbits,
->  		unsigned long start, unsigned long invert, unsigned long le);
-> +extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
-> +extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
-> +extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
->  
->  #ifndef find_next_bit
->  /**
-> @@ -102,8 +105,17 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
->   * Returns the bit number of the first set bit.
->   * If no bits are set, returns @size.
->   */
-> -extern unsigned long find_first_bit(const unsigned long *addr,
-> -				    unsigned long size);
-> +static inline
-> +unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = *addr & BITS_FIRST(size - 1);
-> +
-> +		return val ? __ffs(val) : size;
+When sg_alloc_table_from_pages is called with n_pages = 0, we write in a
+non-allocated page. Fix it by checking early the error condition.
 
-This patch results in:
+[    7.666801] BUG: kernel NULL pointer dereference, address: 0000000000000010
+[    7.667487] #PF: supervisor read access in kernel mode
+[    7.667970] #PF: error_code(0x0000) - not-present page
+[    7.668448] PGD 0 P4D 0
+[    7.668690] Oops: 0000 [#1] SMP NOPTI
+[    7.669037] CPU: 0 PID: 184 Comm: modprobe Not tainted 5.11.0+ #2
+[    7.669606] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[    7.670378] RIP: 0010:__sg_alloc_table_from_pages+0x2c5/0x4a0
+[    7.670924] Code: c9 01 48 c7 40 08 00 00 00 00 48 89 08 8b 47 0c 41 8d 44 00 ff 89 47 0c 48 81 fa 00 f0 ff ff 0f 87 d4 01 00 00 49 8b 16 89 d8 <4a> 8b 74 fd 00 4c 89 d1 44 29 f8 c1 e0 0c 44 29 d8 4c 39 d0 48 0f
+[    7.672643] RSP: 0018:ffffba1e8028fb30 EFLAGS: 00010287
+[    7.673133] RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000002
+[    7.673791] RDX: 0000000000000002 RSI: ffffffffada6d0ba RDI: ffff9afe01fff820
+[    7.674448] RBP: 0000000000000010 R08: 0000000000000001 R09: 0000000000000001
+[    7.675100] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[    7.675754] R13: 00000000fffff000 R14: ffff9afe01fff800 R15: 0000000000000000
+[    7.676409] FS:  00007fb0f448f540(0000) GS:ffff9afe07a00000(0000) knlGS:0000000000000000
+[    7.677151] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    7.677681] CR2: 0000000000000010 CR3: 0000000002184001 CR4: 0000000000370ef0
+[    7.678342] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    7.679019] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    7.680349] Call Trace:
+[    7.680605]  ? device_add+0x146/0x810
+[    7.681021]  sg_alloc_table_from_pages+0x11/0x30
+[    7.681511]  vb2_dma_sg_alloc+0x162/0x280 [videobuf2_dma_sg]
 
-include/asm-generic/bitops/find.h: In function 'find_last_bit':
-include/asm-generic/bitops/find.h:164:16: error: implicit declaration of function '__fls'; did you mean '__ffs'?
+Cc: stable@vger.kernel.org
+Fixes: efc42bc98058 ("scatterlist: add sg_alloc_table_from_pages function")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ lib/scatterlist.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-and:
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index a59778946404..1e83b6a3d930 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -435,6 +435,9 @@ struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
+ 	unsigned int added_nents = 0;
+ 	struct scatterlist *s = prv;
+ 
++	if (n_pages == 0)
++		return ERR_PTR(-EINVAL);
++
+ 	/*
+ 	 * The algorithm below requires max_segment to be aligned to PAGE_SIZE
+ 	 * otherwise it can overshoot.
+-- 
+2.31.0.208.g409f899ff0-goog
 
-./include/asm-generic/bitops/__fls.h: At top level:
-./include/asm-generic/bitops/__fls.h:13:38: error: conflicting types for '__fls'
-
-when building scripts/mod/devicetable-offsets.o.
-
-Seen with h8300 builds.
-
-Guenter
-
-> +	}
-> +
-> +	return _find_first_bit(addr, size);
-> +}
->  
->  /**
->   * find_first_zero_bit - find the first cleared bit in a memory region
-> @@ -113,8 +125,17 @@ extern unsigned long find_first_bit(const unsigned long *addr,
->   * Returns the bit number of the first cleared bit.
->   * If no bits are zero, returns @size.
->   */
-> -extern unsigned long find_first_zero_bit(const unsigned long *addr,
-> -					 unsigned long size);
-> +static inline
-> +unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = *addr | ~BITS_FIRST(size - 1);
-> +
-> +		return val == ~0UL ? size : ffz(val);
-> +	}
-> +
-> +	return _find_first_zero_bit(addr, size);
-> +}
->  #else /* CONFIG_GENERIC_FIND_FIRST_BIT */
->  
->  #ifndef find_first_bit
-> @@ -126,6 +147,27 @@ extern unsigned long find_first_zero_bit(const unsigned long *addr,
->  
->  #endif /* CONFIG_GENERIC_FIND_FIRST_BIT */
->  
-> +#ifndef find_last_bit
-> +/**
-> + * find_last_bit - find the last set bit in a memory region
-> + * @addr: The address to start the search at
-> + * @size: The number of bits to search
-> + *
-> + * Returns the bit number of the last set bit, or size.
-> + */
-> +static inline
-> +unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = *addr & BITS_FIRST(size - 1);
-> +
-> +		return val ? __fls(val) : size;
-> +	}
-> +
-> +	return _find_last_bit(addr, size);
-> +}
-> +#endif
-> +
->  /**
->   * find_next_clump8 - find next 8-bit clump with set bits in a memory region
->   * @clump: location to store copy of found clump
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index a5a48303b0f1..26bf15e6cd35 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -286,17 +286,5 @@ static __always_inline void __assign_bit(long nr, volatile unsigned long *addr,
->  })
->  #endif
->  
-> -#ifndef find_last_bit
-> -/**
-> - * find_last_bit - find the last set bit in a memory region
-> - * @addr: The address to start the search at
-> - * @size: The number of bits to search
-> - *
-> - * Returns the bit number of the last set bit, or size.
-> - */
-> -extern unsigned long find_last_bit(const unsigned long *addr,
-> -				   unsigned long size);
-> -#endif
-> -
->  #endif /* __KERNEL__ */
->  #endif
-> diff --git a/lib/find_bit.c b/lib/find_bit.c
-> index 2470ae390f3c..e2c301d28568 100644
-> --- a/lib/find_bit.c
-> +++ b/lib/find_bit.c
-> @@ -75,7 +75,7 @@ EXPORT_SYMBOL(_find_next_bit);
->  /*
->   * Find the first set bit in a memory region.
->   */
-> -unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-> +unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
->  {
->  	unsigned long idx;
->  
-> @@ -86,14 +86,14 @@ unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
->  
->  	return size;
->  }
-> -EXPORT_SYMBOL(find_first_bit);
-> +EXPORT_SYMBOL(_find_first_bit);
->  #endif
->  
->  #ifndef find_first_zero_bit
->  /*
->   * Find the first cleared bit in a memory region.
->   */
-> -unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
-> +unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size)
->  {
->  	unsigned long idx;
->  
-> @@ -104,11 +104,11 @@ unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
->  
->  	return size;
->  }
-> -EXPORT_SYMBOL(find_first_zero_bit);
-> +EXPORT_SYMBOL(_find_first_zero_bit);
->  #endif
->  
->  #ifndef find_last_bit
-> -unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
-> +unsigned long _find_last_bit(const unsigned long *addr, unsigned long size)
->  {
->  	if (size) {
->  		unsigned long val = BITS_FIRST_MASK(size - 1);
-> @@ -124,7 +124,7 @@ unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
->  	}
->  	return size;
->  }
-> -EXPORT_SYMBOL(find_last_bit);
-> +EXPORT_SYMBOL(_find_last_bit);
->  #endif
->  
->  unsigned long find_next_clump8(unsigned long *clump, const unsigned long *addr,
