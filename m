@@ -2,90 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED235579D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7D83557A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345597AbhDFPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhDFPWZ (ORCPT
+        id S1345606AbhDFPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:22:52 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:44624 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhDFPWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:22:25 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B743FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:22:16 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so9843536pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:22:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E6z5kWwAl+1QNK1u0OVgaasZnxxYZm0UhtDBQU9NQyM=;
-        b=Mv8FIUEgsM18zskQs7tY7B/k0o7lz07YKooRJA46pT3T4Fujs2+EngigMWz1SeXxk2
-         408Wr1wqz8H6xFLG9imGxTklpi19vPMezpxq7NkXPUKoqZtcOp236xq6iXS6PZgoWnSY
-         u9svYa3oMjpxZyz71mbTc+/G0S+PY7LxLoupiSd3xqQjmTjJNd/QITXAcJMPpdI9cmuN
-         0v2+mgf65BG6o1u6vK2WY1mJSCLMXdZxysUQKoCdJcdHM3Q/Zv0GKV1ct2mwjmxokKcW
-         NPW3PoCso53PC6Np4rG6b49qINu/V7X4j/Wi0lAHyHKj84Z+mD17W0DnEuxRS/v2fLyy
-         mQTA==
+        Tue, 6 Apr 2021 11:22:48 -0400
+Received: by mail-ot1-f53.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso14961660oti.11;
+        Tue, 06 Apr 2021 08:22:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E6z5kWwAl+1QNK1u0OVgaasZnxxYZm0UhtDBQU9NQyM=;
-        b=IQZeiKxBQZGoSdbr4bl/fDirGy6M4sqPNkLgm0/Nt8UsKGsKVe3CdNoxLU2bWuPdQn
-         z+zdIx2pvRXR2aIRqAQMdGFb4ZTsXv5dcvOoJrlLU6bI7KOM9acKh3viEhRfMyLeMFJo
-         K5224iM/sg8tNo3SFjWDKQPqzo8/aKQCiz62R3ga1vaRfC40fYaBdvwxt67s3EeqIi44
-         zDTeFw5vkcPqdy4wnU/Ctb/O3hGDc5iLHMidPFu/4Lf+SdbMYhgUPeKSjZyd4Ub4V3rm
-         KYc8x6S1E/gl7VthNcKnB/Ss5Cbdq9MvGxF4p/obN7T6pUBlP9dT4XdLxQJ+XQAF7fdP
-         SMfA==
-X-Gm-Message-State: AOAM532XtMD6Z+9AzCIKV216ad04NmRlQMB9IZNdlslz0rwLuj/L8TqD
-        ZTaX0KwRJo7WZtb2UyIA+QWorQ==
-X-Google-Smtp-Source: ABdhPJwN5ZKGULvml9xEQa+VKvFePdAogoclt6woGJtjAIRk5kqlNGGROJTag2OMaBAe3myOkBprWA==
-X-Received: by 2002:a17:90b:a0c:: with SMTP id gg12mr4750699pjb.184.1617722536134;
-        Tue, 06 Apr 2021 08:22:16 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id q22sm17686696pfk.2.2021.04.06.08.22.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 08:22:15 -0700 (PDT)
-Subject: Re: [PATCH 00/11] Rid W=1 warnings from Block
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        drbd-dev@lists.linbit.com,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        linux-block@vger.kernel.org,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-References: <20210312105530.2219008-1-lee.jones@linaro.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <33a06c9d-58b6-c9bf-a119-6d2a3e37b955@kernel.dk>
-Date:   Tue, 6 Apr 2021 09:22:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sXwcRig3tvZ+Z4uaFJyjbcZ77bloTOBAk/tXd58gGqg=;
+        b=oIERtfMfxiL/6WFEA9yX1IT8myMf4xQFDwD0x5xknZZoRGFHhqxodHhdD8nKosmf6p
+         jEgmseIVLDYxhlrAG0FxzviUxV9FA3oex/TB45xTMsSbV4fiSEUko9QvTwR0r+5GIqA9
+         Ng6WCEv12yvj4+XV4j+S6cQLyYdqWwg4TFzEU+b9flvNDi56GSxjn5d3d4coJi9QMXoH
+         /wY9/kCjM/z+wAxaIAZfjf8u7eE1hawezFJcw30TE0Wdecs8Y2unGGAukV76D8LdCtOV
+         /LGBrlaSmKSf1YyC9MVk+YVfQIfkaWQYJ+NilYiVH1H8QG2ZarlC9M53BYE0be43d5B8
+         Yx3w==
+X-Gm-Message-State: AOAM531xz4e2GzAyL9c6NPTimuzHT/L6GFFOT6k0rlG7fzD6xGfzI5d4
+        Dv1dgfoygukS/MFi7gkgZf1OnBWfEIfu1sVL3YY=
+X-Google-Smtp-Source: ABdhPJyAU3OaY8gRQ4/LiKT6/iD+IByZRCak85VRzGCbbqiiAqXMP3el70R2FFCVi3ltTRoozbuzNWYOl2YsOwnMYc4=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr26387265otb.260.1617722558727;
+ Tue, 06 Apr 2021 08:22:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210312105530.2219008-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210406140005.554402-1-vkuznets@redhat.com>
+In-Reply-To: <20210406140005.554402-1-vkuznets@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 6 Apr 2021 17:22:27 +0200
+Message-ID: <CAJZ5v0ixuM0HfVrrn47+vmTaBq8RS9b3nyKbbTr9qKQps_buYg@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 3:55 AM, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On Tue, Apr 6, 2021 at 4:01 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
+> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
+> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
+> into acpi_idle_play_dead(). The problem is that these functions are not
+> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
+>
+> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
+> (the later from assembly) but it seems putting the whole pattern into a
+> new function and exporting it instead is better.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+> Cc: <stable@vger.kernel.org> # 5.10+
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+> Changes since v1:
+> - Rename wakeup_cpu0() to cond_wakeup_cpu0() and fold wakeup_cpu0() in
+>  as it has no other users [Rafael J. Wysocki]
+> ---
+>  arch/x86/include/asm/smp.h    |  2 +-
+>  arch/x86/kernel/smpboot.c     | 24 ++++++++++--------------
+>  drivers/acpi/processor_idle.c |  4 +---
+>  3 files changed, 12 insertions(+), 18 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+> index 57ef2094af93..630ff08532be 100644
+> --- a/arch/x86/include/asm/smp.h
+> +++ b/arch/x86/include/asm/smp.h
+> @@ -132,7 +132,7 @@ void native_play_dead(void);
+>  void play_dead_common(void);
+>  void wbinvd_on_cpu(int cpu);
+>  int wbinvd_on_all_cpus(void);
+> -bool wakeup_cpu0(void);
+> +void cond_wakeup_cpu0(void);
+>
+>  void native_smp_send_reschedule(int cpu);
+>  void native_send_call_func_ipi(const struct cpumask *mask);
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index f877150a91da..147f1bba9736 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1659,13 +1659,15 @@ void play_dead_common(void)
+>         local_irq_disable();
+>  }
+>
+> -bool wakeup_cpu0(void)
+> +/*
+> + * If NMI wants to wake up CPU0, start CPU0.
+> + */
 
-Applied 2-11, 1 is already in the my tree.
+Hasn't checkpatch.pl complained about this?
 
--- 
-Jens Axboe
+A proper kerneldoc would be something like:
 
+/**
+ * cond_wakeup_cpu0 - Wake up CPU0 if needed.
+ *
+ * If NMI wants to wake up CPU0, start CPU0.
+ */
+
+> +void cond_wakeup_cpu0(void)
+>  {
+>         if (smp_processor_id() == 0 && enable_start_cpu0)
+> -               return true;
+> -
+> -       return false;
+> +               start_cpu0();
+>  }
+> +EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
+>
+>  /*
+>   * We need to flush the caches before going to sleep, lest we have
+> @@ -1734,11 +1736,8 @@ static inline void mwait_play_dead(void)
+>                 __monitor(mwait_ptr, 0, 0);
+>                 mb();
+>                 __mwait(eax, 0);
+> -               /*
+> -                * If NMI wants to wake up CPU0, start CPU0.
+> -                */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +
+> +               cond_wakeup_cpu0();
+>         }
+>  }
+>
+> @@ -1749,11 +1748,8 @@ void hlt_play_dead(void)
+>
+>         while (1) {
+>                 native_halt();
+> -               /*
+> -                * If NMI wants to wake up CPU0, start CPU0.
+> -                */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +
+> +               cond_wakeup_cpu0();
+>         }
+>  }
+>
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 768a6b4d2368..4e2d76b8b697 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -544,9 +544,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+>                         return -ENODEV;
+>
+>  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+> -               /* If NMI wants to wake up CPU0, start CPU0. */
+> -               if (wakeup_cpu0())
+> -                       start_cpu0();
+> +               cond_wakeup_cpu0();
+>  #endif
+>         }
+>
+> --
+> 2.30.2
+>
