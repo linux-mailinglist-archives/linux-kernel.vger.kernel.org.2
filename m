@@ -2,176 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE2A355573
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30488355576
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344616AbhDFNlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhDFNlw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:41:52 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D09C06174A;
-        Tue,  6 Apr 2021 06:41:43 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id q26so8599410wrz.9;
-        Tue, 06 Apr 2021 06:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qklMtpnFh5J5Dsu48LFQMJDK+GDGgx9EDr9EU819CxU=;
-        b=JXU5+afhpmqz3s79d6W4embKeBxGq+5VP/jgfpjVz+QNZvQ4/gBxi9nRmOdYwEOSz4
-         pymCG55qWmaSYUiAmrHsEmJtdsFzwTn/uviHtZkYFsJaCtQJSmdpNtjb2V/EOntK7EeY
-         XGfzyMRY32vXyLyGfLZrgyjWTla2wZoxgQWdIja37Ygr9ik6UdlRLASrXubenE7MSK5X
-         RNxwqkZxL7jfDHQ0fmByzK55mgRSo0ZNpAiHThkFh7KGRHYZbYRlQCQDteGP/Zb5xQqs
-         JPdGqG3uuopEUEA4NSsd+W0HWwJkPfssshHQec9wHsSJKSQk4iBA9etJKYMi1DmO0pLl
-         laUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qklMtpnFh5J5Dsu48LFQMJDK+GDGgx9EDr9EU819CxU=;
-        b=Fg+xosGc+7Tk8laz+6pxecpj7v5NNtNU6y8GKmduZqNHY+nrtD6YjyiJPglTSDVWJ6
-         cyXplnrxD0oK3oQJpD8ZAZs4nmqnvt335H/uuR5ZcVWF5L/06nGxhyL5ebHnmpDm3hDy
-         9fWk6J2TygRQZEmHfw7Vmh7L12ab3r3ZQ1xtSM/yscqKdnJ8hpgnyVB4xL6WFqAfvHGZ
-         aBegjqvsVp5asjZQgI6Cj6YF0m6aGMBuBkf0VGx8EpaPq+u94KP15+K+oZ580QzyNIiB
-         zQXuesVHJy3A5KpEzfno8Y4LlDO9Ld5YAF3ok4vBCNCUTrhWEKAE8qXY+7capz8Wd3WN
-         NxCg==
-X-Gm-Message-State: AOAM530bQ5ogXT4DHQ7BBaVjsfXcOMmVg/1LFZ18hu2xLxKrQ7VV/z+h
-        2LbU5nxXVWEc1EwwVs/+/OQ=
-X-Google-Smtp-Source: ABdhPJwyg/Mb/15E0YTxtFvcV888RO6L7pQfcpaGvAIsJ88MyIZjILLZHAsIXVUmaZCyc6MlfIjNdg==
-X-Received: by 2002:a05:6000:1209:: with SMTP id e9mr10247647wrx.36.1617716502095;
-        Tue, 06 Apr 2021 06:41:42 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id l4sm2870959wmh.8.2021.04.06.06.41.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 06:41:41 -0700 (PDT)
-Subject: Re: [PATCH v2 2/6] soc: mediatek: devapc: move 'vio_idx_num' info to
- DT
-To:     Nina Wu <nina-cm.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Neal Liu <neal.liu@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Jackson-kt.Chang@mediatek.com
-References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
- <1617259087-5502-2-git-send-email-nina-cm.wu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <39794302-7993-4f9c-b28c-577fdb0265a3@gmail.com>
-Date:   Tue, 6 Apr 2021 15:41:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1344623AbhDFNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:42:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhDFNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:42:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6435A613C7;
+        Tue,  6 Apr 2021 13:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617716519;
+        bh=b1ThPDuwmdA5W2MfjKGQeqHfVHiU0Eh1TspdbnlE2sg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sHPM1UQZS4hn2dl5kIKhIPIfhxk0ID8Z9Zjzxo+Bhgrp8uQzRkAkCxFS+m1p2Mgut
+         ndEcguSeiETeDElax3HkXcK9C8tfD3qsNrNMsrFUCkkyLJqcQltHG51m0zaJ7ySt7g
+         4Ii5L72Dqil52fieKMirRFPlkezah4OavQ2WzNww=
+Date:   Tue, 6 Apr 2021 15:41:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 013/247] cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag
+ on setting cifs_sb->prepath.
+Message-ID: <YGxlJXv/+IPaErUr@kroah.com>
+References: <20210301161031.684018251@linuxfoundation.org>
+ <20210301161032.337414143@linuxfoundation.org>
+ <YGxIMCsclG4E1/ck@eldamar.lan>
 MIME-Version: 1.0
-In-Reply-To: <1617259087-5502-2-git-send-email-nina-cm.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGxIMCsclG4E1/ck@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/04/2021 08:38, Nina Wu wrote:
-> From: Nina Wu <Nina-CM.Wu@mediatek.com>
+On Tue, Apr 06, 2021 at 01:38:24PM +0200, Salvatore Bonaccorso wrote:
+> Hi,
 > 
-> For new ICs, there are multiple devapc HWs for different subsys.
-> The number of devices controlled by each devapc (i.e. 'vio_idx_num'
-> in the code) varies.
-> We move this info from compatible data to DT so that we do not need
-> to add n compatible for a certain IC which has n devapc HWs with
-> different 'vio_idx_num', respectively.
+> On Mon, Mar 01, 2021 at 05:10:33PM +0100, Greg Kroah-Hartman wrote:
+> > From: Shyam Prasad N <sprasad@microsoft.com>
+> > 
+> > [ Upstream commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b ]
+> > 
+> > While debugging another issue today, Steve and I noticed that if a
+> > subdir for a file share is already mounted on the client, any new
+> > mount of any other subdir (or the file share root) of the same share
+> > results in sharing the cifs superblock, which e.g. can result in
+> > incorrect device name.
+> > 
+> > While setting prefix path for the root of a cifs_sb,
+> > CIFS_MOUNT_USE_PREFIX_PATH flag should also be set.
+> > Without it, prepath is not even considered in some places,
+> > and output of "mount" and various /proc/<>/*mount* related
+> > options can be missing part of the device name.
+> > 
+> > Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+> > Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+> > Signed-off-by: Steve French <stfrench@microsoft.com>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  fs/cifs/connect.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
+> > index 6285085195c15..632249ce61eba 100644
+> > --- a/fs/cifs/connect.c
+> > +++ b/fs/cifs/connect.c
+> > @@ -3882,6 +3882,7 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
+> >  		cifs_sb->prepath = kstrdup(pvolume_info->prepath, GFP_KERNEL);
+> >  		if (cifs_sb->prepath == NULL)
+> >  			return -ENOMEM;
+> > +		cifs_sb->mnt_cifs_flags |= CIFS_MOUNT_USE_PREFIX_PATH;
+> >  	}
+> >  
+> >  	return 0;
 > 
-> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
-> ---
->  drivers/soc/mediatek/mtk-devapc.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+> A user in Debian reported an issue with mounts of DFS shares after an
+> update in Debian from 4.19.177 to 4.181:
 > 
-> diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
-> index f1cea04..a0f6fbd 100644
-> --- a/drivers/soc/mediatek/mtk-devapc.c
-> +++ b/drivers/soc/mediatek/mtk-devapc.c
-> @@ -32,9 +32,6 @@ struct mtk_devapc_vio_dbgs {
->  };
->  
->  struct mtk_devapc_data {
-> -	/* numbers of violation index */
-> -	u32 vio_idx_num;
-> -
->  	/* reg offset */
->  	u32 vio_mask_offset;
->  	u32 vio_sta_offset;
-> @@ -49,6 +46,7 @@ struct mtk_devapc_data {
->  struct mtk_devapc_context {
->  	struct device *dev;
->  	void __iomem *infra_base;
-> +	u32 vio_idx_num;
-
-We should try to stay backwards compatible (newer kernel with older DTS). I
-think we don't need to move vio_idx_num to mtk_devapc_context. Just don't
-declare it in the per SoC match data. More details see below...
-
->  	struct clk *infra_clk;
->  	const struct mtk_devapc_data *data;
->  };
-> @@ -60,10 +58,10 @@ static void clear_vio_status(struct mtk_devapc_context *ctx)
->  
->  	reg = ctx->infra_base + ctx->data->vio_sta_offset;
->  
-> -	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
-> +	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->vio_idx_num - 1); i++)
->  		writel(GENMASK(31, 0), reg + 4 * i);
->  
-> -	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1, 0),
-> +	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1), 0),
->  	       reg + 4 * i);
->  }
->  
-> @@ -80,15 +78,15 @@ static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
->  	else
->  		val = 0;
->  
-> -	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
-> +	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->vio_idx_num - 1); i++)
->  		writel(val, reg + 4 * i);
->  
->  	val = readl(reg + 4 * i);
->  	if (mask)
-> -		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
-> +		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1),
->  			       0);
->  	else
-> -		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
-> +		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1),
->  				0);
->  
->  	writel(val, reg + 4 * i);
-> @@ -216,7 +214,6 @@ static void stop_devapc(struct mtk_devapc_context *ctx)
->  }
->  
->  static const struct mtk_devapc_data devapc_mt6779 = {
-> -	.vio_idx_num = 511,
->  	.vio_mask_offset = 0x0,
->  	.vio_sta_offset = 0x400,
->  	.vio_dbg0_offset = 0x900,
-> @@ -256,6 +253,9 @@ static int mtk_devapc_probe(struct platform_device *pdev)
->  	if (!ctx->infra_base)
->  		return -EINVAL;
->  
-> +	if (of_property_read_u32(node, "vio_idx_num", &ctx->vio_idx_num))
-> +		return -EINVAL;
-> +
-
-...only read the property if  vio_idx_num == 0.
-What do you think?
-
-Regards,
-Matthias
-
->  	devapc_irq = irq_of_parse_and_map(node, 0);
->  	if (!devapc_irq)
->  		return -EINVAL;
+> https://lists.debian.org/debian-user/2021/04/msg00062.html
 > 
+> In a test setup i was able to reproduce the issue with 4.19.184 itself
+> (but interestingly not withing the 5.10.y series, checked 5.10.26)
+> which both contain the above commit.
+> 
+> 4.19.184 with a738c93fb1c1 ("cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag
+> on setting cifs_sb->prepath.") reverted fixes the issue.
+> 
+> Is there probably some missing prerequisites missing in the 4.19.y
+> brach? I could not test othr versions, but maybe other versions are
+> affected as well as before 4.19.y, as the commit was backported to
+> 4.14.223 as well.
+
+If there is a missing patch, we will be glad to take it, does 5.4 also
+have this problem?
+
+thanks,
+
+greg k-h
