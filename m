@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF943554E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A34A3554E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242748AbhDFNWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:22:31 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:45816 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242618AbhDFNW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:22:28 -0400
-Received: by mail-ot1-f46.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so14550882oty.12;
-        Tue, 06 Apr 2021 06:22:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VoWY/s77zLLDu+Op6P265Vg8YKwWqy+Vh24Ks0b7ijw=;
-        b=JADnTbGDklp8ckWALguRNFBcgQocVHCWE164QOxNX7EBpl42mZRJeuJpPYneo3SX9K
-         UacS8GdAMwFFAfTSMsFIoWEiKMEGXCRTkUyN7q8TpHGiFnSh/geKphzvgaD9BrmDQ7Ol
-         len1TtUdy011uq3TYBbFbZ3wCsYuZezsiIv1g2SEMBWr2u6hlE8jeoOVRZqlp7p5+nZ7
-         sTo5KVVKt9FVhA/FhkfIMusxrdconYYEwUbfeoPoyoNUEUUvGZq6lhsEnDujUEuY9w8w
-         I4ta7VRYUgS7b4P1sal/nfvkdfO0/U6HSFvJpZQCeUcaqyHwC+83eEyrerdQoea9xedf
-         2S7g==
-X-Gm-Message-State: AOAM531vOlqqpO+wYmbU+0iD1G+lq3ObBp7Y1YbiS6s5Izqwwlx3ZzyM
-        sT6f2PNqtSmwwvvupYZOxUFO58UMbHcaVBzdTNA=
-X-Google-Smtp-Source: ABdhPJz2fyrytIoslGUKKUA2m10f98uEsyHqThzFXBrDG5t8ALIUf7K0wQGA9GduVuuduEo53PSsC6TXquOwEXFIy3k=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr25959514otb.260.1617715338923;
- Tue, 06 Apr 2021 06:22:18 -0700 (PDT)
+        id S242521AbhDFNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:22:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:47035 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231684AbhDFNWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:22:17 -0400
+IronPort-SDR: XPr5m3/BZohr+OIcF9muwxqWfyXRfDaoE8nqf3pbqhgsJZOM9vyQGvflm9ZhBg1y341TJcez+J
+ ohW4D1uWYcjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="193102734"
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="193102734"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 06:22:09 -0700
+IronPort-SDR: 6F6fMunmDKi9b4oJzFoNeL2C2XgciVVaoki4Yi0yYBkg3MnC3shLBS4RGfx56+aCyh0Ck0FUI9
+ iEnCYrk08FIA==
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="529807929"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 06:22:07 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lTlef-001iw4-0G; Tue, 06 Apr 2021 16:22:05 +0300
+Date:   Tue, 6 Apr 2021 16:22:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Paul Fertser <fercerpav@gmail.com>
+Cc:     Ernesto Corona <ernesto.corona@intel.com>,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v29 0/6] JTAG driver introduction
+Message-ID: <YGxgfFBUr6eHJ1Qi@smile.fi.intel.com>
+References: <20200413222920.4722-1-ernesto.corona@intel.com>
+ <20210115104635.GA2971@home.paul.comp>
 MIME-Version: 1.0
-References: <20210406125047.547501-1-vkuznets@redhat.com>
-In-Reply-To: <20210406125047.547501-1-vkuznets@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 6 Apr 2021 15:22:00 +0200
-Message-ID: <CAJZ5v0hpkF-acQAomZZKN=r00gNy831R7J-ZWZgWnoCJe5xSkg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115104635.GA2971@home.paul.comp>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:50 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
-> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
-> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
-> into acpi_idle_play_dead(). The problem is that these functions are not
-> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
->
-> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
-> (the later from assembly) but it seems putting the whole pattern into a
-> new function and exporting it instead is better.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
-> Cc: <stable@vger.kernel.org> # 5.10+
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/include/asm/smp.h    |  2 +-
->  arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
->  drivers/acpi/processor_idle.c |  3 +--
->  3 files changed, 12 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index 57ef2094af93..6f79deb1f970 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -132,7 +132,7 @@ void native_play_dead(void);
->  void play_dead_common(void);
->  void wbinvd_on_cpu(int cpu);
->  int wbinvd_on_all_cpus(void);
-> -bool wakeup_cpu0(void);
-> +void wakeup_cpu0_if_needed(void);
->
->  void native_smp_send_reschedule(int cpu);
->  void native_send_call_func_ipi(const struct cpumask *mask);
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index f877150a91da..9547d870ee27 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1659,7 +1659,7 @@ void play_dead_common(void)
->         local_irq_disable();
->  }
->
-> -bool wakeup_cpu0(void)
-> +static bool wakeup_cpu0(void)
->  {
->         if (smp_processor_id() == 0 && enable_start_cpu0)
->                 return true;
-> @@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
->         return false;
->  }
->
-> +void wakeup_cpu0_if_needed(void)
-> +{
-> +       if (wakeup_cpu0())
-> +               start_cpu0();
+On Fri, Jan 15, 2021 at 01:46:35PM +0300, Paul Fertser wrote:
+> Hello,
+> 
+> This is a multi-part review of the series, with general notes inline
+> in this message, and specific points raised as replies to the
+> individual patches.
+> 
+> On Mon, Apr 13, 2020 at 03:29:14PM -0700, Ernesto Corona wrote:
+> > We propose to implement general JTAG interface and infrastructure
+> > to communicate with user layer application.
+> 
+> Working with a Tioga Pass server platform I needed to use the JTAG
+> master controller of an ASPEED AST2500 SoC to configure a Lattice
+> LCMXO2-4000HC CPLD. I'm mentioning these fine details because that's
+> the only proper runtime testing I performed, but my review is not
+> limited to that.
+> 
+> Being a long-time OpenOCD community member, I got familiar with many
+> different facilities and protocols offered by hardware JTAG adapters,
+> and of wide range of usecases as I was providing end-user
+> support. This is my perspective when looking at these patches.
+> 
+> I have to note that the current v29 version of the series is broken in
+> several aspects:
 
-Note that all of the callers of wakeup_cpu0 do the above, so maybe
-make them all use the new function?
+Is it correct that this series is actually abandoned so far?
 
-In which case it can be rewritten in the following way
+> 1. The aspeed driver fails probe(), see the driver review for details;
+> 
+> 2. The uapi include header is unusable;
+> 
+> 3. The offered userspace implementation wasn't updated to the latest
+> API, but even with the changes to make it compile it's still a mess
+> too horrible to be used in production;
+> 
+> Points 1 and 2 will be addressed in separate mails. To workaround
+> point 3 I prepared a recipe with an additional patch[0] so that
+> mlnx_cpldprog can be at least compiled and used for some minimal
+> testing.
+> 
+> The shortcomings of mlnx_cpldprog are numerous:
+> 
+> 1. It doesn't consistently choose between hardware and bitbang modes;
+> 
+> 2. Even though it checks TDO it doesn't print any errors on mismatch
+> and continues playing back the SVF as if it's all right;
+> 
+> 3. It has JTAG speed hardcoded;
+> 
+> 4. It doesn't implement RUNTEST so with the CPLD I'm using it's always
+> _not_ working properly, failing silently;
+> 
+> 5. It is just awfully slow, taking about 40 minutes to play back a
+> file that takes 1.5 minutes with OpenOCD with the same hardware and
+> kernel driver.
+> 
+> So I added support for the proposed API to OpenOCD: patch that applies
+> to the version in OpenBMC[1], patch for the latest version[2]. And
+> since it can do much more than just playing back SVF I hope this can
+> highlight some essential API shortcomings if it's meant to be
+> generic. My impression is that in its current state it's not adequate
+> for the purpose.
+> 
+> [0] https://bitbucket.org/paulfertser/mlnx_cpldprog_bitbake
+> [1] http://openocd.zylin.com/#/c/5976/
+> [2] http://openocd.zylin.com/#/c/5975/
 
-void cond_wakeup_cpu0(void)
-{
-        if (smp_processor_id() == 0 && enable_start_cpu0)
-                start_cpu0();
-}
-EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
-
-Also please add a proper kerneldoc comment to it and maybe drop the
-comments at the call sites?
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> +}
-> +EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
-> +
->  /*
->   * We need to flush the caches before going to sleep, lest we have
->   * dirty data in our caches when we come back up.
-> @@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
->                 /*
->                  * If NMI wants to wake up CPU0, start CPU0.
->                  */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +               wakeup_cpu0_if_needed();
->         }
->  }
->
-> @@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
->                 /*
->                  * If NMI wants to wake up CPU0, start CPU0.
->                  */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +               wakeup_cpu0_if_needed();
->         }
->  }
->
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 768a6b4d2368..de15116b754a 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
->
->  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
->                 /* If NMI wants to wake up CPU0, start CPU0. */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +               wakeup_cpu0_if_needed();
->  #endif
->         }
->
-> --
-> 2.30.2
->
