@@ -2,103 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122EA354A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EE5354A13
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243114AbhDFBdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:33:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:56585 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhDFBdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:33:01 -0400
-IronPort-SDR: 3DWO5Cjo5ewOoJxxS0uoFuFZbR/uuLM47lLUAUPQU3alOvEgZTMbVBsHKAVRr9swyDBBGUTQ6q
- u8KOpg3qWq7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="190783678"
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="190783678"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:32:54 -0700
-IronPort-SDR: vYV/ERUKjRELAc4zoPuduFJq5T14mSjVDqQZgV0QGCcjyPllKdU0rV2ml1qTH17HyV+P6RLEDV
- GX5R44VEdEYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="609081809"
-Received: from climb.png.intel.com ([10.221.118.165])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Apr 2021 18:32:51 -0700
-From:   Voon Weifeng <weifeng.voon@intel.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: [PATCH v2 net-next] stmmac: intel: Enable SERDES PHY rx clk for PSE
-Date:   Tue,  6 Apr 2021 09:32:50 +0800
-Message-Id: <20210406013250.17171-1-weifeng.voon@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S243122AbhDFBd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:33:29 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48175 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230476AbhDFBd1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:33:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UUdpxX5_1617672787;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UUdpxX5_1617672787)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 06 Apr 2021 09:33:08 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] powerpc/pseries: remove unneeded semicolon
+Date:   Tue,  6 Apr 2021 09:33:05 +0800
+Message-Id: <1617672785-81372-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EHL PSE SGMII mode requires to ungate the SERDES PHY rx clk for power up
-sequence and vice versa.
+Eliminate the following coccicheck warning:
+./arch/powerpc/platforms/pseries/lpar.c:1633:2-3: Unneeded semicolon
 
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
-Changes:
- v1 -> v2
- -change subject from "net: intel" to "stmmac: intel"
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 10 ++++++++++
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h |  1 +
- 2 files changed, 11 insertions(+)
+ arch/powerpc/platforms/pseries/lpar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index add95e20548d..a4fec5fe0779 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -153,6 +153,11 @@ static int intel_serdes_powerup(struct net_device *ndev, void *priv_data)
- 		return data;
- 	}
+diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
+index 3805519..705ddf9 100644
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1630,7 +1630,7 @@ static int pseries_lpar_resize_hpt(unsigned long shift)
+ 		}
+ 		msleep(delay);
+ 		rc = plpar_resize_hpt_prepare(0, shift);
+-	};
++	}
  
-+	/* PSE only - ungate SGMII PHY Rx Clock */
-+	if (intel_priv->is_pse)
-+		mdiobus_modify(priv->mii, serdes_phy_addr, SERDES_GCR0,
-+			       0, SERDES_PHY_RX_CLK);
-+
- 	return 0;
- }
- 
-@@ -168,6 +173,11 @@ static void intel_serdes_powerdown(struct net_device *ndev, void *intel_data)
- 
- 	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
- 
-+	/* PSE only - gate SGMII PHY Rx Clock */
-+	if (intel_priv->is_pse)
-+		mdiobus_modify(priv->mii, serdes_phy_addr, SERDES_GCR0,
-+			       SERDES_PHY_RX_CLK, 0);
-+
- 	/*  move power state to P3 */
- 	data = mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index e723096c0b15..542acb8ce467 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -14,6 +14,7 @@
- 
- /* SERDES defines */
- #define SERDES_PLL_CLK		BIT(0)		/* PLL clk valid signal */
-+#define SERDES_PHY_RX_CLK	BIT(1)		/* PSE SGMII PHY rx clk */
- #define SERDES_RST		BIT(2)		/* Serdes Reset */
- #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power state*/
- #define SERDES_PWR_ST_SHIFT	4
+ 	switch (rc) {
+ 	case H_SUCCESS:
 -- 
-2.17.1
+1.8.3.1
 
