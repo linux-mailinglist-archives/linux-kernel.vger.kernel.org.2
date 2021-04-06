@@ -2,254 +2,552 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2051355B8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD97355B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244824AbhDFSjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:39:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:46838 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237219AbhDFSiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:38:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAEB01063;
-        Tue,  6 Apr 2021 11:38:42 -0700 (PDT)
-Received: from [10.57.24.162] (unknown [10.57.24.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8587C3F73D;
-        Tue,  6 Apr 2021 11:38:41 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
- statistics from going stale
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210331163352.32416-1-lukasz.luba@arm.com>
- <20210331163352.32416-2-lukasz.luba@arm.com>
- <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
- <1f0710d5-cd78-dfff-1ce2-bba5f6e469b7@arm.com>
- <1a0b6e4a-1717-91d6-a664-d50e6aa8a809@linaro.org>
- <d74b8e8e-64b0-d724-d572-f98eb597a60e@arm.com>
- <cbc40019-8b2d-5d14-f0fd-b0018fb4a1f6@linaro.org>
- <f7dfced2-23f6-8d3e-d23d-291de368f472@arm.com>
- <7660a09b-51f8-c6f2-5678-77b6bff97af6@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d1bacbb5-9a45-b06d-b646-11ba77510dad@arm.com>
-Date:   Tue, 6 Apr 2021 19:38:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S237734AbhDFSku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:40:50 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:54693 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238242AbhDFSiy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:38:54 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 944BFC0004;
+        Tue,  6 Apr 2021 18:38:43 +0000 (UTC)
+From:   Alex Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH v3 2/5] RISC-V: Add kexec support
+To:     Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com
+Cc:     paul.walmsley@sifive.com, linux-kernel@vger.kernel.org
+References: <20210405085712.1953848-1-mick@ics.forth.gr>
+ <20210405085712.1953848-3-mick@ics.forth.gr>
+Message-ID: <386bf260-006a-62c4-2d7b-1a22a43b3513@ghiti.fr>
+Date:   Tue, 6 Apr 2021 14:38:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <7660a09b-51f8-c6f2-5678-77b6bff97af6@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210405085712.1953848-3-mick@ics.forth.gr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Le 4/5/21 à 4:57 AM, Nick Kossifidis a écrit :
+> This patch adds support for kexec on RISC-V. On SMP systems it depends
+> on HOTPLUG_CPU in order to be able to bring up all harts after kexec.
+> It also needs a recent OpenSBI version that supports the HSM extension.
+> I tested it on riscv64 QEMU on both an smp and a non-smp system.
+> 
+> v5:
+>   * For now depend on MMU, further changes needed for NOMMU support
+>   * Make sure stvec is aligned
+>   * Cleanup some unneeded fences
+>   * Verify control code's buffer size
+>   * Compile kexec_relocate.S with medany and norelax
+> 
+> v4:
+>   * No functional changes, just re-based
+> 
+> v3:
+>   * Use the new smp_shutdown_nonboot_cpus() call.
+>   * Move riscv_kexec_relocate to .rodata
+> 
+> v2:
+>   * Pass needed parameters as arguments to riscv_kexec_relocate
+>     instead of using global variables.
+>   * Use kimage_arch to hold the fdt address of the included fdt.
+>   * Use SYM_* macros on kexec_relocate.S.
+>   * Compatibility with STRICT_KERNEL_RWX.
+>   * Compatibility with HOTPLUG_CPU for SMP
+>   * Small cleanups
+> 
+> Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
+> ---
+>   arch/riscv/Kconfig                 |  15 +++
+>   arch/riscv/include/asm/kexec.h     |  47 ++++++++
+>   arch/riscv/kernel/Makefile         |   5 +
+>   arch/riscv/kernel/kexec_relocate.S | 156 ++++++++++++++++++++++++
+>   arch/riscv/kernel/machine_kexec.c  | 186 +++++++++++++++++++++++++++++
+>   5 files changed, 409 insertions(+)
+>   create mode 100644 arch/riscv/include/asm/kexec.h
+>   create mode 100644 arch/riscv/kernel/kexec_relocate.S
+>   create mode 100644 arch/riscv/kernel/machine_kexec.c
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 8ea60a0a1..3716262ef 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -389,6 +389,21 @@ config RISCV_SBI_V01
+>   	help
+>   	  This config allows kernel to use SBI v0.1 APIs. This will be
+>   	  deprecated in future once legacy M-mode software are no longer in use.
+> +
+> +config KEXEC
+> +	bool "Kexec system call"
+> +	select KEXEC_CORE
+> +	select HOTPLUG_CPU if SMP
+> +	depends on MMU
+> +	help
+> +	  kexec is a system call that implements the ability to shutdown your
+> +	  current kernel, and to start another kernel. It is like a reboot
+> +	  but it is independent of the system firmware. And like a reboot
+> +	  you can start any kernel with it, not just Linux.
+> +
+> +	  The name comes from the similarity to the exec system call.
+> +
+> +
+>   endmenu
+>   
+>   menu "Boot options"
+> diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
+> new file mode 100644
+> index 000000000..efc69feb4
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/kexec.h
+> @@ -0,0 +1,47 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019 FORTH-ICS/CARV
+> + *  Nick Kossifidis <mick@ics.forth.gr>
+> + */
+> +
+> +#ifndef _RISCV_KEXEC_H
+> +#define _RISCV_KEXEC_H
+> +
+> +/* Maximum physical address we can use pages from */
+> +#define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
+> +
+> +/* Maximum address we can reach in physical address mode */
+> +#define KEXEC_DESTINATION_MEMORY_LIMIT (-1UL)
+> +
+> +/* Maximum address we can use for the control code buffer */
+> +#define KEXEC_CONTROL_MEMORY_LIMIT (-1UL)
+> +
+> +/* Reserve a page for the control code buffer */
+> +#define KEXEC_CONTROL_PAGE_SIZE 4096
 
-On 4/6/21 3:32 PM, Daniel Lezcano wrote:
-> 
-> Hi Lukasz,
-> 
-> 
-> On 06/04/2021 14:25, Lukasz Luba wrote:
->>
->>
->> On 4/6/21 12:24 PM, Daniel Lezcano wrote:
+PAGE_SIZE instead ?
 
-[snip]
+> +
+> +#define KEXEC_ARCH KEXEC_ARCH_RISCV
+> +
+> +static inline void
+> +crash_setup_regs(struct pt_regs *newregs,
+> +		 struct pt_regs *oldregs)
+> +{
+> +	/* Dummy implementation for now */
+> +}
+> +
+> +
+> +#define ARCH_HAS_KIMAGE_ARCH
+> +
+> +struct kimage_arch {
+> +	unsigned long fdt_addr;
+> +};
+> +
+> +const extern unsigned char riscv_kexec_relocate[];
+> +const extern unsigned int riscv_kexec_relocate_size;
+> +
+> +typedef void (*riscv_kexec_do_relocate)(unsigned long first_ind_entry,
+> +					unsigned long jump_addr,
+> +					unsigned long fdt_addr,
+> +					unsigned long hartid,
+> +					unsigned long va_pa_off);
+> +
+> +#endif
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 3dc0abde9..c2594018c 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -9,6 +9,10 @@ CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
+>   CFLAGS_REMOVE_sbi.o	= $(CC_FLAGS_FTRACE)
+>   endif
+>   
+> +ifdef CONFIG_KEXEC
+> +AFLAGS_kexec_relocate.o := -mcmodel=medany -mno-relax
+> +endif
+> +
+>   extra-y += head.o
+>   extra-y += vmlinux.lds
+>   
+> @@ -54,6 +58,7 @@ obj-$(CONFIG_SMP) += cpu_ops_sbi.o
+>   endif
+>   obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
+>   obj-$(CONFIG_KGDB)		+= kgdb.o
+> +obj-${CONFIG_KEXEC}		+= kexec_relocate.o machine_kexec.o
 
->>
->> In your proposed code there is 'tz->last_temperature < switch_on_temp'
->> which then return 0 immediately. So we don't poke the devices.
-> 
-> Ah yes, I see your point.
-> 
-> Often the device tree is setup with an additional trip point to trigger
-> a stat collection. So I assumed we don't need to feed the pid loop below
-> this temperature.
-> 
-> What is the goal of sampling at polling time (not passive) ?
+Other obj-$() use parenthesis.
 
-True, we don't need to feed the PID loop with this data when the temp
-is low. We only have to call ->get_requested_power() for each cooling
-device, because they maintain context (in that get_load() function
-which I pointed earlier). When we don't call them, then next time
-when we call, their context is growing and shows statistics for a period
-e.g. 30 sec. Then this 30 sec is almost all idle, but only 1sec was
-'running', but it doesn't tell you that it was actually the last
-1 sec, which means the avg load is ~100%. Due to 'stale' context
-IPA might interpret that the load was 1s/30s = ~3%.
-When we have this reliable polling every 1sec, so we poke the cooling
-devices even at low temp, they will maintain proper statistics context,
-then this ~3% misscalculation would not happen.
+>   
+>   obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
+>   
+> diff --git a/arch/riscv/kernel/kexec_relocate.S b/arch/riscv/kernel/kexec_relocate.S
+> new file mode 100644
+> index 000000000..616c20771
+> --- /dev/null
+> +++ b/arch/riscv/kernel/kexec_relocate.S
+> @@ -0,0 +1,156 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019 FORTH-ICS/CARV
+> + *  Nick Kossifidis <mick@ics.forth.gr>
+> + */
+> +
+> +#include <asm/asm.h>	/* For RISCV_* and REG_* macros */
+> +#include <asm/page.h>	/* For PAGE_SHIFT */
+> +#include <linux/linkage.h> /* For SYM_* macros */
+> +
+> +.section ".rodata"
+> +SYM_CODE_START(riscv_kexec_relocate)
+> +
+> +	/*
+> +	 * s0: Pointer to the current entry
+> +	 * s1: (const) Phys address to jump to after relocation
+> +	 * s2: (const) Phys address of the FDT image
+> +	 * s3: (const) The hartid of the current hart
+> +	 * s4: Pointer to the destination address for the relocation
+> +	 * s5: (const) Number of words per page
+> +	 * s6: (const) 1, used for subtraction
+> +	 * s7: (const) va_pa_offset, used when switching MMU off
+> +	 * s8: (const) Physical address of the main loop
+> +	 * s9: (debug) indirection page counter
+> +	 * s10: (debug) entry counter
+> +	 * s11: (debug) copied words counter
+> +	 */
+> +	mv	s0, a0
+> +	mv	s1, a1
+> +	mv	s2, a2
+> +	mv	s3, a3
+> +	mv	s4, zero
+> +	li	s5, ((1 << PAGE_SHIFT) / RISCV_SZPTR)
 
-> 
-> Here are the boards with the extra trip point:
-> 
-> - mt8173.dtsi
-> - hi6220.dtsi
-> - hi6220.dtsi
-> - px30.dts
-> - rk3328.dtsi
-> - rk3399-gru-kevin.dts
-> 
-> Those have an interrupt mode but do polling also.
-> 
-> See the configuration for:
-> - sc7180.dtsi (no polling delay and no pre-trip point)
-> - r8a77990.dtsi
-> 
->>> If the IPA needs a sampling, it may be more adequate to separate the
->>> sampling from the polling. So the other governors won't be impacted by
->>> the IPA specific setup, and we do not end up with polling/passive delays
->>> tricks for a governor. The IPA would have its own self-encapsulated
->>> sampling rate and the thermal zone setup won't depend on the governor.
->>>
->>> What do you think ?
->>>
->>
->> IMHO having a private timer in the governor creates another complexity
->> and confusion.
-> 
-> I would say we move the adherence between the thermal core and the IPA
-> into the governor only :)
-> 
-> Especially, we *have* to call throttle on a governor even if we are not
-> in the mitigation process.
-> 
-> And from a design POV, it should be the thermal core to be in control of
-> what is happening, not passively call the different callbacks and expect
-> them to behave correctly (eg. set tz->passive)
+1 << PAGE_SHIFT = PAGE_SIZE
 
-In that design you would like to interpret the temp and trips' values
-and decide not to call governor like IPA when the temp is low, below
-the 1st trip point. Well
+> +	li	s6, 1
+> +	mv	s7, a4
+> +	mv	s8, zero
+> +	mv	s9, zero
+> +	mv	s10, zero
+> +	mv	s11, zero
+> +
+> +	/* Disable / cleanup interrupts */
+> +	csrw	sie, zero
+> +	csrw	sip, zero
+> +
+> +	/*
+> +	 * When we switch SATP.MODE to "Bare" we'll only
+> +	 * play with physical addresses. However the first time
+> +	 * we try to jump somewhere, the offset on the jump
+> +	 * will be relative to pc which will still be on VA. To
+> +	 * deal with this we set stvec to the physical address at
+> +	 * the start of the loop below so that we jump there in
+> +	 * any case.
+> +	 */
+> +	la	s8, 1f
+> +	sub	s8, s8, s7
+> +	csrw	stvec, s8
+> +
+> +	/* Process entries in a loop */
+> +.align 2
+> +1:
+> +	addi	s10, s10, 1
+> +	REG_L	t0, 0(s0)		/* t0 = *image->entry */
+> +	addi	s0, s0, RISCV_SZPTR	/* image->entry++ */
+> +
+> +	/* IND_DESTINATION entry ? -> save destination address */
+> +	andi	t1, t0, 0x1
+> +	beqz	t1, 2f
+> +	andi	s4, t0, ~0x1
+> +	j	1b
+> +
+> +2:
+> +	/* IND_INDIRECTION entry ? -> update next entry ptr (PA) */
+> +	andi	t1, t0, 0x2
+> +	beqz	t1, 2f
+> +	andi	s0, t0, ~0x2
+> +	addi	s9, s9, 1
+> +	csrw	sptbr, zero
+> +	jalr	zero, s8, 0
+> +
+> +2:
+> +	/* IND_DONE entry ? -> jump to done label */
+> +	andi	t1, t0, 0x4
+> +	beqz	t1, 2f
+> +	j	4f
+> +
+> +2:
+> +	/*
+> +	 * IND_SOURCE entry ? -> copy page word by word to the
+> +	 * destination address we got from IND_DESTINATION
+> +	 */
+> +	andi	t1, t0, 0x8
+> +	beqz	t1, 1b		/* Unknown entry type, ignore it */
+> +	andi	t0, t0, ~0x8
+> +	mv	t3, s5		/* i = num words per page */
+> +3:	/* copy loop */
+> +	REG_L	t1, (t0)	/* t1 = *src_ptr */
+> +	REG_S	t1, (s4)	/* *dst_ptr = *src_ptr */
+> +	addi	t0, t0, RISCV_SZPTR /* stc_ptr++ */
+> +	addi	s4, s4, RISCV_SZPTR /* dst_ptr++ */
+> +	sub	t3, t3, s6	/* i-- */
+> +	addi	s11, s11, 1	/* c++ */
+> +	beqz	t3, 1b		/* copy done ? */
+> +	j	3b
+> +
+> +4:
+> +	/* Pass the arguments to the next kernel  / Cleanup*/
+> +	mv	a0, s3
+> +	mv	a1, s2
+> +	mv	a2, s1
+> +
+> +	/* Cleanup */
+> +	mv	a3, zero
+> +	mv	a4, zero
+> +	mv	a5, zero
+> +	mv	a6, zero
+> +	mv	a7, zero
+> +
+> +	mv	s0, zero
+> +	mv	s1, zero
+> +	mv	s2, zero
+> +	mv	s3, zero
+> +	mv	s4, zero
+> +	mv	s5, zero
+> +	mv	s6, zero
+> +	mv	s7, zero
+> +	mv	s8, zero
+> +	mv	s9, zero
+> +	mv	s10, zero
+> +	mv	s11, zero
+> +
+> +	mv	t0, zero
+> +	mv	t1, zero
+> +	mv	t2, zero
+> +	mv	t3, zero
+> +	mv	t4, zero
+> +	mv	t5, zero
+> +	mv	t6, zero
+> +	csrw	sepc, zero
+> +	csrw	scause, zero
+> +	csrw	sscratch, zero
+> +
+> +	/*
+> +	 * Make sure the relocated code is visible
+> +	 * and jump to the new kernel
+> +	 */
+> +	fence.i
+> +
+> +	jalr	zero, a2, 0
+> +
+> +SYM_CODE_END(riscv_kexec_relocate)
+> +riscv_kexec_relocate_end:
+> +
+> +	.section ".rodata"
+> +SYM_DATA(riscv_kexec_relocate_size,
+> +	.long riscv_kexec_relocate_end - riscv_kexec_relocate)
+> +
+> diff --git a/arch/riscv/kernel/machine_kexec.c b/arch/riscv/kernel/machine_kexec.c
+> new file mode 100644
+> index 000000000..2ce6c3daf
+> --- /dev/null
+> +++ b/arch/riscv/kernel/machine_kexec.c
+> @@ -0,0 +1,186 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 FORTH-ICS/CARV
+> + *  Nick Kossifidis <mick@ics.forth.gr>
+> + */
+> +
+> +#include <linux/kexec.h>
+> +#include <asm/kexec.h>		/* For riscv_kexec_* symbol defines */
+> +#include <linux/smp.h>		/* For smp_send_stop () */
+> +#include <asm/cacheflush.h>	/* For local_flush_icache_all() */
+> +#include <asm/barrier.h>	/* For smp_wmb() */
+> +#include <asm/page.h>		/* For PAGE_MASK */
+> +#include <linux/libfdt.h>	/* For fdt_check_header() */
+> +#include <asm/set_memory.h>	/* For set_memory_x() */
+> +#include <linux/compiler.h>	/* For unreachable() */
+> +#include <linux/cpu.h>		/* For cpu_down() */
+> +
+> +/**
+> + * kexec_image_info - Print received image details
+> + */
+> +static void
+> +kexec_image_info(const struct kimage *image)
+> +{
+> +	unsigned long i;
+> + * harts and possibly devices etc) for a kexec reboot.
+> + */
+> +void machine_shutdown(void)
+> +
+> +	pr_debug("Kexec image info:\n");
+> +	pr_debug("\ttype:        %d\n", image->type);
+> +	pr_debug("\tstart:       %lx\n", image->start);
+> +	pr_debug("\thead:        %lx\n", image->head);
+> +	pr_debug("\tnr_segments: %lu\n", image->nr_segments);
+> +
+> +	for (i = 0; i < image->nr_segments; i++) {
+> +		pr_debug("\t    segment[%lu]: %016lx - %016lx", i,
+> +			image->segment[i].mem,
+> +			image->segment[i].mem + image->segment[i].memsz);
+> +		pr_debug("\t\t0x%lx bytes, %lu pages\n",
+> +			(unsigned long) image->segment[i].memsz,
+> +			(unsigned long) image->segment[i].memsz /  PAGE_SIZE);
+> +	}
+> +}
+> +
+> +/**
+> + * machine_kexec_prepare - Initialize kexec
+> + *
+> + * This function is called from do_kexec_load, when the user has
+> + * provided us with an image to be loaded. Its goal is to validate
+> + * the image and prepare the control code buffer as needed.
+> + * Note that kimage_alloc_init has already been called and the
+> + * control buffer has already been allocated.
+> + */
+> +int
+> +machine_kexec_prepare(struct kimage *image)
+> +{
+> +	struct kimage_arch *internal = &image->arch;
+> +	struct fdt_header fdt = {0};
+> +	void *control_code_buffer = NULL;
+> +	unsigned int control_code_buffer_sz = 0;
+> +	int i = 0;
+> +
+> +	kexec_image_info(image);
+> +
+> +	if (image->type == KEXEC_TYPE_CRASH) {
+> +		pr_warn("Loading a crash kernel is unsupported for now.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Find the Flattened Device Tree and save its physical address */
+> +	for (i = 0; i < image->nr_segments; i++) {
+> +		if (image->segment[i].memsz <= sizeof(fdt))
+> +			continue;
+> +
+> +		if (copy_from_user(&fdt, image->segment[i].buf, sizeof(fdt)))
+> +			continue;
+> +
+> +		if (fdt_check_header(&fdt))
+> +			continue;
+> +
+> +		internal->fdt_addr = (unsigned long) image->segment[i].mem;
+> +		break;
+> +	}
+> +
+> +	if (!internal->fdt_addr) {
+> +		pr_err("Device tree not included in the provided image\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Copy the assembler code for relocation to the control page */
+> +	control_code_buffer = page_address(image->control_code_page);
+> +	control_code_buffer_sz = page_size(image->control_code_page);
+> +	if (unlikely(riscv_kexec_relocate_size > control_code_buffer_sz)) {
+> +		pr_err("Relocation code doesn't fit within a control page\n");
+> +		return -EINVAL;
+> +	}
+> +	memcpy(control_code_buffer, riscv_kexec_relocate,
+> +		riscv_kexec_relocate_size);
+> +
+> +	/* Mark the control page executable */
+> +	set_memory_x((unsigned long) control_code_buffer, 1);
+> +
+> +	return 0;
+> +}
+> +
+> +
+> +/**
+> + * machine_kexec_cleanup - Cleanup any leftovers from
+> + *			   machine_kexec_prepare
+> + *
+> + * This function is called by kimage_free to handle any arch-specific
+> + * allocations done on machine_kexec_prepare. Since we didn't do any
+> + * allocations there, this is just an empty function. Note that the
+> + * control buffer is freed by kimage_free.
+> + */
+> +void
+> +machine_kexec_cleanup(struct kimage *image)
+> +{
+> +}
+> +
+> +
+> +/*
+> + * machine_shutdown - Prepare for a kexec reboot
+> + *
+> + * This function is called by kernel_kexec just before machine_kexec
+> + * below. Its goal is to prepare the rest of the system (the other
+> + * harts and possibly devices etc) for a kexec reboot.
+> + */
+> +void machine_shutdown(void)
+> +{
+> +	/*
+> +	 * No more interrupts on this hart
+> +	 * until we are back up.
+> +	 */
+> +	local_irq_disable();
+> +
+> +#if defined(CONFIG_HOTPLUG_CPU) && (CONFIG_SMP)
 
+Shouldn't it be defined(CONFIG_SMP) ?
+
+> +	smp_shutdown_nonboot_cpus(smp_processor_id());
+> +#endif
+> +}
+> +
+> +/**
+> + * machine_crash_shutdown - Prepare to kexec after a kernel crash
+> + *
+> + * This function is called by crash_kexec just before machine_kexec
+> + * below and its goal is similar to machine_shutdown, but in case of
+> + * a kernel crash. Since we don't handle such cases yet, this function
+> + * is empty.
+> + */
+> +void
+> +machine_crash_shutdown(struct pt_regs *regs)
+> +{
+> +}
+> +
+> +/**
+> + * machine_kexec - Jump to the loaded kimage
+> + *
+> + * This function is called by kernel_kexec which is called by the
+> + * reboot system call when the reboot cmd is LINUX_REBOOT_CMD_KEXEC,
+> + * or by crash_kernel which is called by the kernel's arch-specific
+> + * trap handler in case of a kernel panic. It's the final stage of
+> + * the kexec process where the pre-loaded kimage is ready to be
+> + * executed. We assume at this point that all other harts are
+> + * suspended and this hart will be the new boot hart.
+> + */
+> +void __noreturn
+> +machine_kexec(struct kimage *image)
+> +{
+> +	struct kimage_arch *internal = &image->arch;
+> +	unsigned long jump_addr = (unsigned long) image->start;
+> +	unsigned long first_ind_entry = (unsigned long) &image->head;
+> +	unsigned long this_hart_id = raw_smp_processor_id();
+> +	unsigned long fdt_addr = internal->fdt_addr;
+> +	void *control_code_buffer = page_address(image->control_code_page);
+> +	riscv_kexec_do_relocate do_relocate = control_code_buffer;
+> +
+> +	pr_notice("Will call new kernel at %08lx from hart id %lx\n",
+> +		  jump_addr, this_hart_id);
+> +	pr_notice("FDT image at %08lx\n", fdt_addr);
+> +
+> +	/* Make sure the relocation code is visible to the hart */
+> +	local_flush_icache_all();
+> +
+> +	/* Jump to the relocation code */
+> +	pr_notice("Bye...\n");
+> +	do_relocate(first_ind_entry, jump_addr, fdt_addr,
+> +		    this_hart_id, va_pa_offset);
+> +	unreachable();
+> +}
 > 
-> 
->> What we have in thermal now is good enough. We have DT support for both
->> periods so there is need even to write via sysfs:
->> polling-delay-passive
->> polling-delay
->> The device driver developers can rely on this reliable check in the
->> thermal framework.
->> I don't agree that IPA forces any specific setup.
-> 
-> Yes, it does IMO.
-> 
-> For instance, on the hi3660, the sensor is able to do interrupt mode, so
-> to be wake up when the first temperature threshold is reached.
-> 
-> But there is still the polling delay because the governor is IPA in this
-> case? There is also an additional trip-point0 which is not a target for
-> a cooling device, just put there to ensure the IPA has enough data when
-> reaching the second trip point which is the target.
-
-It's just a configuration which was there for years. Some who wants to
-use IPA have to be sure that it has this 2 trip points: switch_on and
-control. If you are talking about a new design, then it's not for this
-patch. The complete re-design of DT thermal zones, sensors, etc is
-a huge topic.
-
-> 
-> If, for any reason, we want to switch to step_wise, where the interrupt
-> mode is enough to trigger the mitigation (eg. with passive polling), and
-> ensure the system is not constantly waking up (and AFAICT even 1s
-> periodic wake up can have a significant impact on battery life), it
-> won't be possible because of the device tree.
-
-What do you mean 'and ensure the system is not constantly waking up'?
-Thermal workqueue mechanism doesn't cause system wakeup from suspend
-AFAIK, unless something has changed.
-
-I don't think it has 'significant impact on battery life'. The phone is
-not woken-up when it's in suspend after power button was hit and screen
-is off. There will be no thermal delayed work timer firing.
-
-Then if we are considering a low system utilization, which would allow
-to fire the thermal workqueue and run IPA every 1s, IPA does it's
-computation in less then 10us on single big core with 1GHz freq for a
-thermal zone with 2 cooling devices.
-Thus, for a big CPU running 100% at 1GHz power usage is ~500mW. We can
-estimate in various ways the cost of this 10us IPA running time.
-It's ~5uW or, when we have 1V (in Juno) for that freq, then
-amps=500mA * 10us / 1000000us = 5uA
-
-Even when we add firing & scheduling workqueue cost of CPU idle wake-up
-if needed, then still the impact is not 'significant'. It's not a
-frequent task, this 1sec thermal+IPA check. Even if you double or triple 
-this 10us overhead due to idle wake-up.
-
-That's why we have two values for polling, one is longer, the impact is
-low and not 'significant'.
-
-There is plenty of other software which might have bigger impact than
-this 1sec polling.
-
-> 
-> Moreover, some sensors do not use their interrupt mode because of IPA
-> setup or they use it incorrectly.
-
-Sensors have two modes, I don't see why only IRQ is OK.
-Polling a sensor every 1s is also OK, it's not waking up the whole
-device from suspend.
-
-> 
-> See my concern here ? IPA has an impact on the thermal core and the
-> sensor, while those should be governor agnostic.
-
-I don't see this as argument for blaming that current design of thermal
-has 'significant impact' and is wrong. I don't agree that IPA is the
-root cause of this design.
-
-> 
->> If the thermal is
->> configured to do the polling of the temp sensor, because maybe there
->> are no HW interrupts, then there is no other way. The Arm SCMI sensors
->> were one of them, where we had to send a SCMI request. There was no
->> notifications/IRQs that temp crossed some trip point. Now it should be
->> better, but still it depends on vendor's FW implementation if there is
->> IRQ.
-> 
-> I don't know all the platforms but so far the interrupt mode is largely
-> supported, to not say in the vast majority.
-
-It's not obligatory to support IRQ for all trip points per sensor.
-There are platforms which support a number, e.g. 4 IRQs, then the
-rest of trip points must be defined as polling. This 'mix' for
-a single sensor is a concern for me.
-
-In other platforms which use SCMI, till recently, there was no IRQs
-for sensors protocols (with latest notifications support it
-might be possible in kernel, but still FW must support it).
-
-> 
->> The reliable polling is not IPA 'feature request'.
->> We cannot avoid polling in some configurations. Thermal framework
->> must support this scenario: polling/checking temp sensor even when
->> the temp is low.
-> 
-> I agree with that, I'm not questioning about removing the polling.
-> 
->> Thus, since framework must check the temp, calling
->> the governor->throttle() doesn't harm (as I said every 1sec).
->> Furthermore, the governor interprets what trip point and temperature to
->> interpret and how to react.
-> 
-> Precisely, that is the reason why I disagree. The thermal core should
-> switch on/off the mitigation (say cool down / warm up) and the governor
-> applies its recipe. With polling and sampling tied together it is not
-> possible to create self-encapsulated components. As a result we have bug
-> like [1] :/
-
-I wouldn't blame that this design is all wrong. Framework calls governor
-update callback for all temperature and that's it.
-
-Switching governors is tricky, especially when they rely not only on
-their private data, but data from it's devices private fields, like this
-example step_wise.
-
-This step_wise governor doesn't even provide bind_to_tz() and
-unbind_from_tz(). Maybe it should setup itself before starting
-operating on the thermal zone after binding?
