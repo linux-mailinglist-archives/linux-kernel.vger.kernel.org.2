@@ -2,332 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7B3355B00
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4136355B03
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244447AbhDFSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:06:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22007 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232876AbhDFSGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:06:55 -0400
-IronPort-SDR: RllVXhoTJTKLzCzTQOZkDmJasdPOA8ZF5FjL9kMIlaIjUCncCsDCvSEuNFuKwTZoWtRSwx1YF/
- TWXXAPa1qsRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="213502092"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="213502092"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 11:06:47 -0700
-IronPort-SDR: vV7N1tOOUS71nugDDBIpJDry+Bab/mlrbdsmHmCrAQfyr0OQFrQHI2zK0aLS1OuaQQK64sq+11
- Tl34LmpAZtCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="396336621"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 06 Apr 2021 11:06:46 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.27])
-        by linux.intel.com (Postfix) with ESMTP id AD1695805A1;
-        Tue,  6 Apr 2021 11:06:46 -0700 (PDT)
-Message-ID: <ea7182237c98b2eff836b485cf61723bb6bdfa71.camel@linux.intel.com>
-Subject: Re: [PATCH v4] platform/x86: intel_pmc_core: export platform
- global_reset via sysfs.
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tamar Mashiah <tamar.mashiah@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date:   Tue, 06 Apr 2021 11:06:46 -0700
-In-Reply-To: <d5021cc2-46c7-7c78-73b1-af50524e1db2@redhat.com>
-References: <20210402152113.1191796-1-tomas.winkler@intel.com>
-         <d5021cc2-46c7-7c78-73b1-af50524e1db2@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S244528AbhDFSHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:07:33 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:54100 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232876AbhDFSHc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:07:32 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 9FA2AC064C;
+        Tue,  6 Apr 2021 18:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617732443; bh=3jN0W3NSIoO9aFezPc8bhncPnyJr7BMqeQk6UOqNiR8=;
+        h=From:To:Subject:Date:From;
+        b=HXKVMpMZJI7Fc08gK6YWrB5j2m/wfdYctEHQAOuY6Ag2tS6287owdx/wMWLBmy4/3
+         gkzqAmcpMsetKDJSXLaykERXPDzRKuc4+ul9XE0qBAtLFMAbxFnSR4mPCcts5LQfk+
+         DurcjFerSmR7z8Vz2GluL2U2LRxG3leFAjebtQ6/JyJkZfzH9bxcHYTczeqyr0W9ne
+         YvIqxTjq0nc/JRY7kQ00UUPLbpX1q3czgIklZGtNI5kRSyufAEBjhf4EvBFLf8Jvy+
+         7TQAAvJgLAws2BsRswcfOWiXthPe+JWYqtZxeNhecA8qYm0Dzc726EFDfAtiStVK0S
+         Tir6AsbK1JWsA==
+Received: from de02dwvm009.internal.synopsys.com (de02dwvm009.internal.synopsys.com [10.225.17.73])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 1517BA0094;
+        Tue,  6 Apr 2021 18:07:17 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH] Documentation: misc-devices: Fix indentation, formatting, and update outdated info
+Date:   Tue,  6 Apr 2021 20:06:52 +0200
+Message-Id: <689d1827d98b2f7a51175ff1efd3a92d8191b28d.1617732412.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomas,
+Fixes indentation issues reported by doing *make htmldocs* as well some
+text formatting.
 
-On Tue, 2021-04-06 at 15:11 +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 4/2/21 5:21 PM, Tomas Winkler wrote:
-> > From: Tamar Mashiah <tamar.mashiah@intel.com>
-> > 
-> > During PCH (platform/board) manufacturing process a global reset
-> > has to be induced in order for configuration changes take the effect
-> > upon following platform reset.
-> > This setting was commonly done by accessing PMC registers via
-> > /dev/mem
-> > but due to security concern /dev/mem access is much restricted, hence
-> > the reason for exposing this setting via dedicated sysfs interface.
-> > To prevent post manufacturing abuse the register is protected
-> > by hardware locking.
-> 
-> The purpose of this reset functionality is not entirely clear to me.
-> 
-> Is this only used during production of a board? Or is this also
-> something
-> which a user/reseller may use as part of a factory-reset procedure?
-> 
-> If this is only used once during production, then I'm not sure if
-> introducing a sysfs file for this is desirable.
-> 
-> Can you please provide a new version where the purpsoe of the newly
-> introduced sysfs file is made more clear, both in the commit-msg
-> as well as in the:
+Besides these fixes, there was some outdated information related to stop
+file interface in sysfs.
 
-Could you also rebase it on the for-next branch at
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+---
+ Documentation/misc-devices/dw-xdata-pcie.rst | 62 +++++++++++++++++++---------
+ 1 file changed, 43 insertions(+), 19 deletions(-)
 
-It has patches for intel_pmc_core. I also need to refactor my latest
-patch set on top of this one since you're adding the same new register
-as I am.
-
-> 
-> Documentation/ABI/testing/sysfs-platform-intel-pmc
-> 
-> File ?
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> > 
-> > The register in MMIO space is defined for Cannon Lake and newer PCHs.
-> > 
-> > Cc: David E Box <david.e.box@intel.com>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > ---
-> > 2:
-> > 1. Add locking for reading the ET3 register  (Andy)
-> > 2. Fix few style issues (Andy)
-> > V3:
-> > 1. Resend
-> > v4:
-> > 1. Fix return statement (Andy) 
-> > 2. Specify manufacturing process (Enrico)
-> > 
-> >  .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
-> >  MAINTAINERS                                   |  1 +
-> >  drivers/platform/x86/intel_pmc_core.c         | 97
-> > +++++++++++++++++++
-> >  drivers/platform/x86/intel_pmc_core.h         |  6 ++
-> >  4 files changed, 115 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-
-> > pmc
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > new file mode 100644
-> > index 000000000000..7ce00e77fbcd
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > @@ -0,0 +1,11 @@
-> > +What:          /sys/devices/platform/<platform>/global_reset
-> > +Date:          Apr 2021
-> > +KernelVersion: 5.13
-> > +Contact:       "Tomas Winkler" <tomas.winkler@intel.com>
-> > +Description:
-> > +               Display global reset setting bits for PMC.
-> > +                       * bit 31 - global reset is locked
-> > +                       * bit 20 - global reset is set
-> > +               Writing bit 20 value to the global_reset will induce
-> > +               a platform global reset upon consequent platform
-> > reset.
-> > +               in case the register is not locked.
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 04f68e0cda64..618676eba8c8 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -9166,6 +9166,7 @@ M:        Rajneesh Bhardwaj <
-> > irenic.rajneesh@gmail.com>
-> >  M:     David E Box <david.e.box@intel.com>
-> >  L:     platform-driver-x86@vger.kernel.org
-> >  S:     Maintained
-> > +F:     Documentation/ABI/testing/sysfs-platform-intel-pmc
-> >  F:     drivers/platform/x86/intel_pmc_core*
-> >  
-> >  INTEL PMIC GPIO DRIVERS
-> > diff --git a/drivers/platform/x86/intel_pmc_core.c
-> > b/drivers/platform/x86/intel_pmc_core.c
-> > index ee2f757515b0..8afc198550a4 100644
-> > --- a/drivers/platform/x86/intel_pmc_core.c
-> > +++ b/drivers/platform/x86/intel_pmc_core.c
-> > @@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
-> >         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
-> >         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
-> >         .ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
-> > +       .etr3_offset = ETR3_OFFSET,
-> >  };
-> >  
-> >  static const struct pmc_reg_map icl_reg_map = {
-> > @@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
-> >         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
-> >         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
-> >         .ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
-> > +       .etr3_offset = ETR3_OFFSET,
-> >  };
-> >  
-> >  static const struct pmc_bit_map tgl_clocksource_status_map[] = {
-> > @@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
-> >         .lpm_sts = tgl_lpm_maps,
-> >         .lpm_status_offset = TGL_LPM_STATUS_OFFSET,
-> >         .lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
-> > +       .etr3_offset = ETR3_OFFSET,
-> >  };
-> >  
-> >  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int
-> > reg_offset)
-> > @@ -603,6 +606,99 @@ static inline u64
-> > pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
-> >         return (u64)value * pmcdev->map->slp_s0_res_counter_step;
-> >  }
-> >  
-> > +static int set_global_reset(struct pmc_dev *pmcdev)
-> > +{
-> > +       const struct pmc_reg_map *map = pmcdev->map;
-> > +       u32 reg;
-> > +       int err;
-> > +
-> > +       if (!map->etr3_offset)
-> > +               return -EOPNOTSUPP;
-> > +
-> > +       mutex_lock(&pmcdev->lock);
-> > +
-> > +       /* check if CF9 is locked */
-> > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > +       if (reg & ETR3_CF9LOCK) {
-> > +               err = -EACCES;
-> > +               goto out_unlock;
-> > +       }
-> > +
-> > +       /* write CF9 global reset bit */
-> > +       reg |= ETR3_CF9GR;
-> > +       pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
-> > +
-> > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > +       if (!(reg & ETR3_CF9GR)) {
-> > +               err = -EIO;
-> > +               goto out_unlock;
-> > +       }
-> > +
-> > +       err = 0;
-> > +
-> > +out_unlock:
-> > +       mutex_unlock(&pmcdev->lock);
-> > +       return err;
-> > +}
-> > +
-> > +static ssize_t global_reset_show(struct device *dev,
-> > +                                struct device_attribute *attr, char
-> > *buf)
-> > +{
-> > +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> > +       const struct pmc_reg_map *map = pmcdev->map;
-> > +       u32 reg;
-> > +
-> > +       if (!map->etr3_offset)
-> > +               return -EOPNOTSUPP;
-> > +
-> > +       mutex_lock(&pmcdev->lock);
-> > +
-> > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > +       reg &= ETR3_CF9GR | ETR3_CF9LOCK;
-> > +
-> > +       mutex_unlock(&pmcdev->lock);
-> > +
-> > +       return sysfs_emit(buf, "0x%08x", reg);
-> > +}
-> > +
-> > +static ssize_t global_reset_store(struct device *dev,
-> > +                                 struct device_attribute *attr,
-> > +                                 const char *buf, size_t len)
-> > +{
-> > +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> > +       int err;
-> > +       u32 reg;
-> > +
-> > +       err = kstrtouint(buf, 16, &reg);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* allow only CF9 writes */
-> > +       if (reg != ETR3_CF9GR)
-> > +               return -EINVAL;
-> > +
-> > +       err = set_global_reset(pmcdev);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return len;
-> > +}
-> > +static DEVICE_ATTR_RW(global_reset);
-> > +
-> > +static struct attribute *pmc_attrs[] = {
-> > +       &dev_attr_global_reset.attr,
-> > +       NULL
-> > +};
-> > +
-> > +static const struct attribute_group pmc_attr_group = {
-> > +       .attrs = pmc_attrs,
-> > +};
-> > +
-> > +static const struct attribute_group *pmc_dev_groups[] = {
-> > +       &pmc_attr_group,
-> > +       NULL
-> > +};
-> > +
-> >  static int pmc_core_dev_state_get(void *data, u64 *val)
-> >  {
-> >         struct pmc_dev *pmcdev = data;
-> > @@ -1364,6 +1460,7 @@ static struct platform_driver pmc_core_driver =
-> > {
-> >                 .name = "intel_pmc_core",
-> >                 .acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
-> >                 .pm = &pmc_core_pm_ops,
-> > +               .dev_groups = pmc_dev_groups,
-> >         },
-> >         .probe = pmc_core_probe,
-> >         .remove = pmc_core_remove,
-> > diff --git a/drivers/platform/x86/intel_pmc_core.h
-> > b/drivers/platform/x86/intel_pmc_core.h
-> > index f33cd2c34835..98ebdfe57138 100644
-> > --- a/drivers/platform/x86/intel_pmc_core.h
-> > +++ b/drivers/platform/x86/intel_pmc_core.h
-> > @@ -200,6 +200,11 @@ enum ppfear_regs {
-> >  #define TGL_LPM_STATUS_OFFSET                  0x1C3C
-> >  #define TGL_LPM_LIVE_STATUS_OFFSET             0x1C5C
-> >  
-> > +/* Extended Test Mode Register 3 (CNL and later) */
-> > +#define ETR3_OFFSET                            0x1048
-> > +#define ETR3_CF9GR                             BIT(20)
-> > +#define ETR3_CF9LOCK                           BIT(31)
-> > +
-> >  const char *tgl_lpm_modes[] = {
-> >         "S0i2.0",
-> >         "S0i2.1",
-> > @@ -263,6 +268,7 @@ struct pmc_reg_map {
-> >         const u32 lpm_residency_offset;
-> >         const u32 lpm_status_offset;
-> >         const u32 lpm_live_status_offset;
-> > +       const u32 etr3_offset;
-> >  };
-> >  
-> >  /**
-> > 
-> 
-
+diff --git a/Documentation/misc-devices/dw-xdata-pcie.rst b/Documentation/misc-devices/dw-xdata-pcie.rst
+index fd75c93..a956e1a 100644
+--- a/Documentation/misc-devices/dw-xdata-pcie.rst
++++ b/Documentation/misc-devices/dw-xdata-pcie.rst
+@@ -4,37 +4,61 @@
+ Driver for Synopsys DesignWare PCIe traffic generator (also known as xData)
+ ===========================================================================
+ 
++Supported chips:
++Synopsys DesignWare PCIe prototype solution
++
++Data sheet:
++Not freely available
++
++Author:
++Gustavo Pimentel <gustavo.pimentel@synopsys.com>
++
++Description
++-----------
++
+ This driver should be used as a host-side (Root Complex) driver and Synopsys
+ DesignWare prototype that includes this IP.
+ 
+-The "dw-xdata-pcie" driver can be used to enable/disable PCIe traffic
++The dw-xdata-pcie driver can be used to enable/disable PCIe traffic
+ generator in either direction (mutual exclusion) besides allowing the
+ PCIe link performance analysis.
+ 
+ The interaction with this driver is done through the module parameter and
+ can be changed in runtime. The driver outputs the requested command state
+-information to /var/log/kern.log or dmesg.
++information to ``/var/log/kern.log`` or dmesg.
++
++Example
++-------
++
++Write TLPs traffic generation - Root Complex to Endpoint direction
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Generate traffic::
++
++        # echo 1 > /sys/class/misc/dw-xdata-pcie.0/write
+ 
+-Request write TLPs traffic generation - Root Complex to Endpoint direction
+-- Command:
+-	echo 1 > /sys/class/misc/dw-xdata-pcie/write
++Get link throughput in MB/s::
+ 
+-Get write TLPs traffic link throughput in MB/s
+-- Command:
+-        cat /sys/class/misc/dw-xdata-pcie/write
+-- Output example:
++        # cat /sys/class/misc/dw-xdata-pcie.0/write
+ 	204
+ 
+-Request read TLPs traffic generation - Endpoint to Root Complex direction:
+-- Command:
+-	echo 1 > /sys/class/misc/dw-xdata-pcie/read
++Stop traffic in any direction::
+ 
+-Get read TLPs traffic link throughput in MB/s
+-- Command:
+-        cat /sys/class/misc/dw-xdata-pcie/read
+-- Output example:
++        # echo 0 > /sys/class/misc/dw-xdata-pcie.0/write
++
++Read TLPs traffic generation - Endpoint to Root Complex direction
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Generate traffic::
++
++        # echo 1 > /sys/class/misc/dw-xdata-pcie.0/read
++
++Get link throughput in MB/s::
++
++        # cat /sys/class/misc/dw-xdata-pcie.0/read
+ 	199
+ 
+-Request to stop any current TLP transfer:
+-- Command:
+-	echo 1 > /sys/class/misc/dw-xdata-pcie/stop
++Stop traffic in any direction::
++
++        # echo 0 > /sys/class/misc/dw-xdata-pcie.0/read
++
+-- 
+2.7.4
 
