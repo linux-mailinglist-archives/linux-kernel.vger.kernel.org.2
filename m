@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2853552E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574663552E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343590AbhDFLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:55:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343579AbhDFLzU (ORCPT
+        id S1343595AbhDFLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:55:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15555 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243355AbhDFLze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:55:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617710112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zk7owICe1peTttMqo4Erpsflm67yyAvd+UqYuEsUbmk=;
-        b=cLBqsD6jCcX7knfHDDMhm1h6AJC3Ir6urEURlAMhDjYfso8j9o1qKyG/QuWhd4lGDUW/jO
-        2q1Z0AW2a9uTJ9paR6cD46NQCE+KK3JYKBqikNtN8B3nv+X7Mo6XTGQPG4Lwil1gGuOg6B
-        JJpd9Hkz6J5FB+2EI4lyKdU1DEM7/GI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-KwBAICdzNj2LQefWJILyLw-1; Tue, 06 Apr 2021 07:55:09 -0400
-X-MC-Unique: KwBAICdzNj2LQefWJILyLw-1
-Received: by mail-ej1-f71.google.com with SMTP id d6so5334860ejd.15
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 04:55:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zk7owICe1peTttMqo4Erpsflm67yyAvd+UqYuEsUbmk=;
-        b=P6ZAEooTUWveM7IuHM2KI4p34Uv1aZVcwgEgVJsRBpNN539yLoz0Ypcpd2nd8U4Gdi
-         B6zxobGqBMUTTwJjCJemuupqtYYmuL8ci/RuAC0pcOveq1rW/fOKUspiVojaHb4WeXW5
-         tzT+KdvELsmPzmnby8wyu6o27IOnmBCj47klhcsBc22L3gCusCjwcWjGB3fmcaclI7Jm
-         rrnXABr6NPrYzDAWsoFrUo9Vu+WCfCzSOha+NXJIqAEl4BDdtor1DcWM2WKQ3EPj0K9W
-         jhv7Wr2Fl1grSpBLbPVRjhdkTMV+WT1guXUhx2H4IXxqtIWLmzTrrJvGzbX2d2th3dtq
-         JLjQ==
-X-Gm-Message-State: AOAM532ed9qFHxsod7BrIY38S9Og0xEvHALQD8Hvs9hFx6ouRl41pFl7
-        oHZ/jJZWUyScVxQ7Mb6zcdAzwCIn74tSuHNNbwG4dv9pZ8aHrn087ZlXLd1m7Dc3FRxWnJEsser
-        12lH5nRey1oIvEynGVo9iS8BE
-X-Received: by 2002:a05:6402:1051:: with SMTP id e17mr37550605edu.42.1617710108543;
-        Tue, 06 Apr 2021 04:55:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzt7vEfqu3E+EtKca7ic/h5hAW9ZOPJVZtu/P5HkIDCwYCqlti8U5tedxVhNiXf8T7tpyjU7A==
-X-Received: by 2002:a05:6402:1051:: with SMTP id e17mr37550593edu.42.1617710108364;
-        Tue, 06 Apr 2021 04:55:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w25sm8547061edq.66.2021.04.06.04.55.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 04:55:07 -0700 (PDT)
-Subject: Re: [PATCH 2/4] KVM: MIPS: rework flush_shadow_* callbacks into one
- that prepares the flush
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        seanjc@google.com, "open list:MIPS" <linux-mips@vger.kernel.org>
-References: <20210402155807.49976-1-pbonzini@redhat.com>
- <20210402155807.49976-3-pbonzini@redhat.com>
- <CAAhV-H4wskLvGD1hhuS2ZDOBNenCcTd_K8GkYn1GOzwnEvTDXQ@mail.gmail.com>
- <aab8a915-6e73-3cba-5392-8f940479a011@redhat.com>
- <CAAhV-H72z9DbbV=_fEhCeeOaP8fQ_qtr4rQMD=f5n08ekG=Ygw@mail.gmail.com>
- <510e59e7-91b0-6754-8fb5-6a936ef47b3c@redhat.com>
- <20210406113957.GB8277@alpha.franken.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c0b70a90-3388-858d-2da7-4d7b62fda6db@redhat.com>
-Date:   Tue, 6 Apr 2021 13:55:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 6 Apr 2021 07:55:34 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF5Vw4CgQzPnlj;
+        Tue,  6 Apr 2021 19:52:40 +0800 (CST)
+Received: from mdc.localdomain (10.175.104.57) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 19:55:19 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <huangguobin4@huawei.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] gma500: Use DEFINE_SPINLOCK() for spinlock
+Date:   Tue, 6 Apr 2021 19:55:14 +0800
+Message-ID: <1617710114-48071-1-git-send-email-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210406113957.GB8277@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/21 13:39, Thomas Bogendoerfer wrote:
-> On Tue, Apr 06, 2021 at 08:05:40AM +0200, Paolo Bonzini wrote:
->> On 06/04/21 03:36, Huacai Chen wrote:
->>>> I tried the merge and it will be enough for Linus to remove
->>>> arch/mips/kvm/trap_emul.c.  So I will leave it as is, but next time I'd
->>>> prefer KVM MIPS changes to go through either my tree or a common topic
->>>> branch.
->>> Emmm, the TE removal series is done by Thomas, not me.:)
->>
->> Sure, sorry if the sentence sounded like it was directed to you.  No matter
->> who wrote the code, synchronization between trees is only the maintainers'
->> task. :)
-> 
-> Sorry about the mess. I'll leave arch/mips/kvm to go via your tree then.
+From: Guobin Huang <huangguobin4@huawei.com>
 
-No problem.  In this specific case, at some point I'll pull from 
-mips-next, prior to sending the pull request to Linus.  It will look 
-just like other KVM submaintainer pulls.
+spinlock can be initialized automatically with DEFINE_SPINLOCK()
+rather than explicitly calling spin_lock_init().
 
-Paolo
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
+---
+ drivers/gpu/drm/gma500/power.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/gma500/power.c b/drivers/gpu/drm/gma500/power.c
+index 56ef88237ef6..f07641dfa5a4 100644
+--- a/drivers/gpu/drm/gma500/power.c
++++ b/drivers/gpu/drm/gma500/power.c
+@@ -36,7 +36,7 @@
+ #include <linux/pm_runtime.h>
+ 
+ static struct mutex power_mutex;	/* Serialize power ops */
+-static spinlock_t power_ctrl_lock;	/* Serialize power claim */
++static DEFINE_SPINLOCK(power_ctrl_lock);	/* Serialize power claim */
+ 
+ /**
+  *	gma_power_init		-	initialise power manager
+@@ -55,7 +55,6 @@ void gma_power_init(struct drm_device *dev)
+ 	dev_priv->display_power = true;	/* We start active */
+ 	dev_priv->display_count = 0;	/* Currently no users */
+ 	dev_priv->suspended = false;	/* And not suspended */
+-	spin_lock_init(&power_ctrl_lock);
+ 	mutex_init(&power_mutex);
+ 
+ 	if (dev_priv->ops->init_pm)
 
