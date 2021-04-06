@@ -2,322 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFD235498C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 02:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CBD354991
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 02:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhDFAD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 20:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S232816AbhDFAJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 20:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231544AbhDFADw (ORCPT
+        with ESMTP id S238224AbhDFAJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 20:03:52 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F945C06174A;
-        Mon,  5 Apr 2021 17:03:45 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so12970520otk.5;
-        Mon, 05 Apr 2021 17:03:45 -0700 (PDT)
+        Mon, 5 Apr 2021 20:09:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA04C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 17:09:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u128so18578578ybf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 17:09:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mop3t/gayCivwWkXvjHrWHHgFOa0P9xBtC5TJrJX3fY=;
-        b=HfAtcrFN20ha8/lC5u/lcFrjP2coZWKABboWUA/M32w+1G3aYvmPJbQ0WNERLSqW3V
-         mPK8T5W5vIE6HAGuf0qkAsutyoe+s9BtWERkCHPdkbpM2dOKS2PbdS39R2fqK6tBHvZn
-         dxm/z9JwJq1NkRDxOtD8TpV+hljSP967FeUaLt8fZJy1Ze3mFMs1B3abzo+hqd7fztRr
-         nMEmbg5CLytSKWdX6N4jVk8ZRkZSDzwX/7nLXK26TxHkV4+55haczKDKDGAFidRiD5aO
-         tqPDEuz2ggyGvBBucz+3bMkaHoSJxe4l7BTaswgbIyFM1Dor0VBYPxjRm4Lpz3neBGZ4
-         J0AQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=SbZbPTFJCpAYJ6ceslhgL56jY3VfoMYUKBkk6r45HOA=;
+        b=UZ9KBrbI1nM5xWuW0nXCQxtVxWoF1SZ25VkOCplQ+47tOX9JP+PJmjURhaLLNtXhyk
+         3F3h2hbNyjKoSemmCs8bvDw0BPhtD64GzUFH08dJxnkhoEK+WeaEY8JVrQlHi/41c1Zu
+         Ze/UfoBaoeiH4fF077FjUMKUmoujB4X9friykVh6uM7Ceh0Q5KaOaAM/vXElJNETc3w6
+         SYxrrW+ESxgWySiYyMbE77PsbB6OAScAhcURo9CSrXqytfzFXjB2k2T4Q3GX25BYSely
+         9ZMsxQ5GPzaBRyj5XO3uDB1f9Z4ciwDNH1dOzFl28oRGrLD2z8HH9emjhNGnrv7N1gRy
+         b0Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Mop3t/gayCivwWkXvjHrWHHgFOa0P9xBtC5TJrJX3fY=;
-        b=L76tMPoxyjjTloSw/DNLDK4KQBO1NWdkhoGqJ3OMYe8ZriyUAnLkSQ51pEGjq41dbW
-         slQ3BX/zbTj8JtoTIWfpVqHExbWur91T3TkzaOH7ge0AojtlyzMg7utxA54DIbKhhoA9
-         jd1SVl0K9IiKthYbEJXgQr1wLrnW/ZGYaWx3i7xJUz0CyiaR3waqPOWvMedETOBFCLDA
-         /8bSpOrVjxCI2otXiepfG4dl474p3Vjf0iv09D3ndojRsZNJ+IF1P45ftfaIvwppBhTq
-         X/zKBUzJp1YZLV4eDYOJCyHMMd1mjePqndA1oSgjvkRVC/Hg4Ef77QGxwoP7qmVeSeP+
-         Pbqw==
-X-Gm-Message-State: AOAM532AyVx6l3puVgnVkFOkMhW9wM3Z8Yt6eKuGEQ5EdCLzDP/TJohD
-        Vm4BGEDGnddS/xtk4ujFnLA=
-X-Google-Smtp-Source: ABdhPJzRK8WaNDNPhzfA3Eo08iVnh41hRM0P22PZQlft8ZdlaS0YGCYQWk/soPKb1AAOubcVnQgskw==
-X-Received: by 2002:a9d:1c89:: with SMTP id l9mr24483896ota.25.1617667424724;
-        Mon, 05 Apr 2021 17:03:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g61sm4272606otb.65.2021.04.05.17.03.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 17:03:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: intel-m10-bmc-hwmon: add sensor support of
- Intel D5005 card
-To:     matthew.gerlach@linux.intel.com, hao.wu@intel.com, trix@redhat.com,
-        mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
-        jdelvare@suse.com, lee.jones@linaro.org,
-        linux-hwmon@vger.kernel.org, russell.h.weight@linux.intel.com
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2bafe404-c708-a1eb-6584-2345225282dc@roeck-us.net>
-Date:   Mon, 5 Apr 2021 17:03:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=SbZbPTFJCpAYJ6ceslhgL56jY3VfoMYUKBkk6r45HOA=;
+        b=YQYGZryHwh+lEcreE9zlOSEa/TAsXzWf1LJnN198nRiM/SPKVJSEXMTzE/Sa1lgFHh
+         +Iz5E5hRC17qU77UQRP1lJAAKfBkDKfTcIKAhvZuQMp/jvAnaboil2Vy2rsZ2CLAy/PQ
+         0TvztOdGzFE8EM6tbY7WrxY51Y+w7stP+ZwAG3dUzdhW2yQ3vHH+vHkyidTAMmgdXGdn
+         CozZh1HKXa7o017G2T93SEMQql5Jn20ATkIWcXMY6f9k9Km/qrtFDf9i84KeIW4R/Haq
+         9VMB1gI89RqkBULMH0RHj1cbT4GQwPG9nC7vL9M2RTKsYJzoWHEhs2vS+wV4t1+LknNb
+         uHNA==
+X-Gm-Message-State: AOAM531HHorby2kO7e1SqAILS8X4L2OdzE1CIacKucDGGBgq573JePiY
+        pQZQGBbi8VguxtkEubJUjMhp0Pes8SFSFZ84vb4=
+X-Google-Smtp-Source: ABdhPJyH2Z75+zMmJGcVncBwU1GYAMfWaNqXsTaEBlC4zPdwlyE4IHogLTW0mZbB4cUHkPX5YurIObOVuoCJ0Pxtw68=
+X-Received: from cfijalkovich.mtv.corp.google.com ([2620:15c:211:202:76bb:8f57:ed5a:ae22])
+ (user=cfijalkovich job=sendgmr) by 2002:a25:4014:: with SMTP id
+ n20mr38672945yba.39.1617667774125; Mon, 05 Apr 2021 17:09:34 -0700 (PDT)
+Date:   Mon,  5 Apr 2021 17:09:30 -0700
+Message-Id: <20210406000930.3455850-1-cfijalkovich@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v2] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
+From:   Collin Fijalkovich <cfijalkovich@google.com>
+Cc:     songliubraving@fb.com, surenb@google.com, hridya@google.com,
+        kaleshsingh@google.com, hughd@google.com, timmurray@google.com,
+        william.kucharski@oracle.com, akpm@linux-foundation.org,
+        willy@infradead.org, Collin Fijalkovich <cfijalkovich@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 4:53 PM, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> 
-> Like the Intel N3000 card, the Intel D5005 has a MAX10 based
-> BMC.  This commit adds support for the D5005 sensors that are
-> monitored by the MAX10 BMC.
-> 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@linux.intel.com>
-> ---
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 122 ++++++++++++++++++++++++++++++++++++
->  drivers/mfd/intel-m10-bmc.c         |  10 +++
->  2 files changed, 132 insertions(+)
-> 
-> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> index 17d5e6b..bd7ed2e 100644
-> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> @@ -99,6 +99,50 @@ struct m10bmc_hwmon {
->  	NULL
->  };
->  
-> +static const struct m10bmc_sdata d5005bmc_temp_tbl[] = {
-> +	{ 0x100, 0x104, 0x108, 0x10c, 0x0, 500, "Board Inlet Air Temperature" },
-> +	{ 0x110, 0x114, 0x118, 0x0, 0x0, 500, "FPGA Core Temperature" },
-> +	{ 0x11c, 0x120, 0x124, 0x128, 0x0, 500, "Board Exhaust Air Temperature" },
-> +	{ 0x12c, 0x130, 0x134, 0x0, 0x0, 500, "FPGA Transceiver Temperature" },
-> +	{ 0x138, 0x13c, 0x140, 0x144, 0x0, 500, "RDIMM0 Temperature" },
-> +	{ 0x148, 0x14c, 0x150, 0x154, 0x0, 500, "RDIMM1 Temperature" },
-> +	{ 0x158, 0x15c, 0x160, 0x164, 0x0, 500, "RDIMM2 Temperature" },
-> +	{ 0x168, 0x16c, 0x170, 0x174, 0x0, 500, "RDIMM3 Temperature" },
-> +	{ 0x178, 0x17c, 0x180, 0x0, 0x0, 500, "QSFP0 Temperature" },
-> +	{ 0x188, 0x18c, 0x190, 0x0, 0x0, 500, "QSFP1 Temperature" },
-> +	{ 0x1a0, 0x1a4, 0x1a8, 0x0, 0x0, 500, "3.3v Temperature" },
-> +	{ 0x1bc, 0x1c0, 0x1c4, 0x0, 0x0, 500, "VCCERAM Temperature" },
-> +	{ 0x1d8, 0x1dc, 0x1e0, 0x0, 0x0, 500, "VCCR Temperature" },
-> +	{ 0x1f4, 0x1f8, 0x1fc, 0x0, 0x0, 500, "VCCT Temperature" },
-> +	{ 0x210, 0x214, 0x218, 0x0, 0x0, 500, "1.8v Temperature" },
-> +	{ 0x22c, 0x230, 0x234, 0x0, 0x0, 500, "12v Backplane Temperature" },
-> +	{ 0x248, 0x24c, 0x250, 0x0, 0x0, 500, "12v AUX Temperature" },
-> +};
-> +
-> +static const struct m10bmc_sdata d5005bmc_in_tbl[] = {
-> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QSFP0 Supply Voltage" },
-> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "QSFP1 Supply Voltage" },
-> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Voltage" },
-> +	{ 0x1ac, 0x1b0, 0x1b4, 0x0, 0x0, 1, "3.3v Voltage" },
-> +	{ 0x1c8, 0x1cc, 0x1d0, 0x0, 0x0, 1, "VCCERAM Voltage" },
-> +	{ 0x1e4, 0x1e8, 0x1ec, 0x0, 0x0, 1, "VCCR Voltage" },
-> +	{ 0x200, 0x204, 0x208, 0x0, 0x0, 1, "VCCT Voltage" },
-> +	{ 0x21c, 0x220, 0x224, 0x0, 0x0, 1, "1.8v Voltage" },
-> +	{ 0x238, 0x0, 0x0, 0x0, 0x23c, 1, "12v Backplane Voltage" },
-> +	{ 0x254, 0x0, 0x0, 0x0, 0x258, 1, "12v AUX Voltage" },
-> +};
-> +
-> +static const struct m10bmc_sdata d5005bmc_curr_tbl[] = {
-> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Current" },
-> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1, "3.3v Current" },
-> +	{ 0x1d4, 0x0, 0x0, 0x0, 0x0, 1, "VCCERAM Current" },
-> +	{ 0x1f0, 0x0, 0x0, 0x0, 0x0, 1, "VCCR Current" },
-> +	{ 0x20c, 0x0, 0x0, 0x0, 0x0, 1, "VCCT Current" },
-> +	{ 0x228, 0x0, 0x0, 0x0, 0x0, 1, "1.8v Current" },
-> +	{ 0x240, 0x244, 0x0, 0x0, 0x0, 1, "12v Backplane Current" },
-> +	{ 0x25c, 0x260, 0x0, 0x0, 0x0, 1, "12v AUX Current" },
-> +};
-> +
->  static const struct m10bmc_hwmon_board_data n3000bmc_hwmon_bdata = {
->  	.tables = {
->  		[hwmon_temp] = n3000bmc_temp_tbl,
-> @@ -110,6 +154,80 @@ struct m10bmc_hwmon {
->  	.hinfo = n3000bmc_hinfo,
->  };
->  
-> +static const struct hwmon_channel_info *d5005bmc_hinfo[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
-> +	.tables = {
-> +		[hwmon_temp] = d5005bmc_temp_tbl,
-> +		[hwmon_in] = d5005bmc_in_tbl,
-> +		[hwmon_curr] = d5005bmc_curr_tbl,
-> +	},
-> +
-> +	.hinfo = d5005bmc_hinfo,
-> +};
-> +
->  static umode_t
->  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
->  			u32 attr, int channel)
-> @@ -316,6 +434,10 @@ static int m10bmc_hwmon_probe(struct platform_device *pdev)
->  		.name = "n3000bmc-hwmon",
->  		.driver_data = (unsigned long)&n3000bmc_hwmon_bdata,
->  	},
-> +	{
-> +		.name = "d5005bmc-hwmon",
-> +		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
-> +	},
->  	{ }
->  };
->  
-> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+Transparent huge pages are supported for read-only non-shmem files,
+but are only used for vmas with VM_DENYWRITE. This condition ensures that
+file THPs are protected from writes while an application is running
+(ETXTBSY).  Any existing file THPs are then dropped from the page cache
+when a file is opened for write in do_dentry_open(). Since sys_mmap
+ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
+produced by execve().
 
-It may be better to split this patch into two parts to simplify
-its review and scope of responsibility.
+Systems that make heavy use of shared libraries (e.g. Android) are unable
+to apply VM_DENYWRITE through the dynamic linker, preventing them from
+benefiting from the resultant reduced contention on the TLB.
 
-Guenter
+This patch reduces the constraint on file THPs allowing use with any
+executable mapping from a file not opened for write (see
+inode_is_open_for_write()). It also introduces additional conditions to
+ensure that files opened for write will never be backed by file THPs.
 
-> index 1161933..dbb4975 100644
-> --- a/drivers/mfd/intel-m10-bmc.c
-> +++ b/drivers/mfd/intel-m10-bmc.c
-> @@ -15,6 +15,11 @@
->  
->  enum m10bmc_type {
->  	M10_N3000,
-> +	M10_D5005
-> +};
-> +
-> +static struct mfd_cell m10bmc_bmc_subdevs[] = {
-> +	{ .name = "d5005bmc-hwmon" },
->  };
->  
->  static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
-> @@ -183,6 +188,10 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
->  		cells = m10bmc_pacn3000_subdevs;
->  		n_cell = ARRAY_SIZE(m10bmc_pacn3000_subdevs);
->  		break;
-> +	case M10_D5005:
-> +		cells = m10bmc_bmc_subdevs;
-> +		n_cell = ARRAY_SIZE(m10bmc_bmc_subdevs);
-> +		break;
->  	default:
->  		return -ENODEV;
->  	}
-> @@ -197,6 +206,7 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
->  
->  static const struct spi_device_id m10bmc_spi_id[] = {
->  	{ "m10-n3000", M10_N3000 },
-> +	{ "m10-d5005", M10_D5005 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
-> 
+Restricting the use of THPs to executable mappings eliminates the risk that
+a read-only file later opened for write would encounter significant
+latencies due to page cache truncation.
+
+The ld linker flag '-z max-page-size=(hugepage size)' can be used to
+produce executables with the necessary layout. The dynamic linker must
+map these file's segments at a hugepage size aligned vma for the mapping to
+be backed with THPs.
+
+Comparison of the performance characteristics of 4KB and 2MB-backed
+libraries follows; the Android dex2oat tool was used to AOT compile an
+example application on a single ARM core.
+
+4KB Pages:
+==========
+
+count              event_name            # count / runtime
+598,995,035,942    cpu-cycles            # 1.800861 GHz
+ 81,195,620,851    raw-stall-frontend    # 244.112 M/sec
+347,754,466,597    iTLB-loads            # 1.046 G/sec
+  2,970,248,900    iTLB-load-misses      # 0.854122% miss rate
+
+Total test time: 332.854998 seconds.
+
+2MB Pages:
+==========
+
+count              event_name            # count / runtime
+592,872,663,047    cpu-cycles            # 1.800358 GHz
+ 76,485,624,143    raw-stall-frontend    # 232.261 M/sec
+350,478,413,710    iTLB-loads            # 1.064 G/sec
+    803,233,322    iTLB-load-misses      # 0.229182% miss rate
+
+Total test time: 329.826087 seconds
+
+A check of /proc/$(pidof dex2oat64)/smaps shows THPs in use:
+
+/apex/com.android.art/lib64/libart.so
+FilePmdMapped:      4096 kB
+
+/apex/com.android.art/lib64/libart-compiler.so
+FilePmdMapped:      2048 kB
+
+Signed-off-by: Collin Fijalkovich <cfijalkovich@google.com>
+---
+Changes v1 -> v2:
+* commit message 'non-shmem filesystems' -> 'non-shmem files'
+* Add performance testing data to commit message
+
+ fs/open.c       | 13 +++++++++++--
+ mm/khugepaged.c | 16 +++++++++++++++-
+ 2 files changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/fs/open.c b/fs/open.c
+index e53af13b5835..f76e960d10ea 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -852,8 +852,17 @@ static int do_dentry_open(struct file *f,
+ 	 * XXX: Huge page cache doesn't support writing yet. Drop all page
+ 	 * cache for this file before processing writes.
+ 	 */
+-	if ((f->f_mode & FMODE_WRITE) && filemap_nr_thps(inode->i_mapping))
+-		truncate_pagecache(inode, 0);
++	if (f->f_mode & FMODE_WRITE) {
++		/*
++		 * Paired with smp_mb() in collapse_file() to ensure nr_thps
++		 * is up to date and the update to i_writecount by
++		 * get_write_access() is visible. Ensures subsequent insertion
++		 * of THPs into the page cache will fail.
++		 */
++		smp_mb();
++		if (filemap_nr_thps(inode->i_mapping))
++			truncate_pagecache(inode, 0);
++	}
+ 
+ 	return 0;
+ 
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index a7d6cb912b05..4c7cc877d5e3 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -459,7 +459,8 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+ 
+ 	/* Read-only file mappings need to be aligned for THP to work. */
+ 	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+-	    (vm_flags & VM_DENYWRITE)) {
++	    !inode_is_open_for_write(vma->vm_file->f_inode) &&
++	    (vm_flags & VM_EXEC)) {
+ 		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+ 				HPAGE_PMD_NR);
+ 	}
+@@ -1872,6 +1873,19 @@ static void collapse_file(struct mm_struct *mm,
+ 	else {
+ 		__mod_lruvec_page_state(new_page, NR_FILE_THPS, nr);
+ 		filemap_nr_thps_inc(mapping);
++		/*
++		 * Paired with smp_mb() in do_dentry_open() to ensure
++		 * i_writecount is up to date and the update to nr_thps is
++		 * visible. Ensures the page cache will be truncated if the
++		 * file is opened writable.
++		 */
++		smp_mb();
++		if (inode_is_open_for_write(mapping->host)) {
++			result = SCAN_FAIL;
++			__mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
++			filemap_nr_thps_dec(mapping);
++			goto xa_locked;
++		}
+ 	}
+ 
+ 	if (nr_none) {
+-- 
+2.31.0.208.g409f899ff0-goog
 
