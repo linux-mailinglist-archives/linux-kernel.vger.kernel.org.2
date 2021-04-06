@@ -2,203 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EBC354C77
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE4E354C7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243914AbhDFGCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:02:11 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:21798 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhDFGCJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:02:09 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 05 Apr 2021 23:02:02 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Apr 2021 23:02:01 -0700
-X-QCInternal: smtphost
-Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 06 Apr 2021 11:31:42 +0530
-Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
-        id 4C98121B31; Tue,  6 Apr 2021 11:31:41 +0530 (IST)
-From:   Krishna Manikandan <mkrishn@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        kalyan_t@codeaurora.org, dianders@chromium.org
-Subject: [PATCH v1 3/3] drm/msm/disp/dpu1: add flags to indicate obsolete irqs
-Date:   Tue,  6 Apr 2021 11:31:35 +0530
-Message-Id: <1617688895-26275-4-git-send-email-mkrishn@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617688895-26275-1-git-send-email-mkrishn@codeaurora.org>
-References: <1617688895-26275-1-git-send-email-mkrishn@codeaurora.org>
+        id S243938AbhDFGC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243934AbhDFGCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 02:02:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C64E3613C8;
+        Tue,  6 Apr 2021 06:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617688934;
+        bh=vsBChbY5+LVkujpH9gbQlIQG3kRuiu5IdEM2SWqQFPQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MZ1CxFVWIewiqkef0s0fsT8o07mW1EtcauFEY+QOvfQhPQzgmtUSR6G4rgUJsdLJq
+         j3mfoRsXvoWUJmjDMVDRQWde4DPbrzO6we3YAxlKwIagW/EeGZt/kiB6x2i7mKEToD
+         LWf9Q+B7HJaVRyLgnbb10d5q7Xh7GKPclRiQ3c9tzk/r9DyT9yjjXtvUXKqMhyE1/x
+         p4nn10JEHw6ctw8UmjHElg5WyOyZRDn3gEr/7RRbdDw/4XQFhpTbmyqVLjez6t3xjd
+         u7Rhuud/4KkIYmPqZms796Db8fmA2GTpc/iZB6g4a4sR4cT6V+TO+s4O1LdyLfGBPJ
+         FhkDJwB1Yn6fQ==
+Subject: Re: [PATCH 2/2] clk: ti: get register address from device tree
+To:     Dario Binacchi <dariobin@libero.it>, linux-kernel@vger.kernel.org
+Cc:     Bin Meng <bmeng.cn@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org
+References: <20210402192054.7934-1-dariobin@libero.it>
+ <20210402192054.7934-3-dariobin@libero.it>
+From:   Tero Kristo <kristo@kernel.org>
+Message-ID: <12964099-7d74-57f3-e517-79c8b14c9b94@kernel.org>
+Date:   Tue, 6 Apr 2021 09:02:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210402192054.7934-3-dariobin@libero.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some irqs which are applicable for sdm845 target are no
-longer applicable for sc7180 and sc7280 targets. Add a
-flag to indicate the irqs which are obsolete for a
-particular target so that these irqs are skipped while
-checking for matching irq lookup index.
+On 02/04/2021 22:20, Dario Binacchi wrote:
+> Until now, only the register offset was retrieved from the device tree
+> to be added, during access, to a common base address for the clocks.
+> If possible, we try to retrieve the physical address of the register
+> directly from the device tree.
 
-Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c      |  4 ++--
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |  9 +++++++++
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  2 ++
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 13 +++++++++----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h |  5 ++++-
- 5 files changed, 26 insertions(+), 7 deletions(-)
+The physical address is derived from the base address of the clock 
+provider, it is not derived from the clock node itself.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-index 84ea09d..cdec3fb 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-@@ -58,8 +58,8 @@ int dpu_core_irq_idx_lookup(struct dpu_kms *dpu_kms,
- 	if (!dpu_kms->hw_intr || !dpu_kms->hw_intr->ops.irq_idx_lookup)
- 		return -EINVAL;
- 
--	return dpu_kms->hw_intr->ops.irq_idx_lookup(intr_type,
--			instance_idx);
-+	return dpu_kms->hw_intr->ops.irq_idx_lookup(dpu_kms->hw_intr,
-+			intr_type, instance_idx);
- }
- 
- /**
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index ec27e6a..d4c381f 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -56,6 +56,13 @@
- 
- #define INTF_SC7280_MASK INTF_SC7180_MASK | BIT(DPU_DATA_HCTL_EN)
- 
-+#define INTR_SC7180_MASK \
-+	(BIT(DPU_IRQ_TYPE_PING_PONG_RD_PTR) |\
-+	BIT(DPU_IRQ_TYPE_PING_PONG_WR_PTR) |\
-+	BIT(DPU_IRQ_TYPE_PING_PONG_AUTO_REF) |\
-+	BIT(DPU_IRQ_TYPE_PING_PONG_TEAR_CHECK) |\
-+	BIT(DPU_IRQ_TYPE_PING_PONG_TE_CHECK))
-+
- #define DEFAULT_PIXEL_RAM_SIZE		(50 * 1024)
- #define DEFAULT_DPU_LINE_WIDTH		2048
- #define DEFAULT_DPU_OUTPUT_LINE_WIDTH	2560
-@@ -1077,6 +1084,7 @@ static void sc7180_cfg_init(struct dpu_mdss_cfg *dpu_cfg)
- 		.dma_cfg = sdm845_regdma,
- 		.perf = sc7180_perf_data,
- 		.mdss_irqs = 0x3f,
-+		.obsolete_irq = INTR_SC7180_MASK,
- 	};
- }
- 
-@@ -1166,6 +1174,7 @@ static void sc7280_cfg_init(struct dpu_mdss_cfg *dpu_cfg)
- 		.vbif = sdm845_vbif,
- 		.perf = sc7280_perf_data,
- 		.mdss_irqs = 0x1c07,
-+		.obsolete_irq = INTR_SC7180_MASK,
- 	};
- }
- 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-index 0cf7210..4dfd8a2 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-@@ -723,6 +723,7 @@ struct dpu_perf_cfg {
-  * @cursor_formats     Supported formats for cursor pipe
-  * @vig_formats        Supported formats for vig pipe
-  * @mdss_irqs:         Bitmap with the irqs supported by the target
-+ * @obsolete_irq:       Irq types that are obsolete for a particular target
-  */
- struct dpu_mdss_cfg {
- 	u32 hwversion;
-@@ -769,6 +770,7 @@ struct dpu_mdss_cfg {
- 	const struct dpu_format_extended *vig_formats;
- 
- 	unsigned long mdss_irqs;
-+	unsigned long obsolete_irq;
- };
- 
- struct dpu_mdss_hw_cfg_handler {
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-index a37928b..9c4d6b0 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-@@ -1327,14 +1327,15 @@ static const struct dpu_irq_type dpu_irq_map[] = {
- 	{ DPU_IRQ_TYPE_RESERVED, 0, 0, 12},
- };
- 
--static int dpu_hw_intr_irqidx_lookup(enum dpu_intr_type intr_type,
--		u32 instance_idx)
-+static int dpu_hw_intr_irqidx_lookup(struct dpu_hw_intr *intr,
-+	enum dpu_intr_type intr_type, u32 instance_idx)
- {
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(dpu_irq_map); i++) {
- 		if (intr_type == dpu_irq_map[i].intr_type &&
--			instance_idx == dpu_irq_map[i].instance_idx)
-+			instance_idx == dpu_irq_map[i].instance_idx &&
-+			!(intr->obsolete_irq & BIT(dpu_irq_map[i].intr_type)))
- 			return i;
- 	}
- 
-@@ -1386,7 +1387,9 @@ static void dpu_hw_intr_dispatch_irq(struct dpu_hw_intr *intr,
- 				(irq_idx < end_idx) && irq_status;
- 				irq_idx++)
- 			if ((irq_status & dpu_irq_map[irq_idx].irq_mask) &&
--				(dpu_irq_map[irq_idx].reg_idx == reg_idx)) {
-+				(dpu_irq_map[irq_idx].reg_idx == reg_idx) &&
-+				!(intr->obsolete_irq &
-+				BIT(dpu_irq_map[irq_idx].intr_type))) {
- 				/*
- 				 * Once a match on irq mask, perform a callback
- 				 * to the given cbfunc. cbfunc will take care
-@@ -1698,6 +1701,8 @@ struct dpu_hw_intr *dpu_hw_intr_init(void __iomem *addr,
- 	}
- 
- 	intr->irq_mask = m->mdss_irqs;
-+	intr->obsolete_irq = m->obsolete_irq;
-+
- 	spin_lock_init(&intr->irq_lock);
- 
- 	return intr;
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-index fc9c986..5d6f9a7 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-@@ -83,11 +83,12 @@ struct dpu_hw_intr_ops {
- 	/**
- 	 * irq_idx_lookup - Lookup IRQ index on the HW interrupt type
- 	 *                 Used for all irq related ops
-+	 * @intr:		HW interrupt handle
- 	 * @intr_type:		Interrupt type defined in dpu_intr_type
- 	 * @instance_idx:	HW interrupt block instance
- 	 * @return:		irq_idx or -EINVAL for lookup fail
- 	 */
--	int (*irq_idx_lookup)(
-+	int (*irq_idx_lookup)(struct dpu_hw_intr *intr,
- 			enum dpu_intr_type intr_type,
- 			u32 instance_idx);
- 
-@@ -179,6 +180,7 @@ struct dpu_hw_intr_ops {
-  * @save_irq_status:  array of IRQ status reg storage created during init
-  * @irq_idx_tbl_size: total number of irq_idx mapped in the hw_interrupts
-  * @irq_lock:         spinlock for accessing IRQ resources
-+ * @obsolete_irq:      irq types that are obsolete for a particular target
-  */
- struct dpu_hw_intr {
- 	struct dpu_hw_blk_reg_map hw;
-@@ -188,6 +190,7 @@ struct dpu_hw_intr {
- 	u32 irq_idx_tbl_size;
- 	spinlock_t irq_lock;
- 	unsigned long irq_mask;
-+	unsigned long obsolete_irq;
- };
- 
- /**
--- 
-2.7.4
+Doing what this patch does may actually break things, as you end up 
+creating an individual ioremap for every single clock register, and they 
+are typically a word apart from each other. In the TI clock driver case, 
+the ioremap is done only once for the whole clock register space.
+
+-Tero
+
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> 
+> ---
+> 
+>   drivers/clk/ti/clk.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/ti/clk.c b/drivers/clk/ti/clk.c
+> index 3da33c786d77..938f5a2cb425 100644
+> --- a/drivers/clk/ti/clk.c
+> +++ b/drivers/clk/ti/clk.c
+> @@ -265,9 +265,21 @@ int __init ti_clk_retry_init(struct device_node *node, void *user,
+>   int ti_clk_get_reg_addr(struct device_node *node, int index,
+>   			struct clk_omap_reg *reg)
+>   {
+> +	const __be32 *addrp;
+> +	u64 size, addr = OF_BAD_ADDR;
+> +	unsigned int flags;
+>   	u32 val;
+>   	int i;
+>   
+> +	addrp = of_get_address(node, index, &size, &flags);
+> +	if (addrp)
+> +		addr = of_translate_address(node, addrp);
+> +
+> +	if (addr != OF_BAD_ADDR) {
+> +		reg->ptr = ioremap(addr, sizeof(u32));
+> +		return 0;
+> +	}
+> +
+>   	for (i = 0; i < CLK_MAX_MEMMAPS; i++) {
+>   		if (clocks_node_ptr[i] == node->parent)
+>   			break;
+> @@ -287,7 +299,6 @@ int ti_clk_get_reg_addr(struct device_node *node, int index,
+>   
+>   	reg->offset = val;
+>   	reg->ptr = NULL;
+> -
+>   	return 0;
+>   }
+>   
+> 
 
