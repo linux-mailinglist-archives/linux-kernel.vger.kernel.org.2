@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA37A3555B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9673555AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344740AbhDFNt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344723AbhDFNt4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:49:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D55EC06174A;
-        Tue,  6 Apr 2021 06:49:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/0tyEUyGTkdIV/FVI1c6IIm5ijvOB5mIuhQU5x2R3uw=; b=oOcuFDU425YtZcSW2RxHA6vgNL
-        KFgmHgXjwCUZLpMnb0Fw4gmjuE19l4hYXWF4dUMJ1enUNR1J40G3NW3+zfCCV+EmtHpVUx2rUKspP
-        rg/q9DhO8zBROiLqszSUdU0zptIjzuLukpaMwjhkKPL3j0JXgTzQr1goqNcvJTeDUraSJ64CJA1I1
-        6Xqhc2W7wpwoLJvDoMDgVBCQvL8kP2ZqPs6TVFP+EP5bnXc6WSzqycBzMIXhg5fttqV4nWD24lU/a
-        ekPJ+T6gLDD4agBaFjnYkw1+5To7ndIwtDr87b/ZuUPwEyw/OOOyEt089xWe5lqXMj4TXy5lmUHB7
-        RjrS7IdQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTm4E-00Ct1q-3h; Tue, 06 Apr 2021 13:48:50 +0000
-Date:   Tue, 6 Apr 2021 14:48:30 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 15/27] mm/memcg: Add folio wrappers for various
- functions
-Message-ID: <20210406134830.GN3062550@infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-16-willy@infradead.org>
+        id S1344722AbhDFNtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:49:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232452AbhDFNtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0090D61246;
+        Tue,  6 Apr 2021 13:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617716965;
+        bh=AHTodKbzDwdE4aT+sGBqYSzfgMa+SmLxo8yj2F+6ktU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l8XVzr8pCamhBopVmKZDH1S/qhaNTTX6x5IgAXtZDVjhyYDucCaW/YPHzw/NdvDAO
+         UcX5g9zsj0ofonVWjLzmzoQpioJDQujm2xCHsNkPljKqp36ohQ8gPFQIsTxulg3hax
+         9fUWtdIO+GunlUTPcyp+qpQhbxZR6jn4ic30VSag=
+Date:   Tue, 6 Apr 2021 15:49:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     alexander.shishkin@linux.intel.com, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, jonathan.cameron@huawei.com,
+        song.bao.hua@hisilicon.com, prime.zeng@huawei.com,
+        linux-doc@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH 0/4] Add support for HiSilicon PCIe Tune and Trace device
+Message-ID: <YGxm49c9cT69NV5Q@kroah.com>
+References: <1617713154-35533-1-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331184728.1188084-16-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1617713154-35533-1-git-send-email-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:47:16PM +0100, Matthew Wilcox (Oracle) wrote:
-> Add new wrapper functions folio_memcg(), lock_folio_memcg(),
-> unlock_folio_memcg(), mem_cgroup_folio_lruvec() and
-> count_memcg_folio_event()
+On Tue, Apr 06, 2021 at 08:45:50PM +0800, Yicong Yang wrote:
+> HiSilicon PCIe tune and trace device(PTT) is a PCIe Root Complex
+> integrated Endpoint(RCiEP) device, providing the capability
+> to dynamically monitor and tune the PCIe traffic(tune),
+> and trace the TLP headers(trace). The driver exposes the user
+> interface through debugfs, so no need for extra user space tools.
+> The usage is described in the document.
 
-Looks good,
+Why use debugfs and not the existing perf tools for debugging?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+thanks,
+
+greg k-h
