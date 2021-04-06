@@ -2,56 +2,644 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B181355A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CBC355A1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346808AbhDFRPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346790AbhDFRP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:15:28 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64354C06174A;
-        Tue,  6 Apr 2021 10:15:17 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTpIF-0039az-9C; Tue, 06 Apr 2021 17:15:11 +0000
-Date:   Tue, 6 Apr 2021 17:15:11 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [git pull] a couple of fixes in vfs.git
-Message-ID: <YGyXH6qTQbcoOLJ+@zeniv-ca.linux.org.uk>
+        id S1346829AbhDFRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:15:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233879AbhDFRPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:15:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F21ECAD80;
+        Tue,  6 Apr 2021 17:15:41 +0000 (UTC)
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     vinmenon@codeaurora.org
+References: <1617712064-12264-1-git-send-email-faiyazm@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+Message-ID: <2e1f1771-0483-d311-7995-404c837372fc@suse.cz>
+Date:   Tue, 6 Apr 2021 19:15:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <1617712064-12264-1-git-send-email-faiyazm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Fairly old hostfs bug (in setups that are not used
-by anyone, apparently) + fix for this cycle regression:
-extra dput/mntput in LOOKUP_CACHED failure handling.
+On 4/6/21 2:27 PM, Faiyaz Mohammed wrote:
+> alloc_calls and free_calls implementation in sysfs have two issues,
+> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+> to "one value per file" rule.
+> 
+> To overcome this issues, move the alloc_calls and free_calls implemeation
+> to debugfs.
+> 
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Good direction, thanks. But I'm afraid we need a bit more:
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+- I don't see debugfs_remove() (or _recursive) used anywhere. When a cache is
+destroyed, do the dirs/files just linger in debugfs referencing removed
+kmem_cache objects?
+- There's a simple debugfs_create_dir(s->name, ...), for each cache while the
+sysfs variant handles merged caches with symlinks etc. For consistency, the
+hiearchy should look the same in debugfs as it does in sysfs.
 
-are available in the git repository at:
+Also could we avoid shifting the tracking code around mm/slub.c by leaving it in
+place and adding a nested #ifdef CONFIG_DEBUG_FS where needed?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+And possibly we could leave the old files around, but their content would be
+something along "Deprecated, use the equvalent under <debugfs>/slab/" ? We'll
+see if anyone complains. We can remove them completely after few years.
 
-for you to fetch changes up to 7d01ef7585c07afaf487759a48486228cd065726:
+Thanks!
+Vlastimil
 
-  Make sure nd->path.mnt and nd->path.dentry are always valid pointers (2021-04-06 12:33:07 -0400)
+> ---
+>  mm/slub.c | 518 ++++++++++++++++++++++++++++++++++----------------------------
+>  1 file changed, 286 insertions(+), 232 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3021ce9..4d20ee0 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/memcontrol.h>
+>  #include <linux/random.h>
+>  
+> +#include <linux/debugfs.h>
+>  #include <trace/events/kmem.h>
+>  
+>  #include "internal.h"
+> @@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
+>  							{ return 0; }
+>  #endif
+>  
+> +#ifdef CONFIG_DEBUG_FS
+> +static void debugfs_slab_add(struct kmem_cache *);
+> +#else
+> +static inline void debugfs_slab_add(struct kmem_cache *) { }
+> +#endif
+> +
+>  static inline void stat(const struct kmem_cache *s, enum stat_item si)
+>  {
+>  #ifdef CONFIG_SLUB_STATS
+> @@ -4542,6 +4549,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
+>  	if (err)
+>  		__kmem_cache_release(s);
+>  
+> +	debugfs_slab_add(s);
+> +
+>  	return err;
+>  }
+>  
+> @@ -4682,221 +4691,6 @@ static long validate_slab_cache(struct kmem_cache *s)
+>  
+>  	return count;
+>  }
+> -/*
+> - * Generate lists of code addresses where slabcache objects are allocated
+> - * and freed.
+> - */
+> -
+> -struct location {
+> -	unsigned long count;
+> -	unsigned long addr;
+> -	long long sum_time;
+> -	long min_time;
+> -	long max_time;
+> -	long min_pid;
+> -	long max_pid;
+> -	DECLARE_BITMAP(cpus, NR_CPUS);
+> -	nodemask_t nodes;
+> -};
+> -
+> -struct loc_track {
+> -	unsigned long max;
+> -	unsigned long count;
+> -	struct location *loc;
+> -};
+> -
+> -static void free_loc_track(struct loc_track *t)
+> -{
+> -	if (t->max)
+> -		free_pages((unsigned long)t->loc,
+> -			get_order(sizeof(struct location) * t->max));
+> -}
+> -
+> -static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
+> -{
+> -	struct location *l;
+> -	int order;
+> -
+> -	order = get_order(sizeof(struct location) * max);
+> -
+> -	l = (void *)__get_free_pages(flags, order);
+> -	if (!l)
+> -		return 0;
+> -
+> -	if (t->count) {
+> -		memcpy(l, t->loc, sizeof(struct location) * t->count);
+> -		free_loc_track(t);
+> -	}
+> -	t->max = max;
+> -	t->loc = l;
+> -	return 1;
+> -}
+> -
+> -static int add_location(struct loc_track *t, struct kmem_cache *s,
+> -				const struct track *track)
+> -{
+> -	long start, end, pos;
+> -	struct location *l;
+> -	unsigned long caddr;
+> -	unsigned long age = jiffies - track->when;
+> -
+> -	start = -1;
+> -	end = t->count;
+> -
+> -	for ( ; ; ) {
+> -		pos = start + (end - start + 1) / 2;
+> -
+> -		/*
+> -		 * There is nothing at "end". If we end up there
+> -		 * we need to add something to before end.
+> -		 */
+> -		if (pos == end)
+> -			break;
+> -
+> -		caddr = t->loc[pos].addr;
+> -		if (track->addr == caddr) {
+> -
+> -			l = &t->loc[pos];
+> -			l->count++;
+> -			if (track->when) {
+> -				l->sum_time += age;
+> -				if (age < l->min_time)
+> -					l->min_time = age;
+> -				if (age > l->max_time)
+> -					l->max_time = age;
+> -
+> -				if (track->pid < l->min_pid)
+> -					l->min_pid = track->pid;
+> -				if (track->pid > l->max_pid)
+> -					l->max_pid = track->pid;
+> -
+> -				cpumask_set_cpu(track->cpu,
+> -						to_cpumask(l->cpus));
+> -			}
+> -			node_set(page_to_nid(virt_to_page(track)), l->nodes);
+> -			return 1;
+> -		}
+> -
+> -		if (track->addr < caddr)
+> -			end = pos;
+> -		else
+> -			start = pos;
+> -	}
+> -
+> -	/*
+> -	 * Not found. Insert new tracking element.
+> -	 */
+> -	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
+> -		return 0;
+> -
+> -	l = t->loc + pos;
+> -	if (pos < t->count)
+> -		memmove(l + 1, l,
+> -			(t->count - pos) * sizeof(struct location));
+> -	t->count++;
+> -	l->count = 1;
+> -	l->addr = track->addr;
+> -	l->sum_time = age;
+> -	l->min_time = age;
+> -	l->max_time = age;
+> -	l->min_pid = track->pid;
+> -	l->max_pid = track->pid;
+> -	cpumask_clear(to_cpumask(l->cpus));
+> -	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
+> -	nodes_clear(l->nodes);
+> -	node_set(page_to_nid(virt_to_page(track)), l->nodes);
+> -	return 1;
+> -}
+> -
+> -static void process_slab(struct loc_track *t, struct kmem_cache *s,
+> -		struct page *page, enum track_item alloc)
+> -{
+> -	void *addr = page_address(page);
+> -	void *p;
+> -	unsigned long *map;
+> -
+> -	map = get_map(s, page);
+> -	for_each_object(p, s, addr, page->objects)
+> -		if (!test_bit(__obj_to_index(s, addr, p), map))
+> -			add_location(t, s, get_track(s, p, alloc));
+> -	put_map(map);
+> -}
+> -
+> -static int list_locations(struct kmem_cache *s, char *buf,
+> -			  enum track_item alloc)
+> -{
+> -	int len = 0;
+> -	unsigned long i;
+> -	struct loc_track t = { 0, 0, NULL };
+> -	int node;
+> -	struct kmem_cache_node *n;
+> -
+> -	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+> -			     GFP_KERNEL)) {
+> -		return sysfs_emit(buf, "Out of memory\n");
+> -	}
+> -	/* Push back cpu slabs */
+> -	flush_all(s);
+> -
+> -	for_each_kmem_cache_node(s, node, n) {
+> -		unsigned long flags;
+> -		struct page *page;
+> -
+> -		if (!atomic_long_read(&n->nr_slabs))
+> -			continue;
+> -
+> -		spin_lock_irqsave(&n->list_lock, flags);
+> -		list_for_each_entry(page, &n->partial, slab_list)
+> -			process_slab(&t, s, page, alloc);
+> -		list_for_each_entry(page, &n->full, slab_list)
+> -			process_slab(&t, s, page, alloc);
+> -		spin_unlock_irqrestore(&n->list_lock, flags);
+> -	}
+> -
+> -	for (i = 0; i < t.count; i++) {
+> -		struct location *l = &t.loc[i];
+> -
+> -		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
+> -
+> -		if (l->addr)
+> -			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
+> -		else
+> -			len += sysfs_emit_at(buf, len, "<not-available>");
+> -
+> -		if (l->sum_time != l->min_time)
+> -			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
+> -					     l->min_time,
+> -					     (long)div_u64(l->sum_time,
+> -							   l->count),
+> -					     l->max_time);
+> -		else
+> -			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
+> -
+> -		if (l->min_pid != l->max_pid)
+> -			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
+> -					     l->min_pid, l->max_pid);
+> -		else
+> -			len += sysfs_emit_at(buf, len, " pid=%ld",
+> -					     l->min_pid);
+> -
+> -		if (num_online_cpus() > 1 &&
+> -		    !cpumask_empty(to_cpumask(l->cpus)))
+> -			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
+> -					     cpumask_pr_args(to_cpumask(l->cpus)));
+> -
+> -		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+> -			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
+> -					     nodemask_pr_args(&l->nodes));
+> -
+> -		len += sysfs_emit_at(buf, len, "\n");
+> -	}
+> -
+> -	free_loc_track(&t);
+> -	if (!t.count)
+> -		len += sysfs_emit_at(buf, len, "No data\n");
+> -
+> -	return len;
+> -}
+>  #endif	/* CONFIG_SLUB_DEBUG */
+>  
+>  #ifdef SLUB_RESILIENCY_TEST
+> @@ -5346,21 +5140,6 @@ static ssize_t validate_store(struct kmem_cache *s,
+>  }
+>  SLAB_ATTR(validate);
+>  
+> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
+> -{
+> -	if (!(s->flags & SLAB_STORE_USER))
+> -		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_ALLOC);
+> -}
+> -SLAB_ATTR_RO(alloc_calls);
+> -
+> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
+> -{
+> -	if (!(s->flags & SLAB_STORE_USER))
+> -		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_FREE);
+> -}
+> -SLAB_ATTR_RO(free_calls);
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+>  #ifdef CONFIG_FAILSLAB
+> @@ -5524,8 +5303,6 @@ static struct attribute *slab_attrs[] = {
+>  	&poison_attr.attr,
+>  	&store_user_attr.attr,
+>  	&validate_attr.attr,
+> -	&alloc_calls_attr.attr,
+> -	&free_calls_attr.attr,
+>  #endif
+>  #ifdef CONFIG_ZONE_DMA
+>  	&cache_dma_attr.attr,
+> @@ -5814,6 +5591,283 @@ static int __init slab_sysfs_init(void)
+>  __initcall(slab_sysfs_init);
+>  #endif /* CONFIG_SYSFS */
+>  
+> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+> +/*
+> + * Generate lists of code addresses where slabcache objects are allocated
+> + * and freed.
+> + */
+> +
+> +struct location {
+> +	unsigned long count;
+> +	unsigned long addr;
+> +	long long sum_time;
+> +	long min_time;
+> +	long max_time;
+> +	long min_pid;
+> +	long max_pid;
+> +	DECLARE_BITMAP(cpus, NR_CPUS);
+> +	nodemask_t nodes;
+> +};
+> +
+> +struct loc_track {
+> +	unsigned long max;
+> +	unsigned long count;
+> +	struct location *loc;
+> +};
+> +
+> +static struct dentry *slab_debugfs_root;
+> +
+> +static struct dentry *slab_debugfs_cache;
+> +
+> +static void free_loc_track(struct loc_track *t)
+> +{
+> +	if (t->max)
+> +		free_pages((unsigned long)t->loc,
+> +			get_order(sizeof(struct location) * t->max));
+> +}
+> +
+> +static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
+> +{
+> +	struct location *l;
+> +	int order;
+> +
+> +	order = get_order(sizeof(struct location) * max);
+> +
+> +	l = (void *)__get_free_pages(flags, order);
+> +	if (!l)
+> +		return 0;
+> +
+> +	if (t->count) {
+> +		memcpy(l, t->loc, sizeof(struct location) * t->count);
+> +		free_loc_track(t);
+> +	}
+> +	t->max = max;
+> +	t->loc = l;
+> +	return 1;
+> +}
+> +
+> +static int add_location(struct loc_track *t, struct kmem_cache *s,
+> +				const struct track *track)
+> +{
+> +	long start, end, pos;
+> +	struct location *l;
+> +	unsigned long caddr;
+> +	unsigned long age = jiffies - track->when;
+> +
+> +	start = -1;
+> +	end = t->count;
+> +
+> +	for ( ; ; ) {
+> +		pos = start + (end - start + 1) / 2;
+> +
+> +		/*
+> +		 * There is nothing at "end". If we end up there
+> +		 * we need to add something to before end.
+> +		 */
+> +		if (pos == end)
+> +			break;
+> +
+> +		caddr = t->loc[pos].addr;
+> +		if (track->addr == caddr) {
+> +
+> +			l = &t->loc[pos];
+> +			l->count++;
+> +			if (track->when) {
+> +				l->sum_time += age;
+> +				if (age < l->min_time)
+> +					l->min_time = age;
+> +				if (age > l->max_time)
+> +					l->max_time = age;
+> +
+> +				if (track->pid < l->min_pid)
+> +					l->min_pid = track->pid;
+> +				if (track->pid > l->max_pid)
+> +					l->max_pid = track->pid;
+> +
+> +				cpumask_set_cpu(track->cpu,
+> +						to_cpumask(l->cpus));
+> +			}
+> +			node_set(page_to_nid(virt_to_page(track)), l->nodes);
+> +			return 1;
+> +		}
+> +
+> +		if (track->addr < caddr)
+> +			end = pos;
+> +		else
+> +			start = pos;
+> +	}
+> +
+> +	/*
+> +	 * Not found. Insert new tracking element.
+> +	 */
+> +	if (t->count >= t->max && !alloc_loc_track(t, 2 * t->max, GFP_ATOMIC))
+> +		return 0;
+> +
+> +	l = t->loc + pos;
+> +	if (pos < t->count)
+> +		memmove(l + 1, l,
+> +			(t->count - pos) * sizeof(struct location));
+> +	t->count++;
+> +	l->count = 1;
+> +	l->addr = track->addr;
+> +	l->sum_time = age;
+> +	l->min_time = age;
+> +	l->max_time = age;
+> +	l->min_pid = track->pid;
+> +	l->max_pid = track->pid;
+> +	cpumask_clear(to_cpumask(l->cpus));
+> +	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
+> +	nodes_clear(l->nodes);
+> +	node_set(page_to_nid(virt_to_page(track)), l->nodes);
+> +	return 1;
+> +}
+> +
+> +static void process_slab(struct loc_track *t, struct kmem_cache *s,
+> +		struct page *page, enum track_item alloc)
+> +{
+> +	void *addr = page_address(page);
+> +	void *p;
+> +	unsigned long *map;
+> +
+> +	map = get_map(s, page);
+> +	for_each_object(p, s, addr, page->objects)
+> +		if (!test_bit(__obj_to_index(s, addr, p), map))
+> +			add_location(t, s, get_track(s, p, alloc));
+> +	put_map(map);
+> +}
+> +
+> +static int list_locations(struct seq_file *seq, struct kmem_cache *s,
+> +						enum track_item alloc)
+> +{
+> +	unsigned long i;
+> +	struct loc_track t = { 0, 0, NULL };
+> +	int node;
+> +	struct kmem_cache_node *n;
+> +
+> +	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+> +			     GFP_KERNEL)) {
+> +		seq_puts(seq, "Out of memory\n");
+> +		return -ENOMEM;
+> +	}
+> +	/* Push back cpu slabs */
+> +	flush_all(s);
+> +
+> +	for_each_kmem_cache_node(s, node, n) {
+> +		unsigned long flags;
+> +		struct page *page;
+> +
+> +		if (!atomic_long_read(&n->nr_slabs))
+> +			continue;
+> +
+> +		spin_lock_irqsave(&n->list_lock, flags);
+> +		list_for_each_entry(page, &n->partial, slab_list)
+> +			process_slab(&t, s, page, alloc);
+> +		list_for_each_entry(page, &n->full, slab_list)
+> +			process_slab(&t, s, page, alloc);
+> +		spin_unlock_irqrestore(&n->list_lock, flags);
+> +	}
+> +
+> +	for (i = 0; i < t.count; i++) {
+> +		struct location *l = &t.loc[i];
+> +
+> +		seq_printf(seq, "%7ld ", l->count);
+> +
+> +		if (l->addr)
+> +			seq_printf(seq, "%pS", (void *)l->addr);
+> +		else
+> +			seq_puts(seq, "<not-available>");
+> +
+> +		if (l->sum_time != l->min_time) {
+> +			seq_printf(seq, " age=%ld/%ld/%ld",
+> +				l->min_time,
+> +				(long)div_u64(l->sum_time, l->count),
+> +				l->max_time);
+> +		} else
+> +			seq_printf(seq, " age=%ld",
+> +				l->min_time);
+> +
+> +		if (l->min_pid != l->max_pid)
+> +			seq_printf(seq, " pid=%ld-%ld",
+> +				l->min_pid, l->max_pid);
+> +		else
+> +			seq_printf(seq, " pid=%ld",
+> +				l->min_pid);
+> +
+> +		if (num_online_cpus() > 1 &&
+> +				!cpumask_empty(to_cpumask(l->cpus)))
+> +			seq_printf(seq, " cpus=%*pbl",
+> +					 cpumask_pr_args(to_cpumask(l->cpus)));
+> +
+> +		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+> +			seq_printf(seq, " nodes=%*pbl",
+> +					 nodemask_pr_args(&l->nodes));
+> +
+> +		seq_puts(seq, "\n");
+> +	}
+> +
+> +	free_loc_track(&t);
+> +	if (!t.count)
+> +		seq_puts(seq, "No data\n");
+> +	return 0;
+> +}
+> +
+> +static int slab_debug_trace(struct seq_file *seq, void *ignored)
+> +{
+> +	struct kmem_cache *s = seq->private;
+> +
+> +	if (!(s->flags & SLAB_STORE_USER))
+> +		return 0;
+> +
+> +	if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_trace") == 0)
+> +		return list_locations(seq, s, TRACK_ALLOC);
+> +	else
+> +		return list_locations(seq, s, TRACK_FREE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int slab_debug_trace_open(struct inode *inode, struct file *filp)
+> +{
+> +	return single_open(filp, slab_debug_trace,
+> +				file_inode(filp)->i_private);
+> +}
+> +
+> +static const struct file_operations slab_debug_fops = {
+> +	.open    = slab_debug_trace_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = single_release,
+> +};
+> +
+> +static void debugfs_slab_add(struct kmem_cache *s)
+> +{
+> +	if (unlikely(!slab_debugfs_root))
+> +		return;
+> +
+> +	slab_debugfs_cache = debugfs_create_dir(s->name, slab_debugfs_root);
+> +	if (!IS_ERR(slab_debugfs_cache)) {
+> +		debugfs_create_file("alloc_trace", 0400,
+> +			slab_debugfs_cache, s, &slab_debug_fops);
+> +
+> +		debugfs_create_file("free_trace", 0400,
+> +			slab_debugfs_cache, s, &slab_debug_fops);
+> +	}
+> +}
+> +
+> +static void __init slab_debugfs_init(void)
+> +{
+> +	struct kmem_cache *s;
+> +
+> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
+> +	if (!IS_ERR(slab_debugfs_root))
+> +		list_for_each_entry(s, &slab_caches, list)
+> +			debugfs_slab_add(s);
+> +	else
+> +		pr_err("Cannot create slab debugfs.\n");
+> +
+> +}
+> +__initcall(slab_debugfs_init);
+> +#endif
+>  /*
+>   * The /proc/slabinfo ABI
+>   */
+> 
 
-----------------------------------------------------------------
-Al Viro (2):
-      hostfs: fix memory handling in follow_link()
-      Make sure nd->path.mnt and nd->path.dentry are always valid pointers
-
- fs/hostfs/hostfs_kern.c | 7 +++----
- fs/namei.c              | 6 ++++--
- 2 files changed, 7 insertions(+), 6 deletions(-)
