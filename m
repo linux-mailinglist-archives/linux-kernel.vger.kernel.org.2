@@ -2,154 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F4C3555E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D356F3555EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344825AbhDFOAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:00:07 -0400
-Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:9185
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233153AbhDFOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:00:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CC+RXmX8yATcZrXRoV+so0hx/G2L2JanaaAizFCM1ydQXQ7xrSRFETalvexHK1LBujIoe3bzcXACMlg9Z7jDrvq6Dj/ceQ4UcADVFL8ODuFi3PxwHXFH+DrMR7SzZPI/XWaXLVkYB7i3zQhlTB4kkTxZ0Z3DFByqbvmIm4wLhVEq3/LJQyaZtlZabn1JEfqpuB6g521HgKWdTGrSmyuxCYFzxnngZ6QC7z+2PFVFeGllwkR0HpT8kTaYXuHGBWSlQUuL3kdbUzOgWx5rs09z6I/Dy6B50W2M6jbcKjcSH3KltfbIXnkWNYPh2vjAT1VAaodPJ6FmrClb91TSuy75YQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lTGudQDwJxcslDpKnI6NnJm6+4dcoG4nYfEPNr6+qAY=;
- b=TjIaYmeGAzATdw+K3wwk4bdACVVLp3RRIumhjruVn4sTHl5gfBUfEBGuEYb/oq5eHoW3kyH2V/vUZPuUXW5SL8T7Cr4fEWIcNY9uiJh0HVkH++zf+guEnyCs7yvTLn/pz0FFXg3yKtlOVQy3/9e3aJMnXckqs+7WwVU4RwTi6zSx3C0Nzr90gP9ap4rD22UKUZnxON5LsI6mRaU7FUe+mTLYGCytO/OpQ2Glx1qndIS42BSA+2ePZq+MrqT12pBvaAH0unz6E1fAKdL6A8K9oSPxgS7ThP2nUjRORFEgYdqKJOLgNyMsqa11LC+eZce6pnTu4QxvkMOzKa3TjDuTtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lTGudQDwJxcslDpKnI6NnJm6+4dcoG4nYfEPNr6+qAY=;
- b=MZ0hrlSkjBh1is2A1qK3Vl0OVqnuhQZtXuJY8tuQ0+Mn7gFcglfogBAcqtqp1HjIJ0OpxabdpF8oojnbrB5YShGLvWMrf3QNfl2yJ3rVa8YMUu3l924VZEvseXm/dsKbhd/K0BH4tJSY7GNfnlLx02+1h27vexIWAngZ+JvWbo4=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN6PR12MB2719.namprd12.prod.outlook.com (2603:10b6:805:6c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
- 2021 13:59:56 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 13:59:56 +0000
-Date:   Tue, 6 Apr 2021 13:59:50 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Steve Rutherford <srutherford@google.com>,
+        id S1344872AbhDFOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:01:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37387 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344853AbhDFOBQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:01:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617717667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vcd7BHYNtxoz+eRNoIHPlVbvSdaUKMNauLrrc9ENf4o=;
+        b=cAdbBUd+CPaPJaYZqH1toI6amsb1IYiL0RKMAbFHNl0twFxtUA+CN2jLwMnmwPD7MCu7dq
+        fc3XETV1ychkIDF2ZEOZV3KZY7DwbW8XvzOt1WsmZ8SdgRLdvBNtDhrxA8Cga9Gq3cJIA9
+        K8LpVY6WtkLuNdmNsX8uMb479Z5dVrU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-3NuKkOnJMuiWiBL9X-WHDQ-1; Tue, 06 Apr 2021 10:01:05 -0400
+X-MC-Unique: 3NuKkOnJMuiWiBL9X-WHDQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 429E7184F613;
+        Tue,  6 Apr 2021 14:00:39 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA16E72194;
+        Tue,  6 Apr 2021 14:00:06 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     x86@kernel.org, Len Brown <lenb@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v11 10/13] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Message-ID: <20210406135950.GA23358@ashkalra_ubuntu_server>
-References: <cover.1617302792.git.ashish.kalra@amd.com>
- <69dd6d5c4f467e6c8a0f4f1065f7f2a3d25f37f8.1617302792.git.ashish.kalra@amd.com>
- <CABayD+f3RhXUTnsGRYEnkiJ7Ncr0whqowqujvU+VJiSJx0xrtg@mail.gmail.com>
- <20210406132658.GA23267@ashkalra_ubuntu_server>
- <a59b2a76-dada-866d-ff2b-2d730b70d070@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a59b2a76-dada-866d-ff2b-2d730b70d070@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA0PR11CA0029.namprd11.prod.outlook.com
- (2603:10b6:806:d3::34) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+Date:   Tue,  6 Apr 2021 16:00:05 +0200
+Message-Id: <20210406140005.554402-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by SA0PR11CA0029.namprd11.prod.outlook.com (2603:10b6:806:d3::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32 via Frontend Transport; Tue, 6 Apr 2021 13:59:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1505c07b-fa49-4ad0-818f-08d8f9044268
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2719:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2719D24529FD92DAD7E66D5E8E769@SN6PR12MB2719.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: raOn8zT15DmBLbLlRf94Ls98aAl5vsLimpKOn5SJrZci+3fMr+R1ZLXuvKpd6WhaIlOYZoK4Ou+OW6aLswrex3Buht/2YNb/rex15Ky/liBG03BwNbZb9GAsgZUx/9y8W7Gprc7mVbYzob0m8NVs1MIUir7AKUp8xkmNKRpL2v24PsAMOylJvn9Y4wGrlrMbOImQUphwu/PFwMdG5/kgltcSf5Si22i8Y6zf+fuxCmcxYSUih1/9GR5NzkiF9KFNem2lgE9vNmdYLYNGFjMK7pWVwAGxhWAwM04pxLYy+OihhdsEpdHD/j0QHmLz1VIxqnxKUpalf4S82KDa6dlRnRHJonHsceZcrlhXOQ1bwtH5chnXlJVyH0kBB9WVXz1mbncKwmikz8vfUz1Nh0dTJc2zcNWeElvRPnOxKZPkPguoUvuSqJEbWGTGdWfkAv4dAtfByCWSuXFM2nxuSXUjOpQHpzG28ykR8pn9h8oEs0C00WKJoymaPOtV2nD/tdzCLejn2BvXwCgMKhCRGN+ojDpmQnZrer9GXKPZ0i3vJRU5ayIh68i4txjolZEtVH9I/AVUiXRieJtlJOOplZYZCfsq9NABP8piT2kC6+W5klYmm7/ozFRXsYfpoxC9bPWk15sOERdx55cXvpi/i1C8/0WNUNyGAJOtI1EBRjS61/LsNPUcFZylBDwwg/F3HnUm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(33716001)(54906003)(53546011)(8676002)(956004)(186003)(16526019)(478600001)(86362001)(316002)(6916009)(4326008)(33656002)(52116002)(26005)(38100700001)(8936002)(66556008)(66476007)(6666004)(6496006)(2906002)(7416002)(1076003)(5660300002)(66946007)(44832011)(9686003)(55016002)(38350700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+DXz0yVHOlm5kr6NmebgHoGquIfPP/6ZcNJjr7RtmzkcZeoOMDnipKmGJMKP?=
- =?us-ascii?Q?hcyhTbHKvRWwkT439vDmyjTjJWwgv1dbx7c6Vpi6z3TEqkFF/fE8RPf3EBVS?=
- =?us-ascii?Q?B3eVXEupbO60fPLnGld0Q0AFt+0KTGXXH/hARSEHYv0pNpop6VckCoVYZStv?=
- =?us-ascii?Q?GS9l9J3xtu0CpdT+S8PKc+idCo+pf0oNxCMuDwKmTgLrNxyHqGJt+RSsGco4?=
- =?us-ascii?Q?f7hu2QTTjMbowMB+FJ20mnj9Fg9UOl5T9Gm7a4OapDkwzswB8g4oQQlqE8Go?=
- =?us-ascii?Q?bxb0a6ZHBRLNLtNW5B1XUVWSLXIgq8rtwg0u6gVyi56rNxut3yAO7/fEavMW?=
- =?us-ascii?Q?i/8wgimF3m+JViZPLTyl3VThX8LLMJ5cjUlTj6p/GtZS+WJ29cOpmpm5Is/Q?=
- =?us-ascii?Q?EWuGEOkdx3rbY9ByWHncKxCdG5btT29qlhBvuwEFgIEt8TSfGwr6jA9CxPz6?=
- =?us-ascii?Q?TuZGARzB9n9f03ABaWLZTQuSGoRM+HtKHvBtKEzECS5L+RBV98t9bl2tChDq?=
- =?us-ascii?Q?5+upPLhRya33mTJlALJcKmGZK7k+wcholepjpZ0trN3n1DLHPrcds11m7qQV?=
- =?us-ascii?Q?u/AFUhYVG1tisNO4dO9g0G7oc+iXusLSQVa0JUeFCT9WQz2CV25252RcdACk?=
- =?us-ascii?Q?T4/lHFIjEuCVc9RskTnFK/jipSPzclj9cUF2TcHja4fts1Ur6s0CKF4tQHNf?=
- =?us-ascii?Q?OyDrPOvnWF1BrpVakmgiKH6GlIXEnwM989HEy0M7P9ZSlcVOl9hG59JpXR1k?=
- =?us-ascii?Q?+ldf5wfi2eD3Yfd8vmIHSEuaGCJfVdrPV4JiK21qhphS0D7uMbUGH65qC5OJ?=
- =?us-ascii?Q?QlDEH3QhcG3zcg964t+N8ISFkJ6+rYuYrQJ6+OscBZWQtW91Vr4hm9DKKQDY?=
- =?us-ascii?Q?ZOyNTfFHm3//SUulLvb+fyjviHBNv/Tn0hXU53VEGwdelcZtIez4TDWyvo4f?=
- =?us-ascii?Q?D3o07hPu8zIRJjwatoii3aJcvwBiP3YVQP25kAOjJalMBvKqOfhlxHKmiBBR?=
- =?us-ascii?Q?VurbKRMJ8O23FPF2nedxVwoq8xHq9ed0frt5oabWMLCWH+7SKckBL9BPUqZv?=
- =?us-ascii?Q?nBqx52w9SjJ/p4lozNOyPDL49Y71OAMovUB9GLO3uGXUB6xYxZjnA0Vukgrl?=
- =?us-ascii?Q?XSeeoDXxHwhRZlQDw8tgl+8BmsmEEtwvSybzIdLieMZNC3xBOdGkmUeIjHxR?=
- =?us-ascii?Q?3N5+uDr6421Zp9pf0w9C7IJtSs3+OxftSY/sU9Ci+8KTZB2KkPk5tHZtrNu+?=
- =?us-ascii?Q?bPV26+p3C7UYtJYdAWl1Jd4nukazklquhgbL3moNFpqOsCK23r+ANvG2S5q9?=
- =?us-ascii?Q?JsILpEXg3KirTrPJuouAc4Ow?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1505c07b-fa49-4ad0-818f-08d8f9044268
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 13:59:56.3195
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YVAoL4e2Hnhckc3d2mru52HGMVKiDLyvWoFqL4eTYASEckctXGvOlmP+ZWadg0m1hamB2YFMHv5v+eFqePEd9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2719
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Paolo,
+Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
+acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
+wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
+into acpi_idle_play_dead(). The problem is that these functions are not
+exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
 
-On Tue, Apr 06, 2021 at 03:47:59PM +0200, Paolo Bonzini wrote:
-> On 06/04/21 15:26, Ashish Kalra wrote:
-> > > It's a little unintuitive to see KVM_MSR_RET_FILTERED here, since
-> > > userspace can make this happen on its own without having an entry in
-> > > this switch statement (by setting it in the msr filter bitmaps). When
-> > > using MSR filters, I would only expect to get MSR filter exits for
-> > > MSRs I specifically asked for.
-> > > 
-> > > Not a huge deal, just a little unintuitive. I'm not sure other options
-> > > are much better (you could put KVM_MSR_RET_INVALID, or you could just
-> > > not have these entries in svm_{get,set}_msr).
-> > > 
-> > Actually KVM_MSR_RET_FILTERED seems more logical to use, especially in
-> > comparison with KVM_MSR_RET_INVALID.
-> > 
-> > Also, hooking this msr in svm_{get,set}_msr allows some in-kernel error
-> > pre-processsing before doing the pass-through to userspace.
-> 
-> I agree that it should be up to userspace to set up the filter since we now
-> have that functionality.
-> 
+The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
+(the later from assembly) but it seems putting the whole pattern into a
+new function and exporting it instead is better.
 
-The userspace is still setting up the filter and handling this MSR, it
-is only some basic error pre-processing being done in-kernel here.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+Cc: <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+Changes since v1:
+- Rename wakeup_cpu0() to cond_wakeup_cpu0() and fold wakeup_cpu0() in
+ as it has no other users [Rafael J. Wysocki]
+---
+ arch/x86/include/asm/smp.h    |  2 +-
+ arch/x86/kernel/smpboot.c     | 24 ++++++++++--------------
+ drivers/acpi/processor_idle.c |  4 +---
+ 3 files changed, 12 insertions(+), 18 deletions(-)
 
-Thanks,
-Ashish
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+index 57ef2094af93..630ff08532be 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -132,7 +132,7 @@ void native_play_dead(void);
+ void play_dead_common(void);
+ void wbinvd_on_cpu(int cpu);
+ int wbinvd_on_all_cpus(void);
+-bool wakeup_cpu0(void);
++void cond_wakeup_cpu0(void);
+ 
+ void native_smp_send_reschedule(int cpu);
+ void native_send_call_func_ipi(const struct cpumask *mask);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index f877150a91da..147f1bba9736 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1659,13 +1659,15 @@ void play_dead_common(void)
+ 	local_irq_disable();
+ }
+ 
+-bool wakeup_cpu0(void)
++/*
++ * If NMI wants to wake up CPU0, start CPU0.
++ */
++void cond_wakeup_cpu0(void)
+ {
+ 	if (smp_processor_id() == 0 && enable_start_cpu0)
+-		return true;
+-
+-	return false;
++		start_cpu0();
+ }
++EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
+ 
+ /*
+  * We need to flush the caches before going to sleep, lest we have
+@@ -1734,11 +1736,8 @@ static inline void mwait_play_dead(void)
+ 		__monitor(mwait_ptr, 0, 0);
+ 		mb();
+ 		__mwait(eax, 0);
+-		/*
+-		 * If NMI wants to wake up CPU0, start CPU0.
+-		 */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++
++		cond_wakeup_cpu0();
+ 	}
+ }
+ 
+@@ -1749,11 +1748,8 @@ void hlt_play_dead(void)
+ 
+ 	while (1) {
+ 		native_halt();
+-		/*
+-		 * If NMI wants to wake up CPU0, start CPU0.
+-		 */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++
++		cond_wakeup_cpu0();
+ 	}
+ }
+ 
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index 768a6b4d2368..4e2d76b8b697 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -544,9 +544,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+ 			return -ENODEV;
+ 
+ #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+-		/* If NMI wants to wake up CPU0, start CPU0. */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++		cond_wakeup_cpu0();
+ #endif
+ 	}
+ 
+-- 
+2.30.2
 
-> Let me read the whole threads for the past versions to see what the
-> objections were...
-> 
-> Paolo
-> 
