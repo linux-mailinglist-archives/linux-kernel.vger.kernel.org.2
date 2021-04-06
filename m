@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EB2355C19
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E229355C1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240865AbhDFTVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:21:13 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:40599 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhDFTVM (ORCPT
+        id S240922AbhDFTVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:21:31 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:46001 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhDFTVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:21:12 -0400
-Received: by mail-oi1-f182.google.com with SMTP id i3so16265595oik.7;
-        Tue, 06 Apr 2021 12:21:04 -0700 (PDT)
+        Tue, 6 Apr 2021 15:21:30 -0400
+Received: by mail-ot1-f52.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so15682431oty.12;
+        Tue, 06 Apr 2021 12:21:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZkkhcGwXE8ISA2k/jOIm9eSXhDLGB/Bawfl6kzwO91M=;
-        b=MOz4F0qXiKt517vWqH+zsg0h1rurT6t9fiB3UZfzwPeag1HWn+KuHgE1yrutfow5Go
-         J0aiY7gndKDNjoid1bQO/NnRgSHHi7Y/1ATSuFu0f6FNjP57WxZp6MI30Zz+Nm/VgTN6
-         VtvVvGQGedLH5wTxjKZlMqPjFOsThr2LoU6ikgNTIQXAIHXQgyeZ7W+8mRd7VV2LsapW
-         VL1QiUTP9BCACguO3M+0+mqCcqiE3Q+i5TZClY6a/Nrvq773HD6+DozVBT+KHCGousiV
-         vvv2AtJUWyMjiuRSsWmfGoq34WGN/SjzuyZSzCMi9utQJ8J3fvY+igeIPI8OcCe3s0MP
-         NgUQ==
-X-Gm-Message-State: AOAM533TDE5hR9EzJMUhRCSoIPjf9B5Sz9KvtC3nB0tGXqJBsq/Lkc1O
-        Et0teCjLDDyLjJ1cQ0gkNDgHILUQ/g==
-X-Google-Smtp-Source: ABdhPJxTT6YJGTu/EWts/mpNNCM/hQk4xVcit/FLG4BzmmNXmfVbR8MQs4lWvx/LTIcKJvB0q3lDyg==
-X-Received: by 2002:aca:af43:: with SMTP id y64mr4555484oie.46.1617736862283;
-        Tue, 06 Apr 2021 12:21:02 -0700 (PDT)
+        bh=P/5WF24c25eXF4/LauXbS74dqYKfNkXTqF0ifTdvwyM=;
+        b=AiQKGUrpUs78qrRHfwEgsOW37ZEzYBotcPd6SaqUdqSpoy66RyJ2wW09txkzIWKyjR
+         zORJ+NeVSMC5Kcai2s7fpSND1SLYrxQwJhxzMkaz5AxjU++asTZ4JwO1y/pUTHfKNfp0
+         ZTE+ti95kc2sleSoEOsErHyzm2xlrWqBNHeqrMD93eTbpfphHzh+AfPzwEzxQ9J28iJ9
+         ab6UayqVg4dzO+PXs+wnqWm+2jMWo/wPa6bJSNDgWrTZfY4uK1Yni/uErQ2KHBOIEgzg
+         YAjn01UQ9B/aBgy3g3koaa/4Za7MGCWkzi8uYt0i91SiyzXRQhNdOU2KxlmN/k8xEvyi
+         U3vA==
+X-Gm-Message-State: AOAM530G0P5eNeb1t6xp/LpG3v2NUaf5AYeggt2G1k4/zCrEkzjuf4Ws
+        QQhcFDNTQX68WNempJHhXA==
+X-Google-Smtp-Source: ABdhPJzhOj3xNCKqGX3FplsDy6aCWQFZ8eMFPgYBaxPre137YvK2vIxLDpMH+SY77jrs9hkfbskR5g==
+X-Received: by 2002:a9d:63d6:: with SMTP id e22mr27512520otl.188.1617736881782;
+        Tue, 06 Apr 2021 12:21:21 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l81sm3934251oif.31.2021.04.06.12.21.00
+        by smtp.gmail.com with ESMTPSA id 9sm3818434oid.17.2021.04.06.12.21.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 12:21:01 -0700 (PDT)
-Received: (nullmailer pid 2150103 invoked by uid 1000);
-        Tue, 06 Apr 2021 19:21:00 -0000
-Date:   Tue, 6 Apr 2021 14:21:00 -0500
+        Tue, 06 Apr 2021 12:21:21 -0700 (PDT)
+Received: (nullmailer pid 2150669 invoked by uid 1000);
+        Tue, 06 Apr 2021 19:21:20 -0000
+Date:   Tue, 6 Apr 2021 14:21:20 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     frowand.list@gmail.com
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 Subject: Re: [PATCH 1/1] of: properly check for error returned by
  fdt_get_name()
-Message-ID: <20210406192100.GA2050740@robh.at.kernel.org>
+Message-ID: <20210406192120.GA2150527@robh.at.kernel.org>
 References: <20210405032845.1942533-1-frowand.list@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -56,7 +56,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 10:28:45PM -0500, frowand.list@gmail.com wrote:
+On Sun, 04 Apr 2021 22:28:45 -0500, frowand.list@gmail.com wrote:
 > From: Frank Rowand <frank.rowand@sony.com>
 > 
 > fdt_get_name() returns error values via a parameter pointer
@@ -89,7 +89,11 @@ On Sun, Apr 04, 2021 at 10:28:45PM -0500, frowand.list@gmail.com wrote:
 > https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
 > 
 > I will create a separate patch to fix that problem.
+> 
+>  drivers/of/fdt.c      | 36 +++++++++++++++++++++++-------------
+>  drivers/of/overlay.c  |  2 +-
+>  drivers/of/unittest.c | 15 ++++++++++-----
+>  3 files changed, 34 insertions(+), 19 deletions(-)
+> 
 
-Got an ETA for that?
-
-Rob
+Applied, thanks!
