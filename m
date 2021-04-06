@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87AF355522
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2782335552A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344468AbhDFNaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S1344480AbhDFNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhDFNaW (ORCPT
+        with ESMTP id S230160AbhDFNbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:30:22 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04B3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 06:30:10 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id l9so6971810ils.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 06:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zbkgM7EklYBgMqnsRgXu/OttXW0k5WuSVERLeYOfs6c=;
-        b=YKa/dr0N4/hryeRJlHCpY30TWqqo7GaxNQfMYygCMtHN2eujpvjvFMIbxRxAEAOzrX
-         IJuv5hzDc5ZXN+N87aAvcuy+cZ3Ljpezx/x5edPftTwLA3XImsRyBsG8vk/ViMTiMnO8
-         6EzkJLq532/nm+WSEeyWkvZ7ZEiN+DRhbL2zE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zbkgM7EklYBgMqnsRgXu/OttXW0k5WuSVERLeYOfs6c=;
-        b=SRpIdH3kG6lTxv8rkhj7Q7nm8Ysu8E8k3Z0hnSz/Oc8JRFZj+NaMD4q2nVQfId3ub8
-         mVzwpEYTmHr8n0GNpTI4u0RrPfeLhLD2lHBYFtvv3p/D7mL95qTKdQFvYl4krOTK/c+V
-         ntkKMtQJaOc2Rkh7M72FaisNVC37AFHuJVgMIWQgYrtKY9tbdPC6q0TcnVipoED1CBX0
-         fe2KJxAiqTo4vFIVffIGuZIEFZXDVdyJmVgRlycZD7uQgx6uejrEMMyQbzw/UBSygfK1
-         C51qF+ti9y07w1wQLwzvjQE9kMoqIIsg0Ak4B2kuvjLTMCeVLvLzgrzoi32ywSnuuXRn
-         6l0g==
-X-Gm-Message-State: AOAM531DjqmyrFYKVieEXFWVO+eoaT7mn/5wWHVbTCrR+KW+Nz8rYaiQ
-        +Uq50RTN4jPEMdvwzNzSUyYI1crRmrG86Q==
-X-Google-Smtp-Source: ABdhPJwbzf2iS0A98g3mhRbwKW5LsaZ8kuo6BQjzQQNHH/5Xx5OZtVcmIQYFWCqcVxtbtDAEjogd/w==
-X-Received: by 2002:a92:c5a3:: with SMTP id r3mr24514915ilt.155.1617715810201;
-        Tue, 06 Apr 2021 06:30:10 -0700 (PDT)
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
-        by smtp.gmail.com with ESMTPSA id 7sm5302549ilj.59.2021.04.06.06.30.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 06:30:09 -0700 (PDT)
-Received: by mail-io1-f43.google.com with SMTP id v26so15521780iox.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 06:30:09 -0700 (PDT)
-X-Received: by 2002:a6b:8ec2:: with SMTP id q185mr23730961iod.150.1617715808496;
- Tue, 06 Apr 2021 06:30:08 -0700 (PDT)
+        Tue, 6 Apr 2021 09:31:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1482EC06174A;
+        Tue,  6 Apr 2021 06:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wQuSgXvvayHccqDmkcsLOwlAkT4r6qTVRKvApKKeAHE=; b=QoXafGbjSMFSahCUJ4nxDTUD3P
+        rFsvFlqB+0rSuJbWYoatudI9IGCUCB9MAdIO/kpAMmqcnvpQr0mYUYiOEP/wTPDrPE7pHDIzcijKh
+        3kg34KvSZmbaCUZYjqbBeczXm8UhnmUIKBhTFBlpcre7Gzr1s9xAdANZ4TTQSeVCALpEhwkgWbn4d
+        UFvuGBOMQ2rgjw6ojpgZOnhr55YMGyM7ouZwTT0F6NhoTSE7xHu99EgFt7MkkDzAJvkeVEri1r3X4
+        TojqIhbKgIcV+3KX0z7dE7kh+iru41FOEK1yALk8j9cBpFFHjv1r7CZmNA0HPwqZkkai9627pM8ev
+        +xXCHq5g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTln6-00CrXl-3O; Tue, 06 Apr 2021 13:30:53 +0000
+Date:   Tue, 6 Apr 2021 14:30:48 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 05/27] mm: Add folio reference count functions
+Message-ID: <20210406133048.GD3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-6-willy@infradead.org>
 MIME-Version: 1.0
-References: <20210315123406.1523607-1-ribalda@chromium.org>
- <34c90095-bcbf-5530-786a-e709cc493fa9@linux.intel.com> <CANiDSCvMvYVN0+zN3du2pJfGLPJ_f7Ees2YrfybJgUDmBjq2jQ@mail.gmail.com>
- <db0bac15-01a1-5cc0-f72d-135ce5f9b788@linux.intel.com>
-In-Reply-To: <db0bac15-01a1-5cc0-f72d-135ce5f9b788@linux.intel.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 6 Apr 2021 15:29:57 +0200
-X-Gmail-Original-Message-ID: <CANiDSCujua6DYbys7EF_Qgg4XskvG0qRDOrVmAvTpZDMFtzf9g@mail.gmail.com>
-Message-ID: <CANiDSCujua6DYbys7EF_Qgg4XskvG0qRDOrVmAvTpZDMFtzf9g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: Fix memory leak in imu_fmt
-To:     Bingbu Cao <bingbu.cao@linux.intel.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@driverdev.osuosl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331184728.1188084-6-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bingbu
+On Wed, Mar 31, 2021 at 07:47:06PM +0100, Matthew Wilcox (Oracle) wrote:
+> These functions mirror their page reference counterparts.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  Documentation/core-api/mm-api.rst |  1 +
+>  include/linux/page_ref.h          | 88 ++++++++++++++++++++++++++++++-
+>  2 files changed, 88 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
+> index 34f46df91a8b..1ead2570b217 100644
+> --- a/Documentation/core-api/mm-api.rst
+> +++ b/Documentation/core-api/mm-api.rst
+> @@ -97,3 +97,4 @@ More Memory Management Functions
+>     :internal:
+>  .. kernel-doc:: include/linux/mm.h
+>     :internal:
+> +.. kernel-doc:: include/linux/page_ref.h
+> diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
+> index f3318f34fc54..f27005e760fd 100644
+> --- a/include/linux/page_ref.h
+> +++ b/include/linux/page_ref.h
+> @@ -69,7 +69,29 @@ static inline int page_ref_count(struct page *page)
+>  
+>  static inline int page_count(struct page *page)
+>  {
+> -	return atomic_read(&compound_head(page)->_refcount);
+> +	return page_ref_count(compound_head(page));
+> +}
 
+I don't think this change belongs in here.  It seems useful though,
+so maybe split it into a standalone patch?
 
-Maybe you want to add your Reviewed-by ? ;)
+Otherwise looks good:
 
-Thanks!
-On Wed, Mar 17, 2021 at 7:48 AM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
->
->
-> On 3/17/21 1:50 AM, Ricardo Ribalda wrote:
-> > Hi Bingbu
-> >
-> > Thanks for your review
-> >
-> > On Tue, Mar 16, 2021 at 12:29 PM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
-> >>
-> >> Hi, Ricardo
-> >>
-> >> Thanks for your patch.
-> >> It looks fine for me, do you mind squash 2 patchsets into 1 commit?
-> >
-> > Are you sure? There are two different issues that we are solving.
->
-> Oh, I see. I thought you were fixing 1 issue here.
-> Thanks!
->
-> >
-> > Best regards!
-> >
-> >>
-> >> On 3/15/21 8:34 PM, Ricardo Ribalda wrote:
-> >>> We are losing the reference to an allocated memory if try. Change the
-> >>> order of the check to avoid that.
-> >>>
-> >>> Cc: stable@vger.kernel.org
-> >>> Fixes: 6d5f26f2e045 ("media: staging/intel-ipu3-v4l: reduce kernel stack usage")
-> >>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >>> ---
-> >>>  drivers/staging/media/ipu3/ipu3-v4l2.c | 11 +++++++----
-> >>>  1 file changed, 7 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-> >>> index 60aa02eb7d2a..35a74d99322f 100644
-> >>> --- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-> >>> +++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-> >>> @@ -693,6 +693,13 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
-> >>>               if (inode == IMGU_NODE_STAT_3A || inode == IMGU_NODE_PARAMS)
-> >>>                       continue;
-> >>>
-> >>> +             /* CSS expects some format on OUT queue */
-> >>> +             if (i != IPU3_CSS_QUEUE_OUT &&
-> >>> +                 !imgu_pipe->nodes[inode].enabled) {
-> >>> +                     fmts[i] = NULL;
-> >>> +                     continue;
-> >>> +             }
-> >>> +
-> >>>               if (try) {
-> >>>                       fmts[i] = kmemdup(&imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp,
-> >>>                                         sizeof(struct v4l2_pix_format_mplane),
-> >>> @@ -705,10 +712,6 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
-> >>>                       fmts[i] = &imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp;
-> >>>               }
-> >>>
-> >>> -             /* CSS expects some format on OUT queue */
-> >>> -             if (i != IPU3_CSS_QUEUE_OUT &&
-> >>> -                 !imgu_pipe->nodes[inode].enabled)
-> >>> -                     fmts[i] = NULL;
-> >>>       }
-> >>>
-> >>>       if (!try) {
-> >>>
-> >>
-> >> --
-> >> Best regards,
-> >> Bingbu Cao
-> >
-> >
-> >
->
-> --
-> Best regards,
-> Bingbu Cao
-
-
-
--- 
-Ricardo Ribalda
+Reviewed-by: Christoph Hellwig <hch@lst.de>
