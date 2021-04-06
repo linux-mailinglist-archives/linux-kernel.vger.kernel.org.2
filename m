@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F89355BF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B1A355BF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236926AbhDFTGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:06:01 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43883 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236040AbhDFTF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:05:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617735936;
-        bh=S5w76roMR9069RbtJkgU377LovVfOK0MpWKmGi2/kjk=;
-        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
-        b=YUvW0IUkEYFFBjdbWiLopC7be2NB6xosmAvZqw1+MYNWduVNaDmlVPE4efPOEFkwJ
-         Nn7C2tFhRSn52qW6QmPZUJ9ZzQK/kW7ZDno+mqxgg/oaQdYHIvffm1RQXYgoOvRoxv
-         1PQEWcPZ4EvNmficarqQZgkIvIpDk81npdW3ebLM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.123.35] ([62.143.247.63]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWigq-1l5gHP3Qk4-00X3ZS; Tue, 06
- Apr 2021 21:05:35 +0200
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [RFC] dt-bindings: riscv: enum for riscv,isa
-Message-ID: <5385012d-9f09-d7d9-7b6a-cef7de2d4056@gmx.de>
-Date:   Tue, 6 Apr 2021 21:05:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235661AbhDFTFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230391AbhDFTFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:05:50 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D668C06174A;
+        Tue,  6 Apr 2021 12:05:42 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id p10so2901350pld.0;
+        Tue, 06 Apr 2021 12:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
+        b=TojC3B0s7I3+/nfSWs80/9xaTunkHwnkKDBu0qMg6TLU4XRxHMsgSdErm3Rmk3JsJU
+         mryDZ+lYvgfSbnj2+2DV+tNy2hSnZzx9JSrwv05R4WdMAhs0ldJA89oJuEcMaEwRndqS
+         MYny9f2VB0fXOvTK4N4sVcpxeE/Rj7Ws45TRD7hgPxX5eQIYECZ56yD1nAnqoFnWWeL1
+         eGCWd7lCWR1nvBSe7EnoOCkg/OH0bhhpF9SykB/kkPf0+nJ7MSvuSYGOY7shixqk36UC
+         Dj+tJMc9KRxOBwmpf6HwkJQicZBtHFvS1JDVL1le3a1DwLNXmIHGHzqKgTLlur+jthEJ
+         5ZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
+        b=aodHXExjcJa1UBJzDo74A5a/hp4E2KMQgyZEk3RbMjZY9B6LgkjAUEukUKobmzxN/W
+         ts7IqeeqeV4WvyBEEG9UrJKjf7Z/V03Jc3z7CDokOkdq/BRfT4xpoD7D1g5P5Tz+Pz9Y
+         ww0vLStlrsYKbr2nqPVFImX5PGYo4KAiGTdO6HdHwA0EcOyl1FdJWZzhTZUVfFuyT17S
+         neLTCOuYKZaZp0Jm9kO5KIUF6hjs5o/zJYNNOoAubOsJIQswLsW9TTwqJQq+awStiSC5
+         YPu91F1yu7UD6kIw3tqN5ODkkbJyUWyUTKlsl8U956lJHbB0QnPJ2UujkLgD/0heq6lK
+         cuAw==
+X-Gm-Message-State: AOAM530ZjUeiCZgK+I5WHVwkuvRvmoxzfiRc7XeJKwCmxBcWUNA+3VHZ
+        WIyVoo12X0eUuunamjxouCE=
+X-Google-Smtp-Source: ABdhPJwlP3QmABh4/nIwmiUI0ymstaWn3umCEZUef0OvuVGmL6HHCgt6yYD9gjyKppqKOMZS8rnNyw==
+X-Received: by 2002:a17:90a:f2cc:: with SMTP id gt12mr5723370pjb.136.1617735941762;
+        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
+Received: from localhost ([47.9.169.206])
+        by smtp.gmail.com with ESMTPSA id l10sm18453586pfc.125.2021.04.06.12.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 00:35:38 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+Message-ID: <20210406190538.fdqo7g2tzolgckpy@apollo>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ngX28VYtdWQlHye7iPLWOBYn1ApSoOWXfA3SALu5YrflY7O+Qr/
- fZpezTIa/Nlhrsrdk9Lo/Y398bJ1h7tVl9oaPRkKRR+kMZWYWn3i+aFDp4GXpDdFXSeYAO2
- ItcbGkvnpvqiJGS+nuHYiriX0p3XHuyUBtt8ChCTREYFCRTkLqB4aTiXu/0VqJCWib9iOs6
- TkJj2Kcj5ofZ+TLHIVrxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UepjL+PZHsc=:BanShc5P6UyNbjSNcxkUNf
- zFYy/wDiOrK+rPwaV2rT1KnHpgwY2GVujT30j25QUW5YoobHI9kwgoTm+Gf7S/7bFc/6W1qDi
- p9AA6ZZnhQLeBWiJAaXE2FVMbUFsS+QfX2nCmYqzAWFl14OAFNvCtytuHS2TBklMymnESTpnb
- NuJ2kcsXtuhkgCCyamft7+66Kc0q1R4rJ/6dKr5L6LQhqJrI6kPC3r/cpzDrDkAzo7XZrl2mC
- XDACxBqFk3dUIgkqys4w4gRTg9iJiPn87JTR25jjwUVxAc8yUoi/6r5d6TutyuDuFMBMB2/Le
- R6jrnuXCrNwp23PRH7fS3tV8DGFmjLhTICvp+P2BZ2LLq3hVNc8Y3fZvM2PJXfo63tUFBSzXF
- V4wVsB2k/FuTjNE9vyg4UzvUMuArWX3VlR/Zj5/HKlRCjgCSkTMZCRSi/bvvfhpRcMbcXqM/3
- xFfXqHufV6iP+zYG12jZoUtVHwqE7k1LwdzLJ8reufc9en3BZr0LFbDBwYUWj0ndBT5RBA85H
- W99GkXuklomm8hH5zwC8jG5bpL9r2CscvZFcN9PUKzKBKKlSZwXUla7PGgNqwYYvQaaAWYcZ4
- uGWyOX5I2OyfLv0rgeAHmr0DoEMgp4AfjDLgJuboZiEpdtCTTMd8K+WpKcPkfeB0xhAFQD2kU
- 6O5IdeziwXrF9jVOktLRrabwTTUjr/u1K+0r5jGS1MIG2EVepDyldXGJzEchxt61hB9LBOWBR
- W91WKo92D4j5xjtPJzDmLRjtqcy4phKeQFmFUhwP9nIddAw3tgfq/+X1CYbOhj+2KuVFkbhui
- ruA4rbBWdULlNWmdYObMKIIDJRzvbUIShr8azks5hkzBsNVFviSAfnGffTcXUOf7GajM6U9bi
- mUFJqGTvfArPoTsINPOFAMNLOtH7WCf81z8Jc79Q7EocxQJRSLlyyEwZUcypJbN3gRYu7nsW+
- QPm+go/7A74UFcHZiliARwGqkoItSzSLGVm+ngzqzMFDpTbuuttKzkTZ8hHxm93GzuRYZFviL
- 2ZXegoYj0QuxhdruAF+Vrq2LgQ1qGU8m7YewqD6jkMdouN2fD+sNRCRjYDp+8wr01icY6Hfb6
- egGyQp63KAgHQ3GDzB+xj8mMg0RboqmGikpRuIHdE+xtHrzJaK4z/I3i7F8n0YwcREY+mlyVI
- 1DFqbCQau0bxor+CmuQT1lQ/UCniF8wDt4xYlbqquPyEwr8aNaWLOWxZfDFd7PR4g1Cng=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Documentation/devicetree/bindings/riscv/cpus.yaml I find for riscv,isa:
+On Mon, Apr 05, 2021 at 10:51:09PM IST, Andrii Nakryiko wrote:
+> > [...]
+>
+> if _block variant is just a special ifindex value, then it should be
+> fine for users to know such a detail (we can leave a comment
+> mentioning this specifically), especially given it's not a very
+> popular thing. Almost doubling amount of APIs just for this doesn't
+> make much sense, IMO.
+>
 
-     enum:
-       - rv64imac
-       - rv64imafdc
+Ok.
 
-This implies that 'rv64imafc' or 'rv64imafdqc' would be illegal values
-while these combinations of extensions would be compliant with "The
-RISC-V Instruction Set Manual".
+>
+> If we know that we need variant with options, I'd vote for having just
+> one bpf_tc_attach() API which always takes options. Passing NULL for
+> opts is simple, no need for two APIs, I think.
+>
 
-To me it does not make much sense to try to enumerate all permissible
-permutations of RISC-V extensions.
+Ack.
 
-Shouldn't this enum be removed and replaced by examples?
+>
+> Which parts of that id struct is the data that caller might not know
+> or can't know? Is it handle and chain_index? Or just one of them?
+> Or?... If there is something that has to be returned back, I'd keep
+> only that, instead of returning 6+ fields, most of which user should
+> already know.
+>
 
-Best regards
+The user will know ifindex and parent_id, and perhaps protocol (it would be
+ETH_P_ALL if they don't supply one by default). Other fields like handle,
+priority and chain_index can all be kernel assigned, so keeping those still
+makes sense. I'll change this in v2.
 
-Heinrich
+--
+Kartikeya
