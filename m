@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9913549DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C1A3549D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242087AbhDFBHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:07:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:13651 "EHLO mga17.intel.com"
+        id S237855AbhDFBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:01:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:50991 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235769AbhDFBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:07:43 -0400
-IronPort-SDR: +1Bxe5pKf9d2d9+Yt4h7/cmdzCD7s9wZIWcFMZE8C2NmOuMa1U0yXKld9E9shqZ0zYU9jelPWk
- orrXXUeNrE9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="173030537"
+        id S232600AbhDFBBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:01:20 -0400
+IronPort-SDR: KCYblGlzEz4AMtaDb6DgAPcTzO7gFWKm5Yf12xutZyC0XJPqUW0NqswOpAq8lfvPo9r3Y+Qqt/
+ l+RmMhcgy4lA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="256941413"
 X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="173030537"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:07:36 -0700
-IronPort-SDR: Wtwhc4FlTpvJsuXZDx/ruo9zOYrdhP9yb/4kWwe7nLyGVLSKtTejyMTw8aQadzl5gMAJGAKmyB
- +fG8nCb/dG4g==
-X-ExtLoop1: 1
+   d="scan'208";a="256941413"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:01:12 -0700
+IronPort-SDR: 6iD/G2z2w+mrZJ8DqCNu+CTlcmqDXXqNx50efMxLLpCFr1ZZhJ8oRC25Ohv9gwO7EUb/bc8nux
+ Kkot7cYHSBgA==
 X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="440713227"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Apr 2021 18:07:34 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v2 4/5] iommu/vt-d: Use user privilege for RID2PASID
- translation
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-References: <20210320025415.641201-1-baolu.lu@linux.intel.com>
- <20210320025415.641201-5-baolu.lu@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <84f0ca29-04e0-446b-745a-73e2f9e49f3b@linux.intel.com>
-Date:   Tue, 6 Apr 2021 08:58:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210320025415.641201-5-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="420964332"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:01:09 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH v2] soundwire: intel_init: test link->cdns
+Date:   Tue,  6 Apr 2021 09:01:01 +0800
+Message-Id: <20210406010101.11442-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/20/21 10:54 AM, Lu Baolu wrote:
-> When first-level page tables are used for IOVA translation, we use user
-> privilege by setting U/S bit in the page table entry. This is to make it
-> consistent with the second level translation, where the U/S enforcement
-> is not available. Clear the SRE (Supervisor Request Enable) field in the
-> pasid table entry of RID2PASID so that requests requesting the supervisor
-> privilege are blocked and treated as DMA remapping faults.
-> 
-> Suggested-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+intel_link_probe() could return error and dev_get_drvdata() will return
+null in such case. So we have to test link->cdns after
+link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
+Otherwise, we will meet the "kernel NULL pointer dereference" error.
 
-We found some devices still require SRE to be set during internal tests.
-I will drop this patch from my queue for v5.13 for now.
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+v2:
+ - Rebase to latest code base.
+---
+ drivers/soundwire/intel_init.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Best regards,
-baolu
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index 05b726cdfebc..30ce95ec2d70 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -178,6 +178,15 @@ static struct sdw_intel_ctx
+ 		link->pdev = pdev;
+ 		link->cdns = platform_get_drvdata(pdev);
+ 
++		if (!link->cdns) {
++			dev_err(&adev->dev, "failed to get link->cdns\n");
++			/*
++			 * 1 will be subtracted from i in the err label, but we need to call
++			 * intel_link_dev_unregister for this ldev, so plus 1 now
++			 */
++			i++;
++			goto err;
++		}
+ 		list_add_tail(&link->list, &ctx->link_list);
+ 		bus = &link->cdns->bus;
+ 		/* Calculate number of slaves */
+-- 
+2.17.1
 
-> ---
->   drivers/iommu/intel/iommu.c | 7 +++++--
->   drivers/iommu/intel/pasid.c | 3 ++-
->   2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 868f195f55ff..7354f9ce47d8 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -2494,9 +2494,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
->   				    struct device *dev,
->   				    u32 pasid)
->   {
-> -	int flags = PASID_FLAG_SUPERVISOR_MODE;
->   	struct dma_pte *pgd = domain->pgd;
->   	int agaw, level;
-> +	int flags = 0;
->   
->   	/*
->   	 * Skip top levels of page tables for iommu which has
-> @@ -2512,7 +2512,10 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
->   	if (level != 4 && level != 5)
->   		return -EINVAL;
->   
-> -	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
-> +	if (pasid != PASID_RID2PASID)
-> +		flags |= PASID_FLAG_SUPERVISOR_MODE;
-> +	if (level == 5)
-> +		flags |= PASID_FLAG_FL5LP;
->   
->   	return intel_pasid_setup_first_level(iommu, dev, (pgd_t *)pgd, pasid,
->   					     domain->iommu_did[iommu->seq_id],
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index 0bf7e0a76890..dd69df5a188a 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -673,7 +673,8 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
->   	 * Since it is a second level only translation setup, we should
->   	 * set SRE bit as well (addresses are expected to be GPAs).
->   	 */
-> -	pasid_set_sre(pte);
-> +	if (pasid != PASID_RID2PASID)
-> +		pasid_set_sre(pte);
->   	pasid_set_present(pte);
->   	pasid_flush_caches(iommu, pte, pasid, did);
->   
-> 
