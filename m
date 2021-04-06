@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801B1355FBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C4C355FC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 01:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344792AbhDFXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 19:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344770AbhDFXuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:50:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8DF41613C0;
-        Tue,  6 Apr 2021 23:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617753009;
-        bh=zU5PgoVX2+C0VrAQex2YCIxLZ67eZY8t2e0MftEbYLQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mJRJ+0F598Bd7NO2mfX+bICpAhOOEDMNyWUIt0KaebLJkSb8CZIHZiYbuS8z9DhKS
-         P9qQUxkdrkqd0vG1i7Ig/tb98l/BlGPGffGsbBq17elGiFbNg0nAr0l9lKcujmnPXU
-         P68109bzf+0usMg1eMgho769QG0iif8qT4OMWSrDVf3HQwsN6W4PY9kn/tCzLnoDkS
-         v7ixYFkVO61pyq18Tt/cQpdGJQ9v0FqOqq0VkDY2s9Havzn1+Jt6DHndZI0q5jKqWi
-         tpjvQQ01JqRU712epjS4XJBFEP12y84kj580o/hNA7G0aa04zYeYOHrlcl73pA82Zw
-         5YubED4voGCPg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D1E960A2A;
-        Tue,  6 Apr 2021 23:50:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1344810AbhDFXw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 19:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233629AbhDFXwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 19:52:22 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEEEC06174A;
+        Tue,  6 Apr 2021 16:52:11 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so286002pji.5;
+        Tue, 06 Apr 2021 16:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r0Ha/Gv3pAkjmgqqsKcPiH9tlZnqWzms79uqmOiSHMs=;
+        b=DoH08R29BGwmuj6eSbyG3BUk0CMYUOgrE7l1ib0WohqefmBPVt3sY22jJOdDf2ba3M
+         OraAYZNzGMrAjzLBt/oLKxSGP5xVkpQwVYlEyQ+FCAxk1AucZMSXaKaX4yes8IpuX9bx
+         k/PK2mwZ7S6C7V1Otv/hHIYsXqEQzWVrSgtZ7Smoc3vdWQK5bfkyy5fWevoxUBoneWfM
+         UlLNvmrFvT/LKV17m0n35Iq2WXwO1WQ94cKquKeKdq4Eo0jQbOkxVxjhAnmnUDMrZ/jw
+         sjVzOf22KCT3mTqKrrakDQ7hCLtkS68PqKVrr3avChCGt1YUrsIst96sJ5oXc8I6D0zL
+         +AxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r0Ha/Gv3pAkjmgqqsKcPiH9tlZnqWzms79uqmOiSHMs=;
+        b=aSfq4wLV33gZoxXuQxAynvZwOvSHfBBeqCtoVnLo8iFCLJGj+NsK/Rpc3EAgbou/0s
+         X/0lvT5XDgYjvocVAxntjaMiBxsxokPy/MuHLBOvDKBpY8kmOQOuPwr7s6t/8iDPvGSe
+         /VlkWvbiJXnL8tee6A/M4hWLcjiIDDVZXgcccO2UfFCxX4E7HuesGtqTSxnc2ENzv83d
+         ynONeFI0S6Ih1TbyXY2svmCGT+VQS0H7+hT+/RO7Tgu4ZLlH9k0+gWJladRdDxgZBSSu
+         GQZ+s7U194ACcRGOq8HEtSlkdT/CqDA5J2x2HixvC4u1daaGh7pxv9ogNy4AWbF9b+3k
+         Guqg==
+X-Gm-Message-State: AOAM533y51c6yROMdvXiUe/0YwWezevgdqIaUz3M1gHFSG2NFwTBPU9f
+        iZsDQbYWmnIZc3PGUj0JcxI=
+X-Google-Smtp-Source: ABdhPJxtumeckyy0f77HdPuOn8G6N6f+xOhLUrB9QPIL+nP1d3kOEbilw2AHpr0vnTb2lu4tnB14Mw==
+X-Received: by 2002:a17:90a:6385:: with SMTP id f5mr590598pjj.212.1617753131320;
+        Tue, 06 Apr 2021 16:52:11 -0700 (PDT)
+Received: from localhost (g139.124-45-193.ppp.wakwak.ne.jp. [124.45.193.139])
+        by smtp.gmail.com with ESMTPSA id k21sm19587938pfi.28.2021.04.06.16.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 16:52:10 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 08:52:08 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     guoren@kernel.org, linux-arch@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
+        Anup Patel <anup@brainfault.org>, sparclinux@vger.kernel.org,
+        Waiman Long <longman@redhat.com>,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [OpenRISC] [PATCH v6 1/9] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <20210406235208.GG3288043@lianli.shorne-pla.net>
+References: <1617201040-83905-1-git-send-email-guoren@kernel.org>
+ <1617201040-83905-2-git-send-email-guoren@kernel.org>
+ <YGyRrBjomDCPOBUd@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v1 1/1] ethtool: fix incorrect datatype in set_eee ops
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161775300950.25054.9937992682848380005.git-patchwork-notify@kernel.org>
-Date:   Tue, 06 Apr 2021 23:50:09 +0000
-References: <20210406131730.25404-1-vee.khee.wong@linux.intel.com>
-In-Reply-To: <20210406131730.25404-1-vee.khee.wong@linux.intel.com>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, mkubecek@suse.cz,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGyRrBjomDCPOBUd@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue,  6 Apr 2021 21:17:30 +0800 you wrote:
-> The member 'tx_lpi_timer' is defined with __u32 datatype in the ethtool
-> header file. Hence, we should use ethnl_update_u32() in set_eee ops.
+On Wed, Apr 07, 2021 at 12:51:56AM +0800, Boqun Feng wrote:
+> Hi,
 > 
-> Fixes: fd77be7bd43c ("ethtool: set EEE settings with EEE_SET request")
-> Cc: <stable@vger.kernel.org> # 5.10.x
-> Cc: Michal Kubecek <mkubecek@suse.cz>
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> On Wed, Mar 31, 2021 at 02:30:32PM +0000, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> > 
+> > Some architectures don't have sub-word swap atomic instruction,
+> > they only have the full word's one.
+> > 
+> > The sub-word swap only improve the performance when:
+> > NR_CPUS < 16K
+> >  *  0- 7: locked byte
+> >  *     8: pending
+> >  *  9-15: not used
+> >  * 16-17: tail index
+> >  * 18-31: tail cpu (+1)
+> > 
+> > The 9-15 bits are wasted to use xchg16 in xchg_tail.
+> > 
+> > Please let architecture select xchg16/xchg32 to implement
+> > xchg_tail.
+> > 
 > 
-> [...]
+> If the architecture doesn't have sub-word swap atomic, won't it generate
+> the same/similar code no matter which version xchg_tail() is used? That
+> is even CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32=y, xchg_tail() acts
+> similar to an xchg16() implemented by cmpxchg(), which means we still
+> don't have forward progress guarantee. So this configuration doesn't
+> solve the problem.
+> 
+> I think it's OK to introduce this config and don't provide xchg16() for
+> risc-v. But I don't see the point of converting other architectures to
+> use it.
 
-Here is the summary with links:
-  - [net,v1,1/1] ethtool: fix incorrect datatype in set_eee ops
-    https://git.kernel.org/netdev/net/c/63cf32389925
+Hello,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+For OpenRISC I did ack the patch to convert to
+CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32=y.  But I think you are right, the
+generic code in xchg_tail and the xchg16 emulation code in produced by OpenRISC
+using xchg32 would produce very similar code.  I have not compared instructions,
+but it does seem like duplicate functionality.
 
+Why doesn't RISC-V add the xchg16 emulation code similar to OpenRISC?  For
+OpenRISC we added xchg16 and xchg8 emulation code to enable qspinlocks.  So
+one thought is with CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32=y, can we remove our
+xchg16/xchg8 emulation code?
 
+-Stafford
