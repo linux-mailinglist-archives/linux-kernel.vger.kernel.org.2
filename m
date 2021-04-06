@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FA3355500
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBFF3554FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344431AbhDFNY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:24:28 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:43566 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344402AbhDFNYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344394AbhDFNYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Apr 2021 09:24:23 -0400
-Received: by mail-ot1-f53.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so5671946otq.10;
-        Tue, 06 Apr 2021 06:24:16 -0700 (PDT)
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:36455 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhDFNYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:24:18 -0400
+Received: by mail-oo1-f49.google.com with SMTP id w1-20020a4adec10000b02901bc77feac3eso3682898oou.3;
+        Tue, 06 Apr 2021 06:24:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=WMh9wsTtUk5bjoFe6rmnQ66dAMVkJoEObr181rNizCo=;
-        b=k2BBwCXCrqnKmf4rYaNDkoFS9rub1IHTFWArX9hVpNFaBjlgksrni7xZqtYEyQiCvi
-         NgVZZJAheUBqFkYy+9C+kf5gxZ7Evr7GTIHI+Xjxg0CzicDGNaEMiq4MryhVyjOs2xkF
-         9YmsKo1bpaiBaIcOevKwP2Yi+5rYc5JXMya5+T2G+P8T7zj1SMw8XJxUMsUODQgjTSTV
-         bPE3HotwX+N3wGCm9gjgSceF6D8asvkKaU9MIZvtouW7j5zLtq5yhrQHJiDH/m7rV83b
-         YoRTpSZtG6hHX9bUDpLJybhn8MtRrdwsSLt/A48YLcWI9FNIwj3A145bb9QUcKKigfRS
-         L1pA==
-X-Gm-Message-State: AOAM5330TbDBnt7a3Ijp4mvgxh8WZBJBwsIPvubqvPyeQTJQ2O7ay7J+
-        1RCQXVfmw0A2OBG9BUbq0Q==
-X-Google-Smtp-Source: ABdhPJw6oyIqrB/SR505G75yFdcsa0+9wxt1Z4y+VO2PXVEFRp/jBWqxZmcdvOjPgjDsqwojKjW6lw==
-X-Received: by 2002:a9d:5a97:: with SMTP id w23mr26569036oth.314.1617715455706;
-        Tue, 06 Apr 2021 06:24:15 -0700 (PDT)
+        bh=KqiWovFcA0VWUEW5WeOEp/JpvO8enKS6XaPrtTWARiI=;
+        b=TYONHBVMlTJ9WjxSXBfwJQDPzOWz4qvA5pfCLzj2pH9t3KFBNTDAf0kAeqoT1tLYkn
+         aoGpMS8Cc9uu6vqrQ/9s+RBGgxy+huszvv2GJknjVSCT80M65egZ39BdQjwpvfggBozB
+         DxJoi9aNIXdkaUUO+hnghV5P81AWzIaNKQDlkbsQseHQ8unV88AhtQDHARH2OfIUx7Hn
+         Yw2zmxH5gll9D9PJmqJua/s6igUHMb+ZRxThSfXWj78fmqtd46yKUw5Omip+u139jsH1
+         mGjunOwxAMWV2On2ZFhNUApaQGTBHcrGn40nfnRK/mvxhkl7hNgbJLYm/N6D5yI8K4bC
+         JRZg==
+X-Gm-Message-State: AOAM531Es661i6NB+mqUmWi6oBTtlBR0CjQYBpGU5LPW8uc0bRN+RWNm
+        Vb06f0BLQG9tSlxrdWfxpg==
+X-Google-Smtp-Source: ABdhPJxJ41PdfLWO25H89QYPRHvvbckpBygxU6F09QKrCy3911/J1yRX6LxM3v5h+JUwJEogJi7wcA==
+X-Received: by 2002:a4a:8c4f:: with SMTP id v15mr26861642ooj.25.1617715449941;
+        Tue, 06 Apr 2021 06:24:09 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g2sm4623942otn.32.2021.04.06.06.24.12
+        by smtp.gmail.com with ESMTPSA id a6sm4670188otb.41.2021.04.06.06.24.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 06:24:14 -0700 (PDT)
-Received: (nullmailer pid 1674500 invoked by uid 1000);
+        Tue, 06 Apr 2021 06:24:08 -0700 (PDT)
+Received: (nullmailer pid 1674498 invoked by uid 1000);
         Tue, 06 Apr 2021 13:24:05 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Michal Simek <michal.simek@xilinx.com>
-In-Reply-To: <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
-References: <20210405201817.3977893-1-mka@chromium.org> <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
-Subject: Re: [PATCH v6 1/5] dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        vinod.koul@linaro.org, swboyd@chromium.org, robh+dt@kernel.org,
+        tanmay@codeaurora.org, bjorn.andersson@linaro.org, sean@poorly.run,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        freedreno@lists.freedesktop.org, khsieh@codeaurora.org,
+        abhinavk@codeaurora.org, dianders@chromium.org,
+        kalyan_t@codeaurora.org
+In-Reply-To: <1617620770-26202-3-git-send-email-mkrishn@codeaurora.org>
+References: <1617620770-26202-1-git-send-email-mkrishn@codeaurora.org> <1617620770-26202-3-git-send-email-mkrishn@codeaurora.org>
+Subject: Re: [PATCH v15 3/4] dt-bindings: msm: dsi: add yaml schemas for DSI PHY bindings
 Date:   Tue, 06 Apr 2021 08:24:05 -0500
-Message-Id: <1617715445.179283.1674499.nullmailer@robh.at.kernel.org>
+Message-Id: <1617715445.168054.1674497.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Apr 2021 13:18:13 -0700, Matthias Kaehlcke wrote:
-> The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
+On Mon, 05 Apr 2021 16:36:09 +0530, Krishna Manikandan wrote:
+> Add YAML schema for the device tree bindings for DSI PHY.
 > 
-> This initial version of the binding only describes USB related
-> aspects of the RTS5411, it does not cover the option of
-> connecting the controller as an i2c slave.
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
 > 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> 
-> Changes in v7:
-> - added type ref for 'companion-hub' property
-> 
-> Changes in v6:
-> - Realtek binding instead of generic onboard_usb_hub
-> - added 'companion-hub' property
-> - added reference to 'usb-device.yaml'
-> - 'fixed' indentation of compatible entries to keep yamllint happy
-> - added 'additionalProperties' entry
-> - updated commit message
-> 
-> Changes in v5:
-> - updated 'title'
-> - only use standard USB compatible strings
-> - deleted 'usb_hub' node
-> - renamed 'usb_controller' node to 'usb-controller'
-> - removed labels from USB nodes
-> - added 'vdd-supply' to USB nodes
-> 
-> Changes in v4:
-> - none
-> 
-> Changes in v3:
-> - updated commit message
-> - removed recursive reference to $self
-> - adjusted 'compatible' definition to support multiple entries
-> - changed USB controller phandle to be a node
+> Changes in v1:
+>    - Merge dsi-phy.yaml and dsi-phy-10nm.yaml (Stephen Boyd)
+>    - Remove qcom,dsi-phy-regulator-ldo-mode (Stephen Boyd)
+>    - Add clock cells properly (Stephen Boyd)
+>    - Remove unnecessary decription from clock names (Stephen Boyd)
+>    - Add pin names for the supply entries for 10nm phy which is
+>      used in sc7180 and sdm845 (Stephen Boyd)
+>    - Remove unused header files from examples (Stephen Boyd)
+>    - Drop labels for display nodes and correct node name (Stephen Boyd)
 > 
 > Changes in v2:
-> - removed 'wakeup-source' and 'power-off-in-suspend' properties
-> - consistently use spaces for indentation in example
+>    - Drop maxItems for clock (Stephen Boyd)
+>    - Add vdds supply pin information for sdm845 (Stephen Boyd)
+>    - Add examples for 14nm, 20nm and 28nm phy yaml files (Stephen Boyd)
+>    - Keep child nodes directly under soc node (Stephen Boyd)
 > 
->  .../bindings/usb/realtek,rts5411.yaml         | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> Changes in v3:
+>    - Use a separate yaml file to describe the common properties
+>      for all the dsi phy versions (Stephen Boyd)
+>    - Remove soc from examples (Stephen Boyd)
+>    - Add description for register property
+> 
+> Changes in v4:
+>    - Modify the title for all the phy versions (Stephen Boyd)
+>    - Drop description for all the phy versions (Stephen Boyd)
+>    - Modify the description for register property (Stephen Boyd)
+> 
+> Changes in v5:
+>    - Remove unused properties from common dsi phy file
+>    - Add clock-cells and phy-cells to required property
+>      list (Stephen Boyd)
+> ---
+>  .../bindings/display/msm/dsi-phy-10nm.yaml         | 68 +++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-14nm.yaml         | 66 ++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-20nm.yaml         | 71 ++++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-28nm.yaml         | 68 +++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-common.yaml       | 40 ++++++++++++
+>  5 files changed, 313 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-20nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-common.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -111,12 +109,9 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@1: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@2: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.example.dt.yaml:0:0: /example-0/dsi-phy@fd922a00: failed to match any schema with compatible: ['qcom,dsi-phy-28nm']
 
-See https://patchwork.ozlabs.org/patch/1462533
+See https://patchwork.ozlabs.org/patch/1462327
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
