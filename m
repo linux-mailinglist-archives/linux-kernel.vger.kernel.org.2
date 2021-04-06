@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E183556DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422F83556EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345271AbhDFOmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:42:43 -0400
-Received: from mail1.protonmail.ch ([185.70.40.18]:56216 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345264AbhDFOmj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:42:39 -0400
-Date:   Tue, 06 Apr 2021 14:42:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1617720149; bh=oJpZdJdRCbGDRnUwga5oT056lLMZteop8NZbFOdEXdE=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=LhDCuK2TaPMHBvK0ZdULyzsJMyTCHi6w/6LZRO1wZgu15z7RYuMLl18o6dWHe8kVq
-         WL6SrEz9no1GSQLwOiQYZlPnkRLvZ94+jpco1XCDmxbtAzTeSfd6+PL1Nsi1NXSKI6
-         /Pehtfs++C1q51sOQAQ+0thQQFVhuebHhH6vbk+GidCHeendFIazfyP3o4cHuh5lyK
-         lbaI2eumHvcKUHcnxRdGS4hqhOAyGOWf+X7iyyPnBZsdcc81NlgOQkDVm/bqWs8jpI
-         riU79Fnm8z/LaYMXtnyhOwzQTqJZFnuxSQh/NK6d8DvUD3HOJ9NU5x/JL/zNbVgymZ
-         Gv3ftphgHz+Uw==
-To:     Sami Tolvanen <samitolvanen@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Kees Cook <keescook@chromium.org>, Jessica Yu <jeyu@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH] kbuild: merge module sections under CONFIG_LD_DEAD_CODE_DATA_ELIMINATION too
-Message-ID: <Gt4--xIFQdFQbd97OwKvRwelvfikSSv3Vkc_KKzAeGgp6c2fe8SPW6v_njp0xvwepPwC_UcWdyWeAjSdFEXpheJWlnmWNY-mVsaMEnJV56A=@pm.me>
-In-Reply-To: <CABCJKufH262ki4FCQJxSO-v+gQzPBsVntQWnNZY7h-cvt1KYTA@mail.gmail.com>
-References: <20210402123959.5143-1-alobakin@pm.me> <CABCJKufH262ki4FCQJxSO-v+gQzPBsVntQWnNZY7h-cvt1KYTA@mail.gmail.com>
+        id S1345263AbhDFOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:45:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32984 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233235AbhDFOpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:45:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 27311B1E7;
+        Tue,  6 Apr 2021 14:45:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 15EA9DA732; Tue,  6 Apr 2021 16:43:04 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 16:43:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: disk-io.c:undefined reference to `atomic64_set_386'
+Message-ID: <20210406144303.GF7604@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
+        Josef Bacik <josef@toxicpanda.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>
+References: <202104010035.c4LXmhAY-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202104010035.c4LXmhAY-lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 2 April 2021, 18:09, Sami
-Tolvanen <samitolvanen@google.com> wrote:
+On Thu, Apr 01, 2021 at 12:34:38AM +0800, kernel test robot wrote:
+> Hi Josef,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5e46d1b78a03d52306f21f77a4e4a144b6d31486
+> commit: 8260edba67a2e6bd5e709d32188e23aa22cb4a38 btrfs: make the init of static elements in fs_info separate
+> date:   1 year ago
+> config: um-randconfig-r023-20210330 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8260edba67a2e6bd5e709d32188e23aa22cb4a38
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 8260edba67a2e6bd5e709d32188e23aa22cb4a38
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=um 
 
-> On Fri, Apr 2, 2021 at 5:40 AM Alexander Lobakin alobakin@pm.me wrote:
->
-> > When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
-> > -fdata-sections and -ffunction-sections are being enabled by the
-> > top-level Makefile, and module section merging is also needed.
-> > Expand the ifdef (and the comment block) to cover that case too.
-> > Fixes: 6a3193cdd5e5 ("kbuild: lto: Merge module sections if and only if=
- CONFIG_LTO_CLANG is enabled")
->
-> Wouldn't this trigger the ld.bfd bug described in the commit message
-> when LD_DEAD_CODE_DATA_ELIMINATION is enabled? LTO_CLANG always uses
-> LLD, so it won't have this issue.
-
-LD_DEAD_CODE_DATA_ELIMINATION is marked
-=E2=80=9CEXPERIMENTAL=E2=80=9C in the config prompt, and
-arches have to opt-in
-HAS_LD_DEAD_CODE_DATA_ELIMINATION to give
-an access to it (only a few does). This
-should be relatively safe.
-
-> Sami
-
-Thanks,
-Al
+All the reports regarding atomic64_*_386 are from ARCH=um build, so
+it needs to be fixed there.
