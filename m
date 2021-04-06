@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ABC355E5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE4E355E5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243347AbhDFWDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 18:03:00 -0400
-Received: from smtp-16-i2.italiaonline.it ([213.209.12.16]:34174 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239096AbhDFWCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 18:02:48 -0400
-Received: from oxapps-32-144.iol.local ([10.101.8.190])
-        by smtp-16.iol.local with ESMTPA
-        id TtmMlF7I2f2ANTtmMl5syE; Wed, 07 Apr 2021 00:02:34 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1617746554; bh=akIOS2LFU8AbnXeSKX/lN7kLwCQ59toKE6VoSYcU7p4=;
-        h=From;
-        b=BBHr4D4cYuWFL1NfC8JTa9C2WGMjscDa/CfrMMvK7A6woSjzh84OV2DcgKLxL3sM/
-         +3YMv34N3NV6csEv/fQ7WjHjS1i/4oVxITUXoa4Ad1tzRxGZ6hu2T7X8P3Im9dYIH1
-         QQu8S0xY6y8KC38FEQU6Sq34LXDywwpVGNz217OeCUbVGGnWmvyAmEjtpT0Y5ij64j
-         wk7vz5dOvW6cMo+PFLX9Kv/nPSwX2KKbrProes+dNgnyGz70HKkA2+V18bleDPj+aI
-         uJ857pBimg5qiEAwgeoSPOX0Ewby1NcoAKWPx09h6qGO56l5xjgR+CGVRxPQpi1/SB
-         7TDT2CkOTNIoA==
-X-CNFS-Analysis: v=2.4 cv=Adt0o1bG c=1 sm=1 tr=0 ts=606cda7a cx=a_exe
- a=+LyvvGPX93CApvOVpnXrdQ==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
- a=_gZzKa99_6AA:10 a=VwQbUJbxAAAA:8 a=voM4FWlXAAAA:8 a=pGLkceISAAAA:8
- a=aW_EbgM9uDbL71VJ2OAA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=IC2XNlieTeVoXbcui8wp:22
-Date:   Wed, 7 Apr 2021 00:02:34 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-Message-ID: <1727466283.11523.1617746554330@mail1.libero.it>
-In-Reply-To: <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
-References: <20210402192054.7934-1-dariobin@libero.it>
- <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
+        id S240596AbhDFWD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 18:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhDFWDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 18:03:46 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5A6C06174A;
+        Tue,  6 Apr 2021 15:03:37 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id i19so12357025qtv.7;
+        Tue, 06 Apr 2021 15:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pl6NF7ighmszrBnnrt9i5pamFjYQ/T564JehZ9nDrZ8=;
+        b=dNqVoUmjFaGLO1KEWNtWpOa4FC3Ur07F1vtFzQDat5pyEQci5kEM8UAWvmchAaus1E
+         C2GxXMzXG3x/LO7Z+rRFMHXjXTrYarlPxka0x7ZUBEAiZbaEJ2sXHiGqL3oUMbxmyU3w
+         XwA1iwNfKn3s0rZ/IF5WkhflALemiFHXL+vx+3PUqlQD5sE9kn0Eq/nZthmbqD7jz0vF
+         KC/LV2M7CMWxIbOI3OSISwIkTbNz5BYK1TwWwCxcKh5cQREnavic5f0HgToNDvl4x9wS
+         dwD3Ip7J232HSnCFod8FlhYuBVUdbMXPVu1PTCbttSdfZGr5kzGiHD3TAYK0ij6m8Lyu
+         Ag8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pl6NF7ighmszrBnnrt9i5pamFjYQ/T564JehZ9nDrZ8=;
+        b=M5zjYnj+cHudDTtg5MEMohXypO9PveC0u/X3o4wI/0OYE0pX600bdPxbdMsDp+yylt
+         yjf1zuaYqObGXRE6Lbn+FXoGoo4J1jgPFeOyBXWw/HqZuQetrYB8evi7icbCrsMcS4H2
+         OOT4k3oiVUcbO7VFD59bwbpBKDztmjVkVC/bbvboKyndvL+mJPgyqmvwVKJnX3GzX4hW
+         ThIN7pCCv+YbKdeaHxGIGp4SEsvVKRHvmmP4fG+KMKGnqk0p0BWA874CqcAQwqGzOrp3
+         vxBueQbOGQmcc36GcIVUH2oSMKyo+UKREWP8cefbtCvQR0mEu+3uSp/xRhZ+KF1FO4gc
+         q9Ow==
+X-Gm-Message-State: AOAM530bwt3Yb8PfaV0HjcA4BxRRzI7lXOpKpUbsSqCmN4DR+/adEM7Q
+        KBukuLAIMigVZS2e0mdpEFHCrNImNMpS
+X-Google-Smtp-Source: ABdhPJy21e40Dgb6Cu+qJhUdfvvaJHK0LsdQXUIkIhnD2mIKHIADk5CLzF5WXt9h7sKafbqm+NrfsQ==
+X-Received: by 2002:ac8:4e4d:: with SMTP id e13mr105276qtw.169.1617746616351;
+        Tue, 06 Apr 2021 15:03:36 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id y1sm16777925qki.9.2021.04.06.15.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 15:03:35 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 18:03:26 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] vfs: convert inode cache to hlist-bl
+Message-ID: <YGzarpyqdcI9ncQu@moria.home.lan>
+References: <20210406123343.1739669-1-david@fromorbit.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 87.20.116.197
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: 0kJUj9J8+FPQ/YxkwJqhiHCIFaYs727T
-x-libjamv: J5mKezAXc6M=
-X-CMAE-Envelope: MS4xfLhjxEr/Kp9gu70nyFP13JwXaIfRPj46VyjgR1MpMlp1MPqhqnicFn3XKmrgI2HHVMBkQrAnRDtuhTp+X7ZB9C+nElMvNkK/Roo+m6hQd5Q9kbYDgKvy
- 6Ib7IWoJecJ0Ca+PzBVKZVAyAiPDq7SgF/tHh3iqZvy4VNQTsgsJeo42wLLyr64ND0bVofM9/EYEDxe+ZXPTBtmf9pzVkzOe/VrBiHPCgNCJNg64NEXzGyGG
- YFt8rQ/8nF0d7F8kFMkPFeA8VJ2EPSKAi6Qih4/c7I8RL9Fr5YhiW0idb40hvnM1mckqpfvKyZrK78Z9MT49XWg4jbPsLO8GKSi4kU4eQ5X72Xz8DW4mDgYO
- rULeuWi9FhAZCbSWV4XYJxEQBQcIb4KL198/rG98gpFnvERGD5PKlAuISxfSxKjUc6iIfZSOuMufo98WwNGc2GMa0DYEREP72cuDQRg2u6hjOUvstlWcRusP
- ZUgDgjF/JUUaOsXlp7b/3WVRrVogfshs71oTrg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406123343.1739669-1-david@fromorbit.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Il 06/04/2021 16:06 Rob Herring <robh+dt@kernel.org> ha scritto:
+On Tue, Apr 06, 2021 at 10:33:40PM +1000, Dave Chinner wrote:
+> Hi folks,
 > 
->  
-> On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
-> >
-> >
-> > The series comes from my commit in U-boot
-> > d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
-> > and from the subsequent exchange of emails at the end of which I was
-> > suggested to send the patch to the linux kernel
-> > (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
+> Recently I've been doing some scalability characterisation of
+> various filesystems, and one of the limiting factors that has
+> prevented me from exploring filesystem characteristics is the
+> inode hash table. namely, the global inode_hash_lock that protects
+> it.
 > 
-> It's 'ranges' that determines translatable which is missing from the
-> DT. This should have not had a 0 size either though maybe we could
-> support that.
-
-I have replied to the email you sent to the u-boot mailing list
-
+> This has long been a problem, but I personally haven't cared about
+> it because, well, XFS doesn't use it and so it's not a limiting
+> factor for most of my work. However, in trying to characterise the
+> scalability boundaries of bcachefs, I kept hitting against VFS
+> limitations first. bcachefs hits the inode hash table pretty hard
+> and it becaomse a contention point a lot sooner than it does for
+> ext4. Btrfs also uses the inode hash, but it's namespace doesn't
+> have the capability to stress the indoe hash lock due to it hitting
+> internal contention first.
 > 
-> Does the DT have to be updated anyways for your spread spectrum support?
-
-The spread spectrum support patch does not need this patch to work. They belong 
-to two different series.
-
+> Long story short, I did what should have been done a decade or more
+> ago - I converted the inode hash table to use hlist-bl to split up
+> the global lock. This is modelled on the dentry cache, with one
+> minor tweak. That is, the inode hash value cannot be calculated from
+> the inode, so we have to keep a record of either the hash value or a
+> pointer to the hlist-bl list head that the inode is hashed into so
+> taht we can lock the corect list on removal.
 > 
-> > The second patch of the series aims to demonstrate that the first one, which
-> > enables the translation of addresses also for crossings of DT nodes
-> > with #size-cells = <0>, it really works.
+> Other than that, this is mostly just a mechanical conversion from
+> one list and lock type to another. None of the algorithms have
+> changed and none of the RCU behaviours have changed. But it removes
+> the inode_hash_lock from the picture and so performance for bcachefs
+> goes way up and CPU usage for ext4 halves at 16 and 32 threads. At
+> higher thread counts, we start to hit filesystem and other VFS locks
+> as the limiting factors. Profiles and performance numbers are in
+> patch 3 for those that are curious.
 > 
-> I don't seem to have the 2nd patch... In any case, you should handle
-> the special case for this platform in code for the platform.
-> 
+> I've been running this in benchmarks and perf testing across
+> bcachefs, btrfs and ext4 for a couple of weeks, and it passes
+> fstests on ext4 and btrfs without regressions. So now it needs more
+> eyes and testing and hopefully merging....
 
-the 2nd patch:
-https://lore.kernel.org/patchwork/patch/1407108/
-
-Thanks and regards,
-Dario
-
-> Rob
+These patches have been in the bcachefs repo for a bit with no issues, and they
+definitely do help with performance - thanks, Dave!
