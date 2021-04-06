@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA30355A64
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E701355A67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244739AbhDFR3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S244725AbhDFRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbhDFR3Y (ORCPT
+        with ESMTP id S232752AbhDFRaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:29:24 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10886C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:29:13 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id a7so10868429qvx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:29:13 -0700 (PDT)
+        Tue, 6 Apr 2021 13:30:01 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5738AC06174A;
+        Tue,  6 Apr 2021 10:29:52 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id i81so15916937oif.6;
+        Tue, 06 Apr 2021 10:29:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=WY0464vhNIAqC43+lzSsh1rIIOgxPL3xjkkDU85detM=;
-        b=oZ47kUX5UpS/DRNaxvnO4zZQuUVqPvuA8SmZoN2qvnLnvGH5ndNl4e3FnQuzOo1Cep
-         NwSl3wscmcWjKwFetit7h0p4snRkgV6WQ3eiaZuSWLTrMC2PEkzXtsRJO6iZCAIX/lsc
-         r9ZyON6I3Wehbn1RvprrziaZ68DmiH/Jp6ONZFM4nEXzTU0rx8NGylKh3oSoM0KsxECT
-         UQ1hkIR3H2QXHTJ8uv6Iifwl5JQ4FgoO/AHzDtOD2jsgu8RgEOW4WTa8hZ4GigzEgOYw
-         3qp6BJpOJMRpmzeuMbryjoYond/h/TzNC4cvHQtTF/RHJiKpwvISsDrK1DChn0OpEZ7x
-         OEtg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e9XCrHRbPqjp2SIACD271qp9C9m0DUNFOwKAi0QKpXs=;
+        b=YBZah0WeABNCYq0ebm/I87ZFpbg0mlsv9pTMX6nhWLnrxZgASf89DWi7GzZlKD2svc
+         BTTN01jmIvz6EI6EZygJ/3n79A8xrD3wBk02eJduiV6a5gJT8VLsoZZoWDoWQDWZxJCi
+         z69rT/QA30kbdV4PchR3sj0XyKsqYjdneHxAaRj4Rv8WYywFUli5wHvegPOsbDs4KUGi
+         MrawLcKd21iWytX7uPzpgdt9Sr9oOCszLnq71v5x0uBhLhDpyFjfoy6NTAoxFeL3RoHx
+         wG1IQzGYERVPErQhJee16HLqo3lNgHXO8/7PTfysJe+EZ1NTLxpDW/GskLhCfK3Gg4tO
+         1f8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=WY0464vhNIAqC43+lzSsh1rIIOgxPL3xjkkDU85detM=;
-        b=q3w2R5XdCK2SoSGnOQ+WOZnt+QC3XQQsAWgVa1hBQUObRJHU+eZvTSyRVvRxQoWiyN
-         QoZtBhCA0GqSabEU2lq+AD+PbjKMsBrJM9hK9zG2Itsx6TkYN3LziokGJ+SmFM41O++1
-         zr/tTLc372q7iC7iAtb3n4T+TFsilG6dZ5gDg2utnJujZEZUb6oUlP3N5dzznVzelCnE
-         61A3DsaONNAZV7u+dk38k79Xud9fGwpW5h3efJcyUw9YUGQ740MGH54cgKg8cexnZxVe
-         a9UV76qSBsvcflu2qe6jFNu8beMWq7upz82eKOVv7aouz3vTiAEGLF3U6YFBJ1UDIWdD
-         y59w==
-X-Gm-Message-State: AOAM533fMuJmbhVU+NbnKr+l+hdvHkf0xV42StE7irYBEC0Y6o8VbhD3
-        Ab/ZTcMZGJ//3Pw1+86x9fVrAbQqBNQcmg==
-X-Google-Smtp-Source: ABdhPJxdmWDI96bW/cZQgF/mseMZzpySOdCyNYQZi+codgvKD9VoLUMuszsRysUf4TqmolAWryPCgaBvC44y2A==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:f46d:9fde:7b0b:e01a])
- (user=dlatypov job=sendgmr) by 2002:a05:6214:d65:: with SMTP id
- 5mr29702299qvs.56.1617730152184; Tue, 06 Apr 2021 10:29:12 -0700 (PDT)
-Date:   Tue,  6 Apr 2021 10:29:01 -0700
-Message-Id: <20210406172901.1729216-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH] kunit: fix -Wunused-function warning for __kunit_fail_current_test
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, sfr@canb.auug.org.au,
-        Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e9XCrHRbPqjp2SIACD271qp9C9m0DUNFOwKAi0QKpXs=;
+        b=MmWNG9LiMzOb7rQu1P9Bnh5DNowTYpzBLv56be4CQDdAQaDUbi1nPCNqYxJlYHuyAc
+         xHjq0iwz1c3pHL7X/jdyMq69oq1CGAfgKNWtabyi8mwul86xqP792mBkxT/HjDw99Sy2
+         14k58GxvZ/vlynULbeaK+dIfDyNfnWbIyn2fWSKNat83sblYiF2dAb+EhIY3tw5+CUdU
+         7Ex5psL1ScxViEZMFBRmnvA3+o6DCEwy0ra6nt8N2xAxj6Q1MDj3C+cgAMYLyhSJmOu/
+         6iSXkDhiOQK91jRZNp1IMxhBlVubCtA2NIU0rwyZytPmZKhgdkGbIr++hhLSJiHElSOm
+         WRYA==
+X-Gm-Message-State: AOAM530QqpkIe53nkhjYdNXKONQxF94ScPWtsg7RMAwI/agYucXqrMDY
+        PMTxN/7PdI3TelvgKWz/mwqXFw1EnSdM16CEvmQ=
+X-Google-Smtp-Source: ABdhPJwE+fUN8o/LQb//6t43DmpeyIY8YaG40zK3+s4/evbg6pFMHv53bEk1TPp+MnBpqKtTbb5PjpE44JswmPwH61Q=
+X-Received: by 2002:aca:fc11:: with SMTP id a17mr4067194oii.68.1617730191812;
+ Tue, 06 Apr 2021 10:29:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401212148.47033-1-jim2101024@gmail.com> <20210401212148.47033-4-jim2101024@gmail.com>
+ <20210406163439.GL6443@sirena.org.uk> <CANCKTBvP66su2bXNMbawMfe3T7mpiQsRsG5xLfSPL2BWPNYFyw@mail.gmail.com>
+ <20210406172320.GO6443@sirena.org.uk>
+In-Reply-To: <20210406172320.GO6443@sirena.org.uk>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Tue, 6 Apr 2021 13:29:40 -0400
+Message-ID: <CANCKTBvptjpNLyN-mZqynF=Af_X0X+OVasL==thQKzzBZ5r4yw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] PCI: brcmstb: Add control of slot0 device voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_KUNIT is not enabled, __kunit_fail_current_test() an empty
-static function.
-
-But GCC complains about unused static functions, *unless* they're static inline.
-So add inline to make GCC happy.
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Fixes: 359a376081d4 ("kunit: support failure from dynamic analysis tools")
----
- include/kunit/test-bug.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
-index ce6f6edc7801..5fc58081d511 100644
---- a/include/kunit/test-bug.h
-+++ b/include/kunit/test-bug.h
-@@ -19,8 +19,8 @@ extern __printf(3, 4) void __kunit_fail_current_test(const char *file, int line,
- 
- #else
- 
--static __printf(3, 4) void __kunit_fail_current_test(const char *file, int line,
--						    const char *fmt, ...)
-+static inline __printf(3, 4) void __kunit_fail_current_test(const char *file, int line,
-+							    const char *fmt, ...)
- {
- }
- 
-
-base-commit: 359a376081d4fadfb073e3ddeb6bd6dc94d98341
--- 
-2.31.0.208.g409f899ff0-goog
-
+On Tue, Apr 6, 2021 at 1:23 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Apr 06, 2021 at 12:59:16PM -0400, Jim Quinlan wrote:
+> > On Tue, Apr 6, 2021 at 12:34 PM Mark Brown <broonie@kernel.org> wrote:
+> > > On Thu, Apr 01, 2021 at 05:21:43PM -0400, Jim Quinlan wrote:
+>
+> > > This is broken, the driver knows which supplies are expected, the device
+> > > can't function without these supplies so the driver should just
+> > > unconditionally request them like any other supply.
+>
+> > Some boards require the regulators, some do not.  So the driver is
+>
+> No, some boards have the supplies described in firmware and some do not.
+True.
+>
+> > only  sure what the names may be if they are present.  If  I put these
+> > names in my struct regulator_bulk_data array and do a
+> > devm_regulator_bulk_get(), I will get the following for the boards
+> > that do not need the regulators (e.g. the RPi SOC):
+> >
+> > [    6.823820] brcm-pcie xxx.pcie: supply vpcie12v-supply not found,
+> > using dummy regulator
+> > [    6.832265] brcm-pcie xxx.pcie: supply vpcie3v3-supply not found,
+> > using dummy regulator
+>
+> Sure, those are just warnings.
+>
+> > IIRC you consider this a debug feature?  Be that as it may, these
+> > lines will confuse our customers and I'd like that they not be printed
+> > if possible.
+>
+> You can stop the warnings by updating your firmware to more completely
+> describe the system - ideally all the supplies in the system would be
+> described for future proofing.  Or if this is a custom software stack
+> just delete whatever error checking and warnings you like.  The warnings
+> are there in case we've not got something mapped properly (eg, if there
+> were a typo in a property name) and things stop working, it's not great
+> to just ignore errors.
+A lot of this is really not under our control.
+>
+> > So I ask you to allow the code as is.  If you still insist, I will
+> > change and resubmit.
+>
+> Remove it, conditional code like this is just as bad in this driver as
+> it is in every other one.
+I will remove this and resubmit.
+Thanks,
+Jim Quinlan
+Broadcom STB
