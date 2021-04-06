@@ -2,61 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2584B355203
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32557355219
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245491AbhDFL1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:27:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:45275 "EHLO mga17.intel.com"
+        id S245601AbhDFL2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:28:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:41214 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245480AbhDFL1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:27:25 -0400
-IronPort-SDR: tb23ks26+4jdPCfNlHWdGLQtZwpbCtjHUxzWx5r0/6oey6yz9DKU6yxVAbi24MbXqZkLL3LicU
- WQ1pKhV9AwZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="173122614"
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="173122614"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 04:27:17 -0700
-IronPort-SDR: CNpaZgNMDahqFGQz3rPngbS/KRLe53vd/U7xay6NvtMIdSdNKYJGgWcjtzNSEwRlOiOxUp1sBG
- 8lHHNfxVgyGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="518998822"
-Received: from mylly.fi.intel.com (HELO [10.237.72.184]) ([10.237.72.184])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Apr 2021 04:27:16 -0700
-Subject: Re: [PATCH v1 2/2] i2c: designware: Get rid of legacy platform data
-To:     Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
- <20210331154851.8456-3-andriy.shevchenko@linux.intel.com>
- <20210406104927.GA3532@ninjato>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <bf214a3f-fa6b-33e7-0459-6e5136bd068e@linux.intel.com>
-Date:   Tue, 6 Apr 2021 14:27:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S245532AbhDFL1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:27:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5792DED1;
+        Tue,  6 Apr 2021 04:27:42 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC5943F73D;
+        Tue,  6 Apr 2021 04:27:37 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 12:27:35 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v5 11/18] psci: use function_nocfi for cpu_resume
+Message-ID: <20210406112735.GB96480@C02TD0UTHF1T.local>
+References: <20210401233216.2540591-1-samitolvanen@google.com>
+ <20210401233216.2540591-12-samitolvanen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210406104927.GA3532@ninjato>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401233216.2540591-12-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 1:49 PM, Wolfram Sang wrote:
-> On Wed, Mar 31, 2021 at 06:48:51PM +0300, Andy Shevchenko wrote:
->> Platform data is a legacy interface to supply device properties
->> to the driver. In this case we don't have anymore in-kernel users
->> for it. Just remove it for good.
->>
->> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Thu, Apr 01, 2021 at 04:32:09PM -0700, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG, the compiler replaces function pointers with
+> jump table addresses, which results in __pa_symbol returning the
+> physical address of the jump table entry. As the jump table contains
+> an immediate jump to an EL1 virtual address, this typically won't
+> work as intended. Use function_nocfi to get the actual address of
+> cpu_resume.
 > 
-> Acked-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> ---
+>  drivers/firmware/psci/psci.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index f5fc429cae3f..64344e84bd63 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -325,8 +325,9 @@ static int __init psci_features(u32 psci_func_id)
+>  static int psci_suspend_finisher(unsigned long state)
+>  {
+>  	u32 power_state = state;
+> +	phys_addr_t pa_cpu_resume = __pa_symbol(function_nocfi(cpu_resume));
+>  
+> -	return psci_ops.cpu_suspend(power_state, __pa_symbol(cpu_resume));
+> +	return psci_ops.cpu_suspend(power_state, pa_cpu_resume);
+>  }
+>  
+>  int psci_cpu_suspend_enter(u32 state)
+> @@ -344,8 +345,10 @@ int psci_cpu_suspend_enter(u32 state)
+>  
+>  static int psci_system_suspend(unsigned long unused)
+>  {
+> +	phys_addr_t pa_cpu_resume = __pa_symbol(function_nocfi(cpu_resume));
+> +
+>  	return invoke_psci_fn(PSCI_FN_NATIVE(1_0, SYSTEM_SUSPEND),
+> -			      __pa_symbol(cpu_resume), 0, 0);
+> +			      pa_cpu_resume, 0, 0);
+>  }
+>  
+>  static int psci_system_suspend_enter(suspend_state_t state)
+> -- 
+> 2.31.0.208.g409f899ff0-goog
+> 
