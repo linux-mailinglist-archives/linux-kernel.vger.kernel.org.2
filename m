@@ -2,219 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A799935590E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA9A355914
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhDFQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:21:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51386 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233438AbhDFQVu (ORCPT
+        id S1346367AbhDFQWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233438AbhDFQWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:21:50 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136G7aAp150753;
-        Tue, 6 Apr 2021 12:21:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
- from : in-reply-to : date : cc : message-id : references : to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=8irR3ZwSZ+/j2G1DtNcj8fk37Rd/c7OtNqWduMO/Eek=;
- b=fASIU+H1yJYP7tkbuslT7l5JvwepGnqDTckYeKavo9giE7Kd9iu/D+KgJf14agVt5PAK
- DYlVccK3qiB6gayoyTawWJ1YfdaRG8mg8a+8ffFfpMqvkz2ivVahcOetYIZzdt7B4Kr9
- dMgm7cZQjVYkZCNyF5t7HUoeh2LSZnciZUcMfZhz8ahJOqy2pDfdhaty/5ODqEsZmB4R
- 6meytd0P1Cgq3sD3FXhH+7JVf6zCeSAQ9ALFtotIZLgkvTI/h5DdFYqE10HYdCYNWRhN
- kiFlkcw6EwBZY7E+rp8uPDv97wEDKjjoFrrwksnU4wDJ64ChbB81A07JXn0DFvRcQqka cw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5dvgd92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 12:21:29 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136GDUpD021687;
-        Tue, 6 Apr 2021 16:21:26 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 37q2q5ja8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 16:21:26 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136GL3pF37224714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 16:21:04 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 861B9A404D;
-        Tue,  6 Apr 2021 16:21:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F95CA4051;
-        Tue,  6 Apr 2021 16:21:23 +0000 (GMT)
-Received: from [9.79.187.191] (unknown [9.79.187.191])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  6 Apr 2021 16:21:23 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Subject: Re: [PATCH] powerpc/perf: prevent mixed EBB and non-EBB events
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <F791C89D-E644-43D3-8229-3618AF7DE2C2@linux.vnet.ibm.com>
-Date:   Tue, 6 Apr 2021 21:51:21 +0530
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel@vger.kernel.org
-Message-Id: <0D709DAB-1C5A-4526-9BAB-11BE27E8DBCB@linux.vnet.ibm.com>
-References: <20210224122116.221120-1-cascardo@canonical.com>
- <F791C89D-E644-43D3-8229-3618AF7DE2C2@linux.vnet.ibm.com>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: otPe-JK_96deTIe4c7SmpVOhFaHlCZn2
-X-Proofpoint-ORIG-GUID: otPe-JK_96deTIe4c7SmpVOhFaHlCZn2
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 6 Apr 2021 12:22:50 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CCDC06174A;
+        Tue,  6 Apr 2021 09:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HAWHkSHLpgp7SKC3po0RuoKKiMjohQD3zmd/MHygCVY=; b=Xpg483JZKG5jyymhkSRLWD/wej
+        v25qJkOyU47/DeEPYqZRC4RrP+mk/yqbrUvJQoukNpWxwZBeIyciFIowwxBzNIt9YW6ad3WyKorKt
+        owYUYl5ehm6ApZZJJSW8lWcbwd/Ho4mXFjWHRNtScATjFfTVHoyAAq3GhV+jyhDe7ddLTDIYo1ybI
+        ufCidcYY+hiLrLQSVN0WtU4QEm0pCY1nTJwhp6EnRAZ2GGSVYak69nwxhiWFhLC5GjdpRpDiNq9w0
+        llLL9tRRnwYvcxJGMT7zPMfw93yw25wf5017Ovxe1z8JskXJxcC2BkXOH9jxh9mEVFotVU6uitlSg
+        h8GJyeUg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lToSy-002zuy-6Q; Tue, 06 Apr 2021 16:22:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A467E304B54;
+        Tue,  6 Apr 2021 18:22:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4B247244029D0; Tue,  6 Apr 2021 18:22:10 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 18:22:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v4 02/16] perf/x86/intel: Handle guest PEBS overflow PMI
+ for KVM guest
+Message-ID: <YGyKsna7CcncX0g6@hirez.programming.kicks-ass.net>
+References: <20210329054137.120994-1-like.xu@linux.intel.com>
+ <20210329054137.120994-3-like.xu@linux.intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_04:2021-04-06,2021-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- impostorscore=0 suspectscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104030000
- definitions=main-2104060105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329054137.120994-3-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 01:41:23PM +0800, Like Xu wrote:
+> With PEBS virtualization, the guest PEBS records get delivered to the
+> guest DS, and the host pmi handler uses perf_guest_cbs->is_in_guest()
+> to distinguish whether the PMI comes from the guest code like Intel PT.
+> 
+> No matter how many guest PEBS counters are overflowed, only triggering
+> one fake event is enough. The fake event causes the KVM PMI callback to
+> be called, thereby injecting the PEBS overflow PMI into the guest.
+> 
+> KVM will inject the PMI with BUFFER_OVF set, even if the guest DS is
+> empty. That should really be harmless. Thus the guest PEBS handler would
+> retrieve the correct information from its own PEBS records buffer.
+> 
+> Originally-by: Andi Kleen <ak@linux.intel.com>
+> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>  arch/x86/events/intel/core.c | 45 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 591d60cc8436..af9ac48fe840 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2747,6 +2747,46 @@ static void intel_pmu_reset(void)
+>  	local_irq_restore(flags);
+>  }
+>  
+> +/*
+> + * We may be running with guest PEBS events created by KVM, and the
+> + * PEBS records are logged into the guest's DS and invisible to host.
+> + *
+> + * In the case of guest PEBS overflow, we only trigger a fake event
+> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+> + * The guest will then vm-entry and check the guest DS area to read
+> + * the guest PEBS records.
+> + *
+> + * The contents and other behavior of the guest event do not matter.
+> + */
+> +static int x86_pmu_handle_guest_pebs(struct pt_regs *regs,
+> +					struct perf_sample_data *data)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+> +	struct perf_event *event = NULL;
+> +	int bit;
+> +
+> +	if (!x86_pmu.pebs_active || !guest_pebs_idxs)
+> +		return 0;
+> +
+> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+> +
+> +		event = cpuc->events[bit];
+> +		if (!event->attr.precise_ip)
+> +			continue;
+> +
+> +		perf_sample_data_init(data, 0, event->hw.last_period);
+> +		if (perf_event_overflow(event, data, regs))
+> +			x86_pmu_stop(event, 0);
+> +
+> +		/* Inject one fake event is enough. */
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
 
+Why the return value, it is ignored.
 
-> On 05-Mar-2021, at 11:20 AM, Athira Rajeev <atrajeev@linux.vnet.ibm.com> =
-wrote:
->=20
->=20
->=20
->> On 24-Feb-2021, at 5:51 PM, Thadeu Lima de Souza Cascardo <cascardo@cano=
-nical.com> wrote:
->>=20
->> EBB events must be under exclusive groups, so there is no mix of EBB and
->> non-EBB events on the same PMU. This requirement worked fine as perf core
->> would not allow other pinned events to be scheduled together with exclus=
-ive
->> events.
->>=20
->> This assumption was broken by commit 1908dc911792 ("perf: Tweak
->> perf_event_attr::exclusive semantics").
->>=20
->> After that, the test cpu_event_pinned_vs_ebb_test started succeeding aft=
-er
->> read_events, but worse, the task would not have given access to PMC1, so
->> when it tried to write to it, it was killed with "illegal instruction".
->>=20
->> Preventing mixed EBB and non-EBB events from being add to the same PMU w=
-ill
->> just revert to the previous behavior and the test will succeed.
->=20
->=20
-> Hi,
->=20
-> Thanks for checking this. I checked your patch which is fixing =E2=80=9Cc=
-heck_excludes=E2=80=9D to make
-> sure all events must agree on EBB. But in the PMU group constraints, we a=
-lready have check for
-> EBB events. This is in arch/powerpc/perf/isa207-common.c ( isa207_get_con=
-straint function ).
->=20
-> <<>>
-> mask  |=3D CNST_EBB_VAL(ebb);
-> value |=3D CNST_EBB_MASK;
-> <<>>
->=20
-> But the above setting for mask and value is interchanged. We actually nee=
-d to fix here.
->=20
+> +
+>  static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>  {
+>  	struct perf_sample_data data;
+> @@ -2797,7 +2837,10 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>  		u64 pebs_enabled = cpuc->pebs_enabled;
+>  
+>  		handled++;
+> -		x86_pmu.drain_pebs(regs, &data);
+> +		if (x86_pmu.pebs_vmx && perf_guest_cbs && perf_guest_cbs->is_in_guest())
+> +			x86_pmu_handle_guest_pebs(regs, &data);
+> +		else
+> +			x86_pmu.drain_pebs(regs, &data);
 
-Hi,
-
-I have sent a patch for fixing this EBB mask/value setting.
-This is the link to patch:
-
-powerpc/perf: Fix PMU constraint check for EBB events
-https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=3D237669
-
-Thanks
-Athira
-
-> Below patch should fix this:
->=20
-> diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207=
--common.c
-> index e4f577da33d8..8b5eeb6fb2fb 100644
-> --- a/arch/powerpc/perf/isa207-common.c
-> +++ b/arch/powerpc/perf/isa207-common.c
-> @@ -447,8 +447,8 @@ int isa207_get_constraint(u64 event, unsigned long *m=
-askp, unsigned long *valp,
->         * EBB events are pinned & exclusive, so this should never actually
->         * hit, but we leave it as a fallback in case.
->         */
-> -       mask  |=3D CNST_EBB_VAL(ebb);
-> -       value |=3D CNST_EBB_MASK;
-> +       mask  |=3D CNST_EBB_MASK;
-> +       value |=3D CNST_EBB_VAL(ebb);
->=20
->        *maskp =3D mask;
->        *valp =3D value;
->=20
->=20
-> Can you please try with this patch.
->=20
-> Thanks
-> Athira
->=20
->=20
->>=20
->> Fixes: 1908dc911792 (perf: Tweak perf_event_attr::exclusive semantics)
->> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->> ---
->> arch/powerpc/perf/core-book3s.c | 20 ++++++++++++++++----
->> 1 file changed, 16 insertions(+), 4 deletions(-)
->>=20
->> diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-bo=
-ok3s.c
->> index 43599e671d38..d767f7944f85 100644
->> --- a/arch/powerpc/perf/core-book3s.c
->> +++ b/arch/powerpc/perf/core-book3s.c
->> @@ -1010,9 +1010,25 @@ static int check_excludes(struct perf_event **ctr=
-s, unsigned int cflags[],
->> 			  int n_prev, int n_new)
->> {
->> 	int eu =3D 0, ek =3D 0, eh =3D 0;
->> +	bool ebb =3D false;
->> 	int i, n, first;
->> 	struct perf_event *event;
->>=20
->> +	n =3D n_prev + n_new;
->> +	if (n <=3D 1)
->> +		return 0;
->> +
->> +	first =3D 1;
->> +	for (i =3D 0; i < n; ++i) {
->> +		event =3D ctrs[i];
->> +		if (first) {
->> +			ebb =3D is_ebb_event(event);
->> +			first =3D 0;
->> +		} else if (is_ebb_event(event) !=3D ebb) {
->> +			return -EAGAIN;
->> +		}
->> +	}
->> +
->> 	/*
->> 	 * If the PMU we're on supports per event exclude settings then we
->> 	 * don't need to do any of this logic. NB. This assumes no PMU has both
->> @@ -1021,10 +1037,6 @@ static int check_excludes(struct perf_event **ctr=
-s, unsigned int cflags[],
->> 	if (ppmu->flags & PPMU_ARCH_207S)
->> 		return 0;
->>=20
->> -	n =3D n_prev + n_new;
->> -	if (n <=3D 1)
->> -		return 0;
->> -
->> 	first =3D 1;
->> 	for (i =3D 0; i < n; ++i) {
->> 		if (cflags[i] & PPMU_LIMITED_PMC_OK) {
->> --=20
->> 2.27.0
-
+Why is that else? Since we can't tell if the PMI was for the guest or
+for our own DS, we should check both, no?
