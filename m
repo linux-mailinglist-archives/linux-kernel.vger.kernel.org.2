@@ -2,155 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982FD3556AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57383556B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345165AbhDFOb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        id S1345180AbhDFOdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239306AbhDFOb4 (ORCPT
+        with ESMTP id S1345168AbhDFOdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:31:56 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E72C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:31:47 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b4so23103306lfi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SAbAgRsevYpEf22UGCEjPx5xKc+hazQx7qglGcL+BnI=;
-        b=Sw527LAr3qxsLscT6t43K7tdyRIWbhxyuTkhnY09A6q/cnmvEIDdjGb63s702ua3gg
-         komCXgUt3UPzFcBK1wEip1SlMzpWmdkLh3l4SmK/JLtQE3EETgoZZApGW/LKlVACVT1i
-         16At7wVUmkg2zauQBJtwPS+uq/L9rT0SAJ90wooIxbv67/hzIQm93d7k6qnEXiwLwjVf
-         oCx5CU1TsAnlrBa/aZeUkRIzVJwHo2xFULy06QXHdZAizb+rDOAiV68z7y0rISOkPJWO
-         Tga8qfXo8hn/1HruSAZisA/3fBOO2tWML+ywiKaJ+hceGIfr/YfS/O0vgQ8FyLI7rAPp
-         W92g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SAbAgRsevYpEf22UGCEjPx5xKc+hazQx7qglGcL+BnI=;
-        b=AzsPFWolKsHD3u65yjoRdZAoFdOGAMA8ss9oxezV7ZsEpNisJ5ntp52yDnaThfagGB
-         ujgUDVPQj9HZiGiT4zhdAqeAsnKcNGM15Pik0Di4M9yjPJ53PvVn5QYdYWeDEH/3uFQy
-         tDvjoDX1ftyyI5waukDN6rMtRfucK1fR6RZ7bLSs04NdB/TcqSNiRZ1EnIj66ty9W4zg
-         bX2oOp7IqQgRmOpMNcKtXeRUhRkLJkRBzo3RzXaMtsmt1NzdYwBdA9WpTKoouCRzAGVK
-         +iY2jpXZga8Lg+DOcKPUGZhpRzDdm/DqP5VFCXSh1TVto2rdsVLGx+XpXJjWHYuPHTpJ
-         ybzA==
-X-Gm-Message-State: AOAM530XbfU/VtszHsOuCCEEvP4ylA1GZpwpULVJGrXeMqsZ8wdG6cdS
-        naa61zQ3TRTmoo4y2TOc/YE35Bs5TPMw6XBmunQNkQ==
-X-Google-Smtp-Source: ABdhPJzQSlbElGn8nHA98I4hP9j7AwlPcvxJ87T4dlz5PAkM+o+DemSEHJAFUkclv7rwtilB3Ns3JPM0uLCq0O3Wp6k=
-X-Received: by 2002:a19:f812:: with SMTP id a18mr21272329lff.254.1617719506474;
- Tue, 06 Apr 2021 07:31:46 -0700 (PDT)
+        Tue, 6 Apr 2021 10:33:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A0FC06174A;
+        Tue,  6 Apr 2021 07:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=76Y+RpJl3c/zLDkucbQIVrpSXOundieidtG+VMNQ3II=; b=ABwBhwABT0zb+XUznUbXzl3gna
+        QrIvghe0Py38QdNyUo3z0fAezD/he5R3W91heecXoXp9dqnCsw/HpTjWxZa3SdD8Qsr2u6fNpEmds
+        qBKXlpKJ8MX7k8u8nq5qGQz4hK+U5aEIJWmhbW94Xhgw6G35jTuwQDFXsEzx/H9h1JfAdfbmQN5DT
+        wrrbPVJa1ePk1Y2RPw+Rc85lUvYC9IN4VCymFSak0LIT2EdicuJoN9V3wygWfBdMRIbWsyB8rzAgp
+        6lklwAQi10w6QH5iyzyafUUUB8w+EEWYdnS185eIXwYq0Lsp3yq+jC7zUnhR0oB6gn1I2rTvwepy7
+        F1ZNZNJw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTmkA-00CwNG-RE; Tue, 06 Apr 2021 14:32:10 +0000
+Date:   Tue, 6 Apr 2021 15:31:50 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
+Message-ID: <20210406143150.GA3082513@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-2-willy@infradead.org>
+ <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
+ <20210406124807.GO2531743@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210406041108.7416-1-ricardo.neri-calderon@linux.intel.com> <20210406041108.7416-3-ricardo.neri-calderon@linux.intel.com>
-In-Reply-To: <20210406041108.7416-3-ricardo.neri-calderon@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 6 Apr 2021 16:31:35 +0200
-Message-ID: <CAKfTPtBfRCXgfLVbTo1tD+_puzvba8qbhYc99RiL9QchQ+S5ew@mail.gmail.com>
-Subject: Re: [PATCH 2/4] sched/fair: Introduce arch_sched_asym_prefer_early()
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406124807.GO2531743@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 06:11, Ricardo Neri
-<ricardo.neri-calderon@linux.intel.com> wrote:
->
-> Introduce arch_sched_asym_prefer_early() so that architectures with SMT
-> can delay the decision to label a candidate busiest group as
-> group_asym_packing.
->
-> When using asymmetric packing, high priority idle CPUs pull tasks from
-> scheduling groups with low priority CPUs. The decision on using asymmetric
-> packing for load balancing is done after collecting the statistics of a
-> candidate busiest group. However, this decision needs to consider the
-> state of SMT siblings of dst_cpu.
->
-> Cc: Aubrey Li <aubrey.li@intel.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> ---
->  include/linux/sched/topology.h |  1 +
->  kernel/sched/fair.c            | 11 ++++++++++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index 8f0f778b7c91..663b98959305 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -57,6 +57,7 @@ static inline int cpu_numa_flags(void)
->  #endif
->
->  extern int arch_asym_cpu_priority(int cpu);
-> +extern bool arch_sched_asym_prefer_early(int a, int b);
->
->  struct sched_domain_attr {
->         int relax_domain_level;
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 4ef3fa0d5e8d..e74da853b046 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -106,6 +106,15 @@ int __weak arch_asym_cpu_priority(int cpu)
->         return -cpu;
->  }
->
-> +/*
-> + * For asym packing, early check if CPUs with higher priority should be
-> + * preferred. On some architectures, more data is needed to make a decision.
-> + */
-> +bool __weak arch_sched_asym_prefer_early(int a, int b)
-> +{
-> +       return sched_asym_prefer(a, b);
-> +}
-> +
->  /*
->   * The margin used when comparing utilization with CPU capacity.
->   *
-> @@ -8458,7 +8467,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->         if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
->             env->idle != CPU_NOT_IDLE &&
->             sgs->sum_h_nr_running &&
-> -           sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
-> +           arch_sched_asym_prefer_early(env->dst_cpu, group->asym_prefer_cpu)) {
+On Tue, Apr 06, 2021 at 01:48:07PM +0100, Matthew Wilcox wrote:
+> Now, maybe we should put this optimisation into the definition of nth_page?
 
-If itmt set arch_sched_asym_prefer_early to true all groups will be
-set as group_asym_packing unconditionally which is wrong. The state
-has to be set only when we want asym packing migration
+That would be nice.
 
->                 sgs->group_asym_packing = 1;
->         }
->
-> --
-> 2.17.1
->
+> > As Christoph, I'm not a fan of this :/
+> 
+> What would you prefer?
+
+Looking at your full folio series on git.infradead.org, there are a
+total of 12 references to non-page members of struct folio, assuming
+my crude grep that expects a folio to be named folio did not miss any.
+
+Except for one that prints folio->flags in cachefiles code, and which
+should go away they are all in core MM code in mm/ or include/.  With
+enough file system conversions I do see potential uses for ->mapping
+and ->index outside of core code, but IMHO we can ignore those for now
+and just switch them over if/when we actually change the struct folio
+internals to split them from tail pages.
+
+So my opinion is:  leave these fields out for now, and when the problem
+that we'd have a lot of reference out of core code arises deal with it
+once we know about the scope.  Maybe we add wrappers for the few
+members that are reasonable "public", maybe we then do the union
+trick you have here because it is the least evil, or maybe we just do
+not do anything at all until these fields move over to the folio
+entirely.
