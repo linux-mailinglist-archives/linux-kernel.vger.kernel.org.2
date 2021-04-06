@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E229355C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FCB355C20
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 21:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240922AbhDFTVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 15:21:31 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:46001 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhDFTVa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:21:30 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so15682431oty.12;
-        Tue, 06 Apr 2021 12:21:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P/5WF24c25eXF4/LauXbS74dqYKfNkXTqF0ifTdvwyM=;
-        b=AiQKGUrpUs78qrRHfwEgsOW37ZEzYBotcPd6SaqUdqSpoy66RyJ2wW09txkzIWKyjR
-         zORJ+NeVSMC5Kcai2s7fpSND1SLYrxQwJhxzMkaz5AxjU++asTZ4JwO1y/pUTHfKNfp0
-         ZTE+ti95kc2sleSoEOsErHyzm2xlrWqBNHeqrMD93eTbpfphHzh+AfPzwEzxQ9J28iJ9
-         ab6UayqVg4dzO+PXs+wnqWm+2jMWo/wPa6bJSNDgWrTZfY4uK1Yni/uErQ2KHBOIEgzg
-         YAjn01UQ9B/aBgy3g3koaa/4Za7MGCWkzi8uYt0i91SiyzXRQhNdOU2KxlmN/k8xEvyi
-         U3vA==
-X-Gm-Message-State: AOAM530G0P5eNeb1t6xp/LpG3v2NUaf5AYeggt2G1k4/zCrEkzjuf4Ws
-        QQhcFDNTQX68WNempJHhXA==
-X-Google-Smtp-Source: ABdhPJzhOj3xNCKqGX3FplsDy6aCWQFZ8eMFPgYBaxPre137YvK2vIxLDpMH+SY77jrs9hkfbskR5g==
-X-Received: by 2002:a9d:63d6:: with SMTP id e22mr27512520otl.188.1617736881782;
-        Tue, 06 Apr 2021 12:21:21 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 9sm3818434oid.17.2021.04.06.12.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 12:21:21 -0700 (PDT)
-Received: (nullmailer pid 2150669 invoked by uid 1000);
-        Tue, 06 Apr 2021 19:21:20 -0000
-Date:   Tue, 6 Apr 2021 14:21:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     frowand.list@gmail.com
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
-Subject: Re: [PATCH 1/1] of: properly check for error returned by
- fdt_get_name()
-Message-ID: <20210406192120.GA2150527@robh.at.kernel.org>
-References: <20210405032845.1942533-1-frowand.list@gmail.com>
+        id S241142AbhDFTWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 15:22:08 -0400
+Received: from marcansoft.com ([212.63.210.85]:49944 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhDFTWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:22:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 30DF941E64;
+        Tue,  6 Apr 2021 19:21:48 +0000 (UTC)
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210402090542.131194-1-marcan@marcan.st>
+ <20210402090542.131194-16-marcan@marcan.st> <87ft03p9cd.wl-maz@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v4 15/18] irqchip/apple-aic: Add support for the Apple
+ Interrupt Controller
+Message-ID: <5a4a0ab4-5a4e-1f1c-f6c6-97439b95e7ee@marcan.st>
+Date:   Wed, 7 Apr 2021 04:21:46 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405032845.1942533-1-frowand.list@gmail.com>
+In-Reply-To: <87ft03p9cd.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 04 Apr 2021 22:28:45 -0500, frowand.list@gmail.com wrote:
-> From: Frank Rowand <frank.rowand@sony.com>
+On 07/04/2021 03.16, Marc Zyngier wrote:
+> Hi Hector,
 > 
-> fdt_get_name() returns error values via a parameter pointer
-> instead of in function return.  Fix check for this error value
-> in populate_node() and callers of populate_node().
+> On Fri, 02 Apr 2021 10:05:39 +0100,
+> Hector Martin <marcan@marcan.st> wrote:
+>> +		/*
+>> +		 * In EL1 the non-redirected registers are the guest's,
+>> +		 * not EL2's, so remap the hwirqs to match.
+>> +		 */
+>> +		if (!is_kernel_in_hyp_mode()) {
+>> +			switch (fwspec->param[1]) {
+>> +			case AIC_TMR_GUEST_PHYS:
+>> +				*hwirq = ic->nr_hw + AIC_TMR_HV_PHYS;
+>> +				break;
+>> +			case AIC_TMR_GUEST_VIRT:
+>> +				*hwirq = ic->nr_hw + AIC_TMR_HV_VIRT;
+>> +				break;
+>> +			case AIC_TMR_HV_PHYS:
+>> +			case AIC_TMR_HV_VIRT:
+>> +				return -ENOENT;
+>> +			default:
+>> +				break;
+>> +			}
+>> +		}
 > 
-> Chasing up the caller tree showed callers of various functions
-> failing to initialize the value of pointer parameters that
-> can return error values.  Initialize those values to NULL.
-> 
-> The bug was introduced by
-> commit e6a6928c3ea1 ("of/fdt: Convert FDT functions to use libfdt")
-> but this patch can not be backported directly to that commit
-> because the relevant code has further been restructured by
-> commit dfbd4c6eff35 ("drivers/of: Split unflatten_dt_node()")
-> 
-> The bug became visible by triggering a crash on openrisc with:
-> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> as reported in:
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-> 
-> ---
-> 
-> This patch papers over the unaligned pointer passed to
-> of_fdt_unflatten_tree() bug that Guenter reported in
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> I will create a separate patch to fix that problem.
-> 
->  drivers/of/fdt.c      | 36 +++++++++++++++++++++++-------------
->  drivers/of/overlay.c  |  2 +-
->  drivers/of/unittest.c | 15 ++++++++++-----
->  3 files changed, 34 insertions(+), 19 deletions(-)
-> 
+> Urgh, this is nasty. You are internally remapping the hwirq from one
+> timer to another in order to avoid accessing the enable register
+> which happens to be an EL2 only register?
 
-Applied, thanks!
+The remapping is to make the IRQs route properly at all.
+
+There are EL2 and EL0 timers, and on GIC each timer goes to its own IRQ. 
+But here there are no real IRQs, everything's a FIQ. However, thanks to 
+VHE, the EL2 timer shows up as the EL0 timer, and the EL0 timer is 
+accessed via EL02 registers, when in EL2. So in EL2/VHE mode, "HV" means 
+EL0 and "guest" means EL02, while in EL1, there is no HV and "guest" 
+means EL0. And since we figure out which IRQ fired by reading timer 
+registers, this is what matters. So I map the guest IRQs to the HV 
+hwirqs in EL1 mode, which makes this all work out. Then the timer code 
+goes and ends up undoing all this logic again, so we map to separate 
+fake "IRQs" only to end up right back at using the same timer registers 
+anuway :-)
+
+Really, the ugliness here is that the constant meaning is overloaded. In 
+fwspec context they mean what they say on the tin, while in hwirq 
+context "HV" means EL0 and "guest" means EL02 (other FIQs would be 
+passed through unchanged). Perhaps some additional defines might help 
+clarify this? Say, at the top of this file (not in the binding),
+
+/*
+  * Pass-through mapping from real timers to the correct registers to
+  * access them in EL2/VHE mode. When running in EL1, this gets
+  * overridden to access the guest timer using EL0 registers.
+  */
+#define AIC_TMR_EL0_PHYS AIC_TMR_HV_PHYS
+#define AIC_TMR_EL0_VIRT AIC_TMR_HV_VIRT
+#define AIC_TMR_EL02_PHYS AIC_TMR_GUEST_PHYS
+#define AIC_TMR_EL02_VIRT AIC_TMR_GUEST_VIRT
+
+Then the irqchip/FIQ dispatch side can use the EL* constants, the 
+default pass-through mapping is appropriate for VHE/EL2 mode, and 
+translation can adjust it for EL1 mode.
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
