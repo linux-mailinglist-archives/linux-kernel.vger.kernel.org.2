@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7488735593D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A4D355943
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237651AbhDFQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhDFQdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:33:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 262DF61242;
-        Tue,  6 Apr 2021 16:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617726796;
-        bh=i9cAfTfFodn8EtmRiY0kHTygQzNwzpycJDXRyZy51Es=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Avr4uKmccnZOBbdf+RRmwIRkizkXAM/HaQqwOp2yvm5GAPcngcx3yMCC9kYHuWptX
-         /32Yi/dipoysoPYpNblS9RtjiIokQscSglrROaWqO43wSbzabdkAw6S2PPavhKQwBP
-         J8FgV5AxlGkcoOiniUkh1WYFrajKFmJdKSE9SVk/88td1vY6OzK+AIgoXznokuy2yD
-         dfB0UaCKk5ej+aHQhzUJR2EiHQdN5/HdD1vwgCEIhytfvnJVAyxR0NVONEuLkSbuCm
-         UkIJjB3ZqfrexG+4SriLnUNmT11+lUFBFoJSUmFTOUs8Csxr0oBHDMT30ByngwJa/J
-         CixUWKtbts5Kg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E00AF40647; Tue,  6 Apr 2021 13:33:12 -0300 (-03)
-Date:   Tue, 6 Apr 2021 13:33:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, Ian Rogers <irogers@google.com>,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] perf: util/mem-events.h: Remove unnecessary struct
- declaration
-Message-ID: <YGyNSMDNlxQk5j7E@kernel.org>
-References: <20210406105104.675879-1-wanjiabing@vivo.com>
+        id S1346452AbhDFQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:34:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37258 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346445AbhDFQeL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 12:34:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617726843; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=lCg9rvBlInHgwDdIXHhE440G3KXq+dIQNfO49TSg3Tc=; b=CcW/FXKZ1BEQw9PzeGrx4TTboPikMAJf5q1EtsRHxNpL25B5d+p9258G0dy/CBp5ybJyN7eU
+ lrVTtiU9UR+O8IWlRrphWxMoudeakALiZZvBjEilq1HaJ6rqlNrDDdfAWGb5nTbYlGmRLW14
+ ASNK5Q0Hv5av9yiqi9YKCqPvBBI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 606c8d6b8166b7eff7210d41 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Apr 2021 16:33:47
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 15A96C433CA; Tue,  6 Apr 2021 16:33:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9400C433CA;
+        Tue,  6 Apr 2021 16:33:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B9400C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, dianders@chromium.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v2] arm64: dts: qcom: Update iommu property for simultaneous playback
+Date:   Tue,  6 Apr 2021 22:03:30 +0530
+Message-Id: <20210406163330.11996-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406105104.675879-1-wanjiabing@vivo.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 06, 2021 at 06:51:02PM +0800, Wan Jiabing escreveu:
-> struct mem_info is defined at 22nd line.
-> The declaration here is unnecessary. Remove it.
+From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+
+Update iommu property in lpass cpu node for supporting
+simultaneous playback on headset and speaker.
+
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes since v1:
+   -- Commit messge header change
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index a6da78d31fdd..6228ba2d8513 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -3566,7 +3566,8 @@ lpass_cpu: lpass@62f00000 {
+ 			reg = <0 0x62f00000 0 0x29000>;
+ 			reg-names = "lpass-lpaif";
  
-
-Thanks, applied.
-
-- Arnaldo
-
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  tools/perf/util/mem-events.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-> index 755cef7e0625..5ddbeaa057b0 100644
-> --- a/tools/perf/util/mem-events.h
-> +++ b/tools/perf/util/mem-events.h
-> @@ -44,7 +44,6 @@ bool is_mem_loads_aux_event(struct evsel *leader);
->  
->  void perf_mem_events__list(void);
->  
-> -struct mem_info;
->  int perf_mem__tlb_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
->  int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
->  int perf_mem__snp_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
-> -- 
-> 2.25.1
-> 
-
+-			iommus = <&apps_smmu 0x1020 0>;
++			iommus = <&apps_smmu 0x1020 0>,
++				<&apps_smmu 0x1021 0>;
+ 
+ 			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
+ 
 -- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-- Arnaldo
