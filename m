@@ -2,477 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EBA354F63
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A22A354F66
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240625AbhDFJFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:05:08 -0400
-Received: from mga03.intel.com ([134.134.136.65]:29829 "EHLO mga03.intel.com"
+        id S244746AbhDFJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:06:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58347 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233952AbhDFJFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:05:07 -0400
-IronPort-SDR: 84tUf0CnMzUAsuk6PVUhlBXgz79/AjTgTXRtx3cPjwnjsEUXOy/6rzsODngSrt9upneCQJ5ARi
- Slp+hs41Lqhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193065669"
+        id S233114AbhDFJF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:05:59 -0400
+IronPort-SDR: T6FYeaz4Ch0PK72/KJZsCo1ja9EdLymbJPePX7fK5ekcX1DzwbH+DoIKSah4X2lrxN9auflAWX
+ qKdJN9Sajr4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="190855606"
 X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="193065669"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:04:59 -0700
-IronPort-SDR: i9Zkk7yyN+ayjOp6QpH6cwpXT9bM0TwqqRJYhjgqsblV8vBI8mi7sZOce8M379+MjVxOg0M7jk
- 3eeb/yopG9ZQ==
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="612474076"
-Received: from nkanakap-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.6.197])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:04:55 -0700
-Date:   Tue, 6 Apr 2021 21:04:53 +1200
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
- guests
-Message-Id: <20210406210453.c4744c09b5adfb7bf5e0e239@intel.com>
-In-Reply-To: <20210406082800.GD17806@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
-        <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
-        <20210405090151.GA19485@zn.tnic>
-        <20210406094634.9f5e8c9d6bd2b61690c887cf@intel.com>
-        <20210406082800.GD17806@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="190855606"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:05:51 -0700
+IronPort-SDR: g/f80FV0Vaf1V6xTG+2xjY1WH8Z0wmUkLcn0G/qQi/QwEZQ2SPUMqnzBYrEussa8mQpAxgHbP8
+ uC4Vt8+5igZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="414687036"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Apr 2021 02:05:51 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 02:05:51 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 02:05:50 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Tue, 6 Apr 2021 02:05:50 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.56) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 6 Apr 2021 02:05:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FqQ7ZreDtghPEDkZD8WR1r5/4NSuJhywQjTjwZGXjhzML1fRtks4fCYg70iW4gZZTYiM5Q3Pr8PnSiAN4YNtja01XiNuhmx8MqIs2+As85TTB1oL/kHyL463G1wmW49n+Z2yr0cuL2d7tIb0yMYxDZ5rCaM2ElC3+2kLdweOsKT/DFHkJ308CEUUdxI4AYElR0+os1mqBUYSCQEF4ZhAwGaB9HgtEZC1qN2Hwb5EM5VQFA5i2azYkA/4Udzr3krcMa55R8b83J728YjthDllgfByDrJeddFdNzQ8BTbB4Kl1KwUt7Uei6T/qBYwdW7JL6JzcMJ3/NL9Z7rakFfcc9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NNPFudpmvNKDTQQvzgHYXbva+ws2nWqa+/h6wdLs1lE=;
+ b=cRdl4l3zMYR7BhVM+3oHqJZf6c9G7nCDOWK7F+azA9saI7B4IEUgs5SO7JTmsrhu77MnVTIfgmNO3ZDkgOgyAWebhgfAA/mATYRX8RxCMa2rRQ5cOhtgdAo59E77+G/PL+tppkZbc/MDclMJ8FCHtlDFJDv5UF+TBy5kJ9rYf9TYHTFEpzcrHL00XyOeB6kua3Gn57r1RWhyoB3A7N+ykxHWQ2s8+pureHmV37HuKmjw//z6lj3fnlxbUo6DYuSgGXq/wSC6cmYYDaRVhIr/t0VtnI72uCKded46L+TkPwrqgk9a0FKWQU2Ia4IuceZXjvpi8cIZ2c/xI3oNlK6Usg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NNPFudpmvNKDTQQvzgHYXbva+ws2nWqa+/h6wdLs1lE=;
+ b=LXAr+iD0lOMKoNhCxEhfZxlPY2MYnwms/LLnlVhAakKGwvZBPadLNN6CcjKiKVhnzRhmqlG20vvU/KlhH/rr4qdWZnOx/XXc3n2oGKpcYXKTxckQ7jOWEvjRgtUTe70m4V02kYkmV1FxCMAKekxwjfkJ2uRiIDJeZxORW8S/9Do=
+Received: from SN6PR11MB3136.namprd11.prod.outlook.com (2603:10b6:805:da::30)
+ by SN6PR11MB2797.namprd11.prod.outlook.com (2603:10b6:805:5a::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Tue, 6 Apr
+ 2021 09:05:34 +0000
+Received: from SN6PR11MB3136.namprd11.prod.outlook.com
+ ([fe80::5143:5d07:51b:63a7]) by SN6PR11MB3136.namprd11.prod.outlook.com
+ ([fe80::5143:5d07:51b:63a7%5]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 09:05:34 +0000
+From:   "Voon, Weifeng" <weifeng.voon@intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>
+CC:     "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "fugang.duan@nxp.com" <fugang.duan@nxp.com>,
+        "Chuah, Kim Tatt" <kim.tatt.chuah@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>
+Subject: RE: [PATCH net-next v2 0/2] Enable 2.5Gbps speed for stmmac
+Thread-Topic: [PATCH net-next v2 0/2] Enable 2.5Gbps speed for stmmac
+Thread-Index: AQHXKg/Os9IaztXPaUy24X7Nc4wW6qql5igAgAAULACAAANOgIABLtjg
+Date:   Tue, 6 Apr 2021 09:05:33 +0000
+Message-ID: <SN6PR11MB313690E7953BF715A8F488D688769@SN6PR11MB3136.namprd11.prod.outlook.com>
+References: <20210405112953.26008-1-michael.wei.hong.sit@intel.com>
+ <YGsMbBW9h4H1y/T8@lunn.ch>
+ <CO1PR11MB5044B1F80C412E6F0CAFD5509D779@CO1PR11MB5044.namprd11.prod.outlook.com>
+ <YGsgHWItHcLFV9Kg@lunn.ch>
+In-Reply-To: <YGsgHWItHcLFV9Kg@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [202.190.27.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f410b4b4-0825-4269-50cc-08d8f8db22ff
+x-ms-traffictypediagnostic: SN6PR11MB2797:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB27974192655A107BB20ECDA488769@SN6PR11MB2797.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GttzPCH/F2zVsBHr6iUtdGJrtoBmmgB8bMLX4JJJ7rVnVBrGwly41qID75IO7QheuKgVKaYHGr/wcRn4AfUVN96rjq3dHJ2vNOrPucsWFZ+giMTmsrxL2/q5oHJgLQmXpxHXa/Xr74JRIg35CjQDQdmgtasbPF+gG8mwLQBRTOdp+VR9xVfwAXAkIauQ7x84ftN2A8MkeOhRlRFuPrBLOp119iUPlVyWc7Vt2X2gRedXgJgVNXz9c7Aj4HV3/vvvBdU9gG5ZpvQERsZ3ZiGbHszCqaiFb777RBR52V64pXEm28WyGdQ4UffnP7Z1LO9dpKhZvhEHlK7d495I8uv43xNoODhpdnYzGtKlqJNXqs4w+9hWtMLr3JZxYUbkijc0B5pMVkNr0j0mYr5koVHzgfJsZldPI2uKPsNJyM3GEfjmdwzw1HHEFCSfpg6V5uEX6f5XmVdSzS9hTtFY3AHYQUk6JrOn4jimG/f2fzjP/OQ2j7I7RHqxwRJ1kCgMZIuZB5Zw4IuX86AaSjVIJXgUKwzZErbtUpDwt7VKkW5iaNIqxoz+8d/8VSDZrtnhyyxS2qlxC4bLS5+tlGFRaUKLbVjtcoZ1bPrtGLPxAiipTv2X30k0K1Wo3U3yaNEvGlr0S8IZAygtZeivsB8MsaL6yoE+/E1tYCeyDs1+GvMg+no=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3136.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(376002)(346002)(136003)(71200400001)(2906002)(83380400001)(33656002)(26005)(6636002)(4326008)(7696005)(478600001)(6506007)(8936002)(8676002)(54906003)(316002)(186003)(110136005)(66476007)(55016002)(9686003)(66946007)(66446008)(86362001)(66556008)(64756008)(38100700001)(52536014)(76116006)(5660300002)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ppsRaYqIrANJgbDZMGqOM2R5Z8rI4l3klMZSxO5W0cEp8fnt16fPETJ7afY5?=
+ =?us-ascii?Q?1zh0JDkLCoOvqiovPOQJZBubl/y94FmuP0U/Y/EPDnp+51dHWSZJvL3ZaYqU?=
+ =?us-ascii?Q?DgmNpxplMXHk6tmusiQwyCAhWi6fKGCZCpkWIee1fnTg5jHIAWJaqEDqyPGq?=
+ =?us-ascii?Q?0Ffn7p6e4LOt0XITyIY7/V6MiITVEIzWFE8SVkDPOeLQP/G5yZU9PqfhQO3J?=
+ =?us-ascii?Q?iA059mOvUZo8YH9anl5BtatZd5P8rdI7+fB8XPEkc1Rh+asUSKmP2HwgnxDW?=
+ =?us-ascii?Q?ntj9h5q/JcUg8KDvl82fGOflm/z/RrgR5q43647H++oo4LYoSlOwbHeiV7ip?=
+ =?us-ascii?Q?QhcBn7sDPzppLtP/HFcBdxs/fRtJY8zNQ8FBqxvMjXwx9Ypvpu5FzKou++RM?=
+ =?us-ascii?Q?czfV8402KZzKz4XTpw75hESOdgCFP7EE1mHtowVSkPWJ7iVhmIkR3Uz1PMrX?=
+ =?us-ascii?Q?10n45+v8neRi+blidejtNGrT2ksuk1nsofqNZCUjjeS4DORl7E6fpUObW/k5?=
+ =?us-ascii?Q?tGC9xJBUV/moUn32PA0K7hmw6lVLsGJSfAEJppYTZfszPEQxH91g5aJ4MhBr?=
+ =?us-ascii?Q?KnsvIeNltOxUnDPSd8vFLuer730CEYzV1PtGKLK2wj1XEd98nK9PBRLL3ZRf?=
+ =?us-ascii?Q?PeBy0m3iwSnor76JoRB9dJdwAeXF5vK8cSei3ry1YU+6Oj7GVemKMoSgBtSL?=
+ =?us-ascii?Q?mf6tISxbcxeDDvt+dDcPOmhWYgjeBzzjZK/+Gj7uaeAMH64Y3ZqzpI1JUhuY?=
+ =?us-ascii?Q?KvTu/iF9Ot4fvRFqCsl8orsfw8vCF3i3dJmf+bVSBtpnWxRlmMBo410Qx34f?=
+ =?us-ascii?Q?jz1kSSc7d5yiubdW4ju51/mRI4n26ZXXHPIbj9prMEFbp8eP6omGCuyI6WUa?=
+ =?us-ascii?Q?u00/JbXFa5vo3AECmz1v+X+nd4fPLnaJ7AuBV8kj1q24Qrjgua2JD6iHziEd?=
+ =?us-ascii?Q?FC9AFhGxBptvYrdKJ7n9Ob9X86W6RPfhyL0joYabMCD4CeV++JJ+a6sMMQx1?=
+ =?us-ascii?Q?h6z4HNtSmeRdr6Sg8n+Xq8PpiIS8hWHG5CltlrhBPqG+OW4VPeGGJI5yUUfk?=
+ =?us-ascii?Q?wbRKgliyTOymtRRvy9Mjr8ZZBkT4LESgNby/Xz0OcRXCq7VjwVEql1oEB3B8?=
+ =?us-ascii?Q?WYw1vPwaqoZoq0y+a2GouUnIkAOauTaTxpxeT7Z4YdkmyWsg6cBOyDaE9fsL?=
+ =?us-ascii?Q?9AXudBWwXBJCWsFQY/fvtdjbwzMV2m2IpwqbbltsPFGFsp71wSN4KYUWP23c?=
+ =?us-ascii?Q?/pbfiQXgBC1p2Q1eU6uKzLVoujiR9t0ngzRH09Erb6LReTITA+WaLKMvM4kq?=
+ =?us-ascii?Q?9oKApc/GOb1+bbOU+HfOxEaK?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3136.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f410b4b4-0825-4269-50cc-08d8f8db22ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 09:05:34.0110
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1wma9xz5LscLKuHvqklmya86gxvmK1J/7JBMeMkvzR2OcRaU5TYmBx9XohkdOIsNmaNZQajrUW0JFR3ktmYbtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2797
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 10:28:00 +0200 Borislav Petkov wrote:
-> On Tue, Apr 06, 2021 at 09:46:34AM +1200, Kai Huang wrote:
-> > Fine to me. Please let me know if you want me to resend patches. Thanks.
-> 
-> Patch updated:
+> > > You have a MAC and an PCS in the stmmac IP block. That then has some
+> > > sort of SERDES interface, running 1000BaseX, SGMII, SGMII
+> > > overclocked at 2.5G or 25000BaseX. Connected to the SERDES you have
+> > > a PHY which converts to copper, giving you 2500BaseT.
+> > >
+> > > You said earlier, that the PHY can only do 2500BaseT. So it should
+> > > be the PHY driver which sets supported to 2500BaseT and no other
+> > > speeds.
+> > >
+> > > You should think about when somebody uses this MAC with a different
+> > > PHY, one that can do the full range of 10/half through to 2.5G full.
+> > > What generally happens is that the PHY performs auto-neg to
+> > > determine the link speed. For 10M-1G speeds the PHY will configure
+> > > its SERDES interface to SGMII and phylink will ask the PCS to also
+> > > be configured to SGMII. If the PHY negotiates 2500BaseT, it will
+> > > configure its side of the SERDES to 2500BaseX or SGMII overclocked
+> > > at 2.5G. Again, phylink will ask the PCS to match what the PHY is
+> > > doing.
+> > >
+> > > So, where exactly is the limitation in your hardware? PCS or PHY?
+> > The limitation in the hardware is at the PCS side where it is either
+> > running in SGMII 2.5G or SGMII 1G speeds.
+> > When running on SGMII 2.5G speeds, we disable the in-band AN and use
+> > 2.5G speed only
+>=20
+> So there is no actual limitation! The MAC should indicate it can do 10Hal=
+f
+> through to 2500BaseT. And you need to listen to PHYLINK and swap the PCS
+> between SGMII to overclocked SGMII when it requests.
+>=20
+> PHYLINK will call stmmac_mac_config() and use state->interface to decide
+> how to configure the PCS to match what the PHY is doing.
+>=20
+>      Andrew
 
-Looks fine. Thank you!
+The limitation is not on the MAC, PCS or the PHY. For Intel mgbe, the
+overclocking of 2.5 times clock rate to support 2.5G is only able to be
+configured in the BIOS during boot time. Kernel driver has no access to=20
+modify the clock rate for 1Gbps/2.5G mode. The way to determined the=20
+current 1G/2.5G mode is by reading a dedicated adhoc register through mdio =
+bus.
+In short, after the system boot up, it is either in 1G mode or 2.5G mode=20
+which not able to be changed on the fly.=20
 
-> 
-> ---
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> Date: Fri, 19 Mar 2021 20:22:21 +1300
-> Subject: [PATCH] x86/sgx: Introduce virtual EPC for use by KVM guests
-> 
-> Add a misc device /dev/sgx_vepc to allow userspace to allocate "raw"
-> Enclave Page Cache (EPC) without an associated enclave. The intended
-> and only known use case for raw EPC allocation is to expose EPC to a
-> KVM guest, hence the 'vepc' moniker, virt.{c,h} files and X86_SGX_KVM
-> Kconfig.
-> 
-> The SGX driver uses the misc device /dev/sgx_enclave to support
-> userspace in creating an enclave. Each file descriptor returned from
-> opening /dev/sgx_enclave represents an enclave. Unlike the SGX driver,
-> KVM doesn't control how the guest uses the EPC, therefore EPC allocated
-> to a KVM guest is not associated with an enclave, and /dev/sgx_enclave
-> is not suitable for allocating EPC for a KVM guest.
-> 
-> Having separate device nodes for the SGX driver and KVM virtual EPC also
-> allows separate permission control for running host SGX enclaves and KVM
-> SGX guests.
-> 
-> To use /dev/sgx_vepc to allocate a virtual EPC instance with particular
-> size, the hypervisor opens /dev/sgx_vepc, and uses mmap() with the
-> intended size to get an address range of virtual EPC. Then it may use
-> the address range to create one KVM memory slot as virtual EPC for
-> a guest.
-> 
-> Implement the "raw" EPC allocation in the x86 core-SGX subsystem via
-> /dev/sgx_vepc rather than in KVM. Doing so has two major advantages:
-> 
->   - Does not require changes to KVM's uAPI, e.g. EPC gets handled as
->     just another memory backend for guests.
-> 
->   - EPC management is wholly contained in the SGX subsystem, e.g. SGX
->     does not have to export any symbols, changes to reclaim flows don't
->     need to be routed through KVM, SGX's dirty laundry doesn't have to
->     get aired out for the world to see, and so on and so forth.
-> 
-> The virtual EPC pages allocated to guests are currently not reclaimable.
-> Reclaiming an EPC page used by enclave requires a special reclaim
-> mechanism separate from normal page reclaim, and that mechanism is not
-> supported for virutal EPC pages. Due to the complications of handling
-> reclaim conflicts between guest and host, reclaiming virtual EPC pages
-> is significantly more complex than basic support for SGX virtualization.
-> 
->  [ bp:
->    - Massage commit message and comments
->    - use cpu_feature_enabled()
->    - vertically align struct members init
->    - massage Virtual EPC clarification text
->    - move Kconfig prompt to Virtualization ]
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Link: https://lkml.kernel.org/r/0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com
-> ---
->  Documentation/x86/sgx.rst        |  16 ++
->  arch/x86/kernel/cpu/sgx/Makefile |   1 +
->  arch/x86/kernel/cpu/sgx/sgx.h    |   9 ++
->  arch/x86/kernel/cpu/sgx/virt.c   | 259 +++++++++++++++++++++++++++++++
->  arch/x86/kvm/Kconfig             |  12 ++
->  5 files changed, 297 insertions(+)
->  create mode 100644 arch/x86/kernel/cpu/sgx/virt.c
-> 
-> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-> index f90076e67cde..dd0ac96ff9ef 100644
-> --- a/Documentation/x86/sgx.rst
-> +++ b/Documentation/x86/sgx.rst
-> @@ -234,3 +234,19 @@ As a result, when this happpens, user should stop running any new
->  SGX workloads, (or just any new workloads), and migrate all valuable
->  workloads. Although a machine reboot can recover all EPC memory, the bug
->  should be reported to Linux developers.
-> +
-> +
-> +Virtual EPC
-> +===========
-> +
-> +The implementation has also a virtual EPC driver to support SGX enclaves
-> +in guests. Unlike the SGX driver, an EPC page allocated by the virtual
-> +EPC driver doesn't have a specific enclave associated with it. This is
-> +because KVM doesn't track how a guest uses EPC pages.
-> +
-> +As a result, the SGX core page reclaimer doesn't support reclaiming EPC
-> +pages allocated to KVM guests through the virtual EPC driver. If the
-> +user wants to deploy SGX applications both on the host and in guests
-> +on the same machine, the user should reserve enough EPC (by taking out
-> +total virtual EPC size of all SGX VMs from the physical EPC size) for
-> +host SGX applications so they can run with acceptable performance.
-> diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
-> index 91d3dc784a29..9c1656779b2a 100644
-> --- a/arch/x86/kernel/cpu/sgx/Makefile
-> +++ b/arch/x86/kernel/cpu/sgx/Makefile
-> @@ -3,3 +3,4 @@ obj-y += \
->  	encl.o \
->  	ioctl.o \
->  	main.o
-> +obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-> index 4aa40c627819..4854f3980edd 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -84,4 +84,13 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
->  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
->  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
->  
-> +#ifdef CONFIG_X86_SGX_KVM
-> +int __init sgx_vepc_init(void);
-> +#else
-> +static inline int __init sgx_vepc_init(void)
-> +{
-> +	return -ENODEV;
-> +}
-> +#endif
-> +
->  #endif /* _X86_SGX_H */
-> diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-> new file mode 100644
-> index 000000000000..259cc46ad78c
-> --- /dev/null
-> +++ b/arch/x86/kernel/cpu/sgx/virt.c
-> @@ -0,0 +1,259 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device driver to expose SGX enclave memory to KVM guests.
-> + *
-> + * Copyright(c) 2021 Intel Corporation.
-> + */
-> +
-> +#include <linux/miscdevice.h>
-> +#include <linux/mm.h>
-> +#include <linux/mman.h>
-> +#include <linux/sched/mm.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/slab.h>
-> +#include <linux/xarray.h>
-> +#include <asm/sgx.h>
-> +#include <uapi/asm/sgx.h>
-> +
-> +#include "encls.h"
-> +#include "sgx.h"
-> +
-> +struct sgx_vepc {
-> +	struct xarray page_array;
-> +	struct mutex lock;
-> +};
-> +
-> +/*
-> + * Temporary SECS pages that cannot be EREMOVE'd due to having child in other
-> + * virtual EPC instances, and the lock to protect it.
-> + */
-> +static struct mutex zombie_secs_pages_lock;
-> +static struct list_head zombie_secs_pages;
-> +
-> +static int __sgx_vepc_fault(struct sgx_vepc *vepc,
-> +			    struct vm_area_struct *vma, unsigned long addr)
-> +{
-> +	struct sgx_epc_page *epc_page;
-> +	unsigned long index, pfn;
-> +	int ret;
-> +
-> +	WARN_ON(!mutex_is_locked(&vepc->lock));
-> +
-> +	/* Calculate index of EPC page in virtual EPC's page_array */
-> +	index = vma->vm_pgoff + PFN_DOWN(addr - vma->vm_start);
-> +
-> +	epc_page = xa_load(&vepc->page_array, index);
-> +	if (epc_page)
-> +		return 0;
-> +
-> +	epc_page = sgx_alloc_epc_page(vepc, false);
-> +	if (IS_ERR(epc_page))
-> +		return PTR_ERR(epc_page);
-> +
-> +	ret = xa_err(xa_store(&vepc->page_array, index, epc_page, GFP_KERNEL));
-> +	if (ret)
-> +		goto err_free;
-> +
-> +	pfn = PFN_DOWN(sgx_get_epc_phys_addr(epc_page));
-> +
-> +	ret = vmf_insert_pfn(vma, addr, pfn);
-> +	if (ret != VM_FAULT_NOPAGE) {
-> +		ret = -EFAULT;
-> +		goto err_delete;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_delete:
-> +	xa_erase(&vepc->page_array, index);
-> +err_free:
-> +	sgx_free_epc_page(epc_page);
-> +	return ret;
-> +}
-> +
-> +static vm_fault_t sgx_vepc_fault(struct vm_fault *vmf)
-> +{
-> +	struct vm_area_struct *vma = vmf->vma;
-> +	struct sgx_vepc *vepc = vma->vm_private_data;
-> +	int ret;
-> +
-> +	mutex_lock(&vepc->lock);
-> +	ret = __sgx_vepc_fault(vepc, vma, vmf->address);
-> +	mutex_unlock(&vepc->lock);
-> +
-> +	if (!ret)
-> +		return VM_FAULT_NOPAGE;
-> +
-> +	if (ret == -EBUSY && (vmf->flags & FAULT_FLAG_ALLOW_RETRY)) {
-> +		mmap_read_unlock(vma->vm_mm);
-> +		return VM_FAULT_RETRY;
-> +	}
-> +
-> +	return VM_FAULT_SIGBUS;
-> +}
-> +
-> +const struct vm_operations_struct sgx_vepc_vm_ops = {
-> +	.fault = sgx_vepc_fault,
-> +};
-> +
-> +static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	struct sgx_vepc *vepc = file->private_data;
-> +
-> +	if (!(vma->vm_flags & VM_SHARED))
-> +		return -EINVAL;
-> +
-> +	vma->vm_ops = &sgx_vepc_vm_ops;
-> +	/* Don't copy VMA in fork() */
-> +	vma->vm_flags |= VM_PFNMAP | VM_IO | VM_DONTDUMP | VM_DONTCOPY;
-> +	vma->vm_private_data = vepc;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-> +{
-> +	int ret;
-> +
-> +	/*
-> +	 * Take a previously guest-owned EPC page and return it to the
-> +	 * general EPC page pool.
-> +	 *
-> +	 * Guests can not be trusted to have left this page in a good
-> +	 * state, so run EREMOVE on the page unconditionally.  In the
-> +	 * case that a guest properly EREMOVE'd this page, a superfluous
-> +	 * EREMOVE is harmless.
-> +	 */
-> +	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
-> +	if (ret) {
-> +		/*
-> +		 * Only SGX_CHILD_PRESENT is expected, which is because of
-> +		 * EREMOVE'ing an SECS still with child, in which case it can
-> +		 * be handled by EREMOVE'ing the SECS again after all pages in
-> +		 * virtual EPC have been EREMOVE'd. See comments in below in
-> +		 * sgx_vepc_release().
-> +		 *
-> +		 * The user of virtual EPC (KVM) needs to guarantee there's no
-> +		 * logical processor is still running in the enclave in guest,
-> +		 * otherwise EREMOVE will get SGX_ENCLAVE_ACT which cannot be
-> +		 * handled here.
-> +		 */
-> +		WARN_ONCE(ret != SGX_CHILD_PRESENT, EREMOVE_ERROR_MESSAGE,
-> +			  ret, ret);
-> +		return ret;
-> +	}
-> +
-> +	sgx_free_epc_page(epc_page);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgx_vepc_release(struct inode *inode, struct file *file)
-> +{
-> +	struct sgx_vepc *vepc = file->private_data;
-> +	struct sgx_epc_page *epc_page, *tmp, *entry;
-> +	unsigned long index;
-> +
-> +	LIST_HEAD(secs_pages);
-> +
-> +	xa_for_each(&vepc->page_array, index, entry) {
-> +		/*
-> +		 * Remove all normal, child pages.  sgx_vepc_free_page()
-> +		 * will fail if EREMOVE fails, but this is OK and expected on
-> +		 * SECS pages.  Those can only be EREMOVE'd *after* all their
-> +		 * child pages. Retries below will clean them up.
-> +		 */
-> +		if (sgx_vepc_free_page(entry))
-> +			continue;
-> +
-> +		xa_erase(&vepc->page_array, index);
-> +	}
-> +
-> +	/*
-> +	 * Retry EREMOVE'ing pages.  This will clean up any SECS pages that
-> +	 * only had children in this 'epc' area.
-> +	 */
-> +	xa_for_each(&vepc->page_array, index, entry) {
-> +		epc_page = entry;
-> +		/*
-> +		 * An EREMOVE failure here means that the SECS page still
-> +		 * has children.  But, since all children in this 'sgx_vepc'
-> +		 * have been removed, the SECS page must have a child on
-> +		 * another instance.
-> +		 */
-> +		if (sgx_vepc_free_page(epc_page))
-> +			list_add_tail(&epc_page->list, &secs_pages);
-> +
-> +		xa_erase(&vepc->page_array, index);
-> +	}
-> +
-> +	/*
-> +	 * SECS pages are "pinned" by child pages, and "unpinned" once all
-> +	 * children have been EREMOVE'd.  A child page in this instance
-> +	 * may have pinned an SECS page encountered in an earlier release(),
-> +	 * creating a zombie.  Since some children were EREMOVE'd above,
-> +	 * try to EREMOVE all zombies in the hopes that one was unpinned.
-> +	 */
-> +	mutex_lock(&zombie_secs_pages_lock);
-> +	list_for_each_entry_safe(epc_page, tmp, &zombie_secs_pages, list) {
-> +		/*
-> +		 * Speculatively remove the page from the list of zombies,
-> +		 * if the page is successfully EREMOVE'd it will be added to
-> +		 * the list of free pages.  If EREMOVE fails, throw the page
-> +		 * on the local list, which will be spliced on at the end.
-> +		 */
-> +		list_del(&epc_page->list);
-> +
-> +		if (sgx_vepc_free_page(epc_page))
-> +			list_add_tail(&epc_page->list, &secs_pages);
-> +	}
-> +
-> +	if (!list_empty(&secs_pages))
-> +		list_splice_tail(&secs_pages, &zombie_secs_pages);
-> +	mutex_unlock(&zombie_secs_pages_lock);
-> +
-> +	kfree(vepc);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgx_vepc_open(struct inode *inode, struct file *file)
-> +{
-> +	struct sgx_vepc *vepc;
-> +
-> +	vepc = kzalloc(sizeof(struct sgx_vepc), GFP_KERNEL);
-> +	if (!vepc)
-> +		return -ENOMEM;
-> +	mutex_init(&vepc->lock);
-> +	xa_init(&vepc->page_array);
-> +
-> +	file->private_data = vepc;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations sgx_vepc_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= sgx_vepc_open,
-> +	.release	= sgx_vepc_release,
-> +	.mmap		= sgx_vepc_mmap,
-> +};
-> +
-> +static struct miscdevice sgx_vepc_dev = {
-> +	.minor		= MISC_DYNAMIC_MINOR,
-> +	.name		= "sgx_vepc",
-> +	.nodename	= "sgx_vepc",
-> +	.fops		= &sgx_vepc_fops,
-> +};
-> +
-> +int __init sgx_vepc_init(void)
-> +{
-> +	/* SGX virtualization requires KVM to work */
-> +	if (!cpu_feature_enabled(X86_FEATURE_VMX))
-> +		return -ENODEV;
-> +
-> +	INIT_LIST_HEAD(&zombie_secs_pages);
-> +	mutex_init(&zombie_secs_pages_lock);
-> +
-> +	return misc_register(&sgx_vepc_dev);
-> +}
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index a788d5120d4d..f6b93a35ce14 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -84,6 +84,18 @@ config KVM_INTEL
->  	  To compile this as a module, choose M here: the module
->  	  will be called kvm-intel.
->  
-> +config X86_SGX_KVM
-> +	bool "Software Guard eXtensions (SGX) Virtualization"
-> +	depends on X86_SGX && KVM_INTEL
-> +	help
-> +
-> +	  Enables KVM guests to create SGX enclaves.
-> +
-> +	  This includes support to expose "raw" unreclaimable enclave memory to
-> +	  guests via a device node, e.g. /dev/sgx_vepc.
-> +
-> +	  If unsure, say N.
-> +
->  config KVM_AMD
->  	tristate "KVM for AMD processors support"
->  	depends on KVM
-> -- 
-> 2.29.2
-> 
-> 
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+Since the stmmac MAC can pair with any PCS and PHY, I still prefer that we =
+tie
+this platform specific limitation with the of MAC. As stmmac does handle pl=
+atform
+specific config/limitation.=20
+
+What is your thoughts?=20
+
+Weifeng
