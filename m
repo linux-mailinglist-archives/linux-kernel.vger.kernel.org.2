@@ -2,105 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6D235557E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060AD355580
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344645AbhDFNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S1344652AbhDFNng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhDFNnV (ORCPT
+        with ESMTP id S229911AbhDFNne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:43:21 -0400
-Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2D5C06174A;
-        Tue,  6 Apr 2021 06:43:12 -0700 (PDT)
-Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
-        by postout1.mail.lrz.de (Postfix) with ESMTP id 4FF7yK2H6CzyRn;
-        Tue,  6 Apr 2021 15:43:05 +0200 (CEST)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-        reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-        in-reply-to:content-disposition:content-type:content-type
-        :mime-version:references:message-id:subject:subject:from:from
-        :date:date:received:received; s=postout; t=1617716585; bh=ikAJti
-        260zdCu2Gt9KwSWN6eiJFnkVr4V7OdjBqRH5w=; b=mO0CzYZs/ZH4a8NOhbKD6+
-        U+EDIYAm9uxwrIdWzxlseg7WtosA71IsgvxXopbeU1FJ4hBADIO0gffQK81ia0ll
-        vVBwOBSdo8r8T3BocUaNW+36kyqQI6AqGi2+OUf7Sgme1liF4Yb5g1UosP7AwqB1
-        4nzeeAfkPkz1XDm6tmn6w7O5+NeVhWyWnftE1V2EmGpD47MUNjYhQqHmsiGlE2Gn
-        9E7ojZZX5FiMGqm5mf1xGZepyGcSIsyfhZ1NZK4Xgk2ri/HEeBP8nX5Znbus/QKO
-        4R4LQY+Y2J70/2Eafxx5ljKvR9Y8fUvjX7xaNJei4vuvbVOqMIVCHFvKUu4Jp90Q
-        ==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: -2.876
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.876 tagged_above=-999 required=5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
-        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
-        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
-        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
-        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
-        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
-        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
-        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
-        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
-        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
-        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
-        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
-        LRZ_URL_HTTP_SINGLE=0.001, LRZ_URL_PLAIN_SINGLE=0.001]
-        autolearn=no autolearn_force=no
-Received: from postout1.mail.lrz.de ([127.0.0.1])
-        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id X9kbhbGegS1i; Tue,  6 Apr 2021 15:43:05 +0200 (CEST)
-Received: from endor.yaviniv (unknown [IPv6:2001:4ca0:0:f294:bce0:50e2:fadb:742a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4FF7yJ3kXczyRq;
-        Tue,  6 Apr 2021 15:43:04 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 15:43:01 +0200
-From:   Andrei Rabusov <a.rabusov@tum.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/126] 5.10.28-rc1 review
-Message-ID: <YGxlZfRR6hS/Kfco@endor.yaviniv>
-References: <20210405085031.040238881@linuxfoundation.org>
+        Tue, 6 Apr 2021 09:43:34 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEF4C06174A;
+        Tue,  6 Apr 2021 06:43:26 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id w10so4898267pgh.5;
+        Tue, 06 Apr 2021 06:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jSs0GImijstRdBi/hnd8BpYG0s2XqMpukkAAlW6Mojo=;
+        b=opLce27cL+3ZlmbaKha0CMsQyLnq5SwVfZwLI7r7Mi8H0hvPw8fUyx+eCwBVIBuhdR
+         nFTnEcxKkIXEiwTCr/1/H3p9juxLV7FZKjlA4EzKa8l4c6mSeUoH/2xky4vO9+4oeolP
+         8s+I8xFM5+joUQqZLBO6Hvb4MRwcFaOxYSrWrLQ56lMDET7muIu02FrqZ0mwzuKzmdEA
+         at41fKHrLEHDlJrdveavN8LMfzUD4C3kfTKKcSBCbtixhf5LI/XcvGKPN4BzdB6JiHit
+         aKmj/m7VzAN2ijPHlM0rRjF2k6s6Lutc8lhV46zlTxaNuQq/5BnhMnQKzTuMZJ4PGT5W
+         9dpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jSs0GImijstRdBi/hnd8BpYG0s2XqMpukkAAlW6Mojo=;
+        b=fiU+it4hBZmKtGH9TK6xlzZpPZDdbrWDDhVTgWdPbTjRaV0nCpd6LoGvzhjUDtpJGg
+         jeUapoO2zDvLil+k4yXOsGnXbHB8F+nEQ2zGnHd09J47xYxb72ezK8ZPS3fpOpm3qq6c
+         pMhN8vEc5hW+fd8DY8aRUvYC6/cTE42h9jcKWGdL0dteUyESGFb4oLxlME7a3Tn/1NUU
+         4i5J7zaI0yN+cuqOZXE+dkUf7l9QzqqdLcwzczR9EfB78QUX99us6Pwc4A/zAtIJK19o
+         uAYm1OVHagAYSEZpWOgSzZE+MqJQ8/hfZhlz9fKtrH+phjSqlTwM3IL0QgFM+GxTDGPf
+         kXsQ==
+X-Gm-Message-State: AOAM531sbrJa51zm3L7ZVlIp2mr8Y0xhrapLoUAZLBlmRC+VxQoO5hQX
+        qK8ZxYHQeUSF5LFSWHRuYX8=
+X-Google-Smtp-Source: ABdhPJw4eZiisfrOoYDIWxTG5w9zSLLx4Ne+quT5NeHqLNvnTTR79P3ttNpkO/OU0fJ026VzH/i6WA==
+X-Received: by 2002:a63:4d0:: with SMTP id 199mr27823666pge.304.1617716606266;
+        Tue, 06 Apr 2021 06:43:26 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id g15sm2294162pjd.2.2021.04.06.06.43.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 06:43:25 -0700 (PDT)
+Subject: Re: [PATCH v2 4/6] soc: mediatek: devapc: rename variable for new IC
+ support
+To:     Nina Wu <nina-cm.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Jackson-kt.Chang@mediatek.com
+References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+ <1617259087-5502-4-git-send-email-nina-cm.wu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <a76686d1-3544-fcb9-4c3e-1498ec29ff47@gmail.com>
+Date:   Tue, 6 Apr 2021 15:43:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <1617259087-5502-4-git-send-email-nina-cm.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 10:52:42AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.28 release.
-> There are 126 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.28-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Regarding the commit subject:
+"soc: mediatek: devapc: rename variable for new IC support"
+maybe something like:
+"soc: mediatek: devapc: rename register variable infra_base"
 
-Fine with mine i686 gcc 10.2
-No selftest regressions were found
-Selftest results [ok/not ok]: [1436/80]
+Other then that looks good to me.
 
-Tested-by: Andrei Rabusov <a.rabusov@tum.de>
-
-P.S.
-Sorry, as always I forgot to do reply-all instead of just reply
+On 01/04/2021 08:38, Nina Wu wrote:
+> From: Nina Wu <Nina-CM.Wu@mediatek.com>
+> 
+> For new ICs, there are multiple devapc HWs for different subsys.
+> For example, there is devapc respectively for infra, peri, peri2, etc.
+> So we rename the variable 'infra_base' to 'base' for code readability.
+> 
+> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+> ---
+>  drivers/soc/mediatek/mtk-devapc.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
+> index 68c3e35..bcf6e3c 100644
+> --- a/drivers/soc/mediatek/mtk-devapc.c
+> +++ b/drivers/soc/mediatek/mtk-devapc.c
+> @@ -45,7 +45,7 @@ struct mtk_devapc_data {
+>  
+>  struct mtk_devapc_context {
+>  	struct device *dev;
+> -	void __iomem *infra_base;
+> +	void __iomem *base;
+>  	u32 vio_idx_num;
+>  	struct clk *infra_clk;
+>  	const struct mtk_devapc_data *data;
+> @@ -56,7 +56,7 @@ static void clear_vio_status(struct mtk_devapc_context *ctx)
+>  	void __iomem *reg;
+>  	int i;
+>  
+> -	reg = ctx->infra_base + ctx->data->vio_sta_offset;
+> +	reg = ctx->base + ctx->data->vio_sta_offset;
+>  
+>  	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->vio_idx_num - 1); i++)
+>  		writel(GENMASK(31, 0), reg + 4 * i);
+> @@ -71,7 +71,7 @@ static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
+>  	u32 val;
+>  	int i;
+>  
+> -	reg = ctx->infra_base + ctx->data->vio_mask_offset;
+> +	reg = ctx->base + ctx->data->vio_mask_offset;
+>  
+>  	if (mask)
+>  		val = GENMASK(31, 0);
+> @@ -113,11 +113,11 @@ static int devapc_sync_vio_dbg(struct mtk_devapc_context *ctx)
+>  	int ret;
+>  	u32 val;
+>  
+> -	pd_vio_shift_sta_reg = ctx->infra_base +
+> +	pd_vio_shift_sta_reg = ctx->base +
+>  			       ctx->data->vio_shift_sta_offset;
+> -	pd_vio_shift_sel_reg = ctx->infra_base +
+> +	pd_vio_shift_sel_reg = ctx->base +
+>  			       ctx->data->vio_shift_sel_offset;
+> -	pd_vio_shift_con_reg = ctx->infra_base +
+> +	pd_vio_shift_con_reg = ctx->base +
+>  			       ctx->data->vio_shift_con_offset;
+>  
+>  	/* Find the minimum shift group which has violation */
+> @@ -159,8 +159,8 @@ static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
+>  	void __iomem *vio_dbg0_reg;
+>  	void __iomem *vio_dbg1_reg;
+>  
+> -	vio_dbg0_reg = ctx->infra_base + ctx->data->vio_dbg0_offset;
+> -	vio_dbg1_reg = ctx->infra_base + ctx->data->vio_dbg1_offset;
+> +	vio_dbg0_reg = ctx->base + ctx->data->vio_dbg0_offset;
+> +	vio_dbg1_reg = ctx->base + ctx->data->vio_dbg1_offset;
+>  
+>  	vio_dbgs.vio_dbg0 = readl(vio_dbg0_reg);
+>  	vio_dbgs.vio_dbg1 = readl(vio_dbg1_reg);
+> @@ -198,7 +198,7 @@ static irqreturn_t devapc_violation_irq(int irq_number, void *data)
+>   */
+>  static void start_devapc(struct mtk_devapc_context *ctx)
+>  {
+> -	writel(BIT(31), ctx->infra_base + ctx->data->apc_con_offset);
+> +	writel(BIT(31), ctx->base + ctx->data->apc_con_offset);
+>  
+>  	mask_module_irq(ctx, false);
+>  }
+> @@ -210,7 +210,7 @@ static void stop_devapc(struct mtk_devapc_context *ctx)
+>  {
+>  	mask_module_irq(ctx, true);
+>  
+> -	writel(BIT(2), ctx->infra_base + ctx->data->apc_con_offset);
+> +	writel(BIT(2), ctx->base + ctx->data->apc_con_offset);
+>  }
+>  
+>  static const struct mtk_devapc_data devapc_mt6779 = {
+> @@ -249,8 +249,8 @@ static int mtk_devapc_probe(struct platform_device *pdev)
+>  	ctx->data = of_device_get_match_data(&pdev->dev);
+>  	ctx->dev = &pdev->dev;
+>  
+> -	ctx->infra_base = of_iomap(node, 0);
+> -	if (!ctx->infra_base)
+> +	ctx->base = of_iomap(node, 0);
+> +	if (!ctx->base)
+>  		return -EINVAL;
+>  
+>  	if (of_property_read_u32(node, "vio_idx_num", &ctx->vio_idx_num))
+> 
