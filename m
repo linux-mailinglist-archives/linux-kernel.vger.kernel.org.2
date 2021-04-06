@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3E6355324
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08463355322
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343699AbhDFMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:07:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15495 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343692AbhDFMHC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:07:02 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF5mp4S8Zzrd7S;
-        Tue,  6 Apr 2021 20:04:42 +0800 (CST)
-Received: from mdc.localdomain (10.175.104.57) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 20:06:42 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <huangguobin4@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] PCI: Use DEFINE_SPINLOCK() for spinlock
-Date:   Tue, 6 Apr 2021 20:06:37 +0800
-Message-ID: <1617710797-48903-1-git-send-email-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S1343696AbhDFMHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:07:01 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:41686 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232861AbhDFMG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:06:59 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1lTkTj-0002Tk-UG; Tue, 06 Apr 2021 14:06:43 +0200
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
+ <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
+ <87r1jnohq6.fsf@codeaurora.org>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+Message-ID: <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
+Date:   Tue, 6 Apr 2021 14:06:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+In-Reply-To: <87r1jnohq6.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guobin Huang <huangguobin4@huawei.com>
+On 06.04.2021 12:00, Kalle Valo wrote:
+> "Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
+> 
+>> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
+>>> Hi,
+>>>
+>>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
+>>> since the driver does not update its beacon to account for TIM changes,
+>>> so a station that is sleeping will never learn that it has packets
+>>> buffered at the AP.
+>>>
+>>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
+>>> callback, nor does it explicitly update beacon data periodically, so it
+>>> has no way to learn that it had changed.
+>>>
+>>> This results in the AP mode being virtually unusable with STAs that do
+>>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
+>>> etc.).
+>>>
+>>> I think the easiest fix here would be to implement set_tim() for example
+>>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
+>>> the beacon data on the device.
+>>
+>> Are there any plans to fix this?
+>> The driver is listed as maintained by Ping-Ke.
+> 
+> Yeah, power save is hard and I'm not surprised that there are drivers
+> with broken power save mode support. If there's no fix available we
+> should stop supporting AP mode in the driver.
+> 
 
-spinlock can be initialized automatically with DEFINE_SPINLOCK()
-rather than explicitly calling spin_lock_init().
+https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/api
+clearly documents that "For AP mode, it must (...) react to the set_tim()
+callback or fetch each beacon from mac80211".
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
----
- drivers/pci/hotplug/cpqphp_nvram.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+The driver isn't doing either so no wonder the beacon it is sending
+isn't getting updated.
 
-diff --git a/drivers/pci/hotplug/cpqphp_nvram.c b/drivers/pci/hotplug/cpqphp_nvram.c
-index 00cd2b43364f..7a65d427ac11 100644
---- a/drivers/pci/hotplug/cpqphp_nvram.c
-+++ b/drivers/pci/hotplug/cpqphp_nvram.c
-@@ -80,7 +80,7 @@ static u8 evbuffer[1024];
- static void __iomem *compaq_int15_entry_point;
- 
- /* lock for ordering int15_bios_call() */
--static spinlock_t int15_lock;
-+static DEFINE_SPINLOCK(int15_lock);
- 
- 
- /* This is a series of function that deals with
-@@ -415,9 +415,6 @@ void compaq_nvram_init(void __iomem *rom_start)
- 		compaq_int15_entry_point = (rom_start + ROM_INT15_PHY_ADDR - ROM_PHY_ADDR);
- 
- 	dbg("int15 entry  = %p\n", compaq_int15_entry_point);
--
--	/* initialize our int15 lock */
--	spin_lock_init(&int15_lock);
- }
- 
- 
+As I have said above, it seems to me that all that needs to be done here
+is to queue a work in a set_tim() callback, then call
+send_beacon_frame() from rtlwifi/core.c from this work.
 
+But I don't know the exact device semantics, maybe it needs some other
+notification that the beacon has changed, too, or even tries to
+manage the TIM bitmap by itself.
+
+It would be a shame to lose the AP mode for such minor thing, though.
+
+I would play with this myself, but unfortunately I don't have time
+to work on this right now.
+
+That's where my question to Realtek comes: are there plans to actually
+fix this?
+
+Maciej
