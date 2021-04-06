@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA468355A2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52F1355A33
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244542AbhDFRVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:21:51 -0400
-Received: from smtprelay0183.hostedemail.com ([216.40.44.183]:53336 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233676AbhDFRVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:21:50 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C3182180428ED;
-        Tue,  6 Apr 2021 17:21:41 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 601A2C4182;
-        Tue,  6 Apr 2021 17:21:40 +0000 (UTC)
-Message-ID: <7d7be8bcc0e80d826083890ed7791070ad25e603.camel@perches.com>
-Subject: Re: [PATCH] staging: greybus: Match parentheses alignment
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     johan@kernel.org, elder@kernel.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Date:   Tue, 06 Apr 2021 10:21:38 -0700
-In-Reply-To: <YGxhrLZPIPjILWUH@kroah.com>
-References: <20210406124259.GA96537@zhans> <YGxhrLZPIPjILWUH@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1346852AbhDFRWS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 13:22:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:29859 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233676AbhDFRWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:22:17 -0400
+IronPort-SDR: b9JvhyY60nU91zlsaL51Oh7f2wxZjb/aLvG9zZ/oikt8wbrv+B6YpOqOze610i9+X9W7BZUw1E
+ vv9kg7hFz8qQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="189911506"
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="189911506"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 10:22:09 -0700
+IronPort-SDR: 60qCf+vkBQ0uu7Ll0cvSt+RQvqIwZ7ph+BZE/9nswI81XdmB0Bj74dtbXyU7M/RHWfEopZAPWg
+ fJG61m5Alggw==
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="448685775"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.212.227.101])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 10:22:08 -0700
+Date:   Tue, 6 Apr 2021 10:22:07 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
+        zhangshaokun@hisilicon.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to
+ houskeeping CPUs
+Message-ID: <20210406102207.0000485c@intel.com>
+In-Reply-To: <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
+References: <20200625223443.2684-1-nitesh@redhat.com>
+        <20200625223443.2684-2-nitesh@redhat.com>
+        <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+        <20210127121939.GA54725@fuller.cnet>
+        <87r1m5can2.fsf@nanos.tec.linutronix.de>
+        <20210128165903.GB38339@fuller.cnet>
+        <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+        <20210204181546.GA30113@fuller.cnet>
+        <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
+        <20210204190647.GA32868@fuller.cnet>
+        <d8884413-84b4-b204-85c5-810342807d21@redhat.com>
+        <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+        <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com>
+        <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com>
+        <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 601A2C4182
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: c6sadr7ectuaniqta9h19aj9ajc7unsy
-X-Rspamd-Server: rspamout04
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+jIsA223eKF3R6VcYnwZUQdsfBWilGY3I=
-X-HE-Tag: 1617729700-769365
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-04-06 at 15:27 +0200, Greg KH wrote:
-> On Tue, Apr 06, 2021 at 06:42:59PM +0600, Zhansaya Bagdauletkyzy wrote:
-> > Match next line with open parentheses by adding tabs/spaces
-> > to conform with Linux kernel coding style.
-> > Reported by checkpatch.
-[]
-> > diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-[]
-> > @@ -378,8 +378,8 @@ struct ap_csi_config_request {
-> >  #define GB_CAMERA_CSI_CLK_FREQ_MARGIN		150000000U
-> >  
-> > 
-> >  static int gb_camera_setup_data_connection(struct gb_camera *gcam,
-> > -		struct gb_camera_configure_streams_response *resp,
-> > -		struct gb_camera_csi_params *csi_params)
-> > +					   struct gb_camera_configure_streams_response *resp,
-> > +					   struct gb_camera_csi_params *csi_params)
+Continuing a thread from a bit ago...
+
+Nitesh Narayan Lal wrote:
+
+> > After a little more digging, I found out why cpumask_local_spread change
+> > affects the general/initial smp_affinity for certain device IRQs.
+> >
+> > After the introduction of the commit:
+> >
+> >     e2e64a932 genirq: Set initial affinity in irq_set_affinity_hint()
+> >
 > 
-> And now you violate another coding style requirement, which means
-> someone will send another patch to fix that up and around and around it
-> goes...
+> Continuing the conversation about the above commit and adding Jesse.
+> I was trying to understand the problem that the commit message explains
+> "The default behavior of the kernel is somewhat undesirable as all
+> requested interrupts end up on CPU0 after registration.", I have also been
+> trying to reproduce this behavior without the patch but I failed in doing
+> so, maybe because I am missing something here.
+> 
+> @Jesse Can you please explain? FWIU IRQ affinity should be decided based on
+> the default affinity mask.
 
-None of the coding style document is an actual requirement Greg.
-It's all rules of thumb.  Useful rules, but not hard and fast right?
+The original issue as seen, was that if you rmmod/insmod a driver
+*without* irqbalance running, the default irq mask is -1, which means
+any CPU. The older kernels (this issue was patched in 2014) used to use
+that affinity mask, but the value programmed into all the interrupt
+registers "actual affinity" would end up delivering all interrupts to
+CPU0, and if the machine was under traffic load incoming when the
+driver loaded, CPU0 would start to poll among all the different netdev
+queues, all on CPU0.
 
-To me, the biggest issue with this code isn't whether or not the
-code is aligned at open parentheses or stays within 80 columns,
-but is the use of 30+ character length identifiers.
+The above then leads to the condition that the device is stuck polling
+even if the affinity gets updated from user space, and the polling will
+continue until traffic stops.
 
-Using identifiers of that length makes using 80 column, or even
-100 column length lines infeasible.
+> The problem with the commit is that when we overwrite the affinity mask
+> based on the hinting mask we completely ignore the default SMP affinity
+> mask. If we do want to overwrite the affinity based on the hint mask we
+> should atleast consider the default SMP affinity.
 
-Perhaps seeing if include/linux/greybus/greybus_protocols.h
-could be updated to use shorter length identifiers might be useful.
-
-The median length identifier there is ~25 chars long and the
-maximum length identifier is ~50 chars.
-
-
-
+Maybe the right thing is to fix which CPUs are passed in as the valid
+mask, or make sure the kernel cross checks that what the driver asks
+for is a "valid CPU"?
