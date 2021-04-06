@@ -2,106 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEA4355A28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A613355A2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346870AbhDFRSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244467AbhDFRSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:18:32 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FCEC0613D8
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:18:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id n13so21049742ybp.14
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=AHeQvzzn66sWUva8JNr2h2SQ2HWMOsEyIwLZ7XmPEdo=;
-        b=YETEvBs8rD6Dmh61b2NAoq1qfFjNVFIq9fVXm2Hfc5cx+aUOTDP/FcUFAxayIKqf13
-         76ibDd1lermChzptEwnAh/LQFrI6N+rwx4ekcOYdM2+Z5E2HyrMbqjPt2QWJGrqSCpE1
-         aX7zbi49N9k2lIIYMvOyGdmbnC8vauunxwf2vjAJ329IUqz3T8oOJ5xmxfEzwACtl+ij
-         pkXLJ0sUz+pRFqFtsUUhzfevKLaT7ykOAvPzO2Ec2UlkMqxXTlUD3NHSNfIoMIiytR/c
-         wnHjO5UFSIi7aQr7WC7sKfdfeUQDyr2f2olexN1i2NdAE2qEuEDe7gFCC+lng7k/7+zW
-         JG5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=AHeQvzzn66sWUva8JNr2h2SQ2HWMOsEyIwLZ7XmPEdo=;
-        b=ozoOjr93sUnz+uxzLyTk17jitHbm0AUYrgYkhx3zQtmK+guiGrCvtuygxhHZHrdhKR
-         Zm5UrXgstaRfwG93yORCpbJjaOxWx9hLDi/dnmHzooUJDRqXyIFqLfGXUZoRs4kbyOlE
-         7DBHegE9mWvcK2Nxpvbc5v0hWjuUmYZt14n0EENENWpb8XG0uoeWXJTp/c0XK5cwy5wi
-         tvN3RqznQVw9YJqup5PsuYmyqFeH0nhypTpXF8eve1K5JneshGz9VPnVc20uFJRXNxnq
-         IuatDeygRNRAlLvlir+7Q6FvKc67ybpm/sXaIiz8kNsP2EMslkRSUQ30vUjnVsmIPrQf
-         lCxA==
-X-Gm-Message-State: AOAM532mC6oOJkly+mFv1h5mtcMl8ykzfH2o8xcZCW6cGGMvM6UZTdqQ
-        eQmnK2ZohrG2ce0gw+1Ok7BcZyoZ2QU=
-X-Google-Smtp-Source: ABdhPJxbslvhhYvMOQ089wkXN1xaK5LEt/wkL5quSTis4uoo6YzzSrWcVv5TAYj4iW+o/zFSjf5u02tfKoU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:24a1:90fb:182b:777c])
- (user=seanjc job=sendgmr) by 2002:a25:bad0:: with SMTP id a16mr44857414ybk.441.1617729503442;
- Tue, 06 Apr 2021 10:18:23 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  6 Apr 2021 10:18:11 -0700
-In-Reply-To: <20210406171811.4043363-1-seanjc@google.com>
-Message-Id: <20210406171811.4043363-5-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210406171811.4043363-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH 4/4] KVM: SVM: Enhance and clean up the vmcb tracking comment
- in pre_svm_run()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Cathy Avery <cavery@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S244491AbhDFRUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:20:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:46126 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234885AbhDFRUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:20:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6118B1063;
+        Tue,  6 Apr 2021 10:20:00 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F4023F792;
+        Tue,  6 Apr 2021 10:19:58 -0700 (PDT)
+Subject: Re: [PATCH v2 00/24] x86/resctrl: Merge the CDP resources
+To:     Babu Moger <babu.moger@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20210312175849.8327-1-james.morse@arm.com>
+ <7a6cd831-4a3e-9f2b-b403-9a4d5e1b719d@amd.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <451ec473-8dfa-d2ac-40ef-a4f9bdc23ddc@arm.com>
+Date:   Tue, 6 Apr 2021 18:19:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <7a6cd831-4a3e-9f2b-b403-9a4d5e1b719d@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly document why a vmcb must be marked dirty and assigned a new
-asid when it will be run on a different cpu.  The "what" is relatively
-obvious, whereas the "why" requires reading the APM and/or KVM code.
+Hi Babu,
 
-Opportunistically remove a spurious period and several unnecessary
-newlines in the comment.
+On 30/03/2021 21:36, Babu Moger wrote:
+> On 3/12/21 11:58 AM, James Morse wrote:
+>> This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+>> behaviour is all contained in the filesystem parts, with a minimum amount
+>> of arch specific code.
+>>
+>> Arm have some CPU support for dividing caches into portions, and
+>> applying bandwidth limits at various points in the SoC. The collective term
+>> for these features is MPAM: Memory Partitioning and Monitoring.
+>>
+>> MPAM is similar enough to Intel RDT, that it should use the defacto linux
+>> interface: resctrl. This filesystem currently lives under arch/x86, and is
+>> tightly coupled to the architecture.
+>> Ultimately, my plan is to split the existing resctrl code up to have an
+>> arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
+>> MPAM can be wired up.
+>>
+>> x86 might have two resources with cache controls, (L2 and L3) but has
+>> extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
+>> if CDP is enabled for the corresponding cache.
+>>
+>> MPAM has an equivalent feature to CDP, but its a property of the CPU,
+>> not the cache. Resctrl needs to have x86's odd/even behaviour, as that
+>> its the ABI, but this isn't how the MPAM hardware works. It is entirely
+>> possible that an in-kernel user of MPAM would not be using CDP, whereas
+>> resctrl is.
+>> Pretending L3CODE and L3DATA are entirely separate resources is a neat
+>> trick, but doing this is specific to x86.
+>> Doing this leaves the arch code in control of various parts of the
+>> filesystem ABI: the resources names, and the way the schemata are parsed.
+>> Allowing this stuff to vary between architectures is bad for user space.
+>>
+>> This series collapses the CODE/DATA resources, moving all the user-visible
+>> resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+>> configuration being applied to a cache. This is done by adding a
+>> struct resctrl_schema to the parts of resctrl that will move to fs. This
+>> holds the arch-code resource that is in use for this schema, along with
+>> other properties like the name, and whether the configuration being applied
+>> is CODE/DATA/BOTH.
 
-No functional change intended.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> I applied your patches on my AMD box.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index f62c56adf7c9..afc275ba5d59 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3336,11 +3336,10 @@ static void pre_svm_run(struct kvm_vcpu *vcpu)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
- 	/*
--	 * If the previous vmrun of the vmcb occurred on
--	 * a different physical cpu then we must mark the vmcb dirty.
--	 * and assign a new asid.
--	*/
--
-+	 * If the previous vmrun of the vmcb occurred on a different physical
-+	 * cpu, then mark the vmcb dirty and assign a new asid.  Hardware's
-+	 * vmcb clean bits are per logical CPU, as are KVM's asid assignments.
-+	 */
- 	if (unlikely(svm->current_vmcb->cpu != vcpu->cpu)) {
- 		svm->current_vmcb->asid_generation = 0;
- 		vmcb_mark_all_dirty(svm->vmcb);
--- 
-2.31.0.208.g409f899ff0-goog
+Great! Thanks for taking a look,
 
+
+> Seeing some difference in the behavior.
+
+Ooer,
+
+
+> Before these patches.
+> 
+> # dmesg |grep -i resctrl
+> [   13.076973] resctrl: L3 allocation detected
+> [   13.087835] resctrl: L3DATA allocation detected
+> [   13.092886] resctrl: L3CODE allocation detected
+> [   13.097936] resctrl: MB allocation detected
+> [   13.102599] resctrl: L3 monitoring detected
+> 
+> 
+> After the patches.
+> 
+> # dmesg |grep -i resctrl
+> [   13.076973] resctrl: L3 allocation detected
+> [   13.097936] resctrl: MB allocation detected
+> [   13.102599] resctrl: L3 monitoring detected
+> 
+> You can see that L3DATA and L3CODE disappeared. I think we should keep the
+> behavior same for x86(at least).
+
+This is the kernel log ... what user-space software is parsing that for an expected value?
+What happens if the resctrl strings have been overwritten by more kernel log?
+
+I don't think user-space should be relying on this. I'd argue any user-space doing this is
+already broken. Is it just the kernel selftest's filter_dmesg()? It doesn't seem to do
+anything useful
+
+Whether resctrl is support can be read from /proc/filesystems. CDP is probably a
+try-it-and-see. User-space could parse /proc/cpuinfo, but its probably not a good idea.
+
+
+Its easy to fix, but it seems odd that the kernel has to print things for user-space to
+try and parse. (I'd like to point at the user-space software that depends on this)
+
+
+> I am still not clear why we needed resctrl_conf_type
+> 
+> enum resctrl_conf_type {
+>         CDP_BOTH,
+>         CDP_CODE,
+>         CDP_DATA,
+> };
+> 
+> Right now, I see all the resources are initialized as CDP_BOTH.
+> 
+>  [RDT_RESOURCE_L3] =
+>         {
+>                 .conf_type                      = CDP_BOTH,
+>  [RDT_RESOURCE_L2] =
+>         {
+>                 .conf_type                      = CDP_BOTH,
+>  [RDT_RESOURCE_MBA] =
+>         {
+>                 .conf_type                      = CDP_BOTH,
+
+Ah, those should have been removed in patch 24. Once all the resources are the same, the
+resource doesn't need to describe what kind it is.
+
+
+> If all the resources are CDP_BOTH, then why we need separate CDP_CODE and
+> CDP_DATA?
+
+The filesystem code for resctrl that will eventually move out of arch/x86 needs to be able
+to describe the type of configuration change being made back to the arch code. The enum
+gets used for that.
+
+x86 needs this as it affects which MSRs the configuration value is written to.
+
+
+> Are these going to be different for ARM?
+
+Nope. Arm's MPAM ends up emulating CDP with the closid values that get applied to
+transactions.
+
+
+> Also initializing RDT_RESOURCE_MBA as CDP_BOTH does not seem right. I dont
+> think there will CDP support in MBA in future.
+
+Its not code or data, which makes it both. 'BOTH' is more of a 'do nothing special', there
+may be a better name, but I'm not very good at naming things. (any suggestions?)
+
+
+Thanks,
+
+James
