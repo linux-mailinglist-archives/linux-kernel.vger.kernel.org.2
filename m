@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CD6354D84
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B160C354D87
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhDFHNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:13:12 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:40808 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238014AbhDFHNH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:13:07 -0400
-Received: by mail-lf1-f50.google.com with SMTP id d13so21099960lfg.7;
-        Tue, 06 Apr 2021 00:12:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lanXWWkCnnUsQptzren1s2UcTiYH4GtjBPSv5+mLE5s=;
-        b=TC9BCxAxIqggVrxgRcOZjU0o3AYUDAS2akWNZHAJ6IOMb8FG/3PUS0iN/41BCM5LBM
-         tMrnH0L1XnWrEhDEjA950nPkQSuSwEkGdJ3YD2VcdpAUyLHfRdvfo8COXxx+Xb4zh5T3
-         mecuhYh8jk0bQjqzdvp73oTGFevW4twEfucsvi8qREalvFmlbS0SxQmiHFWghAr7iv9n
-         XG6BymaOIgluekmqUpsCzrK+uRK++bQlOruudJbVcSSK8qNXXZacWYkDgbiBEM8l65wM
-         iGlYqBj7mqMerIJ31oroUWR2WivLTYCiPNCV80wJqp7aBRHCiUsTyeOUASMwHYn+H9WB
-         lEqg==
-X-Gm-Message-State: AOAM533PxvAJ3foUw6qBFa3Kv8fTlaA79zdfpn9/q9HKa/ItWFwj8U5x
-        YyL85MpYYf/q+h5VWo9FxB8=
-X-Google-Smtp-Source: ABdhPJwkKor2U8v1XGz/n6/xsTsBut0qMKA0iIYDFnogjWQRbZ2EHNs/OCQWcRPaxknc90/L2QQitA==
-X-Received: by 2002:a05:6512:1102:: with SMTP id l2mr19916621lfg.501.1617693178101;
-        Tue, 06 Apr 2021 00:12:58 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id u9sm2093291ljd.130.2021.04.06.00.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 00:12:57 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 10:12:51 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v4 2/7] regulator: add warning flags
-Message-ID: <250150928643e2cd4b4fa39d08f6596cd2829c1b.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+        id S244145AbhDFHNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238014AbhDFHNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 03:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C20601FF;
+        Tue,  6 Apr 2021 07:13:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617693188;
+        bh=+ROOemzsL6HXsZmP2A3hvzMlxx6Hg/qSe+z95RovJrE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dGIH4E+/yxdmOTsrr3g4opHziIW4u1+TkjbuGcE4E+xz7Pmoqa0E9G46vlIAIiY6Y
+         upsWtt12hPD4zpPsXJoJBoCGf9Pra6q0AFXksKI767Fzno5NiebBBL8agKY+SkufQU
+         KgWPDjZpBIcwvEQbUl2xSUdRnprmS5pyAdn+kRuQ=
+Date:   Tue, 6 Apr 2021 09:13:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
+Message-ID: <YGwKAOmlHRgEVh20@kroah.com>
+References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
+ <YEIetFdcuYZU98s/@kroah.com>
+ <20210305124252.c3ffgca6wjqpkn45@earth.universe>
+ <20210405214446.zhidvtvahcfp4wxa@earth.universe>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210405214446.zhidvtvahcfp4wxa@earth.universe>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'warning' level events and error flags to regulator core.
-Current regulator core notifications are used to inform consumers
-about errors where HW is misbehaving in such way it is assumed to
-be broken/unrecoverable.
+On Mon, Apr 05, 2021 at 11:44:46PM +0200, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Fri, Mar 05, 2021 at 01:42:52PM +0100, Sebastian Reichel wrote:
+> > On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
+> > > On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
+> > > > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+> > > > 
+> > > > In order to optimize serial communication (performance/throughput VS
+> > > > latency), we may need to tweak DMA period number and size. This adds
+> > > > sysfs attributes to configure those values before initialising DMA.
+> > > > The defaults will stay the same as before (16 buffers with a size of
+> > > > 1024 bytes). Afterwards the values can be read/write with the
+> > > > following sysfs files:
+> > > > 
+> > > > /sys/class/tty/ttymxc*/dma_buffer_size
+> > > > /sys/class/tty/ttymxc*/dma_buffer_count
+> > > 
+> > > Ick no.  Custom sysfs attributes for things like serial ports are crazy.
+> > > 
+> > > > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
+> > > > which has multiple microcontrollers connected via UART controlling. One
+> > > > of the UARTs is connected to an on-board microcontroller at 19200 baud,
+> > > > which constantly pushes critical data (so aging character detect
+> > > > interrupt will never trigger). This data must be processed at 50-200 Hz,
+> > > > so UART should return data in less than 5-20ms. With 1024 byte DMA
+> > > > buffer (and a constant data stream) the read operation instead needs
+> > > > 1024 byte / 19200 baud = 53.333ms, which is way too long (note: Worst
+> > > > Case would be remote processor sending data with short pauses <= 7
+> > > > characters, which would further increase this number). The current
+> > > > downstream kernel instead configures 24 bytes resulting in 1.25ms,
+> > > > but that is obviously not sensible for normal UART use cases and cannot
+> > > > be used as new default.
+> > > 
+> > > Why can't this be a device tree attribute? Why does this have to be a
+> > > sysfs thing that no one will know how to tune and set over time.  This
+> > > hardware should not force a user to manually tune it to get it to work
+> > > properly, this isn't the 1990's anymore :(
+> > > 
+> > > Please never force a user to choose stuff like this, they never will
+> > > know what to do.
+> > 
+> > This used to be a DT attribute in PATCHv1. It has been moved over to
+> > sysfs since PATCHv2, since it does not describe the hardware, but
+> > configuration. Unfortunately lore.kernel.org does not have the full
+> > thread, but this is the discussion:
+> > 
+> > https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@pengutronix.de/
+> > 
+> > From downstream POV this can be done either by adding a DT property
+> > to the UART node, or by adding a udev rule.
+> > 
+> > From my POV there is not a huge difference. In both cases we will
+> > be bound by an ABI afterwards, in both cases people will usually
+> > stick to the default value and in both cases people that do deviate
+> > from the default probably ran into problems and started to look
+> > for a solution.
+> 
+> ping? It's not very nice to get a rejected in cycles :(
 
-There are PMICs which are designed for system(s) that may have use
-for regulator indications sent before HW is damaged so that some
-board/consumer specific recovery-event can be performed while
-continuing most of the normal operations.
+I recommend working with the DT people here, as custom sysfs attributes
+for things like this that are really just describing the hardware is
+crazy.
 
-Add new WARNING level events and notifications to be used for
-that purpose.
+thanks,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-No changes since RFC-v2
-
- include/linux/regulator/consumer.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
-index 20e84a84fb77..f72ca73631be 100644
---- a/include/linux/regulator/consumer.h
-+++ b/include/linux/regulator/consumer.h
-@@ -119,6 +119,16 @@ struct regulator_dev;
- #define REGULATOR_EVENT_PRE_DISABLE		0x400
- #define REGULATOR_EVENT_ABORT_DISABLE		0x800
- #define REGULATOR_EVENT_ENABLE			0x1000
-+/*
-+ * Following notifications should be emitted only if detected condition
-+ * is such that the HW is likely to still be working but consumers should
-+ * take a recovery action to prevent problems esacalating into errors.
-+ */
-+#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
-+#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
-+#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
-+#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
-+#define REGULATOR_EVENT_WARN_MASK		0x1E000
- 
- /*
-  * Regulator errors that can be queried using regulator_get_error_flags
-@@ -138,6 +148,10 @@ struct regulator_dev;
- #define REGULATOR_ERROR_FAIL			BIT(4)
- #define REGULATOR_ERROR_OVER_TEMP		BIT(5)
- 
-+#define REGULATOR_ERROR_UNDER_VOLTAGE_WARN	BIT(6)
-+#define REGULATOR_ERROR_OVER_CURRENT_WARN	BIT(7)
-+#define REGULATOR_ERROR_OVER_VOLTAGE_WARN	BIT(8)
-+#define REGULATOR_ERROR_OVER_TEMP_WARN		BIT(9)
- 
- /**
-  * struct pre_voltage_change_data - Data sent with PRE_VOLTAGE_CHANGE event
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+greg k-h
