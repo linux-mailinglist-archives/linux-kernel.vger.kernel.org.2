@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2212E354EDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B541F354EDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244444AbhDFIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:44:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:38664 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244462AbhDFIoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:44:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 306C91FB;
-        Tue,  6 Apr 2021 01:44:04 -0700 (PDT)
-Received: from [10.57.24.162] (unknown [10.57.24.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E74D33F694;
-        Tue,  6 Apr 2021 01:44:02 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
- statistics from going stale
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210331163352.32416-1-lukasz.luba@arm.com>
- <20210331163352.32416-2-lukasz.luba@arm.com>
- <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <1f0710d5-cd78-dfff-1ce2-bba5f6e469b7@arm.com>
-Date:   Tue, 6 Apr 2021 09:44:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S244463AbhDFIo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:44:58 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:41320 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244417AbhDFIo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:44:57 -0400
+Received: from marcel-macbook.holtmann.net (p4ff9fed5.dip0.t-ipconnect.de [79.249.254.213])
+        by mail.holtmann.org (Postfix) with ESMTPSA id D6E8ECED1D;
+        Tue,  6 Apr 2021 10:52:30 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH 0/2] Bluetooth: Avoid centralized adv handle tracking for
+ extended features
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210405233305.92431-1-danielwinkler@google.com>
+Date:   Tue, 6 Apr 2021 10:44:48 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Transfer-Encoding: 7bit
+Message-Id: <EAE9ED84-E693-4821-A44D-059FE3CE8665@holtmann.org>
+References: <20210405233305.92431-1-danielwinkler@google.com>
+To:     Daniel Winkler <danielwinkler@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-
-On 4/2/21 4:54 PM, Daniel Lezcano wrote:
-> On 31/03/2021 18:33, Lukasz Luba wrote:
->> When the temperature is below the first activation trip point the cooling
->> devices are not checked, so they cannot maintain fresh statistics. It
->> leads into the situation, when temperature crosses first trip point, the
->> statistics are stale and show state for very long period.
+> This series addresses a race condition where an advertisement
+> registration can conflict with a software rotation advertisement
+> refresh. I found that this issue was only occurring with the new
+> extended MGMT advertising interface. A bad use of the
+> hdev->cur_adv_instance caused every new instance to be immediately sent
+> to the controller rather than queued for software rotation, opening a
+> path for the race to occur.
 > 
-> Can you elaborate the statistics you are referring to ?
+> This series improves the way new extended advertising hci callbacks
+> track the relevant adv handle, removing the need for the
+> cur_adv_instance use. In a separate patch, the incorrect usage of
+> cur_adv_instance is removed, to align the extended MGMT commands to the
+> original add_advertising usage. The series was tested on both extended
+> and non-extended bluetooth controllers to confirm that the race
+> condition is resolved, and that multi- and single-advertising automated
+> test scenarios are still successful.
 > 
-> I can understand the pid controller needs temperature but I don't
-> understand the statistics with the cooling device.
+> Thanks in advance,
+> Daniel
 > 
 > 
+> Daniel Winkler (2):
+>  Bluetooth: Use ext adv handle from requests in CCs
+>  Bluetooth: Do not set cur_adv_instance in adv param MGMT request
+> 
+> net/bluetooth/hci_event.c | 16 +++++++---------
+> net/bluetooth/mgmt.c      |  1 -
+> 2 files changed, 7 insertions(+), 10 deletions(-)
 
-The allocate_power() calls cooling_ops->get_requested_power(),
-which is for CPUs cpufreq_get_requested_power() function.
-In that cpufreq implementation for !SMP we still has the
-issue of stale statistics. Viresh, when he introduced the usage
-of sched_cpu_util(), he fixed that 'long non-meaningful period'
-of the broken statistics and it can be found since v5.12-rc1.
+both patches have been applied to bluetooth-next tree.
 
-The bug is still there for the !SMP. Look at the way how idle time
-is calculated in get_load() [1]. It relies on 'idle_time->timestamp'
-for calculating the period. But when this function is not called,
-the value can be very far away in time, e.g. a few seconds back,
-when the last allocate_power() was called.
+Regards
 
-The bug is there for both SMP and !SMP [2] for older kernels, which can
-be used in Android or ChromeOS. I've been considering to put this simple
-IPA fix also to some other kernels, because Viresh's change is more
-a 'feature' and does not cover both platforms.
-
-Regards,
-Lukasz
-
-[1] 
-https://elixir.bootlin.com/linux/v5.12-rc5/source/drivers/thermal/cpufreq_cooling.c#L156
-[2] 
-https://elixir.bootlin.com/linux/v5.11.11/source/drivers/thermal/cpufreq_cooling.c#L143
+Marcel
 
