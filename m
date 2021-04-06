@@ -2,96 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777E73555A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA37A3555B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344719AbhDFNsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:48:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40564 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232452AbhDFNse (ORCPT
+        id S1344740AbhDFNt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344723AbhDFNt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:48:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617716906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2RmbkeXOU9aY5FvEDwAnTFfcMebHKvlLbf8MXeM95+E=;
-        b=FgnTMkO9sBmU/SFuZhCXkaFigJHonIOpr86HUN0Qc7hmML8to/RvJ7IyT/icVBcsT7X57o
-        C+u7PWwqbvEkkVvFyMMwXr1TYYa9ERPtT3HJ0FTNwkeizjoYcqRXuwDD6EmzXM9DFRi7Pf
-        UfF1FP+2vr0Y+EDWnQPXojicgn2Cd/k=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-RhArkNM2PWaH1l96c7lJQA-1; Tue, 06 Apr 2021 09:48:24 -0400
-X-MC-Unique: RhArkNM2PWaH1l96c7lJQA-1
-Received: by mail-ej1-f71.google.com with SMTP id zn19so1589147ejb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 06:48:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2RmbkeXOU9aY5FvEDwAnTFfcMebHKvlLbf8MXeM95+E=;
-        b=dgURCbIOZWRcc8774wMpvjsNhraEwxg09itmn9eBh0J66+Smu7OSLFM+9PppOYQxyo
-         z6+86+3SmEYE0KmGAqJOiZmaU2YWMvGoZzXaDFf8S/pKiXqWqPkHW5tSFyzNv2yobJhp
-         cgNQAZaghjY7PXKDzXUMqnAQ+EPDEEU6GI/c+5GZhXpGdUuqSGh5r+jw9xQ4hAlWp+P3
-         w8uhlL7CeF+yjMB1aC6b6nvSqEoDHHIoaHGbvEvkA601kFr8lqRLMAuXV6vuzkNy7kyg
-         O2d7jU2hi+dnAhz1hnUui60+6H+NsYfA7QGrTqEIOaNGhS3AbB4677HaHClX/CsNzwz1
-         UY/A==
-X-Gm-Message-State: AOAM532sam1shk+jDoSrwPphZ0oveQUVr60WULZkQVJQKY8G6HZtCeVm
-        Imr573xs+j05pkO6AWp0tISXQrZn2utW+GKPJ9ajyGL6j5+HU8Q+27tQt+gUjMKvLMiWTZKr1UL
-        ZjoGck/RViBputlu05Gii/ADi
-X-Received: by 2002:a17:906:148a:: with SMTP id x10mr20569279ejc.92.1617716903331;
-        Tue, 06 Apr 2021 06:48:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwodgB9kK5b4z87BtIiR33ibNjlyam8ylzMccz0Z+CJKdKbenfAf1nuSBw+a99c181oTWZWzA==
-X-Received: by 2002:a17:906:148a:: with SMTP id x10mr20569256ejc.92.1617716903197;
-        Tue, 06 Apr 2021 06:48:23 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v8sm13853900edc.30.2021.04.06.06.48.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 06:48:22 -0700 (PDT)
-Subject: Re: [PATCH v11 00/13] Add AMD SEV guest live migration support
-To:     Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>
-Cc:     Ashish Kalra <Ashish.Kalra@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>,
-        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>
-References: <cover.1617302792.git.ashish.kalra@amd.com>
- <CAMkAt6oWF23YFiOGW_h+iyhjkaAp6uaMNjYKDXNxvNCWR=vyWw@mail.gmail.com>
- <CABayD+dDFMEBTzSxEax=wJLwg7-xQi2C5smPiOh=Ak6pi72ocw@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <00c9433e-99c9-4f7b-6944-4fb2136812d2@redhat.com>
-Date:   Tue, 6 Apr 2021 15:48:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 6 Apr 2021 09:49:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D55EC06174A;
+        Tue,  6 Apr 2021 06:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/0tyEUyGTkdIV/FVI1c6IIm5ijvOB5mIuhQU5x2R3uw=; b=oOcuFDU425YtZcSW2RxHA6vgNL
+        KFgmHgXjwCUZLpMnb0Fw4gmjuE19l4hYXWF4dUMJ1enUNR1J40G3NW3+zfCCV+EmtHpVUx2rUKspP
+        rg/q9DhO8zBROiLqszSUdU0zptIjzuLukpaMwjhkKPL3j0JXgTzQr1goqNcvJTeDUraSJ64CJA1I1
+        6Xqhc2W7wpwoLJvDoMDgVBCQvL8kP2ZqPs6TVFP+EP5bnXc6WSzqycBzMIXhg5fttqV4nWD24lU/a
+        ekPJ+T6gLDD4agBaFjnYkw1+5To7ndIwtDr87b/ZuUPwEyw/OOOyEt089xWe5lqXMj4TXy5lmUHB7
+        RjrS7IdQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTm4E-00Ct1q-3h; Tue, 06 Apr 2021 13:48:50 +0000
+Date:   Tue, 6 Apr 2021 14:48:30 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 15/27] mm/memcg: Add folio wrappers for various
+ functions
+Message-ID: <20210406134830.GN3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-16-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CABayD+dDFMEBTzSxEax=wJLwg7-xQi2C5smPiOh=Ak6pi72ocw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331184728.1188084-16-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/04/21 20:27, Steve Rutherford wrote:
-> On Mon, Apr 5, 2021 at 8:17 AM Peter Gonda <pgonda@google.com> wrote:
->>
->> Could this patch set include support for the SEND_CANCEL command?
->>
-> That's separate from this patchset. I sent up an implementation last week.
+On Wed, Mar 31, 2021 at 07:47:16PM +0100, Matthew Wilcox (Oracle) wrote:
+> Add new wrapper functions folio_memcg(), lock_folio_memcg(),
+> unlock_folio_memcg(), mem_cgroup_folio_lruvec() and
+> count_memcg_folio_event()
 
-And I was going to queue it today.
+Looks good,
 
-Paolo
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
