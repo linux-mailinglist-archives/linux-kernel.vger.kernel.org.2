@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB383559C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8533559C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346691AbhDFQ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:56:47 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2772 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244303AbhDFQ4q (ORCPT
+        id S244293AbhDFQ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:56:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46230 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232598AbhDFQ40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:56:46 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFD2j4tTVz6824f;
-        Wed,  7 Apr 2021 00:47:09 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 18:56:37 +0200
-Received: from [10.210.166.136] (10.210.166.136) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 17:56:35 +0100
-Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-2-git-send-email-john.garry@huawei.com>
- <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
- <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
- <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
- <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
- <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4914d134-5a63-f683-b14b-25ab71a57cd4@huawei.com>
-Date:   Tue, 6 Apr 2021 17:54:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 6 Apr 2021 12:56:26 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136Gtw5h047850;
+        Tue, 6 Apr 2021 11:55:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617728158;
+        bh=+9XjRgYfCOrNjdj1kkEqP/Q3v02FwLNYKDPldfbcuiI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=tjAN7lxASQ7GQgzBSfvPUAJVbed53QtBUL9oOxt1+Px6vCgCJYXJKr17FC9lKR7rS
+         oJwnUGUbf3qZ1to0kpE4KZPESWsmElTk4g34/qqHqGNT6PTMWOW6qTbBOTu8lbineW
+         KkEhEZ7bcZx3Sq/y1NYfjS6Iepw1ZCwLjlrx9lrU=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136Gtwrb021543
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Apr 2021 11:55:58 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
+ 2021 11:55:58 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 6 Apr 2021 11:55:58 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136Gtvuo052410;
+        Tue, 6 Apr 2021 11:55:57 -0500
+Date:   Tue, 6 Apr 2021 22:25:56 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 11/16] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+Message-ID: <20210406165554.5mhn4u5enbf2tvaz@ti.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-12-p.yadav@ti.com>
+ <78a5983c-04c8-4a4c-04fe-bb1f31e87375@gmail.com>
+ <20210406150942.4kyjh2ehsvklupjr@ti.com>
+ <54b0846e-d633-2a03-2c64-f1f0a85c2410@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.136]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54b0846e-d633-2a03-2c64-f1f0a85c2410@gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> So then we have the issue of how to dynamically increase this rcache
->>>> threshold. The problem is that we may have many devices associated with
->>>> the same domain. So, in theory, we can't assume that when we increase
->>>> the threshold that some other device will try to fast free an IOVA 
->>>> which
->>>> was allocated prior to the increase and was not rounded up.
->>>>
->>>> I'm very open to better (or less bad) suggestions on how to do this ...
->>> ...but yes, regardless of exactly where it happens, rounding up or not
->>> is the problem for rcaches in general. I've said several times that my
->>> preferred approach is to not change it that dynamically at all, but
->>> instead treat it more like we treat the default domain type.
->>>
->>
->> Can you remind me of that idea? I don't remember you mentioning using 
->> default domain handling as a reference in any context.
+On 06/04/21 06:33PM, Péter Ujfalusi wrote:
 > 
+> 
+> On 4/6/21 6:09 PM, Pratyush Yadav wrote:
+> > On 04/04/21 04:24PM, Péter Ujfalusi wrote:
+> >> Hi Pratyush,
+> >>
+> >> On 3/30/21 8:33 PM, Pratyush Yadav wrote:
+> >>> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+> >>> have up to 32 threads but the current driver only supports using one. So
+> >>> add an entry for that one thread.
+> >>
+> >> If you are absolutely sure that the other threads are not going to be
+> >> used, then:
+> > 
+> > The opposite in fact. I do expect other threads to be used in the 
+> > future. But the current driver can only use one so I figured it is 
+> > better to add just the thread that is currently needed and then I can 
+> > always add the rest later.
+> > 
+> > Why does this have to be a one-and-done deal? Is there anything wrong 
+> > with adding the other threads when the driver can actually use them?
+> 
+> You can skip CCing DMAengine (and me ;) ). Less subsystems is the better
+> when sending patches...
 
-Hi Robin,
+I'm a bit confused here. If you are no longer interested in maintaining 
+the TI DMA drivers then that's fine, I can skip CCing you. But the patch 
+is still relevant to the dmaengine list so why should I skip CCing it? 
+And if I don't CC the dmaengine list then on which list would I get 
+comments/reviews for the patch?
 
-> Sorry if the phrasing was unclear there - the allusion to default 
-> domains is new, it just occurred to me that what we do there is in fact 
-> fairly close to what I've suggested previously for this. In that case, 
-> we have a global policy set by the command line, which *can* be 
-> overridden per-domain via sysfs at runtime, provided the user is willing 
-> to tear the whole thing down. Using a similar approach here would give a 
-> fair degree of flexibility but still mean that changes never have to be 
-> made dynamically to a live domain.
+> 
+> > 
+> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> >>
+> >> but I would consider adding the other threads if there is a chance that
+> >> the cs2rx will need to support it in the future.
+> >>
+> >>> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> >>> ---
+> >>>  drivers/dma/ti/k3-psil-j721e.c | 10 ++++++++++
+> >>>  1 file changed, 10 insertions(+)
+> >>>
+> >>> diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
+> >>> index 7580870ed746..19ffa31e6dc6 100644
+> >>> --- a/drivers/dma/ti/k3-psil-j721e.c
+> >>> +++ b/drivers/dma/ti/k3-psil-j721e.c
+> >>> @@ -58,6 +58,14 @@
+> >>>  		},					\
+> >>>  	}
+> >>>  
+> >>> +#define PSIL_CSI2RX(x)					\
+> >>> +	{						\
+> >>> +		.thread_id = x,				\
+> >>> +		.ep_config = {				\
+> >>> +			.ep_type = PSIL_EP_NATIVE,	\
+> >>> +		},					\
+> >>> +	}
+> >>> +
+> >>>  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+> >>>  static struct psil_ep j721e_src_ep_map[] = {
+> >>>  	/* SA2UL */
+> >>> @@ -138,6 +146,8 @@ static struct psil_ep j721e_src_ep_map[] = {
+> >>>  	PSIL_PDMA_XY_PKT(0x4707),
+> >>>  	PSIL_PDMA_XY_PKT(0x4708),
+> >>>  	PSIL_PDMA_XY_PKT(0x4709),
+> >>> +	/* CSI2RX */
+> >>> +	PSIL_CSI2RX(0x4940),
+> >>>  	/* CPSW9 */
+> >>>  	PSIL_ETHERNET(0x4a00),
+> >>>  	/* CPSW0 */
+> >>>
+> >>
+> >> -- 
+> >> Péter
+> > 
+> 
+> -- 
+> Péter
 
-So are you saying that we can handle it similar to how we now can handle 
-changing default domain for an IOMMU group via sysfs? If so, that just 
-is not practical here. Reason being that this particular DMA engine 
-provides the block device giving / mount point, so if we unbind the 
-driver, we lose / mount point.
-
-And I am not sure if the end user would even know how to set such a 
-tunable. Or, in this case, why the end user would not want the optimized 
-range configured always.
-
-I'd still rather if the device driver could provide info which can be 
-used to configure this before or during probing.
-
-Cheers,
-John
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
