@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5343355749
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F9235575D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345461AbhDFPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238539AbhDFPGD (ORCPT
+        id S243570AbhDFPKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:10:17 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42482 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhDFPKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:06:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30CFC06174A;
-        Tue,  6 Apr 2021 08:05:54 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q26so8909978wrz.9;
-        Tue, 06 Apr 2021 08:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wFEzASxc1JqcNqRvKv47QdpZej2mZkmCYZTLblwB5X0=;
-        b=p4CiawB48QRjP5DEzSyjsiOuHMtn5Sw07O65fp4IYCOi5qMaJk+pyzGhegxDB+IdLQ
-         uJtt1wgZAwCHotGy4vnFV6Y6GlD8XOtggqSlPEO4y6F3lQhxf4gtydSatJXk7ZTovTMS
-         HtAnO2prJKYwjTcgsWQeM7lmUgrlVvuggAPosmeGp2e8PgHjMw2xrb9Zeq7h9LOCa5PI
-         3yRQqotK6ez56yc97WN3v+7b6xHxUE6XI2S4XKzQPgVk2ma0YkAta/uIS3Jd2Ka66As6
-         YVgh0gJYpCgVVV9dDzys8mwHfyC+mSGr2QT3yRBfgB0l8ZlaZzEQew+VoUxDPjIyrcfh
-         oL2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wFEzASxc1JqcNqRvKv47QdpZej2mZkmCYZTLblwB5X0=;
-        b=B9WupQfRlABaCFm7WlV0U9gVP7nqdE3lfv/Jygu/pXz40GZBW21WNLxmzcM+TayRRZ
-         PtMytI+2IWfoHp9Dh4rjR+byoHn45zB1UOC627pnaQbVzqjqqbhHveNbF58fugn/a7Po
-         XslFomq3p1f8/RrFd6zRmjYZz8YsWRb1nZZvA9OsduPxUH0dTuWLxx+wix9p0sKojsRE
-         7cDkptQ+t+ezWWZ/Kj6+aUfUJabi3Ub7M4vZbLUS5CTzH6NbdugWBDsy5WRFmbSSduri
-         KNraIHHG9F5Adxrqx4zxeK8QJtz4rrphM64DkPFH/JbG1K/FoJC5Yg2QxagkQD5PFS3A
-         i9Fg==
-X-Gm-Message-State: AOAM5307nyYtpUXPLiLXAEA6SynzSp1xaNyfNZojNSU0saOoEMEliUU7
-        nh+C1GsMKNi4K35LU4tw+Ma4aarJ+VrgU/RGr/k=
-X-Google-Smtp-Source: ABdhPJytCaId03MYNFodGWm6D+7GzSxzkxMkuGIB/nHbeWbRxRmdRjbPIFMwAvCUBuvFdXm9VUnDSqzD3jNAJautXKY=
-X-Received: by 2002:a5d:58fc:: with SMTP id f28mr17335178wrd.327.1617721553409;
- Tue, 06 Apr 2021 08:05:53 -0700 (PDT)
+        Tue, 6 Apr 2021 11:10:14 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136F9kdK051468;
+        Tue, 6 Apr 2021 10:09:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617721786;
+        bh=zhcXVfELo5elywfqEq3FrE6jD2OsBz641NuCWtfMcZg=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=woKrHduGuYc8SVo0jICjQufJfoBZ4zd7Cem8OelhzyS5NoyKwT4zbEl2GRD43mfR+
+         i7vr9o+HjpKpYGW3ng5t/1h27+msDPCkHkE88st6SfQ6pat2Fn2QmP/81ZyKpAdCuW
+         9cuZbNJ8ZcAWrAr7Z/AE22x7ylHM2BeMo2ghJf6A=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136F9kJP083293
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Apr 2021 10:09:46 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
+ 2021 10:09:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 6 Apr 2021 10:09:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136F9jlK119537;
+        Tue, 6 Apr 2021 10:09:45 -0500
+Date:   Tue, 6 Apr 2021 20:39:44 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 11/16] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+Message-ID: <20210406150942.4kyjh2ehsvklupjr@ti.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-12-p.yadav@ti.com>
+ <78a5983c-04c8-4a4c-04fe-bb1f31e87375@gmail.com>
 MIME-Version: 1.0
-References: <20210406133939.425987-1-colin.king@canonical.com>
-In-Reply-To: <20210406133939.425987-1-colin.king@canonical.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 6 Apr 2021 08:09:21 -0700
-Message-ID: <CAF6AEGuRvmBdiR=g4eVtxfYzsS_-XWc3kmdBu_3012CtwsdzcQ@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/msm: Fix spelling mistake "Purgable" -> "Purgeable"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <78a5983c-04c8-4a4c-04fe-bb1f31e87375@gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 6:39 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in debugfs gem stats. Fix it. Also
-> re-align output to cater for the extra 1 character.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/msm/msm_gem.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-> index f146d9c5ba9c..4e2e0a93d17d 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.c
-> +++ b/drivers/gpu/drm/msm/msm_gem.c
-> @@ -979,13 +979,13 @@ void msm_gem_describe_objects(struct list_head *list, struct seq_file *m)
->                 msm_gem_describe(obj, m, &stats);
->         }
->
-> -       seq_printf(m, "Total:    %4d objects, %9zu bytes\n",
-> +       seq_printf(m, "Total:     %4d objects, %9zu bytes\n",
->                         stats.all.count, stats.all.size);
-> -       seq_printf(m, "Active:   %4d objects, %9zu bytes\n",
-> +       seq_printf(m, "Active:    %4d objects, %9zu bytes\n",
->                         stats.active.count, stats.active.size);
-> -       seq_printf(m, "Purgable: %4d objects, %9zu bytes\n",
-> +       seq_printf(m, "Purgeable: %4d objects, %9zu bytes\n",
->                         stats.purgable.count, stats.purgable.size);
+On 04/04/21 04:24PM, Péter Ujfalusi wrote:
+> Hi Pratyush,
+> 
+> On 3/30/21 8:33 PM, Pratyush Yadav wrote:
+> > The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+> > have up to 32 threads but the current driver only supports using one. So
+> > add an entry for that one thread.
+> 
+> If you are absolutely sure that the other threads are not going to be
+> used, then:
 
-oh, whoops.. I spel gud..
+The opposite in fact. I do expect other threads to be used in the 
+future. But the current driver can only use one so I figured it is 
+better to add just the thread that is currently needed and then I can 
+always add the rest later.
 
-Thanks, applied.. I'll follow-up with fixing the spelling in the code
+Why does this have to be a one-and-done deal? Is there anything wrong 
+with adding the other threads when the driver can actually use them?
 
-BR,
--R
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> 
+> but I would consider adding the other threads if there is a chance that
+> the cs2rx will need to support it in the future.
+> 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/dma/ti/k3-psil-j721e.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
+> > index 7580870ed746..19ffa31e6dc6 100644
+> > --- a/drivers/dma/ti/k3-psil-j721e.c
+> > +++ b/drivers/dma/ti/k3-psil-j721e.c
+> > @@ -58,6 +58,14 @@
+> >  		},					\
+> >  	}
+> >  
+> > +#define PSIL_CSI2RX(x)					\
+> > +	{						\
+> > +		.thread_id = x,				\
+> > +		.ep_config = {				\
+> > +			.ep_type = PSIL_EP_NATIVE,	\
+> > +		},					\
+> > +	}
+> > +
+> >  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+> >  static struct psil_ep j721e_src_ep_map[] = {
+> >  	/* SA2UL */
+> > @@ -138,6 +146,8 @@ static struct psil_ep j721e_src_ep_map[] = {
+> >  	PSIL_PDMA_XY_PKT(0x4707),
+> >  	PSIL_PDMA_XY_PKT(0x4708),
+> >  	PSIL_PDMA_XY_PKT(0x4709),
+> > +	/* CSI2RX */
+> > +	PSIL_CSI2RX(0x4940),
+> >  	/* CPSW9 */
+> >  	PSIL_ETHERNET(0x4a00),
+> >  	/* CPSW0 */
+> > 
+> 
+> -- 
+> Péter
 
-> -       seq_printf(m, "Purged:   %4d objects, %9zu bytes\n",
-> +       seq_printf(m, "Purged:    %4d objects, %9zu bytes\n",
->                         stats.purged.count, stats.purged.size);
->  }
->  #endif
-> --
-> 2.30.2
->
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
