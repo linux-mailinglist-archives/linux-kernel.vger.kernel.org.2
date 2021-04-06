@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0592035544C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456EA35545D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243362AbhDFMzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:55:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51193 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230248AbhDFMzl (ORCPT
+        id S1344243AbhDFM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:59:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15559 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242308AbhDFM66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:55:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617713733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AMmsc41eqctpVkzPL+JoDmYt5x6xCyCRYplYE68RQiQ=;
-        b=NMyulwd7NU2Syfok57gX9T4+m6iyFeUXzHT4stlhrhsQv7BSEDN7kVbAGgQbXobwdGYUhz
-        KzBZESndJ9DisbmjcoNm/9nZGw4l2c8kgOkw8XNyEz+z3ctNVG6oxNmD+rlNWt+TUdLiQR
-        GYK1q1oSbzKcOjtZdSwmbX+aGI8X20o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-wnPWQRIdP3eCSTi9hvlIwQ-1; Tue, 06 Apr 2021 08:55:29 -0400
-X-MC-Unique: wnPWQRIdP3eCSTi9hvlIwQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E8E98189C7;
-        Tue,  6 Apr 2021 12:55:27 +0000 (UTC)
-Received: from krava (unknown [10.40.195.36])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DA49B1B528;
-        Tue,  6 Apr 2021 12:55:23 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 14:55:22 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, irogers@google.com, linuxarm@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        zhangshaokun@hisilicon.com, pc@us.ibm.com
-Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
- parsing test
-Message-ID: <YGxaOnUZnNmDg/2P@krava>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-3-git-send-email-john.garry@huawei.com>
- <YGXPdEAecos4iPVc@krava>
- <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
- <YGxRbH0XWaj6AWfa@krava>
- <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
+        Tue, 6 Apr 2021 08:58:58 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF6w35vTdzPnkh;
+        Tue,  6 Apr 2021 20:56:03 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 20:58:39 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        <liulongfang@huawei.com>, Weili Qian <qianweili@huawei.com>
+Subject: [PATCH] crypto: hisilicon/qm - add stop queue by hardware
+Date:   Tue, 6 Apr 2021 20:56:02 +0800
+Message-ID: <1617713762-52120-1-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 01:43:09PM +0100, John Garry wrote:
-> On 06/04/2021 13:17, Jiri Olsa wrote:
-> > > > > +			ref = &metric->metric_ref;
-> > > > > +			ref->metric_name = pe->metric_name;
-> > > > > +			ref->metric_expr = pe->metric_expr;
-> > > > > +			list_add_tail(&metric->list, compound_list);
-> > > > > +
-> > > > > +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> > > Hi Jirka,
-> > > 
-> > > > so this might add new items to pctx->ids, I think you need
-> > > > to restart the iteration as we do it in __resolve_metric
-> > > > otherwise you could miss some new keys
-> > > I thought that I was doing this. Indeed, this code is very much like
-> > > __resolve_metric();)
-> > > 
-> > > So expr__find_other() may add a new item to pctx->ids, and we always iterate
-> > > again, and try to lookup any pmu_events, *, above. If none exist, then we
-> > hm, I don't see that.. so, what you do is:
-> > 
-> > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
-> > 
-> > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> > 	}
-> > 
-> > and what I think we need to do is:
-> > 
-> > 	hashmap__for_each_entry_safe((&pctx->ids) ....) {
-> > 
-> > 		rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-> > 
-> > 		break;	
-> > 	}
-> > 
-> > each time you resolve another metric, you need to restart
-> > the pctx->ids iteration, because there will be new items,
-> > and we are in the middle of it
-> 
-> Sure, but we will restart anyway.
+Kunpeng930 could be able to stop queue by writing hardware registers,
+which will trigger tasks in device to be flushed out.
 
-hum, where? you call expr__find_other and continue to next
-pctx->ids item
+In order to be compatible with the kunpeng920 driver, add 'qm_hw_ops_v3' to
+adapt Kunpeng930. And 'stop_qp' callback is added in 'qm_hw_ops_v3' to
+write hardware registers. Call 'stop_qp' to drain the tasks in device
+before releasing queue.
 
-> 
-> Regardless of this, I don't think what I am doing is safe, i.e. adding new
-> items in the middle of the iter, so I will change in the way you suggest.
+Signed-off-by: Weili Qian <qianweili@huawei.com>
+Reviewed-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/qm.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-it'll always add items in the middle of the iteration
-
-jirka
-
-> 
-> Thanks,
-> John
-> 
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index c91e57a..05f96aa 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -38,6 +38,7 @@
+ #define QM_MB_CMD_SQC_BT		0x4
+ #define QM_MB_CMD_CQC_BT		0x5
+ #define QM_MB_CMD_SQC_VFT_V2		0x6
++#define QM_MB_CMD_STOP_QP		0x8
+ 
+ #define QM_MB_CMD_SEND_BASE		0x300
+ #define QM_MB_EVENT_SHIFT		8
+@@ -349,6 +350,7 @@ struct hisi_qm_hw_ops {
+ 	void (*hw_error_init)(struct hisi_qm *qm, u32 ce, u32 nfe, u32 fe);
+ 	void (*hw_error_uninit)(struct hisi_qm *qm);
+ 	enum acc_err_result (*hw_error_handle)(struct hisi_qm *qm);
++	int (*stop_qp)(struct hisi_qp *qp);
+ };
+ 
+ struct qm_dfx_item {
+@@ -1711,6 +1713,11 @@ static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
+ 	return ACC_ERR_RECOVERED;
+ }
+ 
++static int qm_stop_qp(struct hisi_qp *qp)
++{
++	return qm_mb(qp->qm, QM_MB_CMD_STOP_QP, 0, qp->qp_id, 0);
++}
++
+ static const struct hisi_qm_hw_ops qm_hw_ops_v1 = {
+ 	.qm_db = qm_db_v1,
+ 	.get_irq_num = qm_get_irq_num_v1,
+@@ -1726,6 +1733,16 @@ static const struct hisi_qm_hw_ops qm_hw_ops_v2 = {
+ 	.hw_error_handle = qm_hw_error_handle_v2,
+ };
+ 
++static const struct hisi_qm_hw_ops qm_hw_ops_v3 = {
++	.get_vft = qm_get_vft_v2,
++	.qm_db = qm_db_v2,
++	.get_irq_num = qm_get_irq_num_v2,
++	.hw_error_init = qm_hw_error_init_v2,
++	.hw_error_uninit = qm_hw_error_uninit_v2,
++	.hw_error_handle = qm_hw_error_handle_v2,
++	.stop_qp = qm_stop_qp,
++};
++
+ static void *qm_get_avail_sqe(struct hisi_qp *qp)
+ {
+ 	struct hisi_qp_status *qp_status = &qp->qp_status;
+@@ -2005,6 +2022,14 @@ static int qm_drain_qp(struct hisi_qp *qp)
+ 	if (qm->err_status.is_qm_ecc_mbit || qm->err_status.is_dev_ecc_mbit)
+ 		return 0;
+ 
++	/* Kunpeng930 supports drain qp by device */
++	if (qm->ops->stop_qp) {
++		ret = qm->ops->stop_qp(qp);
++		if (ret)
++			dev_err(dev, "Failed to stop qp(%u)!\n", qp->qp_id);
++		return ret;
++	}
++
+ 	addr = qm_ctx_alloc(qm, size, &dma_addr);
+ 	if (IS_ERR(addr)) {
+ 		dev_err(dev, "Failed to alloc ctx for sqc and cqc!\n");
+@@ -2565,8 +2590,10 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
+ 
+ 	if (qm->ver == QM_HW_V1)
+ 		qm->ops = &qm_hw_ops_v1;
+-	else
++	else if (qm->ver == QM_HW_V2)
+ 		qm->ops = &qm_hw_ops_v2;
++	else
++		qm->ops = &qm_hw_ops_v3;
+ 
+ 	pci_set_drvdata(pdev, qm);
+ 	mutex_init(&qm->mailbox_lock);
+-- 
+2.8.1
 
