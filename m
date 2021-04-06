@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF75355505
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204E63554F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344444AbhDFNYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:24:35 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:37414 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344422AbhDFNY1 (ORCPT
+        id S243794AbhDFNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:24:16 -0400
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:39543 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhDFNYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:24:27 -0400
-Received: by mail-oi1-f172.google.com with SMTP id k25so15050393oic.4;
-        Tue, 06 Apr 2021 06:24:19 -0700 (PDT)
+        Tue, 6 Apr 2021 09:24:15 -0400
+Received: by mail-oo1-f54.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso3680991ooq.6;
+        Tue, 06 Apr 2021 06:24:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=JjENON6/Sx20JnClGDF/AXxvY7fv/GFzvMQJPylTgSc=;
-        b=L4K8gClpOlxYTGPcnDerQgQV1rFjnPEiNyI8KeOKPKm9uuzCgmWlUzr9YPbzmglPgm
-         dHl9O5fCQnAFsBZ23pxdqrU3Q4t2c2tfpEOYIaAtyR2NuoHpMqQbHuvv/JhI2KkxT4/9
-         zjHpLMACYSuqY0+JJ6sWbLcCYA1daH2JZsoMhBoMEuA8Yada7ch8JBEbUuVI2Q/dsDpe
-         fAV5foN8WSZmdLmNx3yxNBckpvcm81Fr2KtUw7+0mBBIKD2cZK+9PFoS1y0+9g8b2IrO
-         7DOKV47WY6qERzo8gSniz5vXUTaeJUJsNC2V3/NWflkA/Tqc+pFY66RW6cjtQ3d4L3Gl
-         7h2g==
-X-Gm-Message-State: AOAM531Qiz81oBl1OdRKELGXg9hpS+Q6/BNOALqQpE0xSzKf1RYDeJSE
-        d4AnDrgJFrDsCvJ2JHHTGA==
-X-Google-Smtp-Source: ABdhPJz6rmDyQsgrOoVLlXBQMirxfLVInksGHJ1IftaUOy3LfEw72kG5w/Z0hpnHQfq9gf3n61UCVg==
-X-Received: by 2002:a05:6808:f12:: with SMTP id m18mr3145875oiw.62.1617715458447;
-        Tue, 06 Apr 2021 06:24:18 -0700 (PDT)
+        bh=c+dr09iEOiWwhlY6jark2BPva3mg8Ko55TUQeP3LOTQ=;
+        b=EuzLDUGrbzOhJkobvhvs+p/c3492kZO9W+NUVfGYx0fS87x/d6qKQmjeOYlqS8p3eC
+         dwlpKaZ1NOXUwjpkyjcjPLxUjhYMJSMKOm2vX683Av0Jec7ysaNU/1/tvRnal9OplCyi
+         M94aWs5iqcQmgFQaHx5WQwQXkga/5RS5H1uiYTspo6AU7I3PFTIUq7Qhq1N8QKLxtnfA
+         UZXQOANtz/pQ4HuA1lGw3b6s6ASvisMJQdgLy+DOQffhxzg8tDHgkfw9gjFF/pNST15Z
+         XSxDzvyHPDeP4HAGKksh/iW9lT8+apsr8hWxfEBbm/Qvk/MjjGGR5IsZd9iP6m+zj1DX
+         eo2Q==
+X-Gm-Message-State: AOAM5339gLncxRiAJcT/WE+upmeXsd9GYnxwHlV1qDJANSuZnJvafZA2
+        +MkTzO6GHCDXpC8gibSa1Q==
+X-Google-Smtp-Source: ABdhPJy1H5MC5AV5/1PLAVHXSI2VxCtDGeuzF+SPgq6I9rDImJ8MDbdc0BVD9MHBLEWkcFD5l/3FRg==
+X-Received: by 2002:a05:6820:58:: with SMTP id v24mr26459197oob.55.1617715447042;
+        Tue, 06 Apr 2021 06:24:07 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a20sm3647488oia.49.2021.04.06.06.24.16
+        by smtp.gmail.com with ESMTPSA id p3sm3638698oif.53.2021.04.06.06.24.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 06:24:16 -0700 (PDT)
-Received: (nullmailer pid 1674496 invoked by uid 1000);
+        Tue, 06 Apr 2021 06:24:06 -0700 (PDT)
+Received: (nullmailer pid 1674493 invoked by uid 1000);
         Tue, 06 Apr 2021 13:24:05 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
-References: <YGbc7Qbu6s659Mx4@latitude> <20210402161627.2546145-1-giulio.benetti@benettiengineering.com> <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>
+In-Reply-To: <1617346747-8611-2-git-send-email-manafm@codeaurora.org>
+References: <1617346747-8611-1-git-send-email-manafm@codeaurora.org> <1617346747-8611-2-git-send-email-manafm@codeaurora.org>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: soc: qcom: Add SDPM clock monitor driver documentation in yaml
 Date:   Tue, 06 Apr 2021 08:24:05 -0500
-Message-Id: <1617715445.154812.1674495.nullmailer@robh.at.kernel.org>
+Message-Id: <1617715445.141060.1674492.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Apr 2021 18:16:26 +0200, Giulio Benetti wrote:
-> This adds device tree bindings for the Hycon HY46XX touchscreen series.
+On Fri, 02 Apr 2021 12:29:06 +0530, Manaf Meethalavalappu Pallikunhi wrote:
+> Add yaml documentation for SDPM clock monitor driver which will
+> register for clock rate change notification and writes the clock rate
+> into SDPM CSR register.
 > 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> Signed-off-by: Ram Chandrasekar <rkumbako@codeaurora.org>
+> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
 > ---
-> V1->V2:
-> As suggested by Rob Herring:
-> * fixed $id: address
-> * added "hycon," in front of every custom property
-> * changed all possible property to boolean type
-> * removed proximity-sensor-switch property since it's not handled in driver
-> V2->V3:
-> As suggested by Jonathan Neuschäfer:
-> * fixed some typo
-> * fixed description indentation
-> * improved boolean properties descriptions
-> * improved hycon,report-speed description
-> ---
->  .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 126 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+>  .../devicetree/bindings/soc/qcom/qcom-sdpm.yaml    | 68 ++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml:31:11: [error] empty value in block mapping (empty-values)
+./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml:37:11: [error] empty value in block mapping (empty-values)
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.example.dt.yaml:0:0: /example-0/i2c/hycon-hy4633@1c: failed to match any schema with compatible: ['hycon,hy4633']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'anyOf' conditional failed, one must be fixed:
+	None is not of type 'object', 'boolean'
+	None is not of type 'array'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'anyOf' conditional failed, one must be fixed:
+	None is not of type 'object', 'boolean'
+	None is not of type 'array'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'oneOf' conditional failed, one must be fixed:
+	None is not of type 'object'
+	None is not of type 'array'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'oneOf' conditional failed, one must be fixed:
+	None is not of type 'object'
+	None is not of type 'array'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clock-names:items: 'oneOf' conditional failed, one must be fixed:
+	None is not of type 'object'
+	None is not of type 'array'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks: 'oneOf' conditional failed, one must be fixed:
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks: 'anyOf' conditional failed, one must be fixed:
+		'items' is not one of ['maxItems', 'description', 'deprecated']
+		'minItems' is not one of ['maxItems', 'description', 'deprecated']
+		'items' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
+		'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
+		'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
+		/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: properties:clocks:items: 'oneOf' conditional failed, one must be fixed:
+			None is not of type 'object'
+			None is not of type 'array'
+		1 was expected
+	'items' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+	'minItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+	'maxItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+	'type' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml: ignoring, error in schema: properties: clocks: items
+warning: no schema found in file: ./Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.yaml
+Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.example.dts:19:18: fatal error: dt-bindings/clock/qcom,camcc-sc7280.h: No such file or directory
+   19 |         #include <dt-bindings/clock/qcom,camcc-sc7280.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/soc/qcom/qcom-sdpm.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1414: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1461797
+See https://patchwork.ozlabs.org/patch/1461582
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
