@@ -2,135 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C629E35543D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8004355441
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344233AbhDFMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344206AbhDFMss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:48:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825F0C06174A;
-        Tue,  6 Apr 2021 05:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CA9+GCPN3x6Z5hKcYRzM3r8Ts3deLeZx5UJVoF7+tNE=; b=wR3a+Y4XXolRLqwzrQyiky8UUC
-        pAJ5CpX/TpwCDY1hw2XJH07o/43t5sM9R4Pcb4W1JBVJUnvf50TFWsSjz9HTSGklLw2aQFXMDPlEo
-        w/k4IWIGr6GFOiwYaEl7HBAiVkr0U0EQqye/rLfyvNdQgGhy+JZS4bFZTSfnzgDu86vtlcVYxIVkb
-        cKcqhjLSGLdsFDqrUz8abYZHUIy4DZsZrNzxAbOXWY0I2s0k7k/RW2IrVffvJTBZLrEmm+mnWwOwf
-        HQtaugWjj5yq9EPRp8CaJE/XCiXxi0fV3U3ruHurV+fyLRLnsXDwHcJjXAaYQbCFKxXLb85QlZTQJ
-        FvETcUFA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTl7n-00CoN1-SM; Tue, 06 Apr 2021 12:48:27 +0000
-Date:   Tue, 6 Apr 2021 13:48:07 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 01/27] mm: Introduce struct folio
-Message-ID: <20210406124807.GO2531743@casper.infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-2-willy@infradead.org>
- <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
+        id S239609AbhDFMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:50:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33264 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232927AbhDFMuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:50:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D52EB089;
+        Tue,  6 Apr 2021 12:50:32 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 14:50:28 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 4/8] hugetlb: create remove_hugetlb_page() to separate
+ functionality
+Message-ID: <YGxZFHFp6jyCRK+C@localhost.localdomain>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-5-mike.kravetz@oracle.com>
+ <YGwwO0galuKQsD0J@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406122918.h5dsnbjhmwpfasf4@box.shutemov.name>
+In-Reply-To: <YGwwO0galuKQsD0J@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 03:29:18PM +0300, Kirill A. Shutemov wrote:
-> On Wed, Mar 31, 2021 at 07:47:02PM +0100, Matthew Wilcox (Oracle) wrote:
-> > +/**
-> > + * folio_next - Move to the next physical folio.
-> > + * @folio: The folio we're currently operating on.
-> > + *
-> > + * If you have physically contiguous memory which may span more than
-> > + * one folio (eg a &struct bio_vec), use this function to move from one
-> > + * folio to the next.  Do not use it if the memory is only virtually
-> > + * contiguous as the folios are almost certainly not adjacent to each
-> > + * other.  This is the folio equivalent to writing ``page++``.
-> > + *
-> > + * Context: We assume that the folios are refcounted and/or locked at a
-> > + * higher level and do not adjust the reference counts.
-> > + * Return: The next struct folio.
-> > + */
-> > +static inline struct folio *folio_next(struct folio *folio)
-> > +{
-> > +#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
-> > +	return (struct folio *)nth_page(&folio->page, folio_nr_pages(folio));
-> > +#else
-> > +	return folio + folio_nr_pages(folio);
-> > +#endif
-> 
-> Do we really need the #if here?
-> 
-> >From quick look at nth_page() and memory_model.h, compiler should be able
-> to simplify calculation for FLATMEM or SPARSEMEM_VMEMMAP to what you do in
-> the #else. No?
+On Tue, Apr 06, 2021 at 11:56:11AM +0200, Michal Hocko wrote:
+> Btw. I would prefer to reverse the ordering of this and Oscar's
+> patchset. This one is a bug fix which might be interesting for stable
+> backports while Oscar's work can be looked as a general functionality
+> improvement.
 
-No.
+If it makes things easier, I do not mind this work gets first and then I
+work on top of that.
+Given said that, I will try to have a look at this series.
 
-0000000000001180 <a>:
-struct page *a(struct page *p, unsigned long n)
-{
-    1180:       e8 00 00 00 00          callq  1185 <a+0x5>
-                        1181: R_X86_64_PLT32    __fentry__-0x4
-    1185:       55                      push   %rbp
-        return nth_page(p, n);
-    1186:       48 2b 3d 00 00 00 00    sub    0x0(%rip),%rdi
-                        1189: R_X86_64_PC32     vmemmap_base-0x4
-    118d:       48 c1 ff 06             sar    $0x6,%rdi
-    1191:       48 8d 04 37             lea    (%rdi,%rsi,1),%rax
-    1195:       48 89 e5                mov    %rsp,%rbp
-        return nth_page(p, n);
-    1198:       48 c1 e0 06             shl    $0x6,%rax
-    119c:       48 03 05 00 00 00 00    add    0x0(%rip),%rax
-                        119f: R_X86_64_PC32     vmemmap_base-0x4
-    11a3:       5d                      pop    %rbp
-    11a4:       c3                      retq   
 
-vs
-
-00000000000011b0 <b>:
-
-struct page *b(struct page *p, unsigned long n)
-{
-    11b0:       e8 00 00 00 00          callq  11b5 <b+0x5>
-                        11b1: R_X86_64_PLT32    __fentry__-0x4
-    11b5:       55                      push   %rbp
-        return p + n;
-    11b6:       48 c1 e6 06             shl    $0x6,%rsi
-    11ba:       48 8d 04 37             lea    (%rdi,%rsi,1),%rax
-    11be:       48 89 e5                mov    %rsp,%rbp
-    11c1:       5d                      pop    %rbp
-    11c2:       c3                      retq   
-
-Now, maybe we should put this optimisation into the definition of nth_page?
-
-> > +struct folio {
-> > +	/* private: don't document the anon union */
-> > +	union {
-> > +		struct {
-> > +	/* public: */
-> > +			unsigned long flags;
-> > +			struct list_head lru;
-> > +			struct address_space *mapping;
-> > +			pgoff_t index;
-> > +			unsigned long private;
-> > +			atomic_t _mapcount;
-> > +			atomic_t _refcount;
-> > +#ifdef CONFIG_MEMCG
-> > +			unsigned long memcg_data;
-> > +#endif
-> 
-> As Christoph, I'm not a fan of this :/
-
-What would you prefer?
+-- 
+Oscar Salvador
+SUSE L3
