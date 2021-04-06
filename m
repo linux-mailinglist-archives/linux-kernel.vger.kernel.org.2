@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C018F35577A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7833355782
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345535AbhDFPOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:14:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233155AbhDFPOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DD561363;
-        Tue,  6 Apr 2021 15:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617722069;
-        bh=6EwsObpnkQ5Dfea7gjpKREYGxQADGcmpX2jhvrqCVvk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RmKRdevffH/BmKSNQGh8I3FH7lztg+9RgJlXEMubNtq2LQkdqPgIeqiVpbeayXjli
-         /xc6m1DPIBswndDuw4IpuYW+rmFX8Gmnzzz4yPefsAH4bidLENQzjFxrxJAlb+sEbp
-         ci7sLQ9BOrfpLkOJSHCexaG187bddwVLzZPXL6VtaT+kfVnjk7SG3VGGOrS0GpNR18
-         xJQC7fZqH4wECX+Aqv411LxhfSIDzc/Wu9YM2aj2oRvWvOBYkV2WgHHW2Pj+3a7cLE
-         r80lUzz3K/EoqaLeXjfNG6yDImXu30o7KlQWWw8WZ2zLbcTlJMTaUk2g4qXImv6PQJ
-         yTJl7LqN1KYaQ==
-Message-ID: <fa4fa9fc7236ff4a5f582ead8df4fd12ce08057d.camel@kernel.org>
-Subject: Re: [PATCH v6 00/27] Memory Folios
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Date:   Tue, 06 Apr 2021 11:14:27 -0400
-In-Reply-To: <20210405193120.GL2531743@casper.infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
-         <759cfbb63ca960b2893f2b879035c2a42c80462d.camel@kernel.org>
-         <20210405193120.GL2531743@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1345557AbhDFPPd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 11:15:33 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:50459 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233155AbhDFPP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:15:28 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MSKly-1l15R91IHA-00Shhp; Tue, 06 Apr 2021 17:15:19 +0200
+Received: by mail-oi1-f179.google.com with SMTP id a8so15432339oic.11;
+        Tue, 06 Apr 2021 08:15:18 -0700 (PDT)
+X-Gm-Message-State: AOAM530fUSLnprMb+MnFMSs6qnHnFIpNUBAge6I3v//n2kk1Onz4tJSF
+        X2YJ1ylCKRAglxWS+iaOXAzU9yS3TeBT5WBh0tU=
+X-Google-Smtp-Source: ABdhPJz4slBAtMkWReqWmn9qjq3arsJPPMq5eMKJmxc8Fy+6BZN/lNC6TLdMMNWBQOCPC67UyuJWAc0FKYC/hZSiCXo=
+X-Received: by 2002:aca:5945:: with SMTP id n66mr3568287oib.11.1617722117908;
+ Tue, 06 Apr 2021 08:15:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+In-Reply-To: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 6 Apr 2021 17:15:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
+Message-ID: <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] Initial support for Nuvoton WPCM450 BMC SoC
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:x9m9Q7ff8yYoUKMapPbk0VCXGxTFqarRF1FuovFTBO71aSCgZjH
+ Po6rw+plCFrh0OdO2FGF9ybkZAmTqovns5fzlYeSqGq0GOJ9KprPzn/qnM9i5Mz9JlY3mnG
+ aq6vPyoA9QfhEEV7yO4KZ6vE/C6vcR+yP8kysZcwaYhNP0vqUudlJki+cnULlp/6lGT47U7
+ NrKMVk5s5XoanE4/sEKrw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FIxxS8Y/tss=:pyW7CUrCROU5LIDU3UsC3e
+ 4aPbEcReqp+R3vzJziGSjQhrSit3f29yqc2HMr4JzC3QkyoUBh7svZkah0tLVc5ZCaud/A9se
+ /hmJrNsnv5aHGdph1FmTE+jQDn7cr3sFswFLSgd+3olzX5DaVIY0+yZ9uf0ANqU7+Xn4TNE4B
+ LoLtbPsTqsy7OvhNmws9Fo3n8rVtWshIny7ZjHtFrdan/Ec7NhKQP3S4S3mSQ/mOy+DTKGNUy
+ 3+ic4uYfDYB4xMgON0C3SFBiQkG4bYHU9QT8xfKHj4hMSInwriXIs0tYbo+Gbl2IH+XdulKk5
+ Fz3Yfpz/tnY7MYJTFmNNcawNWljRavlavdd4CdXH9GjQwrZW09B3DyJfvvgy5AeuYRX7OcITE
+ I3q7Gi3xddSott0ickVG71yhJPS3nEKiNl5dHxpIMcKy6aNuvtuYHh8ZNR4siAOF85D6ftmpk
+ bSbmD+WOq4YuAXjZhihN5UxBYlvZuvDd65Wd3cDmdi3izAYVRp2FdkjO0cCzsMsfSsiStxMLt
+ e+zgpouykTuLSXDyeHmCDERi8VKQFxc9cZ9DRiC1SF3QRJQHUr2EONft7WGFe914muKAMKhTl
+ lnyvNUWLmSFHM/kToXJuFvJsXsX0P2nyEL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-05 at 20:31 +0100, Matthew Wilcox wrote:
-> On Mon, Apr 05, 2021 at 03:14:29PM -0400, Jeff Layton wrote:
-> > On Wed, 2021-03-31 at 19:47 +0100, Matthew Wilcox (Oracle) wrote:
-> > > Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
-> > > exist which show the benefits of a larger "page size".  As an example,
-> > > an earlier iteration of this idea which used compound pages got a 7%
-> > > performance boost when compiling the kernel using kernbench without any
-> > > particular tuning.
-> > > 
-> > > Using compound pages or THPs exposes a serious weakness in our type
-> > > system.  Functions are often unprepared for compound pages to be passed
-> > > to them, and may only act on PAGE_SIZE chunks.  Even functions which are
-> > > aware of compound pages may expect a head page, and do the wrong thing
-> > > if passed a tail page.
-> > > 
-> > > There have been efforts to label function parameters as 'head' instead
-> > > of 'page' to indicate that the function expects a head page, but this
-> > > leaves us with runtime assertions instead of using the compiler to prove
-> > > that nobody has mistakenly passed a tail page.  Calling a struct page
-> > > 'head' is also inaccurate as they will work perfectly well on base pages.
-> > > The term 'nottail' has not proven popular.
-> > > 
-> > > We also waste a lot of instructions ensuring that we're not looking at
-> > > a tail page.  Almost every call to PageFoo() contains one or more hidden
-> > > calls to compound_head().  This also happens for get_page(), put_page()
-> > > and many more functions.  There does not appear to be a way to tell gcc
-> > > that it can cache the result of compound_head(), nor is there a way to
-> > > tell it that compound_head() is idempotent.
-> > > 
-> > > This series introduces the 'struct folio' as a replacement for
-> > > head-or-base pages.  This initial set reduces the kernel size by
-> > > approximately 5kB by removing conversions from tail pages to head pages.
-> > > The real purpose of this series is adding infrastructure to enable
-> > > further use of the folio.
-> > > 
-> > > The medium-term goal is to convert all filesystems and some device
-> > > drivers to work in terms of folios.  This series contains a lot of
-> > > explicit conversions, but it's important to realise it's removing a lot
-> > > of implicit conversions in some relatively hot paths.  There will be very
-> > > few conversions from folios when this work is completed; filesystems,
-> > > the page cache, the LRU and so on will generally only deal with folios.
-> > 
-> > I too am a little concerned about the amount of churn this is likely to
-> > cause, but this does seem like a fairly promising way forward for
-> > actually using THPs in the pagecache. The set is fairly straightforward.
-> > 
-> > That said, there are few callers of these new functions in here. Is this
-> > set enough to allow converting some subsystem to use folios? It might be
-> > good to do that if possible, so we can get an idea of how much work
-> > we're in for.
-> 
-> It isn't enough to start converting much.  There needs to be a second set
-> of patches which add all the infrastructure for converting a filesystem.
-> Then we can start working on the filesystems.  I have a start at that
-> here:
-> 
-> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
-> 
-> I don't know if it's exactly how I'll arrange it for submission.  It might
-> be better to convert all the filesystem implementations of readpage
-> to work on a folio, and then the big bang conversion of ->readpage to
-> ->read_folio will look much more mechanical.
-> 
-> But if I can't convince people that a folio approach is what we need,
-> then I should stop working on it, and go back to fixing the endless
-> stream of bugs that the thp-based approach surfaces.
+On Tue, Apr 6, 2021 at 2:09 PM Jonathan Neuschäfer
+<j.neuschaefer@gmx.net> wrote:
+>
+> This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an older
+> SoC but still commonly found on eBay, mostly in Supermicro X9 server boards.
+>
+> Third-party documentation is available at: https://github.com/neuschaefer/wpcm450/wiki
+>
+> Patches 1-4 add devicetree bindings for the WPCM450 SoC and its various parts.
+> Patches 5-7 add arch and driver support. Patches 8 and 9 add a devicetree for
+> the SoC and a board based on it. Patch 10 finally updates the MAINTAINERS file.
+>
+> Patch 2 requires "dt-bindings: arm: Convert nuvoton,npcm750 binding to YAML"
+> (https://lore.kernel.org/lkml/20210320164023.614059-1-j.neuschaefer@gmx.net/)
 
-Fair enough. I generally prefer to see some callers added at the same
-time as new functions, but I understand that the scale of this patchset
-makes that difficult. You can add this to the whole series. I don't see
-any major show-stoppers here:
+Hi Jonathan,
 
-Acked-by: Jeff Layton <jlayton@kernel.org>
+It appears these patches are doing roughly the right thing, and we may still
+be able to get them into v5.13, but I'm not sure what your plan for maintaining
+them is. The two options are that you either send your patches to be picked up
+by Joel, or you send everything directly to soc@kernel.org once it's fully
+reviewed.
 
+I only noticed your series when patch 9/10 made it into the soc@kernel.org
+patchwork because of the Cc, but none of the other ones did.
+
+If you end up with the second option, we can go through what this involves
+off-list.
+
+Regarding the Cc:soc@kernel.org, please add that only for patches that
+are already reviewed and ready to be picked up, ideally with a cover letter
+that describes what the plan is for merging. If you need me to review the
+platform code, use my arnd@arndb.de or arnd@kernel.org addresses.
+
+          Arnd
