@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76129355A46
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80AB355A47
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346930AbhDFR0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1346937AbhDFR0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:26:44 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48412 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346929AbhDFR0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 13:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232562AbhDFR0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:26:40 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D33C06174A;
-        Tue,  6 Apr 2021 10:26:32 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id a76so4541263wme.0;
-        Tue, 06 Apr 2021 10:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l2/DDXuF1+UJKEzekjcIbjpsXi5IY5979dhiBTUUxbE=;
-        b=XiBqqzgK89mbNj19h6IecSmWVJJawESApqacalMTNPaCsBtnreXtSwgyaFGSVrcUOC
-         2ssn4nmRz1YBlgCBAmZBUDZlqrlKPm0sCY01oJ4fMgEqPD3wQYDl1c1ZVwCkLhZ2TwQS
-         7v0c9uqCjMbvzzrJbz4ByI0hjGkYwixjDQA8SqJdbM1uYSGdK8tFX6v4HpCf5+kc0SNv
-         CuxEdQiDEfMuAJCk/i/avuLMvvLlkz7p1UZswc1pZAKpC9Xo18aElhyNT7PSWotpjoM3
-         yodbkVDbqCRVMmKe7VR7uBWX41jlMdttd8PnxIPgOH+PaQSdenY5OdAn4wq8eXnj8/8Q
-         kM3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l2/DDXuF1+UJKEzekjcIbjpsXi5IY5979dhiBTUUxbE=;
-        b=TufvN8viPbG064n1LQAfRJl9nXWGFzCZq41hEdSApuS4C0hL8Dhl3EdNM9WRuIYJla
-         pZxhEDP59HGLlEzZh0Z43sR64Nl8R1PNKBQJFCLVG6nmS+wgNNaailK6a13XWPjsGKXJ
-         AC5DagCCqsTJPZGcJEmYFtZV1ySu/dJlkFCH9p8Lx2dCH7VMaGajyfWkQvqWNzSUaova
-         msvHBgyBHti16v/TcOspj4y4R9WHBvRne33zL+s5oRjHqJRZ3eWDbI/lRUnIVPkGhlT5
-         DnnwefQMDdkMxN0ZEYAB2q5nGpMRUBPVDF7Qi0ZWzUQKWegDYvtKdHdh4Ro11zGgaQhC
-         ElWw==
-X-Gm-Message-State: AOAM5323OdSQNM4EcgpuDE7MkWMQ0Gle4L1lBLB1gthMuwO3JTcof/oT
-        v2k3bvfXwdikdtLqPN41g0ZazvwhL9w=
-X-Google-Smtp-Source: ABdhPJxrUI0tY+zcjCcYikXxT6vSF5p4TvLUBIItXIa+0CjyHRagPQpIzyIozklEra4MmzkGupOucw==
-X-Received: by 2002:a7b:c219:: with SMTP id x25mr5163419wmi.163.1617729991118;
-        Tue, 06 Apr 2021 10:26:31 -0700 (PDT)
-Received: from [192.168.1.101] ([37.170.65.138])
-        by smtp.gmail.com with ESMTPSA id m15sm32011333wrp.96.2021.04.06.10.26.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 10:26:30 -0700 (PDT)
-Subject: Re: [PATCH] net: tun: set tun->dev->addr_len during TUNSETLINK
- processing
-To:     Phillip Potter <phil@philpotter.co.uk>, davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210405113555.9419-1-phil@philpotter.co.uk>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <ba1f5946-d1ef-ee4f-4ce1-15af2b324181@gmail.com>
-Date:   Tue, 6 Apr 2021 19:26:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Received: from zn.tnic (p200300ec2f0a0d00e4e63576b95994ce.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:e4e6:3576:b959:94ce])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 923CC1EC013E;
+        Tue,  6 Apr 2021 19:26:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617729993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=idqOHLAs7SL5nM66x3pkyyTPWUwrZsy38j6qZgr5RLg=;
+        b=cU83McEx1YzXoD2G7k6cubs9rjMLIsjStpkhrDTfhPf0ASp5x3NkT/paHKNrlsy0AUJMUd
+        +lnuIzl2WvESy5dTyTublV7i66yip7R6+yoRoA+dzHoTtVuafjylVdQ41GwiTgLI8UJ65x
+        KvKJ/9CZBeDGGierdASAiE1jdzGxXCE=
+Date:   Tue, 6 Apr 2021 19:26:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ramakrishna Saripalli <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 0/5] Introduce support for PSF mitigation
+Message-ID: <20210406172632.GO17806@zn.tnic>
+References: <20210406155004.230790-1-rsaripal@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210405113555.9419-1-phil@philpotter.co.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210406155004.230790-1-rsaripal@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/5/21 1:35 PM, Phillip Potter wrote:
-> When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
-> to match the appropriate type, using new tun_get_addr_len utility function
-> which returns appropriate address length for given type. Fixes a
-> KMSAN-found uninit-value bug reported by syzbot at:
-> https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
+On Tue, Apr 06, 2021 at 10:49:59AM -0500, Ramakrishna Saripalli wrote:
+> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
 > 
-> Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
+> Predictive Store Forwarding:
+> AMD Zen3 processors feature a new technology called
+> Predictive Store Forwarding (PSF).
+> 
+> <TODO:Insert link to AMD PSF whitepaper>
 
-Please give credits to people who helped.
+You probably should upload it here:
 
-You could have :
+https://bugzilla.kernel.org/show_bug.cgi?id=206537
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
+instead and then point to it in the docs. And by "docs" I mean, putting
+all that nice text below which I've snipped in here:
 
-Or
-Diagnosed-by: Eric Dumazet <edumazet@google.com>
+Documentation/admin-guide/hw-vuln/
 
-Or at least CCed me :/
+for future reference. Look at the docs there for an idea how to
+structure it.
 
+I have come to appreciate our documentation a lot these days when I've
+forgotten all about those nightmares but needed to refresh them back in
+my L1.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
