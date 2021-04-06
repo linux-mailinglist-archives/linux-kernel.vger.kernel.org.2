@@ -2,173 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866D2355175
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29CC355179
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245307AbhDFLAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245299AbhDFLAL (ORCPT
+        id S245321AbhDFLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:03:09 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2765 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhDFLDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:00:11 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F9BC06174A;
-        Tue,  6 Apr 2021 04:00:02 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id g10so7269440plt.8;
-        Tue, 06 Apr 2021 04:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uAfHURTLSwkVlAhOdumUV/peFHBBPWxoa4MMAdiyslg=;
-        b=WaZTnSHwiOhUV40kXOg1zlC6O1HgGEvjnzGK6Mk3vdlneD7+ZwALwOWfVjoBZ+J/cl
-         sfAXoEcYofIJsEQAUqK66xm0qTSpBd9tjJabOhJo21NwaI8SfPvKaFDFtYblLk9r6Fmk
-         GzohY/tcvY2K6/f7/GOeKkSn/f20zYhM10/NUwO92bPhBlNDZbCsExt8HTHip/mx3KAZ
-         n6OM30M6mFH72tUcXXLHBSyF2w9jFvj3PnWr7P6AksR5tEyfErtToQWqUQGbzb81MUJw
-         mo/kSXVtdNDzHHEc/XkGkrTnOQS5dOYpDfvksOpv5vFfjcJDJ+jw0oDKpLT9W2qxaUt/
-         QtBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uAfHURTLSwkVlAhOdumUV/peFHBBPWxoa4MMAdiyslg=;
-        b=X8ZeLDAY5N93owfeK0xqu6HdBggUYnuwlchAuLVQpD6TqHIoJ0qloK1qbJE7YJtbu7
-         YsOWYjwfXX3Ze8s4AziKSnJ6L/LGEgXZCYK5KeKvoce9b810+7XczcIDQGlOKvcVvvg/
-         /HzD/Qn5QqEmzmfNDHZiDqC6Ed5oCmRnle/WTuuATBpDViu0ERq7CFCHKLGGHdp8Z15D
-         /N1D8GIBefXAc6MjZUUEHNqdZt4rJBRgqkktU8XjB5dl6OmFu/5XczqhKiTginLXfqUd
-         TzqkrkR+PqxlBYWMUe1AD2MnxiO9+y7HTBr38HttVS5LAQo4jV6oXIOzzzZk2bkOLelr
-         5fSw==
-X-Gm-Message-State: AOAM531FNB7vNHnw9T6gx8P97IQJhlHb8BAZfj8gQwyCYPssJ+uV/nD3
-        Vvau2T2Z1Nn6t2CAi5ALmL6SCcu8DiZkmQ==
-X-Google-Smtp-Source: ABdhPJyyrYIPTkV8Iim1aaWdrWukRhx3MarZcSFNSq21hNpifBFgLBmRi/z2FOk1ZAh2qBm8JMVW+w==
-X-Received: by 2002:a17:902:aa8a:b029:e6:64bd:e29d with SMTP id d10-20020a170902aa8ab02900e664bde29dmr28523527plr.24.1617706802339;
-        Tue, 06 Apr 2021 04:00:02 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id v8sm18128204pfm.128.2021.04.06.03.59.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 04:00:01 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: mediatek: mt8167: add power domains
-To:     Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     mkorpershoek@baylibre.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210405172836.2038526-1-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <7e8532e1-710c-3239-4384-cbb10348c4b4@gmail.com>
-Date:   Tue, 6 Apr 2021 12:59:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 6 Apr 2021 07:03:06 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF4FW0Dffz686J2;
+        Tue,  6 Apr 2021 18:55:59 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 13:02:56 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 12:02:55 +0100
+Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
+ parsing test
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
+        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <1616668398-144648-3-git-send-email-john.garry@huawei.com>
+ <YGXPdEAecos4iPVc@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
+Date:   Tue, 6 Apr 2021 12:00:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210405172836.2038526-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YGXPdEAecos4iPVc@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/04/2021 19:28, Fabien Parent wrote:
-> Add support for the MT8167 power domains.
+On 01/04/2021 14:49, Jiri Olsa wrote:
+> On Thu, Mar 25, 2021 at 06:33:14PM +0800, John Garry wrote:
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-
-Applied to v5.12-next/dts64-2
-
-Thanks
-
-> ---
->  arch/arm64/boot/dts/mediatek/mt8167.dtsi | 68 ++++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
+> SNIP
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8167.dtsi b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
-> index 1c5639ead622..156fbdad01fb 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8167.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
-> @@ -7,6 +7,7 @@
->  
->  #include <dt-bindings/clock/mt8167-clk.h>
->  #include <dt-bindings/memory/mt8167-larb-port.h>
-> +#include <dt-bindings/power/mt8167-power.h>
->  
->  #include "mt8167-pinfunc.h"
->  
-> @@ -34,6 +35,73 @@ apmixedsys: apmixedsys@10018000 {
->  			#clock-cells = <1>;
->  		};
->  
-> +		scpsys: syscon@10006000 {
-> +			compatible = "syscon", "simple-mfd";
-> +			reg = <0 0x10006000 0 0x1000>;
-> +			#power-domain-cells = <1>;
-> +
-> +			spm: power-controller {
-> +				compatible = "mediatek,mt8167-power-controller";
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				#power-domain-cells = <1>;
-> +
-> +				/* power domains of the SoC */
-> +				power-domain@MT8167_POWER_DOMAIN_MM {
-> +					reg = <MT8167_POWER_DOMAIN_MM>;
-> +					clocks = <&topckgen CLK_TOP_SMI_MM>;
-> +					clock-names = "mm";
-> +					#power-domain-cells = <0>;
-> +					mediatek,infracfg = <&infracfg>;
-> +				};
-> +
-> +				power-domain@MT8167_POWER_DOMAIN_VDEC {
-> +					reg = <MT8167_POWER_DOMAIN_VDEC>;
-> +					clocks = <&topckgen CLK_TOP_SMI_MM>,
-> +						 <&topckgen CLK_TOP_RG_VDEC>;
-> +					clock-names = "mm", "vdec";
-> +					#power-domain-cells = <0>;
-> +				};
-> +
-> +				power-domain@MT8167_POWER_DOMAIN_ISP {
-> +					reg = <MT8167_POWER_DOMAIN_ISP>;
-> +					clocks = <&topckgen CLK_TOP_SMI_MM>;
-> +					clock-names = "mm";
-> +					#power-domain-cells = <0>;
-> +				};
-> +
-> +				power-domain@MT8167_POWER_DOMAIN_MFG_ASYNC {
-> +					reg = <MT8167_POWER_DOMAIN_MFG_ASYNC>;
-> +					clocks = <&topckgen CLK_TOP_RG_AXI_MFG>,
-> +						 <&topckgen CLK_TOP_RG_SLOW_MFG>;
-> +					clock-names = "axi_mfg", "mfg";
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +					#power-domain-cells = <1>;
-> +					mediatek,infracfg = <&infracfg>;
-> +
-> +					power-domain@MT8167_POWER_DOMAIN_MFG_2D {
-> +						reg = <MT8167_POWER_DOMAIN_MFG_2D>;
-> +						#address-cells = <1>;
-> +						#size-cells = <0>;
-> +						#power-domain-cells = <1>;
-> +
-> +						power-domain@MT8167_POWER_DOMAIN_MFG {
-> +							reg = <MT8167_POWER_DOMAIN_MFG>;
-> +							#power-domain-cells = <0>;
-> +							mediatek,infracfg = <&infracfg>;
-> +						};
-> +					};
-> +				};
-> +
-> +				power-domain@MT8167_POWER_DOMAIN_CONN {
-> +					reg = <MT8167_POWER_DOMAIN_CONN>;
-> +					#power-domain-cells = <0>;
-> +					mediatek,infracfg = <&infracfg>;
-> +				};
-> +			};
-> +		};
-> +
->  		imgsys: syscon@15000000 {
->  			compatible = "mediatek,mt8167-imgsys", "syscon";
->  			reg = <0 0x15000000 0 0x1000>;
+>> +struct metric {
+>> +	struct list_head list;
+>> +	struct metric_ref metric_ref;
+>> +};
+>> +
+>> +static int resolve_metric_simple(struct expr_parse_ctx *pctx,
+>> +				 struct list_head *compound_list,
+>> +				 struct pmu_events_map *map,
+>> +				 const char *metric_name)
+>> +{
+>> +	struct hashmap_entry *cur, *cur_tmp;
+>> +	struct metric *metric, *tmp;
+>> +	size_t bkt;
+>> +	bool all;
+>> +	int rc;
+>> +
+>> +	do {
+>> +		all = true;
+>> +		hashmap__for_each_entry_safe((&pctx->ids), cur, cur_tmp, bkt) {
+>> +			struct metric_ref *ref;
+>> +			struct pmu_event *pe;
+>> +
+>> +			pe = metrcgroup_find_metric(cur->key, map);
+
+*
+
+>> +			if (!pe)
+>> +				continue;
+>> +
+>> +			if (!strcmp(metric_name, (char *)cur->key)) {
+>> +				pr_warning("Recursion detected for metric %s\n", metric_name);
+>> +				rc = -1;
+>> +				goto out_err;
+>> +			}
+>> +
+>> +			all = false;
+>> +
+>> +			/* The metric key itself needs to go out.. */
+>> +			expr__del_id(pctx, cur->key);
+>> +
+>> +			metric = malloc(sizeof(*metric));
+>> +			if (!metric) {
+>> +				rc = -ENOMEM;
+>> +				goto out_err;
+>> +			}
+>> +
+>> +			ref = &metric->metric_ref;
+>> +			ref->metric_name = pe->metric_name;
+>> +			ref->metric_expr = pe->metric_expr;
+>> +			list_add_tail(&metric->list, compound_list);
+>> +
+>> +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
 > 
+
+Hi Jirka,
+
+> so this might add new items to pctx->ids, I think you need
+> to restart the iteration as we do it in __resolve_metric
+> otherwise you could miss some new keys
+
+I thought that I was doing this. Indeed, this code is very much like 
+__resolve_metric() ;)
+
+So expr__find_other() may add a new item to pctx->ids, and we always 
+iterate again, and try to lookup any pmu_events, *, above. If none 
+exist, then we have broken down pctx into primitive events aliases and 
+unresolvable metrics, and stop iterating. And then unresolvable metrics 
+would be found in check_parse_cpu().
+
+As an example, we can deal with metric test1, below, which references 2x 
+other metrics:
+
+     {
+         "MetricExpr": "IDQ_UOPS_NOT_DELIVERED.CORE / (4 * (( ( 
+CPU_CLK_UNHALTED.THREAD / 2 ) * ( 1 + CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE 
+/ CPU_CLK_UNHALTED.REF_XCLK ) )))",
+       "MetricName": "Frontend_Bound",
+     },
+     {
+         "MetricExpr": "( UOPS_ISSUED.ANY - UOPS_RETIRED.RETIRE_SLOTS + 
+4 * INT_MISC.RECOVERY_CYCLES ) / (4 * cycles)",
+         "MetricName": "Bad_Speculation",
+     },
+     {
+         "MetricExpr": "Bad_Speculation + Frontend_Bound",
+         "MetricName": "test1",
+     },
+
+Does that satisfy your concern, or have I missed something?
+
+Thanks,
+John
+
+> 
+> jirka
+> 
+>> +			if (rc)
+>> +				goto out_err;
+>> +		}
+>> +	} while (!all);
+>> +
+>> +	return 0;
+>> +
+>> +out_err:
+>> +	list_for_each_entry_safe(metric, tmp, compound_list, list)
+>> +		free(metric);
+>> +
+>> +	return rc;
+>> +
+>> +}
+> 
+> SNIP
+> 
+> .
+> 
+
