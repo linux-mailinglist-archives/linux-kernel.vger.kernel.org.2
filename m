@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128C4355577
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837E235555B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244084AbhDFNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:42:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229911AbhDFNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:42:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED662613C3;
-        Tue,  6 Apr 2021 13:42:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617716560;
-        bh=PNSRvRJY7wNXgKXcqn0h92KOJATNVLrIurobIv0tfbA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QLE/JHP05sEEGqefrp80fT+YGjDp4aHuOFDI3i2gCl73iTeqePl1fbRqwdovdBTXB
-         MaHXHUkn4wLNTC8LgUtqftaonOvjyN4jlN+wF6EJNIEIC/XmH2xemqpSJ6aaWtajw9
-         NbMhvrscGCXv9MvM3a0pnONPahmsBSHghMGdrXeg=
-Date:   Tue, 6 Apr 2021 15:42:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: use printk_safe context at tty_msg()
-Message-ID: <YGxlTYinSceb6cyL@kroah.com>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <a7f5103f-0912-30e1-611c-36c18a1eefd6@kernel.org>
- <62546379-a2b8-bbbb-0799-3afd9b15960a@i-love.sakura.ne.jp>
- <YGwJZWwQCNQwlVLK@kroah.com>
- <4898f140-d7ed-14d3-e24f-8f51fc6bc003@i-love.sakura.ne.jp>
+        id S243999AbhDFNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:39:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15139 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344580AbhDFNjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:39:22 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF7pg3H5ZzpVLZ;
+        Tue,  6 Apr 2021 21:36:27 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 21:39:06 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+CC:     <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>
+Subject: [PATCH -next] media: adv7604: fix possible use-after-free in adv76xx_remove()
+Date:   Tue, 6 Apr 2021 21:42:46 +0800
+Message-ID: <20210406134246.2145396-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4898f140-d7ed-14d3-e24f-8f51fc6bc003@i-love.sakura.ne.jp>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 08:16:43PM +0900, Tetsuo Handa wrote:
-> On 2021/04/06 16:10, Greg Kroah-Hartman wrote:
-> > On Tue, Apr 06, 2021 at 02:31:43PM +0900, Tetsuo Handa wrote:
-> >> On 2021/04/06 13:51, Jiri Slaby wrote:
-> >>> On 03. 04. 21, 6:14, Tetsuo Handa wrote:
-> >>>> --- a/include/linux/tty.h
-> >>>> +++ b/include/linux/tty.h
-> >>>> @@ -14,6 +14,7 @@
-> >>>>   #include <uapi/linux/tty.h>
-> >>>>   #include <linux/rwsem.h>
-> >>>>   #include <linux/llist.h>
-> >>>> +#include <../../kernel/printk/internal.h>
-> >>>
-> >>> Including printk's internal header in linux/tty.h doesn't look correct to me.
-> >>>
-> >>
-> >> This is because this patch wants __printk_safe_enter()/__printk_safe_exit()
-> >> without #ifdef'ing CONFIG_PRINTK.
-> > 
-> > Then those functions need to be "properly" exported, not placed only in
-> > an "internal.h" file that obviously should not be included from anywhere
-> > like this.
-> > 
-> >> Peter and Sergey, what should we do?
-> >> Can we move printk_safe_enter_irqsave()/printk_safe_exit_irqrestore() to include/linux/printk.h ?
-> > 
-> > Are you sure that is the only way to resolve this?
-> 
-> Publishing printk_safe_enter_irqsave() etc. was once proposed at
-> https://lkml.kernel.org/r/20181016050428.17966-3-sergey.senozhatsky@gmail.com and
-> Peter Zijlstra did not like such change. But we reconfirmed that "tty_port lock must
-> switch to printk_safe" at https://lkml.kernel.org/r/20190219013254.GA20023@jagdpanzerIV .
-> 
-> Two years has elapsed since a completely new printk implementation which would not
-> use printk_safe context was proposed, but printk_safe context is still remaining.
-> Therefore, we might need to tolerate, with a warning that printk_safe_enter_irqsave()
-> etc. are not intended for general use, use of printk_safe context for tty_msg() and
-> tty_buffer_alloc().
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-The printk work is still ongoing, perhaps work with those developers on
-this?
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-thanks,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/media/i2c/adv7604.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
+index 18184297e2f0..9cf6de66ae25 100644
+--- a/drivers/media/i2c/adv7604.c
++++ b/drivers/media/i2c/adv7604.c
+@@ -3618,7 +3618,7 @@ static int adv76xx_remove(struct i2c_client *client)
+ 	io_write(sd, 0x6e, 0);
+ 	io_write(sd, 0x73, 0);
+ 
+-	cancel_delayed_work(&state->delayed_work_enable_hotplug);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
+ 	v4l2_async_unregister_subdev(sd);
+ 	media_entity_cleanup(&sd->entity);
+ 	adv76xx_unregister_clients(to_state(sd));
+-- 
+2.25.1
+
