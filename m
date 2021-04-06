@@ -2,160 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F04A354EB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C464D354EBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240209AbhDFIcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        id S244366AbhDFIdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbhDFIcw (ORCPT
+        with ESMTP id S232820AbhDFIdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:32:52 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE0CC06174A;
-        Tue,  6 Apr 2021 01:32:41 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso7260320pjb.3;
-        Tue, 06 Apr 2021 01:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IDxkuTbkM54Xm1Acge8AgpMHwOFsJk+F1h7AXGDseX4=;
-        b=cSG6YBH2D0dnDpTEOvco0wOUCWTCMZZyT2LESFBnj7V7NcFMOtgyKjphIv4te74/vy
-         g53XBfnJp/WLHiwxCgdkthf22Tzk3tVMBH/CMVO/KnCJc/sMziNzw67QWGNRbpjFFRKz
-         LZH8TLtqYNJ3vwJP/F8xzg16FpULRYSmANSNIk44dMiDRvs83gGFQkuNcRM+xGgnhpIz
-         bnHE7n1eXTWz0u/RhiqRoMlwJAWRz+4v7jSc3XHQERhfTfICABrCWlxLvvXIv/0F8JX+
-         4RcgptrSo5glUKkXeWMt3nB+9oiWEbJYHgmpDGXBBOVqHY1fiHFOKjE2Qx42PKaWi0sV
-         qg9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IDxkuTbkM54Xm1Acge8AgpMHwOFsJk+F1h7AXGDseX4=;
-        b=nB/jwKy/uOlTvK2XUDE7s8WVTqkQY5dKpcu48Lmwe4b2VvwMB+s4uo2iiHqKVonGXW
-         gXHbiekSVzwvTvM8nYORtss95CQS5ZzBt9l7AamRqijBMXgA/IlSsXOUcdggbjPFME6v
-         DGSSZaWPNnUYZXwAzx1W6fHelMZ2gnaosbgWlybUvKZsmpkQZaQr6SuA6RBv5PgMbv/U
-         /h2AdWkTJVoroOOgUFKHs/eRZcCr4h5wepxMnEwydFRzcbgS9apGbGfbiQi53J1Gbdw/
-         7AOT+f/X5U75+DSwmgzz5t8Ajc2TOC/pfsbTecOT2eGEQwLlFuhDvIqNfpmPbBWRBjjs
-         Ej+Q==
-X-Gm-Message-State: AOAM533ioeCn5bms/yPJinPbQoutFAl1gOnP1UMgZ6Bh1bdJB4NBeQF5
-        WsTDt0EkuBAsJ27EcwSED7rTL0mknfQ=
-X-Google-Smtp-Source: ABdhPJwsrMNhimh7AmIjFD12TWEarPGaBkgfFq8boNstUh+9CL4/MgCmE8I0BfiUI/DUb1PxHS2lTQ==
-X-Received: by 2002:a17:902:7c8a:b029:e6:f010:a4f4 with SMTP id y10-20020a1709027c8ab02900e6f010a4f4mr27386180pll.17.1617697960930;
-        Tue, 06 Apr 2021 01:32:40 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id u25sm17869165pgk.34.2021.04.06.01.32.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Apr 2021 01:32:39 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: X86: Count success and invalid yields
-Date:   Tue,  6 Apr 2021 16:32:15 +0800
-Message-Id: <1617697935-4158-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 6 Apr 2021 04:33:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84996C06174A;
+        Tue,  6 Apr 2021 01:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wOOvbvczBiqDUD1z9pJzeLiPhATvYrqx3RE9Hb+eT8I=; b=SjVFPWxveC/8e8EIbcjSMdBpLP
+        VkEzTkJad1jAtUK+M4B4jStCCl7tHk3qH/zi0s32A/0NFHArNrfl/oDm+PXQlfQ6uT2/2MbTcEnw7
+        64aaIxw6rQ5SKFeA6HDQWd6+9yo9qWTX0JrpqbwCKsvM8EInotd+Ug3ztl3ezeb+KNq8MbdnVqGde
+        LdHPFL+r0DoIDmPIQGvbmSt18HteM9uUIgqVwG4tdTLUOarUvhQbFc2Ye0LtUyebDAT128fcaAW+7
+        iP7R8QQXM26jTfrTzdyHfbVzyqnPytYGP570R/bsclofCma5ZgI/OdpKKYmd3izqPjsKtvsadjRcT
+        5ECNB2yA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTh9K-001t7Z-Tk; Tue, 06 Apr 2021 08:33:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D650301179;
+        Tue,  6 Apr 2021 10:33:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6B80D2BAE8C22; Tue,  6 Apr 2021 10:33:25 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 10:33:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+dde0cc33951735441301@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        netdev@vger.kernel.org, tglx@linutronix.de, frederic@kernel.org,
+        paulmck@kernel.org
+Subject: Re: Something is leaking RCU holds from interrupt context
+Message-ID: <YGwc1d8049ySxfPE@hirez.programming.kicks-ass.net>
+References: <00000000000025a67605bf1dd4ab@google.com>
+ <20210404102457.GS351017@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210404102457.GS351017@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Sun, Apr 04, 2021 at 11:24:57AM +0100, Matthew Wilcox wrote:
+> On Sat, Apr 03, 2021 at 09:15:17PM -0700, syzbot wrote:
+> > HEAD commit:    2bb25b3a Merge tag 'mips-fixes_5.12_3' of git://git.kernel..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1284cc31d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=dde0cc33951735441301
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+> > 
+> > WARNING: suspicious RCU usage
+> > 5.12.0-rc5-syzkaller #0 Not tainted
+> > -----------------------------
+> > kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
+> > 
+> > other info that might help us debug this:
+> > 
+> > 
+> > rcu_scheduler_active = 2, debug_locks = 0
+> > no locks held by systemd-udevd/4825.
+> 
+> I think we have something that's taking the RCU read lock in
+> (soft?) interrupt context and not releasing it properly in all
+> situations.  This thread doesn't have any locks recorded, but
+> lock_is_held(&rcu_bh_lock_map) is true.
+> 
+> Is there some debugging code that could find this?  eg should
+> lockdep_softirq_end() check that rcu_bh_lock_map is not held?
+> (if it's taken in process context, then BHs can't run, so if it's
+> held at softirq exit, then there's definitely a problem).
 
-To analyze some performance issues with lock contention and scheduling,
-it is nice to know when directed yield are successful or failing.
+Hmm, I'm sure i've written something like that at least once, but I
+can't seem to find it :/
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Does something like the completely untested below work for you?
+
 ---
- arch/x86/include/asm/kvm_host.h |  2 ++
- arch/x86/kvm/x86.c              | 26 ++++++++++++++++++++------
- 2 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 44f8930..157bcaa 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1126,6 +1126,8 @@ struct kvm_vcpu_stat {
- 	u64 halt_poll_success_ns;
- 	u64 halt_poll_fail_ns;
- 	u64 nested_run;
-+	u64 yield_directed;
-+	u64 yield_directed_ignore;
- };
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 600c10da321a..d8aa1dc481b6 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -54,6 +54,8 @@ extern void trace_hardirqs_off_finish(void);
+ extern void trace_hardirqs_on(void);
+ extern void trace_hardirqs_off(void);
  
- struct x86_instruction_info;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 16fb395..3b475cd 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -246,6 +246,8 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
- 	VCPU_STAT("halt_poll_success_ns", halt_poll_success_ns),
- 	VCPU_STAT("halt_poll_fail_ns", halt_poll_fail_ns),
- 	VCPU_STAT("nested_run", nested_run),
-+	VCPU_STAT("yield_directed", yield_directed),
-+	VCPU_STAT("yield_directed_ignore", yield_directed_ignore),
- 	VM_STAT("mmu_shadow_zapped", mmu_shadow_zapped),
- 	VM_STAT("mmu_pte_write", mmu_pte_write),
- 	VM_STAT("mmu_pde_zapped", mmu_pde_zapped),
-@@ -8211,21 +8213,33 @@ void kvm_apicv_init(struct kvm *kvm, bool enable)
- }
- EXPORT_SYMBOL_GPL(kvm_apicv_init);
- 
--static void kvm_sched_yield(struct kvm *kvm, unsigned long dest_id)
-+static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
- {
- 	struct kvm_vcpu *target = NULL;
- 	struct kvm_apic_map *map;
- 
-+	vcpu->stat.yield_directed++;
++extern void lockdep_validate_context_empty(void);
 +
- 	rcu_read_lock();
--	map = rcu_dereference(kvm->arch.apic_map);
-+	map = rcu_dereference(vcpu->kvm->arch.apic_map);
+ # define lockdep_hardirq_context()	(raw_cpu_read(hardirq_context))
+ # define lockdep_softirq_context(p)	((p)->softirq_context)
+ # define lockdep_hardirqs_enabled()	(this_cpu_read(hardirqs_enabled))
+@@ -69,6 +71,7 @@ do {						\
+ } while (0)
+ # define lockdep_hardirq_exit()			\
+ do {						\
++	lockdep_validate_context_empty();	\
+ 	__this_cpu_dec(hardirq_context);	\
+ } while (0)
+ # define lockdep_softirq_enter()		\
+@@ -77,6 +80,7 @@ do {						\
+ } while (0)
+ # define lockdep_softirq_exit()			\
+ do {						\
++	lockdep_validate_context_empty();	\
+ 	current->softirq_context--;		\
+ } while (0)
  
- 	if (likely(map) && dest_id <= map->max_apic_id && map->phys_map[dest_id])
- 		target = map->phys_map[dest_id]->vcpu;
- 
- 	rcu_read_unlock();
-+	if (!target)
-+		goto no_yield;
-+
-+	if (!READ_ONCE(target->ready))
-+		goto no_yield;
- 
--	if (target && READ_ONCE(target->ready))
--		kvm_vcpu_yield_to(target);
-+	if (kvm_vcpu_yield_to(target) <= 0)
-+		goto no_yield;
-+	return;
-+
-+no_yield:
-+	vcpu->stat.yield_directed_ignore++;
-+	return;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 82db977eada8..09ac70d1b3a6 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2697,6 +2697,37 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	return 0;
  }
  
- int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-@@ -8272,7 +8286,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 			break;
++void lockdep_validate_context_empty(void)
++{
++	struct task_struct *curr = current;
++	int depth, ctx = task_irq_context(curr);
++
++	if (debug_locks_silent)
++		return;
++
++	depth = curr->lockdep_depth;
++	if (!depth)
++		return;
++
++	if (curr->held_locks[depth-1].irq_context != ctx)
++		return;
++
++
++	pr_warn("\n");
++	pr_warn("====================================\n");
++	pr_warn("WARNING: Asymmetric locking detected\n");
++	print_kernel_ident();
++	pr_warn("------------------------------------\n");
++
++	pr_warn("%s/%d is leaving an IRQ context with extra locks on\n",
++		curr->comm, task_pid_nr(curr));
++
++	lockdep_printk_held_locks(curr);
++
++	printk("\nstack backtrace:\n");
++	dump_stack();
++}
++
+ #else
  
- 		kvm_pv_kick_cpu_op(vcpu->kvm, a0, a1);
--		kvm_sched_yield(vcpu->kvm, a1);
-+		kvm_sched_yield(vcpu, a1);
- 		ret = 0;
- 		break;
- #ifdef CONFIG_X86_64
-@@ -8290,7 +8304,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 		if (!guest_pv_has(vcpu, KVM_FEATURE_PV_SCHED_YIELD))
- 			break;
- 
--		kvm_sched_yield(vcpu->kvm, a0);
-+		kvm_sched_yield(vcpu, a0);
- 		ret = 0;
- 		break;
- 	default:
--- 
-2.7.4
+ static inline int check_irq_usage(struct task_struct *curr,
 
