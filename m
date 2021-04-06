@@ -2,177 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC1235587F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F54E355887
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346016AbhDFPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:50:50 -0400
-Received: from mail-bn7nam10on2055.outbound.protection.outlook.com ([40.107.92.55]:65504
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346010AbhDFPui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:50:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TwT5a4oiseok7v5M0v9da3wG0aZSMKQFsdOOR12oaWuKLWaIVIyxr/Nx1rumv3Dltdy9fg9lqkNb0n9qL3Flb9M9PSwuGknVeGZqa8P3FAX+YGaJ+oub6lxQP5rsnbu2tk3IUT4tgWCTA1VXBbWu+b/O5kV/lJ4MxWcbXvQkBuBfhPjY/IShHYAEkP3MAzAKX+GODZ/qHAajrnTIZe7Kq4A5WGbjtFQWE2ibyjZb+IV7TaT++2Cdn1XuHx+B/w7K5zWJMqW8Nppse0vcDlL+dU07a025tfdkhutKupAaRedxtfr/FSpvXRuLCv3EhKcFgQwSU4suZq7Dw3bHWZ6xpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Jq/38YBFGqAxVQItBx421hIk/hEUAgkVWEuzEvOg5s=;
- b=nhjssz6X6r2DWOD6XA8b73G/h9/LBGpyBj7a19K3z6txDDHIkS0RUuUKqo1E/HOUu2EJ0Tz7ULR/63Y0/OLiNE7tbxNDTUtFoDAJKI3KDF90NOh3cXZTSU5v6AfgL3/fNoGoVBeMPV4qj0ibU5Vfi/tFrg5b/7EB0h/tEhclYp7YZlE8BYIsV9hUpHOeeTuQfABA2us2YoPwYsSoaHJ0fS4Z2Nsx56fl90SnB7If2fAuUd/odqTRSptMuw5CxLrcNwjH0lZ4NvomOWtEhJOD+0WLF8iFcLo7aMpHqsEeme97Zh3Rq4TUwAlxCU56ou3hu/MnFQzI4Gi9/6K9yQp18w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Jq/38YBFGqAxVQItBx421hIk/hEUAgkVWEuzEvOg5s=;
- b=c5F4wMRv+EQTa6ivxu1qNuT8Dj1mz/WDRpmzLQMz2ZnsjWzqtjj2s3tKNOlGCuoE6tLY9lQClGZEewRJzurfLwxgTQhN1IYnBju5vrpjEB43dM/eHP2nX+ZMs/OQGYyyH+sAAIKUXGAtV/TSJvH3YOorIk8VitGTaC4QtnRNsUY=
-Received: from MWHPR12CA0039.namprd12.prod.outlook.com (2603:10b6:301:2::25)
- by BN6PR1201MB2483.namprd12.prod.outlook.com (2603:10b6:404:a6::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
- 2021 15:50:29 +0000
-Received: from CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:2:cafe::e0) by MWHPR12CA0039.outlook.office365.com
- (2603:10b6:301:2::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32 via Frontend
- Transport; Tue, 6 Apr 2021 15:50:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT015.mail.protection.outlook.com (10.13.175.130) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 15:50:28 +0000
-Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:50:26 -0500
-From:   Ramakrishna Saripalli <rsaripal@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-CC:     <rsaripal@amd.com>
-Subject: [PATCH 5/5] x86/speculation: Add PSF mitigation kernel parameters
-Date:   Tue, 6 Apr 2021 10:50:04 -0500
-Message-ID: <20210406155004.230790-6-rsaripal@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406155004.230790-1-rsaripal@amd.com>
-References: <20210406155004.230790-1-rsaripal@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32f82fb5-1aae-4b50-9db7-08d8f913b3e7
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB2483:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB24837F217E283BBABEA9EF3D9B769@BN6PR1201MB2483.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vpsVpjP1sQ6fHsV7skR0pv3R0xzXHZ53poPVB0NlSgbLagOH/WhGTQYe8//TSBY6z+i5q5rerwjTY+s2aZx6pAn5Tr6vUwHXK7OgtCFPUcddRVdOivHqWR6kcUzNHqosRe6sW3ZFkkUAlVluMUltdMWirDZE92oqmseJ/RncH3yeEPX6qeL0Ci1HOsgFbQdVU7n95fqc4pyRJJqP1qAZMvzo8shh4uWY292QmM6d1+iKIs3LBZjvFrcf17sOeSXQYELnSF3aTtWIOrIIHnIxucKEWQhSdKuetOuZrloqHVeO2XEdRQFgYvDeB2fYeW7MGGKI/DS+GUnUcd6fygV5yMdXaDp7ostPio2XOcYv5IgWxK2/ZOGJWy4su3D8zHLZzrlm59lY2IDt9UNxIZ2bZRhvWYnkV+JdCkKQfTWLa1zK4mt/oISNcjROQAg+tKsqVZbKcgyfI1aiPfzrdF/WTraeAUbwlPbrwVi27uHTs+HaZt8do4g5kkzi0no4oPu+roq+/oPgq7ZZgdor1h8civKhphrB5lfdybO432C7wRnEFNGyhyVXEjZqW9Sd5FKoqJM3rQdY23UBt75VLDRr3/wm+UXCFKQmOgf+zIQsM1XoHf0hLSmsA1o22OSaoiA77zC3owu+q6EoCmEZWq+mTL+FtnzG4bkUc10vWTm3fPHIhU37tt9gRx2+WnpaLtHb
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(46966006)(36840700001)(7696005)(36756003)(110136005)(81166007)(356005)(336012)(426003)(82740400003)(1076003)(316002)(16526019)(2616005)(47076005)(5660300002)(6666004)(8936002)(70206006)(4326008)(2906002)(82310400003)(36860700001)(83380400001)(478600001)(186003)(26005)(8676002)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:50:28.8852
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32f82fb5-1aae-4b50-9db7-08d8f913b3e7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB2483
+        id S1346056AbhDFPvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243875AbhDFPvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:51:12 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3598FC06174A;
+        Tue,  6 Apr 2021 08:51:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id l4so22705069ejc.10;
+        Tue, 06 Apr 2021 08:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MwBs5r1ZJNOmTqYBpKTtnKYCyLFiaA9WgWxe+ttx57g=;
+        b=YpfgJoVR99TLjEIAiCUf0MhS+8vlpnI8XDlBtP8pBpMnVl0rJoCsv2VrTntaygKrVi
+         oYU39msAOlzwehwCWXX45pzV/nUMhAHb2Z3rvEKHNeKHuk0seJ71SA6Clu1YwnRXi2Zm
+         bM/UuIHPx6eqJAd/1ZoZWPpNppiSjkugnTo9hFRKLfxY6fTMeEUfQCJ/L6ZwD8GKBLb5
+         LG1rjqVfgw0TiQ6gsZAMsDJjExhL0IID0Jn4yj5BNw59xhBz5ZfWLX9zhwUj3zovMFvP
+         RIp18iRTt7qlyUtO8P7bvOVLcv2k0pvF34zV/OlxRYQwvhmTmB9ZSw6GvhZf3q9C/7We
+         Ui2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MwBs5r1ZJNOmTqYBpKTtnKYCyLFiaA9WgWxe+ttx57g=;
+        b=W+0NCTepL43FM9//rNLHAh+n9doLYkBmUPVklZMgfkW57a75tj4WKOG/XgGpr7iI5W
+         IhYI41vjtpU/mhfRZus3hJdIul1S2rsILsOP6tSZoas5g1n5/KyHWsxv+erymTMAB8uF
+         PqC/WbbMA3cS8Ojo973dnNVLMExXGUf4KzGWODUkF5JLT287SFCdupiK8tIHpNlzKGQd
+         kiF8dBkaNG3xsF6OJT2YnBT/sVOQjBGytZDvprATnCOWQjA7XRDuIgoTv1RxWLUwzX6P
+         VvanpUwz5dZ/eEfvqrbTb60wrgwc+KVDZukoxa1cZXQYfboOEgo/5IWBt8JaIPB7UnO+
+         xIPQ==
+X-Gm-Message-State: AOAM5319RYaBZjzNIEKeepmgcOU+Ue+rlvFBpG+MC1sT7DbQQEGVNQKg
+        4Loe/pSilqou8VNLxiFWkeU=
+X-Google-Smtp-Source: ABdhPJwB8DLj57BRL/dataeb6kvhb3ZsPmD6W8ROBoUSxQljHmy0I8hpKKuNGdvCPz5jzF8sJ9z0LQ==
+X-Received: by 2002:a17:906:1ba9:: with SMTP id r9mr2482740ejg.395.1617724261927;
+        Tue, 06 Apr 2021 08:51:01 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h8sm13894327ede.25.2021.04.06.08.51.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Apr 2021 08:51:01 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
+Date:   Tue,  6 Apr 2021 17:50:52 +0200
+Message-Id: <20210406155053.29101-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+Current dts files with 'pwm' nodes are manually verified.
+In order to automate this process pwm-rockchip.txt
+has to be converted to yaml.
 
-PSF mitigation introduces new kernel parameters.
-
-The kernel parameters for PSF mitigation are modeled
-after spec_store_bypass_disable.
-
-Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- .../admin-guide/kernel-parameters.txt         | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 ---------
+ .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 66 ++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+ create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..68dfde77a87d 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2876,6 +2876,7 @@
- 					       nospectre_v2 [X86,PPC,S390,ARM64]
- 					       spectre_v2_user=off [X86]
- 					       spec_store_bypass_disable=off [X86,PPC]
-+					       psfd=off [X86]
- 					       ssbd=force-off [ARM64]
- 					       l1tf=off [X86]
- 					       mds=off [X86]
-@@ -3243,6 +3244,8 @@
- 
- 	nohugeiomap	[KNL,X86,PPC,ARM64] Disable kernel huge I/O mappings.
- 
-+	nopsfd          [HW,X86] Disable mitigation for Predictive Store Forwarding.
+diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt b/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+deleted file mode 100644
+index f70956dea..000000000
+--- a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-Rockchip PWM controller
+-
+-Required properties:
+- - compatible: should be "rockchip,<name>-pwm"
+-   "rockchip,rk2928-pwm": found on RK29XX,RK3066 and RK3188 SoCs
+-   "rockchip,rk3288-pwm": found on RK3288 SOC
+-   "rockchip,rv1108-pwm", "rockchip,rk3288-pwm": found on RV1108 SoC
+-   "rockchip,vop-pwm": found integrated in VOP on RK3288 SoC
+- - reg: physical base address and length of the controller's registers
+- - clocks: See ../clock/clock-bindings.txt
+-   - For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399):
+-     - There is one clock that's used both to derive the functional clock
+-       for the device and as the bus clock.
+-   - For newer hardware (rk3328 and future socs): specified by name
+-     - "pwm": This is used to derive the functional clock.
+-     - "pclk": This is the APB bus clock.
+- - #pwm-cells: must be 2 (rk2928) or 3 (rk3288). See pwm.yaml in this directory
+-   for a description of the cell format.
+-
+-Example:
+-
+-	pwm0: pwm@20030000 {
+-		compatible = "rockchip,rk2928-pwm";
+-		reg = <0x20030000 0x10>;
+-		clocks = <&cru PCLK_PWM01>;
+-		#pwm-cells = <2>;
+-	};
+diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+new file mode 100644
+index 000000000..cfd637d3e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/pwm-rockchip.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
- 			Equivalent to smt=1.
- 
-@@ -4002,6 +4005,48 @@
- 			that).
- 			Format: <bool>
- 
-+        psfd=		[HW,X86]
-+                        Predictive Store Forwarding Disable control
++title: Rockchip PWM controller
 +
-+                        Certain AMD processors feature a new technology called Predictive
-+                        Store Forwarding. This feature is designed to improve the
-+                        performance of code execution by predicting dependencies
-+                        between loads and stores.
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
 +
-+                        Modern processors implement techniques to optimize the
-+                        execution of a load instruction to an address that was
-+                        recently written by a store instruction.
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,rk2928-pwm
++      - const: rockchip,rk3288-pwm
++      - const: rockchip,vop-pwm
++      - items:
++          - enum:
++              - rockchip,rv1108-pwm
++          - const: rockchip,rk3288-pwm
 +
-+                        PSF expands on the above by speculating on the relationship
-+                        between loads and stores without waiting for address
-+                        calculation to complete. With PSF, CPU learns over time the
-+                        relationship between loads and stores.
++  reg:
++    maxItems: 1
 +
-+                        Incorrect PSF predictions can occur for various reasons.
-+                        Please see the AMD PSF whitepaper for more information.
++  clocks:
++    minItems: 1
++    maxItems: 2
++    description:
++      For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399)
++        There is one clock that is used both to derive the functional clock
++        for the device and as the bus clock.
++      For newer hardware (rk3328 and future SoCs) that is also specified
++      with clock names.
++        "pwm" is used to derive the functional clock for the device.
++        "pclk" is used as the APB bus clock.
 +
-+                        All AMD processors that implement PSF also provide ability
-+                        to control mitigation of PSF.
++  clock-names:
++    minItems: 1
++    items:
++      - const: pwm
++      - const: pclk
 +
-+                        Following options are provided to control PSF mitigation.
++  "#pwm-cells":
++    enum: [2, 3]
++    description:
++      Must be 2 (rk2928) or 3 (rk3288).
++      See pwm.yaml for a description of the cell format.
 +
-+                        The options are:
-+                        on      - Unconditionally disable Speculative Store Bypass
-+                        off     - Unconditionally enable Speculative Store Bypass
-+                        auto    - Kernel detects whether the CPU is vulnerable.
-+                                  If the CPU is not vulnerable, off is selected.
-+                                  If the CPU is vulnerable, default mitigation is
-+                                  KConfig dependent.
-+                        prctl   - Control Predictive Store Forwarding per thread
-+                                  via prctl. Predictive Store Forwarding is enabled
-+                                  per process by default. The state of the control
-+                                  is inherited on fork.
-+                        seccomp - Same as prctl above but all seccomp threads will
-+                                  disable PSF unless they opt out.
++additionalProperties: false
 +
-+                        Default mitigations:
-+                        [X86] If CONFIG_SECCOMP=y "seccomp" else "prctl"
++required:
++  - compatible
++  - reg
++  - clocks
++  - "#pwm-cells"
 +
- 	psi=		[KNL] Enable or disable pressure stall information
- 			tracking.
- 			Format: <bool>
++examples:
++  - |
++    #include <dt-bindings/clock/rk3188-cru-common.h>
++    pwm0: pwm@20030000 {
++      compatible = "rockchip,rk2928-pwm";
++      reg = <0x20030000 0x10>;
++      clocks = <&cru PCLK_PWM01>;
++      #pwm-cells = <2>;
++    };
 -- 
-2.25.1
+2.11.0
 
