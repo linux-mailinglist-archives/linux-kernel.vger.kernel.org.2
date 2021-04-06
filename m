@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74ACF355956
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09F135595B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346515AbhDFQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:39:06 -0400
-Received: from alln-iport-8.cisco.com ([173.37.142.95]:18432 "EHLO
-        alln-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346499AbhDFQjC (ORCPT
+        id S244233AbhDFQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232042AbhDFQkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:39:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=907; q=dns/txt; s=iport;
-  t=1617727134; x=1618936734;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Smn0mCx9dbvDRLHtP0dTWqRsaDRXRIB0PRh2q1rD0Lk=;
-  b=Iot4pCl9rsClUU/6MKDnsHdvF+f5tVFlqD9zruuAyZV/f/WAP69x74Mz
-   Axs7fgCnuoEVSSwNxLHR6QJeavuPnIS+YuuOpoQRACfZJLTK6MSeBgzPI
-   1k2JiR9n8IMclcgZB3PPeMP3D6plKJnaY4P2Cr0c62p6hvtNs6TCPRYs8
-   s=;
-X-IronPort-AV: E=Sophos;i="5.82,310,1613433600"; 
-   d="scan'208";a="690319628"
-Received: from alln-core-7.cisco.com ([173.36.13.140])
-  by alln-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 06 Apr 2021 16:38:52 +0000
-Received: from zorba ([10.24.14.212])
-        by alln-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 136GcoPb001265
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 6 Apr 2021 16:38:51 GMT
-Date:   Tue, 6 Apr 2021 09:38:49 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Will Deacon <will@kernel.org>, ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] CMDLINE: powerpc: convert to generic builtin command
- line
-Message-ID: <20210406163849.GT2469518@zorba>
-References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
- <e51a16e369f6a7dfae948c6de76061f3a061a375.1617126961.git.danielwa@cisco.com>
- <366fd8d3-09c9-8cae-3f10-046c4a643792@csgroup.eu>
+        Tue, 6 Apr 2021 12:40:15 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F90AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:40:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id r12so23000405ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:40:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TYC5pS0xZoRYRV3BpSxKjUXSyW8aTbxm6/R1LCQeLzw=;
+        b=qV50w6B8dKqAjAmUayknbkDnjoTNg3BVKtkUfavuH2Ko5BoDXs6W0KfMdPVqXa4t40
+         CFDr4rS4U6HJBrhrhHCWn6mDvzzMXyNckepu1qbjeaHYsUkzgXRxVj0jwXGiM56tZfbg
+         F8JFEvZa+GaJBynVMqfAT743ycIV11ef+8zDPhBPQR3OSkI1t4A0TseXbpkcR6NVTmVB
+         7RSydu7KZnvqQg0j4kiqfeizcy4KPervJAYw4gKmXA8/j7RXHN6tCcVZQrw9Jx5vjWWR
+         6ufSUQMJeCqrFIrAcQAmPv4FpkDArjAVCNCBsqq6vPXACC85QxngpL/MdNWvQ1vFDWbT
+         k24g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TYC5pS0xZoRYRV3BpSxKjUXSyW8aTbxm6/R1LCQeLzw=;
+        b=UOFmhAv9YuyW7VN6VGu6tXQxpJTcY3r1cV6Woc19k/8PxWioT56chW24OLWrKntFaD
+         RUcr3lM1Ve9ZWDiqDfXQYSILc/PTAEn5Zu1qRvb4zxnxOPMbKskPfzSg+xObJBspLlYl
+         vvXsturML4dpxzkZdgoLO0Y4KvGPzCBqy4BHvxGmiqWb+ng/WpGh+Ijl1Xf49Na0fhsc
+         hrihwEk2LIXSWgjrYH5nyjHyqj+cB88WmnOOvCtUvuOzHD0rXOts2VhLnEDy/0Qfun7L
+         s9zt1c67JcmeG4KKqjLUAyaBTpmTqtXPqZ+6pA/DJq4rLPbz6vin2rvWR/YCmIwSy7Hx
+         FCGA==
+X-Gm-Message-State: AOAM532lnz1om8CYRbw57QJ9vQYBCpTV0To7uTTbfLRTzXDe5kfpmmsw
+        Py6SSp8cUrFT/loWfAPh7+E=
+X-Google-Smtp-Source: ABdhPJy7sW6ic8uagw1PdBfYwaIz1gA5ezwo92Wh8hrIC5f8GuoRKE48Me3mP1HmWhy7b0RmPOzZ4g==
+X-Received: by 2002:a17:906:430f:: with SMTP id j15mr21808675ejm.543.1617727206298;
+        Tue, 06 Apr 2021 09:40:06 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id u24sm14117326edt.85.2021.04.06.09.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 09:40:05 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Add spaces around operator in HalBtc8723b1Ant.h
+Date:   Tue,  6 Apr 2021 18:40:01 +0200
+Message-Id: <20210406164001.13646-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <366fd8d3-09c9-8cae-3f10-046c4a643792@csgroup.eu>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.14.212, [10.24.14.212]
-X-Outbound-Node: alln-core-7.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 07:34:19PM +0200, Christophe Leroy wrote:
-> 
-> 
-> Le 30/03/2021 à 19:56, Daniel Walker a écrit :
-> > This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
-> > option.
-> > 
-> > This includes a scripted mass convert of the config files to use
-> > the new generic cmdline. There is a bit of a trim effect here.
-> > It would seems that some of the config haven't been trimmed in
-> > a while.
-> 
-> Sorry, this patch is not acceptable as is, the default for powerpc is
-> CMDLINE_FROM_BOOTLOADER, ie builtin-cmdline is taken if and only if none is
-> provided by the bootloader.
-> 
-> As far as I understand, that disappear with this patch.
+Added spaces around operators in file HalBtc8723b1Ant.h. Issue detected
+by checkpatch.pl. Spaces are preferred to improve readibility.
 
-We've talked about it previously. Maybe your not understanding the precedent of
-the command line options. I tried to explain that one before.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What problems do you think are caused if this patch is applied ?
+diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.h b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.h
+index 59e8c68cdc20..719e19420a3b 100644
+--- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.h
++++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.h
+@@ -15,7 +15,7 @@
+ #define	BT_INFO_8723B_1ANT_B_CONNECTION		BIT0
+ 
+ #define	BT_INFO_8723B_1ANT_A2DP_BASIC_RATE(_BT_INFO_EXT_)	\
+-		(((_BT_INFO_EXT_&BIT0)) ? true : false)
++		(((_BT_INFO_EXT_ & BIT0)) ? true : false)
+ 
+ #define	BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT 2
+ 
+-- 
+2.30.2
 
-Daniel
