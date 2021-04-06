@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08A7354CFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99405354D03
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244034AbhDFGip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:38:45 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:13962 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238603AbhDFGil (ORCPT
+        id S233236AbhDFGjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:39:21 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15132 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244060AbhDFGjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:38:41 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B776B980348;
-        Tue,  6 Apr 2021 14:38:29 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drivers: mtd: ubi: Remove unnecessary struct declaration
-Date:   Tue,  6 Apr 2021 14:37:51 +0800
-Message-Id: <20210406063751.522992-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 6 Apr 2021 02:39:18 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDyV14WG7znXSL;
+        Tue,  6 Apr 2021 14:36:25 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
+ 14:39:02 +0800
+Subject: Re: [PATCH v1 1/2] scsi: pm8001: clean up for white space
+To:     Bart Van Assche <bvanassche@acm.org>, <jinpu.wang@cloud.ionos.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1617354522-17113-1-git-send-email-luojiaxing@huawei.com>
+ <1617354522-17113-2-git-send-email-luojiaxing@huawei.com>
+ <7f8aef00-07bc-6b63-19a1-85a8153387cd@acm.org>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <3dd042b3-eb86-f0aa-5542-3f763f6830e0@huawei.com>
+Date:   Tue, 6 Apr 2021 14:39:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTEpDHkxDHkxKTR4eVkpNSkxNQkpKS0JCT0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6KSo5SD8QAi4zQgEfDAEN
-        OS4wCxZVSlVKTUpMTUJKSkpLSUtIVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTk9MNwY+
-X-HM-Tid: 0a78a5e769e6d992kuwsb776b980348
+In-Reply-To: <7f8aef00-07bc-6b63-19a1-85a8153387cd@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct ubi_wl_entry is defined at 178th line.
-The declaration here is unnecessary. Remove it.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/mtd/ubi/ubi.h | 2 --
- 1 file changed, 2 deletions(-)
+On 2021/4/3 0:01, Bart Van Assche wrote:
+> On 4/2/21 2:08 AM, Luo Jiaxing wrote:
+>>   #define AAP1_MEMMAP(r, c) \
+>> -	(*(u32 *)((u8*)pm8001_ha->memoryMap.region[AAP1].virt_ptr + (r) * 32 \
+>> +	(*(u32 *)((u8 *)pm8001_ha->memoryMap.region[AAP1].virt_ptr + (r) * 32 \
+>>   	+ (c)))
+> Since this macro is being modified, please convert it into an inline
+> function such that the type of the arguments can be verified by the
+> compiler.
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c2da77163f94..7c083ad58274 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -388,8 +388,6 @@ struct ubi_volume_desc {
- 	int mode;
- };
- 
--struct ubi_wl_entry;
--
- /**
-  * struct ubi_debug_info - debugging information for an UBI device.
-  *
--- 
-2.25.1
+
+Sure, but still keep the function name as AAP1_MEMMAP?
+
+
+Thanks
+
+Jiaxing
+
+
+>
+> Thanks,
+>
+> Bart.
+>
+> .
+>
 
