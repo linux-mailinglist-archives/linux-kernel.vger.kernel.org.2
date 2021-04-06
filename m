@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD1E354EC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBB8354EC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244392AbhDFIgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:36:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2762 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbhDFIgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:36:53 -0400
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF13007C3z687ZC;
-        Tue,  6 Apr 2021 16:31:40 +0800 (CST)
-Received: from lhreml707-chm.china.huawei.com (10.201.108.56) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:36:44 +0200
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- lhreml707-chm.china.huawei.com (10.201.108.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 6 Apr 2021 09:36:43 +0100
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2106.013;
- Tue, 6 Apr 2021 09:36:43 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [Linuxarm]  Re: [PATCH net] net: hns3: Limiting the scope of
- vector_ring_chain variable
-Thread-Topic: [Linuxarm]  Re: [PATCH net] net: hns3: Limiting the scope of
- vector_ring_chain variable
-Thread-Index: AQHXKkE/K8at3CzCL0GXC2nZ4TjLkKqma5uAgAC7QdA=
-Date:   Tue, 6 Apr 2021 08:36:43 +0000
-Message-ID: <50c5a2d96e174e76afa4eada669c7b26@huawei.com>
-References: <20210405172825.28380-1-salil.mehta@huawei.com>
- <161766060973.24414.1256394756703505340.git-patchwork-notify@kernel.org>
-In-Reply-To: <161766060973.24414.1256394756703505340.git-patchwork-notify@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.71.1]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S244399AbhDFIhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:37:24 -0400
+Received: from muru.com ([72.249.23.125]:51394 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234953AbhDFIhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:37:24 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 23EF180A4;
+        Tue,  6 Apr 2021 08:38:23 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 11:37:07 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] input: gpio-keys: Use hrtimer for software
+ debounce, if possible
+Message-ID: <YGwds97OjXIdZF3L@atomide.com>
+References: <20210307222240.380583-1-paul@crapouillou.net>
+ <20210307222240.380583-3-paul@crapouillou.net>
+ <YFpe6EhydawiMjHB@google.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFpe6EhydawiMjHB@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGF2ZSwNCkhvcGUgSSBhbSBub3QgbWlzc2luZyBzb21ldGhpbmcgYW5kIG5vdCBzdXJlIGhv
-dyB0aGlzIHBhdGNod29yayBib3Qgd29ya3MsDQp0aGUgcGF0Y2ggd2FzIHNlbnQgZm9yIC1uZXQg
-cmVwbyAoaS5lLiBidWcgZml4ZXMgYnJhbmNoKSBidXQgaXQgZ290IGFwcGxpZWQNCnRvIHRoZSAt
-bmV0LW5leHQgcmVwby4NCg0KPiBTdWJqZWN0OiBbTGludXhhcm1dIFJlOiBbUEFUQ0ggbmV0XSBu
-ZXQ6IGhuczM6IExpbWl0aW5nIHRoZSBzY29wZSBvZg0KPiB2ZWN0b3JfcmluZ19jaGFpbiB2YXJp
-YWJsZQ0KDQpbLi4uXQ0KDQo+IEhlbGxvOg0KPiANCj4gVGhpcyBwYXRjaCB3YXMgYXBwbGllZCB0
-byBuZXRkZXYvbmV0LW5leHQuZ2l0IChyZWZzL2hlYWRzL21hc3Rlcik6DQo+DQoNCkkgd2FzIHdv
-bmRlcmluZyBpZiBJIG1pc3NlZCBhbnl0aGluZyBpbiBteSBzdWJtaXNzaW9uIG9yIGJlY2F1c2Ug
-b2Ygc29tZQ0Kb3RoZXIgcmVhc29uIHRoaXMgcGF0Y2ggd2FzIGNob3NlbiB0byBiZSBhcHBsaWVk
-IHRvIHRoZSAtbmV0LW5leHQgcmVwbw0KaW5zdGVhZC4gUGVyaGFwcyB0aGlzIGlzIG5vdCBjbGFz
-c2lmaWVkIGFzIGJ1Zz8NCg0KTWFueSB0aGFua3MNClNhbGlsDQoNCj4gRnJvbTogcGF0Y2h3b3Jr
-LWJvdCtuZXRkZXZicGZAa2VybmVsLm9yZw0KPiBbbWFpbHRvOnBhdGNod29yay1ib3QrbmV0ZGV2
-YnBmQGtlcm5lbC5vcmddDQo+IFNlbnQ6IE1vbmRheSwgQXByaWwgNSwgMjAyMSAxMToxMCBQTQ0K
-PiBUbzogU2FsaWwgTWVodGEgPHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IENjOiBkYXZlbUBk
-YXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWku
-Y29tPjsNCj4gbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiBTdWJqZWN0OiBbTGludXhhcm1dIFJl
-OiBbUEFUQ0ggbmV0XSBuZXQ6IGhuczM6IExpbWl0aW5nIHRoZSBzY29wZSBvZg0KPiB2ZWN0b3Jf
-cmluZ19jaGFpbiB2YXJpYWJsZQ0KPiANCj4gSGVsbG86DQo+IA0KPiBUaGlzIHBhdGNoIHdhcyBh
-cHBsaWVkIHRvIG5ldGRldi9uZXQtbmV4dC5naXQgKHJlZnMvaGVhZHMvbWFzdGVyKToNCj4gDQo+
-IE9uIE1vbiwgNSBBcHIgMjAyMSAxODoyODoyNSArMDEwMCB5b3Ugd3JvdGU6DQo+ID4gTGltaXRp
-bmcgdGhlIHNjb3BlIG9mIHRoZSB2YXJpYWJsZSB2ZWN0b3JfcmluZ19jaGFpbiB0byB0aGUgYmxv
-Y2sgd2hlcmUgaXQNCj4gPiBpcyB1c2VkLg0KPiA+DQo+ID4gRml4ZXM6IDQyNGViODM0YTliZSAo
-Im5ldDogaG5zMzogVW5pZmllZCBITlMzIHtWRnxQRn0gRXRoZXJuZXQgRHJpdmVyIGZvciBoaXAw
-OA0KPiBTb0MiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFNhbGlsIE1laHRhIDxzYWxpbC5tZWh0YUBo
-dWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9oaXNpbGljb24v
-aG5zMy9obnMzX2VuZXQuYyB8IDMgKystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IEhlcmUgaXMgdGhlIHN1bW1hcnkgd2l0aCBsaW5r
-czoNCj4gICAtIFtuZXRdIG5ldDogaG5zMzogTGltaXRpbmcgdGhlIHNjb3BlIG9mIHZlY3Rvcl9y
-aW5nX2NoYWluIHZhcmlhYmxlDQo+ICAgICBodHRwczovL2dpdC5rZXJuZWwub3JnL25ldGRldi9u
-ZXQtbmV4dC9jL2QzOTJlY2QxYmMyOQ0KPiANCj4gWW91IGFyZSBhd2Vzb21lLCB0aGFuayB5b3Uh
-DQo+IC0tDQo+IERlZXQtZG9vdC1kb3QsIEkgYW0gYSBib3QuDQo+IGh0dHBzOi8va29yZy5kb2Nz
-Lmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3B3Ym90Lmh0bWwNCj4gDQo+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4YXJtIG1haWxpbmcgbGlzdCAt
-LSBsaW51eGFybUBvcGVuZXVsZXIub3JnDQo+IFRvIHVuc3Vic2NyaWJlIHNlbmQgYW4gZW1haWwg
-dG8gbGludXhhcm0tbGVhdmVAb3BlbmV1bGVyLm9yZw0K
+Hi,
+
+* Dmitry Torokhov <dmitry.torokhov@gmail.com> [700101 02:00]:
+> On Sun, Mar 07, 2021 at 10:22:40PM +0000, Paul Cercueil wrote:
+> > We want to be able to report the input event as soon as the debounce
+> > delay elapsed. However, the current code does not really ensure that,
+> > as it uses the jiffies-based schedule_delayed_work() API. With a small
+> > enough HZ value (HZ <= 100), this results in some input events being
+> > lost, when a key is quickly pressed then released (on a human's time
+> > scale).
+> > 
+> > Switching to hrtimers fixes this issue, and will work even on extremely
+> > low HZ values (tested at HZ=24). This is however only possible if
+> > reading the GPIO is possible without sleeping. If this condition is not
+> > met, the previous approach of using a jiffies-based timer is taken.
+> > 
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> 
+> Applied with minor edits to make more use of debounce_use_hrtimer flag.
+
+While testing Linux next I noticed that this patch causes a null pointer
+dereference at least when unbinding a gpio-keys instance, see below.
+
+Regards,
+
+Tony
+
+8< -----------------
+Unable to handle kernel NULL pointer dereference at virtual address 0000000c
+...
+PC is at hrtimer_active+0xc/0x98
+LR is at hrtimer_try_to_cancel+0x24/0x140
+...
+[<c01c43b8>] (hrtimer_active) from [<c01c50f4>] (hrtimer_try_to_cancel+0x24/0x140)
+[<c01c50f4>] (hrtimer_try_to_cancel) from [<c01c5224>] (hrtimer_cancel+0x14/0x4c)
+[<c01c5224>] (hrtimer_cancel) from [<bf1cae24>] (gpio_keys_attr_store_helper+0x1b8/0x1d8 [gpio_keys])
+[<bf1cae24>] (gpio_keys_attr_store_helper [gpio_keys]) from [<bf1cae80>] (gpio_keys_store_disabled_keys+0x18/0x24 [gpio_keys])
+[<bf1cae80>] (gpio_keys_store_disabled_keys [gpio_keys]) from [<c038ec7c>] (kernfs_fop_write_iter+0x10c/0x1cc)
+[<c038ec7c>] (kernfs_fop_write_iter) from [<c02df858>] (vfs_write+0x2ac/0x404)
+[<c02df858>] (vfs_write) from [<c02dfaf4>] (ksys_write+0x64/0xdc)
+[<c02dfaf4>] (ksys_write) from [<c0100080>] (ret_fast_syscall+0x0/0x58)
+
