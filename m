@@ -2,333 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A740355D57
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41A9355D59
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242001AbhDFVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:00:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35722 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238037AbhDFVA2 (ORCPT
+        id S242942AbhDFVAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:00:46 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:43961 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238037AbhDFVAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:00:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617742820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f7cQ1fkEKgqDEs0erixT/rVYD9dx/CspastldTTEa5I=;
-        b=B3M9YXOLzAu9q/v1aTwlJqOwtSEQRlusisQwsFLugI7qY8vPb+KGIUWMx2n1wp/kjYi8Di
-        6QoGOS0r4jzHL4uIxc2sJxbJU6KFENgRaZ2jU1B54x6jB/BUOHInJfZpOVDBcVoih0ARne
-        dAR2+t4ZZ0kXnq9ToxUnf039ITy7MLc=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-h_ycScx0NWiit58ydbVJhg-1; Tue, 06 Apr 2021 17:00:16 -0400
-X-MC-Unique: h_ycScx0NWiit58ydbVJhg-1
-Received: by mail-qk1-f200.google.com with SMTP id h21so13450626qkl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 14:00:16 -0700 (PDT)
+        Tue, 6 Apr 2021 17:00:44 -0400
+Received: by mail-pg1-f177.google.com with SMTP id p12so7298794pgj.10;
+        Tue, 06 Apr 2021 14:00:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=f7cQ1fkEKgqDEs0erixT/rVYD9dx/CspastldTTEa5I=;
-        b=r+izccyz08ct4ESblnXzLPodThMcPbX9DV7OhF6yYXyB58CBZCAMRIG3qZLpOa1jfX
-         8kWg+5jeUFGBbD+9L9yoyoVJEAmM4dBd5nW+6yb96+fVFyhwqJ2g+XC65li6Bq8xx2tj
-         VWxQfHeX54lWqy9Nbo7jPNCChvk5xrVeo/FcBT2/YvGTkNQA7NiTlQK1ssBo+0wxWfuh
-         AgZU+O7gM54TJgn3TIS5CWApBVdXI6WoR6KMDWS0ruLkKSEYv7YB3nVUpvaXznWFZZu9
-         TmvS7xLcd7FLMXpE+YuT9IY/RQPm307Fd9CPiEdI//MWGnBMN1EvecsYGTaRLuBpCseP
-         5hEw==
-X-Gm-Message-State: AOAM533ZkaeQW7ZB6Z6UWImm8Kz41p6ZS7geJ+Ux5GM8mupMfMGedG9C
-        ZNh2rTuqEdBdd2BY1gTVSem6ofRwkcri32Clma35qZT1n+AL8UinZFTovNpPwcGdPXOjJdY7Z8P
-        hHebuKP+n83Up9lx0OHDwNzDC
-X-Received: by 2002:ac8:5156:: with SMTP id h22mr29387536qtn.260.1617742815909;
-        Tue, 06 Apr 2021 14:00:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOmy1j35mgzZiFlxS5Jroh61Hm0r4nkBWFryQlZeMfYOuq+cI09SfBZvfmIq6TnDW46tD9gA==
-X-Received: by 2002:ac8:5156:: with SMTP id h22mr29387479qtn.260.1617742815257;
-        Tue, 06 Apr 2021 14:00:15 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id h16sm15401108qto.45.2021.04.06.14.00.13
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fQLaQc5/GaCbi7FW0HmczstHI38aj6TzWQieMfsdo/Q=;
+        b=Bp9tK6r2WjaZFdViP9V6O+S6foSWd5VddKkWQmXCyCHBGPzpyT27bqjBZRIFkwKe5K
+         jMPzMHse5iFkKsaGBJcZEPdoUpKW42GobU158ptDAxCi9kL6pYIVM1A55ukqtk+kHe7+
+         byWIuyFkzlR262P3vZU5Zim0jQrgSrcXlk8saSm7wMeYGdACzoa3PIaH+ndpudJzhZl2
+         CcxSthtmPSqQ7AxiWcc8VuGxByVMfqIe3AJaxElYk8j9MVLXrt2IPr8lIFtAO1JtowuM
+         TKtGr3F50qgYWe1MkwnBOdvZ2EJNsYisflfh2REIitIfkHoL7YCP3Phj46dIAbZgJVOx
+         9ucw==
+X-Gm-Message-State: AOAM530/S40TShmu2W4YfYP05R/ObCqy7Vst3NSsLZy95rqXMyNuo5/V
+        SrRjAmsRSI/D2DuHmoVlb8kXKdW+b3I=
+X-Google-Smtp-Source: ABdhPJxzMprke+6saz2YcivdY4CO3En9U55zbwbKUELZtPC7/SZJGMbYevQneaoHZfD1eIOxr67tJQ==
+X-Received: by 2002:a63:5458:: with SMTP id e24mr81330pgm.170.1617742836057;
+        Tue, 06 Apr 2021 14:00:36 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:277d:764e:de23:a2e8? ([2601:647:4000:d7:277d:764e:de23:a2e8])
+        by smtp.gmail.com with ESMTPSA id w2sm14367882pfb.174.2021.04.06.14.00.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 14:00:14 -0700 (PDT)
-Subject: Re: [PATCH V4 XRT Alveo 20/20] fpga: xrt: Kconfig and Makefile
- updates for XRT drivers
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
- <20210324052947.27889-21-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <26dd81ca-60f7-3ac8-c6a4-69bca4620e8e@redhat.com>
-Date:   Tue, 6 Apr 2021 14:00:11 -0700
+        Tue, 06 Apr 2021 14:00:35 -0700 (PDT)
+Subject: Re: [PATCH 02/11] block: drbd: drbd_interval: Demote some kernel-doc
+ abuses and fix another header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jens Axboe <axboe@kernel.dk>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org
+References: <20210312105530.2219008-1-lee.jones@linaro.org>
+ <20210312105530.2219008-3-lee.jones@linaro.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ed6f1b85-ba63-52fd-16f2-cd8777c3fdd0@acm.org>
+Date:   Tue, 6 Apr 2021 14:00:34 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210324052947.27889-21-lizhi.hou@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210312105530.2219008-3-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/12/21 2:55 AM, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> [ ... ]
 
-On 3/23/21 10:29 PM, Lizhi Hou wrote:
-> Update fpga Kconfig/Makefile and add Kconfig/Makefile for new drivers.
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-> ---
->   MAINTAINERS                        | 11 +++++++++++
->   drivers/Makefile                   |  1 +
->   drivers/fpga/Kconfig               |  2 ++
->   drivers/fpga/Makefile              |  5 +++++
->   drivers/fpga/xrt/Kconfig           |  8 ++++++++
->   drivers/fpga/xrt/lib/Kconfig       | 17 +++++++++++++++++
->   drivers/fpga/xrt/lib/Makefile      | 30 ++++++++++++++++++++++++++++++
->   drivers/fpga/xrt/metadata/Kconfig  | 12 ++++++++++++
->   drivers/fpga/xrt/metadata/Makefile | 16 ++++++++++++++++
->   drivers/fpga/xrt/mgmt/Kconfig      | 15 +++++++++++++++
->   drivers/fpga/xrt/mgmt/Makefile     | 19 +++++++++++++++++++
->   11 files changed, 136 insertions(+)
->   create mode 100644 drivers/fpga/xrt/Kconfig
->   create mode 100644 drivers/fpga/xrt/lib/Kconfig
->   create mode 100644 drivers/fpga/xrt/lib/Makefile
->   create mode 100644 drivers/fpga/xrt/metadata/Kconfig
->   create mode 100644 drivers/fpga/xrt/metadata/Makefile
->   create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
->   create mode 100644 drivers/fpga/xrt/mgmt/Makefile
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aa84121c5611..44ccc52987ac 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7009,6 +7009,17 @@ F:	Documentation/fpga/
->   F:	drivers/fpga/
->   F:	include/linux/fpga/
->   
-> +FPGA XRT DRIVERS
-> +M:	Lizhi Hou <lizhi.hou@xilinx.com>
-> +R:	Max Zhen <max.zhen@xilinx.com>
-> +R:	Sonal Santan <sonal.santan@xilinx.com>
-> +L:	linux-fpga@vger.kernel.org
-> +S:	Maintained
-Should this be 'Supported' ?
-> +W:	https://github.com/Xilinx/XRT
-> +F:	Documentation/fpga/xrt.rst
-> +F:	drivers/fpga/xrt/
-> +F:	include/uapi/linux/xrt/
-> +
->   FPU EMULATOR
->   M:	Bill Metzenthen <billm@melbpc.org.au>
->   S:	Maintained
-> diff --git a/drivers/Makefile b/drivers/Makefile
-> index 6fba7daba591..dbb3b727fc7a 100644
-> --- a/drivers/Makefile
-> +++ b/drivers/Makefile
-> @@ -179,6 +179,7 @@ obj-$(CONFIG_STM)		+= hwtracing/stm/
->   obj-$(CONFIG_ANDROID)		+= android/
->   obj-$(CONFIG_NVMEM)		+= nvmem/
->   obj-$(CONFIG_FPGA)		+= fpga/
-> +obj-$(CONFIG_FPGA_XRT_METADATA) += fpga/
-CONFIG_FPGA_XRT_METADATA is only defined when CONFIG_FPGA is, so i don't 
-think this line is needed.
->   obj-$(CONFIG_FSI)		+= fsi/
->   obj-$(CONFIG_TEE)		+= tee/
->   obj-$(CONFIG_MULTIPLEXER)	+= mux/
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 5ff9438b7b46..01410ff000b9 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -227,4 +227,6 @@ config FPGA_MGR_ZYNQMP_FPGA
->   	  to configure the programmable logic(PL) through PS
->   	  on ZynqMP SoC.
->   
-> +source "drivers/fpga/xrt/Kconfig"
-> +
->   endif # FPGA
-This is where it is defined..
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index 18dc9885883a..4b887bf95cb3 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -48,3 +48,8 @@ obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
->   
->   # Drivers for FPGAs which implement DFL
->   obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
-> +
-> +# XRT drivers for Alveo
-> +obj-$(CONFIG_FPGA_XRT_METADATA)		+= xrt/metadata/
-> +obj-$(CONFIG_FPGA_XRT_LIB)		+= xrt/lib/
-> +obj-$(CONFIG_FPGA_XRT_XMGMT)		+= xrt/mgmt/
-> diff --git a/drivers/fpga/xrt/Kconfig b/drivers/fpga/xrt/Kconfig
-> new file mode 100644
-> index 000000000000..0e2c59589ddd
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/Kconfig
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Xilinx Alveo FPGA device configuration
-> +#
-> +
-> +source "drivers/fpga/xrt/metadata/Kconfig"
-> +source "drivers/fpga/xrt/lib/Kconfig"
-> +source "drivers/fpga/xrt/mgmt/Kconfig"
-> diff --git a/drivers/fpga/xrt/lib/Kconfig b/drivers/fpga/xrt/lib/Kconfig
-> new file mode 100644
-> index 000000000000..935369fad570
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/Kconfig
-> @@ -0,0 +1,17 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# XRT Alveo FPGA device configuration
-> +#
-> +
-> +config FPGA_XRT_LIB
-> +	tristate "XRT Alveo Driver Library"
-> +	depends on HWMON && PCI && HAS_IOMEM
-> +	select FPGA_XRT_METADATA
-> +	select REGMAP_MMIO
-> +	help
-> +	  Select this option to enable Xilinx XRT Alveo driver library. This
-> +	  library is core infrastructure of XRT Alveo FPGA drivers which
-> +	  provides functions for working with device nodes, iteration and
-> +	  lookup of platform devices, common interfaces for platform devices,
-> +	  plumbing of function call and ioctls between platform devices and
-> +	  parent partitions.
-> diff --git a/drivers/fpga/xrt/lib/Makefile b/drivers/fpga/xrt/lib/Makefile
-> new file mode 100644
-> index 000000000000..58563416efbf
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/Makefile
-> @@ -0,0 +1,30 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-> +#
-> +# Authors: Sonal.Santan@xilinx.com
-> +#
-> +
-> +FULL_XRT_PATH=$(srctree)/$(src)/..
-> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-> +
-> +obj-$(CONFIG_FPGA_XRT_LIB) += xrt-lib.o
-> +
-> +xrt-lib-objs :=			\
-> +	lib-drv.o		\
-> +	xroot.o			\
-> +	xclbin.o		\
-> +	subdev.o		\
-> +	cdev.o			\
-> +	group.o			\
-> +	xleaf/vsec.o		\
-> +	xleaf/axigate.o		\
-> +	xleaf/devctl.o		\
-> +	xleaf/icap.o		\
-> +	xleaf/clock.o		\
-> +	xleaf/clkfreq.o		\
-> +	xleaf/ucs.o		\
-> +	xleaf/ddr_calibration.o
-> +
-> +ccflags-y := -I$(FULL_XRT_PATH)/include	 \
-> +	-I$(FULL_DTC_PATH)
-> diff --git a/drivers/fpga/xrt/metadata/Kconfig b/drivers/fpga/xrt/metadata/Kconfig
-> new file mode 100644
-> index 000000000000..129adda47e94
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/metadata/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# XRT Alveo FPGA device configuration
-> +#
-> +
-> +config FPGA_XRT_METADATA
-> +	bool "XRT Alveo Driver Metadata Parser"
-> +	select LIBFDT
-> +	help
-> +	  This option provides helper functions to parse Xilinx Alveo FPGA
-> +	  firmware metadata. The metadata is in device tree format and the
-> +	  XRT driver uses it to discover the HW subsystems behind PCIe BAR.
-> diff --git a/drivers/fpga/xrt/metadata/Makefile b/drivers/fpga/xrt/metadata/Makefile
-> new file mode 100644
-> index 000000000000..14f65ef1595c
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/metadata/Makefile
-> @@ -0,0 +1,16 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-> +#
-> +# Authors: Sonal.Santan@xilinx.com
-> +#
-> +
-> +FULL_XRT_PATH=$(srctree)/$(src)/..
-> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-> +
-> +obj-$(CONFIG_FPGA_XRT_METADATA) += xrt-md.o
-> +
-> +xrt-md-objs := metadata.o
-> +
-> +ccflags-y := -I$(FULL_XRT_PATH)/include	\
-> +	-I$(FULL_DTC_PATH)
-> diff --git a/drivers/fpga/xrt/mgmt/Kconfig b/drivers/fpga/xrt/mgmt/Kconfig
-> new file mode 100644
-> index 000000000000..31e9e19fffb8
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/Kconfig
-> @@ -0,0 +1,15 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Xilinx XRT FPGA device configuration
-> +#
-> +
-> +config FPGA_XRT_XMGMT
-> +	tristate "Xilinx Alveo Management Driver"
-> +	depends on FPGA_XRT_LIB
-> +	select FPGA_XRT_METADATA
-
-If the XRT driver depends on these other two configs and it does not 
-make sense to build these two seperately, could you remove these configs 
-and just use something like FPGA_XRT ?
-
-Tom
-
-> +	select FPGA_BRIDGE
-> +	select FPGA_REGION
-> +	help
-> +	  Select this option to enable XRT PCIe driver for Xilinx Alveo FPGA.
-> +	  This driver provides interfaces for userspace application to access
-> +	  Alveo FPGA device.
-> diff --git a/drivers/fpga/xrt/mgmt/Makefile b/drivers/fpga/xrt/mgmt/Makefile
-> new file mode 100644
-> index 000000000000..acabd811f3fd
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/Makefile
-> @@ -0,0 +1,19 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-> +#
-> +# Authors: Sonal.Santan@xilinx.com
-> +#
-> +
-> +FULL_XRT_PATH=$(srctree)/$(src)/..
-> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-> +
-> +obj-$(CONFIG_FPGA_XRT_XMGMT)	+= xrt-mgmt.o
-> +
-> +xrt-mgmt-objs := root.o		\
-> +	   main.o		\
-> +	   fmgr-drv.o		\
-> +	   main-region.o
-> +
-> +ccflags-y := -I$(FULL_XRT_PATH)/include		\
-> +	-I$(FULL_DTC_PATH)
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
