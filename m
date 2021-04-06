@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06F9354B2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28D9354B30
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 05:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243551AbhDFDV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 23:21:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16342 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhDFDVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 23:21:24 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FDt6K1yfgz9wdL;
-        Tue,  6 Apr 2021 11:19:05 +0800 (CST)
-Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.196) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 11:21:05 +0800
-From:   Qiheng Lin <linqiheng@huawei.com>
-To:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
-        <ryder.lee@mediatek.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Qiheng Lin <linqiheng@huawei.com>
-Subject: [PATCH net-next] mt76: mt7921: remove unneeded semicolon
-Date:   Tue, 6 Apr 2021 11:20:51 +0800
-Message-ID: <20210406032051.7750-1-linqiheng@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S240014AbhDFDWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 23:22:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40992 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230364AbhDFDWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 23:22:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D8B77AFF7;
+        Tue,  6 Apr 2021 03:22:33 +0000 (UTC)
+Date:   Mon, 5 Apr 2021 20:22:26 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     jbaron@akamai.com, rpenyaev@suse.de, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 2/2] fs/epoll: restore waking from ep_done_scan()
+Message-ID: <20210406032226.2fpfzrlyxu2wz2jw@offworld>
+References: <20210405231025.33829-1-dave@stgolabs.net>
+ <20210405231025.33829-3-dave@stgolabs.net>
+ <20210405185018.40d437d392863f743131fcda@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210405185018.40d437d392863f743131fcda@linux-foundation.org>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
- drivers/net/wireless/mediatek/mt76/mt7921/mac.c:1402:2-3: Unneeded semicolon
+On Mon, 05 Apr 2021, Andrew Morton wrote:
 
-Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
----
- drivers/net/wireless/mediatek/mt76/mt7921/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>Tricky.  339ddb53d373 was merged in December 2019.  So do we backport
+>this fix?  Could any userspace code be depending upon the
+>post-339ddb53d373 behavior?
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-index 3f9097481a5e..e56cde3a19ec 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-@@ -1399,7 +1399,7 @@ void mt7921_mac_work(struct work_struct *work)
- 	if (++phy->sta_work_count == 10) {
- 		phy->sta_work_count = 0;
- 		mt7921_mac_sta_stats_work(phy);
--	};
-+	}
- 
- 	mt7921_mutex_release(phy->dev);
- 
--- 
-2.31.1
+As with previous trouble caused by this commit, I vote for restoring the behavior
+backporting the fix, basically the equivalent of adding (which was my intention):
 
+Fixes: 339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested epoll")
+
+>
+>Or do we just leave the post-339ddb53d373 code as-is?  Presumably the
+>issue is very rarely encountered, and changeing it back has its own
+>risks.
+
+While I also consider this scenario rare (normally new ready events can become
+ready and trigger new wakeups), I'm seeing reports in real applications of task
+hangs due to this change of semantics. Alternatively, users can update their code
+to timeout in such scenarios, but it is ultimately the kernel's fault. Furthermore
+it hasn't really been all _that_ long since the commit was merged, so I don't think
+it merits a change in behavior.
+
+As for the risks of restoring the behavior, afaict this only fixed a double wakeup
+in an obscure nested epoll scenario, so I'm not too worried there sacrificing
+performance for functionality. That said, there are fixes, for example 65759097d80
+(epoll: call final ep_events_available() check under the lock) that would perhaps
+be rendered unnecessary.
+
+Thanks,
+Davidlohr
