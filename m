@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6550E3555A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8DD3555BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344669AbhDFNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:47:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16365 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbhDFNrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:47:22 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FF80Y1pgwz9wjL;
-        Tue,  6 Apr 2021 21:45:01 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Tue, 6 Apr 2021
- 21:47:10 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>
-Subject: [PATCH -next] media: i2c: adv7842: fix possible use-after-free in adv7842_remove()
-Date:   Tue, 6 Apr 2021 21:50:53 +0800
-Message-ID: <20210406135053.2150439-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1344755AbhDFNvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238092AbhDFNva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:51:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15C6261246;
+        Tue,  6 Apr 2021 13:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617717081;
+        bh=0cEF+ZfK0qQzRjxEveUnWvJ66nuEubWDvgk4DN5Y7rE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o7mKzgsjZvW55vGPgOaKm1aH/fgmq+BX6u52nCrk6NLVU/4AYpo7We6Pt/XyePltz
+         8QuFSEnF2ZUbLnRVxiQZUt7+hOBPsDN4svxCb4MIIVjIIs2A7c+YaGQsAIEKr+jE9p
+         y3i9ApZjD/3jHc0qj10BvoH8xSvuv64AjS+8ja7I=
+Date:   Tue, 6 Apr 2021 15:51:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     alexander.shishkin@linux.intel.com, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, jonathan.cameron@huawei.com,
+        song.bao.hua@hisilicon.com, prime.zeng@huawei.com,
+        linux-doc@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH 1/4] hwtracing: Add trace function support for HiSilicon
+ PCIe Tune and Trace device
+Message-ID: <YGxnV163z9ptAN0B@kroah.com>
+References: <1617713154-35533-1-git-send-email-yangyicong@hisilicon.com>
+ <1617713154-35533-2-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617713154-35533-2-git-send-email-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+On Tue, Apr 06, 2021 at 08:45:51PM +0800, Yicong Yang wrote:
+> +static int hisi_ptt_create_trace_entries(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct hisi_ptt_debugfs_file_desc *trace_files;
+> +	struct dentry *dir;
+> +	int i, ret = 0;
+> +
+> +	dir = debugfs_create_dir("trace", hisi_ptt->debugfs_dir);
+> +	if (IS_ERR(dir))
+> +		return PTR_ERR(dir);
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
+No need to care about this, please do not check, code should not do
+different things based on if debugfs is working or not.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/media/i2c/adv7842.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +
+> +	trace_files = devm_kmemdup(&hisi_ptt->pdev->dev, trace_entries,
+> +				   sizeof(trace_entries), GFP_KERNEL);
+> +	if (IS_ERR(trace_files)) {
+> +		ret = PTR_ERR(trace_files);
+> +		goto err;
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(trace_entries); ++i) {
+> +		struct dentry *file;
+> +
+> +		trace_files[i].hisi_ptt = hisi_ptt;
+> +		file = debugfs_create_file(trace_files[i].name, 0600,
+> +					   dir, &trace_files[i],
+> +					   trace_files[i].fops);
+> +		if (IS_ERR(file)) {
+> +			ret = PTR_ERR(file);
 
-diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
-index 21dbb7a594fb..8bd58ce07926 100644
---- a/drivers/media/i2c/adv7842.c
-+++ b/drivers/media/i2c/adv7842.c
-@@ -3573,7 +3573,7 @@ static int adv7842_remove(struct i2c_client *client)
- 	struct adv7842_state *state = to_state(sd);
- 
- 	adv7842_irq_enable(sd, false);
--	cancel_delayed_work(&state->delayed_work_enable_hotplug);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
- 	v4l2_device_unregister_subdev(sd);
- 	media_entity_cleanup(&sd->entity);
- 	adv7842_unregister_clients(sd);
--- 
-2.25.1
+Same here, why check?
 
+> +static int hisi_ptt_register_debugfs(void)
+> +{
+> +	if (!debugfs_initialized()) {
+> +		pr_err("failed to create debugfs directory: debugfs uninitialized\n");
+
+Why do you care?  How can this happen?
+
+> +		return -ENOENT;
+> +	}
+> +
+> +	hisi_ptt_debugfs_root = debugfs_create_dir("hisi_ptt", NULL);
+> +	if (IS_ERR(hisi_ptt_debugfs_root)) {
+
+Again, no need to check.
+
+If you are building the whole functionality of your code on if debugfs
+is working or not, that feels really wrong.  Debugfs is for random
+kernel debug type things, not a whole driver infrastructure that somehow
+relies on it working or not.
+
+thanks,
+
+greg k-h
