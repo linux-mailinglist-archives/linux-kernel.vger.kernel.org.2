@@ -2,150 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C3D355AE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB495355AE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbhDFR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbhDFR6m (ORCPT
+        id S236002AbhDFR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:59:45 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:44605 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234333AbhDFR7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:58:42 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78CFC06174A;
-        Tue,  6 Apr 2021 10:58:34 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id ay2so7944299plb.3;
-        Tue, 06 Apr 2021 10:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
-        b=O2M4esYxVNDD2b0CmxjVzfdmbRa5/2CdJ1KDx7k8gjjImYg1rGy9mtdBS9COtByQP2
-         3mSNJxLlvkVS8nWDv5Dom6fskBqP+6FeqAfFnWOrtq7XTzasxJ2gPQSI/S3e3/kQ+QuC
-         kUQg/iObwnXMthh5NRinOWCwarrIxVBLh4GslT1WjLcbnwYb7Hk4V9mlCOfoIob/GhnM
-         Ydk+iNK/LOedtw2ka9BBGiAS6z73oh6UV5Ua+1ZQZkmbbUzOJsoXm9mfd3lcSvDlL9BS
-         5OF2+r57j7YGE0t7atWGAs4VzECMnYK7Lngj91YlG9rCWWyrTKnaSet/7jkRlJLvXIer
-         qsFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
-        b=A8EKwyahpTYLzS/3dmVkiATXWCI8yLDQeUL413JDmtEoI50j8QexcFNnPEc5gQ0RjS
-         v1iZrBjzoeJnMVZuWzFBl9KI5LhxVZpoblBUU51h8iSCoMzn7Yr5Ta00UM0oBUfe67cR
-         OrfaE6IOwLLhR64UbMMIxByeZk5E/dr91px8KNcud57gcqTHFs2f7Rq+crEJRZWoUwj2
-         NiKmDKBSiwPlOS34KENWE4z+s87Eh3tLyKa2bnm1ogNVK4wsQnV1ZzNBUuQX7NnHsudB
-         mimuWWPFQCT1gXY81kRwFS7I+BxrViIi2cNDO48sg1H9NyAU9F2k1Tbm05MfwlFLe2Xo
-         GzQA==
-X-Gm-Message-State: AOAM533XgNtLV+FL7niWozs/ok24w9Nakg895OpTLYJI3zVQFt25r5Aa
-        5v2NfnZt5iPFo6R1tjeftyDdGDeNJcxez+VDchc=
-X-Google-Smtp-Source: ABdhPJzMKWH4LeMxZBkUQvZXRLpiJ+fJNytEmS2UWHGUQ7xi7GEyQxv2bnGTvcVHT0yX8JODLz4UgamvJPVNzYH7KQw=
-X-Received: by 2002:a17:902:8347:b029:e7:4a2d:6589 with SMTP id
- z7-20020a1709028347b02900e74a2d6589mr30609818pln.64.1617731914383; Tue, 06
- Apr 2021 10:58:34 -0700 (PDT)
+        Tue, 6 Apr 2021 13:59:42 -0400
+Received: from [192.168.1.107] ([37.4.249.89]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1N9d4t-1lg8452kx3-015aAu; Tue, 06 Apr 2021 19:59:04 +0200
+Subject: Re: [PATCH 2/3] mmc: sdhci-iproc: Cap min clock frequency on BCM2711
+To:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Ray Jui <ray.jui@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
+        tim.gover@raspberrypi.com, alcooperx@gmail.com,
+        nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org,
+        robh@kernel.org
+References: <20210406104802.20898-1-nsaenz@kernel.org>
+ <20210406104802.20898-3-nsaenz@kernel.org>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+Message-ID: <2d40b062-5809-15ce-b9d1-651644ff6e22@i2se.com>
+Date:   Tue, 6 Apr 2021 19:59:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <0000000000008872ff05bf40e4db@google.com>
-In-Reply-To: <0000000000008872ff05bf40e4db@google.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 6 Apr 2021 10:58:23 -0700
-Message-ID: <CAM_iQpU9gSy++6Ba0vfnHz_J4-FcGpAMG7yzFDFk+qTi1DJnwA@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in tcp_bpf_update_proto
-To:     syzbot <syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>, anton@tuxera.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>, jmattson@google.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "kvm@vger.kernel.org list" <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        pbonzini@redhat.com, rkovhaev@gmail.com, seanjc@google.com,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86 <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210406104802.20898-3-nsaenz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Provags-ID: V03:K1:HbXlSJ1VmkEIfcoUmlqryotP1LF4zeV3Egt3g/YRugI5s3NQIB5
+ Ksj7UcPxJPHhmIXcIFHO11EiDGNNzKyvLCAB3H5ugIcPZuXixZlPJU3pMLlmJQoAU9hUzS0
+ +6yEsj9LB3ee2cHBL2CwGv0+OinucSmau9Wk5yFsGScl9YFABoOzXy3cPzhMgHqTKMRKs+o
+ RU+mYDyriXkdGYNGAKs7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lh2otc4WshI=:iNHAdOR/YKH0Axc6bJPPxO
+ KToe9Wu5qd2ld1aByPUMGfi8dBS81MLHwbrdPbGxsabDL0NeHzwsU+LVzJGKcKTnq4/zdwOPU
+ 9BNHTlPM6IO0hj7ggWM8FogpVTCs/5hdodxZrPZQQ0KJndCMJOn7GToAeAJFxA/b3Wlj3bNzF
+ mc/wzyTrz29ddlRKeLUqyvlVskrGVw3Iha4rW65b662yuDI2SD9ib5RWDdRyjZQUSo4bEeN24
+ GL4/BeEbKKnity/WuEw3172AMVTiifp7gRcR+eYPx++nmLMn2O0SWWYAx/TgG024tk0xQmUpt
+ vXHn9l3LQLUoeFc04FmkR/l5vd6j9ZXdVkH9Cbz7w71iO4lSxPhOyafLWK1udqB1oOUUfMZAt
+ hSG1/lOb+0oY61KcFL5JpUTuBX+nRV4kJRwVjn3ZqmFMKA/BmMSMsGjVWBwiDjzfno3IU5Qgy
+ nwL8UhdXYrxhwwiBTFZIfiH6Ebufae7WezaixqRMMSqu1sydgN3U
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:44 AM syzbot
-<syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    514e1150 net: x25: Queue received packets in the drivers i..
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=112a8831d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=320a3bc8d80f478c37e4
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1532d711d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f44c5ed00000
->
-> The issue was bisected to:
->
-> commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c
-> Author: Rustam Kovhaev <rkovhaev@gmail.com>
-> Date:   Wed Feb 24 20:00:30 2021 +0000
->
->     ntfs: check for valid standard information attribute
+Hi Nicolas,
 
-This is caused by one of my sockmap patches.
-
+Am 06.04.21 um 12:48 schrieb Nicolas Saenz Julienne:
+> There is a known bug on BCM2711's SDHCI core integration where the
+> controller will hang when the difference between the core clock and the
+> bus clock is too great. Specifically this can be reproduced under the
+> following conditions:
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16207a81d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15207a81d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11207a81d00000
+> - No SD card plugged in, polling thread is running, probing cards at
+>   100KHz.
+> - BCM2711's core clock configured at 500MHz or more.
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
-> Fixes: 4dfe6bd94959 ("ntfs: check for valid standard information attribute")
+> So set 200MHz as the minimum clock frequency available for that board.
+i think it should be 200 kHz?
 >
-> =============================
-> WARNING: suspicious RCU usage
-> 5.12.0-rc4-syzkaller #0 Not tainted
-> -----------------------------
-> include/linux/skmsg.h:286 suspicious rcu_dereference_check() usage!
+> For more information on the issue see this:
+> https://lore.kernel.org/linux-mmc/20210322185816.27582-1-nsaenz@kernel.org/T/#m11f2783a09b581da6b8a15f302625b43a6ecdeca
 >
-> other info that might help us debug this:
+> Fixes: f84e411c85be ("mmc: sdhci-iproc: Add support for emmc2 of the BCM2711")
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+> ---
+>  drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 >
->
-> rcu_scheduler_active = 2, debug_locks = 1
-> 1 lock held by syz-executor383/8454:
->  #0: ffff888013a99b48 (clock-AF_INET){++..}-{2:2}, at: sk_psock_drop+0x2c/0x460 net/core/skmsg.c:788
->
-> stack backtrace:
-> CPU: 1 PID: 8454 Comm: syz-executor383 Not tainted 5.12.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  sk_psock include/linux/skmsg.h:286 [inline]
->  tcp_bpf_update_proto+0x530/0x5f0 net/ipv4/tcp_bpf.c:504
->  sk_psock_restore_proto include/linux/skmsg.h:408 [inline]
->  sk_psock_drop+0xdf/0x460 net/core/skmsg.c:789
->  sk_psock_put include/linux/skmsg.h:446 [inline]
->  tcp_bpf_recvmsg+0x42d/0x480 net/ipv4/tcp_bpf.c:208
->  inet_recvmsg+0x11b/0x5d0 net/ipv4/af_inet.c:852
-
-Oddly, I have all relevant Kconfig enabled but never see this
-warning when running selftests for hours....
-
-Anyway, let me see how this should be fixed.
-
-Thanks!
+> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+> index ddeaf8e1f72f..1ef888e91f73 100644
+> --- a/drivers/mmc/host/sdhci-iproc.c
+> +++ b/drivers/mmc/host/sdhci-iproc.c
+> @@ -173,6 +173,23 @@ static unsigned int sdhci_iproc_get_max_clock(struct sdhci_host *host)
+>  		return pltfm_host->clock;
+>  }
+>  
+> +/*
+> + * There is a known bug on BCM2711's SDHCI core integration where the
+> + * controller will hang when the difference between the core clock and the bus
+> + * clock is too great. Specifically this can be reproduced under the following
+> + * conditions:
+> + *
+> + *  - No SD card plugged in, polling thread is running, probing cards at
+> + *    100KHz.
+> + *  - BCM2711's core clock configured at 500MHz or more
+> + *
+> + * So we set 200MHz as the minimum clock frequency available for that SoC.
+> + */
+> +static unsigned int sdhci_iproc_bcm2711_get_min_clock(struct sdhci_host *host)
+> +{
+> +	return 200000;
+> +}
+> +
+>  static const struct sdhci_ops sdhci_iproc_ops = {
+>  	.set_clock = sdhci_set_clock,
+>  	.get_max_clock = sdhci_iproc_get_max_clock,
+> @@ -271,6 +288,7 @@ static const struct sdhci_ops sdhci_iproc_bcm2711_ops = {
+>  	.set_clock = sdhci_set_clock,
+>  	.set_power = sdhci_set_power_and_bus_voltage,
+>  	.get_max_clock = sdhci_iproc_get_max_clock,
+> +	.get_min_clock = sdhci_iproc_bcm2711_get_min_clock,
+>  	.set_bus_width = sdhci_set_bus_width,
+>  	.reset = sdhci_reset,
+>  	.set_uhs_signaling = sdhci_set_uhs_signaling,
