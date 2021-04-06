@@ -2,163 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AB3355BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE3E355BE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233748AbhDFS6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S233884AbhDFS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhDFS6l (ORCPT
+        with ESMTP id S231315AbhDFS75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:58:41 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51782C06174A;
-        Tue,  6 Apr 2021 11:58:31 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id j7so11971059qtx.5;
-        Tue, 06 Apr 2021 11:58:31 -0700 (PDT)
+        Tue, 6 Apr 2021 14:59:57 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0841BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 11:59:49 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f29so8591210pgm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 11:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0k9ST6Sqw/pWXllPyrKJXa/iA6xjIOi51e4J0l+LPoY=;
-        b=S8a/uDh3395wy3FV13q5iCO6nyhLa9VrO7pKfSZAvZHD1ck29dng/z9i8HohDB4AgS
-         wRhxw8hIyg6miTVDoR5CmiHbPEKwEI8Xlz7KtloZJyvTEf+EWR6cjzYHZLgqu9uHSOJt
-         0lXJ38C/4nprr+D74jPeaTNzJNH4V6vTZ9g5S0bN5jmLkyorHN/7lAVYHoqo8mqBTNem
-         0XHlY9cySUGAk4xZ8eGPj76tZ0ABsZ5JBCEe407BXjzYOX3tTVvqv6GKq0x0yu/fF2us
-         mdXzvEifGmtYxh1uDpRPFuD4e3Boz773k6p7Mb/l2ShxBjxcGfvPueuIQdgQ9lXYBlMe
-         v7bg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o/K/k7TMA0dim45MUt35sdwItRBULQE49yHai9MnD1o=;
+        b=KzmcnGjurr5EEPEluehzMcYb2wZZDh8gpR5aFdc2gPNCZhYvrxHbISKeCPlLNRFxS9
+         CMB/peeYBZORNXtSyfCZtbWA0FOztd+t2tmSePqLeQ1zcjwtZl/2pDj9LPA+GJGMZw4G
+         h4XS89UU36vddvcTKG7ff18HjenYr0SbCgh5T6lj79/rzadvUosYaZDtUb8t4InD7X98
+         Wsf4r+xpGTeipqLaCXZ408dzon6D9fD86lcKNReq3vzdRDFtDh7ft10q12HOmOvHFtDe
+         EjetBvNwCY2IPS0TLRcdf0TGnXoYBH6K49vGgfGJ8QIxuDO6NSheZrGTkH66TQUSg+oN
+         Enig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0k9ST6Sqw/pWXllPyrKJXa/iA6xjIOi51e4J0l+LPoY=;
-        b=At2H6kqCZjmC00aDA5GvFPibm/arW6Epzxo7oABReUeOyokXnOi7jDvYgZejbPyb77
-         3Qnid6PWzITwc8SdK/jEuZ7Ixde5/9zfudgTRuJKZkReduDrxbzD7HOMroB73BoiFsMo
-         AkTfEdbYfGh9rC6N755/n3f5FPOSTeoItuEgq0XDnGB1ogLMdFZh05lrCOgZrvMG6H3z
-         BP7T/oc7TsRBG9ZABypnKR+fobSov9tA2ENZUIn9+rTRh94lM2GhkEBEXfchY9j6Fmoo
-         z9p92o3eOGRmRExf3K4xZrHbnpsyRvgQJGAn3E3AF4KwHeOrPTOFbtwX1A0raz5xEFGW
-         S/Fg==
-X-Gm-Message-State: AOAM531ySSd0Dy2QWoh3IBaDVLvvZFPpTrdPIf+whHYejY5fBF6g6urY
-        5NTKzzDxbFqRc0tBSqixkUE=
-X-Google-Smtp-Source: ABdhPJyf4bh9mz1y2J9Ik3gOUrtlRX3H2f8/H/McnUhMS4BYcOINMZH8MpEVx3JStN2zZs6L6CwtCw==
-X-Received: by 2002:ac8:43cb:: with SMTP id w11mr29308676qtn.84.1617735510550;
-        Tue, 06 Apr 2021 11:58:30 -0700 (PDT)
-Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id 19sm14209579qtt.32.2021.04.06.11.58.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o/K/k7TMA0dim45MUt35sdwItRBULQE49yHai9MnD1o=;
+        b=JZSnHy9k3z2T7ohNiEJgz0sASBtWEkrC2sif8XrXWLkHqIPwzcH6sVgXmMXaSG3IIZ
+         h4Os+qRPbKsDoBVnzY6yB9VN0S5Prz2LSjKSSGDP6kyP3r0NJbUOwBVYHYS/GSDQhwOq
+         jDAc5DMlFuPiFUilKK5BnO1PE8dVWiiqusum1LxluisyI09t9OW7z6ZcrTIqtRWtjIHX
+         wLCROmaRQBc4aR39RGg9c0lvGpoT0Odnx9HwiCsOMWBJh40RO6/BLHYvyzUBFRVHsshm
+         KrWh5srFP71WiXy1To2PgRNBWdSWMkt4mFTaOwWHRpiAn8B7SaD435pqJFUmUB/0T/UG
+         v0pQ==
+X-Gm-Message-State: AOAM5327I7NHANPUaHIq2IxiNhH8ilo0K8UyLSVLSFSEzkzcAIKg46Jc
+        bz5X74UWtCeaNkk2xm79SJs1gkQR9kj50g==
+X-Google-Smtp-Source: ABdhPJyIk5vGhXdq5zQumhsts0/ms82m7PMKls76aAMgOHLCSFmyTEgoaXIvPjhMxKbNVnZrFVtveA==
+X-Received: by 2002:a62:1c93:0:b029:1fd:2216:fb45 with SMTP id c141-20020a621c930000b02901fd2216fb45mr28502785pfc.13.1617735588287;
+        Tue, 06 Apr 2021 11:59:48 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id hi21sm3087454pjb.36.2021.04.06.11.59.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:58:30 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
-Date:   Tue,  6 Apr 2021 15:58:04 -0300
-Message-Id: <20210406185806.377576-1-pctammela@mojatatu.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 06 Apr 2021 11:59:47 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 18:59:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86/mmu: preserve pending TLB flush across calls to
+ kvm_tdp_mmu_zap_sp
+Message-ID: <YGyvoF3WO4yjIuug@google.com>
+References: <20210406162550.3732490-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406162550.3732490-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
+On Tue, Apr 06, 2021, Paolo Bonzini wrote:
+> Right now, if a call to kvm_tdp_mmu_zap_sp returns false, the caller
+> will skip the TLB flush, which is wrong.  There are two ways to fix
+> it:
+> 
+> - since kvm_tdp_mmu_zap_sp will not yield and therefore will not flush
+>   the TLB itself, we could change the call to kvm_tdp_mmu_zap_sp to
+>   use "flush |= ..."
+> 
+> - or we can chain the flush argument through kvm_tdp_mmu_zap_sp down
+>   to __kvm_tdp_mmu_zap_gfn_range.
+> 
+> This patch does the former to simplify application to stable kernels.
 
-For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-notification to the process if needed.
+Eh, that and passing flush down the stack is pointless because kvm_tdp_mmu_zap_sp()
+will never yield.  If you want to justify |= over passing flush, it probably
+makes sense to link to the discussion that led to me changing from passing flush
+to accumulating the result (well, tried to, doh).
 
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
----
- include/uapi/linux/bpf.h       | 7 +++++++
- tools/include/uapi/linux/bpf.h | 7 +++++++
- 2 files changed, 14 insertions(+)
+https://lkml.kernel.org/r/20210319232006.3468382-3-seanjc@google.com
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 49371eba98ba..8c5c7a893b87 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4061,12 +4061,15 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
-  * 	Description
-  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
-+ * 		*flags* must be 0.
-  * 	Return
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-@@ -4078,6 +4081,8 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-@@ -4088,6 +4093,8 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 69902603012c..51df1bd45cef 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4061,12 +4061,15 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
-  * 	Description
-  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
-+ * 		*flags* must be 0.
-  * 	Return
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-@@ -4078,6 +4081,8 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-@@ -4088,6 +4093,8 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, notification
-+ * 		of new data availability is sent if needed.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
--- 
-2.25.1
+> Cc: seanjc@google.com
+> Fixes: 048f49809c526 ("KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")
+> Cc: <stable@vger.kernel.org> # 5.10.x: 048f49809c: KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+> Cc: <stable@vger.kernel.org> # 5.10.x: 33a3164161: KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 486aa94ecf1d..951dae4e7175 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5906,7 +5906,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+>  				      lpage_disallowed_link);
+>  		WARN_ON_ONCE(!sp->lpage_disallowed);
+>  		if (is_tdp_mmu_page(sp)) {
+> -			flush = kvm_tdp_mmu_zap_sp(kvm, sp);
+> +			flush |= kvm_tdp_mmu_zap_sp(kvm, sp);
+>  		} else {
+>  			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
+>  			WARN_ON_ONCE(sp->lpage_disallowed);
+> -- 
+> 2.26.2
+> 
