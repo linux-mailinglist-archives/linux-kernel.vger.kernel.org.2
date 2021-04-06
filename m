@@ -2,211 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D93555E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6763555EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344848AbhDFOBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:01:06 -0400
-Received: from mail-eopbgr1300108.outbound.protection.outlook.com ([40.107.130.108]:19936
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234998AbhDFOBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:01:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M2APMvKO0U2g3/ZI6sFcfTwHgPQ1U7VTjtX+XtgfV6+UmQJW5A2XWjFlUSNv255eDCyCYEV22Uj8O2KrV5gcMWKjpXxLDgqhVCQOin9VExRw9C+Uk/byyzGnYj94hRWjbxf83sfNxPl8e5ytdCmQOyvWdAIOlkMfx+ijxs+IpaUcclTQwMvEfaueWAJX1kM2xIBMLNfqpCy7sWWuFJ9S6Zqc3VN85OKvVzW8Ve/6z3VzJlUSkkCd6EbQr+JuEzU02eupHEIICdBVgpC5eC0w+LwUlLrzR9nSkIOL/Pz9l5vc42k2PMhBeYmsS2xub7YmEAY+wS1ddFksmLEg4hVjqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GWtMwK0Bxz6yBz0RrfLhAmLhNXLNekVbNq0Ueh82sAM=;
- b=kD0YTWqPdXs9IyTCYg912VMaZIfA6gdKQvoncILjZU1spIhHu3YjxGgN6t1SpCGJvK/oQeMTbFFitkKthVNkojZUT6iQe/xJ4ebRwiLkTHDbKvfZH2txJeQSzDiZcURqlSxmOqoZmRVvfWTbASZyDjbjyCunNeXCSXlEg/iAUTEL7eO0w9i97SxqFb4tShSC580cNVLcHEAwWjeNsLuIfZq9ZGr27h1N3sysAi0ew7v836rf4LeTMNnreLGg2kuyIh17dcqCtniNvSqdsQt79rOnwkv46mN9V1305elXhhUYrSLRY1REZ7XwuQK6yl5KtMFzhVADdSTCjVHQZaVylw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GWtMwK0Bxz6yBz0RrfLhAmLhNXLNekVbNq0Ueh82sAM=;
- b=Qp7rsHnK+huyoiSEkOY6Bop9DW+L+L/hAglBeWwqRr5+xdH6JLTk583kw+W2L3h9jIDHpIigwZs8XTAaloQaZi67SYmyeUYZi+vb5xzdw0r3J9Xd+VN+nSjHdM8UEhVDjfm0Q26GgNaiOGuBwrtlBXFDMy1wKjmmZB3MW3DlwY0=
-Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM (2603:1096:301:38::12)
- by PSAP153MB0407.APCP153.PROD.OUTLOOK.COM (2603:1096:301:3f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.4; Tue, 6 Apr
- 2021 14:00:48 +0000
-Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
- ([fe80::24d9:ce8b:8c06:2299]) by PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
- ([fe80::24d9:ce8b:8c06:2299%8]) with mapi id 15.20.4042.004; Tue, 6 Apr 2021
- 14:00:48 +0000
-From:   Shyam Prasad <Shyam.Prasad@microsoft.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Salvatore Bonaccorso <carnil@debian.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steven French <Steven.French@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Thread-Topic: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Thread-Index: AQHXKtl3oEpPTTCadkuXKYVCCMdGI6qnf4aAgAACKFA=
-Date:   Tue, 6 Apr 2021 14:00:48 +0000
-Message-ID: <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161032.337414143@linuxfoundation.org> <YGxIMCsclG4E1/ck@eldamar.lan>
- <YGxlJXv/+IPaErUr@kroah.com>
-In-Reply-To: <YGxlJXv/+IPaErUr@kroah.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3cee0850-dbbf-4b06-a840-153b40d04003;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-06T13:49:40Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2404:f801:8028:1:60f6:ca47:5dfc:b1d0]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 798d4f63-334e-43a5-7fe6-08d8f90461c1
-x-ms-traffictypediagnostic: PSAP153MB0407:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <PSAP153MB0407E7A7BFE274EE4ECCFB3594769@PSAP153MB0407.APCP153.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wH3FqhuHpSMwyXmGGa8/rWVDNuXym51n2HrCzYcgL0kGDfi3Fk7WxX2KIboZMHsljRGirztpJKdRLDwtG6fTBQYDwOp6we09XGs3jxP8uGAHKDnk0QDHQ2fLiwnGX3+Qoljnv+78eiRWPe9Q4iBFP9n5OGfEJ4qj6OHsor9F9AJuWfn5CorABtKWIZml7rw4w1MtXfxwgJ7cLlPUSNn5+29Ku4Zd7R96konQUfBHg1okZ04D2LmcThMKc5cGhl4YLbdQ3fHewTrc3BNWKgtk9CrTKFIG0WKLuSR2kIdWeBvvrRD5HwPXyQLQAhfSlzhEA+iniSbuLeVZjeMjAQeBB5OITryNlFRxUVsjeTVZya0LRRVxlZBz21R6cNAwqsFSBmwJdIIEe4w2fFsrbaCJGVjsZnnkbxe8oTisxk4J+2t9dLLbPf5YrqAVwoegFY44F8pUEPRSQZJgbJuwrbIWYbeocJWlFXPPbYwnz/RG474tNm34hZ/yg2c+sEFIR9RoaGtIQx6qzmi3dkTX2VmXtC4PCcBN36KzPxngWfcirPyaqisjBXrqU2Pzjui3YfdvdgDwFiDcM7iDVdZhILmxTf4yht8ZlarTxeBe5qP1cjQcbNVKShP7pQzmyEIiJ26ilPKYSITO+ShPaxSHtPmsANB5aTphiM7FO1HVrY6TQUOy+sBauVTOq7PgZfkn5znS+VoIpadSp/rS5MVLkrIsxNl/gULX7vSNvs3WFYGc4UkuusfPwc14FR0AhQTxOa3c
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAP153MB0422.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(82960400001)(82950400001)(8676002)(53546011)(71200400001)(4326008)(6506007)(186003)(66446008)(76116006)(66476007)(66946007)(86362001)(8936002)(64756008)(66556008)(55016002)(83380400001)(9686003)(7696005)(110136005)(38100700001)(316002)(52536014)(54906003)(8990500004)(16799955002)(33656002)(478600001)(5660300002)(10290500003)(2906002)(966005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yVO5qEXjv9Fnwm2ZzrNTRGvIOykaaMb1cBvlmJrPqKMxa4WwulYVsxgPNexu?=
- =?us-ascii?Q?BREfDenE+/0h6oVKeZ+TuDLSkOg3b3lo+uzJ4XeFkxzYO7kbjvESO/9Xk2j0?=
- =?us-ascii?Q?LbQkNSqxs6Rs7s2BtqpxEBl1SX2DHLbByBZI+Px7vkC9PDxAMMvwYvHnsMbe?=
- =?us-ascii?Q?s8bfyantgwXgePooWy8wyYBR58Us4toE48/aOPio+E1OWMbtHhSh3JUDhvAN?=
- =?us-ascii?Q?pB4fxAZLxYz5BTSllCsO3AIOHYwKz9h6bl3vfYR5Iy19OTvrVapagXGHSHQ2?=
- =?us-ascii?Q?Ifu5pIpVyAim2Hqpqdia7ZTKkqZarlkZRT8UHN0dgquYZBHvsJCb3GiAucSM?=
- =?us-ascii?Q?bsuVRYFmvyKWe2Z0cbYc5Dsk/wt+7xLn2KAajrt+qUyh2qwuFqECe6hs+ddI?=
- =?us-ascii?Q?9Cm6Hip3pqs0Dw6MoMelrHWclUh+Qb2cD+T6GWzT7TJkC3gVST5zfuEVzw3R?=
- =?us-ascii?Q?C3GDCLXcTTxdyJPP6YdG++okDAxv45C6ia/BLH3cuLiuFfyrunEe+sVTZFiv?=
- =?us-ascii?Q?3X85EZJxZHxeawiwhinvg80kCUAQ0USTsaCiudRSDJh+Yfpqk+xhjJMT71sf?=
- =?us-ascii?Q?9ujN7+vJAkA/8HEdwV1KUXGjLpwRBq1DvWAczEtYi7LvmX2f9VD9b/a6RBvc?=
- =?us-ascii?Q?drw28V4RyeEyFlgOmY0/BO4vjvvTssVltKYunYQSeleDANHmFUjdsoBSC9tq?=
- =?us-ascii?Q?WhkfiJu7YGmM3JXw9IG0DhOJlUvzi42gTkUUi0dqytGVGz8l/U7Xm3uV9uHC?=
- =?us-ascii?Q?heXX0Kimu7t1Bi+jHtpWWvYzCyTgYxFgU/jQXcqB4KwSyzAj6rMHWZbyA8AT?=
- =?us-ascii?Q?HJZ2xA5rIwrFw0wdhq5SElVswl03Jx3iNEqNmbvq6VEP+5czxGNUkzk0cpUG?=
- =?us-ascii?Q?dEw4p5Y/DTFuZSLmLWCIjHI0i1RoPNmxQnw/f8kyi3+e7SiJugtqt37aSPK+?=
- =?us-ascii?Q?9q5o2RlAwpN6+i1Qz/LeVKCgGgT2AfG6QR5LA/STEJnK6wvkCSPHlzPTkdJR?=
- =?us-ascii?Q?vEIKVELU3uVGctEBF3w8QYABsQvzguE8XtBv5VjlR2hyzNs0GQNJsK6M0N6z?=
- =?us-ascii?Q?lBf6T8XTMU9ICvtxzbeF4gPoUrblZNUwGtK0nfD1wfqWhmnhhDOrLQ8Mum7Q?=
- =?us-ascii?Q?UFhEaep4FsdrXn2hwxufyqHEJJeT8ImLoQFUkjOPkG2JEE8XJXhfARhwCTFp?=
- =?us-ascii?Q?AuffoLApWaDPE38/TrQ6JiwImwov96ZPHdOmiE35RUbHKbZGBFuu3UzCPECm?=
- =?us-ascii?Q?uxRVH+ieIZSxEcjsVgeZHuYmupDb/BBVVaGi4Saojj+YpBXKOVLI8k+eUZgM?=
- =?us-ascii?Q?550jywiWfJilgMVS9ztg0afHp3f4n+vnkHzmffQW+0joYDQPZzAIgvMCJbwY?=
- =?us-ascii?Q?uRumM60=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1344864AbhDFOBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344849AbhDFOBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:01:15 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54C3C06174A;
+        Tue,  6 Apr 2021 07:01:06 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id a6so8354402wrw.8;
+        Tue, 06 Apr 2021 07:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lyaJC5idQzW8tJ00oZwa0i4EGsa2UYRBAw/y1mTUSfY=;
+        b=ayUWJz1LljY43oBsHUV2fquC0dOfHIGx1sozNYGS0hOden2eG1tTbmdRZ24+HaFfwS
+         TKA5FsaPt3kNZXBlzZf5tPzwmKh5+kY2w5NHOPNYkZe49H8CzjH01ZA/KfEb8pfF3KMR
+         JSJ7zjIEPxv2kXW6r4wtKJHqcj9VPGRH8IudZ3oktd6Oi31Rqdt/liyO7L/pEiHaxAs4
+         NiO1hvtb91hPJosaBlC8I63MZ4htwA9v/5TV0RaOdYOucxorwiiggrk3ahPL9nwL7NLi
+         5ZJjKnvsgjrqsOKWk+Zyq+GgLj9kVtX2VW+fk3RyeAd3lP3bw85655aaDiMh7ttNzOOy
+         0xsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lyaJC5idQzW8tJ00oZwa0i4EGsa2UYRBAw/y1mTUSfY=;
+        b=mz5gEuaYpwxxIrmqWpmzrF+JRXLwye9DkZYpKSnJQ+EK7quCHi4kmNsUCHgnrtl/Yv
+         WzOMUClEyhjnV2yaNLCqKb7qN2sRIyHLj3ApezkyZTmd/5Xq74mJ6VSkCyFJHNTVnxi5
+         2thypbqp1VLdEDOJsve0SK7N/8aQSWFuvqtv7tQ+lk3WDHbpz6pMQpI9hmAx3Mfa9+jV
+         P3f4kaB3PIU1a1om1UoRvqixO8F7byKa5RtqoCXV/Syl7Qmykts6sO2d2M+TZiqFbsx5
+         /s4N7kc+C15Vur3FSreSXXhdWmc20sdYBA9ZTc+n832a++aY4V8y+KZWdcrAXBubzDRU
+         6SIA==
+X-Gm-Message-State: AOAM530OMdXj23xT69mLyIQOE+o/uczPREB9cSwv9bUp2X2XF0sFic78
+        tn9zZFL19oTgI5d946AMrkU=
+X-Google-Smtp-Source: ABdhPJwhqDdKl7A1F5aod5ie1kaC7iSZB3TCVH2ClVuonHpZIk/vJdtZM1hqBpP18KFVj1FaDIxEAw==
+X-Received: by 2002:a5d:6c6f:: with SMTP id r15mr35631965wrz.77.1617717665570;
+        Tue, 06 Apr 2021 07:01:05 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id f2sm3051522wmp.20.2021.04.06.07.01.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 07:01:05 -0700 (PDT)
+Subject: Re: [PATCH v8 2/4] soc: mediatek: add MT6765 scpsys and subdomain
+ support
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Mars Cheng <mars.cheng@mediatek.com>,
+        Sean Wang <Sean.Wang@mediatek.com>,
+        Owen Chen <owen.chen@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Evan Green <evgreen@chromium.org>,
+        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <jroedel@suse.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Ryder Lee <Ryder.Lee@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org
+Cc:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+References: <1582279929-11535-1-git-send-email-macpaul.lin@mediatek.com>
+ <1582279929-11535-3-git-send-email-macpaul.lin@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <c9cefb0b-2394-e48c-f140-3dab55af2369@gmail.com>
+Date:   Tue, 6 Apr 2021 16:01:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 798d4f63-334e-43a5-7fe6-08d8f90461c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 14:00:48.6080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6Rky1u0mzHLP/glQ3W+n/axNQIqPXnWdrhpfkAPbPDYd+28dCd4eIVUJKZiSUpINb7pxPjey1ZePL2WipNbVRg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAP153MB0407
+In-Reply-To: <1582279929-11535-3-git-send-email-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-We'll need to debug this further to understand what's going on.=20
 
-Hi Salvatore,
-Any chance that you'll be able to provide us the cifsFYI logs from the time=
- of mount failure?
-https://wiki.samba.org/index.php/LinuxCIFS_troubleshooting#Enabling_Debuggi=
-ng
+
+On 21/02/2020 11:12, Macpaul Lin wrote:
+> From: Mars Cheng <mars.cheng@mediatek.com>
+> 
+> This adds scpsys support for MT6765
+> Add subdomain support for MT6765:
+> isp, mm, connsys, mfg, and cam.
+> 
+> Signed-off-by: Mars Cheng <mars.cheng@mediatek.com>
+> Signed-off-by: Owen Chen <owen.chen@mediatek.com>
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> ---
+>  drivers/soc/mediatek/mtk-scpsys.c |  130 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+> 
+
+Unfortunately scpsys is deprecated in the meantime. Please port you patches to
+the new mtk-pm-domains.c driver. The biggest difference is, that the domain and
+subdomain structure of the pm domains is describe in device tree instead of
+hard-coded in the driver.
 
 Regards,
-Shyam
+Matthias
 
------Original Message-----
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>=20
-Sent: Tuesday, April 6, 2021 7:12 PM
-To: Salvatore Bonaccorso <carnil@debian.org>
-Cc: linux-kernel@vger.kernel.org; stable@vger.kernel.org; Shyam Prasad <Shy=
-am.Prasad@microsoft.com>; Aurelien Aptel <aaptel@suse.com>; Steven French <=
-Steven.French@microsoft.com>; Sasha Levin <sashal@kernel.org>
-Subject: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set CIFS_MOUNT_USE_PREFI=
-X_PATH flag on setting cifs_sb->prepath.
-
-On Tue, Apr 06, 2021 at 01:38:24PM +0200, Salvatore Bonaccorso wrote:
-> Hi,
->=20
-> On Mon, Mar 01, 2021 at 05:10:33PM +0100, Greg Kroah-Hartman wrote:
-> > From: Shyam Prasad N <sprasad@microsoft.com>
-> >=20
-> > [ Upstream commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b ]
-> >=20
-> > While debugging another issue today, Steve and I noticed that if a=20
-> > subdir for a file share is already mounted on the client, any new=20
-> > mount of any other subdir (or the file share root) of the same share=20
-> > results in sharing the cifs superblock, which e.g. can result in=20
-> > incorrect device name.
-> >=20
-> > While setting prefix path for the root of a cifs_sb,=20
-> > CIFS_MOUNT_USE_PREFIX_PATH flag should also be set.
-> > Without it, prepath is not even considered in some places, and=20
-> > output of "mount" and various /proc/<>/*mount* related options can=20
-> > be missing part of the device name.
-> >=20
-> > Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-> > Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-> > Signed-off-by: Steve French <stfrench@microsoft.com>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  fs/cifs/connect.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c index=20
-> > 6285085195c15..632249ce61eba 100644
-> > --- a/fs/cifs/connect.c
-> > +++ b/fs/cifs/connect.c
-> > @@ -3882,6 +3882,7 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_in=
-fo,
-> >  		cifs_sb->prepath =3D kstrdup(pvolume_info->prepath, GFP_KERNEL);
-> >  		if (cifs_sb->prepath =3D=3D NULL)
-> >  			return -ENOMEM;
-> > +		cifs_sb->mnt_cifs_flags |=3D CIFS_MOUNT_USE_PREFIX_PATH;
-> >  	}
-> > =20
-> >  	return 0;
->=20
-> A user in Debian reported an issue with mounts of DFS shares after an=20
-> update in Debian from 4.19.177 to 4.181:
->=20
-> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flist
-> s.debian.org%2Fdebian-user%2F2021%2F04%2Fmsg00062.html&amp;data=3D04%7C0
-> 1%7CShyam.Prasad%40microsoft.com%7C0acbccd2643f4d55c6d008d8f901c180%7C
-> 72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637533133251645484%7CUnknow
-> n%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC
-> JXVCI6Mn0%3D%7C1000&amp;sdata=3D9xz2q%2FC1ur%2F3y70L5CJ5YoL%2FLhSci5hJ3U
-> pttjbZJas%3D&amp;reserved=3D0
->=20
-> In a test setup i was able to reproduce the issue with 4.19.184 itself=20
-> (but interestingly not withing the 5.10.y series, checked 5.10.26)=20
-> which both contain the above commit.
->=20
-> 4.19.184 with a738c93fb1c1 ("cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag=20
-> on setting cifs_sb->prepath.") reverted fixes the issue.
->=20
-> Is there probably some missing prerequisites missing in the 4.19.y=20
-> brach? I could not test othr versions, but maybe other versions are=20
-> affected as well as before 4.19.y, as the commit was backported to
-> 4.14.223 as well.
-
-If there is a missing patch, we will be glad to take it, does 5.4 also have=
- this problem?
-
-thanks,
-
-greg k-h
+> diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
+> index f669d37..9940c6d 100644
+> --- a/drivers/soc/mediatek/mtk-scpsys.c
+> +++ b/drivers/soc/mediatek/mtk-scpsys.c
+> @@ -15,6 +15,7 @@
+>  
+>  #include <dt-bindings/power/mt2701-power.h>
+>  #include <dt-bindings/power/mt2712-power.h>
+> +#include <dt-bindings/power/mt6765-power.h>
+>  #include <dt-bindings/power/mt6797-power.h>
+>  #include <dt-bindings/power/mt7622-power.h>
+>  #include <dt-bindings/power/mt7623a-power.h>
+> @@ -750,6 +751,120 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+>  };
+>  
+>  /*
+> + * MT6765 power domain support
+> + */
+> +#define SPM_PWR_STATUS_MT6765			0x0180
+> +#define SPM_PWR_STATUS_2ND_MT6765		0x0184
+> +
+> +static const struct scp_domain_data scp_domain_data_mt6765[] = {
+> +	[MT6765_POWER_DOMAIN_VCODEC] = {
+> +		.name = "vcodec",
+> +		.sta_mask = BIT(26),
+> +		.ctl_offs = 0x300,
+> +		.sram_pdn_bits = GENMASK(8, 8),
+> +		.sram_pdn_ack_bits = GENMASK(12, 12),
+> +	},
+> +	[MT6765_POWER_DOMAIN_ISP] = {
+> +		.name = "isp",
+> +		.sta_mask = BIT(5),
+> +		.ctl_offs = 0x308,
+> +		.sram_pdn_bits = GENMASK(8, 8),
+> +		.sram_pdn_ack_bits = GENMASK(12, 12),
+> +		.subsys_clk_prefix = "isp",
+> +		.bp_table = {
+> +			BUS_PROT(IFR_TYPE, 0x2A8, 0x2AC, 0, 0x258,
+> +				BIT(20), BIT(20)),
+> +			BUS_PROT(SMI_TYPE, 0x3C4, 0x3C8, 0, 0x3C0,
+> +				BIT(2), BIT(2)),
+> +		},
+> +	},
+> +	[MT6765_POWER_DOMAIN_MM] = {
+> +		.name = "mm",
+> +		.sta_mask = BIT(3),
+> +		.ctl_offs = 0x30C,
+> +		.sram_pdn_bits = GENMASK(8, 8),
+> +		.sram_pdn_ack_bits = GENMASK(12, 12),
+> +		.basic_clk_id = {"mm"},
+> +		.subsys_clk_prefix = "mm",
+> +		.bp_table = {
+> +			BUS_PROT(IFR_TYPE, 0x2A8, 0x2AC, 0, 0x258,
+> +				BIT(16) | BIT(17), BIT(16) | BIT(17)),
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(10) | BIT(11), BIT(10) | BIT(11)),
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(1) | BIT(2), BIT(1) | BIT(2)),
+> +		},
+> +	},
+> +	[MT6765_POWER_DOMAIN_CONN] = {
+> +		.name = "conn",
+> +		.sta_mask = BIT(1),
+> +		.ctl_offs = 0x32C,
+> +		.sram_pdn_bits = 0,
+> +		.sram_pdn_ack_bits = 0,
+> +		.bp_table = {
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(13), BIT(13)),
+> +			BUS_PROT(IFR_TYPE, 0x2A8, 0x2AC, 0, 0x258,
+> +				BIT(18), BIT(18)),
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(14) | BIT(16), BIT(14) | BIT(16)),
+> +		},
+> +	},
+> +	[MT6765_POWER_DOMAIN_MFG_ASYNC] = {
+> +		.name = "mfg_async",
+> +		.sta_mask = BIT(23),
+> +		.ctl_offs = 0x334,
+> +		.sram_pdn_bits = 0,
+> +		.sram_pdn_ack_bits = 0,
+> +		.basic_clk_id = {"mfg"},
+> +	},
+> +	[MT6765_POWER_DOMAIN_MFG] = {
+> +		.name = "mfg",
+> +		.sta_mask = BIT(4),
+> +		.ctl_offs = 0x338,
+> +		.sram_pdn_bits = GENMASK(8, 8),
+> +		.sram_pdn_ack_bits = GENMASK(12, 12),
+> +		.bp_table = {
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(25), BIT(25)),
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(21) | BIT(22), BIT(21) | BIT(22)),
+> +		}
+> +	},
+> +	[MT6765_POWER_DOMAIN_CAM] = {
+> +		.name = "cam",
+> +		.sta_mask = BIT(25),
+> +		.ctl_offs = 0x344,
+> +		.sram_pdn_bits = GENMASK(8, 9),
+> +		.sram_pdn_ack_bits = GENMASK(12, 13),
+> +		.subsys_clk_prefix = "cam",
+> +		.bp_table = {
+> +			BUS_PROT(IFR_TYPE, 0x2A8, 0x2AC, 0, 0x258,
+> +				BIT(19) | BIT(21), BIT(19) | BIT(21)),
+> +			BUS_PROT(IFR_TYPE, 0x2A0, 0x2A4, 0, 0x228,
+> +				BIT(20), BIT(20)),
+> +			BUS_PROT(SMI_TYPE, 0x3C4, 0x3C8, 0, 0x3C0,
+> +				BIT(3), BIT(3)),
+> +		}
+> +	},
+> +	[MT6765_POWER_DOMAIN_MFG_CORE0] = {
+> +		.name = "mfg_core0",
+> +		.sta_mask = BIT(7),
+> +		.ctl_offs = 0x34C,
+> +		.sram_pdn_bits = GENMASK(8, 8),
+> +		.sram_pdn_ack_bits = GENMASK(12, 12),
+> +	},
+> +};
+> +
+> +static const struct scp_subdomain scp_subdomain_mt6765[] = {
+> +	{MT6765_POWER_DOMAIN_MM, MT6765_POWER_DOMAIN_CAM},
+> +	{MT6765_POWER_DOMAIN_MM, MT6765_POWER_DOMAIN_ISP},
+> +	{MT6765_POWER_DOMAIN_MM, MT6765_POWER_DOMAIN_VCODEC},
+> +	{MT6765_POWER_DOMAIN_MFG_ASYNC, MT6765_POWER_DOMAIN_MFG},
+> +	{MT6765_POWER_DOMAIN_MFG, MT6765_POWER_DOMAIN_MFG_CORE0},
+> +};
+> +
+> +/*
+>   * MT6797 power domain support
+>   */
+>  
+> @@ -1032,6 +1147,18 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+>  	.bus_prot_reg_update = false,
+>  };
+>  
+> +static const struct scp_soc_data mt6765_data = {
+> +	.domains = scp_domain_data_mt6765,
+> +	.num_domains = ARRAY_SIZE(scp_domain_data_mt6765),
+> +	.subdomains = scp_subdomain_mt6765,
+> +	.num_subdomains = ARRAY_SIZE(scp_subdomain_mt6765),
+> +	.regs = {
+> +		.pwr_sta_offs = SPM_PWR_STATUS_MT6765,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND_MT6765,
+> +	},
+> +	.bus_prot_reg_update = true,
+> +};
+> +
+>  static const struct scp_soc_data mt6797_data = {
+>  	.domains = scp_domain_data_mt6797,
+>  	.num_domains = ARRAY_SIZE(scp_domain_data_mt6797),
+> @@ -1088,6 +1215,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+>  		.compatible = "mediatek,mt2712-scpsys",
+>  		.data = &mt2712_data,
+>  	}, {
+> +		.compatible = "mediatek,mt6765-scpsys",
+> +		.data = &mt6765_data,
+> +	}, {
+>  		.compatible = "mediatek,mt6797-scpsys",
+>  		.data = &mt6797_data,
+>  	}, {
+> 
