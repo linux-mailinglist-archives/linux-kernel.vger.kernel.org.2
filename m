@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2703355DB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6118355DC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhDFVNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:13:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238577AbhDFVNt (ORCPT
+        id S1343616AbhDFVSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:18:31 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:34792 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343556AbhDFVS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:13:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617743620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n0hWxJLVmdsricryI3Rst9nD37DLk4CPYNA3q9HyKGA=;
-        b=U/LxtqZ6aWK8FrKlCHVfYDuT4hypRZlHVOXk+IwPdyV/gXrGQSiOqd6US3fHB4ZKZ8Ceo6
-        IBTxlNKoPwxHG3dYDM9nPj2uFSfK/G1ygKF4bJDl4paKONjThOVKL5moP0jfbkegWz8WOH
-        xZIr7XM7UsCswOVV/6haPJXfQLetKzc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-xaQlB8BUMDC2ISxEBTdGhg-1; Tue, 06 Apr 2021 17:13:39 -0400
-X-MC-Unique: xaQlB8BUMDC2ISxEBTdGhg-1
-Received: by mail-qt1-f198.google.com with SMTP id a16so10920497qtw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 14:13:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n0hWxJLVmdsricryI3Rst9nD37DLk4CPYNA3q9HyKGA=;
-        b=U/FrEsm+7VC/0xgTWjjQBk39slOf51kTh6fK9SQttHXYKlrEvFGxQPBYSJzAvC+uB+
-         en+gpGvrxQyUu+/HDnfB5HyjhbssFefS5I2//LqsU34mcfZK/Z3XuuJMrWDRVrqGUKGI
-         5ISxJhebmYm6lzERwv459KrzFXjULx9LWomZ2Lvdf6aSnKHgxK2nh0fw05MGi0NX1fLo
-         8+hzVOxMhx6VymY+LT1Cvr/UK68rXPXb6CtRMzJYNcvfrybRrzTwwj1i+m+qH1P/IyKC
-         WajpLujIL+3awd+eL50UVukDGchA7nGr63A7r7sMhjJorvsw/VdA27RWvLE8mMJf8bpW
-         I99Q==
-X-Gm-Message-State: AOAM530QWR00JtQgSHjzRO8oDkF6lhFUdPv+lfjRJZQRtuKjQp/wKX1K
-        TMN83NXwjIoP3qHsx61/Xxg8B6mJaccV5t38ZFf23mWlMkfwXKwU5KDzln3gH+thwBI+J2Vb6Jv
-        R94YFISHLbACY7lJLLxzm+gnM
-X-Received: by 2002:ac8:6c57:: with SMTP id z23mr14454870qtu.155.1617743618663;
-        Tue, 06 Apr 2021 14:13:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvIEKe5NEFfjLI+xWqaKNhUTCtlcBMeB9iljRNEmRUAfwEbQMtz5cIl77hzWbFWgBhB1CLLA==
-X-Received: by 2002:ac8:6c57:: with SMTP id z23mr14454854qtu.155.1617743618434;
-        Tue, 06 Apr 2021 14:13:38 -0700 (PDT)
-Received: from loberhel7laptop ([2600:6c64:4e7f:cee0:ccad:a4ca:9a69:d8bc])
-        by smtp.gmail.com with ESMTPSA id a10sm16963948qkh.122.2021.04.06.14.13.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Apr 2021 14:13:37 -0700 (PDT)
-Message-ID: <fe8cdf3bede40b46716bf94b0760db6d47a13187.camel@redhat.com>
-Subject: Re: [PATCH][next] net/mlx5: Fix bit-wise and with zero
-From:   Laurence Oberman <loberman@redhat.com>
-To:     Colin King <colin.king@canonical.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Raed Salem <raeds@nvidia.com>, Huy Nguyen <huyn@mellanox.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 06 Apr 2021 17:13:36 -0400
-In-Reply-To: <20210406165346.430535-1-colin.king@canonical.com>
-References: <20210406165346.430535-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 6 Apr 2021 17:18:26 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 854C3C008D;
+        Tue,  6 Apr 2021 21:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617743898; bh=vGBK5U+o+ZHgapDyTLygfAiRN0XZJ6pSVSoGE1cYj2o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T/+jMF0T+CkZvPnxwAeZ6tbTqEmuAS4ET84NdwDmr2m1D/d2B39wIWohHd7JEokPt
+         1wsSTskB4naPs6toUK5J+H26GQOarOMVWb3coTyeub6m6h+cKd0z1Pg50LDWgKsBQm
+         3ZbBnCCLzmla3Xp8s68d3Kxcz3kgnE+GGKs9+dhcHC8xqVn28RM8YZQE5aUF+DXAfo
+         5Tf2no3eoknLYXmjyegkwrhHP+r6ziim15sle4FbjOYS1LFgsmvIzfPGj+jPqsseP0
+         qwROxaQmPEo6xUyPa1emS5JlhV+xgynk8U92J9q6g8dXgJRUVUSBMBFdP7V7ITALdl
+         KGdGWwMsPxFmA==
+Received: from de02dwvm009.internal.synopsys.com (de02dwvm009.internal.synopsys.com [10.225.17.73])
+        by mailhost.synopsys.com (Postfix) with ESMTP id BC738A022E;
+        Tue,  6 Apr 2021 21:18:12 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v2 0/2] Documentation: misc-devices: Fix documentation issues (indentation, text format, toc) and outdated information
+Date:   Tue,  6 Apr 2021 23:17:47 +0200
+Message-Id: <cover.1617743702.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-04-06 at 17:53 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The bit-wise and of the action field with
-> MLX5_ACCEL_ESP_ACTION_DECRYPT
-> is incorrect as MLX5_ACCEL_ESP_ACTION_DECRYPT is zero and not
-> intended
-> to be a bit-flag. Fix this by using the == operator as was originally
-> intended.
-> 
-> Addresses-Coverity: ("Logically dead code")
-> Fixes: 7dfee4b1d79e ("net/mlx5: IPsec, Refactor SA handle creation
-> and destruction")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-> index d43a05e77f67..0b19293cdd74 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-> @@ -850,7 +850,7 @@ mlx5_fpga_ipsec_release_sa_ctx(struct
-> mlx5_fpga_ipsec_sa_ctx *sa_ctx)
->  		return;
->  	}
->  
-> -	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action &
-> +	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action ==
->  	    MLX5_ACCEL_ESP_ACTION_DECRYPT)
->  		ida_free(&fipsec->halloc, sa_ctx->sa_handle);
->  
+This patch series fixes the documentation issues reported by doing
+*make htmldocs*, such as:
+ - indentation
+ - text formatting
+ - missing entry on the table of content related to dw-xdata-pcie misc
+ driver index
 
-Looks correct to me with enum mlx5_accel_esp_action action;
+Besides these warnings also fixes some outdated information related to
+stop file interface in sysfs.
 
-Reviewed-by Laurence Oberman <loberman@redhat.com>
+Changes:
+ V2: Added cover-letter
+     Added Reported-by, Link, and Fixes tags
+
+Cc: linux-doc@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Krzysztof Wilczyński <kw@linux.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+
+Gustavo Pimentel (2):
+  Documentation: misc-devices: Fix indentation, formatting, and update
+    outdated info
+  Documentation: misc-devices: Add missing entry on the table of content
+    related to dw-xdata-pcie
+
+ Documentation/misc-devices/dw-xdata-pcie.rst | 62 +++++++++++++++++++---------
+ Documentation/misc-devices/index.rst         |  1 +
+ 2 files changed, 44 insertions(+), 19 deletions(-)
+
+-- 
+2.7.4
 
