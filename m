@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AD2354FF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2148B354FFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhDFJdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:33:23 -0400
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:41962 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbhDFJdV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:33:21 -0400
-Received: by mail-vk1-f169.google.com with SMTP id o17so3043492vko.8;
-        Tue, 06 Apr 2021 02:33:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=grgIxmSma2JlieWtBX3rMxJzJxBIyz4KExnfhvygE5M=;
-        b=byuWXyERSSoZNxADdXcP7qj3Gh+lRcEXrhE/XKdlLO7AsPuVKfCdBKxL64ncn3nBi/
-         kAV4XYOj8w4i39dgrcNED8NsDHb1R0yA6U6txu5E6wC8t8UWuRVSiCf2t3yfZJ/AzrGG
-         s3rCOZyosY7SBBCEZGKAF7aBGlCJTYnyXFjsicTRQsQdqeYmn67cDsQditOkRkilNagh
-         9Rn+6qqeFR9ZZ+3QVlDhq/gxxAcxvG8sunBwAUO5esMPgP/nBDM9jJIjWq91M0QlxeUC
-         VzBbZFjYwwq41DdNLFzQA59eaP/roBD1P43tu5cr5AFPdAN7Zprmm6JxSqQI9dwK6IaG
-         /8wA==
-X-Gm-Message-State: AOAM530+dUhlV4msIUyoVoONjliCOvYa8nDSN2/xHn03aFBv2tfFjFXq
-        vPunDGV/4HHF7cnc8tCcqoyYLy41Y0Kp19We8lscidvf
-X-Google-Smtp-Source: ABdhPJzgJNbsIKr5NP1kHfRMwi9+BcmAuttYIVdrxWa1dLq56Xb06r6Zg7tF1EDTF5IKCMc00RB5P7qIa5UgLW9cGhU=
-X-Received: by 2002:a1f:2502:: with SMTP id l2mr16362671vkl.5.1617701593632;
- Tue, 06 Apr 2021 02:33:13 -0700 (PDT)
+        id S240957AbhDFJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235857AbhDFJfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:35:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2E06135D;
+        Tue,  6 Apr 2021 09:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617701698;
+        bh=LuZrpJ9SjACJlYKbWRxk7fOEoUkXTHjdnj2dsQk/qjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KpvwQO/gp5gn6MOjpflz83q6+j8bfFs/3J7+8k07xoroXe8x419HvxUvx75NBqoLg
+         wEiXZnRMH4Q24YL7nTIjbq+3b5WbZLHF0lcEBjdIKYJC9mpEE9gwV3c3rOQTPmedbq
+         gDS8h8IxNk/DW50aGRX2fu6vvjA2LM/AaxNfFIG8=
+Date:   Tue, 6 Apr 2021 11:34:55 +0200
+From:   'Greg KH' <gregkh@linuxfoundation.org>
+To:     Pho Tran <Pho.Tran@silabs.com>
+Cc:     'Pho Tran' <photranvan0712@gmail.com>,
+        "'johan@kernel.org'" <johan@kernel.org>,
+        "'linux-usb@vger.kernel.org'" <linux-usb@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>,
+        Tung Pham <Tung.Pham@silabs.com>,
+        'Kernel test robot' <lkp@intel.com>
+Subject: Re: [PATCH v7] USB: serial: cp210x: Add support for GPIOs on CP2108
+Message-ID: <YGwrP1p0KtAIOoyZ@kroah.com>
+References: <20210406040238.1850-1-photranvan0712@gmail.com>
+ <YGvuQlxyorJt+ErG@kroah.com>
+ <DM6PR11MB44414602F10C6C991A65D48CE3769@DM6PR11MB4441.namprd11.prod.outlook.com>
+ <YGwltSD+iEPmRblS@kroah.com>
+ <DM6PR11MB4441660856AC72EA5764BD43E3769@DM6PR11MB4441.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210331081735.367238-1-geert+renesas@glider.be> <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
-In-Reply-To: <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 6 Apr 2021 11:33:02 +0200
-Message-ID: <CAMuHMdXCjhDQhtAXir5zd7u=NCsCFhVvB6kmckWkmXbiQJix4A@mail.gmail.com>
-Subject: Re: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not
- default to m
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB4441660856AC72EA5764BD43E3769@DM6PR11MB4441.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoi Hans,
+On Tue, Apr 06, 2021 at 09:25:18AM +0000, Pho Tran wrote:
+> Hi Greg!
+> Should I send the Patch with new version (PATCH v8) or keep version of the Patch is v7?
 
-On Tue, Apr 6, 2021 at 11:24 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> On 31/03/2021 10:17, Geert Uytterhoeven wrote:
-> > The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
-> > Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
-> > ARCH_MXC, to prevent asking the user about this driver when configuring
-> > a kernel without i.MX8 support.
-> >
-> > Drop the "default m" (which means "default y" if CONFIG_MODULES is not
-> > enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
-> > additional code.
->
-> You do not actually drop 'default m' in the patch. Either the patch or the
-> commit message is wrong.
+Again, please do not top-post.
 
-Oops, the patch is wrong.
-V2 sent.
-Thanks!
+v8 is needed.
 
-Gr{oetje,eeting}s,
+thanks,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
