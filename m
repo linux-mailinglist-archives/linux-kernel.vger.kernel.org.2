@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F8C355177
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1942D355181
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245318AbhDFLBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232292AbhDFLBO (ORCPT
+        id S245345AbhDFLFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:05:17 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2766 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241641AbhDFLFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:01:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B662C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 04:01:06 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617706863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S2O1k9yZlYySt7+8gnNrDK/Yp/8kwoWX62PxlbcqwbA=;
-        b=nl9GFkH778lC7VCrJOuaoV80FdfH0mtXyzGk6zcuRJPpzUbwbdCttQk6fZN0TWXbTNFRHS
-        9OP4F05zxprZGg/xrYgT3Dc78sX2wQoXJufiMTarERPRiF1HwtW87KNXnnLCLPBwAEUI8l
-        Lyi4cptRgwjQyWy4f5OzjrnYIUFDU3znx7RetH9ffo5pac9HdBj/wgI4zvpLnhJw7e2oAi
-        h34q2YaMqx653oO2+7Tqu8iGaVsxQwJhHRPYLrqPOAfOpobaf1NbF3s91jgtawE7IIWdKE
-        UV94lIL4ee0lGL/6gJg9KEoMtmeOBzCgkHyqOsp+irX0SlOmZB2rI9/coqhytg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617706863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S2O1k9yZlYySt7+8gnNrDK/Yp/8kwoWX62PxlbcqwbA=;
-        b=yzGkWAKS3iH7xchc7y3QLe7xFMXuhjofzIxtdxB9f2DojJ4aTiCvWNPgQVcmr4T/abFsf7
-        grBHNd4e9TDvqEDQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
-In-Reply-To: <YGXV8LJarjUJDhvy@alley>
-References: <20210330153512.1182-1-john.ogness@linutronix.de> <20210330153512.1182-3-john.ogness@linutronix.de> <YGW63/elFr/gYW1u@alley> <87a6qiqgzr.fsf@jogness.linutronix.de> <YGXV8LJarjUJDhvy@alley>
-Date:   Tue, 06 Apr 2021 13:01:02 +0200
-Message-ID: <87im4zoexd.fsf@jogness.linutronix.de>
+        Tue, 6 Apr 2021 07:05:14 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF4L86QQXz682Z9;
+        Tue,  6 Apr 2021 19:00:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 13:05:05 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 12:05:03 +0100
+Subject: Re: [PATCH v2 0/6] perf arm64 metricgroup support
+To:     kajoljain <kjain@linux.ibm.com>, "Paul A. Clarke" <pc@us.ibm.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <irogers@google.com>, <linuxarm@huawei.com>,
+        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <dc17013d-2dcb-8ddf-a15a-e98cad3e2ae3@huawei.com>
+ <20210329210717.GF8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <247e9484-34c8-544a-e268-b025ecb317fe@linux.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <1d800da3-ec94-3a37-eca9-1d3cf8543ba6@huawei.com>
+Date:   Tue, 6 Apr 2021 12:02:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <247e9484-34c8-544a-e268-b025ecb317fe@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-01, Petr Mladek <pmladek@suse.com> wrote:
->> Caller-id solves this problem and is easy to sort for anyone with
->> `grep'. Yes, it is a shame that `dmesg' does not show it, but
->> directly using any of the printk interfaces does show it (kmsg_dump,
->> /dev/kmsg, syslog, console).
->
-> True but frankly, the current situation is _far_ from convenient:
->
->    + consoles do not show it by default
->    + none userspace tool (dmesg, journalctl, crash) is able to show it
->    + grep is a nightmare, especially if you have more than handful of CPUs
->
-> Yes, everything is solvable but not easily.
->
->> >     I get this with "echo l >/proc/sysrq-trigger" and this patchset:
->> 
->> Of course. Without caller-id, it is a mess. But this has nothing to do
->> with NMI. The same problem exists for WARN_ON() on multiple CPUs
->> simultaneously. If the user is not using caller-id, they are
->> lost. Caller-id is the current solution to the interlaced logs.
->
-> Sure. But in reality, the risk of mixed WARN_ONs is small. While
-> this patch makes backtraces from all CPUs always unusable without
-> caller_id and non-trivial effort.
+On 30/03/2021 07:41, kajoljain wrote:
+> 
+> 
+> On 3/30/21 2:37 AM, Paul A. Clarke wrote:
+>> On Fri, Mar 26, 2021 at 10:57:40AM +0000, John Garry wrote:
+>>> On 25/03/2021 20:39, Paul A. Clarke wrote:
+>>>> On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
+>>>>> Metric reuse support is added for pmu-events parse metric testcase.
+>>>>> This had been broken on power9 recentlty:
+>>>>> https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
+>>>>
+>>>> Much better.  Before:
+>>>> --
+>>>> $ perf test -v 10 2>&1 | grep -i error | wc -l
+>>>> 112
+>>>> --
+>>>> After:
+>>>> --
+>>>> $ perf test -v 10 2>&1 | grep -i error | wc -l
+>>>> 17
+>>>> --
+>>>>
+>>>> And these seem like different types of issues:
+>>>> --
+>>>> $ perf test -v 10 2>&1 | grep -i error
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+>>>> --
+>>>>
+>>>
+>>> This looks suspicious.
+>>>
+>>> Firstly, does /sys/bus/event_source/devices/nest_mcs01_imc (or others,
+>>> above) exist on your system? I guess not.
+>>>
+>>> Secondly, checking Documentation/powerpc/imc.rst, we have examples of:
+>>> nest_mcs01/PM_MCS01_64B_R...
+>>>
+>>> So is the PMU name correct in the metric file for nest_mcs01_imc? Looking at
+>>> the kernel driver file, arch/powerpc/perf/imc-pmu.c, it seems to be correct.
+>>> Not sure.
+>>
+>> I ran with a newer kernel, and the above errors disappeared, replaced with
+>> about 10 of:
+>> --
+>> Error string 'Cannot find PMU `hv_24x7'. Missing kernel support?' help '(null)'
+>> --
+>>
+>> ...but I was running without a hypervisor, so I tried the same kernel on a
+>> PowerVM-virtualized system and the "hv_24x7" messages went away, but the
+>> "nest" messages returned.  This may all be expected behavior... I confess
+>> I haven't followed these new perf capabilities closely.
+>>
+> 
+> Hi Paul/John,
+>     This is something expected. For nest-imc we need bare-metal system and for
+> hv-24x7 we need VM environment. Since you are checking this test in VM machine,
+> there nest events are not supported and hence we are getting this error.
+> 
+> Thanks,
+> Kajol Jain
 
-I would prefer we solve the situation for non-NMI as well, not just for
-the sysrq "l" case.
+Cool, so I hope that tested-by or similar can be provided :) [obviously 
+pending any changes that come from reviews]
 
->> For the long term, we should introduce a printk-context API that allows
->> callers to perfectly pack their multi-line output into a single
->> entry. We discussed [0][1] this back in August 2020.
->
-> We need a "short" term solution. There are currently 3 solutions:
->
-> 1. Keep nmi_safe() and all the hacks around.
->
-> 2. Serialize nmi_cpu_backtrace() by a spin lock and later by
->    the special lock used also by atomic consoles.
->
-> 3. Tell complaining people how to sort the messed logs.
+Thanks
 
-Or we look into the long term solution now. If caller-id's cannot not be
-used as the solution (because nobody turns it on, nobody knows about it,
-and/or distros do not enable it), then we should look at how to make at
-least the backtraces contiguous. I have a few ideas here.
+> 
+>> It's extremely likely that none of these errors has anything to do with your
+>> changes. :-
+>>
+>> PC
+>>
+> .
+> 
 
-John Ogness
