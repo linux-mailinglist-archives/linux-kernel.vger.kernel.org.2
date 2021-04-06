@@ -2,235 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A2A355415
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7BB355417
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344143AbhDFMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:41:37 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37632 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242201AbhDFMl0 (ORCPT
+        id S1344156AbhDFMlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344145AbhDFMlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:41:26 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 73ACD8E5;
-        Tue,  6 Apr 2021 14:41:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617712877;
-        bh=TScFm4kNLM8PgTEJReKqvDkIXKIGV2TPe2iQsESJ+Mg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mecuFYP5mVEU1d2E1IPnSWqHa9M1L3m64OzYPdTGWhX+iQe8FBhTQE2HuBMuTE9br
-         8CakVbYWT2PUIjRk0VVnPeJWBbIltnb3JD26M7vWL/TkNtf2g8vT3s5XRv9hE4/jOF
-         OPo/2xQV91UFOg+npgyLv38BwG5xDSmK1Lsha0Jg=
-Date:   Tue, 6 Apr 2021 15:40:33 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, dafna3@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, enric.balletbo@collabora.com
-Subject: Re: [PATCH] drm: bridge: rename the function drm_bridge_hpd_notify
- to drm_bridge_hpd_cb
-Message-ID: <YGxWwTTjhFcVDELB@pendragon.ideasonboard.com>
-References: <20210330115200.26006-1-dafna.hirschfeld@collabora.com>
+        Tue, 6 Apr 2021 08:41:42 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47FDC06174A;
+        Tue,  6 Apr 2021 05:41:29 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a0d0028dd5ac2a57e9950.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:28dd:5ac2:a57e:9950])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 37BAD1EC01DF;
+        Tue,  6 Apr 2021 14:41:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617712888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Pv17T3ai77Xev+NWaPOI51QWhDN6big+Jsrye4oweIQ=;
+        b=k2bkf31eTt3jtPXlgdbxv3YCgoXgfzdfwRRM8SnWSGM0m1BljQuJGuLBXXuYdzOursyS5j
+        WsrKAk6zUzRIwIPlYuSVd7W33rV0UZ0dGyj8tdbtoq85qytMpJlssEOgKnqpBTgLjuBRFa
+        y4Us3NKkGkOTYAW0B5xOWnzESzcreYQ=
+Date:   Tue, 6 Apr 2021 14:41:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, it+linux-x86@molgen.mpg.de,
+        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
+        Andy Lutomirski <luto@kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>
+Subject: Re: [regression 5.4.97 =?utf-8?B?4oaSIDUu?= =?utf-8?B?MTAuMjRd?=
+ =?utf-8?Q?=3A?= raid6 avx2x4 speed drops from 18429 MB/s to 6155 MB/s
+Message-ID: <20210406124126.GM17806@zn.tnic>
+References: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
+ <20210402140554.GG28499@zn.tnic>
+ <05dbb237-1d23-df32-e4ed-6bc7b47f42dc@molgen.mpg.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210330115200.26006-1-dafna.hirschfeld@collabora.com>
+In-Reply-To: <05dbb237-1d23-df32-e4ed-6bc7b47f42dc@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dafna,
+On Tue, Apr 06, 2021 at 12:58:15PM +0200, Paul Menzel wrote:
+> I booted Linux 5.12-rc6, containing these commits, on a Dell OptiPlex 5055
+> with AMD Ryzen 5 PRO 1500 Quad-Core Processor, and the regression is still
+> present for `avx2x4 xor()`:
 
-Thank you for the patch.
+So I don't think that's a regression - this looks more like "you should
+not look at those numbers and compare them". Below are some results from
+boot logs on one of my test boxes, first column is the kernel version.
 
-On Tue, Mar 30, 2021 at 01:52:00PM +0200, Dafna Hirschfeld wrote:
-> drm_bridge_funcs has a function called 'hpd_notify'.
-> The function drm_bridge_hpd_notify does not call
-> 'hpd_notify' but it calls 'hpd_cb'. This is rather
-> confusing. Rename the function to fix this confusion.
-> 
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> ---
->  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c        | 2 +-
->  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
->  drivers/gpu/drm/bridge/display-connector.c          | 2 +-
->  drivers/gpu/drm/bridge/lontium-lt9611uxc.c          | 8 ++++----
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c           | 2 +-
->  drivers/gpu/drm/bridge/ti-tpd12s015.c               | 2 +-
->  drivers/gpu/drm/drm_bridge.c                        | 8 ++++----
->  include/drm/drm_bridge.h                            | 8 ++++----
->  8 files changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> index 76555ae64e9c..748f82910f4f 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> @@ -449,7 +449,7 @@ static void adv7511_hpd_work(struct work_struct *work)
->  				cec_phys_addr_invalidate(adv7511->cec_adap);
->  			drm_kms_helper_hotplug_event(adv7511->connector.dev);
->  		} else {
-> -			drm_bridge_hpd_notify(&adv7511->bridge, status);
-> +			drm_bridge_hpd_cb(&adv7511->bridge, status);
->  		}
->  	}
->  }
-> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> index d0c65610ebb5..682da288ff6d 100644
-> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> @@ -794,7 +794,7 @@ static void cdns_mhdp_fw_cb(const struct firmware *fw, void *context)
->  		if (mhdp->connector.dev)
->  			drm_kms_helper_hotplug_event(mhdp->bridge.dev);
->  		else
-> -			drm_bridge_hpd_notify(&mhdp->bridge, cdns_mhdp_detect(mhdp));
-> +			drm_bridge_hpd_cb(&mhdp->bridge, cdns_mhdp_detect(mhdp));
->  	}
->  }
->  
-> @@ -2314,7 +2314,7 @@ static irqreturn_t cdns_mhdp_irq_handler(int irq, void *data)
->  			else
->  				drm_kms_helper_hotplug_event(mhdp->bridge.dev);
->  		} else {
-> -			drm_bridge_hpd_notify(&mhdp->bridge, cdns_mhdp_detect(mhdp));
-> +			drm_bridge_hpd_cb(&mhdp->bridge, cdns_mhdp_detect(mhdp));
->  		}
->  	}
->  
-> diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
-> index 05eb759da6fc..8ccd69d7fe34 100644
-> --- a/drivers/gpu/drm/bridge/display-connector.c
-> +++ b/drivers/gpu/drm/bridge/display-connector.c
-> @@ -98,7 +98,7 @@ static irqreturn_t display_connector_hpd_irq(int irq, void *arg)
->  	struct display_connector *conn = arg;
->  	struct drm_bridge *bridge = &conn->bridge;
->  
-> -	drm_bridge_hpd_notify(bridge, display_connector_detect(bridge));
-> +	drm_bridge_hpd_cb(bridge, display_connector_detect(bridge));
->  
->  	return IRQ_HANDLED;
->  }
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> index fee27952ec6d..58f61b5da605 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> @@ -175,10 +175,10 @@ static void lt9611uxc_hpd_work(struct work_struct *work)
->  		connected = lt9611uxc->hdmi_connected;
->  		mutex_unlock(&lt9611uxc->ocm_lock);
->  
-> -		drm_bridge_hpd_notify(&lt9611uxc->bridge,
-> -				      connected ?
-> -				      connector_status_connected :
-> -				      connector_status_disconnected);
-> +		drm_bridge_hpd_cb(&lt9611uxc->bridge,
-> +				  connected ?
-> +				  connector_status_connected :
-> +				  connector_status_disconnected);
->  	}
->  }
->  
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index dda4fa9a1a08..984ab5c4bc71 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -3026,7 +3026,7 @@ static irqreturn_t dw_hdmi_irq(int irq, void *dev_id)
->  
->  		if (hdmi->bridge.dev) {
->  			drm_helper_hpd_irq_event(hdmi->bridge.dev);
-> -			drm_bridge_hpd_notify(&hdmi->bridge, status);
-> +			drm_bridge_hpd_cb(&hdmi->bridge, status);
->  		}
->  	}
->  
-> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> index e0e015243a60..2f079b6f51bc 100644
-> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> @@ -103,7 +103,7 @@ static irqreturn_t tpd12s015_hpd_isr(int irq, void *data)
->  	struct tpd12s015_device *tpd = data;
->  	struct drm_bridge *bridge = &tpd->bridge;
->  
-> -	drm_bridge_hpd_notify(bridge, tpd12s015_detect(bridge));
-> +	drm_bridge_hpd_cb(bridge, tpd12s015_detect(bridge));
->  
->  	return IRQ_HANDLED;
->  }
-> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> index 64f0effb52ac..653761a0d5f9 100644
-> --- a/drivers/gpu/drm/drm_bridge.c
-> +++ b/drivers/gpu/drm/drm_bridge.c
-> @@ -1173,7 +1173,7 @@ void drm_bridge_hpd_disable(struct drm_bridge *bridge)
->  EXPORT_SYMBOL_GPL(drm_bridge_hpd_disable);
->  
->  /**
-> - * drm_bridge_hpd_notify - notify hot plug detection events
-> + * drm_bridge_hpd_cb - notify hot plug detection events
+IOW, you can use those numbers as a random number generator.
 
-This function is still documented as notifying hot plug detection
-events, so drm_bridge_hpd_cb() isn't a great name :-S I do agree there's
-confusion with the current naming scheme though.
+Now, I'm not saying that there isn't anything happening after
+5.4-5.6-ish timeframe but this needs to be checked with a proper
+benchmark and then look at what could be causing this. It could be the
+MXCSR clearing but it's not like we don't need that so there won't be a
+whole lot we can do.
 
-bridge->hpd_cb() is an internal callback, not part of bridge ops, so I'd
-rather not expose its name in the public drm_bridge_hpd_notify() API.
-Could we find a better naming scheme ?
+But someone would have to sit down and do proper measurements first. And
+bisect. Then we'll see...
 
->   * @bridge: bridge control structure
->   * @status: output connection status
->   *
-> @@ -1183,15 +1183,15 @@ EXPORT_SYMBOL_GPL(drm_bridge_hpd_disable);
->   *
->   * This function shall be called in a context that can sleep.
->   */
-> -void drm_bridge_hpd_notify(struct drm_bridge *bridge,
-> -			   enum drm_connector_status status)
-> +void drm_bridge_hpd_cb(struct drm_bridge *bridge,
-> +		       enum drm_connector_status status)
->  {
->  	mutex_lock(&bridge->hpd_mutex);
->  	if (bridge->hpd_cb)
->  		bridge->hpd_cb(bridge->hpd_data, status);
->  	mutex_unlock(&bridge->hpd_mutex);
->  }
-> -EXPORT_SYMBOL_GPL(drm_bridge_hpd_notify);
-> +EXPORT_SYMBOL_GPL(drm_bridge_hpd_cb);
->  
->  #ifdef CONFIG_OF
->  /**
-> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-> index 2195daa289d2..ab54715eda8b 100644
-> --- a/include/drm/drm_bridge.h
-> +++ b/include/drm/drm_bridge.h
-> @@ -605,7 +605,7 @@ struct drm_bridge_funcs {
->  	 * @hpd_enable:
->  	 *
->  	 * Enable hot plug detection. From now on the bridge shall call
-> -	 * drm_bridge_hpd_notify() each time a change is detected in the output
-> +	 * drm_bridge_hpd_cb() each time a change is detected in the output
->  	 * connection status, until hot plug detection gets disabled with
->  	 * @hpd_disable.
->  	 *
-> @@ -620,7 +620,7 @@ struct drm_bridge_funcs {
->  	 * @hpd_disable:
->  	 *
->  	 * Disable hot plug detection. Once this function returns the bridge
-> -	 * shall not call drm_bridge_hpd_notify() when a change in the output
-> +	 * shall not call drm_bridge_hpd_cb() when a change in the output
->  	 * connection status occurs.
->  	 *
->  	 * This callback is optional and shall only be implemented by bridges
-> @@ -878,8 +878,8 @@ void drm_bridge_hpd_enable(struct drm_bridge *bridge,
->  				      enum drm_connector_status status),
->  			   void *data);
->  void drm_bridge_hpd_disable(struct drm_bridge *bridge);
-> -void drm_bridge_hpd_notify(struct drm_bridge *bridge,
-> -			   enum drm_connector_status status);
-> +void drm_bridge_hpd_cb(struct drm_bridge *bridge,
-> +		       enum drm_connector_status status);
->  
->  #ifdef CONFIG_DRM_PANEL_BRIDGE
->  struct drm_bridge *drm_panel_bridge_add(struct drm_panel *panel);
+HTH.
+
+01-0+   :raid6: avx2x4   xor() 10311 MB/s
+01-rc3+ :raid6: avx2x4   xor()  5497 MB/s
+01-rc6+ :raid6: avx2x4   xor()  5369 MB/s
+02-rc3+ :raid6: avx2x4   xor()  9812 MB/s
+02-rc5+ :raid6: avx2x4   xor() 11479 MB/s
+03-rc1+ :raid6: avx2x4   xor()  6434 MB/s
+03-rc2+ :raid6: avx2x4   xor()  5487 MB/s
+03-rc3+ :raid6: avx2x4   xor()  4840 MB/s
+03-rc5+ :raid6: avx2x4   xor() 11104 MB/s
+04-rc1+ :raid6: avx2x4   xor()  6443 MB/s
+04-rc2+ :raid6: avx2x4   xor()  4959 MB/s
+04-rc3+ :raid6: avx2x4   xor()  4918 MB/s
+04-rc7+ :raid6: avx2x4   xor()  5219 MB/s
+05-rc1+ :raid6: avx2x4   xor()  5362 MB/s
+05-rc2+ :raid6: avx2x4   xor()  5356 MB/s
+05-rc7+ :raid6: avx2x4   xor()  5821 MB/s
+06-rc1+ :raid6: avx2x4   xor()  3358 MB/s
+06-rc2+ :raid6: avx2x4   xor()  3591 MB/s
+06-rc4+ :raid6: avx2x4   xor()  3947 MB/s
+06-rc6+ :raid6: avx2x4   xor()  4100 MB/s
+06-rc7+ :raid6: avx2x4   xor()  4038 MB/s
+07-0+   :raid6: avx2x4   xor()  3410 MB/s
+07-rc1+ :raid6: avx2x4   xor()  4836 MB/s
+07-rc2+ :raid6: avx2x4   xor()  3194 MB/s
+07-rc5  :raid6: avx2x4   xor()  4220 MB/s
+07-rc6+ :raid6: avx2x4   xor()  3949 MB/s
+07-rc7+ :raid6: avx2x4   xor()  3238 MB/s
+09-0+   :raid6: avx2x4   xor()  3259 MB/s
+09-rc1+ :raid6: avx2x4   xor()  2963 MB/s
+09-rc4+ :raid6: avx2x4   xor()  2593 MB/s
+09-rc5+ :raid6: avx2x4   xor()  2555 MB/s
+09-rc7+ :raid6: avx2x4   xor()  3333 MB/s
+09-rc8+ :raid6: avx2x4   xor()  2979 MB/s
+10-rc4+ :raid6: avx2x4   xor()  4482 MB/s
+10-rc5+ :raid6: avx2x4   xor()  6170 MB/s
+10-rc7+ :raid6: avx2x4   xor()  3557 MB/s
+11-rc1+ :raid6: avx2x4   xor()  1461 MB/s
+11-rc2+ :raid6: avx2x4   xor()  4095 MB/s
+11-rc7+ :raid6: avx2x4   xor()  6088 MB/s
+12-rc1+ :raid6: avx2x4   xor()  4147 MB/s
+12-rc2+ :raid6: avx2x4   xor()  4361 MB/s
+12-rc3+ :raid6: avx2x4   xor()  4070 MB/s
+12-rc4+ :raid6: avx2x4   xor()  6078 MB/s
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
