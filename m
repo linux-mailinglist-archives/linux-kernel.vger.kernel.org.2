@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA693556AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70FC3556B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345170AbhDFOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239052AbhDFOdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:33:00 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AC8C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:32:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id u11so2052972wrp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ABvfiatEaAgOGlUexoNa8C9CZPfoQ4JMW2QwnUmAO+k=;
-        b=UKk6IcehDFx5Go/2xcSt6JUua9c4vbNfNtxl8gD79YljpArtYWbuia4csdie2BiCpk
-         nK0jnUl8jaqsfcrl5+jL0fkKaW6t5h1lLG/sTf2PXUk3oOXtmOmYSEc7j8a+ZRbDFHiq
-         rrnNl2uQnkqcCsOpkZ+PdXh4XucUP0JWzAlfsnCUpEdKumGPX+Lw02QLTlVNQC60QxUU
-         Glc6RMN/qWVBmK5Xf9ji2LvGVROzQohhbMnzgkUXq8ZS60LvWWMgGo1b5J+NBWJ1MrqN
-         JVHJPc5QTMJA9pgZceDKGBiyJFKeJzpkhL+owoxFMgvfo8/Ql9UfT3HT9p8HKDRZxkAt
-         r8jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ABvfiatEaAgOGlUexoNa8C9CZPfoQ4JMW2QwnUmAO+k=;
-        b=p4wWmTkCVtLwx0GCWfe4E2booPOh2LebNN5vFXdf9p53rHL3nG30ODaOnOZzR7k8Ls
-         XUlsSDfV1K+1d4a9iLJo8AiR4YYzn5ZRdChxq0U6Y3OYsAE4sANsw5bBUMlpVjZLwW9+
-         JDgJbCEw4JCt6lRlt4Pe6TJCCTBnGxaptIucRwFmitsVMJl3BUesWJO3Ye+KpLXPXiO+
-         qYlLyUov1iwFtt6SvbTWY5kuLaoS5dQI1RPz25iU2RL2ecnOMkZ4dgjVx0hZrMWUC9Dw
-         2KGNgWdQa3kYN1yk5iF9BDBLWTnvYQRyG5b1qmJ1dUqe+Q83WoUG60gCQNjrwVv0nyEP
-         i54Q==
-X-Gm-Message-State: AOAM533M0zHNDH3bmMQg3FIcWbuOnYVHndqOYm5BHPDP37GRiB58A1Zx
-        ZMDTyoOz36Mox7iln+MHbBbwrg==
-X-Google-Smtp-Source: ABdhPJxBRNyFetA38tIlfHPf0ILE/9+6KqWgk+hiNjpApRf/lN4QYAlY0fsj1zLJONGD9Rj0it4nTw==
-X-Received: by 2002:adf:a15e:: with SMTP id r30mr17146732wrr.101.1617719571199;
-        Tue, 06 Apr 2021 07:32:51 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:90c5:36a9:5586:99b9? ([2a01:e34:ed2f:f020:90c5:36a9:5586:99b9])
-        by smtp.googlemail.com with ESMTPSA id 187sm5062848wma.0.2021.04.06.07.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 07:32:50 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
- statistics from going stale
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210331163352.32416-1-lukasz.luba@arm.com>
- <20210331163352.32416-2-lukasz.luba@arm.com>
- <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
- <1f0710d5-cd78-dfff-1ce2-bba5f6e469b7@arm.com>
- <1a0b6e4a-1717-91d6-a664-d50e6aa8a809@linaro.org>
- <d74b8e8e-64b0-d724-d572-f98eb597a60e@arm.com>
- <cbc40019-8b2d-5d14-f0fd-b0018fb4a1f6@linaro.org>
- <f7dfced2-23f6-8d3e-d23d-291de368f472@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7660a09b-51f8-c6f2-5678-77b6bff97af6@linaro.org>
-Date:   Tue, 6 Apr 2021 16:32:48 +0200
+        id S233244AbhDFOdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:33:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14736 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345168AbhDFOdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:33:13 -0400
+IronPort-SDR: Tk5MRMxzqOuNfWRDWHxY2ds2DwXSZHcrIRdmMpw5pNWTK21MrNkSHCDtjqniMO10DSlxbc406i
+ fa8GLl1CfStw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="173156352"
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="173156352"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 07:33:04 -0700
+IronPort-SDR: YL1dNphUsw0l80VGVme5Zr/g6N1Prqg0n5R4QnNdQniE/FVpbXDIbH1niH7yIKrcN2Qjelw17o
+ F3+DzoXsADng==
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="418376975"
+Received: from etbenite-mobl1.amr.corp.intel.com (HELO [10.212.54.229]) ([10.212.54.229])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 07:33:02 -0700
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+To:     David Hildenbrand <david@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+Date:   Tue, 6 Apr 2021 07:33:02 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <f7dfced2-23f6-8d3e-d23d-291de368f472@arm.com>
+In-Reply-To: <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -76,214 +99,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Lukasz,
-
-
-On 06/04/2021 14:25, Lukasz Luba wrote:
+On 4/6/21 12:44 AM, David Hildenbrand wrote:
+> On 02.04.21 17:26, Kirill A. Shutemov wrote:
+>> TDX architecture aims to provide resiliency against confidentiality and
+>> integrity attacks. Towards this goal, the TDX architecture helps enforce
+>> the enabling of memory integrity for all TD-private memory.
+>>
+>> The CPU memory controller computes the integrity check value (MAC) for
+>> the data (cache line) during writes, and it stores the MAC with the
+>> memory as meta-data. A 28-bit MAC is stored in the ECC bits.
+>>
+>> Checking of memory integrity is performed during memory reads. If
+>> integrity check fails, CPU poisones cache line.
+>>
+>> On a subsequent consumption (read) of the poisoned data by software,
+>> there are two possible scenarios:
+>>
+>>   - Core determines that the execution can continue and it treats
+>>     poison with exception semantics signaled as a #MCE
+>>
+>>   - Core determines execution cannot continue,and it does an unbreakable
+>>     shutdown
+>>
+>> For more details, see Chapter 14 of Intel TDX Module EAS[1]
+>>
+>> As some of integrity check failures may lead to system shutdown host
+>> kernel must not allow any writes to TD-private memory. This requirment
+>> clashes with KVM design: KVM expects the guest memory to be mapped into
+>> host userspace (e.g. QEMU).
 > 
-> 
-> On 4/6/21 12:24 PM, Daniel Lezcano wrote:
->> On 06/04/2021 12:39, Lukasz Luba wrote:
->>>
->>>
->>> On 4/6/21 11:16 AM, Daniel Lezcano wrote:
->>>> On 06/04/2021 10:44, Lukasz Luba wrote:
->>>>>
->>>>>
->>>>> On 4/2/21 4:54 PM, Daniel Lezcano wrote:
->>>>>> On 31/03/2021 18:33, Lukasz Luba wrote:
->>>>>>> When the temperature is below the first activation trip point the
->>>>>>> cooling
->>>>>>> devices are not checked, so they cannot maintain fresh
->>>>>>> statistics. It
->>>>>>> leads into the situation, when temperature crosses first trip
->>>>>>> point, the
->>>>>>> statistics are stale and show state for very long period.
->>>>>>
->>>>>> Can you elaborate the statistics you are referring to ?
->>>>>>
->>>>>> I can understand the pid controller needs temperature but I don't
->>>>>> understand the statistics with the cooling device.
->>>>>>
->>>>>>
->>>>>
->>>>> The allocate_power() calls cooling_ops->get_requested_power(),
->>>>> which is for CPUs cpufreq_get_requested_power() function.
->>>>> In that cpufreq implementation for !SMP we still has the
->>>>> issue of stale statistics. Viresh, when he introduced the usage
->>>>> of sched_cpu_util(), he fixed that 'long non-meaningful period'
->>>>> of the broken statistics and it can be found since v5.12-rc1.
->>>>>
->>>>> The bug is still there for the !SMP. Look at the way how idle time
->>>>> is calculated in get_load() [1]. It relies on 'idle_time->timestamp'
->>>>> for calculating the period. But when this function is not called,
->>>>> the value can be very far away in time, e.g. a few seconds back,
->>>>> when the last allocate_power() was called.
->>>>>
->>>>> The bug is there for both SMP and !SMP [2] for older kernels, which
->>>>> can
->>>>> be used in Android or ChromeOS. I've been considering to put this
->>>>> simple
->>>>> IPA fix also to some other kernels, because Viresh's change is more
->>>>> a 'feature' and does not cover both platforms.
->>>>
->>>> Ok, so IIUC, the temperature is needed as well as the power to do the
->>>> connection for the pid loop (temp vs power).
->>>>
->>>> I'm trying to figure out how to delegate the mitigation switch
->>>> on/off to
->>>> the core code instead of the governor (and kill tz->passive) but how
->>>> things are implemented for the IPA makes this very difficult.
->>>>
->>>> AFAICT, this fix is not correct.
->>>>
->>>> If the temperature is below the 'switch_on_temp' the passive is set to
->>>> zero and the throttle function is not called anymore (assuming it is
->>>> interrupt mode not polling mode), so the power number is not updated
->>>> also.
->>>
->>> IPA doesn't work well in asynchronous mode, because it needs this fixed
->>> length for the period. I have been experimenting with tsens IRQs and
->>> also both fixed polling + sporadic asynchronous IRQs, trying to fix it
->>> and have 'predictable' IPA, but without a luck.
->>> IPA needs synchronous polling events like we have for high temp e.g.
->>> 100ms and low temp e.g. 1000ms. The asynchronous events are root of
->>> undesirable states (too low or to high) calculated and set for cooling
->>> devices. It's also harder to escape these states with asynchronous
->>> events. I don't recommend using IPA with asynchronous events from IRQs,
->>> for now. It might change in future, though.
->>
->> I understand that but there is the 'switch_on_temp' trip point which is
->> supposed to begin to collect the power values ahead of the
->> 'desired_temp' (aka mitigation trip point / sustainable power).
->>
->>
->>> The patch 2/2 should calm down the unnecessary updates/notifications so
->>> your request.
->>> The longer polling, which we have for temperature below 'switch_on_temp'
->>> (e.g. every 1sec) shouldn't harm the performance of the system, but
->>> definitely makes IPA more predictable and stable.
->>
->> The change I proposed is correct then no ? The polling is still
->> effective.
-> 
-> In your proposed code there is 'tz->last_temperature < switch_on_temp'
-> which then return 0 immediately. So we don't poke the devices.
+> So what you are saying is that if QEMU would write to such memory, it
+> could crash the kernel? What a broken design.
 
-Ah yes, I see your point.
+IMNHO, the broken design is mapping the memory to userspace in the first
+place.  Why the heck would you actually expose something with the MMU to
+a context that can't possibly meaningfully access or safely write to it?
 
-Often the device tree is setup with an additional trip point to trigger
-a stat collection. So I assumed we don't need to feed the pid loop below
-this temperature.
+This started with SEV.  QEMU creates normal memory mappings with the SEV
+C-bit (encryption) disabled.  The kernel plumbs those into NPT, but when
+those are instantiated, they have the C-bit set.  So, we have mismatched
+mappings.  Where does that lead?  The two mappings not only differ in
+the encryption bit, causing one side to read gibberish if the other
+writes: they're not even cache coherent.
 
-What is the goal of sampling at polling time (not passive) ?
+That's the situation *TODAY*, even ignoring TDX.
 
-Here are the boards with the extra trip point:
+BTW, I'm pretty sure I know the answer to the "why would you expose this
+to userspace" question: it's what QEMU/KVM did alreadhy for
+non-encrypted memory, so this was the quickest way to get SEV working.
 
-- mt8173.dtsi
-- hi6220.dtsi
-- hi6220.dtsi
-- px30.dts
-- rk3328.dtsi
-- rk3399-gru-kevin.dts
-
-Those have an interrupt mode but do polling also.
-
-See the configuration for:
-- sc7180.dtsi (no polling delay and no pre-trip point)
-- r8a77990.dtsi
-
->> If the IPA needs a sampling, it may be more adequate to separate the
->> sampling from the polling. So the other governors won't be impacted by
->> the IPA specific setup, and we do not end up with polling/passive delays
->> tricks for a governor. The IPA would have its own self-encapsulated
->> sampling rate and the thermal zone setup won't depend on the governor.
->>
->> What do you think ?
->>
-> 
-> IMHO having a private timer in the governor creates another complexity
-> and confusion.
-
-I would say we move the adherence between the thermal core and the IPA
-into the governor only :)
-
-Especially, we *have* to call throttle on a governor even if we are not
-in the mitigation process.
-
-And from a design POV, it should be the thermal core to be in control of
-what is happening, not passively call the different callbacks and expect
-them to behave correctly (eg. set tz->passive)
-
-
-> What we have in thermal now is good enough. We have DT support for both
-> periods so there is need even to write via sysfs:
-> polling-delay-passive
-> polling-delay
-> The device driver developers can rely on this reliable check in the
-> thermal framework.
-> I don't agree that IPA forces any specific setup. 
-
-Yes, it does IMO.
-
-For instance, on the hi3660, the sensor is able to do interrupt mode, so
-to be wake up when the first temperature threshold is reached.
-
-But there is still the polling delay because the governor is IPA in this
-case? There is also an additional trip-point0 which is not a target for
-a cooling device, just put there to ensure the IPA has enough data when
-reaching the second trip point which is the target.
-
-If, for any reason, we want to switch to step_wise, where the interrupt
-mode is enough to trigger the mitigation (eg. with passive polling), and
-ensure the system is not constantly waking up (and AFAICT even 1s
-periodic wake up can have a significant impact on battery life), it
-won't be possible because of the device tree.
-
-Moreover, some sensors do not use their interrupt mode because of IPA
-setup or they use it incorrectly.
-
-See my concern here ? IPA has an impact on the thermal core and the
-sensor, while those should be governor agnostic.
-
-> If the thermal is
-> configured to do the polling of the temp sensor, because maybe there
-> are no HW interrupts, then there is no other way. The Arm SCMI sensors
-> were one of them, where we had to send a SCMI request. There was no
-> notifications/IRQs that temp crossed some trip point. Now it should be
-> better, but still it depends on vendor's FW implementation if there is
-> IRQ.
-
-I don't know all the platforms but so far the interrupt mode is largely
-supported, to not say in the vast majority.
-
-> The reliable polling is not IPA 'feature request'.
-> We cannot avoid polling in some configurations. Thermal framework
-> must support this scenario: polling/checking temp sensor even when
-> the temp is low.
-
-I agree with that, I'm not questioning about removing the polling.
-
-> Thus, since framework must check the temp, calling
-> the governor->throttle() doesn't harm (as I said every 1sec).
-> Furthermore, the governor interprets what trip point and temperature to
-> interpret and how to react.
-
-Precisely, that is the reason why I disagree. The thermal core should
-switch on/off the mitigation (say cool down / warm up) and the governor
-applies its recipe. With polling and sampling tied together it is not
-possible to create self-encapsulated components. As a result we have bug
-like [1] :/
-
-  -- Daniel
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=212507
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+So, I don't like the #MC either.  But, this series is a step in the
+right direction for TDX *AND* SEV.
