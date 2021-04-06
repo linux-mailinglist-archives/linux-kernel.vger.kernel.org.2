@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853C4355672
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A37A35560A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345120AbhDFOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:20:55 -0400
-Received: from vps5.brixit.nl ([192.81.221.234]:58456 "EHLO vps5.brixit.nl"
+        id S1344879AbhDFOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:06:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345054AbhDFOUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:20:15 -0400
-X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Apr 2021 10:20:09 EDT
-Received: from localhost.localdomain (unknown [77.239.252.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by vps5.brixit.nl (Postfix) with ESMTPSA id 60069606DF;
-        Tue,  6 Apr 2021 14:11:16 +0000 (UTC)
-From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: [PATCH 2/2] ARM: dts: qcom: msm8974-klte: Add bluetooth support
-Date:   Tue,  6 Apr 2021 17:05:51 +0300
-Message-Id: <20210406140551.3328241-2-alexeymin@postmarketos.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210406140551.3328241-1-alexeymin@postmarketos.org>
-References: <20210406140551.3328241-1-alexeymin@postmarketos.org>
+        id S233554AbhDFOGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:06:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 746B06139C;
+        Tue,  6 Apr 2021 14:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617717960;
+        bh=qEX/6JcIH0tvPPBJ0/FFoBpj98iXPxdaCuo5ByOWTbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gFYaUKc25ivU3lsCHPxdml6UB6rqURBPXl6bgdwev7/XrzmsZy8h9j5ShkstUVbJa
+         D65PWwl9DRiPj+PKOuzh8MVRdM9tdp45wcd58nFmMM3N3rykhFqQH/SA5Q8Wwyyicp
+         fF5PANEvHR7hLtadRncftDmPghckev8aXyFIDbjs=
+Date:   Tue, 6 Apr 2021 16:05:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: hso: fix null-ptr-deref during tty device
+ unregistration
+Message-ID: <YGxqxddOyyDM9ueu@kroah.com>
+References: <20210406124402.20930-1-mail@anirudhrb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406124402.20930-1-mail@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Broadcom BCM4354 is used on Samsung Galaxy S5 phone
-on BLSP2 UART8 bus.
+On Tue, Apr 06, 2021 at 06:13:59PM +0530, Anirudh Rayabharam wrote:
+> Multiple ttys try to claim the same the minor number causing a double
+> unregistration of the same device. The first unregistration succeeds
+> but the next one results in a null-ptr-deref.
+> 
+> The get_free_serial_index() function returns an available minor number
+> but doesn't assign it immediately. The assignment is done by the caller
+> later. But before this assignment, calls to get_free_serial_index()
+> would return the same minor number.
+> 
+> Fix this by modifying get_free_serial_index to assign the minor number
+> immediately after one is found to be and rename it to obtain_minor()
+> to better reflect what it does. Similary, rename set_serial_by_index()
+> to release_minor() and modify it to free up the minor number of the
+> given hso_serial. Every obtain_minor() should have corresponding
+> release_minor() call.
+> 
+> Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+> Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+> 
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+>  drivers/net/usb/hso.c | 32 ++++++++++++--------------------
+>  1 file changed, 12 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+> index 31d51346786a..295ca330e70c 100644
+> --- a/drivers/net/usb/hso.c
+> +++ b/drivers/net/usb/hso.c
+> @@ -611,7 +611,7 @@ static struct hso_serial *get_serial_by_index(unsigned index)
+>  	return serial;
+>  }
+>  
+> -static int get_free_serial_index(void)
+> +static int obtain_minor(struct hso_serial *serial)
+>  {
+>  	int index;
+>  	unsigned long flags;
+> @@ -619,8 +619,10 @@ static int get_free_serial_index(void)
+>  	spin_lock_irqsave(&serial_table_lock, flags);
+>  	for (index = 0; index < HSO_SERIAL_TTY_MINORS; index++) {
+>  		if (serial_table[index] == NULL) {
+> +			serial_table[index] = serial->parent;
+> +			serial->minor = index;
+>  			spin_unlock_irqrestore(&serial_table_lock, flags);
+> -			return index;
+> +			return 0;
 
-Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
----
- .../boot/dts/qcom-msm8974-samsung-klte.dts    | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+Minor note, you might want to convert this to use an idr structure in
+the future, this "loop and find a free minor" isn't really needed now
+that we have a data structure that does this all for us :)
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index a0f7f461f48c8..138353cb4e1d6 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -322,6 +322,27 @@ serial@f991e000 {
- 		status = "okay";
- 	};
- 
-+	/* blsp2_uart8 */
-+	serial@f995e000 {
-+		status = "okay";
-+
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&blsp2_uart8_pins_active>;
-+		pinctrl-1 = <&blsp2_uart8_pins_sleep>;
-+
-+		bluetooth {
-+			compatible = "brcm,bcm43540-bt";
-+			max-speed = <3000000>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&bt_pins>;
-+			device-wakeup-gpios = <&msmgpio 91 GPIO_ACTIVE_HIGH>;
-+			shutdown-gpios = <&gpio_expander 9 GPIO_ACTIVE_HIGH>;
-+			interrupt-parent = <&msmgpio>;
-+			interrupts = <75 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "host-wakeup";
-+		};
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 		input-name = "gpio-keys";
-@@ -356,6 +377,35 @@ volume-up {
- 	};
- 
- 	pinctrl@fd510000 {
-+		blsp2_uart8_pins_active: blsp2-uart8-pins-active {
-+			pins = "gpio45", "gpio46", "gpio47", "gpio48";
-+			function = "blsp_uart8";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+
-+		blsp2_uart8_pins_sleep: blsp2-uart8-pins-sleep {
-+			pins = "gpio45", "gpio46", "gpio47", "gpio48";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-pull-down;
-+		};
-+
-+		bt_pins: bt-pins {
-+			hostwake {
-+				pins = "gpio75";
-+				function = "gpio";
-+				drive-strength = <16>;
-+				input-enable;
-+			};
-+
-+			devwake {
-+				pins = "gpio91";
-+				function = "gpio";
-+				drive-strength = <2>;
-+			};
-+		};
-+
- 		sdhc1_pin_a: sdhc1-pin-active {
- 			clk {
- 				pins = "sdc1_clk";
--- 
-2.26.3
+But that's not going to fix this issue, that's for future changes.
 
+thanks,
+
+greg k-h
