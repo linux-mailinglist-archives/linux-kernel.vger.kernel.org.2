@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCE03550A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8503550A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245048AbhDFKNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:13:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52902 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245037AbhDFKNx (ORCPT
+        id S245035AbhDFKNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:13:49 -0400
+Received: from gateway34.websitewelcome.com ([192.185.148.140]:11896 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245032AbhDFKNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:13:53 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 136A5R52054474;
-        Tue, 6 Apr 2021 06:13:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=6pdQAJ5/OaleDxgn9+MGbQ2SQVm7sujGX1yPdpCzALs=;
- b=nygngEKFTD7sq6YeOg5w4RrTe2iVRKIscf+8unTy/vGBT37KCIIScZTFF7cAc+zJPbDG
- tEOe7vlj67HtOOeq9ue3e0UHUQRvwTZ465mq8mkQ1QK+M4Lk04iY8sGakRgbnf9Q3qMS
- h41B9X1ie6UBzV0IypKa96saInBiGuslrpEFzSulIEulrlm58DPfGqpMyv2LIVrCvy8S
- d7x7lVVHWqeY+zvddYHXcn9cy6Kjp2rc90tmtS9/hudy2wLOL6fccPoVGrGjtkMamkey
- 0hg46o9wGzQ9Fxqz3rDiJ4k4ru1HEkYmRDNcm2tPvP15Qp3kLdcESgF6LyucvJ4C8QOs RA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5byvv2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 06:13:41 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 136A7qKU062851;
-        Tue, 6 Apr 2021 06:13:40 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5byvv0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 06:13:40 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 136AD5H7029826;
-        Tue, 6 Apr 2021 10:13:38 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 37q2nm12tn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Apr 2021 10:13:37 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 136ADZBe35193298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Apr 2021 10:13:35 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C86B311C054;
-        Tue,  6 Apr 2021 10:13:35 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 163C211C04A;
-        Tue,  6 Apr 2021 10:13:34 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.102.27.68])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  6 Apr 2021 10:13:33 +0000 (GMT)
-Date:   Tue, 6 Apr 2021 15:43:31 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210406101331.GB1354243@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
- <YGtZNLhXjv8RegTK@carbon.dhcp.thefacebook.com>
+        Tue, 6 Apr 2021 06:13:43 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id 3D88215BB73
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 05:13:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id TiiDlMiyNMGeETiiDlvqF3; Tue, 06 Apr 2021 05:13:33 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UtxOuI/vruadawRYNAKIr7Rkp/OGW7D58iU4DVSud4Y=; b=b4/m2LrXsUwUOsh7cVz7MEsh+I
+        uNboiyHMNPUFnZ3JjKyJKGGaEDGlOxWs6i9SzhxDlurV4LBNe7d6ioCLzgSJE47KyuoIFM6r9/4pB
+        RMhDQmGJAdklqtE3U5Kx0P+kPxFQRpcOsj7fcsK8bXAvCk7aWvE8wMEKIDaSCps33zqS4K+E4DfyL
+        h7JJ7ntadE/zs8P5PPZycmRAsquCY9ZzuC813FsfC5+mTUIn6D8+9e037L+Ws4EoMms156s3TnTmH
+        WWJNgHIP6DZre3sR1ueXv7aAODbfhAz9CiJMwL1yv4R++2iXCFKhwiGH3F48qvIXj/7g8aHLfr0KK
+        CtCcsbiA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44008 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lTiiC-001Ijj-V3; Tue, 06 Apr 2021 05:13:32 -0500
+Subject: Re: [PATCH][next] iio: hrtimer-trigger: Fix potential integer
+ overflow in iio_hrtimer_store_sampling_frequency
+To:     Jonathan Cameron <jic23@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210329205817.GA188755@embeddedor>
+ <20210405172646.6a9f1b7d@jic23-huawei>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <ec7abed3-1685-8ae0-1a89-d9fc4ee76275@embeddedor.com>
+Date:   Tue, 6 Apr 2021 05:13:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGtZNLhXjv8RegTK@carbon.dhcp.thefacebook.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: njluuTwv1y1SmKCg2zcjzuNSdMgS6qtZ
-X-Proofpoint-ORIG-GUID: jb6S0QOfedpmrFGUTzNc5DJpXlcKc0Gp
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_02:2021-04-01,2021-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 priorityscore=1501 mlxscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060067
+In-Reply-To: <20210405172646.6a9f1b7d@jic23-huawei>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lTiiC-001Ijj-V3
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44008
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:38:44AM -0700, Roman Gushchin wrote:
-> > > @@ -534,7 +521,17 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
-> > >         spin_lock_irq(&nlru->lock);
-> > >
-> > >         src = list_lru_from_memcg_idx(nlru, src_idx);
-> > > +       if (!src)
-> > > +               goto out;
-> > > +
-> > >         dst = list_lru_from_memcg_idx(nlru, dst_idx);
-> > > +       if (!dst) {
-> > > +               /* TODO: Use __GFP_NOFAIL? */
-> > > +               dst = kmalloc(sizeof(struct list_lru_one), GFP_ATOMIC);
-> > > +               init_one_lru(dst);
-> > > +               memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
-> > > +               memcg_lrus->lru[dst_idx] = dst;
-> > > +       }
+
+
+On 4/5/21 11:26, Jonathan Cameron wrote:
+> On Mon, 29 Mar 2021 15:58:17 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 > 
-> Hm, can't we just reuse src as dst in this case?
-> We don't need src anymore and we're basically allocating dst to move all data from src.
-
-Yes, we can do that and it would be much simpler.
-
-> If not, we can allocate up to the root memcg every time to avoid having
-> !dst case and fiddle with __GFP_NOFAIL.
+>> Add suffix ULL to constant 1000 in order to avoid a potential integer
+>> overflow and give the compiler complete information about the proper
+>> arithmetic to use. Notice that this constant is being used in a context
+>> that expects an expression of type unsigned long long, but it's
+>> currently evaluated using 32-bit arithmetic.
+>>
+>> Addresses-Coverity-ID: 1503062 ("Unintentional integer overflow")
+>> Fixes: dafcf4ed8392 ("iio: hrtimer: Allow sub Hz granularity")
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> Otherwise I like the idea and I think it might reduce the memory overhead
-> especially on (very) big machines.
+> Thanks, Applied to the togreg branch of iio.git and pushed out as testing
+> for 0-day to poke at it.
 
-Yes, I will however have to check if the callers of list_lru_add() are capable
-of handling failure which can happen with this approach if kmalloc fails.
+Awesome. :)
 
-Regards,
-Bharata.
+Thanks, Jonathan.
+
+--
+Gustavo
