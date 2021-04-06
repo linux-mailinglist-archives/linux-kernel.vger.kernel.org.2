@@ -2,250 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5272B354A0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E37354A98
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 03:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243101AbhDFBcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 21:32:08 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6015 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhDFBcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 21:32:07 -0400
-IronPort-SDR: R3J8rDxX9cmvm1t5cT+69myBrZnZLDOzC8LfNxRVZwxQgYaA8B3REt50EBiMf0xdyW4ldYFenv
- mzI2YvWaK1ww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="189742498"
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="189742498"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 18:32:00 -0700
-IronPort-SDR: TKszFgfBGhnbKni5eVXGS2+lI9ZUxspno9EP2jtQQ/hPTHxjCQfGgYxnaCRqjfze0QgM+NatAW
- LVA1L+eKeFLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
-   d="scan'208";a="379188238"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga003.jf.intel.com with ESMTP; 05 Apr 2021 18:31:56 -0700
-Date:   Tue, 6 Apr 2021 09:27:08 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     matthew.gerlach@linux.intel.com
-Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net, lee.jones@linaro.org,
-        linux-hwmon@vger.kernel.org, russell.h.weight@linux.intel.com
-Subject: Re: [PATCH 3/3] hwmon: intel-m10-bmc-hwmon: add sensor support of
- Intel D5005 card
-Message-ID: <20210406012708.GA923142@yilunxu-OptiPlex-7050>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
+        id S242134AbhDFBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 21:49:33 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:51537 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242094AbhDFBtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 21:49:23 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210406014908epoutp02ab600daa85361645b04a36a554c29ae7~zIbQQi8FI2107221072epoutp02a
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 01:49:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210406014908epoutp02ab600daa85361645b04a36a554c29ae7~zIbQQi8FI2107221072epoutp02a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617673748;
+        bh=i+cY6POYdCkrVMozJTyt8kBL/ujUnaLOG9/PlhmQ16I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f0BBvCBcqhne3pyi6OkeRLj1Vq6pjfZntIi/PG8SXL3VCvsy6hrvymJCLKSPzz7rG
+         0vE+sfgjQtC9bxjytG6zbpOpISoD4rzMXdjxXVTJ+X95OR2ZS++sm5zdRiYYvLm648
+         fdSqHOIKAClSKdoyBmVYH4Xe+L5L68sr2Z7gyroA=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210406014906epcas1p4de17a227ad5092d5489c00f0948acf74~zIbO3LZrx1401514015epcas1p4_;
+        Tue,  6 Apr 2021 01:49:06 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FDr6T4KTqz4x9QC; Tue,  6 Apr
+        2021 01:49:05 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0B.41.23820.11EBB606; Tue,  6 Apr 2021 10:49:05 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210406014905epcas1p16830a46b7ac6af95a0e2c2c6f4c04859~zIbNF91mc1434114341epcas1p1G;
+        Tue,  6 Apr 2021 01:49:05 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210406014904epsmtrp2525b7e9c72b76224895e802998d8c5fa~zIbNEcXzr1508315083epsmtrp2Y;
+        Tue,  6 Apr 2021 01:49:04 +0000 (GMT)
+X-AuditID: b6c32a37-a59ff70000015d0c-79-606bbe1102a7
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8A.81.33967.01EBB606; Tue,  6 Apr 2021 10:49:04 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210406014904epsmtip21fbf51108f25076b17f062ad898d4b00~zIbMxqdZd3025330253epsmtip2j;
+        Tue,  6 Apr 2021 01:49:04 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
+        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+Subject: [RESEND PATCH v5 1/2] bio: limit bio max size
+Date:   Tue,  6 Apr 2021 10:31:28 +0900
+Message-Id: <20210406013128.16284-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20210316074401.4594-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405235301.187542-4-matthew.gerlach@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEJsWRmVeSWpSXmKPExsWy7bCmrq7gvuwEg2+tChZzVm1jtFh9t5/N
+        orX9G5NF8+L1bBanJyxisuh50sRq8bfrHpPF14fFFntvaVtc3jWHzeLQ5GYmi+mb5zBbHL53
+        lcXi4ZKJzBbnTn5itZj32MHi1/KjjBbvf1xntzi1YzKzxfq9P9kcRDwmNr9j99g56y67x+YV
+        Wh6Xz5Z6bFrVyeaxf+4ado/3+66yefRtWcXo8XmTnEf7gW6mAK6oHJuM1MSU1CKF1Lzk/JTM
+        vHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoN+UFMoSc0qBQgGJxcVK+nY2Rfml
+        JakKGfnFJbZKqQUpOQWGBgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5GZ/nfWEtmKBd8fLAR6YG
+        xna5LkZODgkBE4mPH9cxg9hCAjsYJTY0eHQxcgHZnxglXl88zwLhfGOUWLZhLytMx6F73cwQ
+        ib2MEie/L2GDaP/MKLH0gQaIzSagI9H39hYbSJGIwFYmiZZrh8E6mAV2As3dPhtsobCAmcTe
+        v18YQWwWAVWJv8uagPZxcPAKWEt0r06B2CYv8ed+DzNImBMovG5tDEiYV0BQ4uTMJywgNjNQ
+        SfPW2WDjJQTecEjcv3AU6lIXid379kDZwhKvjm9hh7ClJD6/28sG0dDNKNHcNp8RwpnAKLHk
+        +TImiCpjiU+fPzOCbGYW0JRYv0sfIqwosfP3XEaIzXwS7772sIKUSAjwSnS0CUGUqEicabnP
+        DLPr+dqdTBAlHhJHG5QhAdfHKNH0aQbLBEaFWUj+mYXkn1kIixcwMq9iFEstKM5NTy02LDBG
+        juFNjODErmW+g3Ha2w96hxiZOBgPMUpwMCuJ8O7ozU4Q4k1JrKxKLcqPLyrNSS0+xGgKDOuJ
+        zFKiyfnA3JJXEm9oamRsbGxhYmZuZmqsJM6bZPAgXkggPbEkNTs1tSC1CKaPiYNTqoFJ1eSf
+        3s0J/1++l+mYZ9P4q2/mHkUeji/MHRIMcuw7XycHWlwXidn46O3tiX8u2ul2bl/UEyR3rYh5
+        Tt6ZaSdee+9bd+Cq3rK20m8d8RMcTWWzpQ+4i1llM0dtzMraNnMJp4GJjlIm18o2b43NMnG7
+        JXtSuIskss7bnq/nbenSPXWgOLvh+0yNXfPPdJXmbwn7NOclc4vUlAWBwtPNLrK9+PywWm7m
+        sen35vfxqoQ77Tq3dKJw0KyZNTcqlR7W611ft3rRBa6n2yb7m/6UqymqlttvkXlR43vOe4Fl
+        L+2Vpn0R+S5ceXpa2FoOTk/+I3y98fb3YkTvpy5yvcbqlaDq1spx0tAkukx1ZduHkCtKLMUZ
+        iYZazEXFiQBEccdidQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvK7AvuwEg7PbjC3mrNrGaLH6bj+b
+        RWv7NyaL5sXr2SxOT1jEZNHzpInV4m/XPSaLrw+LLfbe0ra4vGsOm8Whyc1MFtM3z2G2OHzv
+        KovFwyUTmS3OnfzEajHvsYPFr+VHGS3e/7jObnFqx2Rmi/V7f7I5iHhMbH7H7rFz1l12j80r
+        tDwuny312LSqk81j/9w17B7v911l8+jbsorR4/MmOY/2A91MAVxRXDYpqTmZZalF+nYJXBmf
+        531hLZigXfHywEemBsZ2uS5GTg4JAROJQ/e6mbsYuTiEBHYzSkw4/5AJIiElcfzEW9YuRg4g
+        W1ji8OFiiJqPjBJTvuxnBalhE9CR6Ht7iw0kISJwlEliw9VjYJOYBQ4yShyffYYRpEpYwExi
+        798vYDaLgKrE32VNLCBTeQWsJbpXp0Ask5f4c7+HGSTMCRRetzYGxBQSsJK4vcMApIJXQFDi
+        5MwnLCA2M1B189bZzBMYBWYhSc1CklrAyLSKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93
+        EyM4+rQ0dzBuX/VB7xAjEwfjIUYJDmYlEd4dvdkJQrwpiZVVqUX58UWlOanFhxilOViUxHkv
+        dJ2MFxJITyxJzU5NLUgtgskycXBKNTDt0Li8Ynv+zXVPef1YnlXlm7de/1XqMvGKcLb5UvHT
+        0TaKz2uO7TgUY7s3QS3ku5bVvnvHu9v8bh9zsT/jxcJbo/Vs5bYAxbYte+cIRmeseJdomnW8
+        WT5tdwqP4a+pGXEXE98sTTrWYOVewRa28Nm9s0Z3vT02tPtr56r4v4v7wWp1eOFf+S2xMhZv
+        74r8v2koJHkxKj1w20bLxCk6d2N1Um9LzLswv0Jm6ratRyPlrhoU7rr8yvsrR57/m7XXZdMX
+        b7C48+bml4dXFn3IaEi91ruidn/DliP6BpsLVNLvCF7vsMv/esD9ANuV36HOgk9bbbrqctYt
+        shNaK+71QoyB7WLmnprgF7+Vz/5lrElSYinOSDTUYi4qTgQAH+n3PS0DAAA=
+X-CMS-MailID: 20210406014905epcas1p16830a46b7ac6af95a0e2c2c6f4c04859
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210406014905epcas1p16830a46b7ac6af95a0e2c2c6f4c04859
+References: <20210316074401.4594-1-nanich.lee@samsung.com>
+        <CGME20210406014905epcas1p16830a46b7ac6af95a0e2c2c6f4c04859@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 04:53:01PM -0700, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> bio size can grow up to 4GB when muli-page bvec is enabled.
+> but sometimes it would lead to inefficient behaviors.
+> in case of large chunk direct I/O, - 32MB chunk read in user space -
+> all pages for 32MB would be merged to a bio structure if the pages
+> physical addresses are contiguous. it makes some delay to submit
+> until merge complete. bio max size should be limited to a proper size.
 > 
-> Like the Intel N3000 card, the Intel D5005 has a MAX10 based
-> BMC.  This commit adds support for the D5005 sensors that are
-> monitored by the MAX10 BMC.
+> When 32MB chunk read with direct I/O option is coming from userspace,
+> kernel behavior is below now in do_direct_IO() loop. it's timeline.
 > 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@linux.intel.com>
+>  | bio merge for 32MB. total 8,192 pages are merged.
+>  | total elapsed time is over 2ms.
+>  |------------------ ... ----------------------->|
+>                                                  | 8,192 pages merged a bio.
+>                                                  | at this time, first bio submit is done.
+>                                                  | 1 bio is split to 32 read request and issue.
+>                                                  |--------------->
+>                                                   |--------------->
+>                                                    |--------------->
+>                                                               ......
+>                                                                    |--------------->
+>                                                                     |--------------->|
+>                           total 19ms elapsed to complete 32MB read done from device. |
+> 
+> If bio max size is limited with 1MB, behavior is changed below.
+> 
+>  | bio merge for 1MB. 256 pages are merged for each bio.
+>  | total 32 bio will be made.
+>  | total elapsed time is over 2ms. it's same.
+>  | but, first bio submit timing is fast. about 100us.
+>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+>       | 256 pages merged a bio.
+>       | at this time, first bio submit is done.
+>       | and 1 read request is issued for 1 bio.
+>       |--------------->
+>            |--------------->
+>                 |--------------->
+>                                       ......
+>                                                  |--------------->
+>                                                   |--------------->|
+>         total 17ms elapsed to complete 32MB read done from device. |
+> 
+> As a result, read request issue timing is faster if bio max size is limited.
+> Current kernel behavior with multipage bvec, super large bio can be created.
+> And it lead to delay first I/O request issue.
+> 
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
 > ---
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 122 ++++++++++++++++++++++++++++++++++++
->  drivers/mfd/intel-m10-bmc.c         |  10 +++
->  2 files changed, 132 insertions(+)
+>  block/bio.c            | 13 ++++++++++++-
+>  include/linux/bio.h    |  2 +-
+>  include/linux/blkdev.h |  3 +++
+>  3 files changed, 16 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> index 17d5e6b..bd7ed2e 100644
-> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> @@ -99,6 +99,50 @@ struct m10bmc_hwmon {
->  	NULL
->  };
+> diff --git a/block/bio.c b/block/bio.c
+> index 1f2cc1fbe283..c528e1f944c7 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+>  }
+>  EXPORT_SYMBOL(bio_init);
 >  
-> +static const struct m10bmc_sdata d5005bmc_temp_tbl[] = {
-> +	{ 0x100, 0x104, 0x108, 0x10c, 0x0, 500, "Board Inlet Air Temperature" },
-> +	{ 0x110, 0x114, 0x118, 0x0, 0x0, 500, "FPGA Core Temperature" },
-> +	{ 0x11c, 0x120, 0x124, 0x128, 0x0, 500, "Board Exhaust Air Temperature" },
-> +	{ 0x12c, 0x130, 0x134, 0x0, 0x0, 500, "FPGA Transceiver Temperature" },
-> +	{ 0x138, 0x13c, 0x140, 0x144, 0x0, 500, "RDIMM0 Temperature" },
-> +	{ 0x148, 0x14c, 0x150, 0x154, 0x0, 500, "RDIMM1 Temperature" },
-> +	{ 0x158, 0x15c, 0x160, 0x164, 0x0, 500, "RDIMM2 Temperature" },
-> +	{ 0x168, 0x16c, 0x170, 0x174, 0x0, 500, "RDIMM3 Temperature" },
-> +	{ 0x178, 0x17c, 0x180, 0x0, 0x0, 500, "QSFP0 Temperature" },
-> +	{ 0x188, 0x18c, 0x190, 0x0, 0x0, 500, "QSFP1 Temperature" },
-> +	{ 0x1a0, 0x1a4, 0x1a8, 0x0, 0x0, 500, "3.3v Temperature" },
-> +	{ 0x1bc, 0x1c0, 0x1c4, 0x0, 0x0, 500, "VCCERAM Temperature" },
-> +	{ 0x1d8, 0x1dc, 0x1e0, 0x0, 0x0, 500, "VCCR Temperature" },
-> +	{ 0x1f4, 0x1f8, 0x1fc, 0x0, 0x0, 500, "VCCT Temperature" },
-> +	{ 0x210, 0x214, 0x218, 0x0, 0x0, 500, "1.8v Temperature" },
-> +	{ 0x22c, 0x230, 0x234, 0x0, 0x0, 500, "12v Backplane Temperature" },
-> +	{ 0x248, 0x24c, 0x250, 0x0, 0x0, 500, "12v AUX Temperature" },
-> +};
+> +unsigned int bio_max_size(struct bio *bio)
+> +{
+> +	struct request_queue *q = bio->bi_disk->queue;
 > +
-> +static const struct m10bmc_sdata d5005bmc_in_tbl[] = {
-> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QSFP0 Supply Voltage" },
-> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "QSFP1 Supply Voltage" },
-> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Voltage" },
-> +	{ 0x1ac, 0x1b0, 0x1b4, 0x0, 0x0, 1, "3.3v Voltage" },
-> +	{ 0x1c8, 0x1cc, 0x1d0, 0x0, 0x0, 1, "VCCERAM Voltage" },
-> +	{ 0x1e4, 0x1e8, 0x1ec, 0x0, 0x0, 1, "VCCR Voltage" },
-> +	{ 0x200, 0x204, 0x208, 0x0, 0x0, 1, "VCCT Voltage" },
-> +	{ 0x21c, 0x220, 0x224, 0x0, 0x0, 1, "1.8v Voltage" },
-> +	{ 0x238, 0x0, 0x0, 0x0, 0x23c, 1, "12v Backplane Voltage" },
-> +	{ 0x254, 0x0, 0x0, 0x0, 0x258, 1, "12v AUX Voltage" },
-> +};
+> +	if (blk_queue_limit_bio_size(q))
+> +		return blk_queue_get_max_sectors(q, bio_op(bio))
+> +			<< SECTOR_SHIFT;
 > +
-> +static const struct m10bmc_sdata d5005bmc_curr_tbl[] = {
-> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Current" },
-> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1, "3.3v Current" },
-> +	{ 0x1d4, 0x0, 0x0, 0x0, 0x0, 1, "VCCERAM Current" },
-> +	{ 0x1f0, 0x0, 0x0, 0x0, 0x0, 1, "VCCR Current" },
-> +	{ 0x20c, 0x0, 0x0, 0x0, 0x0, 1, "VCCT Current" },
-> +	{ 0x228, 0x0, 0x0, 0x0, 0x0, 1, "1.8v Current" },
-> +	{ 0x240, 0x244, 0x0, 0x0, 0x0, 1, "12v Backplane Current" },
-> +	{ 0x25c, 0x260, 0x0, 0x0, 0x0, 1, "12v AUX Current" },
-> +};
+> +	return UINT_MAX;
+> +}
 > +
->  static const struct m10bmc_hwmon_board_data n3000bmc_hwmon_bdata = {
->  	.tables = {
->  		[hwmon_temp] = n3000bmc_temp_tbl,
-> @@ -110,6 +154,80 @@ struct m10bmc_hwmon {
->  	.hinfo = n3000bmc_hinfo,
->  };
+>  /**
+>   * bio_reset - reinitialize a bio
+>   * @bio:	bio to reset
+> @@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
 >  
-> +static const struct hwmon_channel_info *d5005bmc_hinfo[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> +			   HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MAX | HWMON_I_CRIT |
-> +			   HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_MAX | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
-> +	.tables = {
-> +		[hwmon_temp] = d5005bmc_temp_tbl,
-> +		[hwmon_in] = d5005bmc_in_tbl,
-> +		[hwmon_curr] = d5005bmc_curr_tbl,
-> +	},
-> +
-> +	.hinfo = d5005bmc_hinfo,
-> +};
-> +
->  static umode_t
->  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
->  			u32 attr, int channel)
-> @@ -316,6 +434,10 @@ static int m10bmc_hwmon_probe(struct platform_device *pdev)
->  		.name = "n3000bmc-hwmon",
->  		.driver_data = (unsigned long)&n3000bmc_hwmon_bdata,
->  	},
-> +	{
-> +		.name = "d5005bmc-hwmon",
-> +		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
-> +	},
->  	{ }
->  };
+>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+>  				*same_page = false;
+>  				return false;
+>  			}
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index 1edda614f7ce..13b6f6562a5b 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+>  		return true;
 >  
-> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
-> index 1161933..dbb4975 100644
-> --- a/drivers/mfd/intel-m10-bmc.c
-> +++ b/drivers/mfd/intel-m10-bmc.c
-> @@ -15,6 +15,11 @@
+> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+>  		return true;
 >  
->  enum m10bmc_type {
->  	M10_N3000,
-> +	M10_D5005
-> +};
-> +
-> +static struct mfd_cell m10bmc_bmc_subdevs[] = {
-
-Do we need a better name here? m10bmc_d5005_subdevs?
-
-Thanks,
-Yilun
-
-> +	{ .name = "d5005bmc-hwmon" },
->  };
+>  	return false;
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index f94ee3089e01..3aeab9e7e97b 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -621,6 +621,7 @@ struct request_queue {
+>  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+>  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+>  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
+> +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
 >  
->  static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
-> @@ -183,6 +188,10 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
->  		cells = m10bmc_pacn3000_subdevs;
->  		n_cell = ARRAY_SIZE(m10bmc_pacn3000_subdevs);
->  		break;
-> +	case M10_D5005:
-> +		cells = m10bmc_bmc_subdevs;
-> +		n_cell = ARRAY_SIZE(m10bmc_bmc_subdevs);
-> +		break;
->  	default:
->  		return -ENODEV;
->  	}
-> @@ -197,6 +206,7 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
+>  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+>  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+> @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+>  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+>  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+>  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
+> +#define blk_queue_limit_bio_size(q)	\
+> +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
 >  
->  static const struct spi_device_id m10bmc_spi_id[] = {
->  	{ "m10-n3000", M10_N3000 },
-> +	{ "m10-d5005", M10_D5005 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
+>  extern void blk_set_pm_only(struct request_queue *q);
+>  extern void blk_clear_pm_only(struct request_queue *q);
 > -- 
-> 1.8.3.1
+> 2.28.0
+> 
+
+Please feedback to me if more modification is needed to apply. :)
+
+---
+Changheun Lee
