@@ -2,48 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE00A354C46
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02016354C4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243786AbhDFF0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
+        id S243826AbhDFF1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 01:27:39 -0400
+Received: from verein.lst.de ([213.95.11.211]:52963 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232874AbhDFF0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 01:26:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B57561246;
-        Tue,  6 Apr 2021 05:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617686788;
-        bh=SmVeK0AzoGvnM/oVSClhxdFpdRkFXOYQtTI6gWclCvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXS6ap2HESrw9shecjMTxGQh5jxSPKvPO+smESiwctRKnpV6WpvNKWmq9PTc+mk/h
-         nbGKTFYFDGNzK54Ul6+wmLHt3nq4UiWnJhtHAThCjhM6hbXgJtGy1kl149R1GHRDeq
-         jqf9KKj1Hn0ZsLFZbObhdvHkgNv85iVxQGuQ4gU4=
-Date:   Tue, 6 Apr 2021 07:26:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     balbi@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: aspeed: Remove unnecessary version.h
- includes
-Message-ID: <YGvxAmHIgnRMcyuq@kroah.com>
-References: <1617681598-28165-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S232874AbhDFF1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 01:27:34 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A35D168BEB; Tue,  6 Apr 2021 07:27:17 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 07:27:17 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
+ ib_alloc_mr() and ib_mr_pool_init()
+Message-ID: <20210406052717.GA4835@lst.de>
+References: <20210405052404.213889-1-leon@kernel.org> <20210405052404.213889-2-leon@kernel.org> <c21edd64-396c-4c7c-86f8-79045321a528@acm.org> <YGvwUI022t/rJy5U@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617681598-28165-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <YGvwUI022t/rJy5U@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:59:58AM +0800, Jiapeng Chong wrote:
-> "make versioncheck" shows:
-> 
-> ./drivers/usb/gadget/udc/aspeed-vhub/hub.c: 33 linux/version.h not
-> needed.
+On Tue, Apr 06, 2021 at 08:23:28AM +0300, Leon Romanovsky wrote:
+> The same proposal (enable unconditionally) was raised during
+> submission preparations and we decided to follow same pattern
+> as other verbs objects which receive flag parameter.
 
-Then you need to fix the tool, and always test-build patches before you
-send them out, as this is obviously wrong :(
+A flags argument can be added when it actually is needed.  Using it
+to pass an argument enabled by all ULPs just gets us back to the bad
+old days of complete crap APIs someone drew up on a whiteboard.
 
+I think we need to:
+
+ a) document the semantics
+ b) sort out any technical concerns
+ c) just enable the damn thing
+
+instead of requiring some form of cargo culting.
