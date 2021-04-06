@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40575355A9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CCB355A9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347034AbhDFRoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244858AbhDFRoL (ORCPT
+        id S1347065AbhDFRoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:44:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347042AbhDFRoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:44:11 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F17DC061761
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 10:44:03 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id k76so3367224vkk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 10:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EtQUUFH1idf1LCKyK4bnY5JsWaSl6wulsAadPAZ7yAY=;
-        b=k44fY36vdgSsXvuMKXVH2LPUy3SZsyFWOTycUHNSmOyjQKKd2jYRXyVswoQDx+BXc/
-         qbXVT6sU8A/aog8FxFGQmnA5OqijC8l7d4uKXWgAcKoYSY0f87EdOMdUKGccXRucONjM
-         kQuT9XA70rCkKLQps0fdWPpH+vpwXbGFnuA1rBrLaowSoqzpHxTPvmWAgZWPwrwjiRCP
-         EDsJHhTiPdQdRAMcx1879N1yM38qIuq7ue+gjrpg0ULB7XtmuX4WlsmNRC6gF7c8Oero
-         5G+Qe4AzXmDuJRsj/DVfwuCngDmnz4A5oZH11YIIOMykr0JDwT+RxONPGTfNr6cno1SG
-         C/9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EtQUUFH1idf1LCKyK4bnY5JsWaSl6wulsAadPAZ7yAY=;
-        b=KsDFjD8JptQvcdn5m1wBxIL3S/cXqnzz6jZHDWjW8sJL1f1IEb0DiBDj6lsDXMSzqi
-         ivzntFHyDUaQ1XK8Ye0A8/pWRHIEIR37t5MqYGPpIgIBHZ3XeSEm3g7BcdRshpKuDdUd
-         D4iWL5Bmj/gEoPGvVegnHin4K+l646OTf1YHk85HhWtuqxvLN64GX4TEVjODndlGIAeR
-         E4t2HD6R+NPtxzoWnQWIW3T/I9p/9rbMCJywNx5KDE0Wgdl3fSD6vmclGowoC1eZ8rfn
-         eVhSkYZjC7v3Jz8R4rhXC514sYWhIRX3Tr75eZENfMFP80d6YBiXy07awzkFnTas00SY
-         bsWw==
-X-Gm-Message-State: AOAM533wXfYfGQEru+BuqCKkR+Vodm+C/v39tyrx+1xm9/ntOfs/WusE
-        1GUmwZFjaXbmYWKaAlknFTT6NFjMMryc9ZQyxNxqOQ==
-X-Google-Smtp-Source: ABdhPJw/vL1B1lwxMga5y/GzF9RJd38fkIy6KReE2RxFlfigxn9W8Lc55czyHQX2OxWT1+hnyyz72VsWoaRuC/f5D4k=
-X-Received: by 2002:a1f:9345:: with SMTP id v66mr18088483vkd.22.1617731041913;
- Tue, 06 Apr 2021 10:44:01 -0700 (PDT)
+        Tue, 6 Apr 2021 13:44:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617731040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UCJGZ8Odc87IDddavOSngaYlHxvPBbKub9pvZ7PfgyQ=;
+        b=VJ1c93Xug+0t5lPcNDTHffNkBK6Kll7iXofZvUaq55YdnQnp+S4Wak4WiTCdG9vT49PpeI
+        khfYqeQhhaOJN5I4PODub4L+jZrJ3DksIeCLybYlwCR1Pha1ASjX60VSCu28MiQ6dtncZy
+        gP5xBfrlZtbSs+FkTAKLAf7UtY8qwBE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-VOYV7UtdPNebkdhubNu7CQ-1; Tue, 06 Apr 2021 13:43:58 -0400
+X-MC-Unique: VOYV7UtdPNebkdhubNu7CQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B00E1922961;
+        Tue,  6 Apr 2021 17:43:57 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.43])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9AAAD19D61;
+        Tue,  6 Apr 2021 17:43:54 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  6 Apr 2021 19:43:56 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 19:43:53 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Hillf Danton <hdanton@sina.com>, Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        syzbot <syzbot+b804f902bbb6bcf290cb@syzkaller.appspotmail.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: perf_buffer.event_list is not RCU-safe?
+Message-ID: <20210406174352.GB13270@redhat.com>
+References: <00000000000030aca605be6e0102@google.com>
+ <20210327042150.7460-1-hdanton@sina.com>
+ <20210328025217.7312-1-hdanton@sina.com>
+ <20210401092907.1098-1-hdanton@sina.com>
+ <20210402074636.1270-1-hdanton@sina.com>
+ <20210406172322.GA13270@redhat.com>
 MIME-Version: 1.0
-References: <20210401233216.2540591-1-samitolvanen@google.com>
- <20210401233216.2540591-15-samitolvanen@google.com> <20210406115357.GE96480@C02TD0UTHF1T.local>
-In-Reply-To: <20210406115357.GE96480@C02TD0UTHF1T.local>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 6 Apr 2021 10:43:50 -0700
-Message-ID: <CABCJKuchDg74Md_He1nKgXKUf=pVEmiaVr_yJXB_yX+tKNhByA@mail.gmail.com>
-Subject: Re: [PATCH v5 14/18] arm64: add __nocfi to functions that jump to a
- physical address
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406172322.GA13270@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 4:54 AM Mark Rutland <mark.rutland@arm.com> wrote:
+On 04/06, Oleg Nesterov wrote:
 >
-> [adding Ard for EFI runtime services bits]
->
-> On Thu, Apr 01, 2021 at 04:32:12PM -0700, Sami Tolvanen wrote:
-> > Disable CFI checking for functions that switch to linear mapping and
-> > make an indirect call to a physical address, since the compiler only
-> > understands virtual addresses and the CFI check for such indirect calls
-> > would always fail.
->
-> What does physical vs virtual have to do with this? Does the address
-> actually matter, or is this just a general thing that when calling an
-> assembly function we won't have a trampoline that the caller expects?
+> perf_mmap_close() was added by 9bb5d40cd93c9 ("perf: Fix mmap() accounting hole")
 
-No, this is about the actual address. The compiler-generated runtime
-checks only know about EL1 virtual addresses, so if we switch to a
-different address space, all indirect calls will trip CFI.
+I meant perf_mmap_close() -> put_event()
 
-> I wonder if we need to do something with asmlinkage here, perhaps?
->
-> I didn't spot anything in the seriues handling EFI runtime services
-> calls, and I strongly suspect we need to do something for those, unless
-> they're handled implicitly by something else.
->
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/arm64/include/asm/mmu_context.h | 2 +-
-> >  arch/arm64/kernel/cpu-reset.h        | 8 ++++----
-> >  arch/arm64/kernel/cpufeature.c       | 2 +-
-> >  3 files changed, 6 insertions(+), 6 deletions(-)
-> >https://www.cnbc.com/2021/04/06/donald-trump-save-america-pac-has-85-million-on-hand-ahead-of-midterms.html
-> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> > index 386b96400a57..d3cef9133539 100644
-> > --- a/arch/arm64/include/asm/mmu_context.h
-> > +++ b/arch/arm64/include/asm/mmu_context.h
-> > @@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
-> >   * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
-> >   * avoiding the possibility of conflicting TLB entries being allocated.
-> >   */
-> > -static inline void cpu_replace_ttbr1(pgd_t *pgdp)
-> > +static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
->
-> Given these are inlines, what's the effect when these are inlined into a
-> function that would normally use CFI? Does CFI get supressed for the
-> whole function, or just the bit that got inlined?
+> and this commit doesn't look right anyway
 
-Just for the bit that gets inlined.
+It seems there is another problem or I am totally confused. I do not
+understand why can we use list_for_each_entry_rcu(event, rb->event_list)
+if this can race with perf_event_set_output(event) which can move "event"
+to another list, in this case list_for_each_entry_rcu() can loop forever.
 
-> Is there an attribute that we could place on a function pointer to tell
-> the compiler to not check calls via that pointer? If that existed we'd
-> be able to scope this much more tightly.
+perf_mmap_close() even mentions this race and restarts the iteration to
+avoid it but I don't think this is enough,
 
-There isn't, but I do agree that this would be a useful feature.
+	rcu_read_lock();
+	list_for_each_entry_rcu(event, &rb->event_list, rb_entry) {
+		if (!atomic_long_inc_not_zero(&event->refcount)) {
+			/*
+			 * This event is en-route to free_event() which will
+			 * detach it and remove it from the list.
+			 */
+			continue;
+		}
 
-Sami
+just suppose that "this event" is moved to another list first and after
+that it goes away so that atomic_long_inc_not_zero() fails; in this case
+the next iteration will play with event->rb_entry.next, and this is not
+necessarily "struct perf_event", it can can be "list_head event_list".
+
+Don't we need rb->event_lock ?
+
+Oleg.
+
