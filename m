@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1213558AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBE33558AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346146AbhDFQA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        id S243928AbhDFQCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhDFQAw (ORCPT
+        with ESMTP id S231787AbhDFQCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:00:52 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B42C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 09:00:43 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id s15so2241615edd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:00:43 -0700 (PDT)
+        Tue, 6 Apr 2021 12:02:12 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D0C06174A;
+        Tue,  6 Apr 2021 09:02:04 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id v26so16075968iox.11;
+        Tue, 06 Apr 2021 09:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k5EpuzuQJTKW4iCexb4wYn9pAT56gYbwWP/iQi0chJE=;
-        b=d3pyj6/e3e/fxYUdpu90XqhYram4OhWvReN9Bo7SKbbY5tXgcKg6Vcxejn4Y2FhZyY
-         qyiBX4wUVVubcDYf2hojBzSFiQ1OBf0pbQPDW73tmv7WVEWUhEY8jOVD+BKsZ10Jdqwd
-         /2oux4dbZA3nijNfEqi8esoiYDSC3ATU7r8uvgYpGWL98OiIxFeCGEfXusZthiweq8o1
-         WTDtlCm5EyWqWgsRYxn5q6yoGQ/Cnk+hf55Hixxp9NJ1LEJCfGlw1QYuE7QoREwmbc6u
-         SOzXsZSpeKnIVaVe/m1y9R9NAzXQ1ReBCGLT+f1AUWBLTFZOqC/Iu2LzQQNqZreuML16
-         Jwqg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y6td6U/wgXJy1PKxkTx+qADiVVwnBDVWbevDjru0nls=;
+        b=XvPpCjYxNmJmPbhWQwWWLjNrOfwWJekG5FGqReCq3HR7smTKgok8w/+146+n12sXYh
+         g1SrBLJkHm6800/a8NRq/X+CMSiz6G/JNNS8hv/BXu44w47pWOn4xjF227zQ2lkprOIh
+         eGWepOCNQdmUWzQmHnj7HDx92mhDsbhqkmNXhEA/G8FyxFn6hoH1IVrtQ7PnvK8DwgzB
+         PpYChXnoMFzZkwxfV3WUOwaNcPHs1chU+ro8WE+MMTT1XaElw/fgi6L1oS8RhBNtOjdF
+         OYxHMqvZRgAwps12+XvU/yKiF+SLtPa48N5qxjKKm0GQe2t7kykpeRwCrm/FaC3hYWj6
+         A/SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k5EpuzuQJTKW4iCexb4wYn9pAT56gYbwWP/iQi0chJE=;
-        b=gmqDZuDzvtwtl2rmZnTSatPVeqC+PPjfYTuh94QxeJl7zzGUoET5TbM8dku/TYSqum
-         bb2aqKNqroqRSqXjNCJhw59olDKwFgyInaK+RVvNxsdsoMPA5d6R092Ugrm/pdIvVeg7
-         BqptawSmmX5eKtEb0dbPOBdETyFsWEW7y+i1w73G+zUKGP9CW/CYXTN+YXo9WV4eYQc6
-         jhohYSQ6C2RIsmcS0FhhMtwYvVhkFm8se7g1beVLu56WKixgql+XZJHdAl9gT0TmIpNk
-         gfdSDisQSE9w+973PTBlmitGxiC2MjhDf6sEYWM9+SxXhbHdjXXkLyTk1a+oUEdD9N3p
-         FI3g==
-X-Gm-Message-State: AOAM5337bxxN4MgK7qYL1/R2Tvd3jXDvvx3kyEf4vlJmMGHn63C8+gD+
-        H/ll2xD9VY/mvt16NjjO1jI=
-X-Google-Smtp-Source: ABdhPJw8nHUAQuZ6zZk8j9rfvTPC/Ukwe91CIxsRC6iPj5FHzN6E8hu8ZaonkNE2FgYrO6EcuD3u/w==
-X-Received: by 2002:a05:6402:344e:: with SMTP id l14mr8680125edc.184.1617724842572;
-        Tue, 06 Apr 2021 09:00:42 -0700 (PDT)
-Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
-        by smtp.gmail.com with ESMTPSA id n16sm14317737edr.42.2021.04.06.09.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 09:00:42 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v3] staging: rtl8723bs: hal: Remove camelcase in Hal8723BReg.h
-Date:   Tue,  6 Apr 2021 18:00:37 +0200
-Message-Id: <20210406160037.27225-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y6td6U/wgXJy1PKxkTx+qADiVVwnBDVWbevDjru0nls=;
+        b=SzFu7dNqvnWeg8Fhs3e+9gK+fpERM08uBEIozvp5jrcwMhhcgDLFjxhEZHz3sv3+OA
+         x3hHJ/eBjmL6M60YLr6QvQxM3GfNyHHpWUj/OzN2V4UZMKl0eFoWCVOLCLzPZXodR8bR
+         0hw2dtTJg7Po3I+vp77NHFCDKzG4kt9rulj9e/0StWbcgO4NUO5nyJbWuIDih++jx6Zz
+         wprdXd6cR9m6luynF5+McHRfSFbWBxvoBObhUb0HcYTFMBk4YAxR/EA1fVbVVmVAqKAX
+         xMeEi1sWA8VDafz5TGXTUxzvy1FszO2pyo6rUsT9IpJzhHqOpmrszn55u8FXkwhUdce8
+         33zg==
+X-Gm-Message-State: AOAM530xNQOdaY1OBLmFyjUc/GZ6rUJZLnzz/oVy3806Tev9QCPm+LsO
+        h+k/F0whamCeitgcjpwh1YMzS3CZXck/HjFR3nQ=
+X-Google-Smtp-Source: ABdhPJzrupn5Tqo/qGYiJFhgY4pom3bPfOsFnrJ4YLA/PGWrDxckk5HncixtyDHTPC1rXWyNlr2qX0SRG+OFMzNoklo=
+X-Received: by 2002:a05:6638:144e:: with SMTP id l14mr29148356jad.76.1617724924002;
+ Tue, 06 Apr 2021 09:02:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210406141819.1025864-1-dqfext@gmail.com> <20210406141819.1025864-3-dqfext@gmail.com>
+ <YGx+nyYkSY3Xu0Za@lunn.ch> <CALW65jYhBGmz8dy+9C_YCpJU5wa-KAwgrGjCSpa3nqUNT+xU+g@mail.gmail.com>
+ <YGyC9liu9v+DFSHA@lunn.ch>
+In-Reply-To: <YGyC9liu9v+DFSHA@lunn.ch>
+From:   DENG Qingfang <dqfext@gmail.com>
+Date:   Wed, 7 Apr 2021 00:02:00 +0800
+Message-ID: <CALW65jaTfcJoMqZPfLjbYXd+JWvG8CciUiGRmQwc_bf2538kog@mail.gmail.com>
+Subject: Re: [RFC net-next 2/4] net: dsa: mt7530: add interrupt support
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-staging@lists.linux.dev,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove camelcase in some symbols defined in Hal8723BReg.h. These symbols
-are not used anywhere else, therefore this patch does not break the driver.
+On Tue, Apr 6, 2021 at 11:49 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> O.K. So that makes it similar to the mv88e6xxx. With that driver, i
+> kept interrupt setup and mdio setup separate. I add the interrupt
+> controller first, and then do mdio setup, calling a helper to map the
+> PHY interrupts and assign them to bus->irq[].
+>
+> That gives you a cleaner structure when you start using the other
+> interrupts.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Okay. Will split the function in v2. Thanks.
 
-Patch v3 changes nothing with respect to v2 and v1. It exists only to cc some recipients that were missing in the header of the previous email.
-
- drivers/staging/rtl8723bs/hal/Hal8723BReg.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/hal/Hal8723BReg.h b/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
-index cc249e15b4bd..60c1f966c5de 100644
---- a/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
-+++ b/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
-@@ -110,7 +110,7 @@
- #define REG_RSVD3_8723B				0x0168
- #define REG_C2HEVT_MSG_NORMAL_8723B		0x01A0
- #define REG_C2HEVT_CMD_SEQ_88XX			0x01A1
--#define REG_C2hEVT_CMD_CONTENT_88XX		0x01A2
-+#define REG_C2HEVT_CMD_CONTENT_88XX		0x01A2
- #define REG_C2HEVT_CMD_LEN_88XX			0x01AE
- #define REG_C2HEVT_CLEAR_8723B			0x01AF
- #define REG_MCUTST_1_8723B			0x01C0
-@@ -424,13 +424,13 @@
- #define	IMR_RXFOVW_8723B		BIT8	/* Receive FIFO Overflow */
- 
- /* 2 ACMHWCTRL 0x05C0 */
--#define	AcmHw_HwEn_8723B		BIT(0)
--#define	AcmHw_VoqEn_8723B		BIT(1)
--#define	AcmHw_ViqEn_8723B		BIT(2)
--#define	AcmHw_BeqEn_8723B		BIT(3)
--#define	AcmHw_VoqStatus_8723B		BIT(5)
--#define	AcmHw_ViqStatus_8723B		BIT(6)
--#define	AcmHw_BeqStatus_8723B		BIT(7)
-+#define	ACMHW_HWEN_8723B		BIT(0)
-+#define	ACMHW_VOQEN_8723B		BIT(1)
-+#define	ACMHW_VIQEN_8723B		BIT(2)
-+#define	ACMHW_BEQEN_8723B		BIT(3)
-+#define	ACMHW_VOQSTATUS_8723B		BIT(5)
-+#define	ACMHW_VIQSTATUS_8723B		BIT(6)
-+#define	ACMHW_BEQSTATUS_8723B		BIT(7)
- 
- /* 8195 (RCR) Receive Configuration Register	(Offset 0x608, 32 bits) */
- #define	RCR_TCPOFLD_EN			BIT25	/* Enable TCP checksum offload */
--- 
-2.30.2
-
+>
+>         Andrew
