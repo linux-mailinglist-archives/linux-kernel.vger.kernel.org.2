@@ -2,162 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5791935584E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEBF35584B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345785AbhDFPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:42:02 -0400
-Received: from mail-co1nam11on2058.outbound.protection.outlook.com ([40.107.220.58]:44647
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244150AbhDFPmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:42:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEUlOIwUb9u95289i2jSXlabziLCdoEW8CvLmYNYasMJKHPsufGavYDlnQjpa83FJd+fpt9NGOVhfhkjL4Rv6r/IqR4IBJDyfEP9j4MhPe4QgU0ghJMceuQ/7oh5qGsyUmLHNctB/Rn4iQbuZaPG3QEyw/fpeGt1ziYOpk+sm891iUeNQT22jj2+r2dQZdMRbIxTNSswCBcJvuiRIGExgm4ZKK9eLh0Abe6TSkWoPZERWX5g6FTdDqa6PuY5f/pRDrUr4xx5vzBlROdPbFhh9db6xhLs8nyhF/VT/bYC09MvdC+F+4uPrOsBO2tASadNJkCC6J0fQeVdyN84gn7wNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GgsasAbIGX0KBO78AtPvTCN42iBoHQx5Mee4+RFWlso=;
- b=HSZPiqrnyJAVIMXuGvQjIft4MTTjXGw9femQKNxBI7kAHgRZMsvGmzeWXgHpOJ+ASMMBLKaEPMjjB+9SFctvRPgvQBFO46K/SazO0hxvuZAS/k+9Kn2zIECDbhotzKh8ZQunXHfzF6a/unTB6B2loIsfruI57WrGIIbjAhU0BvRucQQ5nc/tmpgvK2QNLff3WK/uvXNqMBmH3egmc3zEfQyzGPodv7sp42zI5C0VpWq9HROE3Obus42pdV4jAUXS5kxTGuUTx2N8TjR8HPilCbkFiHWfmwHxpzNTbpc0gXFsmw09uTia2ZZOnfaOMQ9aGGgZ/iDIeaoWgu5lmdR6gA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S244164AbhDFPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233999AbhDFPku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:40:50 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697EDC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:40:41 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id d10so13475439ils.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GgsasAbIGX0KBO78AtPvTCN42iBoHQx5Mee4+RFWlso=;
- b=e9DcBH7Y/iZBfL0xW2IQf3T+uPW2jRNjl+CTdmNXsmsFKg2j9EcCVVf1BgsN38g+s+iX5GerSW6641jFDE5fBqUD2zrdYrWDxO/f7ghVGS8j4ZQ/eOYDvZPCC6YhYDd9c4grHAxxwtf4P1H4TF7X9DcodWsQrH1p0HnDmbsiOI8=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1256.namprd11.prod.outlook.com (2603:10b6:903:25::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
- 2021 15:41:51 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 15:41:51 +0000
-From:   quanyang.wang@windriver.com
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [V2][PATCH] clk: zynqmp: move zynqmp_pll_set_mode out of round_rate callback
-Date:   Tue,  6 Apr 2021 23:40:15 +0800
-Message-Id: <20210406154015.602779-1-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR13CA0046.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::21) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/i6oRBuCC1nnDdk8f5MbgBKgjuwAQ5G7EynnRn+CM2U=;
+        b=jNGs8/kzK6fF4rFABzfWwSKeIItGRig5tl4meXpRcksf4WjzMzD5Kw6Fwdzxl6OEyT
+         xfQnEyG92W3AEuG4rzQahom4jtzNpMAw+dpQrzqHP9ZtX6OVv43FlC59IrxkWUEj2ecS
+         GPzo8PQJebMdfdDMgHHWXnKpMn8FcDTndvWWc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/i6oRBuCC1nnDdk8f5MbgBKgjuwAQ5G7EynnRn+CM2U=;
+        b=kLWh6GDiw/EL2sFUJNppRlY02qdJ2TcxDcLG754SVD/7zov/oda6VZphyDGvvZvvIn
+         Bnd99hyhZE1UyfgrT1ukhOXfkppubdDzkcNMZbykIw6hmlxsPRVyCEAnDwGZIZqpDdYR
+         e4wPfEQw5xtAtnZ1fF9x5/g9PvNC5MIjoQEXu+qqj4D+lG6/O0gzX+FlJP55OSVVHH75
+         UvRxHjN+dUi1iXJeye6k6jGF91KdtnrVuvfX8H/Twn8uxGRi1QMXwOQM6YsWvMtsQN+y
+         12LyovyAoK0vT4OOhYGKeB1WAJ01UQrCSzYGy7PjYob4a37+AE6PbIrNzeVReuCliaPU
+         BHkg==
+X-Gm-Message-State: AOAM530W+gmWB6I+fkerW7U/Fhr/c81lmnrWMcK0Y7XrKPfjk0F8DW8q
+        M/sTs/Mt1QbkNm12G8llnh7/A1YIcxMM/IWaZdu3fg==
+X-Google-Smtp-Source: ABdhPJyy0Kus26xdVGm4mg3woI6tVGuaURUUcH6bXPAT0XCsNbcTjHptv5f2ARgt/+EB/ozLBWgBLRIKYX9IbT1/Ems=
+X-Received: by 2002:a92:c9ca:: with SMTP id k10mr9636555ilq.42.1617723640967;
+ Tue, 06 Apr 2021 08:40:40 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by SJ0PR13CA0046.namprd13.prod.outlook.com (2603:10b6:a03:2c2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend Transport; Tue, 6 Apr 2021 15:41:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d10abdbb-fb83-4fc4-7bb2-08d8f9127ec5
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1256:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR11MB12563C58DA37DBEC4604C9AFF0769@CY4PR11MB1256.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NIBpTGPf4g7PFSRqeXLYBpG554Enti93+KrUcCsItjg8fW/+9G6Yl9BA65Je5grtQ4V4I2W7UGDWRFrCVfbOYogS19LNlE/qMcD7Jp/Ij5nEpQW/1xVPdBrPqyxIwgpUX3CuoX/LqIl8HtnCokkN9/X7ivGei0rHeyiwLJcLUBniRw1vyPWCWBoTKLjvHxB8CVnnVy12aVF8Qarta28RiDW94TM9RuXBdrkVDEGhrbd32DkHAtDlscDB+tJDKgrslb+TX47Mo9cj1ke9ANJDplXwB+b3fBYLWWUk9cdJthMWWiwHT8TTjn1yMsM9f+LxV79gniWuUlQfNNKxc5VssXeUQLQ7SH2XichqhaKb9Oq+a5Bygzl7KC3/A0sJoHd55/y+eL/zpZdIRKW7Ft4KdqkjRQ/uLKuRIvwvcQ4PQLZTb1Es4qnlEwSFeTg+D4IScYerQ0wQJ9o9t7M0PyKRthb2Rzv01D3JEjfpUGMFYi4TI/HMsh/HZjsiTngm4POvVk4L8cbGmPdBV1i7JT+vpYpuWf6RuqlRrUndRxUvOgqfS0LWTVa2VPEr6nR34ijbEqruCVmUA/ONLP6XMS0twLNRmQf5geE9s1Y8tzG+oZdiY+xhGV8UB8w5hRetowXS1mUjO70VY50xNJ8oRUkqb2uFfNHOcsIAMOQGyAGE1feoNVozS2zhWLq1DyN9Mn/WNMEwUGg3UU7bZLvcI8I3GQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(366004)(346002)(136003)(376002)(478600001)(6486002)(66476007)(66556008)(52116002)(4326008)(83380400001)(66946007)(5660300002)(38350700001)(186003)(38100700001)(16526019)(8936002)(8676002)(956004)(2616005)(26005)(9686003)(110136005)(2906002)(316002)(7416002)(6666004)(6506007)(1076003)(86362001)(54906003)(36756003)(6512007)(309714004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?K5Cs+5vOP80AgjK6HQRBLZ5WjvdmdyIHTW5cUQMRqxfRCiM0CGeMXuoEpkfR?=
- =?us-ascii?Q?AMOx2zGatlPUNF+wAJLUN6De6tbxn2yvHk86+bUZqabWhclM2PdK/akjlVU0?=
- =?us-ascii?Q?2UhqDjtSgwe4BBavPd2QW+qLwtANluwVmKAwCyMV/d1r6hG/yt/YmrXaZPbo?=
- =?us-ascii?Q?M606+Sxr9bZsn/0mZ/jTIi7+vrf/Ak6vZ/BoUi50P+3n0W3SdsbxxqBwAtDt?=
- =?us-ascii?Q?3BKKXFtItHKFBwgWcy0vjfgIDZzkVErohJWrOp/FliwDTnFw72d+bLgWDC3i?=
- =?us-ascii?Q?xUJ0VhQyPtc0CYWv/AdGQF1oAYCcS+8/I1IWcV62GUuZYWlvUClN4O5dARNZ?=
- =?us-ascii?Q?q42p0rZ9u8akaPhc6d7r+PhoXEqVgdUGIP9mD63UfzINiY5Fh6d2ovC/1dyw?=
- =?us-ascii?Q?wCjh6gJAKSZFwHiNFZCca4krJkNJE4O9Ylp7mfSO18RroNLUjzpHDl/ssTHz?=
- =?us-ascii?Q?ocOnAWiJOLkeu6t3dVVgVOVe1Dws2y/5/JMYo8ZrpSEUWrZ0L6MFqYapkCxc?=
- =?us-ascii?Q?nDGtQ7UeVDSE/M0VuTHeaHGlilRPDrfdEQD3UCOQcY0liVuo5NYB6bJI+HXY?=
- =?us-ascii?Q?7En5JhndEBp9zc1TnLEIAUWxR9BxJ+ZtQitmV5zohG1dSrtgqSxKJIoYt3Yy?=
- =?us-ascii?Q?axtQlgl5dxj+d/Mop0vZ3+FLgC/mzKAZa4rR94lbHeneSUyCiFgElmRbs72Q?=
- =?us-ascii?Q?hWryXU7J4CpUpZ6DI1za1T1LGQJrDEvEaUoUStMpPfpXGp5M4QiE5NKzrTlM?=
- =?us-ascii?Q?X0pmSxvO0pz2PwC0AiNeX8rtpQn9XIu38uLRlo1v3aN0OyifT1MpY6sqLVy1?=
- =?us-ascii?Q?/WMbhbxuVenzTcMfd4jgpGhB8m5kSmhbCrd0l9cOhttnh7Z6m78yJg2RsErW?=
- =?us-ascii?Q?gxu1Qnr9T2fIHi7Ib66RIM3tN/10zzea42Z+b11fZa4v+34UQyyFRmJhaBQ2?=
- =?us-ascii?Q?zm4f9BGB8PLAnjEdNT6+u/QvQ1hpoFxzOBjXEFWjuG2cpTITl8kh1Hyq0lgW?=
- =?us-ascii?Q?DH7c4haqfGYtEQ5tPm1l12Wwb6MNW9xHX+D+eSzTXkhJ86GQrWWb9bkBk9pD?=
- =?us-ascii?Q?XpKRnmjHSWKfXFiSogIIA5b8/ihV+TGAL8P1WXZayxCCVu5fEaOkIWxNDuUN?=
- =?us-ascii?Q?NslTpn4yi6DDM8SS8jeVpy8cOKffbLBARN/Q6y/l5PKNk2Zq3Xkl/KmHm1uJ?=
- =?us-ascii?Q?m4ZaaYvsTekg2GJEYpShZi5ITPm3qPdLCwvj+EnXM4tvHrqt3yKXw13WcDwH?=
- =?us-ascii?Q?8fhv4wBzfc3pa8E0qVCiIkOf2F+6DFyEDt/wZ0xcT8t28dg0lFhbV4j1i+eV?=
- =?us-ascii?Q?YhyL9hHKRvYyAWku+0pSKcBF?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d10abdbb-fb83-4fc4-7bb2-08d8f9127ec5
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:41:50.8242
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hYu1QqS+OPTqfG0LwJhnRPajwcUeoBa2gmSk1rahVTlBEPQPVPIN5Axy3rdUiN/0u16NuBux/+yVR1k6IMu+UXLn9zVipAGTMwmOhTb+FdY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1256
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-7-revest@chromium.org>
+ <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 6 Apr 2021 17:40:30 +0200
+Message-ID: <CABRcYmJZ856joqkSxThS6Kv0m9ZGufUCffQ4OwCTWALg907O5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+On Sat, Mar 27, 2021 at 12:05 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > This exercises most of the format specifiers when things go well.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > ---
+>
+> Looks good. Please add a no-argument test case as well.
 
-The round_rate callback should only perform rate calculation and not
-involve calling zynqmp_pll_set_mode to change the pll mode. So let's
-move zynqmp_pll_set_mode out of round_rate and to set_rate callback.
+Agreed
 
-Fixes: 3fde0e16d016 ("drivers: clk: Add ZynqMP clock driver")
-Reported-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
----
-V2:
- - add Fixes tag.
----
- drivers/clk/zynqmp/pll.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >  .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
+> >  .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
+> >  2 files changed, 124 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+> >
+>
+> [...]
+>
+> > +
+> > +SEC("raw_tp/sys_enter")
+> > +int handler(const void *ctx)
+> > +{
+> > +       /* Convenient values to pretty-print */
+> > +       const __u8 ex_ipv4[] = {127, 0, 0, 1};
+> > +       const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+> > +       const char str1[] = "str1";
+> > +       const char longstr[] = "longstr";
+> > +       extern const void schedule __ksym;
+>
+> oh, fancy. I'd move it out of this function into global space, though,
+> to make it more apparent. I almost missed that it's a special one.
 
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index 0d64268a4a84..abe6afbf3407 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -104,9 +104,7 @@ static long zynqmp_pll_round_rate(struct clk_hw *hw, unsigned long rate,
- 	/* Enable the fractional mode if needed */
- 	rate_div = (rate * FRAC_DIV) / *prate;
- 	f = rate_div % FRAC_DIV;
--	zynqmp_pll_set_mode(hw, !!f);
--
--	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
-+	if (f) {
- 		if (rate > PS_PLL_VCO_MAX) {
- 			fbdiv = rate / PS_PLL_VCO_MAX;
- 			rate = rate / (fbdiv + 1);
-@@ -177,10 +175,12 @@ static int zynqmp_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 	long rate_div, frac, m, f;
- 	int ret;
- 
--	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
--		rate_div = (rate * FRAC_DIV) / parent_rate;
-+	rate_div = (rate * FRAC_DIV) / parent_rate;
-+	f = rate_div % FRAC_DIV;
-+	zynqmp_pll_set_mode(hw, !!f);
-+
-+	if (f) {
- 		m = rate_div / FRAC_DIV;
--		f = rate_div % FRAC_DIV;
- 		m = clamp_t(u32, m, (PLL_FBDIV_MIN), (PLL_FBDIV_MAX));
- 		rate = parent_rate * m;
- 		frac = (parent_rate * f) / FRAC_DIV;
--- 
-2.25.1
-
+Just schedule? Alright.
