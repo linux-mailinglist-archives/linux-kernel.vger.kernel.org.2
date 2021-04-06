@@ -2,176 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4ED354DE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB381354DED
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 09:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhDFHci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 03:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234701AbhDFHch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 03:32:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFB0A60C41;
-        Tue,  6 Apr 2021 07:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617694350;
-        bh=utzK9JJnm7CSmXkantZvzPx3+Nb6tDzqIuRCbQBb+V4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=psPtI1AxNwNSukh8NKwheQgd0WDmruwl+bGW1gxcA6cX+QSrLvaMRY1+KbZ/FNDdo
-         8J1qjYsV2IIUFD6m3DKKkPCKYrfPrq/u8Y/mOI20pA4DTmhHyjcIgPcigAlyI6xruu
-         5HFiK7u0jui2dfxxrevvQfu+te2lm7n2JIE5/H/w=
-Date:   Tue, 6 Apr 2021 09:32:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, mj0123.lee@samsung.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [RESEND PATCH v5 1/2] bio: limit bio max size
-Message-ID: <YGwOiL7tN905H0h0@kroah.com>
-References: <20210316074401.4594-1-nanich.lee@samsung.com>
- <CGME20210406014905epcas1p16830a46b7ac6af95a0e2c2c6f4c04859@epcas1p1.samsung.com>
- <20210406013128.16284-1-nanich.lee@samsung.com>
+        id S235083AbhDFHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 03:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234537AbhDFHei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 03:34:38 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877C8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 00:34:31 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id c15so3445018ilj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 00:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O1rz64W3qpTMmQiYeFsZQrw5A/71EhMPvbEVoO9GiM8=;
+        b=rHnELZY2vTf8uQe6TrlBh1XmoULlKNq81R3ss4YyC+X5JYsXcJwk061jBAWhzWmX80
+         TO4cJMaaifaFRL0T2FnIo43ktg9aHkNquZ3ax7LPkd/+kzMHyJ8UK+UjMXvSb5dX+92G
+         CJxhQSf4uogc2WsjKIty2WQ2Yc1InBgc9QnlHdxOkacS8720Y9H0Z0+zGSUh88stSrbs
+         LnX2gAL/nk3mE9vOaYmSFVuxGomBn8l4HvAWnq+EbY87ibaOkD/kHtweQtb6kTOy2bpI
+         kd43+V648onFnBuqXwPaBNfDaqQcoD6D4LkOtULZo3dyIt4C7B9ABPOQ2ofvna7J5CTd
+         VdHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O1rz64W3qpTMmQiYeFsZQrw5A/71EhMPvbEVoO9GiM8=;
+        b=en/xqe4YaZvDNI+dqTYI+WfEsdOXMyA8zcudUSLF1h7odfe4sh91wUWe+uYsdtRRT4
+         FAOqfKgcn80RdKOW3GIwmlnknRFtH4AHa5bARL03yrVZ63AKydI4ercnjh6CYnaJb6N2
+         klvZSuU1JV9t8to+TPGf3U8yHfc9z1SUfLA/0LpeyitcghgTlrbvnXEZwbI3ohSICUR4
+         kJKGfRC2YauyzcCkkG7ZpsYSPnN1pxqpiLUrmU8reGSnUmChDrVvHq/F5eUkA28LJBBj
+         /oRJeSNJo+zvr31lopcftQHRHwna67A+82ENe1VMfxcHY9CjQJEswvt3g8WiZreuJg+W
+         waCg==
+X-Gm-Message-State: AOAM5309+gvH86+LbmnaoTPBTs20z2zE2Zd8ngAl2yVDvWxbdqge1ObY
+        EiSj2P3r5TQvLgtX6hRinUDpgJSkniQu2L7VDfcd9A==
+X-Google-Smtp-Source: ABdhPJxdpJWc/bqgEpDdB3OhLaSF+VgJma/urmc9afLm5l0TFhPdPsKtb0+1JsfjRBxHm3u0ejmnMoHJFQnXnkQjo74=
+X-Received: by 2002:a05:6e02:1b85:: with SMTP id h5mr22800336ili.134.1617694470261;
+ Tue, 06 Apr 2021 00:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406013128.16284-1-nanich.lee@samsung.com>
+References: <20210405200821.2203458-2-fparent@baylibre.com> <202104060814.berYSn6V-lkp@intel.com>
+In-Reply-To: <202104060814.berYSn6V-lkp@intel.com>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Tue, 6 Apr 2021 09:34:19 +0200
+Message-ID: <CAOwMV_xn2pv1vVoqz5qb+jNsssCKwVtNGG=yEtcA324adau6Rg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] arm64: dts: mediatek: mt8167: add smi_common node
+To:     kernel test robot <lkp@intel.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:31:28AM +0900, Changheun Lee wrote:
-> > bio size can grow up to 4GB when muli-page bvec is enabled.
-> > but sometimes it would lead to inefficient behaviors.
-> > in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > all pages for 32MB would be merged to a bio structure if the pages
-> > physical addresses are contiguous. it makes some delay to submit
-> > until merge complete. bio max size should be limited to a proper size.
-> > 
-> > When 32MB chunk read with direct I/O option is coming from userspace,
-> > kernel behavior is below now in do_direct_IO() loop. it's timeline.
-> > 
-> >  | bio merge for 32MB. total 8,192 pages are merged.
-> >  | total elapsed time is over 2ms.
-> >  |------------------ ... ----------------------->|
-> >                                                  | 8,192 pages merged a bio.
-> >                                                  | at this time, first bio submit is done.
-> >                                                  | 1 bio is split to 32 read request and issue.
-> >                                                  |--------------->
-> >                                                   |--------------->
-> >                                                    |--------------->
-> >                                                               ......
-> >                                                                    |--------------->
-> >                                                                     |--------------->|
-> >                           total 19ms elapsed to complete 32MB read done from device. |
-> > 
-> > If bio max size is limited with 1MB, behavior is changed below.
-> > 
-> >  | bio merge for 1MB. 256 pages are merged for each bio.
-> >  | total 32 bio will be made.
-> >  | total elapsed time is over 2ms. it's same.
-> >  | but, first bio submit timing is fast. about 100us.
-> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> >       | 256 pages merged a bio.
-> >       | at this time, first bio submit is done.
-> >       | and 1 read request is issued for 1 bio.
-> >       |--------------->
-> >            |--------------->
-> >                 |--------------->
-> >                                       ......
-> >                                                  |--------------->
-> >                                                   |--------------->|
-> >         total 17ms elapsed to complete 32MB read done from device. |
-> > 
-> > As a result, read request issue timing is faster if bio max size is limited.
-> > Current kernel behavior with multipage bvec, super large bio can be created.
-> > And it lead to delay first I/O request issue.
-> > 
-> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > ---
-> >  block/bio.c            | 13 ++++++++++++-
-> >  include/linux/bio.h    |  2 +-
-> >  include/linux/blkdev.h |  3 +++
-> >  3 files changed, 16 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/block/bio.c b/block/bio.c
-> > index 1f2cc1fbe283..c528e1f944c7 100644
-> > --- a/block/bio.c
-> > +++ b/block/bio.c
-> > @@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
-> >  }
-> >  EXPORT_SYMBOL(bio_init);
-> >  
-> > +unsigned int bio_max_size(struct bio *bio)
-> > +{
-> > +	struct request_queue *q = bio->bi_disk->queue;
-> > +
-> > +	if (blk_queue_limit_bio_size(q))
-> > +		return blk_queue_get_max_sectors(q, bio_op(bio))
-> > +			<< SECTOR_SHIFT;
-> > +
-> > +	return UINT_MAX;
-> > +}
-> > +
-> >  /**
-> >   * bio_reset - reinitialize a bio
-> >   * @bio:	bio to reset
-> > @@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
-> >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
-> >  
-> >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> > +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
-> >  				*same_page = false;
-> >  				return false;
-> >  			}
-> > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > index 1edda614f7ce..13b6f6562a5b 100644
-> > --- a/include/linux/bio.h
-> > +++ b/include/linux/bio.h
-> > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
-> >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
-> >  		return true;
-> >  
-> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> > +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
-> >  		return true;
-> >  
-> >  	return false;
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index f94ee3089e01..3aeab9e7e97b 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -621,6 +621,7 @@ struct request_queue {
-> >  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
-> >  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
-> >  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
-> > +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
-> >  
-> >  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
-> >  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
-> > @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
-> >  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
-> >  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
-> >  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
-> > +#define blk_queue_limit_bio_size(q)	\
-> > +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
-> >  
-> >  extern void blk_set_pm_only(struct request_queue *q);
-> >  extern void blk_clear_pm_only(struct request_queue *q);
-> > -- 
-> > 2.28.0
-> > 
-> 
-> Please feedback to me if more modification is needed to apply. :)
+Hi,
 
-You are adding code that tests for a value to be set, yet you never set
-it in this code so why is it needed at all?
+I forgot to mention it, but this series depends on
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210405172836.2038526-1-fparent@baylibre.com/
 
-thanks,
-
-greg k-h
+On Tue, Apr 6, 2021 at 2:25 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Fabien,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on robh/for-next]
+> [also build test ERROR on arm/for-next keystone/next soc/for-next rockchip/for-next arm64/for-next/core shawnguo/for-next clk/clk-next v5.12-rc6 next-20210401]
+> [cannot apply to xlnx/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Fabien-Parent/arm64-dts-mediatek-mt8167-add-mmsys-node/20210406-041016
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> config: arm64-randconfig-r011-20210406 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 2760a808b9916a2839513b7fd7314a464f52481e)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/bbbf216a8432b5af475e4e709bf481475c1af58f
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Fabien-Parent/arm64-dts-mediatek-mt8167-add-mmsys-node/20210406-041016
+>         git checkout bbbf216a8432b5af475e4e709bf481475c1af58f
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> Error: arch/arm64/boot/dts/mediatek/mt8167.dtsi:73.26-27 syntax error
+>    FATAL ERROR: Unable to parse input tree
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
