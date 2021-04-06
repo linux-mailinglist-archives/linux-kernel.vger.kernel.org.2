@@ -2,65 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8004355441
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236BD355442
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239609AbhDFMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:50:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33264 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232927AbhDFMuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:50:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D52EB089;
-        Tue,  6 Apr 2021 12:50:32 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 14:50:28 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 4/8] hugetlb: create remove_hugetlb_page() to separate
- functionality
-Message-ID: <YGxZFHFp6jyCRK+C@localhost.localdomain>
-References: <20210405230043.182734-1-mike.kravetz@oracle.com>
- <20210405230043.182734-5-mike.kravetz@oracle.com>
- <YGwwO0galuKQsD0J@dhcp22.suse.cz>
+        id S243337AbhDFMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:51:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25707 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232927AbhDFMvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:51:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617713454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LqmvLDyPcw5HvzsN9d3OA/0ZQ4y65craa/qJjjsW6V4=;
+        b=elZFzJrCjWDenxWshqbObmUy+MawQv/Jtz+NQfUbkeb/p09+3Sm/jPwshz5a6Y3Eu4IQ+b
+        gO83wm8JT4Ps87HUWNvwXzMCoTZZp2VhOj2nm5CdjuT3hSQ4I52KE0jvzphaUcD7JGc32/
+        ZFog/ILCp2zoKNk6Es6eiIw84zHDPDQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-LOHyKUCXMviH3Vb_XtLnIg-1; Tue, 06 Apr 2021 08:50:53 -0400
+X-MC-Unique: LOHyKUCXMviH3Vb_XtLnIg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DDB5800D53;
+        Tue,  6 Apr 2021 12:50:51 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8478860C4A;
+        Tue,  6 Apr 2021 12:50:48 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     x86@kernel.org, Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+Date:   Tue,  6 Apr 2021 14:50:47 +0200
+Message-Id: <20210406125047.547501-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGwwO0galuKQsD0J@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:56:11AM +0200, Michal Hocko wrote:
-> Btw. I would prefer to reverse the ordering of this and Oscar's
-> patchset. This one is a bug fix which might be interesting for stable
-> backports while Oscar's work can be looked as a general functionality
-> improvement.
+Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
+acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
+wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
+into acpi_idle_play_dead(). The problem is that these functions are not
+exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
 
-If it makes things easier, I do not mind this work gets first and then I
-work on top of that.
-Given said that, I will try to have a look at this series.
+The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
+(the later from assembly) but it seems putting the whole pattern into a
+new function and exporting it instead is better.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+Cc: <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/include/asm/smp.h    |  2 +-
+ arch/x86/kernel/smpboot.c     | 15 ++++++++++-----
+ drivers/acpi/processor_idle.c |  3 +--
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+index 57ef2094af93..6f79deb1f970 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -132,7 +132,7 @@ void native_play_dead(void);
+ void play_dead_common(void);
+ void wbinvd_on_cpu(int cpu);
+ int wbinvd_on_all_cpus(void);
+-bool wakeup_cpu0(void);
++void wakeup_cpu0_if_needed(void);
+ 
+ void native_smp_send_reschedule(int cpu);
+ void native_send_call_func_ipi(const struct cpumask *mask);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index f877150a91da..9547d870ee27 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1659,7 +1659,7 @@ void play_dead_common(void)
+ 	local_irq_disable();
+ }
+ 
+-bool wakeup_cpu0(void)
++static bool wakeup_cpu0(void)
+ {
+ 	if (smp_processor_id() == 0 && enable_start_cpu0)
+ 		return true;
+@@ -1667,6 +1667,13 @@ bool wakeup_cpu0(void)
+ 	return false;
+ }
+ 
++void wakeup_cpu0_if_needed(void)
++{
++	if (wakeup_cpu0())
++		start_cpu0();
++}
++EXPORT_SYMBOL_GPL(wakeup_cpu0_if_needed);
++
+ /*
+  * We need to flush the caches before going to sleep, lest we have
+  * dirty data in our caches when we come back up.
+@@ -1737,8 +1744,7 @@ static inline void mwait_play_dead(void)
+ 		/*
+ 		 * If NMI wants to wake up CPU0, start CPU0.
+ 		 */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++		wakeup_cpu0_if_needed();
+ 	}
+ }
+ 
+@@ -1752,8 +1758,7 @@ void hlt_play_dead(void)
+ 		/*
+ 		 * If NMI wants to wake up CPU0, start CPU0.
+ 		 */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++		wakeup_cpu0_if_needed();
+ 	}
+ }
+ 
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index 768a6b4d2368..de15116b754a 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -545,8 +545,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+ 
+ #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+ 		/* If NMI wants to wake up CPU0, start CPU0. */
+-		if (wakeup_cpu0())
+-			start_cpu0();
++		wakeup_cpu0_if_needed();
+ #endif
+ 	}
+ 
 -- 
-Oscar Salvador
-SUSE L3
+2.30.2
+
