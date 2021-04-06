@@ -2,209 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A6535586B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73549355864
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345969AbhDFPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:47:03 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40912 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345945AbhDFPq6 (ORCPT
+        id S1345943AbhDFPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345793AbhDFPqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:46:58 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136Fi8Zx096862;
-        Tue, 6 Apr 2021 15:46:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=g7Wu9P7fbtti3x7xmbrh0KM/fyDLHOndw5tGTcJzysU=;
- b=D5mlgBVehadBeJa47C9BG2otCMj3ScXIKpwtoG6IPKMhtT53TcvJ0V8wQxDt+BZt/w1G
- 4Y+2Hyn1lpCZ4UQ7Ccm6JNkDqxHy1HWT5g9H8PZWWdPaDSoBc8qnuOaqaSrr43kC3Apc
- V0MuIJT0o3QV+E0cWwmdA4jBG6XR7XfqU5ic3jGqy6wv7zNsCR0/3Q1UA7JroHfD4vD4
- 9b//k0MLFlrzZqNjMqxuiSEsHJpauVmbacblIck37Ce5QQR5pJFlwxNPW6JwgFj1wyrN
- 9jbb8cI8etZ1R0wshy+ujoaMD6h4ALU2m+rHp/3VbxO+zwl1iTElJXjz3eV5Yhg7yq3Q bg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37q3bwp0r7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Apr 2021 15:46:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136Fj10L115978;
-        Tue, 6 Apr 2021 15:46:38 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by userp3020.oracle.com with ESMTP id 37q2puerug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Apr 2021 15:46:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zb3RWDrzANfrOoFqEQX9bxIcOW5SMfokOO2A+puZBr9BJb/J34Vd/0hkaQ0/Z6B8KupCHarBLR9QaAa3+b8WNaSftGlvB2yGqv4JMZf21JnpawqXCUaVf09HGcnjqgjP57lIDt8FQCTuyYqQ2EjzyY7THm/a7LArHQQ819Jb4wNvsylKjK2Wx5k8v2j/WvVVo79UOq7BUKdDCSSbQxxmtjoIM0CLDZNna1BcZVDB1SKUFIRSBpia5O9qmTMCWTG+W3oLgepdg2f6rI9dNfZ0kyEnc24m/W4tE8oN/YeEm6AqXO+oVmedOdMCP/rUMOKc5MyZ/i/wlBztXVwjS+0mTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g7Wu9P7fbtti3x7xmbrh0KM/fyDLHOndw5tGTcJzysU=;
- b=HZN9mZr3c15c2t40iNk38itpXWawFk7Wq7c4qRKbiR1uMulDOq9Tl08VWCkI2MtxGlS8edYApXqnzd6G/XJRxWOrUZmfpEzq6Ra+G34VgtCx3DgxHTatsQPITZvw9/AwSImDF659skf1XjvkflBIJy8BMhVpk/2YHiX+QtBLg2IbZSnmezd27lM78V81DiwXYGvD4tAoWsb7b2kxLn7fcaji8TFGiRrsICbCNaGuNrZ2dZjaRZbM7l8kNhphxCDKI0xnCE+izUzDtovKAOKSs3LswwaagUYn+hm7LzUotBLH8DPRovpwiAs+z4BXPF17isZ6pdLnGEjjrWdia/XpYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 6 Apr 2021 11:46:49 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69F4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:46:40 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id w3so22716965ejc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g7Wu9P7fbtti3x7xmbrh0KM/fyDLHOndw5tGTcJzysU=;
- b=gQzcDC6RFpjsbu2raMYgnQLYX6JeaXMwJhrhmiSNqC1FdMluGAqYfwys4VZFzlDg0UYP2qTjmThIbuU/FAnzYPOMHjILHFVZovSGdv3IK3MDnihUerWVu4PmGQlx60af1//RhBjO7WMm1aFRlNU90gW4VPwEDOdplObyiA4T9p8=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BYAPR10MB3110.namprd10.prod.outlook.com (2603:10b6:a03:152::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Tue, 6 Apr
- 2021 15:46:34 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9%4]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 15:46:34 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Huang Guobin <huangguobin4@huawei.com>,
-        Bruce Fields <bfields@fieldses.org>
-CC:     Jeff Layton <jlayton@poochiereds.net>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] NFSD: Use DEFINE_SPINLOCK() for spinlock
-Thread-Topic: [PATCH -next] NFSD: Use DEFINE_SPINLOCK() for spinlock
-Thread-Index: AQHXKt2V1gcSxm7bVkeOdiAjqSPoqaqnok6A
-Date:   Tue, 6 Apr 2021 15:46:34 +0000
-Message-ID: <5B67E76D-139B-4004-9DE0-A626026CAEB1@oracle.com>
-References: <1617710898-49064-1-git-send-email-huangguobin4@huawei.com>
-In-Reply-To: <1617710898-49064-1-git-send-email-huangguobin4@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b431d071-3a77-4669-87db-08d8f9132815
-x-ms-traffictypediagnostic: BYAPR10MB3110:
-x-microsoft-antispam-prvs: <BYAPR10MB311096287F00DC631209B7D593769@BYAPR10MB3110.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MAaj5XX3vgxDpq7WmJpJVJTa4j6Uc2rdmG3YeM03Zn26yd/ZBQQ82P+TVXWg9/u54PB6b31zDc5XIyt4zZ1EHyeSVGQPiOl5EQ9jy4cdL4oJuT7JiKpriVMLWGtIdzryeSuO+ud+a2sp+H82eocUNu4Afc9gZgmQTKZ5YQD1SjNhvr3UAU4ms8qb73dAlhNDKcIa4VttJb5PAcgPHApPGdIhgRXgXJBUjTnt8LqnGgY51Vr7mTkwKm6jaE2FQXrfGY3QuNJ88q1ngVnKqqrWvOp34XNa2qqvDHs1qR7AJBpvRt7Y8ez8GWyqxNmvXydtrgy9DTCOIIfU2o4TeEGReqScgabCpJ5aSxd1R1dnPtyRjgBNk/QgYE6xzG8shR9ehxTfXWVYX8+2Il77L9jIvIpCuptr23YrUVAFjaS8gMUBq109qYFoQy0NUHyhoHYTqkH4m1BmjiGx+42A9FwwK7eH2QZd6BArvTtweyFcUF93474LffC4kGvxlet6oc7w7pdXW7/+VkwNIChE5I+DR7nuycBV223dHchDGYHv/Y6CbwaFPlfg6r0XtU/fmkXud0+8wf/BX+8PaYcN/4zZTefkHn0IeCcHYnwkghQo5voXJLKael1j69A4/bO3ee5CTK9Vak0GxaZ1kLfN1oagMdfKBpOnRMV2P14j4QgJJGivau4wfXkXEUzC6rXtjIvQk3V9MBJELp5IGtK1mi9fIyFs+bGg3S0BT80infjdGUcC91gMaKfzj+l8DW60DAoQTgDXnak/fJHKMNM0L838EA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(2616005)(38100700001)(26005)(186003)(71200400001)(54906003)(110136005)(316002)(5660300002)(6512007)(4326008)(53546011)(6506007)(66476007)(8676002)(66446008)(64756008)(66556008)(478600001)(6486002)(966005)(66946007)(2906002)(8936002)(76116006)(91956017)(83380400001)(36756003)(86362001)(33656002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pXJdMzzmd90iFBHbswKjJJcz4IYeq+arA/+PEqBoR/UUIwDoVDXadoWeeNT2?=
- =?us-ascii?Q?bw/BYqkbvFNGHFTdNZ246bVJngI7vbkay9g5kcREsb0qEbytSVREGswDlVhd?=
- =?us-ascii?Q?CovHXnSlyk6Il+6u201xkT9nVxkuHqmOQT61mTHMcECTEpK7kxH23Ra6zXWj?=
- =?us-ascii?Q?g2i/PH+musaE4cCWkNBR76wTmUKLdVgcj7glsfa9kWvYTL3NO5ypAaI2pFXN?=
- =?us-ascii?Q?kIuHYsyq7JH7SIcSClxBrFYYawYpDYgg8uRgeZsEXlqOnVluV9kZCjVR22nD?=
- =?us-ascii?Q?goy/fbGbBN4Z5t8fmUi4vA4GVh9zt812/iieZ0vNGM/mBfTGeDR0+NHZbS+0?=
- =?us-ascii?Q?tVa/af4sjYcmXKI3Clobb/geVoxHVB9Y+5zCXNDr40jT+DGeu2rq+p8Z4pfm?=
- =?us-ascii?Q?RQ/+sPDaK+7Otz2f920+2k8FYNObl04J6hvfhDTtJhm/SYZP41Rzx93Iabl4?=
- =?us-ascii?Q?opDloSIslzGfzpSLuA9jvInnwo0lTllIIHCeBHXUAa7q/8Rwhg2N5Tvda7ft?=
- =?us-ascii?Q?QxvSNTN7/Pbpwc18ucwwWRE3C8sPCHpXqyt+pFlJCLx9st2+s4BRb/1NyFmI?=
- =?us-ascii?Q?DTpcHewcBrdzVIA/7xeQ4YQeASfxa8qdq8dyn74/3JKnIl2NOnyVdpoKRCGm?=
- =?us-ascii?Q?xQqvYNUEg43ZjjkIYI02j2Kmz6rtW66HxBMey0z0BGp9DkgEMCC2VtB3VR2C?=
- =?us-ascii?Q?YqXr+ev7IIEvsFto5rGWHf6OSjr3Kapvdee77+xsd3sKIe9khvFndwc1+UoU?=
- =?us-ascii?Q?SO8T7epzirNNf5IbalH8vEEUgVxSGTTcAvzlniOMzD1MXxoudJmljJeRaKh3?=
- =?us-ascii?Q?heIuDSM5PJr+HjrxryQueoy4N55B/CE1qhR9mgHPdBpaOxAWWs8XdxiYRPpv?=
- =?us-ascii?Q?WvZLTvVD0LMLlLlj1s20YJ2yq5EPI++0dcE3+4n8DffvLUF+rGC1PDm/wPRK?=
- =?us-ascii?Q?5Yz0ZIbth5/XVPFjcs7HozE8EZM1h4h/hBp75Uh3HhfdYdDw9KBSrXbnsGB3?=
- =?us-ascii?Q?IVwsMyG29IhArXGuZg3ex9z28C6rT9afadacvnrditeNODsaUvbV2k1OZ7WT?=
- =?us-ascii?Q?+5ZGT6yKZG6Hql+u5TqLN0pg5JmHqR4yzVMykwBN9xvph+b6px/P5vRaL19i?=
- =?us-ascii?Q?RfaX1FpoCObaS480VAr9lEI27/U7HjOypiqWkFtkGDKxVc8LR42DZkp/gwOS?=
- =?us-ascii?Q?W+nnsV2mTYGKXB5uVCAMtmrS+8LsEHTQYYtPObnrINtszxLVGNqTYeCswqzx?=
- =?us-ascii?Q?mD+/TnPU8uTFyf05avhr1Nb1hZe350bTkTKBtqHxR8IQkNoOkCPnxsXdwwZB?=
- =?us-ascii?Q?pEItYA6SmK+GctEddRHmeb5K?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B25E53FF39A6C743AFBFDD24D508F9A5@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8HFwoHuoglm1mtfe2pgkTFjqm3d2nSn+JHu5o0wr3aM=;
+        b=E4kqJ89Qp0CSQr3cZdQE61CCSXyCGyqq7hoiqaGR27fOT8VodnMEX4IizjGnosGd/K
+         2MiGV+DT73yEbq9iQ0g04l1HVgbXsTwBhNJLGb9aiDfu4GyEXfTelwb2WGbiw/VpR/C5
+         01yW0mWDO7QSn45CZyv44f8Hd2igeVkcCf5ROmaffs9EkiLqnGrn1CzuggmOmggdv47/
+         ZvJiLMzwr6R/qMfFwYMZWVzQyFIoUxvf0zfiivEObTHWV6HflakZOjA3xsDK7hfzmSVP
+         DgL3R4NNfBohSrspYXbv7SNdKoz01PExJdWb2LTqZ+EUJmVV2jA+YvhztokWZ5g9kmi4
+         YVXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8HFwoHuoglm1mtfe2pgkTFjqm3d2nSn+JHu5o0wr3aM=;
+        b=AAtmq7me+x8S0nOOC7gKSlqzNAwSzgxv5X7CSkPHJ1QvQ9uR8To6lVfdMUwSpaGGpM
+         iS09jPfhp0pbNsS0YnD6QYWYI9dm6FrP65To8kHOzv6ZCHLK0xZylTZm6+4DbVbMwWjX
+         ERaJ56pCH9alq6ZA+qLaf5ipLQ/piq5khjWqbT+jXegZrf4RFi161MHuCGOCglOY2mNv
+         yUll2ROo186E1xNlYdiqToeL2u8igzjeBsqajjgKYSprPrfPLgyUFFx7K1p8c1e4tmbb
+         MY+7MvsZaS0X9kaxhS76xTbpplV/juaTSuM2jteIu6T2OG609AmNwBPjwRDnLgCXXfRQ
+         GiZg==
+X-Gm-Message-State: AOAM531is91rvXn2i0orjwB+k6KIFcatTSnPh24hGnI3QfMAZ0Vl3FQw
+        qn5zVcFKHHt0l44mt6Z4lkDR3EAQi49N1e4w
+X-Google-Smtp-Source: ABdhPJxUXYekr4PLYz9TtBuCmjYrYQX7iGLC+KMdtwdI1x7uNzMpyHaIyMxLRUX/ztuPpI1RbxTrJA==
+X-Received: by 2002:a17:907:6004:: with SMTP id fs4mr1813929ejc.479.1617723999565;
+        Tue, 06 Apr 2021 08:46:39 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id j1sm11183506ejt.18.2021.04.06.08.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 08:46:39 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: hal: Add spaces around operators
+Date:   Tue,  6 Apr 2021 17:46:35 +0200
+Message-Id: <20210406154635.23191-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b431d071-3a77-4669-87db-08d8f9132815
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 15:46:34.3795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PktjRrHgL5psQpOdHR3j9wZH8v2ckRtOIUg31dcXaMG3eWzwC8D2QnriNaulIIPXCLG7OdaktOrLgLSaZD4qiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3110
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060106
-X-Proofpoint-GUID: udJO1lYRfYBP1ugVWXpHWbnEJkxM8ABw
-X-Proofpoint-ORIG-GUID: udJO1lYRfYBP1ugVWXpHWbnEJkxM8ABw
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 mlxscore=0
- priorityscore=1501 clxscore=1011 impostorscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104060106
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Added spaces around operators in file HalBtc8723b1Ant.c. Issue detected
+by checkpatch.pl. Spaces are preferred to improve readibility.
 
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-> On Apr 6, 2021, at 8:08 AM, Huang Guobin <huangguobin4@huawei.com> wrote:
->=20
-> From: Guobin Huang <huangguobin4@huawei.com>
->=20
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
+Patch v2 adds spaces around an operator at line 1355. Overlooked in v1. 
 
-This same patch was sent last July, without the Reported-by:
+ .../staging/rtl8723bs/hal/HalBtc8723b1Ant.c   | 98 +++++++++----------
+ 1 file changed, 49 insertions(+), 49 deletions(-)
 
-https://lore.kernel.org/linux-nfs/1617710898-49064-1-git-send-email-huanggu=
-obin4@huawei.com/T/#u
-
-If I'm reading the code correctly, it appears that set_max_drc()
-can be called more than once by user space API functions via
-nfsd_create_serv().
-
-It seems to me we want to guarantee that nfsd_drc_lock is
-initialized exactly once, and using DEFINE_SPINLOCK() would
-do just that.
-
-Likewise, re-initializing nfsd_drc_mem_used is probably not good
-to do either, but clobbering a spinlock like that might lead to
-a crash.
-
-Bruce, any further thoughts?
-
-
-> ---
-> fs/nfsd/nfssvc.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> index b2eef4112bc2..82ba034fa579 100644
-> --- a/fs/nfsd/nfssvc.c
-> +++ b/fs/nfsd/nfssvc.c
-> @@ -84,7 +84,7 @@ DEFINE_MUTEX(nfsd_mutex);
->  * version 4.1 DRC caches.
->  * nfsd_drc_pages_used tracks the current version 4.1 DRC memory usage.
->  */
-> -spinlock_t	nfsd_drc_lock;
-> +DEFINE_SPINLOCK(nfsd_drc_lock);
-> unsigned long	nfsd_drc_max_mem;
-> unsigned long	nfsd_drc_mem_used;
->=20
-> @@ -563,7 +563,6 @@ static void set_max_drc(void)
-> 	nfsd_drc_max_mem =3D (nr_free_buffer_pages()
-> 					>> NFSD_DRC_SIZE_SHIFT) * PAGE_SIZE;
-> 	nfsd_drc_mem_used =3D 0;
-> -	spin_lock_init(&nfsd_drc_lock);
-> 	dprintk("%s nfsd_drc_max_mem %lu \n", __func__, nfsd_drc_max_mem);
-> }
->=20
->=20
-
---
-Chuck Lever
-
-
+diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
+index 3e794093092b..503790924532 100644
+--- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
++++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
+@@ -38,7 +38,7 @@ static u8 halbtc8723b1ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (btRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
++			if (btRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
+ 
+ 				btRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(
+@@ -85,7 +85,7 @@ static u8 halbtc8723b1ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_LOW) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_LOW)
+ 		) {
+-			if (btRssi >= (rssiThresh+BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
++			if (btRssi >= (rssiThresh + BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
+ 				btRssiState = BTC_RSSI_STATE_MEDIUM;
+ 				BTC_PRINT(
+ 					BTC_MSG_ALGORITHM,
+@@ -104,7 +104,7 @@ static u8 halbtc8723b1ant_BtRssiState(
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_MEDIUM) ||
+ 			(pCoexSta->preBtRssiState == BTC_RSSI_STATE_STAY_MEDIUM)
+ 		) {
+-			if (btRssi >= (rssiThresh1+BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
++			if (btRssi >= (rssiThresh1 + BTC_RSSI_COEX_THRESH_TOL_8723B_1ANT)) {
+ 				btRssiState = BTC_RSSI_STATE_HIGH;
+ 				BTC_PRINT(
+ 					BTC_MSG_ALGORITHM,
+@@ -353,11 +353,11 @@ static void halbtc8723b1ant_MonitorBtCtr(struct btc_coexist *pBtCoexist)
+ 
+ 	u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, regHPTxRx);
+ 	regHPTx = u4Tmp & bMaskLWord;
+-	regHPRx = (u4Tmp & bMaskHWord)>>16;
++	regHPRx = (u4Tmp & bMaskHWord) >> 16;
+ 
+ 	u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, regLPTxRx);
+ 	regLPTx = u4Tmp & bMaskLWord;
+-	regLPRx = (u4Tmp & bMaskHWord)>>16;
++	regLPRx = (u4Tmp & bMaskHWord) >> 16;
+ 
+ 	pCoexSta->highPriorityTx = regHPTx;
+ 	pCoexSta->highPriorityRx = regHPRx;
+@@ -1317,7 +1317,7 @@ static void halbtc8723b1ant_SetFwPstdma(
+ 	pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_BL_WIFI_AP_MODE_ENABLE, &bApEnable);
+ 
+ 	if (bApEnable) {
+-		if (byte1&BIT4 && !(byte1&BIT5)) {
++		if (byte1 & BIT4 && !(byte1 & BIT5)) {
+ 			BTC_PRINT(
+ 				BTC_MSG_INTERFACE,
+ 				INTF_NOTIFY,
+@@ -1349,9 +1349,9 @@ static void halbtc8723b1ant_SetFwPstdma(
+ 		(
+ 			"[BTCoex], PS-TDMA H2C cmd = 0x%x%08x\n",
+ 			H2C_Parameter[0],
+-			H2C_Parameter[1]<<24|
+-			H2C_Parameter[2]<<16|
+-			H2C_Parameter[3]<<8|
++			H2C_Parameter[1] << 24 |
++			H2C_Parameter[2] << 16 |
++			H2C_Parameter[3] << 8 |
+ 			H2C_Parameter[4]
+ 		)
+ 	);
+@@ -1435,7 +1435,7 @@ static void halbtc8723b1ant_PsTdma(
+ 			halbtc8723b1ant_SetFwPstdma(
+ 				pBtCoexist,
+ 				psTdmaByte0Val,
+-				0x3a+nWiFiDurationAdjust,
++				0x3a + nWiFiDurationAdjust,
+ 				0x03,
+ 				psTdmaByte3Val,
+ 				psTdmaByte4Val
+@@ -1445,7 +1445,7 @@ static void halbtc8723b1ant_PsTdma(
+ 			halbtc8723b1ant_SetFwPstdma(
+ 				pBtCoexist,
+ 				psTdmaByte0Val,
+-				0x2d+nWiFiDurationAdjust,
++				0x2d + nWiFiDurationAdjust,
+ 				0x03,
+ 				psTdmaByte3Val,
+ 				psTdmaByte4Val
+@@ -1855,7 +1855,7 @@ static void halbtc8723b1ant_TdmaDurationAdjustForAcl(
+ 				if (m >= 20) /* m 最大值 = 20 ' 最大120秒 recheck是否調整 WiFi duration. */
+ 					m = 20;
+ 
+-				n = 3*m;
++				n = 3 * m;
+ 				up = 0;
+ 				dn = 0;
+ 				WaitCount = 0;
+@@ -1871,7 +1871,7 @@ static void halbtc8723b1ant_TdmaDurationAdjustForAcl(
+ 			if (m >= 20) /* m 最大值 = 20 ' 最大120秒 recheck是否調整 WiFi duration. */
+ 				m = 20;
+ 
+-			n = 3*m;
++			n = 3 * m;
+ 			up = 0;
+ 			dn = 0;
+ 			WaitCount = 0;
+@@ -2495,9 +2495,9 @@ static void halbtc8723b1ant_RunCoexistMechanism(struct btc_coexist *pBtCoexist)
+ 		BTC_GET_U4_WIFI_LINK_STATUS,
+ 		&wifiLinkStatus
+ 	);
+-	numOfWifiLink = wifiLinkStatus>>16;
++	numOfWifiLink = wifiLinkStatus >> 16;
+ 
+-	if ((numOfWifiLink >= 2) || (wifiLinkStatus&WIFI_P2P_GO_CONNECTED)) {
++	if ((numOfWifiLink >= 2) || (wifiLinkStatus & WIFI_P2P_GO_CONNECTED)) {
+ 		BTC_PRINT(
+ 			BTC_MSG_INTERFACE,
+ 			INTF_NOTIFY,
+@@ -2656,7 +2656,7 @@ void EXhalbtc8723b1ant_PowerOnSetting(struct btc_coexist *pBtCoexist)
+ 
+ 	/*  enable BB, REG_SYS_FUNC_EN such that we can write 0x948 correctly. */
+ 	u2Tmp = pBtCoexist->fBtcRead2Byte(pBtCoexist, 0x2);
+-	pBtCoexist->fBtcWrite2Byte(pBtCoexist, 0x2, u2Tmp|BIT0|BIT1);
++	pBtCoexist->fBtcWrite2Byte(pBtCoexist, 0x2, u2Tmp | BIT0 | BIT1);
+ 
+ 	/*  set GRAN_BT = 1 */
+ 	pBtCoexist->fBtcWrite1Byte(pBtCoexist, 0x765, 0x18);
+@@ -2837,7 +2837,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = %d/ %d", "Wifi rssi/ HS rssi", \
+-		wifiRssi-100, btHsRssi-100
++		wifiRssi - 100, btHsRssi - 100
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -2881,11 +2881,11 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = %d/ %d/ %d/ %d/ %d", "sta/vwifi/hs/p2pGo/p2pGc", \
+-		((wifiLinkStatus&WIFI_STA_CONNECTED) ? 1 : 0),
+-		((wifiLinkStatus&WIFI_AP_CONNECTED) ? 1 : 0),
+-		((wifiLinkStatus&WIFI_HS_CONNECTED) ? 1 : 0),
+-		((wifiLinkStatus&WIFI_P2P_GO_CONNECTED) ? 1 : 0),
+-		((wifiLinkStatus&WIFI_P2P_GC_CONNECTED) ? 1 : 0)
++		((wifiLinkStatus & WIFI_STA_CONNECTED) ? 1 : 0),
++		((wifiLinkStatus & WIFI_AP_CONNECTED) ? 1 : 0),
++		((wifiLinkStatus & WIFI_HS_CONNECTED) ? 1 : 0),
++		((wifiLinkStatus & WIFI_P2P_GO_CONNECTED) ? 1 : 0),
++		((wifiLinkStatus & WIFI_P2P_GC_CONNECTED) ? 1 : 0)
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -2932,7 +2932,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = %s", "BT Info A2DP rate", \
+-		(btInfoExt&BIT0) ? "Basic rate" : "EDR rate"
++		(btInfoExt & BIT0) ? "Basic rate" : "EDR rate"
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3044,7 +3044,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 	CL_SPRINTF(
+ 		cliBuf, BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "0x778/0x6cc/0x880[29:25]", \
+-		u1Tmp[0], u4Tmp[0],  (u4Tmp[1]&0x3e000000) >> 25
++		u1Tmp[0], u4Tmp[0],  (u4Tmp[1] & 0x3e000000) >> 25
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3056,7 +3056,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x/ 0x%x", "0x948/ 0x67[5] / 0x764 / 0x76e", \
+-		u4Tmp[0], ((u1Tmp[0]&0x20) >> 5), (u4Tmp[1] & 0xffff), u1Tmp[1]
++		u4Tmp[0], ((u1Tmp[0] & 0x20) >> 5), (u4Tmp[1] & 0xffff), u1Tmp[1]
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3067,7 +3067,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "0x92c[1:0]/ 0x930[7:0]/0x944[1:0]", \
+-		u4Tmp[0]&0x3, u4Tmp[1]&0xff, u4Tmp[2]&0x3
++		u4Tmp[0] & 0x3, u4Tmp[1] & 0xff, u4Tmp[2] & 0x3
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3079,10 +3079,10 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x/ 0x%x", "0x38[11]/0x40/0x4c[24:23]/0x64[0]", \
+-		((u1Tmp[0] & 0x8)>>3),
++		((u1Tmp[0] & 0x8) >> 3),
+ 		u1Tmp[1],
+-		((u4Tmp[0]&0x01800000)>>23),
+-		u1Tmp[2]&0x1
++		((u4Tmp[0] & 0x01800000) >> 23),
++		u1Tmp[2] & 0x1
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3102,7 +3102,7 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x", "0xc50(dig)/0x49c(null-drop)", \
+-		u4Tmp[0]&0xff, u1Tmp[0]
++		u4Tmp[0] & 0xff, u1Tmp[0]
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3115,17 +3115,17 @@ void EXhalbtc8723b1ant_DisplayCoexInfo(struct btc_coexist *pBtCoexist)
+ 	u1Tmp[1] = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0xa5c);
+ 
+ 	faOfdm =
+-		((u4Tmp[0]&0xffff0000) >> 16) +
+-		((u4Tmp[1]&0xffff0000) >> 16) +
++		((u4Tmp[0] & 0xffff0000) >> 16) +
++		((u4Tmp[1] & 0xffff0000) >> 16) +
+ 		(u4Tmp[1] & 0xffff) +  (u4Tmp[2] & 0xffff) + \
+-		((u4Tmp[3]&0xffff0000) >> 16) + (u4Tmp[3] & 0xffff);
++		((u4Tmp[3] & 0xffff0000) >> 16) + (u4Tmp[3] & 0xffff);
+ 	faCck = (u1Tmp[0] << 8) + u1Tmp[1];
+ 
+ 	CL_SPRINTF(
+ 		cliBuf,
+ 		BT_TMP_BUF_SIZE,
+ 		"\r\n %-35s = 0x%x/ 0x%x/ 0x%x", "OFDM-CCA/OFDM-FA/CCK-FA", \
+-		u4Tmp[0]&0xffff, faOfdm, faCck
++		u4Tmp[0] & 0xffff, faOfdm, faCck
+ 	);
+ 	CL_PRINTF(cliBuf);
+ 
+@@ -3281,7 +3281,7 @@ void EXhalbtc8723b1ant_ScanNotify(struct btc_coexist *pBtCoexist, u8 type)
+ 	halbtc8723b1ant_QueryBtInfo(pBtCoexist);
+ 
+ 	pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_U4_WIFI_LINK_STATUS, &wifiLinkStatus);
+-	numOfWifiLink = wifiLinkStatus>>16;
++	numOfWifiLink = wifiLinkStatus >> 16;
+ 
+ 	if (numOfWifiLink >= 2) {
+ 		halbtc8723b1ant_LimitedTx(pBtCoexist, NORMAL_EXEC, 0, 0, 0, 0);
+@@ -3341,7 +3341,7 @@ void EXhalbtc8723b1ant_ConnectNotify(struct btc_coexist *pBtCoexist, u8 type)
+ 	}
+ 
+ 	pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_U4_WIFI_LINK_STATUS, &wifiLinkStatus);
+-	numOfWifiLink = wifiLinkStatus>>16;
++	numOfWifiLink = wifiLinkStatus >> 16;
+ 	if (numOfWifiLink >= 2) {
+ 		halbtc8723b1ant_LimitedTx(pBtCoexist, NORMAL_EXEC, 0, 0, 0, 0);
+ 		halbtc8723b1ant_LimitedRx(pBtCoexist, NORMAL_EXEC, false, bBtCtrlAggBufSize, aggBufSize);
+@@ -3435,7 +3435,7 @@ void EXhalbtc8723b1ant_MediaStatusNotify(struct btc_coexist *pBtCoexist, u8 type
+ 		ALGO_TRACE_FW_EXEC,
+ 		(
+ 			"[BTCoex], FW write 0x66 = 0x%x\n",
+-			H2C_Parameter[0]<<16 | H2C_Parameter[1]<<8 | H2C_Parameter[2]
++			H2C_Parameter[0] << 16 | H2C_Parameter[1] << 8 | H2C_Parameter[2]
+ 		)
+ 	);
+ 
+@@ -3502,7 +3502,7 @@ void EXhalbtc8723b1ant_SpecialPacketNotify(struct btc_coexist *pBtCoexist, u8 ty
+ 	pBtCoexist->fBtcGet(
+ 		pBtCoexist, BTC_GET_U4_WIFI_LINK_STATUS, &wifiLinkStatus
+ 	);
+-	numOfWifiLink = wifiLinkStatus>>16;
++	numOfWifiLink = wifiLinkStatus >> 16;
+ 
+ 	if (numOfWifiLink >= 2) {
+ 		halbtc8723b1ant_LimitedTx(pBtCoexist, NORMAL_EXEC, 0, 0, 0, 0);
+@@ -3541,7 +3541,7 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 
+ 	pCoexSta->bC2hBtInfoReqSent = false;
+ 
+-	rspSource = tmpBuf[0]&0xf;
++	rspSource = tmpBuf[0] & 0xf;
+ 	if (rspSource >= BT_INFO_SRC_8723B_1ANT_MAX)
+ 		rspSource = BT_INFO_SRC_8723B_1ANT_WIFI_FW;
+ 	pCoexSta->btInfoC2hCnt[rspSource]++;
+@@ -3557,7 +3557,7 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 		pCoexSta->btInfoC2h[rspSource][i] = tmpBuf[i];
+ 		if (i == 1)
+ 			btInfo = tmpBuf[i];
+-		if (i == length-1)
++		if (i == length - 1)
+ 			BTC_PRINT(
+ 				BTC_MSG_INTERFACE, INTF_NOTIFY, ("0x%02x]\n", tmpBuf[i])
+ 			);
+@@ -3566,22 +3566,22 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 	}
+ 
+ 	if (BT_INFO_SRC_8723B_1ANT_WIFI_FW != rspSource) {
+-		pCoexSta->btRetryCnt = pCoexSta->btInfoC2h[rspSource][2]&0xf;
++		pCoexSta->btRetryCnt = pCoexSta->btInfoC2h[rspSource][2] & 0xf;
+ 
+ 		if (pCoexSta->btRetryCnt >= 1)
+ 			pCoexSta->popEventCnt++;
+ 
+-		if (pCoexSta->btInfoC2h[rspSource][2]&0x20)
++		if (pCoexSta->btInfoC2h[rspSource][2] & 0x20)
+ 			pCoexSta->bC2hBtPage = true;
+ 		else
+ 			pCoexSta->bC2hBtPage = false;
+ 
+-		pCoexSta->btRssi = pCoexSta->btInfoC2h[rspSource][3]*2-90;
++		pCoexSta->btRssi = pCoexSta->btInfoC2h[rspSource][3] * 2 - 90;
+ 		/* pCoexSta->btInfoC2h[rspSource][3]*2+10; */
+ 
+ 		pCoexSta->btInfoExt = pCoexSta->btInfoC2h[rspSource][4];
+ 
+-		pCoexSta->bBtTxRxMask = (pCoexSta->btInfoC2h[rspSource][2]&0x40);
++		pCoexSta->bBtTxRxMask = (pCoexSta->btInfoC2h[rspSource][2] & 0x40);
+ 		pBtCoexist->fBtcSet(pBtCoexist, BTC_SET_BL_BT_TX_RX_MASK, &pCoexSta->bBtTxRxMask);
+ 
+ 		if (!pCoexSta->bBtTxRxMask) {
+@@ -3626,7 +3626,7 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 		pCoexSta->bC2hBtInquiryPage = false;
+ 
+ 	/*  set link exist status */
+-	if (!(btInfo&BT_INFO_8723B_1ANT_B_CONNECTION)) {
++	if (!(btInfo & BT_INFO_8723B_1ANT_B_CONNECTION)) {
+ 		pCoexSta->bBtLinkExist = false;
+ 		pCoexSta->bPanExist = false;
+ 		pCoexSta->bA2dpExist = false;
+@@ -3659,7 +3659,7 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 
+ 	btInfo = btInfo & 0x1f;  /* mask profile bit for connect-ilde identification (for CSR case: A2DP idle --> 0x41) */
+ 
+-	if (!(btInfo&BT_INFO_8723B_1ANT_B_CONNECTION)) {
++	if (!(btInfo & BT_INFO_8723B_1ANT_B_CONNECTION)) {
+ 		pCoexDm->btStatus = BT_8723B_1ANT_BT_STATUS_NON_CONNECTED_IDLE;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT Non-Connected idle!!!\n"));
+ 	} else if (btInfo == BT_INFO_8723B_1ANT_B_CONNECTION)	{
+@@ -3667,12 +3667,12 @@ void EXhalbtc8723b1ant_BtInfoNotify(
+ 		pCoexDm->btStatus = BT_8723B_1ANT_BT_STATUS_CONNECTED_IDLE;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT Connected-idle!!!\n"));
+ 	} else if (
+-		(btInfo&BT_INFO_8723B_1ANT_B_SCO_ESCO) ||
+-		(btInfo&BT_INFO_8723B_1ANT_B_SCO_BUSY)
++		(btInfo & BT_INFO_8723B_1ANT_B_SCO_ESCO) ||
++		(btInfo & BT_INFO_8723B_1ANT_B_SCO_BUSY)
+ 	) {
+ 		pCoexDm->btStatus = BT_8723B_1ANT_BT_STATUS_SCO_BUSY;
+ 		BTC_PRINT(BTC_MSG_ALGORITHM, ALGO_TRACE, ("[BTCoex], BtInfoNotify(), BT SCO busy!!!\n"));
+-	} else if (btInfo&BT_INFO_8723B_1ANT_B_ACL_BUSY) {
++	} else if (btInfo & BT_INFO_8723B_1ANT_B_ACL_BUSY) {
+ 		if (BT_8723B_1ANT_BT_STATUS_ACL_BUSY != pCoexDm->btStatus)
+ 			pCoexDm->bAutoTdmaAdjust = false;
+ 
+-- 
+2.30.2
 
