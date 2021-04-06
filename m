@@ -2,228 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B44D354EEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A26354EEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 10:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhDFIrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 04:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbhDFIrI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 04:47:08 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE11C06174A;
-        Tue,  6 Apr 2021 01:47:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so9280708pjh.1;
-        Tue, 06 Apr 2021 01:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v8t9qGiqdRXR8+EmbYnvxXFK/yprtNMCSRFqWTcfMeM=;
-        b=mWi5s+7vFFZtmBOXAALwbHFSGth7cF9YjcujdRPfFFZcf9oOAAppFYAsN9DcYBoV4N
-         7qpW9hfriJqtx+9BHIIYBhV7eWCTsRog79H401UBuYv+Y+vGHWiBYPnd/B9eOqsWJhD3
-         MoLNgvZI32Ws5+ck2XWvTvB885rSYo6UDuD1L5OvIYimHkWwTtA+2BhC2dz3ZLYT5M3N
-         /DXlQ0lMs7dsnWmYMHt87piEdPiGWNdOTaeX+eabP7dj4KnT6ntbGuF46wpkXVMlH/F5
-         4ngyhweysB/S88YdxXkqTsOk+uUkNocxiIKFb1Hr9rz3zBs/BcfcY+5CDp/xdEuANQZE
-         fI6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v8t9qGiqdRXR8+EmbYnvxXFK/yprtNMCSRFqWTcfMeM=;
-        b=PSkxD8+6NUI5E7cPdkjL5wmKJCJQd+3yPaJ7mF+/neF3oyvbkpFdOTrXTQNLmo1xSo
-         clJxMrD3GfadDFcDcfGf1VZSDqLD1oN4/la6qk2jmkfs0htF86Z0XHCELyc2zympzr7s
-         D+coNokKMOt+KXHS31HTizWbkXH/iQOnrBcZiK+4CygZbSSooSv+p7YGAG+khhxCJSy7
-         5c+hGc1nGAyGgYdzRlMg5KxRwVlirUL5SnwFG34PT50frlkChoxPZWxAfvqvilNO5BR2
-         qzGzedlGAcD/tpJYeZAtJ44hmaUaubYo/DbsV9FM8dDCgde+ckkXQ3SAWCO1Cj8k0Dq/
-         LzDA==
-X-Gm-Message-State: AOAM531QWELq7xgAcbwsNR0q4P5qIvFgtkBoMdxioi8nGip3Y3Xt7ua0
-        1Twz17gmTD37xVLSddF0u9bZBKqgOLx9ldm7gYc=
-X-Google-Smtp-Source: ABdhPJyXGH7j8Ast6jAbcVyy9u4wRuey1uRMw4PxIvnqnHZ5zi3NOdL0POFI2UZVyImWJxLnBkX2SmbRjMr14kx2LLY=
-X-Received: by 2002:a17:902:e803:b029:e9:1f79:2427 with SMTP id
- u3-20020a170902e803b02900e91f792427mr6531908plg.21.1617698820687; Tue, 06 Apr
- 2021 01:47:00 -0700 (PDT)
+        id S244513AbhDFIrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 04:47:17 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18132 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232870AbhDFIrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 04:47:15 -0400
+IronPort-SDR: zxBlNSdFcyAzPCbLdkJRlFf3kIoxG6H8aPVVj+wiiQlCQ9J3U1u/8i4S4CqpUBkQu3C0LH8J6m
+ 78EJNDnP7yqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="190852447"
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="190852447"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:47:08 -0700
+IronPort-SDR: 6M4IzRU6FK0O5TF+2Mb8SDh7Q/UZhn354fl70noQzigSUhAdNoT6hXoJL47lPDRpvfhPKscYTn
+ bT3vOwKqAZDg==
+X-IronPort-AV: E=Sophos;i="5.81,308,1610438400"; 
+   d="scan'208";a="421122470"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.164]) ([10.249.228.164])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 01:47:05 -0700
+Subject: [PATCH v4 06/12] perf record: introduce data file at mmap buffer
+ object
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <f52da8db-beb8-ec63-56aa-ce6def088951@linux.intel.com>
+Date:   Tue, 6 Apr 2021 11:47:03 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210322033846.39882-1-ran.wang_1@nxp.com>
-In-Reply-To: <20210322033846.39882-1-ran.wang_1@nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 6 Apr 2021 11:46:44 +0300
-Message-ID: <CAHp75Ve6QP7tiTj7cxHiXFLMPSzkGULFe1GdYgtTbg9AhZR3qg@mail.gmail.com>
-Subject: Re: [PATCH v4] gpio: mpc8xxx: Add ACPI support
-To:     Ran Wang <ran.wang_1@nxp.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 5:31 AM Ran Wang <ran.wang_1@nxp.com> wrote:
->
-> Current implementation only supports DT, now add ACPI support.
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Introduce data file and compressor objects into mmap object so
+they could be used to process and store data stream from the
+corresponding kernel data buffer. Introduce bytes_transferred
+and bytes_compressed stats so they would capture statistics for
+the related data buffer transfers. Make use of the introduced
+per mmap file, compressor and stats when they are initialized
+and available.
 
-> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> ---
-> Change in v4:
->  - Update error print for gpiochip_add_data() to fix wrong info. in ACPI case.
->  - Update error print for devm_request_irq() to fix panic in ACPI case.
->  - Add include property.h and mod_devicetable.h.
->  - Correct error handling for mpc8xxx_gc->regs.
->  - Replace "!(IS_ERR_OR_NULL(fwnode) || is_of_node(fwnode)))" with "is_acpi_node(fwnode)"
->
-> Change in v3:
->  - Recover ls1028a and ls1088a compatilbe checking logic
->
-> Change in v2:
->  - Initialize devtype with NULL to fix compile warning.
->  - Replace of_device_get_match_data() and acpi_match_device with device_get_match_data().
->  - Replace acpi_match_device() with simpler checking logic per Andy's suggestion.
->
->  drivers/gpio/gpio-mpc8xxx.c | 47 ++++++++++++++++++++++++++-----------
->  1 file changed, 33 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-> index 6dfca83bcd90..4b9157a69fca 100644
-> --- a/drivers/gpio/gpio-mpc8xxx.c
-> +++ b/drivers/gpio/gpio-mpc8xxx.c
-> @@ -9,6 +9,7 @@
->   * kind, whether express or implied.
->   */
->
-> +#include <linux/acpi.h>
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/spinlock.h>
-> @@ -18,6 +19,8 @@
->  #include <linux/of_address.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_platform.h>
-> +#include <linux/property.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/slab.h>
->  #include <linux/irq.h>
->  #include <linux/gpio/driver.h>
-> @@ -303,8 +306,8 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->         struct device_node *np = pdev->dev.of_node;
->         struct mpc8xxx_gpio_chip *mpc8xxx_gc;
->         struct gpio_chip        *gc;
-> -       const struct mpc8xxx_gpio_devtype *devtype =
-> -               of_device_get_match_data(&pdev->dev);
-> +       const struct mpc8xxx_gpio_devtype *devtype = NULL;
-> +       struct fwnode_handle *fwnode;
->         int ret;
->
->         mpc8xxx_gc = devm_kzalloc(&pdev->dev, sizeof(*mpc8xxx_gc), GFP_KERNEL);
-> @@ -315,14 +318,14 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->
->         raw_spin_lock_init(&mpc8xxx_gc->lock);
->
-> -       mpc8xxx_gc->regs = of_iomap(np, 0);
-> -       if (!mpc8xxx_gc->regs)
-> -               return -ENOMEM;
-> +       mpc8xxx_gc->regs = devm_platform_ioremap_resource(pdev, 0);
-> +       if (IS_ERR(mpc8xxx_gc->regs))
-> +               return PTR_ERR(mpc8xxx_gc->regs);
->
->         gc = &mpc8xxx_gc->gc;
->         gc->parent = &pdev->dev;
->
-> -       if (of_property_read_bool(np, "little-endian")) {
-> +       if (device_property_read_bool(&pdev->dev, "little-endian")) {
->                 ret = bgpio_init(gc, &pdev->dev, 4,
->                                  mpc8xxx_gc->regs + GPIO_DAT,
->                                  NULL, NULL,
-> @@ -345,6 +348,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->
->         mpc8xxx_gc->direction_output = gc->direction_output;
->
-> +       devtype = device_get_match_data(&pdev->dev);
->         if (!devtype)
->                 devtype = &mpc8xxx_gpio_devtype_default;
->
-> @@ -369,24 +373,29 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->          * associated input enable must be set (GPIOxGPIE[IEn]=1) to propagate
->          * the port value to the GPIO Data Register.
->          */
-> +       fwnode = dev_fwnode(&pdev->dev);
->         if (of_device_is_compatible(np, "fsl,qoriq-gpio") ||
->             of_device_is_compatible(np, "fsl,ls1028a-gpio") ||
-> -           of_device_is_compatible(np, "fsl,ls1088a-gpio"))
-> +           of_device_is_compatible(np, "fsl,ls1088a-gpio") ||
-> +           is_acpi_node(fwnode))
->                 gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
->
->         ret = gpiochip_add_data(gc, mpc8xxx_gc);
->         if (ret) {
-> -               pr_err("%pOF: GPIO chip registration failed with status %d\n",
-> -                      np, ret);
-> +               dev_err(&pdev->dev,
-> +                       "GPIO chip registration failed with status %d\n", ret);
->                 goto err;
->         }
->
-> -       mpc8xxx_gc->irqn = irq_of_parse_and_map(np, 0);
-> +       mpc8xxx_gc->irqn = platform_get_irq(pdev, 0);
->         if (!mpc8xxx_gc->irqn)
->                 return 0;
->
-> -       mpc8xxx_gc->irq = irq_domain_add_linear(np, MPC8XXX_GPIO_PINS,
-> -                                       &mpc8xxx_gpio_irq_ops, mpc8xxx_gc);
-> +       mpc8xxx_gc->irq = irq_domain_create_linear(fwnode,
-> +                                                  MPC8XXX_GPIO_PINS,
-> +                                                  &mpc8xxx_gpio_irq_ops,
-> +                                                  mpc8xxx_gc);
-> +
->         if (!mpc8xxx_gc->irq)
->                 return 0;
->
-> @@ -399,8 +408,9 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->                                IRQF_SHARED, "gpio-cascade",
->                                mpc8xxx_gc);
->         if (ret) {
-> -               dev_err(&pdev->dev, "%s: failed to devm_request_irq(%d), ret = %d\n",
-> -                       np->full_name, mpc8xxx_gc->irqn, ret);
-> +               dev_err(&pdev->dev,
-> +                       "failed to devm_request_irq(%d), ret = %d\n",
-> +                       mpc8xxx_gc->irqn, ret);
->                 goto err;
->         }
->
-> @@ -425,12 +435,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id gpio_acpi_ids[] = {
-> +       {"NXP0031",},
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, gpio_acpi_ids);
-> +#endif
-> +
->  static struct platform_driver mpc8xxx_plat_driver = {
->         .probe          = mpc8xxx_probe,
->         .remove         = mpc8xxx_remove,
->         .driver         = {
->                 .name = "gpio-mpc8xxx",
->                 .of_match_table = mpc8xxx_gpio_ids,
-> +               .acpi_match_table = ACPI_PTR(gpio_acpi_ids),
->         },
->  };
->
-> --
-> 2.25.1
->
+Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
+ tools/perf/util/mmap.c      |  6 ++++
+ tools/perf/util/mmap.h      |  6 ++++
+ 3 files changed, 63 insertions(+), 13 deletions(-)
 
-
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 339198b2e37d..3947c60d905b 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -188,11 +188,19 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
+ {
+ 	struct perf_data_file *file = &rec->session->data->file;
+ 
++	if (map && map->file)
++		file = map->file;
++
+ 	if (perf_data_file__write(file, bf, size) < 0) {
+ 		pr_err("failed to write perf data, error: %m\n");
+ 		return -1;
+ 	}
+ 
++	if (map && map->file) {
++		map->bytes_written += size;
++		return 0;
++	}
++
+ 	rec->bytes_written += size;
+ 
+ 	if (record__output_max_size_exceeded(rec) && !done) {
+@@ -210,8 +218,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
+ 
+ static int record__aio_enabled(struct record *rec);
+ static int record__comp_enabled(struct record *rec);
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
+-			    void *src, size_t src_size);
++static size_t zstd_compress(struct zstd_data *data,
++			    void *dst, size_t dst_size, void *src, size_t src_size);
+ 
+ #ifdef HAVE_AIO_SUPPORT
+ static int record__aio_write(struct aiocb *cblock, int trace_fd,
+@@ -345,9 +353,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ 	 */
+ 
+ 	if (record__comp_enabled(aio->rec)) {
+-		size = zstd_compress(aio->rec->session, aio->data + aio->size,
+-				     mmap__mmap_len(map) - aio->size,
++		struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
++
++		aio->rec->session->bytes_transferred += size;
++		size = zstd_compress(zstd_data,
++				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
+ 				     buf, size);
++		aio->rec->session->bytes_compressed += size;
+ 	} else {
+ 		memcpy(aio->data + aio->size, buf, size);
+ 	}
+@@ -572,8 +584,22 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+ 	struct record *rec = to;
+ 
+ 	if (record__comp_enabled(rec)) {
+-		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
++		struct zstd_data *zstd_data = &rec->session->zstd_data;
++
++		if (map->file) {
++			zstd_data = &map->zstd_data;
++			map->bytes_transferred += size;
++		} else {
++			rec->session->bytes_transferred += size;
++		}
++
++		size = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
+ 		bf   = map->data;
++
++		if (map->file)
++			map->bytes_compressed += size;
++		else
++			rec->session->bytes_compressed += size;
+ 	}
+ 
+ 	thread->samples++;
+@@ -1297,18 +1323,15 @@ static size_t process_comp_header(void *record, size_t increment)
+ 	return size;
+ }
+ 
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
++static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
+ 			    void *src, size_t src_size)
+ {
+ 	size_t compressed;
+ 	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
+ 
+-	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
++	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
+ 						     max_record_size, process_comp_header);
+ 
+-	session->bytes_transferred += src_size;
+-	session->bytes_compressed  += compressed;
+-
+ 	return compressed;
+ }
+ 
+@@ -1961,8 +1984,9 @@ static int record__start_threads(struct record *rec)
+ 
+ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ {
+-	int t;
++	int t, tm;
+ 	struct thread_data *thread_data = rec->thread_data;
++	u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
+ 
+ 	for (t = 1; t < rec->nr_threads; t++)
+ 		record__terminate_thread(&thread_data[t]);
+@@ -1970,9 +1994,23 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ 	for (t = 0; t < rec->nr_threads; t++) {
+ 		rec->samples += thread_data[t].samples;
+ 		*waking += thread_data[t].waking;
+-		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
++		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
++			if (thread_data[t].maps) {
++				bytes_transferred += thread_data[t].maps[tm]->bytes_transferred;
++				bytes_compressed += thread_data[t].maps[tm]->bytes_compressed;
++				bytes_written += thread_data[t].maps[tm]->bytes_written;
++			}
++			if (thread_data[t].overwrite_maps) {
++				bytes_transferred += thread_data[t].overwrite_maps[tm]->bytes_transferred;
++				bytes_compressed += thread_data[t].overwrite_maps[tm]->bytes_compressed;
++				bytes_written += thread_data[t].overwrite_maps[tm]->bytes_written;
++			}
++		}
++		rec->session->bytes_transferred += bytes_transferred;
++		rec->session->bytes_compressed += bytes_compressed;
++		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld, written=%ld\n",
+ 			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
+-			 rec->session->bytes_transferred, rec->session->bytes_compressed);
++			 bytes_transferred, bytes_compressed, bytes_written);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
+index ab7108d22428..a2c5e4237592 100644
+--- a/tools/perf/util/mmap.c
++++ b/tools/perf/util/mmap.c
+@@ -230,6 +230,8 @@ void mmap__munmap(struct mmap *map)
+ {
+ 	bitmap_free(map->affinity_mask.bits);
+ 
++	zstd_fini(&map->zstd_data);
++
+ 	perf_mmap__aio_munmap(map);
+ 	if (map->data != NULL) {
+ 		munmap(map->data, mmap__mmap_len(map));
+@@ -291,6 +293,10 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
+ 	map->core.flush = mp->flush;
+ 
+ 	map->comp_level = mp->comp_level;
++	if (zstd_init(&map->zstd_data, map->comp_level)) {
++		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
++		return -1;
++	}
+ 
+ 	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
+ 		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
+diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
+index 9d5f589f02ae..c04ca4b5adf5 100644
+--- a/tools/perf/util/mmap.h
++++ b/tools/perf/util/mmap.h
+@@ -13,6 +13,7 @@
+ #endif
+ #include "auxtrace.h"
+ #include "event.h"
++#include "util/compress.h"
+ 
+ struct aiocb;
+ 
+@@ -43,6 +44,11 @@ struct mmap {
+ 	struct mmap_cpu_mask	affinity_mask;
+ 	void		*data;
+ 	int		comp_level;
++	struct perf_data_file *file;
++	struct zstd_data      zstd_data;
++	u64		      bytes_transferred;
++	u64		      bytes_compressed;
++	u64		      bytes_written;
+ };
+ 
+ struct mmap_params {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.19.0
+
+
