@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83BE355DAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2703355DB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhDFVLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhDFVLi (ORCPT
+        id S232861AbhDFVNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 17:13:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238577AbhDFVNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:11:38 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F6AC06174A;
-        Tue,  6 Apr 2021 14:11:30 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id h7so12275285qtx.3;
-        Tue, 06 Apr 2021 14:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5oMy+AxrchMa7qNBGPpnhH2Zlo695zWTE08uCBLDOgg=;
-        b=U7AOIAmeZPyMFndmbgGGctXp4tWrR8AQhS7TppV+/uYwTJP5cFEbyNQfCMAR4oEog4
-         t8Xz0bOszImDDSa3CHGL5amtMUzI7G7cqW7vikEeqi7txTiBytmLYcv3pXlJKaO0GEWL
-         jUybfMPQkGF1PC7pQ+MFQtD3U6CwBNabjzP7Yz6wlMyeuBHc+8QCVNM1m1Nadr+UNoLz
-         pNagOYHVa3beUM9DfFTX/a/V5jiNAXKR2WztQJmY4ACQz12TDV+yiB6RASW25W/dk1Xh
-         BF5tO/uSK3CXs0qrnsfYoidAhatH3PJALHyTOyX2z03NrR6eWj7zWeZm/MxNZQq746PZ
-         /SfA==
+        Tue, 6 Apr 2021 17:13:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617743620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n0hWxJLVmdsricryI3Rst9nD37DLk4CPYNA3q9HyKGA=;
+        b=U/LxtqZ6aWK8FrKlCHVfYDuT4hypRZlHVOXk+IwPdyV/gXrGQSiOqd6US3fHB4ZKZ8Ceo6
+        IBTxlNKoPwxHG3dYDM9nPj2uFSfK/G1ygKF4bJDl4paKONjThOVKL5moP0jfbkegWz8WOH
+        xZIr7XM7UsCswOVV/6haPJXfQLetKzc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-xaQlB8BUMDC2ISxEBTdGhg-1; Tue, 06 Apr 2021 17:13:39 -0400
+X-MC-Unique: xaQlB8BUMDC2ISxEBTdGhg-1
+Received: by mail-qt1-f198.google.com with SMTP id a16so10920497qtw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 14:13:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5oMy+AxrchMa7qNBGPpnhH2Zlo695zWTE08uCBLDOgg=;
-        b=R0Evn1+IcYxqNotBhEmM7wcgTh1hb1XJzeaTZDXIyYjq+xqaknwEjFfeUMiOoWAWuI
-         eoJUmJyaoqMNZKNc23BRZ6rpcpYt90UNukFX7RdZrQ7i8KA+kwB0UObYtjtb7wAucsA6
-         1CRi28s/NWy/0vP4FRRigNAu9oiQ2DmpVIQ06yVTYIGH1CFUVVXhHgHRYUuEx/AfKzmr
-         WUVEvOACuSULAB/9j9PrR+pWb8SEVTqzrFCVvP3xW84wZwV99c3YJTMqKKnd+J9YcPLl
-         VVQvZlRkqsOKT1PgwKutbgdiKxM8DEeA2LF6jd8B6Ce8+OiI+3oFsVcVvbfMP1/v93kD
-         ylxw==
-X-Gm-Message-State: AOAM530J09SQDHGOBBf8pemC8fnqU/uwuFjVDnFq7f4arVv1aqTFnuij
-        /IPXMOaMQ1mnjOo7UvDcbkU=
-X-Google-Smtp-Source: ABdhPJyPCcC8Is/S1xJmNV+NFDhGvIIS29M76iqFYux8sAvPItCoQiIj4P9sRarK/4E5LpAT/fVjTQ==
-X-Received: by 2002:ac8:7fcc:: with SMTP id b12mr28732609qtk.343.1617743489361;
-        Tue, 06 Apr 2021 14:11:29 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id g2sm15933477qtu.0.2021.04.06.14.11.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 14:11:28 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 17:11:26 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Whitney <enwlinux@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 004/126] ext4: shrink race window in
- ext4_should_retry_alloc()
-Message-ID: <20210406211126.GA14411@localhost.localdomain>
-References: <20210405085031.040238881@linuxfoundation.org>
- <20210405085031.189492366@linuxfoundation.org>
- <20210405152908.GA32232@amd>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405152908.GA32232@amd>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=n0hWxJLVmdsricryI3Rst9nD37DLk4CPYNA3q9HyKGA=;
+        b=U/FrEsm+7VC/0xgTWjjQBk39slOf51kTh6fK9SQttHXYKlrEvFGxQPBYSJzAvC+uB+
+         en+gpGvrxQyUu+/HDnfB5HyjhbssFefS5I2//LqsU34mcfZK/Z3XuuJMrWDRVrqGUKGI
+         5ISxJhebmYm6lzERwv459KrzFXjULx9LWomZ2Lvdf6aSnKHgxK2nh0fw05MGi0NX1fLo
+         8+hzVOxMhx6VymY+LT1Cvr/UK68rXPXb6CtRMzJYNcvfrybRrzTwwj1i+m+qH1P/IyKC
+         WajpLujIL+3awd+eL50UVukDGchA7nGr63A7r7sMhjJorvsw/VdA27RWvLE8mMJf8bpW
+         I99Q==
+X-Gm-Message-State: AOAM530QWR00JtQgSHjzRO8oDkF6lhFUdPv+lfjRJZQRtuKjQp/wKX1K
+        TMN83NXwjIoP3qHsx61/Xxg8B6mJaccV5t38ZFf23mWlMkfwXKwU5KDzln3gH+thwBI+J2Vb6Jv
+        R94YFISHLbACY7lJLLxzm+gnM
+X-Received: by 2002:ac8:6c57:: with SMTP id z23mr14454870qtu.155.1617743618663;
+        Tue, 06 Apr 2021 14:13:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvIEKe5NEFfjLI+xWqaKNhUTCtlcBMeB9iljRNEmRUAfwEbQMtz5cIl77hzWbFWgBhB1CLLA==
+X-Received: by 2002:ac8:6c57:: with SMTP id z23mr14454854qtu.155.1617743618434;
+        Tue, 06 Apr 2021 14:13:38 -0700 (PDT)
+Received: from loberhel7laptop ([2600:6c64:4e7f:cee0:ccad:a4ca:9a69:d8bc])
+        by smtp.gmail.com with ESMTPSA id a10sm16963948qkh.122.2021.04.06.14.13.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Apr 2021 14:13:37 -0700 (PDT)
+Message-ID: <fe8cdf3bede40b46716bf94b0760db6d47a13187.camel@redhat.com>
+Subject: Re: [PATCH][next] net/mlx5: Fix bit-wise and with zero
+From:   Laurence Oberman <loberman@redhat.com>
+To:     Colin King <colin.king@canonical.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Raed Salem <raeds@nvidia.com>, Huy Nguyen <huyn@mellanox.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 06 Apr 2021 17:13:36 -0400
+In-Reply-To: <20210406165346.430535-1-colin.king@canonical.com>
+References: <20210406165346.430535-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pavel Machek <pavel@ucw.cz>:
-> Hi!
+On Tue, 2021-04-06 at 17:53 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> > From: Eric Whitney <enwlinux@gmail.com>
+> The bit-wise and of the action field with
+> MLX5_ACCEL_ESP_ACTION_DECRYPT
+> is incorrect as MLX5_ACCEL_ESP_ACTION_DECRYPT is zero and not
+> intended
+> to be a bit-flag. Fix this by using the == operator as was originally
+> intended.
 > 
-> > A per filesystem percpu counter exported via sysfs is added to allow
-> > users or developers to track the number of times the retry limit is
-> > exceeded without resorting to debugging methods.  This should provide
-> > some insight into worst case retry behavior.
+> Addresses-Coverity: ("Logically dead code")
+> Fixes: 7dfee4b1d79e ("net/mlx5: IPsec, Refactor SA handle creation
+> and destruction")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> This adds new counter exported via sysfs, but no documentation of that
-> counter...
-> 
-> Best regards,
-> 								Pavel
-> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
+> b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
+> index d43a05e77f67..0b19293cdd74 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
+> @@ -850,7 +850,7 @@ mlx5_fpga_ipsec_release_sa_ctx(struct
+> mlx5_fpga_ipsec_sa_ctx *sa_ctx)
+>  		return;
+>  	}
+>  
+> -	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action &
+> +	if (sa_ctx->fpga_xfrm->accel_xfrm.attrs.action ==
+>  	    MLX5_ACCEL_ESP_ACTION_DECRYPT)
+>  		ida_free(&fipsec->halloc, sa_ctx->sa_handle);
+>  
 
-Thanks for the observation.  I'll check with Ted to see what he'd like.
+Looks correct to me with enum mlx5_accel_esp_action action;
 
-Eric
-
-
-> > @@ -257,6 +259,7 @@ static struct attribute *ext4_attrs[] = {
-> >  	ATTR_LIST(session_write_kbytes),
-> >  	ATTR_LIST(lifetime_write_kbytes),
-> >  	ATTR_LIST(reserved_clusters),
-> > +	ATTR_LIST(sra_exceeded_retry_limit),
-> >  	ATTR_LIST(inode_readahead_blks),
-> >  	ATTR_LIST(inode_goal),
-> >  	ATTR_LIST(mb_stats),
-> 
-> -- 
-> http://www.livejournal.com/~pavelmachek
-
+Reviewed-by Laurence Oberman <loberman@redhat.com>
 
