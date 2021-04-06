@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3592355A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A690355A8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 19:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347026AbhDFRkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 13:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233683AbhDFRkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:40:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25FB3613D2;
-        Tue,  6 Apr 2021 17:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617730802;
-        bh=qeca+b4H0nIapO5UzP/YbMsJrZpQiO+jgLRy/koUfyM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxlaIqbdu+c5tgETxhAEuDDllk3hQ+aY68reEb5SSpf9DHFe7FxoNFKFwM6Xvfx64
-         C3Ga3Cm+WHhLRn0EG+q00K7s6kGSN21yau8FsCrKYVJoZ+MspTtj08/QoxLRdWTQUl
-         +g9GdMyzLmTmHC485UiU5T69BkLgWvNqbgwQ40gKdR45ia4yoQKH9208wsW+aHJ5h9
-         ZHuQMRR/pqjw3jc78ofJiVvOwplPw0TB4xzQx0q6Jfle7F4/RClXkcgEV79WJBTx7m
-         ZLKR0HfBTkG9FiVsbdgJQTgLOTSbMO2ZKQwVbq997IpcHVpEiil4ekDy/dxhZmEgB9
-         Gft/tBBSFZB0A==
-From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, perex@perex.cz, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak5558: Fix s/show/slow/ typo
-Date:   Tue,  6 Apr 2021 18:39:39 +0100
-Message-Id: <161773049108.51713.8947694519084093038.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1617458365-23393-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1617458365-23393-1-git-send-email-shengjiu.wang@nxp.com>
+        id S236388AbhDFRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 13:41:01 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:44771 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhDFRlA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:41:00 -0400
+Received: by mail-oi1-f179.google.com with SMTP id a8so15935268oic.11;
+        Tue, 06 Apr 2021 10:40:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6QPhKZsquLIEpX7e3NC/9vIpJz8EUh2fOFvHLn8Y5pw=;
+        b=S3wCtFSocVFiEJY5W0pFVjU3fELWkZGaczm9mnJMOcQ+jPjYVURLkpHEmxdw7HbTf7
+         MI+IkIMml2pWoJhzn3kNVP5KUUazFJb1FueZwSF0cJjZ+pddDWSiDsbZ0jAN7m9Mjw/g
+         LpSVpqmgvl8ckCfd+/pcCJXnbJEWwdGke3tg3bWGIx6k4nkctl+8+TkyidhnmTPTOGs8
+         C+fsMTCxue30HtTbzVderSMcL6K+kTPyR6G3bZkaeGHMcbSXOmLedwRZcJdYURT6MULL
+         8m4WCJ+zkWhzPhPnbuFDCzmhKbOuYI+0RfrGK9SZvD9LS4IgmTlYEz8n2jHmz85o1Oha
+         0giw==
+X-Gm-Message-State: AOAM533JKtNpOCBIJo0Rhx6KiYwUrzw3ehfH2DAiuGsF/KIsoqmavB0h
+        1xsnFauBpasuN92N3et24A==
+X-Google-Smtp-Source: ABdhPJz/exfIBW4WbDS+BnoTA5dhoXS7ju34vF4fJxbKbpRTNFrZPUs0M/kXJrc3/t6EM5pgq00sOA==
+X-Received: by 2002:aca:4187:: with SMTP id o129mr4173846oia.10.1617730852367;
+        Tue, 06 Apr 2021 10:40:52 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l81sm3876263oif.31.2021.04.06.10.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 10:40:51 -0700 (PDT)
+Received: (nullmailer pid 2016914 invoked by uid 1000);
+        Tue, 06 Apr 2021 17:40:50 -0000
+Date:   Tue, 6 Apr 2021 12:40:50 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
+Message-ID: <20210406174050.GA1963300@robh.at.kernel.org>
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+ <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
+ <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com>
+ <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Apr 2021 21:59:25 +0800, Shengjiu Wang wrote:
-> s/show/slow/
+On Mon, Apr 05, 2021 at 01:18:56PM -0700, Saravana Kannan wrote:
+> On Mon, Apr 5, 2021 at 1:10 PM Ilya Lipnitskiy
+> <ilya.lipnitskiy@gmail.com> wrote:
+> >
+> > Hi Saravana,
+> >
+> > On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
+> > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > >
+> > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> > > > not configured by #gpio-cells and can't be parsed along with other
+> > > > "*-gpios" properties.
+> > > >
+> > > > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
+> > > > nr-gpio is not really special, so we only need to fix nr-gpios suffix
+> > > > here.
+> > >
+> > > The only example of this that I see is "snps,nr-gpios".
+> > arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
+> > parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
+> > drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
+> > "nr-gpios" without any vendor prefix.
+> 
+> Ah ok. I just grepped the DT files. I'm not sure what Rob's position
+> is on supporting DT files not in upstream. Thanks for the
+> clarification.
 
-Applied to
+If it's something we had documented, then we have to support it (also 
+conditioned on someone noticing). I'm hoping we can just delete APM and 
+other defunct ARM server DTs soon, but we could update them to use 
+'ngpios' instead.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+gpio-mockup doesn't have a binding, so no DT ABI. Hard to tell if 
+gpio-adnp.c has any users.
 
-Thanks!
-
-[1/1] ASoC: ak5558: Fix s/show/slow/ typo
-      commit: a43508995a913893c5f303e56415d06432b15619
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Rob
