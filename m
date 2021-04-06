@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43143355905
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC0C3558FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 18:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346359AbhDFQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 12:15:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39033 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346354AbhDFQPn (ORCPT
+        id S1346349AbhDFQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 12:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346327AbhDFQPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:15:43 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lToMZ-0005mp-2E
-        for linux-kernel@vger.kernel.org; Tue, 06 Apr 2021 16:15:35 +0000
-Received: by mail-lj1-f198.google.com with SMTP id v29so4629250ljd.23
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 09:15:35 -0700 (PDT)
+        Tue, 6 Apr 2021 12:15:36 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A21C06174A;
+        Tue,  6 Apr 2021 09:15:26 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id y12so11543716qtx.11;
+        Tue, 06 Apr 2021 09:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FH0gnE912P3ws0Ef1o02PZUZDtCA2hsCwBkvlqrhqr8=;
+        b=RvNzrXJsEBRv4/QkFT7ccs9FMS2KM2Xyywtg7PWDOWn7jMBbsyZXO/k7WRgMaanGPN
+         rv4m+Wv9iIfIUS3Peaosb0BctfUnrdEv8eV21o1jufNd71pyz4wr0Bqxrcnk6Simu+0p
+         wZRUykd08TqGTZozklIkK0DOPXv8HzYlzgogV96QJSgudJNM+KrF+85QdrMuuZyl7Crd
+         qznc+SXXfZWsxgML+LvnXpj3PM+0IXxtJylpXCSCzaYrstIvtuNfnwROH1hqoWwib4FM
+         P91SFGXp6SrumY5usXE8ocFHq4HQ65aK+2oKXyPqmKbet/12Wt7rPmV7PI94NgYFjZfk
+         lv1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pc7Mc2iBHF1g8Xf3WZmYYKPrF2SwmZQ5FMyrEN7WVwU=;
-        b=isMM26Vi6hS/0ZflJU2SA0j/QECCSLhTH/WUWWl40dDosKV2wZhA6H4QOzd68JhBvu
-         OdtQhhRTeu5jsW1J/WtZHBJi69Yr3WRO9bj6mkLwsuw3bAbJP+KUNqLP4ngHJMHJ86cr
-         gJMk1hqUbOWnFwv9cimM0ymo1o9y7TUOjtiyC/uNyMmXlcglXbZLIBIFbd3qr9PHPg/M
-         dt7R6nd0oMNkWsm8+KGCY7SuvPd8nZYOLK3yx20G8o7nxzggOxo1c6PDrZI/YtyLOTxm
-         LPYaXbAEoATudgode+eV/kxS4TxCmY+9JkJOEPLAggbc4LfRC8h4sUzl3sStpuJPxssj
-         3kZg==
-X-Gm-Message-State: AOAM5330tJjtzvx246aQ39pMkGXlqdsX9Gkftyowua2JUUdEmVwdyMlg
-        LVcqYe9xevEbhhZgNNNfyUoVC9Qfaa/a/64FEYL2ycw9VK9VxTQ2YUnliWSl3RqAK6tCj5si9yk
-        +/l0uqJ002yMgSe0MPA5fJy4uPig1NkaRMqDLTL80ZpJXv3ulQ06l57jOZQ==
-X-Received: by 2002:a17:906:ff15:: with SMTP id zn21mr20674069ejb.296.1617725724099;
-        Tue, 06 Apr 2021 09:15:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw804Texr+Avxb2Xtww4+jktrq8ZbSClHDrPU8KBZum7liZCTe94GVIXgCnwrVcGVlgqfayCTK8SXCiOhy7+HI=
-X-Received: by 2002:a17:906:ff15:: with SMTP id zn21mr20674031ejb.296.1617725723902;
- Tue, 06 Apr 2021 09:15:23 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=FH0gnE912P3ws0Ef1o02PZUZDtCA2hsCwBkvlqrhqr8=;
+        b=Z2RsiezsyRhH98in5vGCEBa6LkTMkbGTktQd2eWTqOvUBzu4IeiouDSyTOQUyoffRY
+         VP2WDMoE8kzn4lKN+ZvC/UbgPMPsrYw3mZzlf0AutiRrYeDIyKkMqesQxdsBMskiZ49/
+         499ctBmH5Awh6iWUNpQbj5mue3Q2eyVwEoHH3Vwa/GyIvcjUcNuYJ5PQ1KMcdRBY24OL
+         Q6Q7xNdyViDBoQSeg3E0GMB34pwjhVbl7cSQ+E4dEd0cCiMFuJW7tAOk0ylqmVzexzQ1
+         jCpujyLIJ4y2UnJi8X6Jy7c0mC9FVmM2CWkMD2KSzvJn94CsAJ2yx32RglwJhVtLzyDn
+         TK8g==
+X-Gm-Message-State: AOAM5322CPQ+0jfPK6jxQEqH8cPjKIhpi7j18b77AXsOOWxHfCrWdc+d
+        T4J57RE4U5HItku5wFkQ3Lw=
+X-Google-Smtp-Source: ABdhPJwXSd+mzXmgVz0J7ZXpask32WLYHZQ2uVaBp1FzYl11KpaCpx6P6JXpp+nP+nB/mt7P0qFohQ==
+X-Received: by 2002:a05:622a:1192:: with SMTP id m18mr26880316qtk.27.1617725726032;
+        Tue, 06 Apr 2021 09:15:26 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id o26sm12843511qko.83.2021.04.06.09.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 09:15:25 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 6 Apr 2021 12:15:24 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Pavan Kondeti <pkondeti@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Quentin Perret <qperret@google.com>, Wei Wang <wvw@google.com>
+Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
+ of root cpu cgroup
+Message-ID: <YGyJHAlLKqng2WeS@slm.duckdns.org>
+References: <1617714261-18111-1-git-send-email-pkondeti@codeaurora.org>
+ <YGxjwKbec68sCcqo@slm.duckdns.org>
+ <20210406152715.GB21941@codeaurora.org>
 MIME-Version: 1.0
-References: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
- <20210311152545.1317581-9-krzysztof.kozlowski@canonical.com> <20210406160959.GA208060@roeck-us.net>
-In-Reply-To: <20210406160959.GA208060@roeck-us.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date:   Tue, 6 Apr 2021 18:15:13 +0200
-Message-ID: <CA+Eumj6C60r4DF24W2GobwB1GrQADLpm5YXLAzHjcjWmrrsE3g@mail.gmail.com>
-Subject: Re: [PATCH v3 08/15] arm64: socfpga: merge Agilex and N5X into ARCH_INTEL_SOCFPGA
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406152715.GB21941@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 18:10, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Thu, Mar 11, 2021 at 04:25:38PM +0100, Krzysztof Kozlowski wrote:
-> > Agilex, N5X and Stratix 10 share all quite similar arm64 hard cores and
-> > SoC-part.  Up to a point that N5X uses the same DTSI as Agilex.  From
-> > the Linux kernel point of view these are flavors of the same
-> > architecture so there is no need for three top-level arm64
-> > architectures.  Simplify this by merging all three architectures into
-> > ARCH_INTEL_SOCFPGA and dropping the other ARCH* arm64 Kconfig entries.
-> >
-> > The side effect is that the INTEL_STRATIX10_SERVICE will now be
-> > available for both 32-bit and 64-bit Intel SoCFPGA, even though it is
-> > used only for 64-bit.
->
-> Did you try to compile, say, arm:allmodconfig with this patch applied ?
-> Because for me that results in:
->
-> In file included from <command-line>:
-> drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
-> include/linux/compiler_types.h:320:38: error:
->         call to '__compiletime_assert_177' declared with attribute error:
->         FIELD_GET: type of reg too small for mask
->
-> and lots of similar errors.
+Hello,
 
-Thanks for the report. I fixed that already with:
-https://lore.kernel.org/lkml/20210321184650.10926-1-krzysztof.kozlowski@canonical.com/
-(and https://lore.kernel.org/lkml/20210404124609.122377-1-dinguyen@kernel.org/ )
-but for some reason it did not go to the same tree.
+On Tue, Apr 06, 2021 at 08:57:15PM +0530, Pavan Kondeti wrote:
+> Yeah. The workqueue attrs comes in handy to reduce the nice/prio of a
+> background workqueue if we identify that it is cpu intensive. However, this
+> needs case by case analysis, tweaking etc. If there is no other alternative,
+> we might end up chasing the background workers and reduce their nice value.
 
-Best regards,
-Krzysztof
+There shouldn't be that many workqueues that consume a lot of cpu cycles.
+The usual culprit is kswapd, IO related stuff (writeback, encryption), so it
+shouldn't be a long list and we want them identified anyway.
+
+> The problem at our hand (which you might be knowing already) is that, lets say
+> we have 2 cgroups in our setup and we want to prioritize UX over background.
+> IOW, reduce the cpu.shares of background cgroup. This helps in prioritizing
+> Task-A and Task-B over Task-X and Task-Y. However, each individual kworker
+> can potentially have CPU share equal to the entire UX cgroup.
+> 
+> -kworker/0:0
+> -kworker/1:0
+> - UX
+> ----Task-A
+> ----Task-B
+> - background
+> ----Task-X
+> ----Task-Y
+> Hence we want to move all kernel threads to another cgroup so that this cgroup
+> will have CPU share equal to UX.
+> 
+> The patch presented here allows us to create the above setup. Any other
+> alternative approaches to achieve the same without impacting any future
+> designs/requirements?
+
+Not quite the same but we already have
+/sys/devices/virtual/workqueue/cpumask which affects all unbound workqueues,
+so maybe a global default priority knob would help here?
+
+Thanks.
+
+-- 
+tejun
