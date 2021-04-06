@@ -2,53 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7D5355626
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FED4355633
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240377AbhDFONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:13:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhDFOMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A8A6139C;
-        Tue,  6 Apr 2021 14:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617718367;
-        bh=pcziQPHW1TqS0kWxpYxP9neRIebp6sZAONItqnbfQvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KdFawesu53kdwMYki+QYg5Bso5YqGTCFpROshhmtT4kuZCLKQ0VG1OPQhi/eB6zhz
-         2G3/wPjNSfuOdfSHAK+PxgQTmAZ8BlUpVFRhQ3W7utBYiH1qoz+FspI8B5EPgTdluY
-         e6u9GyNQIbzYX7pPVNff0eyhIIue0MnR8eF/wjhw=
-Date:   Tue, 6 Apr 2021 16:12:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH v2 2/2] staging: rtl8712: Remove extra blank lines
-Message-ID: <YGxsXMonD5TvtUyB@kroah.com>
-References: <cover.1617710602.git.zhansayabagdaulet@gmail.com>
- <f61f6d330bc3fa53d4d420754d1d461b6cfcb2de.1617710602.git.zhansayabagdaulet@gmail.com>
+        id S1344944AbhDFOOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240123AbhDFOOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:14:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5875C06174A;
+        Tue,  6 Apr 2021 07:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sW2y093nFNEIVmRMn1QkeEs0LwLNK5xSldsHE5h9ZOM=; b=oVysegC+dFydqmBJ0Byn5gAzg+
+        A4X43UInM3ZxUMbOYHtO0IGNAQBlWH4n3ELfVtf1pSU8lVt3e+FXqu1ONsj+6ZScylr8v5YiyI1IZ
+        QmvJ23g0LstpSSoZ6nK2ELlIc2r+XqVVhZeG6zS2eYg4tAyA9bE95Em6nCYtj2s9B5a+h1liXzIRn
+        zAX9NPiOHzPHEbnCHUme0KSwP4206wkrvBogXBtY/SHNjssg+gHmME/e9Pn82HJ4EbuqpN8jwPWoK
+        S2Y8GIaz9bqQc3Ubeie3q9oNwBWIMnfnHNjUNVsuFwIuFZQqkdFODJsT82gKylHGnN8cbItx2dvBj
+        bz8tASKg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTmSM-00Cuq9-3M; Tue, 06 Apr 2021 14:13:31 +0000
+Date:   Tue, 6 Apr 2021 15:13:26 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 22/27] mm/filemap: Add end_folio_writeback
+Message-ID: <20210406141326.GU3062550@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210331184728.1188084-23-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f61f6d330bc3fa53d4d420754d1d461b6cfcb2de.1617710602.git.zhansayabagdaulet@gmail.com>
+In-Reply-To: <20210331184728.1188084-23-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 06:09:58PM +0600, Zhansaya Bagdauletkyzy wrote:
-> Remove extra blank lines after an open brace to adhere to Linux kernel
-> coding style.
-> Reported by checkpatch.
+On Wed, Mar 31, 2021 at 07:47:23PM +0100, Matthew Wilcox (Oracle) wrote:
+> Add an end_page_writeback() wrapper function for users that are not yet
+> converted to folios.
 > 
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
->  drivers/staging/rtl8712/rtl871x_io.h   | 1 -
->  drivers/staging/rtl8712/rtl871x_mlme.h | 1 -
->  drivers/staging/rtl8712/rtl871x_recv.h | 1 -
->  drivers/staging/rtl8712/sta_info.h     | 1 -
->  4 files changed, 4 deletions(-)
+> end_folio_writeback() is less than half the size of end_page_writeback()
+> at just 105 bytes compared to 213 bytes, due to removing all the
+> compound_head() calls.  The 30 byte wrapper function makes this a net
+> saving of 70 bytes.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-This does not apply either :(
+Looks good,
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
