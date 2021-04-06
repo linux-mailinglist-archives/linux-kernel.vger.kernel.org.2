@@ -2,132 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81998354AD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E3A354AD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243351AbhDFCWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238828AbhDFCWL (ORCPT
+        id S233112AbhDFCX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:23:59 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:53098 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230248AbhDFCX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:22:11 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B280C06174A;
-        Mon,  5 Apr 2021 19:22:03 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id x207so13586783oif.1;
-        Mon, 05 Apr 2021 19:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=19kpffbAVNdi4vsZj8TMnzstnGYyFppvEB6JSrzy1/Y=;
-        b=j+j3fUT9Y4S3n9gywytwrl1xK+qVvDjJ6LehF6aqGfD8a/RJRV2mhCxWmoR84tQQJO
-         buGz3yXHtUQRWFpOyPio2WDBexGFgCEZ7qjUiRwVVSr4C2NtMxH2rPlPD+qskQiejSUO
-         ednSYinpJsuO+9RcbeIYvIJBYhdrQaIotAt1YvJwXCAk3msFn3l/SQkcOPQiPlpgTIqo
-         Z5OmGd00oye0c+d84ZTbNhwgISqu3wWJUN0ACU5nZtDvOxPBJBZokzgo9WG5s0Thi8Lb
-         BDOuKmI1PYWY/G22XNRKOchAoWDvxnETxmKvAfRhfdLYqthC5nAcE52zKZpKUWvZ+UtH
-         WrfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=19kpffbAVNdi4vsZj8TMnzstnGYyFppvEB6JSrzy1/Y=;
-        b=qzeKaDEU13UHWEq879jYuCBQXOcrwMK92OSuKj/y5KBvtmUQFb+1mGlX/U2lbX65ya
-         xdzcd4z7SlO9DhszTLZR4vhZeEYLe3nbnPXgFxwXzUq9WgYXf+e9ai94DbW6ZG+K92jv
-         K6oS9TZ1a8dxIDEXkfo7ctqUfwVHqBdrNZ8guUmCtBIYZZhyhrlYTf+mXuPyZIilR225
-         Cd3SCYS0YEHt8AEpeubjAUrcLy8yOEtszNwfh7aL42F3zt9hey+nE71lu/QSi56/eFUK
-         L8oiVkIxXZ8yP7g1VLo9WoxKyh4P8hUIhH7JNIA/CcjNzmj0ii/+lbIiEiIGP6+cWxBX
-         obuw==
-X-Gm-Message-State: AOAM532exxJS2U9WzKHXsPfIdUW/7atqpuvjwso99ULS76s1FyOGyLOD
-        PfQTVzAECptgFSymHjOm6C8=
-X-Google-Smtp-Source: ABdhPJz/ZLftz58qwsTjXjs6SHJPgE+bsrWxWActnZ7v3P/BxUszM2obBBKRmK3u1BnmHNqnYAF+0w==
-X-Received: by 2002:aca:c349:: with SMTP id t70mr1579523oif.87.1617675722791;
-        Mon, 05 Apr 2021 19:22:02 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g5sm3412345oiy.24.2021.04.05.19.22.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Apr 2021 19:22:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 5 Apr 2021 19:22:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.9 00/35] 4.9.265-rc1 review
-Message-ID: <20210406022200.GA20578@roeck-us.net>
-References: <20210405085018.871387942@linuxfoundation.org>
- <20210405175629.GB93485@roeck-us.net>
- <20210405235155.GA75187@roeck-us.net>
+        Mon, 5 Apr 2021 22:23:56 -0400
+X-AuditID: 0a580155-991ff70000066065-c8-606bc6338653
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 78.10.24677.336CB606; Tue,  6 Apr 2021 10:23:47 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 6 Apr 2021
+ 10:23:46 +0800
+Date:   Tue, 6 Apr 2021 10:23:46 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     David Hildenbrand <david@redhat.com>,
+        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=( =?UTF-8?B?5aCA5Y+jIOebtOS5nw==?=)" 
+        <naoya.horiguchi@nec.com>, "Matthew Wilcox" <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>, <yaoaili@kingsoft.com>
+Subject: [PATCH v6] mm/gup: check page hwpoison status for memory recovery
+ failures.
+Message-ID: <20210406102346.3890ceb2@alex-virtual-machine>
+In-Reply-To: <9f49c415-a75a-1ea3-b80c-5ba512331de6@redhat.com>
+References: <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
+        <20210318044600.GJ3420@casper.infradead.org>
+        <20210318133412.12078eb7@alex-virtual-machine>
+        <20210319104437.6f30e80d@alex-virtual-machine>
+        <20210320003516.GC3420@casper.infradead.org>
+        <20210322193318.377c9ce9@alex-virtual-machine>
+        <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
+        <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
+        <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
+        <20210331104303.145aea53@alex-virtual-machine>
+        <20210331043231.GA26013@hori.linux.bs1.fc.nec.co.jp>
+        <9f49c415-a75a-1ea3-b80c-5ba512331de6@redhat.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405235155.GA75187@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCLMWRmVeSWpSXmKPExsXCFcHor2t8LDvB4MQBfos569ewWXxd/4vZ
+        4vKuOWwW99b8Z7X4uD/Y4mLjAUaLM9OKLH7/mMPmwOGxeYWWx6ZPk9g9Tsz4zeLx4upGFo+P
+        T2+xeLzfd5XNY/Ppao/Pm+QCOKK4bFJSczLLUov07RK4Mvau/MVesNiw4viWJ8wNjM3qXYyc
+        HBICJhKfdh1j7GLk4hASmM4kMbnnByuE85JRom/fe6AMBweLgIrE788cIA1sAqoSu+7NAqsR
+        EXjHKLHl1SR2EIdZYBeTxOzfM9hBqoQFwiQ2T5vOAmLzClhJrLnewwRicwrYSaxdO4EJagOL
+        xLSX88AS/AJiEr1X/jNB3GQv0bZlESNEs6DEyZlPwAYxC+hInFh1jBnClpfY/nYOmC0koChx
+        eMkvdoheJYkj3TPYIOxYiaYDt9gmMArPQjJqFpJRs5CMWsDIvIqRpTg33WgTIyRiQncwzmj6
+        qHeIkYmD8RCjBAezkgjvjt7sBCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8bw4BpQTSE0tSs1NT
+        C1KLYLJMHJxSDUw5Hyda3LyXwqqV80a85dcvvqoHS083BU2JF/hl5mBz8Tp7scIqub8HZ+YL
+        M84ziOPftPvR5fqTr9rnHWrgNz6g3Mdf+nudzkrXbKZ7J39sy7zYERRTIjx/lsKul9M9mrlu
+        Nt4tX/7IS5Q1OyevvFpUxqjwrqiC69ZT4k9THzhdvBDI7yK1puF9tfGtiwkvOuVPGtjKh7c5
+        /Ps3g/vtJLnkh8VFVx+LFTcmL2Dsedpfou0oKLtnjX24nazaat/m7KcW5tEzwmYcaO7v/6vU
+        t/vIzjcBzjNNXCo27Jsr3+HrWsFWacZosDy3pvjGrA/vp/SW7OJmyJbtsJi/dfm0qIrNHssm
+        qvNrPlkk3HNkqhJLcUaioRZzUXEiAIHBdQkHAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 04:51:55PM -0700, Guenter Roeck wrote:
-> On Mon, Apr 05, 2021 at 10:56:29AM -0700, Guenter Roeck wrote:
-> > On Mon, Apr 05, 2021 at 10:53:35AM +0200, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 4.9.265 release.
-> > > There are 35 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > 
-> > Build results:
-> > 	total: 163 pass: 163 fail: 0
-> > Qemu test results:
-> > 	total: 383 pass: 382 fail: 1
-> > Failed tests:
-> > 	parisc:generic-32bit_defconfig:smp:net,pcnet:scsi[53C895A]:rootfs
-> > 
-> > In the failing test, the network interfcace instantiates but fails to get
-> > an IP address. This is not a new problem but a new test. For some reason
-> > it only happens with this specific network interface, this specific SCSI
-> > controller, and with v4.9.y. No reason for concern; I'll try to track down
-> > what is going on.
-> > 
-> 
-> Interesting. The problem affects all kernels up to and including
-> v4.19.y. Unlike I thought initially, the problem is not associated
-> with the SCSI controller (that was coincidental) but with pcnet
-> Ethernet interfaces. It has been fixed in the upstream kernel with
-> commit 518a2f1925c3 ("dma-mapping: zero memory returned from
-> dma_alloc_*"). This patch does not apply cleanly to any of the
-> affected kernels. I backported part of it to v4.19.y and v4.9.y
-> and confirmed that it fixes the problem in those branches.
-> 
-> Question is what we should do: try to backport 518a2f1925c3 to v4.19.y
-> and earlier, or stop testing against this specific problem.
-> 
+When we call get_user_pages() to pin user page in memory, there may be
+hwpoison page, currently, we just handle the normal case that memory
+recovery jod is correctly finished, and we will not return the hwpoison
+page to callers, but for other cases like memory recovery fails and the
+user process related pte is not correctly set invalid, we will still
+return the hwpoison page, and may touch it and lead to panic.
 
-Another update: The following code change fixes the problem as well.
-Commit 518a2f1925c3 fixes it only as side effect since it clears
-all DMA buffers.
+In gup.c, for normal page, after we call follow_page_mask(), we will
+return the related page pointer; or like another hwpoison case with pte
+invalid, it will return NULL. For NULL, we will handle it in if (!page)
+branch. In this patch, we will filter out the hwpoison page in
+follow_page_mask() and return error code for recovery failure cases.
 
-diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
-index c22bf52d3320..7a25ec8390e4 100644
---- a/drivers/net/ethernet/amd/pcnet32.c
-+++ b/drivers/net/ethernet/amd/pcnet32.c
-@@ -1967,7 +1967,7 @@ static int pcnet32_alloc_ring(struct net_device *dev, const char *name)
-                return -ENOMEM;
-        }
+We will check the page hwpoison status as soon as possible and avoid doing
+followed normal procedure and try not to grab related pages.
 
--       lp->rx_ring = pci_alloc_consistent(lp->pci_dev,
-+       lp->rx_ring = pci_zalloc_consistent(lp->pci_dev,
-                                           sizeof(struct pcnet32_rx_head) *
-                                           lp->rx_ring_size,
-                                           &lp->rx_ring_dma_addr);
+Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: stable@vger.kernel.org
+---
+ mm/gup.c         | 27 +++++++++++++++++++++++----
+ mm/huge_memory.c |  9 +++++++--
+ mm/hugetlb.c     |  8 +++++++-
+ mm/internal.h    | 13 +++++++++++++
+ 4 files changed, 50 insertions(+), 7 deletions(-)
 
-I'll submit a patch implementing that; we'll see how it goes.
+diff --git a/mm/gup.c b/mm/gup.c
+index e40579624f10..88a93b89c03e 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -433,6 +433,9 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+ 			page = ERR_PTR(ret);
+ 			goto out;
+ 		}
++	} else if (PageHWPoison(page)) {
++		page = ERR_PTR(-EHWPOISON);
++		goto out;
+ 	}
+ 
+ 	if (flags & FOLL_SPLIT && PageTransCompound(page)) {
+@@ -540,8 +543,13 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 		page = follow_huge_pd(vma, address,
+ 				      __hugepd(pmd_val(pmdval)), flags,
+ 				      PMD_SHIFT);
+-		if (page)
+-			return page;
++		if (page) {
++			struct page *p = check_page_hwpoison(page);
++
++			if (p == ERR_PTR(-EHWPOISON) && flags & FOLL_GET)
++				put_page(page);
++			return p;
++		}
+ 		return no_page_table(vma, flags);
+ 	}
+ retry:
+@@ -643,7 +651,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+ 	if (pud_huge(*pud) && is_vm_hugetlb_page(vma)) {
+ 		page = follow_huge_pud(mm, address, pud, flags);
+ 		if (page)
+-			return page;
++			return check_page_hwpoison(page);
+ 		return no_page_table(vma, flags);
+ 	}
+ 	if (is_hugepd(__hugepd(pud_val(*pud)))) {
+@@ -652,6 +660,13 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+ 				      PUD_SHIFT);
+ 		if (page)
+ 			return page;
++		if (page) {
++			struct page *p = check_page_hwpoison(page);
++
++			if (p == ERR_PTR(-EHWPOISON) && flags & FOLL_GET)
++				put_page(page);
++			return p;
++		}
+ 		return no_page_table(vma, flags);
+ 	}
+ 	if (pud_devmap(*pud)) {
+@@ -1087,10 +1102,14 @@ static long __get_user_pages(struct mm_struct *mm,
+ 			 * struct page.
+ 			 */
+ 			goto next_page;
+-		} else if (IS_ERR(page)) {
++		} else if (PTR_ERR(page) == -EHWPOISON) {
++			ret = (foll_flags & FOLL_HWPOISON) ? -EHWPOISON : -EFAULT;
++			goto out;
++		}  else if (IS_ERR(page)) {
+ 			ret = PTR_ERR(page);
+ 			goto out;
+ 		}
++
+ 		if (pages) {
+ 			pages[i] = page;
+ 			flush_anon_page(vma, page, start);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index ae907a9c2050..3973d988e485 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1349,6 +1349,7 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+ {
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	struct page *page = NULL;
++	struct page *tail = NULL;
+ 
+ 	assert_spin_locked(pmd_lockptr(mm, pmd));
+ 
+@@ -1366,6 +1367,11 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+ 	page = pmd_page(*pmd);
+ 	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+ 
++	tail = page + ((addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT);
++
++	if (PageHWPoison(tail))
++		return ERR_PTR(-EHWPOISON);
++
+ 	if (!try_grab_page(page, flags))
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1405,11 +1411,10 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+ 		unlock_page(page);
+ 	}
+ skip_mlock:
+-	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+ 	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), page);
+ 
+ out:
+-	return page;
++	return tail;
+ }
+ 
+ /* NUMA hinting page fault entry point for trans huge pmds */
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index a86a58ef132d..8b50f7eaa159 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4958,7 +4958,8 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 					     likely(pages) ? pages + i : NULL,
+ 					     vmas ? vmas + i : NULL);
+ 
+-		if (pages) {
++		/* As we will filter out the hwpoison page, so don't try grab it */
++		if (pages && !PageHWPoison(page)) {
+ 			/*
+ 			 * try_grab_compound_head() should always succeed here,
+ 			 * because: a) we hold the ptl lock, and b) we've just
+@@ -5581,6 +5582,11 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+ 	pte = huge_ptep_get((pte_t *)pmd);
+ 	if (pte_present(pte)) {
+ 		page = pmd_page(*pmd) + ((address & ~PMD_MASK) >> PAGE_SHIFT);
++		/* if hwpoison, we don't grab it */
++		if (PageHWPoison(compound_head(page))) {
++			page = ERR_PTR(-EHWPOISON);
++			goto out;
++		}
+ 		/*
+ 		 * try_grab_page() should always succeed here, because: a) we
+ 		 * hold the pmd (ptl) lock, and b) we've just checked that the
+diff --git a/mm/internal.h b/mm/internal.h
+index 1432feec62df..049b310bc79a 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -97,6 +97,19 @@ static inline void set_page_refcounted(struct page *page)
+ 	set_page_count(page, 1);
+ }
+ 
++/*
++ * Check the hwposion status of any page type, and if TRUE, return ERR ptr.
++ */
++static inline struct page *check_page_hwpoison(struct page *page)
++{
++	if (PageHWPoison(page))
++		return ERR_PTR(-EHWPOISON);
++	else if (PageHuge(page) && PageHWPoison(compound_head(page)))
++		return ERR_PTR(-EHWPOISON);
++
++	return page;
++}
++
+ extern unsigned long highest_memmap_pfn;
+ 
+ /*
+-- 
+2.29.3
 
-Thanks,
-Guenter
