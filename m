@@ -2,182 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E7A355401
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F91F355407
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhDFMfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:35:06 -0400
-Received: from mail-mw2nam12on2072.outbound.protection.outlook.com ([40.107.244.72]:2043
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236291AbhDFMfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:35:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VB8R6kIBAd1Ye+zo2U0kuSfwQkpTua9VWXAC8C09z/Giiyz7VbW6s3d0lrtJDbiHeNzeuV5zkh56Fp2A//3TbQ2Dvt02/mMww/pdd0JB08w20x5qubj0ElDNK1CB06t6t2NKnIidDXbHYT/4NYsLkEuBtxIPpiIgyAyV2B8N/BeXVai+2/1kpRtLdzsF008xrNk1Y/SD+3y7jMGTw8B/JcC/J96sJZAXnmGQnW+eGFy60LsTTh7uaCOCbdvcIQIONG1GkR884oCuLUtqP4WPxcrV46i/CvJhWlPcRjIUQkioJ2fCWtMZapRWlZX7Si+nXfOSZ0+inGsSPQ4xW+uwbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=487PkQf+U8PXv/fDH1TQwHED0SCO9RSfHacBURVdHls=;
- b=lsrqabmgRwCM8DxnAuCyI6BiOokerA/PVk5zNNbp4pOjHTEamVFhQ0EEDeShsv2T5jHJWgxLaKzc4pWOqFXRytiUkf3C5B0YJdWT7ZO2j193f6GGzMWCwAvriEKQ8nQniyRIdd7n/6ns8XOmfRiWYgEpTHdhEyRXS7jU7trIzBPbhL9IkgLY66+8IU8XxtPruYdoH1UrVmc66Nv4hKpCvt4yeW/h47mFssELE70hxpXGc1Q+fhbSVl+S2HK8utpxCD1A9x7ggLN46qe2LaWFStg6aiRa7hcQ5LhDRUlRcB5cE3sMCVo/ivV/Q9XxhPxNgdQ6LOx8H6O8wW+wGpbI2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=487PkQf+U8PXv/fDH1TQwHED0SCO9RSfHacBURVdHls=;
- b=P6DL8N7G73UXtTIo1xlCjX0yg0o4XiKraNCwtOrC8t2oGt7bOuafqCR4T9PP1S+ZLSZjjh+KmonGGCEVjUDgSj3LPGsUcTBsXlOBNbegxzu6XT6ELX5rLht9UaUq9hwlwXon7RF9YSiJ7SGaJ7AlushzKV1XAKi4MsDsT7om3DmrGjbqpM0XO3TFg92beQ4llfTgvh5xCOZBAqVjR54yxCvGlNGGmhQtmpbi20J4LQpUMSrFHjY4xBb3vCErinSgJev871zsuCfHbfI0sGcXUvXwb753gjaG56jK4YUH6F2l73JU7u9o/mObS21i+8Li1WoGk2ckxaUY0Yb7eOOgSQ==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4943.namprd12.prod.outlook.com (2603:10b6:5:1bc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
- 2021 12:34:54 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 12:34:53 +0000
-Date:   Tue, 6 Apr 2021 09:34:51 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210406123451.GN7405@nvidia.com>
-References: <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
- <20210322120300.GU2356281@nvidia.com>
- <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210405234230.GF7405@nvidia.com>
- <MWHPR11MB1886CF7C11ECE0396A0215078C769@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886CF7C11ECE0396A0215078C769@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0223.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S243184AbhDFMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:35:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232730AbhDFMfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:35:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96597613C6;
+        Tue,  6 Apr 2021 12:35:08 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 14:35:05 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <20210406123505.auxqtquoys6xg6yf@wittgenstein>
+References: <20210404170513.mfl5liccdaxjnpls@wittgenstein>
+ <YGoKYktYPA86Qwju@zeniv-ca.linux.org.uk>
+ <YGoe0VPs/Qmz/RxC@zeniv-ca.linux.org.uk>
+ <20210405114437.hjcojekyp5zt6huu@wittgenstein>
+ <YGs4clcRhyoXX8D0@zeniv-ca.linux.org.uk>
+ <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
+ <YGtVtfbYXck3qPRl@zeniv-ca.linux.org.uk>
+ <YGtW5g6EFFArtevk@zeniv-ca.linux.org.uk>
+ <20210405200737.qurhkqitoxweousx@wittgenstein>
+ <YGu7n+dhMep1741/@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0223.namprd13.prod.outlook.com (2603:10b6:208:2bf::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.13 via Frontend Transport; Tue, 6 Apr 2021 12:34:53 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lTkux-00174O-De; Tue, 06 Apr 2021 09:34:51 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b5d7eba-eb8f-4760-ab5d-08d8f8f86104
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4943:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4943A277028CB62BA733D5A5C2769@DM6PR12MB4943.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /aM/lZQNCDPAtlbUJ5y9Pm+2bSlVdcbZBLlSflvgQA4DzeZm6KMC/j0ooC+JKqvp7tJa1ywSwphlXvyP0eLAbKJW36GkfBpN0529ZLJSE4Ez3H8/prlhW32x/nK/MrgbcuotoF1tmQc5UDCJW9gv0fAcHpwudFQDVKph5RjenIuFLR+YUNG4mgu3+/yBX8/vMfU3l9/TAXQStfGbl51RMI5biTnViWe4i76H/96Tftu8xtH7D/iY/me2Bxqma+NP3/eWo9NdripYSn4mujUYUnYYp1O6TY+P+bCEddcnCx6GGJvmasFx1LyPfGfk/D0leew/Nb3o9GZ0ZcbECEWHzK5j6c9EPlYhdps4QrZ7EFclSieo/fiTuC0RPd6Q8/5XateaS/ebvppDM8KBHHkJiyHihUM40yjW7GjWL0QH7QTxbWC3A3VzTtOLeRQ5h40SUapMotiFgNnHOBZk1Vna+nTBNKUAtQWxivcrllPi4q4iW+QP0eUWgjIrVPn9MeZdnFChX6mnZjpXaJoOvxCCcTvEoCSsI+md28KLrZEcDRCnhyAznxCbo+MGaztC+NyFJ52CuB9R7kmzoDTDiTl93JroWJx58r0Yl9msowhb/3NGxnFQsb90T5+LG54b8mlDWmZGFY+5R+Rk8Y08FJd92vsj+vVfol9jyNscwSjT2QQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(316002)(6916009)(5660300002)(86362001)(9786002)(478600001)(38100700001)(8936002)(426003)(8676002)(7416002)(4326008)(186003)(36756003)(1076003)(66476007)(33656002)(54906003)(66946007)(2906002)(2616005)(66556008)(9746002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bZvKKWawrI4qOvHzo5nVM3804yPkhJGO8ChXbQfs+/CQh0MENowWQ+ddS70c?=
- =?us-ascii?Q?fMhkRNo436GrsXR1PNcz9JBB2Z7cztWUzutj1JtAjc6V/+ucPRGxoa0lbiAc?=
- =?us-ascii?Q?uq2NVwKTZ7MoRQLNsWEJ8sSf8KadFQrB4hrjcO+TQaL6dUQXROan0XU1eBpT?=
- =?us-ascii?Q?ka/K5zaAjVraj1Q8rI34zhl1I62cfRAQbR/rTm4ds+sGefx7bdohT8MBXEAA?=
- =?us-ascii?Q?XkVT3e1ZJgSsenvJ4aVuTlQkURVBaQl2rv5Xthc38zcT0g99vGBEJQsDN+NJ?=
- =?us-ascii?Q?DgrH3CUaPoskmruj1hwa7II73yXAf68ybfHH6Kp9ULc62GiiWDO0zE/cMYLE?=
- =?us-ascii?Q?XchaD71UjbHma2MX3WRYjod9h5x8evqyquDgf707PdE1Ocw/m+PAOwJhyTGC?=
- =?us-ascii?Q?i0EQYmPMnPkJEKQ5PXU5duv+BIAAKa4onJCky+jpeDPUsjeyRm8kt1Vw8jpK?=
- =?us-ascii?Q?dWeaLk2ePjl53Ib5XMPqPYgIThAtM2JlXD1odV4CuMMM8X9U9aWDKn+p1V+h?=
- =?us-ascii?Q?y/02uNINBGdsoeN33RnmVDFzAl3f8FotLWDidJO8CgGlwaSbJgadV6StP1ai?=
- =?us-ascii?Q?Sv/O6Aewk+6fOyv6v4iOAAIvP5fKFQ9GSw1KNqzjO4TEETp45bC6PYGPMcwB?=
- =?us-ascii?Q?Vp2nShhJyaSntBjyedJ9T2ktTxAvqdinYsmaVD5im9Bvmrw/iwFFuYi3e4ZQ?=
- =?us-ascii?Q?uiLCzoXbINFrZQl5+8KJoljwm+mhc7NzfXtG1PgKpYHqf9f9im9Xmbeg8wGk?=
- =?us-ascii?Q?x9XAtoX3O30bJNW7Vtj+Rh2MYLmGHvb0lavuq6GaLsp1FuX1AfoajqV4atLa?=
- =?us-ascii?Q?hQ7Gm57qaEvYnJz4vrW+MTF5kBZ/YWlpebPIulmyOhpDAL7IejbRpZ3P0mA5?=
- =?us-ascii?Q?sbA9oolWEwmHNld+IPfuCTz8veSwRpte6PzxZAEOsTdHDZodVKDFGKWckKSC?=
- =?us-ascii?Q?sJ8h3Vk+iHOFCBkujh9eW1tMcGMrrtXGwRLVmaH2pUte+xuUTivfh240APUI?=
- =?us-ascii?Q?plgnnfvnMpfvSf7p4mtrA1dMAQ7i/wbh6Si32H3eXZnghZdprHZcWJwBLqAv?=
- =?us-ascii?Q?tlMnItQoWxMHjX1mI3lfW0X9OmVyPk7EheIl+MiCSi49OTcsX/g+N3KkhAFI?=
- =?us-ascii?Q?qsEoSTHzAPSnMUV2YfWAkaVY8w5kyNZzvTCPpFIvoCsQf/fBBR516ILTgKuv?=
- =?us-ascii?Q?1RRQfz20XSKrFTmD38t3rxNlQc5N/Rx53feecvwA4OILdBJyZVqFWkzsFXH5?=
- =?us-ascii?Q?WaOR6UgtNA93noirH11di1Wt/W5MLuaRNk1pFvIo/VFuEjRsFVFJP7Iynq1b?=
- =?us-ascii?Q?S/pXt5W0+augG8uloE1yMZp08hpcEx6PPRJbZdKcmmhSPg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b5d7eba-eb8f-4760-ab5d-08d8f8f86104
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 12:34:53.7818
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4UthfOcIsBkqUn4gr83s0kemYcP97edxI7Oq3xC8Di8gkeyO625GpXjMsgF3lQ/9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4943
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YGu7n+dhMep1741/@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 01:27:15AM +0000, Tian, Kevin wrote:
+On Tue, Apr 06, 2021 at 01:38:39AM +0000, Al Viro wrote:
+> On Mon, Apr 05, 2021 at 10:07:37PM +0200, Christian Brauner wrote:
 > 
-> and here is one example why using existing VFIO/VDPA interface makes
-> sense. say dev1 (w/ sva) and dev2 (w/o sva) are placed in a single VFIO 
-> container. 
+> > > diff --git a/fs/namei.c b/fs/namei.c
+> > > index 216f16e74351..82344f1139ff 100644
+> > > --- a/fs/namei.c
+> > > +++ b/fs/namei.c
+> > > @@ -2289,6 +2289,9 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+> > >  	int error;
+> > >  	const char *s = nd->name->name;
+> > >  
+> > > +	nd->path.mnt = NULL;
+> > > +	nd->path.dentry = NULL;
+> > > +
+> > >  	/* LOOKUP_CACHED requires RCU, ask caller to retry */
+> > >  	if ((flags & (LOOKUP_RCU | LOOKUP_CACHED)) == LOOKUP_CACHED)
+> > >  		return ERR_PTR(-EAGAIN);
+> > > @@ -2322,8 +2325,6 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+> > >  	}
+> > >  
+> > >  	nd->root.mnt = NULL;
+> > > -	nd->path.mnt = NULL;
+> > > -	nd->path.dentry = NULL;
+> > >  
+> > >  	/* Absolute pathname -- fetch the root (LOOKUP_IN_ROOT uses nd->dfd). */
+> > >  	if (*s == '/' && !(flags & LOOKUP_IN_ROOT)) {
+> > 
+> > Bingo. That fixes it.
+> 
+> *grumble*
+> 
+> OK, I suppose it'll do for backports, but longer term... I don't like how
+> convoluted the rules for nameidata fields' validity are.  In particular,
+> for nd->path I would rather have it
+> 	* cleared in set_nameidata()
+> 	* cleared when it become invalid.  That would be
+> 		* places that drop rcu_read_lock() without having legitimized the sucker
+> 		  (already done, except for terminate_walk())
+> 		* terminate_walk() in non-RCU case after path_put(&nd->path)
+> 
+> OTOH... wait a sec - the whole thing is this cycle regression, so...
+> 
+> Could you verify that the variant below fixes that crap?
+> 
+> Make sure nd->path.mnt and nd->path.dentry are always valid pointers
+> 
+> Initialize them in set_nameidata() and make sure that terminate_walk() clears them
+> once the pointers become potentially invalid (i.e. we leave RCU mode or drop them
+> in non-RCU one).  Currently we have "path_init() always initializes them and nobody
+> accesses them outside of path_init()/terminate_walk() segments", which is asking
+> for trouble.
+> 
+> With that change we would have nd->path.{mnt,dentry}
+> 	1) always valid - NULL or pointing to currently allocated objects.
+> 	2) non-NULL while we are successfully walking
+> 	3) NULL when we are not walking at all
+> 	4) contributing to refcounts whenever non-NULL outside of RCU mode.
+> 
+> Hopefully-fixes: 6c6ec2b0a3e0 ("fs: add support for LOOKUP_CACHED")
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 216f16e74351..fc8760d4314e 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -579,6 +579,8 @@ static void set_nameidata(struct nameidata *p, int dfd, struct filename *name)
+>  	p->stack = p->internal;
+>  	p->dfd = dfd;
+>  	p->name = name;
+> +	p->path.mnt = NULL;
+> +	p->path.dentry = NULL;
+>  	p->total_link_count = old ? old->total_link_count : 0;
+>  	p->saved = old;
+>  	current->nameidata = p;
+> @@ -652,6 +654,8 @@ static void terminate_walk(struct nameidata *nd)
+>  		rcu_read_unlock();
+>  	}
+>  	nd->depth = 0;
+> +	nd->path.mnt = NULL;
+> +	nd->path.dentry = NULL;
+>  }
+>  
+>  /* path_put is needed afterwards regardless of success or failure */
+> @@ -2322,8 +2326,6 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+>  	}
+>  
+>  	nd->root.mnt = NULL;
+> -	nd->path.mnt = NULL;
+> -	nd->path.dentry = NULL;
+>  
+>  	/* Absolute pathname -- fetch the root (LOOKUP_IN_ROOT uses nd->dfd). */
+>  	if (*s == '/' && !(flags & LOOKUP_IN_ROOT)) {
 
-Forget about SVA, it is an irrelevant detail of how a PASID is
-configured.
+Yeah, that works too.
+Though I'm not a fan of this open-coding as it looks pretty brittle
+especially if we ever introduce another LOOKUP_* flag that requires us
+to clear some other field carefully. I think a tiny static inline void
+helper might make it easier to grok what's going on.
 
-> The container is associated to an iommu domain which contains a
-> single 2nd-level page table, shared by both devices (when attached
-> to the domain).
+And while we're at it might I bring up the possibility of an additional
+cleanup of how we currently call path_init().
+Right now we pass the return value from path_init() directly into e.g.
+link_path_walk() which as a first thing checks for error. Which feels
+rather wrong and has always confused me when looking at these codepaths.
+I get that it might make sense for reasons unrelated to path_init() that
+link_path_walk() checks its first argument for error but path_init()
+should be checked for error right away especially now that we return
+early when LOOKUP_CACHED is set without LOOKUP_RCU. I have two/three
+additional patches on top of the one below that massage path_lookupat(),
+path_openat() to get rid of such - imho - hard to parse while
+constructs:
 
-This level should be described by an ioasid.
+		while (!(error = link_path_walk(s, nd)) &&
+		       (s = <foo>(nd, file, op)) != NULL)
+			;
 
-> The VFIO MAP operation is applied to the 2nd-level
-> page table thus naturally applied to both devices. Then userspace
-> could use /dev/ioasid to further allocate IOASIDs and bind multiple
-> 1st-level page tables for dev1, nested on the shared 2nd-level page
-> table.
+in favor of a for (;;) like we do in link_path_walk() itself already
+with early exits to a cleanup label. I'm not too fond of the
 
-Because if you don't then we enter insane world where a PASID is being
-created under /dev/ioasid but its translation path flows through setup
-done by VFIO and the whole user API becomes an incomprehensible mess.
+if (!error)
+	error = foo();
+if (!error)
+	error = bar();
 
-How will you even associate the PASID with the other translation??
+terminate_walk();
+return error;
 
-The entire translation path for any ioasid or PASID should be defined
-only by /dev/ioasid. Everything else is a legacy API.
+thing especially in longer functions such as path_lookupat() where it
+gets convoluted pretty quickly. I think it would be cleaner to have
+something like [1]. The early exists make the code easier to reason
+about imho. But I get that that's a style discussion.  If you want to
+see the whole thing and not just the patch below I'm happy to send it
+though. Here's the tweaked fix for the immediate syzbot issue only:
 
-> If following your suggestion then VFIO must deny VFIO MAP operations
-> on sva1 (assume userspace should not mix sva1 and sva2 in the same
-> container and instead use /dev/ioasid to map for sva1)? 
+From d6d669aaaba64debb9c433e281109b5494ad9bc5 Mon Sep 17 00:00:00 2001
+From: Al Viro <viro@zeniv.linux.org.uk>
+Date: Tue, 6 Apr 2021 13:20:26 +0200
+Subject: [PATCH 1/3] namei: Ensure nd->path.{dentry,mnt} are always valid
+ pointers
 
-No, userspace creates an iosaid for the guest physical mapping and
-passes this ioasid to VFIO PCI which will assign it as the first layer
-mapping on the RID
+Initialize them in set_nameidata() and make sure that terminate_walk()
+clears them once the pointers become potentially invalid (i.e.
+we leave RCU mode or drop them in non-RCU one).  Currently we have
+"path_init() always initializes them and nobody accesses them outside of
+path_init()/terminate_walk() segments", which is asking for trouble.
 
-When PASIDs are allocated the uAPI will be told to logically nested
-under the first ioasid. When VFIO authorizes a PASID for a RID it
-checks that all the HW rules are being followed.
+With that change we would have nd->path.{mnt,dentry}
+1) always valid - NULL or pointing to currently allocated objects.
+2) non-NULL while we are successfully walking
+3) NULL when we are not walking at all
+4) contributing to refcounts whenever non-NULL outside of RCU mode.
 
-If there are rules like groups of VFIO devices must always use the
-same IOASID then VFIO will check these too (and realistically qemu
-will have only one guest physical map ioasid anyhow)
+Fixes: 6c6ec2b0a3e0 ("fs: add support for LOOKUP_CACHED")
+Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ fs/namei.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-There is no real difference between setting up an IOMMU table for a
-(RID,PASID) tuple or just a RID. We can do it universally with
-one interface for all consumers.
+diff --git a/fs/namei.c b/fs/namei.c
+index 216f16e74351..618055419da3 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -573,9 +573,18 @@ struct nameidata {
+ 	umode_t		dir_mode;
+ } __randomize_layout;
+ 
++static inline void clear_nameidata(struct nameidata *nd)
++{
++	nd->depth = 0;
++	nd->path.mnt = NULL;
++	nd->path.dentry = NULL;
++}
++
+ static void set_nameidata(struct nameidata *p, int dfd, struct filename *name)
+ {
+ 	struct nameidata *old = current->nameidata;
++
++	clear_nameidata(p);
+ 	p->stack = p->internal;
+ 	p->dfd = dfd;
+ 	p->name = name;
+@@ -651,7 +660,7 @@ static void terminate_walk(struct nameidata *nd)
+ 		nd->flags &= ~LOOKUP_RCU;
+ 		rcu_read_unlock();
+ 	}
+-	nd->depth = 0;
++	clear_nameidata(nd);
+ }
+ 
+ /* path_put is needed afterwards regardless of success or failure */
+@@ -2322,8 +2331,6 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+ 	}
+ 
+ 	nd->root.mnt = NULL;
+-	nd->path.mnt = NULL;
+-	nd->path.dentry = NULL;
+ 
+ 	/* Absolute pathname -- fetch the root (LOOKUP_IN_ROOT uses nd->dfd). */
+ 	if (*s == '/' && !(flags & LOOKUP_IN_ROOT)) {
+-- 
+2.27.0
 
-I wanted this when we were doing VDPA for the first time, now that we
-are doing pasid and more difficult stuff I view it as essential.
 
-Jason
+
+[1]:
+diff --git a/fs/namei.c b/fs/namei.c
+index ae1b5cd7b1a9..572a0d6e22cc 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2424,33 +2424,49 @@ static int path_lookupat(struct nameidata *nd, unsigned flags, struct path *path
+        int err;
+
+        s = path_init(nd, flags);
+-       if (IS_ERR(s))
+-               return PTR_ERR(s);
++       if (IS_ERR(s)) {
++               err = PTR_ERR(s);
++               goto out_terminate;
++       }
+
+        if (unlikely(flags & LOOKUP_DOWN)) {
+                err = handle_lookup_down(nd);
+                if (unlikely(err < 0))
+-                       s = ERR_PTR(err);
++                       goto out_terminate;
+        }
+
+-       while (!(err = link_path_walk(s, nd)) &&
+-              (s = lookup_last(nd)) != NULL)
+-               ;
+-       if (!err)
+-               err = complete_walk(nd);
++       for (;;) {
++               err = link_path_walk(s, nd);
++               if (err)
++                       goto out_terminate;
+
+-       if (!err && nd->flags & LOOKUP_DIRECTORY)
+-               if (!d_can_lookup(nd->path.dentry))
+-                       err = -ENOTDIR;
+-       if (!err && unlikely(nd->flags & LOOKUP_MOUNTPOINT)) {
++               s = lookup_last(nd);
++               if (!s)
++                       break;
++       }
++
++       err = complete_walk(nd);
++       if (err)
++               goto out_terminate;
++
++       if ((nd->flags & LOOKUP_DIRECTORY) &&
++           (!d_can_lookup(nd->path.dentry))) {
++               err = -ENOTDIR;
++               goto out_terminate;
++       }
++
++       if (unlikely(nd->flags & LOOKUP_MOUNTPOINT)) {
+                err = handle_lookup_down(nd);
+                nd->flags &= ~LOOKUP_JUMPED; // no d_weak_revalidate(), please...
++               if (err)
++                       goto out_terminate;
+        }
+-       if (!err) {
+-               *path = nd->path;
+-               nd->path.mnt = NULL;
+-               nd->path.dentry = NULL;
+-       }
++
++       *path = nd->path;
++       nd->path.mnt = NULL;
++       nd->path.dentry = NULL;
++
++out_terminate:
+        terminate_walk(nd);
+        return err;
+ }
