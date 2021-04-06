@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDDC355558
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C28355569
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344564AbhDFNiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbhDFNiL (ORCPT
+        id S1344587AbhDFNlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:41:07 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2769 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238827AbhDFNlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:38:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B40C06174A;
-        Tue,  6 Apr 2021 06:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=adZ0C3cJ4lKQ8eG5ef+dmxnQo6NCZF8rtMgKAkFVbGA=; b=su4rnebOFB0EX6o6PmYWp05R/8
-        AeHyBIFkxxLWf2bzlXH1bYtGWgyiz89SlKo3dieqkCuGtRbIfo6jFVtQMU6bKeqeHpT9QhlWUcNnz
-        LGrNqnHzmLdr9LyPPTSKPIwBL3LHI6JVWWkI2uR/Ich8su5XtvON5yYWmmfMFQX7MTO7+h8qoI5Ru
-        1kuH+1UJSU4/rzGUW4vpCxT560GTybyMsMcQm7RSz+1PKCtuHlonUb9EiclUAvDgOa3Utqqu0Mqmk
-        3RxPjJVPePD8odi5kCAkM5OAtEqnTkVpVIXOJ8Sja/ESOJCrhBHXOYUQ3FYUF1jFUasqjN7yItfv/
-        FmSNlgyQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTltd-00Cs71-Vz; Tue, 06 Apr 2021 13:37:40 +0000
-Date:   Tue, 6 Apr 2021 14:37:33 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 09/27] mm: Handle per-folio private data
-Message-ID: <20210406133733.GH3062550@infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210331184728.1188084-10-willy@infradead.org>
+        Tue, 6 Apr 2021 09:41:06 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FF7lp74C9z682sK;
+        Tue,  6 Apr 2021 21:33:58 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 15:40:56 +0200
+Received: from [10.210.166.136] (10.210.166.136) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 14:40:55 +0100
+Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
+ parsing test
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
+        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <1616668398-144648-3-git-send-email-john.garry@huawei.com>
+ <YGXPdEAecos4iPVc@krava> <edfabc52-4b09-be92-7c40-fb2ddfe80596@huawei.com>
+ <YGxRbH0XWaj6AWfa@krava> <f5b209b2-1e9e-ebad-b2ed-eda9fe858ec8@huawei.com>
+ <YGxaOnUZnNmDg/2P@krava> <49025439-f9e3-0d32-b0a3-ff9f9ff71835@huawei.com>
+ <YGxjWNdZGqWqL87r@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6bb503e4-8d75-62a6-3c10-8478df9c3e44@huawei.com>
+Date:   Tue, 6 Apr 2021 14:38:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331184728.1188084-10-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YGxjWNdZGqWqL87r@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.136]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:47:10PM +0100, Matthew Wilcox (Oracle) wrote:
-> Add folio_private() and set_folio_private() which mirror page_private()
-> and set_page_private() -- ie folio private data is the same as page
-> private data.  The only difference is that these return a void *
-> instead of an unsigned long, which matches the majority of users.
-> 
-> Turn attach_page_private() into attach_folio_private() and reimplement
-> attach_page_private() as a wrapper.  No filesystem which uses page private
-> data currently supports compound pages, so we're free to define the rules.
-> attach_page_private() may only be called on a head page; if you want
-> to add private data to a tail page, you can call set_page_private()
-> directly (and shouldn't increment the page refcount!  That should be
-> done when adding private data to the head page / folio).
-> 
-> This saves 597 bytes of text with the distro-derived config that I'm
-> testing due to removing the calls to compound_head() in get_page()
-> & put_page().
+On 06/04/2021 14:34, Jiri Olsa wrote:
+>>
+>> }
+>>
+>> So once we evaluate a pmu_event in pctx->ids in @pe, @all is set false, and
+>> we would loop again in the do-while loop, regardless of what
+>> expr__find_other() does (apart from erroring), and so call
+>> hashmap__for_each_entry_safe(&pctx->ids, ) again.
+> ah ok, so it finishes the hash iteration first and
+> then restarts it.. ok, I missed that, then it's fine
+>  >> This is really what is done in __resolve_metric() - indeed, I would 
+use that
+>> function directly, but it looks hard to extract that from metricgroup.c .
+> yea, it's another world;-)  it's better to keep it separated
 
-Except that this seems to be the first patch that uses a field in the
-non-struct page union leg in struct folio, which could be trivially
-avoided this looks good:
+ok, so I'll still add the break statement, as suggested.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I'll also wait to see if Ian or you have a strong feeling about the 
+function naming in patch 1/6.
+
+Thanks,
+John
+
