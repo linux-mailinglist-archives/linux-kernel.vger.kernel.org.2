@@ -2,161 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9685F355E47
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 23:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230B8355E50
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 00:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhDFV7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 17:59:17 -0400
-Received: from mout.gmx.net ([212.227.15.15]:57219 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232975AbhDFV7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 17:59:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617746340;
-        bh=HTprFb9yvRvBoW3G9/dHX/fAH1KOecMkyEVg4p7DniY=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=ZJ63vrne6ocuY+SPF3t/R1FivYXLy591gJug7O57oIqsTqhLaFrghJ0BOaHU1RBYe
-         S2LvC+hFgXMYsMNQjRCi4fbYzmqK109n6Havy1k4wqsPNx7QuhfKz75uZtf6rdLD5B
-         kHutqOCrMnkXXiDppTYxXqYnd3THBTFtC5rRC/2Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfYPi-1m58E0081w-00fy9g; Tue, 06
- Apr 2021 23:59:00 +0200
-Date:   Tue, 6 Apr 2021 23:58:57 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 00/10] Initial support for Nuvoton WPCM450 BMC SoC
-Message-ID: <YGzZofPvT80b5gS5@latitude>
-References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
- <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
+        id S1343883AbhDFWAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 18:00:09 -0400
+Received: from mail-dm6nam10on2078.outbound.protection.outlook.com ([40.107.93.78]:43740
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232271AbhDFWAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 18:00:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WRfJC1wMGbzITrXAMcz0C39AI5KlTNh8MZb3IYCPnopjsXtM29g/jaBuYkjQE3zN2Co8LBLCj4pRAlOBgsyLcm0xhah+BXwoUJ3mrrisLJUpTkv64nmGd1UhWJtuSVSAxPMNa+dNpcuQqdPVNL+8KttzvL7c0Aw4MapxkE3kpLi/sNCkYl4OCrCg7kybwyUT7fBypwn+G31fuWD64F1B3RvBXCvYLdvOdoT5423sGFUf8GmLc9GYbE2an7jqT5lpDS3V7y67/BXFK1HWW3wnYyob5/n/l9NQOc4dwJvPeCpKotLzOJbSd2fHqAAKg4LP3/yu7zmKsZ4m0dCA42gR3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FXYN2x7XGzaAYkk4DXlGNbt59fGPJZc9XwLZXsgo3Fg=;
+ b=hr6qDFRuAQkEnDy3yYGAjyO81pHksQ1xYbn0UZoz/Rl7QJnIqvmCFvcT5fcdyF/fwh+pkEUW0Qnb++hq8BrYuawiqptHJoPkQcGB9M5FXqhZJ0TP0scXlwtmHQ6FL1efxUfdMaBsW2/hDkEe95yLHSFa2Keo8Zm6UGvfhUiBo9tkUfqXrPKZvon6DJ6+ZKEaK17Ma+RYW7RV2rWi8d0tpY0TE25IpVS9sV9h9rqMwh2FXxNqJJ0YRMPU+I84ijXWWm+Xx9IMscKhi9HktCRVLxYkV3AgC7Qlcl8Uqy8J1nZ+K41VttH725AjGb+i10oPtIbeA8Bz8JYyibtv6sv6eA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FXYN2x7XGzaAYkk4DXlGNbt59fGPJZc9XwLZXsgo3Fg=;
+ b=MMzi6dHvZz+upY9eIC29pc5Fm4awlkifmAz0RJE9B1IlInuBhxoY5Xwd6PA6w+6UpUuUr75hEulNGzLLXgX8F0fpAUQVBybQfqBFXWhNmNJIUOsUHZRM1Eg92yJxUeVMc8Q/88Ju/B3ExDsfz1Tp0yRlPtY/fNbvnP0HGLwQxY4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
+ by SN6PR12MB2640.namprd12.prod.outlook.com (2603:10b6:805:6c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
+ 2021 21:59:58 +0000
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::6088:2ad2:8012:ff28]) by SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::6088:2ad2:8012:ff28%2]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 21:59:58 +0000
+From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        =?UTF-8?q?Martin=20Li=C5=A1ka?= <mliska@suse.cz>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Kim Phillips <kim.phillips@amd.com>
+Subject: [PATCH 0/4] perf events vendor amd: Fixes, cleanups and updates for AMD Zen cores
+Date:   Tue,  6 Apr 2021 16:59:40 -0500
+Message-Id: <20210406215944.113332-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SA9PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:806:21::33) To SN6PR12MB2685.namprd12.prod.outlook.com
+ (2603:10b6:805:67::33)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WN3Z533fK2dw1UDf"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0VfnUucvZNkA9PdxrWiYUOkisV00v-375PmgQYp4aXoQ@mail.gmail.com>
-X-Provags-ID: V03:K1:5gcOpCHQmH2HH66wHlC3bdbl5uTQY68EaHslQFlMiXdwu1yPMGu
- XAZOwdk8oXIK9z0Mq3J2eD6QiO+K24Z4WIcQGjnOv7DDxr0C08MTAuPsRQe0Ztl9Fd0n1vU
- Y399EkErkUPzQwjmRICQPQQoStkG62g0HnWFpta2wwMupvF+e9YHjP4w7IgLElXNEsm3MRW
- Yx3pl3jKTNt0ELRrwtTbg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lwS1WdEU8AI=:AgUACw6w7/JwB/hgyaWAKV
- GaNzw+AyvPWWXF4SBfzVn3otv+6VJzWvTAi+xc9QrVaXserhQxCksqGEPLj32XmzIfFoCp7G5
- rAPCkYAq3aGQ6pnlu/74O9DdMj8l0PeX/98c4Tsw2OjrX+dlgTi2/JqVwTl5oBjOD4wd0BpLD
- ZqOzPKnf7XGhP8gFZ3BL6M3Ag+HMbqJ3z8s/4O2M/Q3qjLLYymv4LPLOL0pG8V1+UtLNE/00d
- /K6Nc0BlINjOu0ue0DRsUjAlnPi54azecv9V2MIhXpGiJKVuGoa0ITJG2NTmtChUqMfM41Ot3
- bjqT5X3Z/TxjrPA+Sc9p24ifc1i3MAzzSPnMXJsH44qDgHCgc4bFfcCvwSeuVsw2t5Rm+MYlS
- lykBDpuFxVok6REdoI7JpcmYW7otQRYABFFQjK8RIsnX9hITMY6WvGkQv17AXT+cQvGR1LGpa
- fFj4WM2cbwrBUQz1YhX0GUzYjegrUGeOJISd42JjcKWbUpiSaAAeQlDWOWcr4j9dgjeucj3Vk
- IdW22rEZ0TKHlyxiJawJciAhWitHMFTsEMXFnTDbD1Mxigk2O/bVRZvh99D0ZiP270UIvelts
- LYlN7hAsiKeReyqoBbA3gK5oPt4iQjyXqJ9potZOg8B5L71gkQEbdQhpmd1ovVXW16fixMuf4
- 8wpxwXXKC8PLy0Hu6ODBHDhEBaU5XM6bkBUeJipr2SiVm5cs2lrxDL2LzWt+bB58ZFjMX3f7u
- f7lrl/qSH+EcNEHMF9gw6lD6e+ZQI0EN/0OonZQAgY3pSv2qJs2+xzlneIPLDASdEX2YtAE3w
- XT5i4w9SaPrjg3USRX2VGmrID3D4TfMO/9BXDqSD2EhFQI5+KTF7b+F6tAcjrxu99eflaZGYy
- GdTw4wCjB0Cd/wcWkYXHjtYBB4NXmBdTcPFpN8/sO9L8Bypj4fP36/TdpR5UUrQ3vYjODRqSy
- htxSX+ZQL1DAfCj+bvrn+1DHWzfnqXG166eXNoJ7diEyH9S0ASQJVp8DunuIQwtliD8wJWGLw
- oOs19Ed9DXMMpeRvgJF6J0cScoS+eYJg3fMLZDOQPdiBzz3oxBy0nzJpWjK4O4aFX1tT30IiE
- t2fckz4ADTpsP5ad6G7menqFZn+miL89AAGnXKj46lfeXPSfhkWhLZgMFqrzlWqNhni1SJN9/
- YTW6Qgf3YgjVkxURbujSe4oIywYCODJQ5b3L6rXA/x3Fo3CzgRnY3KISMqhzJLW9NQbzFNBhn
- qG1nHPjyHBbIZlr5d
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx50f7host.amd.com (165.204.78.2) by SA9PR13CA0028.namprd13.prod.outlook.com (2603:10b6:806:21::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Tue, 6 Apr 2021 21:59:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d01592ef-c8cb-4a59-cc5f-08d8f9475105
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2640:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2640D5259E8A8A152D65F61A90769@SN6PR12MB2640.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8TUaUhN4/a1HJAVt3acgdqG4pR+gBIQBT+cTfrvLJFWH5PBKLOGTZgLvdb7mUfDa4vlH3XB5j+EINJh2n0eYa1576lUULDIjKhZ/wMDKE2yHLeN1n64gSY0ffJsDU67zdUw1qrR6iyaWNdnUcuUhj3eQkkaf6lyRi6EGJnDKXnPEtkKWL3/GFicRupCVjKS4vRe4lDZizG6u4PkI0fRa96J0zmPf+I0bZZ2V4Tnb7JpwN9yZ8CMJdzLNHuZ8dhuyBqJUUogkJEou4M7qbl1+Xa0MMwELwpxpHcVvrdWnBtvNkUWeTJvzzUbtSFNF2AiVUlHoOEOnXDRzHdf6WKri8PiWFLxUW46454hQvheeUev4GcACQivCo5potNGrEQTHweNpbXpaPohkLTBGX8Lqat1c/wAwcFRu5zRy44/a6r52RC7zoMksuhCHecXBMomJMJi0Ujp2Pwse9i1T0kMnPl4NSDy9Lj1XxuQnX/rE63Te6QSsazdyCehu3vcTTV/R38s/sF9P1UM8M68R8id58A5lveuC3RlmAVoo7QIix8AFrKwglq2eQW8FnyvBZaMFyYMOIT1gQ3+W66l4HFPb9TTgocekGUSimHqd6+IzQIuo3IhwGqKkUEwUGv+E50/NqoaJXAWRO6V2fGO+Q+i/b0GchnxEyOBi8IntIHV2Oh0rwOTCxMJ7UP2kbtnjy/CP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(4326008)(186003)(83380400001)(2616005)(16526019)(8676002)(1076003)(8936002)(38100700001)(66946007)(6486002)(66476007)(38350700001)(7416002)(478600001)(36756003)(52116002)(5660300002)(316002)(54906003)(2906002)(7696005)(6916009)(86362001)(956004)(66556008)(6666004)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UG4zSmcrNWVINVB6ekJiazBaMnlqTVF3SlIvR2ZnbVVaZW90OE5MRjByY0R4?=
+ =?utf-8?B?RnZhd3lFY3FTcW5mQTZaTnYxVkcxYkFobkFRaDd6YVkwU09LVWRNOVNIbWI1?=
+ =?utf-8?B?NXUzYy9CeVBuWGtXb1hRR3N0UWRPWWordllqbWNTZkJmZjhlMStoRjNycVhw?=
+ =?utf-8?B?UVBSNGx2aHFqemlYNXdMT3dENmRBV1dKeEx6Y2dVd00yaUNmK0RNajdPb295?=
+ =?utf-8?B?dmoyQnpXOFp1RTZLQlR4Y1hKMmd3YURaYkd5dml5Nm5kK3ljNDBoY2tsMXMx?=
+ =?utf-8?B?RXljaWdiczVaaktrRXROYXpKOVA5cklWUlJSR3crYllBZkFxazhzUjVRY2lY?=
+ =?utf-8?B?aTVtdXZUYWo2TExVTkxMcUl5ZG9maWdUOU1JWlM0cHlFdWdmYVVlamc1c055?=
+ =?utf-8?B?Q1lOQWVyQytYSUF5VXhCeEpVNFlYZWMrbERDdEI2UG1Ic2RzOTNPQm1JVC9C?=
+ =?utf-8?B?RHpPZVVhN3FmUWxYUDBvYk90TWxHNzNWM1JTeU1XbzRjTTVqSCsxbGhZakRB?=
+ =?utf-8?B?ZmtmdFBNbjZOS3oybmFzZE8vcVNUK2xqSld5ZTlLV1dGdjdFTUhOdFBGTkJh?=
+ =?utf-8?B?Wit5eVM1TE90eU1TZUpjNGxwUyswRUhoRUl2eTJ2UVR6RUwvSjduSVh2dk1M?=
+ =?utf-8?B?Uzg1aHU3SllxUVZqdzlueGZ2T20wOEdsV1piT1NQQVRDbmZnOGhTVllmTVoy?=
+ =?utf-8?B?Q2dhSWx2cUM4LzkzaU1PYkh3b2dCSXlSSjB1UnBwMnByMitTRUljbXNIUFZl?=
+ =?utf-8?B?Y3puTXNpMmI1SmV6NUdSb0dtSk1ZNjhsY0pUL1Nid0JLSldvNlQwUjNsL1l4?=
+ =?utf-8?B?ZldIRVY1STd6R2kzZjEwUm1DM05yZTYyc1cvU3dmVmtWQmlSUU1iSUlQYXdm?=
+ =?utf-8?B?WUtFcUozUmlOZlRLTlNMTm1xL0FDVHBmU1UxeElZS2EzYjZibTFCTVI2L3Bv?=
+ =?utf-8?B?cmwzRzJML3VZMVI1dStqdDU4K2tWcnRLM1lIaWJtbzA3OE9zUHc4Qk9PTEpn?=
+ =?utf-8?B?L1VhWTM0YmtsWThlaEFmditIa0hWSFhRR1ViOUduMmV1bmU2bi9jWFZJQXFn?=
+ =?utf-8?B?UG1SUFpvMHNtMUl5Z2dYaVFzRkpNYlBqTHBJbGc1VTIyay80RDdEa3RXa3BP?=
+ =?utf-8?B?b1hXRjlYUGhpZmdxaGVyeU1XbTc0eWRmTC9BOE5NS1pNZDVHdnZFaFFvM3Y1?=
+ =?utf-8?B?bTB2dy9Bb214SGRMQ3FkT3Z2UnV1QnNERzEyc2ZkcnFTVG5qbmRoT2JsTzg0?=
+ =?utf-8?B?VUdUdFEzNExIVmNrQXZyTW4rYytIemNjdTBmL1RZN0crUldHbWRZb3U3RmVY?=
+ =?utf-8?B?Z1VQeGgwYVZEZnNRbnZLMnBxUDIvdnFKM2tOS0Yrdm4rV3dqNFptNTZjSGxX?=
+ =?utf-8?B?VHByWDJHWnFUS2VvK21XQ1d3QTJ3TUZYOWFhQXFxT0ZzTnJobkdpS00rYlNP?=
+ =?utf-8?B?ZEdVYU5KNG9RM0ladXNxZU5NakZld2JjYjhyZExDbTg0L3FZdHhCeTNLV25P?=
+ =?utf-8?B?TkFhc29ZOHQ3eDdKSUNqNWFuOUc0aWZQQ0Q3U3cyZzRUK0toRldEbWh3ZSt0?=
+ =?utf-8?B?VjhKWU84dS9OSDRrSlUwQmFMVVlUKytjSmFQSDBhRlpDTjJodlhsRHpkS1V3?=
+ =?utf-8?B?eTlqWDZaZytXRmI5YlBQWW1xTWFRdTIzc050M1BMTmNoem1ya3dDbVZKL2JJ?=
+ =?utf-8?B?S3dFTDR4ZjZkd3dyaytuRHpxai9iTElzYzFjekdYVHd3QlMzSWVvazY1QUxu?=
+ =?utf-8?Q?pJ/lIK7AH5iB8AgLbwVo6Og1bmvk4V7pS76j4IW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d01592ef-c8cb-4a59-cc5f-08d8f9475105
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 21:59:58.2097
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ctThmhQDpwIuG8W3s/oFoojGt7ayWtCqxDclFIjb0T0m8rKdVnsLHe0NlkaMgwYqma5nPC/xUHkeQXE3GNQbLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2640
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series of patches provides a fix for the broken metric and does some
+cleanup for AMD Zen1/Zen2 cores. Additionally, adds Zen3 events.
 
---WN3Z533fK2dw1UDf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The first patch fixes broken L2 Cache Hits from L2 HWPF recommended event.
 
-On Tue, Apr 06, 2021 at 05:15:01PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 6, 2021 at 2:09 PM Jonathan Neusch=C3=A4fer
-> <j.neuschaefer@gmx.net> wrote:
-> >
-> > This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an=
- older
-> > SoC but still commonly found on eBay, mostly in Supermicro X9 server bo=
-ards.
-> >
-> > Third-party documentation is available at: https://github.com/neuschaef=
-er/wpcm450/wiki
-> >
-> > Patches 1-4 add devicetree bindings for the WPCM450 SoC and its various=
- parts.
-> > Patches 5-7 add arch and driver support. Patches 8 and 9 add a devicetr=
-ee for
-> > the SoC and a board based on it. Patch 10 finally updates the MAINTAINE=
-RS file.
-> >
-> > Patch 2 requires "dt-bindings: arm: Convert nuvoton,npcm750 binding to =
-YAML"
-> > (https://lore.kernel.org/lkml/20210320164023.614059-1-j.neuschaefer@gmx=
-=2Enet/)
->=20
-> Hi Jonathan,
->=20
-> It appears these patches are doing roughly the right thing, and we may st=
-ill
-> be able to get them into v5.13, but I'm not sure what your plan for maint=
-aining
-> them is. The two options are that you either send your patches to be pick=
-ed up
-> by Joel, or you send everything directly to soc@kernel.org once it's fully
-> reviewed.
+The second and third patches addresses the inconsistency by defaulting all
+event codes and umask values to use lower cases and 0x%02x as their
+format.
 
-The route via Joel sounds alright with me. I've Cc'd him on this version
-of the series.
+The final patch adds Zen3 events.
 
-> I only noticed your series when patch 9/10 made it into the soc@kernel.org
-> patchwork because of the Cc, but none of the other ones did.
->=20
-> If you end up with the second option, we can go through what this involves
-> off-list.
->=20
-> Regarding the Cc:soc@kernel.org, please add that only for patches that
-> are already reviewed and ready to be picked up, ideally with a cover lett=
-er
-> that describes what the plan is for merging. If you need me to review the
-> platform code, use my arnd@arndb.de or arnd@kernel.org addresses.
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Vijay Thakkar <vijaythakkar@me.com>
+Cc: Martin Liška <mliska@suse.cz>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Kim Phillips <kim.phillips@amd.com>
+Cc: linux-perf-users@vger.kernel.org
 
-Ah sorry, soc@kernel.org slipped in automatically because of get_maintainer=
-s.pl.
+Smita Koralahalli (4):
+  perf vendor events amd: Fix broken L2 Cache Hits from L2 HWPF metric
+  perf vendor events amd: Use lowercases for all the eventcodes and umasks
+  perf vendor events amd: Use 0x%02x format for event code and umask
+  perf vendor events amd: Add Zen3 events
 
-The platform code[1] is rather simple, essentially just hooking up the
-nuvoton,wpcm450 compatible string.
+ .../pmu-events/arch/x86/amdzen1/cache.json    |  48 +-
+ .../pmu-events/arch/x86/amdzen1/core.json     |  12 +-
+ .../arch/x86/amdzen1/floating-point.json      |  42 +-
+ .../pmu-events/arch/x86/amdzen1/memory.json   |  42 +-
+ .../pmu-events/arch/x86/amdzen1/other.json    |  12 +-
+ .../arch/x86/amdzen1/recommended.json         |   8 +-
+ .../pmu-events/arch/x86/amdzen2/branch.json   |   8 +-
+ .../pmu-events/arch/x86/amdzen2/cache.json    |  60 +--
+ .../pmu-events/arch/x86/amdzen2/core.json     |  12 +-
+ .../arch/x86/amdzen2/floating-point.json      |  42 +-
+ .../pmu-events/arch/x86/amdzen2/memory.json   |  86 ++--
+ .../pmu-events/arch/x86/amdzen2/other.json    |  20 +-
+ .../arch/x86/amdzen2/recommended.json         |   8 +-
+ .../pmu-events/arch/x86/amdzen3/branch.json   |  53 +++
+ .../pmu-events/arch/x86/amdzen3/cache.json    | 402 ++++++++++++++++
+ .../pmu-events/arch/x86/amdzen3/core.json     | 137 ++++++
+ .../arch/x86/amdzen3/data-fabric.json         |  98 ++++
+ .../arch/x86/amdzen3/floating-point.json      | 139 ++++++
+ .../pmu-events/arch/x86/amdzen3/memory.json   | 428 ++++++++++++++++++
+ .../pmu-events/arch/x86/amdzen3/other.json    | 103 +++++
+ .../arch/x86/amdzen3/recommended.json         | 214 +++++++++
+ tools/perf/pmu-events/arch/x86/mapfile.csv    |   2 +-
+ 22 files changed, 1775 insertions(+), 201 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/branch.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/core.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/data-fabric.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/floating-point.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/other.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/amdzen3/recommended.json
 
+-- 
+2.17.1
 
-Thanks,
-Jonathan
-
-
-[1]: https://lore.kernel.org/lkml/20210406120921.2484986-6-j.neuschaefer@gm=
-x.net/
-
---WN3Z533fK2dw1UDf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBs2Y0ACgkQCDBEmo7z
-X9suURAAuUHlH2kJ/uuM/4HlCCKWBuZ/sYW7xJ61HDfk1IAUiWMQiz8scjXpwJwS
-K+79pQaCaxHvjReE8KAkziPdG0pkgyCg0HNojFs5F9ihpm5BS3BPgNTnofsVUBr5
-UCSe/EKJSgOuGiPs3CXQMYnqbnIbBpLgqpce0QyOlxUjzU/5GV2QHvsksgO1z296
-vgEYRwj11fveE4mtlEjvKPZ+gKUjuwvzDOXCGtmmVPTj+ogC2IRFxDGkmky67z2g
-FSE9v6Esljj9kBCKkScpRqASIkk7EzSf06D/IR7VP39E5NjnR/JtuyLCnlRplDAl
-Pigvs6mVp+NJNqfMwmHcsUwfEg/fmLOhhSM25w10DYHrCM7Sb5zoqotdZyl5Vp9A
-f9p/sYeUrCqBrBCBud6W19pIZwIKPk5b5z22cjEayJJD0+KZ9snC8acrhTLBHvhx
-KU6Gn3K9bXiqGJKbH1SlsFcympSs9/8YjeY8RiM7xL10Rq37xH7D7+V8pLwyciNv
-6hNQotcNgV87mg71nvwdblt7dZUAyUwvIae+MU8q8TrNkvssZzYGZRR07FSDEpk6
-Hx/AiAxGK3pXpD/ycfoDUXd6Xyp8vftGISold3qGpmDp/3iky8Ot66YpXVzDZ3Hn
-oiymkHp0epFTY0p3D2bieAbruGpYzAbN2cfF7evnXiqOOOp49Uc=
-=BEFd
------END PGP SIGNATURE-----
-
---WN3Z533fK2dw1UDf--
