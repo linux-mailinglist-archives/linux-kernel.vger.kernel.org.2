@@ -2,162 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1DB35540A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A2A355415
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhDFMgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:36:31 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:59862 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhDFMg3 (ORCPT
+        id S1344143AbhDFMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:41:37 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37632 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242201AbhDFMl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:36:29 -0400
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 66A5EA1B9EC;
-        Tue,  6 Apr 2021 14:36:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1617712580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=phm1fcLaGGGrQSmvwxHMDL5vIt5BOBgstrxlye/ABRs=;
-        b=QoOrVgpHiWGTOoZX9eG+GPYAzvv7pUTbudXhdbM5L2s18PtRs547zWRad8j02jQGz/uveq
-        x62f5vsq52kRL0+pwtWlrAMAwSbOAx6gsx0qfz1rhca0506RqROQIFwNZUe6mt6++ickRH
-        xDq1NGl+gQiFRYLX5RCYJZp6JHo//IQ=
-Date:   Tue, 6 Apr 2021 14:36:19 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [igb] netconsole triggers warning in netpoll_poll_dev
-Message-ID: <20210406123619.rhvtr73xwwlbu2ll@spock.localdomain>
+        Tue, 6 Apr 2021 08:41:26 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 73ACD8E5;
+        Tue,  6 Apr 2021 14:41:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617712877;
+        bh=TScFm4kNLM8PgTEJReKqvDkIXKIGV2TPe2iQsESJ+Mg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mecuFYP5mVEU1d2E1IPnSWqHa9M1L3m64OzYPdTGWhX+iQe8FBhTQE2HuBMuTE9br
+         8CakVbYWT2PUIjRk0VVnPeJWBbIltnb3JD26M7vWL/TkNtf2g8vT3s5XRv9hE4/jOF
+         OPo/2xQV91UFOg+npgyLv38BwG5xDSmK1Lsha0Jg=
+Date:   Tue, 6 Apr 2021 15:40:33 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, dafna3@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, enric.balletbo@collabora.com
+Subject: Re: [PATCH] drm: bridge: rename the function drm_bridge_hpd_notify
+ to drm_bridge_hpd_cb
+Message-ID: <YGxWwTTjhFcVDELB@pendragon.ideasonboard.com>
+References: <20210330115200.26006-1-dafna.hirschfeld@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210330115200.26006-1-dafna.hirschfeld@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Hi Dafna,
 
-I've raised this here [1] first, but was suggested to engage igb devs,
-so here we are.
+Thank you for the patch.
 
-I'm experiencing the following woes while using netconsole regularly:
+On Tue, Mar 30, 2021 at 01:52:00PM +0200, Dafna Hirschfeld wrote:
+> drm_bridge_funcs has a function called 'hpd_notify'.
+> The function drm_bridge_hpd_notify does not call
+> 'hpd_notify' but it calls 'hpd_cb'. This is rather
+> confusing. Rename the function to fix this confusion.
+> 
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c        | 2 +-
+>  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
+>  drivers/gpu/drm/bridge/display-connector.c          | 2 +-
+>  drivers/gpu/drm/bridge/lontium-lt9611uxc.c          | 8 ++++----
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c           | 2 +-
+>  drivers/gpu/drm/bridge/ti-tpd12s015.c               | 2 +-
+>  drivers/gpu/drm/drm_bridge.c                        | 8 ++++----
+>  include/drm/drm_bridge.h                            | 8 ++++----
+>  8 files changed, 18 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> index 76555ae64e9c..748f82910f4f 100644
+> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> @@ -449,7 +449,7 @@ static void adv7511_hpd_work(struct work_struct *work)
+>  				cec_phys_addr_invalidate(adv7511->cec_adap);
+>  			drm_kms_helper_hotplug_event(adv7511->connector.dev);
+>  		} else {
+> -			drm_bridge_hpd_notify(&adv7511->bridge, status);
+> +			drm_bridge_hpd_cb(&adv7511->bridge, status);
+>  		}
+>  	}
+>  }
+> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> index d0c65610ebb5..682da288ff6d 100644
+> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> @@ -794,7 +794,7 @@ static void cdns_mhdp_fw_cb(const struct firmware *fw, void *context)
+>  		if (mhdp->connector.dev)
+>  			drm_kms_helper_hotplug_event(mhdp->bridge.dev);
+>  		else
+> -			drm_bridge_hpd_notify(&mhdp->bridge, cdns_mhdp_detect(mhdp));
+> +			drm_bridge_hpd_cb(&mhdp->bridge, cdns_mhdp_detect(mhdp));
+>  	}
+>  }
+>  
+> @@ -2314,7 +2314,7 @@ static irqreturn_t cdns_mhdp_irq_handler(int irq, void *data)
+>  			else
+>  				drm_kms_helper_hotplug_event(mhdp->bridge.dev);
+>  		} else {
+> -			drm_bridge_hpd_notify(&mhdp->bridge, cdns_mhdp_detect(mhdp));
+> +			drm_bridge_hpd_cb(&mhdp->bridge, cdns_mhdp_detect(mhdp));
+>  		}
+>  	}
+>  
+> diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
+> index 05eb759da6fc..8ccd69d7fe34 100644
+> --- a/drivers/gpu/drm/bridge/display-connector.c
+> +++ b/drivers/gpu/drm/bridge/display-connector.c
+> @@ -98,7 +98,7 @@ static irqreturn_t display_connector_hpd_irq(int irq, void *arg)
+>  	struct display_connector *conn = arg;
+>  	struct drm_bridge *bridge = &conn->bridge;
+>  
+> -	drm_bridge_hpd_notify(bridge, display_connector_detect(bridge));
+> +	drm_bridge_hpd_cb(bridge, display_connector_detect(bridge));
+>  
+>  	return IRQ_HANDLED;
+>  }
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> index fee27952ec6d..58f61b5da605 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> @@ -175,10 +175,10 @@ static void lt9611uxc_hpd_work(struct work_struct *work)
+>  		connected = lt9611uxc->hdmi_connected;
+>  		mutex_unlock(&lt9611uxc->ocm_lock);
+>  
+> -		drm_bridge_hpd_notify(&lt9611uxc->bridge,
+> -				      connected ?
+> -				      connector_status_connected :
+> -				      connector_status_disconnected);
+> +		drm_bridge_hpd_cb(&lt9611uxc->bridge,
+> +				  connected ?
+> +				  connector_status_connected :
+> +				  connector_status_disconnected);
+>  	}
+>  }
+>  
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index dda4fa9a1a08..984ab5c4bc71 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -3026,7 +3026,7 @@ static irqreturn_t dw_hdmi_irq(int irq, void *dev_id)
+>  
+>  		if (hdmi->bridge.dev) {
+>  			drm_helper_hpd_irq_event(hdmi->bridge.dev);
+> -			drm_bridge_hpd_notify(&hdmi->bridge, status);
+> +			drm_bridge_hpd_cb(&hdmi->bridge, status);
+>  		}
+>  	}
+>  
+> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> index e0e015243a60..2f079b6f51bc 100644
+> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> @@ -103,7 +103,7 @@ static irqreturn_t tpd12s015_hpd_isr(int irq, void *data)
+>  	struct tpd12s015_device *tpd = data;
+>  	struct drm_bridge *bridge = &tpd->bridge;
+>  
+> -	drm_bridge_hpd_notify(bridge, tpd12s015_detect(bridge));
+> +	drm_bridge_hpd_cb(bridge, tpd12s015_detect(bridge));
+>  
+>  	return IRQ_HANDLED;
+>  }
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index 64f0effb52ac..653761a0d5f9 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -1173,7 +1173,7 @@ void drm_bridge_hpd_disable(struct drm_bridge *bridge)
+>  EXPORT_SYMBOL_GPL(drm_bridge_hpd_disable);
+>  
+>  /**
+> - * drm_bridge_hpd_notify - notify hot plug detection events
+> + * drm_bridge_hpd_cb - notify hot plug detection events
 
-```
-[22038.710800] ------------[ cut here ]------------
-[22038.710801] igb_poll+0x0/0x1440 [igb] exceeded budget in poll
-[22038.710802] WARNING: CPU: 12 PID: 40362 at net/core/netpoll.c:155 netpol=
-l_poll_dev+0x18a/0x1a0
-[22038.710802] Modules linked in: blocklayoutdriver rpcsec_gss_krb5 auth_rp=
-cgss nfsv4 dns_resolver nfs lockd grace sunrpc nfs_ssc fscache uinput netco=
-nsole rfcomm nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 cmac algif_h=
-ash algif_skcipher af_alg nf_tables tun bnep nfnetlink iwlmvm snd_hda_codec=
-_realtek snd_hda_codec_generic ledtrig_audio mac80211 snd_hda_codec_hdmi sn=
-d_hda_intel nls_iso8859_1 snd_intel_dspcfg soundwire_intel vfat libarc4 sou=
-ndwire_generic_allocation soundwire_cadence fat intel_rapl_msr snd_hda_code=
-c intel_rapl_common iwlwifi snd_hda_core soundwire_bus snd_usb_audio snd_so=
-c_core eeepc_wmi btusb asus_wmi snd_usbmidi_lib btrtl edac_mce_amd sparse_k=
-eymap btbcm video wmi_bmof mxm_wmi kvm_amd snd_hwdep snd_compress btintel s=
-nd_rawmidi ac97_bus cfg80211 uvcvideo bluetooth snd_pcm_dmaengine snd_seq_d=
-evice snd_pcm videobuf2_vmalloc kvm videobuf2_memops snd_timer videobuf2_v4=
-l2 joydev igb mousedev ecdh_generic snd irqbypass pl2303 ipmi_devintf ecc v=
-ideobuf2_common soundcore
-[22038.710820]  r8169 ipmi_msghandler rapl crc16 k10temp rfkill sp5100_tco =
-dca i2c_piix4 tpm_crb realtek mdio_devres tpm_tis libphy tpm_tis_core pinct=
-rl_amd wmi acpi_cpufreq mac_hid tcp_bbr2 vhost_vsock vmw_vsock_virtio_trans=
-port_common vhost vhost_iotlb vsock v4l2loopback videodev mc nct6775 hwmon_=
-vid crypto_user fuse ip_tables x_tables xfs dm_thin_pool dm_persistent_data=
- dm_bio_prison dm_bufio libcrc32c crc32c_generic dm_crypt cbc encrypted_key=
-s trusted tpm hid_logitech_hidpp hid_logitech_dj usbhid dm_mod raid10 crct1=
-0dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel md_mo=
-d crypto_simd cryptd glue_helper ccp amdgpu rng_core xhci_pci xhci_pci_rene=
-sas drm_ttm_helper ttm gpu_sched i2c_algo_bit drm_kms_helper syscopyarea sy=
-sfillrect sysimgblt fb_sys_fops cec drm agpgart
-[22038.710835] CPU: 12 PID: 40362 Comm: systemd-sleep Not tainted 5.11.0-pf=
-7 #1
-[22038.710836] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIO=
-S 3302 03/05/2021
-[22038.710836] RIP: 0010:netpoll_poll_dev+0x18a/0x1a0
-[22038.710837] Code: 6e ff 80 3d d2 9d f8 00 00 0f 85 5c ff ff ff 48 8b 73 =
-28 48 c7 c7 0c b8 21 84 89 44 24 04 c6 05 b6 9d f8 00 01 e8 84 21 1c 00 <0f=
-> 0b 8b 54 24 04 e9 36 ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00
-[22038.710838] RSP: 0018:ffffb24106e37ba0 EFLAGS: 00010086
-[22038.710838] RAX: 0000000000000000 RBX: ffff9599d2929c50 RCX: ffff959f8ed=
-1ac30
-[22038.710839] RDX: 0000000000000000 RSI: 0000000000000023 RDI: ffff959f8ed=
-1ac28
-[22038.710839] RBP: ffff9598981d4058 R08: 0000000000000019 R09: ffffb24206e=
-3796d
-[22038.710839] R10: ffffffffffffffff R11: ffffb24106e37968 R12: ffff959887e=
-51ec8
-[22038.710840] R13: 000000000000000c R14: 00000000ffffffff R15: ffff9599d29=
-29c60
-[22038.710840] FS:  00007f3ade370a40(0000) GS:ffff959f8ed00000(0000) knlGS:=
-0000000000000000
-[22038.710841] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[22038.710841] CR2: 0000000000000000 CR3: 00000003017b0000 CR4: 00000000003=
-50ee0
-[22038.710841] Call Trace:
-[22038.710842]  netpoll_send_skb+0x185/0x240
-[22038.710842]  write_msg+0xe5/0x100 [netconsole]
-[22038.710842]  console_unlock+0x37d/0x640
-[22038.710842]  ? __schedule+0x2e5/0xc90
-[22038.710843]  suspend_devices_and_enter+0x2ac/0x7f0
-[22038.710843]  pm_suspend.cold+0x321/0x36c
-[22038.710843]  state_store+0xa6/0x140
-[22038.710844]  kernfs_fop_write_iter+0x124/0x1b0
-[22038.710844]  new_sync_write+0x16a/0x200
-[22038.710844]  vfs_write+0x21c/0x2e0
-[22038.710844]  __x64_sys_write+0x6d/0xf0
-[22038.710845]  do_syscall_64+0x33/0x40
-[22038.710845]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[22038.710845] RIP: 0033:0x7f3adece10f7
-[22038.710846] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f =
-00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48=
-> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-[22038.710847] RSP: 002b:00007ffc51c555b8 EFLAGS: 00000246 ORIG_RAX: 000000=
-0000000001
-[22038.710847] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f3adec=
-e10f7
-[22038.710848] RDX: 0000000000000004 RSI: 00007ffc51c556a0 RDI: 00000000000=
-00004
-[22038.710848] RBP: 00007ffc51c556a0 R08: 000055ea374302a0 R09: 00007f3aded=
-770c0
-[22038.710849] R10: 00007f3aded76fc0 R11: 0000000000000246 R12: 00000000000=
-00004
-[22038.710849] R13: 000055ea3742c430 R14: 0000000000000004 R15: 00007f3aded=
-b3700
-[22038.710849] ---[ end trace 6eae54fbf23807f8 ]---
-```
+This function is still documented as notifying hot plug detection
+events, so drm_bridge_hpd_cb() isn't a great name :-S I do agree there's
+confusion with the current naming scheme though.
 
-This one happened during suspend/resume cycle (on resume), followed by:
+bridge->hpd_cb() is an internal callback, not part of bridge ops, so I'd
+rather not expose its name in the public drm_bridge_hpd_notify() API.
+Could we find a better naming scheme ?
 
-```
-[22038.868669] igb 0000:05:00.0 enp5s0: Reset adapter
-[22040.998673] igb 0000:05:00.0 enp5s0: Reset adapter
-[22043.819198] igb 0000:05:00.0 enp5s0: igb: enp5s0 NIC Link is Up 1000 Mbp=
-s Full Duplex, Flow Control: RX
-```
+>   * @bridge: bridge control structure
+>   * @status: output connection status
+>   *
+> @@ -1183,15 +1183,15 @@ EXPORT_SYMBOL_GPL(drm_bridge_hpd_disable);
+>   *
+>   * This function shall be called in a context that can sleep.
+>   */
+> -void drm_bridge_hpd_notify(struct drm_bridge *bridge,
+> -			   enum drm_connector_status status)
+> +void drm_bridge_hpd_cb(struct drm_bridge *bridge,
+> +		       enum drm_connector_status status)
+>  {
+>  	mutex_lock(&bridge->hpd_mutex);
+>  	if (bridge->hpd_cb)
+>  		bridge->hpd_cb(bridge->hpd_data, status);
+>  	mutex_unlock(&bridge->hpd_mutex);
+>  }
+> -EXPORT_SYMBOL_GPL(drm_bridge_hpd_notify);
+> +EXPORT_SYMBOL_GPL(drm_bridge_hpd_cb);
+>  
+>  #ifdef CONFIG_OF
+>  /**
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index 2195daa289d2..ab54715eda8b 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -605,7 +605,7 @@ struct drm_bridge_funcs {
+>  	 * @hpd_enable:
+>  	 *
+>  	 * Enable hot plug detection. From now on the bridge shall call
+> -	 * drm_bridge_hpd_notify() each time a change is detected in the output
+> +	 * drm_bridge_hpd_cb() each time a change is detected in the output
+>  	 * connection status, until hot plug detection gets disabled with
+>  	 * @hpd_disable.
+>  	 *
+> @@ -620,7 +620,7 @@ struct drm_bridge_funcs {
+>  	 * @hpd_disable:
+>  	 *
+>  	 * Disable hot plug detection. Once this function returns the bridge
+> -	 * shall not call drm_bridge_hpd_notify() when a change in the output
+> +	 * shall not call drm_bridge_hpd_cb() when a change in the output
+>  	 * connection status occurs.
+>  	 *
+>  	 * This callback is optional and shall only be implemented by bridges
+> @@ -878,8 +878,8 @@ void drm_bridge_hpd_enable(struct drm_bridge *bridge,
+>  				      enum drm_connector_status status),
+>  			   void *data);
+>  void drm_bridge_hpd_disable(struct drm_bridge *bridge);
+> -void drm_bridge_hpd_notify(struct drm_bridge *bridge,
+> -			   enum drm_connector_status status);
+> +void drm_bridge_hpd_cb(struct drm_bridge *bridge,
+> +		       enum drm_connector_status status);
+>  
+>  #ifdef CONFIG_DRM_PANEL_BRIDGE
+>  struct drm_bridge *drm_panel_bridge_add(struct drm_panel *panel);
 
-I've bumped into a similar issue in BZ 211911 [2] (see c#16),
-and in c#17 it was suggested it was a separate unrelated issue,
-hence I'm raising a new concern.
+-- 
+Regards,
 
-Please help in finding out why this woe happens and in fixing it.
-
-Thanks.
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D212573
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=3D211911
-
---=20
-  Oleksandr Natalenko (post-factum)
+Laurent Pinchart
