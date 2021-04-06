@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3292354AEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657C5354AF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 04:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243410AbhDFCiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 22:38:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243408AbhDFCiC (ORCPT
+        id S243431AbhDFCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 22:38:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37812 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S243408AbhDFCij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:38:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617676675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5Y7rI+FtGX0I4XVdEnNnyzKf98zHZb+U6KjZK4yGbc=;
-        b=KrLXRSpQqL5xKRQawQg5vo9gyq6NBhIrI6oWoIZcV0VH8pj2tZQXtnVZ7o3U3DnlLFJ/Bs
-        1GXePdCxfvrPs0swavs3DbdWumZEX07ghFDZJXc7eH/LcPThvKEfT23jKfLCDJHYIgXe13
-        Lc36DzraX89lHBN0IpBGqDQRX9Z3AZQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-SuhA5TQCNkCWqJin6rD1AA-1; Mon, 05 Apr 2021 22:37:51 -0400
-X-MC-Unique: SuhA5TQCNkCWqJin6rD1AA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 468601800D50;
-        Tue,  6 Apr 2021 02:37:45 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E86A690F5;
-        Tue,  6 Apr 2021 02:37:41 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 10:37:38 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
-References: <20210405052404.213889-1-leon@kernel.org>
+        Mon, 5 Apr 2021 22:38:39 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1362cNbi030846
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 5 Apr 2021 22:38:24 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6C30615C3399; Mon,  5 Apr 2021 22:38:23 -0400 (EDT)
+Date:   Mon, 5 Apr 2021 22:38:23 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/2] ext4: Handle casefolding with encryption
+Message-ID: <YGvJn09vECHxKCMP@mit.edu>
+References: <20210319073414.1381041-1-drosen@google.com>
+ <20210319073414.1381041-2-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405052404.213889-1-leon@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210319073414.1381041-2-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, Mar 19, 2021 at 07:34:13AM +0000, Daniel Rosenberg wrote:
+> This adds support for encryption with casefolding.
 > 
-> From Avihai,
+> Since the name on disk is case preserving, and also encrypted, we can no
+> longer just recompute the hash on the fly. Additionally, to avoid
+> leaking extra information from the hash of the unencrypted name, we use
+> siphash via an fscrypt v2 policy.
 > 
-> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> imposed on PCI transactions, and thus, can improve performance.
+> The hash is stored at the end of the directory entry for all entries
+> inside of an encrypted and casefolded directory apart from those that
+> deal with '.' and '..'. This way, the change is backwards compatible
+> with existing ext4 filesystems.
 > 
-> Until now, relaxed ordering could be set only by user space applications
-> for user MRs. The following patch series enables relaxed ordering for the
-> kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> such, it is ignored by vendors that don't support it.
-> 
-> The following test results show the performance improvement achieved
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
 
-Did you test this patchset with CPU does not support relaxed ordering?
+Applied, thanks with the following addition so that tests, e2fsprogs,
+etc., can determine whether or not the currently running kernel has
+this feature enabled:
 
-We observed significantly performance degradation when run perftest with
-relaxed ordering enabled over old CPU.
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index a3d08276d441..7367ba406e01 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -313,6 +313,7 @@ EXT4_ATTR_FEATURE(verity);
+ #endif
+ EXT4_ATTR_FEATURE(metadata_csum_seed);
+ EXT4_ATTR_FEATURE(fast_commit);
++EXT4_ATTR_FEATURE(encrypted_casefold);
+ 
+ static struct attribute *ext4_feat_attrs[] = {
+ 	ATTR_LIST(lazy_itable_init),
+@@ -330,6 +331,7 @@ static struct attribute *ext4_feat_attrs[] = {
+ #endif
+ 	ATTR_LIST(metadata_csum_seed),
+ 	ATTR_LIST(fast_commit),
++	ATTR_LIST(encrypted_casefold),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(ext4_feat);
 
-https://github.com/linux-rdma/perftest/issues/116
 
-thanks
+Future versions of e2fsprogs may issue a warning if tune2fs or mke2fs
+tries to modify or create a file system such that both the encryption
+and casefold feature is enabled if it appears that the kernel won't
+support this combination.  Daniel, if you could try to get this change
+into the Android kernels that are using encrypted casefold, that would
+be a good thing.
 
+					- Ted
