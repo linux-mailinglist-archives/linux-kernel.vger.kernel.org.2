@@ -2,204 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265C13553D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2DD3553D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 14:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242014AbhDFM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 08:26:41 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6874 "EHLO mga12.intel.com"
+        id S242097AbhDFM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 08:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239328AbhDFM0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:26:36 -0400
-IronPort-SDR: DUhyKIkQAoFbXiRq/mhAjaxSh5pAqH0vN6YWWayzCHc49BKUb6KPdfIqMt3yQ5KoefTaN9vCvG
- HKJobspnk3BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="172527356"
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="172527356"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 05:26:27 -0700
-IronPort-SDR: 8lKa5n8Ae2HzZHCFbou4Yvgz+CvYTNxLDETcl6LhmceLHj4saiIoum14LlgTHgQtWfX7shLQj2
- wyS9WyPwUmoA==
-X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
-   d="scan'208";a="421195694"
-Received: from oowomilo-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.55])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 05:26:23 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Carlis <llyz108@163.com>, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Xuezhi Zhang <zhangxuezhi1@yulong.com>
-Subject: Re: [PATCH] drm/i915/sysfs: convert snprintf to sysfs_emit
-In-Reply-To: <20210404084103.528211-1-llyz108@163.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210404084103.528211-1-llyz108@163.com>
-Date:   Tue, 06 Apr 2021 15:26:20 +0300
-Message-ID: <87k0pflhub.fsf@intel.com>
+        id S241745AbhDFM1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:27:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55BB76121E;
+        Tue,  6 Apr 2021 12:27:28 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 08:27:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ftrace: Check if pages were allocated before calling
+ free_pages()
+Message-ID: <20210406082726.3b25a2f6@gandalf.local.home>
+In-Reply-To: <1617691905-8016-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1617691905-8016-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 04 Apr 2021, Carlis <llyz108@163.com> wrote:
-> From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
->
-> Fix the following coccicheck warning:
-> drivers/gpu/drm/i915//i915_sysfs.c:266:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:285:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:276:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:335:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:390:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:465:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:107:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:75:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:83:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:91:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:99:8-16: 
-> WARNING: use scnprintf or sprintf
-> drivers/gpu/drm/i915//i915_sysfs.c:326:8-16: 
-> WARNING: use scnprintf or sprintf
->
-> Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+On Tue,  6 Apr 2021 14:51:45 +0800
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
 
-Thanks for the patch, pushed to drm-intel-next.
-
-BR,
-Jani.
-
+> It is possible that on error pg->size can be zero when getting its
+> order,which would return a -1 value. It is dangerous to pass in an
+> order of -1 to free_pages(). Check if order is greater than or equal
+> to zero before calling free_pages().
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  drivers/gpu/drm/i915/i915_sysfs.c | 30 ++++++++++++------------------
->  1 file changed, 12 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/i915_sysfs.c b/drivers/gpu/drm/i915/i915_sysfs.c
-> index 45d32ef42787..4c6b5d52b5ca 100644
-> --- a/drivers/gpu/drm/i915/i915_sysfs.c
-> +++ b/drivers/gpu/drm/i915/i915_sysfs.c
-> @@ -72,7 +72,7 @@ show_rc6_mask(struct device *kdev, struct device_attribute *attr, char *buf)
->  	if (HAS_RC6pp(dev_priv))
->  		mask |= BIT(2);
->  
-> -	return snprintf(buf, PAGE_SIZE, "%x\n", mask);
-> +	return sysfs_emit(buf, "%x\n", mask);
->  }
->  
->  static ssize_t
-> @@ -80,7 +80,7 @@ show_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
->  {
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	u32 rc6_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", rc6_residency);
-> +	return sysfs_emit(buf, "%u\n", rc6_residency);
->  }
->  
->  static ssize_t
-> @@ -88,7 +88,7 @@ show_rc6p_ms(struct device *kdev, struct device_attribute *attr, char *buf)
->  {
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	u32 rc6p_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6p);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", rc6p_residency);
-> +	return sysfs_emit(buf, "%u\n", rc6p_residency);
->  }
->  
->  static ssize_t
-> @@ -96,7 +96,7 @@ show_rc6pp_ms(struct device *kdev, struct device_attribute *attr, char *buf)
->  {
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	u32 rc6pp_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6pp);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", rc6pp_residency);
-> +	return sysfs_emit(buf, "%u\n", rc6pp_residency);
->  }
->  
->  static ssize_t
-> @@ -104,7 +104,7 @@ show_media_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
->  {
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	u32 rc6_residency = calc_residency(dev_priv, VLV_GT_MEDIA_RC6);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", rc6_residency);
-> +	return sysfs_emit(buf, "%u\n", rc6_residency);
->  }
->  
->  static DEVICE_ATTR(rc6_enable, S_IRUGO, show_rc6_mask, NULL);
-> @@ -263,8 +263,7 @@ static ssize_t gt_act_freq_mhz_show(struct device *kdev,
->  	struct drm_i915_private *i915 = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &i915->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_rps_read_actual_frequency(rps));
-> +	return sysfs_emit(buf, "%d\n", intel_rps_read_actual_frequency(rps));
->  }
->  
->  static ssize_t gt_cur_freq_mhz_show(struct device *kdev,
-> @@ -273,8 +272,7 @@ static ssize_t gt_cur_freq_mhz_show(struct device *kdev,
->  	struct drm_i915_private *i915 = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &i915->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_gpu_freq(rps, rps->cur_freq));
-> +	return sysfs_emit(buf, "%d\n", intel_gpu_freq(rps, rps->cur_freq));
->  }
->  
->  static ssize_t gt_boost_freq_mhz_show(struct device *kdev, struct device_attribute *attr, char *buf)
-> @@ -282,8 +280,7 @@ static ssize_t gt_boost_freq_mhz_show(struct device *kdev, struct device_attribu
->  	struct drm_i915_private *i915 = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &i915->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_gpu_freq(rps, rps->boost_freq));
-> +	return sysfs_emit(buf, "%d\n", intel_gpu_freq(rps, rps->boost_freq));
->  }
->  
->  static ssize_t gt_boost_freq_mhz_store(struct device *kdev,
-> @@ -323,8 +320,7 @@ static ssize_t vlv_rpe_freq_mhz_show(struct device *kdev,
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &dev_priv->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_gpu_freq(rps, rps->efficient_freq));
-> +	return sysfs_emit(buf, "%d\n", intel_gpu_freq(rps, rps->efficient_freq));
->  }
->  
->  static ssize_t gt_max_freq_mhz_show(struct device *kdev, struct device_attribute *attr, char *buf)
-> @@ -332,8 +328,7 @@ static ssize_t gt_max_freq_mhz_show(struct device *kdev, struct device_attribute
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &dev_priv->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_gpu_freq(rps, rps->max_freq_softlimit));
-> +	return sysfs_emit(buf, "%d\n", intel_gpu_freq(rps, rps->max_freq_softlimit));
->  }
->  
->  static ssize_t gt_max_freq_mhz_store(struct device *kdev,
-> @@ -387,8 +382,7 @@ static ssize_t gt_min_freq_mhz_show(struct device *kdev, struct device_attribute
->  	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->  	struct intel_rps *rps = &dev_priv->gt.rps;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			intel_gpu_freq(rps, rps->min_freq_softlimit));
-> +	return sysfs_emit(buf, "%d\n", intel_gpu_freq(rps, rps->min_freq_softlimit));
->  }
->  
->  static ssize_t gt_min_freq_mhz_store(struct device *kdev,
-> @@ -462,7 +456,7 @@ static ssize_t gt_rp_mhz_show(struct device *kdev, struct device_attribute *attr
->  	else
->  		BUG();
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-> +	return sysfs_emit(buf, "%d\n", val);
->  }
->  
->  static const struct attribute * const gen6_attrs[] = {
+>  kernel/trace/ftrace.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index b7e29db..74efc33 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6811,7 +6811,8 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
+>  		if (!pg->index) {
+>  			*last_pg = pg->next;
+>  			order = get_count_order(pg->size / ENTRIES_PER_PAGE);
+> -			free_pages((unsigned long)pg->records, order);
+> +			if (order >= 0)
+> +				free_pages((unsigned long)pg->records, order);
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+This has already been fixed upstream.
+
+-- Steve
+
+>  			ftrace_number_of_pages -= 1 << order;
+>  			ftrace_number_of_groups--;
+>  			kfree(pg);
+
