@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2292E35587B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CFE35587C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345994AbhDFPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:50:35 -0400
-Received: from mail-mw2nam10on2067.outbound.protection.outlook.com ([40.107.94.67]:5984
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S1346005AbhDFPug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:50:36 -0400
+Received: from mail-mw2nam08on2075.outbound.protection.outlook.com ([40.107.101.75]:42145
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231710AbhDFPue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:50:34 -0400
+        id S243860AbhDFPuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:50:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JzDnvaScEaGD7we+po8WdjF0N4wtCp0v8/nutYcCaPsxXaK7C7H2csYidZRFzOKydDqq3i0e7SmUY8qWsTwAGfGsFti+ls8usuCz6xWD01MxnVKSovwMXG2ve9vHSpglr2c4CRhZJQ3dnPX3CWGlsb+Y8uR/8Nflih6ySmF+vLjAZ/0I7E4WG0d1p9CWuXEKOKCrRAZ4ulGkLmZRlRaRgDOaFhB9IAgjWX4dKP1dcFBo7ynJFwhRLzunUse1wVtbRtLbPNlZozSbFZUVeNwiRPzqqM4wCXFQ+K+S7sxFTXjwD3qU3w+a/r4KzsfchkghmLhFFRc8pANWzn/FBNkqHw==
+ b=NC9BJWUwq7mBD6kFWRn7u329QFGaEHin+VcMEHSApW/uqSsYfvouV+nfdtG/pNaAdSUoPNNBz4JvqWkiK886riuS6Q8+rcojqkFHGYT9cf5++TtV9lWiciDH2DxMNuJ1vUnsG9cOAej05vaIIoyK2anFbkyNmOZbv1VUo1iVmgagNOCf8WaZCtyC05jP885YUIOwc+R3zZV3+gPUs4YqFHP4N2q5WqZyEGU6MVxzCUOOLZa74wNSA8FUHLk4Fba7UdWjqwwO90l7ghmFxJbNDVcm1GtbVRs/Ssamqh1uf3c9hug/nEO8CV5zO/2dawxKkBAwJTFzbYOvFXbAfaBwEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z6um7c7pHjIzsiTciVgK1DNwuElSmKCPSX4+VGrT268=;
- b=IGgXbbok93MAW0VGGCtCOmzzcacZZTcO3lUCZcSpV6xZustgxbIbG0fYhugdZYvAZQyJzLRLwwpDoXfB813IHYbql0ioxj3Gx5MqBPlW5pvoP7krVSwB+dqh26m6xpmPh9EluRBxfTCCJEFM7UL5R9jmIGMyBRZyB/KwxoMNpsINu3nzJsQ2z6kLbitlPm35jg+2OmoTt6eI5coe5NkjWf0aDK7wyWHz0jh359cnWIlJvxH4SqJSdqgyBLjXb3RNF6MkgRMLEpAdsZXM1ji4lxiHVeAj8Rtlmnx7elNrFif46hE5DJNz07OhLT9sMzd7Sk7J9BjzdyujTUEmreeZiw==
+ bh=V9mRExYaYEF/WFCDwwyEd5kszxxyikTsf/8lkPGlg+k=;
+ b=dmifRYivmQrDME5ydtjoXwbzWcTJ6/xAYXAIBTzsVDHl96pKTYHQhKUb9dF7EHx0+a5lD/uLXeeiD+0hGfLn+P50+lR4+hN44HY1qtEYoDOoKTyQQPU4jFL/S26yKJpXj8Pa+NICd5zPeXHY4M52eIT0ePJSMTOb9fuzpn6D0Wh/DgoGmTjVMVwnPGCZnY+DqCqYVDf8BlToqx0rtDrAQY2clr75vmVMhau5gbOCAK6j6WsBPciLhV6gnDuTFXyn89pADYOKPj6LOQGQZ2kjN+/1gpEPC2saHAyrJ37QOE/Z9pnfViQDaL/pI4AiZDTOM2aXlKf5g37/2eDePteylg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z6um7c7pHjIzsiTciVgK1DNwuElSmKCPSX4+VGrT268=;
- b=e5cagcgHk4lQPTZKa6Wh4GYM/dZJ7c4s5YKbrD7n4++IgN/04+X92oOtsObl9arkfWy2ab1t+gj+V7b55p/CI/cc3/PFTzfbOwS0KgVp0cPLRBxPMD1/sW0yoozdbBx2LTDaEzkYU25dtnU1Xhlt8LD1F0xTZqpgGsmauEuO+IU=
-Received: from MWHPR12CA0042.namprd12.prod.outlook.com (2603:10b6:301:2::28)
- by MN2PR12MB3310.namprd12.prod.outlook.com (2603:10b6:208:aa::25) with
+ bh=V9mRExYaYEF/WFCDwwyEd5kszxxyikTsf/8lkPGlg+k=;
+ b=zuP/JOJxzUbJooHK9qkYwjMCacgQvQor/srdDnJpZMqAw8avM2puYQfPKzqQ2IcD52t+S2wYiYXSpRbpD15JTLDOqJxNa+eopSlPgRKPplSGMm9MHK6GmN4Pqux7RLh8vY8jAg0Qye8T4YvN4/uYA88TO2Mtbw9UryALnPjIb6k=
+Received: from MWHPR12CA0046.namprd12.prod.outlook.com (2603:10b6:301:2::32)
+ by DM6PR12MB3258.namprd12.prod.outlook.com (2603:10b6:5:187::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
  2021 15:50:25 +0000
 Received: from CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:2:cafe::ca) by MWHPR12CA0042.outlook.office365.com
- (2603:10b6:301:2::28) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10b6:301:2:cafe::57) by MWHPR12CA0046.outlook.office365.com
+ (2603:10b6:301:2::32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
- Transport; Tue, 6 Apr 2021 15:50:24 +0000
+ Transport; Tue, 6 Apr 2021 15:50:25 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
@@ -46,150 +46,131 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CO1NAM11FT015.mail.protection.outlook.com (10.13.175.130) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 15:50:24 +0000
+ 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 15:50:25 +0000
 Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2106.2; Tue, 6 Apr 2021 10:50:23 -0500
 From:   Ramakrishna Saripalli <rsaripal@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
 CC:     <rsaripal@amd.com>
-Subject: [PATCH 0/5] Introduce support for PSF mitigation
-Date:   Tue, 6 Apr 2021 10:49:59 -0500
-Message-ID: <20210406155004.230790-1-rsaripal@amd.com>
+Subject: [PATCH 1/5] x86/cpufeatures: Define feature bits to support mitigation of PSF
+Date:   Tue, 6 Apr 2021 10:50:00 -0500
+Message-ID: <20210406155004.230790-2-rsaripal@amd.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210406155004.230790-1-rsaripal@amd.com>
+References: <20210406155004.230790-1-rsaripal@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.180.168.240]
 X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b73a9b7c-2947-4c6c-5cb3-08d8f913b115
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3310:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB33107BA65DE198EF5F487DDA9B769@MN2PR12MB3310.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: af227774-5024-4d60-5555-08d8f913b1c7
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3258:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3258059B632748575BA819459B769@DM6PR12MB3258.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JGKN3qdM6vEcvDvXCPjvAV7AKO4hqG3l92pOr1mWyku115pl64hBNdTPWGJRkbltasN4IYf+PmLx1jNW5TfsRbHmmvbTQNOxYbYx92tHmQZ0pjLsaoQN7HjWtRPzw6hlQOtUg+N9+DdEoUYhrRT3ZsrC1aXP67TrM71/dGITGZ9wOFrCTgw20YzKk/SlQ0MmiMh8mwM0TjF5ZTGgAp0WzKwrsBMVC2e7c0csANsVVRP5YQlpWSqD/+1NoJa30+OLX6H7ypIuOoT6u3BwyZc0N9Y1s+psVQ6zsbslDMb0dEAfowelmVaBegGfROQxXK1olIDvDPtuMp4KiO8RtcEBhvv7HT//AFzFqsfBxWKaLxT61M2W2k0Y2m4ePHAdBWgziG66cKNGW5MiWWBIsVFlRrpDlurf6mZAD552TPj/TeiAUx/Lh31pCVNZYQYyMfLWwfxg7133JPOkARJpjYgnOpI5LnDrc/agskizrjKBMbztrCP+pZ9fyYhpYyxTVnGHXu8daS2CyBBB/W0dLs4GeNZ8Xzfja0JeYmVn69w/Hr5BaYkd0uBo8ujwhhgy7ZXvVyqNhYdNsxXKeEWjhY/Y/WA+U/Mwbjf9XjE9leorvtL32vAqsi4lhZ9E/5v7UQEq/n4SwrsB0Ore9jJvLjya/HqjC7oE2KebVSMmM7X7aeafmXZP5ERE/Smiselv1XB4
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(36840700001)(46966006)(36756003)(2616005)(110136005)(5660300002)(478600001)(8936002)(7696005)(16526019)(26005)(186003)(82310400003)(70206006)(82740400003)(336012)(316002)(81166007)(1076003)(2906002)(36860700001)(70586007)(83380400001)(4326008)(8676002)(356005)(6666004)(47076005)(426003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Uqcj/DXbw4uz+yts9ZPXv0zuvVuzk3NlOZ0jQg9StPbYmBlu+k/cAQCVGsbJtyUOPijB84n8W8r+eyETLSB4qznk2XgOXLv8D6Tr84Du3/8tIhoiYAIO8Xk3WXPLGT5F6Jo1MJj+ChG6Z1USGlWApzQhpwbkizc/HVc6KmCt1Q2slJQTmAMqiYUpmifXy/wIj3acUADMZTYtbLp28KipnyOHp/SbL+b36sOj2pJ5vQFN48MFs+YInBJjcP3FVk4SD/zlymdlpr6bDXUQODGQXZuLMlczcC/A24xQt9wFPd1RnOiLxdKK8q52RZ6sLnaOJ4XSaS5H504SkQamHP0m+XAIwiS3iPeqIsiuPgwzfa4Hn9vDgTAn8Rq3ZeZiqbLeZAg/mjfOqxz7s0+KbHjcxvGtYFcMqyR1w7AIa2CVZ32iPWofI4NM+hN1jI6oPmXt8hltBHaXhnhXYzKcjWYIedu7KrIeT9jZFXA1Ge5WuKu9FXOa/ACmg++zM5Dg+7ZNHaPUGBvCIawweWJxEW1Xlu/h4aS+kcjQK2D6ASrGV2oiw8prI/8MAgxjaQ4651jvrTK2dIOGh+Pi+wmG1o2/udKE+vYK6/i9b6RiviHw75nErh2VBtRoJK7tVmf01Mk05gElalKQxoxVhohp1Zw20Bs1LsDrv/oFY3NnREDuQNE0XPeKo1nzobxDyC3s+6A2
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(46966006)(36840700001)(2616005)(16526019)(478600001)(8936002)(7696005)(70586007)(36756003)(356005)(186003)(1076003)(6666004)(2906002)(36860700001)(26005)(47076005)(5660300002)(426003)(4326008)(336012)(83380400001)(110136005)(82310400003)(8676002)(82740400003)(316002)(81166007)(70206006)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:50:24.1998
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:50:25.3661
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b73a9b7c-2947-4c6c-5cb3-08d8f913b115
+X-MS-Exchange-CrossTenant-Network-Message-Id: af227774-5024-4d60-5555-08d8f913b1c7
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3310
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3258
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ramakrishna Saripalli <rk.saripalli@amd.com>
 
-Predictive Store Forwarding:
-AMD Zen3 processors feature a new technology called
-Predictive Store Forwarding (PSF).
+Certain AMD processors feature a new technology called Predictive Store
+Forwarding (PSF).
 
-<TODO:Insert link to AMD PSF whitepaper>
-
-PSF is a hardware-based micro-architectural optimization designed
-to improve the performance of code execution by predicting address
-dependencies between loads and stores.
-
-How PSF works:
-
-It is very common for a CPU to execute a load instruction to an address
-that was recently written by a store. Modern CPUs implement a technique
-known as Store-To-Load-Forwarding (STLF) to improve performance in such
-cases. With STLF, data from the store is forwarded directly to the load
-without having to wait for it to be written to memory. In a typical CPU,
-STLF occurs after the address of both the load and store are calculated
-and determined to match.
-
-PSF expands on this by speculating on the relationship between loads and
-stores without waiting for the address calculation to complete. With PSF,
-the CPU learns over time the relationship between loads and stores.
-If STLF typically occurs between a particular store and load, the CPU will
-remember this.
-
-In typical code, PSF provides a performance benefit by speculating on
-the load result and allowing later instructions to begin execution
-sooner than they otherwise would be able to.
-
-Causes of Incorrect PSF:
+PSF is a micro-architectural optimization designed to improve the
+performance of code execution by predicting dependencies between
+loads and stores.
 
 Incorrect PSF predictions can occur due to two reasons.
 
-First, it is possible that the store/load pair had a dependency for a
-while but later stops having a dependency.  This can occur if the address
-of either the store or load changes during the execution of the program.
+- It is possible that the load/store pair may have had dependency for
+  a while but the dependency has stopped because the address in the
+  load/store pair has changed.
 
-The second source of incorrect PSF predictions can occur if there is an
-alias in the PSF predictor structure.  The PSF predictor tracks
-store-load pairs based on portions of their RIP. It is possible that a
-store-load pair which does have a dependency may alias in the predictor
-with another store-load pair which does not.
+- Second source of incorrect PSF prediction can occur because of an alias
+  in the PSF predictor structure stored in the microarchitectural state.
+  PSF predictor tracks load/store pair based on portions of instruction
+  pointer. It is possible that a load/store pair which does have a
+  dependency may be aliased by another load/store pair which does not have
+  the same dependency. This can result in incorrect speculation.
 
-This can result in incorrect speculation when the second store/load pair
-is executed.
+  Software may be able to detect this aliasing and perform side-channel
+  attacks.
 
-Security Analysis:
+These features are being introduced to support mitigation from these attacks.
 
-Previous research has shown that when CPUs speculate on non-architectural
-paths it can lead to the potential of side channel attacks.
-In particular, programs that implement isolation, also known as
-‘sandboxing’, entirely in software may need to be concerned with incorrect
-CPU speculation as they can occur due to bad PSF predictions.
+All CPUs that implement PSF provide one bit to disable this feature.
+If the bit to disable this feature is available, it means that the CPU
+implements PSF feature and is therefore vulnerable to PSF risks.
 
-Because PSF speculation is limited to the current program context,
-the impact of bad PSF speculation is very similar to that of
-Speculative Store Bypass (Spectre v4)
+The bits that are introduced
 
-Predictive Store Forwarding controls:
-There are two hardware control bits which influence the PSF feature:
-- MSR 48h bit 2 – Speculative Store Bypass (SSBD)
-- MSR 48h bit 7 – Predictive Store Forwarding Disable (PSFD)
+X86_FEATURE_AMD_PSFD: CPUID_Fn80000008_EBX[28] ("PSF disable")
+	If this bit is 1, CPU implements PSF and PSF mitigation is
+	supported.
 
-The PSF feature is disabled if either of these bits are set.  These bits
-are controllable on a per-thread basis in an SMT system. By default, both
-SSBD and PSFD are 0 meaning that the speculation features are enabled.
+X86_FEATURE_PSFD: Generic Linux feature to indicate the CPU supports
+	controls to mitigate PSF.
 
-While the SSBD bit disables PSF and speculative store bypass, PSFD only
-disables PSF.
+ 	X86_FEATURE_PSFD is set if and only if X86_FEATURE_AMD_PSFD
+	is set
 
-PSFD may be desirable for software which is concerned with the
-speculative behavior of PSF but desires a smaller performance impact than
-setting SSBD.
+X86_BUG_PSF: Generic Linux feature to indicate that the CPU is affected
+	by the PSF feature.
 
-Support for PSFD is indicated in CPUID Fn8000_0008 EBX[28].
-All processors that support PSF will also support PSFD.
+Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
+---
+ arch/x86/include/asm/cpufeatures.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Ramakrishna Saripalli (5):
-  x86/cpufeatures: Define feature bits to support mitigation of PSF
-  x86/speculation: Implement support for PSFD detection and reporting
-  x86/speculation: Introduce SPEC_CTRL_MSR bit for PSFD
-  x86/speculation: Implement PSF mitigation support
-  x86/speculation: Add PSF mitigation kernel parameters
-
- .../admin-guide/kernel-parameters.txt         |  45 +++++
- arch/x86/include/asm/cpufeatures.h            |   4 +-
- arch/x86/include/asm/msr-index.h              |   2 +
- arch/x86/include/asm/nospec-branch.h          |   8 +
- arch/x86/include/asm/spec-ctrl.h              |  12 ++
- arch/x86/include/asm/thread_info.h            |   2 +
- arch/x86/kernel/cpu/bugs.c                    | 191 ++++++++++++++++++
- arch/x86/kernel/cpu/common.c                  |   6 +
- arch/x86/kernel/process.c                     |  23 +++
- include/linux/sched.h                         |  15 ++
- include/uapi/linux/prctl.h                    |   2 +
- 11 files changed, 309 insertions(+), 1 deletion(-)
-
-
-base-commit: 0e16f466004d7f04296b9676a712a32a12367d1f
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index cc96e26d69f7..21e7f8d0d7d9 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -201,7 +201,7 @@
+ #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
+ #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
+-/* FREE!                                ( 7*32+10) */
++#define X86_FEATURE_PSFD		( 7*32+10) /* Predictive Store Forward Disable */
+ #define X86_FEATURE_PTI			( 7*32+11) /* Kernel Page Table Isolation enabled */
+ #define X86_FEATURE_RETPOLINE		( 7*32+12) /* "" Generic Retpoline mitigation for Spectre variant 2 */
+ #define X86_FEATURE_RETPOLINE_AMD	( 7*32+13) /* "" AMD Retpoline mitigation for Spectre variant 2 */
+@@ -309,6 +309,7 @@
+ #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
+ #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
+ #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
++#define X86_FEATURE_AMD_PSFD		(13*32+28) /* "" Predictive Store Forward Disable */
+ 
+ /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
+ #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
+@@ -428,5 +429,6 @@
+ #define X86_BUG_TAA			X86_BUG(22) /* CPU is affected by TSX Async Abort(TAA) */
+ #define X86_BUG_ITLB_MULTIHIT		X86_BUG(23) /* CPU may incur MCE during certain page attribute changes */
+ #define X86_BUG_SRBDS			X86_BUG(24) /* CPU may leak RNG bits if not mitigated */
++#define X86_BUG_PSF			X86_BUG(25) /* CPU is affected by Predictive Store Forwarding attack */
+ 
+ #endif /* _ASM_X86_CPUFEATURES_H */
 -- 
 2.25.1
 
