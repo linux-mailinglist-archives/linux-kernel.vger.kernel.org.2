@@ -2,253 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326B5354D1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AED0354D24
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 08:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbhDFGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 02:53:56 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:19981 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230296AbhDFGxz (ORCPT
+        id S237530AbhDFG4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 02:56:08 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39028 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233519AbhDFG4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 02:53:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UUg-950_1617692015;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0UUg-950_1617692015)
+        Tue, 6 Apr 2021 02:56:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UUfx7M0_1617692155;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0UUfx7M0_1617692155)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 06 Apr 2021 14:53:36 +0800
+          Tue, 06 Apr 2021 14:55:56 +0800
 Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH 2/4] mm/page_reporting: Introduce free page reporting
- factor
+Subject: Re: [PATCH 4/4] mm/page_reporting: Fix possible user allocation
+ failure
 To:     Alexander Duyck <alexander.duyck@gmail.com>,
         Xunlei Pang <xlpang@linux.alibaba.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-mm <linux-mm@kvack.org>
 References: <1616751898-58393-1-git-send-email-xlpang@linux.alibaba.com>
- <1616751898-58393-3-git-send-email-xlpang@linux.alibaba.com>
- <CAKgT0Ud872rkrHrn8kaweL83Lg0Uo6cxwRpZUg-5TM9kUyjgSQ@mail.gmail.com>
+ <1616751898-58393-5-git-send-email-xlpang@linux.alibaba.com>
+ <CAKgT0UeHFXEp4Gx4cq5Z7Ekg2iqUgHXqE-5no=hEfybYiUJqng@mail.gmail.com>
 From:   Xunlei Pang <xlpang@linux.alibaba.com>
-Message-ID: <886910ff-f19d-0aa4-e0ad-0aa9072526ee@linux.alibaba.com>
-Date:   Tue, 6 Apr 2021 14:53:35 +0800
+Message-ID: <2d780895-eb7d-4a26-6256-5180c58095d6@linux.alibaba.com>
+Date:   Tue, 6 Apr 2021 14:55:55 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ud872rkrHrn8kaweL83Lg0Uo6cxwRpZUg-5TM9kUyjgSQ@mail.gmail.com>
+In-Reply-To: <CAKgT0UeHFXEp4Gx4cq5Z7Ekg2iqUgHXqE-5no=hEfybYiUJqng@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/3/21 2:56 AM, Alexander Duyck wrote:
+On 4/3/21 3:55 AM, Alexander Duyck wrote:
 > On Fri, Mar 26, 2021 at 2:45 AM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
 >>
->> Add new "/sys/kernel/mm/page_reporting/reporting_factor"
->> within [0, 100], and stop page reporting when it reaches
->> the configured threshold. Default is 100 which means no
->> limitation is imposed. Percentile is adopted to reflect
->> the fact that it reports on the per-zone basis.
+>> We encountered user memory allocation failure(OOM) on our
+>> 512MiB tiny instances, it didn't happen after turning off
+>> the page reporting.
 >>
->> We can control the total number of reporting pages via
->> this knob to avoid EPT violations which may affect the
->> performance of the business, imagine the guest memory
->> allocation burst or host long-tail memory reclaiming
->> really hurt.
+>> After some debugging, it turns out 32*4MB=128MB(order-10)
+>> free pages were isolated during reporting window resulting
+>> in no free available.
+>>
+>> Actually this might also happen on large instances when
+>> having a few free memory.
+>>
+>> This patch introduces a rule to limit reporting capacity
+>> according to current free memory, and reduce accordingly
+>> for higher orders which could break this rule.
+>>
+>> For example,
+>>  100MiB free, sgl capacity for different orders are:
+>>    order-9 : 32
+>>    order-10: 16
+>>
+>> Reported-by: Helin Guo <helinguo@linux.alibaba.com>
+>> Tested-by: Helin Guo <helinguo@linux.alibaba.com>
+>> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
 > 
-> I'm not a fan of the concept as I don't think it really does what it
-> was meant to do. The way page reporting was meant to work is that when
-> we have enough free pages we will cycle through memory a few pages at
-> a time reporting what is unused to the hypervisor. It was meant to be
-> a scan more than something that just would stop once it touched a
-> certain part of the memory.
+> I'm curious how much of this would be solved by just making it so that
+> we reduce the capacity by half if we increase the order? So
+> specifically if we did something such as:
+>   capacity = (PAGE_REPORTING_CAPACITY << PAGE_REPORTING_MIN_ORDER) >> order;
 > 
-> If you are wanting to truly reserve some amount of memory so that it
-> is always left held by the guest then it might make more sense to make
-> the value a fixed amount of memory rather than trying to do it as a
-> percentage.
+> We just have to make sure the capacity is greater than zero before
+> entering the processing loop.
 > 
-> Also we may need to look at adding some sort of
-> linearization/defragmentation logic for the reported pages. One issue
-> is that there are several things that will add pages to the end of the
-> free page lists. One of the reasons why I was processing the entire
-> list when I was processing reported pages was because the page freeing
-> functions will normally cause pages to be interleaved with the
-> reported pages on the end of the list. So if you are wanting to
-> reserve some pages as being non-reported we may need to add something
-> sort the lists periodically.
-
-Yes, agreed. To make the counter accurate, I also noticed this problem,
-I'm going to figure out a way to handle it, e.g. maybe adding a new
-migratetype for reported free_list is a good choice, this also helps
-reduce the zone lock latency during the report procedue on large VM,
-which can be in milliseconds.
-
+> An alternative that occured to me while I reviewed this is to look at
+> just adding a reserve. That would be something like:
+>   reserve = PAGE_REPORTING_CAPACITY - capacity;
 > 
->> This knob can help make customized control policies according
->> to VM priority, it is also useful for testing, gray-release, etc.
+> Basically the reserve would take up some space at the start of the
+> list so that you wouldn't need to actually change the capacity
+> directly. It would just be a matter of making certain we deducted it
+> and updated the offsets of the scatterlist as necessary.
 > 
-> As far as the knob itself it would make sense to combine this with
-> patch 3 since they are just different versions of the same control
 > 
 >> ---
->>  mm/page_reporting.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 59 insertions(+), 1 deletion(-)
+>>  mm/page_reporting.c | 89 +++++++++++++++++++++++++++++++++++++++++++----------
+>>  1 file changed, 72 insertions(+), 17 deletions(-)
 >>
 >> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
->> index ba195ea..86c6479 100644
+>> index 6ffedb8..2ec0ec0 100644
 >> --- a/mm/page_reporting.c
 >> +++ b/mm/page_reporting.c
->> @@ -11,6 +11,8 @@
->>  #include "page_reporting.h"
->>  #include "internal.h"
->>
->> +static int reporting_factor = 100;
->> +
->>  #define PAGE_REPORTING_DELAY   (2 * HZ)
->>  static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
->>
->> @@ -134,6 +136,7 @@ void __page_reporting_notify(void)
+>> @@ -129,8 +129,8 @@ void __page_reporting_notify(void)
+>>   */
+>>  static int
+>>  page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>> -                    unsigned int order, unsigned int mt,
+>> -                    struct scatterlist *sgl, unsigned int *offset)
+>> +                    unsigned int order, unsigned int mt, struct scatterlist *sgl,
+>> +                    const unsigned int capacity, unsigned int *offset)
+>>  {
+>>         struct free_area *area = &zone->free_area[order];
 >>         struct list_head *list = &area->free_list[mt];
->>         unsigned int page_len = PAGE_SIZE << order;
->>         struct page *page, *next;
->> +       unsigned long threshold;
->>         long budget;
->>         int err = 0;
->>
->> @@ -144,6 +147,7 @@ void __page_reporting_notify(void)
->>         if (list_empty(list))
->>                 return err;
->>
->> +       threshold = atomic_long_read(&zone->managed_pages) * reporting_factor / 100;
+>> @@ -161,10 +161,10 @@ void __page_reporting_notify(void)
+>>          * list processed. This should result in us reporting all pages on
+>>          * an idle system in about 30 seconds.
+>>          *
+>> -        * The division here should be cheap since PAGE_REPORTING_CAPACITY
+>> -        * should always be a power of 2.
+>> +        * The division here should be cheap since capacity should
+>> +        * always be a power of 2.
+>>          */
+>> -       budget = DIV_ROUND_UP(area->nr_free, PAGE_REPORTING_CAPACITY * 16);
+>> +       budget = DIV_ROUND_UP(area->nr_free, capacity * 16);
 > 
-> So at 0 you are setting this threshold to 0, however based on the code
-> below you are still pulling at least one page.
+> So the comment here is no longer valid when capacity became a
+> variable. An alternative to look at if we were to assume the shift
+> approach I mentioned above would be to then shift the budget based on
+> the reduced capacity.
 > 
->>         spin_lock_irq(&zone->lock);
->>
->>         /*
->> @@ -181,6 +185,8 @@ void __page_reporting_notify(void)
->>
->>                 /* Attempt to pull page from list and place in scatterlist */
->>                 if (*offset) {
->> +                       unsigned long nr_pages;
->> +
->>                         if (!__isolate_free_page(page, order)) {
->>                                 next = page;
->>                                 break;
->> @@ -190,6 +196,12 @@ void __page_reporting_notify(void)
+>>         /* loop through free list adding unreported pages to sg list */
+>>         list_for_each_entry_safe(page, next, list, lru) {
+>> @@ -196,7 +196,7 @@ void __page_reporting_notify(void)
 >>                         --(*offset);
 >>                         sg_set_page(&sgl[*offset], page, page_len, 0);
 >>
->> +                       nr_pages = (PAGE_REPORTING_CAPACITY - *offset) << order;
->> +                       if (zone->reported_pages + nr_pages >= threshold) {
->> +                               err = 1;
->> +                               break;
->> +                       }
->> +
+>> -                       nr_pages = (PAGE_REPORTING_CAPACITY - *offset) << order;
+>> +                       nr_pages = (capacity - *offset) << order;
+>>                         if (zone->reported_pages + nr_pages >= threshold) {
+>>                                 err = 1;
+>>                                 break;
 > 
-> So here we are checking the threshold after we have already pulled the
-> page. With this being the case it might make more sense to either
-> allow for the full capacity of pages to be pulled and then check this
-> after they have been reported, or to move this check up to somewhere
-> before you start processing the pages. What you want to avoid is
-> having to perform this check for every individual page.
+> Rather than adding a capacity value it might work better to add a
+> "reserve" value so that we are just padding the start of the
+> scatterlist rather than having to reset it every time we change the
+> total capacity of the scatterlist. The advantage to that is that you
+> could drop all the changes where you are having to reset the list and
+> change the capacity.
 > 
->>                         continue;
->>                 }
+> Instead you would just need to update the check to "*offset <=
+> reserve" and the call to report/drain so that they take into account
+> the reserve offset.
+> 
+>> @@ -217,10 +217,10 @@ void __page_reporting_notify(void)
+>>                 spin_unlock_irq(&zone->lock);
 >>
->> @@ -244,9 +256,13 @@ void __page_reporting_notify(void)
+>>                 /* begin processing pages in local list */
+>> -               err = prdev->report(prdev, sgl, PAGE_REPORTING_CAPACITY);
+>> +               err = prdev->report(prdev, sgl, capacity);
+>>
+> 
+> Assuming the change to "reserve" then this would be "&sgl[*offset],
+> PAGE_REPORTING_CAPACITY - *offset", or you could look at copying the
+> approach taken in the "leftover" path in page_reporting_process_zone.
+> 
+>>                 /* reset offset since the full list was reported */
+>> -               *offset = PAGE_REPORTING_CAPACITY;
+>> +               *offset = capacity;
+>>
+>>                 /* update budget to reflect call to report function */
+>>                 budget--;
+>> @@ -229,7 +229,7 @@ void __page_reporting_notify(void)
+>>                 spin_lock_irq(&zone->lock);
+>>
+>>                 /* flush reported pages from the sg list */
+>> -               page_reporting_drain(prdev, sgl, zone, PAGE_REPORTING_CAPACITY, !err);
+>> +               page_reporting_drain(prdev, sgl, zone, capacity, !err);
+> 
+> Same here. The general idea is you want to avoid having to flush every
+> time you want to change the reserve and instead just trigger a flush
+> should your offset value fall below what is reserved.
+> 
+>>                 /*
+>>                  * Reset next to first entry, the old next isn't valid
+>> @@ -251,12 +251,39 @@ void __page_reporting_notify(void)
+>>         return err;
+>>  }
+> 
+> So all of the code below seems to be the result of the added
+> complexity I mentioned above due to the capacity being changed rather
+> than some portion of the list becoming reserved.
+> 
+> I think it would be much more interesting to explore the approach of
+> just reserving some portion of the start of the scatterlist rather
+> than trying to change the capacity. By doing that much of the code
+> change seen here can be avoided as you are having to restructure the
+> entire list and are introducing other possible issues since one of the
+> things I was doing by using the approach I did is always making sure
+> the sg_end was already set for the scatterlist end whereas that is
+> gone now with these changes.
+> 
+>> +/*
+>> + * For guest with little free memory, we should tune reporting capacity
+>> + * correctly to avoid reporting too much once, otherwise user allocation
+>> + * may fail and OOM during reporting window between __isolate_free_page()
+>> + * and page_reporting_drain().
+>> + *
+>> + * Calculate from which order we begin to reduce the scatterlist capacity,
+>> + * in order not to isolate too many pages to fail the user allocation.
+>> + */
+>> +static unsigned int calculate_zone_order_threshold(struct zone *z)
+>> +{
+>> +       unsigned int order;
+>> +       long pages_threshold;
+>> +
+>> +       pages_threshold = zone_page_state(z, NR_FREE_PAGES) - low_wmark_pages(z);
+>> +       for (order = PAGE_REPORTING_MIN_ORDER; order < MAX_ORDER; order++) {
+>> +               if ((PAGE_REPORTING_CAPACITY << order) > pages_threshold)
+>> +                       break;
+>> +       }
+>> +
+>> +       return order;
+>> +}
+>> +
+>>  static int
+>>  page_reporting_process_zone(struct page_reporting_dev_info *prdev,
 >>                             struct scatterlist *sgl, struct zone *zone)
 >>  {
->>         unsigned int order, mt, leftover, offset = PAGE_REPORTING_CAPACITY;
->> -       unsigned long watermark;
->> +       unsigned long watermark, threshold;
+>> -       unsigned int order, mt, leftover, offset = PAGE_REPORTING_CAPACITY;
+>> +       unsigned int order, mt, leftover, offset;
+>>         unsigned long watermark, threshold;
+>> +       unsigned int capacity = PAGE_REPORTING_CAPACITY;
+>> +       unsigned int capacity_curr;
+>> +       struct scatterlist *sgl_curr;
+>> +       unsigned int order_threshold;
 >>         int err = 0;
 >>
->> +       threshold = atomic_long_read(&zone->managed_pages) * reporting_factor / 100;
->> +       if (zone->reported_pages >= threshold)
->> +               return err;
+>>         threshold = atomic_long_read(&zone->managed_pages) * reporting_factor / 100;
+>> @@ -274,15 +301,28 @@ void __page_reporting_notify(void)
+>>         if (!zone_watermark_ok(zone, 0, watermark, 0, ALLOC_CMA))
+>>                 return err;
+>>
+>> +       sgl_curr = sgl;
+>> +       capacity_curr = offset = capacity;
+>> +       order_threshold = calculate_zone_order_threshold(zone);
+>>         /* Process each free list starting from lowest order/mt */
+>>         for (order = PAGE_REPORTING_MIN_ORDER; order < MAX_ORDER; order++) {
+>> +               /* try to reduce unexpected high order's reporting capacity */
+>> +               if (order >= order_threshold) {
+>> +                       capacity_curr = capacity >> (order - order_threshold + 1);
+>> +                       if (capacity_curr == 0)
+>> +                               capacity_curr = 1;
+>> +                       sgl_curr = sgl + capacity - capacity_curr;
+>> +                       offset = capacity_curr;
+>> +                       sg_init_table(sgl_curr, capacity_curr);
+>> +               }
 >> +
 > 
-> Rather than having to calculate the threshold in multiple spots it
-> might make more sense to move this to the start of
-> page_reporting_cycle and have it performed again before we reacquire
-> the spinlock and run page_reporting_drain.
+> The problem here is you are assuming the order threshold will not
+> change during processing. Your order_threshold value could become
+> stale while you are processing the zone so I am not sure having it
+> provides much value.
 > 
->>         /* Generate minimum watermark to be able to guarantee progress */
->>         watermark = low_wmark_pages(zone) +
->>                     (PAGE_REPORTING_CAPACITY << PAGE_REPORTING_MIN_ORDER);
->> @@ -267,11 +283,18 @@ void __page_reporting_notify(void)
+> I think we might be better off just assuming that we need to halve
+> capacity as the order increases.
+> 
+>>                 for (mt = 0; mt < MIGRATE_TYPES; mt++) {
+>>                         /* We do not pull pages from the isolate free list */
+>>                         if (is_migrate_isolate(mt))
+>>                                 continue;
 >>
 >>                         err = page_reporting_cycle(prdev, zone, order, mt,
->>                                                    sgl, &offset);
->> +                       /* Exceed threshold go to report leftover */
->> +                       if (err > 0) {
->> +                               err = 0;
->> +                               goto leftover;
->> +                       }
->> +
+>> -                                                  sgl, &offset);
+>> +                                                  sgl_curr, capacity_curr, &offset);
+>>                         /* Exceed threshold go to report leftover */
+>>                         if (err > 0) {
+>>                                 err = 0;
+>> @@ -292,18 +332,34 @@ void __page_reporting_notify(void)
 >>                         if (err)
 >>                                 return err;
 >>                 }
+>> +
+>> +               /* report the leftover pages for next orders with reduced capacity */
+>> +               leftover = capacity_curr - offset;
+>> +               if (leftover && order + 1 >= order_threshold) {
+>> +                       sgl_curr = &sgl_curr[offset];
+>> +                       err = prdev->report(prdev, sgl_curr, leftover);
+>> +                       offset = capacity_curr;
+>> +
+>> +                       /* flush any remaining pages out from the last report */
+>> +                       spin_lock_irq(&zone->lock);
+>> +                       page_reporting_drain(prdev, sgl_curr, zone, leftover, !err);
+>> +                       spin_unlock_irq(&zone->lock);
+>> +
+>> +                       if (err)
+>> +                               return err;
+>> +               }
 >>         }
 >>
->> +leftover:
+>>  leftover:
 >>         /* report the leftover pages before going idle */
->>         leftover = PAGE_REPORTING_CAPACITY - offset;
+>> -       leftover = PAGE_REPORTING_CAPACITY - offset;
+>> +       leftover = capacity_curr - offset;
 >>         if (leftover) {
-> 
-> You should optimize for processing full batches rather than chopping
-> things up into smaller groupings.
-> 
->> @@ -435,9 +458,44 @@ static ssize_t refault_kbytes_store(struct kobject *kobj,
->>  }
->>  REPORTING_ATTR(refault_kbytes);
+>> -               sgl = &sgl[offset];
+>> -               err = prdev->report(prdev, sgl, leftover);
+>> +               sgl_curr = &sgl_curr[offset];
+>> +               err = prdev->report(prdev, sgl_curr, leftover);
 >>
->> +static ssize_t reporting_factor_show(struct kobject *kobj,
->> +               struct kobj_attribute *attr, char *buf)
->> +{
->> +       return sprintf(buf, "%u\n", reporting_factor);
->> +}
->> +
->> +static ssize_t reporting_factor_store(struct kobject *kobj,
->> +               struct kobj_attribute *attr,
->> +               const char *buf, size_t count)
->> +{
->> +       int new, old, err;
->> +       struct page *page;
->> +
->> +       err = kstrtoint(buf, 10, &new);
->> +       if (err || (new < 0 || new > 100))
->> +               return -EINVAL;
->> +
->> +       old = reporting_factor;
->> +       reporting_factor = new;
->> +
->> +       if (new <= old)
->> +               goto out;
->> +
->> +       /* Trigger reporting with new larger reporting_factor */
->> +       page = alloc_pages(__GFP_HIGHMEM | __GFP_NOWARN,
->> +                       PAGE_REPORTING_MIN_ORDER);
->> +       if (page)
->> +               __free_pages(page, PAGE_REPORTING_MIN_ORDER);
->> +
->> +out:
->> +       return count;
->> +}
->> +REPORTING_ATTR(reporting_factor);
->> +
->>  static struct attribute *reporting_attrs[] = {
->>         &reported_kbytes_attr.attr,
->>         &refault_kbytes_attr.attr,
->> +       &reporting_factor_attr.attr,
->>         NULL,
->>  };
+>>                 /* flush any remaining pages out from the last report */
+>>                 spin_lock_irq(&zone->lock);
+>> -               page_reporting_drain(prdev, sgl, zone, leftover, !err);
+>> +               page_reporting_drain(prdev, sgl_curr, zone, leftover, !err);
+>>                 spin_unlock_irq(&zone->lock);
+>>         }
 >>
+>> @@ -332,9 +388,8 @@ static void page_reporting_process(struct work_struct *work)
+>>         if (!sgl)
+>>                 goto err_out;
+>>
+>> -       sg_init_table(sgl, PAGE_REPORTING_CAPACITY);
+>> -
+>>         for_each_zone(zone) {
+>> +               sg_init_table(sgl, PAGE_REPORTING_CAPACITY);
+>>                 err = page_reporting_process_zone(prdev, sgl, zone);
+>>                 if (err)
+>>                         break;
 >> --
 >> 1.8.3.1
 >>
 >>
+
+Great, will try to improve it according to your suggestions.
+Thanks for all the valuable comments.
