@@ -2,56 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910C3552BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640C7355271
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 13:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343532AbhDFLvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 07:51:21 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58916 "EHLO elvis.franken.de"
+        id S245661AbhDFLhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 07:37:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:41426 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343524AbhDFLvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:51:20 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lTkEe-00062N-00; Tue, 06 Apr 2021 13:51:08 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 639BBC210F; Tue,  6 Apr 2021 13:36:38 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 13:36:38 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 6/9] mips: netlogic: Use irq_domain_simple_ops for XLP PIC
-Message-ID: <20210406113638.GA8277@alpha.franken.de>
-References: <20210406093557.1073423-1-maz@kernel.org>
- <20210406093557.1073423-7-maz@kernel.org>
+        id S241774AbhDFLhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:37:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF9C9101E;
+        Tue,  6 Apr 2021 04:37:05 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 243363F73D;
+        Tue,  6 Apr 2021 04:37:00 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 12:36:57 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v5 12/18] arm64: implement function_nocfi
+Message-ID: <20210406113657.GC96480@C02TD0UTHF1T.local>
+References: <20210401233216.2540591-1-samitolvanen@google.com>
+ <20210401233216.2540591-13-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406093557.1073423-7-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210401233216.2540591-13-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:35:54AM +0100, Marc Zyngier wrote:
-> Use the generic irq_domain_simple_ops structure instead of
-> a home-grown one.
+On Thu, Apr 01, 2021 at 04:32:10PM -0700, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG, the compiler replaces function addresses in
+> instrumented C code with jump table addresses. This change implements
+> the function_nocfi() macro, which returns the actual function address
+> instead.
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+
+I think that it's unfortunate that we have to drop to assembly here, but
+given this is infrequent I agree it's not the end of the world, so:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
 > ---
->  arch/mips/netlogic/common/irq.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+>  arch/arm64/include/asm/memory.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index 0aabc3be9a75..b55410afd3d1 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -321,6 +321,21 @@ static inline void *phys_to_virt(phys_addr_t x)
+>  #define virt_to_pfn(x)		__phys_to_pfn(__virt_to_phys((unsigned long)(x)))
+>  #define sym_to_pfn(x)		__phys_to_pfn(__pa_symbol(x))
+>  
+> +#ifdef CONFIG_CFI_CLANG
+> +/*
+> + * With CONFIG_CFI_CLANG, the compiler replaces function address
+> + * references with the address of the function's CFI jump table
+> + * entry. The function_nocfi macro always returns the address of the
+> + * actual function instead.
+> + */
+> +#define function_nocfi(x) ({						\
+> +	void *addr;							\
+> +	asm("adrp %0, " __stringify(x) "\n\t"				\
+> +	    "add  %0, %0, :lo12:" __stringify(x) : "=r" (addr));	\
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+If it's not too painful, could we please move the asm constrain onto its
+own line? That makes it slightly easier to read, and aligns with what
+we've (mostly) done elsewhere in arm64.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Not a big deal either way, and the ack stands regardless.
+
+Thanks,
+Mark.
+
+> +	addr;								\
+> +})
+> +#endif
+> +
+>  /*
+>   *  virt_to_page(x)	convert a _valid_ virtual address to struct page *
+>   *  virt_addr_valid(x)	indicates whether a virtual address is valid
+> -- 
+> 2.31.0.208.g409f899ff0-goog
+> 
