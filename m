@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F2435556B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6467C35556D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 15:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344596AbhDFNlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 09:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33064 "EHLO mail.kernel.org"
+        id S1344605AbhDFNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 09:41:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46748 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238827AbhDFNlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:41:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6348D613CC;
-        Tue,  6 Apr 2021 13:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617716459;
-        bh=qDqK8wQ/7+OGAOOi2xbtIaP4WgZISHYYxdJR7Ffc8M8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IKvTcGDzC+BV8Bn3ZgVr2JE1vpteJc7rq1gMuR8nj780i50TxUJANEw0ZH5G8+XkT
-         XK8Kpx97almclBQpSzQbI+luXqdH2FqPtZIE48qvYuiDFh0Bq62OsNt/GtM994YGus
-         oRZfWHUk7jf/F/2us8KgRPRdZe2DXfBxC6dq1YZbemKPlyCaPwycs6+WZxFTDKLdb4
-         6hFFpfRO8AoELDUyRUCN8EUotmaTvrQe4KiRE6I4J8bITjhXhMFTZ2ZsybQjXyfFo6
-         YrjEPTdHDEyC5X6pxLbyicG5ulYzKXh3tLwxfciAvAwhIpoPTA5LZpJFysCC1FbiQd
-         puWOsH3D9xclg==
-Received: by mail-ed1-f50.google.com with SMTP id o19so16640223edc.3;
-        Tue, 06 Apr 2021 06:40:59 -0700 (PDT)
-X-Gm-Message-State: AOAM532GaL8d11YEr7LabqA+jV9EDSaswilyKeF5BlCcLhNpmbMV2hLq
-        dS9U+RGfDyOdaocvtJB1uTao8OZ+i2DJq/lzOw==
-X-Google-Smtp-Source: ABdhPJwNrYLLERtt0yqnaTwUk3ZS3MELJaO4SHKDD69Ff9/SXNbj3VqJcyZgHOvauQEnaGR3492LZ0HUkaAxpGmpLX0=
-X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr38710035edd.258.1617716457827;
- Tue, 06 Apr 2021 06:40:57 -0700 (PDT)
+        id S238827AbhDFNlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:41:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 811DAB1AD;
+        Tue,  6 Apr 2021 13:41:13 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 15:41:07 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 4/8] hugetlb: create remove_hugetlb_page() to separate
+ functionality
+Message-ID: <YGxk85nXJD+NxzYX@localhost.localdomain>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-5-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-References: <20210316193820.3137-1-alex@ghiti.fr> <ee702ff7-f43c-745c-4157-b1cba53bb0b2@ghiti.fr>
-In-Reply-To: <ee702ff7-f43c-745c-4157-b1cba53bb0b2@ghiti.fr>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 6 Apr 2021 08:40:46 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLeA2va05A78M893rAGoeMr-CztdiZouq-PSDFfsJ_-EA@mail.gmail.com>
-Message-ID: <CAL_JsqLeA2va05A78M893rAGoeMr-CztdiZouq-PSDFfsJ_-EA@mail.gmail.com>
-Subject: Re: [PATCH] driver: of: Properly truncate command line if too long
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405230043.182734-5-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 7:09 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi,
->
-> Le 3/16/21 =C3=A0 3:38 PM, Alexandre Ghiti a =C3=A9crit :
-> > In case the command line given by the user is too long, warn about it
-> > and truncate it to the last full argument.
-> >
-> > This is what efi already does in commit 80b1bfe1cb2f ("efi/libstub:
-> > Don't parse overlong command lines").
-> >
-> > Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> > ---
-> >   drivers/of/fdt.c | 21 ++++++++++++++++++++-
-> >   1 file changed, 20 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > index dcc1dd96911a..de4c6f9bac39 100644
-> > --- a/drivers/of/fdt.c
-> > +++ b/drivers/of/fdt.c
-> > @@ -25,6 +25,7 @@
-> >   #include <linux/serial_core.h>
-> >   #include <linux/sysfs.h>
-> >   #include <linux/random.h>
-> > +#include <linux/ctype.h>
-> >
-> >   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> >   #include <asm/page.h>
-> > @@ -1050,9 +1051,27 @@ int __init early_init_dt_scan_chosen(unsigned lo=
-ng node, const char *uname,
-> >
-> >       /* Retrieve command line */
-> >       p =3D of_get_flat_dt_prop(node, "bootargs", &l);
-> > -     if (p !=3D NULL && l > 0)
-> > +     if (p !=3D NULL && l > 0) {
-> >               strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
-> >
-> > +             /*
-> > +              * If the given command line size is larger than
-> > +              * COMMAND_LINE_SIZE, truncate it to the last complete
-> > +              * parameter.
-> > +              */
-> > +             if (l > COMMAND_LINE_SIZE) {
-> > +                     char *cmd_p =3D (char *)data + COMMAND_LINE_SIZE =
-- 1;
-> > +
-> > +                     while (!isspace(*cmd_p))
-> > +                             cmd_p--;
-> > +
-> > +                     *cmd_p =3D '\0';
-> > +
-> > +                     pr_err("Command line is too long: truncated to %d=
- bytes\n",
-> > +                            (int)(cmd_p - (char *)data + 1));
-> > +             }
-> > +     }
-> > +
-> >       /*
-> >        * CONFIG_CMDLINE is meant to be a default in case nothing else
-> >        * managed to set the command line, unless CONFIG_CMDLINE_FORCE
-> >
->
-> Any thought about that ?
+On Mon, Apr 05, 2021 at 04:00:39PM -0700, Mike Kravetz wrote:
+> +static void remove_hugetlb_page(struct hstate *h, struct page *page,
+> +							bool adjust_surplus)
+> +{
+> +	int nid = page_to_nid(page);
+> +
+> +	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> +		return;
+> +
+> +	list_del(&page->lru);
+> +
+> +	if (HPageFreed(page)) {
+> +		h->free_huge_pages--;
+> +		h->free_huge_pages_node[nid]--;
+> +		ClearHPageFreed(page);
+> +	}
+> +	if (adjust_surplus) {
+> +		h->surplus_huge_pages--;
+> +		h->surplus_huge_pages_node[nid]--;
+> +	}
+> +
+> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
+> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
 
-It looks fine to me, but this will need to be adapted to the generic
-command line support[1][2] when that is merged. So I've been waiting
-to see if that's going to happen this cycle.
+These checks feel a bit odd here.
+I would move them above, before we start messing with the counters?
 
-Rob
+> +
+> +	ClearHPageTemporary(page);
 
-[1] https://lore.kernel.org/lkml/cover.1616765869.git.christophe.leroy@csgr=
-oup.eu/
-[2] https://lore.kernel.org/lkml/41021d66db2ab427c14255d2a24bb4517c8b58fd.1=
-617126961.git.danielwa@cisco.com/
+Why clearing it unconditionally? I guess we do not really care, but
+someone might wonder why when reading the core.
+So I would either do as we used to do and only clear it in case of
+HPageTemporary(), or drop a comment.
+
+> +	set_page_refcounted(page);
+> +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> +
+> +	h->nr_huge_pages--;
+> +	h->nr_huge_pages_node[nid]--;
+> +}
+
+As Michal pointed out, remove_hugetlb_page() from
+alloc_and_dissolve_huge_page() might be problematic in some cases because
+the new_page has not been enqueued yet.
+
+Now, I guess this might be easily fixed with checking list_empty()
+before going ahead with list_del() call, or with another bool parameter
+'delete', with a fat comment explaining why we can get to call remove_huge_page()
+on a page that is not in any list.
+
+Another solution that comes to my mind is to split remove_huge_page() functionality in
+1) delete from list + unaccount free and surplus pages and 2) reset page's state + unaccount
+nr_huge_pages
+
+But that might be just biased as would fit for my usecase.
+So maybe a list_empty() or the bool parameter might just do.
+ 
+
+-- 
+Oscar Salvador
+SUSE L3
