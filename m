@@ -2,209 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB207355B19
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1607355B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 20:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236773AbhDFSPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 14:15:37 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57338 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbhDFSPg (ORCPT
+        id S237083AbhDFSPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 14:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236823AbhDFSPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:15:36 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 136IF8br123953;
-        Tue, 6 Apr 2021 13:15:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617732908;
-        bh=6WWOGoVwUmU8hn0OiwFKDgcwGqWJVhVQIFo3m6t14HI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=F+e6Bstz8oYQRzY5IazO6a/Q+zySAT9uP4b5nlQxiGtOHsup5bJi/xKOSHu0RDoiU
-         vudeYuYPF4R3QnqUffLvSmG3SEUj/yThXoM3Y3G0iTsHLguhqSiotjNjykRuPoaAbX
-         B0m38ZBPIC9g9i5/XpXsaRXtS+TBBXX6/D/mwwS8=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 136IF8wa018660
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Apr 2021 13:15:08 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Apr
- 2021 13:15:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 6 Apr 2021 13:15:08 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 136IF7Dp072661;
-        Tue, 6 Apr 2021 13:15:07 -0500
-Date:   Tue, 6 Apr 2021 23:45:06 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 12/16] dt-bindings: media: Add DT bindings for TI CSI2RX
- driver
-Message-ID: <20210406181504.6wcungcw2dwhp6vg@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-13-p.yadav@ti.com>
- <20210401155201.GA488101@robh.at.kernel.org>
- <YGbrcKPA9K8Ws0lv@pendragon.ideasonboard.com>
- <YGb3rnuDCdM6XnvJ@pendragon.ideasonboard.com>
+        Tue, 6 Apr 2021 14:15:52 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6EAC061756;
+        Tue,  6 Apr 2021 11:15:44 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id j3so5593116qvs.1;
+        Tue, 06 Apr 2021 11:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SM97r+t3B/0Sl/bYA0tAxXDl/DGgw9Hc/stwzaVm5lI=;
+        b=YOnnxLVuQaP7gy9jJQJLgrNK82zoXWf8BKOEjRJ7IknEJnviHryc81DEfIrUQ2knNP
+         t7CWrMmMQ/nSJ3DSO7ARiS/oVSwoh6DfpmQdW4bP5zqOl9UPAYoNH8AzMdrhse9M1CPg
+         eTatcmId3o1g/amVnAm+GCwV3fz5Ulrn6qrcTqmCy7jyBQenHfp9njNJNZYBjxTIMXYi
+         YvOqNe8/p6M4/7VLBZ/cXo+5NVQxtvrgMbPCnKBopU/mP1ulBJmHZQ+WxKbfcW7CMJ4t
+         EzH6Gnws74T25wZJ5mXDXiXgOnlm5SLanoUas2KBieAwKiYhG/+F6yKSSray6shbE5xV
+         ITAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SM97r+t3B/0Sl/bYA0tAxXDl/DGgw9Hc/stwzaVm5lI=;
+        b=CL49Cs5hqFnVG/MWPgcHiimqhwkazJTH5fCBqMQ3zpd8HxcsUi34O85uteuV6SryHx
+         JQXx1QgVmjqO+2NyTyAZo6Bf6fsP15OMvx7JtHSj9pRGYE5JxS3CH7UbnYUqounmNHo9
+         UY5+UQBNq6+PxI3vxopvc5nY+ujKZ1sEAhQVwmiYQCCWegO+EHHVnFsMuuzJMCzmmmUf
+         KxAjWyM3je6IXp6+5x0dWXOR8TUdaksEDslF/9L3eoyB13NTRvPFSU6ioBXvWljHoELA
+         2ENJWye7TdgmT1/jLniKgqyw7XLmdbDXTtihaOm0VwtnZ7Oyr/d9dBQuHWcXuvCpD/Qd
+         H2MA==
+X-Gm-Message-State: AOAM5309Gk8HZLpY9ZrGlKyeQdE5cS77b3HujlYciMh/2hcFR9l9YG70
+        adxKKAzYVH4dSYMPnI6Z6ro=
+X-Google-Smtp-Source: ABdhPJxZVb3/MGOAQygSnVOhur7hk5+nMcz2n4FNAYRLIh6ssKrcLFMnM34XpTY2HYgow8rrUtppdg==
+X-Received: by 2002:a0c:eda7:: with SMTP id h7mr19509145qvr.26.1617732943021;
+        Tue, 06 Apr 2021 11:15:43 -0700 (PDT)
+Received: from localhost ([2601:4c0:104:d5fc:c1b1:fa44:c411:7822])
+        by smtp.gmail.com with ESMTPSA id w5sm16371237qkc.85.2021.04.06.11.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 11:15:42 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 11:15:41 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 11/13] lib: add fast path for find_first_*_bit() and
+ find_last_bit()
+Message-ID: <20210406181541.GA792963@yury-ThinkPad>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-12-yury.norov@gmail.com>
+ <20210406160327.GA180841@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGb3rnuDCdM6XnvJ@pendragon.ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210406160327.GA180841@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:53PM, Laurent Pinchart wrote:
-> On Fri, Apr 02, 2021 at 01:01:22PM +0300, Laurent Pinchart wrote:
-> > On Thu, Apr 01, 2021 at 10:52:01AM -0500, Rob Herring wrote:
-> > > On Tue, Mar 30, 2021 at 11:03:44PM +0530, Pratyush Yadav wrote:
-> > > > TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> > > > capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
-> > > > parts together.
-> > > > 
-> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > > > ---
-> > > >  .../devicetree/bindings/media/ti,csi2rx.yaml  | 70 +++++++++++++++++++
-> > > >  1 file changed, 70 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/media/ti,csi2rx.yaml b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..ebd894364391
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
-> > > > @@ -0,0 +1,70 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/media/ti,csi2rx.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: TI CSI2RX Wrapper Device Tree Bindings
-> > > > +
+On Tue, Apr 06, 2021 at 09:03:27AM -0700, Guenter Roeck wrote:
+> On Mon, Mar 15, 2021 at 06:54:22PM -0700, Yury Norov wrote:
+> > Similarly to bitmap functions, users would benefit if we'll handle
+> > a case of small-size bitmaps that fit into a single word.
 > > 
-> > A description would be useful, especially given that the TRM doesn't
-> > mention "CSI2RX".
+> > While here, move the find_last_bit() declaration to bitops/find.h
+> > where other find_*_bit() functions sit.
 > > 
-> > > > +maintainers:
-> > > > +  - Pratyush Yadav <p.yadav@ti.com>
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    items:
-> > > > +      - const: ti,csi2rx
-> > > > +
-> > > > +  dmas:
-> > > > +    description: RX DMA Channel 0
-> > > 
-> > > items:
-> > >   - description: RX DMA Channel 0
-> > > 
-> > > Or just 'maxItems: 1'
-> > > 
-> > > > +
-> > > > +  dma-names:
-> > > > +    items:
-> > > > +      - const: rx0
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +    description: Base address and size of the TI wrapper registers.
-> > > 
-> > > That's all 'reg' properties, drop 'description'.
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  include/asm-generic/bitops/find.h | 50 ++++++++++++++++++++++++++++---
+> >  include/linux/bitops.h            | 12 --------
+> >  lib/find_bit.c                    | 12 ++++----
+> >  3 files changed, 52 insertions(+), 22 deletions(-)
 > > 
-> > According to SPRUIL1B, there are four register banks for the CSI_RX_IF,
-> > and two register banks for the DPHY_RX. What's your plan to support
-> > these ? Not everything need to be implemented at once, but backward
-> > compatibility need to be taken into account in the design.
-> > 
-> > > > +
-> > > > +  power-domains:
-> > > > +    maxItems: 1
-> > > > +    description:
-> > > > +      PM domain provider node and an args specifier containing
-> > > > +      the device id value.
-> > > 
-> > > Drop.
-> > > 
-> > > > +
-> > > > +  ranges: true
-> > > > +
-> > > > +  "#address-cells":
-> > > > +    const: 2
-> > > > +
-> > > > +  "#size-cells":
-> > > > +    const: 2
-> > > > +
-> > > > +patternProperties:
-> > > > +  "csi-bridge@":
-> > > 
-> > > "^csi-bridge@"
-> > > 
-> > > > +    type: object
-> > > > +    description: CSI2 bridge node.
-> > > 
-> > > Just an empty node?
-> > 
-> > Even if the node is optional, it would be useful to include it in the
-> > example below, to show how it's supposed to be used.
-> > 
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - dmas
-> > > > +  - dma-names
-> > > > +  - power-domains
-> > > > +  - "#address-cells"
-> > > > +  - "#size-cells"
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> > > > +
-> > > > +    ti_csi2rx0: ticsi2rx {
-> > > > +        compatible = "ti,csi2rx";
-> > > > +        dmas = <&main_udmap 0x4940>;
-> > > > +        dma-names = "rx0";
-> > > > +        reg = <0x0 0x4500000 0x0 0x1000>;
-> > > > +        power-domains = <&k3_pds 26 TI_SCI_PD_EXCLUSIVE>;
-> > > > +        #address-cells = <2>;
-> > > > +        #size-cells = <2>;
-> > > > +    };
+> > diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+> > index 4148c74a1e4d..8d818b304869 100644
+> > --- a/include/asm-generic/bitops/find.h
+> > +++ b/include/asm-generic/bitops/find.h
+> > @@ -5,6 +5,9 @@
+> >  extern unsigned long _find_next_bit(const unsigned long *addr1,
+> >  		const unsigned long *addr2, unsigned long nbits,
+> >  		unsigned long start, unsigned long invert, unsigned long le);
+> > +extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
+> > +extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
+> > +extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
+> >  
+> >  #ifndef find_next_bit
+> >  /**
+> > @@ -102,8 +105,17 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+> >   * Returns the bit number of the first set bit.
+> >   * If no bits are set, returns @size.
+> >   */
+> > -extern unsigned long find_first_bit(const unsigned long *addr,
+> > -				    unsigned long size);
+> > +static inline
+> > +unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
+> > +{
+> > +	if (small_const_nbits(size)) {
+> > +		unsigned long val = *addr & BITS_FIRST(size - 1);
+> > +
+> > +		return val ? __ffs(val) : size;
 > 
-> It would also be useful to expand this to a full example that includes
-> integration with the PHY.
+> This patch results in:
+> 
+> include/asm-generic/bitops/find.h: In function 'find_last_bit':
+> include/asm-generic/bitops/find.h:164:16: error: implicit declaration of function '__fls'; did you mean '__ffs'?
+> 
+> and:
+> 
+> ./include/asm-generic/bitops/__fls.h: At top level:
+> ./include/asm-generic/bitops/__fls.h:13:38: error: conflicting types for '__fls'
+> 
+> when building scripts/mod/devicetable-offsets.o.
+> 
+> Seen with h8300 builds.
+> 
+> Guenter
 
-Integration with PHY is Cadence CSI2RX schema's problem. But I will add 
-the subnode here anyway so it should have the PHY related properties as 
-well.
+The patch is here:
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+https://lkml.org/lkml/2021/4/1/1184
+ 
+Yury
