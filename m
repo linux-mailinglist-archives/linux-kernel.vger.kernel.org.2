@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4BD35513A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE1C355147
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245210AbhDFKvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        id S245217AbhDFKxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236135AbhDFKvh (ORCPT
+        with ESMTP id S231339AbhDFKxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:51:37 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82B7C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 03:51:27 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id o6so4192337wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:51:27 -0700 (PDT)
+        Tue, 6 Apr 2021 06:53:21 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB65C06174A;
+        Tue,  6 Apr 2021 03:53:13 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id i18so10254048wrm.5;
+        Tue, 06 Apr 2021 03:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9jWO01eQCvaSALTaYkYaRpgTZuO0r7x7rAnN4myhxg=;
-        b=B3Ep+wExrgNMtKa8EakKLL7kSl/7DSbnkWpxxMYEK/oxjgbZMOvAqWvKpIsing3zxu
-         s/npRS1/OSQ7QHLFmo9WBHjnBYyR/bDsGAhqJl7QNr/Sud+rYToJarxr5T8+Hc4ryr/0
-         9AZsOP/HlHrK2zB4vfvN7ZYFmAWuYqdBNrlh6aXuefzF/G1/qxOorPfPT0Oq2TDETgKZ
-         D5iWK4t92EXRlKNVBANM6GuCqsNBiHgKYIjxXaWt72JFg7Zn/OMDc8608cOa2JzREgMb
-         k8+6Aa09jjGL/mcik6of57bEFbKnArDko3tnTriMdAtAsHG9HFcSqdrOh7j2md/tvXQe
-         GoTg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UW4SBvk4siFv9zFuBrGL9HNGyyN/dS4WBxMX1QWTZM8=;
+        b=RqwwVIngnJInbW616xuEiRHUTETVRR42D4lHIX03HdrtnCcD1V8G5J302yq0IzkTAQ
+         aAsAeCOQ1XZNfbbtNsxHvfJ0QH1Lla/valtxl62ZjozBrnHRzC5NOyItOuyB4djHff4u
+         mfBcnWNpe97n1JBA5p1W0pSY+0To407VG5rUC5MPA3ZmLtzQ8T4+uGJWGD3nRsvxW9R2
+         vaj71h2BZZuAid7IhY00fiNk0xPhaGgC0lBHjQRFq9hG8eNU4+cPWRcQ0ThDzGIxaoeX
+         X7d1uJRz+t7Rl+L/pSamR4V7udhSn0Mgo1ZIuB/EFIvh/0qw39NRO8Qk0YujTCTvByrB
+         PMrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=a9jWO01eQCvaSALTaYkYaRpgTZuO0r7x7rAnN4myhxg=;
-        b=ItoQbPdbOsSObcIsiPsShEVA/Jdy/jIKQT+xm1g+g0h6muoo2haqyIAEt2qQrDshXA
-         yr3zD9pGZAcHDBafr5uFpYkcN1WwyoFcEwxoh0xFDx829GDvuskYd7M3Qsn7YI7q2D1n
-         4OL0JD5mfNgcOYEippG5MojSLMwg+xcOpzE1u1uHpK4nsg/zjeX2FpMCMa+UPMiQHAKf
-         sJBE3txrwmeGigb2b9MQJQWz85MEycTG3NaRauRHbTGmHTev8IiiF5+J8zuXV793isOW
-         EsC7Ie+o6H1vpOXHh5mrQhvr5I4j5synuc3tk3ETwjwjGtVagtZXxdyNHOy+bq9XuoWx
-         sEEQ==
-X-Gm-Message-State: AOAM532AMJ6u+mPJeWPbL99wQ5qcBDwe8O29yc+Nr37csc+CjZ8IOmes
-        7tKaD+zx4+p5R/4LJ7o+av57rnXirjRg6Q==
-X-Google-Smtp-Source: ABdhPJxQOjyaK8Qd7dD5gHn2A2Ngxdpd7HfM815L2u2CG0SAVMPtVYJI53J97KTVwnSCHf9CetMUcQ==
-X-Received: by 2002:a1c:4686:: with SMTP id t128mr3467097wma.156.1617706286497;
-        Tue, 06 Apr 2021 03:51:26 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:9a5b:98e6:2174:bf29])
-        by smtp.gmail.com with ESMTPSA id c18sm5044229wrp.33.2021.04.06.03.51.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:51:26 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        florian.c.schilhabel@googlemail.com,
-        driverdev-devel@linuxdriverproject.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: [PATCH] drivers: staging: rtl8712: align arguments with open parenthesis
-Date:   Tue,  6 Apr 2021 11:51:24 +0100
-Message-Id: <20210406105124.78498-1-martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=UW4SBvk4siFv9zFuBrGL9HNGyyN/dS4WBxMX1QWTZM8=;
+        b=JKmKpRFboQwCCtJ31o0ff3YyZ0pLrHOnVihc912w+2XkWkMHGuNnNx7oA9t2zPLaDk
+         SGZeXXw21JSglijiIBOG27+eD/nqZpwM+lvFUD44iyEEIsFE8+FpTk2mrCQiAp/urrNw
+         5ZXhJZ5SyMwh/cdPut/x2oVJtRnfRuZ8ZFh6xMzyQKgAAoFgAkKPC7XqtggoHHtYj89B
+         cQHkyLqY1bi25Ovlqsi746h4tFTEb8ktARcy3XqAIXRDqo0ceMlrwKhKCT2T9pkZ254W
+         siFDpNBLjW4zw7EbHEexJ4qDUCKPgWKnJS4BCH1xcn2zHELarQRBXa9ofD7YPY4O/lqD
+         R7Ig==
+X-Gm-Message-State: AOAM532P4QIugzTAAQ6TL/BBCLyvMaO/7AcL9bXkRByGknURi+OOS3fy
+        adCqhxUJeAhoqycbcISiSsk=
+X-Google-Smtp-Source: ABdhPJyEcWxQjakzL4UBY/hSPfKVA9z+I4/Fts1uNiYoCieQ/sPpv7fJrL0XRGTcNHoTn2bhWLT6MA==
+X-Received: by 2002:a5d:47c4:: with SMTP id o4mr33792030wrc.138.1617706392307;
+        Tue, 06 Apr 2021 03:53:12 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id c131sm2416442wma.37.2021.04.06.03.53.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Apr 2021 03:53:11 -0700 (PDT)
+Subject: Re: [PATCH v2 1/8] dt-bindings: timer: Add compatible for Mediatek
+ MT8195
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
+References: <20210319023427.16711-1-seiya.wang@mediatek.com>
+ <20210319023427.16711-3-seiya.wang@mediatek.com>
+ <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
+ <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <251f6d99-a7f6-ddbe-096a-95998b86dbed@gmail.com>
+Date:   Tue, 6 Apr 2021 12:53:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up checks of "Alignment should match open parenthesis"
-in file mlme_osdep.h
+Hi Daniel,
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
- drivers/staging/rtl8712/mlme_osdep.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 04/04/2021 22:33, Daniel Lezcano wrote:
+> On 29/03/2021 13:52, Matthias Brugger wrote:
+>>
+>>
+>> On 19/03/2021 03:34, Seiya Wang wrote:
+>>> This commit adds dt-binding documentation of timer for Mediatek MT8195 SoC
+>>> Platform.
+>>>
+>>> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+>>
+>> Applied to v5.12-next/dts64
+> 
+> Usually bindings go through the subsystem maintainer.
+> 
 
-diff --git a/drivers/staging/rtl8712/mlme_osdep.h b/drivers/staging/rtl8712/mlme_osdep.h
-index 9eaf94f072ff..a02c782588dd 100644
---- a/drivers/staging/rtl8712/mlme_osdep.h
-+++ b/drivers/staging/rtl8712/mlme_osdep.h
-@@ -22,8 +22,8 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter);
- void r8712_os_indicate_connect(struct _adapter *adapter);
- void r8712_report_sec_ie(struct _adapter *adapter, u8 authmode, u8 *sec_ie);
- int r8712_recv_indicatepkts_in_order(struct _adapter *adapter,
--				struct recv_reorder_ctrl *precvreorder_ctrl,
--				int bforced);
-+				     struct recv_reorder_ctrl *precvreorder_ctrl,
-+				     int bforced);
- void r8712_indicate_wx_assoc_event(struct _adapter *padapter);
- void r8712_indicate_wx_disassoc_event(struct _adapter *padapter);
- 
--- 
-2.25.1
+Yes I know, although not all maintainers are taking them. I'll coordinate with
+you the next time, sorry for any inconvenience caused by this.
 
+Regards,
+Matthias
