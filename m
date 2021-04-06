@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD2E354C15
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6865A354C1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 07:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242672AbhDFFJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 01:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230073AbhDFFJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 01:09:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E04D2613B8;
-        Tue,  6 Apr 2021 05:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617685786;
-        bh=X92KQg3tXG2x2dhtuX1igH+EpubBIGXwmzFmddKebSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YAkOjjj0GL3XRB09Ij60URoGO7NdIuDIosagpxtfZ9iVq8xjzpRqmg0/f2VeAwevd
-         gCLGwz21lbIWMUVSXSoaqFi0Iru0BxK0GRYMSdNgIrMHK9Yg3XdHCPbe/mFLACsA/X
-         UFvAfStd4Pc48XpaL+1vVCP+pCq8UiEBkUw/DIxk2rU7bNPyvyjyKgmWx+rw14jJw/
-         p73HiTP8ZGkD/NT+l86ADeas4d0UOfVxF9OY/sGrq+KRIXmDN6hnoJfqvKvFi3f0Bw
-         dXBW8ogvsD7qEJhmTiZTbVWnJi+ud6+yxx8O41YQGlllSDdvvG13vLa6u7yKwxk3MU
-         mcvvXPEGKgaVQ==
-Date:   Tue, 6 Apr 2021 08:09:43 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Honggang LI <honli@redhat.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <YGvtFxv1az754/Q5@unreal>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
+        id S243651AbhDFFK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 01:10:28 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26087 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhDFFK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 01:10:27 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 05 Apr 2021 22:10:19 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Apr 2021 22:10:18 -0700
+X-QCInternal: smtphost
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 06 Apr 2021 10:39:58 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id 7B1C021B31; Tue,  6 Apr 2021 10:39:56 +0530 (IST)
+From:   Krishna Manikandan <mkrishn@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        kalyan_t@codeaurora.org, dianders@chromium.org
+Subject: [PATCH v1 0/4] Add display support for SC7280 target 
+Date:   Tue,  6 Apr 2021 10:39:48 +0530
+Message-Id: <1617685792-14376-1-git-send-email-mkrishn@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:37:38AM +0800, Honggang LI wrote:
-> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > From Avihai,
-> > 
-> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> > imposed on PCI transactions, and thus, can improve performance.
-> > 
-> > Until now, relaxed ordering could be set only by user space applications
-> > for user MRs. The following patch series enables relaxed ordering for the
-> > kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> > such, it is ignored by vendors that don't support it.
-> > 
-> > The following test results show the performance improvement achieved
-> 
-> Did you test this patchset with CPU does not support relaxed ordering?
+The changes in this series adds all the required support for display driver for
+SC7280 target. In addition to the basic catalog changes, changes are added to
+accommodate new registers for SC7280 target.
 
-I don't think so, the CPUs that don't support RO are Intel's fourth/fifth-generation
-and they are not interesting from performance point of view.
+SC7280 target comes under next generation targets. The register differences in
+SC7280 when compared to SC7180 are mentioned below:
 
-> 
-> We observed significantly performance degradation when run perftest with
-> relaxed ordering enabled over old CPU.
-> 
-> https://github.com/linux-rdma/perftest/issues/116
+        - SC7280 uses UBWC3.0 and changes are added to program the ubwc static
+          registers properly
 
-The perftest is slightly different, but you pointed to the valid point.
-We forgot to call pcie_relaxed_ordering_enabled() before setting RO bit
-and arguably this was needed to be done in perftest too.
+        - Pingpong dither block offset value has changed for SC7280 family. Separate
+          sub block is defined for sc7280 pingpong block and changes are added to
+          handle this.
 
-Thanks
+        - Interface offsets are different for SC7280 family. These offset values are
+          used to access the interface irq registers. Changes are added to handle
+          this based on the target.
 
-> 
-> thanks
-> 
+        - A new register called CTL_FETCH_PIPE_ACTIVE is introduced in SC7280 family,
+          which tells the HW about the active pipes in the CTL path. Changes are
+          added to program this register based on the active pipes in the
+          current composition.
+
+        - Changes are added to program INTF_CONFIG2 properly since the reset value
+          of this register has changed in SC7280 family and we need to explicitly program
+          it with correct values to avoid wrong interface configuration.
+
+        - INTF_5 is added to intf configuration to support EDP.
+
+Krishna Manikandan (4):
+  drm/msm/disp/dpu1: add support for display for SC7280 target
+  drm/msm/disp/dpu1: add intf offsets for SC7280 target
+  drm/msm/disp/dpu1: add support to program fetch active in ctl path
+  drm/msm/disp/dpu1: enable DATA_HCTL_EN for sc7280 target
+
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c          |   7 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 176 ++++++++++++++++++++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |   8 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c        |  27 ++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h        |   3 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c |  20 ++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c       |  11 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c           |   4 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c          |   6 +-
+ drivers/gpu/drm/msm/msm_drv.c                     |   4 +-
+ 10 files changed, 242 insertions(+), 24 deletions(-)
+
+-- 
+2.7.4
+
