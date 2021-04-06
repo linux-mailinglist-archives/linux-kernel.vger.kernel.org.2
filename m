@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB23354FC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7A9354FC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 11:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhDFJYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 05:24:47 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:51559 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234340AbhDFJYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 05:24:20 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id ThwKl3zws43ycThwNlNMl6; Tue, 06 Apr 2021 11:24:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617701051; bh=6ltNW1Y1YoLa2xULgf+BpKnOllfDqYhoJ72xHtaUesI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=AQNMu50aeibY975qN4Yhq5zXrN0iyCg+4Dsmk5Cti8Yv2UYEixTLjGiNg6hFr90JS
-         D9bauakk3RWbLrfP5I/E6/6uGV6PFAbu31v+G2nzSzr8Bf/k6zcqW9TEKAHto0bEUV
-         yXWKErZm0fCmf7WiLg3o0M9sBs2LHXoSNQRNcEeiSoDbPJoyAb004Ov34mZLyf7hyP
-         IZyPdWZScrtNL1xxBrClegJLDHwWlqJszqW3eYYQWPOBYR4D7HAqIbgZy4PrdwYOKg
-         7PE0cRWqgY5P74Nf9luDZIuh8YtqFi71Gp2tMJd7wtU2XMjOhFxOFeL564fVPShxuT
-         3Nvgyh1wCv1Cw==
-Subject: Re: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not
- default to m
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210331081735.367238-1-geert+renesas@glider.be>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <e566f40a-dcfb-d863-bc6a-369e7972114a@xs4all.nl>
-Date:   Tue, 6 Apr 2021 11:24:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210331081735.367238-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S233839AbhDFJYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 05:24:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9110 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233638AbhDFJYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 05:24:38 -0400
+IronPort-SDR: x4mxE9AOvQ8V/rjoLoSZM4qypt8BF3/su4dLwfXzBfRteHlTISHBB3RRY6t8DojRgGqt97TAaZ
+ SGs8SK7Y6kXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="254360297"
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="254360297"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:24:30 -0700
+IronPort-SDR: UVbSmDRyv30Ig16YPnjSr+++mTyf3DbjHdxAPG6vlouka6O555bZrGxlM0jA4itA7LZXBhntax
+ nK2U/YbPi1lg==
+X-IronPort-AV: E=Sophos;i="5.81,309,1610438400"; 
+   d="scan'208";a="414692959"
+Received: from nkanakap-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.6.197])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 02:24:27 -0700
+Date:   Tue, 6 Apr 2021 21:24:24 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 13/25] x86/sgx: Add helpers to expose ECREATE and
+ EINIT to KVM
+Message-Id: <20210406212424.86d6d4533b144d4621ecb385@intel.com>
+In-Reply-To: <20210406090901.GH17806@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com>
+        <20210405090759.GB19485@zn.tnic>
+        <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
+        <20210406073917.GA17806@zn.tnic>
+        <20210406205958.084147e365d04d066e4357c1@intel.com>
+        <20210406090901.GH17806@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfM9w8guDS0s68bUW6rlcl0Hz8og0HZGLM8aVwXHcCs1LctqG4skiEBKQc37st96e1fFBUbJVuG4VxpRCMu3vAGbThMezq/L1m2QfCvMsDQmNOeYrZqEn
- 17yIe+68HSfInvq2rR855uyYZvrb6cah/RYD96XL/YDHBuefEjMoXo6JpKCorYpNLjEDf6cCVKDvfq3q5mbFnSUvp+H/Cnz+KNfd9FSpWWSMmZ12jlYI0u8r
- sr220x3pW+eUrViKLiO/actVQCTSkxf5L/cBXMsUatvd9Xij8VY328wxWeTYJ1kUfdC/wckr/eM7JMCOnkMWTvgErC6QUzSbNzCetGGdqOl8AEVpYGziQgdn
- RtsowWLcmLvn/8xXHyuvzyw8mUbXQtvKVmaANoqJMc2W2jJ8zXekLMOMVFI1+cPaBjH5oWVjdzGOBzCGDiYXqjmCWRolkG4YNCfsRfxRIk1U9/SxMLNlhRNi
- WwDjvF5y+f9pNjfuWW1V3KH0s2wVw6KMCrZ/ymis7Y4zEWqifUfd+iXsZuRxgAgRCnADe/7evNSgASxh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On 31/03/2021 10:17, Geert Uytterhoeven wrote:
-> The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
-> Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
-> ARCH_MXC, to prevent asking the user about this driver when configuring
-> a kernel without i.MX8 support.
+On Tue, 6 Apr 2021 11:09:01 +0200 Borislav Petkov wrote:
+> On Tue, Apr 06, 2021 at 08:59:58PM +1200, Kai Huang wrote:
+> > OK. My thinking was that, returning negative error value basically means guest
+> > will be killed.
 > 
-> Drop the "default m" (which means "default y" if CONFIG_MODULES is not
-> enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
-> additional code.
+> You need to define how you're going to handle invalid input from the
+> guest. If that guest is considered malicious, then sure, killing it
+> makes sense.
 
-You do not actually drop 'default m' in the patch. Either the patch or the
-commit message is wrong.
-
-Regards,
-
-	Hans
+Such invalid input has already been handled in handle_encls_xx() before calling
+the two helpers in this patch. KVM returns to Qemu and let it decide whether to
+kill or not. The access_ok()s here are trying to catch KVM bug.
 
 > 
-> Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/media/platform/imx-jpeg/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> > For the case access_ok() fails for @secs or other user pointers, it
+> > seems killing guest is a little it overkill,
 > 
-> diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
-> index d875f7c88cdad125..0e3269d06ded30ec 100644
-> --- a/drivers/media/platform/imx-jpeg/Kconfig
-> +++ b/drivers/media/platform/imx-jpeg/Kconfig
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  config VIDEO_IMX8_JPEG
->  	tristate "IMX8 JPEG Encoder/Decoder"
-> +	depends on ARCH_MXC || COMPILE_TEST
->  	depends on VIDEO_DEV && VIDEO_V4L2
->  	select VIDEOBUF2_DMA_CONTIG
->  	select V4L2_MEM2MEM_DEV
-> 
+> So don't kill it then - just don't allow it to create an enclave because
+> it is doing stupid crap.
 
+If so we'd better inject an exception to guest (and return 1) in KVM so guest
+can continue to run. Otherwise basically KVM will return to Qemu and let it
+decide (and basically it will kill guest).
+
+I think killing guest is also OK. KVM part patches needs to be updated, though,
+anyway.
