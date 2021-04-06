@@ -2,114 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B535588F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCB5355890
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346067AbhDFPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:54:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28625 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243616AbhDFPym (ORCPT
+        id S243616AbhDFPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346071AbhDFPyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:54:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617724474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GECg07lP5wsIqbFA2Q0Bw1H5A4ajMexc9b0QUtiEUWY=;
-        b=cI2GLgvon9l6hRkwem95ROnHMUL7bW2cNgEzkDXSVnzsQ17pAnpgejx0EtKygdbrB0gsT8
-        lbMNGLvo/gqXqBzc2+tAc84LgDXvyNcI6K9y8W2JtZXXKclVTCxNrwyncZTL95u3LgqtJT
-        awSHfEVxZYEI4JR9nLgU1R3jz0DqW9o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-CUodGpTdMkqgH90ht6jzIw-1; Tue, 06 Apr 2021 11:54:30 -0400
-X-MC-Unique: CUodGpTdMkqgH90ht6jzIw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94AA2800D53;
-        Tue,  6 Apr 2021 15:54:27 +0000 (UTC)
-Received: from treble (ovpn-116-68.rdu2.redhat.com [10.10.116.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F97310016FC;
-        Tue,  6 Apr 2021 15:54:25 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 10:54:23 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, mbenes@suse.com,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210406155423.t7dagp24bupudv3p@treble>
-References: <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <20210402183016.GU4332@42.do-not-panic.com>
- <YGgHg7XCHD3rATIK@kroah.com>
- <20210406003152.GZ4332@42.do-not-panic.com>
- <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
+        Tue, 6 Apr 2021 11:54:49 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BE7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 08:54:40 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id v140so5768428lfa.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 08:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M8D5SkpZw86nXuzjclR4fG3nQDhB5s59GcClodpHva0=;
+        b=DO4yLefsSCH5lzWN41R9EyfyrDFMXAUuVLjdmx+vvcR9sV86v1BCDTas1MyXjXw2wh
+         Bzfodspti/i/iiRanQPMaA7zL+WbziFWfcYfQs7aiRPNuskK4vQAMntthOKqncWoWbr2
+         eRAZIF15svJEA0iTHytW+RIsiZzIkbe194OmETtkwHym+wlgjTjfNTTW8SbVaDZjKJU7
+         0V+yCVEXE3YxFIrNpMpevK6DW8kEOBqkpGHG60UqBaIZeCsj0PwBO96+MtlcAWrp9sOA
+         pKgz/q8tv/OWsgb6xbkNa//RZ56a5mK0RmRC5ctBFYcqeF9hFi4Z6NWwpNSau/eFRqVy
+         zqlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M8D5SkpZw86nXuzjclR4fG3nQDhB5s59GcClodpHva0=;
+        b=F9giDCGP2FoQ7OCeDNER7AR7T6Z5hNN3v9pa3WuvA4StFj4WypWXvZrIis4Z7eBMq2
+         qcU0MoLxTWB5kEcJ9oH0pylTI2p2WDHnoEjH/JHDbduNpMpEiMeCkp3lZRIRi9cnoyXX
+         Dgy9eIvskNpIJwPeGwJFFrvBbIkzlTV/KdK4/NITaCAKEZx3z4y39XqKCFmJI8R0T+fI
+         WXMaRVUSMv+UsQFDTmhz3dVoqU3dis80B8F4AGkblLTbt4xaaNKctWGL15dorbGrxY+u
+         GCTgYFAFjJEJwce44Ky9VIFlDvBFgR+Ye9w5blsb9E6uj/iZboPXyole1+TeQlPPejxd
+         5lrQ==
+X-Gm-Message-State: AOAM531FNR7ebLOePQuN5N3DUwGLHSu/jsHRH+fNhBgDXYk7k3dNjunu
+        Z5EnFbrdXpmVM+eg3KPybXeS+A==
+X-Google-Smtp-Source: ABdhPJw0GjKX68W8iooPYCmFRlghZnsUiXcWLL8hIUFTnu7Iz7l7iK4JfMwSMHKTXdraZEh/NfqZuQ==
+X-Received: by 2002:a05:6512:3a81:: with SMTP id q1mr21094809lfu.388.1617724479133;
+        Tue, 06 Apr 2021 08:54:39 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b16sm53280lfq.6.2021.04.06.08.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 08:54:38 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 5558F101FF7; Tue,  6 Apr 2021 18:54:41 +0300 (+03)
+Date:   Tue, 6 Apr 2021 18:54:41 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 22/26] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+Message-ID: <20210406155441.a6ez7ehw7wbc63tk@box>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <76d1bc03ab6f12d1943f5bb83fcf0ff8eac55bc1.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <007362e2-a8df-050b-8c41-1756981bb071@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <007362e2-a8df-050b-8c41-1756981bb071@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:00:19PM +0200, Miroslav Benes wrote:
-> Hi,
+On Thu, Apr 01, 2021 at 01:13:16PM -0700, Dave Hansen wrote:
+> > @@ -56,6 +61,9 @@ static void tdx_get_info(void)
+> >  
+> >  	td_info.gpa_width = rcx & GENMASK(5, 0);
+> >  	td_info.attributes = rdx;
+> > +
+> > +	/* Exclude Shared bit from the __PHYSICAL_MASK */
+> > +	physical_mask &= ~tdx_shared_mask();
+> >  }
 > 
-> > > Driver developers will simply have to open code these protections. In
-> > > light of what I see on LTP / fuzzing, I suspect the use case will grow
-> > > and we'll have to revisit this in the future. But for now, sure, we can
-> > > just open code the required protections everywhere to not crash on module
-> > > removal.
-> > 
-> > LTP and fuzzing too do not remove modules.  So I do not understand the
-> > root problem here, that's just something that does not happen on a real
-> > system.
-> 
-> If I am not mistaken, the issue that Luis tries to solve here was indeed 
-> found by running LTP.
-> 
-> > On Sat, Apr 03, 2021 at 08:13:23AM +0200, Greg KH wrote:
-> > > On Fri, Apr 02, 2021 at 06:30:16PM +0000, Luis Chamberlain wrote:
-> > > > On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
-> > > > > No, please no.  Module removal is a "best effort",
-> > > > 
-> > > > Not for live patching. I am not sure if I am missing any other valid
-> > > > use case?
-> > > 
-> > > live patching removes modules?  We have so many code paths that are
-> > > "best effort" when it comes to module unloading, trying to resolve this
-> > > one is a valiant try, but not realistic.
-> > 
-> > Miroslav, your input / help here would be valuable. I did the
-> > generalization work because you said it would be worthy for you too...
-> 
-> Yes, we have the option to revert and remove the existing live patch from 
-> the system. I am not sure how (if) it is used in practice.
-> 
-> At least at SUSE we do not support the option. But we are only one of the 
-> many downstream users. So yes, there is the option.
+> I wish we had all of these 'physical_mask' manipulations in a single
+> spot.  Can we consolidate these instead of having TDX and SME poke at
+> them individually?
 
-Same for Red Hat.  Unloading livepatch modules seems to work fine, but
-isn't officially supported.
+SME has to do it very early -- from __startup_64() -- as it sets the bit
+on all memory, except what used for communication. TDX can postpone as we
+don't need any shared mapping in very early boot.
 
-That said, if rmmod is just considered a development aid, and we're
-going to be ignoring bugs, we should make it official with a new
-TAINT_RMMOD.
+Basically, to make it done from the same place we would need to move TDX
+enumeration earlier into boot. It's risky: everything is more fragile
+there.
+
+I would rather keep it as is. We should be fine as long as we only allow
+to clear bits from the mask.
 
 -- 
-Josh
-
+ Kirill A. Shutemov
