@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CFE35587C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6623335587D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 17:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346005AbhDFPug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 11:50:36 -0400
-Received: from mail-mw2nam08on2075.outbound.protection.outlook.com ([40.107.101.75]:42145
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        id S1346024AbhDFPup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 11:50:45 -0400
+Received: from mail-bn8nam12on2052.outbound.protection.outlook.com ([40.107.237.52]:57121
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243860AbhDFPuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:50:35 -0400
+        id S1345997AbhDFPug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:50:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NC9BJWUwq7mBD6kFWRn7u329QFGaEHin+VcMEHSApW/uqSsYfvouV+nfdtG/pNaAdSUoPNNBz4JvqWkiK886riuS6Q8+rcojqkFHGYT9cf5++TtV9lWiciDH2DxMNuJ1vUnsG9cOAej05vaIIoyK2anFbkyNmOZbv1VUo1iVmgagNOCf8WaZCtyC05jP885YUIOwc+R3zZV3+gPUs4YqFHP4N2q5WqZyEGU6MVxzCUOOLZa74wNSA8FUHLk4Fba7UdWjqwwO90l7ghmFxJbNDVcm1GtbVRs/Ssamqh1uf3c9hug/nEO8CV5zO/2dawxKkBAwJTFzbYOvFXbAfaBwEg==
+ b=K3TnuYsilRenDNNdDJrgieDdepJWkdQdMk8ojesIOpz2YtuCJ5S4CRogBlpGshC6EHIArPBFvrqJS7dAJxdRZTM7Bwj1AuuRCuytQfSUk9ayZL6C9PRQbxgew3gJASkvXTVSaDNUWjq4+ks/hXmMJVyIdvso7mQ8dl4r7N646bnGe4GpUkOG/kOaaE230didPncUx6euFGXFyiRHDswARioDwklw0mhPOz1IGol8tsosguVTJL3dZ1BiGBjl25qt1Nbrh8z1A2H5mA3Z6/8vMnUojrzDKrK3TNnI5hEq3+y5VFFG02oS4w7HTdxAJq/HhYABONgQmB3NOA11FPYE0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V9mRExYaYEF/WFCDwwyEd5kszxxyikTsf/8lkPGlg+k=;
- b=dmifRYivmQrDME5ydtjoXwbzWcTJ6/xAYXAIBTzsVDHl96pKTYHQhKUb9dF7EHx0+a5lD/uLXeeiD+0hGfLn+P50+lR4+hN44HY1qtEYoDOoKTyQQPU4jFL/S26yKJpXj8Pa+NICd5zPeXHY4M52eIT0ePJSMTOb9fuzpn6D0Wh/DgoGmTjVMVwnPGCZnY+DqCqYVDf8BlToqx0rtDrAQY2clr75vmVMhau5gbOCAK6j6WsBPciLhV6gnDuTFXyn89pADYOKPj6LOQGQZ2kjN+/1gpEPC2saHAyrJ37QOE/Z9pnfViQDaL/pI4AiZDTOM2aXlKf5g37/2eDePteylg==
+ bh=/pb1fBEgORWoDqDU+a07bNHp8PSrfTZeqt8cX8rI9BI=;
+ b=YwFemFQGPzfnSIYM3cbLy80IMBXcVJT6M14TDIX5JaN2zEMkXkA9+Gk+tCQRTj1fndnNN6ZgphAevv0qCnev6Yd/NFmMHw8saVw6eEOHHYRDAtUDsqAgR2EWFZ3HM8ilz+aD0ynKFW1TcC3Qf1qRFYl9IzCNxYFy8A+XBc6VOg6SPsatYpFB4FX1IID3pRetFPrsrqkL9nJo+h0w7iEc9h/sL9MwQYW2l5DqgThS5zQ7GvW7LfswB3gnPD9e58TX8wvHCd81mYWcgajeMQYnUHwRXkYZpzvhY2/BiatIKfo5Vk52GaFrbIznF3zPcIBY3NJ2lHsCdYTe6ji+pC4exg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V9mRExYaYEF/WFCDwwyEd5kszxxyikTsf/8lkPGlg+k=;
- b=zuP/JOJxzUbJooHK9qkYwjMCacgQvQor/srdDnJpZMqAw8avM2puYQfPKzqQ2IcD52t+S2wYiYXSpRbpD15JTLDOqJxNa+eopSlPgRKPplSGMm9MHK6GmN4Pqux7RLh8vY8jAg0Qye8T4YvN4/uYA88TO2Mtbw9UryALnPjIb6k=
-Received: from MWHPR12CA0046.namprd12.prod.outlook.com (2603:10b6:301:2::32)
- by DM6PR12MB3258.namprd12.prod.outlook.com (2603:10b6:5:187::22) with
+ bh=/pb1fBEgORWoDqDU+a07bNHp8PSrfTZeqt8cX8rI9BI=;
+ b=3z3PCSGclefQ4LpvYcbkHgmE17VTAIxn7p88sDPSgDAyJlp8ftvFgYbvY935aECFzKURwzN9rrorPLr7OUP4qjGF00EUG+LCQKXyZ8sPczt8hgnjmBFa4RBshYPLZib81Nwdjmy4MdyGhJTte+17ZVog0hgMi1bgWtv8rpq5lHU=
+Received: from MWHPR12CA0037.namprd12.prod.outlook.com (2603:10b6:301:2::23)
+ by MWHPR12MB1630.namprd12.prod.outlook.com (2603:10b6:301:c::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
- 2021 15:50:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Tue, 6 Apr
+ 2021 15:50:26 +0000
 Received: from CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:2:cafe::57) by MWHPR12CA0046.outlook.office365.com
- (2603:10b6:301:2::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
- Transport; Tue, 6 Apr 2021 15:50:25 +0000
+ (2603:10b6:301:2:cafe::62) by MWHPR12CA0037.outlook.office365.com
+ (2603:10b6:301:2::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29 via Frontend
+ Transport; Tue, 6 Apr 2021 15:50:26 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
@@ -46,19 +46,19 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CO1NAM11FT015.mail.protection.outlook.com (10.13.175.130) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 15:50:25 +0000
+ 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 15:50:26 +0000
 Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 10:50:23 -0500
+ 15.1.2106.2; Tue, 6 Apr 2021 10:50:24 -0500
 From:   Ramakrishna Saripalli <rsaripal@amd.com>
 To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
 CC:     <rsaripal@amd.com>
-Subject: [PATCH 1/5] x86/cpufeatures: Define feature bits to support mitigation of PSF
-Date:   Tue, 6 Apr 2021 10:50:00 -0500
-Message-ID: <20210406155004.230790-2-rsaripal@amd.com>
+Subject: [PATCH 2/5] x86/speculation: Implement support for PSFD detection and reporting
+Date:   Tue, 6 Apr 2021 10:50:01 -0500
+Message-ID: <20210406155004.230790-3-rsaripal@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210406155004.230790-1-rsaripal@amd.com>
 References: <20210406155004.230790-1-rsaripal@amd.com>
@@ -70,107 +70,71 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: af227774-5024-4d60-5555-08d8f913b1c7
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3258:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3258059B632748575BA819459B769@DM6PR12MB3258.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 65d8dbb5-1bec-4992-2711-08d8f913b233
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1630:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1630283C6B0F90C4525F3C279B769@MWHPR12MB1630.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Uqcj/DXbw4uz+yts9ZPXv0zuvVuzk3NlOZ0jQg9StPbYmBlu+k/cAQCVGsbJtyUOPijB84n8W8r+eyETLSB4qznk2XgOXLv8D6Tr84Du3/8tIhoiYAIO8Xk3WXPLGT5F6Jo1MJj+ChG6Z1USGlWApzQhpwbkizc/HVc6KmCt1Q2slJQTmAMqiYUpmifXy/wIj3acUADMZTYtbLp28KipnyOHp/SbL+b36sOj2pJ5vQFN48MFs+YInBJjcP3FVk4SD/zlymdlpr6bDXUQODGQXZuLMlczcC/A24xQt9wFPd1RnOiLxdKK8q52RZ6sLnaOJ4XSaS5H504SkQamHP0m+XAIwiS3iPeqIsiuPgwzfa4Hn9vDgTAn8Rq3ZeZiqbLeZAg/mjfOqxz7s0+KbHjcxvGtYFcMqyR1w7AIa2CVZ32iPWofI4NM+hN1jI6oPmXt8hltBHaXhnhXYzKcjWYIedu7KrIeT9jZFXA1Ge5WuKu9FXOa/ACmg++zM5Dg+7ZNHaPUGBvCIawweWJxEW1Xlu/h4aS+kcjQK2D6ASrGV2oiw8prI/8MAgxjaQ4651jvrTK2dIOGh+Pi+wmG1o2/udKE+vYK6/i9b6RiviHw75nErh2VBtRoJK7tVmf01Mk05gElalKQxoxVhohp1Zw20Bs1LsDrv/oFY3NnREDuQNE0XPeKo1nzobxDyC3s+6A2
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(46966006)(36840700001)(2616005)(16526019)(478600001)(8936002)(7696005)(70586007)(36756003)(356005)(186003)(1076003)(6666004)(2906002)(36860700001)(26005)(47076005)(5660300002)(426003)(4326008)(336012)(83380400001)(110136005)(82310400003)(8676002)(82740400003)(316002)(81166007)(70206006)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: cwHV9oJd4qyQvaGPgc8ss2CzZbZan1FhyBspcw/vTOkBwLfX8/jJpDcNQarnGg4r0yjM21QV9KABQv6YKZgxW7hqzPN1TSavAdKFnYYmFbf+SKINjkiEaTl+iI9GpHFewGecYRm61dLCO8hAeWW6QzSyosZ+v90YeZa9xRd8+H3hjpbA1HPuOfTgvLZnufqohVM78hNHz3ixdOtG+7L+T4LdBMPp5ddkGPbZT0ibOCzPAmiFb++BRu3nFF15L++m5zwOTDlxeto+2/DM+OQHS4B8/V9+0ypS0jjkg1izKKdiLWxMLli+3Ufwylgsq6NZ2GpJ4p4YpeQVZPUFMtgWinjnvmTeDrqW+hRXmITvd/02h/11676HPWvpPkKYtYnIZX2mbBgimTd4TAYBsqUoBg8BLClG70GHnr6jnVR/2SIWN4oYhg+c3dRMcgHiZYkNOFdOFU+ArVCGO9t0/tKsyDjN8zc52/p7ESuuwP+9NL443PAXzgOLsAcrrbJVajKpQPTUj6WhNb/hAq52WwVADuOIgOPiTNWKxJhO6bCs2k9Irl1uq1K5MYXJ4cA3Wcg3qdVTSZdeANLYh40IKk8UinUAXYP6MCblEH8D8v6hbg6T/kY2CSD2+ZHJblDXq1kHTRO59/h8tTGNwXVs2JvXQ1M/0fBbNA2Q+RiiZvtLE2v0fbSKKZrH/2OOVvZUoNnD
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966006)(36840700001)(82310400003)(356005)(82740400003)(110136005)(36860700001)(1076003)(336012)(426003)(2906002)(2616005)(70586007)(7696005)(36756003)(47076005)(8936002)(4326008)(478600001)(5660300002)(26005)(83380400001)(16526019)(6666004)(70206006)(316002)(81166007)(8676002)(186003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:50:25.3661
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 15:50:26.0727
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: af227774-5024-4d60-5555-08d8f913b1c7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65d8dbb5-1bec-4992-2711-08d8f913b233
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3258
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1630
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ramakrishna Saripalli <rk.saripalli@amd.com>
 
-Certain AMD processors feature a new technology called Predictive Store
-Forwarding (PSF).
+All AMD processors that support Predictive Store Forwarding (PSF)
+provide a CPUID bit to detect support for mitigation of this
+feature. This bit is referred to as PSFD (Predictive Store Forwarding
+Disable)
 
-PSF is a micro-architectural optimization designed to improve the
-performance of code execution by predicting dependencies between
-loads and stores.
+If CPU advertises PSFD:
+- Advertise a generic feature (X86_FEATURE_PSFD) in Linux capability
+flags to indicate PSF mitigation is available.
 
-Incorrect PSF predictions can occur due to two reasons.
-
-- It is possible that the load/store pair may have had dependency for
-  a while but the dependency has stopped because the address in the
-  load/store pair has changed.
-
-- Second source of incorrect PSF prediction can occur because of an alias
-  in the PSF predictor structure stored in the microarchitectural state.
-  PSF predictor tracks load/store pair based on portions of instruction
-  pointer. It is possible that a load/store pair which does have a
-  dependency may be aliased by another load/store pair which does not have
-  the same dependency. This can result in incorrect speculation.
-
-  Software may be able to detect this aliasing and perform side-channel
-  attacks.
-
-These features are being introduced to support mitigation from these attacks.
-
-All CPUs that implement PSF provide one bit to disable this feature.
-If the bit to disable this feature is available, it means that the CPU
-implements PSF feature and is therefore vulnerable to PSF risks.
-
-The bits that are introduced
-
-X86_FEATURE_AMD_PSFD: CPUID_Fn80000008_EBX[28] ("PSF disable")
-	If this bit is 1, CPU implements PSF and PSF mitigation is
-	supported.
-
-X86_FEATURE_PSFD: Generic Linux feature to indicate the CPU supports
-	controls to mitigate PSF.
-
- 	X86_FEATURE_PSFD is set if and only if X86_FEATURE_AMD_PSFD
-	is set
-
-X86_BUG_PSF: Generic Linux feature to indicate that the CPU is affected
-	by the PSF feature.
+- Advertise X86_BUG_PSF in Linux bug bits to indicate that CPU is
+affected by PSF security risks.
 
 Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
 ---
- arch/x86/include/asm/cpufeatures.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/common.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index cc96e26d69f7..21e7f8d0d7d9 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -201,7 +201,7 @@
- #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
- #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
- #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
--/* FREE!                                ( 7*32+10) */
-+#define X86_FEATURE_PSFD		( 7*32+10) /* Predictive Store Forward Disable */
- #define X86_FEATURE_PTI			( 7*32+11) /* Kernel Page Table Isolation enabled */
- #define X86_FEATURE_RETPOLINE		( 7*32+12) /* "" Generic Retpoline mitigation for Spectre variant 2 */
- #define X86_FEATURE_RETPOLINE_AMD	( 7*32+13) /* "" AMD Retpoline mitigation for Spectre variant 2 */
-@@ -309,6 +309,7 @@
- #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
- #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
- #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
-+#define X86_FEATURE_AMD_PSFD		(13*32+28) /* "" Predictive Store Forward Disable */
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index ab640abe26b6..4e604d58f3b3 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -893,6 +893,9 @@ static void init_speculation_control(struct cpuinfo_x86 *c)
+ 		set_cpu_cap(c, X86_FEATURE_MSR_SPEC_CTRL);
+ 		clear_cpu_cap(c, X86_FEATURE_VIRT_SSBD);
+ 	}
++
++	if (cpu_has(c, X86_FEATURE_AMD_PSFD))
++		set_cpu_cap(c, X86_FEATURE_PSFD);
+ }
  
- /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
- #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
-@@ -428,5 +429,6 @@
- #define X86_BUG_TAA			X86_BUG(22) /* CPU is affected by TSX Async Abort(TAA) */
- #define X86_BUG_ITLB_MULTIHIT		X86_BUG(23) /* CPU may incur MCE during certain page attribute changes */
- #define X86_BUG_SRBDS			X86_BUG(24) /* CPU may leak RNG bits if not mitigated */
-+#define X86_BUG_PSF			X86_BUG(25) /* CPU is affected by Predictive Store Forwarding attack */
+ void get_cpu_cap(struct cpuinfo_x86 *c)
+@@ -1154,6 +1157,9 @@ static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
+ 	   !cpu_has(c, X86_FEATURE_AMD_SSB_NO))
+ 		setup_force_cpu_bug(X86_BUG_SPEC_STORE_BYPASS);
  
- #endif /* _ASM_X86_CPUFEATURES_H */
++	if (cpu_has(c, X86_FEATURE_AMD_PSFD))
++		setup_force_cpu_bug(X86_BUG_PSF);
++
+ 	if (ia32_cap & ARCH_CAP_IBRS_ALL)
+ 		setup_force_cpu_cap(X86_FEATURE_IBRS_ENHANCED);
+ 
 -- 
 2.25.1
 
