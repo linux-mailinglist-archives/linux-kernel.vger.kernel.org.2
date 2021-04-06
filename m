@@ -2,122 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BCE355166
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5E8355161
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 12:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245263AbhDFK6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 06:58:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26500 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245259AbhDFK6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:58:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617706687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aoo4T5OcYVMmIH5rVBArOHDK8SbcOJSOJ1qUYgR/5T8=;
-        b=AvnKlSPrT2rbxeIr7hzHPgE1FIFEaIEmuwVwtjzpFDSS7c89SEXHhCcM585T6XgLiWkA93
-        MmgNkWfTtvkJispz9eMSEDyNIh47YNDIPqCTeTWfYl3YP0hIGUH8S7xlwgn6Dbn5T+ykvh
-        0oqFpWqa9s2D1y17v8/Tv0wqSwWiJnQ=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-Sl4z2ceSMLai-INDRV5ebA-1; Tue, 06 Apr 2021 06:58:05 -0400
-X-MC-Unique: Sl4z2ceSMLai-INDRV5ebA-1
-Received: by mail-pl1-f198.google.com with SMTP id m4so797308plx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 03:58:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aoo4T5OcYVMmIH5rVBArOHDK8SbcOJSOJ1qUYgR/5T8=;
-        b=qJFzsbKp0nrgiye4SXn2TK3vnKFbLigOKzAu3MnP8eXJky+bEG/EpUlJH2e846Roe1
-         Vkh3n8672AhQHgKdCnoVB8Zfy/N4gmqFZxbGaMJAp2jUB4rO2dWSj/nSBOu1+hdJdplK
-         SnHIzl6G2h+aXpHEP1APHFo+WvBnO1PMRdDdjFgtH8CZ9i/IWT6Rn2GHU0y9yma+dyFd
-         XuO7PKlcfg4SCNffa+XS8xOkGr0AYACz+QNnn3gZZR5Plsx5fLqPosX/SBN5G1W6m9oi
-         fEh8W05b2nbhwIcY5MITNMbHb28KrVF8E3ocAGGRUFJGPY3EZcjY52g91N0EJailV+VG
-         5ppw==
-X-Gm-Message-State: AOAM530HTQ3Mb7G9kqeY2TG7Opb3/QbZK73WQ6MCsYBvlkiSLhbxTnhi
-        qxjw1VxiWQEd9SgYrKmFgEnNl0A/TMliuEbdWO58Ef3j3VOgOqv08TIA7rF4ASpifojfKQelmpu
-        7uvX1CDr2b+YBcpEC7MiowUOB
-X-Received: by 2002:a65:6643:: with SMTP id z3mr1474566pgv.387.1617706684311;
-        Tue, 06 Apr 2021 03:58:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJya/JAeXp9rFtQDgDn8HW+qGdQS73sx5LoNGY80ZZXhkPwr1QTS3aX8lbQdzfQ4srYGA95yMQ==
-X-Received: by 2002:a65:6643:: with SMTP id z3mr1474553pgv.387.1617706684057;
-        Tue, 06 Apr 2021 03:58:04 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c6sm19868861pfj.99.2021.04.06.03.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:58:03 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 18:57:53 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Gao Xiang <xiang@kernel.org>, linux-parisc@vger.kernel.org,
-        Liam Beguin <liambeguin@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] parisc: avoid a warning on u8 cast for cmpxchg on u8
- pointers
-Message-ID: <20210406105753.GA550515@xiangao.remote.csb>
-References: <20210406045929.30331-1-xiang@kernel.org>
- <ee2016b1-926e-93b1-ba92-d5f4975f06c9@gmx.de>
+        id S245252AbhDFK6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 06:58:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245237AbhDFK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 06:58:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BEFFAB14C;
+        Tue,  6 Apr 2021 10:57:55 +0000 (UTC)
+To:     Marco Elver <elver@google.com>,
+        Daniel Latypov <dlatypov@google.com>
+Cc:     glittao@gmail.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20210331085156.5028-1-glittao@gmail.com>
+ <YGWPdFywfNUl4d3S@elver.google.com>
+ <CAGS_qxpWtNLJ7_i5pDYhiGq_Jy+oPPc+HpWjNTJKAPyvQf+gsQ@mail.gmail.com>
+ <CANpmjNPhWUsQrG62Z2jchdqzgSOfVYOsD1QDJpRghJwzwRZcQA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3 1/2] kunit: add a KUnit test for SLUB debugging
+ functionality
+Message-ID: <11886d4f-8826-0cd6-b5fd-defc65470ed5@suse.cz>
+Date:   Tue, 6 Apr 2021 12:57:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CANpmjNPhWUsQrG62Z2jchdqzgSOfVYOsD1QDJpRghJwzwRZcQA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ee2016b1-926e-93b1-ba92-d5f4975f06c9@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:08:55PM +0200, Helge Deller wrote:
-> On 4/6/21 6:59 AM, Gao Xiang wrote:
-> > From: Gao Xiang <hsiangkao@redhat.com>
-> > 
-> > commit b344d6a83d01 ("parisc: add support for cmpxchg on u8 pointers")
-> > can generate a sparse warningi ("cast truncates bits from constant
-> > value"), which has been reported several times [1] [2] [3].
-> > 
-> > The original code worked as expected, but anyway, let silence such
-> > sparse warning as what others did [4].
-> > 
-> > [1] https://lore.kernel.org/r/202104061220.nRMBwCXw-lkp@intel.com
-> > [2] https://lore.kernel.org/r/202012291914.T5Agcn99-lkp@intel.com
-> > [3] https://lore.kernel.org/r/202008210829.KVwn7Xeh%25lkp@intel.com
-> > [4] https://lore.kernel.org/r/20210315131512.133720-2-jacopo+renesas@jmondi.org
-> > Cc: Liam Beguin <liambeguin@gmail.com>
-> > Cc: Helge Deller <deller@gmx.de>
-> > Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-> 
-> applied to the parisc for-next git tree.
-> (I fixed up the typo above too)
 
-Thanks all! :)
-
-Thanks,
-Gao Xiang
-
+On 4/1/21 11:24 PM, Marco Elver wrote:
+> On Thu, 1 Apr 2021 at 21:04, Daniel Latypov <dlatypov@google.com> wrote:
+>> >         }
+>> >         #else
+>> >         static inline bool slab_add_kunit_errors(void) { return false; }
+>> >         #endif
+>> >
+>> > And anywhere you want to increase the error count, you'd call
+>> > slab_add_kunit_errors().
+>> >
+>> > Another benefit of this approach is that if KUnit is disabled, there is
+>> > zero overhead and no additional code generated (vs. the current
+>> > approach).
+>>
+>> The resource approach looks really good, but...
+>> You'd be picking up a dependency on
+>> https://lore.kernel.org/linux-kselftest/20210311152314.3814916-2-dlatypov@google.com/
+>> current->kunit_test will always be NULL unless CONFIG_KASAN=y &&
+>> CONFIG_KUNIT=y at the moment.
+>> My patch drops the CONFIG_KASAN requirement and opens it up to all tests.
 > 
-> Thanks!
-> Helge
+> Oh, that's a shame, but hopefully it'll be in -next soon.
 > 
-> > ---
-> >   arch/parisc/include/asm/cmpxchg.h | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
-> > index cf5ee9b0b393..84ee232278a6 100644
-> > --- a/arch/parisc/include/asm/cmpxchg.h
-> > +++ b/arch/parisc/include/asm/cmpxchg.h
-> > @@ -72,7 +72,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
-> >   #endif
-> >   	case 4: return __cmpxchg_u32((unsigned int *)ptr,
-> >   				     (unsigned int)old, (unsigned int)new_);
-> > -	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
-> > +	case 1: return __cmpxchg_u8((u8 *)ptr, old & 0xff, new_ & 0xff);
-> >   	}
-> >   	__cmpxchg_called_with_bad_pointer();
-> >   	return old;
-> > 
+>> At the moment, it's just waiting another look over from Brendan or David.
+>> Any ETA on that, folks? :)
+>>
+>> So if you don't want to get blocked on that for now, I think it's fine to add:
+>>   #ifdef CONFIG_SLUB_KUNIT_TEST
+>>   int errors;
+>>   #endif
 > 
+> Until kunit fixes setting current->kunit_test, a cleaner workaround
+> that would allow to do the patch with kunit_resource, is to just have
+> an .init/.exit function that sets it ("current->kunit_test = test;").
+> And then perhaps add a note ("FIXME: ...") to remove it once the above
+> patch has landed.
+> 
+> At least that way we get the least intrusive change for mm/slub.c, and
+> the test is the only thing that needs a 2-line patch to clean up
+> later.
 
+So when testing internally Oliver's new version with your suggestions (thanks
+again for those), I got lockdep splats because slab_add_kunit_errors is called
+also from irq disabled contexts, and kunit_find_named_resource will call
+spin_lock(&test->lock) that's not irq safe. Can we make the lock irq safe? I
+tried the change below and it makde the problem go away. If you agree, the
+question is how to proceed - make it part of Oliver's patch series and let
+Andrew pick it all with eventually kunit team's acks on this patch, or whatnot.
+
+----8<----
+
+commit ab28505477892e9824c57ac338c88aec2ec0abce
+Author: Vlastimil Babka <vbabka@suse.cz>
+Date:   Tue Apr 6 12:28:07 2021 +0200
+
+    kunit: make test->lock irq safe
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 49601c4b98b8..524d4789af22 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -515,8 +515,9 @@ kunit_find_resource(struct kunit *test,
+ 		    void *match_data)
+ {
+ 	struct kunit_resource *res, *found = NULL;
++	unsigned long flags;
+ 
+-	spin_lock(&test->lock);
++	spin_lock_irqsave(&test->lock, flags);
+ 
+ 	list_for_each_entry_reverse(res, &test->resources, node) {
+ 		if (match(test, res, (void *)match_data)) {
+@@ -526,7 +527,7 @@ kunit_find_resource(struct kunit *test,
+ 		}
+ 	}
+ 
+-	spin_unlock(&test->lock);
++	spin_unlock_irqrestore(&test->lock, flags);
+ 
+ 	return found;
+ }
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index ec9494e914ef..2c62eeb45b82 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -442,6 +442,7 @@ int kunit_add_resource(struct kunit *test,
+ 		       void *data)
+ {
+ 	int ret = 0;
++	unsigned long flags;
+ 
+ 	res->free = free;
+ 	kref_init(&res->refcount);
+@@ -454,10 +455,10 @@ int kunit_add_resource(struct kunit *test,
+ 		res->data = data;
+ 	}
+ 
+-	spin_lock(&test->lock);
++	spin_lock_irqsave(&test->lock, flags);
+ 	list_add_tail(&res->node, &test->resources);
+ 	/* refcount for list is established by kref_init() */
+-	spin_unlock(&test->lock);
++	spin_unlock_irqrestore(&test->lock, flags);
+ 
+ 	return ret;
+ }
+@@ -515,9 +516,11 @@ EXPORT_SYMBOL_GPL(kunit_alloc_and_get_resource);
+ 
+ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res)
+ {
+-	spin_lock(&test->lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&test->lock, flags);
+ 	list_del(&res->node);
+-	spin_unlock(&test->lock);
++	spin_unlock_irqrestore(&test->lock, flags);
+ 	kunit_put_resource(res);
+ }
+ EXPORT_SYMBOL_GPL(kunit_remove_resource);
+@@ -597,6 +600,7 @@ EXPORT_SYMBOL_GPL(kunit_kfree);
+ void kunit_cleanup(struct kunit *test)
+ {
+ 	struct kunit_resource *res;
++	unsigned long flags;
+ 
+ 	/*
+ 	 * test->resources is a stack - each allocation must be freed in the
+@@ -608,9 +612,9 @@ void kunit_cleanup(struct kunit *test)
+ 	 * protect against the current node being deleted, not the next.
+ 	 */
+ 	while (true) {
+-		spin_lock(&test->lock);
++		spin_lock_irqsave(&test->lock, flags);
+ 		if (list_empty(&test->resources)) {
+-			spin_unlock(&test->lock);
++			spin_unlock_irqrestore(&test->lock, flags);
+ 			break;
+ 		}
+ 		res = list_last_entry(&test->resources,
+@@ -621,7 +625,7 @@ void kunit_cleanup(struct kunit *test)
+ 		 * resource, and this can't happen if the test->lock
+ 		 * is held.
+ 		 */
+-		spin_unlock(&test->lock);
++		spin_unlock_irqrestore(&test->lock, flags);
+ 		kunit_remove_resource(test, res);
+ 	}
+ #if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
