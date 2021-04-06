@@ -2,114 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727CD3556A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982FD3556AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 16:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345161AbhDFOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 10:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
+        id S1345165AbhDFOb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 10:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244717AbhDFOaE (ORCPT
+        with ESMTP id S239306AbhDFOb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:30:04 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E292C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:29:57 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so14784433otb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:29:57 -0700 (PDT)
+        Tue, 6 Apr 2021 10:31:56 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E72C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 07:31:47 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id b4so23103306lfi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 07:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hQuAvIyYNagg9JyQzFat1nJUGgDzxw1aFC3YiFQyaP8=;
-        b=r0xxTuGtRNzYKu8nqiDI+DB5zSPkGLUpbLgQNQaGLGkgiwpw5MLANjpcq8MYaU0Hq2
-         X8hOUDV1/oX/57fSmkTii8Bi2YNGL51y3lk4KSq6YfYCl9xD99P2sRCmzVmEG58kiwA4
-         O05ho4ncMEJoZb938OZlbjiRKlK/EjE9hdYwjEFKVhW8aa5VjYe3kTtXHut1plKroA5I
-         LK8jHR4u1E1zwzgU3jfR/e97UySNVfA6xtYPZDw8iliqxhEF4hMoTSEYpSrDe0cNmIoT
-         5uGPRIzoOUAtKfyfQyD6S4s1F14OHjawgvJvGlkrf0GyIfoE+3kDp/xK61HSyY5bjF7+
-         zvuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SAbAgRsevYpEf22UGCEjPx5xKc+hazQx7qglGcL+BnI=;
+        b=Sw527LAr3qxsLscT6t43K7tdyRIWbhxyuTkhnY09A6q/cnmvEIDdjGb63s702ua3gg
+         komCXgUt3UPzFcBK1wEip1SlMzpWmdkLh3l4SmK/JLtQE3EETgoZZApGW/LKlVACVT1i
+         16At7wVUmkg2zauQBJtwPS+uq/L9rT0SAJ90wooIxbv67/hzIQm93d7k6qnEXiwLwjVf
+         oCx5CU1TsAnlrBa/aZeUkRIzVJwHo2xFULy06QXHdZAizb+rDOAiV68z7y0rISOkPJWO
+         Tga8qfXo8hn/1HruSAZisA/3fBOO2tWML+ywiKaJ+hceGIfr/YfS/O0vgQ8FyLI7rAPp
+         W92g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hQuAvIyYNagg9JyQzFat1nJUGgDzxw1aFC3YiFQyaP8=;
-        b=D3umFoZiheLT+RFdt1rrpABLswMmbXRS6xYHqmegpMOZDEJ5tQ4NQ+VjPZ3YhqNspj
-         2QwpzUq4/WW3Xc1ZAZyEB4Rdu+TPU9GMNyeWTn2gm1VimERiAx0jAXjF/hNnyjV8NgZy
-         FxnNkwoTsnFsehUwu/2Qxv/DZXh7KDUG2UE5SykyTaxcQOJR2mVLIgz6OM6rDgTxvWCL
-         ERNxKut36kF71YbJ+5D+wZVlObsQpPMCeLoHvb5vq7zG+GluGuR9LQXvxfATmi4NfHXC
-         XL6JYjmMM3lRE9IP4dAqKMAfL2HQRDgWO42qH6J8el0MRnvN9sfSrAAb7muVOj/MhcIl
-         mP8w==
-X-Gm-Message-State: AOAM532p64B6GvXbEXGJ8wqC1icoL0U2BHQf8uWil1Yb3nf1n0N8+1JI
-        Q3tCx4FHkYsPSEmB/TBJ6ddjZA==
-X-Google-Smtp-Source: ABdhPJwoj/Chr5jtxoWPmUxeZgdomq36W/mf+NaHAUUL9Ola9ZGgZLXjYEl5wLxRYiH8O3M4xb6gkw==
-X-Received: by 2002:a05:6830:309d:: with SMTP id f29mr26342263ots.225.1617719396349;
-        Tue, 06 Apr 2021 07:29:56 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d13sm4689185otk.74.2021.04.06.07.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 07:29:55 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 09:29:52 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210406142952.GG904837@yoga>
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SAbAgRsevYpEf22UGCEjPx5xKc+hazQx7qglGcL+BnI=;
+        b=AzsPFWolKsHD3u65yjoRdZAoFdOGAMA8ss9oxezV7ZsEpNisJ5ntp52yDnaThfagGB
+         ujgUDVPQj9HZiGiT4zhdAqeAsnKcNGM15Pik0Di4M9yjPJ53PvVn5QYdYWeDEH/3uFQy
+         tDvjoDX1ftyyI5waukDN6rMtRfucK1fR6RZ7bLSs04NdB/TcqSNiRZ1EnIj66ty9W4zg
+         bX2oOp7IqQgRmOpMNcKtXeRUhRkLJkRBzo3RzXaMtsmt1NzdYwBdA9WpTKoouCRzAGVK
+         +iY2jpXZga8Lg+DOcKPUGZhpRzDdm/DqP5VFCXSh1TVto2rdsVLGx+XpXJjWHYuPHTpJ
+         ybzA==
+X-Gm-Message-State: AOAM530XbfU/VtszHsOuCCEEvP4ylA1GZpwpULVJGrXeMqsZ8wdG6cdS
+        naa61zQ3TRTmoo4y2TOc/YE35Bs5TPMw6XBmunQNkQ==
+X-Google-Smtp-Source: ABdhPJzQSlbElGn8nHA98I4hP9j7AwlPcvxJ87T4dlz5PAkM+o+DemSEHJAFUkclv7rwtilB3Ns3JPM0uLCq0O3Wp6k=
+X-Received: by 2002:a19:f812:: with SMTP id a18mr21272329lff.254.1617719506474;
+ Tue, 06 Apr 2021 07:31:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+References: <20210406041108.7416-1-ricardo.neri-calderon@linux.intel.com> <20210406041108.7416-3-ricardo.neri-calderon@linux.intel.com>
+In-Reply-To: <20210406041108.7416-3-ricardo.neri-calderon@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 6 Apr 2021 16:31:35 +0200
+Message-ID: <CAKfTPtBfRCXgfLVbTo1tD+_puzvba8qbhYc99RiL9QchQ+S5ew@mail.gmail.com>
+Subject: Re: [PATCH 2/4] sched/fair: Introduce arch_sched_asym_prefer_early()
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 06 Apr 08:31 CDT 2021, Andy Shevchenko wrote:
+On Tue, 6 Apr 2021 at 06:11, Ricardo Neri
+<ricardo.neri-calderon@linux.intel.com> wrote:
+>
+> Introduce arch_sched_asym_prefer_early() so that architectures with SMT
+> can delay the decision to label a candidate busiest group as
+> group_asym_packing.
+>
+> When using asymmetric packing, high priority idle CPUs pull tasks from
+> scheduling groups with low priority CPUs. The decision on using asymmetric
+> packing for load balancing is done after collecting the statistics of a
+> candidate busiest group. However, this decision needs to consider the
+> state of SMT siblings of dst_cpu.
+>
+> Cc: Aubrey Li <aubrey.li@intel.com>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Quentin Perret <qperret@google.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> ---
+>  include/linux/sched/topology.h |  1 +
+>  kernel/sched/fair.c            | 11 ++++++++++-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index 8f0f778b7c91..663b98959305 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -57,6 +57,7 @@ static inline int cpu_numa_flags(void)
+>  #endif
+>
+>  extern int arch_asym_cpu_priority(int cpu);
+> +extern bool arch_sched_asym_prefer_early(int a, int b);
+>
+>  struct sched_domain_attr {
+>         int relax_domain_level;
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 4ef3fa0d5e8d..e74da853b046 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -106,6 +106,15 @@ int __weak arch_asym_cpu_priority(int cpu)
+>         return -cpu;
+>  }
+>
+> +/*
+> + * For asym packing, early check if CPUs with higher priority should be
+> + * preferred. On some architectures, more data is needed to make a decision.
+> + */
+> +bool __weak arch_sched_asym_prefer_early(int a, int b)
+> +{
+> +       return sched_asym_prefer(a, b);
+> +}
+> +
+>  /*
+>   * The margin used when comparing utilization with CPU capacity.
+>   *
+> @@ -8458,7 +8467,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>         if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+>             env->idle != CPU_NOT_IDLE &&
+>             sgs->sum_h_nr_running &&
+> -           sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
+> +           arch_sched_asym_prefer_early(env->dst_cpu, group->asym_prefer_cpu)) {
 
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
-> 
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
+If itmt set arch_sched_asym_prefer_early to true all groups will be
+set as group_asym_packing unconditionally which is wrong. The state
+has to be set only when we want asym packing migration
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
+>                 sgs->group_asym_packing = 1;
+>         }
+>
+> --
+> 2.17.1
+>
