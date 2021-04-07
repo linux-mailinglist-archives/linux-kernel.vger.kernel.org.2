@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB783562F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7AC3562F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348641AbhDGFUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:20:30 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:48016 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhDGFUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:20:25 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FFXld5nkdz9txVX;
-        Wed,  7 Apr 2021 07:20:13 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id DlNPLR3AT7kI; Wed,  7 Apr 2021 07:20:13 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFXld2155z9txtp;
-        Wed,  7 Apr 2021 07:20:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EF8CC8B781;
-        Wed,  7 Apr 2021 07:20:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DOwMAUIkrgFv; Wed,  7 Apr 2021 07:20:13 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0BB648B75F;
-        Wed,  7 Apr 2021 07:20:12 +0200 (CEST)
-Subject: Re: [PATCH v2 7/8] crypto: ccp: Use the stack and common buffer for
- INIT command
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-References: <20210406224952.4177376-1-seanjc@google.com>
- <20210406224952.4177376-8-seanjc@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <29bd7f5d-ebee-b78e-8ba6-fd8e21ec1dc8@csgroup.eu>
-Date:   Wed, 7 Apr 2021 07:20:11 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210406224952.4177376-8-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S1348643AbhDGFWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:22:52 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:33194 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229603AbhDGFWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 01:22:51 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app2 (Coremail) with SMTP id by_KCgB3GcSTQW1g2+nRAA--.27427S4;
+        Wed, 07 Apr 2021 13:22:30 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Peter Chen <peter.chen@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: cdns3: Fix rumtime PM imbalance on error
+Date:   Wed,  7 Apr 2021 13:22:26 +0800
+Message-Id: <20210407052226.1056-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgB3GcSTQW1g2+nRAA--.27427S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrWfKF4rury5XrW3XF17Awb_yoWfJFc_Ww
+        s8ur12kF1UWa9rXw17Gw15uryI9ryDXw1kZan7tw13CayjkFykAry8XrWkCF47Zw4xGr1D
+        Aw1vqa1fCFZFkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoGBlZdtTQGhAARsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When cdns3_gadget_start() fails, a pairing PM usage counter
+decrement is needed to keep the counter balanced.
 
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/usb/cdns3/cdns3-gadget.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Le 07/04/2021 à 00:49, Sean Christopherson a écrit :
-> Drop the dedicated init_cmd_buf and instead use a local variable.  Now
-> that the low level helper uses an internal buffer for all commands,
-> using the stack for the upper layers is safe even when running with
-> CONFIG_VMAP_STACK=y.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   drivers/crypto/ccp/sev-dev.c | 10 ++++++----
->   drivers/crypto/ccp/sev-dev.h |  1 -
->   2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index e54774b0d637..9ff28df03030 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -233,6 +233,7 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
->   static int __sev_platform_init_locked(int *error)
->   {
->   	struct psp_device *psp = psp_master;
-> +	struct sev_data_init data;
+diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+index 582bfeceedb4..ad891a108aed 100644
+--- a/drivers/usb/cdns3/cdns3-gadget.c
++++ b/drivers/usb/cdns3/cdns3-gadget.c
+@@ -3255,8 +3255,11 @@ static int __cdns3_gadget_init(struct cdns *cdns)
+ 	pm_runtime_get_sync(cdns->dev);
+ 
+ 	ret = cdns3_gadget_start(cdns);
+-	if (ret)
++	if (ret) {
++		pm_runtime_mark_last_busy(cdns->dev);
++		pm_runtime_put_autosuspend(cdns->dev);
+ 		return ret;
++	}
+ 
+ 	/*
+ 	 * Because interrupt line can be shared with other components in
+-- 
+2.17.1
 
-struct sev_data_init data = {0, 0, 0, 0};
-
->   	struct sev_device *sev;
->   	int rc = 0;
->   
-> @@ -244,6 +245,7 @@ static int __sev_platform_init_locked(int *error)
->   	if (sev->state == SEV_STATE_INIT)
->   		return 0;
->   
-> +	memset(&data, 0, sizeof(data));
-
-Not needed.
-
->   	if (sev_es_tmr) {
->   		u64 tmr_pa;
->   
-> @@ -253,12 +255,12 @@ static int __sev_platform_init_locked(int *error)
->   		 */
->   		tmr_pa = __pa(sev_es_tmr);
->   
-> -		sev->init_cmd_buf.flags |= SEV_INIT_FLAGS_SEV_ES;
-> -		sev->init_cmd_buf.tmr_address = tmr_pa;
-> -		sev->init_cmd_buf.tmr_len = SEV_ES_TMR_SIZE;
-> +		data.flags |= SEV_INIT_FLAGS_SEV_ES;
-> +		data.tmr_address = tmr_pa;
-> +		data.tmr_len = SEV_ES_TMR_SIZE;
->   	}
->   
-> -	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &sev->init_cmd_buf, error);
-> +	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
->   	if (rc)
->   		return rc;
->   
-> diff --git a/drivers/crypto/ccp/sev-dev.h b/drivers/crypto/ccp/sev-dev.h
-> index 0fd21433f627..666c21eb81ab 100644
-> --- a/drivers/crypto/ccp/sev-dev.h
-> +++ b/drivers/crypto/ccp/sev-dev.h
-> @@ -46,7 +46,6 @@ struct sev_device {
->   	unsigned int int_rcvd;
->   	wait_queue_head_t int_queue;
->   	struct sev_misc_dev *misc;
-> -	struct sev_data_init init_cmd_buf;
->   
->   	u8 api_major;
->   	u8 api_minor;
-> 
