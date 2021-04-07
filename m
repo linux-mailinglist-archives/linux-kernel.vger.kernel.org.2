@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF25357233
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97B2357236
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245545AbhDGQeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhDGQd7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:33:59 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B79EC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:33:48 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id x189so20782063ybg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0lwsn0u8IqnICGvyAtiBlcyUYYkzwv4EZu9XbSKhZrg=;
-        b=TWEJp7OutTUnO1JIFD74hY9u3yciqYCtgTdf56knITi6CkAmDtCZZXDMRNzmbxnwrh
-         bLHAUsZyRk7YcRxxvH0CTDeN94hfbeaxsbuMc3jFOmszMsXYQ6t7s+4XYsSSQoYD0XMm
-         g0xESiZe/ihc/ZUZhY1zfewcJSN5cKnL5I05FBSo4ZfGoR6AO9Fbk6mSYP5PU7/ek/WR
-         /2DTrzU+zBKENUWBy14uNSqqlSy3Bj83K+hkINV0y2/4b3cQXOJasAoO0gzC31WUmfgX
-         sK/EqdltijimdWmmrGTeeKImYGQK5Mukh16EitOpxY/MQh11Uz77zdL7q/9GmnfUQp66
-         gw+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0lwsn0u8IqnICGvyAtiBlcyUYYkzwv4EZu9XbSKhZrg=;
-        b=SIBNWJc9C6vm8OXp0e+/egQdtdDZ60nYtgCDoL34axSM8kMjZgJXXbdOzfr8xAxXOF
-         GimAgaiEncQFl0YoSHpV3ht31ODBxaxdvMeSLxeX+yIfyJmwkBqU+J2CIJdCmhfmSJDC
-         qfpIP/6MACzFfDEJeeOi4OvPRgSVILG8+ZEXECIbkP0lo7tfOaN+woXCBYDD5UkZLmtM
-         ntmGxQP3BW+FOopHU6jGNiAcSACmLPsmSPQkpdW76KnCmyRScSfU5JKM0mkJoBbqMPtm
-         A/qorGbY6atKiU7SiOZaCYkVx6gQUSj6rulu1jIj30INIsD5g0GnukmTjpm4qD/3MOw/
-         ADgw==
-X-Gm-Message-State: AOAM531rwhz3Z8cBz83VGrb7SUn4U4hGnsCAN2p+KuWnEXIZV5+s8NO8
-        34d9TXhoScNLdPFQQ2ypDLvlvWkxVOg1wudqq+wE3Q==
-X-Google-Smtp-Source: ABdhPJxMcZIjSk5SxemHmmgHhUXGk613blsBNSxX/7m9hmiZI2uoGUA/6Ddd825mHLMNN1EViUgxwXpkg1G7eOH3h+0=
-X-Received: by 2002:a25:c801:: with SMTP id y1mr5843563ybf.250.1617813224849;
- Wed, 07 Apr 2021 09:33:44 -0700 (PDT)
+        id S1344868AbhDGQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:35:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47362 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236269AbhDGQfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:35:03 -0400
+IronPort-SDR: 6X284qua5KEzvc9w5bAR5IWfLRW4AFLTWZCLxef9vId0i8AHJTyOL85lKG/0wbWfM/HnqtAYx7
+ HO42nxorwuSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="254686626"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="254686626"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:34:53 -0700
+IronPort-SDR: MH5hwMcGRORpjQZqM8n+1N8J6UzzEX28yImqYCH1YSGUEV6xgVXxn74zn82rdoSTBPD2yGtNDn
+ MgQHjQjBS7uQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="415347307"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga008.fm.intel.com with SMTP; 07 Apr 2021 09:34:50 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 07 Apr 2021 19:34:46 +0300
+Date:   Wed, 7 Apr 2021 19:34:46 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2] drm/i915: Fix invalid access to ACPI _DSM
+ objects
+Message-ID: <YG3fJq6wkeQGafSS@intel.com>
+References: <20210402082317.871-1-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
- <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
-In-Reply-To: <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 7 Apr 2021 09:33:34 -0700
-Message-ID: <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210402082317.871-1-tiwai@suse.de>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 9:07 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Apr 7, 2021 at 6:22 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> >
-> > 1) Ignore the issue (outside of Android at least). The security model of zygote
-> > is unusual. Where else a parent of fork() doesn't trust the child, which is the
-> > same binary?
->
-> Agreed. I think this is basically an android-only issue (with
-> _possibly_ some impact on crazy "pin-and-fork" loads), and doesn't
-> necessarily merit a backport at all.
->
-> If Android people insist on using very old kernels, knowing that they
-> do things that are questionable with those old kernels, at some point
-> it's just _their_ problem.
+On Fri, Apr 02, 2021 at 10:23:17AM +0200, Takashi Iwai wrote:
+> intel_dsm_platform_mux_info() tries to parse the ACPI package data
+> from _DSM for the debug information, but it assumes the fixed format
+> without checking what values are stored in the elements actually.
+> When an unexpected value is returned from BIOS, it may lead to GPF or
+> NULL dereference, as reported recently.
+> 
+> Add the checks of the contents in the returned values and skip the
+> values for invalid cases.
+> 
+> v1->v2: Check the info contents before dereferencing, too
+> 
+> BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1184074
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/gpu/drm/i915/display/intel_acpi.c | 22 ++++++++++++++++++++--
+>  1 file changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> index e21fb14d5e07..833d0c1be4f1 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> @@ -84,13 +84,31 @@ static void intel_dsm_platform_mux_info(acpi_handle dhandle)
+>  		return;
+>  	}
+>  
+> +	if (!pkg->package.count) {
+> +		DRM_DEBUG_DRIVER("no connection in _DSM\n");
+> +		return;
+> +	}
+> +
+>  	connector_count = &pkg->package.elements[0];
+>  	DRM_DEBUG_DRIVER("MUX info connectors: %lld\n",
+>  		  (unsigned long long)connector_count->integer.value);
+>  	for (i = 1; i < pkg->package.count; i++) {
+>  		union acpi_object *obj = &pkg->package.elements[i];
+> -		union acpi_object *connector_id = &obj->package.elements[0];
+> -		union acpi_object *info = &obj->package.elements[1];
+> +		union acpi_object *connector_id;
+> +		union acpi_object *info;
+> +
+> +		if (obj->type != ACPI_TYPE_PACKAGE || obj->package.count < 2) {
+> +			DRM_DEBUG_DRIVER("Invalid object for MUX #%d\n", i);
+> +			continue;
+> +		}
+> +
+> +		connector_id = &obj->package.elements[0];
 
-We don't really insist on using old kernels but rather we are stuck
-with them for some time.
-Trying my hand at backporting the patchsets Peter mentioned proved
-this to be far from easy with many dependencies. Let me look into
-Vlastimil's suggestion to backport only 17839856fd58 and it sounds
-like 5.4 already followed that path. Thanks for all the information!
-Suren.
+You don't want to check connector_id->type as well?
 
->
->                  Linus
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+> +		info = &obj->package.elements[1];
+> +		if (info->type != ACPI_TYPE_BUFFER || info->buffer.length < 4) {
+> +			DRM_DEBUG_DRIVER("Invalid info for MUX obj #%d\n", i);
+> +			continue;
+> +		}
+> +
+>  		DRM_DEBUG_DRIVER("Connector id: 0x%016llx\n",
+>  			  (unsigned long long)connector_id->integer.value);
+>  		DRM_DEBUG_DRIVER("  port id: %s\n",
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+
+-- 
+Ville Syrjälä
+Intel
