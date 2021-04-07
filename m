@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB8F357319
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1871D35731D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhDGRZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:25:02 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:42782 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhDGRZC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:25:02 -0400
-Received: by mail-oo1-f53.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so4713771ooe.9;
-        Wed, 07 Apr 2021 10:24:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gwq7QKILHZwZMl3lAkpHT2dUFN4Ic/8XItG6AMkXBig=;
-        b=UDOHBrGqLtmupoO+qC4cAmVD5EiL++7al7wRFfpjE8u8XEnXm7VkTn1UuA1DSKDpnU
-         4+s5Vy4tgCRarAvQosAHPZ5vmumbkVdBSG8DG6SroYcOF77yRsjKACLqqVVRDycrwTRR
-         4OmCq5tGzQ3SjYUtd6+5cTYkRzech55M1/mutMBP1DAgaPI+J7Ptoheo7N2vtd9ZwkGx
-         4Cn6EUdBX18E7QYWYSk6yeUblCRji9V3fbJoQqTa5zY9mGCfgmOqcSL3OprXx1tAs0G8
-         AzFi+9E5YzdvfoUVNe/CNA0tKZUatwAbk3PyFT2rXmfenRGBR0xJky4dVHQ+hyATVP6c
-         8ToQ==
-X-Gm-Message-State: AOAM531HEcsgm2d4dozHnqATaUVIGr14lYum+TrnXWUN0w1cK+/cHfBn
-        H1grISOb6ATmuHRRbkxF6h3EABy77BeIMJXj++zT4XDf
-X-Google-Smtp-Source: ABdhPJx3AeN5QPh0GiZbfCMbGItUQ9h4R9SVloYUH4SkJOcnreLOUZrn3q0pLCLGee21BzVGrCc9rKcbCHy+/hn1Smk=
-X-Received: by 2002:a4a:41cb:: with SMTP id x194mr3910804ooa.1.1617816290754;
- Wed, 07 Apr 2021 10:24:50 -0700 (PDT)
+        id S243571AbhDGRZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229720AbhDGRZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:25:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C6361242;
+        Wed,  7 Apr 2021 17:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617816312;
+        bh=/I9GfmleSBbs7R0HF64rsoxW4s6GV91+HDAdvacr2Fc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EWg++h/ZHMHODvvZK/EKo/6Ulry09nDEMt4yEgv6l7BmhERFEnKYorXfN8IcJ3H7D
+         Ada1H1MrYxAMneIu91RjTR+UGFClLJ3kwxIm2Gbm5KwHdh7PPcESFN6kd4Wg2ISaRj
+         +qrTcWO5swVafSNM054/mTa6eoxgM6nIunJMKxHw=
+Date:   Wed, 7 Apr 2021 19:25:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] dt-bindings: serial: 8250: deprecate
+ aspeed,sirq-polarity-sense
+Message-ID: <YG3q9brKTC4pkQbs@kroah.com>
+References: <20210402182724.20848-1-zev@bewilderbeest.net>
+ <20210402182724.20848-2-zev@bewilderbeest.net>
+ <YG3NR4bGRjIGZhgx@kroah.com>
+ <YG3kJC+6gLC6RzzQ@hatter.bewilderbeest.net>
 MIME-Version: 1.0
-References: <2764850.e9J7NaK4W3@kreacher>
-In-Reply-To: <2764850.e9J7NaK4W3@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 7 Apr 2021 19:24:39 +0200
-Message-ID: <CAJZ5v0iMpOtNdnAvx3fRP-wNz4OBG9ZyDXVG0KnHDdGz2U4ipA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: Take possible negative "sleep length"
- values into account
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG3kJC+6gLC6RzzQ@hatter.bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 8:38 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> Hi All,
->
-> As follows from the discussion triggered by the patch at
->
-> https://lore.kernel.org/lkml/20210311123708.23501-2-frederic@kernel.org/
->
-> the cpuidle governors using tick_nohz_get_sleep_length() assume it to always
-> return positive values which is not correct in general.
->
-> To address this issues, first document the fact that negative values can
-> be returned by tick_nohz_get_sleep_length() (patch [1/5]).  Then, in
-> preparation for more substantial changes, change the data type of two
-> fields in struct cpuidle_state to s64 so they can be used in computations
-> involving negative numbers safely (patch [2/5]).
->
-> Next, adjust the teo governor a bit so that negative "sleep length" values
-> are counted like zero by it (patch [3/5]) and modify it so as to avoid
-> mishandling negative "sleep length" values (patch [4/5]).
->
-> Finally, make the menu governor take negative "sleep length" values into
-> account properly (patch [5/5]).
->
-> Please see the changelogs of the patches for details.
+On Wed, Apr 07, 2021 at 11:56:04AM -0500, Zev Weiss wrote:
+> On Wed, Apr 07, 2021 at 10:18:31AM CDT, Greg Kroah-Hartman wrote:
+> > On Fri, Apr 02, 2021 at 01:27:21PM -0500, Zev Weiss wrote:
+> > > This property ties SIRQ polarity to SCU register bits that don't
+> > > necessarily have any direct relationship to it; the only use of it
+> > > was removed in commit c82bf6e133d30e0f9172a20807814fa28aef0f67.
+> > 
+> > Please write that as:
+> > 	c82bf6e133d3 ("ARM: aspeed: g5: Do not set sirq polarity")
+> > 
+> 
+> Ack, will do.
+> 
+> > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> > > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> > > ---
+> > >  Documentation/devicetree/bindings/serial/8250.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > 
+> > What changed from previous versions?  That always goes below the ---
+> > line.
+> > 
+> 
+> I included an overview of that in the cover letter (https://lore.kernel.org/openbmc/20210402182724.20848-1-zev@bewilderbeest.net/);
+> is it desirable to also have that duplicated in the individual patches in
+> the series?
 
-Given no objections or concerns regarding this lot, let me queue it up.
+Any reason why you didn't include all of the relevant people and mailing
+lists in that cover letter?  I've never seen it before :)
 
-Thanks!
+But yes, if you do send it to the right group, putting it in 00/XX is
+fine.
+
+thanks,
+
+greg k-h
