@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A22356B2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599A4356B31
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343586AbhDGL14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:27:56 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:36649 "EHLO ozlabs.org"
+        id S1343614AbhDGL2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:28:25 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53581 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234334AbhDGL1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:27:55 -0400
+        id S243155AbhDGL2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:28:24 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFhvf0Fmvz9sWY;
-        Wed,  7 Apr 2021 21:27:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1617794864;
-        bh=Cj3f8ngloiA9HcJv0SBAooX4hLm02FHFDJHGT11hot4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ODAla7ndUsbsO31oqNPjrBU8zkC7Fp+vECJBoGGzU4J2dhiOl2L8LmJfhtgbZWVzt
-         Y3mI9rf0jAiGHgr7KCr0OLNDnDSTl30UsMWXxcjChJT8goqJgYeInQdX3DlhWqMhvw
-         MRxLqA34JMfG+VoniqJjTnhuOGueMiyk/BQWhKbmZadcseizWT316Fk6BEZf0yjffQ
-         5MbKTdD9VaJ1B6XsrxNJ0xPIfwW/TenRQpQ9eOKUF78y+AuJ3+UxI69Ufz46OX/k3/
-         dUpboJ8nF3C/9dcFuyW6j+19SI4BsnlQ65lBGF/dDbVuBIj+m4J1sNNMLxxokK214e
-         e/SIus9w4F7Yg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Youlin Song <syl.loop@gmail.com>, robh+dt@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org
-Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Youlin Song <syl.loop@gmail.com>
-Subject: Re: [PATCH] powerpc/dts: fix not include DTC_FLAGS
-In-Reply-To: <20210403020423.85278-1-syl.loop@gmail.com>
-References: <20210403020423.85278-1-syl.loop@gmail.com>
-Date:   Wed, 07 Apr 2021 21:27:22 +1000
-Message-ID: <87y2due3mt.fsf@mpe.ellerman.id.au>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFhwF1Gpsz9sPf;
+        Wed,  7 Apr 2021 21:28:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617794893;
+        bh=EqT9NAfluZo0Vs2ov06W0aDuKLUybgmiOWAdPKvI7aA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K3mUV1Jf8FaOh8ufw8vZrHbtPz+QKnfBdxGF2ubmGwZv5tI49VkbZY7vNwjmc3A+p
+         +jU7ABVGts6I1Rmo7Y5fjb4vPr4PPbpX5Wddt2IYKbH8S6OCQa1S+oDejsFv5oBpFx
+         H+d17aI1b5e1Qpox6Gjkm2Jzj3RzPZ1sLa1T904g4DontjbpOM9o97luVfnxFRXkMg
+         usGr2uNovAZp4PZqGGkSAXy0lGRjlsuQBUr3jFPNVuk4HlozY1g1JNyww3Z2eNhU+P
+         XXdlRahwDLymcAXD0UbUeoJ1EJaI1Cx5WATkli+e7Q6OZN/DdLp+dMJCHjCfSLjICd
+         YlT+QkhNJtZyQ==
+Date:   Wed, 7 Apr 2021 21:28:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Frank Rowand <frank.rowand@sony.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the devicetree-fixes tree
+Message-ID: <20210407212522.6cd49dc0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/Vq/cR+aSPR6Yy1+eRkWJAm3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Youlin Song <syl.loop@gmail.com> writes:
-> I wanted to build the fsl dts in my machine and found that
-> the dtb have not extra space,so uboot will cause about
-> FDT_ERR_NOSPACE issue.
->
-> Signed-off-by: Youlin Song <syl.loop@gmail.com>
-> ---
->  arch/powerpc/boot/dts/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/powerpc/boot/dts/Makefile b/arch/powerpc/boot/dts/Makefile
-> index fb335d05aae8..c21165c0cd76 100644
-> --- a/arch/powerpc/boot/dts/Makefile
-> +++ b/arch/powerpc/boot/dts/Makefile
-> @@ -2,5 +2,6 @@
->  
->  subdir-y += fsl
->  
-> +DTC_FLAGS   ?= -p 1024
->  dtstree		:= $(srctree)/$(src)
->  dtb-$(CONFIG_OF_ALL_DTBS) := $(patsubst $(dtstree)/%.dts,%.dtb, $(wildcard $(dtstree)/*.dts))
+--Sig_/Vq/cR+aSPR6Yy1+eRkWJAm3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I guess that was missed in 1acf1cf8638a ("powerpc: build .dtb files in dts directory").
+Hi all,
 
-Which I think means the assignment to DTC_FLAGS in
-arch/powerpc/boot/Makefile is not needed anymore.
+In commit
 
-Can you send a v2 removing that assignment and explaining that's what
-happened?
+  f2ce9e97cf07 ("of: properly check for error returned by fdt_get_name()")
 
-cheers
+Fixes tag
+
+  Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6=
+.0-51-g183df9e9c2b9")
+
+has these problem(s):
+
+  - leading word 'commit' unexpected
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Vq/cR+aSPR6Yy1+eRkWJAm3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBtl0wACgkQAVBC80lX
+0GzFNAf+PLFO1raKsV3ltTD8XPCoCuZsXivHwIrkDCqmoUUMBcZG5ufwiWU4pm6I
+7B4wTXhpUw6My1HRSy4wPJ/P5YhZLNqDf+hXUG9LdTPrvCan512LTWWxzPZ2wsH6
+MX4arGZ9BEQ1UTn8tDcpKBMWuImB+r/s9RI+L74Y0FUygduxPhWNBys+h7N8Mb4I
+CmpUwNNhN7ygghiuEx7J4hu6mPXlzPSAcx7QHA5go2JmYAyPYZCQp6pXI/4aM25j
+8/+9dEPPBmEgMEdqMoEe9/xztDNsS9fDhQi5Ifb4ZBMfOhxvWpBTcKdyqLe19+hk
+nctWcuk6i3TgJyLqO+FE7uYXLbXgUw==
+=Tc34
+-----END PGP SIGNATURE-----
+
+--Sig_/Vq/cR+aSPR6Yy1+eRkWJAm3--
