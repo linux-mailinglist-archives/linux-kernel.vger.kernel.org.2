@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9039C356442
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C56356448
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349028AbhDGGnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
+        id S1349067AbhDGGnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhDGGnr (ORCPT
+        with ESMTP id S1349029AbhDGGns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:43:47 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43429C06174A;
-        Tue,  6 Apr 2021 23:43:38 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id s11so12191336pfm.1;
-        Tue, 06 Apr 2021 23:43:38 -0700 (PDT)
+        Wed, 7 Apr 2021 02:43:48 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EC3C06174A;
+        Tue,  6 Apr 2021 23:43:39 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id ay2so8840603plb.3;
+        Tue, 06 Apr 2021 23:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=qFLPg7mZDXW2+QgSTwSk0nVCNAL/L9QDEUI+JqqFX3k=;
-        b=mT/mUn7WmUIME4GnBmCZDyfX4zs6Bm6ohDT27mTk5sndsJ7EnOZQ7klKCB/g909puv
-         uyusQntZbxLgSrr/+dFpa8tAX6RBUqMCciTeiWL9Qw165iKf5o31jJTdvwfiAlcRVWQ3
-         OHEchdISJQ52hUxRg4KgfaFBe0K3MoLdd4EkkNHZVnEYYVab6kQ5EeGxc1iRt+UScqNF
-         tSubDVgI7VeWKzKXFEQO+HOLhsWo01lrNoal28Cd/ayNyNq6RMIxb6+jJmJ24XFwmCBa
-         zbp3avkBtTjbigntRHWsp/RjggErHM4bg83IMROKbnlrqJbgVPn4m0O/U9UQbI4ydauH
-         0mEg==
+        bh=juPdFsys4r3Aaic/tVEakxA+SlqXVvRJQMcNPtT88ko=;
+        b=V3Jd8on2MAtBF/RvEHZ1tA0fxsIBKGL9HyHv8m7MS02I+BhhMaFAxvfwKrxBtdmgIa
+         ZsvnIg9VaPf5aQw5/FhyhPtpNNezI9I3/ThfdWf1zEZR9/dAyrl9yIgtsRPYFey6OqMi
+         qNdSDWkx/74o0qT5iirVrEh4HwyXNShC+jPlWitcli4StnQCtIHI2ysMQCAQs7K6k1er
+         D6dccbtfNj0/+sPSFech95aVrHX7qDadNgR8dQiQo2vYZ7woqy6ZIt+nPa1TyfbMYxv7
+         WEMxEyhCUQAo5KbGGsbd7pMB4OC5ZNijgLZQz1Jz1eEupTBufLJkXPS9BjKuav0Vxt03
+         ts+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qFLPg7mZDXW2+QgSTwSk0nVCNAL/L9QDEUI+JqqFX3k=;
-        b=iODILrgpp/QGc+n28w7my7qN6fwDOddnQZZ5zCk0PPPHakq0ypy8DNtrxBJc5LGbDP
-         ABFPzxJRQyV+2ttWd3Sv6yUqCT0hHgZdL63xn3F7pLu1p8uShEtgh0Atn3wDMGGX6NIc
-         GhhJ0rdnPoDWRX09rhms3K8M5h/FZS5LmacSM8yCuAy57VhbdlUDnxOLKpKMfzy2ze/5
-         5L4KoeAa8ia4YCVLyj1stn1GeLkXChKOxuwPUZ9Rh4VCabcdQeWPC8JGLFPbN2cXRIeZ
-         sjbBp2GJ26S169JhOZk/4qPsFuzjMjcIX2L5hDBtvPWenQaZwzOnnz3c3WyYHW3wwrpZ
-         i5yQ==
-X-Gm-Message-State: AOAM530CnO5vnL/JQQDnPviph/dOvq5O4fcfgC6opSy6nT1ST6suVanH
-        FIukL0dqPTDsXekn7D/K83s=
-X-Google-Smtp-Source: ABdhPJwOqNX467U2gyXYnZ7HmnsGJu0HLQzRCxRCYJua+3faT0g0IMb6lROPCAKfblaoO8iLfgb1Rw==
-X-Received: by 2002:a63:dc57:: with SMTP id f23mr774017pgj.294.1617777817858;
-        Tue, 06 Apr 2021 23:43:37 -0700 (PDT)
+        bh=juPdFsys4r3Aaic/tVEakxA+SlqXVvRJQMcNPtT88ko=;
+        b=cotmmx2ZlRPvo9QIlDxFiDrWdvB3UTyPrm5bhp9Z/qda6Hj4lhs8v9IoGed/Bwv6OJ
+         WeHKMjNr1LCao/gtH92XbZjSfuCxK2Halwb6jKDPlH5K4hMVNM6Punn1qk+5yaQ9gJX/
+         T0u8X++emVHvig8AX0utE3O/a4KsoSVeQIxVH+wVem7VQt8PfaUurkUB1IV26eDk1w+Z
+         T5yNvczGFnN5SClRM6o4F09MV1TAXTWnJXw5z7O2ooiM+6oXpZvKbDLCbgd66OoyJG8l
+         w2wwuP+t35kzlPg+vV6ZhlTLootAughYex2ZXGDn2JNo554YmC1XnnlKiMIvFvSaf3Ed
+         WsdQ==
+X-Gm-Message-State: AOAM533dPiKprT46VOnJHLWNbIoIeSQ32WE+RppXwd8SahPJr/l6SKXd
+        mEbxf7jgC1/qX7kn2YuXOhQ=
+X-Google-Smtp-Source: ABdhPJzooZZLcFRKF8gWsCfqXUMmjqpDRxFfh8K5S0UQaX5Xv3UXDYqGmunEpRFbquOtNCtZ80nsCA==
+X-Received: by 2002:a17:902:122:b029:e8:bde2:7f6c with SMTP id 31-20020a1709020122b02900e8bde27f6cmr1686322plb.29.1617777818946;
+        Tue, 06 Apr 2021 23:43:38 -0700 (PDT)
 Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id gk20sm3035930pjb.17.2021.04.06.23.43.37
+        by smtp.gmail.com with ESMTPSA id 14sm19981411pfl.1.2021.04.06.23.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:43:37 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:43:35 -0700
+        Tue, 06 Apr 2021 23:43:38 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:43:36 -0700
 From:   Pavle Rohalj <pavle.rohalj@gmail.com>
 To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 21/49] staging: sm750fb: Rename function write_dpPort to
- snake case
-Message-ID: <ed10428746cc0d22256876ab5c11bb1d4c798669.1617776878.git.pavle.rohalj@gmail.com>
+Subject: [PATCH v2 22/49] staging: sm750fb: Update local variable in
+ sm750_hw_copyarea to snake case
+Message-ID: <e112c237568818ab77e11d5785c89e7932a62678.1617776878.git.pavle.rohalj@gmail.com>
 References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,42 +65,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpatch.pl check for the function
-write_dpPort.
+Fix "Avoid CamelCase" checkpoint.pl checks for the local variable
+nDirection in the function sm750_hw_copyarea.
 
 Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
- drivers/staging/sm750fb/sm750_accel.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/sm750fb/sm750_accel.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/sm750_accel.c b/drivers/staging/sm750fb/sm750_accel.c
-index 4327bda871e1..4ad2814b5b54 100644
+index 4ad2814b5b54..760dd036d71a 100644
 --- a/drivers/staging/sm750fb/sm750_accel.c
 +++ b/drivers/staging/sm750fb/sm750_accel.c
-@@ -28,7 +28,7 @@ static inline u32 read_dpr(struct lynx_accel *accel, int offset)
- 	return readl(accel->dprBase + offset);
- }
- 
--static inline void write_dpPort(struct lynx_accel *accel, u32 data)
-+static inline void write_dp_port(struct lynx_accel *accel, u32 data)
+@@ -153,9 +153,9 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 		      unsigned int width, unsigned int height,
+ 		      unsigned int rop2)
  {
- 	writel(data, accel->dpPortBase);
- }
-@@ -396,12 +396,12 @@ int sm750_hw_imageblit(struct lynx_accel *accel, const char *src_buf,
- 	for (i = 0; i < height; i++) {
- 		/* For each line, send the data in chunks of 4 bytes */
- 		for (j = 0; j < (ul4BytesPerScan / 4); j++)
--			write_dpPort(accel, *(unsigned int *)(src_buf + (j * 4)));
-+			write_dp_port(accel, *(unsigned int *)(src_buf + (j * 4)));
+-	unsigned int nDirection, de_ctrl;
++	unsigned int n_direction, de_ctrl;
  
- 		if (ulBytesRemain) {
- 			memcpy(ajRemain, src_buf + ul4BytesPerScan,
- 			       ulBytesRemain);
--			write_dpPort(accel, *(unsigned int *)ajRemain);
-+			write_dp_port(accel, *(unsigned int *)ajRemain);
+-	nDirection = LEFT_TO_RIGHT;
++	n_direction = LEFT_TO_RIGHT;
+ 	/* Direction of ROP2 operation: 1 = Left to Right, (-1) = Right to Left */
+ 	de_ctrl = 0;
+ 
+@@ -173,7 +173,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 			 *	+----------+
+ 			 */
+ 
+-			nDirection = BOTTOM_TO_TOP;
++			n_direction = BOTTOM_TO_TOP;
+ 		} else if (sy > dy) {
+ 			/*  +----------+
+ 			 *  |D         |
+@@ -185,7 +185,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 			 *	+----------+
+ 			 */
+ 
+-			nDirection = TOP_TO_BOTTOM;
++			n_direction = TOP_TO_BOTTOM;
+ 		} else {
+ 			/* sy == dy */
+ 
+@@ -198,7 +198,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 				 * +------+---+------+
+ 				 */
+ 
+-				nDirection = RIGHT_TO_LEFT;
++				n_direction = RIGHT_TO_LEFT;
+ 			} else {
+ 			/* sx > dx */
+ 
+@@ -210,12 +210,12 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 				 * +------+---+------+
+ 				 */
+ 
+-				nDirection = LEFT_TO_RIGHT;
++				n_direction = LEFT_TO_RIGHT;
+ 			}
  		}
+ 	}
  
- 		src_buf += src_delta;
+-	if ((nDirection == BOTTOM_TO_TOP) || (nDirection == RIGHT_TO_LEFT)) {
++	if ((n_direction == BOTTOM_TO_TOP) || (n_direction == RIGHT_TO_LEFT)) {
+ 		sx += width - 1;
+ 		sy += height - 1;
+ 		dx += width - 1;
+@@ -277,7 +277,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+ 		  (height & DE_DIMENSION_Y_ET_MASK)); /* dpr08 */
+ 
+ 	de_ctrl = (rop2 & DE_CONTROL_ROP_MASK) | DE_CONTROL_ROP_SELECT |
+-		((nDirection == RIGHT_TO_LEFT) ? DE_CONTROL_DIRECTION : 0) |
++		((n_direction == RIGHT_TO_LEFT) ? DE_CONTROL_DIRECTION : 0) |
+ 		DE_CONTROL_COMMAND_BITBLT | DE_CONTROL_STATUS;
+ 	write_dpr(accel, DE_CONTROL, de_ctrl); /* dpr0c */
+ 
 -- 
 2.30.2
 
