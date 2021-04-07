@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BC5357554
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1637B357556
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355815AbhDGT7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355812AbhDGT7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:59:07 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69192C06175F;
-        Wed,  7 Apr 2021 12:58:56 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id o198so64156yba.2;
-        Wed, 07 Apr 2021 12:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+arhHcOopZCZVwwUY5LkE30MsV2yXA3O/x1Rb9Yvy3I=;
-        b=Qi/nvyHe4p1pLSizPx3hdGve6ZHnvh83XFcT1ZlDKoLh9fwBGASz9JF23xKpn6Lq7C
-         FXCHyLVyPFA2shUGBmVaTTPB8suUqf+Mxk1Ek7gYzxULZM2OzvKadc3xdc5aDB26+pDU
-         vrV7rgcUVZWWfi/2xNMP6xHDdm/r6YV7hWn+wSb6+tM9eTgSsxPjqENl1f9/qvoJHwv/
-         j6bbJK2M+0vD/yZ0V9plfT3dSjqspSAAHx0IqvQ1LgkXe0NlPSNE6eVV3U3/WZ31rsAC
-         I9kKZPfdaG0tpNhoAKCPii7mcDBvIISy1BzDIEqgL0IzxFPu7i+NUPzy3dX6jvP6f1iG
-         lU5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+arhHcOopZCZVwwUY5LkE30MsV2yXA3O/x1Rb9Yvy3I=;
-        b=DiZXNbQ2htnO8LU1L1L1KNVWKOheT7Z/o7tNi+bcbjXOs6abcQLfMsgnQ4gfC6IMty
-         Mrz8lZzVF+ESf9VDN8KAbRKXV3QSeR4hwbzXYMCczMcZdysB/yBxWdNOjYpjqCciRKWH
-         6zkplPJHuYJJtCQavlY0cum8HVV5zdTv5zV4MdDi4sHhz3TgEOZ3aLJrqS8dBix8xu6O
-         WQrwGPpLP1x6H7uQCQwbwBbWriNm/iJpGyu5l7hI6WZs2XYU+i8jVgriMDAixIVM/qyu
-         8BxY8Bmn+ZB/KLbhUeWwWzZsVjCZEAu7x/rk954dBA8kyHIFMFOSptUyHE5NVniwUfAI
-         k55A==
-X-Gm-Message-State: AOAM530ps5pBfjr5D3eTB9ZY2cq1EA8lf3PZC/3qSSTTRN5DlVVnDmDn
-        sZqCzU9yTK8A82XU2t1HRqbUBwg1hjybLNxEZew=
-X-Google-Smtp-Source: ABdhPJxQkN89156wQX1FRWeFcJzKGPxEYCyOFcmvrWlypN+PACMDIDQR0Wxy5GgajnLWkb6E+fOmN8eMMHNcfMXVX5E=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr6783373ybo.230.1617825535714;
- Wed, 07 Apr 2021 12:58:55 -0700 (PDT)
+        id S1355840AbhDGT7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355810AbhDGT7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:59:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC206105A;
+        Wed,  7 Apr 2021 19:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617825544;
+        bh=k6+WEJUU1OZWMiE9a2UexjzaTvG2oDVuhVsZiW3o6Io=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YR5Q8XvUn6JVjPjj1BNXaM7FVf4Br7ASmk3pta0uakqmw/dDkxpszknJ8UmJ+wudk
+         jtnQron+y3IvEv16sN69Mw5kfPI4AXsQxbLEhpVIJ6VbHzqWg73POVIX0llWl/7km5
+         C5FlmXQ8rbN0i9Vxa05RsKNzt1lJWE8dA81jJSsw16lZHdla3+ss/EqA9w0Ov7mUiT
+         SZ0MwgFHNkbJDQu8pDeuh77/V9ufcutwVYnuuQr0bHtLNkPC2i6qmFBiokoLyQfl0K
+         k42/vc95fEetqcc8H3yFXpNT13wDn+r1F/QiBRtpvqLPYIPxc013iptHec/3Sea2F4
+         6YswdagWPNA+Q==
+Received: by mail-ed1-f47.google.com with SMTP id e7so22300535edu.10;
+        Wed, 07 Apr 2021 12:59:04 -0700 (PDT)
+X-Gm-Message-State: AOAM532dzROo84Vt7QaBgXoHVphk3NhjTSjIAl7mAF9U60XWHxNSS2Y1
+        Y2KbqM6nf7dbS2FkNPYgEm1I2KyysDsNtPVQIg==
+X-Google-Smtp-Source: ABdhPJwY9GthufRHILDLTfwGTZSKr9CrrPh9cGzDOgcphaTRdGgVabGLGr25oYBpzfJepxjo3FsXe2sqmNbljCw070k=
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr6528263edb.62.1617825542888;
+ Wed, 07 Apr 2021 12:59:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406185806.377576-1-pctammela@mojatatu.com> <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
-In-Reply-To: <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 12:58:44 -0700
-Message-ID: <CAEf4BzaBJH-=iO-P6ZTj3zmycz0VESzBzpZkbVOVTvPaZ9OEaA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
-To:     Joe Stringer <joe@cilium.io>
-Cc:     Pedro Tammela <pctammela@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
+References: <20210403020423.85278-1-syl.loop@gmail.com> <87y2due3mt.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87y2due3mt.fsf@mpe.ellerman.id.au>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 7 Apr 2021 14:58:50 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+CKi6+FKO=-VHC538mFMsvpa785sp2Qv86iCTv=1PC1w@mail.gmail.com>
+Message-ID: <CAL_Jsq+CKi6+FKO=-VHC538mFMsvpa785sp2Qv86iCTv=1PC1w@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/dts: fix not include DTC_FLAGS
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Youlin Song <syl.loop@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:43 AM Joe Stringer <joe@cilium.io> wrote:
+On Wed, Apr 7, 2021 at 6:27 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
 >
-> Hi Pedro,
->
-> On Tue, Apr 6, 2021 at 11:58 AM Pedro Tammela <pctammela@gmail.com> wrote:
+> Youlin Song <syl.loop@gmail.com> writes:
+> > I wanted to build the fsl dts in my machine and found that
+> > the dtb have not extra space,so uboot will cause about
+> > FDT_ERR_NOSPACE issue.
+
+How do we not have issues with arm and arm64 boards which don't have
+padding? Or what took so long to notice on powerpc?
+
 > >
-> > In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
-> >
-> > For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-> > notification to the process if needed.
-> >
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > Signed-off-by: Youlin Song <syl.loop@gmail.com>
 > > ---
-> >  include/uapi/linux/bpf.h       | 7 +++++++
-> >  tools/include/uapi/linux/bpf.h | 7 +++++++
-> >  2 files changed, 14 insertions(+)
+> >  arch/powerpc/boot/dts/Makefile | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 49371eba98ba..8c5c7a893b87 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4061,12 +4061,15 @@ union bpf_attr {
-> >   *             of new data availability is sent.
-> >   *             If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-> >   *             of new data availability is sent unconditionally.
-> > + *             If **0** is specified in *flags*, notification
-> > + *             of new data availability is sent if needed.
+> > diff --git a/arch/powerpc/boot/dts/Makefile b/arch/powerpc/boot/dts/Makefile
+> > index fb335d05aae8..c21165c0cd76 100644
+> > --- a/arch/powerpc/boot/dts/Makefile
+> > +++ b/arch/powerpc/boot/dts/Makefile
+> > @@ -2,5 +2,6 @@
+> >
+> >  subdir-y += fsl
+> >
+> > +DTC_FLAGS   ?= -p 1024
+> >  dtstree              := $(srctree)/$(src)
+> >  dtb-$(CONFIG_OF_ALL_DTBS) := $(patsubst $(dtstree)/%.dts,%.dtb, $(wildcard $(dtstree)/*.dts))
 >
-> Maybe a trivial question, but what does "if needed" mean? Does that
-> mean "when the buffer is full"?
+> I guess that was missed in 1acf1cf8638a ("powerpc: build .dtb files in dts directory").
+>
+> Which I think means the assignment to DTC_FLAGS in
+> arch/powerpc/boot/Makefile is not needed anymore.
+>
+> Can you send a v2 removing that assignment and explaining that's what
+> happened?
 
-I used to call it ns "adaptive notification", so maybe let's use that
-term instead of "if needed"? It means that in kernel BPF ringbuf code
-will check if the user-space consumer has caught up and consumed all
-the available data. In that case user-space might be waiting
-(sleeping) in epoll_wait() already and not processing samples
-actively. That means that we have to send notification, otherwise
-user-space might never wake up. But if the kernel sees that user-space
-is still processing previous record (consumer position < producer
-position), then we can bypass sending another notification, because
-user-space consumer protocol dictates that it needs to consume all the
-record until consumer position == producer position. So no
-notification is necessary for the newly submitted sample, as
-user-space will eventually see it without notification.
+I've wanted to make this common, but I guess that's a separate change.
 
-Of course there is careful writes and memory ordering involved to make
-sure that we never miss notification.
-
-Does someone want to try to condense it into a succinct description? ;)
+Rob
