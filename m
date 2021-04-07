@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B90356843
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C508356845
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350219AbhDGJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbhDGJnc (ORCPT
+        id S1350221AbhDGJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:43:43 -0400
+Received: from p3plsmtpa07-06.prod.phx3.secureserver.net ([173.201.192.235]:55301
+        "EHLO p3plsmtpa07-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231805AbhDGJnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:43:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B782C061756;
-        Wed,  7 Apr 2021 02:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uHRRfQiUBlAZ+WTehIjctPz3UPqgqzr8MZeVhYIZJnY=; b=TiUqf7vIpHbIUyAQ2LLRGADfFO
-        sXUzLx7KL6B+iS3V+LlPGebBQ+n2zSzcmzF4HoVj6LSDpw7kj7CZRMClGNuMmNk8EKkoJ5/Whf5Yg
-        mpdjOxQxHEaKKIfcVprBXVDi1sxySzND4ACUgaRggQQJ1sBmr5MWj0lUTICjF5eoVV6lGhMEMuR6X
-        YzQKXCvyVBM+LiR7KwHDVGI6jrRelZ6TEDdI857fL140/jbgSJ0NoHMjMriLTs8TUbhu7v5zi6ah/
-        KswtpdjjZMAwKlCMh55ch/rjKrXTOEb7dO3jl4tjEYq/+X5TGvWzI9a7UDmXTxGlx4lFejMoysRfx
-        BGoFPCig==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU4hc-00EFuS-3a; Wed, 07 Apr 2021 09:42:42 +0000
-Date:   Wed, 7 Apr 2021 10:42:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <20210407094224.GA3393992@infradead.org>
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org>
- <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
- <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
+        Wed, 7 Apr 2021 05:43:41 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49])
+        by :SMTPAUTH: with ESMTPSA
+        id U4ihlFvaQbSa5U4iildjoN; Wed, 07 Apr 2021 02:43:32 -0700
+X-CMAE-Analysis: v=2.4 cv=OIDiYQWB c=1 sm=1 tr=0 ts=606d7ec4
+ a=n7O9czIEQAHQhL92d+l0gQ==:117 a=IkcTkHD0fZMA:10 a=MKtGQD3n3ToA:10
+ a=3YhXtTcJ-WEA:10 a=pFd2Zl5z2vwA:10 a=ZZnuYtJkoWoA:10 a=pGLkceISAAAA:8
+ a=4RBUngkUAAAA:8 a=1XWaLZrsAAAA:8 a=VDxRAwm8vqx6A6xO54EA:9 a=QEXdDO2ut3YA:10
+ a=cDyXFGGuxjcA:10 a=_sbA2Q-Kp09kWB8D3iXc:22
+X-SECURESERVER-ACCT: vthakkar@vaishalithakkar.in
+Received: by mail-vs1-f49.google.com with SMTP id t12so9308721vsj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:43:32 -0700 (PDT)
+X-Gm-Message-State: AOAM530MtJBfR4NRNTI6c7PfYt+tRLgEf/FYpTOPU0etRgymSjgViGC/
+        HlYMtlu5TYjAXJsDCt2Au0zaY4Fwva5ezyyciRQ=
+X-Google-Smtp-Source: ABdhPJy1M/fyqnE1o5lW1Et1vqkfqgXbcQbsXSJXp0F3eHyhHPgQoVEfpM+SH58XUlUq6WZybPkDPjWCe1PCugK0zhw=
+X-Received: by 2002:a67:c01d:: with SMTP id v29mr1207009vsi.23.1617788611161;
+ Wed, 07 Apr 2021 02:43:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210406160037.27225-1-fmdefrancesco@gmail.com>
+ <YG1qxdRtNIIVK3fX@kroah.com> <3526833.TqPzfDAv2q@localhost.localdomain>
+In-Reply-To: <3526833.TqPzfDAv2q@localhost.localdomain>
+From:   Vaishali Thakkar <vthakkar@vaishalithakkar.in>
+Date:   Wed, 7 Apr 2021 11:43:19 +0200
+X-Gmail-Original-Message-ID: <CAK-LDb+JGK-m7A9CSQNCicbwMj9dfekeyT9OZwnWgSFdp6U6vg@mail.gmail.com>
+Message-ID: <CAK-LDb+JGK-m7A9CSQNCicbwMj9dfekeyT9OZwnWgSFdp6U6vg@mail.gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH v3] staging: rtl8723bs: hal: Remove
+ camelcase in Hal8723BReg.h
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Outreachy <outreachy-kernel@googlegroups.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-CMAE-Envelope: MS4xfEmpHoAiX+CfvNuPuBlC2T1Qg7r+U7biowim8Esc73xj9rx6y1Dw/tcetefqcHud8OQfHbx8gBBV5HATWCRBZFct6IadJvM+ceBGBrm6xMjpvABxYogv
+ zGZ+ZXffMBRzAYWiw9FqV/moNrh4vYkzJRp+hFt4zPvdAiww8hmlVKK9w2g71YtFoORZpvX0HjeflPQ0jL7vadj4vr29s0cGY3ZtBRstelW6bHbJLLGhXaki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:15:50AM +0200, Peter Zijlstra wrote:
-> Anyway, given you have such a crap architecture (and here I thought
-> RISC-V was supposed to be a modern design *sigh*), you had better go
-> look at the sparc64 atomic implementation which has a software backoff
-> for failed CAS in order to make fwd progress.
+On Wed, Apr 7, 2021 at 10:49 AM Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
+>
+> On Wednesday, April 7, 2021 10:18:13 AM CEST Greg KH wrote:
+> > On Tue, Apr 06, 2021 at 06:00:37PM +0200, Fabio M. De Francesco wrote:
+> > > Remove camelcase in some symbols defined in Hal8723BReg.h. These symbols
+> > > are not used anywhere else, therefore this patch does not break the driver.
+> > >
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > >
+> > > Patch v3 changes nothing with respect to v2 and v1. It exists only to cc some recipients that were missing in the header of the previous email.
+> > >
+> > >  drivers/staging/rtl8723bs/hal/Hal8723BReg.h | 16 ++++++++--------
+> > >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > This patch does not apply to my tree right now.  Can you refresh and
+> > rebase your copy of my branch and rebase it and resend?
+> >
+> Sure. I'm about to submit that patch again in a few minutes.
 
-It wasn't supposed to be modern.  It was supposed to use boring old
-ideas.  Where it actually did that it is a great ISA, in parts where
-academics actually tried to come up with cool or state of the art
-ideas (interrupt handling, tlb shootdowns, the totally fucked up
-memory model) it turned into a trainwreck.
+Also while you're at it, don't forget to put the information under -- about
+what has changed since the first version of it. Otherwise it becomes
+hard for the reviewers to track the progress of each version.
+
+Ideally it should go like below:
+
+Changes since v2:
+Changes since v1:
+
+> Thanks,
+>
+> Fabio
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
+>
+>
+>
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/3526833.TqPzfDAv2q%40localhost.localdomain.
+
+
+
+-- 
+Vaishali
