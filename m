@@ -2,248 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A7D356822
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D42B356826
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350171AbhDGJez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbhDGJex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:34:53 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A6FC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:34:42 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id r20so19879231ljk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h+539txFbW0Pn09niSuR12AUgDFwJO18dDRQTGIfQRg=;
-        b=X4suFUuVHy8cNq/LvdvedSTeTqjFK109WWaV0X0lvUQJFv0IHEOfovrD+0/lwI4dDH
-         MWg+vDjNCB4ZWF1YhE4T3MflWvpj9GKGwiq6pE6uhQbSUYCtLnplhkngpi1EJDnRP+iw
-         aQmstdfSyHM47lCvTiTQQ8j/GQ3UjuP+7hX0OaGL244qyVfwN6QTWM0dZNqP9Yw9FIAX
-         JTy2U/UHc90AFeHB6vya2gF01eKxW7DzlNIWKjeHQuvUg0ZJKb4S47Pw5UjxZ6ji1vW2
-         m1eIvL/5jyhkK3wTdDU/ld9kkgzekxo9QRBTgiqujk69YbJoZunyI/7mkaGBJKrrbJ/w
-         jZ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h+539txFbW0Pn09niSuR12AUgDFwJO18dDRQTGIfQRg=;
-        b=J+be8/OEwVU5/8LIuGaGVNHb831k/ASRC738jB+SG6ceHdUbZtmriQnCQ5foWaR8v6
-         VfaaTyECWGuSogz5ywC8iML3WptexzvHoUqOMSODaB2O0i+jXzRSDS5BW58uYqI0Lyw/
-         061FeoGrVlAYgYYFHVfjKLgB8MeYgW+X6e8UYNMvSsYKLiy2ThAYYE4/yVutvaUudySn
-         MmTaNQf1TDkpyUQLIrg8Cza3LisWC06jvbKZRNhs8uck0a/u+8GgcQ+AP12jDqZWb+HG
-         xiqJInHIiWAuHwiFhTwyuhgUsRtYLmTrNulJnDqg1KbYToODpo323G0JM6W25JxoCkXy
-         PGJw==
-X-Gm-Message-State: AOAM531oUeSwzmWug67f5dXrlBGTbbv4o0YVhkqzR9KyYqjDmo1iTG+y
-        e4KdI3FWDS236KdH+PULHWU+9FbaaXXOFPkeie5SJw==
-X-Google-Smtp-Source: ABdhPJxlnkdqMK/eisSOVRUuNuANcJ/SnVakweLcLSGmNKPPcUCvGmUkpNoJexfFYnBUkByls1ndc7mlaBt38YGoUY4=
-X-Received: by 2002:a2e:1649:: with SMTP id 9mr1695081ljw.74.1617788080944;
- Wed, 07 Apr 2021 02:34:40 -0700 (PDT)
+        id S1350183AbhDGJfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:35:53 -0400
+Received: from m34-101.88.com ([104.250.34.101]:3793 "EHLO 88.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231294AbhDGJfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:35:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=U+dpdTGIkI10tnxL+rOqMbALU09LbePW1V0eV
+        cbBuLM=; b=MeqNQxDRg+dQ6Y0t9ipzIMDVEQa5DH5PmTreSQOwQAgh473dsQq/7
+        hNrex+biEIeT97QlCL8Ez06OSmWou52LBB418iotfR5C1WjS+wpqRaurn9+ID2US
+        hp02SFOkKplVIeTTqYSn5GtjYr9gUZOR/DGtlWkECQO7M8NNL1WXGI=
+Received: from bobwxc.top (unknown [120.238.248.129])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDnWdC2fG1gnXxQAA--.49205S2;
+        Wed, 07 Apr 2021 17:34:48 +0800 (CST)
+Date:   Wed, 7 Apr 2021 17:34:45 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 17/19] docs: replace transation references for
+ reporting-bugs.rst
+Message-ID: <20210407093445.GB2492@bobwxc.top>
+References: <cover.1617783062.git.mchehab+huawei@kernel.org>
+ <65d1983fb625b5dd38d05f5c75a592e61992a4e0.1617783062.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <YGtZeofmBv7hXK+a@Red> <CACRpkdZ_barDrLvD2UBKo+GA-F+g72uMQx8CfRK2YLRodpeyUA@mail.gmail.com>
- <YGxOf8pKN8Ip/kCl@Red>
-In-Reply-To: <YGxOf8pKN8Ip/kCl@Red>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Apr 2021 11:34:29 +0200
-Message-ID: <CACRpkdYRUXJY_tXamS0vc+RNPDxR2oxdRLbBUk0fmQLp+eYAOA@mail.gmail.com>
-Subject: Re: gemini: sl3516: Mainlining of NS 2502
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65d1983fb625b5dd38d05f5c75a592e61992a4e0.1617783062.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: LCKnCgDnWdC2fG1gnXxQAA--.49205S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF43Jw1fWw13tw4ktF1UJrb_yoW7JFWkpF
+        ykKrZ7K3W7KFy5Gw1xGr4Iqa12kayxua1fGFWkJwn5WFn8AFWktrsFqr90gFZ3XryFyFyU
+        ZFZ5KryYyr12yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyGb7Iv0xC_Zr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
+        z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
+        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0x
+        kIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1U
+        Jr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUjzwZ7UUUUU==
+X-Originating-IP: [120.238.248.129]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:05 PM Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+On Wed, Apr 07, 2021 at 10:20:56AM +0200, Mauro Carvalho Chehab wrote:
+> Changeset d2ce285378b0 ("docs: make reporting-issues.rst official and delete reporting-bugs.rst")
+> dropped reporting-bugs.rst, in favor of reporting-issues.rst, but
+> translations still need to be updated, in order to point to the
+> new file.
+> 
+> Fixes: d2ce285378b0 ("docs: make reporting-issues.rst official and delete reporting-bugs.rst")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/translations/it_IT/process/howto.rst            | 2 +-
+>  Documentation/translations/ja_JP/howto.rst                    | 2 +-
+>  Documentation/translations/zh_CN/SecurityBugs                 | 2 +-
+>  .../translations/zh_CN/admin-guide/reporting-issues.rst       | 4 ++--
+>  Documentation/translations/zh_CN/process/howto.rst            | 2 +-
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+> 
+[...]
 
-> You could find photos at http://kernel.montjoie.ovh/gemini/
-> There are also photos of another SL3516 SoC based device (a SSI 1328 NAS), but I fail to setup a serial on it, so I keep it for later.
+Hi Mauro,
 
-Yeah it is clearly an RTL82111 at least, so this should be possible
-to get going.
+Thanks to help us!
 
-> > >                 syscon: syscon@40000000 {
-> > >                         pinctrl {
-> > >                                 /*
-> > >                                  * gpio0agrp cover line 0-4
-> > >                                  * gpio0bgrp cover line 5
-> > >                                  */
-> > >                                 gpio0_default_pins: pinctrl-gpio0 {
-> > >                                         mux {
-> > >                                                 function = "gpio0";
-> > >                                                 groups = "gpio0agrp",
-> > >                                                 "gpio0bgrp";
-> > >                                         };
-> > >                                 };
-> >
-> > Change groups to
-> >
-> > groups = "gpio0agrp", "gpio0bgrp", "gpio0hgrp";
-> >
-> > So you mux in group h which is where the GPIO 21, 22 go out
-> > to the MDIO on 3516 IIUC. The right mux out is pretty important,
-> > if you have vendor source code, please share so I can check how
-> > they set it up.
->
-> No change, probably due to all pinctrl-gemini 40000000.syscon:pinctrl: could not map pin config for "R8 GMAC0 RXDV"
-> Please see http://kernel.montjoie.ovh/gemini/bootlog6.txt , I have added some pr_info in gmac.
-> I have put in the directory, the final dtb which I use.
+For zh translation:
 
-All this is wrong too:
-pinctrl-gemini 40000000.syscon:pinctrl: could not map pin config for
-"R8 GMAC0 RXDV"
-pinctrl-gemini 40000000.syscon:pinctrl: could not map pin config for
-"U11 GMAC1 RXDV"
-(...)
+> diff --git a/Documentation/translations/zh_CN/SecurityBugs b/Documentation/translations/zh_CN/SecurityBugs
 
-This is because we copied the DT config from a 3512 device rather than
-3516 ... totally different pins. :/ R8 is the pin on 3512 so they all need
-to change to e.g. from "R8 GMAC0 RXDV" to "V8 GMAC0 RXDV".
+This file is very old, may be removed soon.
+No need to edit it.
 
-We need to come up with something unique for this device.
+> index 2d0fffd122ce..980199d88eca 100644
+> --- a/Documentation/translations/zh_CN/SecurityBugs
+> +++ b/Documentation/translations/zh_CN/SecurityBugs
+> @@ -31,7 +31,7 @@ linux内核安全团队可以通过email<security@kernel.org>来联系。这是
+>  一组独立的安全工作人员，可以帮助改善漏洞报告并且公布和取消一个修复。安
+>  全团队有可能会从部分的维护者那里引进额外的帮助来了解并且修复安全漏洞。
+>  当遇到任何漏洞，所能提供的信息越多就越能诊断和修复。如果你不清楚什么
+> -是有帮助的信息，那就请重温一下admin-guide/reporting-bugs.rst文件中的概述过程。任
+> +是有帮助的信息，那就请重温一下admin-guide/reporting-issues.rst文件中的概述过程。任
+>  何攻击性的代码都是非常有用的，未经报告者的同意不会被取消，除非它已经
+>  被公布于众。
+>  
+> diff --git a/Documentation/translations/zh_CN/admin-guide/reporting-issues.rst b/Documentation/translations/zh_CN/admin-guide/reporting-issues.rst
 
-The code for mux is in drivers/pinctrl/pinctrl-gemini.c but can be a bit
-terse. This file contains both 3512 and 3516 drivers so check closely
-that you are looking at the right variant. The right pin names are in
-the array gemini_3516_pins[].
+The link here could not be simply replaced, the means is wrong.
+I will sync reporting-issues.rst with new verison in future.
 
-The tricky thing is that I have never seen a SL3516 connected directly to
-a simple phy like 82111. They all connect to some kind of switch chip...
-So we need to figure out the muxing and pin config for this set-up.
+> index 2805c1a03cd5..72c8e2db88c0 100644
+> --- a/Documentation/translations/zh_CN/admin-guide/reporting-issues.rst
+> +++ b/Documentation/translations/zh_CN/admin-guide/reporting-issues.rst
+> @@ -19,7 +19,7 @@
+>  
+>  .. important::
+>  
+> -   本文档将取代“Documentation/admin-guide/reporting-bugs.rst”。主要的工作
+> +   本文档将取代“Documentation/admin-guide/reporting-issues.rst”。主要的工作
+>     已经完成，你可以自由地按照其指示来向Linux内核开发者报告问题。但请留意，
+>     下面的文字还需要一些润色和校审。现阶段它被合并到Linux内核源代码中，以使
+>     这个过程更容易，并增加文本的可见性。
+> @@ -726,7 +726,7 @@ tar 存档包。
+>  .. note::
+>  
+>     FIXME: 本节文字暂时是占位符，与目前
+> -   “Documentation/admin-guide/reporting-bugs.rst”中的旧文字非常相似。它和它
+> +   “Documentation/admin-guide/reporting-issues.rst”中的旧文字非常相似。它和它
+>     所引用的文档已经过时，因此需要重新审视。因此，请将此说明视为一个求助：如
+>     果你熟悉这个主题，请写几行适合这里的文字。或者只需向本文件的主要作者（见
+>     导言）大致概述一下当前的情况，因为他们也许能写出一些东西来。
+> diff --git a/Documentation/translations/zh_CN/process/howto.rst b/Documentation/translations/zh_CN/process/howto.rst
 
-This is what the DIR-685 is using for GMAC0:
+This change is ok.
 
-                                pinctrl-gmii {
-                                        mux {
-                                                function = "gmii";
-                                                groups = "gmii_gmac0_grp";
-                                        };
-                                        conf0 {
-                                                pins = "V8 GMAC0
-RXDV", "T10 GMAC1 RXDV",
-                                                     "Y7 GMAC0 RXC",
-"Y11 GMAC1 RXC",
-                                                     "T8 GMAC0 TXEN",
-"W11 GMAC1 TXEN",
-                                                     "U8 GMAC0 TXC",
-"V11 GMAC1 TXC",
-                                                     "W8 GMAC0 RXD0",
-"V9 GMAC0 RXD1",
-                                                     "Y8 GMAC0 RXD2",
-"U9 GMAC0 RXD3",
-                                                     "T7 GMAC0 TXD0",
-"U6 GMAC0 TXD1",
-                                                     "V7 GMAC0 TXD2",
-"U7 GMAC0 TXD3",
-                                                     "Y12 GMAC1 RXD0",
-"V12 GMAC1 RXD1",
-                                                     "T11 GMAC1 RXD2",
-"W12 GMAC1 RXD3",
-                                                     "U10 GMAC1 TXD0",
-"Y10 GMAC1 TXD1",
-                                                     "W10 GMAC1 TXD2",
-"T9 GMAC1 TXD3";
-                                                skew-delay = <7>;
-                                        };
-                                        /* Set up drive strength on
-GMAC0 to 16 mA */
-                                        conf1 {
-                                                groups = "gmii_gmac0_grp";
-                                                drive-strength = <16>;
-                                        };
-                                };
+> index ee3dee476d57..c87cd529d769 100644
+> --- a/Documentation/translations/zh_CN/process/howto.rst
+> +++ b/Documentation/translations/zh_CN/process/howto.rst
+> @@ -280,7 +280,7 @@ bugzilla.kernel.org是Linux内核开发者们用来跟踪内核Bug的网站。
+>  
+>  	http://test.kernel.org/bugzilla/faq.html
+>  
+> -内核源码主目录中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
+> +内核源码主目录中的:ref:`admin-guide/reporting-issues.rst <reportingbugs>`
+>  文件里有一个很好的模板。它指导用户如何报告可能的内核bug以及需要提供哪些信息
+>  来帮助内核开发者们找到问题的根源。
+>  
+> -- 
+> 2.30.2
 
-But maybe your device is using GMAC1? I would try GMAC0 first anyway.
+Thanks!
 
-> The vendor source could be found at https://www.edimax.com/edimax/mw/cufiles/files/download/OpenSourceCode/transfer/Wireless/NAS/NAS-GPL-source.zip
+Wu X.C.
 
-Normally the kernel should be setting up device resources and
-config under arch/arm/mach-sl2312 (never mind the ASIC number...)
-but Storlink have hacked the kernel all over the place so the
-relevant parts can be hard to find.
-
-The interesting stuff relating to pin control appears when
-you grep for SL2312_GLOBAL_BASE.
-
-When the kernel boots some essentials are set up
-already in init/main.c (hacky!). But it seems to be the same
-as in all Storlink devices.
-
-This part in drivers/net/sl2312_emac.c looks quite interesting:
-
-#ifdef CONFIG_SL3516_ASIC
-{
-    unsigned int    val;
-
-    /* set GMAC global register */
-    val = readl(GMAC_GLOBAL_BASE_ADDR+0x10);
-    val = val | 0x005a0000;
-    writel(val,GMAC_GLOBAL_BASE_ADDR+0x10);
-    writel(0x07f007f0,GMAC_GLOBAL_BASE_ADDR+0x1c);
-    writel(0x77770000,GMAC_GLOBAL_BASE_ADDR+0x20);
-    writel(0x77770000,GMAC_GLOBAL_BASE_ADDR+0x24);
-        val = readl(GMAC_GLOBAL_BASE_ADDR+0x04);
-        if((val&(1<<20))==0){           // GMAC1 enable
-                val = readl(GMAC_GLOBAL_BASE_ADDR+0x30);
-                val = (val & 0xe7ffffff) | 0x08000000;
-                writel(val,GMAC_GLOBAL_BASE_ADDR+0x30);
-        }
-
-}
-#endif
-
-So we need to verify that this corresponds to what you set
-up in your device tree (I do it by reading the data sheets and
-coparing to the pinctrl-gemini.c code and defines...)
-
-Then we have this:
-
-/* define GPIO pin for MDC/MDIO */
-
-// for gemini ASIC
-#ifdef CONFIG_SL3516_ASIC
-#define H_MDC_PIN           22
-#define H_MDIO_PIN          21
-#define G_MDC_PIN           22
-#define G_MDIO_PIN          21
-#else
-(...)
-
-This seems to correspond to your device tree so OK...
-
-But it's annoying that we can't communicate with it.
-This is usually because some other device is
-"shading" the GPIO lines, i.e. hiding it.
-
-drivers/net/sl_switch.c is not used on your platform (Vitesse switch)
-and is a leftover from the Storlink reference design.
-
-> > > BUT neither ethernet nor USB works.
-> >
-> > For USB try this patch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/commit/?h=gemini-usb&id=cbaf6cdf770b90de5f10bfa5112c679f1dffe948
-> >
->
-> One of the USB port is now working.
-
-Hey nice! :D
-
-The USB patch is not very widely tested, so it may need some shaping
-up.
-
-> Note that I have also started to work on the gemini crypto driver.
-
-I saw some nice debug prints! :D
-
-I always wanted to get that to work, nice that you're working on
-it!
-
-Yours,
-Linus Walleij
