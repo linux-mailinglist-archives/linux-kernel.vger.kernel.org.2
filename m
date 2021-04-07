@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E89356A8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77146356A5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351706AbhDGKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:54:55 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:39262 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351677AbhDGKys (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:54:48 -0400
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 137As8HD019478;
-        Wed, 7 Apr 2021 19:54:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137As8HD019478
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617792849;
-        bh=GHNPkbKKRD5a2nOrnlcUrTtHVkd1LKSTOkdi37JpDHU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hglKVWsWPoSPlcAkB7IWZyL8TfhVMtb1jwzW+vYGb7wNj/VqvKxpqzmj/NdEW4qXA
-         FQLoPxx0FMcuz1+W0NNdg3pzarv/8JmbjLR+Jnpfx16p6+iczYBPXDbke9C5/dHRsD
-         GOHDAgpezkdzPQDaKKGQaBPcvJ93VNMiky+g9E4W3rkoMdQWC1d0/2nUH7E3/g7KZx
-         3/xGroEPRtvv0S5Rq39a4spV5mp40qOcuD2x9oDdM2hr15OZyxmE5QNrmp8LVvxLIM
-         UAtEqygWYCjWXMu7pNQ1WuyOQhO143xps5qMp+CaY8ET8CbzwNa9p1AAuO8PQawhNy
-         6GjPJmCpAnTqA==
-X-Nifty-SrcIP: [209.85.215.179]
-Received: by mail-pg1-f179.google.com with SMTP id t140so12730227pgb.13;
-        Wed, 07 Apr 2021 03:54:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531JOiy2I9USoPy4H1GkaaaI/CBKCkTjPwxvko7aE3pW7iPQ2Van
-        fNBAlmmw5Jps+VA3q46t536s89VBYpZzacESjrk=
-X-Google-Smtp-Source: ABdhPJwENjk1RFkDexdOz06v/RR2+j+tqRdYw68oYExSazKnvcKp/fepcg8daUq2vXTHGwayMzbgSMqHF6Ipvgk8tME=
-X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
- i4-20020aa78d840000b02901f834491bc6mr2286908pfr.76.1617792847926; Wed, 07 Apr
- 2021 03:54:07 -0700 (PDT)
+        id S1351583AbhDGKwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:52:53 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22191 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244909AbhDGKwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:52:51 -0400
+IronPort-SDR: PBAgMjOQ5t/qOsliN7Lz5vHDc1JrJUZtHsoIpRiTahPZdZ88oA731heVaEEgO35oPnJCz6ZvEh
+ LWoUBIO1rNeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="190078178"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="190078178"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 03:52:41 -0700
+IronPort-SDR: cjg41b+IlLllrlat51JVBZ8ls6d2u+AErdtnfiI5+PjTRxvxuVrKBansRYLlDwbwiVu0L4Ih3n
+ 8xoqr5xdokXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="612891970"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Apr 2021 03:52:39 -0700
+Subject: Re: [PATCH] xhci-pci: Allow host runtime PM as default for Intel
+ Alder Lake xHCI
+To:     Azhar Shaikh <azhar.shaikh@intel.com>, gregkh@linuxfoundation.org,
+        p.zabel@pengutronix.de, linux-usb@vger.kernel.org
+Cc:     mika.westerberg@linux.intel.com, abhijeet.rao@intel.com,
+        nikunj.dadhania@intel.com, linux-kernel@vger.kernel.org
+References: <20210406233529.19543-1-azhar.shaikh@intel.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ mQINBFMB0ccBEADd+nZnZrFDsIjQtclVz6OsqFOQ6k0nQdveiDNeBuwyFYykkBpaGekoHZ6f
+ lH4ogPZzQ+pzoJEMlRGXc881BIggKMCMH86fYJGfZKWdfpg9O6mqSxyEuvBHKe9eZCBKPvoC
+ L2iwygtO8TcXXSCynvXSeZrOwqAlwnxWNRm4J2ikDck5S5R+Qie0ZLJIfaId1hELofWfuhy+
+ tOK0plFR0HgVVp8O7zWYT2ewNcgAzQrRbzidA3LNRfkL7jrzyAxDapuejuK8TMrFQT/wW53e
+ uegnXcRJaibJD84RUJt+mJrn5BvZ0MYfyDSc1yHVO+aZcpNr+71yZBQVgVEI/AuEQ0+p9wpt
+ O9Wt4zO2KT/R5lq2lSz1MYMJrtfFRKkqC6PsDSB4lGSgl91XbibK5poxrIouVO2g9Jabg04T
+ MIPpVUlPme3mkYHLZUsboemRQp5/pxV4HTFR0xNBCmsidBICHOYAepCzNmfLhfo1EW2Uf+t4
+ L8IowAaoURKdgcR2ydUXjhACVEA/Ldtp3ftF4hTQ46Qhba/p4MUFtDAQ5yeA5vQVuspiwsqB
+ BoL/298+V119JzM998d70Z1clqTc8fiGMXyVnFv92QKShDKyXpiisQn2rrJVWeXEIVoldh6+
+ J8M3vTwzetnvIKpoQdSFJ2qxOdQ8iYRtz36WYl7hhT3/hwkHuQARAQABtCdNYXRoaWFzIE55
+ bWFuIDxtYXRoaWFzLm55bWFuQGdtYWlsLmNvbT6JAjsEEwECACUCGwMGCwkIBwMCBhUIAgkK
+ CwQWAgMBAh4BAheABQJTAeo1AhkBAAoJEFiDn/uYk8VJOdIP/jhA+RpIZ7rdUHFIYkHEKzHw
+ tkwrJczGA5TyLgQaI8YTCTPSvdNHU9Rj19mkjhUO/9MKvwfoT2RFYqhkrtk0K92STDaBNXTL
+ JIi4IHBqjXOyJ/dPADU0xiRVtCHWkBgjEgR7Wihr7McSdVpgupsaXhbZjXXgtR/N7PE0Wltz
+ hAL2GAnMuIeJyXhIdIMLb+uyoydPCzKdH6znfu6Ox76XfGWBCqLBbvqPXvk4oH03jcdt+8UG
+ 2nfSeti/To9ANRZIlSKGjddCGMa3xzjtTx9ryf1Xr0MnY5PeyNLexpgHp93sc1BKxKKtYaT0
+ lR6p0QEKeaZ70623oB7Sa2Ts4IytqUVxkQKRkJVWeQiPJ/dZYTK5uo15GaVwufuF8VTwnMkC
+ 4l5X+NUYNAH1U1bpRtlT40aoLEUhWKAyVdowxW4yGCP3nL5E69tZQQgsag+OnxBa6f88j63u
+ wxmOJGNXcwCerkCb+wUPwJzChSifFYmuV5l89LKHgSbv0WHSN9OLkuhJO+I9fsCNvro1Y7dT
+ U/yq4aSVzjaqPT3yrnQkzVDxrYT54FLWO1ssFKAOlcfeWzqrT9QNcHIzHMQYf5c03Kyq3yMI
+ Xi91hkw2uc/GuA2CZ8dUD3BZhUT1dm0igE9NViE1M7F5lHQONEr7MOCg1hcrkngY62V6vh0f
+ RcDeV0ISwlZWuQINBFMB0ccBEACXKmWvojkaG+kh/yipMmqZTrCozsLeGitxJzo5hq9ev31N
+ 2XpPGx4AGhpccbco63SygpVN2bOd0W62fJJoxGohtf/g0uVtRSuK43OTstoBPqyY/35+VnAV
+ oA5cnfvtdx5kQPIL6LRcxmYKgN4/3+A7ejIxbOrjWFmbWCC+SgX6mzHHBrV0OMki8R+NnrNa
+ NkUmMmosi7jBSKdoi9VqDqgQTJF/GftvmaZHqgmVJDWNrCv7UiorhesfIWPt1O/AIk9luxlE
+ dHwkx5zkWa9CGYvV6LfP9BznendEoO3qYZ9IcUlW727Le80Q1oh69QnHoI8pODDBBTJvEq1h
+ bOWcPm/DsNmDD8Rwr/msRmRyIoxjasFi5WkM/K/pzujICKeUcNGNsDsEDJC5TCmRO/TlvCvm
+ 0X+vdfEJRZV6Z+QFBflK1asUz9QHFre5csG8MyVZkwTR9yUiKi3KiqQdaEu+LuDD2CGF5t68
+ xEl66Y6mwfyiISkkm3ETA4E8rVZP1rZQBBm83c5kJEDvs0A4zrhKIPTcI1smK+TWbyVyrZ/a
+ mGYDrZzpF2N8DfuNSqOQkLHIOL3vuOyx3HPzS05lY3p+IIVmnPOEdZhMsNDIGmVorFyRWa4K
+ uYjBP/W3E5p9e6TvDSDzqhLoY1RHfAIadM3I8kEx5wqco67VIgbIHHB9DbRcxQARAQABiQIf
+ BBgBAgAJBQJTAdHHAhsMAAoJEFiDn/uYk8VJb7AQAK56tgX8V1Wa6RmZDmZ8dmBC7W8nsMRz
+ PcKWiDSMIvTJT5bygMy1lf7gbHXm7fqezRtSfXAXr/OJqSA8LB2LWfThLyuuCvrdNsQNrI+3
+ D+hjHJjhW/4185y3EdmwwHcelixPg0X9EF+lHCltV/w29Pv3PiGDkoKxJrnOpnU6jrwiBebz
+ eAYBfpSEvrCm4CR4hf+T6MdCs64UzZnNt0nxL8mLCCAGmq1iks9M4bZk+LG36QjCKGh8PDXz
+ 9OsnJmCggptClgjTa7pO6040OW76pcVrP2rZrkjo/Ld/gvSc7yMO/m9sIYxLIsR2NDxMNpmE
+ q/H7WO+2bRG0vMmsndxpEYS4WnuhKutoTA/goBEhtHu1fg5KC+WYXp9wZyTfeNPrL0L8F3N1
+ BCEYefp2JSZ/a355X6r2ROGSRgIIeYjAiSMgGAZMPEVsdvKsYw6BH17hDRzltNyIj5S0dIhb
+ Gjynb3sXforM/GVbr4mnuxTdLXQYlj2EJ4O4f0tkLlADT7podzKSlSuZsLi2D+ohKxtP3U/r
+ 42i8PBnX2oAV0UIkYk7Oel/3hr0+BP666SnTls9RJuoXc7R5XQVsomqXID6GmjwFQR5Wh/RE
+ IJtkiDAsk37cfZ9d1kZ2gCQryTV9lmflSOB6AFZkOLuEVSC5qW8M/s6IGDfYXN12YJaZPptJ fiD/
+Message-ID: <48e32c92-e3e8-3935-3b9a-84fbcf79a9e3@linux.intel.com>
+Date:   Wed, 7 Apr 2021 13:54:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <CAMuHMdWGnr1wK3yZdLovxmVQT1yc2DR+J6FwQyCLxQS-Bp29Rw@mail.gmail.com>
- <YG1jSj7BiDscHBhz@kroah.com> <20210407080229.GF1463@shell.armlinux.org.uk>
- <YG1oQRc1ayGEI+4G@kroah.com> <20210407081436.GG1463@shell.armlinux.org.uk> <YG1vTx5XtgMeA9kX@kroah.com>
-In-Reply-To: <YG1vTx5XtgMeA9kX@kroah.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 19:53:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATeAoBukc+D873b6E=Muw1scc-OWCncx5X6iXMrJjhzeQ@mail.gmail.com>
-Message-ID: <CAK7LNATeAoBukc+D873b6E=Muw1scc-OWCncx5X6iXMrJjhzeQ@mail.gmail.com>
-Subject: Re: [PATCH 00/20] kbuild: unify the install.sh script usage
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210406233529.19543-1-azhar.shaikh@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 5:37 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 07, 2021 at 09:14:36AM +0100, Russell King - ARM Linux admin wrote:
-> > On Wed, Apr 07, 2021 at 10:07:29AM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Apr 07, 2021 at 09:02:29AM +0100, Russell King - ARM Linux admin wrote:
-> > > > On Wed, Apr 07, 2021 at 09:46:18AM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Wed, Apr 07, 2021 at 09:18:11AM +0200, Geert Uytterhoeven wrote:
-> > > > > > Hi Greg,
-> > > > > >
-> > > > > > Thanks for your series!
-> > > > > >
-> > > > > > On Wed, Apr 7, 2021 at 7:34 AM Greg Kroah-Hartman
-> > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > > Almost every architecture has copied the "install.sh" script that
-> > > > > > > originally came with i386, and modified it in very tiny ways.  This
-> > > > > > > patch series unifies all of these scripts into one single script to
-> > > > > > > allow people to understand how to correctly install a kernel, and fixes
-> > > > > > > up some issues regarding trying to install a kernel to a path with
-> > > > > > > spaces in it.
-> > > > > > >
-> > > > > > > Note that not all architectures actually seem to have any type of way to
-> > > > > > > install a kernel, they must rely on external scripts or tools which
-> > > > > > > feels odd as everything should be included here in the main repository.
-> > > > > > > I'll work on trying to figure out the missing architecture issues
-> > > > > > > afterward.
-> > > > > >
-> > > > > > I'll bite ;-)
-> > > > > >
-> > > > > > Does anyone actually use these scripts (outside of x86)?
-> > > >
-> > > > Yes, every time I build a kernel. My kernel build system involves
-> > > > typing "kbuild <flags> <dirname> <machines...>" and the kernel gets
-> > > > built in ../build/<dirname>. When the build completes, it gets
-> > > > installed into ~/systems/<dirname>, tar'd up, and copied to the
-> > > > destination machines, unpacked, installed as appropriate, and
-> > > > the machine rebooted if requested.
-> > > >
-> > > > The installation step is done via the ~/bin/installkernel script.
-> > >
-> > > So you don't use install.sh at all except to invoke your local script.
-> >
-> > It depends where the kernel is being built; it has been used in the
-> > past (one will notice that the arm32 version is not a direct copy of
-> > the x86 version, and never was - it was modified from day 1.) It's
-> > placement and naming of the files in /boot is still used today, which
-> > is slightly different from the x86 version.
->
-> The placement depends on the caller to the script, so that's not an
-> issue here.  The name for the output does differ from x86, but the
-> "common" script handles all of that (or it should, if not I messed up.)
->
-> Attached below is the common scripts/install.sh that this patch series
-> produces at the end of it, if you want to check to see if I missed
-> anything for your arch.
->
-> thanks,
->
-> greg k-h
+On 7.4.2021 2.35, Azhar Shaikh wrote:
+> From: Abhijeet Rao <abhijeet.rao@intel.com>
+> 
+> In the same way as Intel Tiger Lake TCSS (Type-C Subsystem) the Alder Lake
+> TCSS xHCI needs to be runtime suspended whenever possible to allow the
+> TCSS hardware block to enter D3cold and thus save energy.
+> 
+> Signed-off-by: Abhijeet Rao <abhijeet.rao@intel.com>
+> Signed-off-by: Nikunj A. Dadhania <nikunj.dadhania@intel.com>
+> Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+> ---
+>  drivers/usb/host/xhci-pci.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
+Thanks, Added to queue
 
-
-Thanks for nice cleanups!
-
-I will give some nit-picking comments to individual patches.
-Overall, this series looks nice.
-
-
--- 
-Best Regards
-Masahiro Yamada
+-Mathias
