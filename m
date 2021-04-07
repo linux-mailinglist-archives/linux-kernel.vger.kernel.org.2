@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C710035636D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E7B356370
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243368AbhDGFrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhDGFrL (ORCPT
+        id S243469AbhDGFsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:48:02 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:20046 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhDGFr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:47:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA25AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 22:47:02 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU11n-0002gQ-Aj; Wed, 07 Apr 2021 07:46:59 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU11m-0001re-OB; Wed, 07 Apr 2021 07:46:58 +0200
-Date:   Wed, 7 Apr 2021 07:46:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="25q5ivcude7rgd7v"
-Content-Disposition: inline
-In-Reply-To: <20210406164140.81423-5-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Wed, 7 Apr 2021 01:47:58 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 06 Apr 2021 22:47:48 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Apr 2021 22:47:46 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 07 Apr 2021 11:17:26 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 2719F21875; Wed,  7 Apr 2021 11:17:25 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, swboyd@chromium.org,
+        bjorn.andersson@linaro.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v3] media: venus : hfi: add venus image info into smem
+Date:   Wed,  7 Apr 2021 11:17:17 +0530
+Message-Id: <1617774437-31293-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fill fw version info into smem to be printed as part of
+soc info.
 
---25q5ivcude7rgd7v
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 
-On Tue, Apr 06, 2021 at 06:41:37PM +0200, Clemens Gruber wrote:
-> If the flag PWM_STAGGERING_ALLOWED is set on a channel, the PWM driver
-> may (if supported by the HW) delay the ON time of the channel relative
-> to the channel number.
-> This does not alter the duty cycle ratio and is only relevant for PWM
-> chips with less prescalers than channels, which would otherwise assert
-> multiple or even all enabled channels at the same time.
->=20
-> If this feature is supported by the driver and the flag is set on
-> multiple channels, their ON times are spread out to improve EMI and
-> reduce current spikes.
+changes since v2:
+- adressed all review comments. 
+---
+ drivers/media/platform/qcom/venus/hfi_msgs.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-As said in reply to patch 4/8 already: I don't like this idea and
-think this should be made explicit using a new offset member in struct
-pwm_state instead. That's because I think that the wave form a PWM
-generates should be (completely) defined by the consumer and not by a
-mix between consumer and device tree. Also the consumer has no (sane)
-way to determine if staggering is in use or not.
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+index 06a1908..74cfc4f 100644
+--- a/drivers/media/platform/qcom/venus/hfi_msgs.c
++++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+@@ -6,6 +6,7 @@
+ #include <linux/hash.h>
+ #include <linux/list.h>
+ #include <linux/slab.h>
++#include <linux/soc/qcom/smem.h>
+ #include <media/videobuf2-v4l2.h>
+ 
+ #include "core.h"
+@@ -14,6 +15,10 @@
+ #include "hfi_msgs.h"
+ #include "hfi_parser.h"
+ 
++#define SMEM_IMG_VER_TBL 469
++#define VER_STR_SZ	128
++#define SMEM_IMG_OFFSET_VENUS (14 * 128)
++
+ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+ 			      struct hfi_msg_event_notify_pkt *pkt)
+ {
+@@ -239,15 +244,27 @@ static void
+ sys_get_prop_image_version(struct device *dev,
+ 			   struct hfi_msg_sys_property_info_pkt *pkt)
+ {
++	u8 *smem_tbl_ptr;
++	u8 *img_ver;
+ 	int req_bytes;
++	size_t smem_blk_sz;
+ 
+ 	req_bytes = pkt->hdr.size - sizeof(*pkt);
+ 
+-	if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
++	if (req_bytes < VER_STR_SZ || !pkt->data[1] || pkt->num_properties > 1)
+ 		/* bad packet */
+ 		return;
+ 
+-	dev_dbg(dev, VDBGL "F/W version: %s\n", (u8 *)&pkt->data[1]);
++	img_ver = (u8 *)&pkt->data[1];
++
++	dev_dbg(dev, VDBGL "F/W version: %s\n", img_ver);
++
++	smem_tbl_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
++		SMEM_IMG_VER_TBL, &smem_blk_sz);
++	if (smem_tbl_ptr &&
++	    smem_blk_sz >= SMEM_IMG_OFFSET_VENUS + VER_STR_SZ)
++		memcpy(smem_tbl_ptr + SMEM_IMG_OFFSET_VENUS,
++		       img_ver, VER_STR_SZ);
+ }
+ 
+ static void hfi_sys_property_info(struct venus_core *core,
+-- 
+2.7.4
 
-One side effect (at least for the pca9685) is that when programming a
-new duty cycle it takes a bit longer than without staggering until the
-new setting is active.=20
-
-Another objection I have is that we already have some technical debt
-because there are already two different types of drivers (.apply vs
-=2Econfig+.set_polarity+.enable+.disable) and I would like to unify this
-first before introducing new stuff.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---25q5ivcude7rgd7v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtR08ACgkQwfwUeK3K
-7AnH1gf/cdig397tz+5gNgX38+1Ifc1mHXJ0Rh3cWxKQmZ7xbFajyrhcp+95qXcE
-xZfAkeQpyVzycfGUAuioEHz3ufRTMYzl+MRBnimcgVeZR/6Fid3oV4QXT4gLNWtl
-D31osUgPOII4IYcNiOaSndK4v/5jcLr1OpzRimBXqwZtitu4Pjzj5GOUmxQAYKHc
-8PT6N9HswlSWLx4LJFp4preCsPGTLBiO/NPUxK9hcUtu2DLr625A30RUXOr6ke5Q
-zOOSqZWRdgEg7Qt5CI83lB7/cY2TiNHHb9bvwq0h5w7ziwXhkklQ9QkaJP/zZu9L
-vwS4AhdLhkxH6rvt0ppFyXOSWlz90Q==
-=3pkc
------END PGP SIGNATURE-----
-
---25q5ivcude7rgd7v--
