@@ -2,135 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C8D3576E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F333576E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhDGVeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhDGVeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:34:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E088C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 14:34:12 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUFoK-0006ld-IO; Wed, 07 Apr 2021 23:34:04 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUFoJ-0001pJ-Tp; Wed, 07 Apr 2021 23:34:03 +0200
-Date:   Wed, 7 Apr 2021 23:34:03 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
- <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
- <YG4UNoBCQJkEEfwi@workstation.tuxnet>
+        id S233550AbhDGVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233440AbhDGVe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:34:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D84F86121E;
+        Wed,  7 Apr 2021 21:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617831259;
+        bh=OY6m0O2JLdBR3EMbFN1+c1VP7vp1T7/MtgNCyna3jIM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RYs9ZlZAuW+yAR9OaIBjRAaV4aBe0OW8/MZ5z9KTgN3tqbZopScQkbcA+uBicRd51
+         4ZneoA/QQlXnxW1mnalWPMyOR0Z2hdf4NggDX7ZHLpxuPtbC1KECEBZOZ8ATVEOp0o
+         ZRYJXGXa7RKstjpqR9WjaZWBTHYYZ4AxDwU3zg2/eFVE6OdCvdT6IiakzgokgZmogq
+         u65f+kQQ6AHw0KfEWHtBJEya0m8s8GPTZoJ/6Btx2Z8iIw8QCxN3a4e4eT/2AZiA1j
+         Q9fw2qSWrsIGNjZL8OEr2kDLxPSNC3WipF4gvmHFytN9CT1sguw538cuIkLcoTirBp
+         dUuduyju5h4Mw==
+Received: by mail-qt1-f170.google.com with SMTP id s2so14906787qtx.10;
+        Wed, 07 Apr 2021 14:34:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531uO9pWhGsXL10iJVCbFUSVWoWNTn6sam191ySgBo1Yo+fOD9rd
+        iLtZKeafpgPB4K3XKjd+cUw7abgFM718wLuYtw==
+X-Google-Smtp-Source: ABdhPJxby6ZecdKO6ratrvLVnneOpLeudf1qG1OIN7h5L0Yz59gfd8jPWN8/RStIFd7QYsd5JrUafN+sSZgecZb3vBc=
+X-Received: by 2002:ac8:7f07:: with SMTP id f7mr4495392qtk.134.1617831257998;
+ Wed, 07 Apr 2021 14:34:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3rqqlwp4d36foled"
-Content-Disposition: inline
-In-Reply-To: <YG4UNoBCQJkEEfwi@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210407205110.2173976-1-frowand.list@gmail.com>
+In-Reply-To: <20210407205110.2173976-1-frowand.list@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 7 Apr 2021 16:34:06 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+UORLXYh_v8WzAq_hH+-s0qjp0r_jObmaEK+yAh299hw@mail.gmail.com>
+Message-ID: <CAL_Jsq+UORLXYh_v8WzAq_hH+-s0qjp0r_jObmaEK+yAh299hw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 7, 2021 at 3:51 PM <frowand.list@gmail.com> wrote:
+>
+> From: Frank Rowand <frank.rowand@sony.com>
+>
+> The Devicetree standard specifies an 8 byte alignment of the FDT.
+> Code in libfdt expects this alignment for an FDT image in memory.
+> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
+> with kmalloc(), align pointer, memcpy() to get proper alignment.
+>
+> The 4 byte alignment exposed a related bug which triggered a crash
+> on openrisc with:
+> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+> as reported in:
+> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+> ---
+>  drivers/of/of_private.h | 2 ++
+>  drivers/of/overlay.c    | 8 ++++++--
+>  drivers/of/unittest.c   | 9 +++++++--
+>  3 files changed, 15 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+> index d9e6a324de0a..d717efbd637d 100644
+> --- a/drivers/of/of_private.h
+> +++ b/drivers/of/of_private.h
+> @@ -8,6 +8,8 @@
+>   * Copyright (C) 1996-2005 Paul Mackerras.
+>   */
+>
+> +#define FDT_ALIGN_SIZE 8
+> +
+>  /**
+>   * struct alias_prop - Alias property in 'aliases' node
+>   * @link:      List node to link the structure in aliases_lookup list
+> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> index 50bbe0edf538..8b40711ed202 100644
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -1014,7 +1014,7 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>  int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>                          int *ovcs_id)
+>  {
+> -       const void *new_fdt;
+> +       void *new_fdt;
+>         int ret;
+>         u32 size;
+>         struct device_node *overlay_root;
+> @@ -1036,10 +1036,14 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>          * Must create permanent copy of FDT because of_fdt_unflatten_tree()
+>          * will create pointers to the passed in FDT in the unflattened tree.
+>          */
+> -       new_fdt = kmemdup(overlay_fdt, size, GFP_KERNEL);
+> +       size += FDT_ALIGN_SIZE;
+> +       new_fdt = kmalloc(size, GFP_KERNEL);
+>         if (!new_fdt)
+>                 return -ENOMEM;
+>
+> +       new_fdt = PTR_ALIGN(new_fdt, FDT_ALIGN_SIZE);
+> +       memcpy(new_fdt, overlay_fdt, size);
+> +
+>         of_fdt_unflatten_tree(new_fdt, NULL, &overlay_root);
+>         if (!overlay_root) {
+>                 pr_err("unable to unflatten overlay_fdt\n");
+> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+> index eb100627c186..edd6ce807691 100644
+> --- a/drivers/of/unittest.c
+> +++ b/drivers/of/unittest.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/device.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/kernel.h>
+>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-mux.h>
+> @@ -1415,7 +1416,7 @@ static int __init unittest_data_add(void)
+>          */
+>         extern uint8_t __dtb_testcases_begin[];
+>         extern uint8_t __dtb_testcases_end[];
+> -       const int size = __dtb_testcases_end - __dtb_testcases_begin;
+> +       u32 size = __dtb_testcases_end - __dtb_testcases_begin;
+>         int rc;
+>
+>         if (!size) {
+> @@ -1425,10 +1426,14 @@ static int __init unittest_data_add(void)
+>         }
+>
+>         /* creating copy */
+> -       unittest_data = kmemdup(__dtb_testcases_begin, size, GFP_KERNEL);
+> +       size += FDT_ALIGN_SIZE;
+> +       unittest_data = kmalloc(size, GFP_KERNEL);
+>         if (!unittest_data)
+>                 return -ENOMEM;
+>
+> +       unittest_data = PTR_ALIGN(unittest_data, FDT_ALIGN_SIZE);
+> +       memcpy(unittest_data, __dtb_testcases_begin, size);
+> +
+>         of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
+>         if (!unittest_data_node) {
+>                 pr_warn("%s: No tree to attach; not running tests\n", __func__);
 
---3rqqlwp4d36foled
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The next line here is a kfree(unittest_data) which I assume will fail
+if the ptr address changed. Same issue in the overlay code.
 
-On Wed, Apr 07, 2021 at 10:21:10PM +0200, Clemens Gruber wrote:
-> On Wed, Apr 07, 2021 at 07:46:58AM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Tue, Apr 06, 2021 at 06:41:37PM +0200, Clemens Gruber wrote:
-> > > If the flag PWM_STAGGERING_ALLOWED is set on a channel, the PWM driver
-> > > may (if supported by the HW) delay the ON time of the channel relative
-> > > to the channel number.
-> > > This does not alter the duty cycle ratio and is only relevant for PWM
-> > > chips with less prescalers than channels, which would otherwise assert
-> > > multiple or even all enabled channels at the same time.
-> > >=20
-> > > If this feature is supported by the driver and the flag is set on
-> > > multiple channels, their ON times are spread out to improve EMI and
-> > > reduce current spikes.
-> >=20
-> > As said in reply to patch 4/8 already: I don't like this idea and
-> > think this should be made explicit using a new offset member in struct
-> > pwm_state instead. That's because I think that the wave form a PWM
-> > generates should be (completely) defined by the consumer and not by a
-> > mix between consumer and device tree. Also the consumer has no (sane)
-> > way to determine if staggering is in use or not.
->=20
-> I don't think offsets are ideal for this feature: It makes it more
-> cumbersome for the user, because he has to allocate the offsets
-> himself instead of a simple on/off switch.
-> The envisioned usecase is: "I want better EMI behavior and don't care
-> about the individual channels no longer being asserted at the exact same
-> time".
+The error path is easy to fix. Freeing the memory later on, not so
+much... One solution is always alloc a power of 2 size, that's
+guaranteed to be 'size' aligned:
 
-The formal thing is: "I want better EMI behavior and don't care if
-periods start with the active phase, it might be anywhere, even over a
-period boundary." Being asserted at the exact same time is just a detail
-for the pca9685.
-=20
-> > One side effect (at least for the pca9685) is that when programming a
-> > new duty cycle it takes a bit longer than without staggering until the
-> > new setting is active.=20
->=20
-> Yes, but it can be turned off if this is a problem, now even per-PWM.
+ * The allocated object address is aligned to at least ARCH_KMALLOC_MINALIGN
+ * bytes. For @size of power of two bytes, the alignment is also guaranteed
+ * to be at least to the size.
 
-Yes and that is a good thing. (BTW: I'd call it per-PWM-consumer, but
-details.)
-
-> > Another objection I have is that we already have some technical debt
-> > because there are already two different types of drivers (.apply vs
-> > .config+.set_polarity+.enable+.disable) and I would like to unify this
-> > first before introducing new stuff.
->=20
-> But there is already PWM_POLARITY_INVERTED, which can be set in the DT.
-> I am only adding another flag.
-
-I understand your reasoning, and similar to "This diplay backlight needs
-an inverted PWM (as a low duty-cycle results in a high brightness" this
-semantic "This consumer doesn't care if the active cycle is anywhere in
-the period". Hmm, maybe I just have to think about it a bit more to
-become friends with that thought.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3rqqlwp4d36foled
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBuJUgACgkQwfwUeK3K
-7AkeZQgAkT07fezSSY0Ww/dh+XugS9Qc2nJ2nzT4ZE/mZ/2XANqgdpXCgWpJTYsT
-3JjMiC/3mn8CJBcBHPmVTAjb9sipkJoL6BFPYtcpAZ9JcWiYZPm7FmbViQERfp8a
-3uMlxYmTL8h2mIiaPs9Z8U88D15FPXNMExCsMV7kXrtAg8HFOaSO9n8ecXjwi3NO
-54bl9AGg2sVbpNqA9msLRQlmbKujHdJHNlm6n+tKX0vBWvI66mVtnuh72Ymxempp
-qYjkm9ulM9tNXVsaSj++oV7Li0/NJFsi8kv89Ap1Fb5fuYJSs4R0RoSQFOr9rE3K
-cshuyjCapTUubrSwAXiTDVEG27/XZw==
-=5yuQ
------END PGP SIGNATURE-----
-
---3rqqlwp4d36foled--
+Rob
