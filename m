@@ -2,146 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B183B35765C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CF935765E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhDGUxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:53:34 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:40426 "EHLO vps-vb.mhejs.net"
+        id S231625AbhDGU5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231520AbhDGUxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:53:30 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lUFAn-0007gx-8c; Wed, 07 Apr 2021 22:53:13 +0200
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Pkshih <pkshih@realtek.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
- <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
- <87r1jnohq6.fsf@codeaurora.org>
- <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
- <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
- <1617763692.9857.7.camel@realtek.com>
- <1dc7e487-b97b-8584-47f7-37f3385c7bf9@lwfinger.net>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-Message-ID: <15737dcf-95ac-1ce6-a681-94ff5db968e4@maciej.szmigiero.name>
-Date:   Wed, 7 Apr 2021 22:53:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230280AbhDGU5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:57:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2258661131;
+        Wed,  7 Apr 2021 20:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617829027;
+        bh=1Q2oOXUjRJwdCV+qOUNBymw/y9FGIdzI1jb6hvbjuZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJg/YWZzVoLd0kBX/rSjkyXLycEWYmylXQ1cHt7V/whjGUBXNxjAc3sv9P5XuEiwm
+         ZBGB2LMPwY8/fh4rqU6SuG8gck+wGF6mabpwZ38fKlVyQp6aZTL5+u4uSQwjP3m4l/
+         GJaJFuEWSt6jJcXQtwFv45OT1478G3MES4y6mB1C6tdYBH3NJAUaO82M89AFI6yZ4u
+         KkMH3yVUQqvV3vNWuYg3SzLN4uu0ISzfxEzctlSDWUjwA/Y+htRSGkeKoEkdxRTN5R
+         SqLk3D1uLeLFmRwDIXyZMtCEL0h3U2jv3OZT9cGnMFG+YNR2kqWcP5Pw4Jw4szZKes
+         WmJiDe4QKNKqg==
+Date:   Wed, 7 Apr 2021 21:57:02 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, zhukeqian1@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v3 1/2] KVM: arm64: Move CMOs from user_mem_abort to
+ the fault handlers
+Message-ID: <20210407205701.GA16198@willie-the-truck>
+References: <20210326031654.3716-1-wangyanan55@huawei.com>
+ <20210326031654.3716-2-wangyanan55@huawei.com>
+ <cd6c8a86-b7b2-3d3e-121a-c9d1cb23c4b3@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1dc7e487-b97b-8584-47f7-37f3385c7bf9@lwfinger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd6c8a86-b7b2-3d3e-121a-c9d1cb23c4b3@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.04.2021 06:21, Larry Finger wrote:
-> On 4/6/21 9:48 PM, Pkshih wrote:
->> On Tue, 2021-04-06 at 11:25 -0500, Larry Finger wrote:
->>> On 4/6/21 7:06 AM, Maciej S. Szmigiero wrote:
->>>> On 06.04.2021 12:00, Kalle Valo wrote:
->>>>> "Maciej S. Szmigiero" <mail@maciej.szmigiero.name> writes:
->>>>>
->>>>>> On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
->>>>>>> since the driver does not update its beacon to account for TIM changes,
->>>>>>> so a station that is sleeping will never learn that it has packets
->>>>>>> buffered at the AP.
->>>>>>>
->>>>>>> Looking at the code, the rtl8192cu driver implements neither the set_tim()
->>>>>>> callback, nor does it explicitly update beacon data periodically, so it
->>>>>>> has no way to learn that it had changed.
->>>>>>>
->>>>>>> This results in the AP mode being virtually unusable with STAs that do
->>>>>>> PS and don't allow for it to be disabled (IoT devices, mobile phones,
->>>>>>> etc.).
->>>>>>>
->>>>>>> I think the easiest fix here would be to implement set_tim() for example
->>>>>>> the way rt2x00 driver does: queue a work or schedule a tasklet to update
->>>>>>> the beacon data on the device.
->>>>>>
->>>>>> Are there any plans to fix this?
->>>>>> The driver is listed as maintained by Ping-Ke.
->>>>>
->>>>> Yeah, power save is hard and I'm not surprised that there are drivers
->>>>> with broken power save mode support. If there's no fix available we
->>>>> should stop supporting AP mode in the driver.
->>>>>
->>>> https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/api
->>>> clearly documents that "For AP mode, it must (...) react to the set_tim()
->>>> callback or fetch each beacon from mac80211".
->>>> The driver isn't doing either so no wonder the beacon it is sending
->>>> isn't getting updated.
->>>> As I have said above, it seems to me that all that needs to be done here
->>>> is to queue a work in a set_tim() callback, then call
->>>> send_beacon_frame() from rtlwifi/core.c from this work.
->>>> But I don't know the exact device semantics, maybe it needs some other
->>>> notification that the beacon has changed, too, or even tries to
->>>> manage the TIM bitmap by itself.
->>>> It would be a shame to lose the AP mode for such minor thing, though.
->>>> I would play with this myself, but unfortunately I don't have time
->>>> to work on this right now.
->>>> That's where my question to Realtek comes: are there plans to actually
->>>> fix this?
->>>
->>> Yes, I am working on this. My only question is "if you are such an expert on the
->>> problem, why do you not fix it?"
->>>
->>> The example in rx200 is not particularly useful, and I have not found any other
->>> examples.
->>>
->>
->> Hi Larry,
->>
->> I have a draft patch that forks a work to do send_beacon_frame(), whose
->> behavior like Maciej mentioned.
-
-That's great, thanks!
-
->> I did test on RTL8821AE; it works well. But, it seems already work well even
->> I don't apply this patch, and I'm still digging why.
-
-It looks like PCI rtlwifi hardware uses a tasklet (specifically,
-_rtl_pci_prepare_bcn_tasklet() in pci.c) to periodically transfer the
-current beacon to the NIC.
-
-This tasklet is scheduled on a RTL_IMR_BCNINT interrupt, which sounds
-like a beacon interval interrupt.
-
->> I don't have a rtl8192cu dongle on hand, but I'll try to find one.
+On Wed, Apr 07, 2021 at 04:31:31PM +0100, Alexandru Elisei wrote:
+> On 3/26/21 3:16 AM, Yanan Wang wrote:
+> > We currently uniformly permorm CMOs of D-cache and I-cache in function
+> > user_mem_abort before calling the fault handlers. If we get concurrent
+> > guest faults(e.g. translation faults, permission faults) or some really
+> > unnecessary guest faults caused by BBM, CMOs for the first vcpu are
 > 
-> Maceij,
-> 
-> Does this patch fix the problem?
+> I can't figure out what BBM means.
 
-The beacon seems to be updating now and STAs no longer get stuck in PS
-mode.
-Although sometimes (every 2-3 minutes with continuous 1s interval pings)
-there is around 5s delay in updating the transmitted beacon - don't know
-why, maybe the NIC hardware still has the old version in queue?
+Oh, I know that one! BBM means "Break Before Make". Not to be confused with
+DBM (Dirty Bit Management) or BFM (Bit Field Move).
 
-I doubt, however that this set_tim() callback should be added for every
-rtlwifi device type.
-
-As I have said above, PCI devices seem to already have a mechanism in
-place to update their beacon each beacon interval.
-Your test that RTL8821AE works without this patch confirms that (at
-least for the rtl8821ae driver).
-
-It seems this callback is only necessarily for USB rtlwifi devices.
-Which currently means rtl8192cu only.
-
-Thanks,
-Maciej
+Will
