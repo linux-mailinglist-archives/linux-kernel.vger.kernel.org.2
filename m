@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045B5357256
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DAE35725B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347688AbhDGQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S1347773AbhDGQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234029AbhDGQo6 (ORCPT
+        with ESMTP id S245696AbhDGQrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:44:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32560C061756;
-        Wed,  7 Apr 2021 09:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=mSYkryVWY5Pr3drPpv2NaUgq5R5L6jkNcEwAJTVD9CE=; b=oBpo3LmmrylkwRvCPEuDqy0siY
-        w6Vblo1PfrEZIOt1E6+WTUXuQFJke1qgC5BHuVW41/nyqUA2PszrAAvgoZrPSOJTaa/k9jzkkvlxX
-        Yt3hLk/VrDJpfN3knC60fZIz8ODcsUQqtf1/3mBMds2HhQsk5pmsA6domWSd49QLvLIQo92h7Zcsg
-        /+vQyaO4JP158BN/RlvD3p9JXSkaii3fYllmW8zSRcyBjbkek9iH+7lUIXJ7mjzRLBlU6T1zOz5HK
-        EZydhVSVQNaYd2Bd7oAxxSRGHldVKXzg+8/cXvmIhUYr26mJ85htTlJLEs3Dc9ZLizVRHQaTlhXKR
-        VuFPI0VQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUBIB-005V5Q-Qu; Wed, 07 Apr 2021 16:44:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5C40300331;
-        Wed,  7 Apr 2021 18:44:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9EEA423D3AF86; Wed,  7 Apr 2021 18:44:34 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 18:44:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <YG3hcg32xw/D03P2@hirez.programming.kicks-ass.net>
-References: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
- <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
- <20210407094224.GA3393992@infradead.org>
- <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
- <YG3U677P9QKqFGMY@hirez.programming.kicks-ass.net>
+        Wed, 7 Apr 2021 12:47:47 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E79BC061756;
+        Wed,  7 Apr 2021 09:47:37 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id i4so1179278pjk.1;
+        Wed, 07 Apr 2021 09:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oGh9bkiyj6+EkWkOQAdYaOgpqM5cW8idh8bXV6aXyO0=;
+        b=FTFoS+IIVQZVCzbPWJKNuk9ooiaUnHASKGfJzfKbfXQMAecp/A3EwHonJ8kHmqDegt
+         13uQx3ef/b3aPrKx1T7TdEV4qKRljsmP7r5Xd2C6B9GUGzvQNmDjLWq2gb8/Zgf6k0dR
+         1nz/LWlz8h2dH4g71S9RzTSmdSWWGYuDQyO6SPpU8yGyP/UBSpxSN1ANvBWgxMqNqkmD
+         DZ8VAKWtpA1SSCajpphfxLzVBsUp9y/W+D+nBMBn/S6sMO3masT3leI5yXvdUOHM3jb4
+         rxEdmEchgi0/yhm26XU4jYGxrFVDSSZoqb3s2PfHwP/etqIy2atta7FC6rE5jbSfG6Ir
+         KMug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oGh9bkiyj6+EkWkOQAdYaOgpqM5cW8idh8bXV6aXyO0=;
+        b=VYDeMkV6VUfjUHyWvUnXuc8XaL0xSMVK/UbFUT2NxkkrwM4ve+iL9AWwWb1kKGFpww
+         kFWcN2dD45abbJG2wffGFtwG6lLLRysl35ToqcEVRp4ipJRf3j+8mHcP+tF7am6cPR9O
+         nWf+ej0j1wnGmRdHUI+2ytGOgD2QWcherKMR4YDw/aP6kfFS+7AG+9/hXc8JsSpja/RN
+         MMtGo18reC8OkXKLVIubNKaKm1erp1nN89ShLVgfT+25uib4S41zTtYEZjA0+wW+GXF3
+         7o7S4TuZXJLMiC58AEM/Tlj8m7scfFQTjsHJVtr2sPRJrOF40RWUIkNJSx+WIPyz7Vf5
+         gG3A==
+X-Gm-Message-State: AOAM531NpMTEmjSe6YSETRWIB+Jr6fQTIdIbUyMmL/GnIbp+z6476UMT
+        wcRqQ1eSuY85s8laV2tQFCd53C6T9kw=
+X-Google-Smtp-Source: ABdhPJy9yq4HYZgj7+0LjaaaE7HmIOIeHCQulpqZzEk/JyIm2fgHsu7LnIP5ESNi7bwQG/5ncclsHQ==
+X-Received: by 2002:a17:90b:3909:: with SMTP id ob9mr4233859pjb.181.1617814056539;
+        Wed, 07 Apr 2021 09:47:36 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w7sm17762242pff.208.2021.04.07.09.47.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 09:47:35 -0700 (PDT)
+Subject: Re: [PATCH RFC net 2/2] net: dsa: lantiq_gswip: Configure all
+ remaining GSWIP_MII_CFG bits
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     hauke@hauke-m.de, vivien.didelot@gmail.com, olteanv@gmail.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
+ <20210406203508.476122-3-martin.blumenstingl@googlemail.com>
+ <YGz9hMcgZ1sUkgLO@lunn.ch>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <98ef4831-27eb-48d4-1421-c6496b174659@gmail.com>
+Date:   Wed, 7 Apr 2021 09:47:32 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YGz9hMcgZ1sUkgLO@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YG3U677P9QKqFGMY@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:51:07PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph Müllner wrote:
-> > Further, it is not the case that RISC-V has no guarantees at all.
-> > It just does not provide a forward progress guarantee for a
-> > synchronization implementation,
-> > that writes in an endless loop to a memory location while trying to
-> > complete an LL/SC
-> > loop on the same memory location at the same time.
-> 
-> Userspace can DoS the kernel that way, see futex.
 
-The longer answer is that this means you cannot share locks (or any
-atomic really) across a trust boundary, which is of course exactly what
-futex does.
+
+On 4/6/2021 5:32 PM, Andrew Lunn wrote:
+>>  	case PHY_INTERFACE_MODE_RGMII:
+>>  	case PHY_INTERFACE_MODE_RGMII_ID:
+>>  	case PHY_INTERFACE_MODE_RGMII_RXID:
+>>  	case PHY_INTERFACE_MODE_RGMII_TXID:
+>>  		miicfg |= GSWIP_MII_CFG_MODE_RGMII;
+>> +
+>> +		if (phylink_autoneg_inband(mode))
+>> +			miicfg |= GSWIP_MII_CFG_RGMII_IBS;
+> 
+> Is there any other MAC driver doing this? Are there any boards
+> actually enabling it? Since it is so odd, if there is nothing using
+> it, i would be tempted to leave this out.
+
+Some PHYs (Broadcom namely) support suppressing the RGMII in-band
+signaling towards the MAC, so if the MAC relies on that signaling to
+configure itself based on what the PHY reports this may not work.
+-- 
+Florian
