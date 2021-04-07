@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5D03562E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D1B3562EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344983AbhDGFMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S1348618AbhDGFNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhDGFMb (ORCPT
+        with ESMTP id S229603AbhDGFNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:12:31 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E529CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 22:12:22 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id l76so12109937pga.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 22:12:22 -0700 (PDT)
+        Wed, 7 Apr 2021 01:13:39 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED8BC06174A;
+        Tue,  6 Apr 2021 22:13:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id y1so19096211ljm.10;
+        Tue, 06 Apr 2021 22:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ltI0p71hjvjdeWhWjSJn7XWTOKljDDid1ixDlOHvzXE=;
-        b=UG9KzheTk7wB4l+mnUTl8otkPbA/OGfGYnyuP7iNrgcOx5o5F/ITHzwAHLu08S4r8T
-         afa8pjcb5BEkUt89I1pdVlIMd/I55azv3Lt8pFa5K6xv5hSjfEDAj0qgd00Yr+3XNCBD
-         jcCfv8lMlWbyq9EosykwnDpgUprKdKZLmndLLTgAeBe5gpWviw/kUI1epubOT3NIi2tJ
-         /NDwu3hFG2auG+Pl5wLTqXU2Ykthn3NY+T0odgASHwnfeZ5PB255TbFBfy/PAr6QgQrE
-         U33vTYa+w04DA8uDwR5vX7Rz6wEGa8GXXn67ypJvhuNzFqAKmToeEi8zs2FTuKEMiObT
-         qU8A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ODqZnnD2EEay1SllWXm37iJmFhlL6e0CZyIcJ3pNyrA=;
+        b=X0GuxvoH74m6tfZhWB7OeOGuHlbs6pl4rkMgCIpO7YiEB1msDw75dbeMS2LFBdcMek
+         s7zidhBzF527bef6+xItUmTBC3Ipee+Euc4ATumelPLYN1h661ZnnB6rb9YnS9VIdMKs
+         CkVgOdQGRnoIbJbgksrUSg/to8IEXrDJhFJAlIgctrRPoX3mJtQGKaZm9OiSxdnk0aW1
+         4YgINIuu/bMEtKUsSilDcYD42Y83EkMzjZrKTOtqRTgDcC8kndRylNx8LZrLJWCzSVyP
+         jO7bCHBw8gr09z2ABMGMckpO+DYkXFMR3OTk/4vkL7qixvl2E64hE7SKenXTO6ME4Vju
+         WLRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ltI0p71hjvjdeWhWjSJn7XWTOKljDDid1ixDlOHvzXE=;
-        b=AtzOVqnYv/M7tM84NIrfitXqFEc5OB9JUg7WC7b/uWdbs3mdN2b3qo+knUhKCWHjQA
-         Iqrw3LrlPmkbQ+St73P3AIw8u4CzTqm44ORKt7LnxKK4JFZba+VUIPFoJCQ3aQXbztkp
-         9x6QLTUJf0kDdwnfMgjJWiJWtfJ2h628Aot6bJ+7MOfnRUx3TwVUPQXapEwJLwvEDMCA
-         euIei6PnUaULR4m5CNsgaoAj866qwC0UhXwPIXr1O4V8RxZ0VpXQ+r4ORVj9EGYvGgNi
-         uc9uoISbGFmcn3qGYjZlto8/ucO4gWzHrx4O3DvJRJQmx7qi2NUS43hzP7wQoypm1pek
-         OZ2A==
-X-Gm-Message-State: AOAM5310djuZw4M+FjLZRRXwqJ16KeiDz3BCp+IK7ha64BkpufeDeaPp
-        OEnFhwcTMc/1cOLM+iRn9UHP
-X-Google-Smtp-Source: ABdhPJyG45zFtrNMLnBH/76moCkdLTDiKhyiX7+S+rONAYr2AhtPq5Kq/RyA2Bo5IsjQJ9zh8Wd49A==
-X-Received: by 2002:a63:1d18:: with SMTP id d24mr1682499pgd.402.1617772342362;
-        Tue, 06 Apr 2021 22:12:22 -0700 (PDT)
-Received: from work ([103.77.37.180])
-        by smtp.gmail.com with ESMTPSA id g8sm3115133pjb.25.2021.04.06.22.12.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Apr 2021 22:12:21 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:42:18 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: pci_generic: Add SDX65 based modem support
-Message-ID: <20210407051218.GD8675@work>
-References: <1617399199-35172-1-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ODqZnnD2EEay1SllWXm37iJmFhlL6e0CZyIcJ3pNyrA=;
+        b=URucd4IYXH4Yv/p0dx8HhZkSmLhhOU9Wqj07s9RB4tv9cEIlgDDL+nDeSyxjx0ijKn
+         aeusYTM/iesJSXA/8GneEMdnyIZa25OMfRwLB/o1r9pdCAJBlqq8kZpdgC8I9RdPimwn
+         RQMOCGmmnjCsf+PevsxzaawBqac42hSTgzSKB1g1ocN8vGmbBNlbZ3Pt90J5skRH2jQV
+         NYGGCfQ+S58LJf23mGweVv7bVcrJBqTVokpY+i9SjuQ1uJTmIBKLuyYmfpAEBnUL/83U
+         JhBMXJKs8DD5WjPdR0NORqq01DfadvOlZjEza96jWvbp9v39eZxxsWoLMU1v6ikMXOyG
+         XVvQ==
+X-Gm-Message-State: AOAM530vzuOUFpMOAT4rlSNWTphNztaEGJbPVAtd6KjectxgzlpeQKHT
+        96DUYVyY9ZM92mrvV2MCr+kQICK3hY2ZcHp9rk4=
+X-Google-Smtp-Source: ABdhPJxE9idQPq6DN473Lea7pF/dCU6/HVLho/BwkJv4DZAgkBE/XxvaQg+GZBJMmwbIYqHwODvtgnbHq3xwqrxKGUs=
+X-Received: by 2002:a2e:5c47:: with SMTP id q68mr1005136ljb.314.1617772408480;
+ Tue, 06 Apr 2021 22:13:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617399199-35172-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210406182852.263605-1-puranjay12@gmail.com> <20210406182852.263605-3-puranjay12@gmail.com>
+ <3d840334-2c26-5748-8370-54cef6262e02@metafoo.de>
+In-Reply-To: <3d840334-2c26-5748-8370-54cef6262e02@metafoo.de>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Wed, 7 Apr 2021 10:43:15 +0530
+Message-ID: <CANk7y0gK-ObGY_u+W_15i7Lo0CjBc1+-XMaVorhJZFJW0YaVrg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] iio: temperature: add driver support for ti tmp117
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     alexandru.ardelean@analog.com, Jonathan Cameron <jic23@kernel.org>,
+        devicetree@vger.kernel.org, knaack.h@gmx.de,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 02:33:19PM -0700, Bhaumik Bhatt wrote:
-> Add generic info for SDX65 based modems.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On Wed, Apr 7, 2021 at 10:26 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+> On 4/6/21 8:28 PM, Puranjay Mohan wrote:
+> > +
+> > +static int tmp117_write_raw(struct iio_dev *indio_dev,
+> > +             struct iio_chan_spec const *channel, int val,
+> > +             int val2, long mask)
+> > +{
+> > +     struct tmp117_data *data = iio_priv(indio_dev);
+> > +     s16 off;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_CALIBBIAS:
+> > +             off = clamp(val, -32768, 32767);
+> > +             if (off == data->calibbias)
+>
+> data->calibbias is only set in probe() and always 0. I'm not sure we
+> need to cache the value. Reading it back from the device seems fine.
+I forgot to update it, thanks for finding the bug.
+Actually, I wanted to update the calibbias register only if a
+different value is being written.
+If the same value is written to the device repeatedly then we can save
+some I2C writes using this.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+and while reading the calibbias, it is read from the device only.
+I will fix the bug in the next revision.
 
-Thanks,
-Mani
+>
+> > +                     return 0;
+> > +             return i2c_smbus_write_word_swapped(data->client,
+> > +                                             TMP117_REG_TEMP_OFFSET, off);
+> > +
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+>
 
-> ---
-> This patch was tested on SDX65 hardware with Ubuntu X86_64 PC as host.
-> 
->  drivers/bus/mhi/pci_generic.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 5cf44bc..92a1b18 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -204,6 +204,15 @@ static struct mhi_controller_config modem_qcom_v1_mhiv_config = {
->  	.event_cfg = modem_qcom_v1_mhi_events,
->  };
->  
-> +static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
-> +	.name = "qcom-sdx65m",
-> +	.fw = "qcom/sdx65m/xbl.elf",
-> +	.edl = "qcom/sdx65m/edl.mbn",
-> +	.config = &modem_qcom_v1_mhiv_config,
-> +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> +	.dma_data_width = 32
-> +};
-> +
->  static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
->  	.name = "qcom-sdx55m",
->  	.fw = "qcom/sdx55m/sbl1.mbn",
-> @@ -261,6 +270,8 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
->  };
->  
->  static const struct pci_device_id mhi_pci_id_table[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
-> +		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
 
-This should come last. I'll fix it while applying.
+-- 
+Thanks and Regards
 
-Thanks,
-Mani
+Yours Truly,
 
->  	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
->  		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0304),
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Puranjay Mohan
