@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916C8356BAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4C3356BA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351972AbhDGMA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:00:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:23394 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351958AbhDGMAz (ORCPT
+        id S1351943AbhDGL7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhDGL7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:00:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617796846; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=dRkaKojvnawlYO3e1C9wxx79COw07pLsiCqaSEnReIk=; b=n2BNaUrL+vuJ4VVIxwOKFsl+kl8GDa5YFGM3zQuExA9DE4RK0brxfG/cUrMP1gulmZaLxH//
- PFsvRyM3V93HwqbYj1LtOY2pxaRHCkeNV328tK+xswxc/AFr4+sTL/vhZgH2aPJOmjWuglpd
- BdypL/XBSnxiISQ+QBxCBxxD6eo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 606d9ed78166b7eff70a4f4b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 12:00:23
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0381BC43464; Wed,  7 Apr 2021 12:00:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53876C433CA;
-        Wed,  7 Apr 2021 12:00:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53876C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Subject: Re: [PATCH v5 08/24] wfx: add bus_sdio.c
-References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com>
-        <4503971.bAhddQ8uqO@pc-42>
-        <CAPDyKFoXgV3m-rMKfjqRj91PNjOGaWg6odWG-EGdFKkL+dGWoA@mail.gmail.com>
-        <5713463.b6Cmjs1FeV@pc-42>
-        <CAPDyKFrONrUvbVVVF9iy4P17jZ_Fq+1pGMmsqM6C1hOXOWQnBw@mail.gmail.com>
-Date:   Wed, 07 Apr 2021 15:00:17 +0300
-In-Reply-To: <CAPDyKFrONrUvbVVVF9iy4P17jZ_Fq+1pGMmsqM6C1hOXOWQnBw@mail.gmail.com>
-        (Ulf Hansson's message of "Tue, 23 Mar 2021 20:12:06 +0100")
-Message-ID: <87pmz6mhim.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 7 Apr 2021 07:59:52 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859F7C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 04:59:43 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id c3so18319037qkc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wD+7QjxW8Yy8u2YJJtpm9de9zmFgNbvMAMPJpbXhd3s=;
+        b=RithvaeISWOYFMKOs+4g/yzDzcC1QR5HGBFNusZbLRrcUOYrNhj5Iv6cvmCYM00LDj
+         HYWg2/ulQV4CwT8We2hte5vfPOY6QOFgQnEvGnIl4zx2OPts88+FM89qm82iyJlz1url
+         r3BggoDlxf7mJd0/sO+tRA9OpxRyxDqbl9JuE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wD+7QjxW8Yy8u2YJJtpm9de9zmFgNbvMAMPJpbXhd3s=;
+        b=S3rkTHyZH/XE+jWUZpnjQpKleb7HGQfMhbKDRkcNk0PJu/XlTwNw8KfYzAOgUUJe3d
+         1NKV/2b66T8S5Hrhf5n6HhVTZqNhz7wCG3HwrVEHnmjLDZ+Ffm/Fd9NGKSSewx2kuc6N
+         xNhelwW0RHCHY0zWYJIiNXIrgW/jGN5OylOAb3lTOeQBZ+ilhfkdON+sQfHWkKgPkS0n
+         bh3SPiYe4iKss3o4heG+uvAY3YF0Z4UELAz2gJsqvhNmdqymHpHmR38UBMMJtqpHdvCG
+         5DZpFNYy2l6Z6l1K4mRMgLvNImq/olrLQacxJTKcC3k0x/msS2g160DTlp/yMvVa9rlH
+         oudQ==
+X-Gm-Message-State: AOAM531qSyBkgGEv7RzyUB0q5+i/oVTJaEfRNiqSHuMDeUbd4xXkS9g0
+        qy4gjGC2t6UMGsw7eOsxrGJQ9KcSZB1oX4HDeVKUeA==
+X-Google-Smtp-Source: ABdhPJz5ySbfYXXZwpf33xxO36joDp/Mzky80FMCiS4DEuWAntYABJySYm1p3wPpOyinS8r/oOgTBoLnXTuzBQ2PnaI=
+X-Received: by 2002:ae9:f70a:: with SMTP id s10mr2795952qkg.468.1617796782806;
+ Wed, 07 Apr 2021 04:59:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
+ <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+ <20210215121653.4edd86c4@xps13> <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
+ <20210322193213.18520b9a@xps13> <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
+ <20210323113233.3523d66b@xps13> <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
+ <20210323150603.6b942a60@xps13> <CAFr9PXntCmdrmg+i3BB1j-aY4VbE=2iqyLcoSr9cX2090jGiGQ@mail.gmail.com>
+ <20210407100204.08d894ca@xps13>
+In-Reply-To: <20210407100204.08d894ca@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 7 Apr 2021 21:01:01 +0900
+Message-ID: <CAFr9PXk-PNWBa9VPriP3nLUqdhtm6uPnbG3n4_rRCdF5YvS7OQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ulf Hansson <ulf.hansson@linaro.org> writes:
+Hi Miquel,
 
->> If I follow what has been done in other drivers I would write something
->> like:
->>
->>   static int wfx_sdio_suspend(struct device *dev)
->>   {
->>           struct sdio_func *func = dev_to_sdio_func(dev);
->>           struct wfx_sdio_priv *bus = sdio_get_drvdata(func);
->>
->>           config_reg_write_bits(bus->core, CFG_IRQ_ENABLE_DATA, 0);
->>           // Necessary to keep device firmware in RAM
->>           return sdio_set_host_pm_flags(func, MMC_PM_KEEP_POWER);
->
-> This will tell the mmc/sdio core to keep the SDIO card powered on
-> during system suspend. Thus, it doesn't need to re-initialize it at
-> system resume - and the firmware should not need to be re-programmed.
->
-> On the other hand, if you don't plan to support system wakeups, it
-> would probably be better to power off the card, to avoid wasting
-> energy while the system is suspended. I assume that means you need to
-> re-program the firmware as well. Normally, it's these kinds of things
-> that need to be managed from a ->resume() callback.
+On Wed, 7 Apr 2021 at 17:02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> You may look at micron_8_ecc_get_status() helper to guide you. But
+> IMHO, if there are 0-3 bf, you should probably assume there were 3 bf
+> and return 3, if there were 4, return 4, if it's uncorrectable return
+> -EBADMSG otherwise -EINVAL.
 
-Many mac80211 drivers do so that the device is powered off during
-interface down (ifconfig wlan0 down), and as mac80211 does interface
-down automatically during suspend, suspend then works without extra
-handlers.
+Understood.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+> We should verify that this does not mess with UBI wear leveling
+> though. Please check that returning 3-bit errors no matter the
+> actual number of flipped bits does not lead UBI to move the data away
+> (I think it's fine but we need to be sure otherwise the implementation
+> proposal is not valid).
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Ok. I'm not sure how to check that yet but I'll look into it.
+
+Thanks for all of the help on this.
+
+Cheers,
+
+Daniel
