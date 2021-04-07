@@ -2,122 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59407356E9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86134356EA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352913AbhDGO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhDGO3e (ORCPT
+        id S1352931AbhDGOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:30:49 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:16668 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhDGOar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:29:34 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158DEC061756;
-        Wed,  7 Apr 2021 07:29:25 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id h136so3997136vka.7;
-        Wed, 07 Apr 2021 07:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RrhplHEW9q4d4F2AHFjRpj1n00z5X3YyF8zpTfRSZEQ=;
-        b=DW9Y5KjGvU2yBGp9bPuo/LtmusFtpNJ53EdSdllv8/hBrdn8yjuCk4TX21DjDIzCqs
-         8Epv8EhP7pkUSbtM2AGCrAi3H5cnasOs7yLUsdNqWnW+mYicauNf0x4oBHn6m0+3PWk8
-         0Sl94xjjsqigSqsj+NxQ55ZKShHmtqcJSM9UcpEsVTWbCzsGPZcJCA1YcR5WRVA4SJNa
-         L3Qbqg06CRduvti69UL1RiCjT3Pg5MEpmKjSVqWMb4WU1QuaqUS05rdXYgySLsoe8fYE
-         td96MHExqIAxSKRURHJ8YBjHSkCKtvCqI1vvkX8efLklahklx6jTvIp1JvS0wdGT4uQl
-         Hr1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RrhplHEW9q4d4F2AHFjRpj1n00z5X3YyF8zpTfRSZEQ=;
-        b=Q7cgsf+q22dYJiC3A1quSnsadrE0Spx/lIMV4VQzk//c7qGgQdkszdszjP8UNVSLkq
-         RtkUsXBX6tk6hj4ZTdUDT+GI5EW3x3nUGXhqyUyntt3qUNA46XpwLgBZ0A5dyLQ+onN+
-         uvmaRFop3s56fBACUcV8jK53GVGxL+PzYwLvTEZFaZTaF2ehBJd5VTnM+nSjspGl0bfJ
-         6QU7tB0GbqdQoAPHcm1CjNZ8v8L1oAhkzHZVHb4CTAma7VbH9FhNAt+7W61m00BtKf5s
-         YfJrqx0/SlzqCaGcScBJYZCIrM9YqmWjvOE2G+2dr7oA4CYNdQXHEl4NWScUEPQ8pTcT
-         uL2A==
-X-Gm-Message-State: AOAM5311SXVaPUrDuOlgg12b4dMkYjTQJ+WaQYBDQq94lqMcxgoXII43
-        AidK19cIm7aexx6djXRWeIo/fErTU+ABgBugRmo=
-X-Google-Smtp-Source: ABdhPJy6Hg+rsTi1P6bo6wi7EKEqiwOO7Rb2mBxRJDCxdvZywLSUQAaS33Vao9Z7pxmRUnNi1vgVo8GSBPCu+3i9Gyg=
-X-Received: by 2002:a1f:5682:: with SMTP id k124mr1995507vkb.20.1617805764137;
- Wed, 07 Apr 2021 07:29:24 -0700 (PDT)
+        Wed, 7 Apr 2021 10:30:47 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 137EU59t000332;
+        Wed, 7 Apr 2021 23:30:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137EU59t000332
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617805805;
+        bh=MVRjyvotamx0gGxHkxCvFT+m/YZf+2TbVDcNiqVSJD8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ejks8/6nhbUZ2BweBH1E08Gn4kIOSuUvT8rr3ckt7oJDcBZopuA9vYygo7RERY56B
+         1lnFnu8Ugd8CzgX26j1+PU9RLtqR5NCq+cZv/M89Fqu/TCzmhzZ5eqGRnAjaN87gOD
+         nho3tuCxZRrGj0WgQ0d+4x8fdps6cRniOJG2kSCG+y9DUb3jEoxcY+jTLRP9KOa+FN
+         AwuRABJVW0oaCIGB8ZZjPnBSi+aj6TIfLtq48x3SrwwL3O/I0Q2hs03bU6UNRevg8j
+         fa2wIp/rqwCo98Z4Mujgeyqg8lOXilveueTUgwGnubdn9QYzNkTM1nY/G3ei2g+W6O
+         Uud9m0SI/Nc6g==
+X-Nifty-SrcIP: [209.85.214.181]
+Received: by mail-pl1-f181.google.com with SMTP id h20so9433132plr.4;
+        Wed, 07 Apr 2021 07:30:05 -0700 (PDT)
+X-Gm-Message-State: AOAM530GtyV/gg+LfPwp2UvBiMoGepzBrYeWI5G+YQkSna63A+lRA4d7
+        aQHkMHNl7+PdAAQuUJAxLoULeIMRwxev0nVQWBo=
+X-Google-Smtp-Source: ABdhPJziQ0BjpbrjRb7L/3qJ6OIKZU2K1LdHVqg7/W3ygxcpNpdQW7zByiAXv9R1/osGLuFJTg0PV7QnW/5XTAyDteY=
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr3554255pjb.87.1617805804515;
+ Wed, 07 Apr 2021 07:30:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
- <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net> <20210407094224.GA3393992@infradead.org>
-In-Reply-To: <20210407094224.GA3393992@infradead.org>
-From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>
-Date:   Wed, 7 Apr 2021 16:29:12 +0200
-Message-ID: <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+References: <20210331133811.3221540-1-masahiroy@kernel.org> <20210331133811.3221540-9-masahiroy@kernel.org>
+In-Reply-To: <20210331133811.3221540-9-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 23:29:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASCmTMtS+4MxTKJDcdCxtDfBTgXkZPUssjrWbmoPYuwAA@mail.gmail.com>
+Message-ID: <CAK7LNASCmTMtS+4MxTKJDcdCxtDfBTgXkZPUssjrWbmoPYuwAA@mail.gmail.com>
+Subject: Re: [PATCH 9/9] kbuild: remove CONFIG_MODULE_COMPRESS
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:43 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Wed, Mar 31, 2021 at 10:39 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On Tue, Apr 06, 2021 at 09:15:50AM +0200, Peter Zijlstra wrote:
-> > Anyway, given you have such a crap architecture (and here I thought
-> > RISC-V was supposed to be a modern design *sigh*), you had better go
-> > look at the sparc64 atomic implementation which has a software backoff
-> > for failed CAS in order to make fwd progress.
+> CONFIG_MODULE_COMPRESS is only used to activate the choice for module
+> compression algorithm. It will be simpler to make the choice visible
+> all the time by adding CONFIG_MODULE_COMPRESS_NONE to allow the user to
+> disable module compression.
 >
-> It wasn't supposed to be modern.  It was supposed to use boring old
-> ideas.  Where it actually did that it is a great ISA, in parts where
-> academics actually tried to come up with cool or state of the art
-> ideas (interrupt handling, tlb shootdowns, the totally fucked up
-> memory model) it turned into a trainwreck.
+> This is more consistent with the "Kernel compression mode" and "Built-in
+> initramfs compression mode" choices.
+>
+> CONFIG_KERNEL_UNCOMPRESSED and CONFIG_INITRAMFS_COMPRESSION_NONE are
+> available to choose to not compress the kernel, initrd, respectively.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  init/Kconfig | 45 ++++++++++++++++++++++++++-------------------
+>  1 file changed, 26 insertions(+), 19 deletions(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 019c1874e609..3ca1ffd219c4 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2225,40 +2225,47 @@ config MODULE_SIG_HASH
+>         default "sha384" if MODULE_SIG_SHA384
+>         default "sha512" if MODULE_SIG_SHA512
+>
+> -config MODULE_COMPRESS
+> -       bool "Compress modules on installation"
+> +choice
+> +       prompt "Module compression mode"
+>         help
+> +         This option allows you to choose the algorithm which will be used to
+> +         compress modules when 'make modules_install' is run. (or, you can
+> +         choose to not compress modules at all.)
+>
+> -         Compresses kernel modules when 'make modules_install' is run; gzip or
+> -         xz depending on "Compression algorithm" below.
+> +         External modules will also be compressed in the same way during the
+> +         installation.
+>
+> -         module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
+> +         For modules inside an initrd or initramfs, it's more efficient to
+> +         compress the whole initrd or initramfs instead.
+>
+> -         Out-of-tree kernel modules installed using Kbuild will also be
+> -         compressed upon installation.
+> +         This is fully compatible with signed modules.
+>
+> -         Note: for modules inside an initrd or initramfs, it's more efficient
+> -         to compress the whole initrd or initramfs instead.
+> +         Please note that the tool used to load modules needs to support the
+> +         corresponding algorithm. module-init-tools MAY support gzip, and kmod
+> +         MAY support gzip and xz.
+>
+> -         Note: This is fully compatible with signed modules.
+> +         Your build system needs to provide the appropriate compression tool
+> +         to compress the modules.
+>
+> -         If in doubt, say N.
+> +         If in doubt, select 'None'.
+>
+> -choice
+> -       prompt "Compression algorithm"
+> -       depends on MODULE_COMPRESS
+> -       default MODULE_COMPRESS_GZIP
+> +config MODULE_COMPRESS_NONE
+> +       bool "None"
+>         help
+> -         This determines which sort of compression will be used during
+> -         'make modules_install'.
+> -
+> -         GZIP (default) and XZ are supported.
+> +         Do not compress modules. The installed modules are suffixed
+> +         with .ko.
+>
+>  config MODULE_COMPRESS_GZIP
+>         bool "GZIP"
+> +       help
+> +         Compress modules with XZ. The installed modules are suffixed
 
-Gentlemen, please rethink your wording.
-RISC-V is neither "crap" nor a "trainwreck", regardless if you like it or not.
 
-The comparison with sparc64 is not applicable, as sparc64 does not
-have LL/SC instructions.
+This should be "Compress modules with GZIP."
 
-Further, it is not the case that RISC-V has no guarantees at all.
-It just does not provide a forward progress guarantee for a
-synchronization implementation,
-that writes in an endless loop to a memory location while trying to
-complete an LL/SC
-loop on the same memory location at the same time.
-If there's a reasonable algorithm, that relies on forward progress in this case,
-then we should indeed think about that, but I haven't seen one so far.
-The whole MCF lock idea is to actually spin on different memory
-locations per CPU
-to improve scalability (reduce cacheline bouncing). That's a clear indicator,
-that well-scaling synchronization algorithms need to avoid contended cache lines
-anyways.
 
-RISC-V defines LR/SC loops consisting of up to 16 instructions as
-constrained LR/SC loops.
-Such constrained LR/SC loops provide the required forward guarantees,
-that are expected
-(similar to what other architectures, like AArch64, have).
+I will fix it when applied.
 
-What RISC-V does not have is sub-word atomics and if required, we
-would have to implement
-them as LL/SC sequences. And yes, using atomic instructions is
-preferred over using LL/SC,
-because atomics will tend to perform better (less instructions and
-less spilled registers).
-But that actually depends on the actual ISA implementation.
 
-Respectfully,
-Christoph
+
+
+
+
+
+> +         with .ko.gz.
+>
+>  config MODULE_COMPRESS_XZ
+>         bool "XZ"
+> +       help
+> +         Compress modules with XZ. The installed modules are suffixed
+> +         with .ko.xz.
+>
+>  endchoice
+>
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
