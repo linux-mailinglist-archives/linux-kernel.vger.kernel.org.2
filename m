@@ -2,108 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDDC356C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD5356C16
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352166AbhDGMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:31:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20544 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235368AbhDGMa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:30:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617798647;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4b/W7JPg97GIaUB3j27+Wc4inyOV6OIcHslxI1MfBYQ=;
-        b=i5iTHdkf3/f8sqDpmlK7/KgW3O4Gmuc/mwu7+DfFRmSJ8pW5svNcQrLQ/MnVlHaclPEyDX
-        yT/M7x0AhrwcGt0z71J3Cbudj1Yf1W4WwibVMS5ZX/ye8B+z26ns7JcK3GZAwvklv1Cr8m
-        N3UJJTnnXChsm/dn1Jc+9bwqkQ+Zz9k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-4F18YzVNMB-NZzPU5Luxgw-1; Wed, 07 Apr 2021 08:30:44 -0400
-X-MC-Unique: 4F18YzVNMB-NZzPU5Luxgw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C6ED802B7E;
-        Wed,  7 Apr 2021 12:30:42 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.196.68])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C660E10246F1;
-        Wed,  7 Apr 2021 12:30:39 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  7 Apr 2021 14:30:42 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 14:30:38 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Hillf Danton <hdanton@sina.com>, Song Liu <songliubraving@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        syzbot <syzbot+b804f902bbb6bcf290cb@syzkaller.appspotmail.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: perf_buffer.event_list is not RCU-safe?
-Message-ID: <20210407123038.GA22407@redhat.com>
-References: <00000000000030aca605be6e0102@google.com>
- <20210327042150.7460-1-hdanton@sina.com>
- <20210328025217.7312-1-hdanton@sina.com>
- <20210401092907.1098-1-hdanton@sina.com>
- <20210402074636.1270-1-hdanton@sina.com>
- <20210406172322.GA13270@redhat.com>
- <20210406174352.GB13270@redhat.com>
- <YG1kXApqMm/XOcDR@hirez.programming.kicks-ass.net>
+        id S1352179AbhDGMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235368AbhDGMbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:31:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD3460FEE;
+        Wed,  7 Apr 2021 12:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617798651;
+        bh=kkWVCkUc0NJVVv2evc8bpyZsUPichPzeLxsPzJH+f4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o2V0VZZZHZIPJQ6GHChv3VKyITqB/OqkvnFFKwsBJMHZehszOzM3IjEELsL8s399c
+         bx/GhVQeAVRpN9hiA2DmCiR1LlujuzQ34SbotgdYnn4Af4VO4hWQ5rCA1ibtRgQUbR
+         KlbLETjo/R79EMC/mx7r53fF1UAhPaa2hzXTGg/mUjwnsczqLnjNl0O5iBkCQDTOgb
+         Ax9dXwTUlB6TO9jyNkHLfk4q1kZcm987/SwgjaWTwSQ1eFJWjrnxIIj+Q+kqc9Fp/u
+         9Od0IsH09WuhqloQrllP7WVC8etG+rn6pfV49evkpshFSbwtBUrlbdoi0ZwwVhPkve
+         MvrjoD9P92RLw==
+Date:   Wed, 7 Apr 2021 15:30:48 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "bhelgaas@google.com <bhelgaas@google.com>,linux-pci@vger.kernel.org" 
+        <linux-pci@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <YG2l+AbQW1N0bbQ9@unreal>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
+ <YGW8Oe9jn+n9sVsw@unreal>
+ <20210401105616.71156d08@omen>
+ <YGlzEA5HL6ZvNsB8@unreal>
+ <20210406081626.31f19c0f@x1.home.shazbot.org>
+ <YG1eBUY0vCTV+Za/@unreal>
+ <20210407082356.53subv4np2fx777x@archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG1kXApqMm/XOcDR@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210407082356.53subv4np2fx777x@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/07, Peter Zijlstra wrote:
->
-> On Tue, Apr 06, 2021 at 07:43:53PM +0200, Oleg Nesterov wrote:
-> > On 04/06, Oleg Nesterov wrote:
+On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
+> On 21/04/07 10:23AM, Leon Romanovsky wrote:
+> > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
+> > > On Sun, 4 Apr 2021 11:04:32 +0300
+> > > Leon Romanovsky <leon@kernel.org> wrote:
 > > >
-> > > perf_mmap_close() was added by 9bb5d40cd93c9 ("perf: Fix mmap() accounting hole")
+> > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
+> > > > > On Thu, 1 Apr 2021 15:27:37 +0300
+> > > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > > >
+> > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
+> > > > > > > Slot resets are bus resets with additional logic to prevent a device
+> > > > > > > from being removed during the reset. Currently slot and bus resets have
+> > > > > > > separate implementations in pci.c, complicating higher level logic. As
+> > > > > > > discussed on the mailing list, they should be combined into a generic
+> > > > > > > function which performs an SBR. This change adds a function,
+> > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
+> > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
+> > > > > > > single device agnostic function to perform an SBR.
+> > > > > > >
+> > > > > > > This new function is also needed to add SBR reset quirks and therefore
+> > > > > > > is exposed in pci.h.
+> > > > > > >
+> > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
+> > > > > > >
+> > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> > > > > > > ---
+> > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
+> > > > > > >  include/linux/pci.h |  1 +
+> > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > > > > index 16a17215f633..12a91af2ade4 100644
+> > > > > > > --- a/drivers/pci/pci.c
+> > > > > > > +++ b/drivers/pci/pci.c
+> > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+> > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> > > > > > > +{
+> > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > > +
+> > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
+> > > > > >
+> > > > > > The previous coding style is preferable one in the Linux kernel.
+> > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > if (rc != -ENOTTY)
+> > > > > >   return rc;
+> > > > > > return pci_parent_bus_reset(dev, probe);
+> > > > >
+> > > > >
+> > > > > That'd be news to me, do you have a reference?  I've never seen
+> > > > > complaints for ternaries previously.  Thanks,
+> > > >
+> > > > The complaint is not to ternaries, but to the function call as one of
+> > > > the parameters, that makes it harder to read.
+> > >
+> > > Sorry, I don't find a function call as a parameter to a ternary to be
+> > > extraordinary, nor do I find it to be a discouraged usage model within
+> > > the kernel.  This seems like a pretty low bar for hard to read code.
 > >
-> > I meant perf_mmap_close() -> put_event()
+> > It is up to us where this bar is set.
 > >
-> > > and this commit doesn't look right anyway
-> >
-> > It seems there is another problem or I am totally confused. I do not
-> > understand why can we use list_for_each_entry_rcu(event, rb->event_list)
-> > if this can race with perf_event_set_output(event) which can move "event"
-> > to another list, in this case list_for_each_entry_rcu() can loop forever.
-> >
-> > perf_mmap_close() even mentions this race and restarts the iteration to
-> > avoid it but I don't think this is enough,
-> >
-> > 	rcu_read_lock();
-> > 	list_for_each_entry_rcu(event, &rb->event_list, rb_entry) {
-> > 		if (!atomic_long_inc_not_zero(&event->refcount)) {
-> > 			/*
-> > 			 * This event is en-route to free_event() which will
-> > 			 * detach it and remove it from the list.
-> > 			 */
-> > 			continue;
-> > 		}
-> >
-> > just suppose that "this event" is moved to another list first and after
-> > that it goes away so that atomic_long_inc_not_zero() fails; in this case
-> > the next iteration will play with event->rb_entry.next, and this is not
-> > necessarily "struct perf_event", it can can be "list_head event_list".
->
-> We observe an RCU GP in ring_buffer_attach(), between detach and attach,
-> no?
+> > Thanks
+> On the side note there are plenty of places where this pattern is used
+> though
+> for example -
+> kernel/time/clockevents.c:328:
+> return force ? clockevents_program_min_delta(dev) : -ETIME;
+> 
+> kernel/trace/trace_kprobe.c:233:
+> return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
+>        false;
+> 
+> kernel/signal.c:3104:
+> return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
+> etc
 
-Aaah yes, I didn't notice cond_synchronize_rcu() in ring_buffer_attach().
+Did you look when they were introduced?
 
-Thanks!
+Thanks
 
-Oleg.
-
+> 
+> Thanks,
+> Amey
