@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3900F357524
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B4435752C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355666AbhDGTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:48:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64962 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347438AbhDGTs4 (ORCPT
+        id S1355721AbhDGTvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345736AbhDGTu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:48:56 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137JXuub050484;
-        Wed, 7 Apr 2021 15:48:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=agNhum4PDDzPx6WMBBM+gy6P2qjJ+8WKlt8/mCOSlQw=;
- b=q0neIZmQd8t9Czq6/qEplwHJkve94E1lLwnXowBl4eLqYiDTmUu0S7liID8qqR2S+EPw
- 5cE+E8fsMPtobEjG7QUgTrRJbJGaB4wGey4vflSqFzz6g5pyZszWwFsEew2JA2YfBU8m
- 1z5Sf0N8FrP/qJ9oysuA0HGk3R9DuwbSxWm/nV0xYXGwnhLD9ulyFoLjCjhFAd0ADdHi
- Gw6iVfAPcHTOJiSgyIQthY2pCXX+pgqQ7HAseWbAxFsWfV4FvXFKH/Dyolxlz7avUJBg
- iO0XSs8dFG60exarGM4cdP97oFIxBX9onQaR0tkFQ09stzqfTWLlZj9OgjiJam7JpGke 6g== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvn0umc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 15:48:30 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137Jhp1w007590;
-        Wed, 7 Apr 2021 19:48:29 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 37rvc41tdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 19:48:29 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137JmSoj24642000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 19:48:28 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2154DBE053;
-        Wed,  7 Apr 2021 19:48:28 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2B1ABE04F;
-        Wed,  7 Apr 2021 19:48:27 +0000 (GMT)
-Received: from localhost (unknown [9.211.35.170])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Apr 2021 19:48:27 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Subject: Re: [PATCH v4] pseries: prevent free CPU ids to be reused on
- another node
-In-Reply-To: <20210407153808.59993-1-ldufour@linux.ibm.com>
-References: <20210407153808.59993-1-ldufour@linux.ibm.com>
-Date:   Wed, 07 Apr 2021 14:48:27 -0500
-Message-ID: <875z0xlvuc.fsf@linux.ibm.com>
+        Wed, 7 Apr 2021 15:50:59 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B60C06175F;
+        Wed,  7 Apr 2021 12:50:49 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id i81so19971018oif.6;
+        Wed, 07 Apr 2021 12:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/6KYvi3qxRc6jQvr4Dp41laAk9y6iyvnOJ43zRUQVDs=;
+        b=uMkSxAToTLC2pzNL2A1x2wHmlIPTWtxcS1voRqMd4Wk2cE46uuQ7CmmXoD0JOuyqs3
+         j/r0v8HGBIUbdx9KJhzFTPBgwxULt9abG2boBigiWj6wq7Y5a2g+MTn9lwCslBJAFSSR
+         QtSYtOj8NU2fJW44APqVse3qTz83MbIraafH5x/GUZ/N7W6mgTWaj9EmmwSXDyFBkxwN
+         2JEKRMuJjRTE31eCYpYtlsO3t77N0npLqjK3Tf0enfqNZnvYdL/JJMlqo9upiPJAgcCS
+         iFDueF1/k/mFno3kVcSmYVIkS1rnmhCagU6n7O5wZVkMTnDidjrh8Zv2mk9ZwPvvTaAp
+         1uvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/6KYvi3qxRc6jQvr4Dp41laAk9y6iyvnOJ43zRUQVDs=;
+        b=Bj8B18w68Q6T54NCsLItGyXCqC1yAknCwVdg/gEypiqePd5K04v1F9t2VQY62e1MFS
+         ZxX/bclL2aCLsuY+T5A4uDnkStQH9MDmIsGVBJsiCepbLLZFuz1tGEOf/53HtFZOJif7
+         2E2R5rMbRUIZeucRWBZGFx4BOKiBmHHMdodz+bFB5ekSA1qvRBwZ8UEz9lFNMQLtqHFk
+         IJrEGrRpR6Q6k6oB+qUO3JB6QSZa2kcdpe8piKh9e2WhmJeqCsKAIx8WaIDLcXc1rZvT
+         Q1l2DbpqDgotTrl3TQsR/SJKbOksVqjCQuhZdKa8IQAkgdYAUHZtGljBCaRAsuSggLJ2
+         44qQ==
+X-Gm-Message-State: AOAM531XSMNxlGmG0ASA2BSB1qoMClB/18j3poEQRFSKby3BH6M31rNK
+        Lq3BWfaSA8CjYxcaOYNJwXG7juHIi86fxfMv+Sg=
+X-Google-Smtp-Source: ABdhPJwgDlWh7b9fwq5CxJcqk+iLb58LoK/PouPKlTof9Xft/P6tcdH2xc6ZBnvV9eIhMlUmggxqiokqoy1vOC0BVj8=
+X-Received: by 2002:a05:6808:1cb:: with SMTP id x11mr3375444oic.89.1617825048444;
+ Wed, 07 Apr 2021 12:50:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _DF6cQbtfRXmnkPQ9q6cHUT0abp3qKQj
-X-Proofpoint-ORIG-GUID: _DF6cQbtfRXmnkPQ9q6cHUT0abp3qKQj
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-07_10:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=999 bulkscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
- spamscore=0 mlxscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104070135
+References: <1616868399-82848-4-git-send-email-guoren@kernel.org>
+ <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net> <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+ <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net> <20210407094224.GA3393992@infradead.org>
+ <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com> <YG3XDnNc+GaW1Tz4@hirez.programming.kicks-ass.net>
+In-Reply-To: <YG3XDnNc+GaW1Tz4@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>
+Date:   Wed, 7 Apr 2021 21:50:37 +0200
+Message-ID: <CAHB2gtRGMizmWsv+Quf1jA=mzj6-jD5Rgz-XX2jQuR4dn3oDgQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Laurent Dufour <ldufour@linux.ibm.com> writes:
+On Wed, Apr 7, 2021 at 6:00 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Changes since V3, addressing Nathan's comment:
->  - Rename the local variable named 'nid' into 'assigned_node'
-> Changes since V2, addressing Nathan's comments:
->  - Remove the retry feature
->  - Reduce the number of local variables (removing 'i')
->  - Add comment about the cpu_add_remove_lock protecting the added CPU mask.
-> Changes since V1 (no functional changes):
->  - update the test's output in the commit's description
->  - node_recorded_ids_map should be static
+> On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph M=C3=BCllner wrote:
+> > RISC-V defines LR/SC loops consisting of up to 16 instructions as
+> > constrained LR/SC loops.  Such constrained LR/SC loops provide the
+> > required forward guarantees, that are expected (similar to what other
+> > architectures, like AArch64, have).
 >
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> The text quoted by others didn't seem to say such a thing, but whatever.
 
-Thanks Laurent.
+The RISC-V unpriv spec is public can be found here:
+https://riscv.org/technical/specifications/
+Version 20191213 discusses LR/SC-loops in section 8.3 (page 51).
+So in case you are interested in the exact wording, you can find it there.
 
-Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
+> > What RISC-V does not have is sub-word atomics and if required, we
+> > would have to implement them as LL/SC sequences. And yes, using atomic
+> > instructions is preferred over using LL/SC,
+>
+> (psudo asm, can't be bothered to figure out the actual syntax)
+>
+>         # setup r_and_mask, r_or_mask
+>
+> .L1
+>         LL r, [word]
+>         AND r, r, r_and_mask
+>         OR r, r, r_or_mask
+>         SC r, [word]
+>         JNE .L1
+
+I fully agree with this.
+I've implemented a patch for that two weeks ago using the following helper:
+
++/*
++ * Mask and set given bits at a given address atomically.
++ * The masked old value will be returned.
++ */
++static inline u32 atomic_mask_and_set(u32* p, u32 mask, u32 val)
++{
++       u32 ret, tmp;
++       __asm__ __volatile__ (
++               "0:     lr.w %0, %2\n"
++               "       and  %0, %0, %3\n"
++               "       or   %1, %0, %4\n"
++               "       sc.w %1, %1, %2\n"
++               "       bnez %1, 0b\n"
++               : "+&r"(ret), "=3D&r" (tmp), "+A"(*p)
++               : "r" (mask), "rJ"(val)
++               : "memory");
++       return ret;
++}
+
+However, Guo pushed out a new patchset in between and I decided to not cont=
+inue
+my approach to not undermine his approach.
+
+I will sync up with Guo to provide a common patchset.
+
+Thanks,
+Christoph
+
+> is what you need for LL/SC based xchg16, that's less than 16
+> instructions. If RISC-V guarantees fwd progress on that, good, write it
+> like that and lets end this thread.
+>
+> The fact that this is apparently hard, is not good.
