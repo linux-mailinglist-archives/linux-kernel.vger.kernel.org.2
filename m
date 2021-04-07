@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51E0356D38
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC92356D3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242895AbhDGNXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:23:19 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:17968 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbhDGNXK (ORCPT
+        id S235400AbhDGNZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:25:14 -0400
+Received: from mail.efficios.com ([167.114.26.124]:53052 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232362AbhDGNZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:23:10 -0400
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 137DMab6004819;
-        Wed, 7 Apr 2021 22:22:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 137DMab6004819
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617801756;
-        bh=Usra8KcBYgGZoqiKSYtDpYF/LC0cwPSDqgPA0XLdu0U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kf/VzT3qMbMcvWtm2f4X35CJ2YRHwIRNAR+wfKuAd2HPMTg2UqpLg+3vczEjyvQ17
-         lC03gDJdWN7SPtrw2xBkJKVfnThUHZxSmHo1O701c7vh2e55L6YXdUiCAjYW1K7WxZ
-         08Ld4ItN6MzcVqe13Rp2CdP+WqL05VNEyrcVAWZWteR++jCWtgMrrTd3vdBTNeKH+G
-         lRumuXWlo3Du9++4rN2GAN/Z9SC4wgbRVLVq4Q2TzrfEniUmnx1UqK2XmoC7ThkuA/
-         jkz+56D3P0qntBmoybHbd/oVYydmR/0k5BW+PU2iCvneRLzkZ0nub4y8oVH1PqcZP9
-         a5yfGYOLypjmg==
-X-Nifty-SrcIP: [209.85.215.172]
-Received: by mail-pg1-f172.google.com with SMTP id t22so5903083pgu.0;
-        Wed, 07 Apr 2021 06:22:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532Qql37xHrpMq5+gApKeaa5P59Zgyln4dYYtPbek+m9U2JNpwLQ
-        SD6WuSlFBrzHrlu3KM5RVbSXcbTDeElMuXrh5qI=
-X-Google-Smtp-Source: ABdhPJwk9qS0BMUYh5/qdYqoHXSyq4h3xksMbErCbs90p3+A591ceXgm4FOBcMs5kvsm1Qs6lHOiJttPXHcA8V+G7cw=
-X-Received: by 2002:a65:428b:: with SMTP id j11mr3299165pgp.47.1617801755787;
- Wed, 07 Apr 2021 06:22:35 -0700 (PDT)
+        Wed, 7 Apr 2021 09:25:12 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 95B173255A1;
+        Wed,  7 Apr 2021 09:25:02 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uUZeE4Cj45Pe; Wed,  7 Apr 2021 09:25:01 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 894153255A0;
+        Wed,  7 Apr 2021 09:25:01 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 894153255A0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1617801901;
+        bh=DXc2Y1rh5gPP9QGS3ROSlNDTD3fE09xVwWFxdvNOyqw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=LpgqVl51fvV18lzpn3ldBJ4w45shpnUo3aYPTX4B9XERyD9JuoInD8BqZYmK+S2cg
+         K67onG38Kd07fBaLJC8Kpbu/J4cnAnmcDPLpii85U0bbLeofcLywzC1pzEkuEurjP6
+         Zzyu9MUMhs29hX3pztg0Pcta8bpi3TLP0PHRU7/uRk+cEyu+Z/QeuEWQocua3hjX5b
+         +aWOr3YZIIIYk2tAMp9Ox0Fv3b738rmtZ7HktIQlJGB46k884NL/462W1qR143ZPMK
+         ILsxH2YVTgKg0KKd1I7J/r7IAYFGOIWrPhqzUqq8lDkDT5nHSljS7bSgfzWfwBEmy6
+         YYZP54/Oy8zJA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id N5MCYS6mg6Fs; Wed,  7 Apr 2021 09:25:01 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7D7EE325292;
+        Wed,  7 Apr 2021 09:25:01 -0400 (EDT)
+Date:   Wed, 7 Apr 2021 09:25:01 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Mingyi Liu <mingyiliu@gatech.edu>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
+Message-ID: <723248518.60240.1617801901472.JavaMail.zimbra@efficios.com>
+In-Reply-To: <MN2PR07MB80147F72667BBA151586486ED1769@MN2PR07MB8014.namprd07.prod.outlook.com>
+References: <MN2PR07MB80147F72667BBA151586486ED1769@MN2PR07MB8014.namprd07.prod.outlook.com>
+Subject: Re: about seg fault inside rseq critical section
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-8-gregkh@linuxfoundation.org> <CAK7LNASbZ4hY8ypd8TegnRpxQUM-HB84n2VHUmu=k_RxwCnpXg@mail.gmail.com>
- <YG2tvk010wRkIVSX@kroah.com>
-In-Reply-To: <YG2tvk010wRkIVSX@kroah.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 22:21:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARewRB3JENY1vXecz23W+XtOuO4MP4MNTPUx1KKRLKQGA@mail.gmail.com>
-Message-ID: <CAK7LNARewRB3JENY1vXecz23W+XtOuO4MP4MNTPUx1KKRLKQGA@mail.gmail.com>
-Subject: Re: [PATCH 07/20] kbuild: scripts/install.sh: allow for the version number
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: about seg fault inside rseq critical section
+Thread-Index: AQHXKzICNtuXzcd7b0S3OpsM3Zas5DaS7ozS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 10:04 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 07, 2021 at 08:05:23PM +0900, Masahiro Yamada wrote:
-> > On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > Some architectures put the version number by default at the end of the
-> > > files that are copied, so add support for this to be set by arch type.
-> > >
-> > > Odds are one day we should change this for x86, but let's not break
-> > > anyone's systems just yet.
-> > >
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  scripts/install.sh | 15 +++++++++++++--
-> > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/scripts/install.sh b/scripts/install.sh
-> > > index 72dc4c81013e..934619f81119 100644
-> > > --- a/scripts/install.sh
-> > > +++ b/scripts/install.sh
-> > > @@ -60,8 +60,19 @@ else
-> > >         base=vmlinux
-> > >  fi
-> > >
-> > > -install "$2" "$4"/"$base"
-> > > -install "$3" "$4"/System.map
-> > > +# Some architectures name their files based on version number, and
-> > > +# others do not.  Call out the ones that do not to make it obvious.
-> > > +case "${ARCH}" in
-> > > +       x86)
-> > > +               version=""
-> > > +               ;;
-> > > +       *)
-> > > +               version="-${1}"
-> > > +               ;;
-> > > +esac
-> > > +
-> > > +install "$2" "$4"/"$base""$version"
-> >
-> >
-> > Too many quotes are eye sore.
-> >
-> >
-> >     install "$2" "$4/$base$version"
-> >
-> > looks cleaner in my opinion.
-> >
-> > Shell correctly understands the end of each
-> > variable because a slash or a dollar
-> > cannot be a part of a variable name.
->
-> Good idea, I usually just default to "quote everything!" when dealing
-> with bash variables.  I'll fix this up.
->
-> Oh, any preference for "$2" vs. "${2}"?  I don't care either way but I
-> couldn't tell what is the normal kernel style these days.
+(re-sent in plain-text for lkml)
 
+----- On Apr 6, 2021, at 6:24 PM, Mingyi Liu mingyiliu@gatech.edu wrote:
 
-I do not see a well-defined coding style guideline
-for shell scripts.
+> Hi Mathieu,
 
-If you want to know my personal preference,
-I use "$2" without braces.
+> I notice that the program will be terminated with segmentation fault when it is
+> even seg faulted inside the rseq critical section. In Linux kernel rseq.c, I
+> haven't found comment or code regarding this. Could you share any references on
+> why it doesn't execute user defined abort handler but uses the OS handler
+> instead?
 
+> Thanks in advance!
 
-Thanks.
+Hi Mingyi, 
 
+Please let me add the other rseq maintainers and LKML in CC. I'm a bit stretched on time 
+here, so maybe they will have time to answer before I do. 
 
->
-> thanks for all of the review, much appreciated!
+Meanwhile, if you could provide details about your architecture, kernel .config, and a 
+small reproducer program, it would help bootstrapping the discussion. 
 
-My pleasure.
+Thanks, 
 
->
-> greg k-h
+Mathieu 
 
+> Best,
 
+> Mingyi
 
 -- 
-Best Regards
-Masahiro Yamada
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
