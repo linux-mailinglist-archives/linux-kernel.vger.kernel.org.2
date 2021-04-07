@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BD33561BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739C43561BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344370AbhDGDEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhDGDEn (ORCPT
+        id S1344040AbhDGDF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:05:57 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3935 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhDGDFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:04:43 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB56CC06174A;
-        Tue,  6 Apr 2021 20:04:33 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id g35so7167813pgg.9;
-        Tue, 06 Apr 2021 20:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=L2ZahL3BM9zMTRN6qi10FAZfrxjb2GT5DQ+NiJkPnJE=;
-        b=GwqKFBPMn4bFVhdezkkUI0ymRkbCcANy+U391GQLhZ1o+FLDlCjFtqX3B9Gnp6wKwT
-         QaGs2eJln78cXpBjhEpRqJR5WBrVkbzP9XD0hdUSt4RiYj5DizpLaZCBHVIBBb39SF/U
-         5qhFtpPwqESyyHtuwcbkUjI5ZuseMXDRWi3DdP/6sLYhr7EceHFibD1vngMUkzhCOmwl
-         p/hBlaId6GLdBS3fURHP/9eyOlvBgukmLD6C9B6vSUH9Ot5cEbDD4p0a0N57PUpVG/dX
-         4a3MMazn/QnE/AuXexyrh/AgQmDhwH6kivk1LQXze8oc2AW3DpGsgrE3lGJYxll68KGu
-         Kj2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=L2ZahL3BM9zMTRN6qi10FAZfrxjb2GT5DQ+NiJkPnJE=;
-        b=ly8mK7pSeMO5E0v9t+JSqAa//mUe4MZETT8pJhLk0qBlWp24rRGVjxof/1qvDsGJQ0
-         bK/eipH1WVsAqPv3mPJGEEVXwsjs2V1+9IJXnMpJLKhWlu3UM5Ah0aUmyvGjse189SdR
-         sm3F291J759/uJii+lpcL5tW0ll8TWexTXS5ZHHrAd0NDf9A5RQiswv6qtri7C5ZeiZf
-         UD0VwACw+f8DMA3IfRdI/TKQadY8y3Mt1XeabuoHMa4XcSI3h3CnKGyx9XnxZGyU2Ilq
-         nSCIO1j3FqTyn3gvAmokSK9Q+LYuqNVWabyEIs9Z/s8e6Qk0LP7zIMDIqLUgYnBmaxJA
-         PMxg==
-X-Gm-Message-State: AOAM530p+hVf6vMUFBxDeZNa6Tyw4X15xxh6hSAbZTk6HDtIXFfuwnGN
-        8V+5kH2k1M2VGq1stCFYAdmoUfe8Prgebw==
-X-Google-Smtp-Source: ABdhPJzcEIhqJm98AluNdVQFJvExLoakzANuWS4gJisMtZd4p9VhyVeQQfQGkdjTp1NEM5E4iw6cjw==
-X-Received: by 2002:a63:e552:: with SMTP id z18mr1258823pgj.100.1617764672735;
-        Tue, 06 Apr 2021 20:04:32 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id w3sm3395313pjg.7.2021.04.06.20.04.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Apr 2021 20:04:32 -0700 (PDT)
-From:   Hongbo Li <herbert.tencent@gmail.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, dhowells@redhat.com,
-        zohar@linux.ibm.com, jarkko@kernel.org, herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Hongbo Li <herbert.tencent@gmail.com>
-Subject: [PATCH v2 0/4] crypto: add rsa pss support for x509
-Date:   Wed,  7 Apr 2021 11:03:45 +0800
-Message-Id: <1617764625-15421-1-git-send-email-herbert.tencent@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 6 Apr 2021 23:05:55 -0400
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FFTjy5nYsz5mZL;
+        Wed,  7 Apr 2021 11:03:34 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 7 Apr 2021 11:05:38 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 7 Apr 2021 11:05:38 +0800
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+To:     Andi Kleen <andi@firstfloor.org>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+ <20210406124746.ji5iqladdlh73mok@two.firstfloor.org>
+CC:     <like.xu@linux.intel.com>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        <kan.liang@linux.intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wei.w.wang@intel.com>,
+        <x86@kernel.org>
+From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Message-ID: <606D2170.6020203@huawei.com>
+Date:   Wed, 7 Apr 2021 11:05:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
+MIME-Version: 1.0
+In-Reply-To: <20210406124746.ji5iqladdlh73mok@two.firstfloor.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
 
-This series of patches adds support for x509 cert signed by RSA
-with PSS encoding method. RSA PSS is described in rfc8017.
 
-Patch1 make x509 support rsa pss encoding and parse hash parameter.
-
-Patch2 add rsa pss template.
-
-Patch3 add test vector for rsa pss.
-
-Patch4 is the rsa-pss's ima patch.
-
-Test by the following script, it tests different saltlen, hash, mgfhash.
-
-keyctl newring test @u
-
-while :; do
-    for modbits in 1024 2048 4096; do
-	if [ $modbits -eq 1024 ]; then
-	    saltlen=(-1 -2 0 20 32 48 64 94)
-	elif [ $modbits -eq 2048 ]; then
-	    saltlen=(-1 -2 0 20 32 48 64 222)
-	else
-	    saltlen=(-1 -2 0 20 32 48 64 478)
-	fi
-
-	for slen in ${saltlen[@]}; do
-	    for hash in sha1 sha224 sha256 sha384 sha512; do
-		for mgfhash in sha1 sha224 sha256 sha384 sha512; do
-		    certfile="cert.der"
-		    echo slen $slen
-		    openssl req \
-			    -x509 \
-			    -${hash} \
-			    -newkey rsa:$modbits \
-			    -keyout key.pem \
-			    -days 365 \
-			    -subj '/CN=test' \
-			    -nodes \
-			    -sigopt rsa_padding_mode:pss \
-			    -sigopt rsa_mgf1_md:$mgfhash \
-			    -sigopt rsa_pss_saltlen:${slen} \
-			    -outform der \
-			    -out ${certfile} 2>/dev/null
-
-		    exp=0
-		    id=$(keyctl padd asymmetric testkey %keyring:test < "${certfile}")
-		    rc=$?
-		    if [ $rc -ne $exp ]; then
-			case "$exp" in
-			    0) echo "Error: Could not load rsa-pss certificate!";;
-			esac
-			echo "modbits $modbits sha: $hash mgfhash $mgfhash saltlen: $slen"
-			exit 1
-		    else
-			case "$rc" in
-			    0) echo "load cert: keyid: $id modbits $modbits hash: $hash mgfhash $mgfhash saltlen $slen"
-			esac
-		    fi
-		done
-	    done
-	done
-    done
-done
-
-Best Regards
-
-Hongbo
-
-v1->v2:
-  -rebase patches to cryptodev/master to fix the issues that
-   reported-by: kernel test robot <lkp@intel.com>
-
-Hongbo Li (5):
-  x509: add support for rsa-pss
-  crypto: support rsa-pss encoding
-  crypto: add rsa pss test vector
-  crypto: ecdsa ima support
-  ima: add support for rsa pss verification
-
- crypto/Makefile                           |   7 +-
- crypto/asymmetric_keys/Makefile           |   7 +-
- crypto/asymmetric_keys/public_key.c       |   5 ++
- crypto/asymmetric_keys/x509_cert_parser.c |  71 ++++++++++++++++-
- crypto/rsa.c                              |  14 ++--
- crypto/rsa_helper.c                       | 127 ++++++++++++++++++++++++++++++
- crypto/testmgr.c                          |   7 ++
- crypto/testmgr.h                          |  87 ++++++++++++++++++++
- include/crypto/internal/rsa.h             |  25 +++++-
- include/keys/asymmetric-type.h            |   6 ++
- include/linux/oid_registry.h              |   2 +
- security/integrity/digsig_asymmetric.c    |  34 ++++----
- 12 files changed, 363 insertions(+), 29 deletions(-)
-
--- 
-1.8.3.1
+On 2021/4/6 20:47, Andi Kleen wrote:
+>> AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake
+>> doesn't.
+>> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose
+>> counter in Skylake.
+>> Is there anything else that only Icelake supports in this patches set?
+> Only Icelake server has the support for recovering from a EPT violation
+> on the PEBS data structures. To use it on Skylake server you would
+> need to pin the whole guest, but that is currently not done.
+Sorry. Some questions about "Pin the whole guest". Do you mean VmPin 
+equals VmSize
+in "/proc/$(pidof qemu-kvm)/status"? Or just VmLck equals VmSize? Or 
+something else?
+>> Besides, we have tried this patches set in Icelake.  We can use pebs(eg:
+>> "perf record -e cycles:pp")
+>> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a minimum
+>> guest kernel version requirement?
+> You would need a guest kernel that supports Icelake server PEBS. 4.18
+> would need backports for tht.
+>
+>
+> -Andi
 
