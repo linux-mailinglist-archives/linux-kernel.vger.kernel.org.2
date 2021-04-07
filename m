@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D05357091
+	by mail.lfdr.de (Postfix) with ESMTP id 9047D357092
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344097AbhDGPkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
+        id S1353669AbhDGPkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhDGPkR (ORCPT
+        with ESMTP id S242738AbhDGPkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:40:17 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ACBC061756;
-        Wed,  7 Apr 2021 08:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cI27ms1y8lLpiUqUNPeuv/2lHvb/2VL0ZjKGdez54dI=; b=m8esMUoZiIDjn8rWXyVjcL8n/p
-        Tebeu5tJPb5RHhNPR2bPTXVG6MfbdxGxuQaiRW7UWmtAfIY+ZgWP5fkQyWRQrwjErk5fF615lslZS
-        hpJaV7SAY1/BZak7RK8Lb8Oz+0JVb0rhMKjEzAoDRQqifDzMl7PO9H1E0O63fi8Bcul0K0XvW97Nm
-        muAxPrigaM17dsfJmfZhehG43FUwxCmnZsGPkoam7LRQ+0ud5G2pqYgbRWyaUT/+VVNm01S7G00J8
-        K4GIrWYbEh/s2CbFWX/1+xXFJ8UoDzvzc0cJQYjVwAhNUZtjpiCTMieJX2zgdMv3Yw7lGFbaDIukp
-        6iqzQxmg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUAHT-005Ij9-3E; Wed, 07 Apr 2021 15:39:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B86393001FB;
-        Wed,  7 Apr 2021 17:39:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A601D2BF09264; Wed,  7 Apr 2021 17:39:42 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 17:39:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        andi@firstfloor.org, kan.liang@linux.intel.com,
-        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v4 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
- manage guest DS buffer
-Message-ID: <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
-References: <20210329054137.120994-1-like.xu@linux.intel.com>
- <20210329054137.120994-9-like.xu@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329054137.120994-9-like.xu@linux.intel.com>
+        Wed, 7 Apr 2021 11:40:19 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEDCC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:40:09 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k15so17917979ybh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gEHEWQ307bRJvhPwioM0OYPFn1eYNcCod2kJGL7jIh4=;
+        b=QKNDF7sIGKV3rdjakWbl5h7kEjkYWU5tJ98mGMmUVHVXReB9h+utfWRyjHjDqvt+gD
+         9+9Tt0rSr5eQtRl/Wj5DpqRtMsfgMKRTuxcoxNedLdnZTwCKay3LeyIyiYggkn3yOtYF
+         G+x6w7ybekbBbg7ybXs6ZoVaz4rMQUdOuLSegV2u2ux7ekdwmezbx/Dx2d/egB1fzcOk
+         ssQP3/zueT394Mj1fqRGgjqjWF7o7g3JGIyW4U/7ttK6gmUP4Ru2kRK4H/gCz9lGSJWi
+         Cc2cIhUIuvY0Kbm/wIGztl3M3Z53k6FtVZTbp36JdcEMcREbHhfI7vWkRGHX7IELQM0q
+         22hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gEHEWQ307bRJvhPwioM0OYPFn1eYNcCod2kJGL7jIh4=;
+        b=IAUmBPSiS0T+xZ2n3ammpM8Ct7jeQPMjj1qYtT75+wKNYhFdUUNJIP+YX9Xg4/r85w
+         fFVVf8LF26y8chbNHNdKsipp5QPy9P5PT76/JVYLVCbbELYCIWUSwAyQGzeq/uneqLDv
+         n/v175DelzxPLoO7LPVG8kHH9JQvx73biSoRw6c4XLu4PQ3wHXMSGvJty9Fu45nCf6ea
+         GFa83BpMGBU5Qc9t+CQhSfgAPCvCJVELMk4+8yoORt0gkmi+F8HAXnlZwigpv6NIzeau
+         HeGQXBRlKyEMZA9TSeJwbntcLwvoUx74Ek6DMtVFY7hKdu836iWJFFzEXKk+2GFkVfJf
+         qHfQ==
+X-Gm-Message-State: AOAM533H5yhJuElHthhMjNXmQ09K4wsGDTRcCXgOdb+Bp0F4ivMXbRHS
+        vL7E65LcnCRC0dTaKtYO1qnPqUvAsR/q
+X-Google-Smtp-Source: ABdhPJxyF5c2jLs2PsYpDx2eaHlCYtXPlQZONix8B8AIRhg8zffqL2bGb0ZxCromPx+xtMQFhtpthD6DBngQ
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6d13:3d93:6552:2550])
+ (user=irogers job=sendgmr) by 2002:a25:4906:: with SMTP id
+ w6mr5252446yba.324.1617810009143; Wed, 07 Apr 2021 08:40:09 -0700 (PDT)
+Date:   Wed,  7 Apr 2021 08:39:55 -0700
+Message-Id: <20210407153955.317215-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH] perf arm-spe: Avoid potential buffer overrun.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 01:41:29PM +0800, Like Xu wrote:
-> @@ -3869,10 +3876,12 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->  
->  		if (arr[1].guest)
->  			arr[0].guest |= arr[1].guest;
-> -		else
-> +		else {
->  			arr[1].guest = arr[1].host;
-> +			arr[2].guest = arr[2].host;
-> +		}
+SPE extended headers are >1 byte so ensure the buffer contains at
+least this before reading. This issue was detected by fuzzing.
 
-What's all this gibberish?
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The way I read that it says:
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+index f3ac9d40cebf..2e5eff4f8f03 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+@@ -210,8 +210,10 @@ static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
+ 
+ 	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_EXTENDED) {
+ 		/* 16-bit extended format header */
+-		ext_hdr = 1;
++		if (len == 1)
++			return ARM_SPE_BAD_PACKET;
+ 
++		ext_hdr = 1;
+ 		hdr = buf[1];
+ 		if (hdr == SPE_HEADER1_ALIGNMENT)
+ 			return arm_spe_get_alignment(buf, len, packet);
+-- 
+2.31.0.208.g409f899ff0-goog
 
-	if guest has PEBS_ENABLED
-		guest GLOBAL_CTRL |= PEBS_ENABLED
-	otherwise
-		guest PEBS_ENABLED = host PEBS_ENABLED
-		guest DS_AREA = host DS_AREA
-
-which is just completely random garbage afaict. Why would you leak host
-msrs into the guest? Why would you change guest GLOBAL_CTRL implicitly;
-guest had better wrmsr that himself to control when stuff is enabled.
-
-This just cannot be right.
