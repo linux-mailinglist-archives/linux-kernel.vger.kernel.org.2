@@ -2,366 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00933573FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84F93573E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355133AbhDGSKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:10:46 -0400
-Received: from smtp.uniroma2.it ([160.80.6.16]:32878 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229876AbhDGSKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:10:43 -0400
-X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Apr 2021 14:10:38 EDT
-Received: from localhost.localdomain ([160.80.103.126])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 137I49dd014753
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 7 Apr 2021 20:04:10 +0200
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: [RFC net-next 1/1] seg6: add counters support for SRv6 Behaviors
-Date:   Wed,  7 Apr 2021 20:03:32 +0200
-Message-Id: <20210407180332.29775-2-andrea.mayer@uniroma2.it>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
-References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+        id S1355097AbhDGSGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355081AbhDGSGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 14:06:38 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E499CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:06:28 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r8so12426955lfp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DyBm95F+3/SfdAPdI+iZIYttoNbi6kTKipkfV2vV3q8=;
+        b=U02AtdVu7GmuXw614lHDvn33aAMYx6obajAVA6gYKQDX/9ERHsQhYsNVJpx5f8behT
+         ZdpkYFxstdbGj+B0lLjtWpDpTPPMJB9o47gxSPScDWB1OdrO7VFImIs2SYNU9yJR6TbZ
+         /+wpMxhc6Ge/qXGdcfCxTov7kQH7XVd7Vk3+GRxwz9H1pVPpqDX1jsLkBnerUVmzBE7D
+         Fwy6clYk+4BWRDm8UaCLckTU5QmaOgqEXb27jYU2PM/ddHy8CzQKETz2f0xvGPlwyilr
+         gXk2cGGfKDWCbyNqeXJS2pWSQvXTCF1TDHGwibnnct2hl8D13iCHOteQRrKzmGjcH1Z5
+         y7uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DyBm95F+3/SfdAPdI+iZIYttoNbi6kTKipkfV2vV3q8=;
+        b=IdK6K6C4G/qoU6aeAAf4+9Wa+0QXB4LWCMupll7VnREULscGTvQvFEWmO3lFzBO6IC
+         fnZaLlhFchpZQuMX1ep4upU7NaDJHXT7eklXa+T9s5ZvRAbB7RCf0YgtAdoHOckEC5ut
+         7c/7V6u+J2oxbgYZMMKgc77F7P7Ytdby9DJqbBwEjbwG5lrWT7lN5xeVc31MQENpIemX
+         kFY5fX0E9j2wYyGn0yhkvj+VdIU+/WIp4pPrbhTnDdSTtVdkayocaQu9RxKPf0ctZwzS
+         F/2ZHiTfzyCM4eo408N7D2Bn/u1zkVr1SoTyZcFRXR9X2+hCHRNX/4wL8mn+vNmPl5W4
+         sulA==
+X-Gm-Message-State: AOAM531yvNkN0AZnziKyw0Kxw6RxI2H0O1z+s+9u6H/KtKow6gp9ujgD
+        HQDxZRl2ty1D00uvUr5W36KejctJ9JhRw7sK3hU=
+X-Google-Smtp-Source: ABdhPJxbedDQfFngxb5MnIjHVo8kZt/AflxaLuJHiAlFzP3+GOaDxAjS7moJ8B+rFfcC9oBtZQLM3OCXEL+SJnrGyQ8=
+X-Received: by 2002:ac2:42cf:: with SMTP id n15mr3262180lfl.573.1617818787412;
+ Wed, 07 Apr 2021 11:06:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+References: <CABXGCsPAdv6wCWmzh6OQmDX1LOf_FEu_wH=4K9HDd_rToTdwrQ@mail.gmail.com>
+ <7d30982e-a893-858c-2237-a09a183ff2d0@gmail.com>
+In-Reply-To: <7d30982e-a893-858c-2237-a09a183ff2d0@gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Wed, 7 Apr 2021 23:06:15 +0500
+Message-ID: <CABXGCsN6GX4ksbFo9fhd6XGxNyED9qoBqYf0Ph1pwG3qArGtjg@mail.gmail.com>
+Subject: Re: Unexpected multihop in swaput - likely driver bug.
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides counters for SRv6 Behaviors as defined in [1], section
-6. For each SRv6 Behavior instance, the counters defined in [1] are:
+On Wed, 7 Apr 2021 at 15:46, Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> What hardware are you using
 
- - the total number of packets that have been correctly processed;
- - the total amount of traffic in bytes of all packets that have been
-   correctly processed;
+$ inxi -bM
+System:    Host: fedora Kernel: 5.12.0-0.rc6.184.fc35.x86_64+debug
+x86_64 bits: 64 Desktop: GNOME 40.0
+           Distro: Fedora release 35 (Rawhide)
+Machine:   Type: Desktop Mobo: ASUSTeK model: ROG STRIX X570-I GAMING
+v: Rev X.0x serial: <superuser required>
+           UEFI: American Megatrends v: 3603 date: 03/20/2021
+Battery:   ID-1: hidpp_battery_0 charge: N/A condition: N/A
+CPU:       Info: 16-Core (2-Die) AMD Ryzen 9 3950X [MT MCP MCM] speed:
+2365 MHz min/max: 2200/3500 MHz
+Graphics:  Device-1: Advanced Micro Devices [AMD/ATI] Navi 21 [Radeon
+RX 6800/6800 XT / 6900 XT] driver: amdgpu v: kernel
+           Device-2: AVerMedia Live Streamer CAM 513 type: USB driver:
+hid-generic,usbhid,uvcvideo
+           Device-3: AVerMedia Live Gamer Ultra-Video type: USB
+driver: hid-generic,snd-usb-audio,usbhid,uvcvideo
+           Display: wayland server: X.Org 1.21.1 driver: loaded:
+amdgpu,ati unloaded: fbdev,modesetting,radeon,vesa
+           resolution: 3840x2160~60Hz
+           OpenGL: renderer: AMD SIENNA_CICHLID (DRM 3.40.0
+5.12.0-0.rc6.184.fc35.x86_64+debug LLVM 12.0.0)
+           v: 4.6 Mesa 21.1.0-devel
+Network:   Device-1: Intel Wi-Fi 6 AX200 driver: iwlwifi
+           Device-2: Intel I211 Gigabit Network driver: igb
+Drives:    Local Storage: total: 11.35 TiB used: 10.82 TiB (95.3%)
+Info:      Processes: 805 Uptime: 12h 56m Memory: 31.18 GiB used:
+21.88 GiB (70.2%) Shell: Bash inxi: 3.3.02
 
-In addition, we introduces a new counter that counts the number of packets
-that have NOT been properly processed (i.e. errors) by an SRv6 Behavior
-instance.
 
-Each SRv6 Behavior instance can be configured, at the time of its creation,
-to make use of counters.
-This is done through iproute2 which allows the user to create an SRv6
-Behavior instance specifying the optional "count" attribute as shown in the
-following example:
+> and how do you exactly trigger this?
 
- $ ip -6 route add 2001:db8::1 encap seg6local action End count dev eth0
+I am running heavy games like "Zombie Army 4: Dead War" and switching
+to Gnome Activities and other applications while the game is running.
 
-per-behavior counters can be shown by adding "-s" to the iproute2 command
-line, i.e.:
 
- $ ip -s -6 route show 2001:db8::1
- 2001:db8::1 encap seg6local action End packets 0 bytes 0 errors 0 dev eth0
-
-[1] https://www.rfc-editor.org/rfc/rfc8986.html#name-counters
-
-Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
----
- include/uapi/linux/seg6_local.h |   8 ++
- net/ipv6/seg6_local.c           | 133 +++++++++++++++++++++++++++++++-
- 2 files changed, 139 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
-index 3b39ef1dbb46..ae5e3fd12b73 100644
---- a/include/uapi/linux/seg6_local.h
-+++ b/include/uapi/linux/seg6_local.h
-@@ -27,6 +27,7 @@ enum {
- 	SEG6_LOCAL_OIF,
- 	SEG6_LOCAL_BPF,
- 	SEG6_LOCAL_VRFTABLE,
-+	SEG6_LOCAL_COUNTERS,
- 	__SEG6_LOCAL_MAX,
- };
- #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
-@@ -78,4 +79,11 @@ enum {
- 
- #define SEG6_LOCAL_BPF_PROG_MAX (__SEG6_LOCAL_BPF_PROG_MAX - 1)
- 
-+/* SRv6 Behavior counters */
-+struct seg6_local_counters {
-+	__u64 rx_packets;
-+	__u64 rx_bytes;
-+	__u64 rx_errors;
-+};
-+
- #endif
-diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-index 8936f48570fc..0f905a4410bd 100644
---- a/net/ipv6/seg6_local.c
-+++ b/net/ipv6/seg6_local.c
-@@ -93,6 +93,20 @@ struct seg6_end_dt_info {
- 	int hdrlen;
- };
- 
-+struct pcpu_seg6_local_counters {
-+	u64_stats_t rx_packets;
-+	u64_stats_t rx_bytes;
-+	u64_stats_t rx_errors;
-+
-+	struct u64_stats_sync syncp;
-+};
-+
-+#define seg6_local_alloc_pcpu_counters(__gfp)				\
-+	__netdev_alloc_pcpu_stats(struct pcpu_seg6_local_counters,	\
-+				  ((__gfp) | __GFP_ZERO))
-+
-+#define SEG6_F_LOCAL_COUNTERS	SEG6_F_ATTR(SEG6_LOCAL_COUNTERS)
-+
- struct seg6_local_lwt {
- 	int action;
- 	struct ipv6_sr_hdr *srh;
-@@ -105,6 +119,7 @@ struct seg6_local_lwt {
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 	struct seg6_end_dt_info dt_info;
- #endif
-+	struct pcpu_seg6_local_counters __percpu *pcpu_counters;
- 
- 	int headroom;
- 	struct seg6_action_desc *desc;
-@@ -878,36 +893,43 @@ static struct seg6_action_desc seg6_action_table[] = {
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END,
- 		.attrs		= 0,
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_X,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_NH6),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_x,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_T,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_TABLE),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_t,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX2,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_OIF),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_dx2,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX6,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_NH6),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_dx6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX4,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_NH4),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_dx4,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DT4,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_VRFTABLE),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 		.input		= input_action_end_dt4,
- 		.slwt_ops	= {
-@@ -919,30 +941,35 @@ static struct seg6_action_desc seg6_action_table[] = {
- 		.action		= SEG6_LOCAL_ACTION_END_DT6,
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 		.attrs		= 0,
--		.optattrs	= SEG6_F_ATTR(SEG6_LOCAL_TABLE) |
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS		|
-+				  SEG6_F_ATTR(SEG6_LOCAL_TABLE) |
- 				  SEG6_F_ATTR(SEG6_LOCAL_VRFTABLE),
- 		.slwt_ops	= {
- 					.build_state = seg6_end_dt6_build,
- 				  },
- #else
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_TABLE),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- #endif
- 		.input		= input_action_end_dt6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_B6,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_SRH),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_b6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_B6_ENCAP,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_SRH),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_b6_encap,
- 		.static_headroom	= sizeof(struct ipv6hdr),
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_BPF,
- 		.attrs		= SEG6_F_ATTR(SEG6_LOCAL_BPF),
-+		.optattrs	= SEG6_F_LOCAL_COUNTERS,
- 		.input		= input_action_end_bpf,
- 	},
- 
-@@ -963,11 +990,36 @@ static struct seg6_action_desc *__get_action_desc(int action)
- 	return NULL;
- }
- 
-+static bool seg6_lwtunnel_counters_enabled(struct seg6_local_lwt *slwt)
-+{
-+	return slwt->parsed_optattrs & SEG6_F_LOCAL_COUNTERS;
-+}
-+
-+static void seg6_local_update_rx_counters(struct seg6_local_lwt *slwt,
-+					  int len, int err)
-+{
-+	struct pcpu_seg6_local_counters *pcounters;
-+
-+	pcounters = this_cpu_ptr(slwt->pcpu_counters);
-+	u64_stats_update_begin(&pcounters->syncp);
-+
-+	if (likely(!err)) {
-+		u64_stats_inc(&pcounters->rx_packets);
-+		u64_stats_add(&pcounters->rx_bytes, len);
-+	} else {
-+		u64_stats_inc(&pcounters->rx_errors);
-+	}
-+
-+	u64_stats_update_end(&pcounters->syncp);
-+}
-+
- static int seg6_local_input(struct sk_buff *skb)
- {
- 	struct dst_entry *orig_dst = skb_dst(skb);
- 	struct seg6_action_desc *desc;
- 	struct seg6_local_lwt *slwt;
-+	int len = skb->len;
-+	int rc;
- 
- 	if (skb->protocol != htons(ETH_P_IPV6)) {
- 		kfree_skb(skb);
-@@ -977,7 +1029,14 @@ static int seg6_local_input(struct sk_buff *skb)
- 	slwt = seg6_local_lwtunnel(orig_dst->lwtstate);
- 	desc = slwt->desc;
- 
--	return desc->input(skb, slwt);
-+	rc = desc->input(skb, slwt);
-+
-+	if (!seg6_lwtunnel_counters_enabled(slwt))
-+		return rc;
-+
-+	seg6_local_update_rx_counters(slwt, len, rc);
-+
-+	return rc;
- }
- 
- static const struct nla_policy seg6_local_policy[SEG6_LOCAL_MAX + 1] = {
-@@ -992,6 +1051,8 @@ static const struct nla_policy seg6_local_policy[SEG6_LOCAL_MAX + 1] = {
- 	[SEG6_LOCAL_IIF]	= { .type = NLA_U32 },
- 	[SEG6_LOCAL_OIF]	= { .type = NLA_U32 },
- 	[SEG6_LOCAL_BPF]	= { .type = NLA_NESTED },
-+	[SEG6_LOCAL_COUNTERS]	= { .type = NLA_BINARY,
-+				    .len = sizeof(struct seg6_local_counters) },
- };
- 
- static int parse_nla_srh(struct nlattr **attrs, struct seg6_local_lwt *slwt)
-@@ -1296,6 +1357,67 @@ static void destroy_attr_bpf(struct seg6_local_lwt *slwt)
- 		bpf_prog_put(slwt->bpf.prog);
- }
- 
-+static int parse_nla_counters(struct nlattr **attrs,
-+			      struct seg6_local_lwt *slwt)
-+{
-+	struct pcpu_seg6_local_counters __percpu *pcounters;
-+
-+	pcounters = seg6_local_alloc_pcpu_counters(GFP_KERNEL);
-+	if (!pcounters)
-+		return -ENOMEM;
-+
-+	slwt->pcpu_counters = pcounters;
-+
-+	return 0;
-+}
-+
-+static int put_nla_counters(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-+{
-+	struct seg6_local_counters counters = { 0, 0, 0 };
-+	struct nlattr *nla;
-+	int i;
-+
-+	nla = nla_reserve(skb, SEG6_LOCAL_COUNTERS, sizeof(counters));
-+	if (!nla)
-+		return -EMSGSIZE;
-+
-+	for_each_possible_cpu(i) {
-+		struct pcpu_seg6_local_counters *pcounters;
-+		u64 rx_packets, rx_bytes, rx_errors;
-+		unsigned int start;
-+
-+		pcounters = per_cpu_ptr(slwt->pcpu_counters, i);
-+		do {
-+			start = u64_stats_fetch_begin_irq(&pcounters->syncp);
-+
-+			rx_packets = u64_stats_read(&pcounters->rx_packets);
-+			rx_bytes = u64_stats_read(&pcounters->rx_bytes);
-+			rx_errors = u64_stats_read(&pcounters->rx_errors);
-+
-+		} while (u64_stats_fetch_retry_irq(&pcounters->syncp, start));
-+
-+		counters.rx_packets += rx_packets;
-+		counters.rx_bytes += rx_bytes;
-+		counters.rx_errors += rx_errors;
-+	}
-+
-+	memcpy(nla_data(nla), &counters, sizeof(counters));
-+
-+	return 0;
-+}
-+
-+static int cmp_nla_counters(struct seg6_local_lwt *a, struct seg6_local_lwt *b)
-+{
-+	/* a and b are equals if both have pcpu_counters set or not */
-+	return (!!((unsigned long)a->pcpu_counters)) ^
-+		(!!((unsigned long)b->pcpu_counters));
-+}
-+
-+static void destroy_attr_counters(struct seg6_local_lwt *slwt)
-+{
-+	free_percpu(slwt->pcpu_counters);
-+}
-+
- struct seg6_action_param {
- 	int (*parse)(struct nlattr **attrs, struct seg6_local_lwt *slwt);
- 	int (*put)(struct sk_buff *skb, struct seg6_local_lwt *slwt);
-@@ -1343,6 +1465,10 @@ static struct seg6_action_param seg6_action_params[SEG6_LOCAL_MAX + 1] = {
- 				    .put = put_nla_vrftable,
- 				    .cmp = cmp_nla_vrftable },
- 
-+	[SEG6_LOCAL_COUNTERS]	= { .parse = parse_nla_counters,
-+				    .put = put_nla_counters,
-+				    .cmp = cmp_nla_counters,
-+				    .destroy = destroy_attr_counters },
- };
- 
- /* call the destroy() callback (if available) for each set attribute in
-@@ -1645,6 +1771,9 @@ static int seg6_local_get_encap_size(struct lwtunnel_state *lwt)
- 	if (attrs & SEG6_F_ATTR(SEG6_LOCAL_VRFTABLE))
- 		nlsize += nla_total_size(4);
- 
-+	if (attrs & SEG6_F_LOCAL_COUNTERS)
-+		nlsize += nla_total_size(sizeof(struct seg6_local_counters));
-+
- 	return nlsize;
- }
- 
--- 
-2.20.1
-
+--=20
+Best Regards,
+Mike Gavrilov.
