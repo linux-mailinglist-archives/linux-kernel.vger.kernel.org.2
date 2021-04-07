@@ -2,153 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88EA356F12
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87EB356EBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345093AbhDGOns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:43:48 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34880 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348773AbhDGOn2 (ORCPT
+        id S1352969AbhDGOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:32:41 -0400
+Received: from one.firstfloor.org ([193.170.194.197]:41738 "EHLO
+        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231829AbhDGOcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:43:28 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137EWMlD081494;
-        Wed, 7 Apr 2021 09:32:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617805942;
-        bh=/ZE3NClD3KqnjT4ROQ1TsBEaHGQZKlKWPea6oZsVB5s=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=uGmHAP1EdO5bHcQhm8Mv+BUmRytLIH1lXKUQ8ha/vXJzZszJg+g3thRoZHCfzUsjO
-         nRb8tupTlEjMU8WCI2dwTSXgblZ5Rx6zPeZP0nvgW3Yh3PlorKvkS3fZPHhxcQUBnd
-         wL4K79yJrIz9iBK7nzad1fSOYKKzk4LQpLSWQjjU=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137EWMvV045630
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Apr 2021 09:32:22 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
- 2021 09:32:22 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Apr 2021 09:32:22 -0500
-Received: from [10.250.37.105] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137EWLMA070655;
-        Wed, 7 Apr 2021 09:32:22 -0500
-Subject: Re: [PATCH 1/3] remoteproc: pru: Fixup interrupt-parent logic for fw
- events
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210323223839.17464-1-s-anna@ti.com>
- <20210323223839.17464-2-s-anna@ti.com> <20210406232837.GA330882@xps15>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <00b3fcf3-c3ed-9c2c-712e-952af019f16b@ti.com>
-Date:   Wed, 7 Apr 2021 09:32:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Apr 2021 10:32:39 -0400
+Received: by one.firstfloor.org (Postfix, from userid 503)
+        id CB1BB868A0; Wed,  7 Apr 2021 16:32:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
+        s=mail; t=1617805947;
+        bh=q6WRy7x4P3q8OvJPkyTv7aaqP4ZecObHQcJpWRuSaXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DTtoVhBsKIspmBxu7dkw8S16LQBCS8+J6AkmqBNkDvH+aw4jz6H7SKefo2yR6FOLy
+         hQHyzAbNHqY9YKLXZku+UWOr5JFqvmzILXKJ1EHmIwqRdoRHsjKJtI9MKobmx6s0j0
+         Ct5R9SdhhEfIuwHVSiKKv8qWzsjGllUFZPBOMzII=
+Date:   Wed, 7 Apr 2021 07:32:27 -0700
+From:   Andi Kleen <andi@firstfloor.org>
+To:     "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Cc:     Andi Kleen <andi@firstfloor.org>, like.xu@linux.intel.com,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wei.w.wang@intel.com, x86@kernel.org
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+Message-ID: <20210407143227.xoue623sigpx57c3@two.firstfloor.org>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+ <20210406124746.ji5iqladdlh73mok@two.firstfloor.org>
+ <606D2170.6020203@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210406232837.GA330882@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <606D2170.6020203@huawei.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 6:28 PM, Mathieu Poirier wrote:
-> On Tue, Mar 23, 2021 at 05:38:37PM -0500, Suman Anna wrote:
->> The PRU firmware interrupt mapping logic in pru_handle_intrmap() uses
->> of_irq_find_parent() with PRU device node to get a handle to the PRUSS
->> Interrupt Controller at present. This logic however requires that the
->> PRU nodes always define a interrupt-parent property. This property is
->> neither a required/defined property as per the PRU remoteproc binding,
->> nor is relevant from a DT node point of view without any associated
->> interrupts. The curret logic finds a wrong interrupt controller and
->> fails to perform proper mapping without any interrupt-parent property
->> in the PRU nodes.
->>
->> Fix this logic to always find and use the sibling interrupt controller.
->> Also, while at this, fix the acquired interrupt controller device node
->> reference properly.
->>
->> Fixes: c75c9fdac66e ("remoteproc: pru: Add support for PRU specific interrupt configuration")
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->>  drivers/remoteproc/pru_rproc.c | 15 ++++++++++++---
->>  1 file changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
->> index 16979c1cd2f4..a9d07c0751be 100644
->> --- a/drivers/remoteproc/pru_rproc.c
->> +++ b/drivers/remoteproc/pru_rproc.c
->> @@ -284,7 +284,7 @@ static int pru_handle_intrmap(struct rproc *rproc)
->>  	struct pru_rproc *pru = rproc->priv;
->>  	struct pru_irq_rsc *rsc = pru->pru_interrupt_map;
->>  	struct irq_fwspec fwspec;
->> -	struct device_node *irq_parent;
->> +	struct device_node *parent, *irq_parent;
->>  	int i, ret = 0;
->>  
->>  	/* not having pru_interrupt_map is not an error */
->> @@ -312,9 +312,16 @@ static int pru_handle_intrmap(struct rproc *rproc)
->>  
->>  	/*
->>  	 * parse and fill in system event to interrupt channel and
->> -	 * channel-to-host mapping
->> +	 * channel-to-host mapping. The interrupt controller to be used
->> +	 * for these mappings for a given PRU remoteproc is always its
->> +	 * corresponding sibling PRUSS INTC node.
->>  	 */
->> -	irq_parent = of_irq_find_parent(pru->dev->of_node);
+On Wed, Apr 07, 2021 at 11:05:20AM +0800, Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.) wrote:
 > 
-> If I understand correctly when an interrupt controller node wasn't speficied in
-> the parent this was unwinding until it found one...
-
-Correct if not specified in each PRU node, and ends up finding the complete
-wrong interrupt controller (GIC) as it walks up the tree.
-
 > 
->> +	parent = of_get_parent(dev_of_node(pru->dev));
->> +	if (!parent)
->> +		return -ENODEV;
->> +
->> +	irq_parent = of_get_child_by_name(parent, "interrupt-controller");
->> +	of_node_put(parent);
->>  	if (!irq_parent) {
->>  		kfree(pru->mapped_irq);
->>  		return -ENODEV;
->> @@ -337,11 +344,13 @@ static int pru_handle_intrmap(struct rproc *rproc)
->>  			goto map_fail;
->>  		}
->>  	}
->> +	of_node_put(irq_parent);
->>  
->>  	return ret;
->>  
->>  map_fail:
->>  	pru_dispose_irq_mapping(pru);
->> +	of_node_put(irq_parent);
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> On 2021/4/6 20:47, Andi Kleen wrote:
+> > > AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake
+> > > doesn't.
+> > > But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose
+> > > counter in Skylake.
+> > > Is there anything else that only Icelake supports in this patches set?
+> > Only Icelake server has the support for recovering from a EPT violation
+> > on the PEBS data structures. To use it on Skylake server you would
+> > need to pin the whole guest, but that is currently not done.
+> Sorry. Some questions about "Pin the whole guest". Do you mean VmPin equals
+> VmSize
+> in "/proc/$(pidof qemu-kvm)/status"? Or just VmLck equals VmSize? Or
+> something else?
 
-Thanks,
-Suman
+Either would be sufficient. All that matters is that the EPT pages don't get
+unmapped ever while PEBS is active.
 
-> 
->>  
->>  	return ret;
->>  }
->> -- 
->> 2.30.1
->>
-
+-Andi
