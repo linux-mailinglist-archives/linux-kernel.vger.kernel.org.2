@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFA63576BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0D83576BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhDGVXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S232763AbhDGVXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhDGVXB (ORCPT
+        with ESMTP id S232202AbhDGVW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:23:01 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47985C061760;
-        Wed,  7 Apr 2021 14:22:51 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id u11so7008869wrp.4;
-        Wed, 07 Apr 2021 14:22:51 -0700 (PDT)
+        Wed, 7 Apr 2021 17:22:59 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAC2C061762
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 14:22:49 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id l76so13987776pga.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 14:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=YqC1MvbDb+PpI/oVtnbZYXRa+wI43UAIv4i3U4Q2Ho4=;
-        b=SZf0Pw4lDUzRtid00z08mx0iKP9kHkh9tZ4nw0LpmLTlXz9q8LBz6U3i9XKexOuYqV
-         ZSwqTlJhv2T6D2WQs5xDasRhmhUdnpsYbFdjiO+JR7Ghkb+2PcQJDL3W3OsUv+nZq6Mf
-         qIx8MLbkOYHw2L09a6TBSeqCpVlfq9Mhj/Od0Ydjyt7uZIyv/DMqlY0v5F7zJxUorqk1
-         Cvci8maDOnWX8zSlSvXPCSxtBsYwuABiSler9qw8iiDF6cciw8gN9p4bRrLcIVw2cQR/
-         GILKiAt/Fle6VThOPjGKgP6XhqxpSK/3g/zbEOOrBXmFg9LyD8BPMTjweZcsQJ+w2Vlo
-         07Ww==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Zupj7uPahNplY1UQVoMGkmaTQjWt4OgWRC3KsLSujrc=;
+        b=M9YSVBjfkZmUSxtRGAEOxpmgFxdTViW/Siw3rNeLMFHDSM6e3hN8ysP/2240zDxxDi
+         T39zUKyY0vtGxkZkCB4+bVGjB1JAVYTKNRcUTK6MJPCXyrOzKqsAcJlHnP7Y1ova1y0O
+         st/zEdrQliXXXomA7KmkLKClIcIhYnk+UrSJM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=YqC1MvbDb+PpI/oVtnbZYXRa+wI43UAIv4i3U4Q2Ho4=;
-        b=LZnbCgtNCMxAnzuwtFU9IZe/852SQ9owBqAGxrmP6h6A0yUE6CV6wEYHWvKHOX9JtB
-         LJlPjwImhmpcRWOiyy0ZjCXa/7qnjGGIBgK5lA02MwAJDYKkAu9C2QVOZ9PQxjKcm5GH
-         Kdomr3mEitk229pucDo1G3sW5dCXme37hzvSCQDXtct7c4ecfjPB4VEsjnuLZK/XbFYm
-         iVFAxZzoX1al5i6m8dy7IW2/ZD31wMFYa+/Fe8ymPXZQ5Fs55WZ2R3F1bJvNAhQVc1W7
-         UVT549WjApqNGq9XKnpZ3NdZB09T88Y6aN8prhSYGpI5CN2a5Wi0FPj/KMEEfa+zqwdl
-         FBpw==
-X-Gm-Message-State: AOAM531wqj22Dm0CI9vdoPBcrl/vPsZTaH7HNRj/Jkva+fkQ4QFDzbIP
-        qcRmKSotKOFGmp5RvpvUE5o=
-X-Google-Smtp-Source: ABdhPJw0LR/0N07bR1S+Ix97QolAIk1xlDpSQyO/2kV1hMwqR5bJWWafmdduSsH8NiQBWT9q1gg/lA==
-X-Received: by 2002:a05:6000:228:: with SMTP id l8mr6667127wrz.401.1617830570090;
-        Wed, 07 Apr 2021 14:22:50 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id n5sm21037581wrp.50.2021.04.07.14.22.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zupj7uPahNplY1UQVoMGkmaTQjWt4OgWRC3KsLSujrc=;
+        b=MVM0ACDHxDEFL3Z+og29piMzXVcLxGbi41VUEgdT3T7Laxe6xQ399r/KREde8N0WT8
+         yARj206L/ChJ0yi4m23Iq7XysxwVxxThoPBR4lFY5olYTonLQIMM5vXXk/PWH96SzTB9
+         nA88E0lu3UUdKCj3eJdWAkWbD/dywHSarNhJ0vFv1AOHe/K4e/1A60ZBEbk8CxR82e0Y
+         XoIOGFaWzAL99G/EP1B/Jr5sgPvzfjD/zdZDTcLNaaCF6MJcK5+dXPfxy/YfNTX4WgTa
+         Ziu8MP6MFnl+z+jCR8hmlOA/tf/UfsVNtNiytmHHhfoqlZComFQbFrI1IU4V5mj8MU6L
+         /pGQ==
+X-Gm-Message-State: AOAM530nsDiU9xq4u2I9ZkMz9WPkMOteXZCCRyA5TEJ0/aL99h0Io88X
+        yEMPZBkTsB66Eg4I+N0isqiPow==
+X-Google-Smtp-Source: ABdhPJxmQh7Kdjw0Jc6nIS2cPCnS5zmtBW3pIu0KoBmLegBViWu9iAOndw2MizR2wLYNxurOsLzrcw==
+X-Received: by 2002:a63:df56:: with SMTP id h22mr5123694pgj.84.1617830568995;
+        Wed, 07 Apr 2021 14:22:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l191sm6209304pfd.36.2021.04.07.14.22.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 14:22:49 -0700 (PDT)
-Message-ID: <5b1390ea12eb87c8180de61304d00a7d4bb66436.camel@gmail.com>
-Subject: Re: [PATCH][next] media: venus: hfi,pm,firmware: Fix dereference
- before null check on hdev
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Colin King <colin.king@canonical.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 08 Apr 2021 02:22:43 +0500
-In-Reply-To: <20210407141004.495093-1-colin.king@canonical.com>
-References: <20210407141004.495093-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 07 Apr 2021 14:22:48 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 14:22:47 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bill Wendling <morbo@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <202104071419.AA35EEAF@keescook>
+References: <20210111081821.3041587-1-morbo@google.com>
+ <20210407211704.367039-1-morbo@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407211704.367039-1-morbo@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-07 at 15:10 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, Apr 07, 2021 at 02:17:04PM -0700, 'Bill Wendling' via Clang Built Linux wrote:
+> From: Sami Tolvanen <samitolvanen@google.com>
 > 
-> The pointer hdev is being dereferenced twice on the assignment of
-> pointers cpu_cs_base and wrapper_base before hdev is being null
-> checked.  Fix the potential null pointer dereference issues by
-> performing the null check of hdev before dereferencing it when
-> assigning cpu_cs_base and wrapper_base.
+> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> profile, the kernel is instrumented with PGO counters, a representative
+> workload is run, and the raw profile data is collected from
+> /sys/kernel/debug/pgo/profraw.
 > 
-> Addresses-Coverity: ("Dereference before null check")
-> Fixes: ff2a7013b3e6 ("media: venus: hfi,pm,firmware: Convert to block relative addressing")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/media/platform/qcom/venus/hfi_venus.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> The raw profile data must be processed by clang's "llvm-profdata" tool
+> before it can be used during recompilation:
 > 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
-> index cebb20cf371f..3eabb2646572 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
-> @@ -1094,12 +1094,14 @@ static irqreturn_t venus_isr(struct venus_core *core)
->  {
->  	struct venus_hfi_device *hdev = to_hfi_priv(core);
->  	u32 status;
-> -	void __iomem *cpu_cs_base = hdev->core->cpu_cs_base;
-> -	void __iomem *wrapper_base = hdev->core->wrapper_base;
-> +	void __iomem *cpu_cs_base, *wrapper_base;
->  
->  	if (!hdev)
->  		return IRQ_NONE;
->  
-> +	cpu_cs_base = hdev->core->cpu_cs_base;
-> +	wrapper_base = hdev->core->wrapper_base;
-> +
->  	status = readl(wrapper_base + WRAPPER_INTR_STATUS);
->  	if (IS_V6(core)) {
->  		if (status & WRAPPER_INTR_STATUS_A2H_MASK ||
+>   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+>   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> 
+> Multiple raw profiles may be merged during this step.
+> 
+> The data can now be used by the compiler:
+> 
+>   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
+> 
+> This initial submission is restricted to x86, as that's the platform we
+> know works. This restriction can be lifted once other platforms have
+> been verified to work with PGO.
+> 
+> Note that this method of profiling the kernel is clang-native, unlike
+> the clang support in kernel/gcov.
+> 
+> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+> 
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Co-developed-by: Bill Wendling <morbo@google.com>
+> Signed-off-by: Bill Wendling <morbo@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Fangrui Song <maskray@google.com>
 
-Reviewed-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+Thanks for sending this again! I'm looking forward to using it.
 
+Masahiro and Andrew, unless one of you would prefer to take this in your
+tree, I figure I can snag it to send to Linus.
 
+Anyone else have feedback?
+
+Thanks!
+
+-Kees
+
+-- 
+Kees Cook
