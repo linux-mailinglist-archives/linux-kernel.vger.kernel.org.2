@@ -2,323 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB7E357598
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2CE35759F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349223AbhDGUND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        id S1355962AbhDGUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhDGUNC (ORCPT
+        with ESMTP id S1349257AbhDGUNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:13:02 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63C7C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:12:52 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id h69so16676vke.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:12:52 -0700 (PDT)
+        Wed, 7 Apr 2021 16:13:12 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FDAC06175F;
+        Wed,  7 Apr 2021 13:13:01 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y16so135811pfc.5;
+        Wed, 07 Apr 2021 13:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KJfsWVKW3ZQ9+VO3yuES/2F3xtsvRFu1g+bTYItuJHU=;
-        b=pIzz2WPVo69d7w1ewQatkgIdh6gjmGOtKt0O6O0Gs9Z3o5CurypxTrRTj5a/XJcU4b
-         04OKA2SuuNzivEwPV8ApTaqE6Vf6ZsJ406PMNGus2NsFOX27YolBuh17eXvIggEuLaQ6
-         LizaLXluYgTyrfUyqw9fcShTliBDuf0XAEygG7FmgUtgun3mQc9VzsXVQZbtCxqqFqzK
-         fS9yLaN2XtPWBhkttBLPKBnUxCFoAZlKWLMX8hkk+GjSamrNtkSS5bRPC0ja+I9xmGaR
-         0IP5G/v9cjNtxnY0beaD9q14q1M0byE4FUUO2utcwap5RNCKXRWx/CCWky8bhPz0xLBX
-         7a5w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dwldfrHGB7cvjNDHe6gxp+OQ0DSzEe0anuIQnT5lIYc=;
+        b=dKW4tyxbGX73iHxH5Iha60EvcjCvKI+5hrpqwPPcbjELczGr/kzgfdsnLJJsWtOJbP
+         ubOwwaB3iZb/RBJ+1QPkWGQAjFPjPBqh2IboNE1nH7H1pZZqyeSqspXh1PeeRkVlyVq3
+         D+oq7t34NOHRn9OQqu4dUPDeY2QjjFesL1gh9WM+knJrz1i5ZQMIlvyZpNZOQKqZbOKS
+         4CB8O8zOE9mVX0eyokxf96eDPzy8oTdAAN584lU799CDSvkBRtjLRtC/rvSTel9pIKWP
+         gshTMF9nTcU8N6w8UNgn+aG83qEZcXRIQj51bqqxl3MvzOMunlFLxakjAhVMSVBe674a
+         jRAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KJfsWVKW3ZQ9+VO3yuES/2F3xtsvRFu1g+bTYItuJHU=;
-        b=GnzP2Kbstp1KiPbXa/lMHJiEWPZKF5MgkUnvI0Dx+BkGQFL6ZNpWjT0LQRxDLg8KEp
-         /x9CTvu0EkfYLFrGTsHJg+J5oZs4nTDmevbinxcApbnBhwA+HGrP0g3iQe2EyI2R0fbm
-         FXUaoukgIklNQh2aP0lw38h16LQCyQZfAo+4Ei+Ar/NWCQXuxupQZdC0Ec5oL6hQVnTg
-         pxqwDMI5kb5il5vWYqdvnLQR5XWdaZCG6D1EPRpvdsgFUcy08b+1vsJvFohkz3drPsQo
-         sVJ92u1emNQV02uW1qiFKqy4WW/kDQ0dvJ79DfIK1fE7KxFIYPmDwtyE+TwQ9VM4ze1E
-         K9iw==
-X-Gm-Message-State: AOAM532subtNoyWZwdIs7fEDLNdkahJs6nAN+0H3CQH1eyLMHLN9PvV0
-        ZMU3i9kqDo9MrS/apOLXB55YcfWvLUtcNg5X5DIqzA==
-X-Google-Smtp-Source: ABdhPJz8R0XAuI6qhmJ3r+Kb2nnC91gONhf1dMYmAvHfW8+3rdNo1k8WwE4R1rafHq/iJjKxHyZZ6KQ3V8mI8qbmJ/8=
-X-Received: by 2002:a1f:ad58:: with SMTP id w85mr3448935vke.22.1617826371876;
- Wed, 07 Apr 2021 13:12:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dwldfrHGB7cvjNDHe6gxp+OQ0DSzEe0anuIQnT5lIYc=;
+        b=rXerty21UGmpdCTPjnHq5rg76oOHvDDEyFJL1khsUyGRbvZeSDVdY5dzOhNdrM2Om8
+         VkyHV2tS+1jS7mRmPcVAzULtI+vfypUy7acOl1qwHvOzSjUuPK4Xv/l8nmLjfbfvblmR
+         W6YA2LUNl6vyqVLJYPO4ntfczXIfVgKSKYiQ0OSSo23zZO+QaCtW1ZlHzsdxApDcGfzJ
+         xK1lW/QR5Jt4wE3ARF4KlVqqxqfKPXLcvpJMbiJ7u4VwVJa6CCojDtj3CViPO6+g3DEG
+         yO9QcoVJg/w2I9dU+IiXi4RSDxPBHeTqDuh9n6laLY/UCbcm1TSUGMUiqUpGFQ+YuY4D
+         rWDg==
+X-Gm-Message-State: AOAM533JmvcVa4xtOni6+me2ZLjO1ov8C3oFKJPiMJwoU/M9fBfIF9/t
+        ZVW/sIPL5PS1j98PdUKq5V8=
+X-Google-Smtp-Source: ABdhPJx1TzjDHM8SCpdazwwikZp8MB63xmALxAEXVlHdCjBoBVsMzPPllM88y4Piph/rcIdj06SGPw==
+X-Received: by 2002:a65:610f:: with SMTP id z15mr4931593pgu.360.1617826380553;
+        Wed, 07 Apr 2021 13:13:00 -0700 (PDT)
+Received: from localhost (g191.124-44-145.ppp.wakwak.ne.jp. [124.44.145.191])
+        by smtp.gmail.com with ESMTPSA id m1sm5878421pjk.24.2021.04.07.13.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 13:12:59 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 05:12:58 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, guoren@kernel.org,
+        linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>,
+        sparclinux@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [OpenRISC] [PATCH v6 1/9] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <20210407201258.GH3288043@lianli.shorne-pla.net>
+References: <1617201040-83905-1-git-send-email-guoren@kernel.org>
+ <1617201040-83905-2-git-send-email-guoren@kernel.org>
+ <YGyRrBjomDCPOBUd@boqun-archlinux>
+ <20210406235208.GG3288043@lianli.shorne-pla.net>
+ <YG1/xRgWlLHD4j/8@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210406013643.3280369-1-badhri@google.com> <20210406013643.3280369-3-badhri@google.com>
- <AM9PR10MB41340A8F754CB05B0DABB78880759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <AM9PR10MB41340A8F754CB05B0DABB78880759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 7 Apr 2021 13:12:16 -0700
-Message-ID: <CAPTae5K1oW0AE1mn4j_+rdyoqHgrppajMd-74FCDgzZ-D0f8ag@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] usb: typec: tcpm: Address incorrect values of tcpm
- psy for pps supply
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG1/xRgWlLHD4j/8@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Apr 07, 2021 at 11:47:49AM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 07, 2021 at 08:52:08AM +0900, Stafford Horne wrote:
+> > Why doesn't RISC-V add the xchg16 emulation code similar to OpenRISC?  For
+> > OpenRISC we added xchg16 and xchg8 emulation code to enable qspinlocks.  So
+> > one thought is with CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32=y, can we remove our
+> > xchg16/xchg8 emulation code?
+> 
+> CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32 is guaranteed crap.
+>
+> All the architectures that have wanted it are RISC style LL/SC archs,
+> and for them a cmpxchg loop is a daft thing to do, since it reduces the
+> chance of it behaving sanely.
+> 
+> Why would we provide something that's known to be suboptimal? If an
+> architecture chooses to not care about determinism and or fwd progress,
+> then that's their choice. But not one, I feel, we should encourage.
 
-Moved to kerneldoc header in V2.
+Thanks, this is the response I was hoping my comment would provoke.
 
-Thanks,
-Badhri
+So not enabling CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32 for architectures
+unless they really want it should be the way.
 
-On Wed, Apr 7, 2021 at 9:07 AM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
->
-> On 06 April 2021 02:37, Badhri Jagan Sridharan wrote:
->
-> > tcpm_pd_select_pps_apdo overwrites port->pps_data.min_volt,
-> > port->pps_data.max_volt, port->pps_data.max_curr even before
-> > port partner accepts the requests. This leaves incorrect values
-> > in current_limit and supply_voltage that get exported by
-> > "tcpm-source-psy-". Solving this problem by caching the request
-> > values in req_min_volt, req_max_volt, req_max_curr, req_out_volt,
-> > req_op_curr. min_volt, max_volt, max_curr gets updated once the
-> > partner accepts the request. current_limit, supply_voltage gets updated
-> > once local port's tcpm enters SNK_TRANSITION_SINK when the accepted
-> > current_limit and supply_voltage is enforced.
-> >
-> > Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through
-> > power_supply")
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
->
-> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
->
-> >  drivers/usb/typec/tcpm/tcpm.c | 84 ++++++++++++++++++++---------------
-> >  1 file changed, 49 insertions(+), 35 deletions(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 03eca5061132..d43774cc2ccf 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -269,11 +269,22 @@ struct pd_mode_data {
-> >  };
-> >
-> >  struct pd_pps_data {
-> > +     /* Actual min voltage at the local port */
-> >       u32 min_volt;
-> > +     /* Requested min voltage to the port partner */
-> > +     u32 req_min_volt;
-> > +     /* Actual max voltage at the local port */
-> >       u32 max_volt;
-> > +     /* Requested max voltage to the port partner */
-> > +     u32 req_max_volt;
-> > +     /* Actual max current at the local port */
-> >       u32 max_curr;
-> > -     u32 out_volt;
-> > -     u32 op_curr;
-> > +     /* Requested max current of the port partner */
-> > +     u32 req_max_curr;
-> > +     /* Requested output voltage to the port partner */
-> > +     u32 req_out_volt;
-> > +     /* Requested operating current to the port partner */
-> > +     u32 req_op_curr;
-> >       bool supported;
-> >       bool active;
-> >  };
-> > @@ -2498,8 +2509,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
-> > *port,
-> >                       break;
-> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> >                       /* Revert data back from any requested PPS updates */
-> > -                     port->pps_data.out_volt = port->supply_voltage;
-> > -                     port->pps_data.op_curr = port->current_limit;
-> > +                     port->pps_data.req_out_volt = port->supply_voltage;
-> > +                     port->pps_data.req_op_curr = port->current_limit;
-> >                       port->pps_status = (type == PD_CTRL_WAIT ?
-> >                                           -EAGAIN : -EOPNOTSUPP);
-> >
-> > @@ -2548,8 +2559,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
-> > *port,
-> >                       break;
-> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> >                       port->pps_data.active = true;
-> > -                     port->req_supply_voltage = port->pps_data.out_volt;
-> > -                     port->req_current_limit = port->pps_data.op_curr;
-> > +                     port->pps_data.min_volt = port-
-> > >pps_data.req_min_volt;
-> > +                     port->pps_data.max_volt = port-
-> > >pps_data.req_max_volt;
-> > +                     port->pps_data.max_curr = port-
-> > >pps_data.req_max_curr;
-> > +                     port->req_supply_voltage = port-
-> > >pps_data.req_out_volt;
-> > +                     port->req_current_limit = port->pps_data.req_op_curr;
-> >                       tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
-> >                       break;
-> >               case SOFT_RESET_SEND:
-> > @@ -3108,16 +3122,16 @@ static unsigned int tcpm_pd_select_pps_apdo(struct
-> > tcpm_port *port)
-> >               src = port->source_caps[src_pdo];
-> >               snk = port->snk_pdo[snk_pdo];
-> >
-> > -             port->pps_data.min_volt =
-> > max(pdo_pps_apdo_min_voltage(src),
-> > -                                           pdo_pps_apdo_min_voltage(snk));
-> > -             port->pps_data.max_volt =
-> > min(pdo_pps_apdo_max_voltage(src),
-> > -                                           pdo_pps_apdo_max_voltage(snk));
-> > -             port->pps_data.max_curr = min_pps_apdo_current(src, snk);
-> > -             port->pps_data.out_volt = min(port->pps_data.max_volt,
-> > -                                           max(port->pps_data.min_volt,
-> > -                                               port->pps_data.out_volt));
-> > -             port->pps_data.op_curr = min(port->pps_data.max_curr,
-> > -                                          port->pps_data.op_curr);
-> > +             port->pps_data.req_min_volt =
-> > max(pdo_pps_apdo_min_voltage(src),
-> > +
-> > pdo_pps_apdo_min_voltage(snk));
-> > +             port->pps_data.req_max_volt =
-> > min(pdo_pps_apdo_max_voltage(src),
-> > +
-> > pdo_pps_apdo_max_voltage(snk));
-> > +             port->pps_data.req_max_curr = min_pps_apdo_current(src,
-> > snk);
-> > +             port->pps_data.req_out_volt = min(port->pps_data.max_volt,
-> > +                                               max(port->pps_data.min_volt,
-> > +                                                   port-
-> > >pps_data.req_out_volt));
-> > +             port->pps_data.req_op_curr = min(port->pps_data.max_curr,
-> > +                                              port->pps_data.req_op_curr);
-> >               power_supply_changed(port->psy);
-> >       }
-> >
-> > @@ -3245,10 +3259,10 @@ static int tcpm_pd_build_pps_request(struct
-> > tcpm_port *port, u32 *rdo)
-> >                       tcpm_log(port, "Invalid APDO selected!");
-> >                       return -EINVAL;
-> >               }
-> > -             max_mv = port->pps_data.max_volt;
-> > -             max_ma = port->pps_data.max_curr;
-> > -             out_mv = port->pps_data.out_volt;
-> > -             op_ma = port->pps_data.op_curr;
-> > +             max_mv = port->pps_data.req_max_volt;
-> > +             max_ma = port->pps_data.req_max_curr;
-> > +             out_mv = port->pps_data.req_out_volt;
-> > +             op_ma = port->pps_data.req_op_curr;
-> >               break;
-> >       default:
-> >               tcpm_log(port, "Invalid PDO selected!");
-> > @@ -3295,8 +3309,8 @@ static int tcpm_pd_build_pps_request(struct tcpm_port
-> > *port, u32 *rdo)
-> >       tcpm_log(port, "Requesting APDO %d: %u mV, %u mA",
-> >                src_pdo_index, out_mv, op_ma);
-> >
-> > -     port->pps_data.op_curr = op_ma;
-> > -     port->pps_data.out_volt = out_mv;
-> > +     port->pps_data.req_op_curr = op_ma;
-> > +     port->pps_data.req_out_volt = out_mv;
-> >
-> >       return 0;
-> >  }
-> > @@ -5429,7 +5443,7 @@ static int tcpm_try_role(struct typec_port *p, int role)
-> >       return ret;
-> >  }
-> >
-> > -static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
-> > +static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 req_op_curr)
-> >  {
-> >       unsigned int target_mw;
-> >       int ret;
-> > @@ -5447,12 +5461,12 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
-> > *port, u16 op_curr)
-> >               goto port_unlock;
-> >       }
-> >
-> > -     if (op_curr > port->pps_data.max_curr) {
-> > +     if (req_op_curr > port->pps_data.max_curr) {
-> >               ret = -EINVAL;
-> >               goto port_unlock;
-> >       }
-> >
-> > -     target_mw = (op_curr * port->pps_data.out_volt) / 1000;
-> > +     target_mw = (req_op_curr * port->supply_voltage) / 1000;
-> >       if (target_mw < port->operating_snk_mw) {
-> >               ret = -EINVAL;
-> >               goto port_unlock;
-> > @@ -5466,10 +5480,10 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
-> > *port, u16 op_curr)
-> >       }
-> >
-> >       /* Round down operating current to align with PPS valid steps */
-> > -     op_curr = op_curr - (op_curr % RDO_PROG_CURR_MA_STEP);
-> > +     req_op_curr = req_op_curr - (req_op_curr %
-> > RDO_PROG_CURR_MA_STEP);
-> >
-> >       reinit_completion(&port->pps_complete);
-> > -     port->pps_data.op_curr = op_curr;
-> > +     port->pps_data.req_op_curr = req_op_curr;
-> >       port->pps_status = 0;
-> >       port->pps_pending = true;
-> >       mutex_unlock(&port->lock);
-> > @@ -5490,7 +5504,7 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
-> > *port, u16 op_curr)
-> >       return ret;
-> >  }
-> >
-> > -static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
-> > +static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 req_out_volt)
-> >  {
-> >       unsigned int target_mw;
-> >       int ret;
-> > @@ -5508,13 +5522,13 @@ static int tcpm_pps_set_out_volt(struct tcpm_port
-> > *port, u16 out_volt)
-> >               goto port_unlock;
-> >       }
-> >
-> > -     if (out_volt < port->pps_data.min_volt ||
-> > -         out_volt > port->pps_data.max_volt) {
-> > +     if (req_out_volt < port->pps_data.min_volt ||
-> > +         req_out_volt > port->pps_data.max_volt) {
-> >               ret = -EINVAL;
-> >               goto port_unlock;
-> >       }
-> >
-> > -     target_mw = (port->pps_data.op_curr * out_volt) / 1000;
-> > +     target_mw = (port->current_limit * req_out_volt) / 1000;
-> >       if (target_mw < port->operating_snk_mw) {
-> >               ret = -EINVAL;
-> >               goto port_unlock;
-> > @@ -5528,10 +5542,10 @@ static int tcpm_pps_set_out_volt(struct tcpm_port
-> > *port, u16 out_volt)
-> >       }
-> >
-> >       /* Round down output voltage to align with PPS valid steps */
-> > -     out_volt = out_volt - (out_volt % RDO_PROG_VOLT_MV_STEP);
-> > +     req_out_volt = req_out_volt - (req_out_volt %
-> > RDO_PROG_VOLT_MV_STEP);
-> >
-> >       reinit_completion(&port->pps_complete);
-> > -     port->pps_data.out_volt = out_volt;
-> > +     port->pps_data.req_out_volt = req_out_volt;
-> >       port->pps_status = 0;
-> >       port->pps_pending = true;
-> >       mutex_unlock(&port->lock);
-> > @@ -5589,8 +5603,8 @@ static int tcpm_pps_activate(struct tcpm_port *port,
-> > bool activate)
-> >
-> >       /* Trigger PPS request or move back to standard PDO contract */
-> >       if (activate) {
-> > -             port->pps_data.out_volt = port->supply_voltage;
-> > -             port->pps_data.op_curr = port->current_limit;
-> > +             port->pps_data.req_out_volt = port->supply_voltage;
-> > +             port->pps_data.req_op_curr = port->current_limit;
-> >       }
-> >       mutex_unlock(&port->lock);
-> >
-> > --
-> > 2.31.0.208.g409f899ff0-goog
->
+-Stafford
