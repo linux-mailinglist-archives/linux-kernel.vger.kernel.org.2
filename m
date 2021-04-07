@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AC9356449
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65E535644C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349075AbhDGGn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S1349099AbhDGGoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhDGGnu (ORCPT
+        with ESMTP id S1349049AbhDGGnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:43:50 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28011C061756;
-        Tue,  6 Apr 2021 23:43:41 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id m11so9552116pfc.11;
-        Tue, 06 Apr 2021 23:43:41 -0700 (PDT)
+        Wed, 7 Apr 2021 02:43:51 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FBCC061756;
+        Tue,  6 Apr 2021 23:43:42 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so756899pjb.0;
+        Tue, 06 Apr 2021 23:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7SRBX2zWlmG+Wnp7OjpNFHLRL6YKU9gaSLUgjStjeSA=;
-        b=AMYUtoZ2wZYY0gE9hzXqShCPRugVZ8z0VUJuJH69xXJaXI/FZ+5yIsOAHHhp/Xa8EG
-         nG060gKFAckyldI9nEBSQFRlUT5CBU5SN/CdLeGI3klVLm++zuw+TWeFGFhcsC4+J2Tr
-         YT6c2ZKmlY8a3+ecoahFAL7uMsLzRMzRR01xwgPZhBbBmxe56yV8/VeRhVyaLqGT7lDN
-         7dVox0XD/bmyyw1HFVvKsHHtMj11E4isqMso+4SBhUk2EItcxuSE0vnAEObsO8BNXkEO
-         wnG4SUBiLS1blPlV21YE0eSx40atF61ipiDIbZ5sqVgOW+UnA6x9Z1T2uG8dTOAw+OFR
-         yCug==
+        bh=iNQgMFGdHCJQybttnc8ZktUg+AuixFV373VKxt8OipQ=;
+        b=bL4tLK6rPdC9+pMpm+HgZ5dgrI/LpotabRYSpDBBWA/GPfObATMmj0oDciLDLRPShY
+         sXA5qGSY6JqDDlUxFrNOS5K6DaOhD9FNkeKi1J0yNR0qgBn+MEQaHHyUVXB1iUSuRRSX
+         hLE9ZBm3U95hSbeespJke+/a1o7eI0a4QBzAZxjEerBV8nRf0XLzTI2RRWQMKKw4tTFo
+         3L0fO/i9Q/XwMLOVNY7XZkEzBF9+fiP0M0nZE0wjpRz/N+p2CpVmROeA2QMHqWcVK5Zu
+         ZmkodlE1i0ppSsaj6gZiuVrTH1z74+GTKxLid36gFbjvz/4cZubHTHBH/bxkSkOQkTr6
+         QoCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7SRBX2zWlmG+Wnp7OjpNFHLRL6YKU9gaSLUgjStjeSA=;
-        b=DtA2BNvFgYPbhwI96NDCa6Ixai64+iVKfMzLRzGZQVduGDDGdKfW5naiSoTLzyaQip
-         DHUn1L6aX+hRnFChzHSnuDYGOyA1QnbGHjuf9HNco9LgVnmS0M+hLeYsOzjiNmry18Xu
-         qYsRsPXG5Xy9EXecqbZkD4XD8pnAoyzKdZINAI/JCnsFtRF5eJ+nSwXvy0huBQTsJpMr
-         T2xjG2Gsacx3M7LcXF0UKPzBp2wPahdhh3bXA0EtGU4T7nPMSV4UgKmtBfLRkRGpFqOg
-         83gbYLc/6lPmuI3GFAdNHoSP8yPJwSAM0UufYiB+54wSXXIvuNs6gF4RZpKUCmr18/a0
-         g/WA==
-X-Gm-Message-State: AOAM532IxVx0Z4fSDDJZ8uGU76MnOv8QgYb6T/rhzDCpBFO5gCxhrc04
-        1UNsHjBSmIGq9z1HYRBaKRU=
-X-Google-Smtp-Source: ABdhPJwqQmSR9ejO+2SH7wVFCu55gOSjGn+5iNaoES3fzICyJ7d5/kNX9xjU90SUtbPAmh/KqTV17g==
-X-Received: by 2002:a63:dd14:: with SMTP id t20mr1912847pgg.258.1617777820715;
-        Tue, 06 Apr 2021 23:43:40 -0700 (PDT)
+        bh=iNQgMFGdHCJQybttnc8ZktUg+AuixFV373VKxt8OipQ=;
+        b=UbXELtrmcTpDraBDuV2Iz/1/WtRX0cze6YktqAi9t+UitRE3gRkDG3tr9uegCUlRYx
+         BPcIbe1awY5pqUpzAKq5SdFq5wYPbRTxviVir3htKCskRP9s1hpIE/4ILI39H3PhEp2Y
+         rgFmdf1DsjTwZR4SP8yAgeYI3ONwchQulu/dzCCB+vFg/RMhXGDgJ2p31oZbbGrAMIHr
+         mAVVdbhhmtr++TZgm6l+B+mpTQugps5Cz/o0y0p+HHRavIHl5uNyiBzhKp6kjkusoK8K
+         q2q9Cul3ag/tAsDJ9DpHZ23/qAReV1PIvhPl80zRUuU3LnX1gtV5jLCsvq9duagYDaw0
+         rRiA==
+X-Gm-Message-State: AOAM531ppqzkOOa8Tht4Mhsr4q0XjHSWxCxqvsW/ix0B1MaKJIkCEMGA
+        Lr5rneoqLqpTZ2YMzuYfHlc=
+X-Google-Smtp-Source: ABdhPJxBAsCxXKZcvwuM32JlND25qmOd8VBz/H1GWFe+6qjtmSIae702aXP3xKjzS3nHNJ6Koe5VCw==
+X-Received: by 2002:a17:90a:9281:: with SMTP id n1mr1867246pjo.146.1617777822010;
+        Tue, 06 Apr 2021 23:43:42 -0700 (PDT)
 Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id x2sm20604956pgb.89.2021.04.06.23.43.39
+        by smtp.gmail.com with ESMTPSA id j205sm3817856pfd.214.2021.04.06.23.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:43:40 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:43:38 -0700
+        Tue, 06 Apr 2021 23:43:41 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:43:39 -0700
 From:   Pavle Rohalj <pavle.rohalj@gmail.com>
 To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 24/49] staging: sm750fb: Update local variable in
- sm750_hw_fillrect to snake case
-Message-ID: <cd24d36b55d3bdb6121e86b8fb2112efbfdd3f89.1617776878.git.pavle.rohalj@gmail.com>
+Subject: [PATCH v2 25/49] staging: sm750fb: Rename deGetTransparency to snake
+ case
+Message-ID: <1cdaddb4b127cf70c3ccac2496a29da1b761cfbf.1617776878.git.pavle.rohalj@gmail.com>
 References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,41 +65,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpoint.pl checks for the local variable
-deCtrl in the function sm750_hw_fillrect.
+Fix "Avoid CamelCase" checkpatch.pl checks for the function
+deGetTransparency in sm750_accel.c.
 
 Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
- drivers/staging/sm750fb/sm750_accel.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/sm750fb/sm750_accel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/sm750_accel.c b/drivers/staging/sm750fb/sm750_accel.c
-index c840873e9622..1eeedacfc4a8 100644
+index 1eeedacfc4a8..8ab7d827a99e 100644
 --- a/drivers/staging/sm750fb/sm750_accel.c
 +++ b/drivers/staging/sm750fb/sm750_accel.c
-@@ -90,7 +90,7 @@ int sm750_hw_fillrect(struct lynx_accel *accel,
- 		      u32 x, u32 y, u32 width, u32 height,
- 		      u32 color, u32 rop)
- {
--	u32 deCtrl;
-+	u32 de_ctrl;
- 
- 	if (accel->de_wait() != 0) {
- 		/*
-@@ -122,11 +122,11 @@ int sm750_hw_fillrect(struct lynx_accel *accel,
- 		  ((width << DE_DIMENSION_X_SHIFT) & DE_DIMENSION_X_MASK) |
- 		  (height & DE_DIMENSION_Y_ET_MASK)); /* dpr8 */
- 
--	deCtrl = DE_CONTROL_STATUS | DE_CONTROL_LAST_PIXEL |
-+	de_ctrl = DE_CONTROL_STATUS | DE_CONTROL_LAST_PIXEL |
- 		DE_CONTROL_COMMAND_RECTANGLE_FILL | DE_CONTROL_ROP_SELECT |
- 		(rop & DE_CONTROL_ROP_MASK); /* dpr0xc */
- 
--	write_dpr(accel, DE_CONTROL, deCtrl);
-+	write_dpr(accel, DE_CONTROL, de_ctrl);
+@@ -284,7 +284,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
  	return 0;
  }
  
+-static unsigned int deGetTransparency(struct lynx_accel *accel)
++static unsigned int de_get_transparency(struct lynx_accel *accel)
+ {
+ 	unsigned int de_ctrl;
+ 
+@@ -390,7 +390,7 @@ int sm750_hw_imageblit(struct lynx_accel *accel, const char *src_buf,
+ 		DE_CONTROL_ROP_SELECT | DE_CONTROL_COMMAND_HOST_WRITE |
+ 		DE_CONTROL_HOST | DE_CONTROL_STATUS;
+ 
+-	write_dpr(accel, DE_CONTROL, de_ctrl | deGetTransparency(accel));
++	write_dpr(accel, DE_CONTROL, de_ctrl | de_get_transparency(accel));
+ 
+ 	/* Write MONO data (line by line) to 2D Engine data port */
+ 	for (i = 0; i < height; i++) {
 -- 
 2.30.2
 
