@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F1B356CA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BBE356CA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352453AbhDGMvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:51:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53324 "EHLO mail.kernel.org"
+        id S1352463AbhDGMwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhDGMvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:51:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB93461279;
-        Wed,  7 Apr 2021 12:51:21 +0000 (UTC)
+        id S230234AbhDGMwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:52:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC7D61279;
+        Wed,  7 Apr 2021 12:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617799882;
-        bh=m4r6X7ZfydL60kYXm+rHrFPGoJaR2k9l7+B9drZZwHU=;
+        s=k20201202; t=1617799924;
+        bh=cyfjEk9jthcsbMRdXa22ian2dfCApQqG6xTpove5ejg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eg/cjZglmOs+0VhFkHOsbQYekE4Y92vEuJBZOVSLDNZVQfAEP1v6sKbxxj2OdpXJF
-         0pZVBfLKcL6GDGHkWX+FLJ+Xr/nMDvmCJ2MUqjdOlIuDdSxbiX9+9H5gpBW0wWqc/8
-         okJfq9ghElwMauqW9owTQlMBIIG2C4oi+Fq/N26+ZHh4y2EZy7aAFTc3MOcAMTHDoV
-         SWwqaCpcAk2IxZojl2RWYV2abb6pcohUL4MVAzo8zpLvQnT7k9KYt9mZgzZtz58nuU
-         BSyTJA/Khnnm0eJmluiWbJil/6fkvj8wVQWGhM6hw21/fvp66BrKBamkWETivurx/0
-         nJY+4P1lqwslQ==
-Date:   Wed, 7 Apr 2021 15:51:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <YG2qxjPJ4ruas1dI@unreal>
-References: <20210406232321.12104-1-decui@microsoft.com>
- <YG1o4LXVllXfkUYO@unreal>
- <MW2PR2101MB08923D4417E44C5750BFB964BF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
+        b=RCn0Ot8ATDqpyS4C66rj2NwsNmng3SdIotwU/xRgyy/tZ2P2byZVLVcD+/+GRWW59
+         XX/AWOQW22nip9SoRXn/W+INkjDuNPFotVxX+hZYgC1Vx/Q0XuU0JIzWjlQUdRBohL
+         zvReB+RpACqLQuLVS54IPk3fDzDF1GxS00o2RjCZr5Nr6LnCCwhNcvIKDCKXjzamhr
+         PShKbXs4RyeuhNS2bIL8IIjniNYZlXZX6SXi4YyLZ6kGEWDALxo374XiikYIbDhW4v
+         hmxtBE1ec42rJwgfEF5chbAuEqc4pEm3L+9kdHQ7ZYzPT4BND22OU6Y8gjbJvX4MGp
+         i6zVANALjAJOg==
+Date:   Wed, 7 Apr 2021 13:51:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Rob Herring <robh@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: codecs: Fix rumtime PM imbalance in tas2552_probe
+Message-ID: <20210407125147.GD5510@sirena.org.uk>
+References: <20210407065402.17729-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="J5MfuwkIyy7RmF4Q"
 Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB08923D4417E44C5750BFB964BF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
+In-Reply-To: <20210407065402.17729-1-dinghao.liu@zju.edu.cn>
+X-Cookie: Dry clean only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:40:13AM +0000, Dexuan Cui wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Wednesday, April 7, 2021 1:10 AM
-> > 
-> > <...>
-> > 
-> > > +int gdma_verify_vf_version(struct pci_dev *pdev)
-> > > +{
-> > > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > > +	struct gdma_verify_ver_req req = { 0 };
-> > > +	struct gdma_verify_ver_resp resp = { 0 };
-> > > +	int err;
-> > > +
-> > > +	gdma_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
-> > > +			  sizeof(req), sizeof(resp));
-> > > +
-> > > +	req.protocol_ver_min = GDMA_PROTOCOL_FIRST;
-> > > +	req.protocol_ver_max = GDMA_PROTOCOL_LAST;
-> > > +
-> > > +	err = gdma_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> > > +	if (err || resp.hdr.status) {
-> > > +		pr_err("VfVerifyVersionOutput: %d, status=0x%x\n", err,
-> > > +		       resp.hdr.status);
-> > > +		return -EPROTO;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > <...>
-> > > +	err = gdma_verify_vf_version(pdev);
-> > > +	if (err)
-> > > +		goto remove_irq;
-> > 
-> > Will this VF driver be used in the guest VM? What will prevent from users to
-> > change it?
-> > I think that such version negotiation scheme is not allowed.
-> 
-> Yes, the VF driver is expected to run in a Linux VM that runs on Azure.
-> 
-> Currently gdma_verify_vf_version() just tells the PF driver that the VF driver
-> is only able to support GDMA_PROTOCOL_V1, and want to use
-> GDMA_PROTOCOL_V1's message formats to talk to the PF driver later.
-> 
-> enum {
->         GDMA_PROTOCOL_UNDEFINED = 0,
->         GDMA_PROTOCOL_V1 = 1,
->         GDMA_PROTOCOL_FIRST = GDMA_PROTOCOL_V1,
->         GDMA_PROTOCOL_LAST = GDMA_PROTOCOL_V1,
->         GDMA_PROTOCOL_VALUE_MAX
-> };
-> 
-> The PF driver is supposed to always support GDMA_PROTOCOL_V1, so I expect
-> here gdma_verify_vf_version() should succeed. If a user changes the Linux VF
-> driver and try to use a protocol version not supported by the PF driver, then
-> gdma_verify_vf_version() will fail; later, if the VF driver tries to talk to the PF
-> driver using an unsupported message format, the PF driver will return a failure.
 
-The worry is not for the current code, but for the future one when you will
-support v2, v3 e.t.c. First, your code will look like a spaghetti and
-second, users will try and mix vX with "unsupported" commands just for the
-fun.
+--J5MfuwkIyy7RmF4Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
+On Wed, Apr 07, 2021 at 02:54:00PM +0800, Dinghao Liu wrote:
 
-> 
-> Thanks,
-> -- Dexuan
+> -	pm_runtime_set_active(&client->dev);
+> -	pm_runtime_set_autosuspend_delay(&client->dev, 1000);
+> -	pm_runtime_use_autosuspend(&client->dev);
+> -	pm_runtime_enable(&client->dev);
+> -	pm_runtime_mark_last_busy(&client->dev);
+> -	pm_runtime_put_sync_autosuspend(&client->dev);
+> -
+>  	dev_set_drvdata(&client->dev, data);
+> =20
+>  	ret =3D devm_snd_soc_register_component(&client->dev,
+> @@ -733,6 +726,13 @@ static int tas2552_probe(struct i2c_client *client,
+>  	if (ret < 0)
+>  		dev_err(&client->dev, "Failed to register component: %d\n", ret);
+> =20
+> +	pm_runtime_set_active(&client->dev);
+> +	pm_runtime_set_autosuspend_delay(&client->dev, 1000);
+> +	pm_runtime_use_autosuspend(&client->dev);
+
+It's not clear to me that just moving the operations after the
+registration is a good fix - once the component is registered we could
+start trying to do runtime PM operations with it which AFAIR won't count
+references and so on properly if runtime PM isn't enabled so if we later
+enable runtime PM we might have the rest of the code in a confused state
+about what's going on.
+
+--J5MfuwkIyy7RmF4Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBtquIACgkQJNaLcl1U
+h9BQtAf+I2hjUyL/9OkE3eGicNAX7nsxLA+2RCglYcJbnP+DPP0fV9PuPWnUP/v+
+AyaTLilVvUCfW/mSQXCrS8s1YZtRjmcWM+C21dyyejn5PTFp2q02jEfVZUsHE1b2
+wbspUe0X+/tNp8AifCdgMfHN0i0MvxsVVwnDTwTy64sF7escwM7LaCsJXOvIo8Q3
+Jfnq/TJFt40FgSRe30GEzoJEVfiWdAGmfOvggULT2iX3tp7F6Dcl1OevhObFFTmX
+SETQzdLXqih7npx1k1RQBBqFPo3mKJ4syuTn3MV4pDWrWqVPFxU1Z2QsNYlslGtk
+V+WLnEHAr27p/pTbLLxjB6XTo549EA==
+=Tb7U
+-----END PGP SIGNATURE-----
+
+--J5MfuwkIyy7RmF4Q--
