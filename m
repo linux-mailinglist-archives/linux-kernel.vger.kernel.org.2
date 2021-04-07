@@ -2,144 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25085356547
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51246356550
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349431AbhDGHdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        id S1349453AbhDGHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhDGHdq (ORCPT
+        with ESMTP id S1349438AbhDGHeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:33:46 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC52C06174A;
-        Wed,  7 Apr 2021 00:33:23 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 341C5C6B24A;
-        Wed,  7 Apr 2021 09:33:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617780802;
-        bh=2rrkRiew20+H4UyA8Em/KsMBwMk+jHbfTnOtvXL8CRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ohThtx6IaMF+y5Ex5cH3Tiw03cXrhGUYWMwXdjTlQL1iG9G0RYuxQDxb0NGqsqnYR
-         TFM5KwSRUDYQpew/D0YC7cUSb/JTP7bkHpIaMbfuN+BDBBeXMjYO8vH1q2QImd0IBd
-         8V/ew39f0XKW7mm1/G7qZp/LqflsrQ4AzbbOWcs8=
-Date:   Wed, 7 Apr 2021 09:33:20 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/8] pwm: pca9685: Support hardware readout
-Message-ID: <YG1gQNdDYA1RwrCo@workstation.tuxnet>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-2-clemens.gruber@pqgruber.com>
- <20210407053135.tx2q4bzxf2lwtqna@pengutronix.de>
+        Wed, 7 Apr 2021 03:34:10 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49350C06174A;
+        Wed,  7 Apr 2021 00:34:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id i4so376058pjk.1;
+        Wed, 07 Apr 2021 00:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QvZSBrH1kmgxKZKSD+pBe7YtJvXFi8yG9kfTKSmsc5Q=;
+        b=O2cXbe0TlOnka3Htg7a7ktCEm4u84Apnd4pxAh+QckwGH1N5XUJxAQXGojK8urTwHW
+         S6qKShLuqQpXW7czN7NSppj8uMSG1ILItUs2jRqW9KCOM0ewsGPs471AJdd9fQwkregx
+         5WJsKLnvvgP9H/rO+GMThc5QqAWIM6vJUjUihrVpN1qBZ1PZrQQurpb3jy0hrvC8q/ga
+         193Hbzqy2uMvrG2DBivJBITDOAFTPHgkYrA0xxTN2O5/SDYNzxk8E+F9Ofv4wPxpKtYd
+         OpyTo6+F49K8x0yWEkTWuqKF3gTonWd9jxsyeBFNYymfsKPd0N1ZAJ/ruwq0yRVkpYX5
+         /xXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QvZSBrH1kmgxKZKSD+pBe7YtJvXFi8yG9kfTKSmsc5Q=;
+        b=It3wmurtf3RzDQg5MbvIKfnNC72Wd9j3tdITngALofG7LqQTLW3OPQCtldNm0o7pfN
+         vv6qrC6BmiLflb9Y2jK8e1Tw6F6dvD6Xtb2GLk/VBPQZo76gtaVLMk8/Yl2jhR8i6JcA
+         Yupq8wnJ6MywTGqAe85FUj/riByuVr+xU4sH55ollKcjkNzKPONlw1OXXv0+pfnZ2iC2
+         vhTPcgreszCN1xGhxtPRCzfUXcUfC6yICtfAitgkGF4+T+HOwb0A9NPf9jbPalcw5SCj
+         hwv8xozO9qPdI7UeUMOvT7Jsv5e7gCF+8/NTzxcHKIkXX8YPoAEAwcMxFwWYOag9Fc3j
+         bU+g==
+X-Gm-Message-State: AOAM533NK4KGWEkiEc1OC1RcdlQTGg5Jw8Cdq/K5BEQAMNOaF47mYdvu
+        hJWvWJ4hVxY88VhiaFfAIAWd6OrjgZ86cPhgha0=
+X-Google-Smtp-Source: ABdhPJyRMoGPnuz4MO0FmGOHIM1XSyhsQpJQrKhPLw79y8VziNPPVSJYtRew3BRLtYZwwl4H1BLduTLJZdkCaUCy8qY=
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
+ p6-20020a170902a406b02900e678c471c8mr1880447plq.17.1617780840716; Wed, 07 Apr
+ 2021 00:34:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210407053135.tx2q4bzxf2lwtqna@pengutronix.de>
+References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com> <20210406165108.GA4332@42.do-not-panic.com>
+In-Reply-To: <20210406165108.GA4332@42.do-not-panic.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 7 Apr 2021 10:33:44 +0300
+Message-ID: <CAHp75Ve9vBQqSegM2-ch9NUN-MdevxxOs5ZdHkk1W7AacN+Wrw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-remoteproc@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        kexec@lists.infradead.org, rcu@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Corey Minyard <minyard@acm.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:31:35AM +0200, Uwe Kleine-König wrote:
-> On Tue, Apr 06, 2021 at 06:41:34PM +0200, Clemens Gruber wrote:
-> > Implements .get_state to read-out the current hardware state.
-> > 
-> > The hardware readout may return slightly different values than those
-> > that were set in apply due to the limited range of possible prescale and
-> > counter register values.
-> > 
-> > Also note that although the datasheet mentions 200 Hz as default
-> > frequency when using the internal 25 MHz oscillator, the calculated
-> > period from the default prescaler register setting of 30 is 5079040ns.
-> > 
-> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > ---
-> > Changes since v6:
-> > - Added a comment regarding the division (Suggested by Uwe)
-> > - Rebased
-> > 
-> >  drivers/pwm/pwm-pca9685.c | 46 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 46 insertions(+)
-> > 
-> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > index 5a2ce97e71fd..d4474c5ff96f 100644
-> > --- a/drivers/pwm/pwm-pca9685.c
-> > +++ b/drivers/pwm/pwm-pca9685.c
-> > @@ -333,6 +333,51 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> >  	return 0;
-> >  }
-> >  
-> > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +				  struct pwm_state *state)
-> > +{
-> > +	struct pca9685 *pca = to_pca(chip);
-> > +	unsigned long long duty;
-> > +	unsigned int val = 0;
+On Wed, Apr 7, 2021 at 10:25 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
+> > diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
+> > new file mode 100644
+> > index 000000000000..41e32483d7a7
+> > --- /dev/null
+> > +++ b/include/linux/panic_notifier.h
+> > @@ -0,0 +1,12 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _LINUX_PANIC_NOTIFIERS_H
+> > +#define _LINUX_PANIC_NOTIFIERS_H
 > > +
-> > +	/* Calculate (chip-wide) period from prescale value */
-> > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > +	/*
-> > +	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
-> > +	 * The following calculation is therefore only a multiplication
-> > +	 * and we are not losing precision.
-> > +	 */
-> > +	state->period = (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
-> > +			(val + 1);
+> > +#include <linux/notifier.h>
+> > +#include <linux/types.h>
 > > +
-> > +	/* The (per-channel) polarity is fixed */
-> > +	state->polarity = PWM_POLARITY_NORMAL;
+> > +extern struct atomic_notifier_head panic_notifier_list;
 > > +
-> > +	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
-> > +		/*
-> > +		 * The "all LEDs" channel does not support HW readout
-> > +		 * Return 0 and disabled for backwards compatibility
-> > +		 */
-> > +		state->duty_cycle = 0;
-> > +		state->enabled = false;
-> > +		return;
-> > +	}
+> > +extern bool crash_kexec_post_notifiers;
 > > +
-> > +	duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > +
-> > +	state->enabled = !!duty;
-> > +	if (!state->enabled) {
-> > +		state->duty_cycle = 0;
-> > +		return;
-> > +	} else if (duty == PCA9685_COUNTER_RANGE) {
-> > +		state->duty_cycle = state->period;
-> > +		return;
-> > +	}
-> > +
-> > +	duty *= state->period;
-> > +	state->duty_cycle = duty / PCA9685_COUNTER_RANGE;
-> 
-> Given that with duty = 0 the chip is still "on" and changing the duty
-> will first complete the currently running period, I'd model duty=0 as
-> enabled. This also simplifies the code a bit, to something like:
-> 
-> 
-> 	state->enabled = true;
-> 	duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> 	state->duty_cycle = div_round_up(duty * state->period, PCA9685_COUNTER_RANGE);
-> 
-> (I'm using round-up here assuming apply uses round-down to get
-> idempotency. In the current patch set state this is wrong however.)
+> > +#endif       /* _LINUX_PANIC_NOTIFIERS_H */
+>
+> Why is it worth it to add another file just for this?
 
-So, in your opinion, every requested PWM of the pca9685 should always be
-enabled by default (from the PWM core viewpoint) ?
+The main point is to break tons of loops that prevent having clean
+headers anymore.
 
-And this wouldn't break the following because pwm_get_state does not
-actually read out the hw state:
-pwm_get_state -> enabled=true duty=0
-pwm_apply_state -> enabled =false duty=0
-pwm_get_state -> enabled=false duty=0
+In this case, see bug.h, which is very important in this sense.
 
-Thanks,
-Clemens
+>  Seems like a very
+> small file.
+
+If it is an argument, it's kinda strange. We have much smaller headers.
+
+-- 
+With Best Regards,
+Andy Shevchenko
