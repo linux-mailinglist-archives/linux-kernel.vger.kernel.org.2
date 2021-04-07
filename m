@@ -2,146 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660EA357537
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D14F35753E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355756AbhDGTwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345736AbhDGTwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:52:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDBC4610A4;
-        Wed,  7 Apr 2021 19:51:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617825116;
-        bh=WQd0A2usJFQcP3caPt1efatQVgCVEId2F/kHJCBs2oQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q2asrBe9dArzn4UObZDtiFYuhwgv0kvJeDAK9WPHefsTmtfgdqu6Sed++uXsNvtw+
-         2SvWkw7FZh5xiDS+UosEL8+AmiRfmIix+KpMvnLVb9RRIcg5PWV+h5VSQaU5btSSMQ
-         dvLepBLrpycjEIWQp2wFA4eAeIkqaz81N/kuzne7RX4rR24BU8Mmh/vuGG39rABZd6
-         pVUGqhT7bMuAq2LM0NUMxsnm1QwRzYNp6lf2NABDu38arICoExVu87WA7ZTYRfaGw9
-         UX/GFtRfVY96YAIjd4TFndf/dWWnTtJQVoPdN3Ahq2uXknzp1Uw9l4+rMzGvqLbeZD
-         9cZnBphPlBPTg==
-Date:   Wed, 7 Apr 2021 12:51:51 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>
-Subject: Re: [PATCH 2/2] gcov: re-drop support for clang-10
-Message-ID: <20210407195151.h2hlpwsjo2rdnnhs@archlinux-ax161>
-References: <20210407185456.41943-1-ndesaulniers@google.com>
- <20210407185456.41943-3-ndesaulniers@google.com>
+        id S1355765AbhDGTza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345736AbhDGTz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:55:28 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F8CC06175F;
+        Wed,  7 Apr 2021 12:55:18 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id dd20so15107281edb.12;
+        Wed, 07 Apr 2021 12:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TBNRySCI10FxrjiNQBsHSAQLIpLS2uNRCuwmQV6Ng/4=;
+        b=PUNm7oipNKrzDTqheuwlgAIXg33l4OCmPsex10//cjvpaoRQuNZkJY3P/q+9OOVfrT
+         9nq4cWT48T7G7JY7O/XIkUWQMed8FjRDOJbmL1MsRsj0xIlGNogWiQaFqQrYMiPxSHZf
+         mdvL6Bm3QJGk22sFeqrrLL5TjG5S/0t5zdk3ZeDzYxZQ4ETtcOSwTOWGwY0lxNa9TYSh
+         s2BI8yWYzRIkWPWlZQTXkiclZhbs5rVCuj/k17AOZE2vPCLpqAs/AcFblX7OjSzW4+cM
+         P2pgxUrHy5u14Nn60L7vxQNaAX12s3J+u+tybpMD7Qxk7u841Ryi1roVf6PbhQ1fjPWa
+         M+XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TBNRySCI10FxrjiNQBsHSAQLIpLS2uNRCuwmQV6Ng/4=;
+        b=fZZRiYB3PiDkfffLl8NgsM1SgjjTG1HJa4W0fKi/C8DDFiSd5H8kUFhgF57dmr+ed8
+         D72t2TuMHsPUQN33j7OWjogUa5iqjdrJaevsClaptvDNk4EZV3ZZY7/k8wSk/KH0D//k
+         6e2uvWTBGFhetZgJT8pXzh8K+VkVjfqGlGdKiQA4QbQY5v5KlKn5s1Oc4FRFRe4VmfRP
+         cblgIQewhedB4uowNIfoB243OSJRi+EFjUHeY/ju5DCk7G3UtjWsByD2icf1Rs3j0/yO
+         x8IjgU/X5Hi6bcgJstwzQuJMYCw9sB/W4R7/dXAuFx1bN48aOuFJyVMtYocHkC/ltYE8
+         TuUA==
+X-Gm-Message-State: AOAM533IzE0jXU1aaAE8Hr/JZfE3Ev/43U5yGwP57URKaCFR4vKD8n7e
+        FTMMebjXeUN8DANOFdmLlz88xkPvxw==
+X-Google-Smtp-Source: ABdhPJwpYJJrO+3bC9FbqXdWVgcLE2mosMuypaqZvvvt6gnWf3IDNgqCojWIi/txPMUNxI9+0yptYg==
+X-Received: by 2002:aa7:c0ca:: with SMTP id j10mr4271260edp.291.1617825317121;
+        Wed, 07 Apr 2021 12:55:17 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.73])
+        by smtp.gmail.com with ESMTPSA id z4sm3377985edb.97.2021.04.07.12.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 12:55:16 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 22:55:14 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] proc: smoke test lseek()
+Message-ID: <YG4OIhChOrVTPgdN@localhost.localdomain>
+References: <20210328221524.ukfuztGsl%akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210407185456.41943-3-ndesaulniers@google.com>
+In-Reply-To: <20210328221524.ukfuztGsl%akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:54:56AM -0700, Nick Desaulniers wrote:
-> LLVM changed the expected function signatures for
-> llvm_gcda_emit_function() in the clang-11 release.  Drop the older
-> implementations and require folks to upgrade their compiler if they're
-> interested in GCOV support.
-> 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Now that ->proc_lseek has been made mandatory it would be nice to test
+that nothing has been forgotten.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-> ---
->  kernel/gcov/clang.c | 40 ----------------------------------------
->  1 file changed, 40 deletions(-)
-> 
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index 1747204541bf..78c4dc751080 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -69,9 +69,6 @@ struct gcov_fn_info {
->  
->  	u32 ident;
->  	u32 checksum;
-> -#if CONFIG_CLANG_VERSION < 110000
-> -	u8 use_extra_checksum;
-> -#endif
->  	u32 cfg_checksum;
->  
->  	u32 num_counters;
-> @@ -113,23 +110,6 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
->  }
->  EXPORT_SYMBOL(llvm_gcda_start_file);
->  
-> -#if CONFIG_CLANG_VERSION < 110000
-> -void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
-> -		u8 use_extra_checksum, u32 cfg_checksum)
-> -{
-> -	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> -
-> -	if (!info)
-> -		return;
-> -
-> -	INIT_LIST_HEAD(&info->head);
-> -	info->ident = ident;
-> -	info->checksum = func_checksum;
-> -	info->use_extra_checksum = use_extra_checksum;
-> -	info->cfg_checksum = cfg_checksum;
-> -	list_add_tail(&info->head, &current_info->functions);
-> -}
-> -#else
->  void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
->  {
->  	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> @@ -143,7 +123,6 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
->  	info->cfg_checksum = cfg_checksum;
->  	list_add_tail(&info->head, &current_info->functions);
->  }
-> -#endif
->  EXPORT_SYMBOL(llvm_gcda_emit_function);
->  
->  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
-> @@ -274,16 +253,8 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
->  		!list_is_last(&fn_ptr2->head, &info2->functions)) {
->  		if (fn_ptr1->checksum != fn_ptr2->checksum)
->  			return false;
-> -#if CONFIG_CLANG_VERSION < 110000
-> -		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
-> -			return false;
-> -		if (fn_ptr1->use_extra_checksum &&
-> -			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
-> -			return false;
-> -#else
->  		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
->  			return false;
-> -#endif
->  		fn_ptr1 = list_next_entry(fn_ptr1, head);
->  		fn_ptr2 = list_next_entry(fn_ptr2, head);
->  	}
-> @@ -403,21 +374,10 @@ size_t convert_to_gcda(char *buffer, struct gcov_info *info)
->  		u32 i;
->  
->  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
-> -#if CONFIG_CLANG_VERSION < 110000
-> -		pos += store_gcov_u32(buffer, pos,
-> -			fi_ptr->use_extra_checksum ? 3 : 2);
-> -#else
->  		pos += store_gcov_u32(buffer, pos, 3);
-> -#endif
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
-> -#if CONFIG_CLANG_VERSION < 110000
-> -		if (fi_ptr->use_extra_checksum)
-> -			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-> -#else
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-> -#endif
-> -
->  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
->  		for (i = 0; i < fi_ptr->num_counters; i++)
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
-> 
+		May want to fold into
+	proc-mandate-proc_lseek-in-struct-proc_ops.patch
+
+ tools/testing/selftests/proc/read.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/tools/testing/selftests/proc/read.c
++++ b/tools/testing/selftests/proc/read.c
+@@ -14,7 +14,7 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ // Test
+-// 1) read of every file in /proc
++// 1) read and lseek on every file in /proc
+ // 2) readlink of every symlink in /proc
+ // 3) recursively (1) + (2) for every directory in /proc
+ // 4) write to /proc/*/clear_refs and /proc/*/task/*/clear_refs
+@@ -45,6 +45,8 @@ static void f_reg(DIR *d, const char *filename)
+ 	fd = openat(dirfd(d), filename, O_RDONLY|O_NONBLOCK);
+ 	if (fd == -1)
+ 		return;
++	/* struct proc_ops::proc_lseek is mandatory if file is seekable. */
++	(void)lseek(fd, 0, SEEK_SET);
+ 	rv = read(fd, buf, sizeof(buf));
+ 	assert((0 <= rv && rv <= sizeof(buf)) || rv == -1);
+ 	close(fd);
