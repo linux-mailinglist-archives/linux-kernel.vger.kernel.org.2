@@ -2,136 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CD5356C16
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE9F356C19
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352179AbhDGMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49420 "EHLO mail.kernel.org"
+        id S1352184AbhDGMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235368AbhDGMbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:31:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD3460FEE;
-        Wed,  7 Apr 2021 12:30:51 +0000 (UTC)
+        id S235368AbhDGMbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:31:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9EF60FEE;
+        Wed,  7 Apr 2021 12:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617798651;
-        bh=kkWVCkUc0NJVVv2evc8bpyZsUPichPzeLxsPzJH+f4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o2V0VZZZHZIPJQ6GHChv3VKyITqB/OqkvnFFKwsBJMHZehszOzM3IjEELsL8s399c
-         bx/GhVQeAVRpN9hiA2DmCiR1LlujuzQ34SbotgdYnn4Af4VO4hWQ5rCA1ibtRgQUbR
-         KlbLETjo/R79EMC/mx7r53fF1UAhPaa2hzXTGg/mUjwnsczqLnjNl0O5iBkCQDTOgb
-         Ax9dXwTUlB6TO9jyNkHLfk4q1kZcm987/SwgjaWTwSQ1eFJWjrnxIIj+Q+kqc9Fp/u
-         9Od0IsH09WuhqloQrllP7WVC8etG+rn6pfV49evkpshFSbwtBUrlbdoi0ZwwVhPkve
-         MvrjoD9P92RLw==
-Date:   Wed, 7 Apr 2021 15:30:48 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "bhelgaas@google.com <bhelgaas@google.com>,linux-pci@vger.kernel.org" 
-        <linux-pci@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
-Message-ID: <YG2l+AbQW1N0bbQ9@unreal>
-References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
- <YGW8Oe9jn+n9sVsw@unreal>
- <20210401105616.71156d08@omen>
- <YGlzEA5HL6ZvNsB8@unreal>
- <20210406081626.31f19c0f@x1.home.shazbot.org>
- <YG1eBUY0vCTV+Za/@unreal>
- <20210407082356.53subv4np2fx777x@archlinux>
+        s=k20201202; t=1617798668;
+        bh=BOWtBqadjO4pUurB7R+rTs0QMWY2HKWF2R3IZ05VFjU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HB/Q4V5ArIrSoisHQ4oQcwVlwZChbxuVnkhfy3o10/aqNGS6grYLKFJdemtkiUkFB
+         YK9U13GKrbSo/hBSsm6EzlIFR4WAdci56GRpNh0Gjs+sMwP5vVgz5DQMz6HYEzl8d5
+         +rLfXCwnoA4TTotvUgFkUjU0wwt93zmXhXKe+QcBY0KdSqugyuGv8qstbykSzI588S
+         49iKhvokCxB3hl+yRK6wIV8A1U+ghyxHy0jGd4SS9e+fvkOFD7iDl+mUi0CjxtniXp
+         swAu0+vOBWajxFyjDY/Uue3FKuLd9KrILrGSY4d2JRJg2Wm21t1uOUCwI0OH9ba+3n
+         CpW6wbc+10EDA==
+Date:   Wed, 7 Apr 2021 18:01:04 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: soundwire updates for v5.13-rc1
+Message-ID: <YG2mCCQUiSrouQoo@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gAUNDmWExdT5yU8h"
 Content-Disposition: inline
-In-Reply-To: <20210407082356.53subv4np2fx777x@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
-> On 21/04/07 10:23AM, Leon Romanovsky wrote:
-> > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
-> > > On Sun, 4 Apr 2021 11:04:32 +0300
-> > > Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
-> > > > > On Thu, 1 Apr 2021 15:27:37 +0300
-> > > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > > >
-> > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
-> > > > > > > Slot resets are bus resets with additional logic to prevent a device
-> > > > > > > from being removed during the reset. Currently slot and bus resets have
-> > > > > > > separate implementations in pci.c, complicating higher level logic. As
-> > > > > > > discussed on the mailing list, they should be combined into a generic
-> > > > > > > function which performs an SBR. This change adds a function,
-> > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
-> > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
-> > > > > > > single device agnostic function to perform an SBR.
-> > > > > > >
-> > > > > > > This new function is also needed to add SBR reset quirks and therefore
-> > > > > > > is exposed in pci.h.
-> > > > > > >
-> > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
-> > > > > > >
-> > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > > > > > > ---
-> > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
-> > > > > > >  include/linux/pci.h |  1 +
-> > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > > > > index 16a17215f633..12a91af2ade4 100644
-> > > > > > > --- a/drivers/pci/pci.c
-> > > > > > > +++ b/drivers/pci/pci.c
-> > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-> > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> > > > > > > +{
-> > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > > +
-> > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
-> > > > > >
-> > > > > > The previous coding style is preferable one in the Linux kernel.
-> > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > if (rc != -ENOTTY)
-> > > > > >   return rc;
-> > > > > > return pci_parent_bus_reset(dev, probe);
-> > > > >
-> > > > >
-> > > > > That'd be news to me, do you have a reference?  I've never seen
-> > > > > complaints for ternaries previously.  Thanks,
-> > > >
-> > > > The complaint is not to ternaries, but to the function call as one of
-> > > > the parameters, that makes it harder to read.
-> > >
-> > > Sorry, I don't find a function call as a parameter to a ternary to be
-> > > extraordinary, nor do I find it to be a discouraged usage model within
-> > > the kernel.  This seems like a pretty low bar for hard to read code.
-> >
-> > It is up to us where this bar is set.
-> >
-> > Thanks
-> On the side note there are plenty of places where this pattern is used
-> though
-> for example -
-> kernel/time/clockevents.c:328:
-> return force ? clockevents_program_min_delta(dev) : -ETIME;
-> 
-> kernel/trace/trace_kprobe.c:233:
-> return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
->        false;
-> 
-> kernel/signal.c:3104:
-> return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
-> etc
 
-Did you look when they were introduced?
+--gAUNDmWExdT5yU8h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Greg,
+
+Here is the soundwire pull request for this cycle. Bunch of core cleanup
+and changes along with driver updates
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.13-rc1
+
+for you to fetch changes up to 14968dd36a507866be0edfc2a05d48c997da5d99:
+
+  soundwire: intel_init: test link->cdns (2021-04-06 10:26:44 +0530)
+
+----------------------------------------------------------------
+soundwire updates for 5.13-rc1
+
+Updates for v5.13-rc1 are:
+
+Core:
+ - Ability to add quirks for masters
+ - static checker cleanup for bus code
+
+Drivers:
+ - DMI quirks for Intel controllers
+ - static checker cleanup for drivers
+ - add auto enumeration support qcom controller
+
+----------------------------------------------------------------
+Bard Liao (4):
+      soundwire: add master quirks for bus clash and parity
+      soundwire: bus: handle master quirks for bus clash and parity
+      soundwire: intel: add master quirks for bus clash and parity
+      soundwire: intel_init: test link->cdns
+
+Pierre-Louis Bossart (22):
+      soundwire: Intel: introduce DMI quirks for HP Spectre x360 Convertible
+      soundwire: Intel: add DMI quirk for Dell SKU 0A3E
+      soundwire: intel: add missing \n in dev_err()
+      soundwire: bandwidth_allocation: add missing \n in dev_err()
+      soundwire: cadence: add missing \n in dev_err()
+      soundwire: stream: add missing \n in dev_err()
+      soundwire: qcom: add missing \n in dev_err()
+      soundwire: bus: use correct driver name in error messages
+      soundwire: bus: test read status
+      soundwire: bus: use consistent tests for return values
+      soundwire: bus: demote clock stop prepare log to dev_dbg()
+      soundwire: bus: uniquify dev_err() for SCP_INT access
+      soundwire: bus: remove useless initialization
+      soundwire: generic_bandwidth_allocation: remove useless init
+      soundwire: intel: remove useless readl
+      soundwire: qcom: check of_property_read status
+      soundwire: stream: remove useless initialization
+      soundwire: stream: remove useless bus initializations
+      soundwire: cadence_master: fix kernel-doc
+      soundwire: add definition for DPn BlockPackingMode
+      soundwire: generic_allocation: fix confusion between group and packing
+      soundwire: cadence: only prepare attached devices on clock stop
+
+Rander Wang (1):
+      soundwire: stream: fix memory leak in stream config error path
+
+Srinivas Kandagatla (16):
+      soundwire: bus: Fix device found flag correctly
+      dt-bindings: soundwire: qcom: clarify data port bus parameters
+      soundwire: qcom: add support to missing transport params
+      soundwire: qcom: set continue execution flag for ignored commands
+      soundwire: qcom: start the clock during initialization
+      soundwire: qcom: update register read/write routine
+      soundwire: qcom: add support to new interrupts
+      soundwire: export sdw_compare_devid, sdw_extract_slave_id and sdw_sla=
+ve_add
+      soundwire: qcom: add auto enumeration support
+      soundwire: qcom: wait for enumeration to be complete in probe
+      soundwire: add static port mapping support
+      soundwire: qcom: update port map allocation bit mask
+      soundwire: qcom: add static port map support
+      soundwire: qcom: wait for fifo space to be available before read/write
+      soundwire: qcom: cleanup internal port config indexing
+      soundwire: qcom: handle return correctly in qcom_swrm_transport_params
+
+Vinod Koul (2):
+      soundwire: add override addr ops
+      soundwire: qcom: use signed variable for error return
+
+ .../devicetree/bindings/soundwire/qcom,sdw.txt     |  20 +
+ drivers/soundwire/Makefile                         |   2 +-
+ drivers/soundwire/bus.c                            | 100 +++-
+ drivers/soundwire/bus.h                            |   2 +
+ drivers/soundwire/bus_type.c                       |  15 +-
+ drivers/soundwire/cadence_master.c                 |  16 +-
+ drivers/soundwire/dmi-quirks.c                     |  96 +++
+ drivers/soundwire/generic_bandwidth_allocation.c   |  15 +-
+ drivers/soundwire/intel.c                          |  24 +-
+ drivers/soundwire/intel_init.c                     |   9 +
+ drivers/soundwire/qcom.c                           | 652 +++++++++++++++++=
+----
+ drivers/soundwire/slave.c                          |   9 +-
+ drivers/soundwire/stream.c                         |  28 +-
+ include/linux/soundwire/sdw.h                      |  36 +-
+ 14 files changed, 833 insertions(+), 191 deletions(-)
+ create mode 100644 drivers/soundwire/dmi-quirks.c
 
 Thanks
+--=20
+~Vinod
 
-> 
-> Thanks,
-> Amey
+--gAUNDmWExdT5yU8h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmBtpggACgkQfBQHDyUj
+g0dQCw/+J3FzDh2oVtb7ky27Nle1vAr1Ro+efG60X2S4xtIqsBvrmqTqGf/EerBI
+DWa0ijRI8zWRKMueP1eNoDHrnfuaxIFI+iFTUpNBK5eix5LMd5q2GvOxUUwzBDJg
+ZQz+R0pnQsY736IIDVhSAvdcKbu8xrnkeIxlunkdA7dFNC5GN43R0W1wQ/Ongz2n
+6QgCRJlfR/mNz8hSUpLLvtl9ncgR95jQoGXgvcCG+nV7JoMc0xborDQzoyI1NIfU
+SwvdjTm3HUonpGESGvVYoC3iptWgMN10SjcoHh5AAsF4fsZsJwp1giLkYMOk6c0c
+hw5BSXRrAmVFzZ4FqrXsev0b550qz2eQ2G1GVqQwt+CCtluJBKEUTN0fFcoVjLXg
+bV2ZfbQTsbjkm6SWFRiHzd9ybgqkSkYppPPFC0meN6Jq3HgzBRL+Gl3QlU68BHSc
+W8uR7EKEe9qySpzU9h2StawuumtV3YM5xvYJ5w+/cYIZdUCiTfKA4cjBoocGX8S7
+YFsVQnzc1asIq7Wu5q2xpRhaPgbm+BBvin9TqkYsXjb7yY6QBjBNqo6v2LPkNQGc
+PTNIkKB0owauwedIAWUXZu6LSVl7xMIl7pHJHzmktGJfOSaFW4U/deXODCQRvSMu
+PDpKITXthCQq30vJH3Vl/9amS+oD6NAaMJ1bRDs/wJQy6hVvono=
+=1VnQ
+-----END PGP SIGNATURE-----
+
+--gAUNDmWExdT5yU8h--
