@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9647B357358
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCB4357364
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhDGRlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:41:02 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:31176 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhDGRlB (ORCPT
+        id S1343874AbhDGRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:44:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230073AbhDGRo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:41:01 -0400
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 137HeX6u021198;
-        Thu, 8 Apr 2021 02:40:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137HeX6u021198
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617817234;
-        bh=hq2Csej9fmxjCgzuClcCpYDQCr85NYpxH/DhupGrcoc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1YLZoc2ig+l+1hwk/kIAMuY6grDi2lQj1nbmadFMbpyGV61K4aHiTT7H9Rkkt6ptC
-         y9Cza0HK0ZmSwhcGkYrzvET1BMC9Zsyd1GOEizAxqewRFyLp3eCdYJpHzvwRpWl15N
-         3KikniB3363cyf/sS3Sf+agel0MNRjGroafwAM+ycqQI0/AtCsy4ZJ5kvbn9N7MWlz
-         rBvS4TAxqik1SA+av38i0ifsWRqaxZfrNSWtG3OCTORWYHpK4KjJuNt5Ms0eHpFaIf
-         ki2vkn8UxVljEwIoSK06BezvjyQe7Kyg+LRTdpRzlkaT3xRaoR16y22knv8A5GPosW
-         yoeUSbFUXxxDw==
-X-Nifty-SrcIP: [209.85.210.181]
-Received: by mail-pf1-f181.google.com with SMTP id d124so4592809pfa.13;
-        Wed, 07 Apr 2021 10:40:34 -0700 (PDT)
-X-Gm-Message-State: AOAM531hPreCI78/IheKBiwSiM+LSjEL7vg92GbBQ0xWkyyJKCqM+x9U
-        U7+9bLu1vg1BrIirpiwtyD2xwTwLeUIH7Cd1c8Q=
-X-Google-Smtp-Source: ABdhPJzx46YE5Knkbg9eAF3YLlQfZdQ/ANxRnaFclCYNTG0JSnyVe9vciTTz0udAZI8XmiZJdc7ymvHUjedGTN+memY=
-X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
- i4-20020aa78d840000b02901f834491bc6mr3720630pfr.76.1617817233393; Wed, 07 Apr
- 2021 10:40:33 -0700 (PDT)
+        Wed, 7 Apr 2021 13:44:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617817457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UvND0sWUEksMahT4ZPQuH/6oLpAcsH6szOWfFSbWLtI=;
+        b=R2JRTSjVCdu1kjI8FCjntilqtDqn3X8EZvMhNcB3MLd1258ZldFjOEk5jwbwKSOqNOu6eB
+        62BLrJiWki9YWS4G3ANfIl0C7Igk1S+O53nMN4T61NP1gFZZ3LEAKDLep+hfKnCkJfh3rB
+        N7KERDrigdjnIKOkgASNAzpcIf0a9ps=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-110-nwAaVmILO-qKnyBKyfuaZQ-1; Wed, 07 Apr 2021 13:44:03 -0400
+X-MC-Unique: nwAaVmILO-qKnyBKyfuaZQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A42B807352;
+        Wed,  7 Apr 2021 17:44:02 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C3B022C167;
+        Wed,  7 Apr 2021 17:44:01 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 5134341486C6; Wed,  7 Apr 2021 14:40:21 -0300 (-03)
+Date:   Wed, 7 Apr 2021 14:40:21 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, dwmw@amazon.co.uk
+Subject: Re: [PATCH 1/2] KVM: x86: reduce pvclock_gtod_sync_lock critical
+ sections
+Message-ID: <20210407174021.GA30046@fuller.cnet>
+References: <20210330165958.3094759-1-pbonzini@redhat.com>
+ <20210330165958.3094759-2-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210407173543.3598006-1-ndesaulniers@google.com>
-In-Reply-To: <20210407173543.3598006-1-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 8 Apr 2021 02:39:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASbFWG+-fCPmaROvbT8v4=81Jkfpv1pM-NUcbSNX+-5kw@mail.gmail.com>
-Message-ID: <CAK7LNASbFWG+-fCPmaROvbT8v4=81Jkfpv1pM-NUcbSNX+-5kw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: select ARCH_KEEP_MEMBLOCK unconditionally
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330165958.3094759-2-pbonzini@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 2:35 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> While removing allnoconfig_y from Kconfig, ARCH=mips allnoconfig builds
-> started failing with the error:
->
-> WARNING: modpost: vmlinux.o(.text+0x9c70): Section mismatch in reference
-> from the function reserve_exception_space() to the function
-> .meminit.text:memblock_reserve()
-> The function reserve_exception_space() references the function __meminit
-> memblock_reserve().
-> This is often because reserve_exception_space lacks a __meminit
-> annotation or the annotation of memblock_reserve is wrong.
-> ERROR: modpost: Section mismatches detected.
-> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
->
-> allnoconfig disables DEBUG_KERNEL and thus ARCH_KEEP_MEMBLOCK, which
-> changes __init_memblock to be equivalent to __meminit triggering the
-> above error.
->
-> Link: https://lore.kernel.org/linux-kbuild/20210313194836.372585-11-masahiroy@kernel.org/
-> Fixes: commit a8c0f1c634507 ("MIPS: Select ARCH_KEEP_MEMBLOCK if
-> DEBUG_KERNEL to enable sysfs memblock debug")
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-
-Please replace it with:
-
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Thanks.
-
-
-
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Tue, Mar 30, 2021 at 12:59:57PM -0400, Paolo Bonzini wrote:
+> There is no need to include changes to vcpu->requests into
+> the pvclock_gtod_sync_lock critical section.  The changes to
+> the shared data structures (in pvclock_update_vm_gtod_copy)
+> already occur under the lock.
+> 
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  arch/mips/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index e9893cd34992..702648f60e41 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -12,7 +12,7 @@ config MIPS
->         select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->         select ARCH_HAS_UBSAN_SANITIZE_ALL
->         select ARCH_HAS_GCOV_PROFILE_ALL
-> -       select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL
-> +       select ARCH_KEEP_MEMBLOCK
->         select ARCH_SUPPORTS_UPROBES
->         select ARCH_USE_BUILTIN_BSWAP
->         select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-> --
-> 2.31.1.295.g9ea45b61b8-goog
->
+>  arch/x86/kvm/x86.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index fe806e894212..0a83eff40b43 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2562,10 +2562,12 @@ static void kvm_gen_update_masterclock(struct kvm *kvm)
+>  
+>  	kvm_hv_invalidate_tsc_page(kvm);
+>  
+> -	spin_lock(&ka->pvclock_gtod_sync_lock);
+>  	kvm_make_mclock_inprogress_request(kvm);
+> +
 
+Might be good to serialize against two kvm_gen_update_masterclock
+callers? Otherwise one caller could clear KVM_REQ_MCLOCK_INPROGRESS,
+while the other is still at pvclock_update_vm_gtod_copy().
 
---
-Best Regards
-Masahiro Yamada
+Otherwise, looks good.
+
