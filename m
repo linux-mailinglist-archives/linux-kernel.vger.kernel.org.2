@@ -2,118 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CE9356306
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D0835630A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348682AbhDGF0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:26:51 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:51746 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbhDGF0t (ORCPT
+        id S1348693AbhDGF3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348668AbhDGF3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:26:49 -0400
-Received: by mail-wm1-f47.google.com with SMTP id p19so8372979wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 22:26:40 -0700 (PDT)
+        Wed, 7 Apr 2021 01:29:05 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BF8C06174A;
+        Tue,  6 Apr 2021 22:28:56 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id j7so4068387plx.2;
+        Tue, 06 Apr 2021 22:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=oGiS6IxE+PQXupx8pRFmNjoBriuNOqtLio3d69XQRCo=;
+        b=DhLXOu6hnzXGjh/myORg2ehHBWicwYbMTQMQ/awODHxYxcvjpP0jZhMO4smYR5VExD
+         QZ9p3QICAXv0Cfxk/RAF1h1tqg6kgpw1lKhM1jHKkL7ZFjdxjdoqcy0a/Bv3UEXiwcrH
+         1FcbOwyD9+vmtBseTU8nmdg95kL3ITm2+Cwv6KVVthlw66B2Q31e2YJFsJwWuHZrDJcc
+         LMtg+WaV8Avp2QbuA3pcJ6dDc787gO5oyvlLTOgUhZa4M43dU9FXL6FeYKxuTXOaobgn
+         hQRz1jDpAVgZKs9SQPEO7dtFCdJkJbdluFqOBjmywTEm8uPWtJHVkbJGnsn64JPhTNKv
+         Z7sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MPTdDbexEV8/Ukx2uJy1w0fpqcUWtOwp48W6VAtXQZo=;
-        b=GTsDsOGS04v38QTdpJiOzDluTpu/MgxMaG5kT31UWKzkNDzXRnRT49ik1vzAxZ+Ebe
-         17KNS9hctNln+rOFXyoF2RfsNohXstEzR317Z5kSD9YwD6W/YV//pY01fTqlmRvl4Fd2
-         zKKtyaZJOLlsLrbUhly73HY0xXnp/HBcfRdxXEwi775SGkpJzL7fBIwwMB714m/sxega
-         smf2jc7sUlHaPr6yXPottvRy9lxYv4id/79WSsWktpSJ8rEd1yZN/rdrRwAKmjIVmqib
-         aR36zlEAYYSs62e9vjpgCUlQfMD05YD7vsopT4N73E+fTSOnjOmFECUGlOgUgpcLgKtK
-         kPDA==
-X-Gm-Message-State: AOAM5312CcPVYwZnkecDCYBEol0SXqM3wB1wND2/3/hpZyQOhtFbvOuD
-        AVtMXJMUnGXocc///ZUooyc=
-X-Google-Smtp-Source: ABdhPJynP6VBVbMj0gqjGpnk79Sj2YaYu0e6NQJWCM+LbKuLPkGZW3NzA2fscTdh6rdVL5hIavpETw==
-X-Received: by 2002:a05:600c:3590:: with SMTP id p16mr1278747wmq.140.1617773199611;
-        Tue, 06 Apr 2021 22:26:39 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id g16sm39267498wrs.76.2021.04.06.22.26.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Apr 2021 22:26:39 -0700 (PDT)
-Subject: Re: [PATCH v2 04/10] tty: tty_jobctrl: Fix coding style issues of
- block comments
-To:     Xiaofei Tan <tanxiaofei@huawei.com>, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-References: <1617708288-14847-1-git-send-email-tanxiaofei@huawei.com>
- <1617708288-14847-5-git-send-email-tanxiaofei@huawei.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <87ba5be2-e8ee-b1ed-175d-1ee7d5a45498@kernel.org>
-Date:   Wed, 7 Apr 2021 07:26:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=oGiS6IxE+PQXupx8pRFmNjoBriuNOqtLio3d69XQRCo=;
+        b=oJ118y3FDPv7YOIhZsxGY0AvNymcm/r393FFDBs3qcDzogFnqRtSul/jOFzvfLkTmv
+         3fA2/t7YcRt37xomzKhgHJ4Dr1gduXSzd+h6J6LCN/Jiceoy8x9QclUUfLiCJUGLUUV+
+         RceAGxPTtH5CAo6aydV08KOBS5G4tyy2M7FNLmLyF2NZzvztCrBkMs3+prurRNAbXDK3
+         MyV3X1DnyQE3TRse9nobnHB1Wjf+V8YXja8SnfkS48MQ9M+Dl8LZVWzEEkd1fypOgq0U
+         OeC6VSpzt2ifwM0ViVwegkPT83G94V6/BFlQ+rwjM8DU4PMLcw3F0AJq8zm7znc6pV1E
+         qMBA==
+X-Gm-Message-State: AOAM531OmRqvGKK/JH47bOXVLQZuq+j1lsVXZrvNFuGbqyjfoJBdA6ZX
+        EPJYEWQgdUaEBYaCtwhvCbk=
+X-Google-Smtp-Source: ABdhPJzt+/+yjMs1Qw7FD/m4zCD8DCPWo4yuePZixQCHOZ9Xwh9lSeGF2iak1yByXX899yw5A2lGSA==
+X-Received: by 2002:a17:902:44a:b029:e8:eb05:d0a0 with SMTP id 68-20020a170902044ab02900e8eb05d0a0mr1630169ple.50.1617773335923;
+        Tue, 06 Apr 2021 22:28:55 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:6c0c:9cca:cff7:99cd])
+        by smtp.gmail.com with ESMTPSA id e13sm19677934pfi.199.2021.04.06.22.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 22:28:54 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 22:28:52 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: gpio-keys - fix crash when disabliing GPIO-less
+ buttons
+Message-ID: <YG1DFFgojSVfdpaz@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1617708288-14847-5-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 04. 21, 13:24, Xiaofei Tan wrote:
-> Fix coding style issues of block comments, reported by checkpatch.pl.
-> Besides, do some expression optimization for the sentenses.
-> 
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
->   drivers/tty/tty_jobctrl.c | 16 ++++++++++------
->   1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
-> index 86070f7..7003b6b 100644
-> --- a/drivers/tty/tty_jobctrl.c
-> +++ b/drivers/tty/tty_jobctrl.c
-> @@ -204,8 +204,10 @@ int tty_signal_session_leader(struct tty_struct *tty, int exit_session)
->   			spin_lock_irq(&p->sighand->siglock);
->   			if (p->signal->tty == tty) {
->   				p->signal->tty = NULL;
-> -				/* We defer the dereferences outside fo
-> -				   the tasklist lock */
-> +				/*
-> +				 * We defer the dereferences outside of
-> +				 * the tasklist lock period
+My brain-damaged adjustments to Paul's patch caused crashes in
+gpio_keys_disable_button() when driver is used in GPIO-less (i.e.
+purely interrupt-driven) setups, because I mixed together debounce and
+release timers when they are in fact separate:
 
-:). No, I meant "period" as this punctuation mark: .
+Unable to handle kernel NULL pointer dereference at virtual address 0000000c
+...
+PC is at hrtimer_active+0xc/0x98
+LR is at hrtimer_try_to_cancel+0x24/0x140
+...
+[<c01c43b8>] (hrtimer_active) from [<c01c50f4>] (hrtimer_try_to_cancel+0x24/0x140)
+[<c01c50f4>] (hrtimer_try_to_cancel) from [<c01c5224>] (hrtimer_cancel+0x14/0x4c)
+[<c01c5224>] (hrtimer_cancel) from [<bf1cae24>] (gpio_keys_attr_store_helper+0x1b8/0x1d8 [gpio_keys])
+[<bf1cae24>] (gpio_keys_attr_store_helper [gpio_keys]) from [<bf1cae80>] (gpio_keys_store_disabled_keys+0x18/0x24 [gpio_keys])
+[<bf1cae80>] (gpio_keys_store_disabled_keys [gpio_keys]) from [<c038ec7c>] (kernfs_fop_write_iter+0x10c/0x1cc)
+[<c038ec7c>] (kernfs_fop_write_iter) from [<c02df858>] (vfs_write+0x2ac/0x404)
+[<c02df858>] (vfs_write) from [<c02dfaf4>] (ksys_write+0x64/0xdc)
+[<c02dfaf4>] (ksys_write) from [<c0100080>] (ret_fast_syscall+0x0/0x58)
 
-> +				 */
->   				refs++;
->   			}
->   			if (!p->signal->leader) {
-> @@ -328,9 +330,11 @@ void disassociate_ctty(int on_exit)
->    */
->   void no_tty(void)
->   {
-> -	/* FIXME: Review locking here. The tty_lock never covered any race
-> -	   between a new association and proc_clear_tty but possible we need
-> -	   to protect against this anyway */
-> +	/*
-> +	 * FIXME: Review locking here. The tty_lock never covered any race
-> +	 * between a new association and proc_clear_tty but possibly we need
-> +	 * to protect against this period anyway
+Let's fix it up.
 
-The same here.
+Fixes: c9efb0ba281e ("Input: gpio-keys - use hrtimer for software debounce, if possible")
+Reported-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
 
-> +	 */
->   	struct task_struct *tsk = current;
->   
->   	disassociate_ctty(0);
-> @@ -536,7 +540,7 @@ static int tiocgsid(struct tty_struct *tty, struct tty_struct *real_tty, pid_t _
->   	/*
->   	 * (tty == real_tty) is a cheap way of
->   	 * testing if the tty is NOT a master pty.
-> -	*/
-> +	 */
->   	if (tty == real_tty && current->signal->tty != real_tty)
->   		return -ENOTTY;
->   
-> 
+Tony, could you please try this patch and see if it fixes the crash you
+observed?
+
+Thanks!
+
+ drivers/input/keyboard/gpio_keys.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
+index fe8fc76ee22e..8dbf1e69c90a 100644
+--- a/drivers/input/keyboard/gpio_keys.c
++++ b/drivers/input/keyboard/gpio_keys.c
+@@ -125,6 +125,18 @@ static const unsigned long *get_bm_events_by_type(struct input_dev *dev,
+ 	return (type == EV_KEY) ? dev->keybit : dev->swbit;
+ }
+ 
++static void gpio_keys_quiesce_key(void *data)
++{
++	struct gpio_button_data *bdata = data;
++
++	if (!bdata->gpiod)
++		hrtimer_cancel(&bdata->release_timer);
++	if (bdata->debounce_use_hrtimer)
++		hrtimer_cancel(&bdata->debounce_timer);
++	else
++		cancel_delayed_work_sync(&bdata->work);
++}
++
+ /**
+  * gpio_keys_disable_button() - disables given GPIO button
+  * @bdata: button data for button to be disabled
+@@ -145,12 +157,7 @@ static void gpio_keys_disable_button(struct gpio_button_data *bdata)
+ 		 * Disable IRQ and associated timer/work structure.
+ 		 */
+ 		disable_irq(bdata->irq);
+-
+-		if (bdata->debounce_use_hrtimer)
+-			hrtimer_cancel(&bdata->release_timer);
+-		else
+-			cancel_delayed_work_sync(&bdata->work);
+-
++		gpio_keys_quiesce_key(bdata);
+ 		bdata->disabled = true;
+ 	}
+ }
+@@ -492,16 +499,6 @@ static irqreturn_t gpio_keys_irq_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void gpio_keys_quiesce_key(void *data)
+-{
+-	struct gpio_button_data *bdata = data;
+-
+-	if (bdata->debounce_use_hrtimer)
+-		hrtimer_cancel(&bdata->debounce_timer);
+-	else
+-		cancel_delayed_work_sync(&bdata->work);
+-}
+-
+ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 				struct input_dev *input,
+ 				struct gpio_keys_drvdata *ddata,
+@@ -635,7 +632,6 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 		}
+ 
+ 		bdata->release_delay = button->debounce_interval;
+-		bdata->debounce_use_hrtimer = true;
+ 		hrtimer_init(&bdata->release_timer,
+ 			     CLOCK_REALTIME, HRTIMER_MODE_REL_HARD);
+ 		bdata->release_timer.function = gpio_keys_irq_timer;
+-- 
+2.31.0.208.g409f899ff0-goog
 
 
 -- 
-js
-suse labs
+Dmitry
