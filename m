@@ -2,142 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2796F356A19
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61825356A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239432AbhDGKna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:43:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37226 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhDGKn2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:43:28 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137Ah9QP124245;
-        Wed, 7 Apr 2021 05:43:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617792189;
-        bh=F1n6gbGW6vSa3ouqdmSuOTfCrAe3ZvjZ80iuQS1yWPA=;
-        h=From:To:CC:Subject:Date;
-        b=jVHHW5VH2hFRXkmax4OyfI9BbkUrjDF/q7/tboMLMYeegaoin+VTS71Mq7/dnyr0A
-         fQQVdrnW5Scp/cSP+1QLPJXP4IilJbWwVXIfyy2twAYxhtq+7rl4pgwjKcgG8gwUdJ
-         B4KvjFykl6PZb4I7QBsQFFAbDeQ5yyQ//bvhP5o0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137Ah9nU026996
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Apr 2021 05:43:09 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
- 2021 05:43:09 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Apr 2021 05:43:09 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137Ah6kS081028;
-        Wed, 7 Apr 2021 05:43:06 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        id S1347078AbhDGKoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:44:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235796AbhDGKop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:44:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47AB76108B;
+        Wed,  7 Apr 2021 10:44:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617792275;
+        bh=/OYd8ejLQFNhGdZWMDHFlb/wavoCjwGmIAxQChr4y0I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lAszGQDh0IJBjt0Zb7UzHLOMuePGL2eE4/Fa3nR+8cALdr/D3xE+fbRUg65zaCChS
+         Tw9C9Ho1Ii2Ir5HqgHluupVFxpSi0GhucOKYs3I/v0TcC04EBAYufuFcQ4tSpnbHiJ
+         sNfTaqT+4iuid7/+sFakR9fZ+WpxUsytMrx5qRQLefU/Iigd39UlGeCX7RyZUpSI4M
+         WPib7+YcHlLoX0XmybUhmv6kl5MpvOthmQ1r2pOV4hevL+NrVlF2/3XjNyGMFmo8Hx
+         t2DMY/uaYlS8TnOAEXez9s1NJ9r+iGXiwmz3fjqnHEKojuFLqM0r4BWEK3uCVX08a/
+         Gn/jyTL3rHHuw==
+Date:   Wed, 7 Apr 2021 11:44:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: dts: ti: k3-am65: Add support for UHS-I modes in MMCSD1 subsystem
-Date:   Wed, 7 Apr 2021 16:13:03 +0530
-Message-ID: <20210407104303.25950-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v2 1/3] iommu: io-pgtable: add DART pagetable format
+Message-ID: <20210407104425.GB15173@willie-the-truck>
+References: <20210328074009.95932-1-sven@svenpeter.dev>
+ <20210328074009.95932-2-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210328074009.95932-2-sven@svenpeter.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UHS-I speed modes are supported in AM65 S.R. 2.0 SoC[1].
+On Sun, Mar 28, 2021 at 09:40:07AM +0200, Sven Peter wrote:
+> Apple's DART iommu uses a pagetable format that shares some
+> similarities with the ones already implemented by io-pgtable.c.
+> Add a new format variant to support the required differences
+> so that we don't have to duplicate the pagetable handling code.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  drivers/iommu/io-pgtable-arm.c | 59 ++++++++++++++++++++++++++++++++++
+>  drivers/iommu/io-pgtable.c     |  1 +
+>  include/linux/io-pgtable.h     |  6 ++++
+>  3 files changed, 66 insertions(+)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 87def58e79b5..2f63443fd115 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -127,6 +127,9 @@
+>  #define ARM_MALI_LPAE_MEMATTR_IMP_DEF	0x88ULL
+>  #define ARM_MALI_LPAE_MEMATTR_WRITE_ALLOC 0x8DULL
+>  
+> +#define APPLE_DART_PTE_PROT_NO_WRITE (1<<7)
+> +#define APPLE_DART_PTE_PROT_NO_READ (1<<8)
+> +
+>  /* IOPTE accessors */
+>  #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
+>  
+> @@ -381,6 +384,15 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+>  {
+>  	arm_lpae_iopte pte;
+>  
+> +	if (data->iop.fmt == ARM_APPLE_DART) {
+> +		pte = 0;
+> +		if (!(prot & IOMMU_WRITE))
+> +			pte |= APPLE_DART_PTE_PROT_NO_WRITE;
+> +		if (!(prot & IOMMU_READ))
+> +			pte |= APPLE_DART_PTE_PROT_NO_READ;
+> +		return pte;
+> +	}
+> +
+>  	if (data->iop.fmt == ARM_64_LPAE_S1 ||
+>  	    data->iop.fmt == ARM_32_LPAE_S1) {
+>  		pte = ARM_LPAE_PTE_nG;
+> @@ -1043,6 +1055,48 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
+>  	return NULL;
+>  }
+>  
+> +static struct io_pgtable *
+> +apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
+> +{
+> +	struct arm_lpae_io_pgtable *data;
+> +
+> +	if (cfg->ias > 36)
+> +		return NULL;
+> +	if (cfg->oas > 36)
+> +		return NULL;
+> +
+> +	if (!cfg->coherent_walk)
+> +		return NULL;
 
-Add support by removing the no-1-8-v tag and including the voltage
-regulator device tree nodes for power cycling.
+This all feels like IOMMU-specific limitations leaking into the page-table
+code here; it doesn't feel so unlikely that future implementations of this
+IP might have greater addressing capabilities, for example, and so I don't
+see why the page-table code needs to police this.
 
-[1] - https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf, section 12.3.6.1.1
+> +	cfg->pgsize_bitmap &= SZ_16K;
+> +	if (!cfg->pgsize_bitmap)
+> +		return NULL;
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+This is worrying (and again, I don't think this belongs here). How is this
+thing supposed to work if the CPU is using 4k pages?
 
-test logs:
-https://pastebin.ubuntu.com/p/vpYbY9QWh8/
-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  1 -
- .../arm64/boot/dts/ti/k3-am654-base-board.dts | 33 +++++++++++++++++++
- 2 files changed, 33 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-index cb340d1b401f..632f32fce4a1 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -301,7 +301,6 @@
- 		ti,otap-del-sel = <0x2>;
- 		ti,trm-icp = <0x8>;
- 		dma-coherent;
--		no-1-8-v;
- 	};
- 
- 	scm_conf: scm-conf@100000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-index 9e87fb313a54..6f7292b6fe0a 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-@@ -91,6 +91,38 @@
- 		#clock-cells = <0>;
- 		clock-frequency = <24000000>;
- 	};
-+
-+	evm_12v0: fixedregulator-evm12v0 {
-+		/* main supply */
-+		compatible = "regulator-fixed";
-+		regulator-name = "evm_12v0";
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc3v3_io: fixedregulator-vcc3v3io {
-+		/* Output of TPS54334 */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_io";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+		vin-supply = <&evm_12v0>;
-+	};
-+
-+	vdd_mmc1_sd: fixedregulator-sd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_mmc1_sd";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-boot-on;
-+		enable-active-high;
-+		vin-supply = <&vcc3v3_io>;
-+		gpio = <&pca9554 4 GPIO_ACTIVE_HIGH>;
-+	};
- };
- 
- &wkup_pmx0 {
-@@ -350,6 +382,7 @@
-  * disable sdhci1
-  */
- &sdhci1 {
-+	vmmc-supply = <&vdd_mmc1_sd>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mmc1_pins_default>;
- 	ti,driver-strength-ohm = <50>;
--- 
-2.17.1
-
+Will
