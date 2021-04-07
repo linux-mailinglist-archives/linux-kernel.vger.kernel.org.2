@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E116B3568BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607703568BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350579AbhDGKEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:04:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16379 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350489AbhDGKD3 (ORCPT
+        id S1350593AbhDGKEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:04:07 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:45848 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350501AbhDGKDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:03:29 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FFg0C2Z4ZzjYZn;
-        Wed,  7 Apr 2021 18:01:31 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 18:03:11 +0800
-Subject: Re: [PATCH 0/4] Add support for HiSilicon PCIe Tune and Trace device
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <alexander.shishkin@linux.intel.com>, <helgaas@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <lorenzo.pieralisi@arm.com>, <jonathan.cameron@huawei.com>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@huawei.com>,
-        <linux-doc@vger.kernel.org>, <linuxarm@huawei.com>,
-        "liuqi (BA)" <liuqi115@huawei.com>
-References: <1617713154-35533-1-git-send-email-yangyicong@hisilicon.com>
- <YGxm49c9cT69NV5Q@kroah.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <01b6e8f7-3282-514e-818d-0e768dcc5ba3@hisilicon.com>
-Date:   Wed, 7 Apr 2021 18:03:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 7 Apr 2021 06:03:32 -0400
+Received: by mail-lf1-f41.google.com with SMTP id g8so27509906lfv.12;
+        Wed, 07 Apr 2021 03:03:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PF17I0NH3tYVAA1Iv/q8DPWO007JsrI/3wrjpR3VDTQ=;
+        b=ErQapZvxie9sdOspRJqNnfrDw/L873wXRbh6iSWo1q+FQdnLxTP3nitFI8nvFE1NwE
+         H+U/uw+iFK2bpF4+Ci+qW93B3zJgcNXyQUD4yCZEhYZ/fEx9AmkphtQNInAuWTuhsFvd
+         EHEKatlDr8voP9JzqtDaxiA1liBBSRXxvaHFxuRsY+ZclM3h0bmNLKO5CF/jjbJ/yrJ1
+         UxcauNDVyMR0C3kuwjts+os+FVvjkpTJDZvARuZxBCvRZNU2rJPC+h3B7q7W5HtyEDVX
+         sRa6t8PJ3EpdeB3q6/cRPm1x6UoKuPLg+chZSIjIBZBKfwpWaJKvn68f+JoHEEJyTYBU
+         8E5g==
+X-Gm-Message-State: AOAM532J9Fc2O03CBY4vgxn5nPOEVZQNkNIEKrvIFZafCNuBTjHxVokI
+        Gwve5nxfK8fbTOJ2df1wgvY=
+X-Google-Smtp-Source: ABdhPJwAboi9CjOAMTjr+NfQFz6zGL9bX+mfSc7IZMv8APLCGWNMV2T1FA6NlerIpG5wj+/eqeK9cQ==
+X-Received: by 2002:a05:6512:1114:: with SMTP id l20mr1359564lfg.126.1617789800611;
+        Wed, 07 Apr 2021 03:03:20 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id v137sm716388lfa.187.2021.04.07.03.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 03:03:20 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:03:11 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v6 2/8] regulator: add warning flags
+Message-ID: <03ebe1f85fa85762f705a7bf29faf271c9fe3401.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <YGxm49c9cT69NV5Q@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/6 21:49, Greg KH wrote:
-> On Tue, Apr 06, 2021 at 08:45:50PM +0800, Yicong Yang wrote:
->> HiSilicon PCIe tune and trace device(PTT) is a PCIe Root Complex
->> integrated Endpoint(RCiEP) device, providing the capability
->> to dynamically monitor and tune the PCIe traffic(tune),
->> and trace the TLP headers(trace). The driver exposes the user
->> interface through debugfs, so no need for extra user space tools.
->> The usage is described in the document.
-> 
-> Why use debugfs and not the existing perf tools for debugging?
-> 
+Add 'warning' level events and error flags to regulator core.
+Current regulator core notifications are used to inform consumers
+about errors where HW is misbehaving in such way it is assumed to
+be broken/unrecoverable.
 
-The perf doesn't match our device as we've analyzed.
+There are PMICs which are designed for system(s) that may have use
+for regulator indications sent before HW is damaged so that some
+board/consumer specific recovery-event can be performed while
+continuing most of the normal operations.
 
-For the tune function it doesn't do the sampling at all.
-User specifys one link parameter and reads its current value or set
-the desired one. The process is static. We didn't find a
-way to adapt to perf.
+Add new WARNING level events and notifications to be used for
+that purpose.
 
-For the trace function, we may barely adapt to the perf framework
-but it doesn't seems like a better choice. We have our own format
-of data and don't need perf doing the parsing, and we'll get extra
-information added by perf as well. The settings through perf tools
-won't satisfy our needs, we cannot present available settings
-(filter BDF number, TLP types, buffer controls) to
-the user and user cannot set in a friendly way. For example,
-we cannot count on perf to decode the usual format BDF number like
-<domain>:<bus>:<dev>.<fn>, which user can use filter the TLP
-headers.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+No changes since RFC-v2
+---
+ include/linux/regulator/consumer.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-So we intended to make the operation of this driver a bit like
-ftrace. user sets the control settings through control files
-and get the result through files as well. No additional tools
-is necessay. A user space tool is necessary if we use a character
-device or misc device for implementing this. The trace data maybe
-hundreds of megabytes, and debugfs file can just satisfy it.
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index 20e84a84fb77..f72ca73631be 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -119,6 +119,16 @@ struct regulator_dev;
+ #define REGULATOR_EVENT_PRE_DISABLE		0x400
+ #define REGULATOR_EVENT_ABORT_DISABLE		0x800
+ #define REGULATOR_EVENT_ENABLE			0x1000
++/*
++ * Following notifications should be emitted only if detected condition
++ * is such that the HW is likely to still be working but consumers should
++ * take a recovery action to prevent problems esacalating into errors.
++ */
++#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
++#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
++#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
++#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
++#define REGULATOR_EVENT_WARN_MASK		0x1E000
+ 
+ /*
+  * Regulator errors that can be queried using regulator_get_error_flags
+@@ -138,6 +148,10 @@ struct regulator_dev;
+ #define REGULATOR_ERROR_FAIL			BIT(4)
+ #define REGULATOR_ERROR_OVER_TEMP		BIT(5)
+ 
++#define REGULATOR_ERROR_UNDER_VOLTAGE_WARN	BIT(6)
++#define REGULATOR_ERROR_OVER_CURRENT_WARN	BIT(7)
++#define REGULATOR_ERROR_OVER_VOLTAGE_WARN	BIT(8)
++#define REGULATOR_ERROR_OVER_TEMP_WARN		BIT(9)
+ 
+ /**
+  * struct pre_voltage_change_data - Data sent with PRE_VOLTAGE_CHANGE event
+-- 
+2.25.4
 
-Thanks,
-Yicong
 
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
