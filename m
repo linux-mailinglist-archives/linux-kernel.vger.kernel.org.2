@@ -2,70 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B7E356C03
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67649356C04
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352110AbhDGMXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:23:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21613 "EHLO mga02.intel.com"
+        id S235414AbhDGMZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:25:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55706 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235058AbhDGMXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:23:36 -0400
-IronPort-SDR: W1qDZ9/REPVuA9+LdBdUiZUDEYXWF3V951tTdqOO/J6o0K/v/PndZpmnkbnSvlVv/v5wmVUtjK
- NHM3ukP1jHRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180425300"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="180425300"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 05:23:26 -0700
-IronPort-SDR: EVUBtt3Tizwi9cAo/RgfWkVXBkrRABuRN464VG8eU4NE9HDJf7fisIKPbeSihWYbmF0FVbtL3/
- TyvrfRQcBjeA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="449099301"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2021 05:23:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5435412A; Wed,  7 Apr 2021 15:23:40 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: [PATCH v1 1/1] drm/i915: Include only needed headers in ascii85.h
-Date:   Wed,  7 Apr 2021 15:23:37 +0300
-Message-Id: <20210407122337.77493-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S234902AbhDGMZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:25:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC5F1B135;
+        Wed,  7 Apr 2021 12:25:41 +0000 (UTC)
+Subject: Re: [PATCH] mm: page_owner: detect page_owner recursion via
+ task_struct
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <20210401223010.3580480-1-slyfox@gentoo.org>
+ <20210401170519.00824fbdf8ab60b720609422@linux-foundation.org>
+ <20210402125039.671f1f40@sf>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <876f8349-5b64-6be5-6a97-4cf17d7abfb1@suse.cz>
+Date:   Wed, 7 Apr 2021 14:25:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210402125039.671f1f40@sf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ascii85.h is user of exactly two headers, i.e. math.h and types.h.
-There is no need to carry on entire kernel.h.
+On 4/2/21 1:50 PM, Sergei Trofimovich wrote:
+> On Thu, 1 Apr 2021 17:05:19 -0700
+> Andrew Morton <akpm@linux-foundation.org> wrote:
+> 
+>> On Thu,  1 Apr 2021 23:30:10 +0100 Sergei Trofimovich <slyfox@gentoo.org> wrote:
+>> 
+>> > Before the change page_owner recursion was detected via fetching
+>> > backtrace and inspecting it for current instruction pointer.
+>> > It has a few problems:
+>> > - it is slightly slow as it requires extra backtrace and a linear
+>> >   stack scan of the result
+>> > - it is too late to check if backtrace fetching required memory
+>> >   allocation itself (ia64's unwinder requires it).
+>> > 
+>> > To simplify recursion tracking let's use page_owner recursion depth
+>> > as a counter in 'struct task_struct'.  
+>> 
+>> Seems like a better approach.
+>> 
+>> > The change make page_owner=on work on ia64 bu avoiding infinite
+>> > recursion in:
+>> >   kmalloc()  
+>> >   -> __set_page_owner()
+>> >   -> save_stack()
+>> >   -> unwind() [ia64-specific]
+>> >   -> build_script()
+>> >   -> kmalloc()
+>> >   -> __set_page_owner() [we short-circuit here]
+>> >   -> save_stack()
+>> >   -> unwind() [recursion]  
+>> > 
+>> > ...
+>> >
+>> > --- a/include/linux/sched.h
+>> > +++ b/include/linux/sched.h
+>> > @@ -1371,6 +1371,15 @@ struct task_struct {
+>> >  	struct llist_head               kretprobe_instances;
+>> >  #endif
+>> >  
+>> > +#ifdef CONFIG_PAGE_OWNER
+>> > +	/*
+>> > +	 * Used by page_owner=on to detect recursion in page tracking.
+>> > +	 * Is it fine to have non-atomic ops here if we ever access
+>> > +	 * this variable via current->page_owner_depth?  
+>> 
+>> Yes, it is fine.  This part of the comment can be removed.
+> 
+> Cool! Will do.
+> 
+>> > +	 */
+>> > +	unsigned int page_owner_depth;
+>> > +#endif  
+>> 
+>> Adding to the task_struct has a cost.  But I don't expect that
+>> PAGE_OWNER is commonly used in prodction builds (correct?).
+> 
+> Yeah, PAGE_OWNER should not be enabled for production kernels.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/ascii85.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Note that it was converted to use a static key exactly so that it can be always
+built in production kernels, and simply enabled on boot when needed. Our kernels
+have it enabled.
 
-diff --git a/include/linux/ascii85.h b/include/linux/ascii85.h
-index 4cc40201273e..83ad775ad0aa 100644
---- a/include/linux/ascii85.h
-+++ b/include/linux/ascii85.h
-@@ -8,7 +8,8 @@
- #ifndef _ASCII85_H_
- #define _ASCII85_H_
- 
--#include <linux/kernel.h>
-+#include <linux/math.h>
-+#include <linux/types.h>
- 
- #define ASCII85_BUFSZ 6
- 
--- 
-2.30.2
+> Not having extra memory overhead (or layout disruption) is a nice
+> benefit though. I'll switch to "Unserialized, strictly 'current'" bitfield.
+> 
+>> > --- a/init/init_task.c
+>> > +++ b/init/init_task.c
+>> > @@ -213,6 +213,9 @@ struct task_struct init_task
+>> >  #ifdef CONFIG_SECCOMP
+>> >  	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
+>> >  #endif
+>> > +#ifdef CONFIG_PAGE_OWNER
+>> > +	.page_owner_depth	= 0,
+>> > +#endif
+>> >  };
+>> >  EXPORT_SYMBOL(init_task);  
+>> 
+>> It will be initialized to zero by the compiler.  We can omit this hunk
+>> entirely.
+>> 
+>> > --- a/mm/page_owner.c
+>> > +++ b/mm/page_owner.c
+>> > @@ -20,6 +20,16 @@
+>> >   */
+>> >  #define PAGE_OWNER_STACK_DEPTH (16)
+>> >  
+>> > +/*
+>> > + * How many reenters we allow to page_owner.
+>> > + *
+>> > + * Sometimes metadata allocation tracking requires more memory to be allocated:
+>> > + * - when new stack trace is saved to stack depot
+>> > + * - when backtrace itself is calculated (ia64)
+>> > + * Instead of falling to infinite recursion give it a chance to recover.
+>> > + */
+>> > +#define PAGE_OWNER_MAX_RECURSION_DEPTH (1)  
+>> 
+>> So this is presently a boolean.  Is there any expectation that
+>> PAGE_OWNER_MAX_RECURSION_DEPTH will ever be greater than 1?  If not, we
+>> could use a single bit in the task_struct.  Add it to the
+>> "Unserialized, strictly 'current'" bitfields.  Could make it a 2-bit field if we want
+>> to permit PAGE_OWNER_MAX_RECURSION_DEPTH=larger.
+> 
+> Let's settle on depth=1. depth>1 is not trivial for other reasons I don't
+> completely understand.
+
+That's fine, I don't think depth>1 would bring us much benefit anyway.
+
+> Follow-up patch incoming.
+> 
 
