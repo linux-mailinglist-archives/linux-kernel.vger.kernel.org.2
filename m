@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FE63575AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1192A3575AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355990AbhDGUPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:15:04 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:37655 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345885AbhDGUPE (ORCPT
+        id S1355999AbhDGUPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345885AbhDGUPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:15:04 -0400
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
- t=1617826493; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=1amBocSDkmECZ2mX+Wc/8c6p3WkPnn/9Znd0jYHQysk=;
- b=1utFFPbwYH/kug0197KEJXeIgLIxpJOV5kRZk+THEpmPkR5sjuxevNPszZCRqfhs8ZgzX
- VbSfwENbkDiOdRyAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617826493; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=1amBocSDkmECZ2mX+Wc/8c6p3WkPnn/9Znd0jYHQysk=;
- b=DEKz1SQnJU+nbSR645NCzeOO9THxWML8a9p6boPQGis3vFpMhPs8PQr3QbgvxAvvHslCn
- TnhKABdkSqoraINfdiXolIpbGsG0/HyHkthR8o2pYO/JWkunCg/m+y7RM8Zy7J6URdLpNVk
- SrbcSf7rpUqx7pTecUuEMzu0BVnmRyLXVoag4y3hJaYEnTgKyhq4TUp5vp8CZfhv7OKuQEv
- nojZ9+GLYUKT9Jo6X5fdvc4cKeHtGjf44xHYzXfE2zJzFiAzThgkuA2Un8/FxNJnZA3uyGK
- j35FL2gSm+wkUNjp7p6Z21ee5TkA7Co3CZTRDEaUUtXUEZgLRMfz1QljNXhQ==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id B8916160244; Wed,  7 Apr 2021 13:14:53 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 13:14:53 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 11/37] x86/mm: attempt speculative mm faults first
-Message-ID: <20210407201453.GA25738@lespinasse.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-12-michel@lespinasse.org>
- <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 7 Apr 2021 16:15:09 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0FFC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:14:59 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id c131so15448364qkg.21
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=Ceq8XvNE/VKGx/FMUKPisDgv/8Sf3c1dCyF6b7cDUlE=;
+        b=diZvRjNagL/cTfPIrlKCvoxMiNgCBAJmq2gY5rPRKs0WoLmwgnYDSqKbPYI0CgaufI
+         bCjCzhaVjKEztDsnN9SOTZmTxJaOPpvyUK7Jg60OkmSEfPs0lbNTxkXGyAY2dPAugbUt
+         zo+fTFxwH033qLbaEyv/h6F9nIDbEZJHFOEkNbsZO/8a/Q7boXLRWDq01wlNSz+moOX6
+         xwkY1MGoQInP5Zcj45IkWeocMAMYmRNjtHBJ1mJTk8xOWI+qKoiPHOvFBAWuXytZpgou
+         Z6AM5/sizAmUDRUX1lXlXnoSli7y57aGBfI2s+yx2Zok1HbdaDqNOp8csZlyLvNP1FS3
+         MGmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Ceq8XvNE/VKGx/FMUKPisDgv/8Sf3c1dCyF6b7cDUlE=;
+        b=LRkdPmtDKUjccwaIzS5BzoDKVBKsxuXyYUWfi0t81g9Au3CEULajf6Fkbk/MJyDIiw
+         2zrJicVxnR7vNF4hEQl+Tqvx7AXbrCSfA4pDF3vNI8rEUScSjiiXL+lsYn8L8ChGNyA1
+         zxPawmFvneYAangCxEB+wrff5sGBDwP5rC/io8xKfinhurLArEZNrEY9Pnq/CvYp7tj+
+         gvExOzvJYNxjFrcldZvhhcVobO/WOevwG2IuffkG+w0WkuqsEWDilEOgtxjpEKJQBp65
+         VLSZX9WCiGIPSV9GK9dKZoLkiaD9VPP0d3ZB4lPgCowwhrwAuI4drPEq6p9gbUnxjstd
+         P1qQ==
+X-Gm-Message-State: AOAM53140C1lGN6Hx2VQsZMyHQx6DFlFhTQeqCudaLYOVUEfK9SUQjJI
+        6NUvRfI7pwFytiP8+X6dlc+Sx/iYLPLfYfelkAc=
+X-Google-Smtp-Source: ABdhPJw8se9qCloL1BmpH+0RaPpAlNuQscHk86VmksDcfryOQi6f6AQNz0osRK/CGqVIG4NtWiauZZb9vBfm+cbR2UA=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:258e:3713:7415:ce58])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:ee81:: with SMTP id
+ u1mr5216935qvr.14.1617826499155; Wed, 07 Apr 2021 13:14:59 -0700 (PDT)
+Date:   Wed,  7 Apr 2021 13:14:55 -0700
+In-Reply-To: <ead0e9c32a2f70e0bde6f63b3b9470e0ef13d2ee.1616107969.git.andreyknvl@google.com>
+Message-Id: <20210407201455.49907-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <ead0e9c32a2f70e0bde6f63b3b9470e0ef13d2ee.1616107969.git.andreyknvl@google.com>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: Re: [PATCH] mailmap: update Andrey Konovalov's email address
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     andreyknvl@google.com
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Marco Elver <melver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:48:44PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 06, 2021 at 06:44:36PM -0700, Michel Lespinasse wrote:
-> > --- a/arch/x86/mm/fault.c
-> > +++ b/arch/x86/mm/fault.c
-> > @@ -1219,6 +1219,8 @@ void do_user_addr_fault(struct pt_regs *regs,
-> >  	struct mm_struct *mm;
-> >  	vm_fault_t fault;
-> >  	unsigned int flags = FAULT_FLAG_DEFAULT;
-> > +	struct vm_area_struct pvma;
-> 
-> That's 200 bytes on-stack... I suppose that's just about acceptible, but
-> perhaps we need a comment in struct vm_area_struct to make people aware
-> this things lives on-stack and size really is an issue now.
+(replying to https://lore.kernel.org/lkml/ead0e9c32a2f70e0bde6f63b3b9470e0ef13d2ee.1616107969.git.andreyknvl@google.com/)
 
-Right, I agree that having the vma copy on-stack is not ideal.
+Just got the bounceback, RIP. :(
 
-I think what really should be done, is to copy just the attributes of
-the vma that will be needed during the page fault. Things like vm_mm,
-vm_page_prot, vm_flags, vm_ops, vm_pgoff, vm_file, vm_private_data,
-vm_policy. We definitely do not need rbtree and rmap fields such as
-vm_prev, vm_next, vm_rb, rb_subtree_gap, shared, anon_vma_chain etc...
+Marco is updating your epitaph.
 
-The reason I did things this way, is because changing the entire fault
-handler to use attributes stored in struct vm_fault, rather than in
-the original vma, would be quite intrusive. I think it would be a
-reasonable step to consider once there is agreement on the rest of the
-speculative fault patch set, but it's practical doing it before then.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
