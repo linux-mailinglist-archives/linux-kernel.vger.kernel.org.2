@@ -2,108 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7AA35747B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F1435747D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355383AbhDGSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
+        id S1344922AbhDGSoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbhDGSnZ (ORCPT
+        with ESMTP id S232880AbhDGSoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:43:25 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D764C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:43:14 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id y2so14516211qtw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:43:14 -0700 (PDT)
+        Wed, 7 Apr 2021 14:44:21 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2206BC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:44:10 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id j199-20020a1c23d00000b0290123bb155f6aso1658569wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cilium-io.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lwseBhtjiF9OLa/jt/21tHXtZHL6eXnMpFccp0D93oY=;
-        b=uoMiJ2FEhGCc7gKHBuuZ8Lu3bgwTY9u5HJf2rqcNzrQRKfWvOYRaBsgCgYY5Df4qFm
-         arboEx9wv/v+Kccpy0SCr+AnEhg3JuAmS3Sr8yOXei9b13OuBNK0oEcEKzUb6/6uMyqc
-         VZLVOvQNk+P/VuJgSsN9RgJYn6YjdvmDTeISgIB4AVBhZkS2IpJJ7h4udOxe+vopBnqd
-         fblwQvTGkM+kGkq0PD83o05gaIl7Fjyve3bttBIj/wSFiHK0Q6Hy6fdQ+5ZcjccBu8x7
-         mWQ05BMG/SxhZXf0TQpYkHfOIQjM272nLSnDhTQA/pC/bXmLC7U6oKHHJ7l2yE75Fbvl
-         MZ1g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U09jkuhbNd4GqgIa8gbKdPQlfgb0wMDSk0hVwDV1gRw=;
+        b=ngd4o4PyyH4y4MwaG4cnoC6BYaNJKVmTUn1FLk6iHOAPaNG8DeUfZzhymKYlRt0WBF
+         HGIOklvd6ZH0GhYEpHVm1LuvZ4z2wBSgD26kvfyaBhMfmn663lBk1uddv969zUJdaAYt
+         3YBKSHQAb6fT2Vyy/1JMWOttU9895pAjrlIlWnXHy+8Vp2NPYpaGV+sB+0StjU9OeP98
+         tRy0QHfn3hsF8zE1Aq/BMXcz9eW6XrmshNU6mzVrbRp5IwhAeUJu2P0HNXcKc1pCQV2C
+         WnUNExQdMC8rBcwLKpfweD2zJQ7hiRYL85Z0298BXC5qxaHuANgjHZkaqk2CWglrqSDR
+         vunA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lwseBhtjiF9OLa/jt/21tHXtZHL6eXnMpFccp0D93oY=;
-        b=c7NalwWeACEZhxDheUOE7b4RLtqZj4RBXOq1eAD6mTH3DL8gr7V/kHDvTxwq97/sif
-         HnvzR+TjQ8FukNNNtrfK4ISfBO3cCHvAIqqtbYr0i/ZoWGNm7zETdUYw87MvuJyP+vDZ
-         WcTALJrExE5V6m5yz25V0cYXz/MB5iYGgg7vg/55BWvqiX8d3Exgg5AIMuaFwjxHEd4L
-         ORQm+Ks+SbpK8DpBcMkLFvYmKA/OQHjyR5OByoyMCGEJ+T7bcoAoaU+sX+MNv/OQN7Ag
-         8QAwzjcfe46rwBhVp1wFcQvvKtcj0bK1A/k7qap2C4kD96G7wGrBG0Dc2iVfedyJ+9na
-         LxEw==
-X-Gm-Message-State: AOAM532lHfY2p0H/pKC3htBMs9bQKIl5T6rMKuOi5DsVRUhTciXt8QOL
-        EiNBh5c4IDO/MSSy0EHqLK9t+iHDmsfdjxMnM5E=
-X-Google-Smtp-Source: ABdhPJzPUnxUh0Y3OTUxakdfQh5qa9BFLglLXJ1PfQIGwLP6bz3NPGfGbbi0iwj/kBP+pGi1mNxQrw==
-X-Received: by 2002:ac8:4d8b:: with SMTP id a11mr3958359qtw.302.1617820993800;
-        Wed, 07 Apr 2021 11:43:13 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id o125sm18807190qkf.87.2021.04.07.11.43.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 11:43:12 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id l9so6874343ybm.0;
-        Wed, 07 Apr 2021 11:43:12 -0700 (PDT)
-X-Received: by 2002:a25:2e4d:: with SMTP id b13mr5948575ybn.199.1617820992048;
- Wed, 07 Apr 2021 11:43:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U09jkuhbNd4GqgIa8gbKdPQlfgb0wMDSk0hVwDV1gRw=;
+        b=cMl5J2vhLV/feGHINYUlO3s8X+GwGtebkP9ZB6mkqCtsgiyLQYGGAwPgSvDIZxblSf
+         LXD29uPh+xmQgodLI7rpQ3PZX9Fj1b4xa8jzgk8o5GS8Uzx54eAOPw3ab8WExcfPenTM
+         ZsJVREA8BR9hSw3qqMu8R7WfOmk9nH0GvfDrP618FkqHzCQeZhUjTCRgAIW/DRd10a8h
+         K2z1g/rg1VJVb49AhuB/Pmoxrl33xxVax3EmmydGlRqlCXcfzoBFhrwJvd3+38fW2rXG
+         YOcBs1JyTAU/WNEhLXGLO70tfyONPnmta+Zac/C/sjzIlD9Zz5h16KYzAAy7w5ZFEklZ
+         Da7Q==
+X-Gm-Message-State: AOAM532PnkOEZA2JSeIbb+Pjez3o9E2+qGe+1a/6MOpUZVSBuZ9PBuJP
+        xXmn2qSOkli7OYIVY5pzvhRM/Q==
+X-Google-Smtp-Source: ABdhPJx50nBlSlPltZQfbuboqkROjZuWadRs8Z0ewQ8YyTlzSb94+cWlQubdOFAHHuYz9UMUXOaQzw==
+X-Received: by 2002:a1c:23d6:: with SMTP id j205mr4416562wmj.120.1617821048827;
+        Wed, 07 Apr 2021 11:44:08 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id u10sm8410862wrt.75.2021.04.07.11.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 11:44:08 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 20:43:50 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Wang <jasowang@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YG39ZtnTuyn5uBOa@myrica>
+References: <20210322120300.GU2356281@nvidia.com>
+ <20210324120528.24d82dbd@jacob-builder>
+ <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210405234230.GF7405@nvidia.com>
+ <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
+ <20210406124251.GO7405@nvidia.com>
+ <MWHPR11MB1886A7E4C6F3E3A81240517B8C759@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210406185806.377576-1-pctammela@mojatatu.com>
-In-Reply-To: <20210406185806.377576-1-pctammela@mojatatu.com>
-From:   Joe Stringer <joe@cilium.io>
-Date:   Wed, 7 Apr 2021 11:42:33 -0700
-X-Gmail-Original-Message-ID: <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
-Message-ID: <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB1886A7E4C6F3E3A81240517B8C759@MWHPR11MB1886.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pedro,
+On Wed, Apr 07, 2021 at 08:17:50AM +0000, Tian, Kevin wrote:
+> btw this discussion was raised when discussing the I/O page fault handling
+> process. Currently the IOMMU layer implements a per-device fault reporting
+> mechanism, which requires VFIO to register a handler to receive all faults 
+> on its device and then forwards to ioasid if it's due to 1st-level. Possibly it 
+> makes more sense to convert it into a per-pgtable reporting scheme, and 
+> then the owner of each pgtable should register its own handler.
 
-On Tue, Apr 6, 2021 at 11:58 AM Pedro Tammela <pctammela@gmail.com> wrote:
->
-> In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
->
-> For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-> notification to the process if needed.
->
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> ---
->  include/uapi/linux/bpf.h       | 7 +++++++
->  tools/include/uapi/linux/bpf.h | 7 +++++++
->  2 files changed, 14 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 49371eba98ba..8c5c7a893b87 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -4061,12 +4061,15 @@ union bpf_attr {
->   *             of new data availability is sent.
->   *             If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
->   *             of new data availability is sent unconditionally.
-> + *             If **0** is specified in *flags*, notification
-> + *             of new data availability is sent if needed.
+Maybe, but you do need device information in there, since that's how the
+fault is reported to the guest and how the response is routed back to the
+faulting device (only PASID+PRGI would cause aliasing). And we need to
+report non-recoverable faults, as well as recoverable ones without PASID,
+once we hand control of level-1 page tables to guests.
 
-Maybe a trivial question, but what does "if needed" mean? Does that
-mean "when the buffer is full"?
+> It means
+> for 1) VFIO will register a 2nd-level pgtable handler while /dev/ioasid
+> will register a 1st-level pgtable handler, while for 3) /dev/ioasid will register 
+> handlers for both 1st-level and 2nd-level pgtable. Jean? also want to know 
+> your thoughts...  
+
+Moving all IOMMU controls to /dev/ioasid rather that splitting them is
+probably better. Hopefully the implementation can reuse most of
+vfio_iommu_type1.
+
+I'm trying to sketch what may work for Arm, if we have to reuse
+/dev/ioasid to avoid duplication of fault and inval queues:
+
+* Get a container handle out of /dev/ioasid (or /dev/iommu, really.)
+  No operation available since we don't know what the device and IOMMU
+  capabilities are.
+
+* Attach the handle to a VF. With VFIO that would be
+  VFIO_GROUP_SET_CONTAINER. That causes the kernel to associate an IOMMU
+  with the handle, and decide which operations are available.
+
+* With a map/unmap vIOMMU (or shadow mappings), a single translation level
+  is supported. With a nesting vIOMMU, we're populating the level-2
+  translation (some day maybe by binding the KVM page tables, but
+  currently with map/unmap ioctl).
+
+  Single-level translation needs single VF per container. Two level would
+  allow sharing stage-2 between multiple VFs, though it's a pain to define
+  and implement.
+
+* Without a vIOMMU or if the vIOMMU starts in bypass, populate the
+  container page tables.
+
+Start the guest.
+
+* With a map/unmap vIOMMU, guest creates mappings, userspace populates the
+  page tables with map/unmap ioctl.
+
+  It would be possible to add a PASID mode there: guest requests an
+  address space with a specific PASID, userspace derives an IOASID handle
+  from the container handle and populate that address space with map/unmap
+  ioctl. That would enable PASID on sub-VF assignment, which requires the
+  host to control which PASID is programmed into the VF (with
+  DEVICE_ALLOW_IOASID, I guess). And either the host allocates the PASID
+  in this case (which isn't supported by a vSMMU) or we have to do a
+  vPASID -> pPASID. I don't know if it's worth the effort.
+
+Or
+* With a nesting vIOMMU, the guest attaches a PASID table to a VF,
+  userspace issues a SET_PASID_TABLE ioctl on the container handle. If
+  we support multiple VFs per container, we first need to derive a child
+  container from the main one and the device, then attach the PASID table.
+
+  Guest programs the PASID table, sends invalidations when removing
+  mappings which are relayed to the host on the child container. Page
+  faults and response queue would be per container, so if multiple VF per
+  container, we could have one queue for the parent (level-2 faults) and
+  one for each child (level-1 faults).
+
+Thanks,
+Jean
