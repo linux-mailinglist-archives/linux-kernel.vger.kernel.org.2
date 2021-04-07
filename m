@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5544B356897
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5518535689B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350444AbhDGKAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhDGKAD (ORCPT
+        id S1350455AbhDGKAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:00:35 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:39484 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230220AbhDGKAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:00:03 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44E5C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:59:53 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id r9so4126000ejj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:59:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ezue5kDeqE0ZtSRkrpYBHuexgmqA31YZEyH6lvl25uw=;
-        b=fqfNmPZOVFQDe2AouClgXbDOgSSjo7aUUzPL781A9s2Jo33q0bvg/DD2MWEg4KaSZa
-         8ilpB1fN+fA6nmCjXOacIkmkTFzYJpZ0oE34PfRR6j/VEz0AgyZ0N7fA+g0bZGLhvc/9
-         PIsvPn50bde8jK6T7XTX077ZjrGW6TbIJDZ98NhLNQBkSNpgyDsgvpHRzzuBeqDCHMOu
-         gTuneOPxP7SVUdIZGbhSnEFWEE9mc4smi+GEqVlXS/qxF++tQqBMgUu2i1L4FR87ch14
-         /LaZ/Pw5cRuPugRjt0fPwBb7UERuctoxNsthuIPj7uVccqM8L0QwpQHnG/+ZemVvs+gU
-         tpSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ezue5kDeqE0ZtSRkrpYBHuexgmqA31YZEyH6lvl25uw=;
-        b=qP3yT5whDSycaFq1QZT+81SP5OaumFQqU6tSCmKH+hj0+LuXewrqHzHwiFw7jFVtHg
-         uIhX6nzDCzBQMUkYD4GhEfgMdjwiNLqcMXJz2GBq7q7f1NCq9L+JPXIUjM1rPisNbxl4
-         VpCMatmPUFRNigZ59I1LCE5vvDASzT59Ct1UgznpRwvtkOT//E+QExbQv35qwr8EYml3
-         83IcwzTdpEn9207GT5o7WgzWrcLHLDEeWbt2Sql2Ck5MyN7R6RjBxmI7v43P36GuHYtN
-         YLXmL/Q15+BWpw933tUsx6/99WALCi1+vMUW+COGQk0gHJo3DXDk4kV43pdOJYjeisaj
-         411w==
-X-Gm-Message-State: AOAM531YPOUFYP0D9qFyhEkLCvk+ATJNk6I8Zx1sQNzE8y2RlazLLIeD
-        L/WTRphF0JYmay99XvxcaSXqZw==
-X-Google-Smtp-Source: ABdhPJxL4Zz+RoDOr2oUuFbkluZmflq3AmScLlDyfXoiqHo7QFRUOb1hw2oKuo3f6DMiY/hjF8hftg==
-X-Received: by 2002:a17:906:fcaa:: with SMTP id qw10mr1370992ejb.9.1617789592378;
-        Wed, 07 Apr 2021 02:59:52 -0700 (PDT)
-Received: from dell ([91.110.221.225])
-        by smtp.gmail.com with ESMTPSA id e5sm7521056edr.64.2021.04.07.02.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 02:59:51 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:59:50 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: arizona: Fix rumtime PM imbalance on error
-Message-ID: <20210407095950.GA2961413@dell>
-References: <20210407051149.31422-1-dinghao.liu@zju.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210407051149.31422-1-dinghao.liu@zju.edu.cn>
+        Wed, 7 Apr 2021 06:00:32 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 5676F404A0;
+        Wed,  7 Apr 2021 10:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617789623; bh=5j9+LN48/eUhsAf/2HaDqriIe19NdgXnp/wRV+fh3Gw=;
+        h=Date:From:Subject:To:Cc:From;
+        b=YHbwi9Qp0mX9OTmwC77DbcxOU3ruwdLD91CD9DI35TxoGdNOYhOlT6BCmHdEVIryo
+         QH+9Zd1UBg6qShrnjZ86r8ZYqo0RhYhNdO1uDvCcPgi/s4YKtVFA2nJE2uuyEE6LUe
+         +kt1OyITs/NXvTjpcTAiiZljTSnR4ID/82YcaB9ggw4JlNlW5LyRsQzg6+QzI7Wh0p
+         wIP2FabU0CYaeoffGMbQX6F/fNJvXiY/8MlLvcragOoYziBghmp5hxbei5y7QR5PJl
+         YjsiMTllwtt8Lir84Mg8bJM5E+/lQoLOZgkk96zhmTuMk9uu0IkE9EqDPAT7nyeREO
+         Yj9nPJcdYIuMw==
+Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 4441BA0094;
+        Wed,  7 Apr 2021 10:00:17 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Wed, 07 Apr 2021 14:00:15 +0400
+Date:   Wed, 07 Apr 2021 14:00:15 +0400
+Message-Id: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+X-SNPS-Relay: synopsys.com
+From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Subject: [PATCH 00/14] usb: dwc2: Fix Partial Power down issues.
+To:     John Youn <John.Youn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mian Yousaf Kaukab <yousaf.kaukab@intel.com>,
+        Gregory Herrero <gregory.herrero@intel.com>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Paul Zimmerman <paulz@synopsys.com>, <stable@vger.kernel.org>,
+        Robert Baldyga <r.baldyga@samsung.com>,
+        Kever Yang <kever.yang@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Apr 2021, Dinghao Liu wrote:
+This patch set fixes and improves the Partial Power Down mode for
+dwc2 core.
+It adds support for the following cases
+    1. Entering and exiting partial power down when a port is
+       suspended, resumed, port reset is asserted.
+    2. Exiting the partial power down mode before removing driver.
+    3. Exiting partial power down in wakeup detected interrupt handler.
+    4. Exiting from partial power down mode when connector ID.
+       status changes to "connId B
 
-> pm_runtime_get_sync() will increase the rumtime PM counter
-> even it returns an error. Thus a pairing decrement is needed
-> to prevent refcount leak. Fix this by replacing this API with
-> pm_runtime_resume_and_get(), which will not change the runtime
-> PM counter on error.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/mfd/arizona-irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+It updates and fixes the implementation of dwc2 entering and
+exiting partial power down mode when the system (PC) is suspended.
 
-Applied, thanks.
+The patch set also improves the implementation of function handlers
+for entering and exiting host or device partial power down.
 
+NOTE: This is the second patch set in the power saving mode fixes
+series.
+This patch set is part of multiple series and is continuation
+of the "usb: dwc2: Fix and improve power saving modes" patch set.
+(Patch set link: https://marc.info/?l=linux-usb&m=160379622403975&w=2).
+The patches that were included in the "usb: dwc2:
+Fix and improve power saving modes" which was submitted
+earlier was too large and needed to be split up into
+smaller patch sets. 
+
+
+Artur Petrosyan (14):
+  usb: dwc2: Add device partial power down functions
+  usb: dwc2: Add host partial power down functions
+  usb: dwc2: Update enter and exit partial power down functions
+  usb: dwc2: Add partial power down exit flow in wakeup intr.
+  usb: dwc2: Update port suspend/resume function definitions.
+  usb: dwc2: Add enter partial power down when port is suspended
+  usb: dwc2: Add exit partial power down when port is resumed
+  usb: dwc2: Add exit partial power down when port reset is asserted
+  usb: dwc2: Add part. power down exit from
+    dwc2_conn_id_status_change().
+  usb: dwc2: Allow exit partial power down in urb enqueue
+  usb: dwc2: Fix session request interrupt handler
+  usb: dwc2: Update partial power down entering by system suspend
+  usb: dwc2: Fix partial power down exiting by system resume
+  usb: dwc2: Add exit partial power down before removing driver
+
+ drivers/usb/dwc2/core.c      | 113 ++-------
+ drivers/usb/dwc2/core.h      |  27 ++-
+ drivers/usb/dwc2/core_intr.c |  46 ++--
+ drivers/usb/dwc2/gadget.c    | 148 ++++++++++-
+ drivers/usb/dwc2/hcd.c       | 458 +++++++++++++++++++++++++----------
+ drivers/usb/dwc2/hw.h        |   1 +
+ drivers/usb/dwc2/platform.c  |  11 +-
+ 7 files changed, 558 insertions(+), 246 deletions(-)
+
+
+base-commit: e9fcb07704fcef6fa6d0333fd2b3a62442eaf45b
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
