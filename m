@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5BE356975
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BAA356976
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350979AbhDGKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
+        id S1350995AbhDGKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:24:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234316AbhDGKX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA3C6139C;
+        id S234666AbhDGKYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:24:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 494C36124B;
         Wed,  7 Apr 2021 10:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617791030;
-        bh=CeKm6ipfL9Qlfx+2An5KVum6+4Qfn5PtcZDf+8XmBU0=;
+        bh=RHMlrWdzfqav97k3xdI2ncIfUKhHVobU2cn2BD0748g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NCpaqXin5Y4HXiCRsFp8/Te34bqn4cOyL7sioClnsfuVCMABQATTWQ8ZK2EXKIVmC
-         vHPX/gxY/1KrJYdmgNuL10cq/PqyyMxGGX3RgLHSGPi48md7NHGlr0kjTzBHZNmI4P
-         uUfVsLA5Tl/MJ6cR9izOOKkAVpz0Xw3/SDQGKvtLkyVvzE9R9jZmMvsQpjEnbz9Oyo
-         Mb0YoNFt0VhI+gBpSj1x0YqE6hJhCyd5JXQlTzYnfKiydnRB9Igu9nks+N5GzxVWkb
-         OFmdYFe26eTlg8njBFsx4w7wo31T+esVeX6r2WCDxQNjpm0ApMGjREC4YubTXMSrFt
-         AAyo83pCnbQXw==
+        b=VOxoC4bLrmmz/avenRRD8eLEp/ASDnZc/3ilejqKvImG52IDpKx491L9EriEOqUoJ
+         cx5+8xQ+zV3KtUgSqAdiYO45cXDgLgjv0ozvflq1OwwIrLS+m8YunZWisRXL21o6+j
+         uNnhsPVp+FcFiobspeXYsnU/Kv1pOcX6zK4XybY+LG9l/UdL9dvegBtr5+jJaok90I
+         F13Q5mY2iStsl6qCoETowB5+1sk9yz5GXhMGpFAzJpvkHAnArnyKCnxI7cmm1a2T93
+         neSj71hEpZtyDHcxvD2db6qnCywCyvTgbg6e0dL1a2dzSs5wYv4/P+387xqMvRMDDj
+         nnJX5Fu5N87yg==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU5La-0008R9-Uu; Wed, 07 Apr 2021 12:23:42 +0200
+        id 1lU5Lb-0008RE-1S; Wed, 07 Apr 2021 12:23:43 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-staging@lists.linux.dev,
         greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 04/16] staging: fwserial: fix TIOCGSERIAL implementation
-Date:   Wed,  7 Apr 2021 12:23:22 +0200
-Message-Id: <20210407102334.32361-5-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH 05/16] staging: greybus: uart: fix TIOCSSERIAL jiffies conversions
+Date:   Wed,  7 Apr 2021 12:23:23 +0200
+Message-Id: <20210407102334.32361-6-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407102334.32361-1-johan@kernel.org>
 References: <20210407102334.32361-1-johan@kernel.org>
@@ -43,52 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
-serial devices is only useful for setting the close_delay and
-closing_wait parameters.
+The port close_delay and closing_wait parameters set by TIOCSSERIAL are
+specified in jiffies and not milliseconds.
 
-The xmit_fifo_size parameter could be used to set the hardware transmit
-fifo size of a legacy UART when it could not be detected, but the
-interface is limited to eight bits and should be left unset when not
-used.
+Add the missing conversions so that TIOCSSERIAL works as expected also
+when HZ is not 1000.
 
-Fix the fwserial implementation by dropping its custom interpretation of
-the unused xmit_fifo_size field, which was overflowed with the driver
-FIFO size. Also leave the type and flags fields unset as these cannot be
-changed.
-
-The close_delay and closing_wait parameters returned by TIOCGSERIAL are
-specified in centiseconds. The driver does not yet support changing
-closing_wait, but let's report back the default value actually used (30
-seconds).
-
-Fixes: 7355ba3445f2 ("staging: fwserial: Add TTY-over-Firewire serial driver")
+Fixes: e68453ed28c5 ("greybus: uart-gb: now builds, more framework added")
+Cc: stable@vger.kernel.org	# 4.9
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/staging/fwserial/fwserial.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/staging/greybus/uart.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index 2888b80a2c1a..0f4655d7d520 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -1218,13 +1218,12 @@ static int get_serial_info(struct tty_struct *tty,
- 	struct fwtty_port *port = tty->driver_data;
- 
- 	mutex_lock(&port->port.mutex);
--	ss->type =  PORT_UNKNOWN;
--	ss->line =  port->port.tty->index;
--	ss->flags = port->port.flags;
--	ss->xmit_fifo_size = FWTTY_PORT_TXFIFO_LEN;
-+	ss->line = port->index;
- 	ss->baud_base = 400000000;
- 	ss->close_delay = jiffies_to_msecs(port->port.close_delay) / 10;
-+	ss->closing_wait = 3000;
- 	mutex_unlock(&port->port.mutex);
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 607378bfebb7..29846dc1e1bf 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -614,10 +614,12 @@ static int get_serial_info(struct tty_struct *tty,
+ 	ss->line = gb_tty->minor;
+ 	ss->xmit_fifo_size = 16;
+ 	ss->baud_base = 9600;
+-	ss->close_delay = gb_tty->port.close_delay / 10;
++	ss->close_delay = jiffies_to_msecs(gb_tty->port.close_delay) / 10;
+ 	ss->closing_wait =
+ 		gb_tty->port.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+-		ASYNC_CLOSING_WAIT_NONE : gb_tty->port.closing_wait / 10;
++		ASYNC_CLOSING_WAIT_NONE :
++		jiffies_to_msecs(gb_tty->port.closing_wait) / 10;
 +
  	return 0;
  }
  
+@@ -629,9 +631,10 @@ static int set_serial_info(struct tty_struct *tty,
+ 	unsigned int close_delay;
+ 	int retval = 0;
+ 
+-	close_delay = ss->close_delay * 10;
++	close_delay = msecs_to_jiffies(ss->close_delay * 10);
+ 	closing_wait = ss->closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+-			ASYNC_CLOSING_WAIT_NONE : ss->closing_wait * 10;
++			ASYNC_CLOSING_WAIT_NONE :
++			msecs_to_jiffies(ss->closing_wait * 10);
+ 
+ 	mutex_lock(&gb_tty->port.mutex);
+ 	if (!capable(CAP_SYS_ADMIN)) {
 -- 
 2.26.3
 
