@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33422357067
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DAB357082
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243285AbhDGPfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S1353656AbhDGPhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhDGPfJ (ORCPT
+        with ESMTP id S1353625AbhDGPhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:35:09 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000AEC061756;
-        Wed,  7 Apr 2021 08:34:59 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id E5C6E6A45; Wed,  7 Apr 2021 11:34:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org E5C6E6A45
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1617809698;
-        bh=bLQwzZC+bbhqKQBwwlTZfOUN0mKSee0/NQ+qVibG9tA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BxDWI9NjGmn6HGVSDiAJrvOjV3elqwdY183AU2UszAVMZ8YhXiuxCvN4Y8iDUZoqG
-         dPnrzDbm+UF74K70EuqcAwDc3WO8Dl10+HR0kH2fJ9dDvJQWpjd0A5EnhF5YGkpQRU
-         xG8nwVkN+xrMHVh/Y8zm9kFnu5LHNpgL8PYADcx4=
-Date:   Wed, 7 Apr 2021 11:34:58 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <20210407153458.GA28924@fieldses.org>
-References: <20210407001658.2208535-1-pakki001@umn.edu>
+        Wed, 7 Apr 2021 11:37:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095FBC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QylIfigSaFHbypENLSDV3Pz1fEDQV/gGjtYiJoxXbio=; b=MYS9LdrfpVyllUTfNbmURNNMe0
+        n1dYuKQWhrkfeEoQ6tQ0yNM8fOeWZXZGmEcZkJ+JKEA4Bu9dhAf2ov55wMQAihKCw5arj/MwgFYWH
+        /TZt4EWMs23WsX1oMoHIGh/skSg6fb4EKnImmBlDEbxsXXNgx4saosrq08rHDLp1N8M0u2S26VLU7
+        SCAezEIMhjbeXXLiLoTEaBYUAegG+W5RQ0+FwkSmtGbng4YhMVMpnOtv2JjpM8eOq1vXwCNI0+45V
+        yPVAHwtAwjAaKhDPUL1yFb835bTcvSIF61RaDmq2g+oXbYwVfXqdzUSBEbUePp/Cam+tAHVP7nBZy
+        MTG/ZQXQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUADI-00EgWR-Sc; Wed, 07 Apr 2021 15:35:48 +0000
+Date:   Wed, 7 Apr 2021 16:35:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 11/37] x86/mm: attempt speculative mm faults first
+Message-ID: <20210407153528.GF2531743@casper.infradead.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-12-michel@lespinasse.org>
+ <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407001658.2208535-1-pakki001@umn.edu>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 07:16:56PM -0500, Aditya Pakki wrote:
-> In gss_pipe_destroy_msg(), in case of error in msg, gss_release_msg
-> deletes gss_msg. The patch adds a check to avoid a potential double
-> free.
-
-We're already dereferenced msg.  Nothing has set gss_msg to NULL.  It's
-the gss_msg->count reference count that's supposed to prevent double
-frees.
-
-Did you see an actual bug or warning from some tool, and if so, could
-you share the details?
-
---b.
-
+On Wed, Apr 07, 2021 at 04:48:44PM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 06, 2021 at 06:44:36PM -0700, Michel Lespinasse wrote:
+> > --- a/arch/x86/mm/fault.c
+> > +++ b/arch/x86/mm/fault.c
+> > @@ -1219,6 +1219,8 @@ void do_user_addr_fault(struct pt_regs *regs,
+> >  	struct mm_struct *mm;
+> >  	vm_fault_t fault;
+> >  	unsigned int flags = FAULT_FLAG_DEFAULT;
+> > +	struct vm_area_struct pvma;
 > 
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-> ---
->  net/sunrpc/auth_gss/auth_gss.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
-> index 5f42aa5fc612..eb52eebb3923 100644
-> --- a/net/sunrpc/auth_gss/auth_gss.c
-> +++ b/net/sunrpc/auth_gss/auth_gss.c
-> @@ -848,7 +848,8 @@ gss_pipe_destroy_msg(struct rpc_pipe_msg *msg)
->  			warn_gssd();
->  		gss_release_msg(gss_msg);
->  	}
-> -	gss_release_msg(gss_msg);
-> +	if (gss_msg)
-> +		gss_release_msg(gss_msg);
->  }
->  
->  static void gss_pipe_dentry_destroy(struct dentry *dir,
-> -- 
-> 2.25.1
+> That's 200 bytes on-stack... I suppose that's just about acceptible, but
+> perhaps we need a comment in struct vm_area_struct to make people aware
+> this things lives on-stack and size really is an issue now.
+
+Michel's gone off and done his own thing here.
+
+The rest of us (Laurent, Liam & I) are working on top of the maple tree
+which shrinks vm_area_struct by five pointers, so just 160 bytes.
+
+Also, our approach doesn't involve copying VMAs in order to handle a fault.
+
