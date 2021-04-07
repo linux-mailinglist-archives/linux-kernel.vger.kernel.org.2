@@ -2,226 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD745357374
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5121357375
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354939AbhDGRre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:47:34 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46900 "EHLO mga03.intel.com"
+        id S1354946AbhDGRsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:48:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348347AbhDGRrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:47:32 -0400
-IronPort-SDR: Dde14vc2vtiT1csGrkybK6NAAr0v1hHl+dRfQBhss68cmOkVyBzosTilFIaQ7QCV5g8duPK4R0
- thVYlmgtyLZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193407519"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="193407519"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:47:22 -0700
-IronPort-SDR: nGgmK1qyn7/l7moB6WrUsZuJ0r58toV3Lq3JPIp8ib7M6aatvjx6evX4I0VAV4EFEZgsO1ygX7
- F/ft4BSA+6kw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="598441116"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 07 Apr 2021 10:47:22 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.27])
-        by linux.intel.com (Postfix) with ESMTP id 08CAA5808F1;
-        Wed,  7 Apr 2021 10:47:22 -0700 (PDT)
-Message-ID: <5e397222e452d909cf81326b4303532b18562fac.camel@linux.intel.com>
-Subject: Re: [PATCH 6/9] platform/x86: intel_pmc_core: Add requirements file
- to debugfs
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
+        id S1348347AbhDGRsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:48:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBDA561242;
+        Wed,  7 Apr 2021 17:47:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617817670;
+        bh=NiZxEUk/B+44bpEG6g8jL+LXg/Sic2IARShT9jBXL20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0Sss1GJzUG9AGGEPQA/8pgR1UVW5Jiduo6BU5LarLV7TFbPH8XN/TrDrtCr8Xr6vn
+         bDiYQIW3TmnpnXKC2iqOJfXQeAOyV6lKWiwNx8MS5HUuErOqLZtf+VmbBXpj8Tjs6X
+         MKA+q6XWwBw75GEBtoDrcQuNo5jWHGEAahg7ZowE=
+Date:   Wed, 7 Apr 2021 19:47:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     min.li.xe@renesas.com
+Cc:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
         linux-kernel@vger.kernel.org
-Date:   Wed, 07 Apr 2021 10:47:21 -0700
-In-Reply-To: <CAE2upjR2062tGztm15NVTTKOACtrO-Rc4PH7t=_t-Bm5RGzVhw@mail.gmail.com>
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
-         <20210401030558.2301621-7-david.e.box@linux.intel.com>
-         <CAE2upjR2062tGztm15NVTTKOACtrO-Rc4PH7t=_t-Bm5RGzVhw@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+Subject: Re: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Message-ID: <YG3wRJnootNdV0cc@kroah.com>
+References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
+ <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-07 at 11:45 -0400, Rajneesh Bhardwaj wrote:
-> On Wed, Mar 31, 2021 at 11:06 PM David E. Box
-> <david.e.box@linux.intel.com> wrote:
-> > 
-> > From: Gayatri Kammela <gayatri.kammela@intel.com>
-> > 
-> > Add the debugfs file, substate_requirements, to view the low power
-> > mode
-> > (LPM) requirements for each enabled mode alongside the last latched
-> > status
-> > of the condition.
-> > 
-> > After this patch, the new file will look like this:
-> > 
-> >                     Element |    S0i2.0 |    S0i3.0 |    S0i2.1
-> > |    S0i3.1 |    S0i3.2 |    Status |
-> >             USB2PLL_OFF_STS |  Required |  Required |  Required | 
-> > Required |  Required |           |
-> > PCIe/USB3.1_Gen2PLL_OFF_STS |  Required |  Required |  Required | 
-> > Required |  Required |           |
-> >        PCIe_Gen3PLL_OFF_STS |  Required |  Required |  Required | 
-> > Required |  Required |       Yes |
-> >             OPIOPLL_OFF_STS |  Required |  Required |  Required | 
-> > Required |  Required |       Yes |
-> >               OCPLL_OFF_STS |  Required |  Required |  Required | 
-> > Required |  Required |       Yes |
-> >             MainPLL_OFF_STS |           |  Required |           | 
-> > Required |  Required |           |
-> > 
-> > Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> > Co-developed-by: David E. Box <david.e.box@linux.intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> >  drivers/platform/x86/intel_pmc_core.c | 86
-> > +++++++++++++++++++++++++++
-> >  1 file changed, 86 insertions(+)
-> > 
-> > diff --git a/drivers/platform/x86/intel_pmc_core.c
-> > b/drivers/platform/x86/intel_pmc_core.c
-> > index 0ec26a4c715e..0b47a1da5f49 100644
-> > --- a/drivers/platform/x86/intel_pmc_core.c
-> > +++ b/drivers/platform/x86/intel_pmc_core.c
-> > @@ -1122,6 +1122,86 @@ static int
-> > pmc_core_substate_l_sts_regs_show(struct seq_file *s, void *unused)
-> >  }
-> >  DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_l_sts_regs);
-> > 
-> > +static void pmc_core_substate_req_header_show(struct seq_file *s)
-> > +{
-> > +       struct pmc_dev *pmcdev = s->private;
-> > +       int i, mode;
-> > +
-> > +       seq_printf(s, "%30s |", "Element");
-> > +       pmc_for_each_mode(i, mode, pmcdev)
-> > +               seq_printf(s, " %9s |", pmc_lpm_modes[mode]);
-> > +
-> > +       seq_printf(s, " %9s |\n", "Status");
-> > +}
-> > +
-> > +static int pmc_core_substate_req_regs_show(struct seq_file *s,
-> > void *unused)
-> > +{
-> > +       struct pmc_dev *pmcdev = s->private;
-> > +       const struct pmc_bit_map **maps = pmcdev->map->lpm_sts;
-> > +       const struct pmc_bit_map *map;
-> > +       const int num_maps = pmcdev->map->lpm_num_maps;
-> > +       u32 sts_offset = pmcdev->map->lpm_status_offset;
-> > +       u32 *lpm_req_regs = pmcdev->lpm_req_regs;
-> > +       int mp;
-> > +
-> > +       /* Display the header */
-> > +       pmc_core_substate_req_header_show(s);
-> > +
-> > +       /* Loop over maps */
-> > +       for (mp = 0; mp < num_maps; mp++) {
-> > +               u32 req_mask = 0;
-> > +               u32 lpm_status;
-> > +               int mode, idx, i, len = 32;
-> > +
-> > +               /*
-> > +                * Capture the requirements and create a mask so
-> > that we only
-> > +                * show an element if it's required for at least
-> > one of the
-> > +                * enabled low power modes
-> > +                */
-> > +               pmc_for_each_mode(idx, mode, pmcdev)
-> > +                       req_mask |= lpm_req_regs[mp + (mode *
-> > num_maps)];
-> > +
-> > +               /* Get the last latched status for this map */
-> > +               lpm_status = pmc_core_reg_read(pmcdev, sts_offset +
-> > (mp * 4));
-> > +
-> > +               /*  Loop over elements in this map */
-> > +               map = maps[mp];
-> > +               for (i = 0; map[i].name && i < len; i++) {
-> > +                       u32 bit_mask = map[i].bit_mask;
-> > +
-> > +                       if (!(bit_mask & req_mask))
-> > +                               /*
-> > +                                * Not required for any enabled
-> > states
-> > +                                * so don't display
-> > +                                */
-> > +                               continue;
-> > +
-> > +                       /* Display the element name in the first
-> > column */
-> > +                       seq_printf(s, "%30s |", map[i].name);
-> > +
-> > +                       /* Loop over the enabled states and display
-> > if required */
-> > +                       pmc_for_each_mode(idx, mode, pmcdev) {
-> > +                               if (lpm_req_regs[mp + (mode *
-> > num_maps)] & bit_mask)
-> > +                                       seq_printf(s, " %9s |",
-> > +                                                  "Required");
-> > +                               else
-> > +                                       seq_printf(s, " %9s |", "
-> > ");
-> > +                       }
-> > +
-> > +                       /* In Status column, show the last captured
-> > state of this agent */
-> > +                       if (lpm_status & bit_mask)
-> > +                               seq_printf(s, " %9s |", "Yes");
-> > +                       else
-> > +                               seq_printf(s, " %9s |", " ");
-> 
-> Why is this left blank, maybe NA (Not Available)?
+On Wed, Apr 07, 2021 at 01:33:35PM -0400, min.li.xe@renesas.com wrote:
+> --- /dev/null
+> +++ b/drivers/misc/rsmu_cdev.c
+> @@ -0,0 +1,266 @@
+> +// SPDX-License-Identifier: GPL-2.0+
 
-The last column shows that last latched state of that agent. So if
-anything it would be "Not Seen". But a blank space makes it visually
-easier to parse.
+Do you really meen "+" here?  (sorry, have to ask.)
 
-David
+> +/*
+> + * This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
+> + * of timing and synchronization devices. It will be used by Renesas PTP Clock
+> + * Manager for Linux (pcm4l) software to provide support to GNSS assisted
+> + * partial timing support (APTS) and other networking timing functions.
+> + *
+> + * Please note it must work with Renesas MFD driver to access device through
+> + * I2C/SPI.
+> + *
+> + * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
-> 
-> > +
-> > +                       seq_puts(s, "\n");
-> > +               }
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_req_regs);
-> > +
-> >  static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
-> >  {
-> >         struct pmc_dev *pmcdev = s->private;
-> > @@ -1241,6 +1321,12 @@ static void pmc_core_dbgfs_register(struct
-> > pmc_dev *pmcdev)
-> >                                     pmcdev->dbgfs_dir, pmcdev,
-> >                                    
-> > &pmc_core_substate_l_sts_regs_fops);
-> >         }
-> > +
-> > +       if (pmcdev->lpm_req_regs) {
-> > +               debugfs_create_file("substate_requirements", 0444,
-> > +                                   pmcdev->dbgfs_dir, pmcdev,
-> > +                                  
-> > &pmc_core_substate_req_regs_fops);
-> > +       }
-> >  }
-> > 
-> >  static const struct x86_cpu_id intel_pmc_core_ids[] = {
-> > --
-> > 2.25.1
-> > 
-> 
-> 
+You should not need this as it's a driver, so you should only use the
+dev_dbg() family of print message functions, no need for pr_*() calls.
 
+> +
+> +#include <linux/cdev.h>
+> +#include <linux/device.h>
+> +#include <linux/fs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/mfd/rsmu.h>
+> +#include <uapi/linux/rsmu.h>
+> +#include "rsmu_cdev.h"
+> +
+> +#define DRIVER_NAME	"rsmu"
 
+KBUILD_MODNAME instead?  But you really only need this in one place, so
+no need for it at all, just use KBUILD_MODNAME here:
+
+> +static struct platform_driver rsmu_driver = {
+> +	.driver = {
+> +		.name = DRIVER_NAME,
+
+Right there.
+
+> +	},
+> +	.probe = rsmu_probe,
+> +	.remove =  rsmu_remove,
+> +	.id_table = rsmu_id_table,
+> +};
+> +
+> +static int __init rsmu_init(void)
+> +{
+> +	int err;
+> +
+> +	err = platform_driver_register(&rsmu_driver);
+> +	if (err < 0)
+> +		pr_err("Unabled to register %s platform driver", DRIVER_NAME);
+> +
+> +	return err;
+> +}
+> +
+> +static void __exit rsmu_exit(void)
+> +{
+> +	platform_driver_unregister(&rsmu_driver);
+> +}
+> +
+> +module_init(rsmu_init);
+> +module_exit(rsmu_exit);
+
+module_platform_driver() instead?
+
+thanks,
+
+greg k-h
