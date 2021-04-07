@@ -2,248 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8939B35761E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C3135761D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbhDGUdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:33:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2811 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236354AbhDGUcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:32:55 -0400
-IronPort-SDR: yMAtkAeQCtB/HLTQMkxo7Wek3oPAwmatJwr2zYyoknA7bnElDsZYul0vyng0LmzTeFlFSmpBa9
- S7b+h15eVRng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="254731711"
-X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
-   d="scan'208";a="254731711"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 13:32:45 -0700
-IronPort-SDR: 9MPV4pFglu3gOrjkH0iUNWGEgFK9htNbfFIg1LYQaewGOSiQQeVAOu9Pkue0wi9WQHuvL0sV5y
- CIjGwH+j5l9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
-   d="scan'208";a="387129643"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 07 Apr 2021 13:32:43 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lUEqx-000Dmq-7A; Wed, 07 Apr 2021 20:32:43 +0000
-Date:   Thu, 08 Apr 2021 04:32:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 0dbed2a2774fedaf52e1fc6ddb4106f9e53bc7f3
-Message-ID: <606e16cf.QTTvMzhs6HoAySt2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230454AbhDGUc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:32:58 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:49973 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235468AbhDGUcr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:32:47 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
+ t=1617827557; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=8+RTC5y9SGjFpBKmqkWwVCk46oblpz7Iw5ZFtmiCre0=;
+ b=myxGJZUXe+NiYa8jTF68T5sVHAIRuWKBJvTubjYWMRny6i72+hPXGNFbHPi3+JlOU+oiY
+ BQFEjQBOVFDoWeXCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617827557; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=8+RTC5y9SGjFpBKmqkWwVCk46oblpz7Iw5ZFtmiCre0=;
+ b=gwXSR8jeWr+MhP6KenwdNG70wDvW4+sfC9vBokubO0p4UlXmonHUXgbDdO0FnkP1/Hzov
+ XZSJ4JByG9DRSY0LP4wyG/ZQAcm1VKObfYyaYa+W9/LAlHYVOyxtO00BgwRyV5xhTSjeLnj
+ 2xxDXdIrnsG5ukGblOqdduOQLd1Bvifgk16B7n7HNxWo6CX4NXypTx5ZytOhf4cQSDTLAsL
+ +VMuLcKhTnmNCTtI+eKQ2iFFHymjKYUgJW0BVhc4OHAx383laypPoNozJRCMlZ21bw79YyI
+ oKuH1N3QuEm6vSzud/CmlBmYiOcfuBydbvPXkeffIOy13qTmiCqdjCRrAb7g==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id B0D91160244; Wed,  7 Apr 2021 13:32:37 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:32:37 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 11/37] x86/mm: attempt speculative mm faults first
+Message-ID: <20210407203237.GC25738@lespinasse.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-12-michel@lespinasse.org>
+ <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
+ <20210407153528.GF2531743@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210407153528.GF2531743@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 0dbed2a2774fedaf52e1fc6ddb4106f9e53bc7f3  Merge branch 'linus'
+On Wed, Apr 07, 2021 at 04:35:28PM +0100, Matthew Wilcox wrote:
+> On Wed, Apr 07, 2021 at 04:48:44PM +0200, Peter Zijlstra wrote:
+> > On Tue, Apr 06, 2021 at 06:44:36PM -0700, Michel Lespinasse wrote:
+> > > --- a/arch/x86/mm/fault.c
+> > > +++ b/arch/x86/mm/fault.c
+> > > @@ -1219,6 +1219,8 @@ void do_user_addr_fault(struct pt_regs *regs,
+> > >  	struct mm_struct *mm;
+> > >  	vm_fault_t fault;
+> > >  	unsigned int flags = FAULT_FLAG_DEFAULT;
+> > > +	struct vm_area_struct pvma;
+> > 
+> > That's 200 bytes on-stack... I suppose that's just about acceptible, but
+> > perhaps we need a comment in struct vm_area_struct to make people aware
+> > this things lives on-stack and size really is an issue now.
+> 
+> Michel's gone off and done his own thing here.
 
-elapsed time: 727m
+I don't think that is an entirely fair representation. First we are
+both aware of each other's work, there is no working in dark caves here.
+But also, I don't even consider this patchset to be entirely my thing;
+most of the main building blocks come from prior proposals before mine.
 
-configs tested: 188
-configs skipped: 3
+> The rest of us (Laurent, Liam & I) are working on top of the maple tree
+> which shrinks vm_area_struct by five pointers, so just 160 bytes.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The idea of evaluating maple tree and speculative faults as a bundle
+is actually worrying to me. I think both ideas are interesting and
+worth looking into on their own, but I'm not convinced that they have
+much to do with each other.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-nios2                               defconfig
-arc                          axs101_defconfig
-alpha                            alldefconfig
-s390                                defconfig
-mips                        nlm_xlp_defconfig
-m68k                                defconfig
-powerpc                    amigaone_defconfig
-arc                      axs103_smp_defconfig
-mips                             allyesconfig
-mips                        bcm47xx_defconfig
-powerpc                 mpc834x_itx_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                       netwinder_defconfig
-arm                     am200epdkit_defconfig
-mips                          rb532_defconfig
-arm                            qcom_defconfig
-powerpc                    mvme5100_defconfig
-s390                             allyesconfig
-m68k                       m5275evb_defconfig
-arc                        nsimosci_defconfig
-sh                          lboxre2_defconfig
-mips                         tb0287_defconfig
-arm                         lpc18xx_defconfig
-powerpc                      ep88xc_defconfig
-arm                     eseries_pxa_defconfig
-sparc                            alldefconfig
-sparc                       sparc32_defconfig
-mips                           ip28_defconfig
-sh                               alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                             espt_defconfig
-powerpc64                           defconfig
-m68k                          sun3x_defconfig
-arm                         mv78xx0_defconfig
-powerpc                   motionpro_defconfig
-arm                             pxa_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-mips                           ip27_defconfig
-powerpc                           allnoconfig
-sh                      rts7751r2d1_defconfig
-sh                          rsk7264_defconfig
-powerpc                          allyesconfig
-mips                     loongson1c_defconfig
-sh                           se7780_defconfig
-s390                       zfcpdump_defconfig
-nios2                         3c120_defconfig
-m68k                        m5407c3_defconfig
-powerpc                    klondike_defconfig
-powerpc                      ppc44x_defconfig
-nds32                               defconfig
-m68k                       m5208evb_defconfig
-mips                          malta_defconfig
-sh                            hp6xx_defconfig
-m68k                        stmark2_defconfig
-sh                          sdk7780_defconfig
-powerpc                      arches_defconfig
-csky                             alldefconfig
-arc                     nsimosci_hs_defconfig
-powerpc                     pq2fads_defconfig
-m68k                        mvme16x_defconfig
-mips                           rs90_defconfig
-sh                             shx3_defconfig
-arm                            hisi_defconfig
-ia64                            zx1_defconfig
-arm                        neponset_defconfig
-mips                           ci20_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         axm55xx_defconfig
-mips                      malta_kvm_defconfig
-arm                      footbridge_defconfig
-arm                            zeus_defconfig
-openrisc                  or1klitex_defconfig
-arm                         at91_dt_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                          badge4_defconfig
-ia64                             allyesconfig
-arm                          pxa910_defconfig
-sh                          kfr2r09_defconfig
-xtensa                           alldefconfig
-mips                      loongson3_defconfig
-h8300                     edosk2674_defconfig
-arm                       versatile_defconfig
-mips                      pistachio_defconfig
-sh                          rsk7201_defconfig
-powerpc                       maple_defconfig
-arm                        shmobile_defconfig
-mips                        maltaup_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                     powernv_defconfig
-powerpc                 mpc8313_rdb_defconfig
-ia64                        generic_defconfig
-sh                              ul2_defconfig
-arm                             rpc_defconfig
-arm                        vexpress_defconfig
-powerpc                   currituck_defconfig
-powerpc                          allmodconfig
-powerpc                 mpc834x_mds_defconfig
-sh                           se7721_defconfig
-arm                         cm_x300_defconfig
-sh                          urquell_defconfig
-arm                         bcm2835_defconfig
-m68k                        m5307c3_defconfig
-arm                      tct_hammer_defconfig
-arc                                 defconfig
-powerpc                   lite5200b_defconfig
-ia64                          tiger_defconfig
-mips                        jmr3927_defconfig
-mips                            gpr_defconfig
-powerpc                      katmai_defconfig
-arm                        mini2440_defconfig
-powerpc                      acadia_defconfig
-powerpc                         ps3_defconfig
-x86_64                           alldefconfig
-arm                            xcep_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                          landisk_defconfig
-x86_64                              defconfig
-powerpc                       eiger_defconfig
-arm                        trizeps4_defconfig
-arm                     davinci_all_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                         wii_defconfig
-powerpc                     stx_gp3_defconfig
-sh                          rsk7203_defconfig
-powerpc                      pcm030_defconfig
-arm                       multi_v4t_defconfig
-arm                       spear13xx_defconfig
-riscv                          rv32_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-i386                 randconfig-a006-20210407
-i386                 randconfig-a003-20210407
-i386                 randconfig-a001-20210407
-i386                 randconfig-a004-20210407
-i386                 randconfig-a002-20210407
-i386                 randconfig-a005-20210407
-x86_64               randconfig-a014-20210407
-x86_64               randconfig-a015-20210407
-x86_64               randconfig-a013-20210407
-x86_64               randconfig-a011-20210407
-x86_64               randconfig-a012-20210407
-x86_64               randconfig-a016-20210407
-i386                 randconfig-a014-20210407
-i386                 randconfig-a011-20210407
-i386                 randconfig-a016-20210407
-i386                 randconfig-a012-20210407
-i386                 randconfig-a015-20210407
-i386                 randconfig-a013-20210407
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> Also, our approach doesn't involve copying VMAs in order to handle a fault.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+See my other reply to Peter's message - copying VMAs is a convenient
+way to reduce the size of the patchset, but it's not fundamental to
+the approach at all.
