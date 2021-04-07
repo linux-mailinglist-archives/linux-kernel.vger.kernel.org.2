@@ -2,500 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CC0356E86
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39858356E89
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348437AbhDGO1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:27:50 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:40458 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbhDGO1q (ORCPT
+        id S1348507AbhDGO2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:28:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36807 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348473AbhDGO2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:27:46 -0400
-Received: by mail-ot1-f47.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so18213591otb.7;
-        Wed, 07 Apr 2021 07:27:37 -0700 (PDT)
+        Wed, 7 Apr 2021 10:28:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617805671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gft0jQWiRn/fmLudDYjZgnTUdKax4tNm9nPleM7hO78=;
+        b=JYwu9ofqAoTBIUHUi0xrMZNUvWdtQSr22GslZGDkkcyzgeyWhAvjDO5xahkTWRgtxWcIin
+        nhE7eTljqYrKuEKeDBOBRgh3tpJV9f2hGFP4J+FgPtudHPuJMB2Rva+HqJm6KvQy4UuIUi
+        OmIkcC3xJ8BySp1JxTIc7x77mA//Wvs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-3EEz2v-kNxWVUMVeUAtiVA-1; Wed, 07 Apr 2021 10:27:49 -0400
+X-MC-Unique: 3EEz2v-kNxWVUMVeUAtiVA-1
+Received: by mail-ej1-f71.google.com with SMTP id dv7so3990561ejb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:27:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GeyrD5ghfz4rzn7ICuiBNSSZHeofCDW3BjhxNR9ViTE=;
-        b=NSgwBiqo1+9tv59G/V/DQM4Yf5az2h6MSk8Flc/THBUSO2SejYgLJbqqmugeEQ73nL
-         reOga5rcLvODc+6e4lZsJD/SKNAX9LAYvFX5Lwla9GLbMnkaV3PQgJ4WDN3M6D67S3e8
-         CMJcOlgIavdz3DPC97bl7qnDKMHnId4J4xA3NGu6wjuvo7YAR4dq51AvN8BNCng0EOHn
-         CkReYKvp3zdkv0+sSsYSTtX8K5Ujm8ZASZES7sKbhRe2Z6bHZaYGwj1Ef5Y3IMUTdrdr
-         j1EODUcUQ6vmGM2VHHCn1LJFHld4TpTYP3GvdceWyyTzOL0qyDAS3uVzYNwzaie1BryE
-         O26w==
-X-Gm-Message-State: AOAM533vL6sR//0zz2rHQMq5MX78RO67Wf/LflEBdTJ2Z1mWt6g+zYNJ
-        KLYndAiRZS5ch3uhcxCVMZHL5zjkxw==
-X-Google-Smtp-Source: ABdhPJyNKFMEFwJcnUzq1wQa6V2Kn3g3Xv6gOY+oidexIMAeVtgMTVYEtcZQ108oAoR/oweS6lVxBQ==
-X-Received: by 2002:a05:6830:1b69:: with SMTP id d9mr3294582ote.165.1617805656864;
-        Wed, 07 Apr 2021 07:27:36 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r15sm5556966ote.27.2021.04.07.07.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:27:35 -0700 (PDT)
-Received: (nullmailer pid 3696080 invoked by uid 1000);
-        Wed, 07 Apr 2021 14:27:34 -0000
-Date:   Wed, 7 Apr 2021 09:27:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] PCI: dwc: Visoconti: PCIe RC controller driver
-Message-ID: <20210407142734.GA3606952@robh.at.kernel.org>
-References: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210407031839.386088-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gft0jQWiRn/fmLudDYjZgnTUdKax4tNm9nPleM7hO78=;
+        b=DpnXRcuicf2t732n+8I8gDNhzZXME09UMwQSiKG000v8qo9e1UlrOS9NnusIXRgSH6
+         foo+rfQsxN3E/plPW5xL0YNP7eZNo42SeTbpEd6eFh3/bUfhMv7qEbvHgK4peu2S7gU1
+         c3X3slv+FsEjGUHlh0hXdLlxHU3DsHSZuKyU1s3dL8pkSipWIegesIiR43uW3wHETyXB
+         +Yr+e8D5oxiGtpwZ2XV/VjV/qLf1qi9YuygTypSdug+Jd02Y/RITR8i/vZSqwoXXt2s9
+         8tnJ05kDAO2EpuH28bFsjy29LGtDjabBrXMkGNnLDW86kvtw6M59CfiSU6VLucdL3GYU
+         tJqw==
+X-Gm-Message-State: AOAM532sIQ4SqcKiojGbXwk0auSbBY5JWo++bth36GHKMb5qMkIMlGxr
+        dxdgfKNjAaNGPBpma7HMUd0alS2F4PjpbNJOH08BDXAyxeRg87O7Fv2eR3IFqffnE0WylygE7Ni
+        otkwyEMZ/jIy2bM14iX50odCMbAsmIi4P/Ki5pFG1giLqxeEVLsxmKwUAMlRpbHlhjqvU/fPUvs
+        aG
+X-Received: by 2002:aa7:c694:: with SMTP id n20mr4707242edq.51.1617805667988;
+        Wed, 07 Apr 2021 07:27:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxr1SsbFrBUY2eJ7+tVkiwHletcZzL7DWO69w7ot05onv/ASefQumUSH1ZnACb+UHxpGZoPpA==
+X-Received: by 2002:aa7:c694:: with SMTP id n20mr4707211edq.51.1617805667747;
+        Wed, 07 Apr 2021 07:27:47 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bj7sm12881301ejb.28.2021.04.07.07.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 07:27:47 -0700 (PDT)
+Subject: Re: [PATCH 5/9] platform/x86: intel_pmc_core: Get LPM requirements
+ for Tiger Lake
+To:     "David E. Box" <david.e.box@linux.intel.com>,
+        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
+ <20210401030558.2301621-6-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9c9f29af-e130-0704-152d-27a652427a3e@redhat.com>
+Date:   Wed, 7 Apr 2021 16:27:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407031839.386088-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20210401030558.2301621-6-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:18:38PM +0900, Nobuhiro Iwamatsu wrote:
-> Add support to PCIe RC controller on Toshiba Visconti ARM SoCs.
-> PCIe controller is based of Synopsys DesignWare PCIe core.
+Hi,
+
+On 4/1/21 5:05 AM, David E. Box wrote:
+> From: Gayatri Kammela <gayatri.kammela@intel.com>
 > 
-> Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> Platforms that support low power modes (LPM) such as Tiger Lake maintain
+> requirements for each sub-state that a readable in the PMC. However, unlike
+> LPM status registers, requirement registers are not memory mapped but are
+> available from an ACPI _DSM. Collect the requirements for Tiger Lake using
+> the _DSM method and store in a buffer.
+> 
+> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> Co-developed-by: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  drivers/pci/controller/dwc/Kconfig         |  10 +
->  drivers/pci/controller/dwc/Makefile        |   1 +
->  drivers/pci/controller/dwc/pcie-visconti.c | 358 +++++++++++++++++++++
->  3 files changed, 369 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+>  drivers/platform/x86/intel_pmc_core.c | 49 +++++++++++++++++++++++++++
+>  drivers/platform/x86/intel_pmc_core.h |  2 ++
+>  2 files changed, 51 insertions(+)
 > 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index b9aaa84452c4..ae125d7cf375 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -286,6 +286,16 @@ config PCIE_TEGRA194_EP
->  	  in order to enable device-specific features PCIE_TEGRA194_EP must be
->  	  selected. This uses the DesignWare core.
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index ba0db301f07b..0ec26a4c715e 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -23,7 +23,9 @@
+>  #include <linux/slab.h>
+>  #include <linux/suspend.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/uuid.h>
 >  
-> +config PCIE_VISCONTI
-> +	bool "Toshiba VISCONTI PCIe controllers"
-> +	depends on ARCH_VISCONTI || COMPILE_TEST
-> +	depends on OF && HAS_IOMEM
-
-Is this line really needed? Seems we have a mixture on other drivers.
-
-> +	depends on PCI_MSI_IRQ_DOMAIN
-> +	select PCIE_DW_HOST
-> +	help
-> +	  Say Y here if you want PCIe controller support on Toshiba Visconti SoC.
-> +	  This driver supports TMPV77xx.
-> +
->  config PCIE_UNIPHIER
->  	bool "Socionext UniPhier PCIe host controllers"
->  	depends on ARCH_UNIPHIER || COMPILE_TEST
-> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-> index ba7c42f6df6f..46ac5d49dc75 100644
-> --- a/drivers/pci/controller/dwc/Makefile
-> +++ b/drivers/pci/controller/dwc/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_PCI_MESON) += pci-meson.o
->  obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
->  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
->  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-> +obj-$(CONFIG_PCIE_VISCONTI) += pcie-visconti.o
+> +#include <acpi/acpi_bus.h>
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/intel-family.h>
+>  #include <asm/msr.h>
+> @@ -31,6 +33,9 @@
 >  
->  # The following drivers are for devices that use the generic ACPI
->  # pci_root.c driver but don't support standard ECAM config access.
-> diff --git a/drivers/pci/controller/dwc/pcie-visconti.c b/drivers/pci/controller/dwc/pcie-visconti.c
-> new file mode 100644
-> index 000000000000..e24f83df41b8
-> --- /dev/null
-> +++ b/drivers/pci/controller/dwc/pcie-visconti.c
-> @@ -0,0 +1,358 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * DWC PCIe RC driver for Toshiba Visconti ARM SoC
-> + *
-> + * Copyright (C) 2019, 2020 Toshiba Electronic Device & Storage Corporation
-> + * Copyright (C) 2020, TOSHIBA CORPORATION
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + *
-> + */
+>  #include "intel_pmc_core.h"
+>  
+> +#define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
+> +#define ACPI_GET_LOW_MODE_REGISTERS	1
 > +
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/init.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pci.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/resource.h>
-> +#include <linux/types.h>
-> +
-> +#include "pcie-designware.h"
-> +#include "../../pci.h"
-> +
-> +struct visconti_pcie {
-> +	struct dw_pcie *pci;
-
-Embed this rather than a pointer. 1 less alloc.
-
-> +	void __iomem *ulreg_base;
-> +	void __iomem *smu_base;
-> +	void __iomem *mpu_base;
-> +	struct clk *refclk;
-> +	struct clk *sysclk;
-> +	struct clk *auxclk;
-> +};
-> +
-> +#define PCIE_UL_REG_S_PCIE_MODE		0x00F4
-> +#define  PCIE_UL_REG_S_PCIE_MODE_EP	0x00
-> +#define  PCIE_UL_REG_S_PCIE_MODE_RC	0x04
-> +
-> +#define PCIE_UL_REG_S_PERSTN_CTRL	0x00F8
-> +#define  PCIE_UL_IOM_PCIE_PERSTN_I_EN	BIT(3)
-> +#define  PCIE_UL_DIRECT_PERSTN_EN	BIT(2)
-> +#define  PCIE_UL_PERSTN_OUT		BIT(1)
-> +#define  PCIE_UL_DIRECT_PERSTN		BIT(0)
-> +
-> +#define PCIE_UL_REG_S_PHY_INIT_02	0x0104
-> +#define  PCIE_UL_PHY0_SRAM_EXT_LD_DONE	BIT(0)
-> +
-> +#define PCIE_UL_REG_S_PHY_INIT_03	0x0108
-> +#define  PCIE_UL_PHY0_SRAM_INIT_DONE	BIT(0)
-> +
-> +#define PCIE_UL_REG_S_INT_EVENT_MASK1	0x0138
-> +#define  PCIE_UL_CFG_PME_INT		BIT(0)
-> +#define  PCIE_UL_CFG_LINK_EQ_REQ_INT	BIT(1)
-> +#define  PCIE_UL_EDMA_INT0		BIT(2)
-> +#define  PCIE_UL_EDMA_INT1		BIT(3)
-> +#define  PCIE_UL_EDMA_INT2		BIT(4)
-> +#define  PCIE_UL_EDMA_INT3		BIT(5)
-> +#define  PCIE_UL_S_INT_EVENT_MASK1_ALL  (PCIE_UL_CFG_PME_INT | PCIE_UL_CFG_LINK_EQ_REQ_INT | \
-> +					 PCIE_UL_EDMA_INT0 | PCIE_UL_EDMA_INT1 | \
-> +					 PCIE_UL_EDMA_INT2 | PCIE_UL_EDMA_INT3)
-> +
-> +#define PCIE_UL_REG_S_SB_MON		0x0198
-> +#define PCIE_UL_REG_S_SIG_MON		0x019C
-> +#define  PCIE_UL_CORE_RST_N_MON		BIT(0)
-> +
-> +#define PCIE_UL_REG_V_SII_DBG_00	0x0844
-> +#define PCIE_UL_REG_V_SII_GEN_CTRL_01	0x0860
-> +#define  PCIE_UL_APP_LTSSM_ENABLE	BIT(0)
-> +
-> +#define PCIE_UL_REG_V_PHY_ST_00		0x0864
-> +#define  PCIE_UL_SMLH_LINK_UP		BIT(0)
-> +
-> +#define PCIE_UL_REG_V_PHY_ST_02		0x0868
-> +#define  PCIE_UL_S_DETECT_ACT		0x01
-> +#define  PCIE_UL_S_L0			0x11
-> +
-> +#define PISMU_CKON_PCIE			0x0038
-> +#define  PISMU_CKON_PCIE_AUX_CLK	BIT(1)
-> +#define  PISMU_CKON_PCIE_MSTR_ACLK	BIT(0)
-> +
-> +#define PISMU_RSOFF_PCIE		0x0538
-> +#define  PISMU_RSOFF_PCIE_ULREG_RST_N	BIT(1)
-> +#define  PISMU_RSOFF_PCIE_PWR_UP_RST_N	BIT(0)
-> +
-> +#define PCIE_MPU_REG_MP_EN		0x0
-> +#define  MPU_MP_EN_DISABLE		BIT(0)
-> +
-> +#define PCIE_BUS_OFFSET			0x40000000
-> +
-> +/* Access registers in PCIe ulreg */
-> +static inline void visconti_ulreg_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
+>  /* PKGC MSRs are common across Intel Core SoCs */
+>  static const struct pmc_bit_map msr_map[] = {
+>  	{"Package C2",                  MSR_PKG_C2_RESIDENCY},
+> @@ -587,6 +592,46 @@ static const struct pmc_reg_map tgl_reg_map = {
+>  	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
+>  };
+>  
+> +static void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev)
 > +{
-> +	writel(val, pcie->ulreg_base + reg);
+> +	struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
+> +	const int num_maps = pmcdev->map->lpm_num_maps;
+> +	size_t lpm_size = LPM_MAX_NUM_MODES * num_maps * 4;
+> +	union acpi_object *out_obj;
+> +	struct acpi_device *adev;
+> +	guid_t s0ix_dsm_guid;
+> +	u32 *lpm_req_regs;
+> +
+> +	adev = ACPI_COMPANION(&pdev->dev);
+> +	if (!adev)
+> +		return;
+> +
+> +	lpm_req_regs = devm_kzalloc(&pdev->dev, lpm_size * sizeof(u32),
+> +				     GFP_KERNEL);
+> +	if (!lpm_req_regs)
+> +		return;
+> +
+> +	guid_parse(ACPI_S0IX_DSM_UUID, &s0ix_dsm_guid);
+> +
+> +	out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid, 0,
+> +				    ACPI_GET_LOW_MODE_REGISTERS, NULL);
 
-Do these need ordering WRT DMA? If not, use _relaxed variant.
+Since you are using ACPI functions here, maybe change:
+
+	depends on PCI
+
+In the config INTEL_PMC_CORE Kconfig entry to:
+
+	depends on PCI && ACPI
+
+Note all functions you use are stubbed when !ACPI, so this
+should build fine without this, but it will turn this function
+into a no-op. If you prefer not to add the depends on ACPI that
+is fine too.
+
+
+
+> +	if (out_obj && out_obj->type == ACPI_TYPE_BUFFER) {
+> +		u32 *addr = (u32 *)out_obj->buffer.pointer;
+> +		int size = out_obj->buffer.length;
+> +
+> +		if (size != lpm_size)
+
+	You're leaking lpm_req_regs here (sort of) maybe devm_free it here ?
+
+> +			return;
+> +
+> +		memcpy_fromio(lpm_req_regs, addr, lpm_size);
+
+This is wrong, the memory in an ACPI buffer is not IO-mem it is normal memory.
+
+> +	} else
+> +		acpi_handle_debug(adev->handle,
+> +				  "_DSM function 0 evaluation failed\n");
+> +
+> +	ACPI_FREE(out_obj);
+> +
+> +	pmcdev->lpm_req_regs = lpm_req_regs;
+
+You do this even if the "if (out_obj && out_obj->type == ACPI_TYPE_BUFFER)"
+check above failed, making pmcdev->lpm_req_regs point to a block of
+memory filled with zeros. That does not seem right.
 
 > +}
 > +
-> +/* Access registers in PCIe smu */
-> +static inline void visconti_smu_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
-> +{
-> +	writel(val, pcie->smu_base + reg);
-> +}
+>  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
+>  {
+>  	return readl(pmcdev->regbase + reg_offset);
+> @@ -1312,10 +1357,14 @@ static int pmc_core_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&pmcdev->lock);
 > +
-> +/* Access registers in PCIe mpu */
-> +static inline void visconti_mpu_writel(struct visconti_pcie *pcie, u32 val, u32 reg)
-> +{
-> +	writel(val, pcie->mpu_base + reg);
-> +}
+>  	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit(pmcdev);
+>  	pmc_core_get_low_power_modes(pmcdev);
+>  	pmc_core_do_dmi_quirks(pmcdev);
+>  
+> +	if (pmcdev->map == &tgl_reg_map)
+> +		pmc_core_get_tgl_lpm_reqs(pdev);
 > +
-> +static inline u32 visconti_mpu_readl(struct visconti_pcie *pcie, u32 reg)
-> +{
-> +	return readl(pcie->mpu_base + reg);
-> +}
-> +
-> +static int visconti_pcie_check_link_status(struct visconti_pcie *pcie)
-> +{
-> +	int err;
-> +	u32 val;
-> +
-> +	/* wait for linkup of phy link layer */
-> +	err = readl_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_00, val,
-> +				 (val & PCIE_UL_SMLH_LINK_UP), 1000, 10000);
-> +	if (err)
-> +		return err;
-> +
-> +	/* wait for linkup of data link layer */
-> +	err = readl_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_02, val,
-> +				 (val & PCIE_UL_S_DETECT_ACT), 1000, 10000);
-> +	if (err)
-> +		return err;
-> +
-> +	/* wait for LTSSM Status */
-> +	return readl_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_V_PHY_ST_02, val,
-> +				  (val & PCIE_UL_S_L0), 1000, 10000);
-> +}
-> +
-> +static int visconti_pcie_establish_link(struct pcie_port *pp)
-> +{
-> +	int ret;
-> +	u32 val;
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct visconti_pcie *pcie = dev_get_drvdata(pci->dev);
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_APP_LTSSM_ENABLE, PCIE_UL_REG_V_SII_GEN_CTRL_01);
-> +
-> +	ret = visconti_pcie_check_link_status(pcie);
-> +	if (ret < 0) {
-> +		dev_info(pci->dev, "Link failure\n");
-> +		return ret;
-> +	}
-> +
-> +	val = visconti_mpu_readl(pcie, PCIE_MPU_REG_MP_EN);
-> +	visconti_mpu_writel(pcie, val & ~MPU_MP_EN_DISABLE, PCIE_MPU_REG_MP_EN);
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_S_INT_EVENT_MASK1_ALL, PCIE_UL_REG_S_INT_EVENT_MASK1);
-
-Seems like all this should be a phy driver.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int visconti_pcie_host_init(struct pcie_port *pp)
-> +{
-> +	int ret;
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +
-> +	dw_pcie_setup_rc(pp);
-
-> +	ret = visconti_pcie_establish_link(pp);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dw_pcie_wait_for_link(pci);
-
-The DWC core code does link handling now.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dw_pcie_host_ops visconti_pcie_host_ops = {
-> +	.host_init = visconti_pcie_host_init,
-> +};
-> +
-> +static u64 visconti_pcie_cpu_addr_fixup(struct dw_pcie *pci, u64 pci_addr)
-> +{
-> +	return pci_addr - PCIE_BUS_OFFSET;
-> +}
-> +
-> +static const struct dw_pcie_ops dw_pcie_ops = {
-> +	.cpu_addr_fixup = visconti_pcie_cpu_addr_fixup,
-> +};
-> +
-> +static int visconti_get_resources(struct platform_device *pdev,
-> +				  struct visconti_pcie *pcie)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +
-> +	pcie->pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "dbi");
-> +	if (IS_ERR(pcie->pci->dbi_base))
-> +		return PTR_ERR(pcie->pci->dbi_base);
-
-The DWC core handles this now.
-
-> +
-> +	pcie->ulreg_base = devm_platform_ioremap_resource_byname(pdev, "ulreg");
-> +	if (IS_ERR(pcie->ulreg_base))
-> +		return PTR_ERR(pcie->ulreg_base);
-> +
-> +	pcie->smu_base = devm_platform_ioremap_resource_byname(pdev, "smu");
-> +	if (IS_ERR(pcie->smu_base))
-> +		return PTR_ERR(pcie->smu_base);
-> +
-> +	pcie->mpu_base = devm_platform_ioremap_resource_byname(pdev, "mpu");
-> +	if (IS_ERR(pcie->mpu_base))
-> +		return PTR_ERR(pcie->mpu_base);
-> +
-> +	pcie->refclk = devm_clk_get(dev, "pcie_refclk");
-> +	if (IS_ERR(pcie->refclk)) {
-> +		dev_err(dev, "Failed to get refclk clock: %ld\n", PTR_ERR(pcie->refclk));
-> +		return PTR_ERR(pcie->refclk);
-> +	}
-> +
-> +	pcie->sysclk = devm_clk_get(dev, "sysclk");
-> +	if (IS_ERR(pcie->sysclk)) {
-> +		dev_err(dev, "Failed to get sysclk clock: %ld\n", PTR_ERR(pcie->sysclk));
-> +		return PTR_ERR(pcie->sysclk);
-> +	}
-> +
-> +	pcie->auxclk = devm_clk_get(dev, "auxclk");
-> +	if (IS_ERR(pcie->auxclk)) {
-> +		dev_err(dev, "Failed to get auxclk clock: %ld\n", PTR_ERR(pcie->auxclk));
-> +		return PTR_ERR(pcie->auxclk);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int visconti_device_turnon(struct visconti_pcie *pcie)
-> +{
-> +	int err;
-> +	u32 val;
-> +
-> +	visconti_smu_writel(pcie, PISMU_CKON_PCIE_AUX_CLK | PISMU_CKON_PCIE_MSTR_ACLK,
-> +			    PISMU_CKON_PCIE);
-
-Clock control? Should be a clock provider then.
-
-> +	ndelay(250);
-> +
-> +	visconti_smu_writel(pcie, PISMU_RSOFF_PCIE_ULREG_RST_N, PISMU_RSOFF_PCIE);
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_REG_S_PCIE_MODE_RC, PCIE_UL_REG_S_PCIE_MODE);
-> +
-> +	val = PCIE_UL_IOM_PCIE_PERSTN_I_EN | PCIE_UL_DIRECT_PERSTN_EN | PCIE_UL_DIRECT_PERSTN;
-> +	visconti_ulreg_writel(pcie, val, PCIE_UL_REG_S_PERSTN_CTRL);
-> +	udelay(100);
-> +
-> +	val |= PCIE_UL_PERSTN_OUT;
-> +	visconti_ulreg_writel(pcie, val, PCIE_UL_REG_S_PERSTN_CTRL);
-> +	udelay(100);
-> +
-> +	visconti_smu_writel(pcie, PISMU_RSOFF_PCIE_PWR_UP_RST_N, PISMU_RSOFF_PCIE);
-> +
-> +	err = readl_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_S_PHY_INIT_03, val,
-> +				 (val & PCIE_UL_PHY0_SRAM_INIT_DONE), 100, 1000);
-> +	if (err)
-> +		return err;
-> +
-> +	visconti_ulreg_writel(pcie, PCIE_UL_PHY0_SRAM_EXT_LD_DONE, PCIE_UL_REG_S_PHY_INIT_02);
-> +
-> +	return readl_poll_timeout(pcie->ulreg_base + PCIE_UL_REG_S_SIG_MON, val,
-> +				 (val & PCIE_UL_CORE_RST_N_MON), 100, 1000);
-> +}
-> +
-> +static int visconti_add_pcie_port(struct visconti_pcie *pcie, struct platform_device *pdev)
-> +{
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct pcie_port *pp = &pci->pp;
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	pp->irq = platform_get_irq_byname(pdev, "intr");
-> +	if (pp->irq < 0) {
-> +		dev_err(dev, "interrupt intr is missing");
-> +		return pp->irq;
-> +	}
-> +
-> +	if (IS_ENABLED(CONFIG_PCI_MSI)) {
-> +		pp->msi_irq = platform_get_irq_byname(pdev, "msi");
-> +		if (pp->msi_irq < 0) {
-> +			dev_err(dev, "interrupt msi is missing");
-> +			return pp->msi_irq;
-> +		}
-> +	}
-
-DWC core handles this now.
-
-> +
-> +	pp->ops = &visconti_pcie_host_ops;
-> +
-> +	pci->link_gen = of_pci_get_max_link_speed(pdev->dev.of_node);
-> +	if (pci->link_gen < 0 || pci->link_gen > 3) {
-> +		pci->link_gen = 3;
-> +		dev_dbg(dev, "Applied default link speed\n");
-> +	}
-> +
-> +	dev_dbg(dev, "link speed Gen %d", pci->link_gen);
-> +
-> +	ret = visconti_device_turnon(pcie);
-> +	if (ret)
-> +		goto error;
-> +
-> +	ret = dw_pcie_host_init(pp);
-> +	if (ret)
-> +		dev_err(dev, "Failed to initialize host\n");
-> +
-> +error:
-> +	return ret;
-> +}
-> +
-> +static int visconti_pcie_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct visconti_pcie *pcie;
-> +	struct pcie_port *pp;
-> +	struct dw_pcie *pci;
-> +	int ret;
-> +
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(36));
-> +	if (ret)
-> +		return ret;
-> +
-> +	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> +	if (!pcie)
-> +		return -ENOMEM;
-> +
-> +	pci = devm_kzalloc(dev, sizeof(*pci), GFP_KERNEL);
-> +	if (!pci)
-> +		return -ENOMEM;
-> +
-> +	pp = &pci->pp;
-> +	pp->num_vectors = MAX_MSI_IRQS;
-> +
-> +	pci->dev = dev;
-> +	pci->ops = &dw_pcie_ops;
-> +	pcie->pci = pci;
-> +
-> +	ret = visconti_get_resources(pdev, pcie);
-> +	if (ret)
-> +		return ret;
-> +
-> +	platform_set_drvdata(pdev, pcie);
-> +
-> +	return visconti_add_pcie_port(pcie, pdev);
-> +}
-> +
-> +static const struct of_device_id visconti_pcie_match[] = {
-> +	{ .compatible = "toshiba,visconti-pcie" },
-> +	{},
-> +};
-> +
-> +static struct platform_driver visconti_pcie_driver = {
-> +	.probe = visconti_pcie_probe,
-> +	.driver = {
-> +		.name = "visconti-pcie",
-> +		.of_match_table = visconti_pcie_match,
-> +		.suppress_bind_attrs = true,
-> +	},
-> +};
-> +
-> +builtin_platform_driver(visconti_pcie_driver);
-> -- 
-> 2.30.0.rc2
+>  	/*
+>  	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
+>  	 * a cable is attached. Tell the PMC to ignore it.
+> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+> index 3800c1ba6fb7..81d797feed33 100644
+> --- a/drivers/platform/x86/intel_pmc_core.h
+> +++ b/drivers/platform/x86/intel_pmc_core.h
+> @@ -288,6 +288,7 @@ struct pmc_reg_map {
+>   * @s0ix_counter:	S0ix residency (step adjusted)
+>   * @num_modes:		Count of enabled modes
+>   * @lpm_en_modes:	Array of enabled modes from lowest to highest priority
+> + * @lpm_req_regs:	List of substate requirements
+>   *
+>   * pmc_dev contains info about power management controller device.
+>   */
+> @@ -304,6 +305,7 @@ struct pmc_dev {
+>  	u64 s0ix_counter;
+>  	int num_modes;
+>  	int lpm_en_modes[LPM_MAX_NUM_MODES];
+> +	u32 *lpm_req_regs;
+>  };
+>  
+>  #define pmc_for_each_mode(i, mode, pmcdev)		\
 > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+Regards,
+
+Hams
+
