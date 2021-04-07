@@ -2,854 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B02357354
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19567357340
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348101AbhDGRkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:40:17 -0400
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:37960 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhDGRkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:40:15 -0400
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 137HXFmY016777;
-        Wed, 7 Apr 2021 13:40:01 -0400
-Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
-        by pbmsgap02.intersil.com with ESMTP id 37rves8cas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 13:40:01 -0400
-Received: from pbmxdp02.intersil.corp (132.158.200.223) by
- pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.2176.2; Wed, 7 Apr 2021 13:40:00 -0400
-Received: from localhost (132.158.202.108) by pbmxdp02.intersil.corp
- (132.158.200.223) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Wed, 7 Apr 2021 13:39:59 -0400
-From:   <min.li.xe@renesas.com>
-To:     <sameo@linux.intel.com>, <lee.jones@linaro.org>,
-        <grant.likely@linaro.org>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization Management Unit (SMU) support
-Date:   Wed, 7 Apr 2021 13:34:20 -0400
-Message-ID: <1617816860-3840-2-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617816860-3840-1-git-send-email-min.li.xe@renesas.com>
-References: <1617816860-3840-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        id S1354886AbhDGRfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:35:16 -0400
+Received: from mail-bn8nam11on2088.outbound.protection.outlook.com ([40.107.236.88]:1633
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232356AbhDGRfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:35:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Puywi4zQl8RuNLKBt2qlbbsjw+cSj3DHdxmiqidInhQWmlh9R6dws2TO+sMKwYNlrKefLNKJV/BPfiDU0+xSNmmXg1qpq1QwWeGaP35Aw5rB2JgIfyzpklprG5we23vkBkJjur07cU34q+RDDZyvU7FRQWrcRABNV12ZZ8s7/qQ+mCc8IxJdFGBswEifBFwTKdpcyTGYtDQo+Je+46hmATy11WUsrpnKMIEcOvRXjEM+axu31KuH8Hl/1uAEwXUug+x6aeZvhLIMCdPk7hNKsGytlvqRPpCS9WBoFxKgh26kg9GpFjvb+u8N2eNjirFXjjVXwJsOVm45TWGCuUYtaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3OCpHBOrlF8w+/LhjtumUIw+Kz8ym8G8WIufrTbeKA0=;
+ b=ADhjd5549z7Ky7KtxotIwfdvL/h95Jxu0FMUYmFQw5vq+6Bg03KrSYWsGUd6IWNx6vQGwVq5plM8AcuetTBeP6zl8+q87MjJPfscN1DUOMbf1frmta/cXAcup3N8aKFr4YmSfD2BtHxhV23vaJBuwQd3scuDAYmBrpydcI21M5IvjusGdlwa6Z75gf6ca7yjnzsZxlQtyk5nNtFK1lxbEw7H0SjXZCgyiS/uFjf0nbyGL0Q6xwPUOzRc8cAdFumjVKT7G9tHHbjevCU+7CNEsszIUhg8zqCddifYAsDYSkbRAGd2ntGljQSYIS84IijTivkmqb8YaPagRumYkkwXVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3OCpHBOrlF8w+/LhjtumUIw+Kz8ym8G8WIufrTbeKA0=;
+ b=nj5xHmliNoNuZv57W3hRtlEPZpHqulgs23vPhycao62dRfPSxjIOTO5Z/L9uXsZH1zO1fiah8lBcAUai6LALbPbPpOL+2H2ZsNTNYaACpQPrToMSBrMK/KixosUsHCAPzkHuey0wW9uQwfjet02p5daosFqypAHWmF81+5ytJiY=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB4672.namprd12.prod.outlook.com (2603:10b6:805:12::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Wed, 7 Apr
+ 2021 17:35:02 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4020.017; Wed, 7 Apr 2021
+ 17:35:02 +0000
+Cc:     brijesh.singh@amd.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, ak@linux.intel.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 07/13] x86/compressed: register GHCB memory when
+ SNP is active
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-8-brijesh.singh@amd.com>
+ <20210407115959.GC25319@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <2453bacb-dce3-a9c2-f506-7dae7796ab7e@amd.com>
+Date:   Wed, 7 Apr 2021 12:34:59 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+In-Reply-To: <20210407115959.GC25319@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SA0PR11CA0091.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::6) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: sPur9p0_2_z8_wcK7Ff9Jh3vSuWHyx3g
-X-Proofpoint-ORIG-GUID: sPur9p0_2_z8_wcK7Ff9Jh3vSuWHyx3g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-07_09:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104070119
-X-Proofpoint-Spam-Reason: mlx
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SA0PR11CA0091.namprd11.prod.outlook.com (2603:10b6:806:d1::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 17:35:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: afef49a1-a264-4dcf-4d4b-08d8f9eb791d
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4672:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB46722E793120A4D99FE2D26FE5759@SN6PR12MB4672.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5y0CQnbs9RUkCrpfQMIT5KIxf8z1DRwwCCbnilljxKMmijdsumDvIF+L8srxNHYgkLiWy0m6NduXWw4Nue3ljYThdWOVUqOoK2Eis8T6kJ+sszHkDvSYwh7Gm6VODw0G3LQXbae9c67AnARZ0o+d6ZylJhzwyBWoAkkmDZVrggNTy5hyGKo/nvrYvJ9OShuCH/gfx2xdP0tkOKsAYlM5ljZnswwPgtsbxrRvdl0Dr+rw0e9bJ9UZRVqgdb7l4UJFUQB14YlZQjWsiKni2nywEXtMr1ixeOMqsLemTc9g4Adly4jSNNZeYhxOn5LmFsY33aHRUB5Zf6DzV4ocbcKbr0RQ+Gh/AK7Tc9qAuTuq1ZH77U8WTjfXqvfIQXwPWdOaxfsTMKBUK4HrmmgD+whsV/SJq7+kGzXTVBq/sjQCewALp14xXDCWhjh8N2QqTY6ORDb3dzO09TkiHiXMNsTfUtmRs2+CQFIdnKLlzb3s3g41OOXZBNZa1X6pz6aoU/543AJtIO+swQaBKuJ9loEDWmsCsLooFOlvJfds7Ep/ReKDQOXgC1w9aTExNhJop7tPl6ep7a+VK0CzBcjcmWEJY284i8YO0JkqKpGHYI5qOgEgaE2wvr00Qlm+onbC3bHej0D8Mcm8gmt8BJ+gmyuGNNnD2BgIp9tB4bezuuApXCoaN7/FlSS0EoJCSjIRqVw+uR3hzZ+tNDP5MtaItx8PeaFGkEFe4x+jBM9RFLfTC8hrBew90wz0OIDL2Z1Wu6WG2y7MgW4QZ+OZHseo1mh34tEbstZTxG4ts5GLkj2TU49eKNExCcJC8zHYAsoQvMw7ev7Nmwga02It4Q/olMA+Yw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(38350700001)(956004)(2616005)(83380400001)(8676002)(966005)(45080400002)(4326008)(8936002)(52116002)(478600001)(31686004)(5660300002)(53546011)(54906003)(316002)(186003)(16526019)(6486002)(36756003)(38100700001)(2906002)(26005)(86362001)(6916009)(66476007)(6512007)(7416002)(31696002)(66946007)(44832011)(66556008)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RWhRMHY5U0c1R0N5bXAzMDJNTi82elYzVFFOeWhpck9pRzFzZFowV29jQTgw?=
+ =?utf-8?B?NHhzZUx6ekV6Y2dtM01GU2IzN2o4VXpaVFhTYzFOMGUyaFlKbXh0QW5zZWI2?=
+ =?utf-8?B?RDNFZTh2YmEyTEJZdWVabGE4N2NyL2UrNmdNZ2JNeTJ0TitPUi8vMkJFbXUy?=
+ =?utf-8?B?N0VxcTAwcWFPOFZ6Q2ZCa2JObVI2WmxRY205VlNnbHQ3Sm1IczB3ODBzWTVS?=
+ =?utf-8?B?b1ZWTkUwK3FOcjMwS0xPRHhnN3hXSUJiZ01MQmRFckM3SmJLS1RiRDljdStY?=
+ =?utf-8?B?dVhmbXdwMGtJbmxqZXRSdmJGK0IzZWxiUnhmMk1mWEhSWHVrVUFxcmxDYjZP?=
+ =?utf-8?B?eEVBODg5WS9IdEgrUkxBUFVNWC90ckE5TTc1bnBtZ2thaHQ1d0NRczExYkV1?=
+ =?utf-8?B?K2NFcFVyYVZkL0JWRmF1R3B5Mm5mMGFXa1pXWmI3ZFYxUFVmMDc4cVV6cDhI?=
+ =?utf-8?B?WVV6S1FiWlMrRGRjRm5JVHhTU0pSSUpHa2paVld1RmFMSzNaUW8vWEl2KzVk?=
+ =?utf-8?B?ZnlpQzZWSFdkSzIyenhnTWx2Rm93VEJXZmJmQ0JMTCtEb0JNeGZGMVZtMDND?=
+ =?utf-8?B?WE1razBlMWxlb0Q1ZCttTnh4WlpvZXdMSEtEbzdJYm1VeTB3RUhXV3AxTmdh?=
+ =?utf-8?B?RC9uMTNOSXVuamowWDhJNEVXS3dKVTM4UjQ5SnBOMnBNVjlpdU5IbjlnUnkv?=
+ =?utf-8?B?YzZycDJWN0pHQWVPaXAvS3QvQ3BXaTFySjd5MGFmYUlTbm5WK0xHV1FnVEM5?=
+ =?utf-8?B?RXB0L0dUMUdsWFBqRy9NT05wMXRUWEVacHJOdzJPc1ViOFdsQnhTSGxoaVJE?=
+ =?utf-8?B?MGhUTUZacG9ObllvSUFwQ3kwZGwvTy9VNE1neVNQOGVkZURYWEFLQy94UnEz?=
+ =?utf-8?B?d2QxMk05cTBzd1pyQmkxT0tDeFErMlVxTEgxVWJvcXpIQytCRGVwWU9vZ0Fk?=
+ =?utf-8?B?Um0vU1pNR20xemFzemQ3MXYzdTNzYUFKeHl6Ymh5eFRUMEVKeTFLTFQxa0lx?=
+ =?utf-8?B?K1pVMFllWWRDcEh0RncvYm5qM2d4eko4WHlYajdSSElKUkJXTUlBdXBHYWdu?=
+ =?utf-8?B?WWt1ZzNtZlpTZ0FTbkpHdTV5WHlBaU0rNlpxNzhDeVpZc2wyM3ZUR0ZOeFRK?=
+ =?utf-8?B?S1RrUk5hWW44ZlBES3dsdHpUUS9vdnRNSFczQUV3aGxMUENPLzhlWEhZREJh?=
+ =?utf-8?B?WGdFVVlKaEF5ZCt3dHYvQWdtZjFPVklhalArdDRlTTdlMWlETVFuMnZ0VU1N?=
+ =?utf-8?B?RjZnQmNlRFpZanhTamE1Q0NQS0ZEQUU2WlgwYm9Ja0dqanhDSk9VeTBjWGxu?=
+ =?utf-8?B?djFqVkU1cWY3VGdOSldhbVRWTGZaeUFhbzUrY2ZIT2wrR1FibEZzK0lyT2sx?=
+ =?utf-8?B?NXlyZUJmVVdEYlMyRmZONXNEV0MwN2xEeXc3N2txNnQ0SU1vbCttV3d6MUdC?=
+ =?utf-8?B?alFvbWFwVko0R3ZlbmhPMGpXUHRRQ0JHZFpKM2FIOG5iOHNNUVVKOUVMLzdo?=
+ =?utf-8?B?TGo2WWpzeTNtazI0T0tZSTl3L01SSU0reVBJbWlhSzVRN2xFNE5oRjhpUEs2?=
+ =?utf-8?B?VGVKdHlBTUg4VUZDbTVSVnBsYWw5WitxSG5kS1BlNk9JZnpZSkc3Z2d3YjE1?=
+ =?utf-8?B?Ymg5UERCMDlSdkMvaHgzOFI4M3BPZ09NN1VLakNnTEN1NmRtTmNUWWFOZ05x?=
+ =?utf-8?B?SXZpNUxCaDNMelJNcC9ERHEvZGZCMFAxcjVEUkJFK2lwdjBxNkMzSDNuMHNh?=
+ =?utf-8?Q?xgbD/LYVeytURS2ucggfvwzPuG4E9K0rOKyAaxr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afef49a1-a264-4dcf-4d4b-08d8f9eb791d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 17:35:01.9588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TjCmFLSsb9ys/DF+2fW6tNI+HRBQLs+F5S7Ij0QwVhf6LEb6uxYnQhmkeXYgeSIQTE1A4JsDLpuQkAH3B+04JA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4672
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
 
-This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
-of timing and synchronization devices.It will be used by Renesas PTP Clock
-Manager for Linux (pcm4l) software to provide support to GNSS assisted
-partial timing support (APTS) and other networking timing functions.
+On 4/7/21 6:59 AM, Borislav Petkov wrote:
+> On Wed, Mar 24, 2021 at 11:44:18AM -0500, Brijesh Singh wrote:
+>> The SEV-SNP guest is required to perform GHCB GPA registration. This is
+> Why does it need to do that? Some additional security so as to not allow
+> changing the GHCB once it is established?
+>
+> I'm guessing that's enforced by the SNP fw and we cannot do that
+> retroactively for SEV...? Because it sounds like a nice little thing we
+> could do additionally.
 
-Current version provides kernel API's to support the following functions
--set combomode to enable SYNCE clock support
--read dpll's state to determine if the dpll is locked to the GNSS channel
--read dpll's ffo (fractional frequency offset) in ppqt
+The feature is part of the GHCB version 2 and is enforced by the
+hypervisor. I guess it can be extended for the ES. Since this feature
+was not available in GHCB version 1 (base ES) so it should be presented
+as an optional for the ES ?
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
-Change log
--rebase change to linux-next tree
--remove uncessary condition checks suggested by Greg
--fix compile error for x86_64
--register device through misc_register suggested by Greg
 
- drivers/misc/Kconfig      |   9 ++
- drivers/misc/Makefile     |   2 +
- drivers/misc/rsmu_cdev.c  | 266 ++++++++++++++++++++++++++++++++++++++++++++++
- drivers/misc/rsmu_cdev.h  |  74 +++++++++++++
- drivers/misc/rsmu_cm.c    | 166 +++++++++++++++++++++++++++++
- drivers/misc/rsmu_sabre.c | 133 +++++++++++++++++++++++
- include/uapi/linux/rsmu.h |  64 +++++++++++
- 7 files changed, 714 insertions(+)
- create mode 100644 drivers/misc/rsmu_cdev.c
- create mode 100644 drivers/misc/rsmu_cdev.h
- create mode 100644 drivers/misc/rsmu_cm.c
- create mode 100644 drivers/misc/rsmu_sabre.c
- create mode 100644 include/uapi/linux/rsmu.h
+>
+>> because the hypervisor may prefer that a guest use a consistent and/or
+>> specific GPA for the GHCB associated with a vCPU. For more information,
+>> see the GHCB specification section 2.5.2.
+> I think you mean
+>
+> "2.3.2 GHCB GPA Registration"
+>
+> Please use the section name too because that doc changes from time to
+> time.
+>
+> Also, you probably should update it here:
+>
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D206537&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7Ce8ae7574ecc742be6c1a08d8f9bcac94%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637533936070042328%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=NaHJ5R9Dfo%2FPnci%2B%2B6xK9ecpV0%2F%2FYbsdGl25%2BFj3TaU%3D&amp;reserved=0
+>
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index f532c59..49b523a 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -445,6 +445,15 @@ config HISI_HIKEY_USB
- 	  switching between the dual-role USB-C port and the USB-A host ports
- 	  using only one USB controller.
- 
-+config RSMU
-+	tristate "Renesas Synchronization Management Unit (SMU)"
-+	help
-+	  This option enables support for the IDT ClockMatrix(TM) and 82P33xxx
-+	  families of timing and synchronization devices. It will be used by
-+	  Renesas PTP Clock Manager for Linux (pcm4l) software to provide support
-+	  for GNSS assisted partial timing support (APTS) and other networking
-+	  timing functions.
-+
- source "drivers/misc/c2port/Kconfig"
- source "drivers/misc/eeprom/Kconfig"
- source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 99b6f15..21b8ed4 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -56,3 +56,5 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
- obj-$(CONFIG_UACCE)		+= uacce/
- obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
- obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
-+rsmu-objs			:= rsmu_cdev.o rsmu_cm.o rsmu_sabre.o
-+obj-$(CONFIG_RSMU)		+= rsmu.o
-diff --git a/drivers/misc/rsmu_cdev.c b/drivers/misc/rsmu_cdev.c
-new file mode 100644
-index 0000000..f7dddcc
---- /dev/null
-+++ b/drivers/misc/rsmu_cdev.c
-@@ -0,0 +1,266 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
-+ * of timing and synchronization devices. It will be used by Renesas PTP Clock
-+ * Manager for Linux (pcm4l) software to provide support to GNSS assisted
-+ * partial timing support (APTS) and other networking timing functions.
-+ *
-+ * Please note it must work with Renesas MFD driver to access device through
-+ * I2C/SPI.
-+ *
-+ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/cdev.h>
-+#include <linux/device.h>
-+#include <linux/fs.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+#include <linux/mfd/rsmu.h>
-+#include <uapi/linux/rsmu.h>
-+#include "rsmu_cdev.h"
-+
-+#define DRIVER_NAME	"rsmu"
-+
-+static struct rsmu_ops *ops_array[] = {
-+	[RSMU_CM] = &cm_ops,
-+	[RSMU_SABRE] = &sabre_ops,
-+};
-+
-+static int
-+rsmu_set_combomode(struct rsmu_cdev *rsmu, void __user *arg)
-+{
-+	struct rsmu_ops *ops = rsmu->ops;
-+	struct rsmu_combomode mode;
-+	int err;
-+
-+	if (copy_from_user(&mode, arg, sizeof(mode)))
-+		return -EFAULT;
-+
-+	if (ops->set_combomode == NULL)
-+		return -ENOTSUPP;
-+
-+	mutex_lock(rsmu->lock);
-+	err = ops->set_combomode(rsmu, mode.dpll, mode.mode);
-+	mutex_unlock(rsmu->lock);
-+
-+	return err;
-+}
-+
-+static int
-+rsmu_get_dpll_state(struct rsmu_cdev *rsmu, void __user *arg)
-+{
-+	struct rsmu_ops *ops = rsmu->ops;
-+	struct rsmu_get_state state_request;
-+	u8 state;
-+	int err;
-+
-+	if (copy_from_user(&state_request, arg, sizeof(state_request)))
-+		return -EFAULT;
-+
-+	if (ops->get_dpll_state == NULL)
-+		return -ENOTSUPP;
-+
-+	mutex_lock(rsmu->lock);
-+	err = ops->get_dpll_state(rsmu, state_request.dpll, &state);
-+	mutex_unlock(rsmu->lock);
-+
-+	state_request.state = state;
-+	if (copy_to_user(arg, &state_request, sizeof(state_request)))
-+		return -EFAULT;
-+
-+	return err;
-+}
-+
-+static int
-+rsmu_get_dpll_ffo(struct rsmu_cdev *rsmu, void __user *arg)
-+{
-+	struct rsmu_ops *ops = rsmu->ops;
-+	struct rsmu_get_ffo ffo_request;
-+	int err;
-+
-+	if (copy_from_user(&ffo_request, arg, sizeof(ffo_request)))
-+		return -EFAULT;
-+
-+	if (ops->get_dpll_ffo == NULL)
-+		return -ENOTSUPP;
-+
-+	mutex_lock(rsmu->lock);
-+	err = ops->get_dpll_ffo(rsmu, ffo_request.dpll, &ffo_request);
-+	mutex_unlock(rsmu->lock);
-+
-+	if (copy_to_user(arg, &ffo_request, sizeof(ffo_request)))
-+		return -EFAULT;
-+
-+	return err;
-+}
-+
-+static struct rsmu_cdev *file2rsmu(struct file *file)
-+{
-+	return container_of(file->private_data, struct rsmu_cdev, miscdev);
-+}
-+
-+static int
-+rsmu_open(struct inode *iptr, struct file *fptr)
-+{
-+	return 0;
-+}
-+
-+static int
-+rsmu_release(struct inode *iptr, struct file *fptr)
-+{
-+	return 0;
-+}
-+
-+static long
-+rsmu_ioctl(struct file *fptr, unsigned int cmd, unsigned long data)
-+{
-+	struct rsmu_cdev *rsmu = file2rsmu(fptr);
-+	void __user *arg = (void __user *)data;
-+	int err = 0;
-+
-+	switch (cmd) {
-+	case RSMU_SET_COMBOMODE:
-+		err = rsmu_set_combomode(rsmu, arg);
-+		break;
-+	case RSMU_GET_STATE:
-+		err = rsmu_get_dpll_state(rsmu, arg);
-+		break;
-+	case RSMU_GET_FFO:
-+		err = rsmu_get_dpll_ffo(rsmu, arg);
-+		break;
-+	default:
-+		/* Should not get here */
-+		dev_err(rsmu->dev, "Undefined RSMU IOCTL");
-+		err = -EINVAL;
-+		break;
-+	}
-+
-+	return err;
-+}
-+
-+static long rsmu_compat_ioctl(struct file *fptr, unsigned int cmd,
-+			      unsigned long data)
-+{
-+	return rsmu_ioctl(fptr, cmd, data);
-+}
-+
-+static const struct file_operations rsmu_fops = {
-+	.owner = THIS_MODULE,
-+	.open = rsmu_open,
-+	.release = rsmu_release,
-+	.unlocked_ioctl = rsmu_ioctl,
-+	.compat_ioctl =	rsmu_compat_ioctl,
-+};
-+
-+static int rsmu_init_ops(struct rsmu_cdev *rsmu)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ops_array); i++)
-+		if (ops_array[i]->type == rsmu->type)
-+			break;
-+
-+	if (i == ARRAY_SIZE(ops_array))
-+		return -EINVAL;
-+
-+	rsmu->ops = ops_array[i];
-+	return 0;
-+}
-+
-+static int
-+rsmu_probe(struct platform_device *pdev)
-+{
-+	struct rsmu_pdata *pdata = dev_get_platdata(&pdev->dev);
-+	struct rsmu_cdev *rsmu;
-+	int err;
-+
-+	rsmu = devm_kzalloc(&pdev->dev, sizeof(*rsmu), GFP_KERNEL);
-+	if (!rsmu)
-+		return -ENOMEM;
-+
-+	rsmu->dev = &pdev->dev;
-+	rsmu->mfd = pdev->dev.parent;
-+	rsmu->type = pdata->type;
-+	rsmu->lock = pdata->lock;
-+	rsmu->index = pdata->index;
-+
-+	/* Save driver private data */
-+	platform_set_drvdata(pdev, rsmu);
-+
-+	/* Initialize and register the miscdev */
-+	rsmu->miscdev.minor = MISC_DYNAMIC_MINOR;
-+	rsmu->miscdev.fops = &rsmu_fops;
-+	snprintf(rsmu->name, sizeof(rsmu->name), "rsmu%d", rsmu->index);
-+	rsmu->miscdev.name = rsmu->name;
-+	err = misc_register(&rsmu->miscdev);
-+	if (err) {
-+		dev_err(rsmu->dev, "Unable to register device\n");
-+		return -ENODEV;
-+	}
-+
-+	err = rsmu_init_ops(rsmu);
-+	if (err) {
-+		dev_err(rsmu->dev, "Unknown SMU type %d", rsmu->type);
-+		return err;
-+	}
-+
-+	dev_info(rsmu->dev, "Probe %s successful\n", rsmu->name);
-+	return 0;
-+}
-+
-+static int
-+rsmu_remove(struct platform_device *pdev)
-+{
-+	struct rsmu_cdev *rsmu = platform_get_drvdata(pdev);
-+
-+	misc_deregister(&rsmu->miscdev);
-+
-+	return 0;
-+}
-+
-+static const struct platform_device_id rsmu_id_table[] = {
-+	{ "rsmu-cdev0", },
-+	{ "rsmu-cdev1", },
-+	{ "rsmu-cdev2", },
-+	{ "rsmu-cdev3", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(platform, rsmu_id_table);
-+
-+static struct platform_driver rsmu_driver = {
-+	.driver = {
-+		.name = DRIVER_NAME,
-+	},
-+	.probe = rsmu_probe,
-+	.remove =  rsmu_remove,
-+	.id_table = rsmu_id_table,
-+};
-+
-+static int __init rsmu_init(void)
-+{
-+	int err;
-+
-+	err = platform_driver_register(&rsmu_driver);
-+	if (err < 0)
-+		pr_err("Unabled to register %s platform driver", DRIVER_NAME);
-+
-+	return err;
-+}
-+
-+static void __exit rsmu_exit(void)
-+{
-+	platform_driver_unregister(&rsmu_driver);
-+}
-+
-+module_init(rsmu_init);
-+module_exit(rsmu_exit);
-+
-+MODULE_DESCRIPTION("Renesas SMU character device driver");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/misc/rsmu_cdev.h b/drivers/misc/rsmu_cdev.h
-new file mode 100644
-index 0000000..5710929
---- /dev/null
-+++ b/drivers/misc/rsmu_cdev.h
-@@ -0,0 +1,74 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * This driver is developed for the IDT ClockMatrix(TM) of
-+ * timing and synchronization devices.
-+ *
-+ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-+ */
-+#ifndef __LINUX_RSMU_CDEV_H
-+#define __LINUX_RSMU_CDEV_H
-+
-+#include <linux/miscdevice.h>
-+
-+struct rsmu_ops;
-+
-+/**
-+ * struct rsmu_cdev - Driver data for RSMU character device
-+ * @name: rsmu device name
-+ * @dev: pointer to platform device
-+ * @mfd: pointer to MFD device
-+ * @miscdev: character device handle
-+ * @lock: mutex to protect operations from being interrupted
-+ * @type: rsmu device type
-+ * @ops: rsmu device methods
-+ * @index: rsmu device index
-+ */
-+struct rsmu_cdev {
-+	char name[16];
-+	struct device *dev;
-+	struct device *mfd;
-+	struct miscdevice miscdev;
-+	struct mutex *lock;
-+	enum rsmu_type type;
-+	struct rsmu_ops *ops;
-+	u8 index;
-+};
-+
-+extern struct rsmu_ops cm_ops;
-+extern struct rsmu_ops sabre_ops;
-+
-+struct rsmu_ops {
-+	enum rsmu_type type;
-+	int (*set_combomode)(struct rsmu_cdev *rsmu, u8 dpll, u8 mode);
-+	int (*get_dpll_state)(struct rsmu_cdev *rsmu, u8 dpll, u8 *state);
-+	int (*get_dpll_ffo)(struct rsmu_cdev *rsmu, u8 dpll,
-+			    struct rsmu_get_ffo *ffo);
-+};
-+
-+/**
-+ * Enumerated type listing DPLL combination modes
-+ */
-+enum rsmu_dpll_combomode {
-+	E_COMBOMODE_CURRENT = 0,
-+	E_COMBOMODE_FASTAVG,
-+	E_COMBOMODE_SLOWAVG,
-+	E_COMBOMODE_HOLDOVER,
-+	E_COMBOMODE_MAX
-+};
-+
-+/**
-+ * An id used to identify the respective child class states.
-+ */
-+enum rsmu_class_state {
-+	E_SRVLOINITIALSTATE = 0,
-+	E_SRVLOUNQUALIFIEDSTATE = 1,
-+	E_SRVLOLOCKACQSTATE = 2,
-+	E_SRVLOFREQUENCYLOCKEDSTATE = 3,
-+	E_SRVLOTIMELOCKEDSTATE = 4,
-+	E_SRVLOHOLDOVERINSPECSTATE = 5,
-+	E_SRVLOHOLDOVEROUTOFSPECSTATE = 6,
-+	E_SRVLOFREERUNSTATE = 7,
-+	E_SRVNUMBERLOSTATES = 8,
-+	E_SRVLOSTATEINVALID = 9,
-+};
-+#endif
-diff --git a/drivers/misc/rsmu_cm.c b/drivers/misc/rsmu_cm.c
-new file mode 100644
-index 0000000..d5af624
---- /dev/null
-+++ b/drivers/misc/rsmu_cm.c
-@@ -0,0 +1,166 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * This driver is developed for the IDT ClockMatrix(TM) of
-+ * timing and synchronization devices.
-+ *
-+ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
-+#include <linux/mfd/idt8a340_reg.h>
-+#include <linux/mfd/rsmu.h>
-+#include <uapi/linux/rsmu.h>
-+#include <asm/unaligned.h>
-+
-+#include "rsmu_cdev.h"
-+
-+static int rsmu_cm_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode)
-+{
-+	u16 dpll_ctrl_n;
-+	u8 cfg;
-+	int err;
-+
-+	switch (dpll) {
-+	case 0:
-+		dpll_ctrl_n = DPLL_CTRL_0;
-+		break;
-+	case 1:
-+		dpll_ctrl_n = DPLL_CTRL_1;
-+		break;
-+	case 2:
-+		dpll_ctrl_n = DPLL_CTRL_2;
-+		break;
-+	case 3:
-+		dpll_ctrl_n = DPLL_CTRL_3;
-+		break;
-+	case 4:
-+		dpll_ctrl_n = DPLL_CTRL_4;
-+		break;
-+	case 5:
-+		dpll_ctrl_n = DPLL_CTRL_5;
-+		break;
-+	case 6:
-+		dpll_ctrl_n = DPLL_CTRL_6;
-+		break;
-+	case 7:
-+		dpll_ctrl_n = DPLL_CTRL_7;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (mode >= E_COMBOMODE_MAX)
-+		return -EINVAL;
-+
-+	err = rsmu_read(rsmu->mfd, dpll_ctrl_n + DPLL_CTRL_COMBO_MASTER_CFG,
-+			&cfg, sizeof(cfg));
-+	if (err)
-+		return err;
-+
-+	/* Only need to enable/disable COMBO_MODE_HOLD. */
-+	if (mode)
-+		cfg |= COMBO_MASTER_HOLD;
-+	else
-+		cfg &= ~COMBO_MASTER_HOLD;
-+
-+	return rsmu_write(rsmu->mfd, dpll_ctrl_n + DPLL_CTRL_COMBO_MASTER_CFG,
-+			  &cfg, sizeof(cfg));
-+}
-+
-+static int rsmu_cm_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state)
-+{
-+	u8 cfg;
-+	int err;
-+
-+	/* 8 is sys dpll */
-+	if (dpll > 8)
-+		return -EINVAL;
-+
-+	err = rsmu_read(rsmu->mfd,
-+			  STATUS + DPLL0_STATUS + dpll,
-+			  &cfg, sizeof(cfg));
-+	if (err)
-+		return err;
-+
-+	switch (cfg & DPLL_STATE_MASK) {
-+	case DPLL_STATE_FREERUN:
-+		*state = E_SRVLOUNQUALIFIEDSTATE;
-+		break;
-+	case DPLL_STATE_LOCKACQ:
-+	case DPLL_STATE_LOCKREC:
-+		*state = E_SRVLOLOCKACQSTATE;
-+		break;
-+	case DPLL_STATE_LOCKED:
-+		*state = E_SRVLOTIMELOCKEDSTATE;
-+		break;
-+	case DPLL_STATE_HOLDOVER:
-+		*state = E_SRVLOHOLDOVERINSPECSTATE;
-+		break;
-+	default:
-+		*state = E_SRVLOSTATEINVALID;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rsmu_cm_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll,
-+				struct rsmu_get_ffo *ffo)
-+{
-+	u8 buf[8] = {0};
-+	s64 fcw = 0;
-+	u16 dpll_filter_status;
-+	int err;
-+
-+	switch (dpll) {
-+	case 0:
-+		dpll_filter_status = DPLL0_FILTER_STATUS;
-+		break;
-+	case 1:
-+		dpll_filter_status = DPLL1_FILTER_STATUS;
-+		break;
-+	case 2:
-+		dpll_filter_status = DPLL2_FILTER_STATUS;
-+		break;
-+	case 3:
-+		dpll_filter_status = DPLL3_FILTER_STATUS;
-+		break;
-+	case 4:
-+		dpll_filter_status = DPLL4_FILTER_STATUS;
-+		break;
-+	case 5:
-+		dpll_filter_status = DPLL5_FILTER_STATUS;
-+		break;
-+	case 6:
-+		dpll_filter_status = DPLL6_FILTER_STATUS;
-+		break;
-+	case 7:
-+		dpll_filter_status = DPLL7_FILTER_STATUS;
-+		break;
-+	case 8:
-+		dpll_filter_status = DPLLSYS_FILTER_STATUS;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	err = rsmu_read(rsmu->mfd, STATUS + dpll_filter_status, buf, 6);
-+	if (err)
-+		return err;
-+
-+	/* Convert to frequency control word */
-+	fcw = sign_extend64(get_unaligned_le64(buf), 47);
-+
-+	/* FCW unit is 2 ^ -53 = 1.1102230246251565404236316680908e-16 */
-+	ffo->ffo = fcw * 111;
-+
-+	return 0;
-+}
-+
-+struct rsmu_ops cm_ops = {
-+	.type = RSMU_CM,
-+	.set_combomode = rsmu_cm_set_combomode,
-+	.get_dpll_state = rsmu_cm_get_dpll_state,
-+	.get_dpll_ffo = rsmu_cm_get_dpll_ffo,
-+};
-diff --git a/drivers/misc/rsmu_sabre.c b/drivers/misc/rsmu_sabre.c
-new file mode 100644
-index 0000000..ca32b2f
---- /dev/null
-+++ b/drivers/misc/rsmu_sabre.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * This driver is developed for the IDT 82P33XXX series of
-+ * timing and synchronization devices.
-+ *
-+ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
-+#include <linux/mfd/idt82p33_reg.h>
-+#include <linux/mfd/rsmu.h>
-+#include <uapi/linux/rsmu.h>
-+#include <asm/unaligned.h>
-+
-+#include "rsmu_cdev.h"
-+
-+static int rsmu_sabre_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode)
-+{
-+	u16 dpll_ctrl_n;
-+	u8 cfg;
-+	int err;
-+
-+	switch (dpll) {
-+	case 0:
-+		dpll_ctrl_n = DPLL1_OPERATING_MODE_CNFG;
-+		break;
-+	case 1:
-+		dpll_ctrl_n = DPLL2_OPERATING_MODE_CNFG;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (mode >= E_COMBOMODE_MAX)
-+		return -EINVAL;
-+
-+	err = rsmu_read(rsmu->mfd, dpll_ctrl_n, &cfg, sizeof(cfg));
-+	if (err)
-+		return err;
-+
-+	cfg &= ~(COMBO_MODE_MASK << COMBO_MODE_SHIFT);
-+	cfg |= mode << COMBO_MODE_SHIFT;
-+
-+	return rsmu_write(rsmu->mfd, dpll_ctrl_n, &cfg, sizeof(cfg));
-+}
-+
-+static int rsmu_sabre_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state)
-+{
-+	u16 dpll_sts_n;
-+	u8 cfg;
-+	int err;
-+
-+	switch (dpll) {
-+	case 0:
-+		dpll_sts_n = DPLL1_OPERATING_STS;
-+		break;
-+	case 1:
-+		dpll_sts_n = DPLL2_OPERATING_STS;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	err = rsmu_read(rsmu->mfd, dpll_sts_n, &cfg, sizeof(cfg));
-+	if (err)
-+		return err;
-+
-+	switch (cfg & OPERATING_STS_MASK) {
-+	case DPLL_STATE_FREERUN:
-+		*state = E_SRVLOUNQUALIFIEDSTATE;
-+		break;
-+	case DPLL_STATE_PRELOCKED2:
-+	case DPLL_STATE_PRELOCKED:
-+		*state = E_SRVLOLOCKACQSTATE;
-+		break;
-+	case DPLL_STATE_LOCKED:
-+		*state = E_SRVLOTIMELOCKEDSTATE;
-+		break;
-+	case DPLL_STATE_HOLDOVER:
-+		*state = E_SRVLOHOLDOVERINSPECSTATE;
-+		break;
-+	default:
-+		*state = E_SRVLOSTATEINVALID;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rsmu_sabre_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll,
-+				   struct rsmu_get_ffo *ffo)
-+{
-+	u8 buf[8] = {0};
-+	s64 fcw = 0;
-+	u16 dpll_freq_n;
-+	int err;
-+
-+	/*
-+	 * IDTDpll_GetCurrentDpllFreqOffset retrieves the FFO integrator only.
-+	 * In order to get Proportional + Integrator, use the holdover FFO with
-+	 * the filter bandwidth 0.5 Hz set by TCS file.
-+	 */
-+	switch (dpll) {
-+	case 0:
-+		dpll_freq_n = DPLL1_HOLDOVER_FREQ_CNFG;
-+		break;
-+	case 1:
-+		dpll_freq_n = DPLL2_HOLDOVER_FREQ_CNFG;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	err = rsmu_read(rsmu->mfd, dpll_freq_n, buf, 5);
-+	if (err)
-+		return err;
-+
-+	/* Convert to frequency control word */
-+	fcw = sign_extend64(get_unaligned_le64(buf), 39);
-+
-+	/* FCW unit is 77760 / ( 1638400 * 2^48) = 1.68615121864946 * 10^-16 */
-+	ffo->ffo = div_s64(fcw * 168615, 1000);
-+
-+	return 0;
-+}
-+
-+struct rsmu_ops sabre_ops = {
-+	.type = RSMU_SABRE,
-+	.set_combomode = rsmu_sabre_set_combomode,
-+	.get_dpll_state = rsmu_sabre_get_dpll_state,
-+	.get_dpll_ffo = rsmu_sabre_get_dpll_ffo,
-+};
-diff --git a/include/uapi/linux/rsmu.h b/include/uapi/linux/rsmu.h
-new file mode 100644
-index 0000000..02c9e38
---- /dev/null
-+++ b/include/uapi/linux/rsmu.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-+/*
-+ * Driver for the IDT ClockMatrix(TM) and 82p33xxx families of
-+ * timing and synchronization devices.
-+ *
-+ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-+ */
-+
-+#ifndef __UAPI_LINUX_RSMU_CDEV_H
-+#define __UAPI_LINUX_RSMU_CDEV_H
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+
-+/* Set dpll combomode */
-+struct rsmu_combomode {
-+	__u8 dpll;
-+	__u8 mode;
-+};
-+
-+/* Get dpll state */
-+struct rsmu_get_state {
-+	__u8 dpll;
-+	__u8 state;
-+};
-+
-+/* Get dpll ffo (fractional frequency offset) in ppqt*/
-+struct rsmu_get_ffo {
-+	__u8 dpll;
-+	__s64 ffo;
-+};
-+
-+/*
-+ * RSMU IOCTL List
-+ */
-+#define RSMU_MAGIC '?'
-+
-+/**
-+ * @Description
-+ * ioctl to set SMU combo mode.
-+ *
-+ * @Parameters
-+ * pointer to struct rsmu_combomode that contains dpll combomode setting
-+ */
-+#define RSMU_SET_COMBOMODE  _IOW(RSMU_MAGIC, 1, struct rsmu_combomode)
-+
-+/**
-+ * @Description
-+ * ioctl to get SMU dpll state.
-+ *
-+ * @Parameters
-+ * pointer to struct rsmu_get_state that contains dpll state
-+ */
-+#define RSMU_GET_STATE  _IOR(RSMU_MAGIC, 2, struct rsmu_get_state)
-+
-+/**
-+ * @Description
-+ * ioctl to get SMU dpll ffo.
-+ *
-+ * @Parameters
-+ * pointer to struct rsmu_get_ffo that contains dpll ffo in ppqt
-+ */
-+#define RSMU_GET_FFO  _IOR(RSMU_MAGIC, 3, struct rsmu_get_ffo)
-+#endif /* __UAPI_LINUX_RSMU_CDEV_H */
--- 
-2.7.4
+Yes, the section may have changed since I wrote the description. Noted.
+I will refer the section name.
 
+
+>> diff --git a/arch/x86/boot/compressed/sev-snp.c b/arch/x86/boot/compressed/sev-snp.c
+>> index 5c25103b0df1..a4c5e85699a7 100644
+>> --- a/arch/x86/boot/compressed/sev-snp.c
+>> +++ b/arch/x86/boot/compressed/sev-snp.c
+>> @@ -113,3 +113,29 @@ void sev_snp_set_page_shared(unsigned long paddr)
+>>  {
+>>  	sev_snp_set_page_private_shared(paddr, SNP_PAGE_STATE_SHARED);
+>>  }
+>> +
+>> +void sev_snp_register_ghcb(unsigned long paddr)
+> Right and let's prefix SNP-specific functions with "snp_" only so that
+> it is clear which is wcich when looking at the code.
+>
+>> +{
+>> +	u64 pfn = paddr >> PAGE_SHIFT;
+>> +	u64 old, val;
+>> +
+>> +	if (!sev_snp_enabled())
+>> +		return;
+>> +
+>> +	/* save the old GHCB MSR */
+>> +	old = sev_es_rd_ghcb_msr();
+>> +
+>> +	/* Issue VMGEXIT */
+> No need for that comment.
+>
+>> +	sev_es_wr_ghcb_msr(GHCB_REGISTER_GPA_REQ_VAL(pfn));
+>> +	VMGEXIT();
+>> +
+>> +	val = sev_es_rd_ghcb_msr();
+>> +
+>> +	/* If the response GPA is not ours then abort the guest */
+>> +	if ((GHCB_SEV_GHCB_RESP_CODE(val) != GHCB_REGISTER_GPA_RESP) ||
+>> +	    (GHCB_REGISTER_GPA_RESP_VAL(val) != pfn))
+>> +		sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
+> Yet another example where using a specific termination reason could help
+> with debugging guests. Looking at the GHCB spec, I hope GHCBData[23:16]
+> is big enough for all reasons. I'm sure it can be extended ofc ...
+
+
+Maybe we can request the GHCB version 3 to add the extended error code.
+
+
+> :-)
+>
+>> +	/* Restore the GHCB MSR value */
+>> +	sev_es_wr_ghcb_msr(old);
+>> +}
+>> diff --git a/arch/x86/include/asm/sev-snp.h b/arch/x86/include/asm/sev-snp.h
+>> index f514dad276f2..0523eb21abd7 100644
+>> --- a/arch/x86/include/asm/sev-snp.h
+>> +++ b/arch/x86/include/asm/sev-snp.h
+>> @@ -56,6 +56,13 @@ struct __packed snp_page_state_change {
+>>  	struct snp_page_state_entry entry[SNP_PAGE_STATE_CHANGE_MAX_ENTRY];
+>>  };
+>>  
+>> +/* GHCB GPA register */
+>> +#define GHCB_REGISTER_GPA_REQ	0x012UL
+>> +#define		GHCB_REGISTER_GPA_REQ_VAL(v)		(GHCB_REGISTER_GPA_REQ | ((v) << 12))
+>> +
+>> +#define GHCB_REGISTER_GPA_RESP	0x013UL
+> Let's append "UL" to the other request numbers for consistency.
+>
+> Thx.
+>
