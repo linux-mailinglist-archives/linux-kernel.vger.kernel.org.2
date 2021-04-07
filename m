@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EC3356F7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D27356F7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353216AbhDGO5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:57:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353171AbhDGO51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE73E6113D;
-        Wed,  7 Apr 2021 14:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617807434;
-        bh=tUfOgaHcl8ljWu0Wz4/Ge0t5B4gD7a3bBu4ayfksIec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tbDifmJtZHVDm4kG2+oWzWbeF+rTRt7NhGUFOHuDZXvgQsUUm3WyLxk1zQ4qzDxzJ
-         k0CUR6uIV/wS1Z7rlVAnRfXPMfZXjE03zZGg6Hh+gsmwTpRLR87kOnN0iWlgiBwieO
-         5Q9dN09ZoJ3cgfBEObPbXnfkihVrXNIMDDrWthhE=
-Date:   Wed, 7 Apr 2021 16:56:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/2] MAINTAINERS: add regressions mailing list
-Message-ID: <YG3IK46M4LNWp3EO@kroah.com>
-References: <cover.1617786974.git.linux@leemhuis.info>
- <f959331ed0e1a8ed59be9771fcab64378bd6977d.1617786974.git.linux@leemhuis.info>
- <YG2BxMBLqEt4mkgS@kroah.com>
- <3121a1cd-47c6-b26e-0cb3-71872d5ffc65@leemhuis.info>
+        id S1348892AbhDGO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345804AbhDGO5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:57:52 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EF8C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:57:41 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id ba6so13736513edb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QA9e9N4IOvSwJUEhUzTdNXyCf8iiGr98JuVf3SJbSws=;
+        b=JAQF9H0gQEXFL9/pYT2lgmKwCmo/8UEfkLEab3w+3B+f/2dTBlLibW3g3Eepx+nKfg
+         jhiSXd2zDe6fNoMhr8cXIQAJWBt056NgQLQ5WfHIL+BDAV10JNXkybazYAdZfM2hASV0
+         Qltio+F9iYnQLNESFD5gMQ8WXpGpaGPNnkgf942WWDLAriwHIpFzo2p+j4WGWj2NHGk1
+         8ta/ACdwML+eDZa1w6uvpqIT+EaL/F+xWZSGBYygd+j+kJzycS6hX6EaZVpdavH8dnO4
+         r17E9jKOpOvZidos86qEA38r/Sijo0poC0OyUBLHBnG0Im/CmuZyvtmQLzBMPPB++k0O
+         PsJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QA9e9N4IOvSwJUEhUzTdNXyCf8iiGr98JuVf3SJbSws=;
+        b=aPXup6SI1o9w5OSfjZPPQYzdQNEw15S5CLsOTxZzYQAyl1qfqUL0FJN5FU+UPtyRG0
+         Ij7wKpeNub2R6CyuTByBosoZK62sQdyoP8TGslS79iUdYB6TYqOCECrWnpcXpTKrHA3Z
+         3KhioXB36tlnWdShW+ljF7Vu7UM1+pqZvX+0GxMVPsZ4sQ247YpvWndojGbU/nokQmwQ
+         eK5Qwbu5qBo3/k21VhkiUOAmf2MuJ30I4S82UfPFlHGiHsmdxFbrXG5nEY0xTn5YdTXF
+         z6Mse7avKIu696oE+aSrMmwemfyjG1dEDyFgdYmlGiEIAn0q9SqDfBuvG2MC3V7ugewb
+         8jRw==
+X-Gm-Message-State: AOAM53069oRICJ7gA/Fy9DxsrnGwF+fDtM5wdT/jnsjkxEzyKHAUC4tq
+        1c94nry4MqPqRWOnQLYVBTw4Wg==
+X-Google-Smtp-Source: ABdhPJxrD/E7UI8yZ+sfbW3oM0l+FNRA5WDYTfCEADpbzEgpOMkZgtqqaQVPNqZsN4PMZL+SMysa6Q==
+X-Received: by 2002:aa7:d88b:: with SMTP id u11mr4983769edq.254.1617807460510;
+        Wed, 07 Apr 2021 07:57:40 -0700 (PDT)
+Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id yh6sm3732875ejb.37.2021.04.07.07.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:57:40 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        Kevin Hilman <khilman@baylibre.com>
+Subject: [PATCH] ASoC: meson: axg-frddr: set fifo depth according to the period
+Date:   Wed,  7 Apr 2021 16:57:14 +0200
+Message-Id: <20210407145714.311138-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3121a1cd-47c6-b26e-0cb3-71872d5ffc65@leemhuis.info>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:51:43PM +0200, Thorsten Leemhuis wrote:
-> On 07.04.21 11:56, Greg KH wrote:
-> > On Wed, Apr 07, 2021 at 11:21:55AM +0200, Thorsten Leemhuis wrote:
-> >> Add the newly created regression mailing list finally created after it
-> >> already had been agreed on during the maintainers summit 2017 (see
-> >> https://lwn.net/Articles/738216/ ). The topic was recently discussed
-> >> again, where an idea to create a broader list for all issues was
-> >> discussed, but Linus preferred a more targeted list:
-> >> https://lkml.kernel.org/r/CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com/
-> >>
-> >> Hence, the creation for that list was asked for and granted:
-> >> https://bugzilla.kernel.org/show_bug.cgi?id=212557
-> >>
-> >> In the end it became regressions@lists.linux.dev instead of
-> >> linux-regressions@lists.linux.dev as 'Linux' is redundant in the latter
-> >> case.
-> >>
-> >> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> >> ---
-> >> I was a bit unsure how to add that list to MAINTAINERS. I considered
-> >> adding a 'M:' with my name and email address there as well, but getting
-> >> CCed on a lot of regression reports might be a bit much. I also left a
-> >> 'S: supported' out, as that doesn't make much sense in this case afaics;
-> >> and I checked, there are other entries that don't have those two (but
-> >> it's rare).
-> > 
-> > Put your name there, you are the "maintainer of regressions!"  :)
-> 
-> Okay, will do. :-D
-> 
-> /me wonders why he suddenly feels like entering a self-made trap ;-)
-> 
-> > [...]
-> >> +REGRESSIONS
-> >> +L:	regressions@lists.linux.dev
-> >> +K:	regression
-> > 
-> > A bit more information here perhaps?  This will not really help anyone
-> > out to know what to do.
-> 
-> Did you mean a different headline for the entry?  Or would you suggest
-> to use a webpage (W:) for that or a Subsystem Profile document (P:)
-> here? Using either of the two latter was the plan, but for now I'm a bit
-> unsure what to write there except maybe "Thorsten is working on a
-> semi-automatic solution for tracking Linux kernel regressions. Details
-> will follow. For now report regressions as outlined in
-> reporting-issues.rst; but in case you have any problem or think there is
-> a regressions not handled appropriately by the maintainers, get him
-> involved, he'll try to help".
-> 
-> Or did you have something totally different in mind?
+When the period is small, using all the FRDDR fifo depth increases the
+latency of the playback because the following device won't start pulling
+data until the fifo reaches the depth set. We can adjust this depth so trim
+it down for small periods.
 
-Well, "K:	regression" is not a regex, so that's not going to
-really help much.
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/meson/axg-frddr.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-How about something simple like:
-	KERNEL REGRESSIONS:
-	M:	Thorsten Leemhuis <linux@leemhuis.info>
-	L:	regressions@lists.linux.dev
-	S:	Supported
+diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
+index c3ae8ac30745..8ed114de0bdf 100644
+--- a/sound/soc/meson/axg-frddr.c
++++ b/sound/soc/meson/axg-frddr.c
+@@ -11,6 +11,7 @@
+ #include <linux/regmap.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+ 
+@@ -46,11 +47,28 @@ static int g12a_frddr_dai_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static int axg_frddr_dai_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params,
++				   struct snd_soc_dai *dai)
++{
++	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
++	unsigned int period, depth, val;
++
++	period = params_period_bytes(params);
++
++	/* Trim the FIFO depth if the period is small to improve latency */
++	depth = min(period, fifo->depth);
++	val = (depth / AXG_FIFO_BURST) - 1;
++	regmap_update_bits(fifo->map, FIFO_CTRL1, CTRL1_FRDDR_DEPTH_MASK,
++			   CTRL1_FRDDR_DEPTH(val));
++
++	return 0;
++}
++
+ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
+ {
+ 	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
+-	unsigned int val;
+ 	int ret;
+ 
+ 	/* Enable pclk to access registers and clock the fifo ip */
+@@ -61,11 +79,6 @@ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
+ 	/* Apply single buffer mode to the interface */
+ 	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_FRDDR_PP_MODE, 0);
+ 
+-	/* Use all fifo depth */
+-	val = (fifo->depth / AXG_FIFO_BURST) - 1;
+-	regmap_update_bits(fifo->map, FIFO_CTRL1, CTRL1_FRDDR_DEPTH_MASK,
+-			   CTRL1_FRDDR_DEPTH(val));
+-
+ 	return 0;
+ }
+ 
+@@ -84,6 +97,7 @@ static int axg_frddr_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ }
+ 
+ static const struct snd_soc_dai_ops axg_frddr_ops = {
++	.hw_params	= axg_frddr_dai_hw_params,
+ 	.startup	= axg_frddr_dai_startup,
+ 	.shutdown	= axg_frddr_dai_shutdown,
+ };
+-- 
+2.30.2
 
-That looks a bit more like other entries, has a name and a list and a
-state of your status for this work.
-
-Would that work?
-
-thanks,
-
-greg k-h
