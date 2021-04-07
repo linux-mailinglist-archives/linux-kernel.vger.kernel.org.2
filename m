@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AAA3567E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08EA3567E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350064AbhDGJYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S1350085AbhDGJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350051AbhDGJYB (ORCPT
+        with ESMTP id S231878AbhDGJWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:24:01 -0400
+        Wed, 7 Apr 2021 05:22:09 -0400
 Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EF6C061761;
-        Wed,  7 Apr 2021 02:22:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1F4C061756;
+        Wed,  7 Apr 2021 02:22:00 -0700 (PDT)
 Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=truhe.fritz.box); authenticated
         by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lU4Np-0004en-6P; Wed, 07 Apr 2021 11:21:57 +0200
+        id 1lU4Np-0004en-FZ; Wed, 07 Apr 2021 11:21:57 +0200
 From:   Thorsten Leemhuis <linux@leemhuis.info>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Greg KH <gregkh@linuxfoundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 0/2] Add regression mailing list with basics for tracking
-Date:   Wed,  7 Apr 2021 11:21:54 +0200
-Message-Id: <cover.1617786974.git.linux@leemhuis.info>
+Subject: [RFC PATCH v1 1/2] MAINTAINERS: add regressions mailing list
+Date:   Wed,  7 Apr 2021 11:21:55 +0200
+Message-Id: <f959331ed0e1a8ed59be9771fcab64378bd6977d.1617786974.git.linux@leemhuis.info>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1617786974.git.linux@leemhuis.info>
+References: <cover.1617786974.git.linux@leemhuis.info>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617787326;a3c7d107;
-X-HE-SMSGID: 1lU4Np-0004en-6P
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617787320;560b1f82;
+X-HE-SMSGID: 1lU4Np-0004en-FZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi! A mailing list for regressions was finally created as
-regressions@lists.linux.dev (we dropped the linux- prefix as the term is already
-in the domain name). Hence, add it to MAINTAINERS, as that where people will
-look it up. I was a bit unsure how to actually do that, see the note in the
-first patch of the series for details.
+Add the newly created regression mailing list finally created after it
+already had been agreed on during the maintainers summit 2017 (see
+https://lwn.net/Articles/738216/ ). The topic was recently discussed
+again, where an idea to create a broader list for all issues was
+discussed, but Linus preferred a more targeted list:
+https://lkml.kernel.org/r/CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com/
 
-The second patch makes reporting-issues.rst mention the new list, so people CC
-it. At the same time it also tells them to adds a special line to help with
-manual or automatic tracking. This is not done yet, but I will work on this over
-the next few months, so it seemed wise to add it right from the start. See the
-patch for details and the comment in it for some things where some input from
-others might be helpful.
+Hence, the creation for that list was asked for and granted:
+https://bugzilla.kernel.org/show_bug.cgi?id=212557
 
-@Jonathan: this hopefully is the last round of patches for reporting-issues.rst
-for this cycle. Please let me known if you think the addition to the MAINTAINERS
-file should better go through a different maintainer.
+In the end it became regressions@lists.linux.dev instead of
+linux-regressions@lists.linux.dev as 'Linux' is redundant in the latter
+case.
+
+Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+---
+I was a bit unsure how to add that list to MAINTAINERS. I considered
+adding a 'M:' with my name and email address there as well, but getting
+CCed on a lot of regression reports might be a bit much. I also left a
+'S: supported' out, as that doesn't make much sense in this case afaics;
+and I checked, there are other entries that don't have those two (but
+it's rare).
 
 Ciao, Thorsten
+---
+ MAINTAINERS | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thorsten Leemhuis (2):
-  MAINTAINERS: add regressions mailing list
-  docs: reporting-issues: make everyone CC the regressions list
-
- .../admin-guide/reporting-issues.rst          | 64 +++++++++++++------
- MAINTAINERS                                   |  4 ++
- 2 files changed, 48 insertions(+), 20 deletions(-)
-
-
-base-commit: a4f413348f268c4313f58ca383173ee5986d968a
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 03b2096a5f8f..dd5743d1f743 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15212,6 +15212,10 @@ F:	Documentation/devicetree/bindings/regmap/
+ F:	drivers/base/regmap/
+ F:	include/linux/regmap.h
+ 
++REGRESSIONS
++L:	regressions@lists.linux.dev
++K:	regression
++
+ REISERFS FILE SYSTEM
+ L:	reiserfs-devel@vger.kernel.org
+ S:	Supported
 -- 
 2.30.2
 
