@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3FE356962
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BCA356974
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350928AbhDGKWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:22:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235325AbhDGKWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:22:13 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137A3Okf194112;
-        Wed, 7 Apr 2021 06:21:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=Pux/rCemv1tksd2MoaaFh8MmP6s+ALrFCia/3cagrfw=;
- b=NjFekmszqeQQRsSTLvvmmaV+/v3RsQtjZgNeyMiE8ahLD8D2K02oxoLE15YQJk4Xfp0t
- Lw2y49gOHtlYDFriqDHTEMiuiED27Y2T2zhHiRgean7eEHIurle6I5b8M0UsepGihF5c
- pm/GZ9nRoCbhnLrSn/QLKM6/Ea092it7aAdkw6dtdEB1yVgWt/h97t/ZLPOhwHkr4xX1
- Stcxae0dBGzAdWGh86en6+Uz0+LEYtN7sFGJrn99g5k+7KdiW0AAeo9auWBL3VQ5UB7a
- 5XVUBsfTbR5Psa6SPSn51btlbnWGQOHXwYCBxlvegagm+IuEL7EwboH3mjRTQjqb0UM3 wg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvm4cuc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 06:21:53 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137AJ7jX014759;
-        Wed, 7 Apr 2021 10:21:51 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04fra.de.ibm.com with ESMTP id 37rvc5garq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 10:21:51 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137ALnv246072090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 10:21:49 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 025CA52051;
-        Wed,  7 Apr 2021 10:21:49 +0000 (GMT)
-Received: from localhost (unknown [9.85.69.78])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AA53F5205F;
-        Wed,  7 Apr 2021 10:21:48 +0000 (GMT)
-Date:   Wed, 7 Apr 2021 15:51:48 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH 2/3] fsdax: Factor helper: dax_fault_actor()
-Message-ID: <20210407102148.p2osxqohsthlrmxq@riteshh-domain>
-References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
- <20210407063207.676753-3-ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407063207.676753-3-ruansy.fnst@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 18TctFb1Simu9WH1e4RyqGDqfMUL6TDg
-X-Proofpoint-ORIG-GUID: 18TctFb1Simu9WH1e4RyqGDqfMUL6TDg
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1350968AbhDGKYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234751AbhDGKYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:24:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC00613A9;
+        Wed,  7 Apr 2021 10:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617791030;
+        bh=34TodTLk/VIckWwu+MXMhXACn6D2SHx7dl/QxJWtCh4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j3aUX0a2jRPk8uuSvr0bQAHZxKj43BMUM1/GCPNzXg9gD6wLgCVFByb5/A3oiBlsP
+         YDuKh7eUXwAuZ6Gbu9U6YqadfasICaTsuDx89OtcH5tA2Hh/1xVWv3LOBfATGJomLJ
+         v1iy3J3AnHaFO3ogEzmGvH19l8XXCPA5E1lrIoPyN7Oinl9wZxXOU7z3HUieBgO2SV
+         RYr4p3QALLm1TRcb8whe8jHFW0kIny7SnPJlPB8bQsMdVNuN+xHrFqL8b030ja7DQ7
+         HJnc1n2zWZLQEr+80x38NcnTRkmR6zEFQ0mLqmtcGqp5dWrPeUEZwgHKI8EhYAd/n1
+         k0T3huxrFE74Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lU5La-0008Qz-Il; Wed, 07 Apr 2021 12:23:42 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-staging@lists.linux.dev,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 00/16] tty: TIOCSSERIAL fixes and clean ups
+Date:   Wed,  7 Apr 2021 12:23:18 +0200
+Message-Id: <20210407102334.32361-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-07_07:2021-04-06,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 phishscore=0 adultscore=0 mlxscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070070
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/07 02:32PM, Shiyang Ruan wrote:
-> The core logic in the two dax page fault functions is similar. So, move
-> the logic into a common helper function. Also, to facilitate the
-> addition of new features, such as CoW, switch-case is no longer used to
-> handle different iomap types.
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/dax.c | 294 ++++++++++++++++++++++++++++---------------------------
->  1 file changed, 148 insertions(+), 146 deletions(-)
+TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
+serial devices is only useful for setting the close_delay and
+closing_wait parameters.
 
-Thanks for addressing comments.
-A msg in cover letter acknowledging that the review comments mentioned here[1]
-were addressed is helpful for everyone.
+This series fixes up the various ways in which driver authors have
+gotten the implementation wrong over the years, like, for example,
+jiffies conversions, permissions checks and error handling.
 
-Please feel free to add.
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+The de-facto standard for error handling is to ignore any unsupported
+features and immutable parameters (cf. UPF_FIXED_PORT and deprecated
+ASYNC flags).
 
-[1]: https://patchwork.kernel.org/project/linux-nvdimm/patch/20210319015237.993880-3-ruansy.fnst@fujitsu.com/
+Permission checking should prevent an unprivileged user from changing
+anything but the ASYNC_USR flags (and custom divisor) by returning
+-EPERM.
 
--ritesh
+These patches are against tty-next, but the staging ones could otherwise
+go through either tree.
+
+I'll be sending the corresponding USB fixes separately.
+
+Johan
+
+
+
+Johan Hovold (16):
+  staging: fwserial: fix TIOCSSERIAL jiffies conversions
+  staging: fwserial: fix TIOCSSERIAL permission check
+  staging: fwserial: fix TIOCSSERIAL implementation
+  staging: fwserial: fix TIOCGSERIAL implementation
+  staging: greybus: uart: fix TIOCSSERIAL jiffies conversions
+  staging: greybus: uart: fix unprivileged TIOCCSERIAL
+  staging: greybus: uart: clean up TIOCGSERIAL
+  tty: amiserial: fix TIOCSSERIAL permission check
+  tty: amiserial: add missing TIOCSSERIAL jiffies conversions
+  tty: moxa: fix TIOCSSERIAL jiffies conversions
+  tty: moxa: fix TIOCSSERIAL permission check
+  tty: moxa: fix TIOCSSERIAL implementation
+  tty: mxser: fix TIOCSSERIAL jiffies conversions
+  tty: mxser: fix TIOCSSERIAL permission check
+  pcmcia: synclink_cs: drop redundant tty-port initialisation
+  tty: synclink_gt: drop redundant tty-port initialisation
+
+ drivers/char/pcmcia/synclink_cs.c   |  2 --
+ drivers/staging/fwserial/fwserial.c | 19 +++++++++---------
+ drivers/staging/greybus/uart.c      | 16 +++++++--------
+ drivers/tty/amiserial.c             | 25 +++++++++++++++++------
+ drivers/tty/moxa.c                  | 21 +++++++++----------
+ drivers/tty/mxser.c                 | 31 ++++++++++++++++++++---------
+ drivers/tty/synclink_gt.c           |  2 --
+ 7 files changed, 68 insertions(+), 48 deletions(-)
+
+-- 
+2.26.3
+
