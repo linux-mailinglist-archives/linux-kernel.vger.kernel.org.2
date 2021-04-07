@@ -2,99 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17F3356BD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD827356BD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352052AbhDGMNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:13:19 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:32293 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234694AbhDGMNS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:13:18 -0400
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 137CCfdj028677;
-        Wed, 7 Apr 2021 21:12:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137CCfdj028677
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617797561;
-        bh=G2OAzpQeE86KD19ErE7vjeVXsj0toXPSm4HsA5jarbY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dDGn3wRBr2p8T5KSmSx/s/1zw/1KHHmyR6+U3AenRCC7mINr+y8dNF9CCLrpPBLZb
-         lYuoLNC6NH1fW/KARSPQ/6Ol4m8GQibp65EVHMJEEFkJCFsDrQdSvr2weFX/BsThSh
-         GlH/pqA3gvAK/YpES1fzGt+e50QorDfkIlplEJdjeH7Mcfb17bgbaOmMZDD60Km0Aq
-         624yxjFGbEAk6GG9GgDpurVzfipZfR3+iJV5EMeHxnMJ5vEgxJyeI7HI7UIoAQhq1J
-         mQ6afwCDd/IzQa085cNqU8Ul2cVtfJfOYokXuTDTn7ol8ZuG2ItNQkK5YfJHASS2Rd
-         hV2MGcFd9khNA==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id a12so12763039pfc.7;
-        Wed, 07 Apr 2021 05:12:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5333jjQUGYE11AMb/JPQOQDOl7KGPyggLPqoTNMKxPW7mALoq70V
-        y/DIJBEBn9k4um43onPpuGAKknqiuwkVoGtw7GA=
-X-Google-Smtp-Source: ABdhPJy9LRtHMPkZn9qh/2r5DQZKxJhu13p3bA/4mWPzeVr7P5CaYeg6AhE9FmRVbhEGiTypGdeQ3vqnLaD9Rw0iPLs=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr2965394pgq.7.1617797560602;
- Wed, 07 Apr 2021 05:12:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210326060122.25277-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210326060122.25277-1-unixbhaskar@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 21:12:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARH0dXETXtQOfowkpC6Da9_4htbp1T+t50gFLwTXV3Ang@mail.gmail.com>
-Message-ID: <CAK7LNARH0dXETXtQOfowkpC6Da9_4htbp1T+t50gFLwTXV3Ang@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: streamline_config.pl: Couple of typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1352043AbhDGMMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242763AbhDGMMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:12:19 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A212610FB;
+        Wed,  7 Apr 2021 12:12:10 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lU72V-0064G3-UT; Wed, 07 Apr 2021 13:12:08 +0100
+Date:   Wed, 07 Apr 2021 13:12:07 +0100
+Message-ID: <87blaqpa3s.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     Daniel Palmer <daniel@thingy.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v4] irqchip/irq-mst: Support polarity configuration
+In-Reply-To: <20210315131848.31840-1-mark-pk.tsai@mediatek.com>
+References: <20210315131848.31840-1-mark-pk.tsai@mediatek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: mark-pk.tsai@mediatek.com, daniel@thingy.jp, tglx@linutronix.de, matthias.bgg@gmail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 3:03 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
-> s/configuraton/configuration/
-> s/orignal/original/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-
-Applied to linux-kbuild. Thanks.
-
-
-
+On Mon, 15 Mar 2021 13:18:48 +0000,
+Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> 
+> Support irq polarity configuration and save and restore the config
+> when system suspend and resume.
+> 
+> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 > ---
->  scripts/kconfig/streamline_config.pl | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
-> index 1c78ba49ca99..911c72a2dbc4 100755
-> --- a/scripts/kconfig/streamline_config.pl
-> +++ b/scripts/kconfig/streamline_config.pl
-> @@ -21,7 +21,7 @@
->  #  1. Boot up the kernel that you want to stream line the config on.
->  #  2. Change directory to the directory holding the source of the
->  #       kernel that you just booted.
-> -#  3. Copy the configuraton file to this directory as .config
-> +#  3. Copy the configuration file to this directory as .config
->  #  4. Have all your devices that you need modules for connected and
->  #      operational (make sure that their corresponding modules are loaded)
->  #  5. Run this script redirecting the output to some other file
-> @@ -481,7 +481,7 @@ sub parse_config_depends
->  # The idea is we look at all the configs that select it. If one
->  # is already in our list of configs to enable, then there's nothing
->  # else to do. If there isn't, we pick the first config that was
-> -# enabled in the orignal config and use that.
-> +# enabled in the original config and use that.
->  sub parse_config_selects
->  {
->      my ($config, $p) = @_;
-> --
-> 2.26.2
->
+>  drivers/irqchip/irq-mst-intc.c | 94 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 91 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
+> index 143657b0cf28..a2ab3f837b96 100644
+> --- a/drivers/irqchip/irq-mst-intc.c
+> +++ b/drivers/irqchip/irq-mst-intc.c
+> @@ -13,15 +13,27 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> +#include <linux/syscore_ops.h>
+>  
+> -#define INTC_MASK	0x0
+> -#define INTC_EOI	0x20
+> +#define MST_INTC_MAX_IRQS	64
+> +
+> +#define INTC_MASK		0x0
+> +#define INTC_REV_POLARITY	0x10
+> +#define INTC_EOI		0x20
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static LIST_HEAD(mst_intc_list);
+> +#endif
+>  
+>  struct mst_intc_chip_data {
+>  	raw_spinlock_t	lock;
+>  	unsigned int	irq_start, nr_irqs;
+>  	void __iomem	*base;
+>  	bool		no_eoi;
+> +#ifdef CONFIG_PM_SLEEP
+> +	struct list_head entry;
+> +	u16 saved_polarity_conf[DIV_ROUND_UP(MST_INTC_MAX_IRQS, 16)];
+> +#endif
+>  };
+>  
+>  static void mst_set_irq(struct irq_data *d, u32 offset)
+> @@ -78,6 +90,20 @@ static void mst_intc_eoi_irq(struct irq_data *d)
+>  	irq_chip_eoi_parent(d);
+>  }
+>  
+> +static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
+> +{
+> +	if (type != IRQ_TYPE_EDGE_RISING && type != IRQ_TYPE_EDGE_FALLING &&
+> +	    type != IRQ_TYPE_LEVEL_HIGH && type != IRQ_TYPE_LEVEL_LOW)
+> +		return -EINVAL;
 
+All of this amounts to checking for IRQ_TYPE_{NONE,EDGE_BOTH}. Maybe
+that's a better option.
+
+> +
+> +	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING)
+> +		mst_set_irq(data, INTC_REV_POLARITY);
+
+What happens if the interrupt was set to LEVEL_LOW, then switched to
+LEVEL_HIGH? You end up with a stuck reversed polarity.
+
+> +
+> +	type = IRQ_TYPE_LEVEL_HIGH;
+> +
+> +	return irq_chip_set_type_parent(data, type);
+
+I'm going to fix this as below. Shout if you disagree.
+
+Thanks,
+
+	M.
+
+diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
+index a2ab3f837b96..f6133ae28155 100644
+--- a/drivers/irqchip/irq-mst-intc.c
++++ b/drivers/irqchip/irq-mst-intc.c
+@@ -92,16 +92,20 @@ static void mst_intc_eoi_irq(struct irq_data *d)
+ 
+ static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
+ {
+-	if (type != IRQ_TYPE_EDGE_RISING && type != IRQ_TYPE_EDGE_FALLING &&
+-	    type != IRQ_TYPE_LEVEL_HIGH && type != IRQ_TYPE_LEVEL_LOW)
+-		return -EINVAL;
+-
+-	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING)
++	switch (type) {
++	case IRQ_TYPE_LEVEL_LOW:
++	case IRQ_TYPE_EDGE_FALLING:
+ 		mst_set_irq(data, INTC_REV_POLARITY);
++		break;
++	case IRQ_TYPE_LEVEL_HIGH:
++	case IRQ_TYPE_EDGE_RISING:
++		mst_clear_irq(data, INTC_REV_POLARITY);
++		break;
++	default:
++		return -EINVAL;
++	}
+ 
+-	type = IRQ_TYPE_LEVEL_HIGH;
+-
+-	return irq_chip_set_type_parent(data, type);
++	return irq_chip_set_type_parent(data, IRQ_TYPE_LEVEL_HIGH);
+ }
+ 
+ static struct irq_chip mst_intc_chip = {
 
 -- 
-Best Regards
-Masahiro Yamada
+Without deviation from the norm, progress is not possible.
