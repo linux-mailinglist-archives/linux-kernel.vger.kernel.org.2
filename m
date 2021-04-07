@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F2E357031
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1EF35702F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353518AbhDGP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S1353507AbhDGPZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243029AbhDGP0K (ORCPT
+        with ESMTP id S243029AbhDGPZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:26:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114A2C061756;
-        Wed,  7 Apr 2021 08:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jY0P2UufmdE70kZeDZbxVkRO7U3IMhijRe4MI2XThGo=; b=VaxFPZtMMZoPMFhKnxruK4TAIr
-        Blzrz/XgpiuDBZ+WWc8+cpoWKhwPvAqnZL+zTgyYTPaIPkewMoQL7f5YoMEOEkRZELVXtWH1f4l04
-        bJ6Z22Uk+Uq+MBke9EjkMEwP+rBoH5MP6C4B6hDbMtatH9nwPRVYfS9RKQnhZWi6YZm3fXmEYn2ry
-        0ioRhmAjAKdxJNnzpcY697rSELXkaeUzn9MUNRIsBCUU/iwv3sPRMMXyTjCRlFr9ILPQwrP++T0Zr
-        d6jvQKhgHrSiuUDJENprfbLuIo7Sco1xNphUesmL6fOeEEimdWv3+2DiO6dJnc+rOXg/3bRCxkfAE
-        j/SLCgmw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUA3g-005Gnz-7H; Wed, 07 Apr 2021 15:25:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E313A300219;
-        Wed,  7 Apr 2021 17:25:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D2DBF2BF82B41; Wed,  7 Apr 2021 17:25:30 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 17:25:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        andi@firstfloor.org, kan.liang@linux.intel.com,
-        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Luwei Kang <luwei.kang@intel.com>
-Subject: Re: [PATCH v4 07/16] KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR
- emulation for extended PEBS
-Message-ID: <YG3O6rpx2bSt5D+O@hirez.programming.kicks-ass.net>
-References: <20210329054137.120994-1-like.xu@linux.intel.com>
- <20210329054137.120994-8-like.xu@linux.intel.com>
+        Wed, 7 Apr 2021 11:25:49 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCEAC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:25:39 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id i18so14965816wrm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JUwBXCTGmPDS35FUGhOGZPUnfRPqWKMKWqMQh69PbYY=;
+        b=ni8a/QUvQsQXYEF5YryW7qdVsKKI1+UVPsVhm34u54TJ/om9o0h7lk2I4d23Bvr/OM
+         vkCQfDu6P8ylGUSODT8iWRjmcnsgH9HwHdmZ/N/fj0W46yqYK2isBvHoiAWkxjP6ARZ3
+         fT+TBI2NFWv4Rq0XzN3P9mPMlMwqI4T8t7Ib8yiD9smY3OubNobX3IFqfbjY4+911ufN
+         0vON3rSHDGNM2uRECvqIWHNepBKcgT7PCpWBVPDisCnnnFyZD8vNRilbeaFWyP1TsPy2
+         fz2ikL8dyzWgkm+6BTtYG82U21cufYYwSbTl2c8KMwBl5qmCtmDFXbJGcgwl2v2hsWt6
+         DPjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JUwBXCTGmPDS35FUGhOGZPUnfRPqWKMKWqMQh69PbYY=;
+        b=cUKM/x/GSe9sRY6BtoM+dcSTcDWc3sgUQreG50HyHBXu8IH94AHVdRIrBLSZ9Sa0fY
+         OhXrniAxc8xzdnQbY8mgROT8nk+JL4R0iEFyJMskmRdxf7B2ZNybzJxXGjypcZuRFcse
+         d7Ae+PXPIQzYl2xBe6tdvui9iRBl2uH25hNfz27exUrS68ELCWu5KyzNEDyshsB1Clzx
+         NhMA5WCDhae5JH+SWdwAPskujdWhN+OkVk9yCk5UrdTu9OL595yM1tNRABVlN8O+FrRg
+         SSiiH8Uyxn4espRFrnjR4qj6cv5DVb/OJWGgQF0DBr3qBVDxZI0k+gEcJWyFnDUDBZYD
+         bcVg==
+X-Gm-Message-State: AOAM5327VtUAv5VgsgUp3QbCQQEEFC6dCnFZk24tFMk1ag4kMrs0+j13
+        5kMTlF0JO2ji31mlcd8xQa1k4EtEN+o=
+X-Google-Smtp-Source: ABdhPJx+Z99oYdhRrRh6e+qoS2DXuyI+FVmkkIsf66K53VKb8Cz/SBlZJ/GTkORUwlnqM5USPBrLbw==
+X-Received: by 2002:adf:e843:: with SMTP id d3mr5123664wrn.56.1617809137992;
+        Wed, 07 Apr 2021 08:25:37 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.217])
+        by smtp.gmail.com with ESMTPSA id d20sm9118092wmd.48.2021.04.07.08.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 08:25:37 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 17:25:34 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/19] drivers: rtl8723bs: rewrite comparison to null
+Message-ID: <20210407152533.GA1590@agape.jhs>
+References: <cover.1617802415.git.fabioaiuto83@gmail.com>
+ <0c6d53c851d1b07eb0183108e0bad7b4f273f04b.1617802415.git.fabioaiuto83@gmail.com>
+ <YG3MOCQHu3o/qHTg@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329054137.120994-8-like.xu@linux.intel.com>
+In-Reply-To: <YG3MOCQHu3o/qHTg@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 05:14:00PM +0200, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 03:49:31PM +0200, Fabio Aiuto wrote:
+> > fix following post-commit hook checkpatch warnings:
+> > 
+> > CHECK: Comparison to NULL could be written "!psta"
+> > 97: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:2115:
+> > +		if (psta == NULL)
+> > 
+> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > ---
+> >  drivers/staging/rtl8723bs/core/rtw_ap.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Nit, your subject line has "drivers:" not "staging:" here.  Be a bit
+> more careful next time please.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Mon, Mar 29, 2021 at 01:41:28PM +0800, Like Xu wrote:
-> +	if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
-> +		if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_BASELINE) {
-> +			pmu->pebs_enable_mask = ~pmu->global_ctrl;
-> +			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
-> +			for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
-> +				pmu->fixed_ctr_ctrl_mask &=
-> +					~(1ULL << (INTEL_PMC_IDX_FIXED + i * 4));
+sorry, you can drop them off the staging-testing branch and I will resend you all if you want,
 
-{ }
-
-> +		} else
-> +			pmu->pebs_enable_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
-
-{ }
-
-> +	} else {
-> +		vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
-
-as you already do here..
-
-> +	}
->  }
+fabio
