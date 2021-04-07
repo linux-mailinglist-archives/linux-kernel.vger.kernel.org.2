@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CF43572FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F442357300
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347919AbhDGRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:20:03 -0400
-Received: from smtp-42a9.mail.infomaniak.ch ([84.16.66.169]:53835 "EHLO
-        smtp-42a9.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347914AbhDGRT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:19:59 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FFrjv6HTZzMqFPy;
-        Wed,  7 Apr 2021 19:19:47 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4FFrjs34sYzlppyr;
-        Wed,  7 Apr 2021 19:19:45 +0200 (CEST)
-Subject: Re: [PATCH v7 0/5] Enable root to update the blacklist keyring
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20210312171232.2681989-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <52f54ebb-6ac7-4d68-f97a-74219ed88d0b@digikod.net>
-Date:   Wed, 7 Apr 2021 19:21:30 +0200
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <20210312171232.2681989-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1347825AbhDGRWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:22:47 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26196 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229845AbhDGRWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:22:46 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FFrn55lxRzB09ZL;
+        Wed,  7 Apr 2021 19:22:33 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Xl5J5gFclfmx; Wed,  7 Apr 2021 19:22:33 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFrn54pckz9v3fh;
+        Wed,  7 Apr 2021 19:22:33 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 45AFC8B75F;
+        Wed,  7 Apr 2021 19:22:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Xw1ramYXneey; Wed,  7 Apr 2021 19:22:35 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0B8558B7B6;
+        Wed,  7 Apr 2021 19:22:35 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 9CADD6799B; Wed,  7 Apr 2021 17:22:34 +0000 (UTC)
+Message-Id: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 1/8] powerpc/mem: Declare __flush_dcache_icache() static
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  7 Apr 2021 17:22:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David and Jarkko,
+__flush_dcache_icache() is only used in mem.c.
 
-What is the status of this patchset? Could someone take it to -next?
+Declare it static.
 
-Regards,
- Mickaël
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/cacheflush.h | 1 -
+ arch/powerpc/mm/mem.c                 | 4 +++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
+index f63495109f63..9110489ea411 100644
+--- a/arch/powerpc/include/asm/cacheflush.h
++++ b/arch/powerpc/include/asm/cacheflush.h
+@@ -40,7 +40,6 @@ void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+ #define flush_icache_user_page flush_icache_user_page
+ 
+ void flush_dcache_icache_page(struct page *page);
+-void __flush_dcache_icache(void *page);
+ 
+ /**
+  * flush_dcache_range(): Write any modified data cache blocks out to memory and
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 7a59a5c9aa5d..ce6c81ce4362 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -472,6 +472,8 @@ void flush_dcache_page(struct page *page)
+ }
+ EXPORT_SYMBOL(flush_dcache_page);
+ 
++static void __flush_dcache_icache(void *p);
++
+ static void flush_dcache_icache_hugepage(struct page *page)
+ {
+ 	int i;
+@@ -522,7 +524,7 @@ EXPORT_SYMBOL(flush_dcache_icache_page);
+  *
+  * @page: the address of the page to flush
+  */
+-void __flush_dcache_icache(void *p)
++static void __flush_dcache_icache(void *p)
+ {
+ 	unsigned long addr = (unsigned long)p;
+ 
+-- 
+2.25.0
 
-On 12/03/2021 18:12, Mickaël Salaün wrote:
-> This new patch series is a rebase on David Howells's and Eric Snowberg's
-> keys-cve-2020-26541-v3.
-> 
-> I successfully tested this patch series with the 186 entries from
-> https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin (184
-> binary hashes and 2 certificates).
-> 
-> The goal of these patches is to add a new configuration option to enable the
-> root user to load signed keys in the blacklist keyring.  This keyring is useful
-> to "untrust" certificates or files.  Enabling to safely update this keyring
-> without recompiling the kernel makes it more usable.
-> 
-> This can be applied on top of David Howells's keys-cve-2020-26541-branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-cve-2020-26541-branch
-> 
-> Previous patch series:
-> https://lore.kernel.org/lkml/20210210120410.471693-1-mic@digikod.net/
-> 
-> Regards,
-> 
-> Mickaël Salaün (5):
->   tools/certs: Add print-cert-tbs-hash.sh
->   certs: Check that builtin blacklist hashes are valid
->   certs: Make blacklist_vet_description() more strict
->   certs: Factor out the blacklist hash creation
->   certs: Allow root user to append signed hashes to the blacklist
->     keyring
-> 
->  MAINTAINERS                                   |   2 +
->  certs/.gitignore                              |   1 +
->  certs/Kconfig                                 |  17 +-
->  certs/Makefile                                |  17 +-
->  certs/blacklist.c                             | 218 ++++++++++++++----
->  crypto/asymmetric_keys/x509_public_key.c      |   3 +-
->  include/keys/system_keyring.h                 |  14 +-
->  scripts/check-blacklist-hashes.awk            |  37 +++
->  .../platform_certs/keyring_handler.c          |  26 +--
->  tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
->  10 files changed, 346 insertions(+), 80 deletions(-)
->  create mode 100755 scripts/check-blacklist-hashes.awk
->  create mode 100755 tools/certs/print-cert-tbs-hash.sh
-> 
-> 
-> base-commit: ebd9c2ae369a45bdd9f8615484db09be58fc242b
-> 
