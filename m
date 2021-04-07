@@ -2,220 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619AB356BBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12497356BC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351991AbhDGMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
+        id S233898AbhDGMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:07:36 -0400
+Received: from mout.gmx.net ([212.227.15.15]:35457 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233233AbhDGMFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:05:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C14361139;
-        Wed,  7 Apr 2021 12:05:32 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 14:05:30 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     zohar@linux.ibm.com, mjg59@google.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: Re: [PATCH v5 09/12] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Message-ID: <20210407120530.dgcsuyywbaz4fllm@wittgenstein>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
- <20210407105252.30721-10-roberto.sassu@huawei.com>
+        id S233233AbhDGMHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:07:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617797203;
+        bh=J/tag75U3iO+Y/OKgSq6pHTQL6viWXxIasOeXm8b2bA=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=A57dK1GKvV2ZCuIE/fIlfybFTTDOJoWF4jWuX3Z94Cz7jIAxkdcQrAjShKHwFPRbT
+         TdGWqCu9kyY1g07nRWRVQ8TmOVVTzVlflTTOjjv/CZkxbwAeyiNMRlu3p9r5mtSUtj
+         FcCzZcX1dBua1mWloHakWIWgPSqo02i3FoKARdM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MI5UD-1lOsQm2oMh-00FAir; Wed, 07
+ Apr 2021 14:06:43 +0200
+Date:   Wed, 7 Apr 2021 14:06:39 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        openbmc@lists.ozlabs.org, Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 06/10] irqchip: Add driver for WPCM450 interrupt
+ controller
+Message-ID: <YG2gT7C/2P71TYfF@latitude>
+References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+ <20210406120921.2484986-7-j.neuschaefer@gmx.net>
+ <87czv6pcx2.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l0kWbujZdkLVT5mD"
 Content-Disposition: inline
-In-Reply-To: <20210407105252.30721-10-roberto.sassu@huawei.com>
+In-Reply-To: <87czv6pcx2.wl-maz@kernel.org>
+X-Provags-ID: V03:K1:Y5gSuqPtFaARAism5B+FeBemHYMx+2GXGlEMhFDECJAPGJzi79i
+ oc4YKRb7jSiXoiCHCVfaJmofRLAw8fmH4mVIK4qqeVzia9TBEE1UnIliKMGRfiwNOKh+LY/
+ RxkqKP/F+LHrtwgnweKsAgnHeF+4JKfDfJQMKqaxEenSwK5oY41KZS0N8r243Br9iKZcmZf
+ Vx+XUFXOHhQ16jyxlqxMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tH/Mj12UbCU=:JH9ZbyRNsrMqdRxGIBDAhM
+ bfuEFTnglr86J74GxiaBRI2FzB42Ejjo3PIFExA7OENAZD49pCWldW9T1wcnLTHaXNuodGSQa
+ TKpdw3z5lrN1QK3l/pCPaFJoFtNAJix8q2Lr+PMpiVFqL2/WY4vs8Nt/VIZui1K7V2UdtgKfQ
+ 0UkyIqfrGn1pyJAo2ozVFfU6+Y3fBh32bxYuvC7U+nAZkFyR7o9qXt4qlbh5HtvVHVnzofayN
+ wO8tnTTPh+b7l6vEzacGbgyqo8yQc8mdZGOZOOZ4gwqDD79wjVbF6GZps+QMFytzhDPHU1OJZ
+ 9Skh0i3lrYDwKWehDtFN61HpbRHig0QDm6bYkePA7PgU6K0gwFIDNkP+yK/g+OCoHYy0slMXz
+ 0fU8SskEf2BNIPZBExgV7hW/MijE9XF5C5QN1H5E+iLFVYqfZlnSGw5G4pC8pMuULMDDegEO8
+ 6H+nFnrElZ8P1m14032j36B/40z4nWUXaA5D9mvwjO1uqtnPH7Z0uY9j4DqlEmc9rqPFdpVjY
+ eAVRNhOvxPq2cRU5bl1rssW9wJkWkgs7piAK9QJ93/ohjTqMS8acBbfy/5chzQsl34f+1UKsd
+ YNBwxcjZkVQRAJXaXelOodhBExMr1JCDojaW8qzAQc5DfJlVDU0jeh09JQADwe81ge+1yDq2z
+ 4WIyZXSUxmO9iLEwX01200z0oxN+1vG/fnEeli7jW+ts9miw4p0ZQZTTfBEdo98gDoERnLRPe
+ q13c4zfCCMQV5zZ3yDdb6GSlJxMTXzNDxAldigZEm+N5vdVD2HGBDtX1H66KlYfdAE3Gj6Ooq
+ tBeICztf8GJOwvk+GT3HyifolRONZnA1+SPZpbZvnKVgVN9EZkx+wrOVi93p4+hexrISAx22w
+ K+ZTMuPw/EThTGyBSdQU9tuAj+eAN+dLmyWAIoUckyh6HszlTX82fZI6bIW2Jg1PuCCjND0fJ
+ 7A3WpqnYxg85hAhYO4In1hnsrs6yCc65cDVPnPzXvwqeUrg2u901cYQ5wbZumELiy8f72YEYR
+ lhiHfMH+B7pu4gQyXanFVjWdC6NHP19C0hCKoiQAmid+Nq0ValLuCQhM62o3zblGnUbCbmp6d
+ CsiwmC8mfHP9B5v4xrPggvZSvizd75RouHNnrPB6kvJX5XU3ndKjtiDmtw1fxsEKjDPXXZqY2
+ x14IdnWrABIaeIWXwMXcrMNqhWh4z58+Ds3xeFPqaZ/JSu00ejiXAO43dCKYtn0v83q3f//Cb
+ In/FzYbj1uk6cPQt4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:52:49PM +0200, Roberto Sassu wrote:
-> With the patch to allow xattr/attr operations if a portable signature
-> verification fails, cp and tar can copy all xattrs/attrs so that at the
-> end of the process verification succeeds.
-> 
-> However, it might happen that the xattrs/attrs are already set to the
-> correct value (taken at signing time) and signature verification succeeds
-> before the copy has completed. For example, an archive might contains files
-> owned by root and the archive is extracted by root.
-> 
-> Then, since portable signatures are immutable, all subsequent operations
-> fail (e.g. fchown()), even if the operation is legitimate (does not alter
-> the current value).
-> 
-> This patch avoids this problem by reporting successful operation to user
-> space when that operation does not alter the current value of xattrs/attrs.
-> 
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/evm/evm_main.c | 107 ++++++++++++++++++++++++++++++
->  1 file changed, 107 insertions(+)
-> 
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-> index 74f9f3a2ae53..2a8fcba67d47 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -18,6 +18,7 @@
->  #include <linux/integrity.h>
->  #include <linux/evm.h>
->  #include <linux/magic.h>
-> +#include <linux/posix_acl_xattr.h>
->  
->  #include <crypto/hash.h>
->  #include <crypto/hash_info.h>
-> @@ -328,6 +329,89 @@ static enum integrity_status evm_verify_current_integrity(struct dentry *dentry)
->  	return evm_verify_hmac(dentry, NULL, NULL, 0, NULL);
->  }
->  
-> +/*
-> + * evm_xattr_acl_change - check if passed ACL changes the inode mode
-> + * @mnt_userns: user namespace of the idmapped mount
-> + * @dentry: pointer to the affected dentry
-> + * @xattr_name: requested xattr
-> + * @xattr_value: requested xattr value
-> + * @xattr_value_len: requested xattr value length
-> + *
-> + * Check if passed ACL changes the inode mode, which is protected by EVM.
-> + *
-> + * Returns 1 if passed ACL causes inode mode change, 0 otherwise.
-> + */
-> +static int evm_xattr_acl_change(struct user_namespace *mnt_userns,
-> +				struct dentry *dentry, const char *xattr_name,
-> +				const void *xattr_value, size_t xattr_value_len)
-> +{
-> +	umode_t mode;
-> +	struct posix_acl *acl = NULL, *acl_res;
-> +	struct inode *inode = d_backing_inode(dentry);
-> +	int rc;
-> +
-> +	/* user_ns is not relevant here, ACL_USER/ACL_GROUP don't have impact
-> +	 * on the inode mode (see posix_acl_equiv_mode()).
-> +	 */
-> +	acl = posix_acl_from_xattr(&init_user_ns, xattr_value, xattr_value_len);
-> +	if (IS_ERR_OR_NULL(acl))
-> +		return 1;
-> +
-> +	acl_res = acl;
-> +	/* Passing mnt_userns is necessary to correctly determine the GID in
-> +	 * an idmapped mount, as the GID is used to clear the setgid bit in
-> +	 * the inode mode.
-> +	 */
-> +	rc = posix_acl_update_mode(mnt_userns, inode, &mode, &acl_res);
-> +
-> +	posix_acl_release(acl);
-> +
-> +	if (rc)
-> +		return 1;
-> +
-> +	if (inode->i_mode != mode)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * evm_xattr_change - check if passed xattr value differs from current value
-> + * @mnt_userns: user namespace of the idmapped mount
-> + * @dentry: pointer to the affected dentry
-> + * @xattr_name: requested xattr
-> + * @xattr_value: requested xattr value
-> + * @xattr_value_len: requested xattr value length
-> + *
-> + * Check if passed xattr value differs from current value.
-> + *
-> + * Returns 1 if passed xattr value differs from current value, 0 otherwise.
-> + */
-> +static int evm_xattr_change(struct user_namespace *mnt_userns,
-> +			    struct dentry *dentry, const char *xattr_name,
-> +			    const void *xattr_value, size_t xattr_value_len)
-> +{
-> +	char *xattr_data = NULL;
-> +	int rc = 0;
-> +
-> +	if (posix_xattr_acl(xattr_name))
-> +		return evm_xattr_acl_change(mnt_userns, dentry, xattr_name,
-> +					    xattr_value, xattr_value_len);
-> +
-> +	rc = vfs_getxattr_alloc(&init_user_ns, dentry, xattr_name, &xattr_data,
-> +				0, GFP_NOFS);
-> +	if (rc < 0)
-> +		return 1;
-> +
-> +	if (rc == xattr_value_len)
-> +		rc = memcmp(xattr_value, xattr_data, rc);
 
-Afaik memcmp() can return values greater than 1 and less than 0 so it
-might make sense to explicitly do sm like:
-rc = memcmp() ? 1 : 0;
-or
-!!memcmp()
-or alter the comment for evm_xattr_change().
+--l0kWbujZdkLVT5mD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-other than that
+On Wed, Apr 07, 2021 at 12:11:21PM +0100, Marc Zyngier wrote:
+> On Tue, 06 Apr 2021 13:09:17 +0100,
+> Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+=2E..
+> > diff --git a/arch/arm/mach-npcm/Kconfig b/arch/arm/mach-npcm/Kconfig
+> > index 658c8efb4ca14..a71cf1d189ae5 100644
+> > --- a/arch/arm/mach-npcm/Kconfig
+> > +++ b/arch/arm/mach-npcm/Kconfig
+> > @@ -10,6 +10,7 @@ config ARCH_WPCM450
+> >  	bool "Support for WPCM450 BMC (Hermon)"
+> >  	depends on ARCH_MULTI_V5
+> >  	select CPU_ARM926T
+> > +	select WPCM450_AIC
+> >  	select NPCM7XX_TIMER
+> >  	help
+> >  	  General support for WPCM450 BMC (Hermon).
+>=20
+> I can't take this patch with this particular hunk, as I don't have
+> this file in my tree. I can either drop this line, or delay the
+> merging of this patch to a later point in time.
 
-Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
+Hmm, indeed. Please apply the patch without this hunk. I'll reintroduce
+it in another patch.
 
-> +	else
-> +		rc = 1;
-> +
-> +	kfree(xattr_data);
-> +	return rc;
-> +}
-> +
->  /*
->   * evm_protect_xattr - protect the EVM extended attribute
->   *
-> @@ -389,6 +473,11 @@ static int evm_protect_xattr(struct user_namespace *mnt_userns,
->  	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
->  		return 0;
->  
-> +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
-> +	    !evm_xattr_change(mnt_userns, dentry, xattr_name, xattr_value,
-> +			      xattr_value_len))
-> +		return 0;
-> +
->  	if (evm_status != INTEGRITY_PASS)
->  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
->  				    dentry->d_name.name, "appraise_metadata",
-> @@ -532,6 +621,19 @@ void evm_inode_post_removexattr(struct dentry *dentry, const char *xattr_name)
->  	evm_update_evmxattr(dentry, xattr_name, NULL, 0);
->  }
->  
-> +static int evm_attr_change(struct dentry *dentry, struct iattr *attr)
-> +{
-> +	struct inode *inode = d_backing_inode(dentry);
-> +	unsigned int ia_valid = attr->ia_valid;
-> +
-> +	if ((!(ia_valid & ATTR_UID) || uid_eq(attr->ia_uid, inode->i_uid)) &&
-> +	    (!(ia_valid & ATTR_GID) || gid_eq(attr->ia_gid, inode->i_gid)) &&
-> +	    (!(ia_valid & ATTR_MODE) || attr->ia_mode == inode->i_mode))
-> +		return 0;
-> +
-> +	return 1;
-> +}
-> +
->  /**
->   * evm_inode_setattr - prevent updating an invalid EVM extended attribute
->   * @dentry: pointer to the affected dentry
-> @@ -562,6 +664,11 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
->  	    (evm_status == INTEGRITY_FAIL_IMMUTABLE) ||
->  	    (evm_ignore_error_safe(evm_status)))
->  		return 0;
-> +
-> +	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
-> +	    !evm_attr_change(dentry, attr))
-> +		return 0;
-> +
->  	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
->  			    dentry->d_name.name, "appraise_metadata",
->  			    integrity_status_msg[evm_status], -EPERM, 0);
-> -- 
-> 2.26.2
-> 
+>=20
+> The driver otherwise looks ready.
+
+Good.
+
+Thanks,
+Jonathan
+
+--l0kWbujZdkLVT5mD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBtoEAACgkQCDBEmo7z
+X9vQVhAApP3ye/WFcXXj6ynr3v2cHurZM0f9lYRzT7cNBV0IsR9iGH3ftemJnEyZ
+9vtwCg9OneE7cKbEVIdbWBY0M2XAOQWTVMFUHZsQby15N+dSOYgy7rySttqqda5p
+U0J2htknDwvOXxoV3RO/lt3W4PAvrRrXrPEUevHNVgdYYV2ptUazFszf5+Y/Obd1
+FmemUJanNCU5gduFlFEZX8cx48lQqSHA/bfVrs9o3meL1dLYW6Iw1Nvi71LtrR3q
+eEvvAoY1nesqk+d4P72WAZAXNtEWMXoglgsylqyuakcLR0lno8QWGXOiJlR/95+V
+gy1VAnL6fNxbRGtQ58yBAiI+wdQVMSK8VaBL95DPRuE2PiaO9di9e2w+JbwIzPHO
+59VJvqrHKKvbHNhv6EP/E8mIMFTyxg2CvLHfYp5VoFxCtfQ7pDw1KdX5ESS0lyf9
+ir1bT29L1p/uxnDshHvBQIlXfPjXJrADVe3h1AiOhddVnhRUFIGjwX/5XG/w5kkc
+kcPfwo7V3JLgXlqWY89l2F6MqeSjwBTecv5FoxVcF7MNVAdNoT6Ac9GnfHZKhbsk
+c7JEukC1JCX61g01EimQXh5Mms/LqIkn6pQQP8xNyhU6nQcvpL8/NWqOQf1vgdoZ
+N/eB4O+Ne0CfXzykLuF3TtbZKIjAuOG5SYzNK/+F2GJNo9y/D/s=
+=qz8s
+-----END PGP SIGNATURE-----
+
+--l0kWbujZdkLVT5mD--
