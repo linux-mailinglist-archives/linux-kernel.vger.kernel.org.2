@@ -2,207 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D383356D23
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBAE356D2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236273AbhDGNTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:19:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58032 "EHLO mail.kernel.org"
+        id S237725AbhDGNVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235861AbhDGNTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:19:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D90DC61394;
-        Wed,  7 Apr 2021 13:19:11 +0000 (UTC)
+        id S232568AbhDGNVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B710D61394;
+        Wed,  7 Apr 2021 13:21:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617801552;
-        bh=LTkohUbPF6Bi0usi+I5EMI/7O/T2JNpdfdjkmll4mqc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Kqp8jArwrojMAJGeP7WVtOPuOJb6aLYI1QEAYtSX69pVNYOckcJv82nFfEUAkn22R
-         KlQ2ugk7eqW8nUoO9zLMEDqF20/YlvesWxR3cl+aTfTEaAlXBPHh3jtdgc1PcbdBw/
-         oly69z9hBpeNoy1kLCYLD7TOyIysnk3U/G3ZNby56pUoe5px6/masGj96nDAzy8EuB
-         5mrZozq/gYR4DfqP5QZ+3weOFPxTN0c41uGVnL2feqVp5ahmMmdCc3ZXEPATH18oYV
-         U42nGp/NvJtmBl8GR/sltvnc01LEaiQDIeSlNbdRqtSTzBMZBFSgi7qMg8ZGdbbEHx
-         uQnmvBalRM7Fg==
-Received: by mail-ed1-f47.google.com with SMTP id ba6so13313241edb.1;
-        Wed, 07 Apr 2021 06:19:11 -0700 (PDT)
-X-Gm-Message-State: AOAM532PU5w/4/8r0kEXwCQZH/LOxZ2mmlxsTdRYlJAHAERV9gSlpU0S
-        NeVMWgofYvaQvtDa4BqH3+38tkcWtXi+H/RWLA==
-X-Google-Smtp-Source: ABdhPJxouTy0fl89h71UvityxWxXCCSfDE+yhlKWwGiRJuvEWO5V5qJmXkmAupn88a+4qG04LBTr4o4N2tIv4Y6sAw4=
-X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr4435514edr.289.1617801550253;
- Wed, 07 Apr 2021 06:19:10 -0700 (PDT)
+        s=k20201202; t=1617801684;
+        bh=XkjqB4k89kzH7Hz/pSTicftDKmq2vGrJuSRaabOHNLA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YIGYQrRhls1qWBhJpF2h801AJGrYJ9BzgoePqfEB17MimVZ+cGfm/rpA/wj7gj5aE
+         DKdp36LhqKaixMTAIug0EbSLJYOyNb+yoEPLLxFe8LWrc/vsIApgl+tAwWVO9KijJf
+         lQ7rMnRyvbFFtWje539jDvfKSZ+n2YuXORTnI2rfPmcfJFVK8KPMiWR0Geh222sN6b
+         Z6k56d8/eCdAlRV3/p4T/CNQTegEb8worziH/rZ4iQiRcb/StBRjUfKd8bsn7mRKkH
+         vhSbX3MeRSquVdrdKkPcOCSUM3n1arkrRcgLyOEbqcg2Ru9XT0khPuix5q6WjLzbu4
+         sta+Imr3Klttw==
+Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Dario Binacchi <dariobin@libero.it>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>
+References: <20210402192054.7934-1-dariobin@libero.it>
+ <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
+ <1727466283.11523.1617746554330@mail1.libero.it>
+ <CAL_JsqLd+BxW9T99Sx9vgEkxdbMFe+tL7X_nZ7ExvRxVd_9GNQ@mail.gmail.com>
+ <1044574275.383115.1617779265390@mail1.libero.it>
+ <CAL_JsqLcus=Y5nOuV1wiAiVb1mTq9N8xqJpGJD6ip+Ec_6YDyw@mail.gmail.com>
+From:   Tero Kristo <kristo@kernel.org>
+Message-ID: <a197b5d8-621b-6655-e571-2877d007cd4c@kernel.org>
+Date:   Wed, 7 Apr 2021 16:21:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210407031839.386088-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-In-Reply-To: <20210407031839.386088-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 7 Apr 2021 08:18:58 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJew19jBJ-WpGNCK2AD+nUQsQBjJ7-ye9Cgort8AuG8mQ@mail.gmail.com>
-Message-ID: <CAL_JsqJew19jBJ-WpGNCK2AD+nUQsQBjJ7-ye9Cgort8AuG8mQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: pci: Add DT binding for Toshiba Visconti
- PCIe controller
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL_JsqLcus=Y5nOuV1wiAiVb1mTq9N8xqJpGJD6ip+Ec_6YDyw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 10:19 PM Nobuhiro Iwamatsu
-<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
->
-> This commit adds the Device Tree binding documentation that allows
-> to describe the PCIe controller found in Toshiba Visconti SoCs.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../bindings/pci/toshiba,visconti-pcie.yaml   | 121 ++++++++++++++++++
->  1 file changed, 121 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
->
-> diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-> new file mode 100644
-> index 000000000000..8ab60c235007
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-> @@ -0,0 +1,121 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/toshiba,visconti-pcie.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Toshiba Visconti5 SoC PCIe Host Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> +
-> +description: |+
-> +  Toshiba Visconti5 SoC PCIe host controller is based on the Synopsys DesignWare PCIe IP.
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: toshiba,visconti-pcie
-> +
-> +  reg:
-> +    items:
-> +      - description: Data Bus Interface (DBI) registers.
-> +      - description: PCIe configuration space region.
-> +      - description: Visconti specific additional registers.
-> +      - description: Visconti specific SMU registers
-> +      - description: Visconti specific memory protection unit registers (MPU)
-> +
-> +  reg-names:
-> +    items:
-> +      - const: dbi
-> +      - const: config
-> +      - const: ulreg
-> +      - const: smu
-> +      - const: mpu
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: PCIe reference clock
-> +      - description: PCIe system clock
-> +      - description: Auxiliary clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pcie_refclk
-> +      - const: sysclk
-> +      - const: auxclk
-> +
-> +  num-lanes:
-> +    const: 2
-> +
-> +  num-viewport:
-> +    const: 8
+On 07/04/2021 15:52, Rob Herring wrote:
+> On Wed, Apr 7, 2021 at 2:07 AM Dario Binacchi <dariobin@libero.it> wrote:
+>>
+>>
+>>> Il 07/04/2021 03:16 Rob Herring <robh+dt@kernel.org> ha scritto:
+>>>
+>>>
+>>> On Tue, Apr 6, 2021 at 5:02 PM Dario Binacchi <dariobin@libero.it> wrote:
+>>>>
+>>>>
+>>>>> Il 06/04/2021 16:06 Rob Herring <robh+dt@kernel.org> ha scritto:
+>>>>>
+>>>>>
+>>>>> On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
+>>>>>>
+>>>>>>
+>>>>>> The series comes from my commit in U-boot
+>>>>>> d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
+>>>>>> and from the subsequent exchange of emails at the end of which I was
+>>>>>> suggested to send the patch to the linux kernel
+>>>>>> (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
+>>>>>
+>>>>> It's 'ranges' that determines translatable which is missing from the
+>>>>> DT. This should have not had a 0 size either though maybe we could
+>>>>> support that.
+>>>>
+>>>> I have replied to the email you sent to the u-boot mailing list
+>>>>
+>>>>>
+>>>>> Does the DT have to be updated anyways for your spread spectrum support?
+>>>>
+>>>> The spread spectrum support patch does not need this patch to work. They belong
+>>>> to two different series.
+>>>
+>>> That's not what I asked. Is the spread spectrum support forcing a DT
+>>> update for users?
+>>
+>> Yes, the deltam and modfreq registers must be added to the DPLL clocks.
+> 
+> That's a shame given this dts has been mostly untouched since 2013.
+> 
 
-Drop this, we detect this now.
+I think technically it would be possible to map these registers within 
+the driver also, seeing there are like a handful of the DPLLs for both 
+am3/am4 which are impacted. Just add a new compatible or something, or 
+alternatively parse the register addresses and populate the 
+deltam/modfreq registers based on that.
 
-> +
-> +required:
+>>> If the DT has to be changed anyways (not really
+>>> great policy), then you could fix this in the DT at the same time.
+>>
+>> I could put the fix to the device tree in that series, although I wouldn't
+>> create a single patch to fix and add the SSC registers. First the size-cells = <0>
+>> fix patch and then the SSC patch.
+>> Do you agree?
+> 
+> By at the same time, I really just meant within 1 release.
+> 
+> But I'd like to hear TI maintainers' thoughts on this.
 
-Drop everything that pci-bus.yaml already requires.
+I did post a comment on patch #1 questioning the approach from TI clock 
+driver perspective, imho I can't see why these two patches would be 
+needed right now.
 
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - "#interrupt-cells"
-> +  - interrupt-map
-> +  - interrupt-map-mask
-> +  - ranges
-> +  - bus-range
-
-If you support 0-0xff, there's no need for this to be required.
-
-> +  - device_type
-> +  - num-lanes
-> +  - num-viewport
-> +  - clocks
-> +  - clock-names
-> +  - max-link-speed
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        pcie: pcie@28400000 {
-> +            compatible = "toshiba,visconti-pcie";
-> +            reg = <0x0 0x28400000 0x0 0x00400000>,
-> +                  <0x0 0x70000000 0x0 0x10000000>,
-> +                  <0x0 0x28050000 0x0 0x00010000>,
-> +                  <0x0 0x24200000 0x0 0x00002000>,
-> +                  <0x0 0x24162000 0x0 0x00001000>;
-> +            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
-> +            device_type = "pci";
-> +            bus-range = <0x00 0xff>;
-> +            num-lanes = <2>;
-> +            num-viewport = <8>;
-> +
-> +            #address-cells = <3>;
-> +            #size-cells = <2>;
-> +            #interrupt-cells = <1>;
-> +            ranges = <0x81000000 0 0x40000000 0 0x40000000 0 0x00010000>,
-> +                     <0x82000000 0 0x50000000 0 0x50000000 0 0x20000000>;
-> +            interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-> +            interrupt-names = "intr";
-> +            interrupt-map-mask = <0 0 0 7>;
-> +            interrupt-map =
-> +                <0 0 0 1 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> +                 0 0 0 2 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> +                 0 0 0 3 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> +                 0 0 0 4 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&extclk100mhz>, <&clk600mhz>, <&clk25mhz>;
-> +            clock-names = "pcie_refclk", "sysclk", "auxclk";
-> +            max-link-speed = <2>;
-> +
-> +            status = "disabled";
-
-Don't show status in examples.
-
-> +        };
-> +    };
-> +...
-> --
-> 2.30.0.rc2
->
+-Tero
