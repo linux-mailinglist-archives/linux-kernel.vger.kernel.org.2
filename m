@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7577B3566E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C87D3566E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244991AbhDGIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:32:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53002 "EHLO mx2.suse.de"
+        id S245029AbhDGIdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:33:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244921AbhDGIci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:32:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3DD8DAFCF;
-        Wed,  7 Apr 2021 08:32:19 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 09:32:16 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
- hinting fault
-Message-ID: <20210407083216.GB15768@suse.de>
-References: <20210329183312.178266-1-shy828301@gmail.com>
- <20210330164200.01a4b78f@thinkpad>
- <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com>
- <20210331134727.47bc1e6d@thinkpad>
- <CAHbLzkquYxq_eXoVhUCib9qu_aMS9U2XXjb5pop9JtJ8uco_vg@mail.gmail.com>
- <20210406140251.2779c400@thinkpad>
- <CAHbLzkr2+CnY8+ENB_Hvt7kJPKNq3H2aG=RsOBmBE_dYciqstw@mail.gmail.com>
+        id S244921AbhDGIdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CEB861246;
+        Wed,  7 Apr 2021 08:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617784375;
+        bh=YnQM4Dntg6MnBX1n5CpMjAINjqZ8OgHrYo45v3FHX10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tn7dNqH1vKL0Rig5ICBourpNf7ZvbdSNFRcVB1q1W68R1RmEmXGlztoXbllHKBc8u
+         WfL73vHS08P3vkRBpIQyJjMO8yugTS7+q5UcRPxrcIz3L6UzZBMHJCE8rc28QAexUw
+         IUVy6sXR+AcsTyLAWYRpAwCIQqmZH1kfEtRKRKz4=
+Date:   Wed, 7 Apr 2021 10:32:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pavle Rohalj <pavle.rohalj@gmail.com>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/49] *** SUBJECT HERE ***
+Message-ID: <YG1uNX1ZaZ106iy8@kroah.com>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+ <YG1aVx3UuXR2JrC+@kroah.com>
+ <YG1cCtbvINJ52tGT@localhost.localdomain>
+ <YG1gDV6vqnUtDnbT@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkr2+CnY8+ENB_Hvt7kJPKNq3H2aG=RsOBmBE_dYciqstw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YG1gDV6vqnUtDnbT@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:42:07AM -0700, Yang Shi wrote:
-> On Tue, Apr 6, 2021 at 5:03 AM Gerald Schaefer
-> <gerald.schaefer@linux.ibm.com> wrote:
-> >
-> > On Thu, 1 Apr 2021 13:10:49 -0700
-> > Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > [...]
-> > > > >
-> > > > > Yes, it could be. The old behavior of migration was to return -ENOMEM
-> > > > > if THP migration is not supported then split THP. That behavior was
-> > > > > not very friendly to some usecases, for example, memory policy and
-> > > > > migration lieu of reclaim (the upcoming). But I don't mean we restore
-> > > > > the old behavior. We could split THP if it returns -ENOSYS and the
-> > > > > page is THP.
-> > > >
-> > > > OK, as long as we don't get any broken PMD migration entries established
-> > > > for s390, some extra THP splitting would be acceptable I guess.
-> > >
-> > > There will be no migration PMD installed. The current behavior is a
-> > > no-op if THP migration is not supported.
-> >
-> > Ok, just for completeness, since Mel also replied that the split
-> > was not done on other architectures "because the loss from splitting
-> > exceeded the gain of improved locality":
-> >
-> > I did not mean to request extra splitting functionality for s390,
-> > simply skipping / ignoring large PMDs would also be fine for s390,
-> > no need to add extra complexity.
+On Wed, Apr 07, 2021 at 09:32:29AM +0200, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 12:15:22AM -0700, Pavle Rohalj wrote:
+> > On Wed, Apr 07, 2021 at 09:08:07AM +0200, Greg KH wrote:
+> > > On Tue, Apr 06, 2021 at 11:35:54PM -0700, Pavle Rohalj wrote:
+> > > > Changes in v2:
+> > > >     - Removed type information from variable names
+> > > >     - Broken up the changes into smaller patches
+> > > 
+> > > Your subject is very odd :(
+> > 
+> > Sorry about that, I overlooked the fact that I reran format-patch. The
+> > subject should be:
+> > 
+> > [PATCH] staging: sm750fb: Convert camel case to snake case
+> > 
+> > Should I resubmit?
 > 
-> Thank you. It could make life easier. The current code still converts
-> huge PMD to RPOTNONE even though THP migration is not supported. It is
-> easy to skip such PMDs hence cycles are saved for pointless NUMA
-> hinting page faults.
+> Not yet, let me review these first, I think they might need some work...
 > 
-> Will do so in v2 if no objection from Mel as well.
 
-I did not get a chance to review this in time but if a v2 shows up,
-I'll at least run it through a battery of tests to measure the impact
-and hopefully find the time to do a proper review. Superficially I'm not
-opposed to using generic code for migration because even if it shows up a
-problem, it would be better to optimise the generic implementation than
-carry two similar implementations. I'm undecided on whether s390 should
-split+migrate rather than skip because I do not have a good overview of
-"typical workloads on s390 that benefit from NUMA balancing".
+Ok, now you can fix them up, I stopped after reviewing patch 02/49,
+these need some work.
 
--- 
-Mel Gorman
-SUSE Labs
+thanks,
+
+greg k-h
