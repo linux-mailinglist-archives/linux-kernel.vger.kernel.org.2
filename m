@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A17356103
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83A0356102
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347970AbhDGBwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:52:40 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:35241 "EHLO
+        id S242993AbhDGBwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:52:36 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:38663 "EHLO
         server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347825AbhDGBvv (ORCPT
+        with ESMTP id S1347827AbhDGBvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 21:51:51 -0400
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
  t=1617759903; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=KSwVFXcXC1LvgNAhlUzawOb6cyImWm4fVIR5ZQJd5xc=;
- b=gRHSZhDTNNGCbnIvlycMkhUVlPwyxniNsdMuORhL95atZDObl7ItbtuphSDdUjX23gpa2
- 5g/6FTl+SQbi/A/Ag==
+ from; bh=hNw2E9n5catZ5ChciAAiyAEd51ldZQS2D3FL9TJJQ3Y=;
+ b=LdeanG/cHGgwnR5X1yW6N3lnK/QBKoWHRD02KGL1fyNhPOTgq2puWO0/ibCPXZbYgb1lA
+ acWdyb1vjbMAdEdAA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617759903; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=KSwVFXcXC1LvgNAhlUzawOb6cyImWm4fVIR5ZQJd5xc=;
- b=MKIjsemPluEEIll0eWbtQ+LZ5lhWdvrPCIPD45WpylLuLds09nW2fmnBC0BmLlFlKs2TE
- z+Lj8BxURaoMDZEGU6ShDzgdUM73C8UPBdI2ut40XJBRoFJdPKDR5fIZoALC1Wc7q2vJmq/
- rkoreBCPgtSezyWIDekGZoGnWX/wmypzyEXeFSNVR5xeRO5qyroG1rwM8043lZjBRC1FaWB
- tlBOQw9nwVBE4W9R8+hOsrIf6MwXYLl1ZGQNV8/QsjZ1T4uTfgweNCuxKJlNtxHTrRzAKK4
- aF/5rzRtLwNtEAKGDik+k8MEqgZ7ImHLBgSe8amwi/4oPZclODAzWRvqHH+w==
-Received: from zeus.lespinasse.org (zeus.lespinasse.org [10.0.0.150])
-        by server.lespinasse.org (Postfix) with ESMTPS id 18CB516036D;
+ bh=hNw2E9n5catZ5ChciAAiyAEd51ldZQS2D3FL9TJJQ3Y=;
+ b=aaxklxxmwoZqKEa5hd21kEyumQSxeowwY9l01vrrM5iLdUOjf+YPBOX1buQKr4Tpo6iXn
+ PjWEp27BcS9ggHt/rGwAdb43w/7zCOqGOt8OY2xxeogzRt0gQkbxjFyb1BtIwAd7Ymmf4L8
+ mR++NEo/XdU2b87VmLebX8/hkpDDaF/HgQOJlJGLPMP2mZB7xSPyMlbIEUetHzIizKXYYrw
+ PfYM3zytRhEF2Vv+5tom1RbamQBi6ZH93HkYCrMNDa6FpyhASkN56Hqn8tuAz6cDL0esVO6
+ piKK+VlFmJ3tMvrOyIDDQ5K1q3Q5Y1sP6Mtk8rcehQ7J8KevBg7XCKXtHslQ==
+Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
+        by server.lespinasse.org (Postfix) with ESMTPS id 1F86516038C;
         Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id 09A2819F31F; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
+        id 10D2D19F31D; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
@@ -48,9 +48,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Rom Lemarchand <romlem@google.com>,
         Linux-Kernel <linux-kernel@vger.kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [RFC PATCH 24/37] mm: implement speculative handling in __do_fault()
-Date:   Tue,  6 Apr 2021 18:44:49 -0700
-Message-Id: <20210407014502.24091-25-michel@lespinasse.org>
+Subject: [RFC PATCH 25/37] mm: implement speculative handling in filemap_fault()
+Date:   Tue,  6 Apr 2021 18:44:50 -0700
+Message-Id: <20210407014502.24091-26-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407014502.24091-1-michel@lespinasse.org>
 References: <20210407014502.24091-1-michel@lespinasse.org>
@@ -60,101 +60,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the speculative case, call the vm_ops->fault() method from within
-an rcu read locked section, and verify the mmap sequence lock at the
-start of the section. A match guarantees that the original vma is still
-valid at that time, and that the associated vma->vm_file stays valid
-while the vm_ops->fault() method is running.
+Extend filemap_fault() to handle speculative faults.
 
-Note that this implies that speculative faults can not sleep within
-the vm_ops->fault method. We will only attempt to fetch existing pages
-from the page cache during speculative faults; any miss (or prefetch)
-will be handled by falling back to non-speculative fault handling.
-
-The speculative handling case also does not preallocate page tables,
-as it is always called with a pre-existing page table.
+In the speculative case, we will only be fishing existing pages out of
+the page cache. The logic we use mirrors what is done in the
+non-speculative case, assuming that pages are found in the page cache,
+are up to date and not already locked, and that readahead is not
+necessary at this time. In all other cases, the fault is aborted to be
+handled non-speculatively.
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- mm/memory.c | 63 +++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 42 insertions(+), 21 deletions(-)
+ mm/filemap.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 6eddd7b4e89c..7139004c624d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3709,29 +3709,50 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
- 	struct vm_area_struct *vma = vmf->vma;
- 	vm_fault_t ret;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 43700480d897..6e8505fe5df9 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2851,7 +2851,9 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
+  * it in the page cache, and handles the special cases reasonably without
+  * having a lot of duplicated code.
+  *
+- * vma->vm_mm->mmap_lock must be held on entry.
++ * If FAULT_FLAG_SPECULATIVE is set, this function runs within an rcu
++ * read locked section and with mmap lock not held.
++ * Otherwise, vma->vm_mm->mmap_lock must be held on entry.
+  *
+  * If our return value has VM_FAULT_RETRY set, it's because the mmap_lock
+  * may be dropped before doing I/O or by lock_page_maybe_drop_mmap().
+@@ -2876,6 +2878,47 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	struct page *page;
+ 	vm_fault_t ret = 0;
  
--	/*
--	 * Preallocate pte before we take page_lock because this might lead to
--	 * deadlocks for memcg reclaim which waits for pages under writeback:
--	 *				lock_page(A)
--	 *				SetPageWriteback(A)
--	 *				unlock_page(A)
--	 * lock_page(B)
--	 *				lock_page(B)
--	 * pte_alloc_one
--	 *   shrink_page_list
--	 *     wait_on_page_writeback(A)
--	 *				SetPageWriteback(B)
--	 *				unlock_page(B)
--	 *				# flush A, B to clear the writeback
--	 */
--	if (pmd_none(*vmf->pmd) && !vmf->prealloc_pte) {
--		vmf->prealloc_pte = pte_alloc_one(vma->vm_mm);
--		if (!vmf->prealloc_pte)
--			return VM_FAULT_OOM;
--		smp_wmb(); /* See comment in __pte_alloc() */
-+#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
 +	if (vmf->flags & FAULT_FLAG_SPECULATIVE) {
-+		rcu_read_lock();
-+		if (!mmap_seq_read_check(vmf->vma->vm_mm, vmf->seq)) {
-+			ret = VM_FAULT_RETRY;
-+		} else {
-+			/*
-+			 * The mmap sequence count check guarantees that the
-+			 * vma we fetched at the start of the fault was still
-+			 * current at that point in time. The rcu read lock
-+			 * ensures vmf->vma->vm_file stays valid.
-+			 */
-+			ret = vma->vm_ops->fault(vmf);
-+		}
-+		rcu_read_unlock();
-+	} else
-+#endif
-+	{
++		page = find_get_page(mapping, offset);
++		if (unlikely(!page) || unlikely(PageReadahead(page)))
++			return VM_FAULT_RETRY;
++
++		if (!trylock_page(page))
++			return VM_FAULT_RETRY;
++
++		if (unlikely(compound_head(page)->mapping != mapping))
++			goto page_unlock;
++		VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page);
++		if (unlikely(!PageUptodate(page)))
++			goto page_unlock;
++
++		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
++		if (unlikely(offset >= max_off))
++			goto page_unlock;
++
 +		/*
-+		 * Preallocate pte before we take page_lock because
-+		 * this might lead to deadlocks for memcg reclaim
-+		 * which waits for pages under writeback:
-+		 *				lock_page(A)
-+		 *				SetPageWriteback(A)
-+		 *				unlock_page(A)
-+		 * lock_page(B)
-+		 *				lock_page(B)
-+		 * pte_alloc_one
-+		 *   shrink_page_list
-+		 *     wait_on_page_writeback(A)
-+		 *				SetPageWriteback(B)
-+		 *				unlock_page(B)
-+		 *				# flush A, B to clear writeback
++		 * Update readahead mmap_miss statistic.
++		 *
++		 * Note that we are not sure if finish_fault() will
++		 * manage to complete the transaction. If it fails,
++		 * we'll come back to filemap_fault() non-speculative
++		 * case which will update mmap_miss a second time.
++		 * This is not ideal, we would prefer to guarantee the
++		 * update will happen exactly once.
 +		 */
-+		if (pmd_none(*vmf->pmd) && !vmf->prealloc_pte) {
-+			vmf->prealloc_pte = pte_alloc_one(vma->vm_mm);
-+			if (!vmf->prealloc_pte)
-+				return VM_FAULT_OOM;
-+			smp_wmb(); /* See comment in __pte_alloc() */
++		if (!(vmf->vma->vm_flags & VM_RAND_READ) && ra->ra_pages) {
++			unsigned int mmap_miss = READ_ONCE(ra->mmap_miss);
++			if (mmap_miss)
++				WRITE_ONCE(ra->mmap_miss, --mmap_miss);
 +		}
 +
-+		ret = vma->vm_ops->fault(vmf);
- 	}
- 
--	ret = vma->vm_ops->fault(vmf);
- 	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY |
- 			    VM_FAULT_DONE_COW)))
- 		return ret;
++		vmf->page = page;
++		return VM_FAULT_LOCKED;
++page_unlock:
++		unlock_page(page);
++		return VM_FAULT_RETRY;
++	}
++
+ 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+ 	if (unlikely(offset >= max_off))
+ 		return VM_FAULT_SIGBUS;
 -- 
 2.20.1
 
