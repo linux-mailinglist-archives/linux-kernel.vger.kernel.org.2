@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D332F3561DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97FA3561DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348303AbhDGD0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:26:41 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51542 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233915AbhDGD0h (ORCPT
+        id S1344387AbhDGD23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:28:29 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60598 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229736AbhDGD21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:26:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UUky-cb_1617765985;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UUky-cb_1617765985)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 07 Apr 2021 11:26:25 +0800
-Subject: Re: [PATCH] crypto: sm3 - use the more precise type u32 instead of
- unsigned int
-To:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210326022128.71727-1-tianjia.zhang@linux.alibaba.com>
- <CAOtvUMfSC02o03c=Q-8d7vy8KS3QmNTBc59An=-m4BmNzt8_GA@mail.gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <5a5028e1-7cb2-701c-ce0f-1bb9f79cb83d@linux.alibaba.com>
-Date:   Wed, 7 Apr 2021 11:26:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        Tue, 6 Apr 2021 23:28:27 -0400
+X-UUID: 8f237fc3a8ff491eb4a8b716d8886274-20210407
+X-UUID: 8f237fc3a8ff491eb4a8b716d8886274-20210407
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <flora.fu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 120020346; Wed, 07 Apr 2021 11:28:15 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 7 Apr 2021 11:28:14 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Apr 2021 11:28:14 +0800
+From:   Flora Fu <flora.fu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Flora Fu <flora.fu@mediatek.com>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
+        Chiawen Lee <chiawen.lee@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>
+Subject: [PATCH 0/8] Add Support for MediaTek MT8192 APU Power
+Date:   Wed, 7 Apr 2021 11:27:58 +0800
+Message-ID: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <CAOtvUMfSC02o03c=Q-8d7vy8KS3QmNTBc59An=-m4BmNzt8_GA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The MediaTek AI Processing Unit (APU) is a proprietary hardware
+in the SoC to support AI operations.
+The series is to create apusys in the SoC folder for developing
+the related drivers. Add the apu clocks, basic apu nodes and the
+power domain to provide the power controller of APU subsystem.
 
+This series is based on MT8192 clock[1] and PMIC[2] patches.
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=454523
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=458733
 
-On 3/26/21 5:38 PM, Gilad Ben-Yossef wrote:
-> Hi,
-> 
-> Thank you for the patch!
-> 
-> On Fri, Mar 26, 2021 at 5:21 AM Tianjia Zhang
-> <tianjia.zhang@linux.alibaba.com> wrote:
->>
->> In the process of calculating the hash, use the more accurate type
->> 'u32' instead of the original 'unsigned int' to avoid ambiguity.
-> 
-> I don't think there is any ambiguity here, as both forms are always
-> the same size.
-> 
-> Generally, I tend to use the convention of using 'u32' as denoting
-> variables where the size is meaningful - e.g. mathematical operations
-> that are defined in the standard on 32 bit buffers,  versus using
-> plain 'int' types where it isn't - e.g. loop counters etc.
-> 
-> Having said that, even under my own definition possibly the w and wt
-> arrays in sm3_trandform() should be changed to u32.
-> I don't object to changing those if it bugs you :-)
-> 
-> Cheers,
-> Gilad
-> 
-> 
+Flora Fu (8):
+  dt-bindings: clock: Add MT8192 APU clock bindings
+  clk: mediatek: mt8192: Add APU clocks support
+  dt-bindings: apu: Add MT8192 APU power domain
+  dt-bindings: arm: mediatek: Add new document bindings for APU
+  dt-bindings: soc: mediatek: apusys: Add new document for APU power
+    domain
+  soc: mediatek: apu: Add apusys and add apu power domain driver
+  arm64: dts: mt8192: Add APU node
+  arm64: dts: mt8192: Add APU power domain node
 
-Thanks for your opinions. This is just to make the form more uniform. 
-This is not a mistake. If it is not necessary, just ignore this 
-modification.
+ .../arm/mediatek/mediatek,apusys.yaml         |  56 ++
+ .../soc/mediatek/mediatek,apu-pm.yaml         | 146 +++++
+ arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |   7 +
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  46 ++
+ drivers/clk/mediatek/clk-mt8192.c             |  91 +++
+ drivers/soc/mediatek/Kconfig                  |  10 +
+ drivers/soc/mediatek/Makefile                 |   1 +
+ drivers/soc/mediatek/apusys/Makefile          |   2 +
+ drivers/soc/mediatek/apusys/mtk-apu-pm.c      | 613 ++++++++++++++++++
+ include/dt-bindings/clock/mt8192-clk.h        |  14 +-
+ include/dt-bindings/power/mt8192-apu-power.h  |  11 +
+ 11 files changed, 995 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mediatek,apu-pm.yaml
+ create mode 100644 drivers/soc/mediatek/apusys/Makefile
+ create mode 100644 drivers/soc/mediatek/apusys/mtk-apu-pm.c
+ create mode 100644 include/dt-bindings/power/mt8192-apu-power.h
 
-Best regards,
-Tianjia
+-- 
+2.18.0
+
