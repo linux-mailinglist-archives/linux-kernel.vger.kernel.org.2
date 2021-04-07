@@ -2,97 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6682356DE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F89356DC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352713AbhDGNvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352644AbhDGNus (ORCPT
+        id S1347568AbhDGNuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:50:02 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:38472 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234087AbhDGNuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:50:48 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71516C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 06:50:28 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id p22so1256457wmc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 06:50:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8ATocqzISrvJhii+4mqvqB6jnvgXhMORzZO+oZXnMLk=;
-        b=F7SMBjXMoQNt/S4a54onFYpu6SDPHVjbXyfXEls5sPeUr+sdCwYQVzNSx5qED+3o8u
-         eiQVv0tzteF5QWlGBjY1HLYj1SKc6twX3pBjuasV6feOe6XgBIFKcHY6P9S3n7+1Cvqn
-         r4rltEDzlNnxDYTxM4Cm0Fdjxg4KQNfOVgef6Ak0UQDN5ckD2+zFh1rAp7ssvRyWalS1
-         JRxHErS3tgJqye+FuHQ9fwrQrn+4+nT5IvahkgwFAeQ3lGjPuziXTbh1vSr+VAuKrYh5
-         YXre5KCPciSyn+33Pansm6vKIMRx2hqh5ncZkpkk+/07nH972+EP9hgxSZgWnAbwno3H
-         wMWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8ATocqzISrvJhii+4mqvqB6jnvgXhMORzZO+oZXnMLk=;
-        b=INjkPH+jmZUnnh6y58yyw0UQwxs9RwWyHsU+j24hF9SO4POCvwZnQdPwmoLNLVZRrP
-         NDuiOWYVU4U+d4OTbRGIJg6sFpByfgK4BrF27cp0Xf3NOf1F3tTk2HdA1+xL0iWPbdRi
-         8x39WlF45fYonKmelPoimDHDS2P+uWlHFSkDbifN3B5v8fwQazD3gmTkQtWEpTO0C/1l
-         dtjAAAQqr6nCIwZvmzaDsSmwU08m75v/6a3UcW/g2mi/bF3n1UvtshMbdkSvu8LC8n4r
-         rmeRtHMEXWW0lGZFVV4m76RC59Cy31z4OUm2aGWcaRrJqdX7bOpzdsu5M8lNgJh3H8tD
-         7EJw==
-X-Gm-Message-State: AOAM532IxBm8YAWNBEWCQn05w54shbqwfpi33mnI3N9l4FGf23XxURgm
-        I5Vk7FyLyftv7/HKZcY5A7U=
-X-Google-Smtp-Source: ABdhPJwxZOSviwk8T2n9bCN+M0nwC98LmNBuf2OsEeMRkttoVNgTu/deYLLOSemwtCVpcg6nPopWQg==
-X-Received: by 2002:a1c:1d53:: with SMTP id d80mr3220568wmd.62.1617803427225;
-        Wed, 07 Apr 2021 06:50:27 -0700 (PDT)
-Received: from agape ([5.171.81.68])
-        by smtp.gmail.com with ESMTPSA id c2sm8663811wmr.22.2021.04.07.06.50.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 06:50:26 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 19/19] staging: rtl8723bs: remove unnecessary parentheses
-Date:   Wed,  7 Apr 2021 15:49:43 +0200
-Message-Id: <a45ec5059ea315db6509989f320340c1816068c5.1617802415.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617802415.git.fabioaiuto83@gmail.com>
-References: <cover.1617802415.git.fabioaiuto83@gmail.com>
+        Wed, 7 Apr 2021 09:50:02 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 74FCF92009C; Wed,  7 Apr 2021 15:49:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 7033092009B;
+        Wed,  7 Apr 2021 15:49:51 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 15:49:51 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wei Li <liwei391@huawei.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Felix Fietkau <nbd@nbd.name>
+Subject: Re: [PATCH] MIPS: add support for buggy MT7621S core detection
+In-Reply-To: <CALCv0x0SwiOAWXk36vuFkspNSM16nS=wdMhm5ZNyOdFUia5zuw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2104071545330.65251@angie.orcam.me.uk>
+References: <20210403061912.1012509-1-ilya.lipnitskiy@gmail.com> <alpine.DEB.2.21.2104060311490.65251@angie.orcam.me.uk> <CALCv0x0SwiOAWXk36vuFkspNSM16nS=wdMhm5ZNyOdFUia5zuw@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix following post-commit checkpatch issue:
+On Mon, 5 Apr 2021, Ilya Lipnitskiy wrote:
 
-CHECK: Unnecessary parentheses around
-'padapter->securitypriv.dot11AuthAlgrthm == dot11AuthAlgrthm_8021X'
-84: FILE: drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:335:
-+	if ((padapter->securitypriv.dot11AuthAlgrthm
-			== dot11AuthAlgrthm_8021X) &&
-+	    !(padapter->securitypriv.binstallGrpkey))
+> Thanks for the comments. Including asm/bugs.h in asm/mips-cps.h led to
+> some circular dependencies when I tried it, but I will try again based
+> on your feedback - indeed it would be much cleaner to have this logic
+> in mips_cps_numcores. The only wrinkle is that mips_cps_numcores may
+> return a different value on MT7621 after the cores have started due to
+> CPULAUNCH flags changing, but nobody calls mips_cps_numcores later
+> anyway, so it's a moot point today. I will clean up the change and
+> resend.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_pwrctrl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Hmm, I don't know this system, but by the look of the code it queries 
+launch[2], which I gather refers to the VPE #0 of an inexistent core #1, 
+so why would the structure change given that there is no corresponding 
+silicon?
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-index 893c7a417587..f7465cf90c46 100644
---- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-@@ -332,8 +332,8 @@ static u8 PS_RDY_CHECK(struct adapter *padapter)
- 	)
- 		return false;
- 
--	if ((padapter->securitypriv.dot11AuthAlgrthm == dot11AuthAlgrthm_8021X) &&
--	    !(padapter->securitypriv.binstallGrpkey))
-+	if (padapter->securitypriv.dot11AuthAlgrthm == dot11AuthAlgrthm_8021X &&
-+	    !padapter->securitypriv.binstallGrpkey)
- 		return false;
- 
- 	if (!rtw_cfg80211_pwr_mgmt(padapter))
--- 
-2.20.1
-
+  Maciej
