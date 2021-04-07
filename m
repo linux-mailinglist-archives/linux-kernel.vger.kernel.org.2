@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41C535726F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD96357273
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354365AbhDGQyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:54:25 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48896 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235015AbhDGQyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:54:23 -0400
-IronPort-SDR: tS+sdjdNZ+57/MMjaKtrW4uarkxNth53tettdMSyErGOAtvuTC96jkMHJRtG+uA7hRbna6St1h
- Up/H1ORT3QaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="254689869"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="254689869"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:54:13 -0700
-IronPort-SDR: 2a8Kf6WaNd/0kxyeCZqP4ukkq0OmJunrLAZ3NAgBJ+INoMBdilDMdz2NV0XM/GzRMyIYk3jRsG
- wXeqclFq4xGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="530272883"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 07 Apr 2021 09:54:13 -0700
-Received: from linux.intel.com (unknown [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 7BE2E5805A1;
-        Wed,  7 Apr 2021 09:54:10 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 00:54:07 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net: stmmac: Add support for external
- trigger timestamping
-Message-ID: <20210407165407.GA27820@linux.intel.com>
-References: <20210407141537.2129-1-vee.khee.wong@linux.intel.com>
- <YG2/1fbNNIsbafZp@lunn.ch>
+        id S1354383AbhDGQzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354367AbhDGQzN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:55:13 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D76C061756;
+        Wed,  7 Apr 2021 09:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=PJEGDTfx4FpHUfzm/IRlkyDCU12YvWeK1NxNzYl/AlY=; b=IuK+PUXsE0Q27Z+WJZY5fVgKZd
+        jBBDFbH+TO4Kuw/DGmuRbqBZAkScBp4b4IEEuaduuYruDLfTOg4xSHn+nPCdPXTiKWBfVw8GtMbpu
+        eibVSjdAooE/oCCFJ9i7VNHhqde2OWycjWHa1A/Ek6dBGd4E22/GbH6z0XDVTCvebNvzLmqbsb04z
+        oh/m3/o6ffBGwiYBbqDMXv7mJScMbc3t839fHnb1DCwFu8u7UiJ7DGG497/+izZDMNIQgUQF/SC9c
+        ayx70l8lQidfnNLmdGyJZVkt9ZzXsum0ZBoqo1EChaX7MgWdaOhI5KBct919YT6+iCK/vgUwUnErn
+        pwDsDA1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUBS5-005W26-Ah; Wed, 07 Apr 2021 16:54:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8A5C3001FB;
+        Wed,  7 Apr 2021 18:54:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 867582BC07BA6; Wed,  7 Apr 2021 18:54:46 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 18:54:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <YG3j1j/MNCszy12w@hirez.programming.kicks-ass.net>
+References: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+ <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+ <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+ <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
+ <20210407094224.GA3393992@infradead.org>
+ <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
+ <YG3VRIUjjaK+pfES@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YG2/1fbNNIsbafZp@lunn.ch>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YG3VRIUjjaK+pfES@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:21:09PM +0200, Andrew Lunn wrote:
-> On Wed, Apr 07, 2021 at 10:15:37PM +0800, Wong Vee Khee wrote:
-> > From: Tan Tee Min <tee.min.tan@intel.com>
-> > 
-> > The Synopsis MAC controller supports auxiliary snapshot feature that
-> > allows user to store a snapshot of the system time based on an external
-> > event.
-> > 
-> > This patch add supports to the above mentioned feature. Users will be
-> > able to triggered capturing the time snapshot from user-space using
-> > application such as testptp or any other applications that uses the
-> > PTP_EXTTS_REQUEST ioctl request.
+On Wed, Apr 07, 2021 at 05:52:36PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph Müllner wrote:
+> > The comparison with sparc64 is not applicable, as sparc64 does not
+> > have LL/SC instructions.
 > 
-> You forgot to Cc: the PTP maintainer.
->
+> Sparc64 has CAS, without hardware fwd progress. It has to do software
+> backoff for failed CAS in order to do software fwd progress.
 
-Will Cc Richard Cochran on v2.
- 
-> > @@ -159,6 +163,37 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
-> >  					     priv->systime_flags);
-> >  		spin_unlock_irqrestore(&priv->ptp_lock, flags);
-> >  		break;
-> > +	case PTP_CLK_REQ_EXTTS:
-> > +		priv->plat->ext_snapshot_en = on;
-> > +		mutex_lock(&priv->aux_ts_lock);
-> > +		acr_value = readl(ptpaddr + PTP_ACR);
-> > +		acr_value &= ~PTP_ACR_MASK;
-> > +		if (on) {
-> > +			/* Enable External snapshot trigger */
-> > +			acr_value |= priv->plat->ext_snapshot_num;
-> > +			acr_value |= PTP_ACR_ATSFC;
-> > +			pr_info("Auxiliary Snapshot %d enabled.\n",
-> > +				priv->plat->ext_snapshot_num >>
-> > +				PTP_ACR_ATSEN_SHIFT);
-> 
-> dev_dbg()?
-> 
-> > +			/* Enable Timestamp Interrupt */
-> > +			intr_value = readl(ioaddr + GMAC_INT_EN);
-> > +			intr_value |= GMAC_INT_TSIE;
-> > +			writel(intr_value, ioaddr + GMAC_INT_EN);
-> > +
-> > +		} else {
-> > +			pr_info("Auxiliary Snapshot %d disabled.\n",
-> > +				priv->plat->ext_snapshot_num >>
-> > +				PTP_ACR_ATSEN_SHIFT);
-> 
-> dev_dbg()?
-> 
-> Do you really want to spam the kernel log with this?
->
-
-Thanks for the review.
-I will switch this to netdev_dbg().
- 
+Again, the longer answer is that this applies identically to LL/SC and
+I'm sure we actually have (or had) an architecture in tree that did just
+that. I just cannot remember which architecture that was.
