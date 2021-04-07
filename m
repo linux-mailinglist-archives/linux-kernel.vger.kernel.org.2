@@ -2,94 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED29357260
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A35F35725C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354355AbhDGQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
+        id S234029AbhDGQtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241671AbhDGQuF (ORCPT
+        with ESMTP id S1354372AbhDGQtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:50:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0FBC061756;
-        Wed,  7 Apr 2021 09:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2njEr9ZUa7y9HL1hJAt9pr7cUOGTLQlkQmxjlTPcmNU=; b=TrCYgYVMGO2a+5h6D17m8iexku
-        mApqxwXIBwPoLfOBB2PwEiYwbTdSCEvwmlwle9wv0CZzwQugywD6bAsCPSkkVArolQhmMdydbFRyq
-        NkSSb3VQkiyv9si8u79pozGy+TVO/UytP2zdqDUtrKQdA+2KBR41N3TCMJgN4VnFmBCJ55A69hcXN
-        1scFbLa1trXAgbhZXELrxYOxvT9P8jCK4LqOBUVtvoJTnF6u1kFfehiZvvbdNYNg/EKJLyijjN5SC
-        9vOMRpqdnOZuVX7wO5AF92cyNx6j9D1TtjMd2dUmoaRivlEUtuygzIedDwB4AFeXaSuuSUmRFWIZE
-        I/jrfcDQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUBLY-00EmfR-8s; Wed, 07 Apr 2021 16:48:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 956E43001FB;
-        Wed,  7 Apr 2021 18:48:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7EC0F23D3AF86; Wed,  7 Apr 2021 18:48:03 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 18:48:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, mbenes@suse.com,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YG3iQ82gYkcp4G5Q@hirez.programming.kicks-ass.net>
-References: <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <20210402183016.GU4332@42.do-not-panic.com>
- <YGgHg7XCHD3rATIK@kroah.com>
- <20210406003152.GZ4332@42.do-not-panic.com>
- <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
- <20210406155423.t7dagp24bupudv3p@treble>
- <YG29KAuOHbJd3Bll@hirez.programming.kicks-ass.net>
- <20210407153031.m4gg3rsgwlr432ba@treble>
+        Wed, 7 Apr 2021 12:49:17 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9034EC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:49:07 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id f6so12614015wrv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=s4obH9YIZgpmzsW+SCrIe4AakWZcXJUvY0gyNebmfoA=;
+        b=VtgsnxbpikqPS8uUSFrDn8gWyKhnnnyLZ99c4HgIi+pY8j6cNTYKsrrkougkL7rv92
+         XRSOoTa+Qw9Qul+IPJOV6FEUu6kOPQ9KfYGn1ZkyKkJcelFe1SBSCEkPSmwvmrH+wsCa
+         fbG4/QcHAFRHsxcl6gGeF21lFAOs0Sx4gI5d2LFBT332RVazDfwdfAFOxEVFokUv9TTz
+         MixuGs9qmvKefyn2jfyOjti5tNlo1SdxWALGFKZT+cNiRfQ5T91A1MiFLIkeMhQOn8br
+         kC0pquv8urJ+dgfiThUj1NXIusgBL537GxghTZLHqY2u6MemO/aC7L/nNghFymySH5Zi
+         D/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s4obH9YIZgpmzsW+SCrIe4AakWZcXJUvY0gyNebmfoA=;
+        b=e8lH+TvXiIsx5DoNebDfGGYYlIOOFtPOry6FwnQf11Vfh2aVG/VR6W+1QNEH0l29E0
+         2iOQDp5dpOZyzHtlZlBy7qyFAkjAy99F8MiT5It23hN5HnO8ZJM9Zgz1jS8rG7wov+3f
+         +lwk92PPPybx32G4F8JoVyZniH97h+JpH7flKTNW0vUf+a2p97mGd7n3wkR4FvEHXfzB
+         XDIJrA/Ka9mc6Wvn5P0bX2Gnexh8ui7+1r/K5QtwxpNbIjgT5NgQvi3nb68hzstuA9fC
+         lDHy+zT/c7C/ta3fO7iYX/YMzT7EIKeWxXZleEY6sHqj/yhFpmIy7q3eGVhsmM+hWw8r
+         wjbQ==
+X-Gm-Message-State: AOAM531NU+ELcWWNc6zJMJWzSgWTy7WKXJa3wW0fZ5D+TIoZEKctDxFi
+        0cdSG41JGbOxNEaHEciYiGd2wEMBOUA=
+X-Google-Smtp-Source: ABdhPJzHWR41KWvKZXmIW2NuUyMinGdiVpqZvO2/fzOf1XQYFyKq8/xBCI0iAuHAPBmYx2EcqyiLXQ==
+X-Received: by 2002:adf:b642:: with SMTP id i2mr5348617wre.8.1617814146380;
+        Wed, 07 Apr 2021 09:49:06 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.134])
+        by smtp.gmail.com with ESMTPSA id s8sm40255543wrn.97.2021.04.07.09.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:49:05 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 18:49:03 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/19] staging: rtl8723bs: remove DBG_871X trace macro
+Message-ID: <20210407164901.GA1403@agape.jhs>
+References: <cover.1617802415.git.fabioaiuto83@gmail.com>
+ <YG3MVGBomCeVicj+@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407153031.m4gg3rsgwlr432ba@treble>
+In-Reply-To: <YG3MVGBomCeVicj+@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:30:31AM -0500, Josh Poimboeuf wrote:
-> On Wed, Apr 07, 2021 at 04:09:44PM +0200, Peter Zijlstra wrote:
-> > On Tue, Apr 06, 2021 at 10:54:23AM -0500, Josh Poimboeuf wrote:
+On Wed, Apr 07, 2021 at 05:14:28PM +0200, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 03:49:24PM +0200, Fabio Aiuto wrote:
+> > This patchset removes all DBG_871X usages and definitions.
 > > 
-> > > Same for Red Hat.  Unloading livepatch modules seems to work fine, but
-> > > isn't officially supported.
-> > > 
-> > > That said, if rmmod is just considered a development aid, and we're
-> > > going to be ignoring bugs, we should make it official with a new
-> > > TAINT_RMMOD.
+> > The whole private tracing system is not tied to a configuration
+> > symbol and the default behaviour is _trace nothing_.
 > > 
-> > Another option would be to have live-patch modules leak a module
-> > reference by default, except when some debug sysctl is set or something.
-> > Then only those LP modules loaded while the sysctl is set to 'YOLO' can
-> > be unloaded.
+> > DBG_871X macros require the code to be modified by
+> > hand in order to be turned on. This obviously has not happened
+> > since the code was merged, so just remove them as they are unused.
+> > 
+> > First patch fix a DBG_871X call. It has three args over only two
+> > placeholders in the first format string argument.
+> > If I would not make this fix, the semantic patch
+> > used to bulk remove all macro occurences would ignore the abnormal
+> > macro (the one with three args) and all subsequent occurrences in
+> > the same file (core/rtw_recv.c).
+> > 
+> > The second patch applies the cocci script.
+> > 
+> > This is the semantic patch:
+> > 
+> > @@
+> > expression a, b, c, d, e, f, g, h, i, j, k;
+> > constant B, C, D, E;
+> > @@
+> > 
+> > (
+> > -	DBG_871X(a);
+> > |
+> > -	DBG_871X(a, b);
+> > |
+> > -	DBG_871X(a, B);
+> > |
+> > -	DBG_871X(a, b, c);
+> > |
+> > -	DBG_871X(a, B, c);
+> > |
+> > -	DBG_871X(a, b, C);
+> > |
+> > -	DBG_871X(a, B, C);
+> > |
+> > -	DBG_871X(a, b, c, d);
+> > |
+> > -	DBG_871X(a, B, c, d);
+> > |
+> > -	DBG_871X(a, b, C, d);
+> > |
+> > -	DBG_871X(a, b, c, D);
+> > |
+> > -	DBG_871X(a, B, C, d);
+> > |
+> > -	DBG_871X(a, B, c, D);
+> > |
+> > -	DBG_871X(a, b, C, D);
+> > |
+> > -	DBG_871X(a, B, C, D);
+> > |
+> > -	DBG_871X(a, b, c, d, e);
+> > |
+> > -	DBG_871X(a, B, c, d, e);
+> > |
+> > -	DBG_871X(a, b, C, d, e);
+> > |
+> > -	DBG_871X(a, b, c, D, e);
+> > |
+> > -	DBG_871X(a, b, c, d, E);
+> > |
+> > -	DBG_871X(a, B, C, d, e);
+> > |
+> > -	DBG_871X(a, B, c, D, e);
+> > |
+> > -	DBG_871X(a, B, c, d, E);
+> > |
+> > -	DBG_871X(a, b, C, D, e);
+> > |
+> > -	DBG_871X(a, b, C, d, E);
+> > |
+> > -	DBG_871X(a, b, c, D, E);
+> > |
+> > -	DBG_871X(a, B, C, D, e);
+> > |
+> > -	DBG_871X(a, B, C, d, E);
+> > |
+> > -	DBG_871X(a, B, c, D, E);
+> > |
+> > -	DBG_871X(a, b, C, D, E);
+> > |
+> > -	DBG_871X(a, B, C, D, E);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f, g);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f, g, h);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f, g, h, i);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f, g, h, i, j);
+> > |
+> > -	DBG_871X(a, b, c, d, e, f, g, h, i, j, k);
+> > )
+> > 
+> > The third one removes an unmatched macro call,
+> > maybe due to the trailing \, because the occurrence is
+> > inside a macro expansion.
+> > 
+> > The fourth one deletes all commented out call spread all over
+> > the rtl8723bs code.
+> > 
+> > Fifth one removes definitions.
+> > 
+> > All remaining patches do some code cleaning on all
+> > places where DBG_871X has been removed.
 > 
-> The issue is broader than just live patching.
+> Nice work, thanks for doing this, all now queued up!
 > 
-> My suggestion was that if we aren't going to fix bugs in kernel module
-> unloading, then unloading modules shouldn't be supported, and should
-> taint the kernel.
+> greg k-h
 
-Hold up, what? However much I dislike modules (and that is lots), if you
-don't want to support rmmod, you have to leak a reference to self in
-init. Barring that you get to fix any and all unload bugs.
+thank you,
+
+fabio
