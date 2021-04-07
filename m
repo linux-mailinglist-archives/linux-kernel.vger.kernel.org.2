@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE723574A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BC83574A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355480AbhDGS4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355469AbhDGS4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:56:18 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B843C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:56:08 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c5so254513plg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bUFX8OZjFldaYb/6zcLiSui0pTc7lp3Q3DWh7esaF8g=;
-        b=a1xRCOqlDFc7fMaWuNejJHG4Uwf7By9zy2OKAtPQ27xGklMzMvChcENop0/v+mOMEx
-         MW6+86rti2fEGc6b+oX4cnfwPSqf7GbCQ41o+BKscycaOnSgArho8f9BO6FrTo4gYnow
-         aM5rfU2N378Fjx1Amj6OkdpP5/Dtb0+r7QDOA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bUFX8OZjFldaYb/6zcLiSui0pTc7lp3Q3DWh7esaF8g=;
-        b=R3Z87ksw8E7SoayNjW4RZK81rn35j+d/mxnppUqb1m5Ca2dhHOzmPUNINkK19vQTOO
-         feS+ra9GYKu5ZpWKU5wf78i3SHbHfEA/9ngaZJ9GTbS5JXKaADl+OFfWePn7UX1jMXpP
-         LOdKTq6CDBHeQjsPQv8hT1Ha1OoPDj9EfocZrTziI2i92r0w1xM65Jz9nC+UwUIDLypX
-         9lf0GflPTsAQ9UNWc2Zyk75ezR8Yi3rqmwJB8ULH4BrouA+lozgx5OF5f0/6Ku96IhCx
-         IkLp8dlr7r0NR1+JPOx6FHLN1hecVcAGuQqpy+E0zMi13sntygsxKnuV8JZ5uWH5WUWr
-         FrRQ==
-X-Gm-Message-State: AOAM533LxZvhTeBlOhXeYgemtwFl7ndqOpRiAre9bRY4RXZXGxnL9S1E
-        +BMYtkvjXiU/8fpzX6R4lmXvuA==
-X-Google-Smtp-Source: ABdhPJyqOjE2YRcwObcLLiGu2bq48+Q2tF9rRkC6ywJ1L+rDrieu6AYwkNRmg39F3ypuOEZU45TvvA==
-X-Received: by 2002:a17:90a:a389:: with SMTP id x9mr3803993pjp.232.1617821767869;
-        Wed, 07 Apr 2021 11:56:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h19sm22438097pfc.172.2021.04.07.11.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 11:56:07 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 11:56:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/2][next] wl3501_cs: Fix out-of-bounds warning in
- wl3501_send_pkt
-Message-ID: <202104071154.49B15A3AB4@keescook>
-References: <cover.1617226663.git.gustavoars@kernel.org>
- <e03d36114bcbcf814ad13deb7812b0b5c196dadb.1617226663.git.gustavoars@kernel.org>
+        id S1345150AbhDGS5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355496AbhDGS4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 14:56:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43F6A61184;
+        Wed,  7 Apr 2021 18:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617821788;
+        bh=s1pwxfGbr+23r/1PPqHacfYAr8Ua+AqiSW14N4NXfY0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YM0wQ9XhVFqTSHAvSiH0ARmlmWdwANJ0kzxvoIded54FP7B06CGLGj+/4xsIw+jHN
+         NZyDI/pTBdR+lNVLbuQgHwJwPu2znHsoBpIjlG3PlQcM3E/ch7wm9eyr2BoVhrqzvx
+         rp11Y+VLSHTBmmRqxbl6oCkMLNRRS4BXCERFKgykfdOBKdKr7vX/qben/uwG+c33C+
+         5tO4EKXs/BaEprPeTela9Fy3yDFbuaOaVPTAYQmy9P/jJAJ9s6X1vjBD8IosFHIqap
+         G5fQLMynQ9LpEQ0sqMTL/Vw4SrqVTr2uHd0TRBWsm1VJUZ1U/LJAewiCameoSQGtOS
+         qxnbdAS+ags1g==
+Received: by mail-ej1-f45.google.com with SMTP id hq27so29357209ejc.9;
+        Wed, 07 Apr 2021 11:56:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533gglVlM0g20/oAwYlAaR5dcW0qi4Et6sNZ/Kd631eVu/EAoPX3
+        7INHgjbf/rN7yAcMrADq3OKeb9OfpCxGWfXMaA==
+X-Google-Smtp-Source: ABdhPJy6e9BslEl51dXoDuq4DtwJuUJB+jGofOJPKp1uGLl1JeOkeDwA831dcoqDoAIXXk9nclDVL7I3GZsMmJu4+Sc=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr5389459ejd.525.1617821786686;
+ Wed, 07 Apr 2021 11:56:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e03d36114bcbcf814ad13deb7812b0b5c196dadb.1617226663.git.gustavoars@kernel.org>
+References: <YGbc7Qbu6s659Mx4@latitude> <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
+ <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
+ <1617715445.154812.1674495.nullmailer@robh.at.kernel.org> <937f75d4-6c2e-d476-f272-39f8ed2826f2@benettiengineering.com>
+In-Reply-To: <937f75d4-6c2e-d476-f272-39f8ed2826f2@benettiengineering.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 7 Apr 2021 13:56:14 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL2QdSmYbcowgsPz2XXQt1W0KfkzqkNROafAsMNXx7m4w@mail.gmail.com>
+Message-ID: <CAL_JsqL2QdSmYbcowgsPz2XXQt1W0KfkzqkNROafAsMNXx7m4w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Linux Input <linux-input@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 04:44:29PM -0500, Gustavo A. R. Silva wrote:
-> Fix the following out-of-bounds warning by enclosing
-> structure members daddr and saddr into new struct addr:
-> 
-> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
-> 
-> Refactor the code, accordingly:
-> 
-> $ pahole -C wl3501_md_req drivers/net/wireless/wl3501_cs.o
-> struct wl3501_md_req {
-> 	u16                        next_blk;             /*     0     2 */
-> 	u8                         sig_id;               /*     2     1 */
-> 	u8                         routing;              /*     3     1 */
-> 	u16                        data;                 /*     4     2 */
-> 	u16                        size;                 /*     6     2 */
-> 	u8                         pri;                  /*     8     1 */
-> 	u8                         service_class;        /*     9     1 */
-> 	struct {
-> 		u8                 daddr[6];             /*    10     6 */
-> 		u8                 saddr[6];             /*    16     6 */
-> 	} addr;                                          /*    10    12 */
-> 
-> 	/* size: 22, cachelines: 1, members: 8 */
-> 	/* last cacheline: 22 bytes */
-> };
-> 
-> The problem is that the original code is trying to copy data into a
-> couple of arrays adjacent to each other in a single call to memcpy().
-> Now that a new struct _addr_ enclosing those two adjacent arrays
-> is introduced, memcpy() doesn't overrun the length of &sig.daddr[0],
-> because the address of the new struct object _addr_ is used as
-> destination, instead.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds and
-> avoid confusing the compiler.
-> 
-> Link: https://github.com/KSPP/linux/issues/109
-> Reported-by: kernel test robot <lkp@intel.com>
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Wed, Apr 7, 2021 at 12:57 PM Giulio Benetti
+<giulio.benetti@benettiengineering.com> wrote:
+>
+> Hello Rob, All,
+>
+> On 4/6/21 3:24 PM, Rob Herring wrote:
+> > On Fri, 02 Apr 2021 18:16:26 +0200, Giulio Benetti wrote:
+> >> This adds device tree bindings for the Hycon HY46XX touchscreen series=
+.
+> >>
+> >> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> >> ---
+> >> V1->V2:
+> >> As suggested by Rob Herring:
+> >> * fixed $id: address
+> >> * added "hycon," in front of every custom property
+> >> * changed all possible property to boolean type
+> >> * removed proximity-sensor-switch property since it's not handled in d=
+river
+> >> V2->V3:
+> >> As suggested by Jonathan Neusch=C3=A4fer:
+> >> * fixed some typo
+> >> * fixed description indentation
+> >> * improved boolean properties descriptions
+> >> * improved hycon,report-speed description
+> >> ---
+> >>   .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++=
+++
+> >>   MAINTAINERS                                   |   6 +
+> >>   2 files changed, 126 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/input/touchscre=
+en/hycon,hy46xx.yaml
+> >>
+> >
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.exampl=
+e.dt.yaml:0:0: /example-0/i2c/hycon-hy4633@1c: failed to match any schema w=
+ith compatible: ['hycon,hy4633']
+> >
+> > See https://patchwork.ozlabs.org/patch/1461797
+> >
+> > This check can fail if there are any dependencies. The base for a patch
+> > series is generally the most recent rc1.
+> >
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+>
+> I've just send corrected patches.
+>
+> Anyway I'd like to understand how to make dt_binding_check works correctl=
+y.
+>
+> I've installed yamllint and 'make dt_binding_check' works but it still
+> doesn't show that error up on compatible string.
+>
+> yamllint I have is version 1.20.0
+>
+> > pip3 install dtschema --upgrade
+>
+> I've already tried with that too and dtschema version is:
+> 1.3.8
 
-Thanks, this makes the code much easier for the compiler to validate
-at compile time. These cross-field memcpy()s are weird. I like the
-solution here.
+Huh? dtschema versions are YYYY.MM.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> I've read that dtc must be compiled with YAML output enabled and it
+> seems to be so, since when I issue 'make dt_binding_check' from my file:
+> hycon,hy46xx.yaml(with compatible string wrong "hycon,hy4633")
 
--- 
-Kees Cook
+It's a new check queued for 5.13 in linux-next. See commit
+c59773d204cc ("kbuild: Enable DT undocumented compatible checks").
+
+I've updated the bot email with this, but after I sent this one.
+
+Rob
