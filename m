@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CD3356A4D
+	by mail.lfdr.de (Postfix) with ESMTP id 82F52356A4E
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhDGKuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:50:54 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38897 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351513AbhDGKtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:49:15 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 14CC7580985;
-        Wed,  7 Apr 2021 06:48:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 07 Apr 2021 06:48:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=bryhBUK4gj1uG2j7gqn9cxD18k9
-        Ai3R9q5ZzCV5V3d4=; b=M7Jm5mG+jkqykilbQjrGoKnBqe59FZ+AZ/vt3iiYI6L
-        HzkV/0KSdaJKmhK9O0GGftGQA+cIyIt/zO/pWHtb9qAZyqk9iDgC0tLmbEhqFX0h
-        C9WLclqcUaPg+fGc8k9soyiLDCfLcgw7g6bdEU6vMu8EZnfowiZPm3JXmzlvmng7
-        DEN9ennpkMrJdNVMH2PGuELqFqwakYfTtJA+tR270pwxmp9dLFV8Z7zEl9zcb6Z/
-        /tu3QFj1Zu5ixrS+257o9M4TDoU0kJi62X2KeyRLD6/duAlzdP5ECz/tSQYzsrQb
-        30IwXXyy01GADkbXxcfUJftKhafypQx1D0I2ytBYRSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=bryhBU
-        K4gj1uG2j7gqn9cxD18k9Ai3R9q5ZzCV5V3d4=; b=I/XVohD3GiMmHpORrupzI8
-        gy7eoqU6Dhi8A1O4K3BE5ED4oN+hG06ADg9a0GwvdvrqhhM/cI+6Rj7J0078IFTI
-        irPfkwj+F6hbQTjfi0tQAoJwYQ1DzEAVeXtIAxirn59UTJANy0IV+XqspIV8/PnT
-        LoYPbxK0GDw6gmzvcqMWIZZUhndj0oa5nyjDtQsihMyNUXjmTMvGv6MA/j9UZo9o
-        PBpNxjtx2IKnS2mflIJmn1sBApCg+htks/Qy4K4/iXQ3hKUC0P6NCOUvt6UpKh5k
-        0TNOAsypIiolBO0uPE+xpMjeK3RJUHxxic3lZmJ3NHPZTutVFLhkeHGk5BkzW3Sg
-        ==
-X-ME-Sender: <xms:F45tYMqJozDjFGYtVYj4rLYvX4ej4HnU7UX2y79EivJUmZifTRCfAw>
-    <xme:F45tYCpDmx3m3Y7sNFdq3oGb1tIDWEW2e02_4n9LycJWd60niox3oBtLRhyXDZyF5
-    Y_OO7qhUa3RIOwWkSU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:F45tYBOti2cDZl4AwkwXL5MSsXjyTjO2MF17qIzpUbz8-LlpzPSkPw>
-    <xmx:F45tYD4vX-BwZGTHvTMot1zzEU2OL7zZ-xwSjaFz6tWzESCjnQoe0Q>
-    <xmx:F45tYL6VZJpRlyEzZply8yw9KK2H5z0Zfmcb6M_xaoaz7Hk3LXIC3w>
-    <xmx:GI5tYIGbtns08OZnHXbU6CuvEGb6MUwXiNxHY1k2rwSE2GElFow9eA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9D2051080063;
-        Wed,  7 Apr 2021 06:48:55 -0400 (EDT)
-Date:   Wed, 7 Apr 2021 12:48:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 6/6] drm/sprd: add Unisoc's drm mipi dsi&dphy driver
-Message-ID: <20210407104854.fgn67pvau7dchcm2@gilmour>
-References: <20210222132822.7830-1-kevin3.tang@gmail.com>
- <20210222132822.7830-7-kevin3.tang@gmail.com>
- <20210324112745.n76qhrbhzyfunmkd@gilmour>
- <CAFPSGXYK0Hi2-eYkukO2pNhHrJVZ=f79sj_hjXnGBZ_meVmkFg@mail.gmail.com>
+        id S1351505AbhDGKu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:50:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351515AbhDGKtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:49:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65FA86108B;
+        Wed,  7 Apr 2021 10:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617792550;
+        bh=MBTn7f+U7eT5a0y4eY4W/cKzzRkqROJDMGKQWGHgY3I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HBOol3DTzDwf59J9/tYwnGvSHsLl5s6c2GY7ptsQuN320msxSJvos6uJao9uVjn5B
+         u8CoQv/ayoy/XkJzwHzYZX+ZR0nF+ycYXSkZ2nLJ0xuiPm0Z92v9USd7lHzzWC34J0
+         PqP+rgD/RZRZ+zNx1l2pCDIcvEa6eNXoUe0eNoRlVI32trNyRPW/ryJtamrphtoGbW
+         xRWDpq2k4KmTb6ezTAVvlF9VT1wfDrNtHKRjx3jh/63JqFAxCKcqoe7CAukRCWNcJ5
+         S3FKYy6UQoTSe+jR72y9/ae+C69+Lm3NudMM0xGrmDKkNqFuCxSvcs2fnLu4O5QOAj
+         Yt6D8Q2egHPpA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lU5k6-0000MQ-Oi; Wed, 07 Apr 2021 12:49:02 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH net-next] net: wan: z85230: drop unused async state
+Date:   Wed,  7 Apr 2021 12:48:56 +0200
+Message-Id: <20210407104856.1345-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="znbdfkroerihtnuv"
-Content-Disposition: inline
-In-Reply-To: <CAFPSGXYK0Hi2-eYkukO2pNhHrJVZ=f79sj_hjXnGBZ_meVmkFg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to the changelog, asynchronous mode was dropped sometime
+before v2.2. Let's get rid of the unused driver-specific async state as
+well so that it doesn't show up when doing tree-wide tty work.
 
---znbdfkroerihtnuv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/net/wan/z85230.h | 39 ---------------------------------------
+ 1 file changed, 39 deletions(-)
 
-On Wed, Mar 31, 2021 at 09:47:12AM +0800, Kevin Tang wrote:
-> > > diff --git a/drivers/gpu/drm/sprd/Makefile
-> > b/drivers/gpu/drm/sprd/Makefile
-> > > index 6c25bfa99..d49f4977b 100644
-> > > --- a/drivers/gpu/drm/sprd/Makefile
-> > > +++ b/drivers/gpu/drm/sprd/Makefile
-> > > @@ -1,5 +1,8 @@
-> > >  # SPDX-License-Identifier: GPL-2.0
-> > >
-> > >  obj-y := sprd_drm.o \
-> > > -     sprd_dpu.o
-> > > -
-> > > +     sprd_dpu.o \
-> > > +     sprd_dsi.o \
-> > > +     dw_dsi_ctrl.o \
-> > > +     dw_dsi_ctrl_ppi.o \
-> >
-> > So it's a designware IP? There's a driver for it already that seems
-> > fairly similar:
-> > drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> >
-> Our dw dsi controller is not a standard synopsys ip, we have updated a lot
-> on the basic ip version,
-> the entire control register is different, i have cc to drm/bridge reviewers
-> and maintainers.
+diff --git a/drivers/net/wan/z85230.h b/drivers/net/wan/z85230.h
+index 1081d171e477..462cb620bc5d 100644
+--- a/drivers/net/wan/z85230.h
++++ b/drivers/net/wan/z85230.h
+@@ -327,45 +327,6 @@ struct z8530_channel
+ 	void		*private;	/* For our owner */
+ 	struct net_device	*netdevice;	/* Network layer device */
+ 
+-	/*
+-	 *	Async features
+-	 */
+-
+-	struct tty_struct 	*tty;		/* Attached terminal */
+-	int			line;		/* Minor number */
+-	wait_queue_head_t	open_wait;	/* Tasks waiting to open */
+-	wait_queue_head_t	close_wait;	/* and for close to end */
+-	unsigned long		event;		/* Pending events */
+-	int			fdcount;    	/* # of fd on device */
+-	int			blocked_open;	/* # of blocked opens */
+-	int			x_char;		/* XON/XOF char */
+-	unsigned char 		*xmit_buf;	/* Transmit pointer */
+-	int			xmit_head;	/* Transmit ring */
+-	int			xmit_tail;
+-	int			xmit_cnt;
+-	int			flags;	
+-	int			timeout;
+-	int			xmit_fifo_size;	/* Transmit FIFO info */
+-
+-	int			close_delay;	/* Do we wait for drain on close ? */
+-	unsigned short		closing_wait;
+-
+-	/* We need to know the current clock divisor
+-	 * to read the bps rate the chip has currently
+-	 * loaded.
+-	 */
+-
+-	unsigned char		clk_divisor;  /* May be 1, 16, 32, or 64 */
+-	int			zs_baud;
+-
+-	int			magic;
+-	int			baud_base;		/* Baud parameters */
+-	int			custom_divisor;
+-
+-
+-	unsigned char		tx_active; /* character is being xmitted */
+-	unsigned char		tx_stopped; /* output is suspended */
+-
+ 	spinlock_t		*lock;	  /* Device lock */
+ };
+ 
+-- 
+2.26.3
 
-You should make it more obvious then in a comment or in the name of the
-driver. If it's fairly different from the original IP from Synopsys,
-maybe you should just drop the reference to the name?
-
-Maxime
-
---znbdfkroerihtnuv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYG2OFgAKCRDj7w1vZxhR
-xTGeAP43GxaV8bVqijzlTRpxU9Akr4e/ozKykBfR4+jAeDva5gD+K8sElBZsuEnb
-D1HmG0QxEpBwGPRikmgacH+4dSDIAA0=
-=+gJE
------END PGP SIGNATURE-----
-
---znbdfkroerihtnuv--
