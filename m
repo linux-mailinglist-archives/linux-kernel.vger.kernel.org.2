@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D51D356070
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14AA356072
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245390AbhDGAqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 20:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbhDGAq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 20:46:29 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA91C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 17:46:21 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g38so18236509ybi.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 17:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yzE3zFamcB5Vea5iRk340rFBBLcaLHSo0Qjk+jIwcaY=;
-        b=IVFTBdU8wEyJMoUOfBeYw5+mDRNg/H/qAuZ6J+HGgy4SI3mufq5Ce2mvpnlxX1fmh6
-         Jvy57xrcxAAJ154Z6J77rxmoi5NtzgNinXrbzH68a+vaC5Og9hxRcdVk73nrkCuvZpVG
-         sN/RrSXN+UW7ptxNV5DHrNp8JRp74e7DK4Cv0Rjl/ho1mJT2nBsMHzte8ZaQT6yAYLuR
-         Z36n4E2g1lvfuZWXn5FG234L53Y9OgIs49ZH3stjIhpx3/V2oj59zNzEV2SI1kQAbLY9
-         5odNPnAg5EEuvTEzyL46UT9JKg/y6aQg6rk2oH5A9pHWawTTXx/wUe8yqzLznUAm6KSb
-         IaBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yzE3zFamcB5Vea5iRk340rFBBLcaLHSo0Qjk+jIwcaY=;
-        b=FFwIzcV31mqVS86ta0FWKAT8y9wasf+MO/QuMOc+s3hJVqgYovREyWdRo+A2Ibco/I
-         gR6gl971YDAzUPYn3P/jLDp3SvJIIB36MIJpw8EO449PyCidZsxCDynqvPuu3iQZVXXu
-         +gHjmCybAYvcb23dQdLlFevr6KQauPFC//ZJVSZNawpvkmqCnTvQsEuPbcihEwxfNxxB
-         KJCatrbljI+yhZX49bwhbQZNkRbzNANgFjtgBgGTyBlsyFkLqSd1YA7Mr4hL1FEsAnBT
-         SUix+8MHF6CKnpjpIEui1Ywy8jtT5xGKkIMrYohrRPR+kLohBKlo566efKu6RVkPJV6D
-         rJdA==
-X-Gm-Message-State: AOAM5327g/zx/n1LwyKcZJ+QFdgGQJz3hUDYnCoai4TbZB8U0VLZaYWP
-        qpQxOlZXIVdSudc/24sRwZ6kJTmsBF8M8D+rLQDQ/g==
-X-Google-Smtp-Source: ABdhPJwFWGqErirKSpNke7Mjm25xK0JWqXYgdx87+sYF8CgL/Nl1kTt4k2ohsbMR53V5iVTr7+sbuDnS92Z3v+qDXwc=
-X-Received: by 2002:a25:3854:: with SMTP id f81mr1063840yba.466.1617756379625;
- Tue, 06 Apr 2021 17:46:19 -0700 (PDT)
+        id S233000AbhDGArv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 20:47:51 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34303 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233073AbhDGArv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 20:47:51 -0400
+IronPort-SDR: eFz7IoREAasP9AMGV/ATtYJm4m+w6fUi4feZvgCcgAPYmaRN5etF8aOWfDLV0L2R6Mr+t5cRkC
+ o822xaQohzog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="254522701"
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="254522701"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 17:47:42 -0700
+IronPort-SDR: dFvHysc5N71iqXbIglsESnWNUJszXzaHEwnGMFE6DzzvzW/uX6B+Hi9eyc4m4nU/oBCnb8u6Vz
+ eEuExMPrrOPg==
+X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
+   d="scan'208";a="421464553"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.29.228]) ([10.255.29.228])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 17:47:36 -0700
+Subject: Re: [PATCH v4 02/16] perf/x86/intel: Handle guest PEBS overflow PMI
+ for KVM guest
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210329054137.120994-1-like.xu@linux.intel.com>
+ <20210329054137.120994-3-like.xu@linux.intel.com>
+ <YGyKsna7CcncX0g6@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <604f994e-6636-c5e8-8983-86b717175dd8@intel.com>
+Date:   Wed, 7 Apr 2021 08:47:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <20210405222540.18145-1-ilya.lipnitskiy@gmail.com> <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
- <20210407003408.GA2551507@robh.at.kernel.org>
-In-Reply-To: <20210407003408.GA2551507@robh.at.kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 6 Apr 2021 17:45:43 -0700
-Message-ID: <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
-Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YGyKsna7CcncX0g6@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
-> > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
-> > <ilya.lipnitskiy@gmail.com> wrote:
-> > >
-> > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > not configured by #gpio-cells and can't be parsed along with other
-> > > "*-gpios" properties.
-> > >
-> > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
-> > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
-> > > error message continue being printed for non-compliant implementations.
-> > >
-> > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
-> > >  - gpio-adnp.txt
-> > >  - gpio-xgene-sb.txt
-> > >  - gpio-xlp.txt
-> > >  - snps,dw-apb-gpio.yaml
-> > >
-> > > [1]:
-> > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-> > >
-> > > Fixes errors such as:
-> > >   OF: /palmbus@300000/gpio@600: could not find phandle
-> > >
-> > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > > Cc: Saravana Kannan <saravanak@google.com>
-> > > Cc: <stable@vger.kernel.org> # 5.5.x
-> > > ---
-> > >  drivers/of/property.c | 11 ++++++++++-
-> > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > index 2046ae311322..1793303e84ac 100644
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > > +
-> > > +static struct device_node *parse_gpios(struct device_node *np,
-> > > +                                      const char *prop_name, int index)
-> > > +{
-> > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
-> > > +               return NULL;
-> >
-> > Ah I somehow missed this patch. This gives a blanked exception for
-> > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
-> > of ",nr-gpios" we are grandfathering in. Any future additions should
-> > be rejected. Can we do that please?
-> >
-> > Rob, you okay with making this list more explicit?
->
-> Not the kernel's job IMO. A schema is the right way to handle that.
+On 2021/4/7 0:22, Peter Zijlstra wrote:
+> On Mon, Mar 29, 2021 at 01:41:23PM +0800, Like Xu wrote:
+>> With PEBS virtualization, the guest PEBS records get delivered to the
+>> guest DS, and the host pmi handler uses perf_guest_cbs->is_in_guest()
+>> to distinguish whether the PMI comes from the guest code like Intel PT.
+>>
+>> No matter how many guest PEBS counters are overflowed, only triggering
+>> one fake event is enough. The fake event causes the KVM PMI callback to
+>> be called, thereby injecting the PEBS overflow PMI into the guest.
+>>
+>> KVM will inject the PMI with BUFFER_OVF set, even if the guest DS is
+>> empty. That should really be harmless. Thus the guest PEBS handler would
+>> retrieve the correct information from its own PEBS records buffer.
+>>
+>> Originally-by: Andi Kleen <ak@linux.intel.com>
+>> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>   arch/x86/events/intel/core.c | 45 +++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 44 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index 591d60cc8436..af9ac48fe840 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -2747,6 +2747,46 @@ static void intel_pmu_reset(void)
+>>   	local_irq_restore(flags);
+>>   }
+>>   
+>> +/*
+>> + * We may be running with guest PEBS events created by KVM, and the
+>> + * PEBS records are logged into the guest's DS and invisible to host.
+>> + *
+>> + * In the case of guest PEBS overflow, we only trigger a fake event
+>> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+>> + * The guest will then vm-entry and check the guest DS area to read
+>> + * the guest PEBS records.
+>> + *
+>> + * The contents and other behavior of the guest event do not matter.
+>> + */
+>> +static int x86_pmu_handle_guest_pebs(struct pt_regs *regs,
+>> +					struct perf_sample_data *data)
+>> +{
+>> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+>> +	struct perf_event *event = NULL;
+>> +	int bit;
+>> +
+>> +	if (!x86_pmu.pebs_active || !guest_pebs_idxs)
+>> +		return 0;
+>> +
+>> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+>> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+>> +
+>> +		event = cpuc->events[bit];
+>> +		if (!event->attr.precise_ip)
+>> +			continue;
+>> +
+>> +		perf_sample_data_init(data, 0, event->hw.last_period);
+>> +		if (perf_event_overflow(event, data, regs))
+>> +			x86_pmu_stop(event, 0);
+>> +
+>> +		/* Inject one fake event is enough. */
+>> +		return 1;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> Why the return value, it is ignored.
 
-Ok, that's fine by me. Btw, let's land this in driver-core? I've made
-changes there and this might cause conflicts. Not sure.
+Thanks, I'll apply it.
 
--Saravana
+>
+>> +
+>>   static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>>   {
+>>   	struct perf_sample_data data;
+>> @@ -2797,7 +2837,10 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>>   		u64 pebs_enabled = cpuc->pebs_enabled;
+>>   
+>>   		handled++;
+>> -		x86_pmu.drain_pebs(regs, &data);
+>> +		if (x86_pmu.pebs_vmx && perf_guest_cbs && perf_guest_cbs->is_in_guest())
+>> +			x86_pmu_handle_guest_pebs(regs, &data);
+>> +		else
+>> +			x86_pmu.drain_pebs(regs, &data);
+> Why is that else? Since we can't tell if the PMI was for the guest or
+> for our own DS, we should check both, no?
+
+Yes, it's helpful for the later usage and I'll apply it.
+
+By the way, do you have any comments on patches 01, 03
+and the changes related to intel_guest_get_msrs() (such as patch 09) ?
+
+
