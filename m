@@ -2,70 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D147357682
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688DC35768C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbhDGVKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhDGVKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 55A456121E;
-        Wed,  7 Apr 2021 21:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617829809;
-        bh=qUpWG+JR+Dljb5RXh4lK++1952pR3aASzw7TtTfx5tA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cgVIjMS0VeEPsAfBEfAK726EDod2XbEwcChYvB4AhUIDjq00kQoF4c6fTBwDvKbfi
-         LOTVpPLXB6JNaDP7QxNgHTyMH/Kz/0wU5H1v08hvox8Jh00gZ0CtJc4RCyalVLgHDf
-         hQfHagO6L4Ns0v1MHBbXIZUfjazejI53jX0Q/Epw8lv88mTiEOM7ASBYMh2J/nKgUO
-         DnEd+vqTVov0jUV0RyiZEgkn1nodLAwBFvl9ucXB6ZgOe/ad3J9fq2kb2sMylJGP0K
-         8NGPV91dFDUFqXXEGANIC9wSBZfycmkaQtfpCjyRd1hZhTk1kMDBC1AYDfISl6nlIB
-         +4SXu9p6XM6Rg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 44A8E60A71;
-        Wed,  7 Apr 2021 21:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232029AbhDGVRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhDGVRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:17:08 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73030C061760;
+        Wed,  7 Apr 2021 14:16:58 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id n12so250114ybf.8;
+        Wed, 07 Apr 2021 14:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3O1UY45/jWO/BQZWJoj52TQjaRoRPI7XxTD27HudHmQ=;
+        b=icwGjw1OD0LnP09NN6vVmx5HYkxTM8IMdOPHZYcxyyuC9bb3I0N20RzdBPnsbptuwZ
+         TjTR8JuUZQI1Z7t5flMqu1FF8SZJbdoj3dnP4fDLG2sCzncQNczlmugjiwG3NjsAzP5c
+         On4NWF85O2j0vUH3cwmOZYYyp5GI5x67AY6VaD5b3p6npgFTv8Xh5nV6ivf62VS7E4dp
+         FMrhsWu0ZDc/nimY783MvtkuS/yiXWIrPYgiMQ2hGfX6pmRJz4QW0z0z1fhqethpjQ/X
+         DeTXJQ5fSEoLyICs7W69FI3J/L+i4GJEE3+oZdgTLeo8ljButapPk3a2zNIindfXbf5s
+         onww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3O1UY45/jWO/BQZWJoj52TQjaRoRPI7XxTD27HudHmQ=;
+        b=Y6vIuOs6CLXYFQikup3vZRuHfwkc9nOtByRu+0hCj4Hk1XPmhKZoQFRWGDnhl4MSbB
+         TnoXhuUolERF+1piBjIV3/e6RYqH5sOmuvPpIxcx/xkcOV3dQfRGabi8bYk1+dgcjiL5
+         /ZP1QVke+wlz7Q2lc3cH6eemR3hSx7IzldIFsS/jfzSwYbXEEIdxbjCwIqUgyWKMcTNe
+         jo4v1Mo6TkGataDC1uiIdF385eQGwr2DDW1ME64uV4Zog2JQ3VAOcsVc2nl/dZT0D+Vb
+         fDgJ8UFIF8GLSnDTtekcjWJu643kAX2xBQel+9jCwZGvAn8lc8nO4EyPQqGNoRh3qz8g
+         tJvQ==
+X-Gm-Message-State: AOAM530ihiddrIkcUIuSokXGizUUPZUL+z00dFPPN1agWyC6FKjPe2oq
+        N6Zy6zX2HZus/LIw+66cnBH2YaGDClPTtKbxvFs=
+X-Google-Smtp-Source: ABdhPJxXO4Mu/o54Xpk7t60PBmspEOIMbelwxz0OhBrLE+ZvykEXC5MwQM5SwiXs8eDRg5TziHNyjKk11lcsWYPOagI=
+X-Received: by 2002:a25:d87:: with SMTP id 129mr7291662ybn.260.1617830217744;
+ Wed, 07 Apr 2021 14:16:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/rds: Avoid potential use after free in
- rds_send_remove_from_sock
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161782980927.12624.5215933274720336913.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Apr 2021 21:10:09 +0000
-References: <20210407000913.2207831-1-pakki001@umn.edu>
-In-Reply-To: <20210407000913.2207831-1-pakki001@umn.edu>
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+References: <20210406185806.377576-1-pctammela@mojatatu.com>
+ <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
+ <CAEf4BzaBJH-=iO-P6ZTj3zmycz0VESzBzpZkbVOVTvPaZ9OEaA@mail.gmail.com> <CAKY_9u0KV0dW2_xW9g67r9YWAh9UjVpTAsEVWs3xF2htzzVAYQ@mail.gmail.com>
+In-Reply-To: <CAKY_9u0KV0dW2_xW9g67r9YWAh9UjVpTAsEVWs3xF2htzzVAYQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Apr 2021 14:16:46 -0700
+Message-ID: <CAEf4BzbUC9JxhD9cpRX6C0oY2GgkEQMQsniv=AixF63TgNcSsQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Joe Stringer <joe@cilium.io>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Apr 7, 2021 at 1:10 PM Pedro Tammela <pctammela@gmail.com> wrote:
+>
+> Em qua., 7 de abr. de 2021 =C3=A0s 16:58, Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> escreveu:
+> >
+> > On Wed, Apr 7, 2021 at 11:43 AM Joe Stringer <joe@cilium.io> wrote:
+> > >
+> > > Hi Pedro,
+> > >
+> > > On Tue, Apr 6, 2021 at 11:58 AM Pedro Tammela <pctammela@gmail.com> w=
+rote:
+> > > >
+> > > > In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment=
+.
+> > > >
+> > > > For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send =
+a
+> > > > notification to the process if needed.
+> > > >
+> > > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > > ---
+> > > >  include/uapi/linux/bpf.h       | 7 +++++++
+> > > >  tools/include/uapi/linux/bpf.h | 7 +++++++
+> > > >  2 files changed, 14 insertions(+)
+> > > >
+> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > index 49371eba98ba..8c5c7a893b87 100644
+> > > > --- a/include/uapi/linux/bpf.h
+> > > > +++ b/include/uapi/linux/bpf.h
+> > > > @@ -4061,12 +4061,15 @@ union bpf_attr {
+> > > >   *             of new data availability is sent.
+> > > >   *             If **BPF_RB_FORCE_WAKEUP** is specified in *flags*,=
+ notification
+> > > >   *             of new data availability is sent unconditionally.
+> > > > + *             If **0** is specified in *flags*, notification
+> > > > + *             of new data availability is sent if needed.
+> > >
+> > > Maybe a trivial question, but what does "if needed" mean? Does that
+> > > mean "when the buffer is full"?
+> >
+> > I used to call it ns "adaptive notification", so maybe let's use that
+> > term instead of "if needed"? It means that in kernel BPF ringbuf code
+> > will check if the user-space consumer has caught up and consumed all
+> > the available data. In that case user-space might be waiting
+> > (sleeping) in epoll_wait() already and not processing samples
+> > actively. That means that we have to send notification, otherwise
+> > user-space might never wake up. But if the kernel sees that user-space
+> > is still processing previous record (consumer position < producer
+> > position), then we can bypass sending another notification, because
+> > user-space consumer protocol dictates that it needs to consume all the
+> > record until consumer position =3D=3D producer position. So no
+> > notification is necessary for the newly submitted sample, as
+> > user-space will eventually see it without notification.
+> >
+> > Of course there is careful writes and memory ordering involved to make
+> > sure that we never miss notification.
+> >
+> > Does someone want to try to condense it into a succinct description? ;)
+>
+> OK.
+>
+> I can try to condense this and perhaps add it as code in the comment?
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue,  6 Apr 2021 19:09:12 -0500 you wrote:
-> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
-> is freed and later under spinlock, causing potential use-after-free.
-> Set the free pointer to NULL to avoid undefined behavior.
-> 
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-> ---
->  net/rds/message.c | 1 +
->  net/rds/send.c    | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-
-Here is the summary with links:
-  - net/rds: Avoid potential use after free in rds_send_remove_from_sock
-    https://git.kernel.org/netdev/net/c/0c85a7e87465
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Sure, though there is already a brief comment to that effect. But
+having high-level explanation in uapi/linux/bpf.h would be great for
+users, though.
