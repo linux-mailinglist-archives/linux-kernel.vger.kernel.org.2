@@ -2,225 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06C63570ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6447D3570F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353834AbhDGPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:50:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57581 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353846AbhDGPs2 (ORCPT
+        id S242871AbhDGPuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353821AbhDGPsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:48:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617810496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7YU5TzFZ1fF+KiaedglYdJEmeLs3Li2P31LqwaTTSpo=;
-        b=eszrem6TGmFWIuL0HCuW8e3uI1e9qUVlkM4qc7fFfQQ0LPE+tUVS18WM5aOWHtmG4VKpMw
-        DBOvIEbSn5IJvVn8OQ82NuGE9+7yqAA50DBa0Fss8YdM/gayutmdXsaW8Wc4a0S0CCFCrp
-        BaoUxVS4/2pctEFxYPlR7avoZajemSk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-ktl_34jXP5u2gIG_aOuEhA-1; Wed, 07 Apr 2021 11:48:12 -0400
-X-MC-Unique: ktl_34jXP5u2gIG_aOuEhA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 466788026AD;
-        Wed,  7 Apr 2021 15:48:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-201.rdu2.redhat.com [10.10.115.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 010496A033;
-        Wed,  7 Apr 2021 15:48:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 5/5] netfs: Add a tracepoint to log failures that would be
- otherwise unseen
-From:   David Howells <dhowells@redhat.com>
-To:     jlayton@kernel.org
-Cc:     dwysocha@redhat.com, linux-cachefs@redhat.com,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 07 Apr 2021 16:48:08 +0100
-Message-ID: <161781048813.463527.1557000804674707986.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161781041339.463527.18139104281901492882.stgit@warthog.procyon.org.uk>
-References: <161781041339.463527.18139104281901492882.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 7 Apr 2021 11:48:53 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B829C061762;
+        Wed,  7 Apr 2021 08:48:41 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id u11so6066126wrp.4;
+        Wed, 07 Apr 2021 08:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hRBTxBbm6K/qIaEm5hFZJ+Neshbuuk8fIPNBgmcgXe8=;
+        b=kZx+9vzw+6A/2ttOrDHDt3998Bex0Vx3JJwsal4I577bKyDWgajn9F0kdBa7gGOKk6
+         b8dMuS+JxDthkiHq1i1KpDIR+sihTsyUB6ZlHUSMNv9ayJnt+DE1hzmhkZS+Swjko+mw
+         ap+7HSb6OguwSyfDwi6CVn/ryJS+JIwcNVZ+FoLV4lw7p48p+QtlCVHeqlyMKL97ZwOB
+         FucSLuqFZzzbGAMvcq7P6r2c2bQlqqsAxv3kNCx/KlBwGSKi4EUmP4lQKz20B99j9t6P
+         Mn2j+pD/jyWctA3ddxwQVmUZfJagMmIGmHnNVMbtw7jjQxjNGJSkf1lpDVzK6p/jWP+B
+         mFWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hRBTxBbm6K/qIaEm5hFZJ+Neshbuuk8fIPNBgmcgXe8=;
+        b=GyrjwCPefFBgLQb65j8PthSMRNXoNZrh13Lfs2LgcMkcVKy2GIhM271m5HmzlDxfiL
+         yR1RN4bZ4IWsDo1xYu5798cu+2egqn0gT/28wLvDgAe6trjzTaePFOwGWMAuQdv76yqX
+         b9zB0J/YwZJM/wXAmiV6mqxGIXLxyeXDin0lBc3q+5auk83dcjEzXv/TNZMw0wixppy7
+         0D5BMjWhFAVDOQgiSR775zhCMz4XX2Y7o2IandoASUMiI2UIGjPrYfbmtxmaaX2KO52U
+         lybfgTfUoSGEHV/qbI9RJpMT+QKdKjpngOCtuRGZJo31GF4m0FyMWKbTYTuQtrL8WtAR
+         S1Uw==
+X-Gm-Message-State: AOAM531iufXXcZk7sWymWJ3PabFgT+YkuemM0hcemnF/NXUTuFCUO1qf
+        vq7ZvSokrbt4TxkF4DvoPGexqNZf20XLZsM92tqI2KITUtbnfA==
+X-Google-Smtp-Source: ABdhPJwmHo2CQ9i8r855a9TbwcQvBaUTnOL8pNbf2t/BWlCHY694vB9zK3M3P1rOnHnHFZnXFQ8xD/465c2pwrZ+f4s=
+X-Received: by 2002:adf:e4c9:: with SMTP id v9mr5245940wrm.342.1617810519738;
+ Wed, 07 Apr 2021 08:48:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com> <20210401030558.2301621-9-david.e.box@linux.intel.com>
+In-Reply-To: <20210401030558.2301621-9-david.e.box@linux.intel.com>
+From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Date:   Wed, 7 Apr 2021 11:48:14 -0400
+Message-ID: <CAE2upjT6X1cNvoX8HNFkGHP_aDA1t=JngHFPDUjQ1Y0teuErvQ@mail.gmail.com>
+Subject: Re: [PATCH 8/9] platform/x86: intel_pmc_core: Add LTR registers for
+ Tiger Lake
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a tracepoint to log internal failures (such as cache errors) that we
-don't otherwise want to pass back to the netfs.
+Acked-by: Rajneesh Bhardwaj <rajneesh.bhardwaj@intel.com>
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/netfs/read_helper.c       |   14 +++++++++-
- include/trace/events/netfs.h |   58 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+), 2 deletions(-)
-
-diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-index ce2f31d20250..762a15350242 100644
---- a/fs/netfs/read_helper.c
-+++ b/fs/netfs/read_helper.c
-@@ -271,6 +271,8 @@ static void netfs_rreq_copy_terminated(void *priv, ssize_t transferred_or_error,
- 
- 	if (IS_ERR_VALUE(transferred_or_error)) {
- 		netfs_stat(&netfs_n_rh_write_failed);
-+		trace_netfs_failure(rreq, subreq, transferred_or_error,
-+				    netfs_fail_copy_to_cache);
- 	} else {
- 		netfs_stat(&netfs_n_rh_write_done);
- 	}
-@@ -323,6 +325,7 @@ static void netfs_rreq_do_write_to_cache(struct netfs_read_request *rreq)
- 		ret = cres->ops->prepare_write(cres, &subreq->start, &subreq->len,
- 					       rreq->i_size);
- 		if (ret < 0) {
-+			trace_netfs_failure(rreq, subreq, ret, netfs_fail_prepare_write);
- 			trace_netfs_sreq(subreq, netfs_sreq_trace_write_skip);
- 			continue;
- 		}
-@@ -627,6 +630,8 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
- 
- 	if (IS_ERR_VALUE(transferred_or_error)) {
- 		subreq->error = transferred_or_error;
-+		trace_netfs_failure(rreq, subreq, transferred_or_error,
-+				    netfs_fail_read);
- 		goto failed;
- 	}
- 
-@@ -996,8 +1001,10 @@ int netfs_readpage(struct file *file,
- 	} while (test_bit(NETFS_RREQ_IN_PROGRESS, &rreq->flags));
- 
- 	ret = rreq->error;
--	if (ret == 0 && rreq->submitted < rreq->len)
-+	if (ret == 0 && rreq->submitted < rreq->len) {
-+		trace_netfs_failure(rreq, NULL, ret, netfs_fail_short_readpage);
- 		ret = -EIO;
-+	}
- out:
- 	netfs_put_read_request(rreq, false);
- 	return ret;
-@@ -1074,6 +1081,7 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
- 		/* Allow the netfs (eg. ceph) to flush conflicts. */
- 		ret = ops->check_write_begin(file, pos, len, page, _fsdata);
- 		if (ret < 0) {
-+			trace_netfs_failure(NULL, NULL, ret, netfs_fail_check_write_begin);
- 			if (ret == -EAGAIN)
- 				goto retry;
- 			goto error;
-@@ -1150,8 +1158,10 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
- 	}
- 
- 	ret = rreq->error;
--	if (ret == 0 && rreq->submitted < rreq->len)
-+	if (ret == 0 && rreq->submitted < rreq->len) {
-+		trace_netfs_failure(rreq, NULL, ret, netfs_fail_short_write_begin);
- 		ret = -EIO;
-+	}
- 	netfs_put_read_request(rreq, false);
- 	if (ret < 0)
- 		goto error;
-diff --git a/include/trace/events/netfs.h b/include/trace/events/netfs.h
-index e3ebeabd3852..de1c64635e42 100644
---- a/include/trace/events/netfs.h
-+++ b/include/trace/events/netfs.h
-@@ -47,6 +47,15 @@ enum netfs_sreq_trace {
- 	netfs_sreq_trace_write_term,
- };
- 
-+enum netfs_failure {
-+	netfs_fail_check_write_begin,
-+	netfs_fail_copy_to_cache,
-+	netfs_fail_read,
-+	netfs_fail_short_readpage,
-+	netfs_fail_short_write_begin,
-+	netfs_fail_prepare_write,
-+};
-+
- #endif
- 
- #define netfs_read_traces					\
-@@ -81,6 +90,14 @@ enum netfs_sreq_trace {
- 	EM(netfs_sreq_trace_write_skip,		"SKIP ")	\
- 	E_(netfs_sreq_trace_write_term,		"WTERM")
- 
-+#define netfs_failures							\
-+	EM(netfs_fail_check_write_begin,	"check-write-begin")	\
-+	EM(netfs_fail_copy_to_cache,		"copy-to-cache")	\
-+	EM(netfs_fail_read,			"read")			\
-+	EM(netfs_fail_short_readpage,		"short-readpage")	\
-+	EM(netfs_fail_short_write_begin,	"short-write-begin")	\
-+	E_(netfs_fail_prepare_write,		"prep-write")
-+
- 
- /*
-  * Export enum symbols via userspace.
-@@ -94,6 +111,7 @@ netfs_read_traces;
- netfs_rreq_traces;
- netfs_sreq_sources;
- netfs_sreq_traces;
-+netfs_failures;
- 
- /*
-  * Now redefine the EM() and E_() macros to map the enums to the strings that
-@@ -197,6 +215,46 @@ TRACE_EVENT(netfs_sreq,
- 		      __entry->error)
- 	    );
- 
-+TRACE_EVENT(netfs_failure,
-+	    TP_PROTO(struct netfs_read_request *rreq,
-+		     struct netfs_read_subrequest *sreq,
-+		     int error, enum netfs_failure what),
-+
-+	    TP_ARGS(rreq, sreq, error, what),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,		rreq		)
-+		    __field(unsigned short,		index		)
-+		    __field(short,			error		)
-+		    __field(unsigned short,		flags		)
-+		    __field(enum netfs_read_source,	source		)
-+		    __field(enum netfs_failure,		what		)
-+		    __field(size_t,			len		)
-+		    __field(size_t,			transferred	)
-+		    __field(loff_t,			start		)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->rreq	= rreq->debug_id;
-+		    __entry->index	= sreq ? sreq->debug_index : 0;
-+		    __entry->error	= error;
-+		    __entry->flags	= sreq ? sreq->flags : 0;
-+		    __entry->source	= sreq ? sreq->source : NETFS_INVALID_READ;
-+		    __entry->what	= what;
-+		    __entry->len	= sreq ? sreq->len : 0;
-+		    __entry->transferred = sreq ? sreq->transferred : 0;
-+		    __entry->start	= sreq ? sreq->start : 0;
-+			   ),
-+
-+	    TP_printk("R=%08x[%u] %s f=%02x s=%llx %zx/%zx %s e=%d",
-+		      __entry->rreq, __entry->index,
-+		      __print_symbolic(__entry->source, netfs_sreq_sources),
-+		      __entry->flags,
-+		      __entry->start, __entry->transferred, __entry->len,
-+		      __print_symbolic(__entry->what, netfs_failures),
-+		      __entry->error)
-+	    );
-+
- #endif /* _TRACE_NETFS_H */
- 
- /* This part must be outside protection */
+On Wed, Mar 31, 2021 at 11:06 PM David E. Box
+<david.e.box@linux.intel.com> wrote:
+>
+> From: Gayatri Kammela <gayatri.kammela@intel.com>
+>
+> Just like Ice Lake, Tiger Lake uses Cannon Lake's LTR information
+> and supports a few additional registers. Hence add the LTR registers
+> specific to Tiger Lake to the cnp_ltr_show_map[].
+>
+> Also adjust the number of LTR IPs for Tiger Lake to the correct amount.
+>
+> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel_pmc_core.c | 2 ++
+>  drivers/platform/x86/intel_pmc_core.h | 4 +++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index 458c0056e7a1..9168062c927e 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -383,6 +383,8 @@ static const struct pmc_bit_map cnp_ltr_show_map[] = {
+>          * a list of core SoCs using this.
+>          */
+>         {"WIGIG",               ICL_PMC_LTR_WIGIG},
+> +       {"THC0",                TGL_PMC_LTR_THC0},
+> +       {"THC1",                TGL_PMC_LTR_THC1},
+>         /* Below two cannot be used for LTR_IGNORE */
+>         {"CURRENT_PLATFORM",    CNP_PMC_LTR_CUR_PLT},
+>         {"AGGREGATED_SYSTEM",   CNP_PMC_LTR_CUR_ASLT},
+> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+> index f41f61aa7008..634130b589a2 100644
+> --- a/drivers/platform/x86/intel_pmc_core.h
+> +++ b/drivers/platform/x86/intel_pmc_core.h
+> @@ -192,8 +192,10 @@ enum ppfear_regs {
+>  #define ETR3_CLEAR_LPM_EVENTS_BIT              28
+>  #define LPM_STS_LATCH_MODE_BIT                 31
+>
+> -#define TGL_NUM_IP_IGN_ALLOWED                 22
+>  #define TGL_PMC_SLP_S0_RES_COUNTER_STEP                0x7A
+> +#define TGL_PMC_LTR_THC0                       0x1C04
+> +#define TGL_PMC_LTR_THC1                       0x1C08
+> +#define TGL_NUM_IP_IGN_ALLOWED                 23
+>  #define TGL_PMC_LPM_RES_COUNTER_STEP_X2                61      /* 30.5us * 2 */
+>
+>  /*
+> --
+> 2.25.1
+>
 
 
+-- 
+Thanks,
+Rajneesh
