@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83A0356102
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD44E356119
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242993AbhDGBwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:52:36 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:38663 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347827AbhDGBvv (ORCPT
+        id S1348043AbhDGBxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241481AbhDGBvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:51:51 -0400
+        Tue, 6 Apr 2021 21:51:53 -0400
+Received: from server.lespinasse.org (unknown [IPv6:2602:303:fcdc:ce10::100:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAECC0613DA
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
  t=1617759903; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=hNw2E9n5catZ5ChciAAiyAEd51ldZQS2D3FL9TJJQ3Y=;
- b=LdeanG/cHGgwnR5X1yW6N3lnK/QBKoWHRD02KGL1fyNhPOTgq2puWO0/ibCPXZbYgb1lA
- acWdyb1vjbMAdEdAA==
+ from; bh=JYD3Wgnyn5x/hzU8kfQiO6ZPV5GuIxiA+PXDzohUvGA=;
+ b=zcbm6TYGSbg1fogm0a+YNIILcHGu1mT6vUKLDLx8xjYgGqbgnupaWpyFUw2L92FSmnjah
+ aEpUwZWtViFUqIICw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617759903; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=hNw2E9n5catZ5ChciAAiyAEd51ldZQS2D3FL9TJJQ3Y=;
- b=aaxklxxmwoZqKEa5hd21kEyumQSxeowwY9l01vrrM5iLdUOjf+YPBOX1buQKr4Tpo6iXn
- PjWEp27BcS9ggHt/rGwAdb43w/7zCOqGOt8OY2xxeogzRt0gQkbxjFyb1BtIwAd7Ymmf4L8
- mR++NEo/XdU2b87VmLebX8/hkpDDaF/HgQOJlJGLPMP2mZB7xSPyMlbIEUetHzIizKXYYrw
- PfYM3zytRhEF2Vv+5tom1RbamQBi6ZH93HkYCrMNDa6FpyhASkN56Hqn8tuAz6cDL0esVO6
- piKK+VlFmJ3tMvrOyIDDQ5K1q3Q5Y1sP6Mtk8rcehQ7J8KevBg7XCKXtHslQ==
+ bh=JYD3Wgnyn5x/hzU8kfQiO6ZPV5GuIxiA+PXDzohUvGA=;
+ b=lMWJGAHOqeFns527xMlZ3Fyq6hnMk8R4Zi2s4J9BM4hIMv3x4lvNwIXSLvh4Re3SmRDIp
+ QGdMUOLpTfyjweRiRr7ZfG6L/r96l8Q2zb9f40lLLvOEJjDy1dbzpNDwgBwHsux6qykTCmt
+ XjTi6WRidOzS4QLMOOBd6GxKcUgtXKRBWI37pGuwdjraLXfHcYfFMJa4SA38fN+jOoYr5GQ
+ klq7PozMEUef5/a5ixDM0l4FrhbuhaVk3X4jtOHqYrc8HtYOqWZJCPiDRK9waQs5f1YlVvU
+ hH4vEg45qTroyA2tacBcSHTZIlQxGzBz9XwxiZT/OV1aW6mLHzBgv+owcBbQ==
 Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
-        by server.lespinasse.org (Postfix) with ESMTPS id 1F86516038C;
+        by server.lespinasse.org (Postfix) with ESMTPS id 274A0160390;
         Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id 10D2D19F31D; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
+        id 17FCA19F31E; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
@@ -48,9 +51,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Rom Lemarchand <romlem@google.com>,
         Linux-Kernel <linux-kernel@vger.kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [RFC PATCH 25/37] mm: implement speculative handling in filemap_fault()
-Date:   Tue,  6 Apr 2021 18:44:50 -0700
-Message-Id: <20210407014502.24091-26-michel@lespinasse.org>
+Subject: [RFC PATCH 26/37] mm: implement speculative fault handling in finish_fault()
+Date:   Tue,  6 Apr 2021 18:44:51 -0700
+Message-Id: <20210407014502.24091-27-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407014502.24091-1-michel@lespinasse.org>
 References: <20210407014502.24091-1-michel@lespinasse.org>
@@ -60,83 +63,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend filemap_fault() to handle speculative faults.
-
-In the speculative case, we will only be fishing existing pages out of
-the page cache. The logic we use mirrors what is done in the
-non-speculative case, assuming that pages are found in the page cache,
-are up to date and not already locked, and that readahead is not
-necessary at this time. In all other cases, the fault is aborted to be
-handled non-speculatively.
+In the speculative case, we want to avoid direct pmd checks (which
+would require some extra synchronization to be safe), and rely on
+pte_map_lock which will both lock the page table and verify that the
+pmd has not changed from its initial value.
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- mm/filemap.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ mm/memory.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 43700480d897..6e8505fe5df9 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2851,7 +2851,9 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
-  * it in the page cache, and handles the special cases reasonably without
-  * having a lot of duplicated code.
-  *
-- * vma->vm_mm->mmap_lock must be held on entry.
-+ * If FAULT_FLAG_SPECULATIVE is set, this function runs within an rcu
-+ * read locked section and with mmap lock not held.
-+ * Otherwise, vma->vm_mm->mmap_lock must be held on entry.
-  *
-  * If our return value has VM_FAULT_RETRY set, it's because the mmap_lock
-  * may be dropped before doing I/O or by lock_page_maybe_drop_mmap().
-@@ -2876,6 +2878,47 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	struct page *page;
- 	vm_fault_t ret = 0;
+diff --git a/mm/memory.c b/mm/memory.c
+index 7139004c624d..13e2aaf900e5 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3915,23 +3915,25 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+ 			return ret;
+ 	}
  
-+	if (vmf->flags & FAULT_FLAG_SPECULATIVE) {
-+		page = find_get_page(mapping, offset);
-+		if (unlikely(!page) || unlikely(PageReadahead(page)))
-+			return VM_FAULT_RETRY;
+-	if (pmd_none(*vmf->pmd)) {
+-		if (PageTransCompound(page)) {
+-			ret = do_set_pmd(vmf, page);
+-			if (ret != VM_FAULT_FALLBACK)
+-				return ret;
++	if (!(vmf->flags & FAULT_FLAG_SPECULATIVE)) {
++		if (pmd_none(*vmf->pmd)) {
++			if (PageTransCompound(page)) {
++				ret = do_set_pmd(vmf, page);
++				if (ret != VM_FAULT_FALLBACK)
++					return ret;
++			}
 +
-+		if (!trylock_page(page))
-+			return VM_FAULT_RETRY;
-+
-+		if (unlikely(compound_head(page)->mapping != mapping))
-+			goto page_unlock;
-+		VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page);
-+		if (unlikely(!PageUptodate(page)))
-+			goto page_unlock;
-+
-+		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-+		if (unlikely(offset >= max_off))
-+			goto page_unlock;
-+
-+		/*
-+		 * Update readahead mmap_miss statistic.
-+		 *
-+		 * Note that we are not sure if finish_fault() will
-+		 * manage to complete the transaction. If it fails,
-+		 * we'll come back to filemap_fault() non-speculative
-+		 * case which will update mmap_miss a second time.
-+		 * This is not ideal, we would prefer to guarantee the
-+		 * update will happen exactly once.
-+		 */
-+		if (!(vmf->vma->vm_flags & VM_RAND_READ) && ra->ra_pages) {
-+			unsigned int mmap_miss = READ_ONCE(ra->mmap_miss);
-+			if (mmap_miss)
-+				WRITE_ONCE(ra->mmap_miss, --mmap_miss);
-+		}
-+
-+		vmf->page = page;
-+		return VM_FAULT_LOCKED;
-+page_unlock:
-+		unlock_page(page);
++			if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
++				return VM_FAULT_OOM;
+ 		}
+ 
+-		if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
+-			return VM_FAULT_OOM;
++		/* See comment in __handle_mm_fault() */
++		if (pmd_devmap_trans_unstable(vmf->pmd))
++			return 0;
+ 	}
+ 
+-	/* See comment in __handle_mm_fault() */
+-	if (pmd_devmap_trans_unstable(vmf->pmd))
+-		return 0;
+-
+-	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+-				      vmf->address, &vmf->ptl);
++	if (!pte_map_lock(vmf))
 +		return VM_FAULT_RETRY;
-+	}
-+
- 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
- 	if (unlikely(offset >= max_off))
- 		return VM_FAULT_SIGBUS;
+ 	ret = 0;
+ 	/* Re-check under ptl */
+ 	if (likely(pte_none(*vmf->pte)))
 -- 
 2.20.1
 
