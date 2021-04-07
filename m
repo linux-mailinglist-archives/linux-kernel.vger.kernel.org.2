@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C430E3576B3
+	by mail.lfdr.de (Postfix) with ESMTP id 471373576B2
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbhDGVWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        id S232677AbhDGVWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhDGVVr (ORCPT
+        with ESMTP id S232568AbhDGVVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 17:21:47 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550D1C061765;
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B67C0613D7;
         Wed,  7 Apr 2021 14:21:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x15so10231782wrq.3;
+Received: by mail-wm1-x329.google.com with SMTP id 12so151605wmf.5;
         Wed, 07 Apr 2021 14:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=l8ngQ/qQ8Weuy1yqO9HG4J00ciWdsd3MWP0cjimJPkc=;
-        b=C3TCxPmUYVy4U/tF+I1Fh1OLG9wqPm7A1ArCrx1ZYzrt5UD5EyH4HBFZYvK7c7ysCI
-         WKFvndVJdYI+3cxIq5HCFvSIVYH3n9G1gBoH7NGfICw2EWjKAziVojOGn0XCu8nsAY/I
-         OtBCa7LhS7VkGaborgVexzPWO8KHF+3Fkik+JhGhxsFS+rog7BswM87k6Cfskm25qgqJ
-         kGGv5lpDzNM4mqs4GwuG0MWkXABAfyd8s7/TC4zpVOQaGMFMRJq5JSjLJQhN6MCdF1P8
-         BMbluiGbuWxzX3Zxq5j6vl2IMkfYQZ5g4U9BOcyWa/8B5JPmBYx/Ru72GAQJZg9w4ilX
-         IIDg==
+        bh=C+Sv7ebyhZdmYr8zuNmK8przgQqiTzBeblvn6JjaT24=;
+        b=XKD8B7qsQuuWd1cNL5YOrIfkh/B80SxKacpgd/mGcX8L7wxF5vEB6F3IZKHOJZ+tSi
+         VgxkXjROxu8DOyLlyfrsjSXCk8XuS12BOqOJRtaP0M1S4kwlJYskhOH2zkAwoyy8xtx7
+         cQEcpzBok0YoUup3YateFoVWofliJr13HcV7TPH1fS/sEredskpOhrqGzCMqssc5t6JW
+         aGSizURYMPrnBzP/30BAT/UpdJvsT8wHsAMkHHiw4y1tP2knBZd1/0pbzz02wEqlsp6o
+         oIeajgMDgofsI/9yD2UrnbS/F4HGUGAANXYqCbQ55+zVtFk/I4zPQzSmlcZf0+C+YJuu
+         XEAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=l8ngQ/qQ8Weuy1yqO9HG4J00ciWdsd3MWP0cjimJPkc=;
-        b=g+FgfBFMNvODhnUmTNfXbgvS8yxWn+dfX/ah+Fp3Rmk+HQl5Bq+n4iSs5qh3Xjt48d
-         24cnDu9F7r677kR+hna+RbpCXDij3G4GqaCV8aLFLBvP9o/eh7m0hJeWeenPPXNscQFB
-         jzOij0iUncjZVz6TI1Qv4BtIozDpl2I4+AqDb/EhrkDRWoB9n5uKeXD03SdP4T9YBH6j
-         QlXFwB23M9YwkvGLor1/BIHyHo/EPDqH+12GXc1HXIYQYi0ZEnYxJM0buz7fG4AYzPDo
-         MuIlq8X8lJ686q6+OG8GiAT19P34Fp9J6zX6AGWrlJsenZYEuy3bIh3Qg4mC8cbJEU4G
-         QZRw==
-X-Gm-Message-State: AOAM531n+9TOWYNaBpAdL/ma837QBHRxcP/RlvnBzeYGgKEsPI2gxni3
-        SktmM3CQn7Q8XjpyfqeneTrQ5f2Hk1jkdQ==
-X-Google-Smtp-Source: ABdhPJwV/H7G5Ylw18MK4ozOBB5I4Gcl1khWcTYtonjBlD7+FhLtLorNaNriv3LLEGhhSbE7PznZMQ==
-X-Received: by 2002:adf:cd04:: with SMTP id w4mr6737511wrm.148.1617830489880;
-        Wed, 07 Apr 2021 14:21:29 -0700 (PDT)
+        bh=C+Sv7ebyhZdmYr8zuNmK8przgQqiTzBeblvn6JjaT24=;
+        b=I0ndKaHXPEVHYaFRrjlr8h1U8kL6fsnq3gFc2HK7G1oq0EX0RkxVrqIv4K4OAGqJDT
+         WuY/GIzdP5gsJsJoIfWTH62i0dzK62K2/hd2qClxe1gnbyB8YvYBDiVz9mciqz6lZjSf
+         9RE+5SNf+9qkDj03h867hZ9TYefJiBroF7L3AEUkS+5T2ojz0ldNfZWvfeQjS9VX+DRv
+         AKR/lhR9NHX4wcdKHkTOLwDkOdHizwhnIb3qzQ9fEVd6AbCWODEqA6fHGZC0br6HY06c
+         fJvrfBjQ6g6Q4KO0RpbY+TcNU0T+qsFQeU6AP0XzumZaZhpMN4tgIqP0j0HTBlEt5U+2
+         GxLg==
+X-Gm-Message-State: AOAM533CH5bZZ2OrMLJgzLbp/8w2No5AHxZHIkmMirY5f674IKkp7mxO
+        6gArTIiFc3BH7zaHBmsUIPM=
+X-Google-Smtp-Source: ABdhPJzEcI7EbB2e2oDATbJrtla4jwk4IkNB5X15tDJWQzL9U1sVz37qdbX+D8tXFi4fuBGD9a6Ojw==
+X-Received: by 2002:a1c:6a13:: with SMTP id f19mr2241444wmc.145.1617830490525;
+        Wed, 07 Apr 2021 14:21:30 -0700 (PDT)
 Received: from adgra-XPS-15-9570.home (2a01cb0008bd270041a0a0f4308eafc0.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:41a0:a0f4:308e:afc0])
         by smtp.gmail.com with ESMTPSA id l14sm17173952wrm.77.2021.04.07.14.21.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 14:21:29 -0700 (PDT)
+        Wed, 07 Apr 2021 14:21:30 -0700 (PDT)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -57,9 +57,9 @@ Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v1 3/7] soc: imx: gpcv2: allow domains without power sequence control
-Date:   Wed,  7 Apr 2021 23:21:18 +0200
-Message-Id: <20210407212122.626137-4-adrien.grassein@gmail.com>
+Subject: [PATCH v1 4/7] dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
+Date:   Wed,  7 Apr 2021 23:21:19 +0200
+Message-Id: <20210407212122.626137-5-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210407212122.626137-1-adrien.grassein@gmail.com>
 References: <20210407212122.626137-1-adrien.grassein@gmail.com>
@@ -70,194 +70,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On new SOCs, some domains does not have power sequence control
-registers.
+Update documentation for i.MX8MM.
 
 Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 ---
- drivers/soc/imx/gpcv2.c | 134 +++++++++++++++++++++-------------------
- 1 file changed, 72 insertions(+), 62 deletions(-)
+ .../bindings/power/fsl,imx-gpcv2.yaml         |  7 +++++--
+ include/dt-bindings/power/imx8mm-power.h      | 21 +++++++++++++++++++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+ create mode 100644 include/dt-bindings/power/imx8mm-power.h
 
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index 7afb81489f21..d97a53502753 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -162,40 +162,44 @@ static int imx_gpc_pu_pgc_sw_pup_req(struct generic_pm_domain *genpd)
- 	}
+diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+index a96e6dbf1858..04928a173698 100644
+--- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
++++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+@@ -26,6 +26,7 @@ properties:
+     enum:
+       - fsl,imx7d-gpc
+       - fsl,imx8mq-gpc
++      - fsl,imx8mm-pgc
  
- 	/* Map the domain to the A53 core */
--	ret = regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--				 domain->bits.map, domain->bits.map);
--	if (ret) {
--		dev_err(domain->dev, "failed to map GPC PGC domain\n");
--		goto disable_clocks;
-+	if (domain->bits.map) {
-+		ret = regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+					 domain->bits.map, domain->bits.map);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to map GPC PGC domain\n");
-+			goto disable_clocks;
-+		}
- 	}
+   reg:
+     maxItems: 1
+@@ -52,8 +53,10 @@ properties:
+           reg:
+             description: |
+               Power domain index. Valid values are defined in
+-              include/dt-bindings/power/imx7-power.h for fsl,imx7d-gpc and
+-              include/dt-bindings/power/imx8m-power.h for fsl,imx8mq-gpc
++              include/dt-bindings/power/imx7-power.h for fsl,imx7d-gpc,
++              include/dt-bindings/power/imx8m-power.h for fsl,imx8mq-gpc and
++              include/dt-bindings/power/imx8mm-power.h for fsl,imx8mm-gpc
++
+             maxItems: 1
  
- 	/* Request Power Up of the domain */
--	ret = regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
--				 domain->bits.pxx, domain->bits.pxx);
--	if (ret) {
--		dev_err(domain->dev, "failed to command PGC\n");
--		goto unmap;
--	}
-+	if (domain->bits.pxx) {
-+		ret = regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
-+					 domain->bits.pxx, domain->bits.pxx);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to command PGC\n");
-+			goto unmap;
-+		}
- 
--	/*
--	 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
--	 * for PUP_REQ/PDN_REQ bit to be cleared
--	 */
--	ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
--				       value,
--				       !(value & domain->bits.pxx),
--				       0, USEC_PER_MSEC);
--	if (ret) {
--		dev_err(domain->dev, "failed to command PGC\n");
--		goto unmap;
--	}
-+		/*
-+		 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
-+		 * for PUP_REQ/PDN_REQ bit to be cleared
-+		 */
-+		ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
-+					       value,
-+					       !(value & domain->bits.pxx),
-+					       0, USEC_PER_MSEC);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to command PGC\n");
-+			goto unmap;
-+		}
- 
--	/* Disable power control */
--	ret = regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
--				 GPC_PGC_CTRL_PCR, 0);
--	if (ret) {
--		dev_err(domain->dev, "Failed to disable power control !\n");
--		goto unmap;
-+		/* Disable power control */
-+		ret = regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
-+					 GPC_PGC_CTRL_PCR, 0);
-+		if (ret) {
-+			dev_err(domain->dev, "Failed to disable power control !\n");
-+			goto unmap;
-+		}
- 	}
- 
- 	/* request the ADB400 to power up */
-@@ -212,8 +216,9 @@ static int imx_gpc_pu_pgc_sw_pup_req(struct generic_pm_domain *genpd)
- 				genpd->name);
- 	}
- 
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, 0);
-+	if (domain->bits.map)
-+		regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+				   domain->bits.map, 0);
- 
- 	/* Disable all clocks */
- 	for (i = 0; i < domain->num_clks; i++)
-@@ -256,11 +261,13 @@ static int imx_gpc_pu_pgc_sw_pdn_req(struct generic_pm_domain *genpd)
- 	}
- 
- 	/* Map the domain to the A53 core */
--	ret = regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--				 domain->bits.map, domain->bits.map);
--	if (ret) {
--		dev_err(domain->dev, "failed to map GPC PGC domain\n");
--		goto disable_clocks;
-+	if (domain->bits.map) {
-+		ret = regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+					 domain->bits.map, domain->bits.map);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to map GPC PGC domain\n");
-+			goto disable_clocks;
-+		}
- 	}
- 
- 	/* request the ADB400 to power down */
-@@ -278,32 +285,34 @@ static int imx_gpc_pu_pgc_sw_pdn_req(struct generic_pm_domain *genpd)
- 
- 	}
- 
--	/* Enable power control */
--	ret = regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
--				 GPC_PGC_CTRL_PCR, GPC_PGC_CTRL_PCR);
--	if (ret) {
--		dev_err(domain->dev, "Failed to enable power control !\n");
--		goto unmap;
--	}
-+	if (domain->bits.pxx) {
-+		/* Enable power control */
-+		ret = regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
-+					 GPC_PGC_CTRL_PCR, GPC_PGC_CTRL_PCR);
-+		if (ret) {
-+			dev_err(domain->dev, "Failed to enable power control !\n");
-+			goto unmap;
-+		}
- 
--	/* Request Power Down of the domain */
--	ret = regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
--				 domain->bits.pxx, domain->bits.pxx);
--	if (ret) {
--		dev_err(domain->dev, "failed to command PGC\n");
--		goto unmap;
--	}
-+		/* Request Power Down of the domain */
-+		ret = regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
-+					 domain->bits.pxx, domain->bits.pxx);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to command PGC\n");
-+			goto unmap;
-+		}
- 
--	/*
--	 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
--	 * for PUP_REQ/PDN_REQ bit to be cleared
--	 */
--	ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
--				       value,
--				       !(value & domain->bits.pxx),
--				       0, USEC_PER_MSEC);
--	if (ret)
--		dev_err(domain->dev, "failed to command PGC\n");
-+		/*
-+		 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
-+		 * for PUP_REQ/PDN_REQ bit to be cleared
-+		 */
-+		ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
-+					       value,
-+					       !(value & domain->bits.pxx),
-+					       0, USEC_PER_MSEC);
-+		if (ret)
-+			dev_err(domain->dev, "failed to command PGC\n");
-+	}
- 
- 	if (!IS_ERR(domain->regulator)) {
- 		ret = regulator_disable(domain->regulator);
-@@ -311,8 +320,9 @@ static int imx_gpc_pu_pgc_sw_pdn_req(struct generic_pm_domain *genpd)
- 			dev_err(domain->dev, "failed to disable regulator\n");
- 	}
- 
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, 0);
-+	if (domain->bits.map)
-+		regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+				   domain->bits.map, 0);
- 
- 	/* Disable all clocks */
- 	for (i = 0; i < domain->num_clks; i++)
+           clocks:
+diff --git a/include/dt-bindings/power/imx8mm-power.h b/include/dt-bindings/power/imx8mm-power.h
+new file mode 100644
+index 000000000000..bec25fd32394
+--- /dev/null
++++ b/include/dt-bindings/power/imx8mm-power.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
++/*
++ *  Copyright (C) 2021 Adrien Grassein <adrien.grassein@gmail.com>
++ */
++
++#ifndef __DT_BINDINGS_IMX8MM_POWER_H__
++#define __DT_BINDINGS_IMX8MM_POWER_H__
++
++#define IMX8MM_POWER_DOMAIN_HSIOMIX	0
++#define IMX8MM_POWER_DOMAIN_PCIE1	1
++#define IMX8MM_POWER_DOMAIN_USB_OTG1	2
++#define IMX8MM_POWER_DOMAIN_USB_OTG2	3
++#define IMX8MM_POWER_DOMAIN_GPU		4
++#define IMX8MM_POWER_DOMAIN_VPU		5
++#define IMX8MM_POWER_DOMAIN_VPU_G1	6
++#define IMX8MM_POWER_DOMAIN_VPU_G2	7
++#define IMX8MM_POWER_DOMAIN_VPU_H1	8
++#define IMX8MM_POWER_DOMAIN_DISPLAY	9
++#define IMX8MM_POWER_DOMAIN_MIPI	10
++
++#endif
 -- 
 2.25.1
 
