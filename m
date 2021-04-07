@@ -2,153 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941A2356F15
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4304356F1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348553AbhDGOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239804AbhDGOoF (ORCPT
+        id S1345335AbhDGOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:45:48 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:44689 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244998AbhDGOp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:44:05 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6DEC06175F;
-        Wed,  7 Apr 2021 07:43:55 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id o11so4855628qvh.11;
-        Wed, 07 Apr 2021 07:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/btP8VyRZ+PtRHEtHpKhEBU92313kMIz6dauarfwMLw=;
-        b=FGKaXVsd1J+4FesmYRgTHlNBQriTvi5/iDTaOcVP69WtLq6kN3edC0JqVIFnlLsYCA
-         L72IWqTaluslQzvNuGEb7aMe3IME2oWNyoARDuYUeRNb3welcW+9okrJ7XAOC+swKB4v
-         dMVZ1vwObj+LmQxNnjAWnDXIx49wdxr69g2CrT35DofA+OxaPgZqdQ2NjBafPNOZq8za
-         IdG91Gjcaj0dJ3qIsp2CXt9SOgAWykDlCyJwJmXog8jWDKPbMM+3PA94uAw0Dg5E5jSY
-         6r5WeWHI1+TX5j0RBeDnWTHBfvVDq1edl1gDZywRllmKWg4xKZ28aCg+MrLm+65tRXbP
-         nSqQ==
+        Wed, 7 Apr 2021 10:45:26 -0400
+Received: by mail-ot1-f42.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso18269100oti.11;
+        Wed, 07 Apr 2021 07:45:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/btP8VyRZ+PtRHEtHpKhEBU92313kMIz6dauarfwMLw=;
-        b=M1c4qI5jNQEPRi0jVskt57Y/UbhfYFKQFvgX7lOJhO8u5EDSBVLsSDXWOEgOIi7RED
-         krqA/ESt0tGhhlYqd4g/3QzfunOd5CDZ1cvZoSbavCxttr0A5SaNKF82AX+rUkGA6Xoc
-         OUeBVHPNTGW42mjXqULzsjmv++8ytzPhUjxNTmHCb9+RNV1aDdyh4FhZ6g5ioEIfEwsK
-         qcNhc2MgQVD1kaB6Bew0FJPXXOjNLu4QN5Z0Hp0BrX6P7vje2ea8mMC6TXmdySXywOLx
-         B2bna2plJqlZkKEkQ6lcKt/yqVmbsDmLwhZObGRdYP2rOoxYABWRrXRizxQ2qIVR9OjX
-         kKog==
-X-Gm-Message-State: AOAM532jg7KiL7MJ4FOia+ZQhfJwqcH6Csro3ie6dGka+e33JZr/J8hN
-        xyYVVysDUzoY6eO38FzFegiD1id93eg=
-X-Google-Smtp-Source: ABdhPJx72scUaq5TlcVed08ZTISLmlNbmEHtmG617kEvTB0RSvFRyEXWpI7TqiBxKteAikcYxNjhiQ==
-X-Received: by 2002:a0c:9e5e:: with SMTP id z30mr3809678qve.61.1617806634967;
-        Wed, 07 Apr 2021 07:43:54 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:781f])
-        by smtp.gmail.com with ESMTPSA id 75sm18097680qkj.134.2021.04.07.07.43.53
+        bh=Y7LejqSjmP72JykNbNh8s7/3JV7drAODmjJ4r8ppAGA=;
+        b=dcfrVT7PsjcaTfAF+EvOWwt5jVOMmIf4ibPfWP3iONTXgmGLZ8fdtADYGGuqApX4s1
+         yz0g3P92l10aeix0T8qHkhhlbDTnKTT6axpj1zLxY2BwvNNG/1vgc2TlX5rIbeQ6FUJo
+         +6F2UtbB+WiBt1RHvQdv7a0I7pQdq/9KaE5t4g6/4OJoK3rty0ecp7dkZcI40mDXitus
+         EXNK6U8teAlr+XM9TvtnoD+dA0Yr5HJ0N5QuMgYXLfnl3RFpLzuOQQgz8Q20ULIcEVdw
+         klxvIo2f2ehN0wEaXr2YQMAQ1g4i8stnVFmbseyNMQCiB6eQfu8JjrvVbKweG7L/aMNo
+         YeVQ==
+X-Gm-Message-State: AOAM530Sm1wq+23CqRNNyUCF+NBe8bJy/+8EYYtCnelktWChm/7whbk1
+        U0KoqN+GSd63l2QH3GNkqg==
+X-Google-Smtp-Source: ABdhPJw5blCCz/SmqrvGWwD6HM+mFvtA4XUo4j5GQ0AEiXN+1TepkMRXXAVob8fvIbUbv7Tdp6I5YA==
+X-Received: by 2002:a05:6830:15d2:: with SMTP id j18mr3327684otr.75.1617806716946;
+        Wed, 07 Apr 2021 07:45:16 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c2sm5317311otf.66.2021.04.07.07.45.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:43:54 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:43:52 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/3] loop: Use worker per cgroup instead of kworker
-Message-ID: <YG3FKCkcwk7eGdpc@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
- <20210403020902.1384-1-hdanton@sina.com>
- <20210407065300.1478-1-hdanton@sina.com>
+        Wed, 07 Apr 2021 07:45:16 -0700 (PDT)
+Received: (nullmailer pid 3719382 invoked by uid 1000);
+        Wed, 07 Apr 2021 14:45:15 -0000
+Date:   Wed, 7 Apr 2021 09:45:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>, devicetree@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 29/32] docs: dt: update writing-schema.rst references
+Message-ID: <20210407144515.GA3719288@robh.at.kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+ <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407065300.1478-1-hdanton@sina.com>
+In-Reply-To: <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:53:00PM +0800, Hillf Danton wrote:
-> On Tue, 6 Apr 2021 Dan Schatzberg wrote:
-> >On Sat, Apr 03, 2021 at 10:09:02AM +0800, Hillf Danton wrote:
-> >> On Fri,  2 Apr 2021 12:16:32 Dan Schatzberg wrote:
-> >> > +queue_work:
-> >> > +	if (worker) {
-> >> > +		/*
-> >> > +		 * We need to remove from the idle list here while
-> >> > +		 * holding the lock so that the idle timer doesn't
-> >> > +		 * free the worker
-> >> > +		 */
-> >> > +		if (!list_empty(&worker->idle_list))
-> >> > +			list_del_init(&worker->idle_list);
-> >> 
-> >> Nit, only queue work if the worker is inactive - otherwise it is taking
-> >> care of the cmd_list.
-> >
-> >By worker is inactive, you mean worker is on the idle_list? Yes, I
-> >think you're right that queue_work() is unnecessary in that case since
-> >each worker checks empty cmd_list then adds itself to idle_list under
-> >the lock.
-
-A couple other corner cases - When worker is just allocated, it needs
-a queue_work() and rootcg always needs a queue_work() since it never
-sits on the idle_list. It does add to the logic a bit rather than just
-unconditionally invoking queue_work()
-
-> >
-> >> 
-> >> > +		work = &worker->work;
-> >> > +		cmd_list = &worker->cmd_list;
-> >> > +	} else {
-> >> > +		work = &lo->rootcg_work;
-> >> > +		cmd_list = &lo->rootcg_cmd_list;
-> >> > +	}
-> >> > +	list_add_tail(&cmd->list_entry, cmd_list);
-> >> > +	queue_work(lo->workqueue, work);
-> >> > +	spin_unlock_irq(&lo->lo_work_lock);
-> >> >  }
-> >> [...]
-> >> > +	/*
-> >> > +	 * We only add to the idle list if there are no pending cmds
-> >> > +	 * *and* the worker will not run again which ensures that it
-> >> > +	 * is safe to free any worker on the idle list
-> >> > +	 */
-> >> > +	if (worker && !work_pending(&worker->work)) {
-> >> 
-> >> The empty cmd_list is a good enough reason for worker to become idle.
-> >
-> >This is only true with the above change to avoid a gratuitous
-> >queue_work(), right?
+On Thu, 01 Apr 2021 14:17:49 +0200, Mauro Carvalho Chehab wrote:
+> Changeset b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
+> renamed: Documentation/devicetree/writing-schema.rst
+> to: Documentation/devicetree/bindings/writing-schema.rst.
 > 
-> It is always true because of the empty cmd_list - the idle_list is the only
-> place for the worker to go at this point.
+> Update the cross-references accordingly.
 > 
-> >Otherwise we run the risk of freeing a worker
-> >concurrently with loop_process_work() being invoked.
+> Fixes: b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/submitting-patches.rst | 2 +-
+>  scripts/checkpatch.pl                                    | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> My suggestion is a minor optimization at most without any change to removing
-> worker off the idle_list on queuing work - that cuts the risk for you.
 
-If I just change this line from
-
-if (worker && !work_pending(&worker->work)) {
-
-to
-
-if (worker) {
-
-then the following sequence of events is possible:
-
-1) loop_queue_work runs, adds a command to the worker list
-2) loop_process_work runs, processes a single command and then drops
-the lock and reschedules
-3) loop_queue_work runs again, acquires the lock, adds to the list and
-invokes queue_work() again
-4) loop_process_work resumes, acquires lock, processes work, notices
-list is empty and adds itself to the idle_list
-5) idle timer fires and frees the worker
-6) loop_process_work runs again (because of the queue_work in 3) and
-accesses freed memory
-
-The !work_pending... check prevents 4) from adding itself to the
-idle_list so this is not possible. I believe we can only make this
-change if we also make the other change you suggested to avoid
-gratuitous queue_work()
+Applied, thanks!
