@@ -2,164 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1735752F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E11357535
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355733AbhDGTvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345736AbhDGTvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D9AB610A4;
-        Wed,  7 Apr 2021 19:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617825095;
-        bh=VzFA9I2C0CYUWhztVXg4L5zMRzkxsAqEzsg1FbeHjjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aL3N2w7MZLtMl+NYyZDbCNNJoBFrGOpFxpNau/HFm5Jbj01weYZsw8IjKwcPKXuZi
-         0XqLHEnELZCOpIFbiFolJ/5M6UEGoRgMR52dhbFTZ65CqGgaW9x4aCMvYHRgHoUyHq
-         lTaCo4X+4qIsKh/pQ6KekQ+g1ESE7Zg9tV0uC21W3pDwxqC1zJXjclCrt1AEHHOlRd
-         P5e5a8EEDRk04wNysHoN1p5za4ouGER+JMESJ1Ynz2VEkXPAwzSiryXfJem3OcT6K+
-         LkByX7+qAEQdt+/1qSp/m8WoQExPFglnAlyq2LlJM9vRFXSgETNnmtWrIb9VPEWjok
-         tJ5baXOsxknvA==
-Date:   Wed, 7 Apr 2021 12:51:30 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] gcov: re-fix clang-11+ support
-Message-ID: <20210407195130.bacppddzyjs56qxi@archlinux-ax161>
-References: <20210407185456.41943-1-ndesaulniers@google.com>
- <20210407185456.41943-2-ndesaulniers@google.com>
+        id S1355746AbhDGTvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345736AbhDGTvw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:51:52 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA92C06175F;
+        Wed,  7 Apr 2021 12:51:42 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id o10so1888915ybb.10;
+        Wed, 07 Apr 2021 12:51:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NhiV7Lg6NFf2SWTJt1l5/TSaQotsKL/48Z7LwEwUbxo=;
+        b=IfaB7wP0POCwNjxYNSpx71tw+Rgsvm9ifsLVIgxnOYzI9oH+Agho6ks0bXCUuW68Oe
+         FfaaOIzTAkcQi87vtt2ioy04PhXrFB6kUtnGpLAQH7RX74PA3L6b1QwGHTI/cXEIN+C1
+         8thqMoCQ/Kcm0ko/9yDCcqRZUaodNiZJ58jg4QBLac9KONHj21/tshUEm+PatylL49Sf
+         gZxpdtXk6wwKSd078zvTJRwE6NS+MBNt/ShrZu+7KgcFbKHVmOFrFafFmGCAE2FFWKSg
+         mhK3Zv/cvrGzbB54gx2Aie/u5DTjkFTxylry2DzW2aLSUOxtBXPbNIK599rukYQO3W46
+         vs8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NhiV7Lg6NFf2SWTJt1l5/TSaQotsKL/48Z7LwEwUbxo=;
+        b=lQJ1hPcfO02Qt8QOtqP+HNNnW2neYLYVRD0PR9IziZhejAHlUJSG+S9qRJEqlxSPBH
+         1WK7B7BubTAbQK9zrYm7Rnlzhi4n+YanKvLxGAN1PxtXkUjvPaaxC1rLgxgDtpdOz0i9
+         h04EeiFT8UYaLx0h9N3Bmuaz9JSEhKkK3R/K5mRh/EDf8AW3vERGoEVDAwKntMmB+5gc
+         sEQ5X+Xtdf/VsrAMJkAub7jeOB1WsXH+FEug1OS7wuqGWU0eSdrC8YP19XQZzYjpdtIT
+         oD2IjHUbo81me4aFk2Q2V8wYV/DhlkWGyiAH2q7e2+eWdkR8G3XuPEMn6EbtR7yENSgZ
+         WYpA==
+X-Gm-Message-State: AOAM533fLEBzXQ//o5v5zckepLWuC5LmmYkev5DojC3aveewYUkQryZI
+        y4ZbeawXCTzwwPSLUy7sJWa5qZnRMxnbqzE+W87A3PAY
+X-Google-Smtp-Source: ABdhPJyU4GB8wA/t0KzUh6YGE+cjbSCczuBUC5i0dg2k+CO3N+I2P9ldAnSJOgtYCV7fEU/Ou7UtqdoGZPXd8Q+rBXY=
+X-Received: by 2002:a25:d87:: with SMTP id 129mr6828786ybn.260.1617825101859;
+ Wed, 07 Apr 2021 12:51:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407185456.41943-2-ndesaulniers@google.com>
+References: <20210406185400.377293-1-pctammela@mojatatu.com>
+ <20210406185400.377293-3-pctammela@mojatatu.com> <CAEf4BzYmj_ZPDq8Zi4dbntboJKRPU2TVopysBNrdd9foHTfLZw@mail.gmail.com>
+ <CAKY_9u3Y9Ay6yBwt27MaCCm=5aVmH92OkFe2aaoD6YWkCkYjBw@mail.gmail.com>
+In-Reply-To: <CAKY_9u3Y9Ay6yBwt27MaCCm=5aVmH92OkFe2aaoD6YWkCkYjBw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Apr 2021 12:51:31 -0700
+Message-ID: <CAEf4BzaLKm_fy4oO4Rdp76q2KoC6yC1WcJLuehoZUu9JobG-Cw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] libbpf: selftests: refactor
+ 'BPF_PERCPU_TYPE()' and 'bpf_percpu()' macros
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:54:55AM -0700, Nick Desaulniers wrote:
-> LLVM changed the expected function signature for
-> llvm_gcda_emit_function() in the clang-11 release.  Users of clang-11 or
-> newer may have noticed their kernels producing invalid coverage
-> information:
-> 
-> $ llvm-cov gcov -a -c -u -f -b <input>.gcda -- gcno=<input>.gcno
-> 1 <func>: checksum mismatch, \
->   (<lineno chksum A>, <cfg chksum B>) != (<lineno chksum A>, <cfg chksum C>)
-> 2 Invalid .gcda File!
-> ...
-> 
-> Fix up the function signatures so calling this function interprets its
-> parameters correctly and computes the correct cfg checksum. In
-> particular, in clang-11, the additional checksum is no longer optional.
-> 
-> Link: https://reviews.llvm.org/rG25544ce2df0daa4304c07e64b9c8b0f7df60c11d
-> Cc: stable@vger.kernel.org #5.4+
-> Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
-> Tested-by: Prasad Sodagudi <psodagud@quicinc.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Wed, Apr 7, 2021 at 12:30 PM Pedro Tammela <pctammela@gmail.com> wrote:
+>
+> Em qua., 7 de abr. de 2021 =C3=A0s 15:31, Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> escreveu:
+> >
+> > On Tue, Apr 6, 2021 at 11:55 AM Pedro Tammela <pctammela@gmail.com> wro=
+te:
+> > >
+> > > This macro was refactored out of the bpf selftests.
+> > >
+> > > Since percpu values are rounded up to '8' in the kernel, a careless
+> > > user in userspace might encounter unexpected values when parsing the
+> > > output of the batched operations.
+> >
+> > I wonder if a user has to be more careful, though? This
+> > BPF_PERCPU_TYPE, __bpf_percpu_align and bpf_percpu macros seem to
+> > create just another opaque layer. It actually seems detrimental to me.
+> >
+> > I'd rather emphasize in the documentation (e.g., in
+> > bpf_map_lookup_elem) that all per-cpu maps are aligning values at 8
+> > bytes, so user has to make sure that array of values provided to
+> > bpf_map_lookup_elem() has each element size rounded up to 8.
+>
+> From my own experience, the documentation has been a very unreliable
+> source, to the point that I usually jump to the code first rather than
+> to the documentation nowadays[1].
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+I totally agree, which is why I think improving docs is necessary.
+Unfortunately docs are usually lagging behind, because generally
+people hate writing documentation and it's just a fact of life.
 
-> ---
->  kernel/gcov/clang.c | 38 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 33 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index d41f5ecda9db..1747204541bf 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -69,7 +69,9 @@ struct gcov_fn_info {
->  
->  	u32 ident;
->  	u32 checksum;
-> +#if CONFIG_CLANG_VERSION < 110000
->  	u8 use_extra_checksum;
-> +#endif
->  	u32 cfg_checksum;
->  
->  	u32 num_counters;
-> @@ -111,6 +113,7 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
->  }
->  EXPORT_SYMBOL(llvm_gcda_start_file);
->  
-> +#if CONFIG_CLANG_VERSION < 110000
->  void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
->  		u8 use_extra_checksum, u32 cfg_checksum)
->  {
-> @@ -126,6 +129,21 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
->  	info->cfg_checksum = cfg_checksum;
->  	list_add_tail(&info->head, &current_info->functions);
->  }
-> +#else
-> +void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
-> +{
-> +	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +
-> +	if (!info)
-> +		return;
-> +
-> +	INIT_LIST_HEAD(&info->head);
-> +	info->ident = ident;
-> +	info->checksum = func_checksum;
-> +	info->cfg_checksum = cfg_checksum;
-> +	list_add_tail(&info->head, &current_info->functions);
-> +}
-> +#endif
->  EXPORT_SYMBOL(llvm_gcda_emit_function);
->  
->  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
-> @@ -256,11 +274,16 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
->  		!list_is_last(&fn_ptr2->head, &info2->functions)) {
->  		if (fn_ptr1->checksum != fn_ptr2->checksum)
->  			return false;
-> +#if CONFIG_CLANG_VERSION < 110000
->  		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
->  			return false;
->  		if (fn_ptr1->use_extra_checksum &&
->  			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
->  			return false;
-> +#else
-> +		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
-> +			return false;
-> +#endif
->  		fn_ptr1 = list_next_entry(fn_ptr1, head);
->  		fn_ptr2 = list_next_entry(fn_ptr2, head);
->  	}
-> @@ -378,17 +401,22 @@ size_t convert_to_gcda(char *buffer, struct gcov_info *info)
->  
->  	list_for_each_entry(fi_ptr, &info->functions, head) {
->  		u32 i;
-> -		u32 len = 2;
-> -
-> -		if (fi_ptr->use_extra_checksum)
-> -			len++;
->  
->  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
-> -		pos += store_gcov_u32(buffer, pos, len);
-> +#if CONFIG_CLANG_VERSION < 110000
-> +		pos += store_gcov_u32(buffer, pos,
-> +			fi_ptr->use_extra_checksum ? 3 : 2);
-> +#else
-> +		pos += store_gcov_u32(buffer, pos, 3);
-> +#endif
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
-> +#if CONFIG_CLANG_VERSION < 110000
->  		if (fi_ptr->use_extra_checksum)
->  			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-> +#else
-> +		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-> +#endif
->  
->  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
->  		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
-> 
+> Tests, samples and projects have always been my source of truth and we
+> are already lacking a bit on those as well. For instance, the samples
+> directory contains programs that are very outdated (I didn't check if
+> they are still functional).
+
+Yeah, samples/bpf is bitrotting. selftests/bpf, though, are maintained
+and run regularly and vigorously, so making sure they set a good and
+realistic example is a good.
+
+
+> I think macros like these will be present in most of the project
+> dealing with batched operations and as a daily user of libbpf I don't
+> see how this could not be offered by libbpf as a standardized way to
+> declare percpu types.
+
+If I were using per-CPU maps a lot, I'd make sure I use u64 and
+aligned(8) types and bypass all the macro ugliness, because there is
+no need in it and it just hurts readability. So I don't want libbpf to
+incentivize bad choices here by providing seemingly convenient macros.
+Users have to be aware that values are 8-byte aligned/extended. That's
+not a big secret and not a very obscure thing to learn anyways.
+
+>
+> [1] So batched operations were introduced a little bit over a 1 year
+> ago and yet the only reference I had for it was the selftests. The
+> documentation is on my TODO list, but that's just because I have to
+> deal with it daily.
+>
+
+Yeah, please do contribute them!
+
+> >
+> > In practice, I'd recommend users to always use __u64/__s64 when having
+> > primitive integers in a map (they are not saving anything by using
+> > int, it just creates an illusion of savings). Well, maybe on 32-bit
+> > arches they would save a bit of CPU, but not on typical 64-bit
+> > architectures. As for using structs as values, always mark them as
+> > __attribute__((aligned(8))).
+> >
+> > Basically, instead of obscuring the real use some more, let's clarify
+> > and maybe even provide some examples in documentation?
+>
+> Why not do both?
+>
+> Provide a standardized way to declare a percpu value with examples and
+> a good documentation with examples.
+> Let the user decide what is best for his use case.
+
+What is a standardized way? A custom macro with struct { T v; }
+inside? That's just one way of doing this, and it requires another
+macro to just access the value (because no one wants to write
+my_values[cpu].v, right?). I'd say the standardized way of reading
+values should look like `my_values[cpu]`, that's it. For that you use
+64-bit integers or 8-byte aligned structs. And don't mess with macros
+for that at all.
+
+So if a user insists on using int/short/char as value, they can do
+their own struct { char v} __aligned(8) trick. But I'd advise such
+users to reconsider and use u64. If they are using structs for values,
+always mark __aligned(8) and forget about this in the rest of your
+code.
+
+As for allocating memory for array of per-cpu values, there is also no
+single standardized way we can come up with. It could be malloc() on
+the heap. Or alloca() on the stack. Or it could be pre-allocated one
+for up to maximum supported CPUs. Or... whatever makes sense.
+
+So I think the best way to handle all that is to clearly explain how
+reading per-CPU values from per-CPU maps works in BPF and what are the
+memory layout expectations.
+
+>
+> >
+> > >
+> > > Now that both array and hash maps have support for batched ops in the
+> > > percpu variant, let's provide a convenient macro to declare percpu ma=
+p
+> > > value types.
+> > >
+> > > Updates the tests to a "reference" usage of the new macro.
+> > >
+> > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > ---
+> > >  tools/lib/bpf/bpf.h                           | 10 ++++
+> > >  tools/testing/selftests/bpf/bpf_util.h        |  7 ---
+> > >  .../bpf/map_tests/htab_map_batch_ops.c        | 48 ++++++++++-------=
+--
+> > >  .../selftests/bpf/prog_tests/map_init.c       |  5 +-
+> > >  tools/testing/selftests/bpf/test_maps.c       | 16 ++++---
+> > >  5 files changed, 46 insertions(+), 40 deletions(-)
+> > >
+> >
+> > [...]
+> >
+> > > @@ -400,11 +402,11 @@ static void test_arraymap(unsigned int task, vo=
+id *data)
+> > >  static void test_arraymap_percpu(unsigned int task, void *data)
+> > >  {
+> > >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
+> > > -       BPF_DECLARE_PERCPU(long, values);
+> > > +       pcpu_map_value_t values[nr_cpus];
+> > >         int key, next_key, fd, i;
+> > >
+> > >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
+> > > -                           sizeof(bpf_percpu(values, 0)), 2, 0);
+> > > +                           sizeof(long), 2, 0);
+> > >         if (fd < 0) {
+> > >                 printf("Failed to create arraymap '%s'!\n", strerror(=
+errno));
+> > >                 exit(1);
+> > > @@ -459,7 +461,7 @@ static void test_arraymap_percpu(unsigned int tas=
+k, void *data)
+> > >  static void test_arraymap_percpu_many_keys(void)
+> > >  {
+> > >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
+> >
+> > This just sets a bad example for anyone using selftests as an
+> > aspiration for their own code. bpf_num_possible_cpus() does exit(1)
+> > internally if libbpf_num_possible_cpus() returns error. No one should
+> > write real production code like that. So maybe let's provide a better
+> > example instead with error handling and malloc (or perhaps alloca)?
+>
+> OK. Makes sense.
+>
+> >
+> > > -       BPF_DECLARE_PERCPU(long, values);
+> > > +       pcpu_map_value_t values[nr_cpus];
+> > >         /* nr_keys is not too large otherwise the test stresses percp=
+u
+> > >          * allocator more than anything else
+> > >          */
+> > > @@ -467,7 +469,7 @@ static void test_arraymap_percpu_many_keys(void)
+> > >         int key, fd, i;
+> > >
+> > >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
+> > > -                           sizeof(bpf_percpu(values, 0)), nr_keys, 0=
+);
+> > > +                           sizeof(long), nr_keys, 0);
+> > >         if (fd < 0) {
+> > >                 printf("Failed to create per-cpu arraymap '%s'!\n",
+> > >                        strerror(errno));
+> > > --
+> > > 2.25.1
+> > >
