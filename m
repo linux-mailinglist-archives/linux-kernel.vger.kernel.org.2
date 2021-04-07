@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD96357273
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34F2357274
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354383AbhDGQzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354367AbhDGQzN (ORCPT
+        id S1354388AbhDGQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:55:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48349 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347854AbhDGQzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:55:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D76C061756;
-        Wed,  7 Apr 2021 09:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=PJEGDTfx4FpHUfzm/IRlkyDCU12YvWeK1NxNzYl/AlY=; b=IuK+PUXsE0Q27Z+WJZY5fVgKZd
-        jBBDFbH+TO4Kuw/DGmuRbqBZAkScBp4b4IEEuaduuYruDLfTOg4xSHn+nPCdPXTiKWBfVw8GtMbpu
-        eibVSjdAooE/oCCFJ9i7VNHhqde2OWycjWHa1A/Ek6dBGd4E22/GbH6z0XDVTCvebNvzLmqbsb04z
-        oh/m3/o6ffBGwiYBbqDMXv7mJScMbc3t839fHnb1DCwFu8u7UiJ7DGG497/+izZDMNIQgUQF/SC9c
-        ayx70l8lQidfnNLmdGyJZVkt9ZzXsum0ZBoqo1EChaX7MgWdaOhI5KBct919YT6+iCK/vgUwUnErn
-        pwDsDA1g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUBS5-005W26-Ah; Wed, 07 Apr 2021 16:54:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8A5C3001FB;
-        Wed,  7 Apr 2021 18:54:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 867582BC07BA6; Wed,  7 Apr 2021 18:54:46 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 18:54:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <YG3j1j/MNCszy12w@hirez.programming.kicks-ass.net>
-References: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
- <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
- <20210407094224.GA3393992@infradead.org>
- <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
- <YG3VRIUjjaK+pfES@hirez.programming.kicks-ass.net>
+        Wed, 7 Apr 2021 12:55:39 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lUBSj-0004KA-8R
+        for linux-kernel@vger.kernel.org; Wed, 07 Apr 2021 16:55:29 +0000
+Received: by mail-wr1-f69.google.com with SMTP id u10so5753067wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:55:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b8tc1z+Zb7AbxJopa6NWnwQSEHNIOQUVlOv43mlLfRg=;
+        b=mAjtGfi4oz4HEO3GHctfmCHTy0d8q/qAwLxuZpd4WA+j49s0+NOxHUEbXLenbtzb7u
+         hs0Y6kR6NIifGLTD0g+quXRMnVa17VWdGNebyFYfPgUTVNaXu8Z2U4DqI1fTMGTZE34M
+         dd0dwl7YLPHIVSTUu0aXMD96IXoBvkiwitOT4miQc1Ye1FnyxfpSvG77zgVvvPZOO5dK
+         QVGWDvd4a/BszNYkOdLh7O4MAGccwIOuSzVceSo+s14AgRHspLDKCW9R/L1rWTcxXQHx
+         7iIIx/QFxwQwCUMuBroi9FxLPkM7KTF8D2OdS8IcErOVzPFlw36fXoUqUgvZQWo3rl9A
+         r/FQ==
+X-Gm-Message-State: AOAM5321zco+PJS0ynY3pXKevIxz8ev2n0N3fPmQsayGDh3vil8S+WFd
+        PbmL181vbaAkyDdJ8WNoc6h9KMtqHVtiGEl1HQ5roVS0qPWjqRgEfFjoltg9VINxKaNIK8zXGkM
+        I525vMRnsOOWOh7Oj0TGH3guQT+63eYwadcELUBb7aA==
+X-Received: by 2002:adf:83e3:: with SMTP id 90mr5487450wre.153.1617814529040;
+        Wed, 07 Apr 2021 09:55:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwERFh51xp45M2S6ot/dHXjHlp4ZeSuWNqmxrKD8vUxGDYwHLWs5JY0sh/0TZbZQBM0SehJTA==
+X-Received: by 2002:adf:83e3:: with SMTP id 90mr5487443wre.153.1617814528921;
+        Wed, 07 Apr 2021 09:55:28 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id j30sm44488457wrj.62.2021.04.07.09.55.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 09:55:28 -0700 (PDT)
+Subject: Re: [PATCH] memory: atmel-sdramc: check of_device_get_match_data()
+ return value
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210407154447.70540-1-krzysztof.kozlowski@canonical.com>
+ <YG3boJNqAoNCBeIB@piout.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <57470934-d2db-a360-8347-4debe5830f7b@canonical.com>
+Date:   Wed, 7 Apr 2021 18:55:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YG3VRIUjjaK+pfES@hirez.programming.kicks-ass.net>
+In-Reply-To: <YG3boJNqAoNCBeIB@piout.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:52:36PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph Müllner wrote:
-> > The comparison with sparc64 is not applicable, as sparc64 does not
-> > have LL/SC instructions.
+On 07/04/2021 18:19, Alexandre Belloni wrote:
+> Hi,
 > 
-> Sparc64 has CAS, without hardware fwd progress. It has to do software
-> backoff for failed CAS in order to do software fwd progress.
+> On 07/04/2021 17:44:47+0200, Krzysztof Kozlowski wrote:
+>> If the driver is probed, the of_device_get_match_data() should not
+>> return NULL, however for sanity check its return value.
+>>
+> 
+> As you say, there is no way this will ever be the case, I don't see the
+> point of checking the return value, this adds 12 bytes for nothing...
+> 
+> Maybe coverity should be fixed as there are many drivers making the same
+> (true) assumption and I don't think this is worth the churn.
 
-Again, the longer answer is that this applies identically to LL/SC and
-I'm sure we actually have (or had) an architecture in tree that did just
-that. I just cannot remember which architecture that was.
+There are also several drivers having this check. To me an explicit NULL
+check is better and more readable than non-obvious assumption that the
+of_device_id table contains data for each entry and there is no other
+bind method (like for OF+I2C drivers). Even if the case is not real,
+this is nice, simple and explicit code.
+
+Best regards,
+Krzysztof
