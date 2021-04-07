@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37773356453
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298FC356456
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349095AbhDGGow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S1349115AbhDGGo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349068AbhDGGnz (ORCPT
+        with ESMTP id S1349149AbhDGGoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:43:55 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598C7C061761;
-        Tue,  6 Apr 2021 23:43:46 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id f29so9815911pgm.8;
-        Tue, 06 Apr 2021 23:43:46 -0700 (PDT)
+        Wed, 7 Apr 2021 02:44:15 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA73EC06174A;
+        Tue,  6 Apr 2021 23:44:05 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c204so8437642pfc.4;
+        Tue, 06 Apr 2021 23:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ud5Lzp79k1SGUuv+EiKNbNuFA/5+lE3CGchvKku3uIE=;
-        b=iJkwBi7KVbyZYS9GfX0BYQ91VreWjBOm8zpdIIlzLlF3Ry9LHDAcwS6uCbzrtlwzVO
-         O6P//6QInNKwmD/t9RPVEZx9rR02xxPqpSGP5ruuQddvo5izBtQLh2FfbtHhMTXOtg4M
-         92K4fjg30GwsFx+D1FiAVCCnwwfoFF+YIWFfcqjsX9/YJxuqEagqqpju5wV5CBeCtwbJ
-         VyoXFnEZW5qKcrMsQkrwxYrwemMg0WPhUsef2ZCfKOhEAGaOyxWZIqBN4OTGPgNIznHi
-         P0FZ+scia1jCQl9rd5JRaNv0//YaDXThk4BQuyvGMQyomtzFL1jUy62VLsTMV8qng45F
-         66OA==
+        bh=pz+9qnXlLq6MG0RWGwUAYrEGLB2Ibvwg3U+XKwAVHAY=;
+        b=hPz0Vr/0FNjH/shaPI4Kf6Q+NrMh3PzQxZZ4llx2LvOsULhzpXrut83oD4Dq/M+lPx
+         v3/fO8S4rXvbjfzn1kq+8AACkWIncAe1YGk2p0TrB7AxSA9ejUfK1ULtU/UX8AaC4tgN
+         Gpd/j5teDfVYuR8AnMBTtjGlndYTVAlVWmSBXI1E/gRQdtr1nBGx2KDn4Izgf8TrvoRi
+         lIdjCEJfPSwGt0S3PZxQ0w9tGNqrnbnrVQKn7SPKPph0Q0x8FS+IeRPF4OZJJm1R/a6f
+         t1ZPZeMEQg2soVzCgab/IIz8TjsLKIhFOGwJ4E5g74H2oRS9bKEsdCLJZTgzCYq9aBPu
+         b4dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ud5Lzp79k1SGUuv+EiKNbNuFA/5+lE3CGchvKku3uIE=;
-        b=LKAHiGzX91HQW4VC4zdMPxP9rOT8hcX0ByjHUzumU9c+Fv9JIjwJGIiwdzK6iLg4k5
-         OpUBTbX/pD6HlKUOPOe4x66B7aYWdbM0u8iMgXqkQHg7a5iPKAXdkmg5Zt94fxm3SNLh
-         k6vtsjhrMJfVoDZ4C8VlpClwRnQTaSOQykoisAsgO4hh5aV5EokJtdgfsvj0dtPERPBc
-         hgOrzot9NGN4TFubtwyRtdXNlGrBRP+7qKbkhLxfI/qPV1Wrnw+Z7hIFKb2yGhZzgsBz
-         yDoUrB5NpOhoMEXCLUbNHqutmP5G/BGCnPZWCSqVNreEnBIpXXy90BA4FS95ky6SuC14
-         anmg==
-X-Gm-Message-State: AOAM530Xit17lgf5Sqvd/WRefeVGTsd8EhHVhUDyUzkrWgLOa9WuCu6G
-        tTzUslDuurr9W/bsYOa/mao=
-X-Google-Smtp-Source: ABdhPJwiGXyAMRtVFst8y5vF7NeRJzg5ktr1IulCzxwSMwUNmxjCn4VFmNbLLH9kTYxuRPqh0iZbjg==
-X-Received: by 2002:a63:390:: with SMTP id 138mr1978644pgd.8.1617777825923;
-        Tue, 06 Apr 2021 23:43:45 -0700 (PDT)
+        bh=pz+9qnXlLq6MG0RWGwUAYrEGLB2Ibvwg3U+XKwAVHAY=;
+        b=tY/RDW/WnjeEggALJbVqTjkOAjOjWX6IT8rAGy51CODQwg5A26EbRAii5UHhG1uUQX
+         FlVrDL4oWVUQ/Ut3UmXIDAB2pJlZ2ZGEvES7XSUZRrovwoPxqQIoiJuTp9phd03C6lZR
+         xm0MS8wpEOucDZMtvx5gvHRtt2tAFGsZ81JXbrOthrd/kJGMz6eYVZpcacq7uQzPRNCQ
+         gUyimHsNbc+NFoZA5DWagnrU1kiPrL3Dl9PUTytEhoz05vpm0Ge7b6OHJtzJ6rGJqjY/
+         cpi2wLEiuTGxYSwQG65ZVEXpPWMFV2tKCN3G9hqMAVyVv38/kwhwEjS9WZUFoK/tnjrm
+         VdOg==
+X-Gm-Message-State: AOAM530RJ4KgSEe6rv+VH5ZyuZQTq8GVwM36fKDZQLSqC1osZjowWTrt
+        ZbWWSHZa4QTmVCcDjVrCbo8=
+X-Google-Smtp-Source: ABdhPJyvKlMC+j+4Xu3mfNkUoacARCr1TNNehDyvHlblMJewcOT5lLqeYU7xYDIEb/n9xvEg5gx+pQ==
+X-Received: by 2002:aa7:858e:0:b029:1f1:5df2:1f70 with SMTP id w14-20020aa7858e0000b02901f15df21f70mr1607759pfn.46.1617777845296;
+        Tue, 06 Apr 2021 23:44:05 -0700 (PDT)
 Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id p17sm19778622pfn.62.2021.04.06.23.43.45
+        by smtp.gmail.com with ESMTPSA id s76sm20749146pfc.110.2021.04.06.23.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:43:45 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:43:43 -0700
+        Tue, 06 Apr 2021 23:44:04 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:44:03 -0700
 From:   Pavle Rohalj <pavle.rohalj@gmail.com>
 To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 28/49] staging: sm750fb: Update members of lynx_cursor to
- snake case
-Message-ID: <b9f4e37adf0d973c2ce8566dd8bf48394a42a33c.1617776878.git.pavle.rohalj@gmail.com>
+Subject: [PATCH v2 29/49] staging: sm750fb: Rename function
+ sm750_hw_cursor_setSize to snake case
+Message-ID: <976e2df443f81ca1433b742621651425aac43e2e.1617776878.git.pavle.rohalj@gmail.com>
 References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,79 +65,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpatch.pl checks for the members
-of lynx_cursor structure, in particular maxW and maxH.
+Fix "Avoid CamelCase" checkpatch.pl checks for the function
+sm750_hw_cursor_setSize.
 
 Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
- drivers/staging/sm750fb/sm750.c        | 8 ++++----
- drivers/staging/sm750fb/sm750.h        | 4 ++--
- drivers/staging/sm750fb/sm750_cursor.c | 4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/staging/sm750fb/sm750.c        | 2 +-
+ drivers/staging/sm750fb/sm750_cursor.c | 2 +-
+ drivers/staging/sm750fb/sm750_cursor.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index c237a8f8eb59..4f5f68e6aa60 100644
+index 4f5f68e6aa60..eeba12f4b267 100644
 --- a/drivers/staging/sm750fb/sm750.c
 +++ b/drivers/staging/sm750fb/sm750.c
-@@ -112,8 +112,8 @@ static int lynxfb_ops_cursor(struct fb_info *info, struct fb_cursor *fbcursor)
- 	crtc = &par->crtc;
- 	cursor = &crtc->cursor;
+@@ -120,7 +120,7 @@ static int lynxfb_ops_cursor(struct fb_info *info, struct fb_cursor *fbcursor)
  
--	if (fbcursor->image.width > cursor->maxW ||
--	    fbcursor->image.height > cursor->maxH ||
-+	if (fbcursor->image.width > cursor->max_w ||
-+	    fbcursor->image.height > cursor->max_h ||
- 	    fbcursor->image.depth > 1) {
- 		return -ENXIO;
- 	}
-@@ -723,8 +723,8 @@ static int lynxfb_set_fbinfo(struct fb_info *info, int index)
- 		0x800f0 + (int)crtc->channel * 0x140;
+ 	sm750_hw_cursor_disable(cursor);
+ 	if (fbcursor->set & FB_CUR_SETSIZE)
+-		sm750_hw_cursor_setSize(cursor,
++		sm750_hw_cursor_set_size(cursor,
+ 					fbcursor->image.width,
+ 					fbcursor->image.height);
  
- 	pr_info("crtc->cursor.mmio = %p\n", crtc->cursor.mmio);
--	crtc->cursor.maxH = crtc->cursor.maxW = 64;
--	crtc->cursor.size = crtc->cursor.maxH * crtc->cursor.maxW * 2 / 8;
-+	crtc->cursor.max_h = crtc->cursor.max_w = 64;
-+	crtc->cursor.size = crtc->cursor.max_h * crtc->cursor.max_w * 2 / 8;
- 	crtc->cursor.vstart = sm750_dev->pvMem + crtc->cursor.offset;
- 
- 	memset_io(crtc->cursor.vstart, 0, crtc->cursor.size);
-diff --git a/drivers/staging/sm750fb/sm750.h b/drivers/staging/sm750fb/sm750.h
-index 23eefd019ec9..8271cf7c89f3 100644
---- a/drivers/staging/sm750fb/sm750.h
-+++ b/drivers/staging/sm750fb/sm750.h
-@@ -122,8 +122,8 @@ struct lynx_cursor {
- 	int h;
- 	int size;
- 	/* hardware limitation */
--	int maxW;
--	int maxH;
-+	int max_w;
-+	int max_h;
- 	/* base virtual address and offset  of cursor image */
- 	char __iomem *vstart;
- 	int offset;
 diff --git a/drivers/staging/sm750fb/sm750_cursor.c b/drivers/staging/sm750fb/sm750_cursor.c
-index bbbef27cb329..43e6f52c2551 100644
+index 43e6f52c2551..d5ef40b8bc8e 100644
 --- a/drivers/staging/sm750fb/sm750_cursor.c
 +++ b/drivers/staging/sm750fb/sm750_cursor.c
-@@ -97,7 +97,7 @@ void sm750_hw_cursor_setData(struct lynx_cursor *cursor, u16 rop,
- 	count = pitch * cursor->h;
+@@ -58,7 +58,7 @@ void sm750_hw_cursor_disable(struct lynx_cursor *cursor)
+ 	poke32(HWC_ADDRESS, 0);
+ }
  
- 	/* in byte */
--	offset = cursor->maxW * 2 / 8;
-+	offset = cursor->max_w * 2 / 8;
- 
- 	data = 0;
- 	pstart = cursor->vstart;
-@@ -147,7 +147,7 @@ void sm750_hw_cursor_setData2(struct lynx_cursor *cursor, u16 rop,
- 	count = pitch * cursor->h;
- 
- 	/* in byte */
--	offset = cursor->maxW * 2 / 8;
-+	offset = cursor->max_w * 2 / 8;
- 
- 	data = 0;
- 	pstart = cursor->vstart;
+-void sm750_hw_cursor_setSize(struct lynx_cursor *cursor, int w, int h)
++void sm750_hw_cursor_set_size(struct lynx_cursor *cursor, int w, int h)
+ {
+ 	cursor->w = w;
+ 	cursor->h = h;
+diff --git a/drivers/staging/sm750fb/sm750_cursor.h b/drivers/staging/sm750fb/sm750_cursor.h
+index b59643dd61ed..edeed2ea4b04 100644
+--- a/drivers/staging/sm750fb/sm750_cursor.h
++++ b/drivers/staging/sm750fb/sm750_cursor.h
+@@ -5,7 +5,7 @@
+ /* hw_cursor_xxx works for voyager,718 and 750 */
+ void sm750_hw_cursor_enable(struct lynx_cursor *cursor);
+ void sm750_hw_cursor_disable(struct lynx_cursor *cursor);
+-void sm750_hw_cursor_setSize(struct lynx_cursor *cursor, int w, int h);
++void sm750_hw_cursor_set_size(struct lynx_cursor *cursor, int w, int h);
+ void sm750_hw_cursor_setPos(struct lynx_cursor *cursor, int x, int y);
+ void sm750_hw_cursor_setColor(struct lynx_cursor *cursor, u32 fg, u32 bg);
+ void sm750_hw_cursor_setData(struct lynx_cursor *cursor, u16 rop,
 -- 
 2.30.2
 
