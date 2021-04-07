@@ -2,166 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDDE35746E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD4D357471
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355376AbhDGSgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        id S1355375AbhDGShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhDGSgQ (ORCPT
+        with ESMTP id S230020AbhDGSht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:36:16 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44297C06175F;
-        Wed,  7 Apr 2021 11:36:06 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id a12so13539914pfc.7;
-        Wed, 07 Apr 2021 11:36:06 -0700 (PDT)
+        Wed, 7 Apr 2021 14:37:49 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73839C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:37:38 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 185so15653996ybf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t0pIiiT98/ffosAzDqF1bE5J3E9ujwJqQoC1fmcx5CE=;
-        b=fKTuMjGr9bgkeRZEUEDjFan7Vza2w0jXMH+IRVTMwj96/617d9721JXHsbSbQTEaVg
-         dwbFppUIWWyQ7qezqEZ2+ZNya7SuPL9OGEJG1z65G79/rBJk+vbQyhg6lctYAua18KDP
-         tpEDA2uVh/+ZSnod8Ubv5Fu/w0H5uIAwY6pDZsXuUX5JuFSkSUKea0MoUMuhFECkh5V/
-         yhicxnCbaU+GTbUydF08n7E5+9Bkgpoa6eRb0yqcEv61kWsTohv/xDES/2JPdIjkTrZN
-         wvf529udX52u9PhgLrAMZ3PjA6SaX9O3xyL28MRI2m2PUap9PZt7YWmt4CfPgGjbO2kk
-         5SBA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hFmdEZO1BHNBiU5bWvJmS9+4uxkaNYChSBn4oitTS5k=;
+        b=L+wrk/RF93uCEKYdSjS8UkiXQP3xbCxHc6mugRI0maBka2O44xaSm0X93edvL9OrJX
+         ujlPytRewz/1ho5KzGbQkj4xkcElRhWdcrTTgYnD+o9kIQNGioNHAhfqQXwNjHr1IDWp
+         vumBq8lQdp5yqRHkRey02Igg3zpTgsfROsdx1gHavvVxlay3wcHOm1m+2wnCYlTULle9
+         ypXaBU2l6b2MUOzqlbN/gtTghbtJHNICqPYT+KLhlFrTs9RdHq5wQgDgZ/Pl4v0cllhR
+         41fQ4FFuIohFdKgWuu7mEY2pHljzWjYRoAzG4JBvvg4X2z1B98HM1LLBMhjgK1qK44Im
+         1PkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t0pIiiT98/ffosAzDqF1bE5J3E9ujwJqQoC1fmcx5CE=;
-        b=aiVWtT0RI8PJEGkMlEyeOSvRuN0sUNXIiO5tgISuu+zHCm9/Nw6WDH7bVRzWPZ007Y
-         cPOBkarR3/stFTOLM7NuY9nZzK2C4UvzEDmqbRJA8F88MogdBFtxFr11TqGf8dhLgWpE
-         PcZs4GdnkNh0xqso/pItr8HZ1d7AwvfUJW1KLplE/O1zSVjSp/qzRMRqmcZSddFkpRSq
-         R9TTCP0LJGCCzj2D3Enntyi0rknI+6CbSmkVAetyshFohPS1M37UAEpRRdL6SHPfwZSD
-         vE7HV0WxS8TU8GOwAbupmMJiGcHbxu9w1b929//i/Jwa3MejGmKvhyCUhJJq5koi4LgD
-         HvFQ==
-X-Gm-Message-State: AOAM532F0gd3dhldt35JJtjkH7WnKqKxxWSPpxCONps5ix8OlLv+R7SC
-        gwfq+JuQwo+qEgnRhtsZr6Z1ZYPAdFg=
-X-Google-Smtp-Source: ABdhPJwlnS2HnTPLDUaVE/j0PFmdNF8G4NjB6RGboOPZKV9mHKhGtsb+Hcp1c3NZNIcC1WSUH4Khig==
-X-Received: by 2002:a65:47ca:: with SMTP id f10mr4638353pgs.206.1617820565321;
-        Wed, 07 Apr 2021 11:36:05 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c2sm1449860pfo.53.2021.04.07.11.35.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 11:36:04 -0700 (PDT)
-Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
- endpoint device voltage regulators
-To:     Mark Brown <broonie@kernel.org>, Jim Quinlan <jim2101024@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210401212148.47033-1-jim2101024@gmail.com>
- <20210401212148.47033-3-jim2101024@gmail.com>
- <20210406164708.GM6443@sirena.org.uk>
- <CANCKTBsiujTkOdh60etBqF_hE8exg6m9TDxkGHVVAGVS2SFCcQ@mail.gmail.com>
- <20210406173211.GP6443@sirena.org.uk>
- <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
- <20210407112713.GB5510@sirena.org.uk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <03852d1a-1ee4-fd29-8523-4673c35f83cd@gmail.com>
-Date:   Wed, 7 Apr 2021 11:35:57 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hFmdEZO1BHNBiU5bWvJmS9+4uxkaNYChSBn4oitTS5k=;
+        b=TYylXnVgrle6B4VxNUwWGqSAdP+tF6xZ5hLaCGbQ/MSHkiXWWCl2ZlzumcdSIjWCVq
+         +bh58oYO6R6s2oJqDtLBAB6LZIjvJN4Jv6NwJxo+y51znotHtam8bt8MpS2WNn32Mco+
+         uYJ0/iL1b/GjB4Sw0mIU8NegFSrsEwbskKwNH9a+Uq5ymfHrM4vHg2Z5NYHeem7Qn4cP
+         qtdYRgjzwD0jDa7Uqms1/wUku2gEdob0K3dlPIrK2dtYL+WN3PX9t2Oc9bbhf1RJFdwL
+         FY92CwD/RgQepsUiICiiOaAHwr3H6jdsc4Dt1wIMPWNP4HE7DyOEBng7lH5mlsVs/XLh
+         DHjA==
+X-Gm-Message-State: AOAM533X61zNP9zPNdg0wp65vHZFrpunZthLZzC2d4/lK5RTjdnruKpe
+        19lK2GPCchbRWWJ7ePdCqu7PUCsvRgJPZbVYDWb/Qw==
+X-Google-Smtp-Source: ABdhPJyICV0kwOET+z8KY+sqxG63NIDFcLMYCUY7s2rmcFIG8Os1amhvAC51e1wxYdc7nxUBMCImj9uaEYFe4qDguIw=
+X-Received: by 2002:a25:768c:: with SMTP id r134mr6378278ybc.366.1617820657720;
+ Wed, 07 Apr 2021 11:37:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210407112713.GB5510@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210402132431.3590-1-claudiu.beznea@microchip.com>
+In-Reply-To: <20210402132431.3590-1-claudiu.beznea@microchip.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 7 Apr 2021 20:37:26 +0200
+Message-ID: <CAMpxmJVCOpkn5PfDtw8kc=xdKMFD0+yCs7EzSZDK7YTBZ7G-GQ@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: avoid adjusting offset for 24AA025E{48, 64}
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 2, 2021 at 3:24 PM Claudiu Beznea
+<claudiu.beznea@microchip.com> wrote:
+>
+> Some EEPROMs could be used only for MAC storage. In this case the
+> EEPROM areas where MACs resides could be modeled as NVMEM cells
+> (directly via DT bindings) such that the already available networking
+> infrastructure to read properly the MAC addresses (via
+> of_get_mac_address()). Add "atmel,24mac02e4", "atmel,24mac02e4"
+> compatible for the usage w/ 24AA025E{48, 64} type of EEPROMs and adapt
+> the driver to not do offset adjustments.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>
+> Hi Bartosz,
+>
+> For the previously available compatibles the offset adjustment is done
+> (probably for compatibility w/ old DT bindings?). In my scenario 24AA025E48
+> is used in setup with macb driver which is calling of_get_mac_address()
+> to get the proper NVMEM cell in EEPROM where the MAC resides and read
+> directly from there. We modeled the EEPROM and NVMEM cell in DT as
+> follows:
+>
+> &i2cnode {
+>         // ...
+>         eeprom0: eeprom0@52 {
+>                 compatible = "atmel,24mac02e4";
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+>                 reg = <0x52>;
+>                 pagesize = <16>;
+>                 size = <256>;
+>                 status = "okay";
+>
+>                 eeprom0_eui48: eui48@fa {
+>                         reg = <0xfa 0x6>;
+>                 };
+>         };
+> };
+>
+> &gmac {
+>         // ...
+>
+>         nvmem-cells = <&eeprom0_eui48>;
+>         nvmem-cell-names = "mac-address";
+>
+>         // ...
+> };
+>
+>
+> Let me know if some other approach needs to be taken into account in
+> at24 driver for this to work.
+>
+> Thank you,
+> Claudiu Beznea
+>
+
+Hi Claudiu,
+
+First of all: any new compatibles need to go into the DT bindings document.
 
 
-On 4/7/2021 4:27 AM, Mark Brown wrote:
-> On Tue, Apr 06, 2021 at 02:25:49PM -0400, Jim Quinlan wrote:
-> 
->> I'm a little confused -- here is how I remember the chronology of the
->> "DT bindings" commit reviews, please correct me if I'm wrong:
-> 
->> o JimQ submitted a pullreq for using voltage regulators in the same
->> style as the existing "rockport" PCIe driver.
->> o After some deliberation, RobH preferred that the voltage regulators
->> should go into the PCIe subnode device's DT node.
->> o JimQ put the voltage regulators in the subnode device's DT node.
->> o MarkB didn't like the fact that the code did a global search for the
->> regulator since it could not provide the owning struct device* handle.
->> o RobH relented, and said that if it is just two specific and standard
->> voltage regulators, perhaps they can go in the parent DT node after
->> all.
->> o JimQ put the regulators back in the PCIe node.
->> o MarkB now wants the regulators to go back into the child node again?
-> 
-> ...having pointed out a couple of times now that there's no physical
-> requirement that the supplies be shared between slots never mind with
-> the controller.  Also note that as I've said depending on what the
-> actual requirements of the controller node are you might want to have
-> the regulators in both places, and further note that the driver does not
-> have to actively use everything in the binding document (although if
-> it's not using something that turns out to be a requirement it's likely
-> to run into hardware where that causes bugs at some point).
-> 
-> Frankly I'm not clear why you're trying to handle powering on PCI slots
-> in a specific driver, surely PCI devices are PCI devices regardless of
-> the controller?
+>  drivers/misc/eeprom/at24.c | 69 ++++++++++++++++++++++----------------
+>  1 file changed, 40 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 926408b41270..ae2fbcb5e83d 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -123,17 +123,19 @@ MODULE_PARM_DESC(at24_write_timeout, "Time (in ms) to try writes (default 25)");
+>  struct at24_chip_data {
+>         u32 byte_len;
+>         u8 flags;
+> +       u8 adjoff;
+>         void (*read_post)(unsigned int off, char *buf, size_t count);
+>  };
+>
+> -#define AT24_CHIP_DATA(_name, _len, _flags)                            \
+> +#define AT24_CHIP_DATA(_name, _len, _flags, _adjoff)                   \
+>         static const struct at24_chip_data _name = {                    \
+> -               .byte_len = _len, .flags = _flags,                      \
+> +               .byte_len = _len, .flags = _flags, .adjoff = _adjoff, \
+>         }
+>
+> -#define AT24_CHIP_DATA_CB(_name, _len, _flags, _read_post)             \
+> +#define AT24_CHIP_DATA_CB(_name, _len, _flags, _adjoff, _read_post)    \
+>         static const struct at24_chip_data _name = {                    \
+>                 .byte_len = _len, .flags = _flags,                      \
+> +               .adjoff = _adjoff,                                      \
+>                 .read_post = _read_post,                                \
+>         }
+>
+> @@ -158,48 +160,52 @@ static void at24_read_post_vaio(unsigned int off, char *buf, size_t count)
+>  }
+>
+>  /* needs 8 addresses as A0-A2 are ignored */
+> -AT24_CHIP_DATA(at24_data_24c00, 128 / 8, AT24_FLAG_TAKE8ADDR);
+> +AT24_CHIP_DATA(at24_data_24c00, 128 / 8, AT24_FLAG_TAKE8ADDR, 0);
+>  /* old variants can't be handled with this generic entry! */
+> -AT24_CHIP_DATA(at24_data_24c01, 1024 / 8, 0);
+> +AT24_CHIP_DATA(at24_data_24c01, 1024 / 8, 0, 0);
+>  AT24_CHIP_DATA(at24_data_24cs01, 16,
+> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> -AT24_CHIP_DATA(at24_data_24c02, 2048 / 8, 0);
+> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24c02, 2048 / 8, 0, 0);
+>  AT24_CHIP_DATA(at24_data_24cs02, 16,
+> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+>  AT24_CHIP_DATA(at24_data_24mac402, 48 / 8,
+> -       AT24_FLAG_MAC | AT24_FLAG_READONLY);
+> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 1);
+>  AT24_CHIP_DATA(at24_data_24mac602, 64 / 8,
+> -       AT24_FLAG_MAC | AT24_FLAG_READONLY);
+> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 1);
+> +AT24_CHIP_DATA(at24_data_24mac02e4, 48 / 8,
+> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24mac02e6, 64 / 8,
+> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 0);
+>  /* spd is a 24c02 in memory DIMMs */
+>  AT24_CHIP_DATA(at24_data_spd, 2048 / 8,
+> -       AT24_FLAG_READONLY | AT24_FLAG_IRUGO);
+> +       AT24_FLAG_READONLY | AT24_FLAG_IRUGO, 0);
+>  /* 24c02_vaio is a 24c02 on some Sony laptops */
+>  AT24_CHIP_DATA_CB(at24_data_24c02_vaio, 2048 / 8,
+> -       AT24_FLAG_READONLY | AT24_FLAG_IRUGO,
+> +       AT24_FLAG_READONLY | AT24_FLAG_IRUGO, 0,
+>         at24_read_post_vaio);
+> -AT24_CHIP_DATA(at24_data_24c04, 4096 / 8, 0);
+> +AT24_CHIP_DATA(at24_data_24c04, 4096 / 8, 0, 0);
+>  AT24_CHIP_DATA(at24_data_24cs04, 16,
+> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+>  /* 24rf08 quirk is handled at i2c-core */
+> -AT24_CHIP_DATA(at24_data_24c08, 8192 / 8, 0);
+> +AT24_CHIP_DATA(at24_data_24c08, 8192 / 8, 0, 0);
+>  AT24_CHIP_DATA(at24_data_24cs08, 16,
+> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> -AT24_CHIP_DATA(at24_data_24c16, 16384 / 8, 0);
+> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24c16, 16384 / 8, 0, 0);
+>  AT24_CHIP_DATA(at24_data_24cs16, 16,
+> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> -AT24_CHIP_DATA(at24_data_24c32, 32768 / 8, AT24_FLAG_ADDR16);
+> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24c32, 32768 / 8, AT24_FLAG_ADDR16, 0);
+>  AT24_CHIP_DATA(at24_data_24cs32, 16,
+> -       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> -AT24_CHIP_DATA(at24_data_24c64, 65536 / 8, AT24_FLAG_ADDR16);
+> +       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24c64, 65536 / 8, AT24_FLAG_ADDR16, 0);
+>  AT24_CHIP_DATA(at24_data_24cs64, 16,
+> -       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> -AT24_CHIP_DATA(at24_data_24c128, 131072 / 8, AT24_FLAG_ADDR16);
+> -AT24_CHIP_DATA(at24_data_24c256, 262144 / 8, AT24_FLAG_ADDR16);
+> -AT24_CHIP_DATA(at24_data_24c512, 524288 / 8, AT24_FLAG_ADDR16);
+> -AT24_CHIP_DATA(at24_data_24c1024, 1048576 / 8, AT24_FLAG_ADDR16);
+> -AT24_CHIP_DATA(at24_data_24c2048, 2097152 / 8, AT24_FLAG_ADDR16);
+> +       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> +AT24_CHIP_DATA(at24_data_24c128, 131072 / 8, AT24_FLAG_ADDR16, 0);
+> +AT24_CHIP_DATA(at24_data_24c256, 262144 / 8, AT24_FLAG_ADDR16, 0);
+> +AT24_CHIP_DATA(at24_data_24c512, 524288 / 8, AT24_FLAG_ADDR16, 0);
+> +AT24_CHIP_DATA(at24_data_24c1024, 1048576 / 8, AT24_FLAG_ADDR16, 0);
+> +AT24_CHIP_DATA(at24_data_24c2048, 2097152 / 8, AT24_FLAG_ADDR16, 0);
+>  /* identical to 24c08 ? */
+> -AT24_CHIP_DATA(at24_data_INT3499, 8192 / 8, 0);
+> +AT24_CHIP_DATA(at24_data_INT3499, 8192 / 8, 0, 0);
+>
+>  static const struct i2c_device_id at24_ids[] = {
+>         { "24c00",      (kernel_ulong_t)&at24_data_24c00 },
+> @@ -208,7 +214,9 @@ static const struct i2c_device_id at24_ids[] = {
+>         { "24c02",      (kernel_ulong_t)&at24_data_24c02 },
+>         { "24cs02",     (kernel_ulong_t)&at24_data_24cs02 },
+>         { "24mac402",   (kernel_ulong_t)&at24_data_24mac402 },
+> +       { "24mac02e4",  (kernel_ulong_t)&at24_data_24mac02e4 },
+>         { "24mac602",   (kernel_ulong_t)&at24_data_24mac602 },
+> +       { "24mac02e6",  (kernel_ulong_t)&at24_data_24mac02e6 },
+>         { "spd",        (kernel_ulong_t)&at24_data_spd },
+>         { "24c02-vaio", (kernel_ulong_t)&at24_data_24c02_vaio },
+>         { "24c04",      (kernel_ulong_t)&at24_data_24c04 },
+> @@ -238,7 +246,9 @@ static const struct of_device_id at24_of_match[] = {
+>         { .compatible = "atmel,24c02",          .data = &at24_data_24c02 },
+>         { .compatible = "atmel,24cs02",         .data = &at24_data_24cs02 },
+>         { .compatible = "atmel,24mac402",       .data = &at24_data_24mac402 },
+> +       { .compatible = "atmel,24mac02e4",      .data = &at24_data_24mac02e4 },
+>         { .compatible = "atmel,24mac602",       .data = &at24_data_24mac602 },
+> +       { .compatible = "atmel,24mac02e6",      .data = &at24_data_24mac02e6 },
+>         { .compatible = "atmel,spd",            .data = &at24_data_spd },
+>         { .compatible = "atmel,24c04",          .data = &at24_data_24c04 },
+>         { .compatible = "atmel,24cs04",         .data = &at24_data_24cs04 },
+> @@ -690,7 +700,8 @@ static int at24_probe(struct i2c_client *client)
+>         at24->flags = flags;
+>         at24->read_post = cdata->read_post;
+>         at24->num_addresses = num_addresses;
+> -       at24->offset_adj = at24_get_offset_adj(flags, byte_len);
+> +       at24->offset_adj = cdata->adjoff ?
+> +                               at24_get_offset_adj(flags, byte_len) : 0;
+>         at24->client[0].client = client;
+>         at24->client[0].regmap = regmap;
+>
+> --
+> 2.25.1
+>
 
-There is no currently a way to deal with that situation since you have a
-chicken and egg problem to solve: there is no pci_device created until
-you enumerate the PCI bus, and you cannot enumerate the bus and create
-those pci_devices unless you power on the slots/PCIe end-points attached
-to the root complex. There are precedents like the rockchip PCIe RC
-driver, and yes, we should not be cargo culting this, which is why we
-are trying to understand what is it that should be done here and there
-has been conflicting advice, or rather our interpretation has led to
-perceiving it as a conflicting.
+What is the problem you're trying to solve? The MAC area is accessible
+on a different device address. The variants with serial and MAC areas
+are meant to be instantiated as devices separate from the main
+writeable area and you can then create an nvmem cell that will take up
+the whole MAC.
 
-If the regulator had a variation where it supported passing a
-device_node reference to look up regulator properties, we could solve
-this generically for all devices, that does not exist, and you stated
-you will not accept changes like those, fair enough.
+Or does your model keep the MAC in the same block that's used for
+writing? In which case just using a regular compatible that matches
+the size and creating the nvmem cell at the right offset should be
+enough, right?
 
-When you suggested to look at soundwire for an example of "software
-devices", we did that but it was not clear where the sdw_slave would be
-created prior to sdw_slave_add(), but this does not matter too much.
+Am I missing something?
 
-Let us say we try to solve this generically using the same idea that we
-would pre-populate pci_device prior to calling pci_scan_child_bus(). We
-could do something along these lines:
-
-- pci_scan_child_bus() would attempt to walk the list of device_node
-children from the PCIe root complex's device_node and call
-pci_alloc_dev() for each of these devices that it finds, along with
-calling device_initialize() and ensuring that pci_dev::device::of_node
-is set correctly by calling pci_set_of_node()/set_dev_node(). Finally we
-call list_add_tail() with the pci_bus_sem semaphore held to add that
-pci_device to bus->devices such that we can later find them
-
-- from there on we try to get the regulators of those pci_device objects
-we just allocated and we try to enable their regulators, either based on
-a specific list of supplies or just trying to enable all supplied declared.
-
-- now pci_scan_child_bus() will attempt to scan the bus for real by
-reading the pci_device objects ID but we already have such objects, so
-we need to update pci_scan_device() to search bus::devices and if
-nothing is found we allocate one
-
-Is that roughly what you have in mind as to what should be done?
--- 
-Florian
+Bartosz
