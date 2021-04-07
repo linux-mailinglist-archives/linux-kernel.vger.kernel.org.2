@@ -2,98 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42513572BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFD83572BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354609AbhDGRHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:07:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:44331 "EHLO pegase1.c-s.fr"
+        id S243140AbhDGRHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:07:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234050AbhDGRHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:07:05 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FFrR00jRRzB09ZQ;
-        Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5RNxtr6d0LwG; Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFrQz6rN1zB09ZJ;
-        Wed,  7 Apr 2021 19:06:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8E54D8B7B6;
-        Wed,  7 Apr 2021 19:06:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Xg2uihRRaosX; Wed,  7 Apr 2021 19:06:53 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C34438B75F;
-        Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
-Subject: Re: [PATCH v2 8/8] KVM: SVM: Allocate SEV command structures on local
- stack
-To:     Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@suse.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210406224952.4177376-1-seanjc@google.com>
- <20210406224952.4177376-9-seanjc@google.com>
- <9df3b755-d71a-bfdf-8bee-f2cd2883ea2f@csgroup.eu>
- <20210407102440.GA25732@zn.tnic> <YG3mQ+U6ZnoWIZ9a@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <24cd7d2b-3b74-6b51-aa9a-554003fe5cec@csgroup.eu>
-Date:   Wed, 7 Apr 2021 19:06:35 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234050AbhDGRHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:07:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5805610CC;
+        Wed,  7 Apr 2021 17:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617815240;
+        bh=apYFtuNjrmejYcSJrizl3qdNjlJnPQG0oaFz9y6REwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DZvZEW5aRVVrnzHzcQ0FiqmiAjJNRU5VlbA7YGgK3DD7GrjiSCMd45gWJtejdjvcj
+         eaYHtTjLo0jUi3BJF7ffPfzR9pQohHiNHACh+ZVAqtzwWNPzEA6IOJpceF8ZFV7t/e
+         AT3IyBn8iEZd/YQv7UQB9ZjtkoDpVE3YdzX9fSqQ6CXJoRHaVliv3aoXXDGUuGGoCd
+         5XfZ7itX/C/uz+Xx9m836XOPgiu2nDeyFl0mbnutaqcRTtKyt+Wffr3ZIUdsGLFQUs
+         h98B/QaGqotwO50wgB9cMRCsMQD7opmzCsp1wbd8BYRVp5hY87q1h+VPrfAQXZLyAf
+         yWJCTSVuSUOsA==
+Date:   Wed, 7 Apr 2021 20:07:16 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <YG3mxHji/JH6iFqk@unreal>
+References: <20210406232321.12104-1-decui@microsoft.com>
+ <YG1o4LXVllXfkUYO@unreal>
+ <MW2PR2101MB08923D4417E44C5750BFB964BF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
+ <YG2qxjPJ4ruas1dI@unreal>
+ <DM5PR2101MB09342B74ECD56BE4781431EACA759@DM5PR2101MB0934.namprd21.prod.outlook.com>
+ <YG3HxVaotTi/Xk5X@unreal>
+ <BL0PR2101MB0930CEB943EF4502932F053BCA759@BL0PR2101MB0930.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <YG3mQ+U6ZnoWIZ9a@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL0PR2101MB0930CEB943EF4502932F053BCA759@BL0PR2101MB0930.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 07/04/2021 à 19:05, Sean Christopherson a écrit :
-> On Wed, Apr 07, 2021, Borislav Petkov wrote:
->> First of all, I'd strongly suggest you trim your emails when you reply -
->> that would be much appreciated.
->>
->> On Wed, Apr 07, 2021 at 07:24:54AM +0200, Christophe Leroy wrote:
->>>> @@ -258,7 +240,7 @@ static int sev_issue_cmd(struct kvm *kvm, int id, void *data, int *error)
->>>>    static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
->>>>    {
->>>>    	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
->>>> -	struct sev_data_launch_start *start;
->>>> +	struct sev_data_launch_start start;
->>>
->>> struct sev_data_launch_start start = {0, 0, 0, 0, 0, 0, 0};
->>
->> I don't know how this is any better than using memset...
->>
->> Also, you can do
->>
->> 	... start = { };
->>
->> which is certainly the only other alternative to memset, AFAIK.
->>
->> But whatever you do, you need to look at the resulting asm the compiler
->> generates. So let's do that:
+On Wed, Apr 07, 2021 at 03:05:26PM +0000, Haiyang Zhang wrote:
 > 
-> I'm ok with Boris' version, I'm not a fan of having to count zeros.  I used
-> memset() to defer initialization until after the various sanity checks, and
-> out of habit.
 > 
+> > -----Original Message-----
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Wednesday, April 7, 2021 10:55 AM
+> > To: Haiyang Zhang <haiyangz@microsoft.com>
+> > Cc: Dexuan Cui <decui@microsoft.com>; davem@davemloft.net;
+> > kuba@kernel.org; KY Srinivasan <kys@microsoft.com>; Stephen Hemminger
+> > <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
+> > <liuwe@microsoft.com>; netdev@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
+> > Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
+> > Network Adapter (MANA)
+> > 
+> > On Wed, Apr 07, 2021 at 02:41:45PM +0000, Haiyang Zhang wrote:
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > Sent: Wednesday, April 7, 2021 8:51 AM
+> > > > To: Dexuan Cui <decui@microsoft.com>
+> > > > Cc: davem@davemloft.net; kuba@kernel.org; KY Srinivasan
+> > > > <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+> > Stephen
+> > > > Hemminger <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
+> > > > <liuwe@microsoft.com>; netdev@vger.kernel.org; linux-
+> > > > kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
+> > > > Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft
+> > > > Azure Network Adapter (MANA)
+> > > >
+> > > > On Wed, Apr 07, 2021 at 08:40:13AM +0000, Dexuan Cui wrote:
+> > > > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > > > Sent: Wednesday, April 7, 2021 1:10 AM
+> > > > > >
+> > > > > > <...>
+> > > > > >
+> > > > > > > +int gdma_verify_vf_version(struct pci_dev *pdev) {
+> > > > > > > +	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > > > > > > +	struct gdma_verify_ver_req req = { 0 };
+> > > > > > > +	struct gdma_verify_ver_resp resp = { 0 };
+> > > > > > > +	int err;
+> > > > > > > +
+> > > > > > > +	gdma_init_req_hdr(&req.hdr,
+> > GDMA_VERIFY_VF_DRIVER_VERSION,
+> > > > > > > +			  sizeof(req), sizeof(resp));
+> > > > > > > +
+> > > > > > > +	req.protocol_ver_min = GDMA_PROTOCOL_FIRST;
+> > > > > > > +	req.protocol_ver_max = GDMA_PROTOCOL_LAST;
+> > > > > > > +
+> > > > > > > +	err = gdma_send_request(gc, sizeof(req), &req, sizeof(resp),
+> > &resp);
+> > > > > > > +	if (err || resp.hdr.status) {
+> > > > > > > +		pr_err("VfVerifyVersionOutput: %d, status=0x%x\n",
+> > err,
+> > > > > > > +		       resp.hdr.status);
+> > > > > > > +		return -EPROTO;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	return 0;
+> > > > > > > +}
+> > > > > >
+> > > > > > <...>
+> > > > > > > +	err = gdma_verify_vf_version(pdev);
+> > > > > > > +	if (err)
+> > > > > > > +		goto remove_irq;
+> > > > > >
+> > > > > > Will this VF driver be used in the guest VM? What will prevent
+> > > > > > from users
+> > > > to
+> > > > > > change it?
+> > > > > > I think that such version negotiation scheme is not allowed.
+> > > > >
+> > > > > Yes, the VF driver is expected to run in a Linux VM that runs on Azure.
+> > > > >
+> > > > > Currently gdma_verify_vf_version() just tells the PF driver that
+> > > > > the VF
+> > > > driver
+> > > > > is only able to support GDMA_PROTOCOL_V1, and want to use
+> > > > > GDMA_PROTOCOL_V1's message formats to talk to the PF driver later.
+> > > > >
+> > > > > enum {
+> > > > >         GDMA_PROTOCOL_UNDEFINED = 0,
+> > > > >         GDMA_PROTOCOL_V1 = 1,
+> > > > >         GDMA_PROTOCOL_FIRST = GDMA_PROTOCOL_V1,
+> > > > >         GDMA_PROTOCOL_LAST = GDMA_PROTOCOL_V1,
+> > > > >         GDMA_PROTOCOL_VALUE_MAX
+> > > > > };
+> > > > >
+> > > > > The PF driver is supposed to always support GDMA_PROTOCOL_V1, so I
+> > > > expect
+> > > > > here gdma_verify_vf_version() should succeed. If a user changes
+> > > > > the Linux
+> > > > VF
+> > > > > driver and try to use a protocol version not supported by the PF
+> > > > > driver,
+> > > > then
+> > > > > gdma_verify_vf_version() will fail; later, if the VF driver tries
+> > > > > to talk to the
+> > > > PF
+> > > > > driver using an unsupported message format, the PF driver will
+> > > > > return a
+> > > > failure.
+> > > >
+> > > > The worry is not for the current code, but for the future one when
+> > > > you will support v2, v3 e.t.c. First, your code will look like a
+> > > > spaghetti and second, users will try and mix vX with "unsupported"
+> > > > commands just for the fun.
+> > >
+> > > In the future, if the protocol version updated on the host side,
+> > > guests need to support different host versions because not all hosts
+> > > are updated (simultaneously). So this negotiation is necessary to know
+> > > the supported version, and decide the proper command version to use.
+> > 
+> > And how do other paravirtual drivers solve this negotiation scheme?
+> 
+> I saw some other drivers used version negotiation too, for example:
 
-Yes I also like Boris' version 	... start = { };  better than mine.
+I see, thanks.
 
+> 
+> /**
+>  *  ixgbevf_negotiate_api_version_vf - Negotiate supported API version
+>  *  @hw: pointer to the HW structure
+>  *  @api: integer containing requested API version
+>  **/
+> static int ixgbevf_negotiate_api_version_vf(struct ixgbe_hw *hw, int api)
+> {
+> 
+> Thanks,
+> - Haiyang
