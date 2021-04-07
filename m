@@ -2,159 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8B0356B85
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FD0356B99
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351911AbhDGLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:47:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53890 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234728AbhDGLrr (ORCPT
+        id S1351919AbhDGLxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:53:52 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48135 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhDGLxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:47:47 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137BYXU1179695;
-        Wed, 7 Apr 2021 07:47:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=kYzAsOk2ynDum0To7DEp6vjW2m9P2reJHZpRQVDhpfs=;
- b=P36F5kJvCTzg9uwUZJ610xL31K1O2ypTLOop6SKV0sViTrT9y8gAxGanr/Yf5AiHYZ1/
- BAgn0knDAZHme6l3x46kADfhhrMxmqjJlBfN0Ty/x/baW1E2ELKfS9iR5qMQMQPLM+ze
- m//s7+zinAPKihAtG4o1/o1a0gus60jjxxC6Y9Se/wNeEsT+U77O8a9oyURivb3WfWKg
- opMDC+D6VdEvJapw8AMg/q2tdo/rwe5i67S8FRZDJV1RSbk3p4LE9L7GZB52AOBKFKKt
- FwC0Ob4bcz311sj+QBKggmGSKzpVs4Is/q1sQyivIy/BmALiSXOGMcvBzWRyizmNKcPA UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37s9fmd23d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 07:47:32 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137Ba3a8190055;
-        Wed, 7 Apr 2021 07:47:32 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37s9fmd22p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 07:47:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137Bhle6023605;
-        Wed, 7 Apr 2021 11:47:29 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 37rvbu8nyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 11:47:29 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137BlRDV23527786
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 11:47:27 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4ED19AE058;
-        Wed,  7 Apr 2021 11:47:27 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A2B3AE051;
-        Wed,  7 Apr 2021 11:47:25 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.199.44.82])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  7 Apr 2021 11:47:25 +0000 (GMT)
-Date:   Wed, 7 Apr 2021 17:17:23 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Dave Chinner <david@fromorbit.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210407114723.GD1354243@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
- <20210407050541.GC1354243@in.ibm.com>
- <c9bd1744-f15c-669a-b3a9-5a0c47bd4e1d@virtuozzo.com>
+        Wed, 7 Apr 2021 07:53:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617796412; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=ftOQviE1FSzzRGWmikfFzO6yxTTkoqf8WYw+BHbHQdY=; b=xBN4vUrabMc9cTlEyGWRhE8Q5XKyYRY70P1Ks0CD7j8P7QZ2j/ZxhWWUcr/yFtrUFJU+YARu
+ n79jA21eEjUolDtDSCfalt3nYwTQay4xtD1dOgRf4hjZNp/2M1HtZ/0Ral3ssTA27BVQ1Xrs
+ whj5AUPiBpME4m95MEe9eeJ5Hq8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 606d9d3187ce1fbb56dc048f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 11:53:21
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB861C43465; Wed,  7 Apr 2021 11:53:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12D51C433C6;
+        Wed,  7 Apr 2021 11:53:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 12D51C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Jouni Malinen <j@w1.fi>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hostap: Fix memleak in prism2_config
+References: <20210329085246.24586-1-dinghao.liu@zju.edu.cn>
+Date:   Wed, 07 Apr 2021 14:53:15 +0300
+In-Reply-To: <20210329085246.24586-1-dinghao.liu@zju.edu.cn> (Dinghao Liu's
+        message of "Mon, 29 Mar 2021 16:52:43 +0800")
+Message-ID: <87tuoimhuc.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9bd1744-f15c-669a-b3a9-5a0c47bd4e1d@virtuozzo.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3qAzuBCxVDP89FeleJ_iZWvOll0QR6yR
-X-Proofpoint-GUID: bXt5-x0dTqMWZF6WRNEvWsgxGyonOZfp
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-07_07:2021-04-06,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- adultscore=0 clxscore=1015 phishscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 spamscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=912 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070080
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:07:27PM +0300, Kirill Tkhai wrote:
-> > Here is how the calculation turns out to be in my setup:
-> > 
-> > Number of possible NUMA nodes = 2
-> > Number of mounts per container = 7 (Check below to see which are these)
-> > Number of list creation requests per mount = 2
-> > Number of containers = 10000
-> > memcg_nr_cache_ids for 10k containers = 12286
-> 
-> Luckily, we have "+1" in memcg_nr_cache_ids formula: size = 2 * (id + 1).
-> In case of we only multiplied it, you would have to had memcg_nr_cache_ids=20000.
+Dinghao Liu <dinghao.liu@zju.edu.cn> writes:
 
-Not really, it would grow like this for size = 2 * id
+> When prism2_hw_config() fails, we just return an error code
+> without any resource release, which may lead to memleak.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/net/wireless/intersil/hostap/hostap_cs.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/intersil/hostap/hostap_cs.c b/drivers/net/wireless/intersil/hostap/hostap_cs.c
+> index ec7db2badc40..7dc16ab50ad6 100644
+> --- a/drivers/net/wireless/intersil/hostap/hostap_cs.c
+> +++ b/drivers/net/wireless/intersil/hostap/hostap_cs.c
+> @@ -536,10 +536,10 @@ static int prism2_config(struct pcmcia_device *link)
+>  	sandisk_enable_wireless(dev);
+>  
+>  	ret = prism2_hw_config(dev, 1);
+> -	if (!ret)
+> -		ret = hostap_hw_ready(dev);
+> +	if (ret)
+> +		goto failed;
+>  
+> -	return ret;
+> +	return hostap_hw_ready(dev);;
 
-id 0 size 4
-id 4 size 8
-id 8 size 16
-id 16 size 32
-id 32 size 64
-id 64 size 128
-id 128 size 256
-id 256 size 512
-id 512 size 1024
-id 1024 size 2048
-id 2048 size 4096
-id 4096 size 8192
-id 8192 size 16384
+Two semicolons.
 
-Currently (size = 2 * (id + 1)), it grows like this:
+But I'm not sure about this, can someone provide a Reviewed-by tag?
 
-id 0 size 4
-id 4 size 10
-id 10 size 22
-id 22 size 46
-id 46 size 94
-id 94 size 190
-id 190 size 382
-id 382 size 766
-id 766 size 1534
-id 1534 size 3070
-id 3070 size 6142
-id 6142 size 12286
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> 
-> Maybe, we need change that formula to increase memcg_nr_cache_ids more accurate
-> for further growths of containers number. Say,
-> 
-> size = id < 2000 ? 2 * (id + 1) : id + 2000
-
-For the above, it would only be marginally better like this:
-
-id 0 size 4
-id 4 size 10
-id 10 size 22
-id 22 size 46
-id 46 size 94
-id 94 size 190
-id 190 size 382
-id 382 size 766
-id 766 size 1534
-id 1534 size 3070
-id 3070 size 5070
-id 5070 size 7070
-id 7070 size 9070
-id 9070 size 11070
-
-All the above numbers are for 10k memcgs.
-
-Regards,
-Bharata.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
