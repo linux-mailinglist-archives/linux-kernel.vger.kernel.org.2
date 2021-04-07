@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348BE357521
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3900F357524
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355727AbhDGTqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355666AbhDGTqB (ORCPT
+        id S1355666AbhDGTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:48:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347438AbhDGTs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:46:01 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028F9C06175F;
-        Wed,  7 Apr 2021 12:45:52 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08fb0020f55c189e926593.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:20f5:5c18:9e92:6593])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 804211EC027D;
-        Wed,  7 Apr 2021 21:45:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617824750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4Puw/f2inG+ZQu4nlRXPJ5moZ3IcdquuqTQWZAcVWIU=;
-        b=gdd2RqFQWYXI38oSYUTTo5LfHOTbS35aTqj65jtabpOkJoK3i4WB3xNmfTAmuwawYJgpSL
-        0EGfryo6eHPgaGf5luSn4GwxKs7zEfaDNpv8zpPgLjSoZO8+12H4HNFwYsrmci9tG8eGU8
-        Zg+M/6Y1oq24+p/OEcqvg36xmHotEpw=
-Date:   Wed, 7 Apr 2021 21:45:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 06/13] x86/compressed: rescinds and validate
- the memory used for the GHCB
-Message-ID: <20210407194550.GO25319@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-7-brijesh.singh@amd.com>
- <20210406103358.GL17806@zn.tnic>
- <c9f60432-2484-be1e-7b08-86dae5aa263f@amd.com>
- <67f92f5c-780c-a4c6-241a-6771558e81a3@amd.com>
- <20210407112555.GB25319@zn.tnic>
+        Wed, 7 Apr 2021 15:48:56 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137JXuub050484;
+        Wed, 7 Apr 2021 15:48:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=agNhum4PDDzPx6WMBBM+gy6P2qjJ+8WKlt8/mCOSlQw=;
+ b=q0neIZmQd8t9Czq6/qEplwHJkve94E1lLwnXowBl4eLqYiDTmUu0S7liID8qqR2S+EPw
+ 5cE+E8fsMPtobEjG7QUgTrRJbJGaB4wGey4vflSqFzz6g5pyZszWwFsEew2JA2YfBU8m
+ 1z5Sf0N8FrP/qJ9oysuA0HGk3R9DuwbSxWm/nV0xYXGwnhLD9ulyFoLjCjhFAd0ADdHi
+ Gw6iVfAPcHTOJiSgyIQthY2pCXX+pgqQ7HAseWbAxFsWfV4FvXFKH/Dyolxlz7avUJBg
+ iO0XSs8dFG60exarGM4cdP97oFIxBX9onQaR0tkFQ09stzqfTWLlZj9OgjiJam7JpGke 6g== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvn0umc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 15:48:30 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137Jhp1w007590;
+        Wed, 7 Apr 2021 19:48:29 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 37rvc41tdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 19:48:29 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137JmSoj24642000
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 19:48:28 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2154DBE053;
+        Wed,  7 Apr 2021 19:48:28 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E2B1ABE04F;
+        Wed,  7 Apr 2021 19:48:27 +0000 (GMT)
+Received: from localhost (unknown [9.211.35.170])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 19:48:27 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Subject: Re: [PATCH v4] pseries: prevent free CPU ids to be reused on
+ another node
+In-Reply-To: <20210407153808.59993-1-ldufour@linux.ibm.com>
+References: <20210407153808.59993-1-ldufour@linux.ibm.com>
+Date:   Wed, 07 Apr 2021 14:48:27 -0500
+Message-ID: <875z0xlvuc.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210407112555.GB25319@zn.tnic>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _DF6cQbtfRXmnkPQ9q6cHUT0abp3qKQj
+X-Proofpoint-ORIG-GUID: _DF6cQbtfRXmnkPQ9q6cHUT0abp3qKQj
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_10:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ mlxlogscore=999 bulkscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104070135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:25:55PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 06, 2021 at 02:42:43PM -0500, Tom Lendacky wrote:
-> > The GHCB spec only defines the "0" reason code set. We could provide Linux
-> > it's own reason code set with some more specific reason codes for
-> > failures, if that is needed.
-> 
-> Why Linux only?
-> 
-> Don't we want to have a generalized set of error codes which say what
-> has happened so that people can debug?
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+>
+> Changes since V3, addressing Nathan's comment:
+>  - Rename the local variable named 'nid' into 'assigned_node'
+> Changes since V2, addressing Nathan's comments:
+>  - Remove the retry feature
+>  - Reduce the number of local variables (removing 'i')
+>  - Add comment about the cpu_add_remove_lock protecting the added CPU mask.
+> Changes since V1 (no functional changes):
+>  - update the test's output in the commit's description
+>  - node_recorded_ids_map should be static
+>
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
 
-To quote Tom from IRC - and that is perfectly fine too, AFAIC:
+Thanks Laurent.
 
-<tlendacky> i'm ok with it, but i don't think it should be something dictated by the spec.  the problem is if you want to provide a new error code then the spec has to be updated constantly
-<tlendacky> that's why i said, pick a "reason code set" value and say those are what Linux will use. We could probably document them in Documentation/
-<tlendacky> the error code thing was an issue when introduced as part of the first spec.  that's why only a small number of reason codes are specified
-
-Yap, makes sense. What we should do in the spec, though, is say: "This
-range is for vendor-specific error codes".
-
-Also, is GHCBData[23:16] big enough and can we extend it simply? Or do
-we need the spec to at least dictate some ranges so that it can use some bits
-above, say, bit 32 or whatever the upper range of the extension is...
-
-Hmmm.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
