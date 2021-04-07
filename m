@@ -2,52 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B38B3566AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C823566A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhDGIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
+        id S240507AbhDGIW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244822AbhDGIVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:21:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F298561404;
+        id S240361AbhDGIVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:21:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0A8613E5;
         Wed,  7 Apr 2021 08:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617783663;
-        bh=njIc+20sXj+3VPI2zRcVud7gtlaSQFSwAA+rzuTprv4=;
+        s=k20201202; t=1617783662;
+        bh=01jspTSWm7bLXEJy5cH57gxxdERvRXGSivEgicYhRac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fHVumoxZ9ldx7bpNpiJo8wRAn+KwA75NjUvMlIpCpN8VWh0YHfx6DB/4aDgrlHxDe
-         NlBvgHBH5zYPFM0D2dKo9pzFq/0PHKtFgewluwb2sj5YfVgArcfGsrv9MpV3UFEKok
-         c/nXVb7sOAPQ/ds6CizBU1MqV59S5lvUJJRA+EMfNuyCMowzkgqL6ogfLxNreSEDeO
-         xNiZ9Cxlx4yOE8OfS7USgZPUCtM2sST1d1gPorxEhYMj9IqCX1YxXyIQoCPm3ZIePX
-         N9mtYIKIfJIazP2aHylPpJLT2Iz36zboYaK3ty06EmV6Tlb7qHm2wocvo5Ha41kuz9
-         NzuxPW/P90TQQ==
+        b=jXzc1b5Agkr/7HQxKILvoj1ZXg4WQ4JoGIL8aHE3xU+wUrgoH2CaqRIi8BsJ3m8/q
+         L9TEVVmpKxnFQdouRV6ucHeyJyi4kkv0SH+DH4ECIEmLKIm2dnShkYx4yaMBZ5fXf2
+         +ybd+3fl7i3eA3+pZ4RMV1zsKQc7CiGEPAPVN2Q6b+3WNwMD+dfH25DWa8cM3JBwON
+         d0WPPrljMfeeD1IZiMHAVmE9Jh5ljNJZm0fomiA3mxlnpqgUcQOe6wFL/J9mIljX1Y
+         BO38nXrNBFFs2UV6yByRTjRNQlG5Oz6xmv8FsLUAKPyum8RJvHWbL94HVTiM4jg/ud
+         eApwM31XX4zBw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lU3Qq-005i2e-Q7; Wed, 07 Apr 2021 10:21:00 +0200
+        id 1lU3Qq-005i2i-Rj; Wed, 07 Apr 2021 10:21:00 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Amol Grover <frextrite@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 15/19] docs: update rcu_dereference.rst reference
-Date:   Wed,  7 Apr 2021 10:20:54 +0200
-Message-Id: <ea2236875b0f5159ab07853d78f1e3c2f565a5e7.1617783062.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 16/19] docs: vcpu-requests.rst: fix reference for atomic ops
+Date:   Wed,  7 Apr 2021 10:20:55 +0200
+Message-Id: <d6980818e862c08d13747b87054d92ab2b891112.1617783062.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1617783062.git.mchehab+huawei@kernel.org>
 References: <cover.1617783062.git.mchehab+huawei@kernel.org>
@@ -58,31 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset b00aedf978aa ("doc: Convert to rcu_dereference.txt to rcu_dereference.rst")
-renamed: Documentation/RCU/rcu_dereference.txt
-to: Documentation/RCU/rcu_dereference.rst.
+Changeset f0400a77ebdc ("atomic: Delete obsolete documentation")
+got rid of atomic_ops.rst, pointing that this was superseded by
+Documentation/atomic_*.txt.
 
-Update its cross-reference accordingly.
+Update its reference accordingly.
 
-Fixes: b00aedf978aa ("doc: Convert to rcu_dereference.txt to rcu_dereference.rst")
+Fixes: f0400a77ebdc ("atomic: Delete obsolete documentation")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/memory-model/Documentation/glossary.txt | 2 +-
+ Documentation/virt/kvm/vcpu-requests.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-index b2da6365be63..6f3d16dbf467 100644
---- a/tools/memory-model/Documentation/glossary.txt
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -19,7 +19,7 @@ Address Dependency:  When the address of a later memory access is computed
- 	 from the value returned by the rcu_dereference() on line 2, the
- 	 address dependency extends from that rcu_dereference() to that
- 	 "p->a".  In rare cases, optimizing compilers can destroy address
--	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-+	 dependencies.	Please see Documentation/RCU/rcu_dereference.rst
- 	 for more information.
+diff --git a/Documentation/virt/kvm/vcpu-requests.rst b/Documentation/virt/kvm/vcpu-requests.rst
+index 5feb3706a7ae..5f8798e7fdf8 100644
+--- a/Documentation/virt/kvm/vcpu-requests.rst
++++ b/Documentation/virt/kvm/vcpu-requests.rst
+@@ -302,6 +302,6 @@ VCPU returns from the call.
+ References
+ ==========
  
- 	 See also "Control Dependency" and "Data Dependency".
+-.. [atomic-ops] Documentation/core-api/atomic_ops.rst
++.. [atomic-ops] Documentation/atomic_bitops.txt and Documentation/atomic_t.txt
+ .. [memory-barriers] Documentation/memory-barriers.txt
+ .. [lwn-mb] https://lwn.net/Articles/573436/
 -- 
 2.30.2
 
