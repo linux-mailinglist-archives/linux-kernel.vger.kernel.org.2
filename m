@@ -2,246 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA72357087
+	by mail.lfdr.de (Postfix) with ESMTP id CED55357089
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhDGPit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:38:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34262 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231366AbhDGPio (ORCPT
+        id S236545AbhDGPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhDGPjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:38:44 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137FXfZm158849;
-        Wed, 7 Apr 2021 11:38:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pp1;
- bh=GlXnQunDufATQ+KZ1mXpYeLrka5deUrsxFY90g2T3v4=;
- b=g0B6WJiYk3/BKUUsOnkWlK+qa4zPSmcRBa3DngopL1VAiXsdlD1NrNC5pJYDMukOnnmM
- rwDeQrlLqe+u52daWpBtlo6KrPrz/0TjrRjlCf4Fwmn+e6NBILWiLr2nqW+2PEttah/l
- WzM8d49lw99SsuImXZOcDFLrBRLf0g6ic26dVHmaH8zmAdvE1tkim4Vv6VfA0PzuzyES
- QwdozFlBgMdQzUlvTZPb3D5gl1paBYpHJM4QpkwIrnEMJbCEJ5/c61K5BCStV2Vo46f8
- YnQPceUNvhZOonKojE+fDl0tqtARpzxS4Ssi/GqcHFSyt0F9MU40Q4DCPhaf5X6wqLiG FQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvm4nxca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 11:38:14 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137FbGnd006017;
-        Wed, 7 Apr 2021 15:38:12 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 37rvbu8ugs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 15:38:12 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137Fc9Lx50528648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 15:38:09 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B13D411C04C;
-        Wed,  7 Apr 2021 15:38:09 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5055B11C04A;
-        Wed,  7 Apr 2021 15:38:09 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.159.151])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Apr 2021 15:38:09 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        nathanl@linux.ibm.com
-Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] pseries: prevent free CPU ids to be reused on another node
-Date:   Wed,  7 Apr 2021 17:38:08 +0200
-Message-Id: <20210407153808.59993-1-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 7 Apr 2021 11:39:01 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F8CC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:38:50 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id a6so12454907wrw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PgfSSgWWGnJrITlLJ0K+KPTYMGpFHqdgXbRVjqTXauE=;
+        b=kDhTBq1m4FakBwFLKFIwVcGHcH0AqtLggFGnTPKPAgyLWmSb6Qkhj/u4hh/cHK4oei
+         tO7ZoP41t6AF+dyQ0kZlul8ZxKo6xDtBewUP+2hZL0QvA7gHAkPCkcQ6pXZOiceANA79
+         AMt/CAmZ7Qco8RQ+rkFCbumUWVrkKvthomWnDLc8vpYw+JA0hmiR1tenlsVzVEx/nw5Z
+         WTpJ+tJzX/r0xR5tTPHo16hvjB8nNaCGpEIo+RPtp6ssTgEiiCgC6S+mzuHQ4HeNi9sL
+         AXSfnpw6bBkovdH1gTpdv1cIAEpNDZzl8tMKYuK2rZ6v1TELt0p1w3DzFOvaLPSgCC/A
+         6SSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PgfSSgWWGnJrITlLJ0K+KPTYMGpFHqdgXbRVjqTXauE=;
+        b=eCGdoYNsohL/YWQhEvTuqNXp+xIucHtrXX22gmNdt+VafXG/pmD9XHycozzbb/0yE+
+         GdIbUXr0zmir/pcSl+KkDGHw7J+4LevCjCVUQSJsoepCjw4OkGT+VrWupZzK1GuwBh47
+         LQlEUIo157rgsghxh9t8R5ze++nmwemfuZqgcEfVOH6AhKFmxmmIrcyipnedF08DlTvw
+         f8Zl6p1sU2ECdKby4xZ8GzW434pJAdcpJ0tctsbqUq0qH/DcEjSNPlFQL3AMI5jO1pP7
+         oLQcEsiBSckvn0pPq+2bbIJBIO613cC/hc/uy9/8SGn6sGf1JJC7bAqo0fxX8Ox+gfqd
+         P0TQ==
+X-Gm-Message-State: AOAM531yQ8p7j3eRvOx6So5vSXR+kCbgGHf2UGWwGhPbnk14fw1p3ce3
+        Ut7Kgc5/TRvB/fbXCsFiJ8yR9H/Ua8o=
+X-Google-Smtp-Source: ABdhPJy34RCn31VLSLxNkvRukDu5fZtzbNJcl+BYjRDAeKer83hnHvTVrU+Z0ars+LB2pgKbk9RBcQ==
+X-Received: by 2002:a5d:4ac7:: with SMTP id y7mr5166844wrs.395.1617809929055;
+        Wed, 07 Apr 2021 08:38:49 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.217])
+        by smtp.gmail.com with ESMTPSA id y4sm9642472wmc.2.2021.04.07.08.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 08:38:48 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 17:38:46 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/19] drivers: rtl8723bs: rewrite comparison to null
+Message-ID: <20210407153845.GB1590@agape.jhs>
+References: <cover.1617802415.git.fabioaiuto83@gmail.com>
+ <0c6d53c851d1b07eb0183108e0bad7b4f273f04b.1617802415.git.fabioaiuto83@gmail.com>
+ <YG3MOCQHu3o/qHTg@kroah.com>
+ <20210407152533.GA1590@agape.jhs>
+ <YG3QGq0T/cO2kdFN@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kNeKRjadjUe_JAGlCTFaxDJHW1mUzB5F
-X-Proofpoint-ORIG-GUID: kNeKRjadjUe_JAGlCTFaxDJHW1mUzB5F
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 phishscore=0 adultscore=0 mlxscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070109
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG3QGq0T/cO2kdFN@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU is hot added, the CPU ids are taken from the available mask from
-the lower possible set. If that set of values was previously used for CPU
-attached to a different node, this seems to application like if these CPUs
-have migrated from a node to another one which is not expected in real
-life.
+On Wed, Apr 07, 2021 at 05:30:34PM +0200, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 05:25:34PM +0200, Fabio Aiuto wrote:
+> > On Wed, Apr 07, 2021 at 05:14:00PM +0200, Greg KH wrote:
+> > > On Wed, Apr 07, 2021 at 03:49:31PM +0200, Fabio Aiuto wrote:
+> > > > fix following post-commit hook checkpatch warnings:
+> > > > 
+> > > > CHECK: Comparison to NULL could be written "!psta"
+> > > > 97: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:2115:
+> > > > +		if (psta == NULL)
+> > > > 
+> > > > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > > > ---
+> > > >  drivers/staging/rtl8723bs/core/rtw_ap.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > Nit, your subject line has "drivers:" not "staging:" here.  Be a bit
+> > > more careful next time please.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > sorry, you can drop them off the staging-testing branch and I will resend you all if you want,
+> 
+> Nah, it's not worth it, I'll keep them for now :)
 
-To prevent this, it is needed to record the CPU ids used for each node and
-to not reuse them on another node. However, to prevent CPU hot plug to
-fail, in the case the CPU ids is starved on a node, the capability to reuse
-other nodes’ free CPU ids is kept. A warning is displayed in such a case
-to warn the user.
-
-A new CPU bit mask (node_recorded_ids_map) is introduced for each possible
-node. It is populated with the CPU onlined at boot time, and then when a
-CPU is hot plug to a node. The bits in that mask remain when the CPU is hot
-unplugged, to remind this CPU ids have been used for this node.
-
-The effect of this patch can be seen by removing and adding CPUs using the
-Qemu monitor. In the following case, the first CPU from the node 2 is
-removed, then the first one from the node 1 is removed too. Later, the
-first CPU of the node 2 is added back. Without that patch, the kernel will
-numbered these CPUs using the first CPU ids available which are the ones
-freed when removing the second CPU of the node 0. This leads to the CPU ids
-16-23 to move from the node 1 to the node 2. With the patch applied, the
-CPU ids 32-39 are used since they are the lowest free ones which have not
-been used on another node.
-
-At boot time:
-[root@vm40 ~]# numactl -H | grep cpus
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-
-Vanilla kernel, after the CPU hot unplug/plug operations:
-[root@vm40 ~]# numactl -H | grep cpus
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-node 1 cpus: 24 25 26 27 28 29 30 31
-node 2 cpus: 16 17 18 19 20 21 22 23 40 41 42 43 44 45 46 47
-
-Patched kernel, after the CPU hot unplug/plug operations:
-[root@vm40 ~]# numactl -H | grep cpus
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-node 1 cpus: 24 25 26 27 28 29 30 31
-node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-
-Changes since V3, addressing Nathan's comment:
- - Rename the local variable named 'nid' into 'assigned_node'
-Changes since V2, addressing Nathan's comments:
- - Remove the retry feature
- - Reduce the number of local variables (removing 'i')
- - Add comment about the cpu_add_remove_lock protecting the added CPU mask.
-Changes since V1 (no functional changes):
- - update the test's output in the commit's description
- - node_recorded_ids_map should be static
-
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
----
- arch/powerpc/platforms/pseries/hotplug-cpu.c | 52 ++++++++++++++++++--
- 1 file changed, 47 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-index ec478f8a98ff..cddf6d2db786 100644
---- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-@@ -39,6 +39,12 @@
- /* This version can't take the spinlock, because it never returns */
- static int rtas_stop_self_token = RTAS_UNKNOWN_SERVICE;
- 
-+/*
-+ * Record the CPU ids used on each nodes.
-+ * Protected by cpu_add_remove_lock.
-+ */
-+static cpumask_var_t node_recorded_ids_map[MAX_NUMNODES];
-+
- static void rtas_stop_self(void)
- {
- 	static struct rtas_args args;
-@@ -151,9 +157,9 @@ static void pseries_cpu_die(unsigned int cpu)
-  */
- static int pseries_add_processor(struct device_node *np)
- {
--	unsigned int cpu;
-+	unsigned int cpu, node;
- 	cpumask_var_t candidate_mask, tmp;
--	int err = -ENOSPC, len, nthreads, i;
-+	int err = -ENOSPC, len, nthreads, assigned_node;
- 	const __be32 *intserv;
- 
- 	intserv = of_get_property(np, "ibm,ppc-interrupt-server#s", &len);
-@@ -163,9 +169,17 @@ static int pseries_add_processor(struct device_node *np)
- 	zalloc_cpumask_var(&candidate_mask, GFP_KERNEL);
- 	zalloc_cpumask_var(&tmp, GFP_KERNEL);
- 
-+	/*
-+	 * Fetch from the DT nodes read by dlpar_configure_connector() the NUMA
-+	 * node id the added CPU belongs to.
-+	 */
-+	assigned_node = of_node_to_nid(np);
-+	if (assigned_node < 0 || !node_possible(assigned_node))
-+		assigned_node = first_online_node;
-+
- 	nthreads = len / sizeof(u32);
--	for (i = 0; i < nthreads; i++)
--		cpumask_set_cpu(i, tmp);
-+	for (cpu = 0; cpu < nthreads; cpu++)
-+		cpumask_set_cpu(cpu, tmp);
- 
- 	cpu_maps_update_begin();
- 
-@@ -173,6 +187,19 @@ static int pseries_add_processor(struct device_node *np)
- 
- 	/* Get a bitmap of unoccupied slots. */
- 	cpumask_xor(candidate_mask, cpu_possible_mask, cpu_present_mask);
-+
-+	/*
-+	 * Remove free ids previously assigned on the other nodes. We can walk
-+	 * only online nodes because once a node became online it is not turned
-+	 * offlined back.
-+	 */
-+	for_each_online_node(node) {
-+		if (node == assigned_node) /* Keep our node's recorded ids */
-+			continue;
-+		cpumask_andnot(candidate_mask, candidate_mask,
-+			       node_recorded_ids_map[node]);
-+	}
-+
- 	if (cpumask_empty(candidate_mask)) {
- 		/* If we get here, it most likely means that NR_CPUS is
- 		 * less than the partition's max processors setting.
-@@ -197,6 +224,10 @@ static int pseries_add_processor(struct device_node *np)
- 		goto out_unlock;
- 	}
- 
-+	/* Record the newly used CPU ids for the associate node. */
-+	cpumask_or(node_recorded_ids_map[assigned_node],
-+		   node_recorded_ids_map[assigned_node], tmp);
-+
- 	for_each_cpu(cpu, tmp) {
- 		BUG_ON(cpu_present(cpu));
- 		set_cpu_present(cpu, true);
-@@ -903,6 +934,7 @@ static struct notifier_block pseries_smp_nb = {
- static int __init pseries_cpu_hotplug_init(void)
- {
- 	int qcss_tok;
-+	unsigned int node;
- 
- #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
- 	ppc_md.cpu_probe = dlpar_cpu_probe;
-@@ -924,8 +956,18 @@ static int __init pseries_cpu_hotplug_init(void)
- 	smp_ops->cpu_die = pseries_cpu_die;
- 
- 	/* Processors can be added/removed only on LPAR */
--	if (firmware_has_feature(FW_FEATURE_LPAR))
-+	if (firmware_has_feature(FW_FEATURE_LPAR)) {
-+		for_each_node(node) {
-+			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
-+
-+			/* Record ids of CPU added at boot time */
-+			cpumask_or(node_recorded_ids_map[node],
-+				   node_recorded_ids_map[node],
-+				   node_to_cpumask_map[node]);
-+		}
-+
- 		of_reconfig_notifier_register(&pseries_smp_nb);
-+	}
- 
- 	return 0;
- }
--- 
-2.31.1
-
+:-D
