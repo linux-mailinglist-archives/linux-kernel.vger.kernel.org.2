@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79873560BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960833560C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347724AbhDGBZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:25:45 -0400
-Received: from mail-mw2nam10on2080.outbound.protection.outlook.com ([40.107.94.80]:56577
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S1347731AbhDGBZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:25:50 -0400
+Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:57441
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238346AbhDGBZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:25:33 -0400
+        id S238500AbhDGBZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 21:25:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XvV/aWlCfyA/UABYr/uue6D0JTthzUywrKoiPQLnoxTFB/PMggbfb2zVhdvTXjZ/Y3lCGlozG1YKQQ8d+p5Kx0qWtuvwmjBE10QJE5FGfAEWSRBTUUvGkXZyDyPE6JuLNvRD2LGVMkA+V4JiDSqqf1G9iMafWCUnhdGqVZSy40iG/H8JAjr/9PipvOKC7lUARJll0Ap/TJomyEu2kmNHsFowLC/Qxb/YCV3LfRLD2Txkz6X6ttoChrehsevewvtmJjUbt9TKN0xoMz4NXIQE6MCop5X7lXeqtTBynvFSGLFxwab9O58BAzIoNJKDOup+B1N6dUEuxQqKU/cYyWLiwg==
+ b=UO8sBrdmwPMG095NrZ3L6IdvG0H4/jwmOvLZARfjcsHIiTXC7FWTI8uON+zkVZI4ujJ2OvsyMAKqMFLrNfaHTIre1IaneOR45CNBS2PlqNqMsqnadVZpxApeKVv1zhmIXkYeqLkbjNiFRQw1tJl2/oPf2M7DqwhScECM9znEmfinPHUmiDcLcCqEYVeq0cuBCOCJ+BA5giAOfujVOHg9FoTTvibTUh9JKg9NB1Z17i7BAJn/mgkGSHsoPVi9XDvlvKBdc6TwBFb5ibebdmySBYmA0eQ6qgrcdZYjZ6GsmeyCts9KrOdWx46QTYq5KEYZR3YJbMIS97sqh9EG6AaSjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qJix4WfNsLZm+lYekpRcrc3AKl0GDdBVxZMlDPsodU4=;
- b=QSOqXMyUYdQH1j7ygDva5lKcJjWjNlMGv4aZNDIr0hH0M+T4naTxUa/om1ffO8eQwBn9JVgULrOWLdf5qDaNtZJVvjTsQuSg0bsm/xKJyaMwx4Ow5LielxyRD9JVmNs1mv77uUY3ucD983ihcYgHg9IAvenMz09YCLYwhXJz8NTikEqKkNVlY3HsnMb28Qfje6Usw7FVChxRf9oFByeCVhfwwQosDRT6Dsg94td+Fneda2moLe8gfUk2x9qwP4CACwR6VAaO3PgFuHtzpR40ltxiJ2FSzPU4fDObbBL2iOZnzPT4PLFI6nEBj4M1aQe+0+QDJL11u3wCXWZFwg1PnA==
+ bh=PfDrNKCX5CMNRDpfyCEpZKmu8tRIqYugQbcPQhpYCL4=;
+ b=L1e2VAE4bdfKDTJBgcgyTXZUtPkuTvMv71DZjghmvMiqYWBp2pJaYBe2BDYk+9kijn6gWXpCb3lTk7Br6Hdqb4ZlsF9vBWSR47EeddN1eVXncVSHTp26mtyciwN+ph24ISwFxoE1THm9dorR9PFE3TWT1ZxPOi4pJqKLXuAsdcoA/B+o982uC4ISYDOiFhbIW3iF56MF95CwAsxmOglcWW5sNdW5L+K5FR+h0fMyEyY9psk5hDAEO2n477qQT+yXLim3zIbIFLMDQSSL4jizN7rUuzZf35gXA2IouI4fIetPgP8s4tBCxSbsK5DbPSStSQJ0hjkHw5MKE2J1YEYX4g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.112.36) smtp.rcpttodomain=kernel.dk smtp.mailfrom=nvidia.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qJix4WfNsLZm+lYekpRcrc3AKl0GDdBVxZMlDPsodU4=;
- b=BRYJJPgxOC9EsHsO9lfzvY3k5W+Z34DwTJhS8g+bY8d3ibL7blycByb0ypFFaV663WeH5fBp4mxbNEIN//siYzAE/cWrkzAwANQQoavtLg4OAdRlmQ+vgh37+t3LlYMG0d/1ovk5xTbZytfMke95CDATbTfcKRscTtI7NnKjk7hCKY+CDLWrIzCo5oE+QwbqxKPAAdixMstWzk/HlG3yDNQfmPeLdAqWEeeUr/Vu4DgxxxTsfVMvC2jZseIWfcX3NOC+nezAmcVLGJaoSpNFjod2vRNaKvDFIFNjM6IqJeVOVMXHs6nGRLQ2ONcRQUI6jacW5J21I4VbzxsBklw6cg==
-Received: from DM3PR12CA0121.namprd12.prod.outlook.com (2603:10b6:0:51::17) by
- BYAPR12MB4791.namprd12.prod.outlook.com (2603:10b6:a03:10a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Wed, 7 Apr
- 2021 01:25:24 +0000
+ bh=PfDrNKCX5CMNRDpfyCEpZKmu8tRIqYugQbcPQhpYCL4=;
+ b=TTXc+MTxJ3fdVSLevpAuGE87wivJyXjCuSNvEDFHoo3QFQlmVKVYTF3+Gv7USNb+aygqrUq1L97I7tXmpKSSgnCTTtZyHCiajG0I/zHFrrriK6Qum350fefKuUy6wqUNqxaKvWqVv/0FQIhp0eADkjgGzVM82aaQzqSdudXAwCSTqXAYJVT1OByPqzwwPGjIYgy7Qg/dmVJLZZy2Q5L0IWIaAW/V8RyHBYzaYAodJdwv0cQ7FUlmpwVODCrgZt1HGq5TN58ODivsDRmDWR+FdLdDJ114qJvwmcNkIS8XFc/tUYycoVewOTEfxG5id54Gl1SzTIZDo2OULbINwNg7uQ==
+Received: from DM3PR12CA0136.namprd12.prod.outlook.com (2603:10b6:0:51::32) by
+ CY4PR12MB1606.namprd12.prod.outlook.com (2603:10b6:910:10::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3999.26; Wed, 7 Apr 2021 01:25:25 +0000
 Received: from DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:51:cafe::b) by DM3PR12CA0121.outlook.office365.com
- (2603:10b6:0:51::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
- Transport; Wed, 7 Apr 2021 01:25:24 +0000
+ (2603:10b6:0:51:cafe::63) by DM3PR12CA0136.outlook.office365.com
+ (2603:10b6:0:51::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
+ Transport; Wed, 7 Apr 2021 01:25:25 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+ smtp.mailfrom=nvidia.com; kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.112.36 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.112.36; helo=mail.nvidia.com;
 Received: from mail.nvidia.com (216.228.112.36) by
  DM6NAM11FT039.mail.protection.outlook.com (10.13.172.83) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3999.28 via Frontend Transport; Wed, 7 Apr 2021 01:25:23 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ 15.20.3999.28 via Frontend Transport; Wed, 7 Apr 2021 01:25:25 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
  (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
+ 2021 01:25:24 +0000
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
  2021 01:25:23 +0000
 Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -61,71 +63,245 @@ To:     <skomatineni@nvidia.com>, <axboe@kernel.dk>,
 CC:     <pchandru@nvidia.com>, <devicetree@vger.kernel.org>,
         <linux-ide@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 0/3] Add AHCI support for Tegra186
-Date:   Tue, 6 Apr 2021 18:25:28 -0700
-Message-ID: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+Subject: [PATCH v4 1/3] dt-bindings: ata: tegra: Convert binding documentation to YAML
+Date:   Tue, 6 Apr 2021 18:25:29 -0700
+Message-ID: <1617758731-12380-2-git-send-email-skomatineni@nvidia.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
 X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c7f855ae-9b89-4f35-9d28-08d8f9640483
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4791:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB4791A7EE586779736D15B535C2759@BYAPR12MB4791.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Office365-Filtering-Correlation-Id: 65ac4d64-d1b0-4084-f7dd-08d8f9640538
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1606:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1606264D901706A56F634013C2759@CY4PR12MB1606.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cI49pfR0p9EKsbg8B3OX/d+OcX1mLgRu/vEb9S5BXi63MJ0KJFI0hSI8Up12XvvD5jCJ0rnpSwDcRuPfVrKmgb53dApQlLbEVX/L9RoWOgESl2eF2kt/o5No1foBgGplVULediJ7gD8diTEf1cpOzi+eWMfA7YPrLC5ccIRpON7xdkxKE+9IuYCeCfZ+MwOuHK6btORwN0gaUPmMFIffFUH9Gh7rfHZnoNBBJ4Sht3Xrd0pFhPiIc8EBfCzi60HPfYR8KMLRKsPF5/yCXwnNbp2FZ2QEEGci9gmrvnibUwGSL5wcXRv4fZqSKgmOU/whPv7Wbq0Auo44rpsMxqonYg6I3SILsy0nbe9jdVVvNsmbbRSnljffG89Vn/Ks+tg/C10MQx/0wa4b1Z3yLMbgzNIGEsuAoADcl3cU/R+wf2MsfzTiUaS6++gUcBzQybmxdlFOf0jAA4hpysJuyZTXb0aR4cksrgtOPFdXtgXp/eqw3VkK7ZVcIB/uzGMXpkdwyKU1Na4rhumPi4f5YtN/O50r347TYwlLzyd1sBCToLq/62zgOocT22MZXRLwJIYzY2iubhHgv6/Ovq0zCQustdjJ9SwVStSA9WHmn/dfscruxoId9jqw25asj8W/6q5DzO/5eP4+G0Tvnx7qM53Pmw==
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(46966006)(36840700001)(36860700001)(478600001)(83380400001)(2906002)(8936002)(36756003)(7696005)(356005)(7636003)(186003)(54906003)(110136005)(426003)(2616005)(82740400003)(5660300002)(336012)(316002)(36906005)(26005)(70586007)(70206006)(47076005)(86362001)(4326008)(8676002)(82310400003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: DSEG85wYT30eXWF+9klYna8CIHjNu0uyFhiiEJkudkqrrQrY8Qkk4Oe7E9cueb9wDUKl+4fcr+VZcJEyTv3Z7k9cOQ/p9K3DYcVD1vOAXDibJvW4VeHUPG2iCr9ogZWI0iUNvZsr4zAmZLTO7BjEBEe+Dm027AfyEDg30UGiQKIRiKvBf1J3XEfMyH4TSVUYFHYihWNYs9hKj3LAA/ZqM53W6LCTsicv7nkWoREJl7KNhkmFDO6MMUxc0LloDPDWwDU6GdhyUWEMAi0EAGPLR8+JCU+2pS1Vi2fcpQOscJ3H6DQ6Ho5HpaKM8Grc+8wihgistbJp7CA22rnWHRniio8iT76rgO+CPaW26RZqmC1gthULxFqx66X0M/pK1jDoBaFYfkw7uLlFHcB+uUSeif0BoOFou0WJXGadKtcx3+3g4olctwvobK4UV+FWc5y4ImTtr8n0wvbaCHWN0DqVC+uWl+QSZ+zij0BsWK0bXWv6sOjvvIogkoXlk9ncsZOZF3vWiwMTCM0EhjLnyLKkn9P6EoBWDkN1OCebysKxsv5I0ABAXhaZLyYy5o23vT659znTputgExkHtcTPHXOJyhc5pfoWCZG7s2z52YwvA3v8yx69eLP0FAHVKZ38H0xLW7/CwJfrrblKqp6KxQGNCA390t7igLu/QHYT6uz6UykmLbHmhBAT50yORMP7Aoo+8TTX8MF/k7coKU6SJUNjjQveZ4X9ZuG2fAHHavFcoc4=
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(136003)(36840700001)(46966006)(36756003)(478600001)(83380400001)(70206006)(110136005)(356005)(4326008)(7636003)(82740400003)(70586007)(7696005)(82310400003)(966005)(426003)(86362001)(26005)(36906005)(8676002)(186003)(36860700001)(47076005)(336012)(2906002)(5660300002)(8936002)(316002)(2616005)(54906003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 01:25:23.9705
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 01:25:25.1581
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7f855ae-9b89-4f35-9d28-08d8f9640483
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65ac4d64-d1b0-4084-f7dd-08d8f9640538
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4791
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1606
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Re-sending dt-binding and ahci_tegra driver patches as v4 as device
-tree patches from v3 are merged but not the AHCI Tegra driver.
+This patch converts text based dt-binding document to YAML based
+dt-binding document.
 
-Missed to add Jens Axboe to mailing list in v3. Adding for v4.
-
-This series adds support for AHCI-compliant SATA to Tegra186 SoC.
-
-This series includes patches for
-- Converting text based dt-binding document to YAML.
-- Adding dt-bindings for Tegra186.
-- Adding Tegra186 support to Tegra AHCI driver.
-
-Delta between patch versions:
-[v4]:	Same as v3 except removed device tree patches as they are
-	merged.
-[v3]:	fixed yaml example to pass dt_binding_check
-[v2]:	v1 feedback related to yaml dt-binding.
-	Removed conditional reset order in yaml and updated dts files
-	to maintain same order for commonly available resets across
-	Tegra124 thru Tegra186.
-
-
-Sowjanya Komatineni (3):
-  dt-bindings: ata: tegra: Convert binding documentation to YAML
-  dt-binding: ata: tegra: Add dt-binding documentation for Tegra186
-  ata: ahci_tegra: Add AHCI support for Tegra186
-
- .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 176 +++++++++++++++++++++
- .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
- drivers/ata/ahci_tegra.c                           |  60 +++++--
- 3 files changed, 223 insertions(+), 57 deletions(-)
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+---
+ .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 138 +++++++++++++++++++++
+ .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
+ 2 files changed, 138 insertions(+), 44 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
 
+diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+new file mode 100644
+index 0000000..3c15aea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+@@ -0,0 +1,138 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/ata/nvidia,tegra-ahci.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra AHCI SATA Controller
++
++maintainers:
++  - Thierry Reding <thierry.reding@gmail.com>
++  - Jonathan Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    enum:
++      - nvidia,tegra124-ahci
++      - nvidia,tegra132-ahci
++      - nvidia,tegra210-ahci
++
++  reg:
++    minItems: 2
++    maxItems: 3
++    items:
++      - description: AHCI registers
++      - description: SATA configuration and IPFS registers
++      - description: SATA AUX registers
++
++  interrupts:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: sata
++      - const: sata-oob
++
++  clocks:
++    maxItems: 2
++
++  reset-names:
++    items:
++      - const: sata
++      - const: sata-cold
++      - const: sata-oob
++
++  resets:
++    maxItems: 3
++
++  phy-names:
++    items:
++      - const: sata-0
++
++  phys:
++    maxItems: 1
++
++  hvdd-supply:
++    description: SATA HVDD regulator supply.
++
++  vddio-supply:
++    description: SATA VDDIO regulator supply.
++
++  avdd-supply:
++    description: SATA AVDD regulator supply.
++
++  target-5v-supply:
++    description: SATA 5V power regulator supply.
++
++  target-12v-supply:
++    description: SATA 12V power regulator supply.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clock-names
++  - clocks
++  - reset-names
++  - resets
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - nvidia,tegra124-ahci
++              - nvidia,tegra132-ahci
++    then:
++      properties:
++        reg:
++          maxItems: 2
++        reset-names:
++          minItems: 3
++        resets:
++          minItems: 3
++      required:
++        - phys
++        - phy-names
++        - hvdd-supply
++        - vddio-supply
++        - avdd-supply
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - nvidia,tegra210-ahci
++    then:
++      properties:
++        reg:
++          minItems: 3
++        reset-names:
++          minItems: 3
++        resets:
++          minItems: 3
++
++additionalProperties: true
++
++examples:
++  - |
++    #include <dt-bindings/clock/tegra210-car.h>
++    #include <dt-bindings/reset/tegra210-car.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    sata@70020000 {
++            compatible = "nvidia,tegra210-ahci";
++            reg = <0x70027000 0x00002000>, /* AHCI */
++                  <0x70020000 0x00007000>, /* SATA */
++                  <0x70001100 0x00010000>; /* SATA AUX */
++            interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&tegra_car TEGRA210_CLK_SATA>,
++                     <&tegra_car TEGRA210_CLK_SATA_OOB>;
++            clock-names = "sata", "sata-oob";
++            resets = <&tegra_car 124>,
++                     <&tegra_car 129>,
++                     <&tegra_car 123>;
++            reset-names = "sata", "sata-cold", "sata-oob";
++    };
+diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt b/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+deleted file mode 100644
+index 12ab2f7..0000000
+--- a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
++++ /dev/null
+@@ -1,44 +0,0 @@
+-Tegra SoC SATA AHCI controller
+-
+-Required properties :
+-- compatible : Must be one of:
+-  - Tegra124 : "nvidia,tegra124-ahci"
+-  - Tegra132 : "nvidia,tegra132-ahci", "nvidia,tegra124-ahci"
+-  - Tegra210 : "nvidia,tegra210-ahci"
+-- reg : Should contain 2 entries:
+-  - AHCI register set (SATA BAR5)
+-  - SATA register set
+-- interrupts : Defines the interrupt used by SATA
+-- clocks : Must contain an entry for each entry in clock-names.
+-  See ../clocks/clock-bindings.txt for details.
+-- clock-names : Must include the following entries:
+-  - sata
+-  - sata-oob
+-- resets : Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names : Must include the following entries:
+-  - sata
+-  - sata-oob
+-  - sata-cold
+-- phys : Must contain an entry for each entry in phy-names.
+-  See ../phy/phy-bindings.txt for details.
+-- phy-names : Must include the following entries:
+-  - For Tegra124 and Tegra132:
+-    - sata-phy : XUSB PADCTL SATA PHY
+-- For Tegra124 and Tegra132:
+-  - hvdd-supply : Defines the SATA HVDD regulator
+-  - vddio-supply : Defines the SATA VDDIO regulator
+-  - avdd-supply : Defines the SATA AVDD regulator
+-  - target-5v-supply : Defines the SATA 5V power regulator
+-  - target-12v-supply : Defines the SATA 12V power regulator
+-
+-Optional properties:
+-- reg :
+-  - AUX register set
+-- clock-names :
+-  - cml1 :
+-    cml1 clock should be defined here if the PHY driver
+-    doesn't manage them. If it does, they should not be.
+-- phy-names :
+-  - For T210:
+-    - sata-phy
 -- 
 2.7.4
 
