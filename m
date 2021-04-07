@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4068A356F42
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B40B356F44
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353186AbhDGOua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:50:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56980 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353100AbhDGOt4 (ORCPT
+        id S1353161AbhDGOuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:50:52 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:38605 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353149AbhDGOuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:49:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617806986;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2JsGWtEoCdr3zGRUAMmhrIg8TDL4ft+B27TPb9qYrBY=;
-        b=LGx6I3PJ8cDn/Kq/ezpe5x7TS5yW1uLyTxxeXLtxO50JkNjMmVC/G4AOyjNty+CV6AnJ13
-        8EKVx2KZvIFzBR8wskwimH7UKsIa9uTzgADuXirwdDRjxBNh/l5TVvN1QCxQNlqC5k2mjr
-        HJUf/4239HXe1YXVkhONB/y1KOcT0KI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-u85dIExIO3qSr9fFZ1-8Vg-1; Wed, 07 Apr 2021 10:49:44 -0400
-X-MC-Unique: u85dIExIO3qSr9fFZ1-8Vg-1
-Received: by mail-ej1-f70.google.com with SMTP id jx20so3447880ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:49:43 -0700 (PDT)
+        Wed, 7 Apr 2021 10:50:23 -0400
+Received: by mail-pj1-f50.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso1421865pji.3;
+        Wed, 07 Apr 2021 07:50:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2JsGWtEoCdr3zGRUAMmhrIg8TDL4ft+B27TPb9qYrBY=;
-        b=hsAd1kJOto8avFwmXGl+2QTi0HnEbX6WNI73BkmAWncSt17AVDmOCg1a6ZSyjHqIUE
-         eAQ2CYhQXH9qxwjGjob/5FHRg30jgZRCNVg7vIoNdDZ2hmJkAgW2dqPu0unIWFTHC7lG
-         8sdrCDq+33u6xXhboXCF0d7dj0Slt8ak7wFG8alaqtNMBN8jDye/pCvE7xtaiQffImCG
-         ZndYDLlm7lgnvXUmSQrJKj9IepOkGWxLbFkFaR1TZMW1P7ekFia4wHXUc25KC3S4O/S2
-         odQvNUAyv88WWHcv9eedIXMTHPwq7vpCCznogOa6fAZuMrbhfcjxpsz0rOqrMISz/60a
-         OChA==
-X-Gm-Message-State: AOAM531XUlzC6HXD99PZ8NtjgxPe3AUalqxuP/kvaapxRtilL0vkfQyH
-        DTf5muH5FWBsap6WAK5G1A7ZEZjL+feBGWn/tlYCySmbCis63x1wQYlysDJLXq6VGRFnBQW0w5I
-        Hlal0sYsnq2BZxiok8tphiCbxjUUP7nbc8p2AsQNLLD27batw2lYr2ItE47O7Rl5kxPiADAKIX0
-        Pg
-X-Received: by 2002:a17:906:6bcf:: with SMTP id t15mr4255002ejs.252.1617806982640;
-        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywzceHMmr/aBnghYFEU/cRHINVV7jvAY6AaT0S4fVfyNds5n7GPvYOsJRF+ILpB089AE4QCA==
-X-Received: by 2002:a17:906:6bcf:: with SMTP id t15mr4254975ejs.252.1617806982278;
-        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e5sm7975833edr.64.2021.04.07.07.49.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
-Subject: Re: [PATCH 0/9] intel_pmc_core: Add sub-state requirements and mode
- latching support
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a5d476c8-5c38-b8fc-a0da-65a28c5a14e3@redhat.com>
-Date:   Wed, 7 Apr 2021 16:49:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=boi2GdDjBf4aaH3bA5w/2O331cszGc1eNxLpxWY9wsg=;
+        b=KDSINOB9bR4hD4AaYffX7/zaOA0yDEULFYnxpO7/E8Udst94nzZtqLe3m9fk0iHoWH
+         dY9rtxPH6z344OrmNvEAx0uCrIKki7IkVXqQA1n2umTbFwNpN1gXB0W2ZQ/YWyxA2BSy
+         k2Y3YAnv4487I7uALlNnSGLo0/8PJlbuns4m1uVH5S+rBmDjhkmbJ/3jTVUo+BC1nLWh
+         IHV9zMBRr44uvIsH0Mju7oCodA1w+mxWmzAUuIdQzJ4dsg8In4Ua/qYVTf6JvFXZPLL1
+         bKVai0BmqMabAa1CIrHc5KQMI3BagJeP312sX80jV0hyWxa+Yuh7gd7XAuZnjAfCunK/
+         Gmrw==
+X-Gm-Message-State: AOAM531zVkpAuxAjAqY/6/2hrRewR9zFTTy/VevqqCBNc1Mqx49Sf90/
+        aJZfMOyXun5VlcRyVBJebyojTti2AKRN6g==
+X-Google-Smtp-Source: ABdhPJy9mZKEqarLu0bzco6v8rONCslZUVdW4sUn63A9oHt3bKbnCOrgUMgvX5BnXtvtmNez+rg/QQ==
+X-Received: by 2002:a17:90a:4d86:: with SMTP id m6mr3587807pjh.197.1617807013349;
+        Wed, 07 Apr 2021 07:50:13 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id f17sm21732898pgj.86.2021.04.07.07.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:50:12 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id C40D1402D7; Wed,  7 Apr 2021 14:50:11 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 14:50:11 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210407145011.GC4332@42.do-not-panic.com>
+References: <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGtDzH0dEfEngCij@google.com>
+ <20210405190023.GX4332@42.do-not-panic.com>
+ <YGtrzXYDiO3Gf9Aa@google.com>
+ <20210406002909.GY4332@42.do-not-panic.com>
+ <YG0JouWqrJPHbpqz@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210401030558.2301621-1-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG0JouWqrJPHbpqz@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/1/21 5:05 AM, David E. Box wrote:
-> - Patch 1 and 2 remove the use of the global struct pmc_dev
-> - Patches 3-7 add support for reading low power mode sub-state
->   requirements, latching sub-state status on different low power mode
->   events, and displaying the sub-state residency in microseconds
-> - Patch 8 adds missing LTR IPs for TGL
-> - Patch 9 adds support for ADL-P which is based on TGL
+On Tue, Apr 06, 2021 at 06:23:46PM -0700, Minchan Kim wrote:
+> On Tue, Apr 06, 2021 at 12:29:09AM +0000, Luis Chamberlain wrote:
+> > On Mon, Apr 05, 2021 at 12:58:05PM -0700, Minchan Kim wrote:
+> > > On Mon, Apr 05, 2021 at 07:00:23PM +0000, Luis Chamberlain wrote:
+> > > > Which is why the *try_module_get()* I think is much more suitable, as
+> > > > it will always fails if we're already going down.
+> > > 
+> > > How does the try_module_get solved the problem?
+> > 
+> > The try stuff only resolves the deadlock. The bget() / bdput() resolves
+> > the race to access to the gendisk private_data.
 > 
-> Applied on top of latest 5.12-rc2 based hans-review/review-hans
+> That's the one I missed in this discussion. Now I am reading your [2/2]
+> in original patch. I thought it was just zram instance was destroyed
+> by sysfs race problem so you had seen the deadlock.
 
-Thnak you for this series, this mostly is fine, a few small remarks
-on patch 5/9 and 7/9 if you can send a v2 addressing those, then
-this is ready for merging.
+Patch [2/2] indeed dealt with a zram instance race but the issue was not
+a crash due to indirection, it was because of a deadlock. The deadlock
+happens because a shared mutex is used both at sysfs and also on __exit.
+I'll expand on the example as you request so that both issues are
+clearly understood.
 
-Regards,
+The zram race you spotted which could lead to a derefence and crash is
+a separate one, which the bget() / bdput() on sysfs knobs resolves. That
+race happens because zram's sysfs knobs don't prevent del_gendisk() from
+completing currently, and so a dereference can happen.
 
-Hans
+> Hmm, we are discussing several problems all at once. I feel it's time
+> to jump v2 with your way in this point. You said three different
+> problems. As I asked, please write it down with more detail with
+> code sequence as we discussed other thread. If you mean a deadlock,
+> please write what specific locks was deadlock with it.
+> It would make discussion much easier. Let's discuss the issue
+> one by one in each thread.
 
+Sure. Will post a v2.
 
+> > But so far Greg does not see enough justification for a), so we can either
+> > show how wider this issue is (which I can do using coccinelle), or we
+> > just open code the try_module_get() / put on each driver that needs it
+> > for now. Either way it would resolve the issue.
 > 
-> David E. Box (4):
->   platform/x86: intel_pmc_core: Don't use global pmcdev in quirks
->   platform/x86: intel_pmc_core: Remove global struct pmc_dev
->   platform/x86: intel_pmc_core: Add option to set/clear LPM mode
->   platform/x86: intel_pmc_core: Add support for Alder Lake PCH-P
-> 
-> Gayatri Kammela (5):
->   platform/x86: intel_pmc_core: Handle sub-states generically
->   platform/x86: intel_pmc_core: Show LPM residency in microseconds
->   platform/x86: intel_pmc_core: Get LPM requirements for Tiger Lake
->   platform/x86: intel_pmc_core: Add requirements file to debugfs
->   platform/x86: intel_pmc_core: Add LTR registers for Tiger Lake
-> 
->  drivers/platform/x86/intel_pmc_core.c | 359 +++++++++++++++++++++++---
->  drivers/platform/x86/intel_pmc_core.h |  47 +++-
->  2 files changed, 370 insertions(+), 36 deletions(-)
-> 
+> I second if it's general problem for drivers, I agree it's worth to
+> addresss in the core unless the driver introduce the mess. I have
+> no idea here since I didn't understand the problem, yet.
 
+I suspect these issue are generic, however hard to reproduce, but this
+just means busying out sysfs knobs and doing module removal can likely
+cause crashes to some kernel drivers.
+
+Since it seems the position to take is module removal is best effort,
+if crashes on module removal are important to module maintainers, the
+position to take is that such races are best addressed on the driver
+side, not core.
+
+> > As for b), given that I think even you had missed my attempt to
+> > generialzie the bdget/bdput solution for any attribute type (did you see
+> > my dev_type_get() and dev_type_put() proposed changes?), I don't think
+> > this problem is yet well defined in a generic way for us to rule it out.
+> > It is however easier to simply open code this per driver that needs it
+> > for now given that I don't think Greg is yet convinced the deadlock is
+> > yet a widespread issue. I however am pretty sure both races races *do*
+> > exist outside of zram in many places.
+> 
+> It would be good sign to propose general solution.
+
+Same situation here, as the race is with module removal.
+
+Even in the case where module removal is possible today and likely
+"supported" -- on livepatching, it seems we're shying away slowly from
+that situation, and will likely expose a knob to ensure removing a
+livepatch (and do module removal) will require a knob to be flipped
+to say, "Yes, I know what I am doing").
+
+> > They try_module_get() approach resolves the deadlock race, but it does
+> > so in a lazy way. I mean lazy in that then rmmod wins over sysfs knobs.
+> > So touching sysfs knobs won't make an rmmod fail. I think that's more
+> > typical expected behaviour. Why? Because I find it odd that looping
+> > forever touching sysfs attributes should prevent a module removal. But
+> > that's a personal preference.
+> 
+> I agree with you that would be better but let's see how it could go
+> clean.
+
+OK great.
+
+> FYI, please look at hot_remove_store which also can remove zram
+> instance on demand. I am looking forward to seeing your v2.
+
+Sure, I'll address all sysfs knobs in v2.
+
+  Luis
