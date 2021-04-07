@@ -2,139 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2504356365
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FFE356367
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242230AbhDGFnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhDGFnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:43:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40CF7610D0;
-        Wed,  7 Apr 2021 05:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617774191;
-        bh=E1AdJJuv6qohtYvGButFiib/HiQBnklU6WNRjFNV50k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TnuQo2Ic9BtrG8CgitohlzV61GQcYEFAKie68LnwM1skObKLXHC7dv26wayM76902
-         KXtaGNAV3eKpUehIycdH3gOx3HQaN1t1FScb6Xif9Sq/Xasy0mdf4dHCEuUsHc8WTH
-         nFENttRRFtHwhLov7XfMzwLsjbubyAMtCHMTibjY=
-Date:   Wed, 7 Apr 2021 07:43:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     bvanassche@acm.org, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        hch@infradead.org, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: Re: [RESEND PATCH v5 2/2] bio: add limit_bio_size sysfs
-Message-ID: <YG1GbFOqaq3wAnfZ@kroah.com>
-References: <7c8d9787-f0eb-9ef1-6ebf-f383c27b599a@acm.org>
- <CGME20210407013850epcas1p2d305f138c9fa1431abba1ec44a382de9@epcas1p2.samsung.com>
- <20210407012117.21122-1-nanich.lee@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407012117.21122-1-nanich.lee@samsung.com>
+        id S242400AbhDGFng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:43:36 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:36666 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229558AbhDGFne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 01:43:34 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app4 (Coremail) with SMTP id cS_KCgC3+URyRm1giwuVAA--.60619S4;
+        Wed, 07 Apr 2021 13:43:17 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: platform: sti: Fix rumtime PM imbalance in regs_show
+Date:   Wed,  7 Apr 2021 13:43:13 +0800
+Message-Id: <20210407054313.5570-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgC3+URyRm1giwuVAA--.60619S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3Aw4rurW8GF1kAr48tFb_yoWDXwc_Kw
+        n8uF47Wr1Fkr1DKw47tw1rZa4IvFs8Wr1rGa1SqFWayayrur9rXry8ZFZ7uwnxX3yjv3sI
+        krnIgFyxCrZxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoGBlZdtTQGhAAVsV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:21:17AM +0900, Changheun Lee wrote:
-> > On 3/16/21 12:44 AM, Changheun Lee wrote:
-> > > Add limit_bio_size block sysfs node to limit bio size.
-> > > Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
-> > > And bio max size will be limited by queue max sectors via
-> > > QUEUE_FLAG_LIMIT_BIO_SIZE set.
-> > > 
-> > > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-block | 10 ++++++++++
-> > >  Documentation/block/queue-sysfs.rst   |  7 +++++++
-> > >  block/blk-sysfs.c                     |  3 +++
-> > >  3 files changed, 20 insertions(+)
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-block b/Documentation/ABI/testing/sysfs-block
-> > > index e34cdeeeb9d4..86a7b15410cf 100644
-> > > --- a/Documentation/ABI/testing/sysfs-block
-> > > +++ b/Documentation/ABI/testing/sysfs-block
-> > > @@ -316,3 +316,13 @@ Description:
-> > >  		does not complete in this time then the block driver timeout
-> > >  		handler is invoked. That timeout handler can decide to retry
-> > >  		the request, to fail it or to start a device recovery strategy.
-> > > +
-> > > +What:		/sys/block/<disk>/queue/limit_bio_size
-> > > +Date:		Feb, 2021
-> > > +Contact:	Changheun Lee <nanich.lee@samsung.com>
-> > > +Description:
-> > > +		(RW) Toggle for set/clear QUEUE_FLAG_LIMIT_BIO_SIZE queue flag.
-> > > +		Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size
-> > > +		is set. And bio max size will be limited by queue max sectors.
-> > > +		QUEUE_FLAG_LIMIT_BIO_SIZE will be cleared if limit_bio_size is
-> > > +		cleard. And limit of bio max size will be cleard.
-> > > diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
-> > > index 2638d3446b79..cd371a821855 100644
-> > > --- a/Documentation/block/queue-sysfs.rst
-> > > +++ b/Documentation/block/queue-sysfs.rst
-> > > @@ -273,4 +273,11 @@ devices are described in the ZBC (Zoned Block Commands) and ZAC
-> > >  do not support zone commands, they will be treated as regular block devices
-> > >  and zoned will report "none".
-> > >  
-> > > +limit_bio_size (RW)
-> > > +-------------------
-> > > +This indicates QUEUE_FLAG_LIMIT_BIO_SIZE queue flag value. And
-> > > +QUEUE_FLAG_LIMIT_BIO_SIZE can be changed via set(1)/clear(0) this node.
-> > > +bio max size will be limited by queue max sectors via set this node. And
-> > > +limit of bio max size will be cleard via clear this node.
-> > > +
-> > >  Jens Axboe <jens.axboe@oracle.com>, February 2009
-> > > diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> > > index b513f1683af0..840d97f427e6 100644
-> > > --- a/block/blk-sysfs.c
-> > > +++ b/block/blk-sysfs.c
-> > > @@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
-> > >  QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
-> > >  QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
-> > >  QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
-> > > +QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
-> > >  #undef QUEUE_SYSFS_BIT_FNS
-> > >  
-> > >  static ssize_t queue_zoned_show(struct request_queue *q, char *page)
-> > > @@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
-> > >  QUEUE_RW_ENTRY(queue_iostats, "iostats");
-> > >  QUEUE_RW_ENTRY(queue_random, "add_random");
-> > >  QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
-> > > +QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
-> > >  
-> > >  static struct attribute *queue_attrs[] = {
-> > >  	&queue_requests_entry.attr,
-> > > @@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
-> > >  	&queue_rq_affinity_entry.attr,
-> > >  	&queue_iostats_entry.attr,
-> > >  	&queue_stable_writes_entry.attr,
-> > > +	&queue_limit_bio_size_entry.attr,
-> > >  	&queue_random_entry.attr,
-> > >  	&queue_poll_entry.attr,
-> > >  	&queue_wc_entry.attr,
-> > 
-> > Has it been considered to introduce a function to set the BIO size limit
-> > instead of introducing a new sysfs attribute? See also
-> > blk_queue_max_hw_sectors().
-> 
-> A function to set has been not considered yet.
-> But sysfs attribute should be supported I think. Because it can be
-> different depending on each system environment including policy.
+pm_runtime_get_sync() will increase the rumtime PM counter
+even it returns an error. Thus a pairing decrement is needed
+to prevent refcount leak. Fix this by replacing this API with
+pm_runtime_resume_and_get(), which will not change the runtime
+PM counter on error.
 
-But what tool is now responsible for setting this new value?  Where will
-it get that information from?  And why can't the kernel just
-automatically set this correctly in the first place without any need for
-userspace interaction?
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/media/platform/sti/bdisp/bdisp-debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/media/platform/sti/bdisp/bdisp-debug.c b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+index 2b270093009c..a27f638df11c 100644
+--- a/drivers/media/platform/sti/bdisp/bdisp-debug.c
++++ b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+@@ -480,7 +480,7 @@ static int regs_show(struct seq_file *s, void *data)
+ 	int ret;
+ 	unsigned int i;
+ 
+-	ret = pm_runtime_get_sync(bdisp->dev);
++	ret = pm_runtime_resume_and_get(bdisp->dev);
+ 	if (ret < 0) {
+ 		seq_puts(s, "Cannot wake up IP\n");
+ 		return 0;
+-- 
+2.17.1
 
-greg k-h
