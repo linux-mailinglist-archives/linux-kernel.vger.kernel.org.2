@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB213568B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57931356900
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350555AbhDGKD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:03:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350497AbhDGKDN (ORCPT
+        id S244416AbhDGKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:07:10 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:46794 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244351AbhDGKGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:03:13 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFfyk2k0DzPnwg;
-        Wed,  7 Apr 2021 18:00:14 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 18:02:46 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     <huawei.libin@huawei.com>, Xinliang Liu <xinliang.liu@linaro.org>,
-        "Tian Tao" <tiantao6@hisilicon.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        John Stultz <john.stultz@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>,
-        Wei Li <liwei391@huawei.com>
-Subject: [PATCH RESEND -next] drm: kirin: Remove redundant dev_err call in ade_hw_ctx_alloc()
-Date:   Wed, 7 Apr 2021 18:06:10 +0800
-Message-ID: <20210407100610.3278802-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Apr 2021 06:06:48 -0400
+Received: by mail-lj1-f169.google.com with SMTP id u20so19913572lja.13;
+        Wed, 07 Apr 2021 03:06:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Gvfrl9iHmqojQZyBLAUe+w/XFRz7PxAI+scFLNoAmw=;
+        b=qL4/aaWju8xmvWPw0q14oP5adfhjzhG8xyCMuUn78C+dYDF5r+WKcWtPOZtirAGUXy
+         JK8D1NjIu88PEPTYPXIU3xp8lNql3uX8mWUNLB4Zvw4RUKB4TCH+qIm78387WqiuQWfl
+         G5AB7/AgGj1ifsHs892F56pal/TDOzw+/NRDNmKDBUnVeSTPCIbvpfDQ9YuexmFQpXNc
+         DtDP664cfsyHKHrKsbvpUDVLPAK8kGVAgAWI1ukIdiQ0BwbIvaUpTEBTSmxuXDBinKgo
+         J6Kub15LPWsJ+awp/HiyK24w7ckbdvlzTJOpHF9zT0OiZIJH8uqM6fEsdyVoab4SroOH
+         YFkQ==
+X-Gm-Message-State: AOAM5319ZDcqftyW/YzSuTxxdvs7ZkTwu/vLJ/93YhetWdfYuwCRGqqe
+        nJ6dGlimgvfAgNUA6+9+tjA=
+X-Google-Smtp-Source: ABdhPJycG++GnnNSF9Uwa9U/sGNyEigoxCCBk7AwDXyL2fb7oHVEsK5bK3513bl3uA+G5yp5QxYFjw==
+X-Received: by 2002:a05:651c:3c3:: with SMTP id f3mr1632618ljp.105.1617789997624;
+        Wed, 07 Apr 2021 03:06:37 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id y24sm2428638lfj.54.2021.04.07.03.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 03:06:36 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:06:31 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v6 8/8] MAINTAINERS: Add reviewer for regulator irq_helpers
+Message-ID: <2b744faf8441df8ca145450ba68c2086ba6c1052.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Add a reviewer entry for the regulator irq_helpers.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Li <liwei391@huawei.com>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Changelog:
+ v6:
+  - New patch
+---
+ MAINTAINERS | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-index 6dcf9ec05eec..78a792048c42 100644
---- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-+++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-@@ -857,10 +857,8 @@ static void *ade_hw_ctx_alloc(struct platform_device *pdev,
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c80ad735b384..8ed6af3e66f7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19211,6 +19211,10 @@ F:	include/dt-bindings/regulator/
+ F:	include/linux/regulator/
+ K:	regulator_get_optional
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	ctx->base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(ctx->base)) {
--		DRM_ERROR("failed to remap ade io base\n");
-+	if (IS_ERR(ctx->base))
- 		return ERR_PTR(-EIO);
--	}
- 
- 	ctx->reset = devm_reset_control_get(dev, NULL);
- 	if (IS_ERR(ctx->reset))
++VOLTAGE AND CURRENT REGULATOR IRQ HELPERS
++R:	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++F:	drivers/regulator/irq_helpers.c
++
+ VRF
+ M:	David Ahern <dsahern@kernel.org>
+ L:	netdev@vger.kernel.org
+-- 
+2.25.4
 
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
