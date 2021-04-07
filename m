@@ -2,141 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5DD357596
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB7E357598
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349187AbhDGUM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:12:27 -0400
-Received: from mail-eopbgr1400099.outbound.protection.outlook.com ([40.107.140.99]:7808
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232431AbhDGUM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:12:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b1TByRk+h5b1Lii5HronqNt/v2nOLEN9mv7OPB5di7YUhMxIMpy3ndyWlY2yu+ir9qp9Ga35YE0wW9mczj+J+0jY/E2eYD74YgqphLErPooB6SAbQeDDT0XpSqQybXLWtcFg/YjAUMkwZx/98LjqbiozA+zqHuhjTbkXlmol2h/2z881lzWJ9w8EjQxlzTOzx2+7nbEEhUKCXZt4mS74j1DOIQ41iwHI2FY1jKzQYMMe3eNFqyBXQLcYL/610r8UfCJnlfD2iR4Vv0TQzBfn2dJZ+zYB6+3hUDDNN5zfWIqk4r5rLKtysUACKUFEse2eJUJEjGcggws/fgxtTnFKBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/555MhVvMhhI76T9UsiHpXOemPjfQi+FHZXq/ivJDk=;
- b=X5pDhcevqa7PSmTivbcnNx5JMiL80diVIvcOk8QhQdDukLmz6GyyJJkl8z+9O+8sicHLUUk29IGbho4kB2wGrlTcAusFVKH41TO4+jNgFC1YSZJD7kRrKeB43zYOlm8EcValzTOry3ZoJqRtH1quyucFIkN86WbKMaVfqh4peiAENbbAHKFZIOy3UoKwQshb1XRk3oRDvlhRgPdxPHqp1/rNErz7RMOlo5WMznMRoRVfvctu9BgDHPtOV5Z9WzZMvaB7x9ToMaA2G/DLZyBC4D4zDTCHJVSDLBKPlRBOp7K1U7xnUfJU3APa3ZSmMqf7fy8ZrqE5QtilAyFFcX4XDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S1349223AbhDGUND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232431AbhDGUNC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:13:02 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63C7C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:12:52 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id h69so16676vke.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:12:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/555MhVvMhhI76T9UsiHpXOemPjfQi+FHZXq/ivJDk=;
- b=iZFcBthVlgkzdET6nyFjw6r6YPqL/miCoK45vOM5h+ckyQINLR0v196BuR+M8nZoCD/vTOcKXhdBCxF6npctneGKG3SFwdBOcqMyV1hDyiPfuW+E+T0jTs9dXAQ5QLa8tQdmtZTq6zz4K761kaCzndyBIga739bHM8R8B+8FzU8=
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
- by OSAPR01MB5267.jpnprd01.prod.outlook.com (2603:1096:604:33::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Wed, 7 Apr
- 2021 20:12:11 +0000
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::f04d:9261:4793:3433]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::f04d:9261:4793:3433%7]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
- 20:12:11 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
- Management Unit (SMU) support
-Thread-Topic: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
- Management Unit (SMU) support
-Thread-Index: AQHXK9TmRDzfnJqVl0Sq9GK4xidseaqpVacAgAAkN3A=
-Date:   Wed, 7 Apr 2021 20:12:10 +0000
-Message-ID: <OSBPR01MB477360E86A8913D07759C1C8BA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
- <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
- <YG3xKlSrOZvrIr3z@kroah.com>
-In-Reply-To: <YG3xKlSrOZvrIr3z@kroah.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9d57727-119f-49bf-870d-08d8fa016d75
-x-ms-traffictypediagnostic: OSAPR01MB5267:
-x-microsoft-antispam-prvs: <OSAPR01MB52678B05ED7366D35AA2ED61BA759@OSAPR01MB5267.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ngNnWii49NMkE6jMobYVmAOn6Hk4hc4s2z3zZZKl1imfTHRd0tDTUH9RVg6ZnW6fVu1U5U7BZvYqLrE2Y3bYx20394KFzK6Tvpi6c0/93Pau5DNEaPatd8jr4wvdJV2feoWnXuhSyV2ou/6F81WVc4MQjB9JdYf1KKDTTlz5LbcvIr4EAT5GOUFafLgX7T8MTMwpxwCtkjlW/zth6WHJUqt07ccxsZzgrAeX6jzI/Jsm+vO8dHSm7JXHbLlzAlIaBXnoM5gXNV9UVQHZJBnq3QEoQrhhOrFgSDaySXcCOkWdN4tVcGZ7NCkH+CuQlmQzOQFwSSGwFUQV5yaTrWjTE2gDsFNlOZ7T+pOiHg8GQkx0AXXs59mlTb3CReM6ayRATynX0p8CmdFxmulan+qkbvi3EojbXvGrCnrhH65Gb/Y22SXsO28xXrm+yzhARRsD0lvr0cvxd286f2YjZTKXCH0T3YMZaIwVeUvell01M1oG+eTMQx47c2cSTHNz+mhOip3NL844ARKwZ5boJIm85M2VkmjNy+kEbe+pIEZn+p5mfmc5RasH7WkCBVeg/5HPaoanODLpQ9tsrI58OX3cTqhzyef8nOzEFg4CWiDQ+6fTLj0BoUURFkJJ2wwbY94zPrgmQFMIAJbj2tbYsamYEm0nqJPLDmWk/8qcJiFB2Tk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(4744005)(52536014)(5660300002)(316002)(6916009)(478600001)(33656002)(8936002)(4326008)(9686003)(54906003)(8676002)(55016002)(71200400001)(186003)(86362001)(26005)(2906002)(38100700001)(7696005)(76116006)(66446008)(66946007)(64756008)(83380400001)(66556008)(66476007)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?30boVJKt92HIqQalSvh+ATKDmA8blwqNwXydCwatRpmeVo565j1Oxr+rJR7G?=
- =?us-ascii?Q?OOEbnG06a4oRSpJXI4L40UnWkg7MbuzEjBde66h+byBsMi/8uSQ1oieYWhBi?=
- =?us-ascii?Q?IaVVv1LPDGfbHiYC6m28DJa188ZyhZUhhQ6AvVxFmufEntBZ99O3EQm3T/mk?=
- =?us-ascii?Q?1I7JTWSwUdbKQaPG7TS78JULg+xbadG5CfoKwdPm0rAq417TgzT0qOFStRN6?=
- =?us-ascii?Q?rVlc4uz6R/hUu4y3Zh9xOF+ej0pSSVm6nifvCfV5wbN7MJDtxdb1Bt6PynYd?=
- =?us-ascii?Q?AAr0zAQ9Jo++4FHRWeqnvYvfMN6kpx5Fvn7wDAJ70tvArHGFFpGbcuuC1Bdl?=
- =?us-ascii?Q?h07vgSmyz7T641qo3xnqFJ3ZKifOFUmJ3whjOsNruM+RQ8ByqY50w70cMd/z?=
- =?us-ascii?Q?C3QMBI8KSPmr3CD2mMO6prU+6i2/ZPRa++rThmNxnRpy2pLNSHZnsX/1OH/F?=
- =?us-ascii?Q?ZrVS0MzuD0YjonvEu2s3P57EVBuKDI0EXxKFIDMZOc4vZ3cxy5+9BwMJKgm6?=
- =?us-ascii?Q?fJrEOrSmLPeP9dyF5+Mn9v99j3rsq4EINbsPrngWq3vI/6U3BPJs3bGyrNRw?=
- =?us-ascii?Q?dR5BiF36w+vR2Qkv+v8YBVE5EZyoG6ga1w27eNJkqgfP43AKy58trjqP40Ni?=
- =?us-ascii?Q?pY5LPQnPlga/veLlli7MVeKVXIqXQDbNmL8g2qQ4lXJmpe92dNL2CGasLf5R?=
- =?us-ascii?Q?hjkFyRn3Fbr8omFIgWO0EXFOtNSFJb8lSARkRFwQq2jlSpfJKJ9tQWtV2Fth?=
- =?us-ascii?Q?GBsLcdWklw50rZp5l/rJPzf8ubbBzu/MuC4/c9l2h5GN4cU2eYcN4nEOup6O?=
- =?us-ascii?Q?MYGuMGioWABoXhSobBOpeDl/CGDTD15arExfq/Y3kHhK8mYFX7iXi90XlXWe?=
- =?us-ascii?Q?w4k51ndbn1WrzP56PAFixeH0H+Ao2givmFtE2CAexE8MKEU8VPRck6Lhepm3?=
- =?us-ascii?Q?cVzXUhjCEr1q+LtuJ4jSb+t7tlEUQeWyF87ztscI6T7rQRa17cc6h3UIxM6v?=
- =?us-ascii?Q?uDaucsKDd2ny1CTTnCxekzNkPEzHrKG/5P8ezLoDhgHn6SBxmDjNV/ao9GiE?=
- =?us-ascii?Q?rDcG6ulpyqWacj6e9hB+Yls+bTSt1icvrVRbFsLIWTr8ia3DGrgpWi0ZK1hm?=
- =?us-ascii?Q?aWBVcnlME6n6+aRJA1SpQw5PnRiTIo6hjko6piBjzCB1Jvm8riHWJRnexAXf?=
- =?us-ascii?Q?Q36r5EXgBzd+NNDZBwVa2DVIAC4CKKInuv5Ype0rXFZbYws+vbn4WbvgvRbj?=
- =?us-ascii?Q?Ww4os+Rj+Xjr6eC8+cx4PVfDVvE27x76VCxHejl4KpCaX2qLxSap8r06C4cA?=
- =?us-ascii?Q?fHSdFJnOD70zinliFB/eZ+/y?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KJfsWVKW3ZQ9+VO3yuES/2F3xtsvRFu1g+bTYItuJHU=;
+        b=pIzz2WPVo69d7w1ewQatkgIdh6gjmGOtKt0O6O0Gs9Z3o5CurypxTrRTj5a/XJcU4b
+         04OKA2SuuNzivEwPV8ApTaqE6Vf6ZsJ406PMNGus2NsFOX27YolBuh17eXvIggEuLaQ6
+         LizaLXluYgTyrfUyqw9fcShTliBDuf0XAEygG7FmgUtgun3mQc9VzsXVQZbtCxqqFqzK
+         fS9yLaN2XtPWBhkttBLPKBnUxCFoAZlKWLMX8hkk+GjSamrNtkSS5bRPC0ja+I9xmGaR
+         0IP5G/v9cjNtxnY0beaD9q14q1M0byE4FUUO2utcwap5RNCKXRWx/CCWky8bhPz0xLBX
+         7a5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KJfsWVKW3ZQ9+VO3yuES/2F3xtsvRFu1g+bTYItuJHU=;
+        b=GnzP2Kbstp1KiPbXa/lMHJiEWPZKF5MgkUnvI0Dx+BkGQFL6ZNpWjT0LQRxDLg8KEp
+         /x9CTvu0EkfYLFrGTsHJg+J5oZs4nTDmevbinxcApbnBhwA+HGrP0g3iQe2EyI2R0fbm
+         FXUaoukgIklNQh2aP0lw38h16LQCyQZfAo+4Ei+Ar/NWCQXuxupQZdC0Ec5oL6hQVnTg
+         pxqwDMI5kb5il5vWYqdvnLQR5XWdaZCG6D1EPRpvdsgFUcy08b+1vsJvFohkz3drPsQo
+         sVJ92u1emNQV02uW1qiFKqy4WW/kDQ0dvJ79DfIK1fE7KxFIYPmDwtyE+TwQ9VM4ze1E
+         K9iw==
+X-Gm-Message-State: AOAM532subtNoyWZwdIs7fEDLNdkahJs6nAN+0H3CQH1eyLMHLN9PvV0
+        ZMU3i9kqDo9MrS/apOLXB55YcfWvLUtcNg5X5DIqzA==
+X-Google-Smtp-Source: ABdhPJz8R0XAuI6qhmJ3r+Kb2nnC91gONhf1dMYmAvHfW8+3rdNo1k8WwE4R1rafHq/iJjKxHyZZ6KQ3V8mI8qbmJ/8=
+X-Received: by 2002:a1f:ad58:: with SMTP id w85mr3448935vke.22.1617826371876;
+ Wed, 07 Apr 2021 13:12:51 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9d57727-119f-49bf-870d-08d8fa016d75
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2021 20:12:10.9456
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FRzWLNh04CMhRQ+NjG6+9PyJCuq6iK5ftmbb5pV/cXSwyDiTnUWgOSZS0yhz9wI02WHl4XaaEQj2ar12PFWsRg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB5267
+References: <20210406013643.3280369-1-badhri@google.com> <20210406013643.3280369-3-badhri@google.com>
+ <AM9PR10MB41340A8F754CB05B0DABB78880759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <AM9PR10MB41340A8F754CB05B0DABB78880759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 7 Apr 2021 13:12:16 -0700
+Message-ID: <CAPTae5K1oW0AE1mn4j_+rdyoqHgrppajMd-74FCDgzZ-D0f8ag@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] usb: typec: tcpm: Address incorrect values of tcpm
+ psy for pps supply
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Why not use the miscdev name field?
->=20
-miscdev name field is just a char pointer and I need an static array to man=
-ipulate the name with index
+Hi Greg,
 
->=20
-> So it's a parent?  Why not make this a real platform_device pointer and n=
-ot
-> a device pointer?
->=20
+Moved to kerneldoc header in V2.
 
-It is not parent and mfd field is the parent
+Thanks,
+Badhri
 
->=20
-> What operations?
->=20
-
-The MFD driver will create 2 devices, one is for phc driver and another one=
- is this driver.
-The lock is to make sure these 2 driver's operations are synchronized.=20
-
->=20
-> Index into what?
->=20
-
-index is passed by mfd driver and will be used as part of device name such =
-as "rsmu0"
+On Wed, Apr 7, 2021 at 9:07 AM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
+>
+> On 06 April 2021 02:37, Badhri Jagan Sridharan wrote:
+>
+> > tcpm_pd_select_pps_apdo overwrites port->pps_data.min_volt,
+> > port->pps_data.max_volt, port->pps_data.max_curr even before
+> > port partner accepts the requests. This leaves incorrect values
+> > in current_limit and supply_voltage that get exported by
+> > "tcpm-source-psy-". Solving this problem by caching the request
+> > values in req_min_volt, req_max_volt, req_max_curr, req_out_volt,
+> > req_op_curr. min_volt, max_volt, max_curr gets updated once the
+> > partner accepts the request. current_limit, supply_voltage gets updated
+> > once local port's tcpm enters SNK_TRANSITION_SINK when the accepted
+> > current_limit and supply_voltage is enforced.
+> >
+> > Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through
+> > power_supply")
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+>
+> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+>
+> >  drivers/usb/typec/tcpm/tcpm.c | 84 ++++++++++++++++++++---------------
+> >  1 file changed, 49 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 03eca5061132..d43774cc2ccf 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -269,11 +269,22 @@ struct pd_mode_data {
+> >  };
+> >
+> >  struct pd_pps_data {
+> > +     /* Actual min voltage at the local port */
+> >       u32 min_volt;
+> > +     /* Requested min voltage to the port partner */
+> > +     u32 req_min_volt;
+> > +     /* Actual max voltage at the local port */
+> >       u32 max_volt;
+> > +     /* Requested max voltage to the port partner */
+> > +     u32 req_max_volt;
+> > +     /* Actual max current at the local port */
+> >       u32 max_curr;
+> > -     u32 out_volt;
+> > -     u32 op_curr;
+> > +     /* Requested max current of the port partner */
+> > +     u32 req_max_curr;
+> > +     /* Requested output voltage to the port partner */
+> > +     u32 req_out_volt;
+> > +     /* Requested operating current to the port partner */
+> > +     u32 req_op_curr;
+> >       bool supported;
+> >       bool active;
+> >  };
+> > @@ -2498,8 +2509,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
+> > *port,
+> >                       break;
+> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
+> >                       /* Revert data back from any requested PPS updates */
+> > -                     port->pps_data.out_volt = port->supply_voltage;
+> > -                     port->pps_data.op_curr = port->current_limit;
+> > +                     port->pps_data.req_out_volt = port->supply_voltage;
+> > +                     port->pps_data.req_op_curr = port->current_limit;
+> >                       port->pps_status = (type == PD_CTRL_WAIT ?
+> >                                           -EAGAIN : -EOPNOTSUPP);
+> >
+> > @@ -2548,8 +2559,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
+> > *port,
+> >                       break;
+> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
+> >                       port->pps_data.active = true;
+> > -                     port->req_supply_voltage = port->pps_data.out_volt;
+> > -                     port->req_current_limit = port->pps_data.op_curr;
+> > +                     port->pps_data.min_volt = port-
+> > >pps_data.req_min_volt;
+> > +                     port->pps_data.max_volt = port-
+> > >pps_data.req_max_volt;
+> > +                     port->pps_data.max_curr = port-
+> > >pps_data.req_max_curr;
+> > +                     port->req_supply_voltage = port-
+> > >pps_data.req_out_volt;
+> > +                     port->req_current_limit = port->pps_data.req_op_curr;
+> >                       tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
+> >                       break;
+> >               case SOFT_RESET_SEND:
+> > @@ -3108,16 +3122,16 @@ static unsigned int tcpm_pd_select_pps_apdo(struct
+> > tcpm_port *port)
+> >               src = port->source_caps[src_pdo];
+> >               snk = port->snk_pdo[snk_pdo];
+> >
+> > -             port->pps_data.min_volt =
+> > max(pdo_pps_apdo_min_voltage(src),
+> > -                                           pdo_pps_apdo_min_voltage(snk));
+> > -             port->pps_data.max_volt =
+> > min(pdo_pps_apdo_max_voltage(src),
+> > -                                           pdo_pps_apdo_max_voltage(snk));
+> > -             port->pps_data.max_curr = min_pps_apdo_current(src, snk);
+> > -             port->pps_data.out_volt = min(port->pps_data.max_volt,
+> > -                                           max(port->pps_data.min_volt,
+> > -                                               port->pps_data.out_volt));
+> > -             port->pps_data.op_curr = min(port->pps_data.max_curr,
+> > -                                          port->pps_data.op_curr);
+> > +             port->pps_data.req_min_volt =
+> > max(pdo_pps_apdo_min_voltage(src),
+> > +
+> > pdo_pps_apdo_min_voltage(snk));
+> > +             port->pps_data.req_max_volt =
+> > min(pdo_pps_apdo_max_voltage(src),
+> > +
+> > pdo_pps_apdo_max_voltage(snk));
+> > +             port->pps_data.req_max_curr = min_pps_apdo_current(src,
+> > snk);
+> > +             port->pps_data.req_out_volt = min(port->pps_data.max_volt,
+> > +                                               max(port->pps_data.min_volt,
+> > +                                                   port-
+> > >pps_data.req_out_volt));
+> > +             port->pps_data.req_op_curr = min(port->pps_data.max_curr,
+> > +                                              port->pps_data.req_op_curr);
+> >               power_supply_changed(port->psy);
+> >       }
+> >
+> > @@ -3245,10 +3259,10 @@ static int tcpm_pd_build_pps_request(struct
+> > tcpm_port *port, u32 *rdo)
+> >                       tcpm_log(port, "Invalid APDO selected!");
+> >                       return -EINVAL;
+> >               }
+> > -             max_mv = port->pps_data.max_volt;
+> > -             max_ma = port->pps_data.max_curr;
+> > -             out_mv = port->pps_data.out_volt;
+> > -             op_ma = port->pps_data.op_curr;
+> > +             max_mv = port->pps_data.req_max_volt;
+> > +             max_ma = port->pps_data.req_max_curr;
+> > +             out_mv = port->pps_data.req_out_volt;
+> > +             op_ma = port->pps_data.req_op_curr;
+> >               break;
+> >       default:
+> >               tcpm_log(port, "Invalid PDO selected!");
+> > @@ -3295,8 +3309,8 @@ static int tcpm_pd_build_pps_request(struct tcpm_port
+> > *port, u32 *rdo)
+> >       tcpm_log(port, "Requesting APDO %d: %u mV, %u mA",
+> >                src_pdo_index, out_mv, op_ma);
+> >
+> > -     port->pps_data.op_curr = op_ma;
+> > -     port->pps_data.out_volt = out_mv;
+> > +     port->pps_data.req_op_curr = op_ma;
+> > +     port->pps_data.req_out_volt = out_mv;
+> >
+> >       return 0;
+> >  }
+> > @@ -5429,7 +5443,7 @@ static int tcpm_try_role(struct typec_port *p, int role)
+> >       return ret;
+> >  }
+> >
+> > -static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
+> > +static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 req_op_curr)
+> >  {
+> >       unsigned int target_mw;
+> >       int ret;
+> > @@ -5447,12 +5461,12 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
+> > *port, u16 op_curr)
+> >               goto port_unlock;
+> >       }
+> >
+> > -     if (op_curr > port->pps_data.max_curr) {
+> > +     if (req_op_curr > port->pps_data.max_curr) {
+> >               ret = -EINVAL;
+> >               goto port_unlock;
+> >       }
+> >
+> > -     target_mw = (op_curr * port->pps_data.out_volt) / 1000;
+> > +     target_mw = (req_op_curr * port->supply_voltage) / 1000;
+> >       if (target_mw < port->operating_snk_mw) {
+> >               ret = -EINVAL;
+> >               goto port_unlock;
+> > @@ -5466,10 +5480,10 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
+> > *port, u16 op_curr)
+> >       }
+> >
+> >       /* Round down operating current to align with PPS valid steps */
+> > -     op_curr = op_curr - (op_curr % RDO_PROG_CURR_MA_STEP);
+> > +     req_op_curr = req_op_curr - (req_op_curr %
+> > RDO_PROG_CURR_MA_STEP);
+> >
+> >       reinit_completion(&port->pps_complete);
+> > -     port->pps_data.op_curr = op_curr;
+> > +     port->pps_data.req_op_curr = req_op_curr;
+> >       port->pps_status = 0;
+> >       port->pps_pending = true;
+> >       mutex_unlock(&port->lock);
+> > @@ -5490,7 +5504,7 @@ static int tcpm_pps_set_op_curr(struct tcpm_port
+> > *port, u16 op_curr)
+> >       return ret;
+> >  }
+> >
+> > -static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
+> > +static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 req_out_volt)
+> >  {
+> >       unsigned int target_mw;
+> >       int ret;
+> > @@ -5508,13 +5522,13 @@ static int tcpm_pps_set_out_volt(struct tcpm_port
+> > *port, u16 out_volt)
+> >               goto port_unlock;
+> >       }
+> >
+> > -     if (out_volt < port->pps_data.min_volt ||
+> > -         out_volt > port->pps_data.max_volt) {
+> > +     if (req_out_volt < port->pps_data.min_volt ||
+> > +         req_out_volt > port->pps_data.max_volt) {
+> >               ret = -EINVAL;
+> >               goto port_unlock;
+> >       }
+> >
+> > -     target_mw = (port->pps_data.op_curr * out_volt) / 1000;
+> > +     target_mw = (port->current_limit * req_out_volt) / 1000;
+> >       if (target_mw < port->operating_snk_mw) {
+> >               ret = -EINVAL;
+> >               goto port_unlock;
+> > @@ -5528,10 +5542,10 @@ static int tcpm_pps_set_out_volt(struct tcpm_port
+> > *port, u16 out_volt)
+> >       }
+> >
+> >       /* Round down output voltage to align with PPS valid steps */
+> > -     out_volt = out_volt - (out_volt % RDO_PROG_VOLT_MV_STEP);
+> > +     req_out_volt = req_out_volt - (req_out_volt %
+> > RDO_PROG_VOLT_MV_STEP);
+> >
+> >       reinit_completion(&port->pps_complete);
+> > -     port->pps_data.out_volt = out_volt;
+> > +     port->pps_data.req_out_volt = req_out_volt;
+> >       port->pps_status = 0;
+> >       port->pps_pending = true;
+> >       mutex_unlock(&port->lock);
+> > @@ -5589,8 +5603,8 @@ static int tcpm_pps_activate(struct tcpm_port *port,
+> > bool activate)
+> >
+> >       /* Trigger PPS request or move back to standard PDO contract */
+> >       if (activate) {
+> > -             port->pps_data.out_volt = port->supply_voltage;
+> > -             port->pps_data.op_curr = port->current_limit;
+> > +             port->pps_data.req_out_volt = port->supply_voltage;
+> > +             port->pps_data.req_op_curr = port->current_limit;
+> >       }
+> >       mutex_unlock(&port->lock);
+> >
+> > --
+> > 2.31.0.208.g409f899ff0-goog
+>
