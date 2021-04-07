@@ -2,157 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEB8357755
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7F335775F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhDGWG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:06:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:35784 "EHLO foss.arm.com"
+        id S230209AbhDGWK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:10:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhDGWGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:06:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57CDE1474;
-        Wed,  7 Apr 2021 15:06:43 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C64843F792;
-        Wed,  7 Apr 2021 15:06:41 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH v5 3/3] sched/fair: Introduce a CPU capacity comparison helper
-Date:   Wed,  7 Apr 2021 23:06:28 +0100
-Message-Id: <20210407220628.3798191-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210407220628.3798191-1-valentin.schneider@arm.com>
-References: <20210407220628.3798191-1-valentin.schneider@arm.com>
+        id S229640AbhDGWKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:10:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F067761353;
+        Wed,  7 Apr 2021 22:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617833412;
+        bh=MbeWD88f8jD0gLyIm+8WMDx6sspBJX9rWdchSIgUtEk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X8xWWYTJH9c1NnC8n0SVZVMi41apHOxN08RTNuIYH67GBb9/nrPuMD++GisENSifS
+         /q3ReuDCw2eI5gSlL+XQY3e+DG53PlSsN8+epaWsPbVAXTFNmH+NDFTKq/zn5fvq67
+         DF9EDVi9UP8TTMRHm/wVP7EQvbvHiPABYpR7Wf5pwkN/SPvBxAabb7AVv+R5ep55Ou
+         z8fR2PYJ5aQBaNSZniDniIOAVgODzWUo0uxPs1V4mmcTxfpVZ7bhJptj2RfhvK7YEe
+         2Bbahnu4NpvYLyUNigEJ6FSQT78nSxE52LS/BCd9IkTZPoUTIqTR1SCeZ7izY7OCgt
+         GQWwLXAb0kR2Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EB091609D8;
+        Wed,  7 Apr 2021 22:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] liquidio: Fix unintented sign extension of a left shift of a
+ u16
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161783341195.5631.6736576843347914096.git-patchwork-notify@kernel.org>
+Date:   Wed, 07 Apr 2021 22:10:11 +0000
+References: <20210407101248.485307-1-colin.king@canonical.com>
+In-Reply-To: <20210407101248.485307-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
+        davem@davemloft.net, kuba@kernel.org,
+        rvatsavayi@caviumnetworks.com, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During load-balance, groups classified as group_misfit_task are filtered
-out if they do not pass
+Hello:
 
-  group_smaller_max_cpu_capacity(<candidate group>, <local group>);
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-which itself employs fits_capacity() to compare the sgc->max_capacity of
-both groups.
+On Wed,  7 Apr 2021 11:12:48 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The macro CN23XX_PEM_BAR1_INDEX_REG is being used to shift oct->pcie_port
+> (a u16) left 24 places. There are two subtle issues here, first the
+> shift gets promoted to an signed int and then sign extended to a u64.
+> If oct->pcie_port is 0x80 or more then the upper bits get sign extended
+> to 1. Secondly shfiting a u16 24 bits will lead to an overflow so it
+> needs to be cast to a u64 for all the bits to not overflow.
+> 
+> [...]
 
-Due to the underlying margin, fits_capacity(X, 1024) will return false for
-any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-{261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-higher capacity due to the aforementioned margin.
+Here is the summary with links:
+  - liquidio: Fix unintented sign extension of a left shift of a u16
+    https://git.kernel.org/netdev/net-next/c/298b58f00c0f
 
-One may argue the 20% margin of fits_capacity() is excessive in the advent
-of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-is that fits_capacity() is meant to compare a utilization value to a
-capacity value, whereas here it is being used to compare two capacity
-values. As CPU capacity and task utilization have different dynamics, a
-sensible approach here would be to add a new helper dedicated to comparing
-CPU capacities.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Also note that comparing capacity extrema of local and source sched_group's
-doesn't make much sense when at the day of the day the imbalance will be
-pulled by a known env->dst_cpu, whose capacity can be anywhere within the
-local group's capacity extrema.
-
-While at it, replace group_smaller_{min, max}_cpu_capacity() with
-comparisons of the source group's min/max capacity and the destination
-CPU's capacity.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Tested-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
----
- kernel/sched/fair.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d8077f82a380..c9c5c2697998 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
-  */
- #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
- 
-+/*
-+ * The margin used when comparing CPU capacities.
-+ * is 'cap1' noticeably greater than 'cap2'
-+ *
-+ * (default: ~5%)
-+ */
-+#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
- #endif
- 
- #ifdef CONFIG_CFS_BANDWIDTH
-@@ -8364,26 +8371,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
- 	return false;
- }
- 
--/*
-- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity than sched_group ref.
-- */
--static inline bool
--group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
--}
--
--/*
-- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity_orig than sched_group ref.
-- */
--static inline bool
--group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
--}
--
- static inline enum
- group_type group_classify(unsigned int imbalance_pct,
- 			  struct sched_group *group,
-@@ -8539,7 +8526,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 * internally or be covered by avg_load imbalance (eventually).
- 	 */
- 	if (sgs->group_type == group_misfit_task &&
--	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
-+	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
- 	     sds->local_stat.group_type != group_has_spare))
- 		return false;
- 
-@@ -8623,7 +8610,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 */
- 	if ((env->sd->flags & SD_ASYM_CPUCAPACITY) &&
- 	    (sgs->group_type <= group_fully_busy) &&
--	    (group_smaller_min_cpu_capacity(sds->local, sg)))
-+	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
- 		return false;
- 
- 	return true;
-@@ -9423,7 +9410,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 		 * average load.
- 		 */
- 		if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
--		    capacity_of(env->dst_cpu) < capacity &&
-+		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
- 		    nr_running == 1)
- 			continue;
- 
--- 
-2.25.1
 
