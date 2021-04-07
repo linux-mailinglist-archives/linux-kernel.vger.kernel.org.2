@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6447D3570F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE933570F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242871AbhDGPuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        id S1353791AbhDGPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353821AbhDGPsx (ORCPT
+        with ESMTP id S1353818AbhDGPsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:48:53 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B829C061762;
-        Wed,  7 Apr 2021 08:48:41 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id u11so6066126wrp.4;
-        Wed, 07 Apr 2021 08:48:40 -0700 (PDT)
+        Wed, 7 Apr 2021 11:48:46 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E93C061760;
+        Wed,  7 Apr 2021 08:48:32 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso1415388wmq.1;
+        Wed, 07 Apr 2021 08:48:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hRBTxBbm6K/qIaEm5hFZJ+Neshbuuk8fIPNBgmcgXe8=;
-        b=kZx+9vzw+6A/2ttOrDHDt3998Bex0Vx3JJwsal4I577bKyDWgajn9F0kdBa7gGOKk6
-         b8dMuS+JxDthkiHq1i1KpDIR+sihTsyUB6ZlHUSMNv9ayJnt+DE1hzmhkZS+Swjko+mw
-         ap+7HSb6OguwSyfDwi6CVn/ryJS+JIwcNVZ+FoLV4lw7p48p+QtlCVHeqlyMKL97ZwOB
-         FucSLuqFZzzbGAMvcq7P6r2c2bQlqqsAxv3kNCx/KlBwGSKi4EUmP4lQKz20B99j9t6P
-         Mn2j+pD/jyWctA3ddxwQVmUZfJagMmIGmHnNVMbtw7jjQxjNGJSkf1lpDVzK6p/jWP+B
-         mFWg==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=VXyrtGnwTjNkgIA1jrziNG4eeLUP6i3fUCHQ1vhVTNk=;
+        b=AT3fDu5INkxhj3Ycskj+25gD7VvEaPZFZOqS+dhmjSsFiVZ01PPcXhLNUTnVfU6F9T
+         E0XhY4u1NBJm5jTKMs7AcK+gzPIAXkVqEgk+T49IfKZLkDo5mqKZKRVFf11vkcvr5LUA
+         jXeX/IYQl6oBAUQLk3c2+KmMoN8w+LME7R5+tp200su1i7v4ClMarRdCiNqfPZnLAqX1
+         k7FMPChv+9NMP1ym25RwMfvTL/6KVRO1Kh1ziGhSI4x7ijLJK86xHGHdwQJ+fVlh/7Be
+         Z1oGWwNYGPu9/pqRHVoHZRW8mBI6HXAVhCeK00BOayKoSU9s9USmOKT4eQRZ/kGHWoJ4
+         5u1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hRBTxBbm6K/qIaEm5hFZJ+Neshbuuk8fIPNBgmcgXe8=;
-        b=GyrjwCPefFBgLQb65j8PthSMRNXoNZrh13Lfs2LgcMkcVKy2GIhM271m5HmzlDxfiL
-         yR1RN4bZ4IWsDo1xYu5798cu+2egqn0gT/28wLvDgAe6trjzTaePFOwGWMAuQdv76yqX
-         b9zB0J/YwZJM/wXAmiV6mqxGIXLxyeXDin0lBc3q+5auk83dcjEzXv/TNZMw0wixppy7
-         0D5BMjWhFAVDOQgiSR775zhCMz4XX2Y7o2IandoASUMiI2UIGjPrYfbmtxmaaX2KO52U
-         lybfgTfUoSGEHV/qbI9RJpMT+QKdKjpngOCtuRGZJo31GF4m0FyMWKbTYTuQtrL8WtAR
-         S1Uw==
-X-Gm-Message-State: AOAM531iufXXcZk7sWymWJ3PabFgT+YkuemM0hcemnF/NXUTuFCUO1qf
-        vq7ZvSokrbt4TxkF4DvoPGexqNZf20XLZsM92tqI2KITUtbnfA==
-X-Google-Smtp-Source: ABdhPJwmHo2CQ9i8r855a9TbwcQvBaUTnOL8pNbf2t/BWlCHY694vB9zK3M3P1rOnHnHFZnXFQ8xD/465c2pwrZ+f4s=
-X-Received: by 2002:adf:e4c9:: with SMTP id v9mr5245940wrm.342.1617810519738;
- Wed, 07 Apr 2021 08:48:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com> <20210401030558.2301621-9-david.e.box@linux.intel.com>
-In-Reply-To: <20210401030558.2301621-9-david.e.box@linux.intel.com>
-From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Date:   Wed, 7 Apr 2021 11:48:14 -0400
-Message-ID: <CAE2upjT6X1cNvoX8HNFkGHP_aDA1t=JngHFPDUjQ1Y0teuErvQ@mail.gmail.com>
-Subject: Re: [PATCH 8/9] platform/x86: intel_pmc_core: Add LTR registers for
- Tiger Lake
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=VXyrtGnwTjNkgIA1jrziNG4eeLUP6i3fUCHQ1vhVTNk=;
+        b=ugFB5YX3YCfTD2hL3v2W5Ah5e7+It42wVwcazLQox/NVinMYV3JFit7TRdpgh6W5jX
+         94RmY51Sus3XleUfkAmNiPfHl0Ap3otzqLSsYaXYillw/Y8YIkE3+/Rj9YX5jTRBiKBw
+         GlGUlWeiqfTmAkjANeR2aUqLoqbk6mYzfmXE5j30tNVC6JAyOgwRK3DZKQTA6j09jA5f
+         RcBpt0pYUJar7KSNZUop/LNkJgeBLZgftYJTZLa1m3DysPFbfovrrgHANa2vBWfzL+pG
+         SgJpZCelxGFvIOhG4+XSU7XGxM7ep7++5hPEM/QsBz50nZJueqt8f44ZHUn735HjbYLG
+         1GvQ==
+X-Gm-Message-State: AOAM531/b7+19UA1PpCp2n0vD7kzfbYW1o9xU/Zwe4jQ+e50dF45kxwB
+        wFgaj2WbLEsRSYQJP8qWIs0=
+X-Google-Smtp-Source: ABdhPJzD7dxKEjfVHj/Mt5EH5n5S/dlaxsmEkejN73MZv+TvkDOrEI5rgccyVlOqrKVUnws2nEHr5A==
+X-Received: by 2002:a05:600c:2946:: with SMTP id n6mr3655449wmd.52.1617810511641;
+        Wed, 07 Apr 2021 08:48:31 -0700 (PDT)
+Received: from 192.168.10.5 ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id v185sm9224838wmb.25.2021.04.07.08.48.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 08:48:31 -0700 (PDT)
+Message-ID: <5daaeac37cfa5c07a1880ae49b712566a561ba1a.camel@gmail.com>
+Subject: Re: [PATCH] staging: axis-fifo: media/meson: remove redundant
+ dev_err call
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     musamaanjum@gmail.com, linqiheng@huawei.com,
+        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-media@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-amlogic@lists.infradead.org>,
+        "moderated list:ARM/Amlogic Meson SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 07 Apr 2021 20:48:21 +0500
+In-Reply-To: <93218bc8-2cbb-bacc-f985-876a842261c4@xs4all.nl>
+References: <20210407101047.GA1491258@LEGION>
+         <93218bc8-2cbb-bacc-f985-876a842261c4@xs4all.nl>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Rajneesh Bhardwaj <rajneesh.bhardwaj@intel.com>
+On Wed, 2021-04-07 at 16:05 +0200, Hans Verkuil wrote:
+> Hi Muhammad,
+> 
+> On 07/04/2021 12:10, Muhammad Usama Anjum wrote:
+> > devm_ioremap_resource() prints error message in itself. Remove the
+> > dev_err call to avoid redundant error message.
+> 
+> Please split this up into two separate patches! They are independent
+> changes and these two drivers are maintained by different people as well.
+> 
+> The patch itself looks OK, but it really has to be two separate patches.
+> 
+Okay. I'll send two separate patches. Thank you.
 
-On Wed, Mar 31, 2021 at 11:06 PM David E. Box
-<david.e.box@linux.intel.com> wrote:
->
-> From: Gayatri Kammela <gayatri.kammela@intel.com>
->
-> Just like Ice Lake, Tiger Lake uses Cannon Lake's LTR information
-> and supports a few additional registers. Hence add the LTR registers
-> specific to Tiger Lake to the cnp_ltr_show_map[].
->
-> Also adjust the number of LTR IPs for Tiger Lake to the correct amount.
->
-> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/platform/x86/intel_pmc_core.c | 2 ++
->  drivers/platform/x86/intel_pmc_core.h | 4 +++-
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index 458c0056e7a1..9168062c927e 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -383,6 +383,8 @@ static const struct pmc_bit_map cnp_ltr_show_map[] = {
->          * a list of core SoCs using this.
->          */
->         {"WIGIG",               ICL_PMC_LTR_WIGIG},
-> +       {"THC0",                TGL_PMC_LTR_THC0},
-> +       {"THC1",                TGL_PMC_LTR_THC1},
->         /* Below two cannot be used for LTR_IGNORE */
->         {"CURRENT_PLATFORM",    CNP_PMC_LTR_CUR_PLT},
->         {"AGGREGATED_SYSTEM",   CNP_PMC_LTR_CUR_ASLT},
-> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-> index f41f61aa7008..634130b589a2 100644
-> --- a/drivers/platform/x86/intel_pmc_core.h
-> +++ b/drivers/platform/x86/intel_pmc_core.h
-> @@ -192,8 +192,10 @@ enum ppfear_regs {
->  #define ETR3_CLEAR_LPM_EVENTS_BIT              28
->  #define LPM_STS_LATCH_MODE_BIT                 31
->
-> -#define TGL_NUM_IP_IGN_ALLOWED                 22
->  #define TGL_PMC_SLP_S0_RES_COUNTER_STEP                0x7A
-> +#define TGL_PMC_LTR_THC0                       0x1C04
-> +#define TGL_PMC_LTR_THC1                       0x1C08
-> +#define TGL_NUM_IP_IGN_ALLOWED                 23
->  #define TGL_PMC_LPM_RES_COUNTER_STEP_X2                61      /* 30.5us * 2 */
->
->  /*
-> --
-> 2.25.1
->
+Regards,
+Usama
+> Regards,
+> 
+> 	Hans
+> 
+> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> > ---
+> >  drivers/staging/axis-fifo/axis-fifo.c   | 1 -
+> >  drivers/staging/media/meson/vdec/vdec.c | 8 ++------
+> >  2 files changed, 2 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
+> > index 2bb1c2e9cb57..ed9281089738 100644
+> > --- a/drivers/staging/axis-fifo/axis-fifo.c
+> > +++ b/drivers/staging/axis-fifo/axis-fifo.c
+> > @@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
+> >  	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
+> >  	if (IS_ERR(fifo->base_addr)) {
+> >  		rc = PTR_ERR(fifo->base_addr);
+> > -		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
+> >  		goto err_initial;
+> >  	}
+> >  
+> > diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+> > index 5d4db7a5b4b5..e51d69c4729d 100644
+> > --- a/drivers/staging/media/meson/vdec/vdec.c
+> > +++ b/drivers/staging/media/meson/vdec/vdec.c
+> > @@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
+> >  
+> >  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
+> >  	core->dos_base = devm_ioremap_resource(dev, r);
+> > -	if (IS_ERR(core->dos_base)) {
+> > -		dev_err(dev, "Couldn't remap DOS memory\n");
+> > +	if (IS_ERR(core->dos_base))
+> >  		return PTR_ERR(core->dos_base);
+> > -	}
+> >  
+> >  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
+> >  	core->esparser_base = devm_ioremap_resource(dev, r);
+> > -	if (IS_ERR(core->esparser_base)) {
+> > -		dev_err(dev, "Couldn't remap ESPARSER memory\n");
+> > +	if (IS_ERR(core->esparser_base))
+> >  		return PTR_ERR(core->esparser_base);
+> > -	}
+> >  
+> >  	core->regmap_ao =
+> >  		syscon_regmap_lookup_by_phandle(dev->of_node,
+> > 
 
-
--- 
-Thanks,
-Rajneesh
