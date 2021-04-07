@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AB73566C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1D03566C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhDGIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:25:58 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47282 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237064AbhDGIZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:25:39 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id ED4651C0BD8; Wed,  7 Apr 2021 10:25:28 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 10:25:28 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/28] 4.4.265-rc1 review
-Message-ID: <20210407082528.GC5425@amd>
-References: <20210405085017.012074144@linuxfoundation.org>
+        id S237145AbhDGI1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:27:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234075AbhDGI1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:27:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DFD5DB040;
+        Wed,  7 Apr 2021 08:27:30 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 09:27:28 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH -V2] NUMA balancing: reduce TLB flush via delaying
+ mapping on hint page fault
+Message-ID: <20210407082728.GA15768@suse.de>
+References: <20210402082717.3525316-1-ying.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210402082717.3525316-1-ying.huang@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 02, 2021 at 04:27:17PM +0800, Huang Ying wrote:
+> With NUMA balancing, in hint page fault handler, the faulting page
+> will be migrated to the accessing node if necessary.  During the
+> migration, TLB will be shot down on all CPUs that the process has run
+> on recently.  Because in the hint page fault handler, the PTE will be
+> made accessible before the migration is tried.  The overhead of TLB
+> shooting down can be high, so it's better to be avoided if possible.
+> In fact, if we delay mapping the page until migration, that can be
+> avoided.  This is what this patch doing.
+> 
+> <SNIP>
+>
 
---L6iaP+gRLNZHKoI4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, I think this is ok for Andrew to pick up to see if anything
+bisects to this commit but it's a low risk.
 
-Hi!
+Reviewed-by: Mel Gorman <mgorman@suse.de>
 
-> This is the start of the stable review cycle for the 4.4.265 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+More notes;
 
-CIP testing did not find any problems here:
+This is not a universal win given that not all workloads exhibit the
+pattern where accesses occur in parallel threads between when a page
+is marked accessible and when it is migrated. The impact of the patch
+appears to be neutral for those workloads. For workloads that do exhibit
+the pattern, there is a small gain with a reduction in interrupts as
+advertised unlike v1 of the patch. Further tests are running to confirm
+the reduction is in TLB shootdown interrupts but I'm reasonably confident
+that will be the case. Gains are typically small and the load described in
+the changelog appears to be a best case scenario but a 1-5% gain in some
+other workloads is still an improvement. There is still the possibility
+that some workloads will unnecessarily stall as a result of the patch
+for slightly longer periods of time but that is a relatively low risk
+and will be difficult to detect. If I'm wrong, a bisection will find it.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+Andrew?
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---L6iaP+gRLNZHKoI4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBtbHgACgkQMOfwapXb+vKp0gCfaXKuhA/KNnY3lRneoTCgiZ5L
-CMEAn38MRpU+JAustdtN49HwhHRQEs/M
-=Aapy
------END PGP SIGNATURE-----
-
---L6iaP+gRLNZHKoI4--
+-- 
+Mel Gorman
+SUSE Labs
