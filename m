@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489F1356109
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FB7356124
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347996AbhDGBw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347836AbhDGBvv (ORCPT
+        id S233464AbhDGB4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:56:49 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:33301 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDGB4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:51:51 -0400
-Received: from server.lespinasse.org (unknown [IPv6:2602:303:fcdc:ce10::100:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7713C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:51:40 -0700 (PDT)
+        Tue, 6 Apr 2021 21:56:47 -0400
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
  t=1617759903; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=AZPl31a+Qwjg2yKK4/58wswJf9/r+P5+G7HgfFwgwPw=;
- b=myO1JlTLVwjj24PaAXDauPLhrNYZf5SriBcRFoxRq6uYNze2pldTo0iqgg/1h9Tk22dkA
- lmYyTY+Bn1u8AvOCA==
+ from; bh=XkD4f0ULJymIOIeAqVxcBhuCK1FNqNRxb6Ygkc1ApCs=;
+ b=T+2gjG7c+P1JGIgyykqnKaQiD2Wtt2L+tO+pRnvCt2JO1FKjXP26ZCM6hHIjsZg0F91Pv
+ IUbkovCOPxRyi8dAA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617759903; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=AZPl31a+Qwjg2yKK4/58wswJf9/r+P5+G7HgfFwgwPw=;
- b=LpXTrEgOQVv1SNRQC0QiFxqtt5r3kW1xS0lKV129jQ3pGExTQLhVAfhaY4ophF2qd9GPM
- uGdaUjRHHgg/cP2jS10ipaOcP2chwNgqYP7lIJCCkO1TYdBA2Uj42Nzr3HGPQ98ywqLCNZU
- wzKEZVBj0iYDunZ850zmNvpx0p69hMJ3GQMHiSQzgUYmUNKFhKheqm4Cc2AIAHsKRBoODwU
- PpvRQPAzz4QgLLQvr5iXXjiYa4nZOwdnPUo77vKtDVwue3bzaanPHOHhoPE9n9Zmktm4Iez
- 1rE0/jqbi44fDIfdauryJOpQyygXVN/sHP49P9/8OIvq80NkuOX3/i4FFtlA==
+ bh=XkD4f0ULJymIOIeAqVxcBhuCK1FNqNRxb6Ygkc1ApCs=;
+ b=RTBwrQVEuGgTfXMpMfbrh/D5mOUGsMVm80V0u7rXaSdXDkPKYPpLKgLTiCRWVRop96qn6
+ 0H69mSmJu7OkmjqPwNX7g+7lzVmBTBOnkqtihAaT+U/O2gxSb293SkAW7EIfEHbmGHMYZWk
+ pOscXZjW7Z0CSgRkvL7L15AFZtvdGsJOlu2QZxqeLxSHccd/OsdnNeVdL56bmw0Rd1+uEX3
+ VukmTQUvytixFC1AIzrmU1IDhnsHFdOkwUHs5+5/3GbtMI8p+2GamYUAQkZO2nK072EtqZp
+ iyjY45FT2zBP25QHQ+U8WOHV240vWPDjZQGCB3bXmbBMsDK2fiPRHyEjp86w==
 Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
-        by server.lespinasse.org (Postfix) with ESMTPS id 301ED16046E;
+        by server.lespinasse.org (Postfix) with ESMTPS id 35EA7160531;
         Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id 1F68A19F320; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
+        id 26A2B19F31D; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
@@ -51,9 +48,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Rom Lemarchand <romlem@google.com>,
         Linux-Kernel <linux-kernel@vger.kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [RFC PATCH 27/37] mm: implement speculative handling in do_fault_around()
-Date:   Tue,  6 Apr 2021 18:44:52 -0700
-Message-Id: <20210407014502.24091-28-michel@lespinasse.org>
+Subject: [RFC PATCH 28/37] mm: implement speculative handling in filemap_map_pages()
+Date:   Tue,  6 Apr 2021 18:44:53 -0700
+Message-Id: <20210407014502.24091-29-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407014502.24091-1-michel@lespinasse.org>
 References: <20210407014502.24091-1-michel@lespinasse.org>
@@ -63,85 +60,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call the vm_ops->map_pages method within an rcu read locked section.
-In the speculative case, verify the mmap sequence lock at the start of
-the section. A match guarantees that the original vma is still valid
-at that time, and that the associated vma->vm_file stays valid while
-the vm_ops->map_pages() method is running.
+In the speculative case, we know the page table already exists, and it
+must be locked with pte_map_lock(). In the case where no page is found
+for the given address, return VM_FAULT_RETRY which will abort the
+fault before we get into the vm_ops->fault() callback. This is fine
+because if filemap_map_pages does not find the page in page cache,
+vm_ops->fault() will not either.
 
-Do not test vmf->pmd in the speculative case - we only speculate when
-a page table already exists, and and this saves us from having to handle
-synchronization around the vmf->pmd read.
-
-Change xfs_filemap_map_pages() account for the fact that it can not
-block anymore, as it is now running within an rcu read lock.
+Initialize addr and last_pgoff to correspond to the pte at the original
+fault address (which was mapped with pte_map_lock()), rather than the
+pte at start_pgoff. The choice of initial values doesn't matter as
+they will all be adjusted together before use, so they just need to be
+consistent with each other, and using the original fault address and
+pte allows us to reuse pte_map_lock() without any changes to it.
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- fs/xfs/xfs_file.c |  3 +++
- mm/memory.c       | 22 ++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ mm/filemap.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a007ca0711d9..b360732b20ae 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1387,6 +1387,9 @@ xfs_filemap_map_pages(
- 	struct inode		*inode = file_inode(vmf->vma->vm_file);
- 	vm_fault_t ret;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 6e8505fe5df9..d496771749e6 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3136,25 +3136,31 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct file *file = vma->vm_file;
+ 	struct address_space *mapping = file->f_mapping;
+-	pgoff_t last_pgoff = start_pgoff;
++	pgoff_t last_pgoff;
+ 	unsigned long addr;
+ 	XA_STATE(xas, &mapping->i_pages, start_pgoff);
+ 	struct page *head, *page;
+ 	unsigned int mmap_miss = READ_ONCE(file->f_ra.mmap_miss);
+-	vm_fault_t ret = 0;
++	vm_fault_t ret = (vmf->flags & FAULT_FLAG_SPECULATIVE) ?
++		VM_FAULT_RETRY : 0;
  
-+	if (!xfs_ilock_nowait(XFS_I(inode), XFS_MMAPLOCK_SHARED))
-+		return (vmf->flags & FAULT_FLAG_SPECULATIVE) ?
-+			VM_FAULT_RETRY : 0;
- 	xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
- 	ret = filemap_map_pages(vmf, start_pgoff, end_pgoff);
- 	xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-diff --git a/mm/memory.c b/mm/memory.c
-index 13e2aaf900e5..a20e13d84145 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4012,6 +4012,7 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
- 	pgoff_t start_pgoff = vmf->pgoff;
- 	pgoff_t end_pgoff;
- 	int off;
-+	vm_fault_t ret;
+-	rcu_read_lock();
++	/* filemap_map_pages() is called within an rcu read lock already. */
+ 	head = first_map_page(mapping, &xas, end_pgoff);
+ 	if (!head)
+-		goto out;
++		return ret;
  
- 	nr_pages = READ_ONCE(fault_around_bytes) >> PAGE_SHIFT;
- 	mask = ~(nr_pages * PAGE_SIZE - 1) & PAGE_MASK;
-@@ -4030,14 +4031,31 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
- 	end_pgoff = min3(end_pgoff, vma_pages(vmf->vma) + vmf->vma->vm_pgoff - 1,
- 			start_pgoff + nr_pages - 1);
- 
--	if (pmd_none(*vmf->pmd)) {
+-	if (filemap_map_pmd(vmf, head)) {
+-		ret = VM_FAULT_NOPAGE;
+-		goto out;
 +	if (!(vmf->flags & FAULT_FLAG_SPECULATIVE) &&
-+	    pmd_none(*vmf->pmd)) {
- 		vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
- 		if (!vmf->prealloc_pte)
- 			return VM_FAULT_OOM;
- 		smp_wmb(); /* See comment in __pte_alloc() */
++	    filemap_map_pmd(vmf, head))
++		return VM_FAULT_NOPAGE;
++
++	if (!pte_map_lock(vmf)) {
++		unlock_page(head);
++		put_page(head);
++		return VM_FAULT_RETRY;
  	}
++	addr = vmf->address;
++	last_pgoff = vmf->pgoff;
  
--	return vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
-+	rcu_read_lock();
-+#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
-+	if (vmf->flags & FAULT_FLAG_SPECULATIVE) {
-+		if (!mmap_seq_read_check(vmf->vma->vm_mm, vmf->seq)) {
-+			rcu_read_unlock();
-+			return VM_FAULT_RETRY;
-+		}
-+		/*
-+		 * the mmap sequence check verified that vmf->vma was still
-+		 * current at that point in time.
-+		 * The rcu read lock ensures vmf->vma->vm_file stays valid.
-+		 */
-+	}
-+#endif
-+	ret = vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
-+	rcu_read_unlock();
-+	return ret;
+-	addr = vma->vm_start + ((start_pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+-	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
+ 	do {
+ 		page = find_subpage(head, xas.xa_index);
+ 		if (PageHWPoison(page))
+@@ -3184,8 +3190,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+ 		put_page(head);
+ 	} while ((head = next_map_page(mapping, &xas, end_pgoff)) != NULL);
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+-out:
+-	rcu_read_unlock();
++	vmf->pte = NULL;
+ 	WRITE_ONCE(file->f_ra.mmap_miss, mmap_miss);
+ 	return ret;
  }
- 
- static vm_fault_t do_read_fault(struct vm_fault *vmf)
 -- 
 2.20.1
 
