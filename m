@@ -2,217 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C27356E93
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A832356E98
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352895AbhDGO2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:28:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352877AbhDGO21 (ORCPT
+        id S1352902AbhDGO2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:28:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20490 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352877AbhDGO2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:28:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617805697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=US66opIuFghtCrRHnxkfqKefrAJrm1KUxts+rEbIoR8=;
-        b=botkrnAMkeBAv4DFT/IcOfB0idyPRgAHf5CKxpJLuyOgElTcK/1VuuMiV58nBnztz5IajF
-        wfL3/eBQWwKfQopbFZ4upmxwHqjWRjm9UH4qFdnjYn5yp2uJdFhBwHypcRUsWPeAj0zFLI
-        sXhuE6rJ8tjOO4xBwXSUchl0vSr+kI4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-42aAot18NsOwt8b-cf5O6A-1; Wed, 07 Apr 2021 10:28:15 -0400
-X-MC-Unique: 42aAot18NsOwt8b-cf5O6A-1
-Received: by mail-ej1-f69.google.com with SMTP id dv7so3991201ejb.22
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:28:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=US66opIuFghtCrRHnxkfqKefrAJrm1KUxts+rEbIoR8=;
-        b=QQYaHxFUclR/intKrfPDMNCqVgn+4pzcfltx+AGWdJLJNU9LWsLQYLHEVh8WeWMTCi
-         gcXxNOpOBmu1m9wldAhbj+5fZMLsNKMBCw2HOIc6MueGrNxPPtYbU/aNoOHYE2krbqgA
-         Qy4A3Tr5mTej+HdVEzVD+iHviT1RZ3HsFeFR2GrZ47Qs07RHo0tB7Eibf//ZPPBHILhI
-         wZRn606sA1Z22ivM9eiYSBg7l+N3YmkQddX4G/zU6jn8XGT+uj6jTwsaF2h6wkLXNrkz
-         MBqpaqRanoVMf2MY5ociOkFhCxdslPXybmy9IpQQteSoDmw9yYIuQns22M93PKb3lnO0
-         RGSA==
-X-Gm-Message-State: AOAM530D3DqotYAXQsM8x9a3+SesHqnCdeTesoBxHsUhpk6Pne9+wbnV
-        uhyt689vC3VUKqI4pWeMO7C+H0eTdxJ4Sotin7C+AIu62Wh/t4cRz+p3PO67kQgW5UMyqNAxVt+
-        2EsyKoLME7e7upxxJkEhVjnK/tMpFPpUz7PwFayMEMvc1tR2pm8FVJWSjqE0/ZTNMk09wyKDi80
-        hn
-X-Received: by 2002:a17:906:3b81:: with SMTP id u1mr4167998ejf.49.1617805694352;
-        Wed, 07 Apr 2021 07:28:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydZVaO/j7cbsNoIMCkW6nZtfibvW3PiRRUtRUJykxIbXCvuRLyfG8eYFYJHXnnegl4go5NlA==
-X-Received: by 2002:a17:906:3b81:: with SMTP id u1mr4167970ejf.49.1617805694055;
-        Wed, 07 Apr 2021 07:28:14 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id w25sm10643508edq.66.2021.04.07.07.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:28:13 -0700 (PDT)
-Subject: Re: [PATCH 6/9] platform/x86: intel_pmc_core: Add requirements file
- to debugfs
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
- <20210401030558.2301621-7-david.e.box@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f708fb0d-31ca-e81b-0131-21425c746d38@redhat.com>
-Date:   Wed, 7 Apr 2021 16:28:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210401030558.2301621-7-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+        Wed, 7 Apr 2021 10:28:44 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137E4spX049186;
+        Wed, 7 Apr 2021 10:28:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Nex4OErYwI4wYRrAfrcdGgHwB+tl/6uDykb+fUe8xM8=;
+ b=IwMVrHxSnfi8RyGjx2OsSN99D7KyoX+AiTpA9w+Ruj4uNoZG1FhCsxTER8vdkVjMdMcG
+ xTmx+QynorznhUjevLIQJcXFzqhQcQUkmeUoMoAp1P+8ukABQquTdzdjbpsma9iJSyNZ
+ X8B2yfvNJtpgA/fKwdY4SKg/eSq/zvYPbnTLcDbgcElCzq7dSLphQmhrlNZpDJaSer6C
+ IBPFkz68hGbG9SEeht7cxNa72ts1hr8vtwsZLrKwCIxt6kSgGigvdA2+dsDFZu2n9F5O
+ mrGf5eisr74EP7LGBcxHWjN4ZkD5KIvD10SXqolGtlYBuumwjmMwFAztm7d3nSFSeBl8 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpujnp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:28:30 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137E5PcX051494;
+        Wed, 7 Apr 2021 10:28:29 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpujnnc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:28:29 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137EP9o9023712;
+        Wed, 7 Apr 2021 14:28:28 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02wdc.us.ibm.com with ESMTP id 37ryqc4yb4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 14:28:28 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137ESRsk28901666
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 14:28:27 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C46E13605E;
+        Wed,  7 Apr 2021 14:28:27 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EEF53136059;
+        Wed,  7 Apr 2021 14:28:26 +0000 (GMT)
+Received: from [9.211.151.211] (unknown [9.211.151.211])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 14:28:26 +0000 (GMT)
+Subject: Re: crashkernel reservation failed - No suitable area found on a
+ cortina/gemini SoC
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     ebiederm@xmission.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <YG2rfzRvHIZKXkf/@Red>
+ <34ff1fcc-e9ee-02c2-b2a8-d98a24ce94c3@linux.vnet.ibm.com>
+ <YG3AZ4K2auqEz9BK@Red>
+From:   Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
+Message-ID: <7a75028b-4495-cd51-6a32-59fcf6e0f166@linux.vnet.ibm.com>
+Date:   Wed, 7 Apr 2021 07:28:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <YG3AZ4K2auqEz9BK@Red>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Fsd95cWjD2O48rrRgmgW-41rNDBxb_MQ
+X-Proofpoint-GUID: 8sUaRUh8pg5OMgcZF1yEK4tJUpQpSuLw
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/1/21 5:05 AM, David E. Box wrote:
-> From: Gayatri Kammela <gayatri.kammela@intel.com>
+On 4/7/2021 07:23, Corentin Labbe wrote:
+> Le Wed, Apr 07, 2021 at 07:13:04AM -0700, Bruce Mitchell a écrit :
+>> On 4/7/2021 05:54, Corentin Labbe wrote:
+>>> Hello
+>>>
+>>> I try to do kexec on a cortina/gemini SoC.
+>>> On a "normal" boot, kexec fail to find memory so I added crashkernel=8M to cmdline. (kernel size is ~6M).
+>>> But now, kernel fail to reserve memory:
+>>> Load Kern image from 0x30020000 to 0x800000 size 7340032
+>>> Booting Linux on physical CPU 0x0
+>>> Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #98 PREEMPT Wed Apr 7 14:14:08 CEST 2021
+>>> CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
+>>> CPU: VIVT data cache, VIVT instruction cache
+>>> OF: fdt: Machine model: Edimax NS-2502
+>>> Memory policy: Data cache writeback
+>>> Zone ranges:
+>>>     Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+>>>     HighMem  empty
+>>> Movable zone start for each node
+>>> Early memory node ranges
+>>>     node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+>>> Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+>>> crashkernel reservation failed - No suitable area found.
+>>> Built 1 zonelists, mobility grouping on.  Total pages: 32512
+>>> Kernel command line: console=ttyS0,19200n8 ip=dhcp crashkernel=8M
+>>> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+>>> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+>>> mem auto-init: stack:off, heap alloc:off, heap free:off
+>>> Memory: 119476K/131072K available (5034K kernel code, 579K rwdata, 1372K rodata, 3020K init, 210K bss, 11596K reserved, 0K cma-reserved, 0K highmem)
+>>> SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+>>>
+>>> What can I do ?
+>>>
+>>> Thanks
+>>> Regards
+>>>
+>>> _______________________________________________
+>>> kexec mailing list
+>>> kexec@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/kexec
+>>>
+>>
+>> Hello Corentin,
+>>
+>> I see much larger crashkernel=xxM being shown here
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kdump/kdump.rst
+>> and from many of my other searches.
+>>
+>> Here is an interesting article on kdump for ARM-32
+>> https://kaiwantech.wordpress.com/2017/07/13/setting-up-kdump-and-crash-for-arm-32-an-ongoing-saga/
+>>
+>>
+>> Here is the kernel command line reference
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kernel-parameters.txt?h=v5.11#n732
+>>
+>> I feel your frustrations too.
 > 
-> Add the debugfs file, substate_requirements, to view the low power mode
-> (LPM) requirements for each enabled mode alongside the last latched status
-> of the condition.
+> Hello
 > 
-> After this patch, the new file will look like this:
+> Thanks but I have already read those documentation.
+> I search to know why the kernel cannot find 8M of memory ouf of 128.
 > 
->                     Element |    S0i2.0 |    S0i3.0 |    S0i2.1 |    S0i3.1 |    S0i3.2 |    Status |
->             USB2PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |           |
-> PCIe/USB3.1_Gen2PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |           |
->        PCIe_Gen3PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
->             OPIOPLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
->               OCPLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
->             MainPLL_OFF_STS |           |  Required |           |  Required |  Required |           |
+> Regards
 > 
-> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> Co-developed-by: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/intel_pmc_core.c | 86 +++++++++++++++++++++++++++
->  1 file changed, 86 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index 0ec26a4c715e..0b47a1da5f49 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -1122,6 +1122,86 @@ static int pmc_core_substate_l_sts_regs_show(struct seq_file *s, void *unused)
->  }
->  DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_l_sts_regs);
->  
-> +static void pmc_core_substate_req_header_show(struct seq_file *s)
-> +{
-> +	struct pmc_dev *pmcdev = s->private;
-> +	int i, mode;
-> +
-> +	seq_printf(s, "%30s |", "Element");
-> +	pmc_for_each_mode(i, mode, pmcdev)
-> +		seq_printf(s, " %9s |", pmc_lpm_modes[mode]);
-> +
-> +	seq_printf(s, " %9s |\n", "Status");
-> +}
-> +
-> +static int pmc_core_substate_req_regs_show(struct seq_file *s, void *unused)
-> +{
-> +	struct pmc_dev *pmcdev = s->private;
-> +	const struct pmc_bit_map **maps = pmcdev->map->lpm_sts;
-> +	const struct pmc_bit_map *map;
-> +	const int num_maps = pmcdev->map->lpm_num_maps;
-> +	u32 sts_offset = pmcdev->map->lpm_status_offset;
-> +	u32 *lpm_req_regs = pmcdev->lpm_req_regs;
-> +	int mp;
-> +
-> +	/* Display the header */
-> +	pmc_core_substate_req_header_show(s);
-> +
-> +	/* Loop over maps */
-> +	for (mp = 0; mp < num_maps; mp++) {
-> +		u32 req_mask = 0;
-> +		u32 lpm_status;
-> +		int mode, idx, i, len = 32;
-> +
-> +		/*
-> +		 * Capture the requirements and create a mask so that we only
-> +		 * show an element if it's required for at least one of the
-> +		 * enabled low power modes
-> +		 */
-> +		pmc_for_each_mode(idx, mode, pmcdev)
-> +			req_mask |= lpm_req_regs[mp + (mode * num_maps)];
-> +
-> +		/* Get the last latched status for this map */
-> +		lpm_status = pmc_core_reg_read(pmcdev, sts_offset + (mp * 4));
-> +
-> +		/*  Loop over elements in this map */
-> +		map = maps[mp];
-> +		for (i = 0; map[i].name && i < len; i++) {
-> +			u32 bit_mask = map[i].bit_mask;
-> +
-> +			if (!(bit_mask & req_mask))
-> +				/*
-> +				 * Not required for any enabled states
-> +				 * so don't display
-> +				 */
-> +				continue;
-> +
-> +			/* Display the element name in the first column */
-> +			seq_printf(s, "%30s |", map[i].name);
-> +
-> +			/* Loop over the enabled states and display if required */
-> +			pmc_for_each_mode(idx, mode, pmcdev) {
-> +				if (lpm_req_regs[mp + (mode * num_maps)] & bit_mask)
-> +					seq_printf(s, " %9s |",
-> +						   "Required");
-> +				else
-> +					seq_printf(s, " %9s |", " ");
-> +			}
-> +
-> +			/* In Status column, show the last captured state of this agent */
-> +			if (lpm_status & bit_mask)
-> +				seq_printf(s, " %9s |", "Yes");
-> +			else
-> +				seq_printf(s, " %9s |", " ");
-> +
-> +			seq_puts(s, "\n");
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_req_regs);
-> +
->  static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
->  {
->  	struct pmc_dev *pmcdev = s->private;
-> @@ -1241,6 +1321,12 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
->  				    pmcdev->dbgfs_dir, pmcdev,
->  				    &pmc_core_substate_l_sts_regs_fops);
->  	}
-> +
-> +	if (pmcdev->lpm_req_regs) {
-> +		debugfs_create_file("substate_requirements", 0444,
-> +				    pmcdev->dbgfs_dir, pmcdev,
-> +				    &pmc_core_substate_req_regs_fops);
-> +	}
->  }
->  
->  static const struct x86_cpu_id intel_pmc_core_ids[] = {
-> 
+How much more memory does the kernel and initrd above and beyond just 
+their physical size?  (heaps, stacks, buffers, virtual filesystems)
 
