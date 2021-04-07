@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7375356FF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF98356FF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353380AbhDGPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34622 "EHLO mail.kernel.org"
+        id S1353421AbhDGPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:16:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232221AbhDGPPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:15:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EB1611CC;
-        Wed,  7 Apr 2021 15:15:00 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 16:14:58 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>, Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        qemu-devel@nongnu.org, Marc Zyngier <maz@kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210407151458.GC21451@arm.com>
-References: <20210327152324.GA28167@arm.com>
- <20210328122131.GB17535@arm.com>
- <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
- <20210330103013.GD18075@arm.com>
- <8977120b-841d-4882-2472-6e403bc9c797@redhat.com>
- <20210331092109.GA21921@arm.com>
- <d545a051-a02a-4c3a-0afe-66612839ba32@redhat.com>
- <86a968c8-7a0e-44a4-28c3-bac62c2b7d65@arm.com>
- <20210331184311.GA10737@arm.com>
- <e2612bd8-b356-a9cd-cfdf-26f4aa813578@arm.com>
+        id S232221AbhDGPQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:16:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5764B61222;
+        Wed,  7 Apr 2021 15:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617808551;
+        bh=94PRIMWG4V3sgv4oARYxnmjhrvLu3NubLdmmO0Dgjuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BF4g7p0GvM/lL5494Bp3z0or+u55EH1ofQEvNHjxLj+3XFtOLnH2ISD6pmDUnUq+I
+         gHc6wiOwVnWBBjROSmxmEaPuvwrp6DcXa5bIjh3wt5+fMj7OCH101qsGf9hQhIsV2Q
+         QIfX4rbNgx2fI4DZ+ET4nYzsuXX8z1FLgecYf0yZpybvjzQFDrDKMM+uqKUOVUxQwP
+         0gRQX1u5wM0ZV1ly4QlWEuzuD53BmxKwIJ5YiXHZSGafS5a8bI765b+sJddaXfL81F
+         tnZB8N/hcv/RQrQNyzNfv89gpLntv/UML2/GLiJ3qGVRfolY0V/Y5VzJw2VsAUJ1L6
+         y8MSVCCUIPiew==
+Date:   Wed, 7 Apr 2021 16:15:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Perry Yuan <Perry.Yuan@dell.com>
+Cc:     pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
+        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        Mario.Limonciello@dell.com, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, mario.limonciello@outlook.com,
+        Dell.Client.Kernel@dell.com
+Subject: Re: [PATCH v6 2/2] ASoC: rt715:add micmute led state control supports
+Message-ID: <20210407151534.GE5510@sirena.org.uk>
+References: <20210404083159.1620-1-Perry_Yuan@Dell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4Epv4kl9IRBfg3rk"
 Content-Disposition: inline
-In-Reply-To: <e2612bd8-b356-a9cd-cfdf-26f4aa813578@arm.com>
+In-Reply-To: <20210404083159.1620-1-Perry_Yuan@Dell.com>
+X-Cookie: Dry clean only.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:20:18AM +0100, Steven Price wrote:
-> On 31/03/2021 19:43, Catalin Marinas wrote:
-> > When a slot is added by the VMM, if it asked for MTE in guest (I guess
-> > that's an opt-in by the VMM, haven't checked the other patches), can we
-> > reject it if it's is going to be mapped as Normal Cacheable but it is a
-> > ZONE_DEVICE (i.e. !kvm_is_device_pfn() + one of David's suggestions to
-> > check for ZONE_DEVICE)? This way we don't need to do more expensive
-> > checks in set_pte_at().
-> 
-> The problem is that KVM allows the VMM to change the memory backing a slot
-> while the guest is running. This is obviously useful for the likes of
-> migration, but ultimately means that even if you were to do checks at the
-> time of slot creation, you would need to repeat the checks at set_pte_at()
-> time to ensure a mischievous VMM didn't swap the page for a problematic one.
 
-Does changing the slot require some KVM API call? Can we intercept it
-and do the checks there?
+--4Epv4kl9IRBfg3rk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maybe a better alternative for the time being is to add a new
-kvm_is_zone_device_pfn() and force KVM_PGTABLE_PROT_DEVICE if it returns
-true _and_ the VMM asked for MTE in guest. We can then only set
-PG_mte_tagged if !device.
+On Sun, Apr 04, 2021 at 04:31:59PM +0800, Perry Yuan wrote:
 
-We can later relax this further to Normal Non-cacheable for ZONE_DEVICE
-memory (via a new KVM_PGTABLE_PROT_NORMAL_NC) or even Normal Cacheable
-if we manage to change the behaviour of the architecture.
+> +static bool micmute_led_set;
+> +static int  dmi_matched(const struct dmi_system_id *dmi)
+> +{
+> +	micmute_led_set = 1;
+> +	return 1;
+> +}
 
-> > We could add another PROT_TAGGED or something which means PG_mte_tagged
-> > set but still mapped as Normal Untagged. It's just that we are short of
-> > pte bits for another flag.
-> 
-> That could help here - although it's slightly odd as you're asking the
-> kernel to track the tags, but not allowing user space (direct) access to
-> them. Like you say using us the precious bits for this seems like it might
-> be short-sighted.
+This isn't how we usually record DMI quirks, usually we'd query once on
+probe and store the data in the driver data struct - see other users for
+examples.
 
-Yeah, let's scrap this idea. We set PG_mte_tagged in user_mem_abort(),
-so we already know it's a page potentially containing tags. On
-restoring from swap, we need to check for MTE metadata irrespective of
-whether the user pte is tagged or not, as you already did in patch 1.
-I'll get back to that and look at the potential races.
+> @@ -358,6 +388,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+>  	unsigned int mask = (1 << fls(max)) - 1;
 
-BTW, after a page is restored from swap, how long do we keep the
-metadata around? I think we can delete it as soon as it was restored and
-PG_mte_tagged was set. Currently it looks like we only do this when the
-actual page was freed or swapoff. I haven't convinced myself that it's
-safe to do this for swapoff unless it guarantees that all the ptes
-sharing a page have been restored.
+> +	dmi_check_system(micmute_led_dmi_table);
+> +	if (invert && micmute_led_set) {
 
--- 
-Catalin
+This check for invert is odd and could probably use a comment.
+
+--4Epv4kl9IRBfg3rk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBtzJUACgkQJNaLcl1U
+h9Dpcwf9F6efsgl8SxB48L2h93SnAp+aXJZGvsihl3talmxVNg7zmoGcUoHsDMU8
+Q48ZaYHXa2Zehw7UMpBlQ1Iww60W43c3yVSv5xS9C5FZdr7pvn0fjVhVX121uSTt
+BeTI2r8BH0ndjb29prof+duUTHGBx+I81NjAC7aK26EIcnkHZqREM1dhVbJtSd+I
+p+ofEZVpTswy5qECN1/JtYf6QvlRJ3x0QOCaq8E4Sj1URTRP3NCMSJH9h/WaItae
+sJvELh1IcUMel0ElT1TEtf/fgDZVgiQh3PmRkA6qtrqturKrWSw61T99EE80Rn7j
+ZsK6s1vQEXo5vslhtx5JoOGtK8wDTQ==
+=w3kO
+-----END PGP SIGNATURE-----
+
+--4Epv4kl9IRBfg3rk--
