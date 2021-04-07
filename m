@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DC53568FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB213568B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhDGKGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:06:54 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:35370 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346542AbhDGKGX (ORCPT
+        id S1350555AbhDGKD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:03:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16010 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350497AbhDGKDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:06:23 -0400
-Received: by mail-lf1-f54.google.com with SMTP id w28so27509324lfn.2;
-        Wed, 07 Apr 2021 03:06:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QYZKnG5sW48x9oFbbMIXt3sQ2d75rIBaQQRFZCVetlI=;
-        b=Pf+rW2H16RVONAq2855JboC/H0BC0RQa2mlrl4Z82p7Q0w1jPFESVt7SukSqEoJDHz
-         7R6NqojzAKMPgQmHy+fSC5/AB+WLTED4mt0CGqtgKd6yjb8kR7rnqzLN9Zp/EKQqsW8J
-         /z14IfCOeCrwHBZR4gknDnGN4jvIc1PM4r1MbdlOdd9zyDG/jhNIpSs4003wKCQ4dE1C
-         nnfwZ450IAzGan8YY+rLuHXFyXpQ1RA+1A5JytR0yB1ZVtGu9eTtdv0QZvhoZqJAuXY4
-         amc8BkSAvHqCxN2Acro37usItmwfLiW0UNAPRs1iBaV9CTXFzJA4CsaXf6dByGir1n9d
-         VPdQ==
-X-Gm-Message-State: AOAM533K+F5PImSSaVEKgKMyDwtSH3/9DY81AjBSnIL1BiPDdd5ekT9y
-        xJ6Y6rk8vWlxP1adYdFV/dA=
-X-Google-Smtp-Source: ABdhPJw6HmzKrFkTQYXsR3w07jUqF3BkDOpNEPQ77/7ShZXmM3D9C1+viKOuezsYixzhLBjqUoXxTg==
-X-Received: by 2002:a19:670c:: with SMTP id b12mr2014271lfc.441.1617789972333;
-        Wed, 07 Apr 2021 03:06:12 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id h62sm2433228lfd.234.2021.04.07.03.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 03:06:11 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 13:06:05 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v6 7/8] regulator: bd9576: Fix the driver name in id table
-Message-ID: <a80b9f989084b75619a573e166bfedc970f6f801.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 7 Apr 2021 06:03:13 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFfyk2k0DzPnwg;
+        Wed,  7 Apr 2021 18:00:14 +0800 (CST)
+Received: from localhost.localdomain (10.175.103.91) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 18:02:46 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     <huawei.libin@huawei.com>, Xinliang Liu <xinliang.liu@linaro.org>,
+        "Tian Tao" <tiantao6@hisilicon.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        John Stultz <john.stultz@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>,
+        Wei Li <liwei391@huawei.com>
+Subject: [PATCH RESEND -next] drm: kirin: Remove redundant dev_err call in ade_hw_ctx_alloc()
+Date:   Wed, 7 Apr 2021 18:06:10 +0800
+Message-ID: <20210407100610.3278802-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver name was changed in MFD cell:
-https://lore.kernel.org/lkml/560b9748094392493ebf7af11b6cc558776c4fd5.1613031055.git.matti.vaittinen@fi.rohmeurope.com/
-Fix the ID table to match this.
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
-Please note - this patch is not really related to the series. This
-change is related to separate MFD driver change and was only added
-as part of this series to avoid the conflicts.
+ drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-No changes since RFC-v2
----
- drivers/regulator/bd9576-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
-index 0d55d383d2aa..aeb816cf9ad3 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -1117,8 +1117,8 @@ static int bd957x_probe(struct platform_device *pdev)
- }
+diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+index 6dcf9ec05eec..78a792048c42 100644
+--- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
++++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+@@ -857,10 +857,8 @@ static void *ade_hw_ctx_alloc(struct platform_device *pdev,
  
- static const struct platform_device_id bd957x_pmic_id[] = {
--	{ "bd9573-pmic", ROHM_CHIP_TYPE_BD9573 },
--	{ "bd9576-pmic", ROHM_CHIP_TYPE_BD9576 },
-+	{ "bd9573-regulator", ROHM_CHIP_TYPE_BD9573 },
-+	{ "bd9576-regulator", ROHM_CHIP_TYPE_BD9576 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(platform, bd957x_pmic_id);
--- 
-2.25.4
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	ctx->base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(ctx->base)) {
+-		DRM_ERROR("failed to remap ade io base\n");
++	if (IS_ERR(ctx->base))
+ 		return ERR_PTR(-EIO);
+-	}
+ 
+ 	ctx->reset = devm_reset_control_get(dev, NULL);
+ 	if (IS_ERR(ctx->reset))
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
