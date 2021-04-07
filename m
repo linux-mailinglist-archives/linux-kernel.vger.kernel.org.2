@@ -2,193 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6ED635635E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B46535635F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239423AbhDGFgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:36:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39742 "EHLO mail.kernel.org"
+        id S232902AbhDGFhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232902AbhDGFgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:36:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5A6461168;
-        Wed,  7 Apr 2021 05:36:28 +0000 (UTC)
+        id S229558AbhDGFhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 01:37:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D25A613AF;
+        Wed,  7 Apr 2021 05:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617773789;
-        bh=8anWKro+sWuFlGBNXG7Iayco5dTGMaJT1pqPGQOheOU=;
+        s=korg; t=1617773861;
+        bh=nzwtY+L0kgmfWf4JSBCkm5fqQT9Wgv7V7OBgqfxP7iQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fi+8JHmKEQjBh4ans5JtwUkSz0qMpr9jEQHX2/dpSYaQQLmWt2VxT1GisjRbT7C3t
-         Ps+Xiu7QShYFwS9YbJS98cNGO3ilDMT9owolRmagHlOXoDU2mHRzwHTLXrcyJI0JJx
-         5eoDoPIGJioyjEDPXC9/fs1tuORNiJxhmQf1/SEc=
-Date:   Wed, 7 Apr 2021 07:36:26 +0200
+        b=xnCUb60RQc+dbIilRCXgHSUKVn1uSFZRGHhqBgIHEUtOafKvgpD8IHyGesMJ1jfXL
+         01RmSupd0IRlARujw4yym69PmeknlmD/m+ZPpiHBvIaUWDGCfrEvx0jMX/iGk0Yneh
+         EqdAp4TF0KHnboEMVlH3NikrloWCoSpedSWQfP/8=
+Date:   Wed, 7 Apr 2021 07:37:39 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, mj0123.lee@samsung.com, osandov@fb.com,
-        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [RESEND PATCH v5 1/2] bio: limit bio max size
-Message-ID: <YG1E2krVn5S+E1Da@kroah.com>
-References: <YG09t9VRYfxRnhPt@kroah.com>
- <CGME20210407052407epcas1p1d0b5d23ac04a68760f691954e7ada3dd@epcas1p1.samsung.com>
- <20210407050633.949-1-nanich.lee@samsung.com>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: Re: [RESEND PATCH] staging: emxx_udc: Ending line with argument
+Message-ID: <YG1FI38zNbidjt9q@kroah.com>
+References: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
+ <YGy4LXHBrBb/r3dk@kroah.com>
+ <4c7df741-4e73-2ac4-f0d8-c9513ae29c88@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407050633.949-1-nanich.lee@samsung.com>
+In-Reply-To: <4c7df741-4e73-2ac4-f0d8-c9513ae29c88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:06:33PM +0900, Changheun Lee wrote:
-> > On Wed, Apr 07, 2021 at 09:16:12AM +0900, Changheun Lee wrote:
-> > > > On Tue, Apr 06, 2021 at 10:31:28AM +0900, Changheun Lee wrote:
-> > > > > > bio size can grow up to 4GB when muli-page bvec is enabled.
-> > > > > > but sometimes it would lead to inefficient behaviors.
-> > > > > > in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > > > > > all pages for 32MB would be merged to a bio structure if the pages
-> > > > > > physical addresses are contiguous. it makes some delay to submit
-> > > > > > until merge complete. bio max size should be limited to a proper size.
-> > > > > > 
-> > > > > > When 32MB chunk read with direct I/O option is coming from userspace,
-> > > > > > kernel behavior is below now in do_direct_IO() loop. it's timeline.
-> > > > > > 
-> > > > > >  | bio merge for 32MB. total 8,192 pages are merged.
-> > > > > >  | total elapsed time is over 2ms.
-> > > > > >  |------------------ ... ----------------------->|
-> > > > > >                                                  | 8,192 pages merged a bio.
-> > > > > >                                                  | at this time, first bio submit is done.
-> > > > > >                                                  | 1 bio is split to 32 read request and issue.
-> > > > > >                                                  |--------------->
-> > > > > >                                                   |--------------->
-> > > > > >                                                    |--------------->
-> > > > > >                                                               ......
-> > > > > >                                                                    |--------------->
-> > > > > >                                                                     |--------------->|
-> > > > > >                           total 19ms elapsed to complete 32MB read done from device. |
-> > > > > > 
-> > > > > > If bio max size is limited with 1MB, behavior is changed below.
-> > > > > > 
-> > > > > >  | bio merge for 1MB. 256 pages are merged for each bio.
-> > > > > >  | total 32 bio will be made.
-> > > > > >  | total elapsed time is over 2ms. it's same.
-> > > > > >  | but, first bio submit timing is fast. about 100us.
-> > > > > >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> > > > > >       | 256 pages merged a bio.
-> > > > > >       | at this time, first bio submit is done.
-> > > > > >       | and 1 read request is issued for 1 bio.
-> > > > > >       |--------------->
-> > > > > >            |--------------->
-> > > > > >                 |--------------->
-> > > > > >                                       ......
-> > > > > >                                                  |--------------->
-> > > > > >                                                   |--------------->|
-> > > > > >         total 17ms elapsed to complete 32MB read done from device. |
-> > > > > > 
-> > > > > > As a result, read request issue timing is faster if bio max size is limited.
-> > > > > > Current kernel behavior with multipage bvec, super large bio can be created.
-> > > > > > And it lead to delay first I/O request issue.
-> > > > > > 
-> > > > > > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > > > > > ---
-> > > > > >  block/bio.c            | 13 ++++++++++++-
-> > > > > >  include/linux/bio.h    |  2 +-
-> > > > > >  include/linux/blkdev.h |  3 +++
-> > > > > >  3 files changed, 16 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/block/bio.c b/block/bio.c
-> > > > > > index 1f2cc1fbe283..c528e1f944c7 100644
-> > > > > > --- a/block/bio.c
-> > > > > > +++ b/block/bio.c
-> > > > > > @@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
-> > > > > >  }
-> > > > > >  EXPORT_SYMBOL(bio_init);
-> > > > > >  
-> > > > > > +unsigned int bio_max_size(struct bio *bio)
-> > > > > > +{
-> > > > > > +	struct request_queue *q = bio->bi_disk->queue;
-> > > > > > +
-> > > > > > +	if (blk_queue_limit_bio_size(q))
-> > > > > > +		return blk_queue_get_max_sectors(q, bio_op(bio))
-> > > > > > +			<< SECTOR_SHIFT;
-> > > > > > +
-> > > > > > +	return UINT_MAX;
-> > > > > > +}
-> > > > > > +
-> > > > > >  /**
-> > > > > >   * bio_reset - reinitialize a bio
-> > > > > >   * @bio:	bio to reset
-> > > > > > @@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
-> > > > > >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
-> > > > > >  
-> > > > > >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> > > > > > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> > > > > > +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
-> > > > > >  				*same_page = false;
-> > > > > >  				return false;
-> > > > > >  			}
-> > > > > > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > > > > > index 1edda614f7ce..13b6f6562a5b 100644
-> > > > > > --- a/include/linux/bio.h
-> > > > > > +++ b/include/linux/bio.h
-> > > > > > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
-> > > > > >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
-> > > > > >  		return true;
-> > > > > >  
-> > > > > > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> > > > > > +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
-> > > > > >  		return true;
-> > > > > >  
-> > > > > >  	return false;
-> > > > > > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > > > > > index f94ee3089e01..3aeab9e7e97b 100644
-> > > > > > --- a/include/linux/blkdev.h
-> > > > > > +++ b/include/linux/blkdev.h
-> > > > > > @@ -621,6 +621,7 @@ struct request_queue {
-> > > > > >  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
-> > > > > >  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
-> > > > > >  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
-> > > > > > +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
-> > > > > >  
-> > > > > >  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
-> > > > > >  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
-> > > > > > @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
-> > > > > >  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
-> > > > > >  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
-> > > > > >  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
-> > > > > > +#define blk_queue_limit_bio_size(q)	\
-> > > > > > +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
-> > > > > >  
-> > > > > >  extern void blk_set_pm_only(struct request_queue *q);
-> > > > > >  extern void blk_clear_pm_only(struct request_queue *q);
-> > > > > > -- 
-> > > > > > 2.28.0
-> > > > > > 
-> > > > > 
-> > > > > Please feedback to me if more modification is needed to apply. :)
-> > > > 
-> > > > You are adding code that tests for a value to be set, yet you never set
-> > > > it in this code so why is it needed at all?
-> > > 
-> > > This patch is a solution for some inefficient case of multipage bvec like
-> > > as current DIO scenario. So it's not set as a default.
-> > > It will be set when bio size limitation is needed in runtime.
-> > 
-> > Set where?
+On Tue, Apr 06, 2021 at 09:00:07PM +0100, Beatriz Martins de Carvalho wrote:
 > 
-> In my environment, set it on init.rc file like as below.
-> "echo 1 > /sys/block/sda/queue/limit_bio_size"
+> Em 06/04/21 20:36, Greg KH escreveu:
+> > On Tue, Apr 06, 2021 at 08:34:09PM +0100, Beatriz Martins de Carvalho wrote:
+> > > Cleans up check of "Lines should not end with a '('"
+> > > with argument present in next line in file emxx_udc.c
+> > > 
+> > > Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+> > > ---
+> > >   drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+> > >   1 file changed, 4 insertions(+), 7 deletions(-)
+> > Why is this a [RESEND] ?
+> > 
+> > What happened to the first version?
+> Sorry, I didn't receive your review, and in kernelnewbies tutorial, they say
+> if not receive a response, may have missed the patch, so I resent it.
 
-I do not see any sysfs file in this patch, and why would you ever want
-to be forced to manually do this?  The hardware should know the limits
-itself, and should automatically tune things like this, do not force a
-user to do it as that's just not going to go well at all.
+Do you have a pointer to your previous patch in the lore.kernel.org
+archives anywhere?  I can't seem to find it.
 
-So if this patch series is forcing a new option to be configured by
-sysfs only, that's not acceptable, sorry.
+> > Also, your subject is odd, please look at the documentation for how to
+> > write good subject lines for patches.
+> 
+> Yes, I know. It was my second patch, and I was learning, and when I resent
+> it, I didn't know if I can change the subject.
+
+Of course you can always fix up things you know you did incorrectly,
+don't make others review stuff that you know is wrong, that just wastes
+everyone's time.
+
+thanks,
 
 greg k-h
