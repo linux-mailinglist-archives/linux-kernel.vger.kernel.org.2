@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D5835660C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62207356611
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhDGIGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:06:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
+        id S237304AbhDGIHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:07:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233970AbhDGIGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3F961222;
-        Wed,  7 Apr 2021 08:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617782793;
-        bh=Saui7R6VgfinD0aYuADSUqh2OGbSYGStZdRURn73p8Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CaQS81BmyDfetD8FswzLLV7h6/zoDjIyjLT15jD5RY5SFKpj834sHX1cqTmUxj7HF
-         tdLn2UaFdycx2uLhSLTyzP+chLrpEN7uIC+nGL9LDhG9tJU+ue7zleKV753cnW6Wfg
-         nppLNQ/JyeS633dDWM0YC3HBygcPZ1TSSlJRPfSJktIpQRAqJDfTWnha+kCMAS+8bS
-         ne9wpH4kn9Wx6Is5UMWw9aL/7zxpgohjtxYOWY6iSUI38HS56YMYIxrzi2h+pp+UWw
-         1Y2UhGFZIdfap22sxk+s9m/KkDZoMcKPsksDKEMY4t35lQl2HBguzAeWeeTavOgrd9
-         fqSeTNLU4bblA==
-Date:   Wed, 7 Apr 2021 10:06:27 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 29/32] docs: dt: update writing-schema.rst references
-Message-ID: <20210407100627.13071b72@coco.lan>
-In-Reply-To: <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
-        <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
-        <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S233970AbhDGIHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:07:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A359561222;
+        Wed,  7 Apr 2021 08:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617782852;
+        bh=Roc1pgXNiDFIxi3O+PozBhZj0RIUUb4b0E+76uwfL+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T/ZOIOuxBLriRB2gjvcoIn/zscjIlzFfL7/xqXUwGYF2cb3/hdlSfpAIsgT/rxO92
+         0Ksu+szp80r5k586GtP9bXqJfy3n37LDwrlz5+NNj1J454phfDTLcFpwMlCwZEVfC8
+         fV5cGIhEj62KjrmV93OMnQosMjI90IHLASV3vBKc=
+Date:   Wed, 7 Apr 2021 10:07:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH 00/20] kbuild: unify the install.sh script usage
+Message-ID: <YG1oQRc1ayGEI+4G@kroah.com>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+ <CAMuHMdWGnr1wK3yZdLovxmVQT1yc2DR+J6FwQyCLxQS-Bp29Rw@mail.gmail.com>
+ <YG1jSj7BiDscHBhz@kroah.com>
+ <20210407080229.GF1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407080229.GF1463@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 6 Apr 2021 10:04:57 -0500
-Rob Herring <robh+dt@kernel.org> escreveu:
-
-> On Thu, Apr 1, 2021 at 7:17 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > Changeset b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> > renamed: Documentation/devicetree/writing-schema.rst
-> > to: Documentation/devicetree/bindings/writing-schema.rst.
-> >
-> > Update the cross-references accordingly.
-> >
-> > Fixes: b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/devicetree/bindings/submitting-patches.rst | 2 +-
-> >  scripts/checkpatch.pl                                    | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-> > index ee4feb53f8d0..104fa8fb2c17 100644
-> > --- a/Documentation/devicetree/bindings/submitting-patches.rst
-> > +++ b/Documentation/devicetree/bindings/submitting-patches.rst
-> > @@ -25,7 +25,7 @@ I. For patch submitters
-> >
-> >         make dt_binding_check
-> >
-> > -     See Documentation/devicetree/writing-schema.rst for more details about
-> > +     See Documentation/devicetree/bindings/writing-schema.rst for more details about  
+On Wed, Apr 07, 2021 at 09:02:29AM +0100, Russell King - ARM Linux admin wrote:
+> On Wed, Apr 07, 2021 at 09:46:18AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 07, 2021 at 09:18:11AM +0200, Geert Uytterhoeven wrote:
+> > > Hi Greg,
+> > > 
+> > > Thanks for your series!
+> > > 
+> > > On Wed, Apr 7, 2021 at 7:34 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > Almost every architecture has copied the "install.sh" script that
+> > > > originally came with i386, and modified it in very tiny ways.  This
+> > > > patch series unifies all of these scripts into one single script to
+> > > > allow people to understand how to correctly install a kernel, and fixes
+> > > > up some issues regarding trying to install a kernel to a path with
+> > > > spaces in it.
+> > > >
+> > > > Note that not all architectures actually seem to have any type of way to
+> > > > install a kernel, they must rely on external scripts or tools which
+> > > > feels odd as everything should be included here in the main repository.
+> > > > I'll work on trying to figure out the missing architecture issues
+> > > > afterward.
+> > > 
+> > > I'll bite ;-)
+> > > 
+> > > Does anyone actually use these scripts (outside of x86)?
 > 
-> We should make this a rSt link instead.
+> Yes, every time I build a kernel. My kernel build system involves
+> typing "kbuild <flags> <dirname> <machines...>" and the kernel gets
+> built in ../build/<dirname>. When the build completes, it gets
+> installed into ~/systems/<dirname>, tar'd up, and copied to the
+> destination machines, unpacked, installed as appropriate, and
+> the machine rebooted if requested.
+> 
+> The installation step is done via the ~/bin/installkernel script.
 
-It shouldn't be needed, as Documentation/sphinx/automarkup.py has a rule
-which converts Documentation/* into a cross reference using this
-regex:
+So you don't use install.sh at all except to invoke your local script.
 
-	RE_doc = re.compile(r'(\bDocumentation/)?((\.\./)*[\w\-/]+)\.(rst|txt)')
+> > > I assume the architectures that have them, only have them because they
+> > > were copied from x86 while doing the initial ports ("oh, a file I don't
+> > > have to modify at all.").
+> > > But installing the kernel can be very platform-specific.
+> > > Do you need the vmlinux, vmlinux.gz, Image, zImage, uImage, ...?
+> > > With separate or appended DTB?
+> 
+> My scripts deal with all that.
+> 
+> However, I haven't been able to review the changes that are being
+> made because I have no visibility of the common "scripts" version.
+> Provided it offers exactly the same functionality as the arm32
+> version, I'm happy. If it doesn't, it may cause a regression, and
+> I will be reporting that.
 
+It should be identical, if I got something wrong please let me know.
 
-Thanks,
-Mauro
+thanks,
+
+greg k-h
