@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71E1356419
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61675356420
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348880AbhDGGg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
+        id S1348905AbhDGGgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348883AbhDGGgX (ORCPT
+        with ESMTP id S1348878AbhDGGg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:36:23 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88F7C06174A;
-        Tue,  6 Apr 2021 23:36:13 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id f29so9803075pgm.8;
-        Tue, 06 Apr 2021 23:36:13 -0700 (PDT)
+        Wed, 7 Apr 2021 02:36:27 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B78C061756;
+        Tue,  6 Apr 2021 23:36:15 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y2so8830659plg.5;
+        Tue, 06 Apr 2021 23:36:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=DybsWO6cYupTAYK5TY3h7KJtjw7Gu9U9lSriFDUMaw8=;
-        b=FdKvOV3IL4dnT5Qd/skievzAJiYmP8mOYgeLLnlq8L9EL4D4WJkv9ydKhfJHdfDcpD
-         3mmH7Ir/l5o9MTRgL7OacSM9crrSypLeLHN1TyKvyqucvvP9juoFuXW9fep1pOgnBlj8
-         6HM+IH4/WtAUjyAhoJWv1TpXk3OTWDuvCWnBQ77qnw/IIoOOLMx/RoR5k3cOtQVAzs0N
-         hgOecVo+7k1TP9tlKQ5sQDHt4BhkQG6cGZIYyB11VhyqLiaQEc9QEXWuocbp2k2gHkkJ
-         NUW1A0bUUkKs/ivXH8cT1c13KiHIQZRHTPjvV1wcJ1cYnPNyfF3AT+R4XUZCLsy7lwVY
-         jLdQ==
+        bh=nbXo1IxGweA//u4mbIa93kKWNX3fgy1vKyjQx5w3BBQ=;
+        b=ZqoVq74+Pip01x1DlbjW34pRjJf5G0G3dBYHsQYrLNNSnfKiaKZFYf2fW2WICQQGhZ
+         hjVQPHrOh0R1P9UGm7qzvfc9etyl2d0JnIrVAZyC+XNqDxXB9QbV2S/ZIlhnkPgnZRFh
+         CcIQvyxwZP+mjT0SII7AcWRdhBACReIK03ZXkDidXuJpd6IXnuWkCaOR+uFQfPPvd6bm
+         9OhNHhhZPzdliWu+8A80Z6wQtg0MbKtgLx4UBL8nbH/rkH95AQYpR2mDRCQkBMtA3/IJ
+         TFSyHASWkcNPlEgEWA/c24GXMn/y0mnyyLbzi+9TCXBlP+5F1HRSpubbq7+17VECgPlP
+         6Aag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DybsWO6cYupTAYK5TY3h7KJtjw7Gu9U9lSriFDUMaw8=;
-        b=C8eVMB8bZv+0Kir2bwEscE2oPROmiu3dTFO0Sx/hA3GlXKwpEfacsXaPTn/af+Lcvg
-         VkQ93uxNlYGNeRZDP2ceu8E+P3SdNmwF1kSLtyY6vIpEVT0fgxNGxSWg/4p2w2qbzBni
-         Udqmd0/kMSa2aGEHuRW7x3Ir/jmljJx+08uQYhqNtKxEpOIPuaYBpkTzJM81J9Am/J8S
-         y2vFh1WWlhbOxfH5erpQiE/xOWLTZLnhs/Wrg8TWLWw3XgIbkzZiy+MpMgmUmrSOkrM/
-         CTy6bvAvrozLq1+WnZkYry1ISNpyBZ/nkMzla2rok/46QdQ00ENZLre1gUllM+SSqyUz
-         YYBg==
-X-Gm-Message-State: AOAM533907fSYjVzwftroxJSZJVDbzGLuIhZsKFb3UQm6BDxt0tSP0HC
-        V0LcZ3WRwT9L1W/Be0MKMWM=
-X-Google-Smtp-Source: ABdhPJwuyTAC8jxTxOk3Mmj1dDuxKrU16iQQtdWCrgRfJU7JlDZ3fSgVkVL7AJIYC/S1Qw5EZuHKEQ==
-X-Received: by 2002:a05:6a00:158b:b029:241:a969:4da6 with SMTP id u11-20020a056a00158bb0290241a9694da6mr1584990pfk.27.1617777373300;
-        Tue, 06 Apr 2021 23:36:13 -0700 (PDT)
+        bh=nbXo1IxGweA//u4mbIa93kKWNX3fgy1vKyjQx5w3BBQ=;
+        b=NMXBNZVolUk5KQgLmk+/j1hr4rLOQOfisZKx1LfltVOm4CHKIVXU2+zim5r1yYgwl0
+         ciOEvDi+qZkR740O48CG+xKU30aYqJtTrSWmkl+phs240+3WOG/Z1Fnb/Q2SdVQvncSY
+         xhOtXASbac5KR18oJgbU8noYOYtc+BowF+x4GFueAi3S+QG8QuZrk4uWodKBanYc+lr4
+         WcGZNQ/phf40mymbshs67B6HlyaYk5GRFXuAvAJ35neDuISy3wsZzCP2vXwjSHaziQFw
+         ugp+9NwchgHNioKR8LmYuCx0ZbpQhLo7De3KcBylyQvwsxYHL9PyCy0/2yAV5x4rRiBe
+         5/ww==
+X-Gm-Message-State: AOAM530+snXExsDbajXk+S3vxN8PZabKtMG+080RwAEMNtmJR3S0aDwy
+        vGHl7dSxTUxMahk45wmZE2c=
+X-Google-Smtp-Source: ABdhPJwfW5mvaupNug1y63+8B7XCnyNIMU83jfAc56VjkaKr9Vl8Pxzv5szf1jX/yYIXeWNtnlNnpg==
+X-Received: by 2002:a17:90a:c211:: with SMTP id e17mr1894147pjt.52.1617777375051;
+        Tue, 06 Apr 2021 23:36:15 -0700 (PDT)
 Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id mu6sm4115326pjb.35.2021.04.06.23.36.12
+        by smtp.gmail.com with ESMTPSA id k15sm21048620pfi.0.2021.04.06.23.36.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:36:12 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:36:10 -0700
+        Tue, 06 Apr 2021 23:36:14 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:36:12 -0700
 From:   Pavle Rohalj <pavle.rohalj@gmail.com>
 To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/49] staging: sm750fb: Remove remaining camel case names
- in ddk750_dvi.h
-Message-ID: <2ee5dbf98547860d93d5c72b73ea61991dac0b1c.1617776878.git.pavle.rohalj@gmail.com>
+Subject: [PATCH v2 06/49] staging: sm750fb: Update
+ displayControlAdjust_SM750LE to snake case
+Message-ID: <36f24931c96cb315c32a06f5ae374f652dee96e4.1617776878.git.pavle.rohalj@gmail.com>
 References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,29 +65,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpatch.pl check for type definitions
-DVICTRL_SETPOWER and DVICTRL_HOTPLUGDETECTION in ddk750_dvi.h.
+Fix "Avoid CamelCase" checkpatch.pl checks for the function
+displayControlAdjust_SM750LE, including its name, parameters, and body.
 
 Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
- drivers/staging/sm750fb/ddk750_dvi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/sm750fb/ddk750_mode.c | 40 +++++++++++++--------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/staging/sm750fb/ddk750_dvi.h b/drivers/staging/sm750fb/ddk750_dvi.h
-index 8aee0cdf63a4..d953fb5ab9f2 100644
---- a/drivers/staging/sm750fb/ddk750_dvi.h
-+++ b/drivers/staging/sm750fb/ddk750_dvi.h
-@@ -19,8 +19,8 @@ typedef void (*DVICTRL_RESETCHIP)(void);
- typedef char* (*DVICTRL_GETCHIPSTRING)(void);
- typedef unsigned short (*DVICTRL_GETVENDORID)(void);
- typedef unsigned short (*DVICTRL_GETDEVICEID)(void);
--typedef void (*DVICTRL_SETPOWER)(unsigned char powerUp);
--typedef void (*DVICTRL_HOTPLUGDETECTION)(unsigned char enableHotPlug);
-+typedef void (*DVICTRL_SETPOWER)(unsigned char power_up);
-+typedef void (*DVICTRL_HOTPLUGDETECTION)(unsigned char enable_hot_plug);
- typedef unsigned char (*DVICTRL_ISCONNECTED)(void);
- typedef unsigned char (*DVICTRL_CHECKINTERRUPT)(void);
- typedef void (*DVICTRL_CLEARINTERRUPT)(void);
+diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
+index e00a6cb31947..2fae81b47f46 100644
+--- a/drivers/staging/sm750fb/ddk750_mode.c
++++ b/drivers/staging/sm750fb/ddk750_mode.c
+@@ -14,13 +14,13 @@
+  * in bit 29:27 of Display Control register.
+  */
+ static unsigned long
+-displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
+-			     unsigned long dispControl)
++display_control_adjust_sm750le(struct mode_parameter *mode_param,
++			     unsigned long disp_control)
+ {
+ 	unsigned long x, y;
+ 
+-	x = pModeParam->horizontal_display_end;
+-	y = pModeParam->vertical_display_end;
++	x = mode_param->horizontal_display_end;
++	y = mode_param->vertical_display_end;
+ 
+ 	/*
+ 	 * SM750LE has to set up the top-left and bottom-right
+@@ -36,42 +36,42 @@ displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
+ 	       ((x - 1) & CRT_AUTO_CENTERING_BR_RIGHT_MASK));
+ 
+ 	/*
+-	 * Assume common fields in dispControl have been properly set before
++	 * Assume common fields in disp_control have been properly set before
+ 	 * calling this function.
+-	 * This function only sets the extra fields in dispControl.
++	 * This function only sets the extra fields in disp_control.
+ 	 */
+ 
+ 	/* Clear bit 29:27 of display control register */
+-	dispControl &= ~CRT_DISPLAY_CTRL_CLK_MASK;
++	disp_control &= ~CRT_DISPLAY_CTRL_CLK_MASK;
+ 
+ 	/* Set bit 29:27 of display control register for the right clock */
+ 	/* Note that SM750LE only need to supported 7 resolutions. */
+ 	if (x == 800 && y == 600)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL41;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL41;
+ 	else if (x == 1024 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL65;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL65;
+ 	else if (x == 1152 && y == 864)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 720)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL74;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL74;
+ 	else if (x == 1280 && y == 960)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else if (x == 1280 && y == 1024)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else /* default to VGA clock */
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL25;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL25;
+ 
+ 	/* Set bit 25:24 of display controller */
+-	dispControl |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
++	disp_control |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
+ 
+ 	/* Set bit 14 of display controller */
+-	dispControl |= DISPLAY_CTRL_CLOCK_PHASE;
++	disp_control |= DISPLAY_CTRL_CLOCK_PHASE;
+ 
+-	poke32(CRT_DISPLAY_CTRL, dispControl);
++	poke32(CRT_DISPLAY_CTRL, disp_control);
+ 
+-	return dispControl;
++	return disp_control;
+ }
+ 
+ /* only timing related registers will be  programed */
+@@ -125,7 +125,7 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
+ 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
+ 
+ 		if (sm750_get_chip_type() == SM750LE) {
+-			displayControlAdjust_SM750LE(pModeParam, tmp);
++			display_control_adjust_sm750le(pModeParam, tmp);
+ 		} else {
+ 			reg = peek32(CRT_DISPLAY_CTRL) &
+ 				~(DISPLAY_CTRL_VSYNC_PHASE |
 -- 
 2.30.2
 
