@@ -2,128 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BAF356B1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79CE356B23
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242010AbhDGLZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:25:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234598AbhDGLZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:25:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617794738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6vTOve9t9MRfb5n6V3rOJN+vGohohWSYNISTo4uZoiA=;
-        b=J0kmeXGdSS19LyF/m99BxzceMbsVo3Kek52rmU02vZQ87/37nz6wGWUaHkby5LfuvBdvq/
-        WmTfI8+qr59vfDg4c7Co067YHdhy6nj5MvxULO096KFz8PgWRAw+gj2hKR3HdvhipJMie/
-        BEZkQcb4w0Mgqr01oE//ddQcCVkCf/Y=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-Au7OnaX_Ox-xEWLsntXESQ-1; Wed, 07 Apr 2021 07:25:36 -0400
-X-MC-Unique: Au7OnaX_Ox-xEWLsntXESQ-1
-Received: by mail-ed1-f69.google.com with SMTP id g7so3020406edp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:25:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6vTOve9t9MRfb5n6V3rOJN+vGohohWSYNISTo4uZoiA=;
-        b=k+E6HTvGMbxMHOm8N+7kBDiEK8iAFJEBOOYpPKxlBbGIhmi5OaiTbyR3STxi6+v6c7
-         O6UDBHIszNv30omL6fpIucCL20qHo8vbpgyt/b+CyiBKIcyfTeDO19YEgHB+k5cbrrZ8
-         ZilK5r2KCzBo5WMbVOJN4QmllmQU8nIjdk9O3Hg1p54L5rxhNif5GMvs2Ti+trOSsdsQ
-         kB740GewhWknms/pYyojdx1AaJbsbV+Ha9vO/96Lcu/CZ6zDxVXgNZ9+IbreIPjUGRFe
-         3gMDhZCABVCNZSh+dpXBdsPxdy8l1DE5QfgqJm46PupYc9EbprhOIYa4O+LcWojq2M+/
-         DIdA==
-X-Gm-Message-State: AOAM533ioDAS1b9vQK763DytyGQ2wSaJ5Q2XaZoaxpvIpp0h2+SiXvph
-        5OHYf3dP7jtX7uWqL5EfbdbyoU33I0qc6As+LGorzsc1Cu9XbhPEdJIFaAWqyO1ZRhhTSZVeY0a
-        IOsqlwLpRYmiIouMS1pX+ZpO9
-X-Received: by 2002:a05:6402:148d:: with SMTP id e13mr3770685edv.29.1617794735527;
-        Wed, 07 Apr 2021 04:25:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0kZjqz9PTJqFtWE3x1dV8jt1KkESynnl85mNB3EJ6D5KzQ3B0vRO/5Cla0AO3B3t4uiAqUQ==
-X-Received: by 2002:a05:6402:148d:: with SMTP id e13mr3770672edv.29.1617794735409;
-        Wed, 07 Apr 2021 04:25:35 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id la16sm2569695ejb.40.2021.04.07.04.25.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 04:25:35 -0700 (PDT)
-Subject: Re: [PATCH] platform/surface: clean up a variable in
- surface_dtx_read()
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <YF3TgCcpcCYl3a//@mwanda>
- <e614021b-62aa-c879-c324-fc1dc1eec73e@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f621186f-6c24-ff5c-237b-f0cc0fa092f8@redhat.com>
-Date:   Wed, 7 Apr 2021 13:25:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S245740AbhDGL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:26:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245698AbhDGL0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:26:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D30DE6102A;
+        Wed,  7 Apr 2021 11:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617794753;
+        bh=fp9e7C8temPHioHnfMeuShTqKsHUij0RHUo6TqZrCNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ckP6pwJ+dw5GZcDOONZJTO3eldsrYzYtzmpJWlUFJYYiPkWVV5P3gltO1FyyMr4Ha
+         mCUF4kKyPhoRYLKfhzNwA3T4TFSKmJK5IWx13/OcXybWG1/pREvOYr1xoQRsktUZml
+         z4wlxd5MfDC+nFo3f5vOdQX6k19Q5W0yZtECoV/VmdyT21cBR26bWkUU83PsQhr5FX
+         newpyk6G3e39jleTDs2NzyOwRPtiJ9MjJP/kQewANJxZWkhHnRdJspyDoVHVR2TYBS
+         zvAsV9tWufIh0ikwGEl1u6yN0VZO7pqcIOgICoEFYr67fHhGIBGe3gYtDgpGXGQwZy
+         JhbbphEYNBDUw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lU6Jd-0000Sv-Dv; Wed, 07 Apr 2021 13:25:45 +0200
+Date:   Wed, 7 Apr 2021 13:25:45 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Anthony Mallet <anthony.mallet@laas.fr>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] Revert "USB: cdc-acm: fix rounding error in
+ TIOCSSERIAL"
+Message-ID: <YG2WuTPjPhLPR/v7@hovoldconsulting.com>
+References: <20210407102845.32720-1-johan@kernel.org>
+ <20210407102845.32720-2-johan@kernel.org>
+ <24685.37311.759816.776098@gargle.gargle.HOWL>
 MIME-Version: 1.0
-In-Reply-To: <e614021b-62aa-c879-c324-fc1dc1eec73e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24685.37311.759816.776098@gargle.gargle.HOWL>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/26/21 3:06 PM, Maximilian Luz wrote:
-> On 3/26/21 1:28 PM, Dan Carpenter wrote:
->> The "&client->ddev->lock" and "&ddev->lock" are the same thing.  Let's
->> use "&ddev->lock" consistently.
->>
->> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, Apr 07, 2021 at 01:04:31PM +0200, Anthony Mallet wrote:
+> On Wednesday  7 Apr 2021, at 12:28, Johan Hovold wrote:
+> > With HZ=250, the default 0.5 second value of close_delay is converted to
+> > 125 jiffies when set and is converted back to 50 centiseconds by
+> > TIOCGSERIAL as expected (not 12 cs as was claimed).
 > 
-> Good catch, thanks!
+> It was "12" (instead of 50) because the conversion gor TIOCGSERIAL was
+> initially broken, and that was fixed in the previous commit
+> 633e2b2ded739a34bd0fb1d8b5b871f7e489ea29
+
+Right, so this patch is still just broken. The missing jiffies
+conversion had already been added.
+
+> > For completeness: With different default values for these parameters or
+> > with a HZ value not divisible by two, the lack of rounding when setting
+> > the default values in tty_port_init() could result in an -EPERM being
+> > returned, but this is hardly something we need to worry about.
 > 
-> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+> The -EPERM is harmful when a regular user wants to update other
+> members of serial_struct without changing the close delays,
+> e.g. ASYNC_LOW_LATENCY, which is granted to regular users.
 
-Thank you for the review, I've merged this now:
+You're missing the point; -EPERM will *not* be returned -- and this
+patch was never needed.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-> 
->> ---
->>   drivers/platform/surface/surface_dtx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/platform/surface/surface_dtx.c b/drivers/platform/surface/surface_dtx.c
->> index 1fedacf74050..63ce587e79e3 100644
->> --- a/drivers/platform/surface/surface_dtx.c
->> +++ b/drivers/platform/surface/surface_dtx.c
->> @@ -487,7 +487,7 @@ static ssize_t surface_dtx_read(struct file *file, char __user *buf, size_t coun
->>               if (status < 0)
->>                   return status;
->>   -            if (down_read_killable(&client->ddev->lock))
->> +            if (down_read_killable(&ddev->lock))
->>                   return -ERESTARTSYS;
->>                 /* Need to check that we're not shut down again. */
->>
-> 
-
+Johan
