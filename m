@@ -2,163 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FFD357463
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDBE357468
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355349AbhDGScF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S1355356AbhDGSfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhDGScD (ORCPT
+        with ESMTP id S230020AbhDGSfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:32:03 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0864C06175F;
-        Wed,  7 Apr 2021 11:31:53 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id e188so10166049ybb.13;
-        Wed, 07 Apr 2021 11:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kn69rhRMMVrayDs5H+UzYud2Z7b87MPu6OYNo7BSq9A=;
-        b=Q2cgRQjRQoFVUE6O76KGZGQ0T10GT/8WWUQ4aLFIvZB1FdDAVI7p0zTOtKA3w5gmxC
-         GJ9+qEn9Pl6LOQDUOz/2AscK4HGX/1pzTtrWrclrliS9UWu2vetCXRLORs9r1/0BGOll
-         z4+IUGKVMpbbjvfjr/Cer+mqJQIqGPMQaVcF5Wyn9jFeVGrczf9AvISUdu3E3Z08gfCa
-         tqIR2B9NeRkhhNaVWenAAVcYue4UsqlMAHKD8aTXMxbjTHbTowFcZ9tqnt9JmYZmEz7E
-         /9dWXUufoX7o7RKzVcI7hhwlnKcS3T8x6l6I9Z/4vTJoPub06WYZ4jEsnzbDbBkuD1Tm
-         E7bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kn69rhRMMVrayDs5H+UzYud2Z7b87MPu6OYNo7BSq9A=;
-        b=tjp51UgVsUw9dveE7K+1oE+bd3Ctnq4pJWYA80F2s6HXG/IPD6zUI1wBC5aQ09xQ24
-         aLD50NVBF0W3F/VorcOvnLwIkztiN/jne3Yx12u/0sEQvqHKqTmktiD7nHPa3NsoxP65
-         /20f+ukdNa15M93YFwfoPnVJ1HMx/QrnvPkLVFsGUPGRZjdtNURNhdpL0JTJf4xhVUWx
-         lHgurknNNJ8op4EfRYXJqhWG9U7ORFdhNcA1tDZ8ZvY2iBxSA999yUS5tA3dZ4m9U4LV
-         b2A408wYtpDIbCDVr+ciAS6DqKHZ+EJPyVrm4E1sVOfX2d9uVeiorzisCFwp5CfQj4Bz
-         GHmA==
-X-Gm-Message-State: AOAM532eVSixlRrilev70gKpirjFw1UwiE5lI6tmv/ZWNOjEi6qHK1GH
-        kA1uc41GWFfz5BAHqpgFgXp2jQIqm+IdmCtEC1c=
-X-Google-Smtp-Source: ABdhPJwyD46iJ/cTYmc9rpHBrMJfjKJ5VR+417ZI8GKSj4oYvi0t0OHizfMM7YPKvVsq94rSk7oftNhfxDjL2qjXeCo=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr6307629ybo.230.1617820312912;
- Wed, 07 Apr 2021 11:31:52 -0700 (PDT)
+        Wed, 7 Apr 2021 14:35:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0718C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=wxDzh9qlCPHjoFTm6hkUMZ4Kdiz01AiQAJwtq0bC5uA=; b=dMSe2t2Yj/m86xcuOQ1LQRyb1s
+        ggUwWVzcH1w7Y1E3mk6170CJeIw9FIvPRe7e8T8AJetO7q0bxzxD98sm8I5p8/R3y8JgpgMEiPFZI
+        UCzRkg88xnzEpcxH/BeziYxmUUNTgz4brLo8rfGqEXmNE2f8/pzrTAeCFrEI/hu2CF03WLAma2cWd
+        /Afg+vVnoXWwYi7mNe7bfdv+XfnFpyKSuYAz5AzNsPMfPoVRoxRJVMhhFUx8cr3Uw9ZZZlI+lqY3X
+        CSDtrepkdauuZSmVTkcins7pjJjY9cOx/z/Th8sHwFyo6JsG8YmXL8YOVokRRi1X9n45MmUkpOCgM
+        5otQ4LFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUD0T-00Euww-RH; Wed, 07 Apr 2021 18:34:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76E81300056;
+        Wed,  7 Apr 2021 20:34:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5955D2BC07BA8; Wed,  7 Apr 2021 20:34:24 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 20:34:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, joel@joelfernandes.org,
+        chris.hyser@oracle.com, joshdon@google.com, mingo@kernel.org,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Zefan Li <lizefan.x@bytedance.com>
+Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
+Message-ID: <YG37MBLBIXIPVv7u@hirez.programming.kicks-ass.net>
+References: <20210401131012.395311786@infradead.org>
+ <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
+ <YG3i2JF2vBY4CseK@blackbook>
 MIME-Version: 1.0
-References: <20210406185400.377293-1-pctammela@mojatatu.com> <20210406185400.377293-3-pctammela@mojatatu.com>
-In-Reply-To: <20210406185400.377293-3-pctammela@mojatatu.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 11:31:42 -0700
-Message-ID: <CAEf4BzYmj_ZPDq8Zi4dbntboJKRPU2TVopysBNrdd9foHTfLZw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] libbpf: selftests: refactor
- 'BPF_PERCPU_TYPE()' and 'bpf_percpu()' macros
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        David Verbeiren <david.verbeiren@tessares.net>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YG3i2JF2vBY4CseK@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 11:55 AM Pedro Tammela <pctammela@gmail.com> wrote:
->
-> This macro was refactored out of the bpf selftests.
->
-> Since percpu values are rounded up to '8' in the kernel, a careless
-> user in userspace might encounter unexpected values when parsing the
-> output of the batched operations.
+On Wed, Apr 07, 2021 at 06:50:32PM +0200, Michal Koutn=FD wrote:
+> Hello.
+>=20
+> IIUC, the premise is that the tasks that have different cookies imply
+> they would never share a core.
 
-I wonder if a user has to be more careful, though? This
-BPF_PERCPU_TYPE, __bpf_percpu_align and bpf_percpu macros seem to
-create just another opaque layer. It actually seems detrimental to me.
+Correct.
 
-I'd rather emphasize in the documentation (e.g., in
-bpf_map_lookup_elem) that all per-cpu maps are aligning values at 8
-bytes, so user has to make sure that array of values provided to
-bpf_map_lookup_elem() has each element size rounded up to 8.
+> On Thu, Apr 01, 2021 at 03:10:12PM +0200, Peter Zijlstra wrote:
+> > The cgroup interface now uses a 'core_sched' file, which still takes 0,=
+1. It is
+> > however changed such that you can have nested tags. The for any given t=
+ask, the
+> > first parent with a cookie is the effective one. The rationale is that =
+this way
+> > you can delegate subtrees and still allow them some control over groupi=
+ng.
+>=20
+> Given the existence of prctl and clone APIs, I don't see the reason to
+> have a separate cgroup-bound interface too (as argued by Tejun).=20
 
-In practice, I'd recommend users to always use __u64/__s64 when having
-primitive integers in a map (they are not saving anything by using
-int, it just creates an illusion of savings). Well, maybe on 32-bit
-arches they would save a bit of CPU, but not on typical 64-bit
-architectures. As for using structs as values, always mark them as
-__attribute__((aligned(8))).
+IMO as long as cgroups have that tasks file, you get to support people
+using it. That means that tasks joining your cgroup need to 'inherit'
+cgroup properties.
 
-Basically, instead of obscuring the real use some more, let's clarify
-and maybe even provide some examples in documentation?
+That's not something covered by either prctl or clone.
 
->
-> Now that both array and hash maps have support for batched ops in the
-> percpu variant, let's provide a convenient macro to declare percpu map
-> value types.
->
-> Updates the tests to a "reference" usage of the new macro.
->
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> ---
->  tools/lib/bpf/bpf.h                           | 10 ++++
->  tools/testing/selftests/bpf/bpf_util.h        |  7 ---
->  .../bpf/map_tests/htab_map_batch_ops.c        | 48 ++++++++++---------
->  .../selftests/bpf/prog_tests/map_init.c       |  5 +-
->  tools/testing/selftests/bpf/test_maps.c       | 16 ++++---
->  5 files changed, 46 insertions(+), 40 deletions(-)
->
+> The potential speciality is the possibility to re-tag whole groups of
+> processes at runtime (but the listed use cases [1] don't require that
+> and it's not such a good idea given its asynchronicity).
 
-[...]
+That seems to be the implication of having that tasks file. Tasks can
+join a cgroup, so you get to deal with that.
 
-> @@ -400,11 +402,11 @@ static void test_arraymap(unsigned int task, void *data)
->  static void test_arraymap_percpu(unsigned int task, void *data)
->  {
->         unsigned int nr_cpus = bpf_num_possible_cpus();
-> -       BPF_DECLARE_PERCPU(long, values);
-> +       pcpu_map_value_t values[nr_cpus];
->         int key, next_key, fd, i;
->
->         fd = bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
-> -                           sizeof(bpf_percpu(values, 0)), 2, 0);
-> +                           sizeof(long), 2, 0);
->         if (fd < 0) {
->                 printf("Failed to create arraymap '%s'!\n", strerror(errno));
->                 exit(1);
-> @@ -459,7 +461,7 @@ static void test_arraymap_percpu(unsigned int task, void *data)
->  static void test_arraymap_percpu_many_keys(void)
->  {
->         unsigned int nr_cpus = bpf_num_possible_cpus();
+You can't just say, don't do that then.
 
-This just sets a bad example for anyone using selftests as an
-aspiration for their own code. bpf_num_possible_cpus() does exit(1)
-internally if libbpf_num_possible_cpus() returns error. No one should
-write real production code like that. So maybe let's provide a better
-example instead with error handling and malloc (or perhaps alloca)?
+> Also, I would find useful some more explanation how the hierarchical
+> behavior is supposed to work. In my understanding the task is either
+> allowed to request its own isolation or not. The cgroups could be used
+> to restrict this privilege, however, that doesn't seem to be the case
+> here.
 
-> -       BPF_DECLARE_PERCPU(long, values);
-> +       pcpu_map_value_t values[nr_cpus];
->         /* nr_keys is not too large otherwise the test stresses percpu
->          * allocator more than anything else
->          */
-> @@ -467,7 +469,7 @@ static void test_arraymap_percpu_many_keys(void)
->         int key, fd, i;
->
->         fd = bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
-> -                           sizeof(bpf_percpu(values, 0)), nr_keys, 0);
-> +                           sizeof(long), nr_keys, 0);
->         if (fd < 0) {
->                 printf("Failed to create per-cpu arraymap '%s'!\n",
->                        strerror(errno));
-> --
-> 2.25.1
->
+Given something like:
+
+	R
+       / \
+      A   B
+         / \
+	C   D
+
+B group can set core_sched=3D1 and then all its (and its decendants) tasks
+get to have the same (group) cookie and cannot share with others.
+
+If however B is a delegate and has a subgroup D that is security
+sensitive and must not share core resources with the rest of B, then it
+can also set D.core_sched=3D1, such that D (and its decendants) will have
+another (group) cookie.
+
+On top of this, say C has a Real-Time tasks, that wants to limit SMT
+interference, then it can set a (task/prctl) cookie on itself, such that
+it will not share the core with the rest of the tasks of B.
+
+
+In that scenario the D subtree is a restriction (doesn't share) with the
+B subtree.
+
+And all of B is a restriction on all its tasks, including the Real-Time
+task that set a task cookie, in that none of them can share with tasks
+outside of B (including system tasks which are in R), irrespective of
+what they do with their task cookie.
+
