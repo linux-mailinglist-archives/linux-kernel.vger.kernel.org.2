@@ -2,135 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CA4356AC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5BC356B00
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351745AbhDGLE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:04:26 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:56250 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351781AbhDGLEV (ORCPT
+        id S243314AbhDGLUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236366AbhDGLUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:04:21 -0400
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 137B3t0L024427;
-        Wed, 7 Apr 2021 20:03:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137B3t0L024427
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617793436;
-        bh=FpQlEZxI5UBjZfh486NBfPjf7fVd6igI2DJa+H+guV4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UmAuuNQwM3avYafqnciKMZ7TQ4gF8L3tEIZTvTsccyPNXbktnGdEEQ95/OVA0pw/l
-         XuFKsrcRsvv89AsSQQFiCme7gTM+SWYGzRmtF/kwD3wKStzqCTZPIP3ik8XAV657+S
-         IzgkYlTPMevnsuKQVZTSJ51Hyt6/6JC+V4eL7Vwv/Z1i5JK5bBPzaaWoUXxyCGib7G
-         eHjgeFz6mL/aMCyEba100/kHIYDU0wl74OHoXlFTZYmmGvoKS9trAjURlZIfx15Vwn
-         F+X0uT5H0yO/idrUKDoUSQ4psaI2JY7pB4J+eE2lEmz+v70kbKTRqEmR6WcdrCq0Y+
-         8u0RPaQfW5klA==
-X-Nifty-SrcIP: [209.85.210.177]
-Received: by mail-pf1-f177.google.com with SMTP id c204so8885292pfc.4;
-        Wed, 07 Apr 2021 04:03:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530+XjWYu+QeF+prXrOq5AMKdnX8uyoHaE0EBHZPMWfPjdI8FcTB
-        LceZC3Z+0uptufk1HLUDHhHl70+K1CwyV+DlcC4=
-X-Google-Smtp-Source: ABdhPJwcKEp1tbeLhACK+LXIrQD4xvOVABt2bhyKSxt5NPEmlLsUX6lRIKbqoRPAL1F5SfWYFk85T6FQdqPdDDEYlcU=
-X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
- c20-20020aa788140000b029021dd2ce07bemr2305518pfo.80.1617793435008; Wed, 07
- Apr 2021 04:03:55 -0700 (PDT)
+        Wed, 7 Apr 2021 07:20:35 -0400
+X-Greylist: delayed 924 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Apr 2021 04:20:25 PDT
+Received: from laas.laas.fr (laas.laas.fr [IPv6:2001:660:6602:4::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBB5C061756;
+        Wed,  7 Apr 2021 04:20:19 -0700 (PDT)
+Received: from cactus.useless-ficus.net (useless-ficus.net [IPv6:2001:470:7ffe:0:0:0:0:cafe])
+        (authenticated bits=0)
+        by laas.laas.fr (8.16.0.45/8.16.0.29) with ESMTPSA id 137B4YJO028770
+        (version=TLSv1.3 cipher=AEAD-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 7 Apr 2021 13:04:40 +0200 (CEST)
+Received: from ficus.useless-ficus.net (ficus.useless-ficus.net [IPv6:2001:470:7ffe:1::1])
+        by cactus.useless-ficus.net (Postfix) with ESMTP id EAA6A9F;
+        Wed,  7 Apr 2021 13:04:31 +0200 (CEST)
+        (envelope-from anthony.mallet@laas.fr)
+Received: by ficus.useless-ficus.net (Postfix, from userid 1001)
+        id C6DF3605557; Wed,  7 Apr 2021 13:04:31 +0200 (CEST)
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-5-gregkh@linuxfoundation.org>
-In-Reply-To: <20210407053419.449796-5-gregkh@linuxfoundation.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 20:03:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ4ar1gM1+08EXUZYHvt38Bt_D+NZdhRyH8hfjecw2vEg@mail.gmail.com>
-Message-ID: <CAK7LNAQ4ar1gM1+08EXUZYHvt38Bt_D+NZdhRyH8hfjecw2vEg@mail.gmail.com>
-Subject: Re: [PATCH 04/20] kbuild: scripts/install.sh: call sync before
- calling the bootloader installer
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <24685.37311.759816.776098@gargle.gargle.HOWL>
+Date:   Wed, 7 Apr 2021 13:04:31 +0200
+From:   Anthony Mallet <anthony.mallet@laas.fr>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH 1/3] Revert "USB: cdc-acm: fix rounding error in TIOCSSERIAL"
+In-Reply-To: <20210407102845.32720-2-johan@kernel.org>
+References: <20210407102845.32720-1-johan@kernel.org>
+        <20210407102845.32720-2-johan@kernel.org>
+X-Mailer: VM 8.2.0b under 26.3 (x86_64--netbsd)
+Organization: LAAS/CNRS - Toulouse - France
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> It's good to ensure that the files are written out before calling the
-> bootloader installer, as other architectures do, so call sync after
-> doing the copying of the kernel and system map files.
+On Wednesday  7 Apr 2021, at 12:28, Johan Hovold wrote:
+> With HZ=250, the default 0.5 second value of close_delay is converted to
+> 125 jiffies when set and is converted back to 50 centiseconds by
+> TIOCGSERIAL as expected (not 12 cs as was claimed).
 
+It was "12" (instead of 50) because the conversion gor TIOCGSERIAL was
+initially broken, and that was fixed in the previous commit
+633e2b2ded739a34bd0fb1d8b5b871f7e489ea29
 
-I see 3 architectures that call 'sync' from install.sh
+> For completeness: With different default values for these parameters or
+> with a HZ value not divisible by two, the lack of rounding when setting
+> the default values in tty_port_init() could result in an -EPERM being
+> returned, but this is hardly something we need to worry about.
 
-masahiro@grover:~/ref/linux$ find . -name install.sh  | xargs grep sync
-./arch/nios2/boot/install.sh:sync
-./arch/x86/boot/install.sh:       sync
-./arch/m68k/install.sh:sync
+The -EPERM is harmful when a regular user wants to update other
+members of serial_struct without changing the close delays,
+e.g. ASYNC_LOW_LATENCY, which is granted to regular users.
 
-
-As for nios2 and m68k, they do not call
-any bootloader-specific setups.
-
-
-
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  scripts/install.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/install.sh b/scripts/install.sh
-> index af36c0a82f01..92d0d2ade414 100644
-> --- a/scripts/install.sh
-> +++ b/scripts/install.sh
-> @@ -52,12 +52,12 @@ if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
->  # Default install - same as make zlilo
->  install "$2" "$4"/vmlinuz
->  install "$3" "$4"/System.map
-> +sync
->
->  if [ -x /sbin/lilo ]; then
->         /sbin/lilo
->  elif [ -x /etc/lilo/install ]; then
->         /etc/lilo/install
->  else
-> -       sync
->         echo "Cannot find LILO."
->  fi
-> --
-> 2.31.1
->
-
-Why do we need 'sync' before lilo invocation?
-
-
-
-If you want to ensure everything is flushed
-to a disk before this scripts exits,
-adding 'sync' at the end of the script
-makes more sense, in my opinion.
-
-
-
-   if [ -x /sbin/lilo ]; then
-          /sbin/lilo
-   elif [ -x /etc/lilo/install ]; then
-          /etc/lilo/install
-   else
-         echo "Cannot find LILO."
-   fi
-
-   sync
-
-
-
-
-This goes aligned with nios2 and m68k.
-
-
-
---
-Best Regards
-
-Masahiro Yamada
+Best,
+Anthony
