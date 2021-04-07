@@ -2,86 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604CE3560A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C5B3560A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242964AbhDGBRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhDGBRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:17:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8931613B8;
-        Wed,  7 Apr 2021 01:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617758222;
-        bh=zBigBeAVRRnBSblYtyRYt/CjlLIZ5EhRSivRJQIiig8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XA1UVdnGqPBxjfLV2XYA+Kk5KAJ5EurEyTpCNRhO3Z95dJbmGsdSpaKVBW4AnJH2G
-         FPgD++bew9rlYPSH+I3syHrrtf7pTv2RvdcntSYqN2j/Wx++MHVUljAhCdadv43PvY
-         /iwplBLrge0V3i4xzT2e8vv00eP4iSzoLGDCAvkOLiMUUHDi76Ks4qrBKwB2jxyuoE
-         a3h0XgAnHi43gS+/yhqUJwNPwopGPpVEGClI/1BavxhVoGCM3Tx7P6gFAbERd/mtwi
-         g+PKj3CyaAfqNEhUD5lVaMsj8OWfG2Y4gJhJsrufQBSw+2/ZuntuTaln69fi9aTKDw
-         gfz7dnR5Rpw3Q==
-Received: by mail-ed1-f49.google.com with SMTP id dd20so11553525edb.12;
-        Tue, 06 Apr 2021 18:17:01 -0700 (PDT)
-X-Gm-Message-State: AOAM532MEa0sm4EtZro/l/JaYRz8lOb8K+jb+LCsfkXv7dhkmzr1E2rU
-        EWZM96SIl1LcJKy+KPtHHIEfrlijr0Z9kN2k2g==
-X-Google-Smtp-Source: ABdhPJx7e0RDh+oY28QS2hpRLsqDzP7gWN95sa8k6OGQYV4Y9wj+aweFDC2W6/enfc0eeSHbRjLltO2gK/q2hwAQ0JM=
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr1392400edb.62.1617758220158;
- Tue, 06 Apr 2021 18:17:00 -0700 (PDT)
+        id S234158AbhDGBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhDGBX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 21:23:58 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E38C06174A;
+        Tue,  6 Apr 2021 18:23:49 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id h25so11789981pgm.3;
+        Tue, 06 Apr 2021 18:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6KvFpjitWE2M71REdtEXIgBjJz1CwbeZTnbvXxt51AQ=;
+        b=D4tkcUpI9qx5koPGyD4RUbTMcgdcD+9c8ADP6ykzCOVV1HCLfJQ6D2iFofpGVPcQQk
+         5S1Hf7iIQ0ruOxa0tynVE6lzFa3o2IzZ0dxI18hSp/QZSgC0GoiQXWTKJyMZKpbTW3O1
+         9ffdmQiTm9H0ESsvkmk62Iq721Yh0+EyIDjmACNyWe5TdEjDdGiX81GMIZRHT0aCWsPz
+         w1zn1sxaX5rR0QhHMpUc4fFUfMjKdrXWBOh2xsVt9hXNKKVqIehfDIE53e8QwpYVpacT
+         xzwSs+3q7/90aElFIwPipZ4fEl45WRvIyJSLN4cpPJgbGUY/FZ/cMiY8qxYDEBczoRKF
+         dCZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6KvFpjitWE2M71REdtEXIgBjJz1CwbeZTnbvXxt51AQ=;
+        b=cMabC5P9rPEw2SW4WUJWA874mHwgoc46lurRrqC2ndcPJbuKmcL8pe9+0ESbuz2Adr
+         SDLawIS6mS9MuYY8jffV/cp6wwAvFOm1G2KtzRtO9OPipcqyhvmtwJY+AJTV/7wCbQ3D
+         oVfzw1n7RJEWhbGasyAjtdCFmBb2eb4sudYSSIH7DnkJjLJsQhB9rgFfFWoQDa0nU4AE
+         TxmdeFzQx6hahVGxJgwnk99GWCIca2l3gTfTsIgBDO8+3oc3nrggcYATcpEu3/cd8eCM
+         gcO1bsKaVURUq8+JmzLeC9K7+grL9Utp78QmJCYy8eiCPMuO9jNsoSsmaGOkoQG6NyXJ
+         bvGw==
+X-Gm-Message-State: AOAM530V73VaW4MPDB94qsgDYNi2LvGvH57YVyLO/+ONeB3x4rxmW/H5
+        jd6GkhZ19JxpeoY1vwSYzIg=
+X-Google-Smtp-Source: ABdhPJybi/R6FL+dQhERuz2JkHwBysW1ib9wOcdjZ8nfxF3HceaeJEjhqEec2GuFbCWTnFPjUuiSDQ==
+X-Received: by 2002:a62:76cf:0:b029:241:ba8d:eac1 with SMTP id r198-20020a6276cf0000b0290241ba8deac1mr836749pfc.71.1617758629188;
+        Tue, 06 Apr 2021 18:23:49 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:5a8:9f08:98f1:7659])
+        by smtp.gmail.com with ESMTPSA id t16sm89596pfc.94.2021.04.06.18.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 18:23:48 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 6 Apr 2021 18:23:46 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YG0JouWqrJPHbpqz@google.com>
+References: <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGtDzH0dEfEngCij@google.com>
+ <20210405190023.GX4332@42.do-not-panic.com>
+ <YGtrzXYDiO3Gf9Aa@google.com>
+ <20210406002909.GY4332@42.do-not-panic.com>
 MIME-Version: 1.0
-References: <20210402192054.7934-1-dariobin@libero.it> <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
- <1727466283.11523.1617746554330@mail1.libero.it>
-In-Reply-To: <1727466283.11523.1617746554330@mail1.libero.it>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 6 Apr 2021 20:16:48 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLd+BxW9T99Sx9vgEkxdbMFe+tL7X_nZ7ExvRxVd_9GNQ@mail.gmail.com>
-Message-ID: <CAL_JsqLd+BxW9T99Sx9vgEkxdbMFe+tL7X_nZ7ExvRxVd_9GNQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406002909.GY4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 5:02 PM Dario Binacchi <dariobin@libero.it> wrote:
->
->
-> > Il 06/04/2021 16:06 Rob Herring <robh+dt@kernel.org> ha scritto:
-> >
-> >
-> > On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
-> > >
-> > >
-> > > The series comes from my commit in U-boot
-> > > d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
-> > > and from the subsequent exchange of emails at the end of which I was
-> > > suggested to send the patch to the linux kernel
-> > > (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
-> >
-> > It's 'ranges' that determines translatable which is missing from the
-> > DT. This should have not had a 0 size either though maybe we could
-> > support that.
->
-> I have replied to the email you sent to the u-boot mailing list
->
-> >
-> > Does the DT have to be updated anyways for your spread spectrum support?
->
-> The spread spectrum support patch does not need this patch to work. They belong
-> to two different series.
+On Tue, Apr 06, 2021 at 12:29:09AM +0000, Luis Chamberlain wrote:
+> On Mon, Apr 05, 2021 at 12:58:05PM -0700, Minchan Kim wrote:
+> > On Mon, Apr 05, 2021 at 07:00:23PM +0000, Luis Chamberlain wrote:
+> > > On Mon, Apr 05, 2021 at 10:07:24AM -0700, Minchan Kim wrote:
+> > > > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> > > > > And come to think of it the last patch I had sent with a new
+> > > > > DECLARE_RWSEM(zram_unload) also has this same issue making most
+> > > > > sysfs attributes rather fragile.
+> > > > 
+> > > > Thanks for looking the way. I agree the single zram_index_rwlock is
+> > > > not the right approach to fix it. However, I still hope we find more
+> > > > generic solution to fix them at once since I see it's zram instance
+> > > > racing problem.
+> > > 
+> > > They are 3 separate different problems. Related, but different.
+> > 
+> > What are 3 different problems? I am asking since I remember only two:
+> > one for CPU multistate and the other one for sysfs during rmmod.
+> 
+> The third one is the race to use sysfs attributes and those routines
+> then derefernece th egendisk private_data.
 
-That's not what I asked. Is the spread spectrum support forcing a DT
-update for users? If the DT has to be changed anyways (not really
-great policy), then you could fix this in the DT at the same time.
+First of all, thanks for keeping discussion, Luis.
 
-Rob
+That was the one I thought race between sysfs and during rmmod.
+
+> 
+> > > If the idea then is to busy out rmmod if a sysfs attribute is being
+> > > read, that could then mean rmmod can sometimes never complete. Hogging
+> > > up / busying out sysfs attributes means the module cannto be removed.
+> > 
+> > It's true but is it a big problem? There are many cases that system
+> > just return error if it's busy and rely on the admin. IMHO, rmmod should
+> > be part of them.
+> 
+> It depends on existing userspace scripts which are used to test and
+> expectations set. Consider existing tests, you would know better, and
+> since you are the maintainer you decide.
+> 
+> I at least know for many other types of device drivers an rmmod is
+> a sledge hammer.
+> 
+> You decide. I just thought it would be good to highlight the effect now
+> rather than us considering it later.
+
+To me, the rmmod faillure is not a big problem for zram since it's
+common cases in the system with -EBUSY(Having said, I agree that's the
+best if we could avoid the fail-and-retrial. IOW, -EBUSY should be
+last resort unless we have nicer way.)
+
+> 
+> > > Which is why the *try_module_get()* I think is much more suitable, as
+> > > it will always fails if we're already going down.
+> > 
+> > How does the try_module_get solved the problem?
+> 
+> The try stuff only resolves the deadlock. The bget() / bdput() resolves
+> the race to access to the gendisk private_data.
+
+That's the one I missed in this discussion. Now I am reading your [2/2]
+in original patch. I thought it was just zram instance was destroyed
+by sysfs race problem so you had seen the deadlock. I might miss the
+point here, too. 
+
+Hmm, we are discussing several problems all at once. I feel it's time
+to jump v2 with your way in this point. You said three different
+problems. As I asked, please write it down with more detail with
+code sequence as we discussed other thread. If you mean a deadlock,
+please write what specific locks was deadlock with it.
+It would make discussion much easier. Let's discuss the issue
+one by one in each thread.
+
+> 
+> > > > I see one of the problems is how I could make new zram object's
+> > > > attribute group for zram knobs under /sys/block/zram0 since block
+> > > > layer already made zram0 kobject via device_add_disk.
+> > > 
+> > > Right.. well the syfs attribute races uncovered here actually do
+> > > apply to any block driver as well. And which is why I was aiming
+> > > for something generic if possible.
+> > 
+> > It would be great but that's not the one we have atm so want to
+> > proceed to fix anyway.
+> 
+> What is not the one we have atm? I *do* have a proposed generic solution
+> for 2/3 issues we have been disussing:
+> 
+>  a) deadlock on sysfs access
+
+This is the one I didn't understand.
+
+>  b) gendisk private_data race
+
+Yub.
+
+> 
+> But so far Greg does not see enough justification for a), so we can either
+> show how wider this issue is (which I can do using coccinelle), or we
+> just open code the try_module_get() / put on each driver that needs it
+> for now. Either way it would resolve the issue.
+
+I second if it's general problem for drivers, I agree it's worth to
+addresss in the core unless the driver introduce the mess. I have
+no idea here since I didn't understand the problem, yet.
+
+> 
+> As for b), given that I think even you had missed my attempt to
+> generialzie the bdget/bdput solution for any attribute type (did you see
+> my dev_type_get() and dev_type_put() proposed changes?), I don't think
+> this problem is yet well defined in a generic way for us to rule it out.
+> It is however easier to simply open code this per driver that needs it
+> for now given that I don't think Greg is yet convinced the deadlock is
+> yet a widespread issue. I however am pretty sure both races races *do*
+> exist outside of zram in many places.
+
+It would be good sign to propose general solution.
+
+> 
+> > > I am not sure if you missed the last hunks of the generic solution,
+> > > but that would resolve the issue you noted. Here is the same approach
+> > > but in a non-generic solution, specific to just one attribute so far
+> > > and to zram:
+> > 
+> > So idea is refcount of the block_device's inode 
+> 
+> Yes that itself prevents races against the gendisk private_data from
+> being invalid. Why because a bdget() would not be successful after
+> del_gendisk():
+> 
+> del_gendisk() --> invalidate_partition() --> __invalidate_device() --> invalidate_inodes()
+> 
+> > and module_exit path
+> > checks also the inode refcount to make rmmod failure?
+> 
+> They try_module_get() approach resolves the deadlock race, but it does
+> so in a lazy way. I mean lazy in that then rmmod wins over sysfs knobs.
+> So touching sysfs knobs won't make an rmmod fail. I think that's more
+> typical expected behaviour. Why? Because I find it odd that looping
+> forever touching sysfs attributes should prevent a module removal. But
+> that's a personal preference.
+
+I agree with you that would be better but let's see how it could go
+clean.
+
+FYI, please look at hot_remove_store which also can remove zram
+instance on demand. I am looking forward to seeing your v2.
+
+Thanks for your patience, Luis.
