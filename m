@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432C235749C
+	by mail.lfdr.de (Postfix) with ESMTP id 8C36235749D
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355451AbhDGSzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        id S1355459AbhDGSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235874AbhDGSzO (ORCPT
+        with ESMTP id S1348624AbhDGSzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:55:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DA3C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:55:04 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v6so24785747ybk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:55:04 -0700 (PDT)
+        Wed, 7 Apr 2021 14:55:16 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62F2C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:55:06 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w8so12375447qtk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=/gR9Ty4JZXDPsNPdLjznxvXioeerIHzHsL4Fen6xU1U=;
-        b=kJ22aMNQIfFXGVMQiKwfbQW3A8aS4n5OKTXXtKoy2tOtKbZ5sveNWwXkW41JRZ1+2I
-         P13YGxxyK+57NNHrszU/vP1yleMjLLDk3bW1VEAdo6X6v8iqysIGAG7AdkrssBHdHQBo
-         XHYZhCKlY78qBBUwIIuVsOAxavnwdZoPmOBmyBkapOEmcEfnxiwxlEIjLOgv10UBHAEz
-         UocGhah+miptm6iW/OQbdxMXbVF1RUwO511bHCbpdT6R5nz3QWP51rlgWVeJv6w0PkIz
-         h1VyApQQ8i0OOkV905dB8upSt0ykYhk9v1oZd9l11Pdp4m6VmpU+iJlpyTgHM5pO6P95
-         MeJA==
+        bh=732FuhF+yEqhx0MeVArWdFACqgUAoeDTQ99xUhtV4rU=;
+        b=QvouwaN6YG/qoHUB8Qeyewtdqkqa2Q/dqDmCniod80CGN/jSvsW1xVnUOU1puMaSft
+         OxNQKCSZDFmxAMbbHvakSmso29sjPHGxswRxhyXrVaFpi2GsA90DIv0X10IsWuc9bOGM
+         /5SWJ63q1fNgrMpR3Z7kfhIB2GfUIzTT6uRUCGWnU/yYzhDMFVgvqRP5HRSNO9DdtbVC
+         RH/+1Aq4tDpwSc56dfh/9P67azz3eS6I16zBozk1FaOJmkSVLxLAN5YDzTzJRKHCOFUB
+         2V5uBAmdHIyF/gZoPMJzMzvRSgs2d4TgkQwR5ZberTfZLkcaEOjp20TAVqiasVKwiX8/
+         vP6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=/gR9Ty4JZXDPsNPdLjznxvXioeerIHzHsL4Fen6xU1U=;
-        b=pPLSMhprtjcRQejRMC5HVY1/s4iNnfTaA9KaXB5172Yyt+QbnfiQwVv75oM8pya18N
-         iWlZ1HGWoXsbWtNqlCa4eskEvgQPTSqigdHo6XqgZJHisN0rcyQuk+agbD4YoYp6G8Lo
-         osclp4aHDsP0XFfFc8jyCjn0wbtYLepGeOFTkcTSHSQwDPlhXuyPHZLTxEOtLGSrJRa/
-         r65TNtvc50IoRE4Z7kTluH/jNyPberjRqoovqJ19ncXywS2coAKGEI9w5x6ojk/IbRFZ
-         EYM/J1exg0eaQyJfXtEWJhTlPgSiDDsXhefACYYAWWx9MgjdL2/2JqmQ/S49INdn0Lk/
-         6b0A==
-X-Gm-Message-State: AOAM532X08uhiIKHIUybOCivi/Sx3Tjls1oyuE2NHj1VnzCb7OJx7yet
-        2ofGHcpl87q0Ngbn0HR074Rl/CZFJ0iyJ0QZYkM=
-X-Google-Smtp-Source: ABdhPJwPMNy6IRcmExulR9MCR1vcQCNmfIHGc9HGamIK0SxX/x86lIIw/i0JtpjrWuCRXIPe2t60eNGwb5/pn+f5RhM=
+        bh=732FuhF+yEqhx0MeVArWdFACqgUAoeDTQ99xUhtV4rU=;
+        b=Sc0DcXqlv+QxFCE2qbyisWfv4XYX9VgfY04erNg0lvfBgviNereIdlGVOsa13zZWa4
+         cll5twM/uBOrIMGP6RsaLTKqsQ394WX7Vw1zubXpMmet43AWQBFybRhCtnRHis+gfM8x
+         NoqLi260rJ9UDLhSEQJvrZWRVvFpqdOBdYBmztYwvcogeN9VZfo5Nn1LyNI/R+688nBp
+         wBurt5VdPoaVzJfMyW5UC6N0iqxMq+3PfZdY085sKdt9KdqfCFvNDZjIhqUyExVp9TPj
+         AqycWLcJMmlsdzSIMfWxzhFmC5y9uJRuGlwZEe1+GfaFP1RYdCgvh6YBO1rxSuykgPAt
+         HKOg==
+X-Gm-Message-State: AOAM531sRKY8du0dYkbdoG76wwVxjvvpzi0Zbw8q5MdHmsek7O4P+u94
+        oC1vQCa3iHF+5xQgr1EjXtMFT/GFKqNo06SVuGY=
+X-Google-Smtp-Source: ABdhPJx+MwaWLhazSCXDyW0uPMVFfTmpoZ39SGpls22P89Am1HbnFr+5NI+sxrG4NG2cTV3NnJ6YFlFhasuxDhGps/g=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:c454:8587:ce1c:e900])
- (user=ndesaulniers job=sendgmr) by 2002:a25:9108:: with SMTP id
- v8mr6177944ybl.460.1617821704165; Wed, 07 Apr 2021 11:55:04 -0700 (PDT)
-Date:   Wed,  7 Apr 2021 11:54:55 -0700
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:a404:: with SMTP id
+ w4mr4975968qvw.45.1617821705987; Wed, 07 Apr 2021 11:55:05 -0700 (PDT)
+Date:   Wed,  7 Apr 2021 11:54:56 -0700
 In-Reply-To: <20210407185456.41943-1-ndesaulniers@google.com>
-Message-Id: <20210407185456.41943-2-ndesaulniers@google.com>
+Message-Id: <20210407185456.41943-3-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20210407185456.41943-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH 1/2] gcov: re-fix clang-11+ support
+Subject: [PATCH 2/2] gcov: re-drop support for clang-10
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Peter Oberparleiter <oberpar@linux.ibm.com>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -59,126 +59,107 @@ Cc:     Nathan Chancellor <nathan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Fangrui Song <maskray@google.com>,
         Prasad Sodagudi <psodagud@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM changed the expected function signature for
-llvm_gcda_emit_function() in the clang-11 release.  Users of clang-11 or
-newer may have noticed their kernels producing invalid coverage
-information:
+LLVM changed the expected function signatures for
+llvm_gcda_emit_function() in the clang-11 release.  Drop the older
+implementations and require folks to upgrade their compiler if they're
+interested in GCOV support.
 
-$ llvm-cov gcov -a -c -u -f -b <input>.gcda -- gcno=<input>.gcno
-1 <func>: checksum mismatch, \
-  (<lineno chksum A>, <cfg chksum B>) != (<lineno chksum A>, <cfg chksum C>)
-2 Invalid .gcda File!
-...
-
-Fix up the function signatures so calling this function interprets its
-parameters correctly and computes the correct cfg checksum. In
-particular, in clang-11, the additional checksum is no longer optional.
-
-Link: https://reviews.llvm.org/rG25544ce2df0daa4304c07e64b9c8b0f7df60c11d
-Cc: stable@vger.kernel.org #5.4+
-Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
-Tested-by: Prasad Sodagudi <psodagud@quicinc.com>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- kernel/gcov/clang.c | 38 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+ kernel/gcov/clang.c | 40 ----------------------------------------
+ 1 file changed, 40 deletions(-)
 
 diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-index d41f5ecda9db..1747204541bf 100644
+index 1747204541bf..78c4dc751080 100644
 --- a/kernel/gcov/clang.c
 +++ b/kernel/gcov/clang.c
-@@ -69,7 +69,9 @@ struct gcov_fn_info {
+@@ -69,9 +69,6 @@ struct gcov_fn_info {
  
  	u32 ident;
  	u32 checksum;
-+#if CONFIG_CLANG_VERSION < 110000
- 	u8 use_extra_checksum;
-+#endif
+-#if CONFIG_CLANG_VERSION < 110000
+-	u8 use_extra_checksum;
+-#endif
  	u32 cfg_checksum;
  
  	u32 num_counters;
-@@ -111,6 +113,7 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
+@@ -113,23 +110,6 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
  }
  EXPORT_SYMBOL(llvm_gcda_start_file);
  
-+#if CONFIG_CLANG_VERSION < 110000
- void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
- 		u8 use_extra_checksum, u32 cfg_checksum)
+-#if CONFIG_CLANG_VERSION < 110000
+-void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
+-		u8 use_extra_checksum, u32 cfg_checksum)
+-{
+-	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
+-
+-	if (!info)
+-		return;
+-
+-	INIT_LIST_HEAD(&info->head);
+-	info->ident = ident;
+-	info->checksum = func_checksum;
+-	info->use_extra_checksum = use_extra_checksum;
+-	info->cfg_checksum = cfg_checksum;
+-	list_add_tail(&info->head, &current_info->functions);
+-}
+-#else
+ void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
  {
-@@ -126,6 +129,21 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
+ 	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
+@@ -143,7 +123,6 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
  	info->cfg_checksum = cfg_checksum;
  	list_add_tail(&info->head, &current_info->functions);
  }
-+#else
-+void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
-+{
-+	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-+
-+	if (!info)
-+		return;
-+
-+	INIT_LIST_HEAD(&info->head);
-+	info->ident = ident;
-+	info->checksum = func_checksum;
-+	info->cfg_checksum = cfg_checksum;
-+	list_add_tail(&info->head, &current_info->functions);
-+}
-+#endif
+-#endif
  EXPORT_SYMBOL(llvm_gcda_emit_function);
  
  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
-@@ -256,11 +274,16 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
+@@ -274,16 +253,8 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
  		!list_is_last(&fn_ptr2->head, &info2->functions)) {
  		if (fn_ptr1->checksum != fn_ptr2->checksum)
  			return false;
-+#if CONFIG_CLANG_VERSION < 110000
- 		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
+-#if CONFIG_CLANG_VERSION < 110000
+-		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
+-			return false;
+-		if (fn_ptr1->use_extra_checksum &&
+-			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
+-			return false;
+-#else
+ 		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
  			return false;
- 		if (fn_ptr1->use_extra_checksum &&
- 			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
- 			return false;
-+#else
-+		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
-+			return false;
-+#endif
+-#endif
  		fn_ptr1 = list_next_entry(fn_ptr1, head);
  		fn_ptr2 = list_next_entry(fn_ptr2, head);
  	}
-@@ -378,17 +401,22 @@ size_t convert_to_gcda(char *buffer, struct gcov_info *info)
- 
- 	list_for_each_entry(fi_ptr, &info->functions, head) {
+@@ -403,21 +374,10 @@ size_t convert_to_gcda(char *buffer, struct gcov_info *info)
  		u32 i;
--		u32 len = 2;
--
--		if (fi_ptr->use_extra_checksum)
--			len++;
  
  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
--		pos += store_gcov_u32(buffer, pos, len);
-+#if CONFIG_CLANG_VERSION < 110000
-+		pos += store_gcov_u32(buffer, pos,
-+			fi_ptr->use_extra_checksum ? 3 : 2);
-+#else
-+		pos += store_gcov_u32(buffer, pos, 3);
-+#endif
+-#if CONFIG_CLANG_VERSION < 110000
+-		pos += store_gcov_u32(buffer, pos,
+-			fi_ptr->use_extra_checksum ? 3 : 2);
+-#else
+ 		pos += store_gcov_u32(buffer, pos, 3);
+-#endif
  		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
  		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
-+#if CONFIG_CLANG_VERSION < 110000
- 		if (fi_ptr->use_extra_checksum)
- 			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-+#else
-+		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-+#endif
- 
+-#if CONFIG_CLANG_VERSION < 110000
+-		if (fi_ptr->use_extra_checksum)
+-			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
+-#else
+ 		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
+-#endif
+-
  		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
  		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
+ 		for (i = 0; i < fi_ptr->num_counters; i++)
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
