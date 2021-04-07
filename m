@@ -2,143 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6243E356F8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5971356F87
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353247AbhDGO7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353220AbhDGO7q (ORCPT
+        id S1353225AbhDGO7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:59:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5330 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345747AbhDGO7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:59:46 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBAEC061756;
-        Wed,  7 Apr 2021 07:59:36 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t22so6111827pgu.0;
-        Wed, 07 Apr 2021 07:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r/d1grSpme2mQqHlJWH4I0IMbDUguqI3gCUkY5Nr1Q4=;
-        b=fYy1lWNPXiQ+yb67ebJZu+8zEC+h0pBnsXArakBNChEkh6CjoRMYl72lknBCAuRuX2
-         jxuH9EpzzGDSCJWIUX2Ng7q0y9vsIP4Zr+Ek6u4yFt20hudhezjO5DOYAIxN+UZB5hMM
-         FswWwQr3PpOF1lHlMFl2SjtB1/0Fx4MrlsWZAZT4dZpOxE8in8RosRGUfdrKX/M6x4Fq
-         inZiwEl3DvszVRA5j32WLhIZYUUNpVuXdnve6hiU7XgFQUrk2IG/GFnBcXcqK58X9Wrd
-         bbLLNR2m9dcbokFkoo+uH9b1jOTr6jOD6OdvmDZN/EImsXC0vxwvNHIMR6Dr2vU22cdq
-         YTtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r/d1grSpme2mQqHlJWH4I0IMbDUguqI3gCUkY5Nr1Q4=;
-        b=CwV4SfJ5T9ynaA7+mggevnUvClo01FL40NS8lBx81l2cq+igOxHk0kGZlbIVC9/ISG
-         EyWuAbQ8gpCwbEEb52k8OYYKhn4x4xEV3rqw3MLC7bOyB6ZHKA9OqxJMDHz60j1dTRQj
-         PLYAv/JR5AX65zn2RuOcIkVMjwMyOGbuw0/2uix88YLWnjYxZDznWZESQgjGzxim4wa8
-         z7uOMl86wolFhhsVdGsI5z+nmySamZz8reo2EIhgkPTr1IxNaU8KRSkmGrhOINSdtcKs
-         0xAOa+wQQ8mCnglgWzdYomOgsQVJfSrMKbUHkKNeRY2qSnQzVFj7XfOiHg/kXzJVekci
-         cwRA==
-X-Gm-Message-State: AOAM531nqK+plWXtEn2WEGC5MC3uR3QH+Nh57umQItbVUkKDUiMsQii/
-        +Rcz1fprVFt1WvT1xiQjbd8sxNDajVcDgrUBUpA=
-X-Google-Smtp-Source: ABdhPJyU4xbKR/hTcJT3i+4AmcxOkV7rwYOr2kWTFFANFENce/N3tHTgLI14O9XHpuyAeqcD9v6uZo0Kn/Dprv2XBvs=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr3114076pfb.7.1617807575856; Wed, 07
- Apr 2021 07:59:35 -0700 (PDT)
+        Wed, 7 Apr 2021 10:59:44 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137EX1O8156742;
+        Wed, 7 Apr 2021 10:59:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=dd/ot2QwEl8xUK3CIVbT8kEhkYMJjKVAMBX5GWjlEZA=;
+ b=n96TBR5dqU6Z5gl2yqBiqnIQsdScLhwTo+KTqz9pW6AtnEWMm1hhr9pL5jIUpQPqTHtf
+ 1os6w0dRvs2fG2jayzwlu9SlTswQB9FfOii0aiplpxcbnjZQ4D+50wIWfiFjAmWvUs/O
+ e81MmTJu3nq/bslklwvgfpbOrLAolsEyfWKX21FtstiG+G+MoYSPSd0j2qzFkfsXwnRZ
+ 40WKExM7K7gFBdPBC1fahxUZTpJKcKy9eCZ/Z9luCQhQhRjSmzZD5NoXyBQ9LRRPs50l
+ bMzSXdSslx6ItYCc2OAj06rNfpYNdxdDU5jA06idW30Hmc05q6NiDD3Dm0OwkivhZCh0 CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rw7jmgkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:59:30 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137EXOoD161227;
+        Wed, 7 Apr 2021 10:59:29 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rw7jmgk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:59:29 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137EvW8E017817;
+        Wed, 7 Apr 2021 14:59:28 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 37rvc469wy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 14:59:28 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137ExRj013238594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 14:59:27 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8ED61136051;
+        Wed,  7 Apr 2021 14:59:27 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4336913604F;
+        Wed,  7 Apr 2021 14:59:27 +0000 (GMT)
+Received: from [9.211.151.211] (unknown [9.211.151.211])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 14:59:27 +0000 (GMT)
+Subject: Re: crashkernel reservation failed - No suitable area found on a
+ cortina/gemini SoC
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     ebiederm@xmission.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <YG2rfzRvHIZKXkf/@Red>
+ <34ff1fcc-e9ee-02c2-b2a8-d98a24ce94c3@linux.vnet.ibm.com>
+ <YG3AZ4K2auqEz9BK@Red>
+ <7a75028b-4495-cd51-6a32-59fcf6e0f166@linux.vnet.ibm.com>
+ <YG3GWxYU02UhOnUX@Red>
+From:   Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
+Message-ID: <291254c6-97e3-f5ba-dcee-77f8e4d25f9b@linux.vnet.ibm.com>
+Date:   Wed, 7 Apr 2021 07:59:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <YG3GWxYU02UhOnUX@Red>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: D9UYz_gygOFRC6Vk--LATWjeYwRzM22j
+X-Proofpoint-ORIG-GUID: OVCSXYENGxnjDHZ6CO_H7h4D2rbl8K1b
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
- <20210406165108.GA4332@42.do-not-panic.com> <CAHp75Ve9vBQqSegM2-ch9NUN-MdevxxOs5ZdHkk1W7AacN+Wrw@mail.gmail.com>
- <20210407143040.GB4332@42.do-not-panic.com>
-In-Reply-To: <20210407143040.GB4332@42.do-not-panic.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Apr 2021 17:59:19 +0300
-Message-ID: <CAHp75VeXiLa0b49eoZKVR1DSqTc9hKxpSgy294hMiaUzt0ugOA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 adultscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 5:30 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> On Wed, Apr 07, 2021 at 10:33:44AM +0300, Andy Shevchenko wrote:
-> > On Wed, Apr 7, 2021 at 10:25 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
+On 4/7/2021 07:48, Corentin Labbe wrote:
+> Le Wed, Apr 07, 2021 at 07:28:26AM -0700, Bruce Mitchell a écrit :
+>> On 4/7/2021 07:23, Corentin Labbe wrote:
+>>> Le Wed, Apr 07, 2021 at 07:13:04AM -0700, Bruce Mitchell a écrit :
+>>>> On 4/7/2021 05:54, Corentin Labbe wrote:
+>>>>> Hello
+>>>>>
+>>>>> I try to do kexec on a cortina/gemini SoC.
+>>>>> On a "normal" boot, kexec fail to find memory so I added crashkernel=8M to cmdline. (kernel size is ~6M).
+>>>>> But now, kernel fail to reserve memory:
+>>>>> Load Kern image from 0x30020000 to 0x800000 size 7340032
+>>>>> Booting Linux on physical CPU 0x0
+>>>>> Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #98 PREEMPT Wed Apr 7 14:14:08 CEST 2021
+>>>>> CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
+>>>>> CPU: VIVT data cache, VIVT instruction cache
+>>>>> OF: fdt: Machine model: Edimax NS-2502
+>>>>> Memory policy: Data cache writeback
+>>>>> Zone ranges:
+>>>>>      Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+>>>>>      HighMem  empty
+>>>>> Movable zone start for each node
+>>>>> Early memory node ranges
+>>>>>      node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+>>>>> Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+>>>>> crashkernel reservation failed - No suitable area found.
+>>>>> Built 1 zonelists, mobility grouping on.  Total pages: 32512
+>>>>> Kernel command line: console=ttyS0,19200n8 ip=dhcp crashkernel=8M
+>>>>> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+>>>>> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+>>>>> mem auto-init: stack:off, heap alloc:off, heap free:off
+>>>>> Memory: 119476K/131072K available (5034K kernel code, 579K rwdata, 1372K rodata, 3020K init, 210K bss, 11596K reserved, 0K cma-reserved, 0K highmem)
+>>>>> SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+>>>>>
+>>>>> What can I do ?
+>>>>>
+>>>>> Thanks
+>>>>> Regards
+>>>>>
+>>>>> _______________________________________________
+>>>>> kexec mailing list
+>>>>> kexec@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/kexec
+>>>>>
+>>>>
+>>>> Hello Corentin,
+>>>>
+>>>> I see much larger crashkernel=xxM being shown here
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kdump/kdump.rst
+>>>> and from many of my other searches.
+>>>>
+>>>> Here is an interesting article on kdump for ARM-32
+>>>> https://kaiwantech.wordpress.com/2017/07/13/setting-up-kdump-and-crash-for-arm-32-an-ongoing-saga/
+>>>>
+>>>>
+>>>> Here is the kernel command line reference
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kernel-parameters.txt?h=v5.11#n732
+>>>>
+>>>> I feel your frustrations too.
+>>>
+>>> Hello
+>>>
+>>> Thanks but I have already read those documentation.
+>>> I search to know why the kernel cannot find 8M of memory ouf of 128.
+>>>
+>>> Regards
+>>>
+>>
+>> How much more memory does the kernel and initrd above and beyond just
+>> their physical size?  (heaps, stacks, buffers, virtual filesystems)
+> 
+> The kernel size include a rootfs.cpio.lzma of 3MB and dtb is appended.
+> The total kernel size is 7MB.
+> The uncompressed size of the kernel is 13M (size of vmlinux)
+> The uncompressed size of rootfs is 11M.
+> 
+> cat /proc/meminfo
+> MemTotal:         122496 kB
+> MemFree:          103700 kB
+> MemAvailable:     101936 kB
+> Buffers:               0 kB
+> Cached:            10904 kB
+> SwapCached:            0 kB
+> Active:             4304 kB
+> Inactive:           8012 kB
+> Active(anon):       4304 kB
+> Inactive(anon):     8012 kB
+> Active(file):          0 kB
+> Inactive(file):        0 kB
+> Unevictable:           0 kB
+> Mlocked:               0 kB
+> HighTotal:             0 kB
+> HighFree:              0 kB
+> LowTotal:         122496 kB
+> LowFree:          103700 kB
+> SwapTotal:             0 kB
+> SwapFree:              0 kB
+> Dirty:                 0 kB
+> Writeback:             0 kB
+> AnonPages:          1428 kB
+> Mapped:             3552 kB
+> Shmem:             10904 kB
+> KReclaimable:        608 kB
+> Slab:               2960 kB
+> SReclaimable:        608 kB
+> SUnreclaim:         2352 kB
+> KernelStack:         312 kB
+> PageTables:          136 kB
+> NFS_Unstable:          0 kB
+> Bounce:                0 kB
+> WritebackTmp:          0 kB
+> CommitLimit:       61248 kB
+> Committed_AS:      14336 kB
+> VmallocTotal:     901120 kB
+> VmallocUsed:          64 kB
+> VmallocChunk:          0 kB
+> Percpu:               32 kB
+> CmaTotal:              0 kB
+> CmaFree:               0 kB
+> 
 
-...
+I believe you need space for all of that,
+the smallest that would work for me was 20MB.
 
-> > > Why is it worth it to add another file just for this?
-> >
-> > The main point is to break tons of loops that prevent having clean
-> > headers anymore.
-> >
-> > In this case, see bug.h, which is very important in this sense.
->
-> OK based on the commit log this was not clear, it seemed more of moving
-> panic stuff to its own file, so just cleanup.
 
-Sorry for that. it should have mentioned the kernel folder instead of
-lib. But I think it won't clarify the above.
-
-In any case there are several purposes in this case
- - dropping dependency in bug.h
- - dropping a loop by moving out panic_notifier.h
- - unload kernel.h from something which has its own domain
-
-I think that you are referring to the commit message describing 3rd
-one, but not 1st and 2nd.
-
-I will amend this for the future splits, thanks!
-
-> > >  Seems like a very
-> > > small file.
-> >
-> > If it is an argument, it's kinda strange. We have much smaller headers.
->
-> The motivation for such separate file was just not clear on the commit
-> log.
-
--- 
-With Best Regards,
-Andy Shevchenko
