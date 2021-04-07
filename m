@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4B535640D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124C8356410
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345737AbhDGGf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:35:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3517 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345216AbhDGGfy (ORCPT
+        id S1345857AbhDGGgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345707AbhDGGgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:35:54 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FFZNP6mZ2zRZHy;
-        Wed,  7 Apr 2021 14:33:41 +0800 (CST)
-Received: from dggpemm100007.china.huawei.com (7.185.36.116) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 7 Apr 2021 14:35:41 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm100007.china.huawei.com (7.185.36.116) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 7 Apr 2021 14:35:41 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Wed, 7 Apr 2021 14:35:41 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     David Woodhouse <dwmw2@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-Thread-Topic: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-Thread-Index: AQHXJsdJgAXY3vlVHUqi4t5f0DX/hKqgIfAAgAh+GPA=
-Date:   Wed, 7 Apr 2021 06:35:41 +0000
-Message-ID: <611cb5849c9a497b8289004dddb71150@huawei.com>
-References: <20210401071834.1639-1-longpeng2@huawei.com>
- <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
-In-Reply-To: <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 7 Apr 2021 02:36:07 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FDCC06174A;
+        Tue,  6 Apr 2021 23:35:58 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d124so3344183pfa.13;
+        Tue, 06 Apr 2021 23:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=Kpadh2a52Sny43OWLtjjTywPE6OAtZ2j+jNoMxyDVSw=;
+        b=COVHN0e75+tmi1XgiOPsCKXkUbcFba+PUO6pVjrFXU1/aQd8+8NccoFdAhVa4+2V5l
+         p4AW2ahIK2qNHexph+yJA931r3n9JSYXVQpNc4EYihBLxFH2nLd3CZ+Ir24eFB9v+UNn
+         i5xn+QoOHoPxV3gE3UOSNB5ZHqXF4MER94QtMheXelil7vH59UQNjGfNhYIrYyTiiC+W
+         6kWD7GG71UB4pT0jUh4l279VfsQ6xazRgHB6Alvym8WtLI1HTjqB7GixrRGmTCDOfHGD
+         MeRlnUWjwjPcdM7s2OOeMw0LOfHGhsz2JvSZXR7wVZj1Gbo9Fgt5rxKU8RC50+/+tKyW
+         fZoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=Kpadh2a52Sny43OWLtjjTywPE6OAtZ2j+jNoMxyDVSw=;
+        b=Fa6r2qGHx3HnWOXdSivheyA/oi9iTt/awk7iDvhqCHTOIzVILxEbBl22pfR27NLLIK
+         o+WvSKYVrxNHqQaxteEU5yLY2HyWvFMR2lrNMMY+EeiR6a7qhOq6JsM/jG0t/aDhxloK
+         ijKylJcsfO8Wm3kHGdt4bsRUeCnLR01qERcMEat+bISdF+gnOUzNawUjckKukMD+m5s9
+         yhBMgDc5XIMs6cFA739ljJHKsKHJ0uBwCtAqeQ6PMyrGGoR1BGF/7AUoi5Z5W32yWkie
+         DWHA4bEtp4zDDlZIaJhZcFQqnvXAbR9ISthMTqmOszcmwrTZoVZKNmRI08B2sq/yH90G
+         LyYQ==
+X-Gm-Message-State: AOAM533lzUOCjx5gNeV5bo0KqJ6wAavJB+WcT0IWK1NgA0MOeqwfJw/G
+        moObrR39/+VIbXFLX6w5Gpc=
+X-Google-Smtp-Source: ABdhPJyYyodEW+gfwmlphycKDQ2ep/z/1vWwxpaAalQ0Toek+O713NOHEYPOigtPIJoKhJk8w36+ug==
+X-Received: by 2002:a62:63c7:0:b029:225:7c19:a8f9 with SMTP id x190-20020a6263c70000b02902257c19a8f9mr1689320pfb.39.1617777357588;
+        Tue, 06 Apr 2021 23:35:57 -0700 (PDT)
+Received: from localhost.localdomain ([134.173.248.5])
+        by smtp.gmail.com with ESMTPSA id ot17sm4048352pjb.50.2021.04.06.23.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 23:35:56 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:35:54 -0700
+From:   Pavle Rohalj <pavle.rohalj@gmail.com>
+To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/49] *** SUBJECT HERE ***
+Message-ID: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmFvbHUsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHUgQmFv
-bHUgW21haWx0bzpiYW9sdS5sdUBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgQXBy
-aWwgMiwgMjAyMSAxMjo0NCBQTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3Ry
-dWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPjsg
-aW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmcNCj4gQ2M6IGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbTsgRGF2aWQgV29vZGhvdXNl
-IDxkd213MkBpbmZyYWRlYWQub3JnPjsgTmFkYXYNCj4gQW1pdCA8bmFkYXYuYW1pdEBnbWFpbC5j
-b20+OyBBbGV4IFdpbGxpYW1zb24gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tPjsNCj4gS2V2
-aW4gVGlhbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+OyBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25n
-bGVpQGh1YXdlaS5jb20+Ow0KPiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0hdIGlvbW11L3Z0LWQ6IEZvcmNlIHRvIGZsdXNoIGlvdGxiIGJlZm9yZSBjcmVhdGlu
-ZyBzdXBlcnBhZ2UNCj4gDQo+IEhpIExvbmdwZW5nLA0KPiANCj4gT24gNC8xLzIxIDM6MTggUE0s
-IExvbmdwZW5nKE1pa2UpIHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L2lu
-dGVsL2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L2ludGVsL2lvbW11LmMNCj4gPiBpbmRleCBlZTA5
-MzIzLi5jYmNiNDM0IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUu
-Yw0KPiA+ICsrKyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYw0KPiA+IEBAIC0yMzQyLDkg
-KzIzNDIsMjAgQEAgc3RhdGljIGlubGluZSBpbnQgaGFyZHdhcmVfbGFyZ2VwYWdlX2NhcHMoc3Ry
-dWN0DQo+IGRtYXJfZG9tYWluICpkb21haW4sDQo+ID4gICAJCQkJICogcmVtb3ZlZCB0byBtYWtl
-IHJvb20gZm9yIHN1cGVycGFnZShzKS4NCj4gPiAgIAkJCQkgKiBXZSdyZSBhZGRpbmcgbmV3IGxh
-cmdlIHBhZ2VzLCBzbyBtYWtlIHN1cmUNCj4gPiAgIAkJCQkgKiB3ZSBkb24ndCByZW1vdmUgdGhl
-aXIgcGFyZW50IHRhYmxlcy4NCj4gPiArCQkJCSAqDQo+ID4gKwkJCQkgKiBXZSBhbHNvIG5lZWQg
-dG8gZmx1c2ggdGhlIGlvdGxiIGJlZm9yZSBjcmVhdGluZw0KPiA+ICsJCQkJICogc3VwZXJwYWdl
-IHRvIGVuc3VyZSBpdCBkb2VzIG5vdCBwZXJzZXJ2ZXMgYW55DQo+ID4gKwkJCQkgKiBvYnNvbGV0
-ZSBpbmZvLg0KPiA+ICAgCQkJCSAqLw0KPiA+IC0JCQkJZG1hX3B0ZV9mcmVlX3BhZ2V0YWJsZShk
-b21haW4sIGlvdl9wZm4sIGVuZF9wZm4sDQo+ID4gLQkJCQkJCSAgICAgICBsYXJnZXBhZ2VfbHZs
-ICsgMSk7DQo+ID4gKwkJCQlpZiAoZG1hX3B0ZV9wcmVzZW50KHB0ZSkpIHsNCj4gDQo+IFRoZSBk
-bWFfcHRlX2ZyZWVfcGFnZXRhYmxlKCkgY2xlYXJzIGEgYmF0Y2ggb2YgUFRFcy4gU28gY2hlY2tp
-bmcgY3VycmVudCBQVEUgaXMNCj4gaW5zdWZmaWNpZW50LiBIb3cgYWJvdXQgcmVtb3ZpbmcgdGhp
-cyBjaGVjayBhbmQgYWx3YXlzIHBlcmZvcm1pbmcgY2FjaGUNCj4gaW52YWxpZGF0aW9uPw0KPiAN
-Cg0KVW0uLi50aGUgUFRFIGhlcmUgbWF5IGJlIHByZXNlbnQoIGUuZy4gNEsgbWFwcGluZyAtLT4g
-c3VwZXJwYWdlIG1hcHBpbmcgKSBvciBOT1QtcHJlc2VudCAoIGUuZy4gY3JlYXRlIGEgdG90YWxs
-eSBuZXcgc3VwZXJwYWdlIG1hcHBpbmcgKSwgYnV0IHdlIG9ubHkgbmVlZCB0byBjYWxsIGZyZWVf
-cGFnZXRhYmxlIGFuZCBmbHVzaF9pb3RsYiBpbiB0aGUgZm9ybWVyIGNhc2UsIHJpZ2h0ID8NCg0K
-PiA+ICsJCQkJCWludCBpOw0KPiA+ICsNCj4gPiArCQkJCQlkbWFfcHRlX2ZyZWVfcGFnZXRhYmxl
-KGRvbWFpbiwgaW92X3BmbiwgZW5kX3BmbiwNCj4gPiArCQkJCQkJCSAgICAgICBsYXJnZXBhZ2Vf
-bHZsICsgMSk7DQo+ID4gKwkJCQkJZm9yX2VhY2hfZG9tYWluX2lvbW11KGksIGRvbWFpbikNCj4g
-PiArCQkJCQkJaW9tbXVfZmx1c2hfaW90bGJfcHNpKGdfaW9tbXVzW2ldLCBkb21haW4sDQo+ID4g
-KwkJCQkJCQkJICAgICAgaW92X3BmbiwgbnJfcGFnZXMsIDAsIDApOw0KPiA+ICsNCj4gDQo+IEJl
-c3QgcmVnYXJkcywNCj4gYmFvbHUNCg==
+Changes in v2:
+    - Removed type information from variable names
+    - Broken up the changes into smaller patches
+
+Pavle Rohalj (49):
+  staging: sm750fb: Update dvi_ctrl_device to snake case
+  staging: sm750fb: Rename dviInit to dvi_init and update param names
+  staging: sm750fb: Update param names of PFN_DVICTRL_INIT function
+    pointer
+  staging: sm750fb: Remove type names in variables and type definitions
+  staging: sm750fb: Remove remaining camel case names in ddk750_dvi.h
+  staging: sm750fb: Update displayControlAdjust_SM750LE to snake case
+  staging: sm750fb: Update programModeRegisters to snake case
+  staging: sm750fb: Update enum values in dpms to snake case
+  staging: sm750fb: Rename sm750_set_power_mode function parameter
+  staging: sm750fb: Rename ddk750_setModeTiming to
+    ddk750_set_mode_timing
+  staging: sm750fb: Rename i2cWriteReg and i2cReadReg to snake case
+  staging: sm750fb: Rename vendorID local variable to snake case
+  staging: sm750fb: Rename deviceID local variable to snake case
+  staging: sm750fb: Rename sii164SelectHotPlugDetectionMode to snake
+    case
+  staging: sm750fb: Rename gDviCtrlChipName to snake case
+  staging: sm750fb: Update function parameter names in ddk750_sii164.c
+  staging: sm750fb: Rename local variables to snake case
+  staging: sm750fb: Rename function params of sii164_init_chip
+  staging: sm750fb: Rename function parameter of
+    sii164_enable_hot_plug_detection
+  staging: sm750fb: Update function parameter names to snake case
+  staging: sm750fb: Rename function write_dpPort to snake case
+  staging: sm750fb: Update local variable in sm750_hw_copyarea to snake
+    case
+  staging: sm750fb: Update local variables in sm750_hw_imageblit to
+    snake case
+  staging: sm750fb: Update local variable in sm750_hw_fillrect to snake
+    case
+  staging: sm750fb: Rename deGetTransparency to snake case
+  staging: sm750fb: Update function parameter of sm750_hw_imageblit to
+    snake case
+  staging: sm750fb: Rename function params to snake case in
+    sm750_accel.h
+  staging: sm750fb: Update members of lynx_cursor to snake case
+  staging: sm750fb: Rename function sm750_hw_cursor_setSize to snake
+    case
+  staging: sm750fb: Rename function sm750_hw_cursor_setPos to snake case
+  staging: sm750fb: Rename function sm750_hw_cursor_setColor to snake
+    case
+  staging: sm750fb: Rename function sm750_hw_cursor_setData to snake
+    case
+  staging: sm750fb: Rename function hw_sm750_crtc_setMode to snake case
+  staging: sm750fb: Update members of init_status struct to snake case
+  staging: sm750fb: Update members of sm750_dev struct to snake case
+  staging: sm750fb: Update members of lynxfb_crtc struct to snake case
+  staging: sm750fb: Rename function hw_sm750_output_setMode to snake
+    case
+  staging: sm750fb: Rename function hw_sm750_setColReg to snake case
+  staging: sm750fb: Rename functions *_setBLANK to snake case
+  staging: sm750fb: Rename function sm750_hw_cursor_setData2 to snake
+    case
+  staging: sm750fb: Rename function hw_sm750_initAccel to snake case
+  staging: sm750fb: Rename functions *_deWait to snake case
+  staging: sm750fb: Update members of lynx_accel struct to snake case
+  staging: sm750fb: Rename function hw_sm750_crtc_checkMode to snake
+    case
+  staging: sm750fb: Rename sii164_set_power function parameter
+  staging: sm750fb: Rename local variable Bpp to bpp in sm750.c
+  staging: sm750fb: Rename proc_setBLANK member of lynxfb_output struct
+  staging: sm750fb: Rename fixId to fix_id
+  staging: sm750fb: Update members of sm750_pnltype struct to snake case
+
+ drivers/staging/sm750fb/ddk750_dvi.c    |  32 ++---
+ drivers/staging/sm750fb/ddk750_dvi.h    |  80 ++++++-------
+ drivers/staging/sm750fb/ddk750_mode.c   |  88 +++++++-------
+ drivers/staging/sm750fb/ddk750_mode.h   |   2 +-
+ drivers/staging/sm750fb/ddk750_power.h  |  10 +-
+ drivers/staging/sm750fb/ddk750_sii164.c | 152 ++++++++++++------------
+ drivers/staging/sm750fb/ddk750_sii164.h |  40 +++----
+ drivers/staging/sm750fb/sm750.c         | 130 ++++++++++----------
+ drivers/staging/sm750fb/sm750.h         |  56 ++++-----
+ drivers/staging/sm750fb/sm750_accel.c   | 148 +++++++++++------------
+ drivers/staging/sm750fb/sm750_accel.h   |  42 +++----
+ drivers/staging/sm750fb/sm750_cursor.c  |  14 +--
+ drivers/staging/sm750fb/sm750_cursor.h  |  10 +-
+ drivers/staging/sm750fb/sm750_hw.c      |  56 ++++-----
+ 14 files changed, 430 insertions(+), 430 deletions(-)
+
+-- 
+2.30.2
+
