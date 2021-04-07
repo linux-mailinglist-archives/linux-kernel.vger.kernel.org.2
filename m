@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D5B3563CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B083563CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbhDGGPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
+        id S1345517AbhDGGQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244644AbhDGGPN (ORCPT
+        with ESMTP id S239344AbhDGGQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:15:13 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E7AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:15:04 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r12so25706952ejr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 23:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ehA4+CBMgJnHxIWSDt3vvOqxWWCaIP+aC+c7RnHz298=;
-        b=Lk/4dIH+N+ZBhhqfy2c2Qdk4QtOKSeqf1LT78mXobymqFqgJqkMB824FeJGHUDiyhF
-         KucIfDxfs37T+/sOyyHlTTeh2qjtpw7LhgUw2eWYIjtmttz1qsSIqzb8l8fV9hd+Gyw3
-         2DhQJORYW85r9enjZQbiKVSij37LcSMC8ntcU3wW3WBzaETMI9tC3kf+p9J0kQwywFBt
-         AJwnZx8e7sPQcf7j7MyqCJikWbCQG0SuhaB8Lp3zyzLnBEvEVCCUYThp8XSKaCL69fj6
-         UfQbBWAceDLK7FoRQLZBQ5AD3uQMZ6j9y5bXXBJlTz8q+c08TXMRO2QEik9yNYqrK9BX
-         MlFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ehA4+CBMgJnHxIWSDt3vvOqxWWCaIP+aC+c7RnHz298=;
-        b=nXnhuvfWHEvmlLNYajTMD2ZfY3Rc8oWpVo6O3Hjq/E3D4QkP7GcQYyKAZ86Cc0W4zS
-         OrwsqrgvZ0giK/SNXLpEXXqQ+W0abmGjTNiszWDgXXBEVhixLT71Y91jdZTC7dt4v50Q
-         qFKOKXrxtKvZ+0S5QVtibAQSNXOxOtQvNCx0JLhj8x/9gP/Af3j9+bAAvRKDqzZARSYC
-         88d9QaZIZsGf8G8GieRgG746kGGPaj9oCclbPAtcWJ3S/W+fa0oE3IsiQ4puqEvEWvMB
-         jOiD4nMKj/4vWkEGc7ODIeHNxkB200khjQq2cFW+iDJCzuAbSGiErrXRulynnq8JlPFC
-         c6gg==
-X-Gm-Message-State: AOAM531RfUppb3RXcIT5W+G8XqFzEO9VHYfjLxufcn/H8eioteXVymap
-        urBiMnPgyMtUIMiU7A7jD5N9amr3tteaivP1
-X-Google-Smtp-Source: ABdhPJwQ379vqV1XC30k/xqIHl9h/QxnSq0OvT/EAGlbhR/8FFx8TlYbaYv8rxtNo3sERpkPm/PaCA==
-X-Received: by 2002:a17:907:3f97:: with SMTP id hr23mr1881535ejc.69.1617776102928;
-        Tue, 06 Apr 2021 23:15:02 -0700 (PDT)
-Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id a12sm8130686ejy.87.2021.04.06.23.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:15:02 -0700 (PDT)
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ndesaulniers@google.com, dan.j.williams@intel.com,
-        andreyknvl@google.com, laniel_francis@privacyrequired.com,
-        keescook@chromium.org, dja@axtens.net, akpm@linux-foundation.org,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH] lib/string: Introduce sysfs_streqcase
-Date:   Wed,  7 Apr 2021 08:14:56 +0200
-Message-Id: <20210407061456.5914-1-gi-oh.kim@ionos.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Apr 2021 02:16:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65637C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:16:24 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU1UC-0005bW-LU; Wed, 07 Apr 2021 08:16:20 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU1UC-0004OE-31; Wed, 07 Apr 2021 08:16:20 +0200
+Date:   Wed, 7 Apr 2021 08:16:19 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 8/8] pwm: pca9685: Add error messages for failed
+ regmap calls
+Message-ID: <20210407061619.fl6ffos6csvgtnjh@pengutronix.de>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-8-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vfnjmoawnycporzw"
+Content-Disposition: inline
+In-Reply-To: <20210406164140.81423-8-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the name shows, it checks if strings are equal in case insensitive
-manner.
 
-For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-strncasecmp to check that the input via sysfs is "mi". But it would
-work even-if the input is "min-wrongcommand".
+--vfnjmoawnycporzw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I found some more cases using strncasecmp to check the entire string
-such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
-"disable" command with strncasecmp but it would also work if the
-command is "disable-wrong".
+On Tue, Apr 06, 2021 at 06:41:40PM +0200, Clemens Gruber wrote:
+> Regmap operations can fail if the underlying subsystem is not working
+> properly (e.g. hogged I2C bus, etc.)
+> As this is useful information for the user, print an error message if it
+> happens.
+> Let probe fail if the first regmap_read or the first regmap_write fails.
+>=20
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+> Changes since v6:
+> - Rebased
+>=20
+>  drivers/pwm/pwm-pca9685.c | 83 ++++++++++++++++++++++++++++-----------
+>  1 file changed, 59 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> index cf0c98e4ef44..8a4993882b40 100644
+> --- a/drivers/pwm/pwm-pca9685.c
+> +++ b/drivers/pwm/pwm-pca9685.c
+> @@ -107,6 +107,30 @@ static bool pca9685_prescaler_can_change(struct pca9=
+685 *pca, int channel)
+>  	return test_bit(channel, pca->pwms_enabled);
+>  }
+> =20
+> +static int pca9685_read_reg(struct pca9685 *pca, unsigned int reg, unsig=
+ned int *val)
+> +{
+> +	struct device *dev =3D pca->chip.dev;
+> +	int err;
+> +
+> +	err =3D regmap_read(pca->regmap, reg, val);
+> +	if (err !=3D 0)
+> +		dev_err(dev, "regmap_read of register 0x%x failed: %d\n", reg, err);
 
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
----
- include/linux/string.h |  1 +
- lib/string.c           | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+Please use %pe to emit the error code instead of %d.
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 4fcfb56abcf5..36d00ff8013e 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
- extern void argv_free(char **argv);
- 
- extern bool sysfs_streq(const char *s1, const char *s2);
-+extern bool sysfs_streqcase(const char *s1, const char *s2);
- extern int kstrtobool(const char *s, bool *res);
- static inline int strtobool(const char *s, bool *res)
- {
-diff --git a/lib/string.c b/lib/string.c
-index 7548eb715ddb..5e6bc0d3d5c6 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -714,6 +714,29 @@ bool sysfs_streq(const char *s1, const char *s2)
- }
- EXPORT_SYMBOL(sysfs_streq);
- 
-+/**
-+ * sysfs_streqcase - same to sysfs_streq and case insensitive
-+ * @s1: one string
-+ * @s2: another string
-+ *
-+ */
-+bool sysfs_streqcase(const char *s1, const char *s2)
-+{
-+	while (*s1 && tolower(*s1) == tolower(*s2)) {
-+		s1++;
-+		s2++;
-+	}
-+
-+	if (*s1 == *s2)
-+		return true;
-+	if (!*s1 && *s2 == '\n' && !s2[1])
-+		return true;
-+	if (*s1 == '\n' && !s1[1] && !*s2)
-+		return true;
-+	return false;
-+}
-+EXPORT_SYMBOL(sysfs_streqcase);
-+
- /**
-  * match_string - matches given string in an array
-  * @array:	array of strings
--- 
-2.25.1
+> +
+> +	return err;
+> +}
+> +
+> +static int pca9685_write_reg(struct pca9685 *pca, unsigned int reg, unsi=
+gned int val)
+> +{
+> +	struct device *dev =3D pca->chip.dev;
+> +	int err;
+> +
+> +	err =3D regmap_write(pca->regmap, reg, val);
+> +	if (err !=3D 0)
+> +		dev_err(dev, "regmap_write to register 0x%x failed: %d\n", reg, err);
+> +
+> +	return err;
+> +}
+> +
+>  /* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=
+=3D2048 -> 50%) */
+>  static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsig=
+ned int duty)
+>  {
+> @@ -115,12 +139,12 @@ static void pca9685_pwm_set_duty(struct pca9685 *pc=
+a, int channel, unsigned int
+> =20
+>  	if (duty =3D=3D 0) {
+>  		/* Set the full OFF bit, which has the highest precedence */
+> -		regmap_write(pca->regmap, REG_OFF_H(channel), LED_FULL);
+> +		pca9685_write_reg(pca, REG_OFF_H(channel), LED_FULL);
 
+You didn't check all return codes? How did you select the calls to
+check?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vfnjmoawnycporzw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtTjEACgkQwfwUeK3K
+7AmlpAf/Ys9OlGLMDV++TA9VDwM/Ywp0P7HPN+Pw/FaEO5wvTM9HBvACUwWOpBV7
+iX50S3rqBwBpi4oy0eOEmKVibWWKwIIbLdVqq9Emaccl742KZ2Gt4ItW4qdKHkw/
+q8hPbEBYLB5ZdgdCOnsiOj75nWcwoOrCH1d8szRAONN7fuNeV20ESF7FcurS44Xz
+2UD+MyEZWui9deKSNE6JhzEWLYJQwtyhba0/bqD0++rhp4spKVrTb7df3YRi6EFv
+bJvMAahRP8I2FItnzsCmyCbrFkkhWnJL062wuMC745ZrCXTzp/1bNd4wXN3P27Dt
+VuYwFFqn/MFPgpnXX07s7Jk1QPTwCQ==
+=Gk6O
+-----END PGP SIGNATURE-----
+
+--vfnjmoawnycporzw--
