@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735B935682B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA357356825
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244016AbhDGJiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:38:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48892 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231294AbhDGJiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:38:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1DA31B02A;
-        Wed,  7 Apr 2021 09:37:53 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 11:37:49 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 5/8] hugetlb: call update_and_free_page without
- hugetlb_lock
-Message-ID: <20210407093744.GA11066@linux>
-References: <20210405230043.182734-1-mike.kravetz@oracle.com>
- <20210405230043.182734-6-mike.kravetz@oracle.com>
- <20210407082744.GA10058@linux>
- <YG17U4PolKicoch8@dhcp22.suse.cz>
+        id S1350175AbhDGJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231294AbhDGJfa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:35:30 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B5AC061756;
+        Wed,  7 Apr 2021 02:35:21 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f29so10144458pgm.8;
+        Wed, 07 Apr 2021 02:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIooQe1cbZMs5k8eiR4v29BI/b/lezlax8wbPH1H5SQ=;
+        b=TG3PeN3bbbhOlaS/fGewz9kZiVnq2EJUkxfeL2QWyXozsNqD1cjXmZQJB5UCuuvCqK
+         J7KnscDpbC2cYyQgM/4X1/DfMYJ9N/KZMhCV351/SyFvGSRwmpzHRiLHeKdz5QwfA83v
+         BzTnXB1oSSt0RCEN+rcrpxevK6UIymMsbb9qDDakODz8h8495aqaaF9DsIQzjjWIBjJG
+         MyO4OY7+7LIzovfvlz6puppfGwsuhRyAbgfU220U3+Qz0+mppcMRy1njas99JqcIaxTj
+         x1YjV6CXisuZ4fU8wRRjltqKQ4sLpZhEBfJhFE+99gijFWbvoEx0zC9uMVPZNBXL3/ew
+         XuOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIooQe1cbZMs5k8eiR4v29BI/b/lezlax8wbPH1H5SQ=;
+        b=hXHkgGOOISi0GnLaV4RUdVpFkpwHo4uRSdLthDdb2F7Ic1bPacLVrYIuW5iaHjVIqy
+         cFIFVt9xrE7gs88MNvmKqrsKAO9r95zegqNjmmhSxXWkuKTuc6D9gmVkjZeHynUdQlI3
+         rxThw8C+8pwprAuypkB+/cfAfpV37UnJaXocyXdKjY3cPXA1BDGW3KSXbzowaKVtSJnY
+         WN1xYW28D+npUl56Z/kVetjXHLAVPbz9I6IpfTtvw0Uex32d6NLNSS+AujYtQkwf9jms
+         fNLVB8dzn+CwZPrwtl2I1YU+/SnzhDRagB/02cc4CRFY2TO6sqilu5NUIPGQon18xC7S
+         6dTQ==
+X-Gm-Message-State: AOAM532E+LAf7ULR84uAhkIcHu9VbzQ1uZr/JU7BEDPSeCqw0ljhJMz5
+        CrUNjrhQOK2ULEisIxVbOaA=
+X-Google-Smtp-Source: ABdhPJy07ALYrfjRKx22b51BS2YpKrkb0TCrDqKfuWda/8IxY1teZ40qkuDIjAdVMBC4GhJdF8YKKQ==
+X-Received: by 2002:a63:2c8a:: with SMTP id s132mr2443705pgs.165.1617788120728;
+        Wed, 07 Apr 2021 02:35:20 -0700 (PDT)
+Received: from localhost.localdomain (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id gm10sm4749407pjb.4.2021.04.07.02.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 02:35:20 -0700 (PDT)
+From:   Ben Chuang <benchuanggli@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Renius.Chen@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>
+Subject: [RESEND, PATCH] mmc: sdhci-pci-gli: Improve GL9763E L1 entry delay to increase battery life
+Date:   Wed,  7 Apr 2021 17:38:16 +0800
+Message-Id: <20210407093816.8863-1-benchuanggli@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG17U4PolKicoch8@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:28:51AM +0200, Michal Hocko wrote:
-> An emoty page_list? If yes then sure, this can happen but
-> list_for_each_entry_safe will simply not iterate. Or what do you mean?
+From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
-Yes, I meant page_list.
-Yeah, I figured list_for_each_entry_safe() would simply not iterate but I
-wondered whether we still want the spin_unlock()/spin_lock() in that case.
+For GL9763E, although there is the best performance at the maximum delay.
+Change the value to 20us in order to have better power consumption.
+This change may reduce the maximum performance by 10%.
 
-But probably not worth it adding more code, so it is fine.
+Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 4a0f69b97a78..3b0a049d4124 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -90,7 +90,7 @@
  
+ #define PCIE_GLI_9763E_CFG2      0x8A4
+ #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
+-#define   GLI_9763E_CFG2_L1DLY_MAX 0x3FF
++#define   GLI_9763E_CFG2_L1DLY_MID 0x50
+ 
+ #define PCIE_GLI_9763E_MMC_CTRL  0x960
+ #define   GLI_9763E_HS400_SLOW     BIT(3)
+@@ -802,8 +802,8 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+ 
+ 	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
+ 	value &= ~GLI_9763E_CFG2_L1DLY;
+-	/* set ASPM L1 entry delay to 260us */
+-	value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MAX);
++	/* set ASPM L1 entry delay to 20us */
++	value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MID);
+ 	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
+ 
+ 	pci_read_config_dword(pdev, PCIE_GLI_9763E_CLKRXDLY, &value);
 -- 
-Oscar Salvador
-SUSE L3
+2.30.0
+
