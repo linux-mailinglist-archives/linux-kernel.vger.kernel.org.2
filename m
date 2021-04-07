@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F5B357142
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E83357143
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347376AbhDGQAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:00:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245406AbhDGP75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D87261394;
-        Wed,  7 Apr 2021 15:59:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617811187;
-        bh=hGXNzVJiH86Iaj7zXKQ35uQKcMAGo1DSHvGN1U3LigI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Eo9KXeSeF+qiiMEGBRTSan29w2Je5fOzX3pOmVElTHi7slb0WJjRYTAXzrWkEi5x6
-         yTVFc4CvBTJLc4Oujco6Z+AL2tSisD/h6vlGZU9lXUEL07/Wl6JQn2Ltl6/VIKK/Ye
-         kE5p1sWa2AOpUz8CiyzLM9P0jaCQHocVmc316We4uxopIxF4FX5SavnDy87kwOQXVe
-         y3qrrM/cTCmaPCZPDElsMGRKu91TH7Zad4Nw1Vnl7HZrMlZFT4pmA7H2B08jwBkbay
-         JCixRc/O6Upa3OxBNVKdH4K2DBI/HDrK1y4hXX13GRC95O/hZGGO3y2jZyrxQI4e2T
-         TNJ52eMFZd0YQ==
-Received: by mail-ej1-f51.google.com with SMTP id e14so28483738ejz.11;
-        Wed, 07 Apr 2021 08:59:47 -0700 (PDT)
-X-Gm-Message-State: AOAM530xpUItdPpmZOeQ8s41sjVb+gXxYSC0yUytwpMgGTy+bJ2yM6xY
-        vSkrlzP30AKFV0FAWogJTDzAQo8UCmI70FPM1w==
-X-Google-Smtp-Source: ABdhPJwpyfbWTwn3/jlmyA5Hhu8Vwe6NWCunioufvDhHzHzmvZ82ObW9OPDby6jvwPsk5u2uvIzq/RFbEZhCbrFa1jc=
-X-Received: by 2002:a17:906:4a52:: with SMTP id a18mr4522021ejv.194.1617811185726;
- Wed, 07 Apr 2021 08:59:45 -0700 (PDT)
+        id S1353996AbhDGQAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245406AbhDGQAS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:00:18 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E25C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:00:09 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id c204so9459596pfc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDqBmqtcjCQnS2ELUddbb59S8zRaad/3uX3MFWpjJMI=;
+        b=aZ+EbS8xAhDpR+j0vK1tcPzg/dQZ7tMknFDgLQ7dGI7KV69YQmnBZHUboF8oh6SVSL
+         p1yvQD7M2hxJB8IqSkN2uXg8h8GfFQgu6e4oz6QL/Cu+r3GW7lt4dxXusWyM1AH3xiB/
+         GtvFSUUsk3Wsy2xmP7ISBVF0X9DC7pea1zGWKwAi6/T9aXWFRFmOT9ZWtS3p7YBfKVki
+         JQotLFXpfuJ5aSgCbrIFScugCdpvkkDAfF5YH9hwvXQEkHKKb97oXD6aMg6ktcH5yc7w
+         gW1F0HhSXS2//jSi2etinywCS9oBlGoOkJWvarf5DCtxEFe05ORWPjJ2HhFpOcgpdRUL
+         wSjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDqBmqtcjCQnS2ELUddbb59S8zRaad/3uX3MFWpjJMI=;
+        b=AeCUi9RdtAadMADM5VRS52qSvARw7R4Q+6qdwjPqadCqAlxRZb6ciAlNMsojewsQjE
+         FW+YTxK1SWgh8hyk/0EAqbhLs3Lh9VhdtcvTi2A1aDZtAzU8YYzZLqt1joepnEW7UUzR
+         vwtGjwh6AhReXpVLw4HP5HnNaszBTMdeb1UnRrJTVBb810h6QqY5eZNEGZGVEoya3Y5Z
+         n0hWK096LOVbZIWx533CHOMiad+2xNVUzA5BxI7XU+u2j0MMYkyF808owf/kHRBQhdFR
+         +JVXDkss/LX/644YhRZQuPSOMMvRyBfg2bL0nu7sRf3Jk6hIBcjT8K0npSJ00ccg/qIP
+         2xVQ==
+X-Gm-Message-State: AOAM5320XKLe5OWilirQk7/ojzXS76KuZ35KUs/UxhOazQWPCrKLUnFw
+        wzLKOvw26FANHqICVQHoM6GDag==
+X-Google-Smtp-Source: ABdhPJyNtskc4EXOAkfyuZ2yXMDiVucjly1QnBlRu9zJwxmWM7UhArY/Mcmpb1eSeLk3bJkRgxWXhQ==
+X-Received: by 2002:a62:9253:0:b029:242:2150:f98a with SMTP id o80-20020a6292530000b02902422150f98amr3043311pfd.24.1617811208936;
+        Wed, 07 Apr 2021 09:00:08 -0700 (PDT)
+Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id s22sm21464713pfe.150.2021.04.07.09.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:00:08 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] coresight: Patches for v5.13
+Date:   Wed,  7 Apr 2021 10:00:03 -0600
+Message-Id: <20210407160007.418053-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210407143656.2574-1-jitao.shi@mediatek.com>
-In-Reply-To: <20210407143656.2574-1-jitao.shi@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 7 Apr 2021 23:59:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9sxEZ-M8dp1w4ac+DR-9ESOxVGfDfhd4d8MkCMsCj7kg@mail.gmail.com>
-Message-ID: <CAAOTY_9sxEZ-M8dp1w4ac+DR-9ESOxVGfDfhd4d8MkCMsCj7kg@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: force hsa hsa hfp packets multiple of line
- num to avoid screen shift
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        huijuan.xie@mediatek.com, stonea168@163.com,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, yingjoe.chen@mediatek.com,
-        eddie.huang@mediatek.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jitao:
+Hi Greg,
 
-Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=887=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:37=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> The bridge chip ANX7625 require the line packets ending at the sametime
-> or ANX7625 will shift the screen.
->
-> Change-Id: Ia324ad28fbff54140feedb9a1d6bfb2b246d0447
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index a1ff152ef468..e825a80862de 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -194,6 +194,8 @@ struct mtk_dsi {
->         struct clk *hs_clk;
->
->         u32 data_rate;
-> +       /* force dsi line end without dsi_null data */
-> +       bool force_dsi_end_without_null;
->
->         unsigned long mode_flags;
->         enum mipi_dsi_pixel_format format;
-> @@ -495,6 +497,13 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi=
- *dsi)
->                 DRM_WARN("HFP + HBP less than d-phy, FPS will under 60Hz\=
-n");
->         }
->
-> +       if (dsi->force_dsi_end_without_null) {
-> +               horizontal_sync_active_byte =3D roundup(horizontal_sync_a=
-ctive_byte, dsi->lanes) - 2;
-> +               horizontal_frontporch_byte =3D roundup(horizontal_frontpo=
-rch_byte, dsi->lanes) - 2;
-> +               horizontal_backporch_byte =3D roundup(horizontal_backporc=
-h_byte, dsi->lanes) - 2;
-> +               horizontal_backporch_byte -=3D (vm->hactive * dsi_tmp_buf=
-_bpp + 2) % dsi->lanes;
-> +       }
-> +
->         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
->         writel(horizontal_backporch_byte, dsi->regs + DSI_HBP_WC);
->         writel(horizontal_frontporch_byte, dsi->regs + DSI_HFP_WC);
-> @@ -1091,6 +1100,9 @@ static int mtk_dsi_probe(struct platform_device *pd=
-ev)
->         dsi->bridge.of_node =3D dev->of_node;
->         dsi->bridge.type =3D DRM_MODE_CONNECTOR_DSI;
->
-> +       dsi->force_dsi_end_without_null =3D of_property_read_bool(dev->of=
-_node,
-> +                                                               "force_ds=
-i_end_without_null");
+These are the coresight patches I'd like you to consider for
+the v5.13 cycle.  There is only 4, the other ones will go
+go through Marc's kvmarm tree as previously agreed.
 
-If force_dsi_end_without_null is caused by ANX7625, I think we should
-get this information from ANX7625.
+I may have another (big) set coming later this week or early
+next week but it may be on the late side for this much code.
+We'll see when we get there.
 
-Regards,
-Chun-Kuang.
+Thanks,
+Mathieu   
 
-> +
->         drm_bridge_add(&dsi->bridge);
->
->         ret =3D component_add(&pdev->dev, &mtk_dsi_component_ops);
-> --
-> 2.25.1
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+Mathieu Poirier (1):
+  MAINTAINERS: Add CoreSight header files
+
+Qi Liu (1):
+  coresight: core: Fix typo in coresight-core.c
+
+Sai Prakash Ranjan (1):
+  coresight: etm4x: Add ETM PID for Cortex-A78
+
+Wei Yongjun (1):
+  coresight: etm: perf: Make symbol 'format_attr_contextid' static
+
+ MAINTAINERS                                        | 1 +
+ drivers/hwtracing/coresight/coresight-core.c       | 2 +-
+ drivers/hwtracing/coresight/coresight-etm-perf.c   | 2 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 1 +
+ 4 files changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
