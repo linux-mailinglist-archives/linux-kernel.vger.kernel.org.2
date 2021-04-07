@@ -2,159 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE97F3572EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D713572F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354761AbhDGRS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:18:27 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37660 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347857AbhDGRSZ (ORCPT
+        id S1354768AbhDGRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354763AbhDGRTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:18:25 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 137HF51Y103607;
-        Wed, 7 Apr 2021 17:18:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
- b=FWI6IF+7wVMHgqYK8n+zk+Cjy30S5riRhvosEY0Jd3yxZ3smQtpOnyfX6P1J+JglP/Hb
- Woy0QdsDtXDfEDEyYVReZjhGltCNtjjQ5A8KWtgxGUviUdU8MfXo1THiKVj27fiy+m86
- NOiVCk1Kr/6bqJaQOeA+geVAWW/qN1ORZsH/4zgcCXdeT9cJRXhzYUKifbL0xM7dk1TK
- yQ2wj9Udl4B/cvqQ8Q6M8pEOcHcTMArKkslcWswnpDs3kY+J8arRHXxzh+OdT5h+tmAR
- Dgjb2BMggixcxaK8S/L79JjDUyC5ilZkfZyJThOsC14iKGLwYjNUiO3LnZ00z7F3sZjx KQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 37rvas3bgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Apr 2021 17:18:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 137HB8LG051391;
-        Wed, 7 Apr 2021 17:18:07 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
-        by userp3020.oracle.com with ESMTP id 37rvb05p1q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Apr 2021 17:18:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eDobSeo8X43OCLHiLjhyTivQOdvX/zCWOpGe5H82XmscEO77J2hg4zyvBj0RliO7HRTA3BCgLe8k45Dw0P/ts0TmLaTSDkX5MgrdSOVOKspkFPKZdt4IuYMrVTWQE8/RYlt46Ekkb37o715Ukx0tUnAyxkvVRtKDky2My6/NaocEZGktRI6BkrV73H7JVv5av2SSAO8rm+1pN4jLd+zNv/ea95K8aHMVjRlgJm7qLiIeGmYTinKKNI2oXlZFPlVwnk/taw7Z3uwDgty/I0+kQTw3boZbKVFny2ccGucm+qA5Ay8k/a2OTNFofhAignGG/QGHnyhZxO+Qwnd7Se+37g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
- b=cuSOe/BaXtdHa8G8zANLrqZgkKnUNQmSTZX5sX8KQcb6Adp8hBr5/qT8EUQgzomAh58/iwT6xOcbjaxIhAH06n/tlZEu/84QdDILWFSFlpmob+TQEiJLP6EM4ULNSrs5vFUeH+HMP50AfIEpFMeh9PLiO2x7mtpQfkmBZ6NRsEb+DKHIThsQGkDM7YCJH7MfFQgwughsTa10CpUQfX03zKVjsGJ+WJDugyrEPUHCzRRIfVEBgg0zO27Zlm5RROuzV9yTYS2/iYnQmmtywIpeKpTNidPWu7vfH1d4jxe72AGDXd1JLvRP4SF8gQ26h//viT+StFpzMGg9qeZOAthUtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
- b=KT42K99hWqjibrflrtqwMIgA9EG58BCKqO+gGL/+Rc7gvyaKB2YTm43Xr5nG7dfCLjh5M2jpKsrwqKzuwoOtfPAR8hfAJAlmNSIsXlJTI4MlIezz6Zw0ADdrBYdRLoIQhdNyzpe/7oyBI+FFCu5ofAr1nkym9hTaSyfjogTYJDs=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4754.namprd10.prod.outlook.com (2603:10b6:303:91::24)
- by MWHPR10MB1376.namprd10.prod.outlook.com (2603:10b6:300:21::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 7 Apr
- 2021 17:18:05 +0000
-Received: from CO1PR10MB4754.namprd10.prod.outlook.com
- ([fe80::6091:8d07:2f26:cf44]) by CO1PR10MB4754.namprd10.prod.outlook.com
- ([fe80::6091:8d07:2f26:cf44%5]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
- 17:18:05 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Viswas G <Viswas.G@microchip.com>, linux-scsi@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: pm80xx: Fix potential infinite loop
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1blaq9fyx.fsf@ca-mkp.ca.oracle.com>
-References: <20210407135840.494747-1-colin.king@canonical.com>
-Date:   Wed, 07 Apr 2021 13:18:02 -0400
-In-Reply-To: <20210407135840.494747-1-colin.king@canonical.com> (Colin King's
-        message of "Wed, 7 Apr 2021 14:58:40 +0100")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BY3PR05CA0027.namprd05.prod.outlook.com
- (2603:10b6:a03:254::32) To CO1PR10MB4754.namprd10.prod.outlook.com
- (2603:10b6:303:91::24)
+        Wed, 7 Apr 2021 13:19:16 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A1CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 10:19:06 -0700 (PDT)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 20CA322236;
+        Wed,  7 Apr 2021 19:19:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617815944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=m8JRbP+4VYEd0x+gmI9QGB89o+sA1dMj7BYXwPIjfiU=;
+        b=HpK6b27l8ZTf3aRY0bw5+e5CfWg0cxK57LBY+PTXDz1BZbYBulc7ua5Dys/1fKxYK1B2Ag
+        VsYgTCAJd/RXsLzzv+KHuyzDkD4O9D0XhfVp6MHohmKYstxD85PxVa0rhtr/SH6InBe6Fe
+        hG9UnHWWNVFq5SGrzlxmSj4UPGkbQoQ=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: spi-nor: implement OTP erase for Winbond and similar flashes
+Date:   Wed,  7 Apr 2021 19:18:58 +0200
+Message-Id: <20210407171858.8132-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY3PR05CA0027.namprd05.prod.outlook.com (2603:10b6:a03:254::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend Transport; Wed, 7 Apr 2021 17:18:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f077595f-8ea2-415f-01f8-08d8f9e91b63
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1376:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB13765577A27F3A63BF36C4D78E759@MWHPR10MB1376.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: msj7Y4SMI3AYw4K4+LgaO4n2YwHhmATOlIXoDntbt0d/4YF3Ad1jk/aLhQFboBgYAmCxj32DrjiKPzsl6ELoBpiFG+VU3OoErg3m7Oy+gXcbSwJrNhtYjtFF7i7aPW6jLIGfGZukvgL7fk9YdvyDV+/F4JUzCNfUNsJQoXqT7S4/wFJIxs9596h2BHZLpK/OJNI6Red+wimIy4llNKEPlRcQ/57+d/hoMuxJbp1oeS9reXPQT0lRoNbM89yQZgCqdhMdtKBPgEqwZLmJiwM9kYxnB7RgVvd/IRC1Yp835sD/mqCqbnrbZhoqkQ32BzM4Pn2JN9O7anibdIGMWMht9HIUQ+DkUTuL9XurmrO9bMhTLBcRNwMXk++vXMkXFLSQrX4KrRZQr/PPr+o+UCv6e2cUoFHQAotDrBXevjGaShoFFFAmISouffoFnt7j4cwbmkVEdlQ1FXnh0OAhHd0wyMA/LdSInRJQ4CWoQhMQL9czqkmZKIvoovC8s94ADTEpaHhZFqYL37d7ecJrYjMtl4Ix/Lbw/G898VyL7oT8qmiY65c1Oku4pSWW9sifJ8TO27C6K/V5o2uRi+5rwZOGAHWiWiOgGjKgG9k6IPb4sVZna9wKKyNjICGrul6wqSaj6yKYqDBm43f96CzoMdNYQIDKojZUZUfNTyvRYHp8ILP+sUSmC7JPsZ56fO8l1Ipj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4754.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(376002)(346002)(39860400002)(956004)(6916009)(38350700001)(36916002)(8936002)(66946007)(8676002)(2906002)(66556008)(5660300002)(26005)(83380400001)(478600001)(86362001)(52116002)(4744005)(54906003)(7696005)(55016002)(316002)(38100700001)(186003)(6666004)(66476007)(4326008)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Fs59wfLw45skekUJVFjaj3QpV75/Moznqsj145k7tnaNaF8EkDAbWo07JRl7?=
- =?us-ascii?Q?VOkPueYAccSdbttxgVXWAhn7IPFIoBgWkmiNhWM4o8pN6ulAgEdVz/wHkec3?=
- =?us-ascii?Q?3MOInHNPS9KcXW/40QevHwg1dpwjmIVy2YB2t4lehIO71I34edhApkR4QrSK?=
- =?us-ascii?Q?JQ091XVrApJkhgfNQNOTUtP3NT8ZKRUZH2NdpokcCMoHwI1nkczA0DlktUFq?=
- =?us-ascii?Q?ukmfwO76115ZXlCUmFiL1/IV9lh8jGeyxV/iAuN0CaF6bK4hKqjGa9xf9zNO?=
- =?us-ascii?Q?62oljBipt97McJ8idT92m+O3YUCfyWrSZdcnf1IS3DGlGE2Dv0i1/6n8djzt?=
- =?us-ascii?Q?ArpLHdZ1VG42785FqWs04YtvZo72eocYCzUtaOvxDSY4nkk3UHm3rajk5Zpz?=
- =?us-ascii?Q?Pp0judkxC0une/nEtNUfmpMZmbHky6QbkXPtb7JCLZaVdxl58laxFlWabvFc?=
- =?us-ascii?Q?jMjZXGgn1KtpxFJuBiafWiAu+MvIwvxoYcOrlpFqduMLkNVKw9NTPRDtcEfQ?=
- =?us-ascii?Q?k3dDdTx2eraj1SoronW+xoiz5FLxLZqVqFk3IBAVPsDZeXxAJida9kSwKCI3?=
- =?us-ascii?Q?Kn4uCYu2zQWGK2+OMtGLQ5N19TGkCPnVqIuHeXBad30zmULkUSDADguGmfiR?=
- =?us-ascii?Q?7jvwhuuUTWMJ6+9gvbdtDRh+nAKNZ7uzjrgnvniNbQ6lZZ6VLoURa14DyxwK?=
- =?us-ascii?Q?GpBXwbRPvf6tOoceeL7rFDtLCfJ5pWyPa1IhL9uQfz8KTY+2gFAkqHrqGmrj?=
- =?us-ascii?Q?En2QCj/KSCFLPDxUkbVlWGN3ja9wIaKqVLlJilFFNtatAL5kNiWXV2cxSHrO?=
- =?us-ascii?Q?fz8WSeToDnM0EpUZ8XAaGH7c+/M+4FS3MsGixwPQIwH1umFpybSynYtj5v2g?=
- =?us-ascii?Q?qdPleu6nZHPrjWrkDRLgANQQ9rmpAb1z3Xv9MvXIlXf/97es/B1YepgnD/Y7?=
- =?us-ascii?Q?MH0u8V/rmz0wRQ3lbMIEw9mamAkew+twuAZyofYy1ZuYFXTtYjpntXxYmI49?=
- =?us-ascii?Q?4AaQc7fAlsAYDiQJAedCDpkJy/M6jqd8I5XhWLufocON8VUtFJfdthmeDgKL?=
- =?us-ascii?Q?/KU8tZItDjR2Nq2Lz3cAenBSUrnUKP5e0CjM/9EQHJJjSKoz3PzGkNVaHF9C?=
- =?us-ascii?Q?ZQSyb5xRugrv19WyWkWQbE+33JK1INgcF0PQQT2NXXdZFHlHWS9UGom+iGhi?=
- =?us-ascii?Q?Oxu2F1QlURJHmWWF3G8O8eymwwxllziZN6u8NfcGDmYxT/nFejMIWSRACpkt?=
- =?us-ascii?Q?QWMVHveLNze0RE+ObwH0KXbsxuAQDAwW50Yl6rrr8XWpw0wxC1kTTvnJqfQu?=
- =?us-ascii?Q?h2H8h3qXNPDhM3nyo1xQF5sw?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f077595f-8ea2-415f-01f8-08d8f9e91b63
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4754.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 17:18:05.7076
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ehz4gpGLnXbvgPC6Fz4bLhup9hN105uuxnWl0rqlUiwYDQq2jS5jmzuQ/psJ0Jank3oer96FCkHj/hnDMcT7eadZBCHl1qdEB5L+o8qzfSc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1376
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9947 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104070117
-X-Proofpoint-GUID: naKXGQRpoHDg0byGLphyVXpwsk9yRQ_P
-X-Proofpoint-ORIG-GUID: naKXGQRpoHDg0byGLphyVXpwsk9yRQ_P
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9947 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 clxscore=1015
- bulkscore=0 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070117
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Winbond flashes with OTP support provide a command to erase the OTP
+data. This might come in handy during development.
 
-Hi Colin!
+This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
+NXP FSPI controller.
 
-> The for-loop iterates with a u8 loop counter i and compares this with
-> the loop upper limit of pm8001_ha->max_q_num which is a u32 type.
-> There is a potential infinite loop if pm8001_ha->max_q_num is larger
-> than the u8 loop counter. Fix this by making the loop counter the same
-> type as pm8001_ha->max_q_num.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/mtd/spi-nor/core.c    |  4 +-
+ drivers/mtd/spi-nor/core.h    |  4 ++
+ drivers/mtd/spi-nor/otp.c     | 75 ++++++++++++++++++++++++++++++++++-
+ drivers/mtd/spi-nor/winbond.c |  1 +
+ 4 files changed, 80 insertions(+), 4 deletions(-)
 
-No particular objections to the patch for future-proofing. However, as
-far as I can tell max_q_num is capped at 64 (PM8001_MAX_MSIX_VEC).
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 8cf3cf92129e..3f726a87e5a9 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
+ 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
+ }
+ 
+-static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+-					    const u8 *buf, size_t len)
++int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
++				     const u8 *buf, size_t len)
+ {
+ 	if (spi_nor_protocol_is_dtr(nor->reg_proto))
+ 		return -EOPNOTSUPP;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index e9b6b2e76cdb..648e67bea0b2 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -213,6 +213,7 @@ struct spi_nor_otp_ops {
+ 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ 	int (*lock)(struct spi_nor *nor, unsigned int region);
++	int (*erase)(struct spi_nor *nor, loff_t addr);
+ 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+ };
+ 
+@@ -480,6 +481,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
+ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 			     struct spi_mem_op *op,
+ 			     const enum spi_nor_protocol proto);
++int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
++				     const u8 *buf, size_t len);
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+@@ -505,6 +508,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+ 
+ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
+ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index 5021d40dffbf..ea7db4b354f7 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -8,6 +8,7 @@
+ #include <linux/log2.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/spi/spi-mem.h>
+ 
+ #include "core.h"
+ 
+@@ -110,6 +111,50 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf
+ 	return ret ?: written;
+ }
+ 
++/**
++ * spi_nor_otp_erase_secr() - erase one OTP region
++ * @nor:        pointer to 'struct spi_nor'
++ * @to:         offset to write to
++ * @len:        number of bytes to write
++ * @buf:        pointer to src buffer
++ *
++ * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
++ * used on GigaDevice and Winbond flashes.
++ *
++ * Return: 0 on success, -errno otherwise
++ */
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
++{
++	int ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
++				   SPI_MEM_OP_ADDR(3, addr, 0),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_NO_DATA);
++
++		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		nor->bouncebuf[2] = addr & 0xff;
++		nor->bouncebuf[1] = (addr >> 8) & 0xff;
++		nor->bouncebuf[0] = (addr >> 16) & 0xff;
++
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
++						       nor->bouncebuf, 3);
++	}
++	if (ret)
++		return ret;
++
++	return spi_nor_wait_till_ready(nor);
++}
++
+ static int spi_nor_otp_lock_bit_cr(unsigned int region)
+ {
+ 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+@@ -315,12 +360,14 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+ }
+ 
+-static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
++static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
++				      size_t len, bool is_erase)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+ 	const size_t rlen = spi_nor_otp_region_len(nor);
+ 	unsigned int region;
++	loff_t rstart;
+ 	int ret;
+ 
+ 	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
+@@ -336,7 +383,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+ 
+ 	while (len) {
+ 		region = spi_nor_otp_offset_to_region(nor, from);
+-		ret = ops->lock(nor, region);
++
++		if (is_erase) {
++			rstart = spi_nor_otp_region_start(nor, region);
++			ret = ops->erase(nor, rstart);
++		} else {
++			ret = ops->lock(nor, region);
++		}
+ 		if (ret)
+ 			goto out;
+ 
+@@ -350,6 +403,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+ 	return ret;
+ }
+ 
++static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
++}
++
++static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
++
++	/* OTP erase is optional */
++	if (!ops->erase)
++		return -EOPNOTSUPP;
++
++	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
++}
++
+ void spi_nor_otp_init(struct spi_nor *nor)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+@@ -373,4 +443,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
+ 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
+ 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
+ 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
++	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
+ }
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 9a81c67a60c6..96573f61caf5 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ static const struct spi_nor_otp_ops winbond_otp_ops = {
+ 	.read = spi_nor_otp_read_secr,
+ 	.write = spi_nor_otp_write_secr,
++	.erase = spi_nor_otp_erase_secr,
+ 	.lock = spi_nor_otp_lock_sr2,
+ 	.is_locked = spi_nor_otp_is_locked_sr2,
+ };
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.20.1
+
