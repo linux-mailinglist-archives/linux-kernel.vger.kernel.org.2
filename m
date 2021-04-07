@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00B6356B9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2130356B9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351932AbhDGL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:57:12 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:26386 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351925AbhDGL5K (ORCPT
+        id S244708AbhDGL5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:57:00 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:61766 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235246AbhDGL45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:57:10 -0400
+        Wed, 7 Apr 2021 07:56:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1617796621; x=1649332621;
+  t=1617796608; x=1649332608;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=TyfOh8mJ7OPn6qhfH6Ryl1SvZ+awCxnRWrTwDJ9ElKQ=;
-  b=IN4/A6HW1bEe3qz5a4HVFruResBfMTDxuJTJcT+iEeym/N9UMT9osIGA
-   kvNVaREHAcEvth+zsEKLpxD15+0dm3lrGszQZg935k0EU/p1ilgxtr1/+
-   ITQTZdcNpibHbl0nGk27GIkKNpoFSSF0RNXR3/mGtC3Wfykt447udqmQP
-   6VUT1Jm/muVWNbvZgeh2Vwvl/pcCrOS7FuNKITLp55KTPnbnr/Kmv0Y9f
-   Mmhuv+AQ6bJTch/sOtTtd/gGC9IOAxgTE46PVwENnAKiQ5XJ8m8y7/L0L
-   10fu30S8v5Rj3zZAtiU2WtzUQlkv4EoMq0No3pY1pEtouuCV/wCodrQJv
-   A==;
-IronPort-SDR: fepby/UFf/ANbqAkLj37c7TTSw/xC/bOa2PYtAXGf2C5/OlT9XNKlrfn23S/ip6FoWIshodqPr
- h5RNAWwfZFokVFmxkss+55eqqLHf2QPui9RmBJ8X0mZJnGcXGsZce6urlr77fbXfVMQFlFkNdO
- xbBPOcfwuwbWX7MbvcsuKe88jojXowz3/5Kb+qD2BLlLAt1XqwR2C/oW5hSuGIdTfg+2HmAAWC
- W564e7Kmnmnpqfq696Dh7Nq9xyf6F8WoXWad5dxftoBJ32SpKUvF43ZOpij85k2hfHN1UGjicX
- UUc=
+  bh=H5pI3ie5XSFSAQDc8gf+PA4Da275zUOynoSsfmXEaiQ=;
+  b=Oqw5GNxU693Nu1y7iUGRJGpIX2r3FO7rfuruAPYyI+bzxVgHUxABYqPf
+   q0i7jfaOjCYXKLOHC0k56bCxOytrlw3mo1bhi2hbWpnLKFwz2nYyzRvNl
+   bvSsUTKbdbm3/Z1Svgi1ZYVu91OU2Ml1RoC2GEckZWKd0fNFfNvYVevOC
+   UFtYiCXlRxb/9ddFLFhqYi1vsXm/kkA95WoyY1JuWffBwO7PHS1i+v2IA
+   PxBI4nOOnZ40YIYgLFmeAz96zFFd3nEkjsPafLTvysELxDadRygrcynpR
+   3hcwPHfoSUK3NM7DLzs2CX53D1ddO5XsdcWewVH24F6q9Q8eh8wvUCxpg
+   Q==;
+IronPort-SDR: ML4HQYeikW8IyapqoYEXE/isVonJhfSecWIj/suBbH4qvvF2clUkvp9zZbOwTm46uFLtfHitE9
+ f+LE+HIFCZbFw0igUYNZtVvpxI9MUhCMMOhCfaZWQ1XlgAakPG8B7tOrODwJsFJ0Lky4PIygtG
+ FA+ObMmGbA7UyjY37j+r7aO1d7OhN7flP0lc74HxhCfHRhMGMEnyhX7eZnv71Riq0/py9Uh6rV
+ pMydg3wrAkU5VpIlH13u2nuBtC/zXNlfUI/CtxPlmjZ7ndfuGFwcmYbdmGTE2dYCoQOfilK6ut
+ WXs=
 X-IronPort-AV: E=Sophos;i="5.82,203,1613404800"; 
-   d="scan'208";a="164998595"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Apr 2021 19:56:53 +0800
-IronPort-SDR: uQD/n7QgPB6iB5sJJTgW5PDETJrB0mXZgIepjJ3bliwyXzC3kgRSAIRbf+lOsKUE2yohUE5nbU
- /Xr0SdlQVU8L2ZO72NIXPLjLJo2QgBYU+MMXMwbXcEmpyQz77rEhbQ+JQ8G5WR8urU5swQyzkk
- pryMiO3s1o+addDEVjRMW/RD1ii3AVNno0r4RkY9NccHBIMtOr1XDq+1JW7CNqupTP8o9i5jgu
- o5zoi3hAGO+6Ho076J542VVlYhTWy6xE122DKcHGSKP1HcuwplKAf5VNHSpnOFkwfiCJb5mEcE
- K2FNB7qfEV2evPm9/6vlNWW5
+   d="scan'208";a="168551281"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Apr 2021 19:56:47 +0800
+IronPort-SDR: 3M3L+t/bnSn0udrdCD23bEnInZLrRTR2P+wovQhuK7p/YVOaKMzwCOT3Ef5oJp3KpfUwYUzbZJ
+ kz7ic3tSKFCMR59d1qK///thABhReTSmn4jZkXPzEZ/hwqQu9V0bBozTzZni7xae9dVT5rXgFd
+ gpGYo4CgfyJ4bSENcbOJezEgb76XVnHvo8Agg1KA/o37I6tTFc0ZwQ2kLRYecBgXf913Xgizf6
+ HBPvWlcypYaHoXJAKfk8EQAHuCFVlGus0AOQrVLwUcOOQeT9mbpDWHpxAUh4JYj/4EI1P6La51
+ rxVSq6O8uc+85v5it4G2rzCs
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 04:36:30 -0700
-IronPort-SDR: vvzMd1q7ccIG2Fj24WATyo39smazcLM+7q6JNW/spiaEZLmVJJUp5t73mIwIMZ6RCmoxoj1IEW
- ZJXBdOmPgEN9QD7VDjxuh+8ZCMP5tBBwuQttdhzQOMpHIYqRcBO+STn1zczJcbdlTXtv5qFY5B
- T82CXEgiNkSu6CywTyCoSqjBdU0ypnibeohraiigdxAgBW490UYvoz9SXiormPT0/0qhI9gSbB
- C9fU9vnEQpSX/ce7x7eaVwTW4phW3R5hSVgPtbFJoDXq5+hMxE+TkAlzsu8sn8UTi/TncktR9q
- MSA=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 04:36:32 -0700
+IronPort-SDR: 9e2jbEm8D1doKxEIYX3CmwvGDbWmBBGVjWx1JrOmMxjBeG/PY90cnZBcFhnunFZpyiXM6MnEQz
+ KqCqa9m0k7FMtMK1KvCw60ICbcn3VdT/i0zly4dDsaf9LzZCWS7VgBaxoPSs9prS+ids7c73dX
+ plYX4luXIOMQ0GC/jOhv3hvfqIkcaRIB9cpSi+WRaQauTFlfPE6e2oIOUVY5PKdVLl32TpPoiu
+ i7Sp+CSG4Vnrp6OfXPrF7DC2pVZ+McGLU6uEC1dWRoBdrp3mgKuwvWzFmiPh6fxV6L2ZaASefK
+ s0Y=
 WDCIronportException: Internal
 Received: from unknown (HELO twashi.fujisawa.hgst.com) ([10.225.163.90])
-  by uls-op-cesaip02.wdc.com with ESMTP; 07 Apr 2021 04:56:45 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Apr 2021 04:56:47 -0700
 From:   Damien Le Moal <damien.lemoal@wdc.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         linux-riscv@lists.infradead.org,
@@ -57,9 +57,9 @@ To:     Palmer Dabbelt <palmer@dabbelt.com>,
 Cc:     Max Filippov <jcmvbkbc@gmail.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Anup Patel <anup.patel@wdc.com>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 1/2] binfmt_flat: allow not offsetting data start
-Date:   Wed,  7 Apr 2021 20:56:37 +0900
-Message-Id: <20210407115638.1055824-2-damien.lemoal@wdc.com>
+Subject: [PATCH 2/2] riscv: introduce asm/flat.h
+Date:   Wed,  7 Apr 2021 20:56:38 +0900
+Message-Id: <20210407115638.1055824-3-damien.lemoal@wdc.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210407115638.1055824-1-damien.lemoal@wdc.com>
 References: <20210407115638.1055824-1-damien.lemoal@wdc.com>
@@ -69,120 +69,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2217b9826246 ("binfmt_flat: revert "binfmt_flat: don't offset
-the data start"") restored offsetting the start of the data section by
-a number of words defined by MAX_SHARED_LIBS. As a result, since
-MAX_SHARED_LIBS is never 0, a gap between the text and data sections
-always exist. For architecture which cannot support a such gap between
-the text and data sections (e.g. riscv nommu), flat binary programs
-cannot be executed.
-
-To allow an architecture to request contiguous text and data sections,
-introduce the macro FLAT_TEXT_DATA_NO_GAP which can be defined by the
-architecture in its asm/flat.h file. With this change, the macro
-DATA_GAP_WORDS is conditionally defined in binfmt_flat.c to
-MAX_SHARED_LIBS for architectures tolerating the gap
-(FLAT_TEXT_DATA_NO_GAP undefined case) and to 0 when
-FLAT_TEXT_DATA_NO_GAP is defined. DATA_GAP_WORDS is used in
-load_flat_file() to calculate the data section length and start
-position.
-
-The definition of FLAT_TEXT_DATA_NO_GAP by an architecture also
-prevents the use of the separate text/data load case (when
-FLAT_FLAG_RAM and FLAT_FLAG_GZIP are not set with NOMMU kernels).
+uclibc/gcc combined with elf2flt riscv linker file fully resolve the
+PC relative __global_pointer$ value at compile time and do not generate
+a relocation entry to set a runtime gp value. As a result, if the
+flatbin loader introduces a gap between the text and data sections, the
+gp value becomes incorrect and prevent correct execution of a flatbin
+executable. Avoid this problem by introducing the file asm/flat.h
+and defining the macro FLAT_TEXT_DATA_NO_GAP to indicate that the text
+and data sections must be loaded at contiguous addresses.
 
 Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
 ---
- fs/binfmt_flat.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ arch/riscv/include/asm/Kbuild |  1 -
+ arch/riscv/include/asm/flat.h | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/include/asm/flat.h
 
-diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
-index b9c658e0548e..2bfa05ac5cb4 100644
---- a/fs/binfmt_flat.c
-+++ b/fs/binfmt_flat.c
-@@ -74,6 +74,12 @@
- #define	MAX_SHARED_LIBS			(1)
- #endif
- 
-+#ifdef FLAT_TEXT_DATA_NO_GAP
-+#define DATA_GAP_WORDS			(0)
-+#else
-+#define DATA_GAP_WORDS			(MAX_SHARED_LIBS)
-+#endif
+diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+index 445ccc97305a..a8b54a3f4c2b 100644
+--- a/arch/riscv/include/asm/Kbuild
++++ b/arch/riscv/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += early_ioremap.h
+ generic-y += extable.h
+-generic-y += flat.h
+ generic-y += kvm_para.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
+diff --git a/arch/riscv/include/asm/flat.h b/arch/riscv/include/asm/flat.h
+new file mode 100644
+index 000000000000..43bccf090fd1
+--- /dev/null
++++ b/arch/riscv/include/asm/flat.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_RISCV_FLAT_H
++#define _ASM_RISCV_FLAT_H
 +
- struct lib_info {
- 	struct {
- 		unsigned long start_code;		/* Start of text segment */
-@@ -437,7 +443,6 @@ static int load_flat_file(struct linux_binprm *bprm,
- 	__be32 __user *reloc;
- 	u32 __user *rp;
- 	int i, rev, relocs;
--	loff_t fpos;
- 	unsigned long start_code, end_code;
- 	ssize_t result;
- 	int ret;
-@@ -560,6 +565,9 @@ static int load_flat_file(struct linux_binprm *bprm,
- 	 * it all together.
- 	 */
- 	if (!IS_ENABLED(CONFIG_MMU) && !(flags & (FLAT_FLAG_RAM|FLAT_FLAG_GZIP))) {
-+#ifndef FLAT_TEXT_DATA_NO_GAP
-+		loff_t fpos;
++#include <asm/unaligned.h>
 +
- 		/*
- 		 * this should give us a ROM ptr,  but if it doesn't we don't
- 		 * really care
-@@ -576,7 +584,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			goto err;
- 		}
- 
--		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
-+		len = data_len + extra + DATA_GAP_WORDS * sizeof(unsigned long);
- 		len = PAGE_ALIGN(len);
- 		realdatastart = vm_mmap(NULL, 0, len,
- 			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
-@@ -591,7 +599,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			goto err;
- 		}
- 		datapos = ALIGN(realdatastart +
--				MAX_SHARED_LIBS * sizeof(unsigned long),
-+				DATA_GAP_WORDS * sizeof(unsigned long),
- 				FLAT_DATA_ALIGN);
- 
- 		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
-@@ -620,9 +628,14 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			(datapos + (ntohl(hdr->reloc_start) - text_len));
- 		memp = realdatastart;
- 		memp_size = len;
-+#else
-+		pr_err("Separate text/data loading not supported\n");
-+		ret = -ENOEXEC;
-+		goto err;
-+#endif /* FLAT_TEXT_DATA_NO_GAP */
- 	} else {
- 
--		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
-+		len = text_len + data_len + extra + DATA_GAP_WORDS * sizeof(u32);
- 		len = PAGE_ALIGN(len);
- 		textpos = vm_mmap(NULL, 0, len,
- 			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
-@@ -638,7 +651,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 
- 		realdatastart = textpos + ntohl(hdr->data_start);
- 		datapos = ALIGN(realdatastart +
--				MAX_SHARED_LIBS * sizeof(u32),
-+				DATA_GAP_WORDS * sizeof(u32),
- 				FLAT_DATA_ALIGN);
- 
- 		reloc = (__be32 __user *)
-@@ -714,7 +727,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			ret = result;
- 			pr_err("Unable to read code+data+bss, errno %d\n", ret);
- 			vm_munmap(textpos, text_len + data_len + extra +
--				MAX_SHARED_LIBS * sizeof(u32));
-+				  DATA_GAP_WORDS * sizeof(u32));
- 			goto err;
- 		}
- 	}
++static inline int flat_get_addr_from_rp(u32 __user *rp, u32 relval, u32 flags,
++					u32 *addr)
++{
++	*addr = get_unaligned((__force u32 *)rp);
++	return 0;
++}
++
++static inline int flat_put_addr_at_rp(u32 __user *rp, u32 addr, u32 rel)
++{
++	put_unaligned(addr, (__force u32 *)rp);
++	return 0;
++}
++
++/*
++ * uclibc/gcc fully resolve the PC relative __global_pointer value
++ * at compile time and do not generate a relocation entry to set a
++ * runtime gp value. As a result, the flatbin loader must not introduce
++ * a gap between the text and data sections and keep them contiguous to
++ * avoid invalid address accesses.
++ */
++#define FLAT_TEXT_DATA_NO_GAP	(1)
++
++#endif /* _ASM_RISCV_FLAT_H */
 -- 
 2.30.2
 
