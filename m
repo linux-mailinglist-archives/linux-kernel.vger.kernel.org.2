@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC44C356B28
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1F1356B2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343506AbhDGL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:26:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243162AbhDGL0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:26:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617794772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hevnKcQ4I9jq+ZzW4AWSbIV29KiYxHuVFGDAD6+MJjk=;
-        b=InqJH9Na46w5hPszAycdni17NJfTNm4qYSpDXmLNNBh/6csKrSu4cq/mW10hgvxNKG00Zy
-        5TsyV6y5scwq0MrJRIZU5ThFEHfiwix1lQ64mWjIrWPxNfUnu9Q7iw3Af4r5orwStQ3Xaw
-        MCH2jd7WhvkZPsNr5XYpSjQsbIUCQT8=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-aqH710yjNv2cQy2MQY91ww-1; Wed, 07 Apr 2021 07:26:11 -0400
-X-MC-Unique: aqH710yjNv2cQy2MQY91ww-1
-Received: by mail-ej1-f71.google.com with SMTP id yk6so3012400ejb.21
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:26:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hevnKcQ4I9jq+ZzW4AWSbIV29KiYxHuVFGDAD6+MJjk=;
-        b=Nu9O0ob4oMypCx7YuTwYQ8Oss+UAxVyFqqVIAPzjS6p/i0F2FqmhMGSMQz3ss+rZQa
-         dPTtJ9wg29FI+waT/RVD1w8s/Fh+GfyF1+zTnYcwbgmqrRpFH0WqQRT8UHijmehEQPUf
-         yvlbUYhVR0d1j240BCFnd8V4zqjKO1LQ4EfGq5wT+RHs8GmTCJnakLsbs9KNwK+0rd6+
-         JwxOqTyJ2sCoxZoEr/05LlirE2o9UxjgBJ+92o9EPIZQ78kL97VmWOsOAghwo7Y6eV8U
-         RvXuW8rt4rLnm6q8pt0Jbdqa6/ONToF3gyxcg79MInQSB5q3952Zg07jYdjU9VxoG58L
-         /XQA==
-X-Gm-Message-State: AOAM530RFoxEGRRd4iC2qeGAF+CFA1/oKsJDX2Qod7RJEAtk/FRyWccZ
-        ZyiJo3hhsNxcKRHZiX//fO/+JBWD4ql+KHIv3wn25RcC+NU0fgAn5hznuFY7rgRRybDqGB5at/q
-        s2RdYBI1mvqpztY8tSYjlqf2htvFj8C59SWMp0ES0Y2S2Q0Zi4jtYd1eut0xM0lmm8WqliLtPE6
-        aK
-X-Received: by 2002:a17:906:5056:: with SMTP id e22mr3077612ejk.289.1617794769550;
-        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJltS0uUBU91wWC+Pkq7DwEgumF1o8eQ6ZXJwpirqAtiwQthRhT5WzUwSkKd89iCBCI/whxQ==
-X-Received: by 2002:a17:906:5056:: with SMTP id e22mr3077593ejk.289.1617794769324;
-        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id k19sm8306722ejk.117.2021.04.07.04.26.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: panasonic-laptop: remove redundant
- assignment of variable result
-To:     Colin King <colin.king@canonical.com>,
-        Kenneth Chan <kenneth.t.chan@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210326192022.623001-1-colin.king@canonical.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e270b8b9-2562-ba49-32af-0f9d5ea1760b@redhat.com>
-Date:   Wed, 7 Apr 2021 13:26:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S1343544AbhDGL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234334AbhDGL1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:27:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1D266102A;
+        Wed,  7 Apr 2021 11:27:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617794851;
+        bh=Oc+4fiOadZVriRmtYF2X6D50TYJGSbWqaPmJNsL0qLQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AcZ+rPjZz3fSPP2eQqqw4sfVrloxYvRvcvxmPhw8cGgSVABR5U0zrDA6YdQO63iaR
+         WC6RrIIcDA3iQ5ZGUO5F90z5ukGGtCUExsRfsH0Plbbe9/DUeaqV8+xope8ueDd84X
+         712Y08fenbQ7hrGjDYBPgNMYOMkKrSL/qSbWNzr63qNSOTlyYV37PQfLM3aGoIIxxn
+         t4PJA6lzDIb5zfnF63QX8J/B7ISDKgUQyTrr/70fjA+d5rVvEPYm8/E4mKDe19bbRA
+         zudGmSuAJtbi/Zso1I0own9s8EtIG02uI6E6V6xz7hqQ3S6mKkLoNt1Hd7EG3y+aL4
+         Qwr3KX6hkQYyQ==
+Date:   Wed, 7 Apr 2021 12:27:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
+ endpoint device voltage regulators
+Message-ID: <20210407112713.GB5510@sirena.org.uk>
+References: <20210401212148.47033-1-jim2101024@gmail.com>
+ <20210401212148.47033-3-jim2101024@gmail.com>
+ <20210406164708.GM6443@sirena.org.uk>
+ <CANCKTBsiujTkOdh60etBqF_hE8exg6m9TDxkGHVVAGVS2SFCcQ@mail.gmail.com>
+ <20210406173211.GP6443@sirena.org.uk>
+ <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210326192022.623001-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
+Content-Disposition: inline
+In-Reply-To: <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
+X-Cookie: Dry clean only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 3/26/21 8:20 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable result is being assigned a value that is never
-> read and it is being updated later with a new value. The
-> assignment is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+--xXmbgvnjoT4axfJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+On Tue, Apr 06, 2021 at 02:25:49PM -0400, Jim Quinlan wrote:
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+> I'm a little confused -- here is how I remember the chronology of the
+> "DT bindings" commit reviews, please correct me if I'm wrong:
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+> o JimQ submitted a pullreq for using voltage regulators in the same
+> style as the existing "rockport" PCIe driver.
+> o After some deliberation, RobH preferred that the voltage regulators
+> should go into the PCIe subnode device's DT node.
+> o JimQ put the voltage regulators in the subnode device's DT node.
+> o MarkB didn't like the fact that the code did a global search for the
+> regulator since it could not provide the owning struct device* handle.
+> o RobH relented, and said that if it is just two specific and standard
+> voltage regulators, perhaps they can go in the parent DT node after
+> all.
+> o JimQ put the regulators back in the PCIe node.
+> o MarkB now wants the regulators to go back into the child node again?
 
-Regards,
+...having pointed out a couple of times now that there's no physical
+requirement that the supplies be shared between slots never mind with
+the controller.  Also note that as I've said depending on what the
+actual requirements of the controller node are you might want to have
+the regulators in both places, and further note that the driver does not
+have to actively use everything in the binding document (although if
+it's not using something that turns out to be a requirement it's likely
+to run into hardware where that causes bugs at some point).
 
-Hans
+Frankly I'm not clear why you're trying to handle powering on PCI slots
+in a specific driver, surely PCI devices are PCI devices regardless of
+the controller?
 
+--xXmbgvnjoT4axfJE
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> ---
->  drivers/platform/x86/panasonic-laptop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/panasonic-laptop.c b/drivers/platform/x86/panasonic-laptop.c
-> index 6388c3c705a6..d4f444401496 100644
-> --- a/drivers/platform/x86/panasonic-laptop.c
-> +++ b/drivers/platform/x86/panasonic-laptop.c
-> @@ -973,7 +973,7 @@ static int acpi_pcc_hotkey_add(struct acpi_device *device)
->  	pcc->mute = pcc->sinf[SINF_MUTE];
->  	pcc->ac_brightness = pcc->sinf[SINF_AC_CUR_BRIGHT];
->  	pcc->dc_brightness = pcc->sinf[SINF_DC_CUR_BRIGHT];
-> -	result = pcc->current_brightness = pcc->sinf[SINF_CUR_BRIGHT];
-> +	pcc->current_brightness = pcc->sinf[SINF_CUR_BRIGHT];
->  
->  	/* add sysfs attributes */
->  	result = sysfs_create_group(&device->dev.kobj, &pcc_attr_group);
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBtlxAACgkQJNaLcl1U
+h9AVggf+KlMNZIoTcOq/oLb3wKm6+ONJs3mMv2sDmONFmlTeFHAMuy2gNTI9//f7
+J7oWgDx/7VcL3Fn3ODnM+rBsCYXxWIi8oeryGPmn4Z7eF2RkPR3gfNYz5sCopQD8
+jXlpB0wv+wwEuj2jmiFNnLUWDDA4U4mK4oo4Genm/9a9Rm0QN3e1lX0c8ku/Fg5Z
+sc+2kh5IZr8da5JrJPoMTIKx2DgsESM/vOC0ZtnVsPDqTGLTa/NtPSp+gX9l2jif
+4ff65/knyAyc4mhni/5vFBNkhmNpE7qpiOFZkelDDNRQIUp2vEtsezt1mrUsIFli
+shZcnBD1K3uwGQhIrLwsSnesnX7SVQ==
+=SqjM
+-----END PGP SIGNATURE-----
 
+--xXmbgvnjoT4axfJE--
