@@ -2,204 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB153574E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EF23574E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355609AbhDGTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhDGTXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:23:04 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F32C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:22:54 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id f29so11351760pgm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ke0rc9XfMf9BcEhOIRjBDFSOHCSu8Insw4la98udkfI=;
-        b=dkn2z9paIb5VYx0wtP5aKvdI23w7VMZ1O7ju3Ca/pZzlkns43wwtyfBWl5DKnfcUpz
-         wr7X5Hf/BjaaCgvjQwbIqLRWndt+MItgIzOGEZhpnX70qcFNN6audlLSe8gS6z1DADdf
-         iU11sqKHX1CtZ6PY/r6enXrWbZVVhr/GAfoYU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ke0rc9XfMf9BcEhOIRjBDFSOHCSu8Insw4la98udkfI=;
-        b=hptvq6927LdVPc4b9uil/J0CkX3odXPMXN3iVrAMlpBejD7PNiUI8999CiQSFSleNE
-         2BvXYKCz1usW054Dn1I0aQIwyRX4qFBHrQTrgFS/ddlSQPxWgcrIOZ400t60q/PvG0z0
-         nWkQWV15P/68Zy7B4IDiAXZmd8D2VO4uxSI7pRElBcbv7fh/zM72qauu3km577riADiS
-         QPjoJzjyqk0FAdknhqiO1a96DJqpwLE7OyDydFzcGBC7y2SQhHIjhC18hBbFYR4plgET
-         hSO8u4hQfKzYT+EkwwA84eoyGPqmV2qucCgHEXr/bTimVCH/FyhNUxsgkBvh/ge8rvVd
-         5WfA==
-X-Gm-Message-State: AOAM532uttSZfb81HaLIyfJLfXYukJ5P8RVhmtRfnb/gn36jJRkk/Npu
-        DD5CP4VLXwYOjCrgafUhG8TkNg==
-X-Google-Smtp-Source: ABdhPJw3gwG8i+ZTCLIXPStASuu7D+EAq3vNs4JWpjSG/O34E4hVG4WXQ3XIWlQKIJJlCyJnmouMKw==
-X-Received: by 2002:aa7:96bc:0:b029:1f6:9937:fe43 with SMTP id g28-20020aa796bc0000b02901f69937fe43mr4376117pfk.68.1617823373801;
-        Wed, 07 Apr 2021 12:22:53 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h16sm21556115pfc.194.2021.04.07.12.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 12:22:53 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 12:22:52 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
- flexible-array member
-Message-ID: <202104071216.5BEA350@keescook>
-References: <20210304203822.GA102218@embeddedor>
+        id S236309AbhDGTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhDGTYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:24:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91C4F610CE;
+        Wed,  7 Apr 2021 19:24:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617823479;
+        bh=NzHxaMc9ymOaHFsr0WO3B8EPV7NmVSRJm/gRBzJJYQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gqnQR4Kg7z8Q9qHykgd/9B4hD79nCKGO9l9gDR1OvTk2CWe4lhrZYwlYH/rH9BWnE
+         DHZ0dOibaDhi7A4SgsNRTOJ4/8FB2BXANIvnWqa5O0XjRvdE75+n/vyxv9RcrSEZaF
+         aqu2HKfqyk0wY2s+ypjdY8iwKaHvPof3BSQKXMCzTrcDf0zmWdKoi76vrrbGr0a5UI
+         13SBBNlWHKJJyKr3T3IHslTOdIdzIjWxs9fACO0MXur84Q9Tfc2llVhwgPVVjV4yeQ
+         dmrJT0fhP58WgYHw2sMRTqfEu215Hyw/xfqJyNUBz5bKsahiVTm+NS8lmEPmatCLoM
+         QwSqZg9PY5tAA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0B8AD40647; Wed,  7 Apr 2021 16:24:37 -0300 (-03)
+Date:   Wed, 7 Apr 2021 16:24:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf arm-spe: Avoid potential buffer overrun.
+Message-ID: <YG4G9Fb8NO3MYYQa@kernel.org>
+References: <20210407153955.317215-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210304203822.GA102218@embeddedor>
+In-Reply-To: <20210407153955.317215-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 02:38:22PM -0600, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
-> 
-> Refactor the code according to the use of a flexible-array member in
-> struct aac_raw_io2 instead of one-element array, and use the
-> struct_size() and flex_array_size() helpers.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warnings:
-> 
-> drivers/scsi/aacraid/aachba.c: In function ‘aac_build_sgraw2’:
-> drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  3970 |     if (rio2->sge[j].length % (i*PAGE_SIZE)) {
->       |         ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:3974:27: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  3974 |     nseg_new += (rio2->sge[j].length / (i*PAGE_SIZE));
->       |                  ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4011:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4011 |   for (j = 0; j < rio2->sge[i].length / (pages * PAGE_SIZE); ++j) {
->       |                   ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4012:24: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4012 |    addr_low = rio2->sge[i].addrLow + j * pages * PAGE_SIZE;
->       |               ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4014:33: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4014 |    sge[pos].addrHigh = rio2->sge[i].addrHigh;
->       |                        ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4015:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4015 |    if (addr_low < rio2->sge[i].addrLow)
->       |                   ~~~~~~~~~^~~
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/60414244.ur4%2FkI+fBF1ohKZs%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Em Wed, Apr 07, 2021 at 08:39:55AM -0700, Ian Rogers escreveu:
+> SPE extended headers are >1 byte so ensure the buffer contains at
+> least this before reading. This issue was detected by fuzzing.
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  drivers/scsi/aacraid/aachba.c  | 13 +++++++------
->  drivers/scsi/aacraid/aacraid.h |  2 +-
->  2 files changed, 8 insertions(+), 7 deletions(-)
+>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-> index 4ca5e13a26a6..0f5617e40b94 100644
-> --- a/drivers/scsi/aacraid/aachba.c
-> +++ b/drivers/scsi/aacraid/aachba.c
-> @@ -1235,8 +1235,8 @@ static int aac_read_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u3
->  		if (ret < 0)
->  			return ret;
->  		command = ContainerRawIo2;
-> -		fibsize = sizeof(struct aac_raw_io2) +
-> -			((le32_to_cpu(readcmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
-> +		fibsize = struct_size(readcmd2, sge,
-> +				     le32_to_cpu(readcmd2->sgeCnt));
-
-readcmd2 is struct aac_raw_io2, and sge is the struct sge_ieee1212
-array, so this looks correct to me with the change to struct
-aac_raw_io2..
-
->  	} else {
->  		struct aac_raw_io *readcmd;
->  		readcmd = (struct aac_raw_io *) fib_data(fib);
-> @@ -1366,8 +1366,8 @@ static int aac_write_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u
->  		if (ret < 0)
->  			return ret;
->  		command = ContainerRawIo2;
-> -		fibsize = sizeof(struct aac_raw_io2) +
-> -			((le32_to_cpu(writecmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
-> +		fibsize = struct_size(writecmd2, sge,
-> +				      le32_to_cpu(writecmd2->sgeCnt));
-
-writecmd2 is struct aac_raw_io2, and sge is the struct sge_ieee1212
-array, so this looks correct to me with the change to struct
-aac_raw_io2.
-
->  	} else {
->  		struct aac_raw_io *writecmd;
->  		writecmd = (struct aac_raw_io *) fib_data(fib);
-> @@ -4003,7 +4003,7 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
->  	if (aac_convert_sgl == 0)
->  		return 0;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index f3ac9d40cebf..2e5eff4f8f03 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -210,8 +210,10 @@ static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
 >  
-> -	sge = kmalloc_array(nseg_new, sizeof(struct sge_ieee1212), GFP_ATOMIC);
-> +	sge = kmalloc_array(nseg_new, sizeof(*sge), GFP_ATOMIC);
-
-Technically, this is unrelated (struct sge_ieee1212 has not changed),
-but sge is a struct sge_ieee1212 pointer, so this is good robustness
-change, IMO.
-
->  	if (sge == NULL)
->  		return -ENOMEM;
+>  	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_EXTENDED) {
+>  		/* 16-bit extended format header */
+> -		ext_hdr = 1;
+> +		if (len == 1)
+> +			return ARM_SPE_BAD_PACKET;
 >  
-> @@ -4020,7 +4020,8 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
->  		}
->  	}
->  	sge[pos] = rio2->sge[nseg-1];
-> -	memcpy(&rio2->sge[1], &sge[1], (nseg_new-1)*sizeof(struct sge_ieee1212));
-> +	memcpy(&rio2->sge[1], &sge[1],
-> +	       flex_array_size(rio2, sge, nseg_new - 1));
-
-This was hard to validate, but looks correct to me. The flex array
-helper here is the same as the prior code (but now tied to the
-variables, which is more robust IMO). The use of seg[1] here appears to
-be just how this code works -- the loop above is rewriting the 1 through
-nseg_new - 1 array entries, and then this copies back the results.
-
->  
->  	kfree(sge);
->  	rio2->sgeCnt = cpu_to_le32(nseg_new);
-> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
-> index e3e4ecbea726..3733df77bc65 100644
-> --- a/drivers/scsi/aacraid/aacraid.h
-> +++ b/drivers/scsi/aacraid/aacraid.h
-> @@ -1929,7 +1929,7 @@ struct aac_raw_io2 {
->  	u8		bpComplete;	/* reserved for F/W use */
->  	u8		sgeFirstIndex;	/* reserved for F/W use */
->  	u8		unused[4];
-> -	struct sge_ieee1212	sge[1];
-> +	struct sge_ieee1212	sge[];
->  };
->  
->  #define CT_FLUSH_CACHE 129
+> +		ext_hdr = 1;
+>  		hdr = buf[1];
+>  		if (hdr == SPE_HEADER1_ALIGNMENT)
+>  			return arm_spe_get_alignment(buf, len, packet);
 > -- 
-> 2.27.0
+> 2.31.0.208.g409f899ff0-goog
 > 
-
-Thanks!
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Kees Cook
+
+- Arnaldo
