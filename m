@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9917D35780B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079A835780D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhDGW4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:56:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhDGW4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD8146121E;
-        Wed,  7 Apr 2021 22:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617836193;
-        bh=qwxHfnafLkEtJfvg0xpbJnCPJGqP8nFK5xWmfBv8bsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oK3a9TmRdBL/lPwSif296HMSXd0l6WN1N2MOA+P+zKIotQS2pD10SVJ12sUAgaXu4
-         O5laFgj+aUPyxgbj/+PxFSeGa4BDSEChbd8CvmD8n8WYYUebD6vbX789MZdSIg/R6j
-         CCXDotQDOa+btLFnwgduMjz1WfXCefjT/WY4j9OjYoRg6jGKwc9zQcyHzEq7G+kFMz
-         xMXubwbFu8iSyZdkWM/Zl0Q35xpOpzWdjziSuduyzGmQUY40EPL8FZ6QezrTxWZzXE
-         lkZ99SgB2mpmis0xYjEEZ/SKh+RKxKuRR2srNQHJkusp5JxO5secmyWoj4uC+nWjcu
-         BUC8XMpFF7l6Q==
-Date:   Thu, 8 Apr 2021 00:56:27 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, Sergey.Semin@baikalelectronics.ru,
-        linux-kernel@vger.kernel.org, digetx@gmail.com, treding@nvidia.com,
-        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v6 2/5] i2c: core: add api to provide frequency mode
- strings
-Message-ID: <20210407225627.GA860@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, Sergey.Semin@baikalelectronics.ru,
-        linux-kernel@vger.kernel.org, digetx@gmail.com, treding@nvidia.com,
-        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
- <20210406195414.GG3122@kunai>
- <0d48f447-d1f2-1c86-27f4-3c8b23dcaf30@hisilicon.com>
- <YG2EjHuMb92mX5G5@smile.fi.intel.com>
- <3fc130fe-e34a-4aaa-05bf-23db60b3b9f1@hisilicon.com>
+        id S229808AbhDGW4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDGW4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:56:45 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BA8C061765;
+        Wed,  7 Apr 2021 15:56:35 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so438998otk.5;
+        Wed, 07 Apr 2021 15:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/Wv6tbKjF28yj9/5QE+CjLVG6ST1YqVRqQtxyTlKXFY=;
+        b=X57aSODsuVV9kNBWYNKot3RY0SB92DuqSPkoYtoRLtsS4KuV2No28WQ7LaeGJ5Ox0T
+         5m+R1uL9Jr6nvbN61fJrU5TWQI8FxTmGGBZTyt39DaJXmllijvhFADMk8qAi7/2pti9Q
+         hdnroHvh+4ckIijUff6QkSYC4SY+7YvZE1Hxj18tvhylGf9wYjiRqyGW1hrus8fviRBe
+         JA5iq+xr/4ZZNjYaNpmQhrvT5pi9+VxXv0x5LHbUpswZiSOPdrUlSbE6hRS+BGJBRHMR
+         SAqNv42O80tLXrr6NUDN4T8bXXTNMK1XNU42sT6VK4hJfmm9mCez/0bg5ElGUhSR3kAX
+         Bueg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Wv6tbKjF28yj9/5QE+CjLVG6ST1YqVRqQtxyTlKXFY=;
+        b=WJekNbRrSWI1FmkmCF15FQiOZSqZaxwg4C25mv8h21mkSiTeWHPiPz2xLsYyj3+JIv
+         d7dIXcLWrhtP9VeGf0kOKWrwpUyHEWgUj3kZCGNDp8zIjb1JaHyg40DH8oCROAVS0+uY
+         9RtNj28tp5Fli2ChxANVVGPBqeacm2FCbnnuwPyl/6gq89SXHje4Tm63JVCK22oFUIMK
+         dJNvirZc47+8q2uLIDalElBnwfPVffl+ClYE9XV4pySYHM3mc4vLUzmsaixbs0ShUEkI
+         6c049HAAHGrtvyd4mOKZhxjpiIogvWgmxESWhDAX2fEYEHIzY2FqopomCkHWF34uZDqt
+         +Q/A==
+X-Gm-Message-State: AOAM532BsBbdsFjI1/5tRpkCqoKu0N+SMMmBLxOt/C7yDiTAMSsRTHyK
+        4c3X7Kb+o1Ru7bSNJzoxMjo=
+X-Google-Smtp-Source: ABdhPJwf0U6nUGcp7O+fZ8iG65N/XKnKO5msuHT1WKzPvG6xbdKYMbhqegMDg734i25W3QmrHV0OKQ==
+X-Received: by 2002:a9d:6ad6:: with SMTP id m22mr4747018otq.160.1617836195040;
+        Wed, 07 Apr 2021 15:56:35 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.56])
+        by smtp.googlemail.com with ESMTPSA id a7sm5051669ooo.30.2021.04.07.15.56.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 15:56:34 -0700 (PDT)
+Subject: Re: [RFC net-next 0/1] seg6: Counters for SRv6 Behaviors
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <10c2aa0d-b273-a75b-4c07-c1ccbe858aaf@gmail.com>
+Date:   Wed, 7 Apr 2021 16:56:32 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
-In-Reply-To: <3fc130fe-e34a-4aaa-05bf-23db60b3b9f1@hisilicon.com>
+In-Reply-To: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> > I guess exporting will save few dozens of bytes if the function is used=
- more
-> > than once. (All strings will be duplicated or multiplied in that case)
-> >=20
->=20
-> yes, that's one concern. since we don't need this to perform fast, an inl=
-ine
-> one maybe unnecessary.
-
-Exactly. I also don't see an advantage of the function being inline. But
-potential disadvantage, even if just small memory overhead. So, I'd
-still rather see it as a core function.
-
-
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBuOJcACgkQFA3kzBSg
-KbabuBAAkCMkf5eJAiOjcxmdKVrf7CgfTh/sFOhPd9bCNYC6JAtGUYj5XlSAH2Tg
-f3aY6U9A7GL90c/F/Csb0L8DKuWOFZNGHxKAYzqHtZMCyPBc5M25tFiwDOqLpiz3
-n3s11WuXdLrGeqa2ZJB5gLcypaIQbJai1FyOlgQbcLwg+wJs4Ir3XGcXRtZLV/mV
-+XZcSO73jjq/EU195V47DvUEc8jNdN2+lR11AE2JOzNSkYRiDHx9dbucBu5piX+y
-/Vp5v0qMx2TbSOX5jRpRIsyRdyMHWmPQCOObuNt69n819Rh35kCqguyPwuKiglSq
-qzO2DOXNb0AH5xJ8p6x97JoRQgfMenh3IyarD+tmKYK1LZdzBEELnT54tJ09IsW6
-uY9sK1H9iQvGyPypyb/FIN6bGjnHBXz2h00SwhPQ3PEBxJfgn/wtwzOFZqwGulMq
-IBWo8nUM30HO9sJvCcClUDwld26P9H8vlNj01rJBJFrZTd7A7wAD4nFvvalcA4u7
-9ACzwPqGSIzWDhnPly1OH9islXGmYz+TloFOphZA2DtMbfIU7DRfblmiQSJ7SJZY
-h/0k8aO1LXi7YQrj44e/NXaKcn6p6BMwB5yJyrpO9jNxemwzrfbV6ZrF0HvvBqP4
-yOXoFV80GaDIJ7vyHyq7V4AvKZEJPmR5M9VgMUVhQe5VEnR9GsM=
-=bksq
------END PGP SIGNATURE-----
-
---Qxx1br4bt0+wmkIi--
+Since this is a single patch set, just put this good cover letter
+content as the message in the patch.
