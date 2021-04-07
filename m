@@ -2,163 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EE0356B6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB85356B45
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238515AbhDGLjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:39:49 -0400
-Received: from smtp.uniroma2.it ([160.80.6.16]:42722 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234582AbhDGLjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:39:48 -0400
-X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Apr 2021 07:39:47 EDT
-Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 137BXSaY025813;
-        Wed, 7 Apr 2021 13:33:33 +0200
-Received: from localhost.localdomain (unknown [160.80.103.223])
-        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id A5F331200A8;
-        Wed,  7 Apr 2021 13:33:23 +0200 (CEST)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
-        s=ed201904; t=1617795203; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IFLvlBv2rnxQe/cn7S6pxFtDAf5FdbP5U7kkFlY9MiU=;
-        b=fm0HC0e8GGywAnFS7Ktqj9iKq3hUxxYA1tX23RnvgdmLTg2QysUZpbl73tUbVH90y9I3Hz
-        zt9KrLFJbtOyBoBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
-        t=1617795203; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IFLvlBv2rnxQe/cn7S6pxFtDAf5FdbP5U7kkFlY9MiU=;
-        b=sPVyKhPQCLWl2axtY8JxwHchRu8+zVRcyp639mASPBWryQkSGKPR9XXrrJ9/77BDxBpGrJ
-        UTiWhsZebF0tunCCiF0ihnOAPE9PQp58qqKn8fFufbE39+Oqxn0nH1X9gPh+RIxCwiyVsz
-        gQMzk5KbYP9Yp5nH5JJ7Omvq7RkI5UQDpeOWCwPTyyLj7B/ps5sr31ALcSVA8u3luKS1Ce
-        jDrQlu8QbpVoXLWYgu9BxmZlRQ9Gwi1hgfT9ClM1t79Hhff/pXhdmF4EjBbzhUmHz3MSUR
-        Mzjt2+cg99dYUsFgVbCzfVUQkfkfpNCrcaJq8Q8KarG+lv3SeJfcVB4mN08Tjw==
-From:   Marco Faltelli <marco.faltelli@uniroma2.it>
-To:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Marco Faltelli <marco.faltelli@uniroma2.it>
-Subject: [PATCH] kernel/time: Feedback reply for hr_sleep syscall, a fine-grained sleep service
-Date:   Wed,  7 Apr 2021 11:32:11 +0000
-Message-Id: <20210407113211.2398-1-marco.faltelli@uniroma2.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210407112958.2350-1-marco.faltelli@uniroma2.it>
-References: <20210407112958.2350-1-marco.faltelli@uniroma2.it>
+        id S1343809AbhDGLdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:33:24 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:38375 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343769AbhDGLdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:33:20 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 137BWpek018265;
+        Wed, 7 Apr 2021 20:32:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137BWpek018265
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617795171;
+        bh=YE/3jAmw6G8yCwpeiXzDgIBF5HNw+SmvWOFzgsI9ku8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OFB2zo1di8wMHF9IPuMJoFpQMSkFi6QtvaiuuJ1uO+r6HSGOoY/60HVV5/OPcpkkx
+         AFYPXTBUIVE2yyvQOVBnWJs+16lHf2BM6f5yfsVT56LyibDEAkOXenWXv2mPasSEEv
+         9aMZUtRtSoJMuJD7zzFW9xgwJUJ3kWQ5E2T6ZeEt++g96C2fhpWjGcQuVojzJiy+Vt
+         pANcAWFI2Ir4ab+9SxV4NGYR2+FzP43iy4eDmfa5GaXwcxKtrlPo6wUlbDPnao5PoQ
+         s6iHlwO85gqYD7+jSxQ8oSw382PPfTw2nsnPPmCmdj9pUhqhOB/t7GTZYLi6JaCBRu
+         hFQfwWfBpMSlA==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id y32so9639670pga.11;
+        Wed, 07 Apr 2021 04:32:51 -0700 (PDT)
+X-Gm-Message-State: AOAM530R9JpBH49uU6Wxg0ouQwNXWZVvrwwhGXcix7DR7yiKogk5VNdo
+        rit9nDyb1lNpyUPFfL44hBXxnI7M1i2HJqWAaj8=
+X-Google-Smtp-Source: ABdhPJyX462+iXRWfux7Z4xGcPCP6UQgdQ1H4XYGHRU9N2d8fzIA6kG7uhIhickmK5JeHy1+bAt+KLzwLmX8di1BRdc=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr2830311pgq.7.1617795170674;
+ Wed, 07 Apr 2021 04:32:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-17-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-17-gregkh@linuxfoundation.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 20:32:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASUO4XTKfmatCRcGT-nBQM15ueuS6DtU98_LCbo=9NeiA@mail.gmail.com>
+Message-ID: <CAK7LNASUO4XTKfmatCRcGT-nBQM15ueuS6DtU98_LCbo=9NeiA@mail.gmail.com>
+Subject: Re: [PATCH 16/20] kbuild: powerpc: use common install script
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current sleep services (nanosleep) provide sleep periods very far from the expectations when scheuling microsecond-scale timers. On our testbed, using rdtscp() before and after a nanosleep() syscall to measure the effective elapsed time with a 1us timer, we got ~59us.
-Even with larger timeout periods, the difference is still evident (e.g., with a 100us timer, we measured ~158us of elapsed time).
-We believe that one of the reasons is the use of the timespec structure, that needs to be copied for user to kernel and then converted into a single-value representation.
-In our work Metronome (https://dl.acm.org/doi/pdf/10.1145/3386367.3432730) we had the need for a precise microsecond-granularity sleep service, as nanosleep() was far from our needs, so we developed hr_sleep(), a new sleep service. Since the sleep periods needed in our case are small, we don't want our sleep service to re-schedule a timer in case of a signal interruption, so it just returns -EINTR to the user. The user must be aware that this is a best-effort sleep service, so the sleep period specified is an upper-bound of the effective elapsed time.
-We believe this patch can be useful in applications where fine-grained granularity is requested for small sleep periods, and re-scheduling the timer in case of a signal is not mandatory.
-In the paper previously linked, Section 3.1 provides more details about hr_sleep and Section 3.3 extensively evaluates hr_sleep() and compares it to nanosleep(). For a 1us timeout, hr_sleep() elapses ~3.8us in mean vs. the ~59us of nanosleep().
-hr_sleep has been previously submitted at https://lore.kernel.org/lkml/20210115180733.5663-1-marco.faltelli@uniroma2.it/.
-This commit answers to the previous feedback in https://lore.kernel.org/lkml/CALCETrWfnL=3M3nmmHs-a3si5JptSCtF6cEtHVtsDNwA5mHnRg@mail.gmail.com/ and applies the requested changes.
+On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> The common scripts/install.sh script will now work for powerpc, all that
+> is needed is to add it to the list of arches that do not put the version
+> number in the installed file name.
+>
+> After the kernel is installed, powerpc also likes to install a few
+> random files, so provide the ability to do that as well.
+>
+> With that we can remove the powerpc-only version of the install script.
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/powerpc/boot/Makefile   |  4 +--
+>  arch/powerpc/boot/install.sh | 55 ------------------------------------
+>  scripts/install.sh           | 14 ++++++++-
+>  3 files changed, 15 insertions(+), 58 deletions(-)
+>  delete mode 100644 arch/powerpc/boot/install.sh
+>
+> diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
+> index 2b8da923ceca..bbfcbd33e0b7 100644
+> --- a/arch/powerpc/boot/Makefile
+> +++ b/arch/powerpc/boot/Makefile
+> @@ -442,11 +442,11 @@ $(obj)/zImage.initrd:     $(addprefix $(obj)/, $(initrd-y))
+>
+>  # Only install the vmlinux
+>  install: $(CONFIGURE) $(addprefix $(obj)/, $(image-y))
+> -       sh -x $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)"
+> +       sh -x $(srctree)/scripts/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)"
+>
+>  # Install the vmlinux and other built boot targets.
+>  zInstall: $(CONFIGURE) $(addprefix $(obj)/, $(image-y))
+> -       sh -x $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)" $^
+> +       sh -x $(srctree)/scripts/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)" $^
 
-Signed-off-by: Marco Faltelli <marco.faltelli@uniroma2.it>
----
- arch/x86/entry/syscalls/syscall_64.tbl |  1 +
- kernel/time/hrtimer.c                  | 67 ++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 7bf01cbe582f..85b14dfa40fb 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -364,6 +364,7 @@
- 440	common	process_madvise		sys_process_madvise
- 441	common	epoll_pwait2		sys_epoll_pwait2
- 442	common	mount_setattr		sys_mount_setattr
-+443	common	hr_sleep		sys_hr_sleep
- 
- #
- # Due to a historical design error, certain syscalls are numbered differently
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 4a66725b1d4a..887c01392e08 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -2006,6 +2006,73 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
- }
- #endif
- 
-+
-+
-+#ifdef CONFIG_64BIT
-+
-+
-+struct control_record {
-+	struct task_struct *task;
-+	int awake;
-+	struct hrtimer hr_timer;
-+};
-+
-+
-+static enum hrtimer_restart hr_sleep_callback(struct hrtimer *timer)
-+{
-+	struct control_record *control;
-+	struct task_struct *the_task;
-+
-+	control = (control_record *)container_of(timer, control_record, hr_timer);
-+	control->awake = 1;
-+	the_task = control->task;
-+	wake_up_process(the_task);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
-+
-+
-+/**
-+ * hr_sleep - a high-resolution sleep service for fine-grained timeouts
-+ * @nanoseconds:	the requested sleep period in nanoseconds
-+ *
-+ * Returns:
-+ * 0 when the sleep request successfully terminated
-+ * -EINVAL if a sleep period < 0 is requested
-+ * -EINTR if a signal interrupted the calling thread
-+ */
-+SYSCALL_DEFINE1(hr_sleep, long, nanoseconds)
-+{
-+	DECLARE_WAIT_QUEUE_HEAD(the_queue);
-+	struct control_record control;
-+	ktime_t ktime_interval;
-+	struct restart_block *restart;
-+
-+	if (nanoseconds < 0)
-+		return -EINVAL;
-+
-+	if (nanoseconds == 0)
-+		return 0;
-+
-+	ktime_interval = ktime_set(0, nanoseconds);
-+	hrtimer_init(&(control.hr_timer), CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	control.hr_timer.function = &hr_sleep_callback;
-+	control.task = current;
-+	control.awake = 0;
-+	hrtimer_start(&(control.hr_timer), ktime_interval, HRTIMER_MODE_REL);
-+	wait_event_interruptible(the_queue, control.awake == 1);
-+	hrtimer_cancel(&(control.hr_timer));
-+	if (control.awake == 0)
-+		//We have been interrupted by a signal
-+		return -EINTR;
-+	return 0;
-+
-+}
-+
-+#endif
-+
-+
- /*
-  * Functions related to boot-time initialization:
-  */
--- 
-2.25.1
+I want comments from the ppc maintainers
+because this code is already broken.
 
+
+This 'zInstall' target is unreachable.
+
+See commit c913e5f95e546d8d3a9f99ba9908f7e095cbc1fb
+
+It added the new target 'zInstall', but it is not hooked anywhere.
+It is completely useless for 6 years, and nobody has pointed it out.
+So, I think nobody is caring about this broken code.
+
+One more thing, Kbuild does not recognize it as an installation target
+because the 'I' in 'zInstall' is a capital letter.
+
+The name of the installation target must be '*install',
+all letters in lower cases.
+
+
+
+
+
+
+>  PHONY += install zInstall
+>
+> diff --git a/arch/powerpc/boot/install.sh b/arch/powerpc/boot/install.sh
+> deleted file mode 100644
+> index b6a256bc96ee..000000000000
+> --- a/arch/powerpc/boot/install.sh
+> +++ /dev/null
+> @@ -1,55 +0,0 @@
+> -#!/bin/sh
+> -#
+> -# This file is subject to the terms and conditions of the GNU General Public
+> -# License.  See the file "COPYING" in the main directory of this archive
+> -# for more details.
+> -#
+> -# Copyright (C) 1995 by Linus Torvalds
+> -#
+> -# Blatantly stolen from in arch/i386/boot/install.sh by Dave Hansen
+> -#
+> -# "make install" script for ppc64 architecture
+> -#
+> -# Arguments:
+> -#   $1 - kernel version
+> -#   $2 - kernel image file
+> -#   $3 - kernel map file
+> -#   $4 - default install path (blank if root directory)
+> -#   $5 and more - kernel boot files; zImage*, uImage, cuImage.*, etc.
+> -#
+> -
+> -# Bail with error code if anything goes wrong
+> -set -e
+> -
+> -# User may have a custom install script
+> -
+> -if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
+> -if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
+> -
+> -# Default install
+> -
+> -# this should work for both the pSeries zImage and the iSeries vmlinux.sm
+> -image_name=`basename $2`
+> -
+> -if [ -f $4/$image_name ]; then
+> -       mv $4/$image_name $4/$image_name.old
+> -fi
+> -
+> -if [ -f $4/System.map ]; then
+> -       mv $4/System.map $4/System.old
+> -fi
+> -
+> -cat $2 > $4/$image_name
+> -cp $3 $4/System.map
+> -
+> -# Copy all the bootable image files
+> -path=$4
+> -shift 4
+> -while [ $# -ne 0 ]; do
+> -       image_name=`basename $1`
+> -       if [ -f $path/$image_name ]; then
+> -               mv $path/$image_name $path/$image_name.old
+> -       fi
+> -       cat $1 > $path/$image_name
+> -       shift
+> -done;
+> diff --git a/scripts/install.sh b/scripts/install.sh
+> index e0ffb95737d4..67c0a5f74af2 100644
+> --- a/scripts/install.sh
+> +++ b/scripts/install.sh
+> @@ -67,7 +67,7 @@ fi
+>  # Some architectures name their files based on version number, and
+>  # others do not.  Call out the ones that do not to make it obvious.
+>  case "${ARCH}" in
+> -       ia64 | m68k | nios2 | x86)
+> +       ia64 | m68k | nios2 | powerpc | x86)
+>                 version=""
+>                 ;;
+>         *)
+> @@ -93,6 +93,18 @@ case "${ARCH}" in
+>                         /usr/sbin/elilo
+>                 fi
+>                 ;;
+> +       powerpc)
+> +               # powerpc installation can list other boot targets after the
+> +               # install path that should be copied to the correct location
+
+
+Perhaps, we can remove this if the ppc maintainers approve it ?
+
+
+
+
+> +               path=$4
+> +               shift 4
+> +               while [ $# -ne 0 ]; do
+> +                       image_name=$(basename "$1")
+> +                       install "$1" "$path"/"$image_name"
+> +                       shift
+> +               done;
+> +               sync
+> +               ;;
+>         x86)
+>                 if [ -x /sbin/lilo ]; then
+>                         /sbin/lilo
+> --
+> 2.31.1
+>
+
+
+--
+Best Regards
+Masahiro Yamada
