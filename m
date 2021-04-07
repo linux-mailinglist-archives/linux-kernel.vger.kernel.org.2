@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4B4356465
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB7935646F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345492AbhDGGqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S1349198AbhDGGq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349160AbhDGGpv (ORCPT
+        with ESMTP id S1345694AbhDGGqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:45:51 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E70C061756;
-        Tue,  6 Apr 2021 23:45:42 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id b17so8629030pgh.7;
-        Tue, 06 Apr 2021 23:45:42 -0700 (PDT)
+        Wed, 7 Apr 2021 02:46:15 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B0AC06175F;
+        Tue,  6 Apr 2021 23:46:01 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id j7so4152880plx.2;
+        Tue, 06 Apr 2021 23:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2cYF68oFcyjU4Kfw0xfEVQzUH83t8nX8JKIHWjr/Ga4=;
-        b=MEokI6t3x8iAwgGFuejhxCZfmi/8MZr1VfKdpod4k0sm+6g0CTIMZud2LT2aIEjPmM
-         SGKqVjzmxeHkaq0RbhWqK0TBvdEod2XCaDHzh/O+S05TvY7T4fiacuLDQYI0hK5UsLrx
-         V11h9pGD6iJZxUEwJAszphcVnKmeM/Ocutf6obIGu5JpbkxIbabAI7FQNc0salQf6OM7
-         c/7tfo6Dv6UW+r1B8uAkp5FRh0kDMHvq+hWQcI4vn1ZZr4ApZ6xoBHx0W4cLNPgXbCqF
-         XxEMZZLA2z0RavXGOmdGyc+9iPDhPjiQPQltvlyDzrowszOJj14dxsOjLdROM37Nf0zw
-         GhFg==
+        bh=RBA5zwvxY/1ia+fk/xzK8YHrNKoUOfjiRKh/7CEC92U=;
+        b=mrhaeb+T/SIIYoEllcrxGKc1jjqGpydgzecq43Imy5Oy7UD1xJ5ZjVKZeucTjR1y9R
+         Ch4axRbbD7Vw6VxFryHw1vLmpG5gx1N5yBeJGUV98gU5IGUDPbwFdPu1iE+8h9R3vAef
+         BT1kHDDwzSzRYah8JADtv2j29ecgHdIciHmBH0n1eiAmnNuPuhPsDkHNTa7dHVYPllW2
+         uAmNlzbfP+Svr0nJNes8kHeIHn2oIDiiX1atR9JX44iDjZbycsleENnVTAOdWp0t0Lwp
+         LVNgNHk9w4DOZAHO7yp2/vNwk/CZjd2XKtszXWCJM2yQIs0orE4yCEE3Nvrc80H6orEE
+         s9sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2cYF68oFcyjU4Kfw0xfEVQzUH83t8nX8JKIHWjr/Ga4=;
-        b=qUSiDfJ48CQoTi3FMYePhb7EdPXmv8gCZBtnz+Rg5ct8aCMe76/Wvc2xq/KkfYhT6d
-         D4bedTOH/lUwgJC2N2S6I3wIYqCo92htDfA9Bgw3b1xF1wqM3MXwzoSuekgH1/UU7Q/t
-         ELCzKKWxcGOp5qq0SbzI/46v9yUrLMapU+CtBFfU1ZGacYHUOhitobPtl6+w7IHKQ3ZP
-         N/KRnC5HDU5qqjw+ftnhabE2bsqpLV0xoqvUVt2sKkqdrHSsOkfchI1k0VztQmfKchQ2
-         VoNb14GCtbx5XL+Otbs6Su8CIvb9eNljaYmSwW9gkugxJ5tRQ2lbh7MySpAl9ZTL3Mhk
-         eMbg==
-X-Gm-Message-State: AOAM532yVPhJDyOTSxqvol4v8OplSOzQ+YIf6wWq10lpFLiIZFItNr6N
-        IQwdGuNUwZ9lVRpZfoLLcg4vn3a5M/2/yg==
-X-Google-Smtp-Source: ABdhPJxk+9euoAl2I+ED+syNGgwrNK2Klr1blr3hUcYgQ/TU2vQI/PVdYVYP0vPQ22ggVoTxZGYaBg==
-X-Received: by 2002:a63:1b5f:: with SMTP id b31mr1968300pgm.194.1617777941781;
-        Tue, 06 Apr 2021 23:45:41 -0700 (PDT)
+        bh=RBA5zwvxY/1ia+fk/xzK8YHrNKoUOfjiRKh/7CEC92U=;
+        b=mqlFS9PgNdKn+DQr1w6vklUsfY6B115kyY1tlWB48uhOAzDWvo5fs3+97zISoLKCeb
+         ay2e2Y1DiMO+r8RxeH0VG+uuHT6etmhYAhu0GixpPBa+PzbEM1fR3VwB611XvL6Vdlvl
+         ezFJVbrsJVIrqGfXAvSWrMImbN1kgIXLz0vhKD6M5gMO+kxdsjveEPCntZUz1Mn9W9T+
+         6Cp7ST2Bs7WFG5cDcpsmhWbwm/eRsZVeuprciHFNf+xJZnEFrlvRUPcsiQZJUGuDGpMQ
+         mgznWKhbW+Bw9LptC/+xgD6A5Kf2L1r1f3JNbasNyeOoChs2D83Q90MB9ttt9VVrccdD
+         xA8g==
+X-Gm-Message-State: AOAM533tzh/Jk5ywHq4WiC5C7A/T8GILO27chGEO0afalnJ6M4LVtcNW
+        JDfjvqXvEmXwcelG2uSRTBc=
+X-Google-Smtp-Source: ABdhPJyv4gfR0TnKChyY15jeg2ZsvS91QJc36GgO+qjGtG7OfaTaQ0WlLPQ5uAOEYQEjtLrODErihw==
+X-Received: by 2002:a17:90a:bf91:: with SMTP id d17mr1854424pjs.138.1617777960944;
+        Tue, 06 Apr 2021 23:46:00 -0700 (PDT)
 Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id l25sm21847554pgu.72.2021.04.06.23.45.40
+        by smtp.gmail.com with ESMTPSA id k4sm2732908pgm.73.2021.04.06.23.46.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:45:41 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:45:39 -0700
+        Tue, 06 Apr 2021 23:46:00 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:45:58 -0700
 From:   Pavle Rohalj <pavle.rohalj@gmail.com>
 To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 37/49] staging: sm750fb: Rename function
- hw_sm750_output_setMode to snake case
-Message-ID: <b24581cc3a52db532d55f0c2a0a079f95e21613f.1617776878.git.pavle.rohalj@gmail.com>
+Subject: [PATCH v2 38/49] staging: sm750fb: Rename function
+ hw_sm750_setColReg to snake case
+Message-ID: <4ecf65873d119290ba1173e2a1665b91fdaae9d6.1617776878.git.pavle.rohalj@gmail.com>
 References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -66,7 +66,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix "Avoid CamelCase" checkpatch.pl checks for the function
-hw_sm750_output_set_mod.
+hw_sm750_setColReg.
 
 Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
@@ -76,44 +76,44 @@ Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 2c944539eaf0..8e803b580a71 100644
+index 8e803b580a71..62c9a8c5de8f 100644
 --- a/drivers/staging/sm750fb/sm750.c
 +++ b/drivers/staging/sm750fb/sm750.c
-@@ -395,7 +395,7 @@ static int lynxfb_ops_set_par(struct fb_info *info)
+@@ -545,7 +545,7 @@ static int lynxfb_ops_setcolreg(unsigned int regno,
+ 		red >>= 8;
+ 		green >>= 8;
+ 		blue >>= 8;
+-		ret = hw_sm750_setColReg(crtc, regno, red, green, blue);
++		ret = hw_sm750_set_col_reg(crtc, regno, red, green, blue);
+ 		goto exit;
  	}
- 	ret = hw_sm750_crtc_set_mode(crtc, var, fix);
- 	if (!ret)
--		ret = hw_sm750_output_setMode(output, var, fix);
-+		ret = hw_sm750_output_set_mode(output, var, fix);
+ 
+diff --git a/drivers/staging/sm750fb/sm750.h b/drivers/staging/sm750fb/sm750.h
+index b46d13134f76..71b4ce05f4fe 100644
+--- a/drivers/staging/sm750fb/sm750.h
++++ b/drivers/staging/sm750fb/sm750.h
+@@ -208,7 +208,7 @@ int hw_sm750_crtc_set_mode(struct lynxfb_crtc *crtc,
+ 			  struct fb_var_screeninfo *var,
+ 			  struct fb_fix_screeninfo *fix);
+ 
+-int hw_sm750_setColReg(struct lynxfb_crtc *crtc, ushort index,
++int hw_sm750_set_col_reg(struct lynxfb_crtc *crtc, ushort index,
+ 		       ushort red, ushort green, ushort blue);
+ 
+ int hw_sm750_setBLANK(struct lynxfb_output *output, int blank);
+diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
+index 410f726b03e9..7eae56b74a2b 100644
+--- a/drivers/staging/sm750fb/sm750_hw.c
++++ b/drivers/staging/sm750fb/sm750_hw.c
+@@ -372,7 +372,7 @@ int hw_sm750_crtc_set_mode(struct lynxfb_crtc *crtc,
  	return ret;
  }
  
-diff --git a/drivers/staging/sm750fb/sm750.h b/drivers/staging/sm750fb/sm750.h
-index 368e5cc19147..b46d13134f76 100644
---- a/drivers/staging/sm750fb/sm750.h
-+++ b/drivers/staging/sm750fb/sm750.h
-@@ -197,7 +197,7 @@ void hw_sm750_initAccel(struct sm750_dev *sm750_dev);
- int hw_sm750_deWait(void);
- int hw_sm750le_deWait(void);
- 
--int hw_sm750_output_setMode(struct lynxfb_output *output,
-+int hw_sm750_output_set_mode(struct lynxfb_output *output,
- 			    struct fb_var_screeninfo *var,
- 			    struct fb_fix_screeninfo *fix);
- 
-diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
-index 7c852c6a153b..410f726b03e9 100644
---- a/drivers/staging/sm750fb/sm750_hw.c
-+++ b/drivers/staging/sm750fb/sm750_hw.c
-@@ -180,7 +180,7 @@ int hw_sm750_inithw(struct sm750_dev *sm750_dev, struct pci_dev *pdev)
- 	return 0;
- }
- 
--int hw_sm750_output_setMode(struct lynxfb_output *output,
-+int hw_sm750_output_set_mode(struct lynxfb_output *output,
- 			    struct fb_var_screeninfo *var,
- 			    struct fb_fix_screeninfo *fix)
+-int hw_sm750_setColReg(struct lynxfb_crtc *crtc, ushort index,
++int hw_sm750_set_col_reg(struct lynxfb_crtc *crtc, ushort index,
+ 		       ushort red, ushort green, ushort blue)
  {
+ 	static unsigned int add[] = {PANEL_PALETTE_RAM, CRT_PALETTE_RAM};
 -- 
 2.30.2
 
