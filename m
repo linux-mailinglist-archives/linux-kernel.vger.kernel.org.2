@@ -2,161 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20144356868
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20299356858
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350312AbhDGJv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:51:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16376 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346322AbhDGJvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:51:54 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FFfks249QzlVj4;
-        Wed,  7 Apr 2021 17:49:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 17:51:36 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <zhangshaokun@hisilicon.com>, <linuxarm@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] docs: perf: Add description for HiSilicon PCIe PMU driver
-Date:   Wed, 7 Apr 2021 17:49:03 +0800
-Message-ID: <1617788943-52722-3-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1617788943-52722-1-git-send-email-liuqi115@huawei.com>
-References: <1617788943-52722-1-git-send-email-liuqi115@huawei.com>
+        id S1345939AbhDGJta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350340AbhDGJtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:49:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0D8610F9;
+        Wed,  7 Apr 2021 09:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617788949;
+        bh=sAU1j4Aymge3WgB3f/YkePq5P6yMhJPEDXC73w+YBms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NFQbjzc2oNbCAJSKvkyUQetu/+pxf3vqRcTSpnKjSG+zFS0QpuDgwSiWhMd7A1Y/X
+         bZ3BZ05f9C9ZKqVS24ibR3FEN0XXn1b6vsx6JgpYOw6eCt866X0DyQaVIkEGryiYwo
+         yMgucM8AwiwNo+w3OUV2owWg7scGvE6yt3kQTPLw=
+Date:   Wed, 7 Apr 2021 11:49:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: Re: [PATCH v1 1/1] driver core: platform: Make
+ platform_get_irq_optional() optional
+Message-ID: <YG2AEoKfiMHqabbQ@kroah.com>
+References: <20210331144526.19439-1-andriy.shevchenko@linux.intel.com>
+ <20210406192514.GA34677@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406192514.GA34677@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported on
-HiSilicon HIP09 platform, and document it to provide guidance on how to
-use it.
+On Tue, Apr 06, 2021 at 12:25:14PM -0700, Guenter Roeck wrote:
+> On Wed, Mar 31, 2021 at 05:45:26PM +0300, Andy Shevchenko wrote:
+> > Currently the platform_get_irq_optional() returns an error code even
+> > if IRQ resource sumply has not been found. It prevents caller to be
+> > error code agnostic in their error handling.
+> > 
+> > Now:
+> > 	ret = platform_get_irq_optional(...);
+> > 	if (ret != -ENXIO)
+> > 		return ret; // respect deferred probe
+> > 	if (ret > 0)
+> > 		...we get an IRQ...
+> > 
+> > After proposed change:
+> > 	ret = platform_get_irq_optional(...);
+> > 	if (ret < 0)
+> > 		return ret;
+> > 	if (ret > 0)
+> > 		...we get an IRQ...
+> > 
+> > Reported-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> This patch causes all my "sh" emulations to stall during boot with the
+> following repeated error message.
+> 
+> sh-sci sh-sci.1: Can't allocate rx full IRQ
+> 
+> Reverting this patch fixes the problem (and the message is gone).
+> Bisect log is attached.
+> 
+> Guenter
+> 
+> ---
+> # bad: [9c54130cd25528028b2d38f6ada0c79e92210390] Add linux-next specific files for 20210406
+> # good: [e49d033bddf5b565044e2abe4241353959bc9120] Linux 5.12-rc6
+> git bisect start 'HEAD' 'v5.12-rc6'
+> # good: [3981dcd7199773fc8cfbbcc6173e3521b8e49035] Merge remote-tracking branch 'crypto/master'
+> git bisect good 3981dcd7199773fc8cfbbcc6173e3521b8e49035
+> # good: [da18b6c82eba21e87d6ee76b7b0382eca123cc79] Merge remote-tracking branch 'ftrace/for-next'
+> git bisect good da18b6c82eba21e87d6ee76b7b0382eca123cc79
+> # bad: [021e2b99a3cb523408609ca1792ab623ff16f334] Merge remote-tracking branch 'staging/staging-next'
+> git bisect bad 021e2b99a3cb523408609ca1792ab623ff16f334
+> # bad: [685f903c62e3929370293bad184afa04b6fddebd] Merge remote-tracking branch 'char-misc/char-misc-next'
+> git bisect bad 685f903c62e3929370293bad184afa04b6fddebd
+> # good: [67d49fe7e4d40cfe6919b434d6a4e837230af9d4] Merge remote-tracking branch 'ipmi/for-next'
+> git bisect good 67d49fe7e4d40cfe6919b434d6a4e837230af9d4
+> # bad: [69e2ae87cfa94c77c3503715e9e0a68e6cc69f8d] Merge remote-tracking branch 'usb/usb-next'
+> git bisect bad 69e2ae87cfa94c77c3503715e9e0a68e6cc69f8d
+> # good: [2665a13a3e9ef3d08b9ac4b48328ddfba9126987] usb: typec: Fix a typo
+> git bisect good 2665a13a3e9ef3d08b9ac4b48328ddfba9126987
+> # good: [967f6d162d9fa415cf140d3eef5576d566632292] dt-bindings: usb: mtk-xhci: remove redefinitions of usb3-lpm-capable
+> git bisect good 967f6d162d9fa415cf140d3eef5576d566632292
+> # good: [d225ef6fda7ce9ff7d28764bd1cceea2d0215e8b] base: dd: fix error return code of driver_sysfs_add()
+> git bisect good d225ef6fda7ce9ff7d28764bd1cceea2d0215e8b
+> # bad: [72a91f192da032b68519fafaecce03fd002d669a] driver core: add helper for deferred probe reason setting
+> git bisect bad 72a91f192da032b68519fafaecce03fd002d669a
+> # good: [1768289b44bae847612751d418fc5c5e680b5e5c] driver core: platform: Declare early_platform_cleanup() prototype
+> git bisect good 1768289b44bae847612751d418fc5c5e680b5e5c
+> # bad: [ed7027fdf4ec41ed6df6814956dc11860232a9d5] driver core: platform: Make platform_get_irq_optional() optional
+> git bisect bad ed7027fdf4ec41ed6df6814956dc11860232a9d5
+> # good: [318c3e00f13c2f6e11202a22cc302ea8c70552ea] driver core: Replace printf() specifier and drop unneeded casting
+> git bisect good 318c3e00f13c2f6e11202a22cc302ea8c70552ea
+> # first bad commit: [ed7027fdf4ec41ed6df6814956dc11860232a9d5] driver core: platform: Make platform_get_irq_optional() optional
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- Documentation/admin-guide/perf/hisi-pcie-pmu.rst | 103 +++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
- create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+Thanks for the report, I'll go revert this from my tree now.
 
-diff --git a/Documentation/admin-guide/perf/hisi-pcie-pmu.rst b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
-new file mode 100644
-index 0000000..8942498
---- /dev/null
-+++ b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
-@@ -0,0 +1,103 @@
-+================================================
-+HiSilicon PCIe Performance Monitoring Unit (PMU)
-+================================================
-+
-+HiSilicon PCIe Performance Monitoring Unit (PMU) is a PCIe Root Complex
-+integrated End Point(RCiEP) device. On Hip09, each PCIe Core has a PMU RCiEP
-+to monitor multi root ports and all Endpoints downstream these root ports.
-+
-+HiSilicon PCIe PMU is supported to collect performance data of PCIe bus, such
-+as: bandwidth, latency etc.
-+
-+
-+HiSilicon PCIe PMU driver
-+=========================
-+
-+The PCIe PMU driver registers a perf PMU with the name of its sicl-id and PCIe
-+core id.::
-+
-+  /sys/bus/event_source/hisi_pcie<sicl>_<core>
-+
-+PMU driver provides description of available events and filter options in sysfs,
-+see /sys/bus/event_source/devices/hisi_pcie<sicl>_<core>.
-+
-+The "format" directory describes all formats of the config (events) and config1
-+(filter options) fields of the perf_event_attr structure. The "events" directory
-+describes all documented events shown in perf list.
-+
-+The "identifier" sysfs file allows users to identify the version of the
-+PMU hardware device.
-+
-+The "bus" sysfs file allows users to get the bus number of root ports
-+monitored by PMU.
-+
-+Example usage of perf::
-+
-+  $# perf list
-+  hisi_pcie0_0/bw_rx/ [kernel PMU event]
-+  ------------------------------------------
-+
-+  $# perf stat -e hisi_pcie0_0/bw_rx/ sleep 5
-+
-+The current driver does not support sampling. So "perf record" is unsupported.
-+Also attach to a task is unsupported for PCIe PMU.
-+
-+Filter options
-+--------------
-+
-+1. Target filter
-+PMU could only monitor the performance of traffic downstream target root ports
-+or traffic of target Endpoint. PCIe PMU driver support "port" and "bdf"
-+interfaces for users, and this two interfaces isn't supported at the same time.
-+
-+-port
-+"port" filter can be used in all PCIe PMU events, target root port can be
-+selected by configure the bitmap "port". Multi ports can be selected for
-+AP-layer-events, and only one port can be selected for TL/DL-layer-events.
-+
-+For example, if target root port is 0000:00:00.0(x8 lanes), bit0 should be
-+selected, port=0x1; if target root port is 0000:00:04.0(x4 lanes), bit8 is set,
-+port=0x100; if these two root port are both monitored, port=0x101.
-+
-+Example usage of perf::
-+
-+  $# perf stat -e hisi_pcie0_0/bw_rx,port=0x1/ sleep 5
-+
-+-bdf
-+
-+"bdf" filter can only be used in bandwidth events, target Endpoint is selected
-+by configure BDF to "bdf". Counter only counts the bandwidth of message
-+requested by target Endpoint.
-+
-+For example, "bdf=0x3900" means BDF of target Endpoint is 0000:39:00.0.
-+
-+Example usage of perf::
-+
-+  $# perf stat -e hisi_pcie0_0/bw_rx,bdf=0x3900/ sleep 5
-+
-+2. Trigger filter
-+event statistics start when the first time TLP length is greater/smaller
-+than trigger condition. You can set the trigger condition by write
-+"trig_len", and set the trigger mode by write "trig_mode". This filter can only
-+be used in bandwidth events.
-+
-+For example, "trig_len=4" means trigger condition is 2^4 DW, "trig_mode=0"
-+means statistics start when TLP length > trigger condition, "trig_mode=1"
-+means start When TLP length < condition.
-+
-+Example usage of perf::
-+
-+  $# perf stat -e hisi_pcie0_0/bw_rx,trig_len=0x4,trig_mode=1/ sleep 5
-+
-+3. Threshold filter
-+counter counts when TLP length within the specified range. You can set the
-+threshold by write "thr_len", and set the threshold mode by write "thr_mode".
-+This filter can only be used in bandwidth events.
-+
-+For example, "thr_len=4" means threshold is 2^4 DW, "thr_mode=0" means
-+statistics when TLP length >= threshold, and "thr_mode=1" means statistics
-+when TLP length < threshold.
-+
-+Example usage of perf::
-+
-+  $# perf stat -e hisi_pcie0_0/bw_rx,thr_len=0x4,thr_mode=1/ sleep 5
--- 
-2.8.1
-
+greg k-h
