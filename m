@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AD3571F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2823571FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347363AbhDGQPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
+        id S1347793AbhDGQRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhDGQPk (ORCPT
+        with ESMTP id S234072AbhDGQRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:15:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA041C061756;
-        Wed,  7 Apr 2021 09:15:30 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08fb00aad493ab6ea3c721.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:aad4:93ab:6ea3:c721])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2B33E1EC0246;
-        Wed,  7 Apr 2021 18:15:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617812129;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=F9OuUN762B+9d4jmnherzF+wKWI42AD+cSEq+YQttyQ=;
-        b=A6wMC0+jv+/LO+6T2qggvFCBNhuX20IUJ7kqMDqEWN33tLbhLAGIxSXvJWeLCNpvGt8FN7
-        RX/iq8/bPpFHVxHf2L8+04DJLBfpoBCm6UG9NTg39ZN3vXWVIc19wVjL0dMTK1N5nksmHg
-        aUuy7DbZa8nhOvh+yA+ax0MvQvbkX/w=
-Date:   Wed, 7 Apr 2021 18:15:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the
- debugfs
-Message-ID: <20210407161533.GJ25319@zn.tnic>
-References: <20210405232653.33680-1-jarkko@kernel.org>
- <20210405232653.33680-2-jarkko@kernel.org>
- <20210407155636.GG25319@zn.tnic>
- <YG3ZJyMB+S5LcUso@kernel.org>
+        Wed, 7 Apr 2021 12:17:36 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD94C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:17:26 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f29so10979213pgm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kkQmVpMRcrPLSpRzP7dgecYRXq//RT6p4q1X4WEKNnw=;
+        b=aOFaiO1sq92U5rT3rqHZzy0CqSci1sKFt1gzalxF0j0IiPHSkXRWw4ZMP24yMCfe0m
+         DhS0TL7UDg+53OGmzKNcxcSmzONzd+FFFqypJeqzYhh8U2g3zfclpKnr0h0B0nTvNjtC
+         LTsYqs6lDJwfYYZZLDFlRUdYcapUon/T5nNz1qoQvEPhsVFuQ20CsgRb9pClWb349j2L
+         H8RvAfInuvthmM9p65Qs2Fu/NlEtWtRdmZciuZpgW6F7726943MGZw8O7bUe0WfEX3WN
+         Dl2soYywUEJ38mI8xkzDH8GSXCqBYeDk4e03UnBJkYCK+mYwHTnbyirgaLjLI1tvkvWN
+         PEFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kkQmVpMRcrPLSpRzP7dgecYRXq//RT6p4q1X4WEKNnw=;
+        b=AqOuMWcIPZabEHrxk5W9D5cC+6cL/GJJVDw12e3K2qk0ir33ZeCmfi0dXgUoWuKznT
+         TEf++cUzsGVZtT6A4rIWH1C4boLK5UZIxLu9Zfd4TEbC4nJzx4MAqDHz9+hkMxckz08u
+         o9mTyF9tEkBM9mDgUiw6oQyoO9LHTUjB2r1BdBoktR6Vg7U/Yq3Q7Vdg4gtOdAAAO6gm
+         gWMhX0exDpi5PuR5cqMhm1OkqQih/J1D/kq+wCCet/N4KsdcyLc2gY1LGhgliTYnHKTx
+         wK8cjt4apyAeSJDih9/J1x3ZUTlWqKSRRiLWjsws+flxsA8Y6jZONfC1O+4I25OsbgUh
+         VrDQ==
+X-Gm-Message-State: AOAM532/EFluBLUTQuxDRZ5CNc5W6UZ6p1ewNQQGjUpoJyf+GhnOs0zn
+        hluPQGTculxPD/8cp77vEeNhEg==
+X-Google-Smtp-Source: ABdhPJz8tD/aoietkR/S+yJ5l3waT2txM2yHKjP7dEAdhaToxJ+HWpYCwyYfF3RNpOgdmtyM4sNDLQ==
+X-Received: by 2002:a65:4046:: with SMTP id h6mr3933614pgp.345.1617812245675;
+        Wed, 07 Apr 2021 09:17:25 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id x2sm22778587pgb.89.2021.04.07.09.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:17:24 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     devicetree@vger.kernel.org,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Cc:     Drazen Spio <drazsp@gmail.com>
+Subject: Re: [PATCH 0/3] arm64: dts: meson: add support for MeCool KII-Pro/KIII-Pro
+Date:   Wed,  7 Apr 2021 09:17:23 -0700
+Message-Id: <161781223326.25927.5710421341360861748.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210329154753.30074-1-christianshewitt@gmail.com>
+References: <20210329154753.30074-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YG3ZJyMB+S5LcUso@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:09:11PM +0300, Jarkko Sakkinen wrote:
-> I left out "epc" because they are already prefixed with "sgx_".
+On Mon, 29 Mar 2021 15:47:50 +0000, Christian Hewitt wrote:
+> This series adds support for the MeCool (Videostrong) KII Pro (GXL)
+> and KIII Pro (GXM) Android STB devices. These are quite popular due
+> to the embedded multi-standard tuner card (which is sadly not-yet
+> supported in the kernel). Both devices closely follow the Amlogic
+> reference designs with keys/buttons/LED details taken from known-
+> working vendor kernel device-trees.
+> 
+> [...]
 
-Are there any other "page" types which are going to be figurating in
-some pseudofs or is "sgx" == "epc" in this case?
+Applied, thanks!
 
-> debugfs was my first shot, but for sure these could be sysfs.
+[1/3] dt-bindings: arm: amlogic: add MeCool KII/KIII Pro bindings
+      commit: 0bbfea7c0469cbe0914c1800b70f607ed7638870
+[2/3] arm64: dts: meson: add initial device-tree for MeCool KII Pro
+      commit: d5454e7ce24a28bd22beb2fc02f1571b5748dfbb
+[3/3] arm64: dts: meson: add initial device-tree for MeCool KIII Pro
+      commit: 727d93ed3ba67307a82c3ac5ebc7e335265e8b9e
 
-Ok, let's keep it in debugfs for now, it can always be made an ABI later
-and moved to sysfs. But pls document what those are and what they do and
-that when in debugfs, there are no guarantees that these interfaces will
-be there in the future.
-
-> Should that be part of the first patch?
-
-Yes pls.
-
-Thx.
-
-
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kevin Hilman <khilman@baylibre.com>
