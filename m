@@ -2,163 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC87356B80
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7002356B83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351892AbhDGLqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:46:49 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:33620 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhDGLqs (ORCPT
+        id S1351901AbhDGLrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:47:06 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:44019 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234728AbhDGLrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:46:48 -0400
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 137BkH4S014490;
-        Wed, 7 Apr 2021 20:46:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137BkH4S014490
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617795977;
-        bh=e90N5wkF1hteFP0jbF58SprpJVKj/n+S9wgTEG6K0FU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0/7TaLTG1n5REF91X1AZOuKj23ztlPWXi/d4KOqPSn8CMB4/bu4RWfGmP6czoTmPF
-         t8Iq/BtgvvKa/kvEYw7RzS9wt2TEeC97wBXLHcj73Xp351QncwWQlI1dl9UveOp2wM
-         PDGOPdSNPCiBcKHQNhQXvElB+LsZAq0J8K9be5Vxd/s+sqUW1H7bHAz/ex00K7y9yc
-         pWqhfgO78jmUa0mSDtMZkB0/ZR/4TnlmS6h7SKW6MKx5w2/czrmOOvo53B30Val2AP
-         9sWxJARxEDyAWNQra2YrB2bP5nK9VBf0+v1hXBxvznovCQP0157jKE8ZOXOPOkERH/
-         6XgnBuUeG3IWg==
-X-Nifty-SrcIP: [209.85.214.178]
-Received: by mail-pl1-f178.google.com with SMTP id p10so4063117pld.0;
-        Wed, 07 Apr 2021 04:46:17 -0700 (PDT)
-X-Gm-Message-State: AOAM533UGs3G8zY/r6CMandWEeoZpG/0UGP0pQFi5pZDH/ZRRJce0zEU
-        hBT+f1X1xJ+WVciDPFMJHiF6Ql5P3jhNwNPaB1g=
-X-Google-Smtp-Source: ABdhPJwJoOhh0r/oUL4pdVvHWI3QqGMXW6MConrvV8ZSEojaWe52StwsenE49C8CUiAxSf0ixYjEthzutaEsSxsE9iU=
-X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr2724939pjd.153.1617795976615;
- Wed, 07 Apr 2021 04:46:16 -0700 (PDT)
+        Wed, 7 Apr 2021 07:47:04 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 730911810;
+        Wed,  7 Apr 2021 07:46:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 07 Apr 2021 07:46:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=3u9hoaAscFACYx/m5gKZ40JLi46
+        hYSsEP3rEip+wmfE=; b=mCuHcMoVTB31vlvnHv9zHOeva2odOK7oEhpJUR3Sj+M
+        QxGYGJjXy2jiIF+cRkDO7P6TP1G4FsCZ5fsfSAqNh0+HmiCaAlnKz0pEyd74qf1g
+        yCxPzaXrBLXpz5ef4xeAN/zMyTGYQli2DJ+gVLVpFceSBQWQRB05VsF4yE0dzeWx
+        ABpBg3VoXtB/X6gUZYbg9W9sOKoeGHZfAn09pNHrzm6iMz9g/yaRIaVxLV782ouE
+        Op0esPCzXcq+lbq8uEY6vyo0gEtxMdPRTX1GtekcxA0T3+Ax2R+j0S3Y3q0vtwqB
+        Wo2p7yRlwn64rWVmjBN5+vmNw5CLBUxRhsmyGAcXYDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3u9hoa
+        AscFACYx/m5gKZ40JLi46hYSsEP3rEip+wmfE=; b=TAeaN2NKVXUtO+cUPxdf6W
+        4bVcLr74I3hIWa4OBfa2e6Kh0B5YDbVFvQvYaERh97iLyQcHtdVC17Pq1uAHd1f1
+        cO/MZXBO5WrTpit9KHNcRTye+P7dyek07EdAgtAoaON6DK2Jp7Kj/wWdPvVRpQyo
+        //CbdDDoXCJDf3dGX27JIzNJxYABy8LY9kZ3r6ooMNammTQMjmxhS/5ydUrajBZK
+        TI+R102H4/2oPRGX59Cj1pnlB1X7czaAsYvtGjPO4d++xn+6IYrRxa+lOkPN5nqC
+        96G8r3xDdvnZhn3GH9uVinkwv4PkZERekpNnOPGexTQIia9Noqs9gDtDW86//6aQ
+        ==
+X-ME-Sender: <xms:rJttYIOl8yReZwWUye92edjkNns86VUv8RP0rHtTjsfQJtw3aYVnNA>
+    <xme:rJttYO9GKxm-3ranT4GFhVC9lG3dTjLhsQtVoSyj8ZF9SQ1PDDod_OHmOG8a3IKIl
+    uOb4VV5z07t2Dvbsbs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:rJttYPRF3DbUgW-Q00bXGLyl6IdzaoO8yWhFlIYht9tOs-wkEHGnAQ>
+    <xmx:rJttYAttdpxB3xR56rCleN0drv3O-Uze7G9Z51_wVTMrjIerzmShBQ>
+    <xmx:rJttYAcUzFAvlmNjtaNaEMPa0_VTqzL95u3IbOOhCXXU_FIhdy2ReQ>
+    <xmx:rpttYI5Pl73pTs8qtCUgK8UFogSeAlxCqH1ext-Yp--qveHCsdBtjg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id ACA28240057;
+        Wed,  7 Apr 2021 07:46:52 -0400 (EDT)
+Date:   Wed, 7 Apr 2021 13:46:50 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm-soc tree
+Message-ID: <20210407114650.2ed2p5aqkwwicm3k@gilmour>
+References: <20210406081100.4a866aa6@canb.auug.org.au>
+ <20210406081147.7a5332ed@canb.auug.org.au>
+ <CAK8P3a1W9oHfx47-_d1ytHN+ZJAQ3ivS4RfcbiVHQ-fU840-ag@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-21-gregkh@linuxfoundation.org>
-In-Reply-To: <20210407053419.449796-21-gregkh@linuxfoundation.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 20:45:39 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASHEETPwBr1C6PwZwohH2QeSJtAZgAMwXHASw=dg3kCpA@mail.gmail.com>
-Message-ID: <CAK7LNASHEETPwBr1C6PwZwohH2QeSJtAZgAMwXHASw=dg3kCpA@mail.gmail.com>
-Subject: Re: [PATCH 20/20] kbuild: scripts/install.sh: update documentation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ibffx5pg3eyhmcpt"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1W9oHfx47-_d1ytHN+ZJAQ3ivS4RfcbiVHQ-fU840-ag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> Add a proper SPDX line and document the install.sh file a lot better,
-> explaining exactly what it does, and update the copyright notice and
-> provide a better message about the lack of LILO being present or not as
-> really, no one should be using that anymore...
->
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  scripts/install.sh | 33 ++++++++++++++++++++++++++-------
->  1 file changed, 26 insertions(+), 7 deletions(-)
->
-> diff --git a/scripts/install.sh b/scripts/install.sh
-> index 225b19bbbfa6..dd86fb9971e9 100644
-> --- a/scripts/install.sh
-> +++ b/scripts/install.sh
-> @@ -1,14 +1,14 @@
->  #!/bin/sh
-> -#
-> -# This file is subject to the terms and conditions of the GNU General Public
-> -# License.  See the file "COPYING" in the main directory of this archive
-> -# for more details.
-> +# SPDX-License-Identifier: GPL-2.0
->  #
->  # Copyright (C) 1995 by Linus Torvalds
-> +# Copyright (C) 2021 Greg Kroah-Hartman
->  #
->  # Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-> +# Adapted from code in arch/i386/boot/install.sh by Russell King
 
-Perhaps, this line can go to
-"10/20 kbuild: arm: use common install script"  ?
+--ibffx5pg3eyhmcpt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 06, 2021 at 11:44:27PM +0200, Arnd Bergmann wrote:
+> On Tue, Apr 6, 2021 at 12:11 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > Hi all,
+> >
+> > On Tue, 6 Apr 2021 08:11:00 +1000 Stephen Rothwell <sfr@canb.auug.org.a=
+u> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > Commit
+> > >
+> > >   3b493ac0ac04 ("arm64: dts: allwinner: h6: Switch to macros for RSB =
+clock/reset indices")
+> > >
+> > > is missing a Signed-off-by from its committer.
+> >
+> > Sorry, that commit is in the arm-soc-fixes tree.
+>=20
+> Thanks for the report, I've temporarily removed the sunx-fixes branch mer=
+ge
+> from the arm/fixes branch and will send the pull request without it.
+>=20
+> Maxime, can you fix it up and resend the pull request?
+> Feel free to add any other fixes that have come up since then.
 
+I just did. Is there a way to prevent this from happening when one
+rebase a branch that was partially committed by someone else?
 
+git rebase --signoff doesn't seem to detect if there's already a SoB, so
+it might produce duplicates which isn't great either.
 
-> +# Adapted from code in arch/arm/boot/install.sh by Stuart Menefy
+Maxime
 
-I think this line came from 18/20,
-but do we need to keep it?
+--ibffx5pg3eyhmcpt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You removed arch/sh/boot/compressed/install.sh entirely.
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYG2bqgAKCRDj7w1vZxhR
+xcz+AP9kz8QR1UMM/xxCe6lAs7i17ioNddxuCx5+y0I2o3F1xQEAi/1g+aksWTHX
+oxYWyoT9IKHj7ZiOqxuor1zRspZx0AQ=
+=5Q4L
+-----END PGP SIGNATURE-----
 
-
->  #
-> -# "make install" script for i386 architecture
-> +# "make install" script for Linux to be used by all architectures.
->  #
->  # Arguments:
->  #   $1 - kernel version
-> @@ -16,6 +16,26 @@
->  #   $3 - kernel map file
->  #   $4 - default install path (blank if root directory)
->  #
-> +# Installs the built kernel image and map and symbol file in the specified
-> +# install location.  If no install path is selected, the files will be placed
-> +# in the root directory.
-> +#
-> +# The name of the kernel image will be "vmlinux-VERSION" for uncompressed
-> +# kernels or "vmlinuz-VERSION' for compressed kernels.
-> +#
-> +# The kernel map file will be named "System.map-VERSION"
-> +#
-> +# Note, not all architectures seem to like putting the VERSION number in the
-> +# file name, see below in the script for a list of those that do not.  For
-> +# those that do not the "-VERSION" will not be present in the file name.
-> +#
-> +# If there is currently a kernel image or kernel map file present with the name
-> +# of the file to be copied to the location, it will be renamed to contain a
-> +# ".old" suffix.
-> +#
-> +# If ~/bin/${INSTALLKERNEL} or /sbin/${INSTALLKERNEL} is executable, execution
-> +# will be passed to that program instead of this one to allow for distro or
-> +# system specific installation scripts to be used.
->
->  verify () {
->         if [ ! -f "$1" ]; then
-> @@ -45,7 +65,6 @@ verify "$2"
->  verify "$3"
->
->  # User may have a custom install script
-> -
->  if [ -x ~/bin/"${INSTALLKERNEL}" ]; then exec ~/bin/"${INSTALLKERNEL}" "$@"; fi
->  if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
->
-> @@ -111,7 +130,7 @@ case "${ARCH}" in
->                 elif [ -x /etc/lilo/install ]; then
->                         /etc/lilo/install
->                 else
-> -                       echo "Cannot find LILO."
-> +                       echo "Cannot find LILO, ensure your bootloader knows of the new kernel image."
-
-
-Since you soften the message, I guess this is not a warning message.
-I assume it is intentional to put it in stdout instead of stderr.
-
-
->                 fi
->                 ;;
->  esac
-> --
-> 2.31.1
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+--ibffx5pg3eyhmcpt--
