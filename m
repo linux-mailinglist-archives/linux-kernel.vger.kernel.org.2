@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE8F3566B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1483566B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234502AbhDGIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:24:27 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16809 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235611AbhDGIYC (ORCPT
+        id S234417AbhDGIXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:23:49 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47104 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232650AbhDGIXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:24:02 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FFcn01nJPz7tPj;
-        Wed,  7 Apr 2021 16:21:40 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 16:23:42 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] drm/msm/dp: remove unused local variable 'hpd'
-Date:   Wed, 7 Apr 2021 16:23:15 +0800
-Message-ID: <20210407082315.2703-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Wed, 7 Apr 2021 04:23:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 21EB61C0BD8; Wed,  7 Apr 2021 10:23:37 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 10:23:36 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/56] 4.19.185-rc1 review
+Message-ID: <20210407082336.GB5425@amd>
+References: <20210405085022.562176619@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="z6Eq5LdranGa6ru8"
+Content-Disposition: inline
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning:
 
-drivers/gpu/drm/msm/dp/dp_display.c: In function ‘dp_display_usbpd_attention_cb’:
-drivers/gpu/drm/msm/dp/dp_display.c:496:19: warning: variable ‘hpd’ set but not used [-Wunused-but-set-variable]
+--z6Eq5LdranGa6ru8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: c58eb1b54fee ("drm/msm/dp: fix connect/disconnect handled at irq_hpd")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 3 ---
- 1 file changed, 3 deletions(-)
+Hi!
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 5a39da6e1eaf277..31bf2a40a9eb2c9 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -493,7 +493,6 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 	int rc = 0;
- 	u32 sink_request;
- 	struct dp_display_private *dp;
--	struct dp_usbpd *hpd;
- 
- 	if (!dev) {
- 		DRM_ERROR("invalid dev\n");
-@@ -507,8 +506,6 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 		return -ENODEV;
- 	}
- 
--	hpd = dp->usbpd;
--
- 	/* check for any test request issued by sink */
- 	rc = dp_link_process_request(dp->link);
- 	if (!rc) {
--- 
-1.8.3
+> This is the start of the stable review cycle for the 4.19.185 release.
+> There are 56 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
+CIP testing did not find any kernel problems here: (Siemens boards
+are unavailable)
 
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--z6Eq5LdranGa6ru8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBtbAgACgkQMOfwapXb+vIU7QCggowsFdeFY/+FND5xN6kCckK7
+4ZIAn3gtv1eRKGjYTgLAiKQs1Iby8feR
+=vkVN
+-----END PGP SIGNATURE-----
+
+--z6Eq5LdranGa6ru8--
