@@ -2,101 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC754356913
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4A2356916
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350771AbhDGKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:08:35 -0400
-Received: from mga14.intel.com ([192.55.52.115]:17651 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350779AbhDGKIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:08:30 -0400
-IronPort-SDR: 1fzvL/0U7EtzTDKbCWj4vLw++H+LkFEQfeeOAjiU6MGg4uILnIcU76T6Bv1J9t8CT0vhuYN18p
- H8DWFh88HM5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="192814496"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="192814496"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 03:08:18 -0700
-IronPort-SDR: gT6+aDFfU1Bgz1CRtrbrf+lOr9DXJ8IKMm8iqu/Lkhh5JP1qpt2Penz4DMR1OC9o5j9wfnOpfY
- DVe710Ab8Tvw==
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="598297243"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 03:08:15 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lU56a-001yx0-7S; Wed, 07 Apr 2021 13:08:12 +0300
-Date:   Wed, 7 Apr 2021 13:08:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
-        digetx@gmail.com, treding@nvidia.com,
-        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v6 2/5] i2c: core: add api to provide frequency mode
- strings
-Message-ID: <YG2EjHuMb92mX5G5@smile.fi.intel.com>
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
- <20210406195414.GG3122@kunai>
- <0d48f447-d1f2-1c86-27f4-3c8b23dcaf30@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d48f447-d1f2-1c86-27f4-3c8b23dcaf30@hisilicon.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S244645AbhDGKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:09:08 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:39802 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234217AbhDGKJF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:09:05 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 64685404A3;
+        Wed,  7 Apr 2021 10:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617790136; bh=eu1McAw//AVG679Rm99KEM81EeYNu+rSRmUeWBUkbUU=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=TalrV//l2s8hN09XkplmdN901X7vspjNSQ1t0CzlQLkUtLGUexeUjBz/jsGBP8/+3
+         E7aJD8MTFviEyxBNaU0kujh/+Wx8YOv9eScsD5yOPcNo9P2LdnmVO1Ds8SI4+QrWS9
+         Cxqw1Vyh3x0ejTPFXA6H+SPqp/Wb5JdpQLU7h+XhsWKqdFMc6AELnpcdagbH5ALGmC
+         HVZsq7xClUJhwoRMVF9aTGxlh6iUY6RirNk+KZq96eEmgh6PZNDVp3EcsHVwJc0LKR
+         flt5lYKCWCbI4SM7bKlj75b43FRUgOdcWOBwu45huAf1hKRJf3YXIdF7u91FaiJgWU
+         xCe6qNCMPT1Eg==
+Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 4E974A022E;
+        Wed,  7 Apr 2021 10:08:53 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Wed, 07 Apr 2021 14:08:52 +0400
+Date:   Wed, 07 Apr 2021 14:08:52 +0400
+Message-Id: <bd57036a0724d733b588a1af2aa7b71c3530a6bc.1617782103.git.Arthur.Petrosyan@synopsys.com>
+In-Reply-To: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+X-SNPS-Relay: synopsys.com
+From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Subject: [PATCH 13/14] usb: dwc2: Fix partial power down exiting by system resume
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     John Youn <John.Youn@synopsys.com>,
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Paul Zimmerman <paulz@synopsys.com>, <stable@vger.kernel.org>,
+        Kever Yang <kever.yang@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:29:29PM +0800, Yicong Yang wrote:
-> On 2021/4/7 3:54, Wolfram Sang wrote:
-> > 
-> >> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> >> index 10bd0b0..7268180 100644
-> >> --- a/include/linux/i2c.h
-> >> +++ b/include/linux/i2c.h
-> >> @@ -47,6 +47,26 @@ typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
-> >>  #define I2C_MAX_HIGH_SPEED_MODE_FREQ	3400000
-> >>  #define I2C_MAX_ULTRA_FAST_MODE_FREQ	5000000
-> >>  
-> >> +static inline const char *i2c_freq_mode_string(u32 bus_freq_hz)
-> >> +{
-> >> +	switch (bus_freq_hz) {
-> >> +	case I2C_MAX_STANDARD_MODE_FREQ:
-> >> +		return "Standard Mode (100 kHz)";
-> >> +	case I2C_MAX_FAST_MODE_FREQ:
-> >> +		return "Fast Mode (400 kHz)";
-> >> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> >> +		return "Fast Mode Plus (1.0 MHz)";
-> >> +	case I2C_MAX_TURBO_MODE_FREQ:
-> >> +		return "Turbo Mode (1.4 MHz)";
-> >> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> >> +		return "High Speed Mode (3.4 MHz)";
-> >> +	case I2C_MAX_ULTRA_FAST_MODE_FREQ:
-> >> +		return "Ultra Fast Mode (5.0 MHz)";
-> >> +	default:
-> >> +		return "Unknown Mode";
-> >> +	}
-> >> +}
-> > 
-> > Any reason ehy this is an inline function? My gut feeling says it would
-> > be better added to the core?
-> > 
-> 
-> it's not a complicated function so i didn't think it'll make much difference,
-> so i just put it in the header along with the coresponding macro definitions.
-> do you want me to move it to the core?
+Fixes the implementation of exiting from partial power down
+power saving mode when PC is resumed.
 
-I guess exporting will save few dozens of bytes if the function is used more
-than once. (All strings will be duplicated or multiplied in that case)
+Added port connection status checking which prevents exiting from
+Partial Power Down mode from _dwc2_hcd_resume() if not in Partial
+Power Down mode.
 
+Rearranged the implementation to get rid of many "if"
+statements.
+
+NOTE: Switch case statement is used for hibernation partial
+power down and clock gating mode determination. In this patch
+only Partial Power Down is implemented the Hibernation and
+clock gating implementations are planned to be added.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 6f6d70597c15 ("usb: dwc2: bus suspend/resume for hosts with DWC2_POWER_DOWN_PARAM_NONE")
+Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+---
+ drivers/usb/dwc2/hcd.c | 90 +++++++++++++++++++++---------------------
+ 1 file changed, 46 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index 34030bafdff4..f096006df96f 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4427,7 +4427,7 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+ {
+ 	struct dwc2_hsotg *hsotg = dwc2_hcd_to_hsotg(hcd);
+ 	unsigned long flags;
+-	u32 pcgctl;
++	u32 hprt0;
+ 	int ret = 0;
+ 
+ 	spin_lock_irqsave(&hsotg->lock, flags);
+@@ -4438,11 +4438,40 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+ 	if (hsotg->lx_state != DWC2_L2)
+ 		goto unlock;
+ 
+-	if (hsotg->params.power_down > DWC2_POWER_DOWN_PARAM_PARTIAL) {
++	hprt0 = dwc2_read_hprt0(hsotg);
++
++	/*
++	 * Added port connection status checking which prevents exiting from
++	 * Partial Power Down mode from _dwc2_hcd_resume() if not in Partial
++	 * Power Down mode.
++	 */
++	if (hprt0 & HPRT0_CONNSTS) {
++		hsotg->lx_state = DWC2_L0;
++		goto unlock;
++	}
++
++	switch (hsotg->params.power_down) {
++	case DWC2_POWER_DOWN_PARAM_PARTIAL:
++		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
++		if (ret)
++			dev_err(hsotg->dev,
++				"exit partial_power_down failed\n");
++		/*
++		 * Set HW accessible bit before powering on the controller
++		 * since an interrupt may rise.
++		 */
++		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
++		break;
++	case DWC2_POWER_DOWN_PARAM_HIBERNATION:
++	case DWC2_POWER_DOWN_PARAM_NONE:
++	default:
+ 		hsotg->lx_state = DWC2_L0;
+ 		goto unlock;
+ 	}
+ 
++	/* Change Root port status, as port status change occurred after resume.*/
++	hsotg->flags.b.port_suspend_change = 1;
++
+ 	/*
+ 	 * Enable power if not already done.
+ 	 * This must not be spinlocked since duration
+@@ -4454,52 +4483,25 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+ 		spin_lock_irqsave(&hsotg->lock, flags);
+ 	}
+ 
+-	if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_PARTIAL) {
+-		/*
+-		 * Set HW accessible bit before powering on the controller
+-		 * since an interrupt may rise.
+-		 */
+-		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
+-
+-
+-		/* Exit partial_power_down */
+-		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
+-		if (ret && (ret != -ENOTSUPP))
+-			dev_err(hsotg->dev, "exit partial_power_down failed\n");
+-	} else {
+-		pcgctl = readl(hsotg->regs + PCGCTL);
+-		pcgctl &= ~PCGCTL_STOPPCLK;
+-		writel(pcgctl, hsotg->regs + PCGCTL);
+-	}
+-
+-	hsotg->lx_state = DWC2_L0;
+-
++	/* Enable external vbus supply after resuming the port. */
+ 	spin_unlock_irqrestore(&hsotg->lock, flags);
++	dwc2_vbus_supply_init(hsotg);
+ 
+-	if (hsotg->bus_suspended) {
+-		spin_lock_irqsave(&hsotg->lock, flags);
+-		hsotg->flags.b.port_suspend_change = 1;
+-		spin_unlock_irqrestore(&hsotg->lock, flags);
+-		dwc2_port_resume(hsotg);
+-	} else {
+-		if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_PARTIAL) {
+-			dwc2_vbus_supply_init(hsotg);
+-
+-			/* Wait for controller to correctly update D+/D- level */
+-			usleep_range(3000, 5000);
+-		}
++	/* Wait for controller to correctly update D+/D- level */
++	usleep_range(3000, 5000);
++	spin_lock_irqsave(&hsotg->lock, flags);
+ 
+-		/*
+-		 * Clear Port Enable and Port Status changes.
+-		 * Enable Port Power.
+-		 */
+-		dwc2_writel(hsotg, HPRT0_PWR | HPRT0_CONNDET |
+-				HPRT0_ENACHG, HPRT0);
+-		/* Wait for controller to detect Port Connect */
+-		usleep_range(5000, 7000);
+-	}
++	/*
++	 * Clear Port Enable and Port Status changes.
++	 * Enable Port Power.
++	 */
++	dwc2_writel(hsotg, HPRT0_PWR | HPRT0_CONNDET |
++			HPRT0_ENACHG, HPRT0);
+ 
+-	return ret;
++	/* Wait for controller to detect Port Connect */
++	spin_unlock_irqrestore(&hsotg->lock, flags);
++	usleep_range(5000, 7000);
++	spin_lock_irqsave(&hsotg->lock, flags);
+ unlock:
+ 	spin_unlock_irqrestore(&hsotg->lock, flags);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
