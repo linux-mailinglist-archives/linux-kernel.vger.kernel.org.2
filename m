@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A06535721F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4EB357224
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344688AbhDGQ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:27:57 -0400
-Received: from mga17.intel.com ([192.55.52.151]:18454 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237178AbhDGQ1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:27:54 -0400
-IronPort-SDR: BiCIPfj70IHNJKmA6bT5HGii9dUpRO1AlDqItIuks9VrsZjeVhb9kSwMXM5ea/VqwsGLtiB1mM
- Iu5slzqlUtCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="173425267"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="173425267"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:27:43 -0700
-IronPort-SDR: ifoAkmVznBhlLzvLYUJccx+r35G9oXM3IuHi6wQPC4Paan/lNdhDqHPnJUXEb4jDArh7clmNrd
- u0NmYsyZNbjw==
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="519498952"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:27:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lUB1g-0023BS-Ff; Wed, 07 Apr 2021 19:27:32 +0300
-Date:   Wed, 7 Apr 2021 19:27:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     kernel test robot <lkp@intel.com>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Subject: Re: [PATCH v1 1/1] ata: Drop unneeded inclusion of kernel.h in the
- header
-Message-ID: <YG3ddNiPdUgRmBZc@smile.fi.intel.com>
-References: <20210407134706.81383-1-andriy.shevchenko@linux.intel.com>
- <202104072325.Zv0JLqbH-lkp@intel.com>
- <YG3X7ogK/Oq2Hv4J@smile.fi.intel.com>
- <5111151e-35a5-0422-8414-7b900f01d316@kernel.dk>
+        id S1354311AbhDGQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237178AbhDGQ3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:29:38 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1520C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:29:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id e10so5245624pls.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=30vaYO8QvcWp/TkVqpqtB3ob8eJXnmjqog5CouESalk=;
+        b=hs7bKSs1jZB7tVMk24eqMdDhXi/Zi78JsD8ccMJHgSikkyBi9yOwjKQYOw7Qpa+91C
+         zj3yKvPCbnyb5xrHxkYPdawFWI+zjII/gCnB3bat7B3fUY7b0UbDQ6otxH8nWAxlf/i8
+         DVRFFuQUbSzXDHNzi+E7uCv4Pr5a4DuOBgOP8cl+YkyjitiTFsKSkNEKKmiY63amBIvB
+         lAPAVSA5vcJd4ludsDfTHGGedt+fdfQqvUA9M/V8wMWMUV40Lf8uiyFXG/bY7TJqsfL7
+         z1s2Y65AkNZhj6EE3p8g/gek5keY3i+9u3obqr7J/zA/WsbiGe75qDFEY7e3rLJ0iYPh
+         kNGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=30vaYO8QvcWp/TkVqpqtB3ob8eJXnmjqog5CouESalk=;
+        b=mUcxcWSQhlXbpVYB4kvTTN2/59HbenDGJLM4fttnTZqddx7rkIDtGxgAYzU3M7bGsT
+         9pEbIg1jYDqaMgHPs1fWNq87Z9+iX5cZnN221XZHT8+GIDlr69TSFOAZloY2kXTn4F4A
+         2HZOpE9JYU36l3+NKYSm27hlhn9ZN8h4Nh6htImXGU5yCDh102PxiOoS2jLN530clkGw
+         Fvo4H+ZOTae+jQMqxayA8NF8FeJJmAq28BcNnCmhOclNE0opWQ83PXVSOvI81S9bSZjV
+         oxA3A/wp/IUpmK4CvKviv9jMVvGQkc3utQdfxUDOb2h4zA47mis3c+31vS9pbi59TbYb
+         n4OA==
+X-Gm-Message-State: AOAM530hFD1sYSugfk9JGROSHa7QcOOlrPtiZc+DwPZDCc5kq6ADYQm0
+        4pGptHcjjzEEKSZMHRHhOfabTg==
+X-Google-Smtp-Source: ABdhPJxp1BMcOO2FCXs6zLTKMNXvSMVT4MFuXpVxFI+xBc98lIgK6yT8/QQT0HBAnGcZnxOd2LsOgg==
+X-Received: by 2002:a17:90a:6e47:: with SMTP id s7mr4143181pjm.229.1617812968299;
+        Wed, 07 Apr 2021 09:29:28 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id x18sm2456918pfu.32.2021.04.07.09.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:29:27 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 10:29:26 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2 1/4] remoteproc: imx: add missing of_node_put
+Message-ID: <20210407162926.GC418374@xps15>
+References: <1617082235-15923-1-git-send-email-peng.fan@oss.nxp.com>
+ <1617082235-15923-2-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5111151e-35a5-0422-8414-7b900f01d316@kernel.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1617082235-15923-2-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:04:49AM -0600, Jens Axboe wrote:
-> On 4/7/21 10:03 AM, Andy Shevchenko wrote:
-> > On Wed, Apr 07, 2021 at 11:51:31PM +0800, kernel test robot wrote:
-
-...
-
-> >> All errors (new ones prefixed by >>):
-> > 
-> > Thanks, we need to include bits.h.
-> > (It passed my simple build, but appears I have no such driver included)
-> > 
-> > Jens, I saw your message, should I send a follow up fix, or a v2?
+On Tue, Mar 30, 2021 at 01:30:32PM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Let's just drop it, not worth it for the risk imho.
+> After of_parse_phandle, we need of_node_put to decrease the refcount
+> of the device_node.
+> 
+> Reported-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index 6d3207ccbaef..077413319f58 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -459,6 +459,8 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+>  			return err;
+>  		}
+>  
+> +		of_node_put(node);
+> +
 
-Does it mean I may try again in next cycle?
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Because kernel.h inclusion seems to me too wrong there.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  		if (b >= IMX7D_RPROC_MEM_MAX)
+>  			break;
+>  
+> -- 
+> 2.30.0
+> 
