@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2CE35759F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1C33575A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355962AbhDGUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
+        id S1355983AbhDGUOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349257AbhDGUNM (ORCPT
+        with ESMTP id S234182AbhDGUOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:13:12 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FDAC06175F;
-        Wed,  7 Apr 2021 13:13:01 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id y16so135811pfc.5;
-        Wed, 07 Apr 2021 13:13:01 -0700 (PDT)
+        Wed, 7 Apr 2021 16:14:10 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6740BC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:14:00 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id m16so1381195uaq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:14:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dwldfrHGB7cvjNDHe6gxp+OQ0DSzEe0anuIQnT5lIYc=;
-        b=dKW4tyxbGX73iHxH5Iha60EvcjCvKI+5hrpqwPPcbjELczGr/kzgfdsnLJJsWtOJbP
-         ubOwwaB3iZb/RBJ+1QPkWGQAjFPjPBqh2IboNE1nH7H1pZZqyeSqspXh1PeeRkVlyVq3
-         D+oq7t34NOHRn9OQqu4dUPDeY2QjjFesL1gh9WM+knJrz1i5ZQMIlvyZpNZOQKqZbOKS
-         4CB8O8zOE9mVX0eyokxf96eDPzy8oTdAAN584lU799CDSvkBRtjLRtC/rvSTel9pIKWP
-         gshTMF9nTcU8N6w8UNgn+aG83qEZcXRIQj51bqqxl3MvzOMunlFLxakjAhVMSVBe674a
-         jRAw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CuwA5DDBiBdqXrtVYclMzCLGSzTpOYNq7dYaDVgktOY=;
+        b=Ovf8IDenzsH3TXNKitshzLy21hxzs3a2Zha0LJwXz6auHaFVk7uEae/EsR18I6d7u+
+         fQM13up6BoxFE8xgL0IT71FWVGvEKy6MWvtuZyNLaIE73VUL0tNvkS2vDhK0/yj6Myyf
+         cHnh95EPFy1vlws5mLRItvq5Ri/uxn+YiPk+yBj5D3cH0hGJ11IlF2FfM/+2YVshMQV8
+         EOsFIl8gBLBmP0m9LDo6NcE/PfXyijlXEK21nonnSX1uBt7KDnrZ2sq4Taqigc1R7cvS
+         EQXe8KTn4TwZ367zReSield7a2JddCxNi2WCt2hWp9EzNpFUw6tUDp4o9RSD+knUZAne
+         1I2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dwldfrHGB7cvjNDHe6gxp+OQ0DSzEe0anuIQnT5lIYc=;
-        b=rXerty21UGmpdCTPjnHq5rg76oOHvDDEyFJL1khsUyGRbvZeSDVdY5dzOhNdrM2Om8
-         VkyHV2tS+1jS7mRmPcVAzULtI+vfypUy7acOl1qwHvOzSjUuPK4Xv/l8nmLjfbfvblmR
-         W6YA2LUNl6vyqVLJYPO4ntfczXIfVgKSKYiQ0OSSo23zZO+QaCtW1ZlHzsdxApDcGfzJ
-         xK1lW/QR5Jt4wE3ARF4KlVqqxqfKPXLcvpJMbiJ7u4VwVJa6CCojDtj3CViPO6+g3DEG
-         yO9QcoVJg/w2I9dU+IiXi4RSDxPBHeTqDuh9n6laLY/UCbcm1TSUGMUiqUpGFQ+YuY4D
-         rWDg==
-X-Gm-Message-State: AOAM533JmvcVa4xtOni6+me2ZLjO1ov8C3oFKJPiMJwoU/M9fBfIF9/t
-        ZVW/sIPL5PS1j98PdUKq5V8=
-X-Google-Smtp-Source: ABdhPJx1TzjDHM8SCpdazwwikZp8MB63xmALxAEXVlHdCjBoBVsMzPPllM88y4Piph/rcIdj06SGPw==
-X-Received: by 2002:a65:610f:: with SMTP id z15mr4931593pgu.360.1617826380553;
-        Wed, 07 Apr 2021 13:13:00 -0700 (PDT)
-Received: from localhost (g191.124-44-145.ppp.wakwak.ne.jp. [124.44.145.191])
-        by smtp.gmail.com with ESMTPSA id m1sm5878421pjk.24.2021.04.07.13.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 13:12:59 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 05:12:58 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, guoren@kernel.org,
-        linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>,
-        sparclinux@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [OpenRISC] [PATCH v6 1/9] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <20210407201258.GH3288043@lianli.shorne-pla.net>
-References: <1617201040-83905-1-git-send-email-guoren@kernel.org>
- <1617201040-83905-2-git-send-email-guoren@kernel.org>
- <YGyRrBjomDCPOBUd@boqun-archlinux>
- <20210406235208.GG3288043@lianli.shorne-pla.net>
- <YG1/xRgWlLHD4j/8@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CuwA5DDBiBdqXrtVYclMzCLGSzTpOYNq7dYaDVgktOY=;
+        b=UBtRVkTEfMlhZOTFU6iEtAoZdDvVZvGA9ZADd+gb2+Jl4YHRkMghadOCXq1nUIovrJ
+         wfZiyxJnmOku1AjTRnuW2HpLq2zBTsTQTp6jMhXYCrTwS0+hBloWwpqxliN+/pKoGkI4
+         AKsiZtjlAPqmRs4UtFIQQwAYHGR8cov4bH5+4OXZQ/XB2qbF4bV/PQxYLyNkO2iJdRr1
+         2UqHkEUQj22KNbr+vCIWfGMnqBCb8jhkeA8sSe5CTD9H7thI96sVxQre1YKPtiC/jvZ2
+         qqiWwRYcT/+N6553oWiat6FFWS4V7iGFFa8jfuzVmRYlHcD6vUhly+g+lQblEwS3dycG
+         mzUw==
+X-Gm-Message-State: AOAM533qHtTNJTHi+k8P6dysv9G6w1o7yEDT3Di3byEqtFmX6gux8E8y
+        IOh9Z5ZpP3qFKJ2KqeDVfTPtD/qA4qyUUFhtAFcmCQ==
+X-Google-Smtp-Source: ABdhPJzV9R8oH0zGK0LMgHPtRJnREvu/AIeNHuCjWCH7XFr1auCUB5yuIVIPuGtmscQjKB8XJhtSBvXIWlyR/aBUyJU=
+X-Received: by 2002:ab0:2555:: with SMTP id l21mr3574800uan.65.1617826439264;
+ Wed, 07 Apr 2021 13:13:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG1/xRgWlLHD4j/8@hirez.programming.kicks-ass.net>
+References: <20210406013643.3280369-1-badhri@google.com> <20210406013643.3280369-2-badhri@google.com>
+ <AM9PR10MB4134A5A4A0D34EC3F2C572BD80759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <AM9PR10MB4134A5A4A0D34EC3F2C572BD80759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 7 Apr 2021 13:13:24 -0700
+Message-ID: <CAPTae5Lqv4E_w31gEWjqPB_-H9A=ed3NNhc=18psih_Vs1U4ug@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] usb: typec: tcpm: Address incorrect values of tcpm
+ psy for fixed supply
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:47:49AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 07, 2021 at 08:52:08AM +0900, Stafford Horne wrote:
-> > Why doesn't RISC-V add the xchg16 emulation code similar to OpenRISC?  For
-> > OpenRISC we added xchg16 and xchg8 emulation code to enable qspinlocks.  So
-> > one thought is with CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32=y, can we remove our
-> > xchg16/xchg8 emulation code?
-> 
-> CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32 is guaranteed crap.
+Hi Guenter and Adam,
+
+Thanks for the reviews !
+Fixed up the typo in V2.
+
+Thanks,
+Badhri
+
+On Wed, Apr 7, 2021 at 9:04 AM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
 >
-> All the architectures that have wanted it are RISC style LL/SC archs,
-> and for them a cmpxchg loop is a daft thing to do, since it reduces the
-> chance of it behaving sanely.
-> 
-> Why would we provide something that's known to be suboptimal? If an
-> architecture chooses to not care about determinism and or fwd progress,
-> then that's their choice. But not one, I feel, we should encourage.
-
-Thanks, this is the response I was hoping my comment would provoke.
-
-So not enabling CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32 for architectures
-unless they really want it should be the way.
-
--Stafford
+> On 06 April 2021 02:37, Badhri Jagan Sridharan wrote:
+>
+> > tcpm_pd_build_request overwrites current_limit and supply_voltage
+> > even before port partner accepts the requests. This leaves stale
+> > values in current_limit and supply_voltage that get exported by
+> > "tcpm-source-psy-". Solving this problem by caching the request
+> > values of current limit/supply voltage in req_current_limit
+> > and req_supply_voltage. current_limit/supply_voltage gets updated
+> > once the port partner accepts the request.
+> >
+> > Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through
+> > power_supply")
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+>
+> Looks sensible, typo aside:
+>
+> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+>
+> >  drivers/usb/typec/tcpm/tcpm.c | 17 ++++++++++-------
+> >  1 file changed, 10 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index ca1fc77697fc..03eca5061132 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -389,7 +389,10 @@ struct tcpm_port {
+> >       unsigned int operating_snk_mw;
+> >       bool update_sink_caps;
+> >
+> > -     /* Requested current / voltage */
+> > +     /* Requested current / voltage to the port partner */
+> > +     u32 req_current_limit;
+> > +     u32 req_supply_voltage;
+> > +     /* Acutal current / voltage limit of the local port */
+> >       u32 current_limit;
+> >       u32 supply_voltage;
+> >
+> > @@ -2435,8 +2438,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
+> > *port,
+> >               case SNK_TRANSITION_SINK:
+> >                       if (port->vbus_present) {
+> >                               tcpm_set_current_limit(port,
+> > -                                                    port->current_limit,
+> > -                                                    port->supply_voltage);
+> > +                                                    port->req_current_limit,
+> > +                                                    port->req_supply_voltage);
+> >                               port->explicit_contract = true;
+> >                               tcpm_set_auto_vbus_discharge_threshold(port,
+> >
+> > TYPEC_PWR_MODE_PD,
+> > @@ -2545,8 +2548,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
+> > *port,
+> >                       break;
+> >               case SNK_NEGOTIATE_PPS_CAPABILITIES:
+> >                       port->pps_data.active = true;
+> > -                     port->supply_voltage = port->pps_data.out_volt;
+> > -                     port->current_limit = port->pps_data.op_curr;
+> > +                     port->req_supply_voltage = port->pps_data.out_volt;
+> > +                     port->req_current_limit = port->pps_data.op_curr;
+> >                       tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
+> >                       break;
+> >               case SOFT_RESET_SEND:
+> > @@ -3195,8 +3198,8 @@ static int tcpm_pd_build_request(struct tcpm_port
+> > *port, u32 *rdo)
+> >                        flags & RDO_CAP_MISMATCH ? " [mismatch]" : "");
+> >       }
+> >
+> > -     port->current_limit = ma;
+> > -     port->supply_voltage = mv;
+> > +     port->req_current_limit = ma;
+> > +     port->req_supply_voltage = mv;
+> >
+> >       return 0;
+> >  }
+> > --
+> > 2.31.0.208.g409f899ff0-goog
+>
