@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C963564B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEA63564B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346116AbhDGHD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:03:26 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59126 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346051AbhDGHDW (ORCPT
+        id S1349299AbhDGHFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346051AbhDGHFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:03:22 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lU2DY-0000tX-Lp
-        for linux-kernel@vger.kernel.org; Wed, 07 Apr 2021 07:03:12 +0000
-Received: by mail-ed1-f69.google.com with SMTP id i19so11683321edy.18
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:03:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EPPmWmdaq2dh/UGET3fGHk7TqyifSikdBPPTcaMQ1jg=;
-        b=Eaa9jkUcXKg68GYrUp+02Ifid2ribY619Wb3q5h1M1wkA9PtoV+YSBNm2BBmQMaAgT
-         tR1XFhfn9H09GnwbyEBnf5NZZ5pW6sVOzPkidHEODOtJCLmwOdtWU+ml+xKKL/ouFWZ4
-         fgyOCHJ5oEXhsLxYJwlZdZngGQjDifF6fHQlbEdpGffcBuh9GP1MOBfm81aQDZi9725d
-         T59S9hKGmObL9mMvRpl8Tm0sdNVSeRMA5WoTEx78k6MA6ub2nIlIik5M0PAHmRraX+tm
-         VYfmhfhP44O+5QTkJebOIWjOVmcQXh2WhTnAyS8fcz0w75wssuAn32HLP6/XNhumuX+E
-         lwzg==
-X-Gm-Message-State: AOAM530zXY8wuGAx/qRAJ/nVoO2kF+Yt+cNWw2iPxbS5smK5VYW9WKI+
-        1/2ahziP8qMuyxvKJNoxoz2h82kKzyio4ku/ZfpN4etAsHvcjQDxx01tnkqS3XXqZWMXP8B9RUh
-        WQWWKPFS8wgmKWhokixCwPkNQ66V6zTpYR2ffTEg3WQ==
-X-Received: by 2002:a17:907:8315:: with SMTP id mq21mr1978843ejc.197.1617778992223;
-        Wed, 07 Apr 2021 00:03:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5unwAu/pheJs7/Bm4+tsoa6su36QNc2QP3KIySluVf5OYxVWePEgyI1T1vZ5SuhSIJMwiOQ==
-X-Received: by 2002:a17:907:8315:: with SMTP id mq21mr1978824ejc.197.1617778992048;
-        Wed, 07 Apr 2021 00:03:12 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id s9sm14384640edd.16.2021.04.07.00.03.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 00:03:11 -0700 (PDT)
-Subject: Re: [GIT PULL 1/3] ARM: dts: samsung: Pull for v5.13
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210407065828.7213-1-krzysztof.kozlowski@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <33fb7d93-a091-e1d4-e0e6-463c391b6e76@canonical.com>
-Date:   Wed, 7 Apr 2021 09:03:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 7 Apr 2021 03:05:14 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0980CC06174A;
+        Wed,  7 Apr 2021 00:05:05 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFb4Z1TKlz9sSC;
+        Wed,  7 Apr 2021 17:04:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617779102;
+        bh=IwP571ALp33d/+OKaZ53iVtxbcfAPVMy+wa7LIfu3og=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Dx95BirQsEfX1HvAcCSuqhT5emUI4uXcZSMebWtnkABXZ+4DZjOY8vptMN8Hpx7YF
+         aXam2IM/iUhORrfbcja7AXi8DNy5eLTXCQkAvlNNr9wsQ9eZ9Jkytpux9XcGIKjunj
+         lEu5lpeOg56IWBHQU6TaK0X8DL5nQwfB+1JsGmht/Ig73n/m/5V6SmWpJ1xCeHsBPJ
+         Ig0XF8jAmyUOYAh6BjMNxWnaj+mYsYoGnJ5ohhLGLSHpJ24zh+przklMErq7F1kGho
+         bLerJhwL6ccBojq8m55aDeKdX1j+Dmp6SDmstoYva0Skg54Ht7fE57Hrq8ghraM4zu
+         dIPFnp8C4f2AQ==
+Date:   Wed, 7 Apr 2021 17:04:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Christie <michael.christie@oracle.com>,
+        Roman Bolshakov <r.bolshakov@yadro.com>
+Subject: linux-next: manual merge of the scsi tree with the scsi-fixes tree
+Message-ID: <20210407170457.77b88f83@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210407065828.7213-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/PX_aTgi2hCTeuOKythd=m+C";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/04/2021 08:58, Krzysztof Kozlowski wrote:
-> From: Krzysztof Kozlowski <krzk@kernel.org>
+--Sig_/PX_aTgi2hCTeuOKythd=m+C
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I still did not update all my tools for new email - this should be
-"From" my Canonical address. The tags are signed with the same key with
-@canonical.com UID.  The latest key is already in kernel PGP keyring:
-https://korg.docs.kernel.org/pgpkeys.html
+Hi all,
 
-Best regards,
-Krzysztof
+Today's linux-next merge of the scsi tree got a conflict in:
+
+  drivers/target/iscsi/iscsi_target.c
+
+between commit:
+
+  0352c3d3959a ("scsi: target: iscsi: Fix zero tag inside a trace event")
+
+from the scsi-fixes tree and commit:
+
+  08694199477d ("scsi: target: core: Add gfp_t arg to target_cmd_init_cdb()=
+")
+
+from the scsi tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/target/iscsi/iscsi_target.c
+index e5c443bfbdf9,cf7f0465dd63..000000000000
+--- a/drivers/target/iscsi/iscsi_target.c
++++ b/drivers/target/iscsi/iscsi_target.c
+@@@ -1166,8 -1166,8 +1166,9 @@@ int iscsit_setup_scsi_cmd(struct iscsi_
+ =20
+  	target_get_sess_cmd(&cmd->se_cmd, true);
+ =20
+ +	cmd->se_cmd.tag =3D (__force u32)cmd->init_task_tag;
+- 	cmd->sense_reason =3D target_cmd_init_cdb(&cmd->se_cmd, hdr->cdb);
++ 	cmd->sense_reason =3D target_cmd_init_cdb(&cmd->se_cmd, hdr->cdb,
++ 						GFP_KERNEL);
+  	if (cmd->sense_reason) {
+  		if (cmd->sense_reason =3D=3D TCM_OUT_OF_RESOURCES) {
+  			return iscsit_add_reject_cmd(cmd,
+
+--Sig_/PX_aTgi2hCTeuOKythd=m+C
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBtWZkACgkQAVBC80lX
+0GyP3Af/XKqDVcOOfhVvwgVDNT0+25UStndjHl0Wy2S4txmgXWzmdx8L/21SrSdz
+DUmHfigp02Jjh1jU/b0RftbNU9yMsPF75jA6UNvhZAmIAu6Zqm1Ri/3tx+rNImVX
+HTC1EOHCHzBmV/2jBrDv2c0+IgT5g+nvI3WokoSqgqoj0PumABw61vo0lMTWIjji
+h1h6rAOjUdHbw+tvc1AlTJhzEaQ/2SbddyBoT5Sksi9v4g3K1NhAzizNuGA5TSe1
+IqwdYLitaYKiR0WhccX4hoa0jS8q0x2vji7U831IJ/t87HYLAR4SuZMh+LWeDE7/
+qx9FQyMIbk0f1ub5MUap07lwOCqtWQ==
+=k50g
+-----END PGP SIGNATURE-----
+
+--Sig_/PX_aTgi2hCTeuOKythd=m+C--
