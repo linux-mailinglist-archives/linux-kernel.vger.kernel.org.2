@@ -2,63 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1AF357057
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC740357059
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353612AbhDGPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:30:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353606AbhDGPaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:30:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28ED061284;
-        Wed,  7 Apr 2021 15:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617809436;
-        bh=qA1K7GXPgJggIo7yDSDd0shoNwNJAxbUw0JD2TvPcag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UfyzGWNsF1bmdjTOmt5+jEypgyfgMvhFIkBUPZVuqaSPuLIKJIqK6Owskw2/nQYud
-         jDZ9O4GG3VMLuz98vXGXANX7n3EkLxgaTACr/lXmk3CWecq0wlYB0lCEac2tnGAVbf
-         9GSywokjiNUpEh5Nfz7rwuDxndPapF0uPk3upcOg=
-Date:   Wed, 7 Apr 2021 17:30:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/19] drivers: rtl8723bs: rewrite comparison to null
-Message-ID: <YG3QGq0T/cO2kdFN@kroah.com>
-References: <cover.1617802415.git.fabioaiuto83@gmail.com>
- <0c6d53c851d1b07eb0183108e0bad7b4f273f04b.1617802415.git.fabioaiuto83@gmail.com>
- <YG3MOCQHu3o/qHTg@kroah.com>
- <20210407152533.GA1590@agape.jhs>
+        id S1353621AbhDGPbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:31:00 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55370 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353613AbhDGPa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:30:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137FUdNp061591;
+        Wed, 7 Apr 2021 10:30:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617809439;
+        bh=/lIZwVy1ZVnvPRHkhJ8M6h02XBSL9Vglt6RbLS8Ad1Y=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jYFdLhL3/hsMuAuxwjTL+ktUwlW56WhbQAxr3pdamvsadO9iPDiLmMeokW9gAfX4g
+         JFwv4/yshBReE0l8owLT4hfCK2L2Ioe0rWhjlDmyqOCoTozeLLSU6WSOasG/bwSyim
+         G132xu9MleWcmB1xmG3whvDk9s3bGdp9QXwVyPcY=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137FUcfC000528
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Apr 2021 10:30:38 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
+ 2021 10:30:38 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 7 Apr 2021 10:30:38 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137FUcau113588;
+        Wed, 7 Apr 2021 10:30:38 -0500
+Date:   Wed, 7 Apr 2021 10:30:38 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+CC:     Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am65: Add support for UHS-I modes in
+ MMCSD1 subsystem
+Message-ID: <20210407153038.fkwoctn4qvlplxfs@probation>
+References: <20210407104303.25950-1-a-govindraju@ti.com>
+ <20210407145937.prvue66guhdls2fw@immovably>
+ <7d089f1c-6f9e-82fe-fc8a-42c691d4ec40@siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210407152533.GA1590@agape.jhs>
+In-Reply-To: <7d089f1c-6f9e-82fe-fc8a-42c691d4ec40@siemens.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:25:34PM +0200, Fabio Aiuto wrote:
-> On Wed, Apr 07, 2021 at 05:14:00PM +0200, Greg KH wrote:
-> > On Wed, Apr 07, 2021 at 03:49:31PM +0200, Fabio Aiuto wrote:
-> > > fix following post-commit hook checkpatch warnings:
-> > > 
-> > > CHECK: Comparison to NULL could be written "!psta"
-> > > 97: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:2115:
-> > > +		if (psta == NULL)
-> > > 
-> > > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > > ---
-> > >  drivers/staging/rtl8723bs/core/rtw_ap.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+On 17:13-20210407, Jan Kiszka wrote:
+> On 07.04.21 16:59, Nishanth Menon wrote:
+> > On 16:13-20210407, Aswath Govindraju wrote:
+> >> UHS-I speed modes are supported in AM65 S.R. 2.0 SoC[1].
+> >>
+> >> Add support by removing the no-1-8-v tag and including the voltage
+> >> regulator device tree nodes for power cycling.
+> >>
+> >> [1] - https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf, section 12.3.6.1.1
+> >>
+> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > > 
-> > Nit, your subject line has "drivers:" not "staging:" here.  Be a bit
-> > more careful next time please.
+> >> ---
+> >>
+> >> test logs:
+> >> https://pastebin.ubuntu.com/p/vpYbY9QWh8/
+> >>
+> > Thanks, but I dont plan on queuing this for 5.13-rc1 (my PR is already
+> > out). but it does trigger an interesting discussion..
 > > 
-> > thanks,
+> >>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  1 -
+> >>  .../arm64/boot/dts/ti/k3-am654-base-board.dts | 33 +++++++++++++++++++
+> >>  2 files changed, 33 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> >> index cb340d1b401f..632f32fce4a1 100644
+> >> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> >> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> >> @@ -301,7 +301,6 @@
+> >>  		ti,otap-del-sel = <0x2>;
+> >>  		ti,trm-icp = <0x8>;
+> >>  		dma-coherent;
+> >> -		no-1-8-v;
+> >>  	};
+> >>  
 > > 
-> > greg k-h
+> > Jan - this will break your IOT SR1.0 boards, no? with all the SR1.0,
+> > 2.0, 2.1 coming along, the plan for TI was to support older revs via
+> > overlays hoping that older boards will eventually get replaced or die
+> > out of lack of use.. but you do have production on 1.0 -> so would you
+> > rather handle this in overlay OR IOT boards dts introduce no-1-8-v
+> > property?
 > 
-> sorry, you can drop them off the staging-testing branch and I will resend you all if you want,
+> I'm fine with pulling anything needed into our board-specific DTs. Those
+> pending are for SR1.0 boards only. SR2 will come later and have their
+> own DTs.
 
-Nah, it's not worth it, I'll keep them for now :)
+OK - I think the safe option will be for Ashwath to add no-1-8-v into
+IOT board.dts as part of this patch to maintain bisectability.
+
+> Didn't follow the thread: Where is this patch located wrt my IOT2050
+> series? Does it come first first, and we would have to rebase? Or would
+> this change rather have to move the flag to k3-am65-iot2050-common.dtsi?
+
+5.13 PR is sent https://lore.kernel.org/linux-arm-kernel/20210405155336.smohb7uzkperqwuz@reflex/
+IoT is part of that.. I am guessing Arnd / Olof will pick it up later this week
+or weekend once it goes through their checklist.
+
+we are starting to see 5.14 material now, so nothing you need to do from
+rebase perspective - testing will be appreciated to make sure that the
+new patches have'nt broken your board.
+
+> Thanks a lot for having an eye on these subtle dependencies!
+
+Sure..
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
