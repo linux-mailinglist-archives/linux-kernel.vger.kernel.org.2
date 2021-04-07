@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DDE35697A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE32356983
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351049AbhDGKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:24:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44724 "EHLO mail.kernel.org"
+        id S1351085AbhDGKY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350933AbhDGKYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350935AbhDGKYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 06:24:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C07F613B3;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83935613CD;
         Wed,  7 Apr 2021 10:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617791030;
-        bh=ojeNQlDbeBe4P3HSW70P9xJ2J0gkKfJbFvASDGXxSOY=;
+        bh=aOiPbYy6/Ya3tIGwHa7GwZ9E/dBfsXM6G8A4jcFIg/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HjNgfRvSZS0FOP2GHLQMNZkvl/s0chXhgkcu9aAB0f9KWxNPYuPNCnk88kevGXWuU
-         zgDAmAJ2PwujQIDoWkhn2ce59mxVR+tqUJl9cI7d8PJr30fNKy9OR4JSHVjzxIQlR8
-         mFGUTaAkJkvlVgyUiY6jzJxCO5RfmbhO6lzRYP2CEWrV14da66bpt5TYpaWqlLYjHT
-         YSXQbAJjeTesA96nDuYc1sdWf+oFvO0U0LthpW5XbIEYuBqxAEBgQfz1UPwFnuummk
-         ttIf6N8ImZCFQ/SrDb1B6WytTK+6q4qgzbIP6O437lMbdxTL4JJIN2IWQvXDy4kIN0
-         0njOOT571RrEg==
+        b=QMoWO65jgBW2Pok69R3BKsbXuIrP21olYOQZOHASBR6UxawzxDMHRKdr31p/w9hfp
+         zO2LLm6V3dwgpSA8dYMj3b4+5QkugHofPnzlmDYip8SzxfYmFcbGmS7z12hFN7vV50
+         ZvSU+SmOsUyx6UP56WMYEqbQ87I20Tfi01OF41fP4swS17NrzoejFFjHmdKmSJBQCM
+         w4FGkLn96em5nzhGCruLSrJrk+8aB7Q9Uh/OycVTP2otygNq05PKouwXO2TxlI85ps
+         tn4I6+T4v/X6SorrSLTCXBmmV/dpa2gtd5Vkwo8Yj0olKSKWGk9bLYsqspqyJnaG0i
+         kXAHQDmeIuXPw==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU5Lb-0008RK-6e; Wed, 07 Apr 2021 12:23:43 +0200
+        id 1lU5Lb-0008RN-94; Wed, 07 Apr 2021 12:23:43 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-staging@lists.linux.dev,
         greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 07/16] staging: greybus: uart: clean up TIOCGSERIAL
-Date:   Wed,  7 Apr 2021 12:23:25 +0200
-Message-Id: <20210407102334.32361-8-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH 08/16] tty: amiserial: fix TIOCSSERIAL permission check
+Date:   Wed,  7 Apr 2021 12:23:26 +0200
+Message-Id: <20210407102334.32361-9-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407102334.32361-1-johan@kernel.org>
 References: <20210407102334.32361-1-johan@kernel.org>
@@ -43,50 +43,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
-serial devices is only useful for setting the close_delay and
-closing_wait parameters.
+Changing the port closing_wait parameter is a privileged operation.
 
-The xmit_fifo_size parameter could be used to set the hardware transmit
-fifo size of a legacy UART when it could not be detected, but the
-interface is limited to eight bits and should be left unset when not
-used.
+Add the missing check to TIOCSSERIAL so that -EPERM is returned in case
+an unprivileged user tries to change the closing-wait setting.
 
-Similarly, baud_base could be used to set the UART base clock when it
-could not be detected but might as well be left unset when it is not
-known.
-
-The type parameter could be used to set the UART type, but is
-better left unspecified (type unknown) when it isn't used.
-
-Note that some applications have historically expected TIOCGSERIAL to be
-implemented, but judging from the Debian sources, the port type not
-being PORT_UNKNOWN is only used to check for the existence of legacy
-serial ports (ttySn). Notably USB serial drivers like ftdi_sio have been
-using PORT_UNKNOWN for twenty years without any problems.
-
-Drop the bogus values provided by the greybus implementation.
-
+Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/staging/greybus/uart.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/tty/amiserial.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index a520f7f213db..b1e63f7798b0 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -610,10 +610,7 @@ static int get_serial_info(struct tty_struct *tty,
- {
- 	struct gb_tty *gb_tty = tty->driver_data;
- 
--	ss->type = PORT_16550A;
- 	ss->line = gb_tty->minor;
--	ss->xmit_fifo_size = 16;
--	ss->baud_base = 9600;
- 	ss->close_delay = jiffies_to_msecs(gb_tty->port.close_delay) / 10;
- 	ss->closing_wait =
- 		gb_tty->port.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
+index 0c8157fab17f..ec6802ba2bf8 100644
+--- a/drivers/tty/amiserial.c
++++ b/drivers/tty/amiserial.c
+@@ -970,6 +970,7 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
+ 	if (!serial_isroot()) {
+ 		if ((ss->baud_base != state->baud_base) ||
+ 		    (ss->close_delay != port->close_delay) ||
++		    (ss->closing_wait != port->closing_wait) ||
+ 		    (ss->xmit_fifo_size != state->xmit_fifo_size) ||
+ 		    ((ss->flags & ~ASYNC_USR_MASK) !=
+ 		     (port->flags & ~ASYNC_USR_MASK))) {
 -- 
 2.26.3
 
