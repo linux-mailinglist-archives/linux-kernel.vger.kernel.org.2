@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B8535776A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81E5357772
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhDGWLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        id S229828AbhDGWNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhDGWLm (ORCPT
+        with ESMTP id S229734AbhDGWNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:11:42 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C0C061760;
-        Wed,  7 Apr 2021 15:11:31 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id g24so14970466qts.6;
-        Wed, 07 Apr 2021 15:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=amAuSjaH75GbFNszV8kNPKmiZ9+ARLzooMkxZXBGL4c=;
-        b=Q8bUVhUxi4if9bKkZaClN0vDG8Zqwvx/YTkTZjDFMQGm+J80O+6zT5JzPrwgh13HwR
-         sZvKNz1EIgUUVwwBu74zih3eU37J3Y2BpKH++a/1JufPT3FDw2k0pL/VfkATVkQfwKwu
-         +szXKkmHxDY+HSA063eeY3uJeTc6AwgBI85CH0BK9WAJMNVmujmEBJPNyZGlCBtgu9Gk
-         aICCgKb8a7sKH7V6bnIJnVdNQps/CNVOz6UZVcFiSpluTrRUJ2Pp9BFEuAHHDIxGWzsY
-         pMMlKT4K2Fcg4l1iGQpPuvBYtPOKQMLJLXwKECylxNTHuhw/SyAF4oaW3iZJNBP7qUa3
-         X4RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=amAuSjaH75GbFNszV8kNPKmiZ9+ARLzooMkxZXBGL4c=;
-        b=EonMrydY2xuuwV6a8SEvSbJI6eVzzU1epbqKYcSYD9R2jZGV7bv0lykfzM9aRPSlUp
-         ropmqZ/HdJ/Jqz7EPDkaawpynzu/O9YQRF0+gHmLVLuS2Ia4BQTUcoceD4a2EqbDFeGX
-         ExZpJwSkyxv1EDu5U4fl0xsiONhEqy27jeZTFKbYOAhYvNgpeJVPGWaMjnuGVM2ejx6W
-         xvIpWwGN0XGjFH5BfX+vx3n2QmTlXSV/M1jCx1DzoeDmqjmmW5hNgdNGOJva81hVWzWA
-         nidcNWe2qSwyiCos4GjP0nnD8xEVEYdlTlvz1zO1qUWv0xAYaNlMVPmnPwnUN33iFpq9
-         p/Ew==
-X-Gm-Message-State: AOAM531kddTJxcYli8fLVSOP1gDChw9mEuHgp1weGkt8egufX4pvgqHL
-        E5OiFn7mC5meAXBWyrAKK8KPT2EXJGfYyJdRxgc=
-X-Google-Smtp-Source: ABdhPJy9uzxI0rQ+Z4C4+JpW5tL/YK+9PabpkQyOtmeoKQV8IH3MlM7Azd/8wZxPx9/B6fqdWSebJuvstroAIDQCBdg=
-X-Received: by 2002:ac8:6d2b:: with SMTP id r11mr4635895qtu.245.1617833490836;
- Wed, 07 Apr 2021 15:11:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210331062723.2090-1-wangfangpeng1@huawei.com>
-In-Reply-To: <20210331062723.2090-1-wangfangpeng1@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Thu, 8 Apr 2021 00:11:19 +0200
-Message-ID: <CAFLxGvwer-w7ngekB_4rtBLWrr0KrwqLjavJd3ZTR8Xh5f_Y3A@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: fix read fail but return ok
-To:     wangfangpeng <wangfangpeng1@huawei.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Adrian Hunter <ext-adrian.hunter@nokia.com>,
-        Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>, zengweilin@huawei.com,
-        stable <stable@vger.kernel.org>
+        Wed, 7 Apr 2021 18:13:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C18C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 15:13:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lUGQ8-0002Ir-PK; Thu, 08 Apr 2021 00:13:08 +0200
+Message-ID: <542d469459083fa31e37ca7feb14480831a0445f.camel@pengutronix.de>
+Subject: Re: [PATCH v1 0/7] imx-gpcv2 improvements
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, krzk@kernel.org, peng.fan@nxp.com,
+        aisheng.dong@nxp.com, qiangqing.zhang@nxp.com, alice.guo@nxp.com,
+        aford173@gmail.com, agx@sigxcpu.org, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 08 Apr 2021 00:13:06 +0200
+In-Reply-To: <20210407212122.626137-1-adrien.grassein@gmail.com>
+References: <20210407212122.626137-1-adrien.grassein@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 8:29 AM wangfangpeng <wangfangpeng1@huawei.com> wrote:
-> do_readpage() may return err, but ubifs_readpage() always return ok.
-> The vfs will ignore the err happen in ubifs.
+Hi Adrien,
 
-Are you sure about that?
-In case of an error UBIFS sets the error flag of the page and does not
-mark it as uptodate,
-so vfs will emit -EIO. At least this is the theory. :-)
+I feel like I already mentioned to you some time ago that there is
+already a much more complete patch series to add this functionality on
+the list [1].
 
--- 
-Thanks,
-//richard
+If you want this functionality to go upstream, please help test and
+extend this patch series.
+
+Regards,
+Lucas
+
+[1] https://lore.kernel.org/linux-arm-kernel/20201105174434.1817539-1-l.stach@pengutronix.de/
+
+Am Mittwoch, dem 07.04.2021 um 23:21 +0200 schrieb Adrien Grassein:
+> Hi,
+> 
+> This patch set aims is to add the support of the i.MX8 MM power domains
+> on the mainline kernel.
+> 
+> To achieve this, I do several patches
+>   - Check errors when reading or writing registers (concerns i.MX8M base
+>     implementation);
+>   - Fix power up/down sequence. Handshake was not checked and it was
+>     not called at the appropriate time (concerns i.MX8M base
+> implementaions);
+>   - Allow domains without power sequence control like the HSIOMIX of the
+>     i.MX8MM.
+>   - Add some i.MX8MM domains (HSIO and OTGS);
+>   - Introduce quirks. For example, i.MX8MM OTG domains should not be
+>     powered off (seen n the source code of th i.MX ATF). Quirks are
+> easily upgrable for other cases.
+>   - Finally I defined power domains into the imx8mm.dtb file.
+> 
+> I know that this kind of patch is rejected by NXP ut the other way
+> (callin ATF directly) was also rejected.
+> 
+> I also know that NXP is concerned abou adding hundred lines of codes for
+> each new SOC but it' the way it works on Linux. And the "added code"
+> mainly consist of adding structures, defines and generic methods for
+> regmap.
+> 
+> If it's a real problem, maybe we can introduc a new "gpcv3" driver for
+> i.MX8MM, i.MX8MN and i.MX8MP.
+> 
+> Thanks,  
+> 
+> Adrien Grassein (7):
+>   soc: imx: gpcv2: check for errors when r/w registers
+>   soc: imx: gpcv2: Fix power up/down sequence
+>   soc: imx: gpcv2: allow domains without power sequence control
+>   dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
+>   soc: imx: gpcv2: add HSIOMIX and USB domains for i.MX8MM
+>   soc: imx: gpcv2: add quirks to domains
+>   arm64: dts: imx8mm: add power-domains
+> 
+>  .../bindings/power/fsl,imx-gpcv2.yaml         |   7 +-
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  35 ++
+>  drivers/soc/imx/gpcv2.c                       | 336 ++++++++++++++----
+>  include/dt-bindings/power/imx8mm-power.h      |  21 ++
+>  4 files changed, 333 insertions(+), 66 deletions(-)
+>  create mode 100644 include/dt-bindings/power/imx8mm-power.h
+> 
+
+
