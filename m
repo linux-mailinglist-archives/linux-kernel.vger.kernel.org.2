@@ -2,154 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFD7357752
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56141357753
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhDGWGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:06:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:35740 "EHLO foss.arm.com"
+        id S229887AbhDGWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:06:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:35752 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhDGWGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:06:48 -0400
+        id S229793AbhDGWGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:06:50 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1138F1063;
-        Wed,  7 Apr 2021 15:06:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAD3C1435;
+        Wed,  7 Apr 2021 15:06:39 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7DA083F792;
-        Wed,  7 Apr 2021 15:06:36 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 44E8F3F792;
+        Wed,  7 Apr 2021 15:06:38 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
+Cc:     Lingutla Chandrasekhar <clingutla@codeaurora.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Morten Rasmussen <morten.rasmussen@arm.com>,
         Qais Yousef <qais.yousef@arm.com>,
         Quentin Perret <qperret@google.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: [PATCH v5 0/3] sched/fair: load-balance vs capacity margins
-Date:   Wed,  7 Apr 2021 23:06:25 +0100
-Message-Id: <20210407220628.3798191-1-valentin.schneider@arm.com>
+        Rik van Riel <riel@surriel.com>
+Subject: [PATCH v5 1/3] sched/fair: Ignore percpu threads for imbalance pulls
+Date:   Wed,  7 Apr 2021 23:06:26 +0100
+Message-Id: <20210407220628.3798191-2-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210407220628.3798191-1-valentin.schneider@arm.com>
+References: <20210407220628.3798191-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
 
-I split up the extra misfit patches from v3 as I'm still playing around with
-those following Vincent's comments. In the meantime, I believe the first few
-patches of the series can still be considered as standalone.
+During load balance, LBF_SOME_PINNED will be set if any candidate task
+cannot be detached due to CPU affinity constraints. This can result in
+setting env->sd->parent->sgc->group_imbalance, which can lead to a group
+being classified as group_imbalanced (rather than any of the other, lower
+group_type) when balancing at a higher level.
 
-o Patch 1 prevents pcpu kworkers from causing group_imbalanced
-o Patch 2 is an independent active balance cleanup
-o Patch 3 introduces yet another margin for capacity to capacity
-  comparisons
+In workloads involving a single task per CPU, LBF_SOME_PINNED can often be
+set due to per-CPU kthreads being the only other runnable tasks on any
+given rq. This results in changing the group classification during
+load-balance at higher levels when in reality there is nothing that can be
+done for this affinity constraint: per-CPU kthreads, as the name implies,
+don't get to move around (modulo hotplug shenanigans).
 
-The "important" one is patch 3, as it solves misfit migration issues on newer
-platforms.
-  
-This is based on top of today's tip/sched/core at:
+It's not as clear for userspace tasks - a task could be in an N-CPU cpuset
+with N-1 offline CPUs, making it an "accidental" per-CPU task rather than
+an intended one. KTHREAD_IS_PER_CPU gives us an indisputable signal which
+we can leverage here to not set LBF_SOME_PINNED.
 
-  0a2b65c03e9b ("sched/topology: Remove redundant cpumask_and() in init_overlap_sched_group()")
+Note that the aforementioned classification to group_imbalance (when
+nothing can be done) is especially problematic on big.LITTLE systems, which
+have a topology the likes of:
 
-Testing
-=======
+  DIE [          ]
+  MC  [    ][    ]
+       0  1  2  3
+       L  L  B  B
 
-I ran my usual [1] misfit tests on
-o TC2
-o Juno
-o HiKey960
-o Dragonboard845C
-o RB5
+  arch_scale_cpu_capacity(L) < arch_scale_cpu_capacity(B)
 
-RB5 has a similar topology to Pixel4 and highlights the problem of having
-two different CPU capacity values above 819 (in this case 871 and 1024):
-without these patches, CPU hogs (i.e. misfit tasks) running on the "medium"
-CPUs will never be upmigrated to a "big" via misfit balance.
+Here, setting LBF_SOME_PINNED due to a per-CPU kthread when balancing at MC
+level on CPUs [0-1] will subsequently prevent CPUs [2-3] from classifying
+the [0-1] group as group_misfit_task when balancing at DIE level. Thus, if
+CPUs [0-1] are running CPU-bound (misfit) tasks, ill-timed per-CPU kthreads
+can significantly delay the upgmigration of said misfit tasks. Systems
+relying on ASYM_PACKING are likely to face similar issues.
 
+Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+[Use kthread_is_per_cpu() rather than p->nr_cpus_allowed]
+[Reword changelog]
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+---
+ kernel/sched/fair.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The 0day bot reported [3] the first patch causes a ~14% regression on its
-stress-ng.vm-segv testcase. I ran that testcase on: 
-
-o Ampere eMAG (arm64, 32 cores)
-o 2-socket Xeon E5-2690 (x86, 40 cores)
-
-and found at worse a -0.3% regression and at best a 2% improvement - I'm
-getting nowhere near -14%.
-  
-Revisions
-=========
-
-v4 -> v5
---------
-o Collected Reviewed-by (Vincent, Dietmar)
-o Fixed typo in patch 1 (Dietmar)
-o Appended paragraph about using local group vs dst cpu in patch 3 (Dietmar)
-
-v3 -> v4
---------
-o Tore out the extra misfit patches
-
-o Rewrote patch 1 changelog (Dietmar)
-o Reused LBF_ACTIVE_BALANCE to ditch LBF_DST_PINNED active balance logic
-  (Dietmar)
-o Collected Tested-by (Lingutla)  
-
-o Squashed capacity_greater() introduction and use (Vincent)
-o Removed sched_asym_cpucapacity() static key proliferation (Vincent)
-
-v2 -> v3
---------
-
-o Rebased on top of latest tip/sched/core
-o Added test results vs stress-ng.vm-segv
-
-v1 -> v2
---------
-
-o Collected Reviewed-by
-o Minor comment and code cleanups
-
-o Consolidated static key vs SD flag explanation (Dietmar)
-
-  Note to Vincent: I didn't measure the impact of adding said static key to
-  load_balance(); I do however believe it is a low hanging fruit. The
-  wrapper keeps things neat and tidy, and is also helpful for documenting
-  the intricacies of the static key status vs the presence of the SD flag
-  in a CPU's sched_domain hierarchy.
-  
-o Removed v1 patch 4 - root_domain.max_cpu_capacity is absolutely not what
-  I had convinced myself it was.
-o Squashed capacity margin usage with removal of
-  group_smaller_{min, max}_capacity() (Vincent)   
-o Replaced v1 patch 7 with Lingutla's can_migrate_task() patch [2]
-o Rewrote task_hot() modification changelog
-
-Links
-=====
-
-[1]: https://lisa-linux-integrated-system-analysis.readthedocs.io/en/master/kernel_tests.html#lisa.tests.scheduler.misfit.StaggeredFinishes
-[2]: http://lore.kernel.org/r/20210217120854.1280-1-clingutla@codeaurora.org
-[3]: http://lore.kernel.org/r/20210223023004.GB25487@xsang-OptiPlex-9020
-
-Cheers,
-Valentin
-
-Lingutla Chandrasekhar (1):
-  sched/fair: Ignore percpu threads for imbalance pulls
-
-Valentin Schneider (2):
-  sched/fair: Clean up active balance nr_balance_failed trickery
-  sched/fair: Introduce a CPU capacity comparison helper
-
- kernel/sched/fair.c | 68 +++++++++++++++++++--------------------------
- 1 file changed, 29 insertions(+), 39 deletions(-)
-
---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6d73bdbb2d40..04d5e14fa261 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7567,6 +7567,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+ 		return 0;
+ 
++	/* Disregard pcpu kthreads; they are where they need to be. */
++	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
++		return 0;
++
+ 	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+ 		int cpu;
+ 
+-- 
 2.25.1
 
