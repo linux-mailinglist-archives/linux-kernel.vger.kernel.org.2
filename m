@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD693574BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A73A3574C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348646AbhDGTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:02:47 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:54047 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348647AbhDGTCo (ORCPT
+        id S1355550AbhDGTDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355544AbhDGTDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:02:44 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ab65nEaqqUu3gUIbyN2DEw68aV5vDL9V00zAX?=
- =?us-ascii?q?/kB9WHVpW+aT/vrOoN0w0xjohDENHEw6kdebN6WaBV/a/5h54Y4eVI3SOjXOkm?=
- =?us-ascii?q?2uMY1k8M/e0yTtcheOkdJ1+IVBV+xFCNP2BUVnlsqS2mOFOvsp3dXvys2VrMjE?=
- =?us-ascii?q?yXMFd21XQoFmqzx0EwOKVnBxLTM2ZqYRMZqH+45uvDCgeWsaB/7LekUteujYup?=
- =?us-ascii?q?nqufvdEGM7Ljsm8hTLtDWz9dfBYmel9zIfSS4K/bA57WPemRf47anLiYDE9jb5?=
- =?us-ascii?q?23XI55pb3PvNo+EiOOWpiswYbgrhkRypYoMJYczngBkNu+2k5Fsnl9PByi1QRv?=
- =?us-ascii?q?hb0H/acmGrrRaF4WCJuwoG0HPsxUSVhnHuu6XCNVAHIvFMnIdINibegnBOgPhH?=
- =?us-ascii?q?zKlJ02iF3qAnaC/ooSKV3bb1fiAvvlaopz4YnfQLiXtEXc8ldKZJtoAE5ipuYe?=
- =?us-ascii?q?Y9NRO/xoA7MfVkSPrR7OxRdjqhHgrkl1gq7tywf2g5WiyLSEgausCTzlFt7QtE?=
- =?us-ascii?q?5npd6swDv2sKsKkwQZlc5+jCL+BBmbxUQtUNBJgNdNspcI+YCnHtXRmJCm6ULF?=
- =?us-ascii?q?j9fZt3Q07wlw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,203,1613430000"; 
-   d="scan'208";a="502073127"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:02:32 +0200
-Date:   Wed, 7 Apr 2021 21:02:32 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Liam Beguin <liambeguin@gmail.com>, mturquette@baylibre.com,
-        sboyd@kernel.org
-cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        kbuild-all@lists.01.org
-Subject: [PATCH] clk: fix for_each_child.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2104072100410.11549@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 7 Apr 2021 15:03:40 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB1EC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:03:30 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08fb0068bab63ea534f357.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:68ba:b63e:a534:f357])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A0E11EC027D;
+        Wed,  7 Apr 2021 21:03:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617822208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JUOYRsoSNtxMpZveLJ6dY4PyEUlazbU0SkSDty5Zntg=;
+        b=SX+Ta7aY7OoQKmk+/6iAH5iiPBmVuHU5k5NQf0B27AX5iXwtcFXHbOn96kakmdXydwk+JZ
+        i4GelD6ZGHPtUD+5dLGv6YrayKCV/lusYTyu/E7hKNWr7xv0uwlQB+SkND8njXqaWJWIbl
+        6PF6qk1+Kr69fXl9znMbSQIfba3GXyw=
+Date:   Wed, 7 Apr 2021 21:03:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] x86/kernel: remove unneeded dead-store initialization
+Message-ID: <20210407190328.GM25319@zn.tnic>
+References: <1617177624-24670-1-git-send-email-yang.lee@linux.alibaba.com>
+ <20210407120239.GD25319@zn.tnic>
+ <CAKwvOdnuKazNhqXAM9Qj7DgCW=PqVHkyyfYWytmkyBzv0QeYsw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnuKazNhqXAM9Qj7DgCW=PqVHkyyfYWytmkyBzv0QeYsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Wed, Apr 07, 2021 at 10:41:26AM -0700, Nick Desaulniers wrote:
+> You do have clang-tidy installed right? `which clang-tidy`?
 
-For_each_child_of_node should have of_node_put() before goto.
+Yah, installed that and was able to repro:
 
-Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+arch/x86/kernel/cpu/cacheinfo.c:880:24: warning: Value stored to 'this_cpu_ci' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+        struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+arch/x86/kernel/cpu/cacheinfo.c:880:24: note: Value stored to 'this_cpu_ci' during its initialization is never read
 
-CC: Liam Beguin <lvb@xiphos.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+Thx.
 
-url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-support-for-the-lmk04832/20210407-085408
-base:   f40ddce88593482919761f74910f42f4b84c004b
-:::::: branch date: 9 hours ago
-:::::: commit date: 9 hours ago
+-- 
+Regards/Gruss,
+    Boris.
 
- clk-lmk04832.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/clk/clk-lmk04832.c
-+++ b/drivers/clk/clk-lmk04832.c
-@@ -1159,6 +1159,7 @@ static int lmk04832_probe(struct spi_dev
- 		if (ret) {
- 			dev_err(lmk->dev, "missing reg property in child: %s\n",
- 				child->full_name);
-+			of_node_put(child);
- 			goto err_disable_oscin;
- 		}
-
+https://people.kernel.org/tglx/notes-about-netiquette
