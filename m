@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BAF357252
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045B5357256
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354351AbhDGQoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
+        id S1347688AbhDGQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234029AbhDGQoF (ORCPT
+        with ESMTP id S234029AbhDGQo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:44:05 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4247C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:43:55 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id d5-20020a17090a2a45b029014d934553c4so811569pjg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZXSquVdNTnJV6sENmFIy57LLxGa3DHW5OaRJtKQMEqE=;
-        b=Q/eVLwdZeqMpOn6mWC3xedWa5aaBshfCet80piSYa7fI6XhvFrxJ0ZUNpLjWQfgIR+
-         w22cV/konELrLQngdB+LF3HzOzvME7sLzyvGe5kMLixaUxLpl1Mln+nLuZRvVAOGARR1
-         KSoROc1baZ6kEnBycVa89hg7LnhH0xttJco81BAw8FNe+iCqwkCG/6d7qITsmfIlUo1d
-         cdOgpM0FNjIqixa5QdRDmJUo/yBh6wcZBQL6UfnLqZHERHgZqZXVmLHm7gJ13G+CgPse
-         eJRvvLzDsG4/wZWBnpQmWbzg9CGw3CNCFhQb2wbdrgwJnDf2nOZLy4rfYWWe4VMKfh5v
-         T42A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZXSquVdNTnJV6sENmFIy57LLxGa3DHW5OaRJtKQMEqE=;
-        b=ehXl7o9j/uDfbRcKorcXLVCsym7oZ27z98o7yZ15M250GvcGTLmwdu5LLG9lnbB2JC
-         IIzeHqUjb0DU7epQ9hvXN57vs4AAChw9FjQoirPhVbzdljxEBQAyZd8WZ3SFHGmRitwA
-         emruAzx2YvwP+zHZtw8Jv+kUUY1IzxvhJT70c0I6EuFSAo5yIKsJJq0Np2CRnMgDXwvF
-         Iw5qqQrFD4w5PaamA2Xdv6c2jGq9cg8DAbAE/SQpDbHBwBoOhrxxVsRNZgtuKb1xBZ71
-         QyL2IPVHxsmkntPeCWHHq7XlmUew/KLKx6kic5qKSo0K8cAFVJr4nJ2GcbBNIakA49l3
-         SuUw==
-X-Gm-Message-State: AOAM5302snCND216WOYNANzCWgrIJDFrNd+27jyUbLnj2DtI5cDzebJl
-        5SjSjOokK3pYVtNXxrotC+ECDQ==
-X-Google-Smtp-Source: ABdhPJw8Y8AnmgaJ1lgzk3/bpLg0ktvFBPC4tvE7MOQ13QiF3fO59oX5L95aNliexL6KjcvynBuNnw==
-X-Received: by 2002:a17:902:8d85:b029:e7:1029:9114 with SMTP id v5-20020a1709028d85b02900e710299114mr3853158plo.42.1617813835289;
-        Wed, 07 Apr 2021 09:43:55 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id m1sm6045239pjf.8.2021.04.07.09.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 09:43:54 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] ata: Drop unneeded inclusion of kernel.h in the
- header
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-References: <20210407134706.81383-1-andriy.shevchenko@linux.intel.com>
- <202104072325.Zv0JLqbH-lkp@intel.com> <YG3X7ogK/Oq2Hv4J@smile.fi.intel.com>
- <5111151e-35a5-0422-8414-7b900f01d316@kernel.dk>
- <YG3ddNiPdUgRmBZc@smile.fi.intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <728ec7f8-310e-e478-bd53-8784392aee25@kernel.dk>
-Date:   Wed, 7 Apr 2021 10:43:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Apr 2021 12:44:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32560C061756;
+        Wed,  7 Apr 2021 09:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=mSYkryVWY5Pr3drPpv2NaUgq5R5L6jkNcEwAJTVD9CE=; b=oBpo3LmmrylkwRvCPEuDqy0siY
+        w6Vblo1PfrEZIOt1E6+WTUXuQFJke1qgC5BHuVW41/nyqUA2PszrAAvgoZrPSOJTaa/k9jzkkvlxX
+        Yt3hLk/VrDJpfN3knC60fZIz8ODcsUQqtf1/3mBMds2HhQsk5pmsA6domWSd49QLvLIQo92h7Zcsg
+        /+vQyaO4JP158BN/RlvD3p9JXSkaii3fYllmW8zSRcyBjbkek9iH+7lUIXJ7mjzRLBlU6T1zOz5HK
+        EZydhVSVQNaYd2Bd7oAxxSRGHldVKXzg+8/cXvmIhUYr26mJ85htTlJLEs3Dc9ZLizVRHQaTlhXKR
+        VuFPI0VQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUBIB-005V5Q-Qu; Wed, 07 Apr 2021 16:44:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5C40300331;
+        Wed,  7 Apr 2021 18:44:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9EEA423D3AF86; Wed,  7 Apr 2021 18:44:34 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 18:44:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <YG3hcg32xw/D03P2@hirez.programming.kicks-ass.net>
+References: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+ <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+ <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+ <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
+ <20210407094224.GA3393992@infradead.org>
+ <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
+ <YG3U677P9QKqFGMY@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <YG3ddNiPdUgRmBZc@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YG3U677P9QKqFGMY@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 10:27 AM, Andy Shevchenko wrote:
-> On Wed, Apr 07, 2021 at 10:04:49AM -0600, Jens Axboe wrote:
->> On 4/7/21 10:03 AM, Andy Shevchenko wrote:
->>> On Wed, Apr 07, 2021 at 11:51:31PM +0800, kernel test robot wrote:
+On Wed, Apr 07, 2021 at 05:51:07PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph Müllner wrote:
+> > Further, it is not the case that RISC-V has no guarantees at all.
+> > It just does not provide a forward progress guarantee for a
+> > synchronization implementation,
+> > that writes in an endless loop to a memory location while trying to
+> > complete an LL/SC
+> > loop on the same memory location at the same time.
 > 
-> ...
-> 
->>>> All errors (new ones prefixed by >>):
->>>
->>> Thanks, we need to include bits.h.
->>> (It passed my simple build, but appears I have no such driver included)
->>>
->>> Jens, I saw your message, should I send a follow up fix, or a v2?
->>
->> Let's just drop it, not worth it for the risk imho.
-> 
-> Does it mean I may try again in next cycle?
-> 
-> Because kernel.h inclusion seems to me too wrong there.
+> Userspace can DoS the kernel that way, see futex.
 
-I don't mind taking it, but not on a hunch. If you send something
-that has been thought about and went through full compilation, then
-you can resend it.
-
--- 
-Jens Axboe
-
+The longer answer is that this means you cannot share locks (or any
+atomic really) across a trust boundary, which is of course exactly what
+futex does.
