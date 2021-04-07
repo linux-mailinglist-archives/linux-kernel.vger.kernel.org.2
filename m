@@ -2,94 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22A4357046
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F4B35704B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353576AbhDGPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:30:09 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57431 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353563AbhDGPaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:30:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617809391; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JcwFyeJqWTt/6F4dr1wtb+EluQ2hrjm6hvh0P5VoiD4=;
- b=Q0iZRA1Hdv6zkYdiAzdJ1TxB5Wm1kNvAiQIidcQygPmTRN9RxAUBdaiWbToSgeRkS72grdVu
- UyiRRWN6TgQBkHA7J0gCQK0ztHdZv33g4hYHwE7LMkNrCx21l9WTEkkwNWt4CNRu5F27Vkny
- LrBQwgXtxRES3HOfQdQ9Ot+/+WI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 606dcfe403cfff3452ce78cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 15:29:40
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CC458C43468; Wed,  7 Apr 2021 15:29:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19DDEC43465;
-        Wed,  7 Apr 2021 15:29:39 +0000 (UTC)
+        id S1353601AbhDGPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:30:14 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:41609 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353563AbhDGPaK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:30:10 -0400
+Received: by mail-pj1-f43.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso1531594pje.0;
+        Wed, 07 Apr 2021 08:30:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+M5ErOA6vMHXgHMo812hqipKBEarvAzxNuznNu4dPh4=;
+        b=jsvrsCk2USuWmPdJ3aMJwVWzy7393uAv08mKvsKYFaJ3jCz3VVW+3ptyPpHt+GKx4l
+         gu8PPEPO4ABq8AYUHGQRdtU2WGDKbxNh+d5+9X6fZqZ0bFodVnAgSlVZkClleG2AZ7/r
+         h3FWStbOqUeG0Z+tP0bxzNT5xF5sJ9dTINsUIQh9Xl4sC7+4A7Ekvo04F2GemAkmhlrg
+         H0euxVew93XQify4f3rbwJ4GvC3KOWGRPprBA2i2BqONFdVEMF65KAfxK6p20CvOCcot
+         yITsnojVRMOplQSR1DucFSuPOKLIdUhJXRLk+0tZRNqQLMG/GN5QHESxap34pjxgdthM
+         zdmQ==
+X-Gm-Message-State: AOAM533kWqDVeQEz732forA2TcK+LLVu5mlJfxMUpn4sSA/RFy4gbEcA
+        ZwqJzgEcQKtv84CmXQJ0khs=
+X-Google-Smtp-Source: ABdhPJxpL5KaAnDuQDJzuUb5KCGFxZ3YcW99M+WHBna9dnMuIO92XOsuZyqjUKOy0DftFppakeCj7Q==
+X-Received: by 2002:a17:902:b210:b029:e6:33b4:cd9e with SMTP id t16-20020a170902b210b02900e633b4cd9emr3418197plr.67.1617809399828;
+        Wed, 07 Apr 2021 08:29:59 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id f65sm22129550pgc.19.2021.04.07.08.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 08:29:58 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 00948402D7; Wed,  7 Apr 2021 15:29:56 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 15:29:56 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-remoteproc@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        kexec@lists.infradead.org, rcu@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Corey Minyard <minyard@acm.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+Message-ID: <20210407152956.GE4332@42.do-not-panic.com>
+References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+ <20210406165108.GA4332@42.do-not-panic.com>
+ <CAHp75Ve9vBQqSegM2-ch9NUN-MdevxxOs5ZdHkk1W7AacN+Wrw@mail.gmail.com>
+ <20210407143040.GB4332@42.do-not-panic.com>
+ <CAHp75VeXiLa0b49eoZKVR1DSqTc9hKxpSgy294hMiaUzt0ugOA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 07 Apr 2021 20:59:39 +0530
-From:   skakit@codeaurora.org
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/3] input: pm8941-pwrkey: add support for PMK8350
- PON_HLOS PMIC peripheral
-In-Reply-To: <1614922721-1390-2-git-send-email-skakit@codeaurora.org>
-References: <1614922721-1390-1-git-send-email-skakit@codeaurora.org>
- <1614922721-1390-2-git-send-email-skakit@codeaurora.org>
-Message-ID: <690456c09c433741900643eafad25beb@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeXiLa0b49eoZKVR1DSqTc9hKxpSgy294hMiaUzt0ugOA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle Reminder!
+On Wed, Apr 07, 2021 at 05:59:19PM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 7, 2021 at 5:30 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > On Wed, Apr 07, 2021 at 10:33:44AM +0300, Andy Shevchenko wrote:
+> > > On Wed, Apr 7, 2021 at 10:25 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > > > On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > > Why is it worth it to add another file just for this?
+> > >
+> > > The main point is to break tons of loops that prevent having clean
+> > > headers anymore.
+> > >
+> > > In this case, see bug.h, which is very important in this sense.
+> >
+> > OK based on the commit log this was not clear, it seemed more of moving
+> > panic stuff to its own file, so just cleanup.
+> 
+> Sorry for that. it should have mentioned the kernel folder instead of
+> lib. But I think it won't clarify the above.
+> 
+> In any case there are several purposes in this case
+>  - dropping dependency in bug.h
+>  - dropping a loop by moving out panic_notifier.h
+>  - unload kernel.h from something which has its own domain
+> 
+> I think that you are referring to the commit message describing 3rd
+> one, but not 1st and 2nd.
 
-Thanks,
-Satya Priya
-On 2021-03-05 11:08, satya priya wrote:
-> From: David Collins <collinsd@codeaurora.org>
-> 
-> On Qualcomm Technologies, Inc. PMIC PMK8350, the PON peripheral
-> is split into two peripherals: PON_HLOS and PON_PBS.  The
-> application processor only has write access to PON_HLOS which
-> limits it to only receiving PON interrupts.
-> 
-> Add support for the PMK8350 PON_HLOS peripheral so that its
-> KPDPWR_N and RESIN_N interrupts can be used to detect key
-> presses.
-> 
-> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  drivers/input/misc/pm8941-pwrkey.c | 103 
-> ++++++++++++++++++++++++++-----------
->  1 file changed, 72 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/input/misc/pm8941-pwrkey.c
-> b/drivers/input/misc/pm8941-pwrkey.c
-> index cf81044..2044d187 100644
-> --- a/drivers/input/misc/pm8941-pwrkey.c
-> +++ b/drivers/input/misc/pm8941-pwrkey.c
+Right!
+
+> I will amend this for the future splits, thanks!
+
+Don't get me wrong, I love the motivation behind just the 3rd purpose,
+however I figured there might be something more when I saw panic_notifier.h.
+It was just not clear.
+
+But awesome stuff!
+
+  Luis
