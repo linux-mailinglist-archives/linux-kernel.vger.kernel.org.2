@@ -2,182 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7347356DA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14574356DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbhDGNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbhDGNoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:44:54 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0859BC061756;
-        Wed,  7 Apr 2021 06:44:44 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id p12so9092617pgj.10;
-        Wed, 07 Apr 2021 06:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yvoTrhwWmXyM0wgHP8pY/H3NzCMF21CuCGmfBMdW+Vs=;
-        b=DoKAZLxODOMVxOKmpKVH+qV6lHmQ9tHVmr6Z/OdhuA3EHOK4iTP/OpoG/KhjduHuET
-         RMB5XGOCZzKBofrSD0EfLhyA3C6Sd87ftvlOWlS1KiJxCQQEHyHjae/nGhQ6TRZYq+uk
-         yOKjdaQpPQZe7+V5NrMtri+Wed+IRpTbJ4jr8ipBGKZPol7ctA/EQp9cLbL6/QEp0q2Z
-         Z6XzZhQyoAcqdvijFEdm78ptP8OWvPHCTgwR44bwaJR826quPjMH3lshrcAssPz+UmCF
-         zNhhroAlF+7bCUjedb447o3Cuhf5gIe01iffw5SVEQFWb+JJOIqLgaVeg4kqE3QCo7DB
-         e7mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yvoTrhwWmXyM0wgHP8pY/H3NzCMF21CuCGmfBMdW+Vs=;
-        b=Bs1HrocFpfvz0f6P91b6fDHx9wQfaLjzaPyCbzko48xMAJbcJc6ILH6h7O0eMLuQOS
-         QK7e4vDDlm81/oShZR7ez+Jfl6PyZJcGkQcgEjT/HashhspiMRSrlOdeqJEZkJTN4rB6
-         o5tQ3cQ9Vn0iWZl/N+lTCKrX6Mmap4p898nR9aijlyutWGM3iYAnVa9lVi6urFJliC+T
-         EL/bN2vGVh9X/iNxs+FAhxvCw70tvg51reOTZ5Fn7RLRvEeFXeFsNOpP0h84Eeys4kYW
-         BtwJ3cyd5s/q7933zeTg9IkRBiN5Wj+D38LYpi5qckLmGMq7mXUWyRrLQ5tOl/naODCy
-         QigQ==
-X-Gm-Message-State: AOAM5305BFToT49CSP4Q//EvsOthpynvBbe8fAnHjZsFSC8AJGSgAnFl
-        iHZqty0hgZlOwGBFpXR6llc=
-X-Google-Smtp-Source: ABdhPJzRyVqodpiDGZq1wRg0jF6R5KocBXyhlIs+hVvasRMzKMsXIekD1S9q/Z3qKsZhIAOPWkeGqw==
-X-Received: by 2002:a63:ab05:: with SMTP id p5mr3379513pgf.149.1617803083467;
-        Wed, 07 Apr 2021 06:44:43 -0700 (PDT)
-Received: from localhost ([103.77.152.190])
-        by smtp.gmail.com with ESMTPSA id b1sm6304272pgf.84.2021.04.07.06.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 06:44:43 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 19:13:43 +0530
-From:   "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        alex.williamson@redhat.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
-Message-ID: <20210407134343.6u2vbxavhes32zwj@archlinux>
-References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
- <YGW8Oe9jn+n9sVsw@unreal>
- <20210401105616.71156d08@omen>
- <YGlzEA5HL6ZvNsB8@unreal>
- <20210406081626.31f19c0f@x1.home.shazbot.org>
- <YG1eBUY0vCTV+Za/@unreal>
- <20210407082356.53subv4np2fx777x@archlinux>
- <YG2l+AbQW1N0bbQ9@unreal>
- <20210407130601.aleyww5d5mttitry@archlinux>
- <YG21k6/4QQNrw41S@unreal>
+        id S238089AbhDGNpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:45:52 -0400
+Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:13281
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230142AbhDGNpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:45:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lh+KkMuRLktnSZOELXGHH2ptzfoLbcXvVI07e4eOjdXDcHkbjTjOZp5S6M4SkPupz7QTDbUvQ38rr1c8YNHU6MA6zGVDsbIkYjPW6yG+1GnBXLPL1yIQaIRMOjVgUYgyVm3TiR1NNUiWIztDLApKnhRgR5INibHIujPDUPD++ambAIJftwadWnu+jn5xVN4PxQCyyvfX1P19Gw73ufqaf5QqAEcZ/cYnHLivJRMSy1+2q/X81nlzakcUNQcIY/iinYuAdm9xHj6N0grqTp7Dpcdcq5zrxnjxjxTl1uqTD6P1QVYsOrdnzWjHK1oFOxeFNXXMcPPRNsRmvf2X8BLTFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hss2GxAYzhQr2v377fSU3WwaodSWsEjnUwYHMfnRKxc=;
+ b=ggW3YFomxCNDtOQD5n7XhYmbnmV7DXNHXK+qkGO2HUK9KX4MQT3nM5i334HaRpfAo3jZl7uZSapWp/4jIRbE/pUgcf533mLNOnJE1QvYcOrcuDVkRMMPZwZMIL5OtOqQ/7YkZdxYCIIRr4hZnjIQy0FkE8tG9Q2O5ES6QTE9Vtqk4t+QnlJaIckZjktwiQg33jHbHsbSUdzmveJt9637is1tDwQBkkWS80Leb7bkxTGGaWrVx8c0y0Fcgk3QALknBr9Oi9Ui7ZHhtJfCjaUQoF1dp9sGnBCjF/hI/wNdkYxHGCrthG/p18eJaG2gv7tb9k7JCAi4iqV4HFrRQaZv/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hss2GxAYzhQr2v377fSU3WwaodSWsEjnUwYHMfnRKxc=;
+ b=UEq4550HxWeWIHNZHjKDNFKtMwEbg5TCiUgQOSpU09iSkSrP09KaQ1QE2Em739yDGHuGE7jphDc+5A3Fc3M7egJYpDJkPJSF3ytf5n8/Wcexud7XjkrI6/i1jYTR6xvs32wCrxvGHYEEQe4tD8AmYC4SVRg3YUcX4XHD/2ufKmVtlLzn0y4ef4zjGVICTQ2AQRtNiaoMKLuMJ2l+73w4A7x0ayQz8U1B9WqmDvgVCR/naLP19AY0X8y+xvY4HroIQJlMLTJ8wbE0Ng36qr/pr25xXJCJLMJNfRHp2h1KuRMHfQ+Fm749mgQ39dkyT9DiJWlXBd4wg7JIkx5XQkxtwQ==
+Received: from DM3PR03CA0017.namprd03.prod.outlook.com (2603:10b6:0:50::27) by
+ PH0PR12MB5466.namprd12.prod.outlook.com (2603:10b6:510:d7::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.16; Wed, 7 Apr 2021 13:45:40 +0000
+Received: from DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:50:cafe::8f) by DM3PR03CA0017.outlook.office365.com
+ (2603:10b6:0:50::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
+ Transport; Wed, 7 Apr 2021 13:45:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT019.mail.protection.outlook.com (10.13.172.172) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 13:45:39 +0000
+Received: from [10.21.26.179] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
+ 2021 13:45:37 +0000
+Subject: Re: [PATCH] media: Fix compilation error
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <skomatineni@nvidia.com>, <mchehab@kernel.org>,
+        <treding@nvidia.com>, <john.wanghui@huawei.com>
+References: <20210402074017.49009-1-cuibixuan@huawei.com>
+ <c5b9fc40-0d52-4a31-2e73-14ec07434af4@xs4all.nl>
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+Message-ID: <78d1052a-9f9a-315b-0bba-4628a6fb3ddb@nvidia.com>
+Date:   Wed, 7 Apr 2021 16:45:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG21k6/4QQNrw41S@unreal>
+In-Reply-To: <c5b9fc40-0d52-4a31-2e73-14ec07434af4@xs4all.nl>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 977937d1-334c-4b0c-05f6-08d8f9cb6e82
+X-MS-TrafficTypeDiagnostic: PH0PR12MB5466:
+X-Microsoft-Antispam-PRVS: <PH0PR12MB5466FB75652A37BEC39FE8ACB2759@PH0PR12MB5466.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xMqovzYcduPDj35sRKrH2fYZnz+2FE2+DoWaPLINuaB8sTmo0WMsMoaGRnkVzAyKGp/O1t5UvFdTp9HK7VBLIqyTgD7yvIJXR10G0lcc4O6yp9Vula00v/El1XQohjVV3bkockBNtT8sj6/Q9q8ipHSl42zm2qeEAe08ny2YawXOKnPzv2uEbnBUFOC/ntPfEGnrLZ+pt2n6BlKYQoUKHJB8K1qYXpCAl2eiZVh1Ifjae9aa2SBPSk1+xK+PsqC1yM6D5tZGyi4gQ1dQhOBuWQpcw4h0XJGFQbjdy66GdNk+FAh2iMB3TSrLITGdOJA8WDiCwXGdKJr1ibiJKWjSCOnqUy03WR2PcCJ9QypXTFR225XrqgYOsFa2vzNs7P/mAJxSPuPYcL78fXWOHXgkiJndTEOpPOCfJoC48KxsrbFYMqC5HHHyRdY9Bz2U2ywC04CPiu7QwtBfX4zKgr5M5ezUHaeUbYvTE6jFGiVQxLVRk4fY4mEZRlAvIqYvHWxvxG9YQBQkOTTGhGYAHSE5YwbPMN5Oyr2MgXBMSqOeCGuFEhZ+E0m/gTXI3KXbMIUubFlp2BzYXKlbPx1MlgeWCumQztn/GqLoOtj+99ACcxYFJ/yKwU+ZiaFftDaPoPfebImSEe8Bi/vr7jWBwUnPdqw3wS+gMKOEJYHvk7iWOhw+TbA0sD72yaRs0BcccOfmEZNyxdQGBQuI7jODDSzmIg==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(36840700001)(46966006)(53546011)(16576012)(8676002)(83380400001)(70206006)(16526019)(7636003)(356005)(6666004)(70586007)(110136005)(54906003)(36860700001)(31686004)(478600001)(31696002)(316002)(47076005)(5660300002)(36906005)(8936002)(86362001)(4326008)(82310400003)(426003)(336012)(2906002)(186003)(36756003)(26005)(82740400003)(2616005)(43740500002)(357404004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 13:45:39.9528
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 977937d1-334c-4b0c-05f6-08d8f9cb6e82
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5466
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/07 04:37PM, Leon Romanovsky wrote:
-> On Wed, Apr 07, 2021 at 06:36:01PM +0530, ameynarkhede03@gmail.com wrote:
-> > On 21/04/07 03:30PM, Leon Romanovsky wrote:
-> > > On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
-> > > > On 21/04/07 10:23AM, Leon Romanovsky wrote:
-> > > > > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
-> > > > > > On Sun, 4 Apr 2021 11:04:32 +0300
-> > > > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > >
-> > > > > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
-> > > > > > > > On Thu, 1 Apr 2021 15:27:37 +0300
-> > > > > > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
-> > > > > > > > > > Slot resets are bus resets with additional logic to prevent a device
-> > > > > > > > > > from being removed during the reset. Currently slot and bus resets have
-> > > > > > > > > > separate implementations in pci.c, complicating higher level logic. As
-> > > > > > > > > > discussed on the mailing list, they should be combined into a generic
-> > > > > > > > > > function which performs an SBR. This change adds a function,
-> > > > > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
-> > > > > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
-> > > > > > > > > > single device agnostic function to perform an SBR.
-> > > > > > > > > >
-> > > > > > > > > > This new function is also needed to add SBR reset quirks and therefore
-> > > > > > > > > > is exposed in pci.h.
-> > > > > > > > > >
-> > > > > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
-> > > > > > > > > >
-> > > > > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
-> > > > > > > > > >  include/linux/pci.h |  1 +
-> > > > > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > > > > > > > index 16a17215f633..12a91af2ade4 100644
-> > > > > > > > > > --- a/drivers/pci/pci.c
-> > > > > > > > > > +++ b/drivers/pci/pci.c
-> > > > > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-> > > > > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> > > > > > > > > > +{
-> > > > > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > > > > > +
-> > > > > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
-> > > > > > > > >
-> > > > > > > > > The previous coding style is preferable one in the Linux kernel.
-> > > > > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > > > > if (rc != -ENOTTY)
-> > > > > > > > >   return rc;
-> > > > > > > > > return pci_parent_bus_reset(dev, probe);
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > That'd be news to me, do you have a reference?  I've never seen
-> > > > > > > > complaints for ternaries previously.  Thanks,
-> > > > > > >
-> > > > > > > The complaint is not to ternaries, but to the function call as one of
-> > > > > > > the parameters, that makes it harder to read.
-> > > > > >
-> > > > > > Sorry, I don't find a function call as a parameter to a ternary to be
-> > > > > > extraordinary, nor do I find it to be a discouraged usage model within
-> > > > > > the kernel.  This seems like a pretty low bar for hard to read code.
-> > > > >
-> > > > > It is up to us where this bar is set.
-> > > > >
-> > > > > Thanks
-> > > > On the side note there are plenty of places where this pattern is used
-> > > > though
-> > > > for example -
-> > > > kernel/time/clockevents.c:328:
-> > > > return force ? clockevents_program_min_delta(dev) : -ETIME;
-> > > >
-> > > > kernel/trace/trace_kprobe.c:233:
-> > > > return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
-> > > >        false;
-> > > >
-> > > > kernel/signal.c:3104:
-> > > > return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
-> > > > etc
-> > >
-> > > Did you look when they were introduced?
-> > >
-> > > Thanks
-> > >
-> > that code trace_kprobe in 2 years old.
-> > If you want more recent example checkout
-> > drivers/pci/controller/pcie-brcmstb.c:1112,1117:
-> > return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
-> > which was introduced 7 months ago.
-> > There are lot of examples in pci.c also.
->
-> Yeah, I know, copy-paste is a powerful tool.
->
-> Can we please progress with this patch instead of doing
-> archaeological research?
->
-> Thanks
->
-Sorry I didn't understand what you said.
+On 7.4.2021 16.29, Hans Verkuil wrote:
+> On 02/04/2021 09:40, Bixuan Cui wrote:
+>> Fix the error:
+>>
+>> drivers/staging/media/tegra-video/vi.c:1180:4:
+>> error: implicit declaration of function 'host1x_syncpt_free' [-Werror,-Wimplicit-function-declaration]
+> 
+> Against what tree is this being built? The mainline kernel doesn't have
+> host1x_syncpt_put, only host1x_syncpt_free.
 
+This change was done only very recently, it's in linux-next and 
+submitted for 5.13. I missed this one host1x_syncpt_free call in vi.c, 
+but Thierry has already applied an equivalent patch on his end so the 
+issue should be resolved.
 
 Thanks,
-Amey
+Mikko
+
+> 
+> Also, the subject line is very vague, something like this is much more descriptive:
+> 
+> [PATCH] media: tegra-video: replace host1x_syncpt_free by host1x_syncpt_put
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>> Fixes: 3028a00c55bf ('gpu: host1x: Cleanup and refcounting for syncpoints')
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+>> ---
+>>   drivers/staging/media/tegra-video/vi.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
+>> index 7e0cb5529b49..df5ca3596470 100644
+>> --- a/drivers/staging/media/tegra-video/vi.c
+>> +++ b/drivers/staging/media/tegra-video/vi.c
+>> @@ -1177,7 +1177,7 @@ static int tegra_channel_host1x_syncpt_init(struct tegra_vi_channel *chan)
+>>   		mw_sp = host1x_syncpt_request(&vi->client, flags);
+>>   		if (!mw_sp) {
+>>   			dev_err(vi->dev, "failed to request memory ack syncpoint\n");
+>> -			host1x_syncpt_free(fs_sp);
+>> +			host1x_syncpt_put(fs_sp);
+>>   			ret = -ENOMEM;
+>>   			goto free_syncpts;
+>>   		}
+>>
+> 
