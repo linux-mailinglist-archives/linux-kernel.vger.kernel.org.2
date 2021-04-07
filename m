@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900BE357561
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17059357565
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355858AbhDGUDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        id S1355874AbhDGUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348996AbhDGUDX (ORCPT
+        with ESMTP id S1348996AbhDGUFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:03:23 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69204C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:03:13 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so1887111pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B41V4oqYaXi3FydWXE4zvPEfZIelBL661YH0Myuz09E=;
-        b=boEMul6rkTXaZYoyXAY/38c3XvmUdzsNOME7Pzj2W5uWd10bc3FDMud+mt3Bb2ksCA
-         zKBFXnRwWhQ5qDx5U/o/bk0hoSgZD/0GcDJWk6wdAWYnlFbN62lq5K5cpr2jtosbvqYr
-         RSdnkQk5IUS2uLTlmrS1PrUGcsuqpH+HT2guha3qC72E8eDdUUhwywIxtcFxlvCES8Ix
-         zgKPqaOo+4e4mNerI5oTd3u2xcbm9fqH4vkjDcgpkhqLRiijXFLgTzkZyG7PZ+8hV8hZ
-         Cg3CiM14sQ2PvhmX4r8NcZURs1bjpXLoB31KEdAIaYSJuBAgnbxDIOpRokXX3LavT8Wx
-         /Ubw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B41V4oqYaXi3FydWXE4zvPEfZIelBL661YH0Myuz09E=;
-        b=N6PIq+NowWyZ/G9ycuGAf+ugkHuw1KXToZSBE7jSRl8Qj8KC9Tk5gs/euLWLzMD2I/
-         42uPJuerE3IFrxBi0yQjYIYW0GkgWektbPVguRKTyy1vU70ZRPUBEklb19lDpJvOkrM9
-         fIy6Net9ffOGAWtxt90whoy20MQGO1W6Pv79G1WLV3IfQNUrfATq8Mch5dTc2PBhK6Cy
-         q9X3mYoqUZApO/7Jt/Qsy5MCePNnM89agquc7suuxfRpBE9sf/N4pWWVHmw7YnDU94pi
-         +pGC+3/R2q+OTZHIg3RiCNNEaw5N3+SDY3V1Idb4M1AcszWaZKOCw4LN87yNGVpUBSgr
-         ZgFg==
-X-Gm-Message-State: AOAM533so07CXhk+uUUq7b656Iar74rgFL6lAWy6W0smlrbDt7Fis5bj
-        WdKF50b3RSnPGB+d66mlkr3Yag==
-X-Google-Smtp-Source: ABdhPJxCyQUB6B2HBH0gDU3LGzEyNg31SjFIXXSlM53qGjpJxYdf1nDQly8G1HFpKGscZcFsr8siig==
-X-Received: by 2002:a17:90a:cb0a:: with SMTP id z10mr5047517pjt.20.1617825792766;
-        Wed, 07 Apr 2021 13:03:12 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id u17sm5786219pfm.113.2021.04.07.13.03.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 13:03:12 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 20:03:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ramakrishna Saripalli <rsaripal@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] x86/kvm/svm: Implement support for PSFD
-Message-ID: <YG4P/EdPN4qGpYUq@google.com>
-References: <20210407194512.6922-1-rsaripal@amd.com>
+        Wed, 7 Apr 2021 16:05:08 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD390C06175F;
+        Wed,  7 Apr 2021 13:04:57 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4FFwNR0zGjzQjmW;
+        Wed,  7 Apr 2021 22:04:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1617825893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x/SavWgMTIlT38FW/ptNNTaKRDlmmxJUPCoUw3uGMZA=;
+        b=0zO1e2w6vtsV3izioESoLXsQOa62Z2Fh01yHrwfgn+7MvPC3lqPiXzCXhAPK8398zFBgoh
+        8wnBv9AVZAGfNIpsH2hC2yVnIjKM2QZwAQU9MaPf9jk+ds2Uqi6fkEzR91rRc5RtW2uQih
+        R/gjPBHkoMqfqzwlj2wVCCZt9mCH2J/jzN36fGh5cYlfWn6OxwyM2bnOAlieUQXYyABJGd
+        JHNywPFxInZIaNz8dN7T2tCvZr4lPDfky30zRYEp7ol8IxUw5aQZSXmEZjN2BlHeE9FZZS
+        EO3zmJwFpJJJRJBtycFxyh3KTiLyaj5rFzPMiQQrDDgKxqCYKBLFbJPQgaszxQ==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id Gj-CFps7egyi; Wed,  7 Apr 2021 22:04:51 +0200 (CEST)
+Subject: Re: [PATCH RFC net 2/2] net: dsa: lantiq_gswip: Configure all
+ remaining GSWIP_MII_CFG bits
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     f.fainelli@gmail.com, vivien.didelot@gmail.com, olteanv@gmail.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
+ <20210406203508.476122-3-martin.blumenstingl@googlemail.com>
+ <YGz9hMcgZ1sUkgLO@lunn.ch>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <94c2777d-5111-2568-f64b-f68480766c5d@hauke-m.de>
+Date:   Wed, 7 Apr 2021 22:04:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407194512.6922-1-rsaripal@amd.com>
+In-Reply-To: <YGz9hMcgZ1sUkgLO@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.33 / 15.00 / 15.00
+X-Rspamd-Queue-Id: BD48716F2
+X-Rspamd-UID: da13e3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021, Ramakrishna Saripalli wrote:
-> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+On 4/7/21 2:32 AM, Andrew Lunn wrote:
+>>   	case PHY_INTERFACE_MODE_RGMII:
+>>   	case PHY_INTERFACE_MODE_RGMII_ID:
+>>   	case PHY_INTERFACE_MODE_RGMII_RXID:
+>>   	case PHY_INTERFACE_MODE_RGMII_TXID:
+>>   		miicfg |= GSWIP_MII_CFG_MODE_RGMII;
+>> +
+>> +		if (phylink_autoneg_inband(mode))
+>> +			miicfg |= GSWIP_MII_CFG_RGMII_IBS;
 > 
-> Expose Predictive Store Forwarding capability to guests.
+> Is there any other MAC driver doing this? Are there any boards
+> actually enabling it? Since it is so odd, if there is nothing using
+> it, i would be tempted to leave this out.
 
-Technically KVM is advertising the capability to userspace, e.g. userspace can
-expose the feature to the guest without this patch.
+We saw this option in the switch documentation and activated it to 
+prepare for such systems, but I do not have any board which uses this 
+and I am also not aware that this is used anywhere.
 
-> Guests enable or disable PSF via SPEC_CTRL MSR.
-
-At a (very) quick glance, this requires extra enabling in guest_has_spec_ctrl_msr(),
-otherwise a vCPU with PSF but not the existing features will not be able to set
-MSR_IA32_SPEC_CTRL.PSFD.
-
-That raises a question: should KVM do extra checks for PSFD on top of the "throw
-noodles at the wall and see what sticks" approach of kvm_spec_ctrl_test_value()?
-The noodle approach is there to handle the mess of cross-vendor features/bits,
-but that doesn't seem to apply to PSFD.
-
-> Signed-off-by: Ramakrishna Saripalli <rk.saripalli@amd.com>
-> ---
->  arch/x86/kvm/cpuid.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..9c4af0fef6d7 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -448,6 +448,8 @@ void kvm_set_cpu_caps(void)
->  		kvm_cpu_cap_set(X86_FEATURE_INTEL_STIBP);
->  	if (boot_cpu_has(X86_FEATURE_AMD_SSBD))
->  		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
-> +	if (boot_cpu_has(X86_FEATURE_AMD_PSFD))
-> +		kvm_cpu_cap_set(X86_FEATURE_AMD_PSFD);
-
-This is unnecessary, it's handled by the F(AMD_PSFD).  The above features have
-special handling to enumerate their Intel equivalent.
-
->  	kvm_cpu_cap_mask(CPUID_7_1_EAX,
->  		F(AVX_VNNI) | F(AVX512_BF16)
-> @@ -482,7 +484,7 @@ void kvm_set_cpu_caps(void)
->  	kvm_cpu_cap_mask(CPUID_8000_0008_EBX,
->  		F(CLZERO) | F(XSAVEERPTR) |
->  		F(WBNOINVD) | F(AMD_IBPB) | F(AMD_IBRS) | F(AMD_SSBD) | F(VIRT_SSBD) |
-> -		F(AMD_SSB_NO) | F(AMD_STIBP) | F(AMD_STIBP_ALWAYS_ON)
-> +		F(AMD_SSB_NO) | F(AMD_STIBP) | F(AMD_STIBP_ALWAYS_ON) | F(AMD_PSFD)
->  	);
->  
->  	/*
-> -- 
-> 2.25.1
-> 
+Hauke
