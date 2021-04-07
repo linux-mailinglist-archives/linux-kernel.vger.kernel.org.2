@@ -2,183 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018473567B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17453567BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349972AbhDGJKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
+        id S1349994AbhDGJKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346321AbhDGJJ7 (ORCPT
+        with ESMTP id S237982AbhDGJKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:09:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C40C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:09:50 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU4C0-0000zQ-43; Wed, 07 Apr 2021 11:09:44 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU4Bz-0006cu-EQ; Wed, 07 Apr 2021 11:09:43 +0200
-Date:   Wed, 7 Apr 2021 11:09:43 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/8] pwm: pca9685: Support hardware readout
-Message-ID: <20210407090943.vshoxqhaha4j6wq7@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-2-clemens.gruber@pqgruber.com>
- <20210407053135.tx2q4bzxf2lwtqna@pengutronix.de>
- <YG1gQNdDYA1RwrCo@workstation.tuxnet>
+        Wed, 7 Apr 2021 05:10:22 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3C6C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:10:11 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id o20-20020a05600c4fd4b0290114265518afso769802wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E701SlcCrVz67XXmWrxLLXJUKWXi3hhGVBswQflcfKc=;
+        b=rcq+BxD8v9tMgxLwmSDs2SRxC0bboNhEvY6zfzGzUrzUNmiMb4dDVpB2lqfaoUQmZi
+         2SdoDnDkrFXaX335+nCRrv7x0QTWIm6Zv5shcl1AskSULGdM/Ch9sKjSsI7FN7pnORE3
+         +Rj0f3HsLOZpjmJjsWm0bz2S3MDaSZqSLL7IMlAjUALM7M2goYB1ZwWULnfki3Z2cqeS
+         axJKtsm2AdexUF/R1H+xA5OxzJEhsUhiRL4Nzpq1Arz5GYgS7g3EcBVPuAB6CA3l/crY
+         x4kD8ZQzJZDnqRUKUUyaB9w4/xPSi2i9MpyIOzz6+azi96xa/NtCZ6Z9Q/xUpfEerYOk
+         56lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E701SlcCrVz67XXmWrxLLXJUKWXi3hhGVBswQflcfKc=;
+        b=bNzImqIWXP5/b/JFEOMWI64oy3i13yHbHp4Fu61rb3ItHUx8IMCQc4mscDsqrijybN
+         14Cv2Vt+P9KqRmE8zTYeLlT1guljAlxbrTOA4PP2c4sPkIkpKt7OKEaenc9LWyFzZD4y
+         HDZrqmy5OfM32Bb+4EwDkQ66VBL0Ecw4nepkzOvotfeIqrBnuQJ2oHzn2CUU6BU7emBJ
+         7G7g9BmpTh5NQ4mZGDoAzXQwMf9U54108Si0UKbR2Cy1qeT2Au4wJ8zGIRerHGckweix
+         eCHu0XjaKW7OBqEMOO8oj3V8Lz6b0yPgQV/v/K8coL76ZPgipnpfn0efrZm/f4QucfYm
+         SYYg==
+X-Gm-Message-State: AOAM530Gggucz0Bqqe1IhG5YEFnFDCuVWK6b5L15djRzgQC6/pEkE8lP
+        hlNJyMqdQNo2CC1fbocNaOb6Bg==
+X-Google-Smtp-Source: ABdhPJzcgQhp66xKNb9OEInGvyad2APPTICANv9uTgAdL/J/3NtVusZS+eiTi1UhQBfdtgyn2rSb3Q==
+X-Received: by 2002:a1c:4e07:: with SMTP id g7mr2112103wmh.29.1617786609946;
+        Wed, 07 Apr 2021 02:10:09 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:90c5:36a9:5586:99b9? ([2a01:e34:ed2f:f020:90c5:36a9:5586:99b9])
+        by smtp.googlemail.com with ESMTPSA id s83sm7418759wms.16.2021.04.07.02.10.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 02:10:09 -0700 (PDT)
+Subject: Re: [v3,1/3] thermal: mediatek: Relocate driver to mediatek folder
+To:     Michael Kao <michael.kao@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210312034018.17437-1-michael.kao@mediatek.com>
+ <20210312034018.17437-2-michael.kao@mediatek.com>
+ <1617786505.12846.1.camel@mtksdccf07>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <848df858-1f8d-bcf1-f885-546b70c37b9e@linaro.org>
+Date:   Wed, 7 Apr 2021 11:10:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pshvs3vilf37gue4"
-Content-Disposition: inline
-In-Reply-To: <YG1gQNdDYA1RwrCo@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1617786505.12846.1.camel@mtksdccf07>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/04/2021 11:08, Michael Kao wrote:
+> Hi Maintainers,
+>  
+> Gentle pin for this patch.
+>  
+> Thanks
 
---pshvs3vilf37gue4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ack, pong
 
-On Wed, Apr 07, 2021 at 09:33:20AM +0200, Clemens Gruber wrote:
-> On Wed, Apr 07, 2021 at 07:31:35AM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Tue, Apr 06, 2021 at 06:41:34PM +0200, Clemens Gruber wrote:
-> > > Implements .get_state to read-out the current hardware state.
-> > >=20
-> > > The hardware readout may return slightly different values than those
-> > > that were set in apply due to the limited range of possible prescale =
-and
-> > > counter register values.
-> > >=20
-> > > Also note that although the datasheet mentions 200 Hz as default
-> > > frequency when using the internal 25 MHz oscillator, the calculated
-> > > period from the default prescaler register setting of 30 is 5079040ns.
-> > >=20
-> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > ---
-> > > Changes since v6:
-> > > - Added a comment regarding the division (Suggested by Uwe)
-> > > - Rebased
-> > >=20
-> > >  drivers/pwm/pwm-pca9685.c | 46 +++++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 46 insertions(+)
-> > >=20
-> > > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > > index 5a2ce97e71fd..d4474c5ff96f 100644
-> > > --- a/drivers/pwm/pwm-pca9685.c
-> > > +++ b/drivers/pwm/pwm-pca9685.c
-> > > @@ -333,6 +333,51 @@ static int pca9685_pwm_apply(struct pwm_chip *ch=
-ip, struct pwm_device *pwm,
-> > >  	return 0;
-> > >  }
-> > > =20
-> > > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_=
-device *pwm,
-> > > +				  struct pwm_state *state)
-> > > +{
-> > > +	struct pca9685 *pca =3D to_pca(chip);
-> > > +	unsigned long long duty;
-> > > +	unsigned int val =3D 0;
-> > > +
-> > > +	/* Calculate (chip-wide) period from prescale value */
-> > > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > > +	/*
-> > > +	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
-> > > +	 * The following calculation is therefore only a multiplication
-> > > +	 * and we are not losing precision.
-> > > +	 */
-> > > +	state->period =3D (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK=
-_MHZ) *
-> > > +			(val + 1);
-> > > +
-> > > +	/* The (per-channel) polarity is fixed */
-> > > +	state->polarity =3D PWM_POLARITY_NORMAL;
-> > > +
-> > > +	if (pwm->hwpwm >=3D PCA9685_MAXCHAN) {
-> > > +		/*
-> > > +		 * The "all LEDs" channel does not support HW readout
-> > > +		 * Return 0 and disabled for backwards compatibility
-> > > +		 */
-> > > +		state->duty_cycle =3D 0;
-> > > +		state->enabled =3D false;
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > > +
-> > > +	state->enabled =3D !!duty;
-> > > +	if (!state->enabled) {
-> > > +		state->duty_cycle =3D 0;
-> > > +		return;
-> > > +	} else if (duty =3D=3D PCA9685_COUNTER_RANGE) {
-> > > +		state->duty_cycle =3D state->period;
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	duty *=3D state->period;
-> > > +	state->duty_cycle =3D duty / PCA9685_COUNTER_RANGE;
-> >=20
-> > Given that with duty =3D 0 the chip is still "on" and changing the duty
-> > will first complete the currently running period, I'd model duty=3D0 as
-> > enabled. This also simplifies the code a bit, to something like:
-> >=20
-> >=20
-> > 	state->enabled =3D true;
-> > 	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > 	state->duty_cycle =3D div_round_up(duty * state->period, PCA9685_COUNT=
-ER_RANGE);
-> >=20
-> > (I'm using round-up here assuming apply uses round-down to get
-> > idempotency. In the current patch set state this is wrong however.)
->=20
-> So, in your opinion, every requested PWM of the pca9685 should always be
-> enabled by default (from the PWM core viewpoint) ?
->=20
-> And this wouldn't break the following because pwm_get_state does not
-> actually read out the hw state:
-> pwm_get_state -> enabled=3Dtrue duty=3D0
-> pwm_apply_state -> enabled =3Dfalse duty=3D0
-> pwm_get_state -> enabled=3Dfalse duty=3D0
 
-I don't see any breakage here. Either there is none or I failed to grasp
-where you see a problem.
 
-Best regards
-Uwe
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pshvs3vilf37gue4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtdtQACgkQwfwUeK3K
-7AkV9QgAmzkvZmlwDOuD+LCEIwVv5auPUPnPoHRyMlVqa+tf6TGAsf2cIBa8RYTz
-0xAfh5Ur3gt0joZoPFUZwAyegth9iz3wdQLpemqXd5mGQv6VLUE8D7F1szrwO8kx
-G1V3dU7EwqPegD32zeERBm3kLA70Aggw2hnSFeq0AJghTxN8qLVWslrHm1MRaiYS
-1VHnR/bmdgxt33SwmNpzcw2pYwZDsRECA6SE5McR5m7B91hSKVlOJyTjTL9xhihb
-5w3rFI/nC6dFvIyJRmhYoVkkvDABbrqWL0ssLkE41b1U+RyxIKaqvqNJvUPVTaVa
-/1tstHjiLlYeRCUp4IEFTHiijhVClg==
-=FbW8
------END PGP SIGNATURE-----
-
---pshvs3vilf37gue4--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
