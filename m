@@ -2,173 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39425356DB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55817356DB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241489AbhDGNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:46:28 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:55571 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230142AbhDGNq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:46:26 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id U8VYlSAykMxedU8VblIbRb; Wed, 07 Apr 2021 15:46:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617803176; bh=0lWAigJfnBdAZZQf3xF3B3OZq3RPO5pT/vKIgwsduMQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=vST2vnOgJPU7s+FPHN0Q54yvcyoSD7k9oeeKzrGKDbE6+74lG4lDfxVosdujxghWy
-         x7sGxou9eNRcfTUgwccyAEfUSUu0TOo7Nf3aYenv3T94ouZA1RMmyjiNq63/yZ5wDT
-         pOaZI37q5LW3okoZ91lGVJVzJFgCkRdPzgEk0e8b6EEtb3mct7VeV8hnMxHSWFHzUT
-         bE8BTZqXWGyU6w+c7epFa7h2IDx/7EQWk7bBLvOl1espNYbyRKWH6WPGniZTi2A12b
-         K7C/sNYGyGAsWH1e2B5eHkrSfZ2PI71cDgj6xpBTCU+8R43Bd8wbvhVB41gx1c1HZH
-         iyU5fznWkfSng==
-Subject: Re: [PATCH 1/2] staging: media: omap4iss: Ending line with argument
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-References: <cover.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
- <441d27060ff6477d0ad418f41e194b96373c1f7f.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <e1b25826-1359-24dd-47ad-41fbd3a406b9@xs4all.nl>
-Date:   Wed, 7 Apr 2021 15:46:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S242043AbhDGNqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230142AbhDGNqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:46:52 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CA1361382;
+        Wed,  7 Apr 2021 13:46:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lU8W1-0065Ei-5i; Wed, 07 Apr 2021 14:46:41 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu, Gavin Shan <gshan@redhat.com>
+Cc:     shan.gavin@gmail.com, linux-kernel@vger.kernel.org, will@kernel.org
+Subject: Re: [PATCH v2 0/3] KVM: arm64: Minor page fault handler improvement
+Date:   Wed,  7 Apr 2021 14:46:38 +0100
+Message-Id: <161780318317.1871386.15067995969870728434.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210316041126.81860-1-gshan@redhat.com>
+References: <20210316041126.81860-1-gshan@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <441d27060ff6477d0ad418f41e194b96373c1f7f.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNyliiv7nqtDF3kIRgP2dS9nBfW2ds8w63Jf79FQQWaIoEcHFIWi6huzpYLA5yqNGxoRT32w4U8wVkdExRuFjCfLwiMYYo1FfWj1lqUpC9td5q8uJpiv
- nKAy8OxtaAgzCY497ggGunKAC/ZzitJ2sJZ5Sljlj7J4hiifOlrG7mp7PpbBIzQqNbEy67oJT6S4lU4QO8vU3d5NHv1yCWShnf4ijAeoOscHl1dlVC0fJsfg
- EKYl+taFLexwvVQRxGHVyI490LxnpmMdgsJJz8BkOFKa8SnBBGiCCMRSNJ5QSq0uMHmqq7ZnG5+wQHNW9LRcLOLqFLmpZxK4hdryQGvAIeNKk1JcSXLHydv8
- rHnSlJ2c0faHosLFp2C2Rqx0/PuV5KZdqPwnMA7Hrp9rAOasg5OgtA6/gz+aKa0nQbwkhtBgeyPTD26OWEPYKoCkT3Q1Lw7v8HkjzjtTq/Nw8QQbiRtSrCRS
- W8mqMJ9ec2s7CYbLuN1nL3uCxqxTc5zWwpskSg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, gshan@redhat.com, shan.gavin@gmail.com, linux-kernel@vger.kernel.org, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beatriz,
-
-I'm now reviewing staging/media patches instead of Greg KH. See Vaishali's
-email from today: "Sending patches for the drivers/staging/media".
-
-On 01/04/2021 17:07, Beatriz Martins de Carvalho wrote:
-> Remove checkpatch check "CHECK: Lines should not end with a '('" with
-> argument present in next line and reorganize characters so the lines
-> are under 100 columns
+On Tue, 16 Mar 2021 12:11:23 +0800, Gavin Shan wrote:
+> The series includes several minior improvements to stage-2 page fault
+> handler: PATCH[1/2] are cleaning up the code. PATCH[3] don't retrieve
+> the memory slot again in the page fault handler to save a bit CPU cycles.
 > 
-> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-> ---
->  drivers/staging/media/omap4iss/iss.c | 46 +++++++++++++---------------
->  1 file changed, 22 insertions(+), 24 deletions(-)
+> Changelog
+> =========
+> v2:
+>    * Rebased to 5.12.rc3 and include r-bs from Keqian  (Gavin)
+>    * Drop patch to fix IPA limit boundary issue        (Keqian)
+>    * Comments on why we use __gfn_to_pfn_memslot()     (Keqian)
 > 
-> diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
-> index dae9073e7d3c..e8f724dbf810 100644
-> --- a/drivers/staging/media/omap4iss/iss.c
-> +++ b/drivers/staging/media/omap4iss/iss.c
-> @@ -559,9 +559,10 @@ static int iss_reset(struct iss_device *iss)
->  	iss_reg_set(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG,
->  		    ISS_HL_SYSCONFIG_SOFTRESET);
->  
-> -	timeout = iss_poll_condition_timeout(
-> -		!(iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG) &
-> -		ISS_HL_SYSCONFIG_SOFTRESET), 1000, 10, 100);
-> +	timeout = iss_poll_condition_timeout(!(iss_reg_read(iss,
-> +							    OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG)
-> +							    & ISS_HL_SYSCONFIG_SOFTRESET),
-> +							    1000, 10, 100);
->  	if (timeout) {
->  		dev_err(iss->dev, "ISS reset timeout\n");
->  		return -ETIMEDOUT;
-> @@ -583,9 +584,10 @@ static int iss_isp_reset(struct iss_device *iss)
->  
->  	iss_reg_set(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL, ISP5_CTRL_MSTANDBY);
->  
-> -	timeout = iss_poll_condition_timeout(
-> -		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL) &
-> -		ISP5_CTRL_MSTANDBY_WAIT, 1000000, 1000, 1500);
-> +	timeout = iss_poll_condition_timeout(iss_reg_read(iss,
-> +							  OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL)
-> +							  & ISP5_CTRL_MSTANDBY_WAIT, 1000000,
-> +							  1000, 1500);
->  	if (timeout) {
->  		dev_err(iss->dev, "ISP5 standby timeout\n");
->  		return -ETIMEDOUT;
-> @@ -595,9 +597,10 @@ static int iss_isp_reset(struct iss_device *iss)
->  	iss_reg_set(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_SYSCONFIG,
->  		    ISP5_SYSCONFIG_SOFTRESET);
->  
-> -	timeout = iss_poll_condition_timeout(
-> -		!(iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_SYSCONFIG) &
-> -		ISP5_SYSCONFIG_SOFTRESET), 1000000, 1000, 1500);
-> +	timeout = iss_poll_condition_timeout(!(iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1,
-> +							    ISP5_SYSCONFIG) &
-> +							    ISP5_SYSCONFIG_SOFTRESET), 1000000,
-> +							    1000, 1500);
+> [...]
 
-As several other people already commented, these changes do not improve readability.
-Just leave this code alone, it's good enough. Even splitting up the condition into
-a separate function would degrade readability since that would make it harder to
-discover the exact condition that will be polled for.
+Applied to kvm-arm64/memslot-fixes, thanks!
 
-Not everything that checkpatch.pl flags is necessarily bad code :-)
+[1/3] KVM: arm64: Hide kvm_mmu_wp_memory_region()
+      commit: eab62148478d339a37c7a6b37d34182ccf5056ad
+[2/3] KVM: arm64: Use find_vma_intersection()
+      commit: c728fd4ce75e9c342ea96facc5a2fe5ddb976a67
+[3/3] KVM: arm64: Don't retrieve memory slot again in page fault handler
+      commit: 10ba2d17d2972926c60e01dace6d7a3f8d968c4f
 
->  	if (timeout) {
->  		dev_err(iss->dev, "ISP5 reset timeout\n");
->  		return -ETIMEDOUT;
-> @@ -1104,33 +1107,28 @@ static int iss_create_links(struct iss_device *iss)
->  	}
->  
->  	/* Connect the submodules. */
-> -	ret = media_create_pad_link(
-> -			&iss->csi2a.subdev.entity, CSI2_PAD_SOURCE,
-> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
-> +	ret = media_create_pad_link(&iss->csi2a.subdev.entity, CSI2_PAD_SOURCE,
-> +				    &iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = media_create_pad_link(
-> -			&iss->csi2b.subdev.entity, CSI2_PAD_SOURCE,
-> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
-> +	ret = media_create_pad_link(&iss->csi2b.subdev.entity, CSI2_PAD_SOURCE,
-> +				    &iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = media_create_pad_link(
-> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
-> -			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
-> +	ret = media_create_pad_link(&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
-> +				    &iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = media_create_pad_link(
-> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
-> -			&iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0);
-> +	ret = media_create_pad_link(&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
-> +				    &iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0);
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = media_create_pad_link(
-> -			&iss->ipipe.subdev.entity, IPIPE_PAD_SOURCE_VP,
-> -			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
-> +	ret = media_create_pad_link(&iss->ipipe.subdev.entity, IPIPE_PAD_SOURCE_VP,
-> +				    &iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->  	if (ret < 0)
->  		return ret;
->  
-> 
+Cheers,
 
-These, however, are readability improvements, so I'm happy with that.
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-Regards,
 
-	Hans
