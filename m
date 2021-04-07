@@ -2,544 +2,660 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57B6356302
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A72A356304
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348670AbhDGFZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348659AbhDGFZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348679AbhDGFZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:25:24 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:18103 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348658AbhDGFZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 01:25:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64303C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 22:25:10 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU0g1-0000We-G0; Wed, 07 Apr 2021 07:24:29 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lU0g0-00016A-Nk; Wed, 07 Apr 2021 07:24:28 +0200
-Date:   Wed, 7 Apr 2021 07:24:28 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/8] pwm: pca9685: Switch to atomic API
-Message-ID: <20210407052428.4hkzzqtitpq7zzc5@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FFXs41SCvz9txtv;
+        Wed,  7 Apr 2021 07:24:56 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id T5beRjCfygZX; Wed,  7 Apr 2021 07:24:56 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFXs408vRz9txtt;
+        Wed,  7 Apr 2021 07:24:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AEB4B8B783;
+        Wed,  7 Apr 2021 07:24:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ifU7OUdFeB9E; Wed,  7 Apr 2021 07:24:56 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B90FA8B75F;
+        Wed,  7 Apr 2021 07:24:55 +0200 (CEST)
+Subject: Re: [PATCH v2 8/8] KVM: SVM: Allocate SEV command structures on local
+ stack
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+References: <20210406224952.4177376-1-seanjc@google.com>
+ <20210406224952.4177376-9-seanjc@google.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9df3b755-d71a-bfdf-8bee-f2cd2883ea2f@csgroup.eu>
+Date:   Wed, 7 Apr 2021 07:24:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ko6fq56lz6hystfz"
-Content-Disposition: inline
-In-Reply-To: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210406224952.4177376-9-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ko6fq56lz6hystfz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On Tue, Apr 06, 2021 at 06:41:33PM +0200, Clemens Gruber wrote:
-> The switch to the atomic API goes hand in hand with a few fixes to
-> previously experienced issues:
-> - The duty cycle is no longer lost after disable/enable (previously the
->   OFF registers were cleared in disable and the user was required to
->   call config to restore the duty cycle settings)
-> - If one sets a period resulting in the same prescale register value,
->   the sleep and write to the register is now skipped
->=20
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+Le 07/04/2021 à 00:49, Sean Christopherson a écrit :
+> Use the local stack to "allocate" the structures used to communicate with
+> the PSP.  The largest struct used by KVM, sev_data_launch_secret, clocks
+> in at 52 bytes, well within the realm of reasonable stack usage.  The
+> smallest structs are a mere 4 bytes, i.e. the pointer for the allocation
+> is larger than the allocation itself.
+> 
+> Now that the PSP driver plays nice with vmalloc pointers, putting the
+> data on a virtually mapped stack (CONFIG_VMAP_STACK=y) will not cause
+> explosions.
+> 
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
-> Changes since v6:
-> - Order of a comparison switched for improved readability
->=20
-> Changes since v5:
-> - Function documentation for set_duty
-> - Variable initializations
-> - Print warning if all LEDs channel
-> - Changed EOPNOTSUPP to EINVAL
-> - Improved error messages
-> - Register reset corrections moved to this patch
->=20
-> Changes since v4:
-> - Patches split up
-> - Use a single set_duty function
-> - Improve readability / new macros
-> - Added a patch to restrict prescale changes to the first user
->=20
-> Changes since v3:
-> - Refactoring: Extracted common functions
-> - Read prescale register value instead of caching it
-> - Return all zeros and disabled for "all LEDs" channel state
-> - Improved duty calculation / mapping to 0..4096
->=20
-> Changes since v2:
-> - Always set default prescale value in probe
-> - Simplified probe code
-> - Inlined functions with one callsite
->=20
-> Changes since v1:
-> - Fixed a logic error
-> - Impoved PM runtime handling and fixed !CONFIG_PM
-> - Write default prescale reg value if invalid in probe
-> - Reuse full_off/_on functions throughout driver
-> - Use cached prescale value whenever possible
->=20
->  drivers/pwm/pwm-pca9685.c | 261 ++++++++++++++------------------------
->  1 file changed, 92 insertions(+), 169 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> index 4a55dc18656c..5a2ce97e71fd 100644
-> --- a/drivers/pwm/pwm-pca9685.c
-> +++ b/drivers/pwm/pwm-pca9685.c
-> @@ -51,7 +51,6 @@
->  #define PCA9685_PRESCALE_MAX	0xFF	/* =3D> min. frequency of 24 Hz */
-> =20
->  #define PCA9685_COUNTER_RANGE	4096
-> -#define PCA9685_DEFAULT_PERIOD	5000000	/* Default period_ns =3D 1/200 Hz=
- */
->  #define PCA9685_OSC_CLOCK_MHZ	25	/* Internal oscillator with 25 MHz */
-> =20
->  #define PCA9685_NUMREGS		0xFF
-> @@ -71,10 +70,14 @@
->  #define LED_N_OFF_H(N)	(PCA9685_LEDX_OFF_H + (4 * (N)))
->  #define LED_N_OFF_L(N)	(PCA9685_LEDX_OFF_L + (4 * (N)))
-> =20
-> +#define REG_ON_H(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_H : L=
-ED_N_ON_H((C)))
-> +#define REG_ON_L(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_L : L=
-ED_N_ON_L((C)))
-> +#define REG_OFF_H(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_H :=
- LED_N_OFF_H((C)))
-> +#define REG_OFF_L(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_L :=
- LED_N_OFF_L((C)))
-> +
->  struct pca9685 {
->  	struct pwm_chip chip;
->  	struct regmap *regmap;
-> -	int period_ns;
->  #if IS_ENABLED(CONFIG_GPIOLIB)
->  	struct mutex lock;
->  	struct gpio_chip gpio;
-> @@ -87,6 +90,51 @@ static inline struct pca9685 *to_pca(struct pwm_chip *=
-chip)
->  	return container_of(chip, struct pca9685, chip);
->  }
-> =20
-> +/* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=
-=3D2048 -> 50%) */
-> +static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsig=
-ned int duty)
-> +{
-> +	if (duty =3D=3D 0) {
-> +		/* Set the full OFF bit, which has the highest precedence */
-> +		regmap_write(pca->regmap, REG_OFF_H(channel), LED_FULL);
-> +	} else if (duty >=3D PCA9685_COUNTER_RANGE) {
-> +		/* Set the full ON bit and clear the full OFF bit */
-> +		regmap_write(pca->regmap, REG_ON_H(channel), LED_FULL);
-> +		regmap_write(pca->regmap, REG_OFF_H(channel), 0);
-> +	} else {
-> +		/* Set OFF time (clears the full OFF bit) */
-> +		regmap_write(pca->regmap, REG_OFF_L(channel), duty & 0xff);
-> +		regmap_write(pca->regmap, REG_OFF_H(channel), (duty >> 8) & 0xf);
-> +		/* Clear the full ON bit */
-> +		regmap_write(pca->regmap, REG_ON_H(channel), 0);
-> +	}
-> +}
-> +
-> +static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channe=
-l)
-> +{
-> +	unsigned int off_h =3D 0, val =3D 0;
-> +
-> +	if (WARN_ON(channel >=3D PCA9685_MAXCHAN)) {
-> +		/* HW does not support reading state of "all LEDs" channel */
-> +		return 0;
-> +	}
-> +
-> +	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off_h);
-> +	if (off_h & LED_FULL) {
-> +		/* Full OFF bit is set */
-> +		return 0;
-> +	}
-> +
-> +	regmap_read(pca->regmap, LED_N_ON_H(channel), &val);
-> +	if (val & LED_FULL) {
-> +		/* Full ON bit is set */
-> +		return PCA9685_COUNTER_RANGE;
-> +	}
-> +
-> +	val =3D 0;
+>   arch/x86/kvm/svm/sev.c | 262 +++++++++++++++--------------------------
+>   1 file changed, 96 insertions(+), 166 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 5457138c7347..316fd39c7aef 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -150,35 +150,22 @@ static void sev_asid_free(int asid)
+>   
+>   static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+>   {
+> -	struct sev_data_decommission *decommission;
+> -	struct sev_data_deactivate *data;
+> +	struct sev_data_decommission decommission;
+> +	struct sev_data_deactivate deactivate;
+>   
+>   	if (!handle)
+>   		return;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL);
+> -	if (!data)
+> -		return;
+> -
+> -	/* deactivate handle */
+> -	data->handle = handle;
+> +	deactivate.handle = handle;
+>   
+>   	/* Guard DEACTIVATE against WBINVD/DF_FLUSH used in ASID recycling */
+>   	down_read(&sev_deactivate_lock);
+> -	sev_guest_deactivate(data, NULL);
+> +	sev_guest_deactivate(&deactivate, NULL);
+>   	up_read(&sev_deactivate_lock);
+>   
+> -	kfree(data);
+> -
+> -	decommission = kzalloc(sizeof(*decommission), GFP_KERNEL);
+> -	if (!decommission)
+> -		return;
+> -
+>   	/* decommission handle */
+> -	decommission->handle = handle;
+> -	sev_guest_decommission(decommission, NULL);
+> -
+> -	kfree(decommission);
+> +	decommission.handle = handle;
+> +	sev_guest_decommission(&decommission, NULL);
+>   }
+>   
+>   static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> @@ -216,19 +203,14 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   static int sev_bind_asid(struct kvm *kvm, unsigned int handle, int *error)
+>   {
+> -	struct sev_data_activate *data;
+> +	struct sev_data_activate activate;
+>   	int asid = sev_get_asid(kvm);
+>   	int ret;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> -
+>   	/* activate ASID on the given handle */
+> -	data->handle = handle;
+> -	data->asid   = asid;
+> -	ret = sev_guest_activate(data, error);
+> -	kfree(data);
+> +	activate.handle = handle;
+> +	activate.asid   = asid;
+> +	ret = sev_guest_activate(&activate, error);
+>   
+>   	return ret;
+>   }
+> @@ -258,7 +240,7 @@ static int sev_issue_cmd(struct kvm *kvm, int id, void *data, int *error)
+>   static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_launch_start *start;
+> +	struct sev_data_launch_start start;
 
-Why do you set val to 0 first? Do you get a compiler warning otherwise?
+struct sev_data_launch_start start = {0, 0, 0, 0, 0, 0, 0};
 
-> +	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-> +	return ((off_h & 0xf) << 8) | (val & 0xff);
-> +}
-> +
->  #if IS_ENABLED(CONFIG_GPIOLIB)
->  static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, int pwm_=
-idx)
->  {
-> @@ -138,34 +186,23 @@ static int pca9685_pwm_gpio_request(struct gpio_chi=
-p *gpio, unsigned int offset)
->  static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned int off=
-set)
->  {
->  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> -	struct pwm_device *pwm =3D &pca->chip.pwms[offset];
-> -	unsigned int value;
-> =20
-> -	regmap_read(pca->regmap, LED_N_ON_H(pwm->hwpwm), &value);
-> -
-> -	return value & LED_FULL;
-> +	return pca9685_pwm_get_duty(pca, offset) !=3D 0;
+>   	struct kvm_sev_launch_start params;
+>   	void *dh_blob, *session_blob;
+>   	int *error = &argp->error;
+> @@ -270,20 +252,16 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+>   		return -EFAULT;
+>   
+> -	start = kzalloc(sizeof(*start), GFP_KERNEL_ACCOUNT);
+> -	if (!start)
+> -		return -ENOMEM;
+> +	memset(&start, 0, sizeof(start));
 
-Is this a relevant bug fix? If both OFF_H.FULL and ON_H.FULL are set,
-the output is low and this was diagnosed before as high.
+Not needed.
 
->  }
-> =20
->  static void pca9685_pwm_gpio_set(struct gpio_chip *gpio, unsigned int of=
-fset,
->  				 int value)
->  {
->  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> -	struct pwm_device *pwm =3D &pca->chip.pwms[offset];
-> -	unsigned int on =3D value ? LED_FULL : 0;
-> -
-> -	/* Clear both OFF registers */
-> -	regmap_write(pca->regmap, LED_N_OFF_L(pwm->hwpwm), 0);
-> -	regmap_write(pca->regmap, LED_N_OFF_H(pwm->hwpwm), 0);
-> =20
-> -	/* Set the full ON bit */
-> -	regmap_write(pca->regmap, LED_N_ON_H(pwm->hwpwm), on);
-> +	pca9685_pwm_set_duty(pca, offset, value ? PCA9685_COUNTER_RANGE : 0);
->  }
-> =20
->  static void pca9685_pwm_gpio_free(struct gpio_chip *gpio, unsigned int o=
-ffset)
->  {
->  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> =20
-> -	pca9685_pwm_gpio_set(gpio, offset, 0);
-> +	pca9685_pwm_set_duty(pca, offset, 0);
-
-Orthogonal to your patch:
-I don't know the customs of GPIO drivers enough, but I wonder that
-=2Efree() results in setting the value of the GPIO?!
-
->  	pm_runtime_put(pca->chip.dev);
->  	pca9685_pwm_clear_inuse(pca, offset);
->  }
-> @@ -246,167 +283,56 @@ static void pca9685_set_sleep_mode(struct pca9685 =
-*pca, bool enable)
->  	}
->  }
-> =20
-> -static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *=
-pwm,
-> -			      int duty_ns, int period_ns)
-> +static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
-wm,
-> +			     const struct pwm_state *state)
->  {
->  	struct pca9685 *pca =3D to_pca(chip);
-> -	unsigned long long duty;
-> -	unsigned int reg;
-> -	int prescale;
-> -
-> -	if (period_ns !=3D pca->period_ns) {
-> -		prescale =3D DIV_ROUND_CLOSEST(PCA9685_OSC_CLOCK_MHZ * period_ns,
-> -					     PCA9685_COUNTER_RANGE * 1000) - 1;
-> -
-> -		if (prescale >=3D PCA9685_PRESCALE_MIN &&
-> -			prescale <=3D PCA9685_PRESCALE_MAX) {
-> -			/*
-> -			 * Putting the chip briefly into SLEEP mode
-> -			 * at this point won't interfere with the
-> -			 * pm_runtime framework, because the pm_runtime
-> -			 * state is guaranteed active here.
-> -			 */
-> -			/* Put chip into sleep mode */
-> -			pca9685_set_sleep_mode(pca, true);
-> -
-> -			/* Change the chip-wide output frequency */
-> -			regmap_write(pca->regmap, PCA9685_PRESCALE, prescale);
-> -
-> -			/* Wake the chip up */
-> -			pca9685_set_sleep_mode(pca, false);
-> -
-> -			pca->period_ns =3D period_ns;
-> -		} else {
-> -			dev_err(chip->dev,
-> -				"prescaler not set: period out of bounds!\n");
-> -			return -EINVAL;
+>   
+>   	dh_blob = NULL;
+>   	if (params.dh_uaddr) {
+>   		dh_blob = psp_copy_user_blob(params.dh_uaddr, params.dh_len);
+> -		if (IS_ERR(dh_blob)) {
+> -			ret = PTR_ERR(dh_blob);
+> -			goto e_free;
 > -		}
+> +		if (IS_ERR(dh_blob))
+> +			return PTR_ERR(dh_blob);
+>   
+> -		start->dh_cert_address = __sme_set(__pa(dh_blob));
+> -		start->dh_cert_len = params.dh_len;
+> +		start.dh_cert_address = __sme_set(__pa(dh_blob));
+> +		start.dh_cert_len = params.dh_len;
+>   	}
+>   
+>   	session_blob = NULL;
+> @@ -294,40 +272,38 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   			goto e_free_dh;
+>   		}
+>   
+> -		start->session_address = __sme_set(__pa(session_blob));
+> -		start->session_len = params.session_len;
+> +		start.session_address = __sme_set(__pa(session_blob));
+> +		start.session_len = params.session_len;
+>   	}
+>   
+> -	start->handle = params.handle;
+> -	start->policy = params.policy;
+> +	start.handle = params.handle;
+> +	start.policy = params.policy;
+>   
+>   	/* create memory encryption context */
+> -	ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_LAUNCH_START, start, error);
+> +	ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_LAUNCH_START, &start, error);
+>   	if (ret)
+>   		goto e_free_session;
+>   
+>   	/* Bind ASID to this guest */
+> -	ret = sev_bind_asid(kvm, start->handle, error);
+> +	ret = sev_bind_asid(kvm, start.handle, error);
+>   	if (ret)
+>   		goto e_free_session;
+>   
+>   	/* return handle to userspace */
+> -	params.handle = start->handle;
+> +	params.handle = start.handle;
+>   	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params))) {
+> -		sev_unbind_asid(kvm, start->handle);
+> +		sev_unbind_asid(kvm, start.handle);
+>   		ret = -EFAULT;
+>   		goto e_free_session;
+>   	}
+>   
+> -	sev->handle = start->handle;
+> +	sev->handle = start.handle;
+>   	sev->fd = argp->sev_fd;
+>   
+>   e_free_session:
+>   	kfree(session_blob);
+>   e_free_dh:
+>   	kfree(dh_blob);
+> -e_free:
+> -	kfree(start);
+>   	return ret;
+>   }
+>   
+> @@ -446,7 +422,7 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	unsigned long vaddr, vaddr_end, next_vaddr, npages, pages, size, i;
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+>   	struct kvm_sev_launch_update_data params;
+> -	struct sev_data_launch_update_data *data;
+> +	struct sev_data_launch_update_data data;
+>   	struct page **inpages;
+>   	int ret;
+>   
+> @@ -456,20 +432,14 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+>   		return -EFAULT;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> -
+>   	vaddr = params.uaddr;
+>   	size = params.len;
+>   	vaddr_end = vaddr + size;
+>   
+>   	/* Lock the user memory. */
+>   	inpages = sev_pin_memory(kvm, vaddr, size, &npages, 1);
+> -	if (IS_ERR(inpages)) {
+> -		ret = PTR_ERR(inpages);
+> -		goto e_free;
 > -	}
-> +	unsigned long long duty, prescale;
-> +	unsigned int val =3D 0;
-> =20
-> -	if (duty_ns < 1) {
-> -		if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -			reg =3D PCA9685_ALL_LED_OFF_H;
-> -		else
-> -			reg =3D LED_N_OFF_H(pwm->hwpwm);
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> +		return -EINVAL;
-> =20
-> -		regmap_write(pca->regmap, reg, LED_FULL);
-> -
-> -		return 0;
-> +	prescale =3D DIV_ROUND_CLOSEST_ULL(PCA9685_OSC_CLOCK_MHZ * state->perio=
-d,
-> +					 PCA9685_COUNTER_RANGE * 1000) - 1;
+> +	if (IS_ERR(inpages))
+> +		return PTR_ERR(inpages);
+>   
+>   	/*
+>   	 * Flush (on non-coherent CPUs) before LAUNCH_UPDATE encrypts pages in
+> @@ -477,6 +447,9 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	 */
+>   	sev_clflush_pages(inpages, npages);
+>   
+> +	data.reserved = 0;
+> +	data.handle = sev->handle;
+> +
+>   	for (i = 0; vaddr < vaddr_end; vaddr = next_vaddr, i += pages) {
+>   		int offset, len;
+>   
+> @@ -491,10 +464,9 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   		len = min_t(size_t, ((pages * PAGE_SIZE) - offset), size);
+>   
+> -		data->handle = sev->handle;
+> -		data->len = len;
+> -		data->address = __sme_page_pa(inpages[i]) + offset;
+> -		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_DATA, data, &argp->error);
+> +		data.len = len;
+> +		data.address = __sme_page_pa(inpages[i]) + offset;
+> +		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_DATA, &data, &argp->error);
+>   		if (ret)
+>   			goto e_unpin;
+>   
+> @@ -510,8 +482,6 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	}
+>   	/* unlock the user pages */
+>   	sev_unpin_memory(kvm, inpages, npages);
+> -e_free:
+> -	kfree(data);
+>   	return ret;
+>   }
+>   
+> @@ -563,16 +533,14 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>   static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_launch_update_vmsa *vmsa;
+> +	struct sev_data_launch_update_vmsa vmsa;
+>   	struct kvm_vcpu *vcpu;
+>   	int i, ret;
+>   
+>   	if (!sev_es_guest(kvm))
+>   		return -ENOTTY;
+>   
+> -	vmsa = kzalloc(sizeof(*vmsa), GFP_KERNEL);
+> -	if (!vmsa)
+> -		return -ENOMEM;
+> +	vmsa.reserved = 0;
+>   
+>   	kvm_for_each_vcpu(i, vcpu, kvm) {
+>   		struct vcpu_svm *svm = to_svm(vcpu);
+> @@ -580,7 +548,7 @@ static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   		/* Perform some pre-encryption checks against the VMSA */
+>   		ret = sev_es_sync_vmsa(svm);
+>   		if (ret)
+> -			goto e_free;
+> +			return ret;
+>   
+>   		/*
+>   		 * The LAUNCH_UPDATE_VMSA command will perform in-place
+> @@ -590,27 +558,25 @@ static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   		 */
+>   		clflush_cache_range(svm->vmsa, PAGE_SIZE);
+>   
+> -		vmsa->handle = sev->handle;
+> -		vmsa->address = __sme_pa(svm->vmsa);
+> -		vmsa->len = PAGE_SIZE;
+> -		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, vmsa,
+> +		vmsa.handle = sev->handle;
+> +		vmsa.address = __sme_pa(svm->vmsa);
+> +		vmsa.len = PAGE_SIZE;
+> +		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
+>   				    &argp->error);
+>   		if (ret)
+> -			goto e_free;
+> +			return ret;
+>   
+>   		svm->vcpu.arch.guest_state_protected = true;
+>   	}
+>   
+> -e_free:
+> -	kfree(vmsa);
+> -	return ret;
+> +	return 0;
+>   }
+>   
+>   static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	void __user *measure = (void __user *)(uintptr_t)argp->data;
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_launch_measure *data;
+> +	struct sev_data_launch_measure data;
 
-Here the multiplication might overflow.  Also if period is small the
-result of the division might be 0 and prescale might end up being -1ULL.
-(But that's a problem that we had already before, so not a stopper for
-this patch.)
+struct sev_data_launch_measure data = {0, 0, 0, 0};
 
-> +	if (prescale < PCA9685_PRESCALE_MIN || prescale > PCA9685_PRESCALE_MAX)=
- {
-> +		dev_err(chip->dev, "pwm not changed: period out of bounds!\n");
-> +		return -EINVAL;
->  	}
-> =20
-> -	if (duty_ns =3D=3D period_ns) {
-> -		/* Clear both OFF registers */
-> -		if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -			reg =3D PCA9685_ALL_LED_OFF_L;
-> -		else
-> -			reg =3D LED_N_OFF_L(pwm->hwpwm);
-> -
-> -		regmap_write(pca->regmap, reg, 0x0);
-> -
-> -		if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -			reg =3D PCA9685_ALL_LED_OFF_H;
-> -		else
-> -			reg =3D LED_N_OFF_H(pwm->hwpwm);
-> -
-> -		regmap_write(pca->regmap, reg, 0x0);
-> -
-> -		/* Set the full ON bit */
-> -		if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -			reg =3D PCA9685_ALL_LED_ON_H;
-> -		else
-> -			reg =3D LED_N_ON_H(pwm->hwpwm);
-> -
-> -		regmap_write(pca->regmap, reg, LED_FULL);
-> +	duty =3D PCA9685_COUNTER_RANGE * state->duty_cycle;
-> +	duty =3D DIV_ROUND_CLOSEST_ULL(duty, state->period);
+>   	struct kvm_sev_launch_measure params;
+>   	void __user *p = NULL;
+>   	void *blob = NULL;
+> @@ -622,9 +588,7 @@ static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	if (copy_from_user(&params, measure, sizeof(params)))
+>   		return -EFAULT;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> +	memset(&data, 0, sizeof(data));
 
-Here we're losing precision. In general calculating the duty should be
-done using time, not period counter values. (Again, that's an old
-problem.)
+Not needed
 
-> =20
-> +	if (duty < 1 || !state->enabled) {
-> +		pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-> +		return 0;
-> +	} else if (duty =3D=3D PCA9685_COUNTER_RANGE) {
-> +		pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
->  		return 0;
->  	}
-> =20
-> -	duty =3D PCA9685_COUNTER_RANGE * (unsigned long long)duty_ns;
-> -	duty =3D DIV_ROUND_UP_ULL(duty, period_ns);
+>   
+>   	/* User wants to query the blob length */
+>   	if (!params.len)
+> @@ -632,23 +596,20 @@ static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   	p = (void __user *)(uintptr_t)params.uaddr;
+>   	if (p) {
+> -		if (params.len > SEV_FW_BLOB_MAX_SIZE) {
+> -			ret = -EINVAL;
+> -			goto e_free;
+> -		}
+> +		if (params.len > SEV_FW_BLOB_MAX_SIZE)
+> +			return -EINVAL;
+>   
+> -		ret = -ENOMEM;
+>   		blob = kmalloc(params.len, GFP_KERNEL_ACCOUNT);
+>   		if (!blob)
+> -			goto e_free;
+> +			return -ENOMEM;
+>   
+> -		data->address = __psp_pa(blob);
+> -		data->len = params.len;
+> +		data.address = __psp_pa(blob);
+> +		data.len = params.len;
+>   	}
+>   
+>   cmd:
+> -	data->handle = sev->handle;
+> -	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_MEASURE, data, &argp->error);
+> +	data.handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_MEASURE, &data, &argp->error);
+>   
+>   	/*
+>   	 * If we query the session length, FW responded with expected data.
+> @@ -665,63 +626,50 @@ static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	}
+>   
+>   done:
+> -	params.len = data->len;
+> +	params.len = data.len;
+>   	if (copy_to_user(measure, &params, sizeof(params)))
+>   		ret = -EFAULT;
+>   e_free_blob:
+>   	kfree(blob);
+> -e_free:
+> -	kfree(data);
+>   	return ret;
+>   }
+>   
+>   static int sev_launch_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_launch_finish *data;
+> -	int ret;
+> +	struct sev_data_launch_finish data;
+>   
+>   	if (!sev_guest(kvm))
+>   		return -ENOTTY;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> -
+> -	data->handle = sev->handle;
+> -	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_FINISH, data, &argp->error);
+> -
+> -	kfree(data);
+> -	return ret;
+> +	data.handle = sev->handle;
+> +	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_FINISH, &data, &argp->error);
+>   }
+>   
+>   static int sev_guest_status(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+>   	struct kvm_sev_guest_status params;
+> -	struct sev_data_guest_status *data;
+> +	struct sev_data_guest_status data = {0, 0, 0, 0};
+>   	int ret;
+>   
+>   	if (!sev_guest(kvm))
+>   		return -ENOTTY;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> +	memset(&data, 0, sizeof(data));
 
-Oh, the new implementation uses DIV_ROUND_CLOSEST. IMHO either keep the
-calculations as is, or use the preferred round-down.
+not needed
 
+>   
+> -	data->handle = sev->handle;
+> -	ret = sev_issue_cmd(kvm, SEV_CMD_GUEST_STATUS, data, &argp->error);
+> +	data.handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_GUEST_STATUS, &data, &argp->error);
+>   	if (ret)
+> -		goto e_free;
+> +		return ret;
+>   
+> -	params.policy = data->policy;
+> -	params.state = data->state;
+> -	params.handle = data->handle;
+> +	params.policy = data.policy;
+> +	params.state = data.state;
+> +	params.handle = data.handle;
+>   
+>   	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params)))
+>   		ret = -EFAULT;
+> -e_free:
+> -	kfree(data);
+> +
+>   	return ret;
+>   }
+>   
+> @@ -730,23 +678,17 @@ static int __sev_issue_dbg_cmd(struct kvm *kvm, unsigned long src,
+>   			       int *error, bool enc)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_dbg *data;
+> -	int ret;
+> +	struct sev_data_dbg data;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> +	data.reserved = 0;
+> +	data.handle = sev->handle;
+> +	data.dst_addr = dst;
+> +	data.src_addr = src;
+> +	data.len = size;
+>   
+> -	data->handle = sev->handle;
+> -	data->dst_addr = dst;
+> -	data->src_addr = src;
+> -	data->len = size;
 > -
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_OFF_L;
-> -	else
-> -		reg =3D LED_N_OFF_L(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, (int)duty & 0xff);
-> -
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_OFF_H;
-> -	else
-> -		reg =3D LED_N_OFF_H(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, ((int)duty >> 8) & 0xf);
-> -
-> -	/* Clear the full ON bit, otherwise the set OFF time has no effect */
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_ON_H;
-> -	else
-> -		reg =3D LED_N_ON_H(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, 0);
-> -
-> -	return 0;
-> -}
-> -
-> -static int pca9685_pwm_enable(struct pwm_chip *chip, struct pwm_device *=
-pwm)
-> -{
-> -	struct pca9685 *pca =3D to_pca(chip);
-> -	unsigned int reg;
-> -
-> -	/*
-> -	 * The PWM subsystem does not support a pre-delay.
-> -	 * So, set the ON-timeout to 0
-> -	 */
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_ON_L;
-> -	else
-> -		reg =3D LED_N_ON_L(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, 0);
-> -
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_ON_H;
-> -	else
-> -		reg =3D LED_N_ON_H(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, 0);
-> +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> +	if (prescale !=3D val) {
-> +		/*
-> +		 * Putting the chip briefly into SLEEP mode
-> +		 * at this point won't interfere with the
-> +		 * pm_runtime framework, because the pm_runtime
-> +		 * state is guaranteed active here.
-> +		 */
-> +		/* Put chip into sleep mode */
-> +		pca9685_set_sleep_mode(pca, true);
-
-I assume it's a requirement to stop the oscillator when changing the
-prescaler?
-
-> =20
-> -	/*
-> -	 * Clear the full-off bit.
-> -	 * It has precedence over the others and must be off.
-> -	 */
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_OFF_H;
-> -	else
-> -		reg =3D LED_N_OFF_H(pwm->hwpwm);
-> +		/* Change the chip-wide output frequency */
-> +		regmap_write(pca->regmap, PCA9685_PRESCALE, (int)prescale);
-
-The cast isn't necessary, is it?
-
-> -	regmap_update_bits(pca->regmap, reg, LED_FULL, 0x0);
-> +		/* Wake the chip up */
-> +		pca9685_set_sleep_mode(pca, false);
-> +	}
-> =20
-> +	pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
->  	return 0;
->  }
-> =20
-> -static void pca9685_pwm_disable(struct pwm_chip *chip, struct pwm_device=
- *pwm)
-> -{
-> -	struct pca9685 *pca =3D to_pca(chip);
-> -	unsigned int reg;
-> -
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_OFF_H;
-> -	else
-> -		reg =3D LED_N_OFF_H(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, LED_FULL);
-> -
-> -	/* Clear the LED_OFF counter. */
-> -	if (pwm->hwpwm >=3D PCA9685_MAXCHAN)
-> -		reg =3D PCA9685_ALL_LED_OFF_L;
-> -	else
-> -		reg =3D LED_N_OFF_L(pwm->hwpwm);
-> -
-> -	regmap_write(pca->regmap, reg, 0x0);
-> -}
-> -
->  static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device =
-*pwm)
->  {
->  	struct pca9685 *pca =3D to_pca(chip);
-> @@ -422,15 +348,13 @@ static void pca9685_pwm_free(struct pwm_chip *chip,=
- struct pwm_device *pwm)
->  {
->  	struct pca9685 *pca =3D to_pca(chip);
-> =20
-> -	pca9685_pwm_disable(chip, pwm);
-> +	pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
->  	pm_runtime_put(chip->dev);
->  	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
->  }
-> =20
->  static const struct pwm_ops pca9685_pwm_ops =3D {
-> -	.enable =3D pca9685_pwm_enable,
-> -	.disable =3D pca9685_pwm_disable,
-> -	.config =3D pca9685_pwm_config,
-> +	.apply =3D pca9685_pwm_apply,
->  	.request =3D pca9685_pwm_request,
->  	.free =3D pca9685_pwm_free,
->  	.owner =3D THIS_MODULE,
-> @@ -461,7 +385,6 @@ static int pca9685_pwm_probe(struct i2c_client *clien=
-t,
->  			ret);
->  		return ret;
->  	}
-> -	pca->period_ns =3D PCA9685_DEFAULT_PERIOD;
-> =20
->  	i2c_set_clientdata(client, pca);
-> =20
-> @@ -484,9 +407,9 @@ static int pca9685_pwm_probe(struct i2c_client *clien=
-t,
->  	reg &=3D ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
->  	regmap_write(pca->regmap, PCA9685_MODE1, reg);
-> =20
-> -	/* Clear all "full off" bits */
-> -	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, 0);
-> -	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, 0);
-> +	/* Reset OFF registers to POR default */
-> +	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
-> +	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
-
-Is this hunk unrelated to the patch description?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ko6fq56lz6hystfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtQgkACgkQwfwUeK3K
-7Alc9Af+KFmFCdwMyHJdIroSiuyBN2VpcxAfS1bnzcMMUugiaPGExw0B+Y6gZAc+
-bKY4y4Xk936pvGiROcDjdHPF0n5vcL67a0D542nUqlc8THSF9Y9lpAkWyO3z+xCw
-bhdBZYv3NKK18VVY1UueQP79FRtFo+HKZZmDMi+0deo08DFC2oLUXvoYHJkGj1fF
-VckVtE7KN3YhYRSkyv0Yd5hh61yYzdN8bIkTh0fZMxzLeei98wizSUwXL4Y6EEyh
-2ETgsvbNtRab3d/9W1Wjr/wto1L/cv3E/xXf/L63iBcAkUvxQ/xP1MJcvsIhaaqu
-8HFNjDaH5EQoLFgUSAUvITgT3MoE5A==
-=duGG
------END PGP SIGNATURE-----
-
---ko6fq56lz6hystfz--
+> -	ret = sev_issue_cmd(kvm,
+> -			    enc ? SEV_CMD_DBG_ENCRYPT : SEV_CMD_DBG_DECRYPT,
+> -			    data, error);
+> -	kfree(data);
+> -	return ret;
+> +	return sev_issue_cmd(kvm,
+> +			     enc ? SEV_CMD_DBG_ENCRYPT : SEV_CMD_DBG_DECRYPT,
+> +			     &data, error);
+>   }
+>   
+>   static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
+> @@ -966,7 +908,7 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
+>   static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_launch_secret *data;
+> +	struct sev_data_launch_secret data;
+>   	struct kvm_sev_launch_secret params;
+>   	struct page **pages;
+>   	void *blob, *hdr;
+> @@ -998,41 +940,36 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   		goto e_unpin_memory;
+>   	}
+>   
+> -	ret = -ENOMEM;
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		goto e_unpin_memory;
+> +	memset(&data, 0, sizeof(data));
+>   
+>   	offset = params.guest_uaddr & (PAGE_SIZE - 1);
+> -	data->guest_address = __sme_page_pa(pages[0]) + offset;
+> -	data->guest_len = params.guest_len;
+> +	data.guest_address = __sme_page_pa(pages[0]) + offset;
+> +	data.guest_len = params.guest_len;
+>   
+>   	blob = psp_copy_user_blob(params.trans_uaddr, params.trans_len);
+>   	if (IS_ERR(blob)) {
+>   		ret = PTR_ERR(blob);
+> -		goto e_free;
+> +		goto e_unpin_memory;
+>   	}
+>   
+> -	data->trans_address = __psp_pa(blob);
+> -	data->trans_len = params.trans_len;
+> +	data.trans_address = __psp_pa(blob);
+> +	data.trans_len = params.trans_len;
+>   
+>   	hdr = psp_copy_user_blob(params.hdr_uaddr, params.hdr_len);
+>   	if (IS_ERR(hdr)) {
+>   		ret = PTR_ERR(hdr);
+>   		goto e_free_blob;
+>   	}
+> -	data->hdr_address = __psp_pa(hdr);
+> -	data->hdr_len = params.hdr_len;
+> +	data.hdr_address = __psp_pa(hdr);
+> +	data.hdr_len = params.hdr_len;
+>   
+> -	data->handle = sev->handle;
+> -	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_SECRET, data, &argp->error);
+> +	data.handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_SECRET, &data, &argp->error);
+>   
+>   	kfree(hdr);
+>   
+>   e_free_blob:
+>   	kfree(blob);
+> -e_free:
+> -	kfree(data);
+>   e_unpin_memory:
+>   	/* content of memory is updated, mark pages dirty */
+>   	for (i = 0; i < n; i++) {
+> @@ -1047,7 +984,7 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   {
+>   	void __user *report = (void __user *)(uintptr_t)argp->data;
+>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -	struct sev_data_attestation_report *data;
+> +	struct sev_data_attestation_report data;
+>   	struct kvm_sev_attestation_report params;
+>   	void __user *p;
+>   	void *blob = NULL;
+> @@ -1059,9 +996,7 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+>   		return -EFAULT;
+>   
+> -	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> -	if (!data)
+> -		return -ENOMEM;
+> +	memset(&data, 0, sizeof(data));
+>   
+>   	/* User wants to query the blob length */
+>   	if (!params.len)
+> @@ -1069,23 +1004,20 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   	p = (void __user *)(uintptr_t)params.uaddr;
+>   	if (p) {
+> -		if (params.len > SEV_FW_BLOB_MAX_SIZE) {
+> -			ret = -EINVAL;
+> -			goto e_free;
+> -		}
+> +		if (params.len > SEV_FW_BLOB_MAX_SIZE)
+> +			return -EINVAL;
+>   
+> -		ret = -ENOMEM;
+>   		blob = kmalloc(params.len, GFP_KERNEL_ACCOUNT);
+>   		if (!blob)
+> -			goto e_free;
+> +			return -ENOMEM;
+>   
+> -		data->address = __psp_pa(blob);
+> -		data->len = params.len;
+> -		memcpy(data->mnonce, params.mnonce, sizeof(params.mnonce));
+> +		data.address = __psp_pa(blob);
+> +		data.len = params.len;
+> +		memcpy(data.mnonce, params.mnonce, sizeof(params.mnonce));
+>   	}
+>   cmd:
+> -	data->handle = sev->handle;
+> -	ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, data, &argp->error);
+> +	data.handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, &data, &argp->error);
+>   	/*
+>   	 * If we query the session length, FW responded with expected data.
+>   	 */
+> @@ -1101,13 +1033,11 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	}
+>   
+>   done:
+> -	params.len = data->len;
+> +	params.len = data.len;
+>   	if (copy_to_user(report, &params, sizeof(params)))
+>   		ret = -EFAULT;
+>   e_free_blob:
+>   	kfree(blob);
+> -e_free:
+> -	kfree(data);
+>   	return ret;
+>   }
+>   
+> 
