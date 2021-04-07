@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD3935680B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190553567F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350119AbhDGJ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:29:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350117AbhDGJ3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:29:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617787733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5cX0jPVjLXn3h+yOfz/RDosBSJ4v4SvYZHT2Qf30u9Y=;
-        b=W+hboP3M7H5GCsQkPXRHf7zSqbnwda6i3DukU0WuxQ9YJH5nj3Ck3hADGT0HhsAr0szc5E
-        2srhEVla4/hx7Rc3OXfnJvTfdjrYjMv49VnnKU6UIWWCSsksuw7me5NQAOoDy8/jl/sZvR
-        P+cw/cOHtHHi6d9IQhztpY3wbt3hJ+0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 264D0B03B;
-        Wed,  7 Apr 2021 09:28:53 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 11:28:51 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 5/8] hugetlb: call update_and_free_page without
- hugetlb_lock
-Message-ID: <YG17U4PolKicoch8@dhcp22.suse.cz>
-References: <20210405230043.182734-1-mike.kravetz@oracle.com>
- <20210405230043.182734-6-mike.kravetz@oracle.com>
- <20210407082744.GA10058@linux>
+        id S238933AbhDGJ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:26:25 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15941 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231287AbhDGJ0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:26:21 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFf8w31tyzyNbZ;
+        Wed,  7 Apr 2021 17:24:00 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
+ 17:26:08 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+CC:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>
+Subject: [PATCH -next] usb: gadget: tegra-xudc: Fix possible use-after-free in tegra_xudc_remove()
+Date:   Wed, 7 Apr 2021 17:29:47 +0800
+Message-ID: <20210407092947.3271507-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407082744.GA10058@linux>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07-04-21 10:27:49, Oscar Salvador wrote:
-> On Mon, Apr 05, 2021 at 04:00:40PM -0700, Mike Kravetz wrote:
-[...]
-> > @@ -2671,22 +2682,34 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
-> >  						nodemask_t *nodes_allowed)
-> >  {
-> >  	int i;
-> > +	struct page *page, *next;
-> > +	LIST_HEAD(page_list);
-> >  
-> >  	if (hstate_is_gigantic(h))
-> >  		return;
-> >  
-> > +	/*
-> > +	 * Collect pages to be freed on a list, and free after dropping lock
-> > +	 */
-> >  	for_each_node_mask(i, *nodes_allowed) {
-> > -		struct page *page, *next;
-> >  		struct list_head *freel = &h->hugepage_freelists[i];
-> >  		list_for_each_entry_safe(page, next, freel, lru) {
-> >  			if (count >= h->nr_huge_pages)
-> > -				return;
-> > +				goto out;
-> >  			if (PageHighMem(page))
-> >  				continue;
-> >  			remove_hugetlb_page(h, page, false);
-> > -			update_and_free_page(h, page);
-> > +			list_add(&page->lru, &page_list);
-> >  		}
-> >  	}
-> > +
-> > +out:
-> > +	spin_unlock(&hugetlb_lock);
-> > +	list_for_each_entry_safe(page, next, &page_list, lru) {
-> > +		update_and_free_page(h, page);
-> > +		cond_resched();
-> > +	}
-> > +	spin_lock(&hugetlb_lock);
-> 
-> Can we get here with an empty list?
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-An emoty page_list? If yes then sure, this can happen but
-list_for_each_entry_safe will simply not iterate. Or what do you mean?
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/usb/gadget/udc/tegra-xudc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
+index 580bef8eb4cb..2319c9737c2b 100644
+--- a/drivers/usb/gadget/udc/tegra-xudc.c
++++ b/drivers/usb/gadget/udc/tegra-xudc.c
+@@ -3883,7 +3883,7 @@ static int tegra_xudc_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_get_sync(xudc->dev);
+ 
+-	cancel_delayed_work(&xudc->plc_reset_work);
++	cancel_delayed_work_sync(&xudc->plc_reset_work);
+ 	cancel_work_sync(&xudc->usb_role_sw_work);
+ 
+ 	usb_del_gadget_udc(&xudc->gadget);
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
