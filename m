@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF45E3576D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94613576D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhDGVaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:30:04 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:18869 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232890AbhDGVaD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:30:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1617830994; x=1649366994;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=JJX07rFbUFSCmW7iMNBNJnLHN/ul/VCQMW2GB/8R+9w=;
-  b=XuM5o68lErS/35iEYt03BoBEByEaahVaBHuJa1mkJTjtL7oqtuH4qY75
-   iHu/dvbICz0zXNhP1ddHr25oFnbgtLcCgGPG+q8hNSdhD8CqAcyKizvdw
-   EtNrMXQZ35Xqp6ZkE0YzgelKhIdzmKX9cdTxmNqAbgJBpcmVkHT4Wtduy
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.82,204,1613433600"; 
-   d="scan'208";a="100206498"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Apr 2021 21:29:51 +0000
-Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id 18D5C1200AB;
-        Wed,  7 Apr 2021 21:29:50 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.162.68) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 7 Apr 2021 21:29:41 +0000
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <pbonzini@redhat.com>,
-        <seanjc@google.com>, <vkuznets@redhat.com>,
-        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>
-CC:     <sidcha@amazon.de>, <graf@amazon.com>, <eyakovl@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-Subject: [PATCH 0/4] Add support for XMM fast hypercalls
-Date:   Wed, 7 Apr 2021 23:29:26 +0200
-Message-ID: <20210407212926.3016-1-sidcha@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        id S233314AbhDGVam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:30:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:16880 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233291AbhDGVaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:30:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617831029; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=4+Mj/cJw6icDUdM4yXKtOvTYUr7STjEMtM145prku0g=; b=aqokiW54+ePKZHI4G826xILjqG7lyO1QvLw4mnY92h5S6stEIGf3no7yaIJFN9WOIkhi664P
+ YBZ78+djYE7OSd2zdy/cknkfKXKK/OKyCeUuSxjzhOusH89lysNdqfpe9A1x/jFEdLf0khYc
+ GIrtK6Iu7hPttvDu4rBIOCa515U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 606e246b8807bcde1d637efe (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 21:30:19
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DE174C43462; Wed,  7 Apr 2021 21:30:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E638FC433CA;
+        Wed,  7 Apr 2021 21:30:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E638FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v3] bus: mhi: core: Sanity check values from remote device
+ before use
+To:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1615411855-15053-1-git-send-email-jhugo@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <dda17db8-d2f4-bf9c-1ac0-1bcd35262b7d@codeaurora.org>
+Date:   Wed, 7 Apr 2021 14:30:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.68]
-X-ClientProxiedBy: EX13D01UWA003.ant.amazon.com (10.43.160.107) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+In-Reply-To: <1615411855-15053-1-git-send-email-jhugo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyper-V supports the use of XMM registers to perform fast hypercalls.
-This allows guests to take advantage of the improved performance of the
-fast hypercall interface even though a hypercall may require more than
-(the current maximum of) two general purpose registers.
 
-The XMM fast hypercall interface uses an additional six XMM registers
-(XMM0 to XMM5) to allow the caller to pass an input parameter block of
-up to 112 bytes. Hyper-V can also return data back to the guest in the
-remaining XMM registers that are not used by the current hypercall.
 
-Although the Hyper-v TLFS mentions that a guest cannot use this feature
-unless the hypervisor advertises support for it, some hypercalls which
-we plan on upstreaming in future uses them anyway. This patchset adds
-necessary infrastructure for handling input/output via XMM registers and
-patches kvm_hv_flush_tlb() to use xmm input arguments.
+On 3/10/21 1:30 PM, Jeffrey Hugo wrote:
+> When parsing the structures in the shared memory, there are values which
+> come from the remote device.  For example, a transfer completion event
+> will have a pointer to the tre in the relevant channel's transfer ring.
+> As another example, event ring elements may specify a channel in which
+> the event occurred, however the specified channel value may not be valid
+> as no channel is defined at that index even though the index may be less
+> than the maximum allowed index.  Such values should be considered to be
+> untrusted, and validated before use.  If we blindly use such values, we
+> may access invalid data or crash if the values are corrupted.
+> 
+> If validation fails, drop the relevant event.
+> 
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
-~ Sid.
-
-Siddharth Chandrasekaran (4):
-  KVM: x86: Move FPU register accessors into fpu.h
-  KVM: hyper-v: Collect hypercall params into struct
-  KVM: x86: kvm_hv_flush_tlb use inputs from XMM registers
-  KVM: hyper-v: Advertise support for fast XMM hypercalls
-
- arch/x86/include/asm/hyperv-tlfs.h |   4 +-
- arch/x86/kvm/emulate.c             | 138 +++--------------
- arch/x86/kvm/fpu.h                 | 140 +++++++++++++++++
- arch/x86/kvm/hyperv.c              | 241 +++++++++++++++++++----------
- 4 files changed, 322 insertions(+), 201 deletions(-)
- create mode 100644 arch/x86/kvm/fpu.h
-
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 -- 
-2.17.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
