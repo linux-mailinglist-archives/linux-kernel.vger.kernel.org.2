@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD57356CC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE92356CBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352510AbhDGM71 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Apr 2021 08:59:27 -0400
-Received: from vostok.pvgoran.name ([71.19.149.48]:48783 "EHLO
-        vostok.pvgoran.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhDGM7Z (ORCPT
+        id S1352501AbhDGMyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352492AbhDGMyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:59:25 -0400
-X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Apr 2021 08:59:25 EDT
-Received: from [10.0.10.127] (l37-193-246-51.novotelecom.ru [::ffff:37.193.246.51])
-  (AUTH: CRAM-MD5 main-collector@pvgoran.name, )
-  by vostok.pvgoran.name with ESMTPSA
-  id 000000000000D1D4.00000000606DAB74.0000055E; Wed, 07 Apr 2021 12:54:11 +0000
-Date:   Wed, 7 Apr 2021 19:54:09 +0700
-From:   Pavel Goran <via-bcache@pvgoran.name>
-X-Mailer: The Bat! (v3.85.03) Professional
-Reply-To: Pavel Goran <via-bcache@pvgoran.name>
-X-Priority: 3 (Normal)
-Message-ID: <807301067.20210407195409@pvgoran.name>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-CC:     colyli@suse.de, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next v3] bcache: use DEFINE_MUTEX() for mutex lock
-In-Reply-To: <20210407125000.858219-1-zhengyongjun3@huawei.com>
-References: <20210407125000.858219-1-zhengyongjun3@huawei.com>
+        Wed, 7 Apr 2021 08:54:37 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4C4C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 05:54:26 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id f6so11779777wrv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 05:54:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=5pJucaSbsBrG/CWUYa4KAar5H4gKZ5F7mB0A0QhuVg8=;
+        b=d2V91WvHx9LYuvRp67K+b4meIOoebm8Wze3K2hps8Z4p1NG0Npv4GLEd3VOyt6R73n
+         ntVBvoUxVKZ8ei0NJ7XCuepOESwJ2+ga12A0D7VBIXnD8TNEGrVRdIGQ8ZsYAeo3XyTs
+         sQK36KVXCCDhUQI8tfUTtgx7AHZBiH5h2j2ujQpEU8lo5uWA27s/olHs/gTv9u74XhP/
+         ude9/0cBBXCLuwNtTN/q89o8fJehaYAJz8HRLNfu0E8O68Zt9lWgYcqTbN9ZdSA9Z4Hy
+         3fd60TCI5lOlsUvGfbRLMeD7wix2u9WIVsA5f6CFFBDYynVaKXQs23nsluGMZJJ+0YLW
+         gEEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=5pJucaSbsBrG/CWUYa4KAar5H4gKZ5F7mB0A0QhuVg8=;
+        b=aZBvHDz3GlCPUgfnMFOrb6UCgYKNfcFAE4ss74XyuPBh3nPCAmzMmlgsH5HsSxG1eT
+         fTSyY3zBKhnMhL24+OoaaNR6oCeJ3aBThsGu8Rvm269yge4gwHrVnKlL4dYZFE5mIVUR
+         A9bfe+/oF9CtuLd2kjZC1hNTPiJ5ofDRpipixgaacr4aor7WpjMI9+SRcpalUyiJYpK7
+         0SMTA3scQi8N9IQo+C8q6Zr1BfUH8T47ZiIoymCogj91xAhkp0oKJSkHqZKW5GNkGrlT
+         Cq6dz2WAV8tQXOt8lSjiiBGicW2EszP8Jg3Hk6XnSQbVfLgxVs5HuAYx68/Ps/szjw08
+         vixA==
+X-Gm-Message-State: AOAM531jfOZCXATihGlSx3/AGm5LGQtiEvbWYRjTs4CUtmOgMT6jeWSk
+        wDM7/DEmX+cwevDGzsj17vc=
+X-Google-Smtp-Source: ABdhPJyeCuj7I9k2tqVXowyjGr6fnhGiTMtvu86730HYRIIDYqLHsIw4A0xe43av8c355Tei87QCUw==
+X-Received: by 2002:adf:f0cd:: with SMTP id x13mr4264272wro.370.1617800065321;
+        Wed, 07 Apr 2021 05:54:25 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id n17sm15063930wrs.84.2021.04.07.05.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 05:54:24 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 14:54:23 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     ebiederm@xmission.com, kexec@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: crashkernel reservation failed - No suitable area found on a
+ cortina/gemini SoC
+Message-ID: <YG2rfzRvHIZKXkf/@Red>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Zheng,
+Hello
 
-The third paragraph of the commit description still mentions the .bss
-segment.
+I try to do kexec on a cortina/gemini SoC.
+On a "normal" boot, kexec fail to find memory so I added crashkernel=8M to cmdline. (kernel size is ~6M).
+But now, kernel fail to reserve memory:
+Load Kern image from 0x30020000 to 0x800000 size 7340032                                            
+Booting Linux on physical CPU 0x0                                                                   
+Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #98 PREEMPT Wed Apr 7 14:14:08 CEST 2021
+CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f                                               
+CPU: VIVT data cache, VIVT instruction cache                                                        
+OF: fdt: Machine model: Edimax NS-2502                                                              
+Memory policy: Data cache writeback                                                                 
+Zone ranges:                                                                                        
+  Normal   [mem 0x0000000000000000-0x0000000007ffffff]                                              
+  HighMem  empty                                                                                    
+Movable zone start for each node                                                                    
+Early memory node ranges                                                                            
+  node   0: [mem 0x0000000000000000-0x0000000007ffffff]                                             
+Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]                                    
+crashkernel reservation failed - No suitable area found.                                            
+Built 1 zonelists, mobility grouping on.  Total pages: 32512                                        
+Kernel command line: console=ttyS0,19200n8 ip=dhcp crashkernel=8M                                   
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)                              
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)                                
+mem auto-init: stack:off, heap alloc:off, heap free:off                                             
+Memory: 119476K/131072K available (5034K kernel code, 579K rwdata, 1372K rodata, 3020K init, 210K bss, 11596K reserved, 0K cma-reserved, 0K highmem)
+SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1                                          
 
-Wednesday, April 7, 2021, 7:50:00 PM, you wrote:
+What can I do ?
 
-> mutex lock can be initialized automatically with DEFINE_MUTEX() rather
-> than explicitly calling mutex_init().
-
-> this patch will reduce the size of bcache.ko about 16 bytes, the reason
-> as follows:
-
-> though this patch will increase the size of .data segment about 32 bytes,
-> it will also reduce the size of .init.text and .rodata.str1.1(at x86_64),
-> .rodata_str1.8(at arm64) and .bss segment total about 48 bytes which reduce
->  the size more than .data segment;
-
-> here is the statistics:
-> Sections: (arm64 platform)
-> Idx name                size
-> -.init.text             00000240
-> +.init.text             00000228
-
-> -.rodata.str1.8	000012cd
-> +.rodata.str1.8	000012b5
-
-> -.data                  00000c60
-> +.data                  00000c80
-
-> Sections: (x86 platform)
-> Idx name                size
-> -.init.text             000001d9
-> +.init.text             000001bf
-
-> -.rodata.str1.1	00000c80
-> +.rodata.str1.1	00000c6d
-
-> -.data                  00000cc0
-> +.data                  00000ce0
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
-
-> v3:
-> - change commit log, delete statistic about .bss segment.
-> v2:
-> - add commit log about the reason why bcache.ko size reduced.
-
->  drivers/md/bcache/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 03e1fe4de53d..3635f454309e 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
->  };
->  
->  static struct kobject *bcache_kobj;
-> -struct mutex bch_register_lock;
-> +DEFINE_MUTEX(bch_register_lock);
->  bool bcache_is_reboot;
->  LIST_HEAD(bch_cache_sets);
->  static LIST_HEAD(uncached_devices);
-> @@ -2869,7 +2869,6 @@ static int __init bcache_init(void)
->  
->         check_module_parameters();
->  
-> -       mutex_init(&bch_register_lock);
->         init_waitqueue_head(&unregister_wait);
->         register_reboot_notifier(&reboot);
->  
-
-
-
-Pavel Goran
-  
-
+Thanks
+Regards
