@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4304356F1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14674356F1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345335AbhDGOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:45:48 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:44689 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244998AbhDGOp0 (ORCPT
+        id S1348601AbhDGOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:46:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242365AbhDGOq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:45:26 -0400
-Received: by mail-ot1-f42.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso18269100oti.11;
-        Wed, 07 Apr 2021 07:45:17 -0700 (PDT)
+        Wed, 7 Apr 2021 10:46:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617806778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mg+fAs8HiCSf9usDBnxdCzvZm/dqxv2o27VRQ8dpGpE=;
+        b=jPKzwiE/9AoSGrNd6RS6OlZy9VUmoO3MiNoeuBRWjLsQ+vNITic18iddsbp42livXzPLHo
+        p1Pc7bJNBdgyFQeDatDNH8efOGixIhiZmVVV2L1PS9QCoPCjGo2ANNIB6CfCkUarzS6jxd
+        wbmegmsLEDUPPfXB0/4LjcupsH2YUuM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-n_eKW6L1O7ym3wpEAeO2Tg-1; Wed, 07 Apr 2021 10:46:16 -0400
+X-MC-Unique: n_eKW6L1O7ym3wpEAeO2Tg-1
+Received: by mail-ed1-f69.google.com with SMTP id b8so4202730ede.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:46:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y7LejqSjmP72JykNbNh8s7/3JV7drAODmjJ4r8ppAGA=;
-        b=dcfrVT7PsjcaTfAF+EvOWwt5jVOMmIf4ibPfWP3iONTXgmGLZ8fdtADYGGuqApX4s1
-         yz0g3P92l10aeix0T8qHkhhlbDTnKTT6axpj1zLxY2BwvNNG/1vgc2TlX5rIbeQ6FUJo
-         +6F2UtbB+WiBt1RHvQdv7a0I7pQdq/9KaE5t4g6/4OJoK3rty0ecp7dkZcI40mDXitus
-         EXNK6U8teAlr+XM9TvtnoD+dA0Yr5HJ0N5QuMgYXLfnl3RFpLzuOQQgz8Q20ULIcEVdw
-         klxvIo2f2ehN0wEaXr2YQMAQ1g4i8stnVFmbseyNMQCiB6eQfu8JjrvVbKweG7L/aMNo
-         YeVQ==
-X-Gm-Message-State: AOAM530Sm1wq+23CqRNNyUCF+NBe8bJy/+8EYYtCnelktWChm/7whbk1
-        U0KoqN+GSd63l2QH3GNkqg==
-X-Google-Smtp-Source: ABdhPJw5blCCz/SmqrvGWwD6HM+mFvtA4XUo4j5GQ0AEiXN+1TepkMRXXAVob8fvIbUbv7Tdp6I5YA==
-X-Received: by 2002:a05:6830:15d2:: with SMTP id j18mr3327684otr.75.1617806716946;
-        Wed, 07 Apr 2021 07:45:16 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c2sm5317311otf.66.2021.04.07.07.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:45:16 -0700 (PDT)
-Received: (nullmailer pid 3719382 invoked by uid 1000);
-        Wed, 07 Apr 2021 14:45:15 -0000
-Date:   Wed, 7 Apr 2021 09:45:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>, devicetree@vger.kernel.org,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 29/32] docs: dt: update writing-schema.rst references
-Message-ID: <20210407144515.GA3719288@robh.at.kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mg+fAs8HiCSf9usDBnxdCzvZm/dqxv2o27VRQ8dpGpE=;
+        b=SbV+B3yu+TDRyQtYjUzPsrPQA8jUwLC0HKrmpsrEmac+ppACJhAvEfQ/d6VxB4FrlB
+         6HLni05ci7DgRZQCrzOV489L5otKeutZd62NiHb1UgtB0wi6KqsIj2clMDDi/H9494A5
+         eDwNP41eDExFHI7D+dOf0jtDUoGNsYPgrMT3SREz00Zt+hvGtTL3KU7gmBJaOwQY/Mqp
+         pKeEiGmPGlgnOL+Qy7O1z0REQGIMCU78e5X5vpSfZ2UJOJOnLWPfgSs2RfpnX4J4Salt
+         2NJiikNpbyuiG/i70uHHRJmhM5VwM3/f+dreBPIiBtplJ5Lj6dCxVC6PuN+5tm12fikO
+         8NiA==
+X-Gm-Message-State: AOAM5325lQLdF7u3rJunQ17nBDLvpmnx5z2PjQALOYItATpP3FfujDKY
+        Fcu5XNCef3xbGr/J17+dR1q3+piTDuNX7JwtMzaU8UXz0BBOXbcbXZ1di1exWHgxuJVe6zizkQj
+        boLEO+tRuiHu8r4CQSUgPU9rfqA1BdQ7KRO+G2ab/ae0q/p4mt4JIn+CfyP7E419GFs/UI1hMwc
+        nV
+X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr4143799ejc.326.1617806775320;
+        Wed, 07 Apr 2021 07:46:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHhBqm26Mm7YFhs88gM9OOeiQCRSbPAmpao8DVnIAjK0sCenydd7fdhGuJ2WWq8h5whHoFsw==
+X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr4143783ejc.326.1617806775169;
+        Wed, 07 Apr 2021 07:46:15 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id x17sm12698028ejd.68.2021.04.07.07.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 07:46:14 -0700 (PDT)
+Subject: Re: [PATCH v1 0/5] ACPI: scan: acpi_bus_check_add() simplifications
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <2192169.ElGaqSPkdT@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c50d3bc1-e40c-a66d-35fe-823a1398989d@redhat.com>
+Date:   Wed, 7 Apr 2021 16:46:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
+In-Reply-To: <2192169.ElGaqSPkdT@kreacher>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Apr 2021 14:17:49 +0200, Mauro Carvalho Chehab wrote:
-> Changeset b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> renamed: Documentation/devicetree/writing-schema.rst
-> to: Documentation/devicetree/bindings/writing-schema.rst.
-> 
-> Update the cross-references accordingly.
-> 
-> Fixes: b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/submitting-patches.rst | 2 +-
->  scripts/checkpatch.pl                                    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
+Hi,
 
-Applied, thanks!
+On 4/7/21 4:27 PM, Rafael J. Wysocki wrote:
+> Hi,
+> 
+> This series simplifies acpi_bus_check_add() and related code.
+> 
+> It mostly is not expected to alter functionality, except for patch [4/5] that
+> unifies the handling of device and processor objects.
+> 
+> Please refer to the patch changelogs for details.
+
+Thanks, the entire series looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
