@@ -2,408 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF2B356615
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C420356622
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236505AbhDGII4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbhDGIIv (ORCPT
+        id S242867AbhDGILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:11:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2780 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238497AbhDGILN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:08:51 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D12C06174A;
-        Wed,  7 Apr 2021 01:08:41 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id d5-20020a17090a2a45b029014d934553c4so141481pjg.1;
-        Wed, 07 Apr 2021 01:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8BMoc5hPkxy7fsOAEMQeYNlaXoRBjBfIzaTXjUbnT8o=;
-        b=qRyTQmvY0x/57FKRL+UN0fdeFa03LemGalP0S7OczVk2ecOK4na/u8S6vy1mByfqhj
-         w3usCjh8wnGxFBsbiF9vyt06jY4OjmHgAqcBox0le+i3JU2haLaMmWRU4kYaJzM/NzXV
-         acVTxRpEW+AikREeXSh3o+zcaDmtC/TnbPree2gwROQikIj9Jd5AKdqWgBPVQwpzy4ne
-         2R89IsHH5ysh7nPhjGXGpNnyjmmoKL+rIUCd1Xfiojow9Wn641W4WlbGrtomx56qEvsW
-         ttnAEMbMLqpatkUBhHq1jLABxBTnWhSJ8+iX6ELAOVuBKiNxqJZFf8hAvrOgtAvZgY3H
-         I+bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8BMoc5hPkxy7fsOAEMQeYNlaXoRBjBfIzaTXjUbnT8o=;
-        b=VMBB2NhYlQjGJboZEDTTkO7IBgHTTXqF1eXokMNW2vBTKO+S4pAOodiScMxBhgx6Sn
-         tCRK0XqroVovsK330J9V2La558hqz0j1OGqEmw8oudlajnme4ObpcvEFDE3qI+RSmSU+
-         QkVCI/3u5RJ6ZPX1mPtR4vsuQFtBcwX4TjRKEZX4H3Ol8RDhJzGTuoltOx/Z/6AXzvsf
-         AuPPIZZP/bZJJqq80pmJBhVJhVV79URO2FWXSQ3YLuSpzkxXWlTvnYgtQDmMrR/NjKNf
-         MI2Y5+nPzg3CitdYOFB7LJX+5O1zzoWjxtksCMSXGt735SbA2WfPylXQ4qk1wIl8b/GV
-         L01w==
-X-Gm-Message-State: AOAM531XNncS/82QcFoRaFpScXim+YzhbyiAbWB98dH2gL7FTt0fXZlO
-        i4ega1sZrZ2BDfNW6Mz6BU6aDyQ238g9S/FSrlU=
-X-Google-Smtp-Source: ABdhPJwZabodD5+Ekzs9L1KoCtRQBLD7boir9a/vwp3qH6lpRD+Lm6wKXGBf8RQAHz0GzftyEzxQgcoovK6PJDOIAkk=
-X-Received: by 2002:a17:90b:1e0a:: with SMTP id pg10mr1514532pjb.129.1617782921358;
- Wed, 07 Apr 2021 01:08:41 -0700 (PDT)
+        Wed, 7 Apr 2021 04:11:13 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFcQr3sX9z687ng;
+        Wed,  7 Apr 2021 16:05:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 7 Apr 2021 10:11:02 +0200
+Received: from [10.210.168.126] (10.210.168.126) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 7 Apr 2021 09:11:01 +0100
+Subject: Re: [PATCH 0/3] iommu/iova: Add CPU hotplug handler to flush rcaches
+ to core code
+To:     Joerg Roedel <joro@8bytes.org>
+CC:     <dwmw2@infradead.org>, <baolu.lu@linux.intel.com>,
+        <will@kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <robin.murphy@arm.com>
+References: <1614600741-15696-1-git-send-email-john.garry@huawei.com>
+ <YG1noCU6pFQRC+yF@8bytes.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ed59d02d-e3dc-21dc-bc82-199988700d31@huawei.com>
+Date:   Wed, 7 Apr 2021 09:08:34 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210402004548.20813-1-joe.g.sandom@gmail.com>
-In-Reply-To: <20210402004548.20813-1-joe.g.sandom@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Apr 2021 11:08:24 +0300
-Message-ID: <CAHp75VdCmc6FST2hYyWR6eLSL2W03MtSBhwLANr1vz3=xJUTcw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] Added AMS tsl2591 driver implementation
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YG1noCU6pFQRC+yF@8bytes.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.126]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 3:45 AM Joe Sandom <joe.g.sandom@gmail.com> wrote:
->
-> Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
->
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
->
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
+On 07/04/2021 09:04, Joerg Roedel wrote:
+> On Mon, Mar 01, 2021 at 08:12:18PM +0800, John Garry wrote:
+>> The Intel IOMMU driver supports flushing the per-CPU rcaches when a CPU is
+>> offlined.
+>>
+>> Let's move it to core code, so everyone can take advantage.
+>>
+>> Also correct a code comment.
+>>
+>> Based on v5.12-rc1. Tested on arm64 only.
+>>
+>> John Garry (3):
+>>    iova: Add CPU hotplug handler to flush rcaches
+>>    iommu/vt-d: Remove IOVA domain rcache flushing for CPU offlining
+>>    iova: Correct comment for free_cpu_cached_iovas()
+>>
+>>   drivers/iommu/intel/iommu.c | 31 -------------------------------
+>>   drivers/iommu/iova.c        | 32 ++++++++++++++++++++++++++++++--
+>>   include/linux/cpuhotplug.h  |  2 +-
+>>   include/linux/iova.h        |  1 +
+>>   4 files changed, 32 insertions(+), 34 deletions(-)
+> 
+> Applied, thanks.
+> 
+> .
+> 
+
+Thanks, but there was a v2 on this series. Not sure which you applied.
+
+https://lore.kernel.org/linux-iommu/9aad6e94-ecb7-ca34-7f7d-3df6e43e9c42@huawei.com/T/#mbea81468782c75fa84744ad7a7801831a4c952e9
 
-> Datasheet: https://ams.com/tsl25911#tab/documents
->
-
-Shouldn't be blank lines in the tag block.
-
-> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
-
-...
-
-> +#include <asm/unaligned.h>
-
-Better to put this in a separate group after linux/* , but before linux/iio*
-
-> +#include <linux/bitfield.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/pm_runtime.h>
-> +
-> +#include <linux/iio/events.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/sysfs.h>
-
-...
-
-> +/* ADC integration time, field value to time in ms*/
-
-Missed space.
-
-> +#define TSL2591_FVAL_TO_ATIME(x) (((x) + 1) * 100)
-> +/* ADC integration time, time in ms to field value */
-> +#define TSL2591_ATIME_TO_FVAL(x) (((x) / 100) - 1)
-
-Taking comments into consideration I would simply rename
-
-ATIME -> MSEC
-
-...
-
-> +#define TSL2591_CTRL_ALS_INTEGRATION_100MS  0x00
-> +#define TSL2591_CTRL_ALS_INTEGRATION_200MS  0x01
-> +#define TSL2591_CTRL_ALS_INTEGRATION_300MS  0x02
-> +#define TSL2591_CTRL_ALS_INTEGRATION_400MS  0x03
-> +#define TSL2591_CTRL_ALS_INTEGRATION_500MS  0x04
-> +#define TSL2591_CTRL_ALS_INTEGRATION_600MS  0x05
-> +#define TSL2591_CTRL_ALS_LOW_GAIN           0x00
-> +#define TSL2591_CTRL_ALS_MED_GAIN           0x10
-> +#define TSL2591_CTRL_ALS_HIGH_GAIN          0x20
-> +#define TSL2591_CTRL_ALS_MAX_GAIN           0x30
-> +#define TSL2591_CTRL_SYS_RESET              0x80
-
-I would do it differently, since they are bit fields, e.g. for GAIN
-(0 << 4)
-(1 << 4)
-(2 << 4)
-(3 << 4)
-
-and so on for the rest.
-
-But there are pros and cons for yours and proposed variants, so I
-leave it for you and maintainers.
-
-...
-
-> +#define TSL2591_PRST_ALS_INT_CYCLE_MAX      TSL2591_PRST_ALS_INT_CYCLE_60
-
-I guess it's a bitfield, so instead of using value from the list, show
-explicitly the size in bits of the field
-
-(BIT(x) - 1), or here looks like (BIT(4) - 1)
-
-...
-
-> +/* TSL2591 status register masks */
-> +#define TSL2591_STS_ALS_VALID_MASK   BIT(0)
-> +#define TSL2591_STS_ALS_INT_MASK     0x10
-> +#define TSL2591_STS_NPERS_INT_MASK   0x20
-> +#define TSL2591_STS_VAL_HIGH_MASK    0x01
-
-Why inconsistent ? Use BIT() for all here, or switch to left shifts or
-plain numbers.
-
-...
-
-> +/*
-> + * LUX calculations;
-> + * AGAIN values from Adafruits TSL2591 Arduino library
-
-Adafruit's
-
-> + * https://github.com/adafruit/Adafruit_TSL2591_Library
-> + */
-
-...
-
-> +static int tsl2591_set_als_lower_threshold(struct tsl2591_chip *chip,
-> +                                          u16 als_lower_threshold);
-> +static int tsl2591_set_als_upper_threshold(struct tsl2591_chip *chip,
-> +                                          u16 als_upper_threshold);
-
-Why forward declarations? Do you have recursion in use?
-Otherwise, rearrange functions to be ordered and drop these.
-
-...
-
-> +static int tsl2591_check_als_valid(struct i2c_client *client)
-> +{
-> +       int ret;
-> +
-> +       ret = i2c_smbus_read_byte_data(client,
-> +                                      TSL2591_CMD_NOP | TSL2591_STATUS);
-
-One line?
-
-> +       if (ret < 0) {
-> +               dev_err(&client->dev, "Failed to read register\n");
-> +               return -EINVAL;
-> +       }
-
-> +       ret = FIELD_GET(TSL2591_STS_ALS_VALID_MASK, ret);
-> +
-> +       return ret;
-
-return FIELD_GET(...);
-
-> +}
-
-...
-
-> +       struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +       struct tsl2591_als_settings *settings = &chip->als_settings;
-> +       struct i2c_client *client = chip->client;
-
-> +
-
-Extra unneeded blank line.
-
-> +       u8 als_data[TSL2591_NUM_DATA_REGISTERS];
-> +       int counts_per_lux, int_time_fval, gain_multi, lux;
-> +       u16 als_ch0, als_ch1;
-> +       int ret;
-
-...
-
-> +       struct tsl2591_als_settings als_settings = chip->als_settings;
-> +       struct i2c_client *client = chip->client;
-
-> +
-
-Ditto.
-
-> +       u16 als_upper_threshold;
-> +       u8 als_lower_l;
-> +       u8 als_lower_h;
-> +       int ret;
-
-...
-
-> +       struct tsl2591_als_settings als_settings = chip->als_settings;
-> +       struct i2c_client *client = chip->client;
-
-> +
-
-Ditto.
-
-> +       u16 als_lower_threshold;
-> +       u8 als_upper_l;
-> +       u8 als_upper_h;
-> +       int ret;
-
-...
-
-> +static ssize_t tsl2591_in_illuminance_period_available_show(struct device *dev,
-> +                                                           struct device_attribute *attr,
-> +                                                           char *buf)
-> +{
-> +       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +       struct tsl2591_chip *chip = iio_priv(indio_dev);
-
-> +       return snprintf(buf, PAGE_SIZE, "%s\n",
-> +                      tsl2591_als_period_list[chip->als_settings.als_int_time]);
-
-sysfs_emit()
-
-> +}
-
-> +
-
-Unneeded blank line.
-
-> +static IIO_DEVICE_ATTR_RO(tsl2591_in_illuminance_period_available, 0);
-
-...
-
-> +static int tsl2591_read_raw(struct iio_dev *indio_dev,
-> +                           struct iio_chan_spec const *chan,
-> +                           int *val, int *val2, long mask)
-> +{
-> +       struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +       struct i2c_client *client = chip->client;
-> +       int ret;
-> +
-> +       pm_runtime_get_sync(&client->dev);
-> +
-> +       mutex_lock(&chip->als_mutex);
-> +
-> +       switch (mask) {
-> +       case IIO_CHAN_INFO_RAW:
-> +               if (chan->type != IIO_INTENSITY) {
-> +                       ret = -EINVAL;
-> +                       break;
-> +               }
-> +
-> +               ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
-> +               if (ret < 0)
-> +                       break;
-> +
-> +               ret = IIO_VAL_INT;
-> +               break;
-> +       case IIO_CHAN_INFO_PROCESSED:
-> +               if (chan->type != IIO_LIGHT) {
-> +                       ret = -EINVAL;
-> +                       break;
-> +               }
-> +
-> +               ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
-> +               if (ret < 0)
-> +                       break;
-> +
-> +               ret = IIO_VAL_INT_PLUS_MICRO;
-> +               break;
-> +       case IIO_CHAN_INFO_INT_TIME:
-> +               if (chan->type != IIO_INTENSITY) {
-> +                       ret = -EINVAL;
-> +                       break;
-> +               }
-> +
-> +               *val = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
-> +               ret = IIO_VAL_INT;
-> +               break;
-> +       case IIO_CHAN_INFO_CALIBSCALE:
-> +               if (chan->type != IIO_INTENSITY) {
-> +                       ret = -EINVAL;
-> +                       break;
-> +               }
-> +
-> +               *val = tsl2591_gain_to_multiplier(chip->als_settings.als_gain);
-> +               ret = IIO_VAL_INT;
-> +               break;
-> +       default:
-
-> +               ret = -EINVAL;
-
-Missed break; statement.
-
-> +       }
-> +
-> +       mutex_unlock(&chip->als_mutex);
-> +
-> +       pm_runtime_mark_last_busy(&client->dev);
-> +       pm_runtime_put_autosuspend(&client->dev);
-> +
-> +       return ret;
-> +}
-
-...
-
-> +err:
-
-err_unlock:
-
-> +       mutex_unlock(&chip->als_mutex);
-> +       return ret;
-> +}
-
-It's interesting why in one case full of break statements and another
-is goto style. Can you be consistent, please?
-
-...
-
-> +err:
-> +       mutex_unlock(&chip->als_mutex);
-> +       return ret;
-> +}
-
-Ditto.
-
-...
-
-> +err:
-> +       mutex_unlock(&chip->als_mutex);
-> +       return ret;
-> +}
-
-Ditto.
-
-...
-
-> +       if (!i2c_check_functionality(client->adapter,
-> +                                    I2C_FUNC_SMBUS_BYTE_DATA)) {
-
-One line?
-
-> +               dev_err(&client->dev,
-> +                       "I2C smbus byte data functionality is not supported\n");
-> +               return -EOPNOTSUPP;
-> +       }
-
-...
-
-> +       /*
-> +        * Add chip off to automatically managed path and disable runtime
-> +        * power management. This ensures that the chip power management
-> +        * is handled correctly on driver remove. tsl2591_chip_off must be
-
-tsl2591_chip_off()
-
-> +        * added to the managed path after pm runtime is enabled and before
-> +        * any error exit paths are met to ensure we're not left in a state
-> +        * of pm runtime not being disabled properly.
-> +        */
-
---
-With Best Regards,
-Andy Shevchenko
