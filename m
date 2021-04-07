@@ -2,137 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6611F35688A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1080E356891
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350427AbhDGJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        id S235215AbhDGJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346426AbhDGJ4z (ORCPT
+        with ESMTP id S235053AbhDGJ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:56:55 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94CBC061756;
-        Wed,  7 Apr 2021 02:56:44 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso865035wmi.0;
-        Wed, 07 Apr 2021 02:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=XI8zjCWrHrG5RIk4b3Hbm5Q3Z+HRUCQWg5bfMzD9Jsw=;
-        b=PFu66/SNVZwtKmaSFIdn/9ceMMmMfrg5wm0jZCzFUOkxp7UMTjNzv+rpxe0GGHZd2t
-         OyUq7Wdpon8ac2O4cHKkqaff7q9WnGVUzBrPFeGiEbUVFvKU3kWjyer2a4ATgUMZDm9b
-         0J+3qUscAHVFfQyzTikzaUaXOOBRcJpsZErg1MNFGMuYnF2lN6VKu3TiA75OUhjxYsNX
-         +i2RPqiOvBGzHehsYWL1vZn/9M3gxc2B7kw4cXkDaED/e5vGrrRg2FJQhKOh1zPdOaL6
-         tfxlWfOxCek89UCQERc0S+8OmZU2a/9n3S87Bzw6VAKoruJH54FsPLrqQkBgpdiqxosf
-         u4bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=XI8zjCWrHrG5RIk4b3Hbm5Q3Z+HRUCQWg5bfMzD9Jsw=;
-        b=q/fZF/Ch5A2Ala9pq02Z3pRAxvOcfFGP9jewAvkgElwlU3VAMSeS31xoFu/i1q7PeL
-         TEusAmmfynEW0DqgwP6LS2DUOD7HQkWJ9mfptvS0NraI8YY56oTZHXfztbVR0jM1QyFc
-         /4pDrwE5Qo7Rgj1yyIbQS5LMWBOsJbLbKuZ5duGsEYLNVcha6KTLtcwx1iSvHal77l7E
-         oiMVjennAhf1ouWe1TTmL1BsgK8nzh8zDCuXzfJg4kAskqULSAFBwW6onKezJ96d72dE
-         496uQiGn5lfLEVJ7RfqB5RLa/1J9qcX3pofXFNnBMocraoXw1YhDYsUiS1NANdqdyFWg
-         YBPw==
-X-Gm-Message-State: AOAM533xgA1legbLCl5WANRsmPsX8cllPzFPzCYymEXhckHgn/Rj3Eg8
-        NPTu34bFgf/vUAz38ngdw+U=
-X-Google-Smtp-Source: ABdhPJyFvIZgCudXxRH75W0b0/ObztMY9OZAeZr5OgyvwLXGLUX3a+7dZmd43PJqWcc67lcFZcMvMQ==
-X-Received: by 2002:a1c:7209:: with SMTP id n9mr2286646wmc.132.1617789402785;
-        Wed, 07 Apr 2021 02:56:42 -0700 (PDT)
-Received: from LEGION ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id u8sm39863959wrr.42.2021.04.07.02.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 02:56:42 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 14:56:34 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev
-Cc:     musamaanjum@gmail.com, linqiheng@huawei.com,
-        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
-Subject: [PATCH] ASoC: fsl: sunxi: remove redundant dev_err call
-Message-ID: <20210407095634.GA1379642@LEGION>
+        Wed, 7 Apr 2021 05:57:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07400C061756;
+        Wed,  7 Apr 2021 02:57:27 -0700 (PDT)
+Date:   Wed, 07 Apr 2021 09:57:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617789445;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y5FLxlgSbexvqy2fxlM9SqEVAma4qXNuQhn4SL5UkIk=;
+        b=2Dm7z5zULhx5OvRlLUVkUNNXy8aDsuiZpRWngcivpZ5SrkcKvkmlVIySsDAdvVq5BwRJ9f
+        57JD5evhjgZGgSZpwFaajFmvMm30dsCJpzFma0bor1WEbav0Nj7qme5bE8X51kg4aooKSC
+        /kuK9lVDZFaN4HzjQDC5mkqNxwT/D8zD+zbwNRvV0Y9BktBGzBMctWbTExwuJ7kpiS678y
+        SJSzeEs++B/n3sE/383AQIZgki3UZTFm+TeJdalvEJtBug+t6fsdT75U+gvwZsrzVY9P95
+        8BFu1cVMjxAWxhJLbNrae3YrEr064TdVrerb+oAw6h5vUwAwbLJFvATEXQXYyw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617789445;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y5FLxlgSbexvqy2fxlM9SqEVAma4qXNuQhn4SL5UkIk=;
+        b=hz+WEwZ1pLiauU75JepV0A8wgi3iGLWLYgXYw5Unu8j7Q4nzo0K+ZyQzBII8BR47ftjfDV
+        1QZF6hf3b17ee/Cw==
+From:   "tip-bot2 for William Roche" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] RAS/CEC: Correct ce_add_elem()'s returned values
+Cc:     William Roche <william.roche@oracle.com>,
+        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
+References: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <161778944414.29796.5725343346963494205.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_ioremap_resource() prints error message in itself. Remove the
-dev_err call to avoid redundant error message.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+Commit-ID:     3a62583c2853b0ab37a57dde79decea210b5fb89
+Gitweb:        https://git.kernel.org/tip/3a62583c2853b0ab37a57dde79decea210b5fb89
+Author:        William Roche <william.roche@oracle.com>
+AuthorDate:    Tue, 06 Apr 2021 11:28:59 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 07 Apr 2021 11:52:26 +02:00
+
+RAS/CEC: Correct ce_add_elem()'s returned values
+
+ce_add_elem() uses different return values to signal a result from
+adding an element to the collector. Commit in Fixes: broke the case
+where the element being added is not found in the array. Correct that.
+
+ [ bp: Rewrite commit message, add kernel-doc comments. ]
+
+Fixes: de0e0624d86f ("RAS/CEC: Check count_threshold unconditionally")
+Signed-off-by: William Roche <william.roche@oracle.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/1617722939-29670-1-git-send-email-william.roche@oracle.com
 ---
- sound/soc/fsl/fsl_aud2htx.c   | 4 +---
- sound/soc/fsl/fsl_easrc.c     | 4 +---
- sound/soc/sunxi/sun4i-codec.c | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/ras/cec.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-index d70d5e75a30c..a328697511f7 100644
---- a/sound/soc/fsl/fsl_aud2htx.c
-+++ b/sound/soc/fsl/fsl_aud2htx.c
-@@ -198,10 +198,8 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
+diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
+index ddecf25..d7894f1 100644
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -309,11 +309,20 @@ static bool sanity_check(struct ce_array *ca)
+ 	return ret;
+ }
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(regs)) {
--		dev_err(&pdev->dev, "failed ioremap\n");
-+	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
--	}
++/**
++ * cec_add_elem - Add an element to the CEC array.
++ * @pfn:	page frame number to insert
++ *
++ * Return values:
++ * - <0:	on error
++ * -  0:	on success
++ * - >0:	when the inserted pfn was offlined
++ */
+ static int cec_add_elem(u64 pfn)
+ {
+ 	struct ce_array *ca = &ce_arr;
++	int count, err, ret = 0;
+ 	unsigned int to = 0;
+-	int count, ret = 0;
  
- 	aud2htx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
- 						&fsl_aud2htx_regmap_config);
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 5e33afe87c4a..b1765c7d3bcd 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1889,10 +1889,8 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 	/*
+ 	 * We can be called very early on the identify_cpu() path where we are
+@@ -330,8 +339,8 @@ static int cec_add_elem(u64 pfn)
+ 	if (ca->n == MAX_ELEMS)
+ 		WARN_ON(!del_lru_elem_unlocked(ca));
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(dev, res);
--	if (IS_ERR(regs)) {
--		dev_err(&pdev->dev, "failed ioremap\n");
-+	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
--	}
- 
- 	easrc->paddr = res->start;
- 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 2173991c13db..6f3d9148a185 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1711,10 +1711,8 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(base)) {
--		dev_err(&pdev->dev, "Failed to map the registers\n");
-+	if (IS_ERR(base))
- 		return PTR_ERR(base);
--	}
- 
- 	quirks = of_device_get_match_data(&pdev->dev);
- 	if (quirks == NULL) {
--- 
-2.25.1
-
+-	ret = find_elem(ca, pfn, &to);
+-	if (ret < 0) {
++	err = find_elem(ca, pfn, &to);
++	if (err < 0) {
+ 		/*
+ 		 * Shift range [to-end] to make room for one more element.
+ 		 */
