@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDC7356ADE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFD2356AE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242922AbhDGLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbhDGLOh (ORCPT
+        id S1351777AbhDGLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:15:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37701 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351769AbhDGLPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:14:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529E9C061756;
-        Wed,  7 Apr 2021 04:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gXTPe6Z3xf8fN6/+SVbn3oskaMk/+fmn0nXa9QgNoq4=; b=adTni07HAeWwLS2YFlGyWwnHef
-        /sZm3ojRZKo+Ygx1EnVM5PliOVz1wtKizmuCGBSAmi0UJIsH7P6kMBF+ti7Mrf2S1tKMDzlyDFpO0
-        BozxGSdjTVRNpdjd7IRtXJhaaLurr6AHi9d4x+v6JKg99TLPnvcs+ApVba0ZvMRXqgVrLC7CBfWPX
-        hC5TVO5JLQaL446fVish6SQMaP0pZkmtI39bSBclvNEoVk1UvjJlJz/3FPOdGKF/0nxtnnV0a1i7a
-        BeCe93JNy2rJKClRUwuIe5/6KPKkgRyghnTNtdRBO89EYmGqKOehHaE4aBEeR0hLoWj3OqAyOqtyr
-        xRUHT6cQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU68B-00EN6A-FD; Wed, 07 Apr 2021 11:14:06 +0000
-Date:   Wed, 7 Apr 2021 12:13:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
-        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Ritesh Harjani <riteshh@gmail.com>
-Subject: Re: [PATCH 1/3] fsdax: Factor helpers to simplify dax fault code
-Message-ID: <20210407111355.GD2531743@casper.infradead.org>
-References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
- <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
+        Wed, 7 Apr 2021 07:15:23 -0400
+Received: from mail-wm1-f69.google.com ([209.85.128.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lU69R-00081U-5E
+        for linux-kernel@vger.kernel.org; Wed, 07 Apr 2021 11:15:13 +0000
+Received: by mail-wm1-f69.google.com with SMTP id b20-20020a7bc2540000b029010f7732a35fso2004358wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:15:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HouJQzuf2a1RcT0yofIoKLAiQ7qd5aclheZGD67RW3Q=;
+        b=Rie1pzH/+S1vkk1TrrcSUIv8qjsr+pUpsSFv4p9ElgJa12mcXRCLGugjR7ySuqKNcX
+         VbKKnLk7Boxc3dnEEk5xFb/AxmWNLvHj3YmNDe6uAWMmKYflYbxyJOlcrR0iw1rGt0xF
+         /b4zTr2o8+1QGi1R39jIUWptJoheVNKy1Qne1hxOt+WxcnwAkvgNNbG6Ykn/NnYQ2QuC
+         nVOS47AXxeZ8B+ngveWM0MSmI2lULvfb3obeYJKxCWZacU55odO90n3dsIHYNCIqxPR3
+         3McnZTLUEfTXNQIzKm/x/R/kRFoiyn9BO1FxhE8NkXY2clQPwAUB5uqdmPCxYUDxDDNr
+         ykpA==
+X-Gm-Message-State: AOAM530p93+v2o0VLZUH7/XACjOsloZMD6kf7pMnoS9XK09et6Izud6G
+        vRutUi+ofIRzcHuJRDXQBaKBgpNsiFqoTKmPBRCkWqu0GiICZfotpxU1er298aDcFSz2P/4tU+4
+        MzXBPXN+vH9nhYs/+LNsBOiKU+1DBO8SK6wzJv+l8vw==
+X-Received: by 2002:a05:600c:289:: with SMTP id 9mr2579310wmk.135.1617794112751;
+        Wed, 07 Apr 2021 04:15:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzO6lh76dqAK/8ySaxATJaX1KSJP2CwlW9U/9Lc9KH0/ThKDYRhCZamwGMwGpbLu9yd7DIm7w==
+X-Received: by 2002:a05:600c:289:: with SMTP id 9mr2579295wmk.135.1617794112628;
+        Wed, 07 Apr 2021 04:15:12 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id i127sm8297328wma.6.2021.04.07.04.15.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 04:15:12 -0700 (PDT)
+Subject: Re: [PATCH -next] power: supply: s3c_adc_battery: fix possible
+ use-after-free in s3c_adc_bat_remove()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     sre@kernel.org
+References: <20210407091903.3268399-1-yangyingliang@huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <59bbbad2-a82b-e08d-5225-267fee168ed1@canonical.com>
+Date:   Wed, 7 Apr 2021 13:15:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210407091903.3268399-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:32:05PM +0800, Shiyang Ruan wrote:
-> +static int dax_fault_cow_page(struct vm_fault *vmf, struct iomap *iomap,
-> +		loff_t pos, vm_fault_t *ret)
-> +{
-> +	int error = 0;
-> +	unsigned long vaddr = vmf->address;
-> +	sector_t sector = dax_iomap_sector(iomap, pos);
-> +
-> +	switch (iomap->type) {
-> +	case IOMAP_HOLE:
-> +	case IOMAP_UNWRITTEN:
-> +		clear_user_highpage(vmf->cow_page, vaddr);
-> +		break;
-> +	case IOMAP_MAPPED:
-> +		error = copy_cow_page_dax(iomap->bdev, iomap->dax_dev,
-> +						sector, vmf->cow_page, vaddr);
-> +		break;
-> +	default:
-> +		WARN_ON_ONCE(1);
-> +		error = -EIO;
-> +		break;
-> +	}
-> +
-> +	if (error)
-> +		return error;
-> +
-> +	__SetPageUptodate(vmf->cow_page);
-> +	*ret = finish_fault(vmf);
-> +	if (!*ret)
-> +		*ret = VM_FAULT_DONE_COW;
-> +	return 0;
-> +}
-...
+On 07/04/2021 11:19, Yang Yingliang wrote:
+> This driver's remove path calls cancel_delayed_work(). However, that
+> function does not wait until the work function finishes. This means
+> that the callback function may still be running after the driver's
+> remove function has finished, which would result in a use-after-free.
+> 
+> Fix by calling cancel_delayed_work_sync(), which ensures that
+> the work is properly cancelled, no longer running, and unable
+> to re-schedule itself.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/power/supply/s3c_adc_battery.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-> +		error = dax_fault_cow_page(vmf, &iomap, pos, &ret);
->  		if (error)
-> +			ret = dax_fault_return(error);
->  		goto finish_iomap;
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-This seems unnecessarily complex.  Why not return the vm_fault_t instead of
-returning the errno and then converting it?
+Best regards,
+Krzysztof
