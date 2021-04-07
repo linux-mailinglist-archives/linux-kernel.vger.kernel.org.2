@@ -2,159 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A394635730D
+	by mail.lfdr.de (Postfix) with ESMTP id 370DC35730C
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354845AbhDGRXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:23:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:44718 "EHLO mga03.intel.com"
+        id S1354840AbhDGRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:22:59 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:21301 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354793AbhDGRW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:22:56 -0400
-IronPort-SDR: NvYdEg7dBCcx2y7w/UeX8UUFtbIW3h2I0w/n0cm4RP9TDI4V5uPElchIwyoNIRPs7FiXKgk/zM
- 2bOIbvlXFh4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193402814"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="193402814"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:22:46 -0700
-IronPort-SDR: KwRl/Bnk4CW00c6/1V3Y0pBj3HWwW469ITP0J+7ckACoT5J/yen/fYNsRM+UpncpcDyIEyF8sr
- 7soW871bFdKw==
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="519516437"
-Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:22:43 -0700
-References: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com> <20210324183610.4574-2-maciej.kwapulinski@linux.intel.com> <CAHp75Vf54GNsw_xWqiOhZx5aHHnQ_-wUWugQ8w9vJPRheLxHFA@mail.gmail.com>
-User-agent: mu4e 1.4.13; emacs 26.3
-From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v2 01/13] intel_gna: add driver module
-In-reply-to: <CAHp75Vf54GNsw_xWqiOhZx5aHHnQ_-wUWugQ8w9vJPRheLxHFA@mail.gmail.com>
-Date:   Wed, 07 Apr 2021 19:22:40 +0200
-Message-ID: <85sg42nh5r.fsf@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1354797AbhDGRWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:22:52 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FFrnD5tF4zB09Zd;
+        Wed,  7 Apr 2021 19:22:40 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ARjndTOPdYxl; Wed,  7 Apr 2021 19:22:40 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFrnD530bzB09ZS;
+        Wed,  7 Apr 2021 19:22:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 66EE08B7B6;
+        Wed,  7 Apr 2021 19:22:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id H3O39hLoOR4i; Wed,  7 Apr 2021 19:22:42 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1BC388B75F;
+        Wed,  7 Apr 2021 19:22:42 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id F062B6799B; Wed,  7 Apr 2021 17:22:41 +0000 (UTC)
+Message-Id: <0838c473de92bc87826710cc2a35e0f05c98bbd9.1617816138.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
+References: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 8/8] powerpc/mem: Use kmap_local_page() in flushing
+ functions
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  7 Apr 2021 17:22:41 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Flushing functions don't rely on preemption being disabled, so
+use kmap_local_page() instead of kmap_atomic().
 
-Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/mem.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-> On Wed, Mar 24, 2021 at 8:38 PM Maciej Kwapulinski
-> <maciej.kwapulinski@linux.intel.com> wrote:
->>
-....
->> diff --git a/include/uapi/misc/intel/gna.h b/include/uapi/misc/intel/gna.h
->> new file mode 100644
->> index 000000000000..a7e435b74a0a
->> --- /dev/null
->> +++ b/include/uapi/misc/intel/gna.h
->> @@ -0,0 +1,155 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
->> +/* Copyright(c) 2017-2021 Intel Corporation */
->> +
->> +#ifndef _UAPI_GNA_H_
->> +#define _UAPI_GNA_H_
->> +
->> +#if defined(__cplusplus)
->> +extern "C" {
->> +#endif
->
->> +#include <linux/types.h>
->> +#include <linux/ioctl.h>
->> +#include <linux/const.h>
->
-> Ordered?
->
-What do You mean?
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 65b2205839fe..1895bd64191a 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -464,16 +464,16 @@ static void flush_dcache_icache_hugepage(struct page *page)
+ {
+ 	int i;
+ 	int nr = compound_nr(page);
+-	void *start;
+ 
+ 	if (!PageHighMem(page)) {
+ 		for (i = 0; i < nr; i++)
+ 			__flush_dcache_icache(lowmem_page_address(page + i));
+ 	} else {
+ 		for (i = 0; i < nr; i++) {
+-			start = kmap_atomic(page+i);
++			void *start = kmap_local_page(page + i);
++
+ 			__flush_dcache_icache(start);
+-			kunmap_atomic(start);
++			kunmap_local(start);
+ 		}
+ 	}
+ }
+@@ -489,9 +489,10 @@ void flush_dcache_icache_page(struct page *page)
+ 	if (!PageHighMem(page)) {
+ 		__flush_dcache_icache(lowmem_page_address(page));
+ 	} else if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
+-		void *start = kmap_atomic(page);
++		void *start = kmap_local_page(page);
++
+ 		__flush_dcache_icache(start);
+-		kunmap_atomic(start);
++		kunmap_local(start);
+ 	} else {
+ 		flush_dcache_icache_phys(page_to_phys(page));
+ 	}
+@@ -564,11 +565,11 @@ void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
+ void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+ 			     unsigned long addr, int len)
+ {
+-	unsigned long maddr;
++	void *maddr;
+ 
+-	maddr = (unsigned long) kmap(page) + (addr & ~PAGE_MASK);
+-	flush_icache_range(maddr, maddr + len);
+-	kunmap(page);
++	maddr = kmap_local_page(page) + (addr & ~PAGE_MASK);
++	flush_icache_range((unsigned long)maddr, (unsigned long)maddr + len);
++	kunmap_local(maddr);
+ }
+ 
+ /*
+-- 
+2.25.0
 
->>
-......
->> +struct gna_compute_cfg {
->> +       __u32 layer_base;
->> +       __u32 layer_count;
->> +
->> +       /* List of GNA memory buffers */
->> +       __u64 buffers_ptr;
->> +       __u64 buffer_count;
->> +
->> +       __u8 active_list_on;
->> +       __u8 gna_mode;
->> +       __u8 hw_perf_encoding;
->> +       __u8 pad[5];
->> +};
->> +
->> +union gna_parameter {
->> +       struct {
->> +               __u64 id;
->> +       } in;
->> +
->> +       struct {
->> +               __u64 value;
->> +       } out;
->> +};
->> +
->> +union gna_memory_map {
->> +       struct {
->> +               __u64 address;
->> +               __u32 size;
->> +               __u32 pad;
->> +       } in;
->> +
->> +       struct {
->> +               __u64 memory_id;
->> +       } out;
->> +};
->> +
->> +union gna_compute {
->> +       struct {
->> +               struct gna_compute_cfg config;
->> +       } in;
->> +
->> +       struct {
->> +               __u64 request_id;
->> +       } out;
->> +};
->> +
->> +union gna_wait {
->> +       struct {
->> +               __u64 request_id;
->> +               __u32 timeout;
->> +               __u32 pad;
->> +       } in;
->> +
->> +       struct {
->> +               __u32 hw_status;
->> +               __u32 pad;
->> +               struct gna_drv_perf drv_perf;
->> +               struct gna_hw_perf hw_perf;
->> +       } out;
->> +};
->
-> For all unions:
-> How do you know which branch is used (out, in)? What field and where
-> in the ABI points to that?
-
-each of the unions above plays the role of in/out argument to its
-corresponding ioctl call.
-
-'in' part is used when ioctl() is called by client (userland
-application) - data is written by app.
-
-'out' part is read by app on exit from ioctl(), but only when ioctl()
-retuns 0.
-
-do You suggest adding the comment to gna.h for the above?
-
-> .....
