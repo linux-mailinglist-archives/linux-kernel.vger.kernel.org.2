@@ -2,193 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1F735729C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBBD35729D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354495AbhDGRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348056AbhDGRD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:03:28 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7207FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 10:03:17 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso1628436pji.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 10:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OgOPSgL3WiygH+uUV8x/1kUBrNk6ThiWBWKBYjCNOos=;
-        b=fh0gWlRcIbbF6xKO5z/LxMjDIZNrHePyHjhMPqTy+wFVqtYNAkKe6+wnEuuoO6wYUK
-         B04s2gUWEzDEQd1nkf2DLQlEuplS0bIVc8EMkjyQiW3PFEFg/11pdsPyaxfulmHyhrLv
-         GInz6FPKUIvELLSkso7nwJZUej5pRMyEZp56ixFLdDkTuc+AcxXqX0XrSioNAWk4VYb4
-         33SzjeZ/xjINLsS6UaVKGh5VIcbg9gnVaLAFLc5uk+77yrxa3mapUoT1pD7553bF5+IG
-         PaPjZD07Gr94j1dEOqZSeWkC4Sgw1jO0+P8t1VxLjsJWjr3lKa4RTGuBZkkIcERN2Ivn
-         UqPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OgOPSgL3WiygH+uUV8x/1kUBrNk6ThiWBWKBYjCNOos=;
-        b=pn+NdpJsDBfB3c19XKvTegIUHK6hvQPv5OJ9kVfKBSddONa+FlMgZ9EA/669yacvTZ
-         Sg/0Q2Z+JO3oIcgKRr8r38a7s71e+Vmjr/nSFv3hx3rcTcGv83uyAkPc9e8Ac+sGAksK
-         m7c3SAe+iOpkhWlQ4KSDFtyUcZmPBDshvLrBtWakDRWlv44rL3CtDQzqmqBs1TD2QiSF
-         Xl0K7MfsIdb+rsumT1OVNnfvTh+AcPyzKUixe0zQBFObtN+/m1xIxwgzeCDqTuBvjB7c
-         uIFjPj09LEqThpZ+HOXhyOqJ6elKadcJWBJB66jCZE2jouVKVoCr7WCrHiC94070OBP5
-         0WEQ==
-X-Gm-Message-State: AOAM532D9taIjNrCjbBtvL6g7yR1J9eT/gNyxPdbXJKem9lNORaaW7Ow
-        //bVBpXhQAFri2KxO2fRRquuLQ==
-X-Google-Smtp-Source: ABdhPJwfHlXEqzxul/2I6UT1RUGFJn+u9iKMSmWadLvNa7wATRwgHFPMsq2N7ngHmelKqjFlW8I1iQ==
-X-Received: by 2002:a17:90a:a513:: with SMTP id a19mr4440084pjq.210.1617814996878;
-        Wed, 07 Apr 2021 10:03:16 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id w1sm15703544pgh.26.2021.04.07.10.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 10:03:16 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 11:03:14 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2 4/4] remoteproc: imx_rproc: support remote cores
- booted before Linux Kernel
-Message-ID: <20210407170314.GF418374@xps15>
-References: <1617082235-15923-1-git-send-email-peng.fan@oss.nxp.com>
- <1617082235-15923-5-git-send-email-peng.fan@oss.nxp.com>
+        id S1354505AbhDGRDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:03:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59518 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354499AbhDGRDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:03:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617815008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xDeNUJWj/KwT4DnPD7aB4HG9X9xq0pFkyBbaBZ5x780=;
+        b=JMho7XQI9YwV9l9avF831ZqLC96OjqfQUBZvaXXkSQx5ySX95Tsl3SOGM65NHxoUpfwkHG
+        L2gRnDyPL2QZ2OWoEGTD7Lkb43Fvtvx7GZ3FNdDtx08fpB8XUorDTuLRzDEEXMzPRZajpw
+        SAOM8um+sRgSBf3zfgsPdqYTkIGzFRI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 89803B1EF;
+        Wed,  7 Apr 2021 17:03:28 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 19:03:28 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+Subject: Re: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
+Message-ID: <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz>
+References: <20210331030520.3816265-1-swboyd@chromium.org>
+ <20210331030520.3816265-13-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617082235-15923-5-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210331030520.3816265-13-swboyd@chromium.org>
+User-Agent: NeoMutt/20170912 (1.9.0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 01:30:35PM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Tue 2021-03-30 20:05:20, Stephen Boyd wrote:
+> We can use the vmlinux_build_id array here now instead of open coding
+> it. This mostly consolidates code.
 > 
->  - Add rsc_table to hold the resource table published by remote cores.
->  - Add attach hook.
->  - Add imx_rproc_get_loaded_rsc_table to get resource table published by
->    remote processors.
->  - Add imx_rproc_detect_mode to detect remote cores' working mode.
->
-
-This is describing _what_ is being done rather than _why_ it is done.
-
-Moreover for patches 1 an 3 the subject line is tagged with "imx" while patches
-2 and 4 have "imx_rproc".  I don't mind which one is used as long as it is
-consistent.
- 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Jessica Yu <jeyu@kernel.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <kexec@lists.infradead.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  drivers/remoteproc/imx_rproc.c | 45 ++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
+>  include/linux/crash_core.h |  6 +-----
+>  kernel/crash_core.c        | 41 ++------------------------------------
+>  2 files changed, 3 insertions(+), 44 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 7cd09971d1a4..d6338872c6db 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -95,6 +95,7 @@ struct imx_rproc {
->  	struct mbox_chan		*rx_ch;
->  	struct work_struct		rproc_work;
->  	struct workqueue_struct		*workqueue;
-> +	void __iomem			*rsc_table;
->  };
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index 206bde8308b2..fb8ab99bb2ee 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
+>  #define VMCOREINFO_OSRELEASE(value) \
+>  	vmcoreinfo_append_str("OSRELEASE=%s\n", value)
+>  #define VMCOREINFO_BUILD_ID(value) \
+> -	vmcoreinfo_append_str("BUILD-ID=%s\n", value)
+> +	vmcoreinfo_append_str("BUILD-ID=%20phN\n", value)
+
+Please, add also build check that BUILD_ID_MAX == 20.
+
+
+>  #define VMCOREINFO_PAGESIZE(value) \
+>  	vmcoreinfo_append_str("PAGESIZE=%ld\n", value)
+>  #define VMCOREINFO_SYMBOL(name) \
+> @@ -69,10 +69,6 @@ extern unsigned char *vmcoreinfo_data;
+>  extern size_t vmcoreinfo_size;
+>  extern u32 *vmcoreinfo_note;
 >  
->  static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
-> @@ -395,8 +396,26 @@ static void imx_rproc_kick(struct rproc *rproc, int vqid)
->  			__func__, vqid, err);
+> -/* raw contents of kernel .notes section */
+> -extern const void __start_notes __weak;
+> -extern const void __stop_notes __weak;
+> -
+>  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+>  			  void *data, size_t data_len);
+>  void final_note(Elf_Word *buf);
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 825284baaf46..6b560cf9f374 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -4,6 +4,7 @@
+>   * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
+>   */
+>  
+> +#include <linux/buildid.h>
+>  #include <linux/crash_core.h>
+>  #include <linux/utsname.h>
+>  #include <linux/vmalloc.h>
+> @@ -378,51 +379,13 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
 >  }
+>  EXPORT_SYMBOL(paddr_vmcoreinfo_note);
 >  
-> +static int imx_rproc_attach(struct rproc *rproc)
-> +{
-> +	return 0;
-> +}
-> +
-> +static struct resource_table *imx_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
-> +{
-> +	struct imx_rproc *priv = rproc->priv;
-> +
-> +	/* The resource table has already been mapped in imx_rproc_addr_init */
-> +	if (!priv->rsc_table)
-> +		return NULL;
-> +
-> +	*table_sz = SZ_1K;
-> +	return (struct resource_table *)priv->rsc_table;
-> +}
-> +
->  static const struct rproc_ops imx_rproc_ops = {
->  	.prepare	= imx_rproc_prepare,
-> +	.attach		= imx_rproc_attach,
->  	.start		= imx_rproc_start,
->  	.stop		= imx_rproc_stop,
->  	.kick		= imx_rproc_kick,
-> @@ -404,6 +423,7 @@ static const struct rproc_ops imx_rproc_ops = {
->  	.load		= rproc_elf_load_segments,
->  	.parse_fw	= imx_rproc_parse_fw,
->  	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
-> +	.get_loaded_rsc_table = imx_rproc_get_loaded_rsc_table,
->  	.sanity_check	= rproc_elf_sanity_check,
->  	.get_boot_addr	= rproc_elf_get_boot_addr,
->  };
-> @@ -470,6 +490,8 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		}
->  		priv->mem[b].sys_addr = res.start;
->  		priv->mem[b].size = resource_size(&res);
-> +		if (!strcmp(node->name, "rsc_table"))
-> +			priv->rsc_table = priv->mem[b].cpu_addr;
->  		b++;
->  	}
->  
-> @@ -536,6 +558,25 @@ static void imx_rproc_free_mbox(struct rproc *rproc)
->  	mbox_free_channel(priv->rx_ch);
->  }
->  
-> +static int imx_rproc_detect_mode(struct imx_rproc *priv)
-> +{
-> +	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
-> +	struct device *dev = priv->dev;
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = regmap_read(priv->regmap, dcfg->src_reg, &val);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to read src\n");
-> +		return ret;
-> +	}
-> +
-> +	if (!(val & dcfg->src_stop))
-> +		priv->rproc->state = RPROC_DETACHED;
-> +
-> +	return 0;
-> +}
-> +
->  static int imx_rproc_probe(struct platform_device *pdev)
+> -#define NOTES_SIZE (&__stop_notes - &__start_notes)
+> -#define BUILD_ID_MAX SHA1_DIGEST_SIZE
+> -#define NT_GNU_BUILD_ID 3
+> -
+> -struct elf_note_section {
+> -	struct elf_note	n_hdr;
+> -	u8 n_data[];
+> -};
+> -
+>  /*
+>   * Add build ID from .notes section as generated by the GNU ld(1)
+>   * or LLVM lld(1) --build-id option.
+>   */
+>  static void add_build_id_vmcoreinfo(void)
 >  {
->  	struct device *dev = &pdev->dev;
-> @@ -590,6 +631,10 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  		goto err_put_mbox;
->  	}
+> -	char build_id[BUILD_ID_MAX * 2 + 1];
+> -	int n_remain = NOTES_SIZE;
+> -
+> -	while (n_remain >= sizeof(struct elf_note)) {
+> -		const struct elf_note_section *note_sec =
+> -			&__start_notes + NOTES_SIZE - n_remain;
+> -		const u32 n_namesz = note_sec->n_hdr.n_namesz;
+> -
+> -		if (note_sec->n_hdr.n_type == NT_GNU_BUILD_ID &&
+> -		    n_namesz != 0 &&
+> -		    !strcmp((char *)&note_sec->n_data[0], "GNU")) {
+> -			if (note_sec->n_hdr.n_descsz <= BUILD_ID_MAX) {
+> -				const u32 n_descsz = note_sec->n_hdr.n_descsz;
+> -				const u8 *s = &note_sec->n_data[n_namesz];
+> -
+> -				s = PTR_ALIGN(s, 4);
+> -				bin2hex(build_id, s, n_descsz);
+> -				build_id[2 * n_descsz] = '\0';
+> -				VMCOREINFO_BUILD_ID(build_id);
+> -				return;
+> -			}
+> -			pr_warn("Build ID is too large to include in vmcoreinfo: %u > %u\n",
+> -				note_sec->n_hdr.n_descsz,
+> -				BUILD_ID_MAX);
+> -			return;
+> -		}
+> -		n_remain -= sizeof(struct elf_note) +
+> -			ALIGN(note_sec->n_hdr.n_namesz, 4) +
+> -			ALIGN(note_sec->n_hdr.n_descsz, 4);
+> -	}
+> +	VMCOREINFO_BUILD_ID(vmlinux_build_id);
+>  }
+
+The function add_build_id_vmcoreinfo() is used in
+crash_save_vmcoreinfo_init() in this context:
+
+
+	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
+	add_build_id_vmcoreinfo();
+	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+
+	VMCOREINFO_SYMBOL(init_uts_ns);
+	VMCOREINFO_OFFSET(uts_namespace, name);
+	VMCOREINFO_SYMBOL(node_online_map);
+
+The function is not longer need. VMCOREINFO_BUILD_ID()
+can be used directly:
+
+	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
+	VMCOREINFO_BUILD_ID(vmlinux_build_id);
+	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+
+	VMCOREINFO_SYMBOL(init_uts_ns);
+	VMCOREINFO_OFFSET(uts_namespace, name);
+	VMCOREINFO_SYMBOL(node_online_map);
+
+
+Best Regards,
+Petr
+
+
 >  
-> +	ret = imx_rproc_detect_mode(priv);
-> +	if (ret)
-> +		goto err_put_mbox;
-> +
-
-With the above:
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
->  	priv->clk = devm_clk_get(dev, NULL);
->  	if (IS_ERR(priv->clk)) {
->  		dev_err(dev, "Failed to get clock\n");
+>  static int __init crash_save_vmcoreinfo_init(void)
 > -- 
-> 2.30.0
-> 
+> https://chromeos.dev
