@@ -2,69 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87EB356EBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEC5356ECB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352969AbhDGOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:32:41 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:41738 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbhDGOcj (ORCPT
+        id S1353070AbhDGOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:34:21 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:53148 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352985AbhDGOeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:32:39 -0400
-Received: by one.firstfloor.org (Postfix, from userid 503)
-        id CB1BB868A0; Wed,  7 Apr 2021 16:32:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1617805947;
-        bh=q6WRy7x4P3q8OvJPkyTv7aaqP4ZecObHQcJpWRuSaXU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DTtoVhBsKIspmBxu7dkw8S16LQBCS8+J6AkmqBNkDvH+aw4jz6H7SKefo2yR6FOLy
-         hQHyzAbNHqY9YKLXZku+UWOr5JFqvmzILXKJ1EHmIwqRdoRHsjKJtI9MKobmx6s0j0
-         Ct5R9SdhhEfIuwHVSiKKv8qWzsjGllUFZPBOMzII=
-Date:   Wed, 7 Apr 2021 07:32:27 -0700
-From:   Andi Kleen <andi@firstfloor.org>
-To:     "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
-        <liuxiangdong5@huawei.com>
-Cc:     Andi Kleen <andi@firstfloor.org>, like.xu@linux.intel.com,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wei.w.wang@intel.com, x86@kernel.org
-Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
- Lake Servers
-Message-ID: <20210407143227.xoue623sigpx57c3@two.firstfloor.org>
-References: <20210329054137.120994-2-like.xu@linux.intel.com>
- <606BD46F.7050903@huawei.com>
- <20210406124746.ji5iqladdlh73mok@two.firstfloor.org>
- <606D2170.6020203@huawei.com>
+        Wed, 7 Apr 2021 10:34:05 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 3fefc9d137ea351f; Wed, 7 Apr 2021 16:33:54 +0200
+Received: from kreacher.localnet (89-64-81-116.dynamic.chello.pl [89.64.81.116])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 86987669203;
+        Wed,  7 Apr 2021 16:33:53 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v1 4/5] ACPI: scan: Drop sta argument from acpi_init_device_object()
+Date:   Wed, 07 Apr 2021 16:32:43 +0200
+Message-ID: <7894723.T7Z3S40VBb@kreacher>
+In-Reply-To: <2192169.ElGaqSPkdT@kreacher>
+References: <2192169.ElGaqSPkdT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <606D2170.6020203@huawei.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.116
+X-CLIENT-HOSTNAME: 89-64-81-116.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedgjeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedurdduudeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdduudeipdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:05:20AM +0800, Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.) wrote:
-> 
-> 
-> On 2021/4/6 20:47, Andi Kleen wrote:
-> > > AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake
-> > > doesn't.
-> > > But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose
-> > > counter in Skylake.
-> > > Is there anything else that only Icelake supports in this patches set?
-> > Only Icelake server has the support for recovering from a EPT violation
-> > on the PEBS data structures. To use it on Skylake server you would
-> > need to pin the whole guest, but that is currently not done.
-> Sorry. Some questions about "Pin the whole guest". Do you mean VmPin equals
-> VmSize
-> in "/proc/$(pidof qemu-kvm)/status"? Or just VmLck equals VmSize? Or
-> something else?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Either would be sufficient. All that matters is that the EPT pages don't get
-unmapped ever while PEBS is active.
+Use the observation that the initial status check for
+ACPI_BUS_TYPE_PROCESSOR objects can be carried out in the same way
+as for ACPI_BUS_TYPE_DEVICE objects and it is not necessary to fail
+acpi_add_single_object() if acpi_bus_get_status_handle() returns an
+error for a processor (its status can be set to 0 instead) to
+simplify acpi_add_single_object().
 
--Andi
+Accordingly, drop the "sta" argument from acpi_init_device_object()
+as it can always set the initial status to ACPI_STA_DEFAULT and let
+its caller correct that later on.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/internal.h |    3 +--
+ drivers/acpi/power.c    |    3 +--
+ drivers/acpi/scan.c     |   28 ++++++++++++++--------------
+ 3 files changed, 16 insertions(+), 18 deletions(-)
+
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1649,15 +1649,14 @@ static bool acpi_device_enumeration_by_p
+ }
+ 
+ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+-			     int type, unsigned long long sta,
+-			     struct acpi_device_info *info)
++			     int type, struct acpi_device_info *info)
+ {
+ 	INIT_LIST_HEAD(&device->pnp.ids);
+ 	device->device_type = type;
+ 	device->handle = handle;
+ 	device->parent = acpi_bus_get_parent(handle);
+ 	fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
+-	acpi_set_device_status(device, sta);
++	acpi_set_device_status(device, ACPI_STA_DEFAULT);
+ 	acpi_device_get_busid(device);
+ 	acpi_set_pnp_ids(handle, &device->pnp, type, info);
+ 	acpi_init_properties(device);
+@@ -1680,19 +1679,21 @@ void acpi_device_add_finalize(struct acp
+ 	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
+ }
+ 
++static void acpi_scan_init_status(struct acpi_device *adev)
++{
++	if (acpi_bus_get_status(adev))
++		acpi_set_device_status(adev, 0);
++}
++
+ static int acpi_add_single_object(struct acpi_device **child,
+ 				  acpi_handle handle, int type)
+ {
+ 	struct acpi_device_info *info = NULL;
+-	unsigned long long sta = ACPI_STA_DEFAULT;
+ 	struct acpi_device *device;
+ 	int result;
+ 
+ 	if (type == ACPI_BUS_TYPE_DEVICE && handle != ACPI_ROOT_OBJECT)
+ 		acpi_get_object_info(handle, &info);
+-	else if (type == ACPI_BUS_TYPE_PROCESSOR &&
+-		 ACPI_FAILURE(acpi_bus_get_status_handle(handle, &sta)))
+-		return -ENODEV;
+ 
+ 	device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
+ 	if (!device) {
+@@ -1700,16 +1701,15 @@ static int acpi_add_single_object(struct
+ 		return -ENOMEM;
+ 	}
+ 
+-	acpi_init_device_object(device, handle, type, sta, info);
++	acpi_init_device_object(device, handle, type, info);
+ 	kfree(info);
+ 	/*
+-	 * For ACPI_BUS_TYPE_DEVICE getting the status is delayed till here so
+-	 * that we can call acpi_bus_get_status() and use its quirk handling.
+-	 * Note this must be done before the get power-/wakeup_dev-flags calls.
++	 * Getting the status is delayed till here so that we can call
++	 * acpi_bus_get_status() and use its quirk handling.  Note that
++	 * this must be done before the get power-/wakeup_dev-flags calls.
+ 	 */
+-	if (type == ACPI_BUS_TYPE_DEVICE)
+-		if (acpi_bus_get_status(device) < 0)
+-			acpi_set_device_status(device, 0);
++	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR)
++		acpi_scan_init_status(device);
+ 
+ 	acpi_bus_get_power_flags(device);
+ 	acpi_bus_get_wakeup_device_flags(device);
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -109,8 +109,7 @@ struct acpi_device_bus_id {
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *));
+ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+-			     int type, unsigned long long sta,
+-			     struct acpi_device_info *info);
++			     int type, struct acpi_device_info *info);
+ int acpi_device_setup_files(struct acpi_device *dev);
+ void acpi_device_remove_files(struct acpi_device *dev);
+ void acpi_device_add_finalize(struct acpi_device *device);
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -925,8 +925,7 @@ int acpi_add_power_resource(acpi_handle
+ 		return -ENOMEM;
+ 
+ 	device = &resource->device;
+-	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER,
+-				ACPI_STA_DEFAULT, NULL);
++	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER, NULL);
+ 	mutex_init(&resource->resource_lock);
+ 	INIT_LIST_HEAD(&resource->list_node);
+ 	INIT_LIST_HEAD(&resource->dependents);
+
+
+
