@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C0C357218
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC498357214
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344106AbhDGQZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:25:58 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21376 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhDGQZ5 (ORCPT
+        id S235928AbhDGQZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232387AbhDGQZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:25:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1617812736; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=C1h8uhyNkzrQ0E3qhcUIcbCvP4jGaDYVxarQb6cb5xxXZe5YaCpuSbLEQ9Y3WlPLUFO59oCYUJqs0rionf9qiW1SSwWsUSYsL5SSWsOuEtWOSukPS3orOqyui+8BpbFfut2gTv82sP/SYdgwUDbQt9mil0McnjckKjPZKxqisRo=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1617812736; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=9rCgtNOMHsocXCv8CU0q2BcbGtHqxN61YcdO1kdtR64=; 
-        b=f2SJ4z6yKavf+PN10HKCw1vf6mf2UlUl/sT1kJRNb8x052DF3t8V5ceKkg0GWM2N9AhatgIBHNdw4kaB57dl98bu0IvO8pmIBqULgTittuarWJjBaxdoK8PGp5yw+NhrtCwYDdw3zW0aMPyd0sWW4D0HhKOS8bq7uKOqvJ4DrbY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1617812736;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=9rCgtNOMHsocXCv8CU0q2BcbGtHqxN61YcdO1kdtR64=;
-        b=YWv0oXbVsCkumBcNMtRlcp2a9bcPczKg31OFSsy0uJXcwSA5zqmHujMprRQldP51
-        135sXGb8LsJg5nuskMTlEn/X2dfpJdln0xpKw6xPcY8/JspyM5jS/PGAQ2TKXFaP4LD
-        vD2AeGuDZ/WznnS4uvFET5ps593Qy13B2VGjVceI=
-Received: from anirudhrb.com (49.207.63.67 [49.207.63.67]) by mx.zohomail.com
-        with SMTPS id 161781273293210.498895456132573; Wed, 7 Apr 2021 09:25:32 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 21:55:25 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Mike Isely <isely@pobox.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        gregkh@linuxfoundation.org,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: pvrusb2: fix warning in pvr2_i2c_core_done
-Message-ID: <YG3c9eWJvHtnfXsf@anirudhrb.com>
-References: <20210401123338.3937-1-mail@anirudhrb.com>
- <b81e4612-dde3-d6e5-e647-b61c7c3501da@xs4all.nl>
+        Wed, 7 Apr 2021 12:25:50 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AC6C061756;
+        Wed,  7 Apr 2021 09:25:41 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k25so13107793iob.6;
+        Wed, 07 Apr 2021 09:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pqiCYkner6ZTxNFtdDpH2AHRS2ZxI0TvEOALrDZMWM8=;
+        b=F8DAUtDvy2Y1CM+3PG+i6uVmIgwhb6Ap0hTHLqNtVUhEUxecdZsmGckJegT6PEBraX
+         t/wDjgdowWYbxXu25KGwNpCmkfCIbN76M+u7VigfkG1h9xazMD7FPIoN4dwtDk8o/Hkc
+         fwX9bOA8bOtdEWiWkiAu7Q6lEsPpj1dkHVrxVXaydz534llEwTaic6GAqqdGOY5hkvk0
+         Jp/amcMxs0brLDQqkLOWg2Qjqaigwl+S2R0Ew8hJFrtuTwP7tyDKmqbq5FvRgTsAq2hK
+         koR2cAnxjarSPDF9FDsDECysTSiepMTdlCMUcxSUdCJ7b9M4c1VlvI+68dopp2bdBj3t
+         ZUrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pqiCYkner6ZTxNFtdDpH2AHRS2ZxI0TvEOALrDZMWM8=;
+        b=ZOYmXW4CtYqiM3i8OY3mC7eeWf9H9JXvJuxMdX1MZ35cUgLxBtiMyfRZZ18Ygb/xBl
+         5bEnF4TmWrWt5940LYFi9qVONgWH7V/k7nFfiXbSZRXN8dea5xR1LNYDMqk6lU4jdAGp
+         bQdGnBvonPHjC86a9J5WxcaXnuNWS7yJzhK0f4r+ddQEMXc/UiWHrsLe5OSBTVJW1H9k
+         Q00Xiq94MrowKISwzgCwsism1Qavq/+bVBDv/eGxMm4oeWlQVnZLFzVR7WASbFx8RrwU
+         t0Y4YlZATbEgtibXhll7nljFdJP1xgWLGhgfjNIu83CIxe+a//rpotRnJDB0jzsHMG0E
+         zVxA==
+X-Gm-Message-State: AOAM531xjJbUbqmuov59cJn9Pq/6Bx/RiCnjOYlT6c66NLBLCkSXoIU2
+        KT4aFQBejw6mM0O5m05pfTuZaOwTp7teanW6N+9HaWdQAWs=
+X-Google-Smtp-Source: ABdhPJzmzLaJF4Sotf9VFZCX75ULTqB4tb9ZLVKroKizHCJhALSVb7AKGj+kS+HedLYZBjNhj5bzWEkFoxnaV9BDWYI=
+X-Received: by 2002:a6b:f909:: with SMTP id j9mr3208715iog.138.1617812740182;
+ Wed, 07 Apr 2021 09:25:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b81e4612-dde3-d6e5-e647-b61c7c3501da@xs4all.nl>
-X-ZohoMailClient: External
+References: <20210406123619.rhvtr73xwwlbu2ll@spock.localdomain>
+ <20210406114734.0e00cb2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210407060053.wyo75mqwcva6w6ci@spock.localdomain> <20210407083748.56b9c261@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210407083748.56b9c261@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 7 Apr 2021 09:25:28 -0700
+Message-ID: <CAKgT0UfLLQycLsAZQ98ofBGYPwejA6zHbG6QsNrU92mizS7e0g@mail.gmail.com>
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:38:25AM +0200, Hans Verkuil wrote:
-> On 01/04/2021 14:33, Anirudh Rayabharam wrote:
-> > syzbot has reported the following warning in pvr2_i2c_done:
-> > 
-> > 	sysfs group 'power' not found for kobject '1-0043'
-> > 
-> > When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-> > not unregistered along with the USB and vl42 teardown. As part of the
-> 
-> vl42 -> v4l2
-> 
-> > USB device disconnect, the sysfs files of the subdevices are also
-> > deleted. So, by the time pvr_i2c_core_done is called by
-> > pvr_context_destroy, the sysfs files have been deleted.
-> > 
-> > To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-> > the device deregistration code shared by calling pvr_hdw_disconnect from
-> > pvr2_hdw_destory.
-> 
-> destory -> destroy
-> 
-> > 
-> > Reported-and-tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> > ---
-> >  drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> > index f4a727918e35..791227787ff5 100644
-> > --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> > +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> > @@ -2676,9 +2676,7 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
-> >  		pvr2_stream_destroy(hdw->vid_stream);
-> >  		hdw->vid_stream = NULL;
-> >  	}
-> > -	pvr2_i2c_core_done(hdw);
-> > -	v4l2_device_unregister(&hdw->v4l2_dev);
-> 
-> I think this should still remain since pvr2_hdw_disconnect() doesn't call
-> v4l2_device_unregister().
-> 
-> Can you test that with syzbot?
+On Wed, Apr 7, 2021 at 8:37 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 7 Apr 2021 08:00:53 +0200 Oleksandr Natalenko wrote:
+> > Thanks for the effort, but reportedly [1] it made no difference,
+> > unfortunately.
+> >
+> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=212573#c8
+>
+> The only other option I see is that somehow the NAPI has no rings.
+>
+> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> index a45cd2b416c8..24568adc2fb1 100644
+> --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> @@ -7980,7 +7980,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
+>         struct igb_q_vector *q_vector = container_of(napi,
+>                                                      struct igb_q_vector,
+>                                                      napi);
+> -       bool clean_complete = true;
+> +       bool clean_complete = q_vector->tx.ring || q_vector->rx.ring;
+>         int work_done = 0;
+>
+>  #ifdef CONFIG_IGB_DCA
 
-Sent v2 with this change. Tested it with syzbot and didn't find any
-problems.
-
-Thanks.
-
-	- Anirudh.
+It might make sense to just cast the work_done as a unsigned int, and
+then on the end of igb_poll use:
+  return min_t(unsigned int, work_done, budget - 1);
