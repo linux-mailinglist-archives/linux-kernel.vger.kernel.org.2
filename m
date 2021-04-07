@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66566356025
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190D3356029
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347529AbhDGARo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 20:17:44 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:52354 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347538AbhDGARK (ORCPT
+        id S234186AbhDGASK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 20:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237769AbhDGASH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 20:17:10 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4FFQ1n5bLDz9vC8s
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:17:01 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NSvcnZhKNceO for <linux-kernel@vger.kernel.org>;
-        Tue,  6 Apr 2021 19:17:01 -0500 (CDT)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4FFQ1n3kMYz9vC8t
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 19:17:01 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4FFQ1n3kMYz9vC8t
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4FFQ1n3kMYz9vC8t
-Received: by mail-il1-f198.google.com with SMTP id y11so12796124ilq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 17:17:01 -0700 (PDT)
+        Tue, 6 Apr 2021 20:18:07 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957E5C061760;
+        Tue,  6 Apr 2021 17:17:58 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id mh7so14735306ejb.12;
+        Tue, 06 Apr 2021 17:17:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nqOH5zgJF7P4HyaMu6ydIUY7IV1etU3TYVY63b7sAa4=;
-        b=C/aFQt6ZAt5MRtTXx/Fhtv/1mKJtdwjI4LgC2wAMy6oLuevcyqtBH2KHwZwOB+CNV4
-         U1U3t0gwmA3f2k7EuGJXIXAhNRTnWWXrzwszp/zirNn2JQsJbIrq4CjiiKi4QapjjGUg
-         NF2BARqpG1FmjAAqMj7H78yx145avlLZhiMtpH5Um9Ef6d198jmKLjTO6JgTTKgkHBY+
-         IqHYWy974th4oicyfzI8QkPWoDCzBRQd3Mo9rv6hdHD09b/WSGH7FL1LD8s04vgP5INU
-         CP/8OSJYSLkhaN6GpgQ7LKBG5BJQwXTV8nufxvDHDtp0fhwadi9vPHdM4EnpKi9HusaD
-         srMw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YKVtgqn3FTurcOSdNrQJXSMQKGxJcG+Owhfj5N0hU7Y=;
+        b=A5ZP5eKrx8vDWZkqIePXqyNHJutxfC/J15bpfUtlPvMzj72A4ChpSBj0Rv1CRgvAdy
+         z5BCCfEomP6BXF7oQb999RbCivKrexuSzaJzWZfXQXgJyJuYs4f8gEQr/L9tyNxEcGmi
+         I52PhKt9nVhEQZMFQV20+75COflG0PIaCe7dGeRjBJDgrfKbDIrH16WKtrtbA4KBK80l
+         2aU2MZo43Quu7g4OMTMRQJeZbNZ9SXD3S3BgCFSLqcLszlu+UWyDm6qL0arE3+17DVYw
+         Ho9eNDsXb3a8FryWJQfz2YakPoTs6BqjZtbdxXBCaErN8pOhQ0CRkYvyI+ZOwKwgj8ar
+         rSfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nqOH5zgJF7P4HyaMu6ydIUY7IV1etU3TYVY63b7sAa4=;
-        b=tA3ehX5QtvTyxqgZN++saFLX6Qum1VAu1IzNpA/VS+dTkjq66t/+rrDU4Hq/iqoM6m
-         S29tkO2XbO6ntC3fldt+mS0K7GVzKUibsxKdke6FSCDIflMGtA3b5TO3jQZdcGcY/kLh
-         1EuSn2S/PsJv9UmqF5s1Sv4Lr0ddL5Cbcwta4hFXQVTdiBvNfiL/xFQSDqJC9JtVQknt
-         Ux9V3MaqXEpcpU8U84Zf+DC45OCofdOedujW5BqSWgGTYWBjXtWgQ4lkiDZEz17DZKJd
-         nokzKgxXKwJmMYAv4h8Ydkfon1VljCx10dfmuiOxKJkzAMb3HQniL2q7O9GJ2uRsgjJv
-         sNmA==
-X-Gm-Message-State: AOAM531DvdnEPpq5IFTUhVY/PvF0hOhscjBd+Z526edtiAJmagFfbAV/
-        ePt9Wg8dv7ubhm50vhEQUkKVhbW+UlWCx6hpOMsF3hgOZRrEKuWUDbKOMQBuFeNknxGrCXt336K
-        j7l2l/qtvWm/gNqTqRKK9RGbuSyDl
-X-Received: by 2002:a05:6e02:1543:: with SMTP id j3mr596830ilu.39.1617754621144;
-        Tue, 06 Apr 2021 17:17:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJync0sm3iznIgnH19+wOdfOZuEWNLZ2IA+S3HsDOJ1V6h+h25dE8WpGDnv9gMRXsXxfWLxUkA==
-X-Received: by 2002:a05:6e02:1543:: with SMTP id j3mr596819ilu.39.1617754620931;
-        Tue, 06 Apr 2021 17:17:00 -0700 (PDT)
-Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:6ecd:6512:5d03:eeb6])
-        by smtp.googlemail.com with ESMTPSA id c5sm14522884ioi.0.2021.04.06.17.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 17:17:00 -0700 (PDT)
-From:   Aditya Pakki <pakki001@umn.edu>
-To:     pakki001@umn.edu
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] SUNRPC: Add a check for gss_release_msg
-Date:   Tue,  6 Apr 2021 19:16:56 -0500
-Message-Id: <20210407001658.2208535-1-pakki001@umn.edu>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YKVtgqn3FTurcOSdNrQJXSMQKGxJcG+Owhfj5N0hU7Y=;
+        b=BS+1z5fR6mOqOjT1rSAHr+hPww84UsAD/yh3Shor9HsxIX4iJ/+ppennXHt7ci3PAz
+         m9dPREcXJR2DBLGVJmApSjlTi7RURTWFGpeagw5kMveSEiyb8MV7OFSGgTI4uFh7mJ2f
+         XY2IhVyD1pOYrB2advLdJC1xo/nj1+w4yQ2sJIJ4EGmgU6x5k7WIeV3PYLgBSgXNaI3N
+         atOZoyP3Fsm3otlrgQvjh2KVqixlXuv4NbsPW802rC8ZpFGMRUzSiDmaTXTmrF8ckHek
+         aFOzt4eB9pc/pfrg7GyFOpWKkncDJ3VHBGAWcrsuRsSeNoqUpoeLKUN92eDTUZm6J7Kf
+         cTmA==
+X-Gm-Message-State: AOAM5307+4e3DD5774vMtnbLypiCCEHs984twj+xNmqBNNKXivEDzce2
+        YH302QJBdTHNkhm0idIA6zAOYcwBZT0MSWKYpwTBljK2
+X-Google-Smtp-Source: ABdhPJzIbt4VJettkwnUDneguXkbVSiuGthZKnHiDt45sD/JgPNzlHiNZuzRQl4JDub5/UBOPKgP0jPA/dtGz/sJaFk=
+X-Received: by 2002:a17:907:3ea0:: with SMTP id hs32mr652096ejc.411.1617754677376;
+ Tue, 06 Apr 2021 17:17:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210401113933.GA2828895@LEGION> <20210401115008.GS2088@kadam>
+ <CAKYAXd-ou4-jf7_8xa4jDQ_otyQ9ffKhwD7WZrmrna1P3b_W8Q@mail.gmail.com>
+ <ca1b9b0c-55f9-025d-558b-1b2b6c866d12@samba.org> <CAKYAXd-ScM9i9Ln_FL8pWyEnPO_0n8t1BLH8MJ=b4NkqEbhZ=Q@mail.gmail.com>
+ <2b758812-f00b-9465-c24e-763912748809@samba.org> <CAKYAXd_p1MrB2G25_p52OfppfSUcEWQEVxgJbBikAe3GZrJFhw@mail.gmail.com>
+ <46e67316-58f3-435d-458c-11968499d4ee@talpey.com>
+In-Reply-To: <46e67316-58f3-435d-458c-11968499d4ee@talpey.com>
+From:   ronnie sahlberg <ronniesahlberg@gmail.com>
+Date:   Wed, 7 Apr 2021 10:17:45 +1000
+Message-ID: <CAN05THQuMFiPpLVZ_j1UZVohitUPj59EOKT0qyscfV6dh4fBUw@mail.gmail.com>
+Subject: Re: [Linux-cifsd-devel] [PATCH] cifsd: use kfree to free memory
+ allocated by kzalloc
+To:     Tom Talpey <tom@talpey.com>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>, Ralph Boehme <slow@samba.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifs@vger.kernel.org>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Colin King <colin.king@canonical.com>,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In gss_pipe_destroy_msg(), in case of error in msg, gss_release_msg
-deletes gss_msg. The patch adds a check to avoid a potential double
-free.
+On Fri, Apr 2, 2021 at 7:04 AM Tom Talpey <tom@talpey.com> wrote:
+>
+> On 4/1/2021 9:36 AM, Namjae Jeon wrote:
+> > 2021-04-01 22:14 GMT+09:00, Ralph Boehme <slow@samba.org>:
+> >> Am 4/1/21 um 2:59 PM schrieb Namjae Jeon:
+> >>> 2021-04-01 21:50 GMT+09:00, Ralph Boehme <slow@samba.org>:
+> >>>> fwiw, while at it what about renaming everything that still references
+> >>>> "cifs" to "smb" ? This is not the 90's... :)
+> >>> It is also used with the name "ksmbd". So function and variable prefix
+> >>> are used with ksmbd.
+> >>
+> >> well, I was thinking of this:
+> >>
+> >>   > +++ b/fs/cifsd/...
+> >>
+> >> We should really stop using the name cifs for modern implementation of
+> >> SMB{23} and the code should not be added as fs/cifsd/ to the kernel.
+> > As I know, currently "cifs" is being used for the subdirectory name
+> > for historical reasons and to avoid confusions, even though the CIFS
+> > (SMB1) dialect is no longer recommended.
+>
+> I'm with Ralph. CIFS is history that we need to relegate to the past.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
----
- net/sunrpc/auth_gss/auth_gss.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Tom, and Ralph.
+Some background on the cifsd directory name:
 
-diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
-index 5f42aa5fc612..eb52eebb3923 100644
---- a/net/sunrpc/auth_gss/auth_gss.c
-+++ b/net/sunrpc/auth_gss/auth_gss.c
-@@ -848,7 +848,8 @@ gss_pipe_destroy_msg(struct rpc_pipe_msg *msg)
- 			warn_gssd();
- 		gss_release_msg(gss_msg);
- 	}
--	gss_release_msg(gss_msg);
-+	if (gss_msg)
-+		gss_release_msg(gss_msg);
- }
- 
- static void gss_pipe_dentry_destroy(struct dentry *dir,
--- 
-2.25.1
+We discussed in length but we decided with cifsd to align with the
+current directory name cifs for the client.
+Just to align with current praxis defined by other filesystems, i.e.
+nfs. which has nfs for client, nfsd for server
+and nfs_common for shared cod and definitions.
 
+Once cifsd lands in the kernel I expect we will start building
+cifs_common for this purpose.
+
+An alternative would have been to rename the current fs/cifs tree to
+fs/ksmb but renaming an entire directory tree
+felt it might get pushback.
+In the end we thought that the module name, that is user visible and
+there it is important we call it smb3 something
+but the source tree is not end-user visible so it was less important
+what the name was.
+
+(the alternative ending up with   fs/cifs  fs/ksmbd and fs/cifs_common
+would have been terrible)
+
+regards
+ronnie sahlberg
+
+>
+> I also agree that wrappers around core memory allocators are to
+> be avoided.
+>
+> Tom.
