@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC6D356A0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2940E356A02
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351400AbhDGKlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351171AbhDGKkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 813DF613D1;
-        Wed,  7 Apr 2021 10:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617791991;
-        bh=hxIJtit8EJ+Brug2ei0l8Ef85prFYKfb3oZE4LDPzpI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LVspfmEPa8er2cjfB+y3xA0dzojAAv5vX/qOnYHKDrAyjbk0RJ5V+u9XHOE9YvpgO
-         7sYSVssG4GRB9stoIZzsGPT8iEd4PyRPDH8r5iflrm+ibpLvskZrpDEaMsYxHYi+Bz
-         kdxPG4C7NcPTHF9IojRxDUlkpFbhDMSCu1LK+r3EXVTcANA5Ju4b6QGzIgSeFdT/y9
-         +PwcyPo+s2RfJOFNHYZGMk4FrTRWZMbsRUTb9ftKFmoyfaCp2tSzWbrG+R0uXTZQXw
-         0W33FDbp4fbwKozrqQ+bnRoFQ3SqJisSI7fsoTDn6NDxo7lrYSOvJV/f6Za4yt49+K
-         uPkjbgG9rLmUA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lU5b6-0000Fg-D7; Wed, 07 Apr 2021 12:39:44 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 24/24] USB: serial: ftdi_sio: clean up TIOCSSERIAL
-Date:   Wed,  7 Apr 2021 12:39:25 +0200
-Message-Id: <20210407103925.829-25-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210407103925.829-1-johan@kernel.org>
-References: <20210407103925.829-1-johan@kernel.org>
+        id S1351366AbhDGKlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351158AbhDGKkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:40:00 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F489C061756;
+        Wed,  7 Apr 2021 03:39:51 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id E79D01F453CF
+Received: by earth.universe (Postfix, from userid 1000)
+        id 2F75D3C0C96; Wed,  7 Apr 2021 12:39:46 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 12:39:46 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 07/19] dt-bindings: fix references for iio-bindings.txt
+Message-ID: <20210407103946.hxr3yoeasumuzsdk@earth.universe>
+References: <cover.1617783062.git.mchehab+huawei@kernel.org>
+ <c4e3cfcc666552084df5155c4f3957134b72ef7a.1617783062.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2ca4km7phoijhn6n"
+Content-Disposition: inline
+In-Reply-To: <c4e3cfcc666552084df5155c4f3957134b72ef7a.1617783062.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TIOCSSERIAL implementation needs to compare the old flag and divisor
-settings with the new to detect ASYNC_SPD changes, but there's no need
-to copy all driver state to the stack for that.
 
-While at it, unbreak the function parameter list.
+--2ca4km7phoijhn6n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/ftdi_sio.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Hi,
 
-diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index 9228e56a91c0..6f2659e59b2e 100644
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -1486,15 +1486,13 @@ static void get_serial_info(struct tty_struct *tty, struct serial_struct *ss)
- 	ss->custom_divisor = priv->custom_divisor;
- }
- 
--static int set_serial_info(struct tty_struct *tty,
--	struct serial_struct *ss)
-+static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
- {
- 	struct usb_serial_port *port = tty->driver_data;
- 	struct ftdi_private *priv = usb_get_serial_port_data(port);
--	struct ftdi_private old_priv;
-+	int old_flags, old_divisor;
- 
- 	mutex_lock(&priv->cfg_lock);
--	old_priv = *priv;
- 
- 	if (!capable(CAP_SYS_ADMIN)) {
- 		if ((ss->flags ^ priv->flags) & ~ASYNC_USR_MASK) {
-@@ -1503,14 +1501,17 @@ static int set_serial_info(struct tty_struct *tty,
- 		}
- 	}
- 
-+	old_flags = priv->flags;
-+	old_divisor = priv->custom_divisor;
-+
- 	priv->flags = ss->flags & ASYNC_FLAGS;
- 	priv->custom_divisor = ss->custom_divisor;
- 
- 	write_latency_timer(port);
- 
--	if ((priv->flags ^ old_priv.flags) & ASYNC_SPD_MASK ||
-+	if ((priv->flags ^ old_flags) & ASYNC_SPD_MASK ||
- 			((priv->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST &&
--			 priv->custom_divisor != old_priv.custom_divisor)) {
-+			 priv->custom_divisor != old_divisor)) {
- 
- 		/* warn about deprecation unless clearing */
- 		if (priv->flags & ASYNC_SPD_MASK)
--- 
-2.26.3
+On Wed, Apr 07, 2021 at 10:20:46AM +0200, Mauro Carvalho Chehab wrote:
+> The iio-bindings.txt was converted into two files and merged
+> at the dt-schema git tree at:
+>=20
+> 	https://github.com/devicetree-org/dt-schema
+>=20
+> Yet, some documents still refer to the old file. Fix their
+> references, in order to point to the right URL.
+>=20
+> Fixes: dba91f82d580 ("dt-bindings:iio:iio-binding.txt Drop file as conten=
+t now in dt-schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
+[...]
+
+>  .../devicetree/bindings/power/supply/da9150-charger.txt      | 2 +-
+
+This file got converted to YAML in my tree and no longer exists in
+linux-next. The new YAML file no longer references iio-bindings.txt.
+
+-- Sebastian
+
+--2ca4km7phoijhn6n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBti+YACgkQ2O7X88g7
++ppT7Q/+MFaaDYk56GF+wi+QyV+vfgvcoBWD2eDgLGinJVCETdwJNtd7P8qw9BdT
+yHp+Mzz5Zq+fpJrZg9JvfEw/kL6eHJfoOimW/r6qQAA4tdHYD053pZXPa9lSPlSU
+NgK+TR0UlM6vDXIcl2tUSo0ps/eofdUSvjLmjfAXC+WBOvbokDtijr9FDCm5eXAE
+iEtUplHH1SLkxrIBDZhnNoIiHc4xj/D5AaZSg9LB4zHuJsF66vG763wwKyTgtE8A
+MqF8F/IR0ZFRuCAlmJDogQ3HM/1lirXhqPX3Ife1uuyzSA1Zz0vqkCRwEV/9itwT
+qH0YFWVo/GU2MZeshUOgsP/rMHPEiXIH8pG2s+FUMx3BISgk/CH7WysSei58SSJE
+tUyC+ByP3mukLaDYtVBEZVlIDDgypcdO+UH6WrMyPhMaTpVSVYWJ9p2nEgUX5qF5
+jWwi6lmeExNir9fqnCsXp4O5V2bk11w0jKr2QepOtRx4ak/7HQJkznQEj+Wmv+DW
+Zz60FghpDaMs8yG8x7v8xOcOf0PPtREEYNhCIPffQsIqPclRYS3hgEt+nuU2CxkU
+ayf7dN4DsDVG/amwymw40QvKRGjugmGjxK80kkXoPhZ/yVxH0pyjolWkaox2XjxN
+LnqE/vsJZGi1NLTbWgg7/MSRIxuGAEmJJCEJLCtPhiCyDv06aas=
+=RoNN
+-----END PGP SIGNATURE-----
+
+--2ca4km7phoijhn6n--
