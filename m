@@ -2,176 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9F356C19
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88627356C1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352184AbhDGMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49560 "EHLO mail.kernel.org"
+        id S242863AbhDGMb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:31:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235368AbhDGMbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:31:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9EF60FEE;
-        Wed,  7 Apr 2021 12:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617798668;
-        bh=BOWtBqadjO4pUurB7R+rTs0QMWY2HKWF2R3IZ05VFjU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HB/Q4V5ArIrSoisHQ4oQcwVlwZChbxuVnkhfy3o10/aqNGS6grYLKFJdemtkiUkFB
-         YK9U13GKrbSo/hBSsm6EzlIFR4WAdci56GRpNh0Gjs+sMwP5vVgz5DQMz6HYEzl8d5
-         +rLfXCwnoA4TTotvUgFkUjU0wwt93zmXhXKe+QcBY0KdSqugyuGv8qstbykSzI588S
-         49iKhvokCxB3hl+yRK6wIV8A1U+ghyxHy0jGd4SS9e+fvkOFD7iDl+mUi0CjxtniXp
-         swAu0+vOBWajxFyjDY/Uue3FKuLd9KrILrGSY4d2JRJg2Wm21t1uOUCwI0OH9ba+3n
-         CpW6wbc+10EDA==
-Date:   Wed, 7 Apr 2021 18:01:04 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: soundwire updates for v5.13-rc1
-Message-ID: <YG2mCCQUiSrouQoo@vkoul-mobl.Dlink>
+        id S235368AbhDGMb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:31:26 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E378611EE;
+        Wed,  7 Apr 2021 12:31:17 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lU7L1-0064O4-3w; Wed, 07 Apr 2021 13:31:15 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        openbmc@lists.ozlabs.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tomer Maimon <tmaimon77@gmail.com>, devicetree@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>
+Subject: Re: [PATCH v2 00/10] Initial support for Nuvoton WPCM450 BMC SoC
+Date:   Wed,  7 Apr 2021 13:31:12 +0100
+Message-Id: <161779861852.1095473.15662659062108361949.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
+References: <20210406120921.2484986-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gAUNDmWExdT5yU8h"
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, tmaimon77@gmail.com, devicetree@vger.kernel.org, joel@jms.id.au
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 6 Apr 2021 14:09:11 +0200, Jonathan Neuschäfer wrote:
+> This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an older
+> SoC but still commonly found on eBay, mostly in Supermicro X9 server boards.
+> 
+> Third-party documentation is available at: https://github.com/neuschaefer/wpcm450/wiki
+> 
+> Patches 1-4 add devicetree bindings for the WPCM450 SoC and its various parts.
+> Patches 5-7 add arch and driver support. Patches 8 and 9 add a devicetree for
+> the SoC and a board based on it. Patch 10 finally updates the MAINTAINERS file.
+> 
+> [...]
 
---gAUNDmWExdT5yU8h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to irq/irqchip-next, thanks!
 
-Hello Greg,
+[03/10] dt-bindings: interrupt-controller: Add nuvoton, wpcm450-aic
+        commit: 7c18715546203a09f859dac2fe3ea8aceec5f235
+[06/10] irqchip: Add driver for WPCM450 interrupt controller
+        commit: fead4dd496631707549f414b4059afb86ea8fb80
 
-Here is the soundwire pull request for this cycle. Bunch of core cleanup
-and changes along with driver updates
+Cheers,
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-5.13-rc1
-
-for you to fetch changes up to 14968dd36a507866be0edfc2a05d48c997da5d99:
-
-  soundwire: intel_init: test link->cdns (2021-04-06 10:26:44 +0530)
-
-----------------------------------------------------------------
-soundwire updates for 5.13-rc1
-
-Updates for v5.13-rc1 are:
-
-Core:
- - Ability to add quirks for masters
- - static checker cleanup for bus code
-
-Drivers:
- - DMI quirks for Intel controllers
- - static checker cleanup for drivers
- - add auto enumeration support qcom controller
-
-----------------------------------------------------------------
-Bard Liao (4):
-      soundwire: add master quirks for bus clash and parity
-      soundwire: bus: handle master quirks for bus clash and parity
-      soundwire: intel: add master quirks for bus clash and parity
-      soundwire: intel_init: test link->cdns
-
-Pierre-Louis Bossart (22):
-      soundwire: Intel: introduce DMI quirks for HP Spectre x360 Convertible
-      soundwire: Intel: add DMI quirk for Dell SKU 0A3E
-      soundwire: intel: add missing \n in dev_err()
-      soundwire: bandwidth_allocation: add missing \n in dev_err()
-      soundwire: cadence: add missing \n in dev_err()
-      soundwire: stream: add missing \n in dev_err()
-      soundwire: qcom: add missing \n in dev_err()
-      soundwire: bus: use correct driver name in error messages
-      soundwire: bus: test read status
-      soundwire: bus: use consistent tests for return values
-      soundwire: bus: demote clock stop prepare log to dev_dbg()
-      soundwire: bus: uniquify dev_err() for SCP_INT access
-      soundwire: bus: remove useless initialization
-      soundwire: generic_bandwidth_allocation: remove useless init
-      soundwire: intel: remove useless readl
-      soundwire: qcom: check of_property_read status
-      soundwire: stream: remove useless initialization
-      soundwire: stream: remove useless bus initializations
-      soundwire: cadence_master: fix kernel-doc
-      soundwire: add definition for DPn BlockPackingMode
-      soundwire: generic_allocation: fix confusion between group and packing
-      soundwire: cadence: only prepare attached devices on clock stop
-
-Rander Wang (1):
-      soundwire: stream: fix memory leak in stream config error path
-
-Srinivas Kandagatla (16):
-      soundwire: bus: Fix device found flag correctly
-      dt-bindings: soundwire: qcom: clarify data port bus parameters
-      soundwire: qcom: add support to missing transport params
-      soundwire: qcom: set continue execution flag for ignored commands
-      soundwire: qcom: start the clock during initialization
-      soundwire: qcom: update register read/write routine
-      soundwire: qcom: add support to new interrupts
-      soundwire: export sdw_compare_devid, sdw_extract_slave_id and sdw_sla=
-ve_add
-      soundwire: qcom: add auto enumeration support
-      soundwire: qcom: wait for enumeration to be complete in probe
-      soundwire: add static port mapping support
-      soundwire: qcom: update port map allocation bit mask
-      soundwire: qcom: add static port map support
-      soundwire: qcom: wait for fifo space to be available before read/write
-      soundwire: qcom: cleanup internal port config indexing
-      soundwire: qcom: handle return correctly in qcom_swrm_transport_params
-
-Vinod Koul (2):
-      soundwire: add override addr ops
-      soundwire: qcom: use signed variable for error return
-
- .../devicetree/bindings/soundwire/qcom,sdw.txt     |  20 +
- drivers/soundwire/Makefile                         |   2 +-
- drivers/soundwire/bus.c                            | 100 +++-
- drivers/soundwire/bus.h                            |   2 +
- drivers/soundwire/bus_type.c                       |  15 +-
- drivers/soundwire/cadence_master.c                 |  16 +-
- drivers/soundwire/dmi-quirks.c                     |  96 +++
- drivers/soundwire/generic_bandwidth_allocation.c   |  15 +-
- drivers/soundwire/intel.c                          |  24 +-
- drivers/soundwire/intel_init.c                     |   9 +
- drivers/soundwire/qcom.c                           | 652 +++++++++++++++++=
-----
- drivers/soundwire/slave.c                          |   9 +-
- drivers/soundwire/stream.c                         |  28 +-
- include/linux/soundwire/sdw.h                      |  36 +-
- 14 files changed, 833 insertions(+), 191 deletions(-)
- create mode 100644 drivers/soundwire/dmi-quirks.c
-
-Thanks
---=20
-~Vinod
-
---gAUNDmWExdT5yU8h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmBtpggACgkQfBQHDyUj
-g0dQCw/+J3FzDh2oVtb7ky27Nle1vAr1Ro+efG60X2S4xtIqsBvrmqTqGf/EerBI
-DWa0ijRI8zWRKMueP1eNoDHrnfuaxIFI+iFTUpNBK5eix5LMd5q2GvOxUUwzBDJg
-ZQz+R0pnQsY736IIDVhSAvdcKbu8xrnkeIxlunkdA7dFNC5GN43R0W1wQ/Ongz2n
-6QgCRJlfR/mNz8hSUpLLvtl9ncgR95jQoGXgvcCG+nV7JoMc0xborDQzoyI1NIfU
-SwvdjTm3HUonpGESGvVYoC3iptWgMN10SjcoHh5AAsF4fsZsJwp1giLkYMOk6c0c
-hw5BSXRrAmVFzZ4FqrXsev0b550qz2eQ2G1GVqQwt+CCtluJBKEUTN0fFcoVjLXg
-bV2ZfbQTsbjkm6SWFRiHzd9ybgqkSkYppPPFC0meN6Jq3HgzBRL+Gl3QlU68BHSc
-W8uR7EKEe9qySpzU9h2StawuumtV3YM5xvYJ5w+/cYIZdUCiTfKA4cjBoocGX8S7
-YFsVQnzc1asIq7Wu5q2xpRhaPgbm+BBvin9TqkYsXjb7yY6QBjBNqo6v2LPkNQGc
-PTNIkKB0owauwedIAWUXZu6LSVl7xMIl7pHJHzmktGJfOSaFW4U/deXODCQRvSMu
-PDpKITXthCQq30vJH3Vl/9amS+oD6NAaMJ1bRDs/wJQy6hVvono=
-=1VnQ
------END PGP SIGNATURE-----
-
---gAUNDmWExdT5yU8h--
