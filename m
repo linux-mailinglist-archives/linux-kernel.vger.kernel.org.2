@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445443570BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE81E3570C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245056AbhDGPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:45:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46251 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353705AbhDGPpw (ORCPT
+        id S1353749AbhDGPrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:47:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353748AbhDGPrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:45:52 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lUAN9-0008QS-Bq
-        for linux-kernel@vger.kernel.org; Wed, 07 Apr 2021 15:45:40 +0000
-Received: by mail-wm1-f71.google.com with SMTP id r18so1499244wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:45:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5rG51SJ9b2j59QDiuKuphq0VcbOFNOs71jH8++a6urQ=;
-        b=bSbad4HJPLwOurAHTEWp5o29NWxPUm1Li9uqFMKVyjHFUieNRbALZDCunqdiK04xvb
-         /0d4nmFEndGqvzy9Fnb95Jh0yrOIgEtJGSINz9M1Z3YwJMf6A+l793TuUCCUV3CttGcO
-         RrS41dkDdnhsf3a7YJe1jn/bX8eVEspvHq86HYD4lI1StQ2GbL6jHK7eKHn+ruZTPx/7
-         dUbDNpRtDl+OwPvlHF0+vEXwH4sVCBe3rQowQCkhYsMtmXS47Ss7HICV+D5fBHTeLf/h
-         vMiPMdMgPSGiySZh4x/i/+AaKGYrTVp6R5UCYrgAo+zIHv+KG0OaDIRBZ3HhKqXcTPvM
-         SfuQ==
-X-Gm-Message-State: AOAM532Zxx6lUILwmj/cNImBxx3/R3y3Mcedh+F5Ps/rNL2jAkRYMP9n
-        jg7OAns6Lw9BdStxzTe/k/nOc+8MGCWEGOwFDCrRVB5kUo81xzrZ0fK+0PkLvvPLbpVO/2pLJOu
-        69n/bW+lcBMdkhOUeL1ZwVd93OIQDkCuswOl3XM3sKA==
-X-Received: by 2002:a5d:47c4:: with SMTP id o4mr5102169wrc.138.1617810339102;
-        Wed, 07 Apr 2021 08:45:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwO3yDp/yMNG0dr/oMAaV1wjrumOV1gXxmp2b3gm7xGo7YMYB/+jov0VlU3GDVXbeWhmTWV8w==
-X-Received: by 2002:a5d:47c4:: with SMTP id o4mr5102154wrc.138.1617810338946;
-        Wed, 07 Apr 2021 08:45:38 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id c2sm9215943wmr.22.2021.04.07.08.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 08:45:38 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] memory: samsung: exynos5422-dmc: handle clk_set_parent() failure
-Date:   Wed,  7 Apr 2021 17:45:35 +0200
-Message-Id: <20210407154535.70756-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Apr 2021 11:47:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617810419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vBa++ylKdM6FaV/AsB3jGOj59UUYHkh6Ww/V2KVEjbY=;
+        b=c+fq6CSqdPaXsDLjk9sZKP8XRYj6NBP4Ayk733j7mZRrDMp/hhImxZAo7bIJXbEdBZVrpE
+        xbaT4DW+hmX4HiacOHBZ7994CJ3Jq8u5GV0eC68ATGn7DGrMYS6dtFCAjpqPnIEZxGr/Ur
+        Ivunkv/6hj0Senn4/KUXNO9YMYSMytM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-vJ-WsKDbMdGZLbaNmZzTBw-1; Wed, 07 Apr 2021 11:46:57 -0400
+X-MC-Unique: vJ-WsKDbMdGZLbaNmZzTBw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D7E51008076;
+        Wed,  7 Apr 2021 15:46:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-201.rdu2.redhat.com [10.10.115.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 43E9D1893C;
+        Wed,  7 Apr 2021 15:46:54 +0000 (UTC)
+Subject: [PATCH 0/5] netfs: Fixes for the netfs lib
+From:   David Howells <dhowells@redhat.com>
+To:     jlayton@kernel.org
+Cc:     dwysocha@redhat.com, linux-cachefs@redhat.com,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 07 Apr 2021 16:46:53 +0100
+Message-ID: <161781041339.463527.18139104281901492882.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clk_set_parent() can fail and ignoring such case could lead to invalid
-clock setup for given frequency.
 
-Addresses-Coverity: Unchecked return value
-Fixes: 6e7674c3c6df ("memory: Add DMC driver for Exynos5422")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Hi Jeff,
+
+Here's a bunch of fixes plus a tracepoint for the netfs library.  I'm going
+to roll them into other patches, but I'm posting them here for separate
+review.
+
+David
 ---
- drivers/memory/samsung/exynos5422-dmc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+David Howells (5):
+      netfs: Fix a missing rreq put in netfs_write_begin()
+      netfs: Call trace_netfs_read() after ->begin_cache_operation()
+      netfs: Don't record the copy termination error
+      netfs: Fix copy-to-cache amalgamation
+      netfs: Add a tracepoint to log failures that would be otherwise unseen
 
-diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-index 56f6e65d40cd..9c8318923ed0 100644
---- a/drivers/memory/samsung/exynos5422-dmc.c
-+++ b/drivers/memory/samsung/exynos5422-dmc.c
-@@ -1293,7 +1293,9 @@ static int exynos5_dmc_init_clks(struct exynos5_dmc *dmc)
- 
- 	dmc->curr_volt = target_volt;
- 
--	clk_set_parent(dmc->mout_mx_mspll_ccore, dmc->mout_spll);
-+	ret = clk_set_parent(dmc->mout_mx_mspll_ccore, dmc->mout_spll);
-+	if (ret)
-+		return ret;
- 
- 	clk_prepare_enable(dmc->fout_bpll);
- 	clk_prepare_enable(dmc->mout_bpll);
--- 
-2.25.1
+
+ fs/cachefiles/io.c           | 17 ++++++++++
+ fs/netfs/read_helper.c       | 58 +++++++++++++++++++---------------
+ include/linux/netfs.h        |  6 ++++
+ include/trace/events/netfs.h | 60 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 116 insertions(+), 25 deletions(-)
+
 
