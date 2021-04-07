@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E813573D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D603573FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355071AbhDGSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhDGSDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:03:03 -0400
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B032FC06175F;
-        Wed,  7 Apr 2021 11:02:53 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 19:02:47 +0100
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
-Subject: Re: [PATCH 11/20] kbuild: ia64: use common install script
-Message-ID: <20210407190247.64a4ac46@sf>
-In-Reply-To: <20210407053419.449796-12-gregkh@linuxfoundation.org>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
-        <20210407053419.449796-12-gregkh@linuxfoundation.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1355107AbhDGSKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:10:43 -0400
+Received: from smtp.uniroma2.it ([160.80.6.16]:32878 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348221AbhDGSKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 14:10:39 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Apr 2021 14:10:38 EDT
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 137I49dc014753
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 7 Apr 2021 20:04:09 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [RFC net-next 0/1] seg6: Counters for SRv6 Behaviors 
+Date:   Wed,  7 Apr 2021 20:03:31 +0200
+Message-Id: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Apr 2021 07:34:10 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+This patch provides counters for SRv6 Behaviors as defined in [1],
+section 6. For each SRv6 Behavior instance, counters defined in [1] are:
 
-> The common scripts/install.sh script will now work for ia64, all that
-> is needed is to add the compressed image type to it.  So add that file
-> type check and the ability to call /usr/sbin/elilo after copying the
-> kernel.  With that we can remove the ia64-only version of the file.
-> 
-> Cc: linux-ia64@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ - the total number of packets that have been correctly processed;
+ - the total amount of traffic in bytes of all packets that have been
+   correctly processed;
 
-Reviewed-by: Sergei Trofimovich <slyfox@gentoo.org>
+In addition, this patch introduces a new counter that counts the number of
+packets that have NOT been properly processed (i.e. errors) by an SRv6
+Behavior instance.
 
-> ---
->  arch/ia64/Makefile   |  2 +-
->  arch/ia64/install.sh | 40 ----------------------------------------
->  scripts/install.sh   |  8 +++++++-
->  3 files changed, 8 insertions(+), 42 deletions(-)
->  delete mode 100644 arch/ia64/install.sh
-> 
-> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
-> index 467b7e7f967c..19e20e99f487 100644
-> --- a/arch/ia64/Makefile
-> +++ b/arch/ia64/Makefile
-> @@ -77,7 +77,7 @@ archheaders:
->  CLEAN_FILES += vmlinux.gz
->  
->  install: vmlinux.gz
-> -	sh $(srctree)/arch/ia64/install.sh $(KERNELRELEASE) $< System.map "$(INSTALL_PATH)"
-> +	sh $(srctree)/scripts/install.sh $(KERNELRELEASE) $< System.map "$(INSTALL_PATH)"
->  
->  define archhelp
->    echo '* compressed	- Build compressed kernel image'
-> diff --git a/arch/ia64/install.sh b/arch/ia64/install.sh
-> deleted file mode 100644
-> index 0e932f5dcd1a..000000000000
-> --- a/arch/ia64/install.sh
-> +++ /dev/null
-> @@ -1,40 +0,0 @@
-> -#!/bin/sh
-> -#
-> -# arch/ia64/install.sh
-> -#
-> -# This file is subject to the terms and conditions of the GNU General Public
-> -# License.  See the file "COPYING" in the main directory of this archive
-> -# for more details.
-> -#
-> -# Copyright (C) 1995 by Linus Torvalds
-> -#
-> -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-> -#
-> -# "make install" script for ia64 architecture
-> -#
-> -# Arguments:
-> -#   $1 - kernel version
-> -#   $2 - kernel image file
-> -#   $3 - kernel map file
-> -#   $4 - default install path (blank if root directory)
-> -#
-> -
-> -# User may have a custom install script
-> -
-> -if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
-> -if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
-> -
-> -# Default install - same as make zlilo
-> -
-> -if [ -f $4/vmlinuz ]; then
-> -	mv $4/vmlinuz $4/vmlinuz.old
-> -fi
-> -
-> -if [ -f $4/System.map ]; then
-> -	mv $4/System.map $4/System.old
-> -fi
-> -
-> -cat $2 > $4/vmlinuz
-> -cp $3 $4/System.map
-> -
-> -test -x /usr/sbin/elilo && /usr/sbin/elilo
-> diff --git a/scripts/install.sh b/scripts/install.sh
-> index 73067b535ea0..b6ca2a0f0983 100644
-> --- a/scripts/install.sh
-> +++ b/scripts/install.sh
-> @@ -52,6 +52,7 @@ if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
->  base=$(basename "$2")
->  if [ "$base" = "bzImage" ] ||
->     [ "$base" = "Image.gz" ] ||
-> +   [ "$base" = "vmlinux.gz" ] ||
->     [ "$base" = "zImage" ] ; then
->  	# Compressed install
->  	echo "Installing compressed kernel"
-> @@ -65,7 +66,7 @@ fi
->  # Some architectures name their files based on version number, and
->  # others do not.  Call out the ones that do not to make it obvious.
->  case "${ARCH}" in
-> -	x86)
-> +	ia64 | x86)
->  		version=""
->  		;;
->  	*)
-> @@ -86,6 +87,11 @@ case "${ARCH}" in
->  			echo "You have to install it yourself"
->  		fi
->  		;;
-> +	ia64)
-> +		if [ -x /usr/sbin/elilo ]; then
-> +			/usr/sbin/elilo
-> +		fi
-> +		;;
->  	x86)
->  		if [ -x /sbin/lilo ]; then
->  			/sbin/lilo
-> -- 
-> 2.31.1
-> 
+Counters are not only interesting for network monitoring purposes (i.e.
+counting the number of packets processed by a given behavior) but they also
+provide a simple tool for checking whether a behavior instance is working
+as we expect or not.
+Counters can be useful for troubleshooting misconfigured SRv6 networks.
+Indeed, an SRv6 Behavior can silently drop packets for very different
+reasons (i.e. wrong SID configuration, interfaces set with SID addresses,
+etc) without any notification/message to the user.
 
+Due to the nature of SRv6 networks, diagnostic tools such as ping and
+traceroute may be ineffective: paths used for reaching a given router can
+be totally different from the ones followed by probe packets. In addition,
+paths are often asymmetrical and this makes it even more difficult to keep
+up with the journey of the packets and to understand which behaviors are
+actually processing our traffic.
+
+When counters are enabled on an SRv6 Behavior instance, it is possible to
+verify if packets are actually processed by such behavior and what is the
+outcome of the processing. Therefore, the counters for SRv6 Behaviors offer
+an non-invasive observability point which can be leveraged for both traffic
+monitoring and troubleshooting purposes.
+
+[1] https://www.rfc-editor.org/rfc/rfc8986.html#name-counters
+
+Troubleshooting using SRv6 Behavior counters
+--------------------------------------------
+
+Let's make a brief example to see how helpful counters can be for SRv6
+networks. Let's consider a node where an SRv6 End Behavior receives an SRv6
+packet whose Segment Left (SL) is equal to 0. In this case, the End
+Behavior (which accepts only packets with SL >= 1) discards the packet and
+increases the error counter.
+This information can be leveraged by the network operator for
+troubleshooting. Indeed, the error counter is telling the user that the
+packet:
+
+  (i) arrived at the node;
+ (ii) the packet has been taken into account by the SRv6 End behavior;
+(iii) but an error has occurred during the processing.
+
+The error (iii) could be caused by different reasons, such as wrong route
+settings on the node or due to an invalid SID List carried by the SRv6
+packet. Anyway, the error counter is used to exclude that the packet did
+not arrive at the node or it has not been processed by the behavior at
+all.
+
+Turning on/off counters for SRv6 Behaviors
+------------------------------------------
+
+Each SRv6 Behavior instance can be configured, at the time of its creation,
+to make use of counters.
+This is done through iproute2 which allows the user to create an SRv6
+Behavior instance specifying the optional "count" attribute as shown in the
+following example:
+
+ $ ip -6 route add 2001:db8::1 encap seg6local action End count dev eth0
+
+per-behavior counters can be shown by adding "-s" to the iproute2 command
+line, i.e.:
+
+ $ ip -s -6 route show 2001:db8::1
+ 2001:db8::1 encap seg6local action End packets 0 bytes 0 errors 0 dev eth0
+
+
+####################################################
+
+
+Impact of counters for SRv6 Behaviors on performance
+====================================================
+
+To determine the performance impact due to the introduction of counters in
+the SRv6 Behavior subsystem, we have carried out extensive tests.
+
+We chose to test the throughput achieved by the SRv6 End.DX2 Behavior
+because, among all the other behaviors implemented so far, it reaches the
+highest throughput which is around 1.5 Mpps (per core at 2.4 GHz on a
+Xeon(R) CPU E5-2630 v3) on kernel 5.12-rc2 using packets of size ~ 100
+bytes.
+
+Three different tests were conducted in order to evaluate the overall
+throughput of the SRv6 End.DX2 Behavior in the following scenarios:
+
+ 1) vanilla kernel (without the SRv6 Behavior counters patch) and a single
+    instance of an SRv6 End.DX2 Behavior;
+ 2) patched kernel with SRv6 Behavior counters and a single instance of
+    an SRv6 End.DX2 Behavior with counters turned off;
+ 3) patched kernel with SRv6 Behavior counters and a single instance of
+    SRv6 End.DX2 Behavior with counters turned on.
+
+All tests were performed on a testbed deployed on the CloudLab facilities
+[2], a flexible infrastructure dedicated to scientific research on the
+future of Cloud Computing.
+
+
+Results of tests are shown in the following table:
+
+Scenario (1): average 1504764,81 pps (~1504,76 kpps); std. dev 3956,82 pps
+Scenario (2): average 1501469,78 pps (~1501,47 kpps); std. dev 2979,85 pps
+Scenario (3): average 1501315,13 pps (~1501,32 kpps); std. dev 2956,00 pps
+
+As can be observed, throughputs achieved in scenarios (2),(3) did not
+suffer any observable degradation compared to scenario (1).
+
+Comments, suggestions and improvements are very welcome!
+
+Thanks,
+Andrea
+
+[2] https://www.cloudlab.us
+
+Andrea Mayer (1):
+  seg6: add counters support for SRv6 Behaviors
+
+ include/uapi/linux/seg6_local.h |   8 ++
+ net/ipv6/seg6_local.c           | 133 +++++++++++++++++++++++++++++++-
+ 2 files changed, 139 insertions(+), 2 deletions(-)
 
 -- 
+2.20.1
 
-  Sergei
