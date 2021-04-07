@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5553577E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39443577EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbhDGWqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDGWqX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:46:23 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98452C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 15:46:11 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id a8so147246oic.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 15:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8LyLxGSQQphLnjeYLlddmkfUqatoN6oCK+jULyo25+I=;
-        b=cqNnST/xDb7Jic5n81TJ7veTJqiuUrZpTxheT/XoPbOwWZAWAjb1oTobsghTVqVYzH
-         jH4ArgLVqUlkx1eM3HFmCMa3oaWi3qy2Dj8y14jAaBjIRmvTtckS90N28Gb/fLAKfbO8
-         w/WeHFa6qM/gbYgSvy+cuSc1/dnutMwN2/J+I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8LyLxGSQQphLnjeYLlddmkfUqatoN6oCK+jULyo25+I=;
-        b=sSC8+m2LCCwOXQ/HeZn2yFEJe+zysAryZR1vDSVGXx+vF+ZCHB8mBqN43mQAFPyIJY
-         H2ZOdBJynrtYHBoN7yC/1qq4d7iZNj2vwwtCsutJl+ZLiX3z5GbMl1dOGnIBLVoV4nMv
-         +UVqI0AB0u4K/779iEVh+EPkWYRCTuDkKgjthX+Se7MlvMfOkk/KyMeb2BAcp869AX3e
-         KfKOXWbrulTxtz+AxG6dUfOSNl7I7PhJwPOLAnv9namsLeKxyNvs3Og3Dbz1P5VfMWs5
-         TGv3lLeaDkxXZenBjiRSzFWRv2PS/tUUP+42oSeT0eSdRmULe6JD/irZrK2NPhWQermf
-         n84g==
-X-Gm-Message-State: AOAM530tSoc9sUHqcPUp9Y16f4PaBWVZUTW287DTdX6H8p+AoUpOISwc
-        B7L+IPey+UurjnmqsAv9TNw2NQ==
-X-Google-Smtp-Source: ABdhPJymyx49DOIBzLpDgXw+PDyza1nyktZGIAn1HVJ78ILT8bElG0nl9n8yik3+1y2UBR6iMashug==
-X-Received: by 2002:aca:4e55:: with SMTP id c82mr3860158oib.43.1617835570974;
-        Wed, 07 Apr 2021 15:46:10 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s21sm4988229oos.5.2021.04.07.15.46.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 15:46:10 -0700 (PDT)
-Subject: Re: [PATCH] Documentation: kunit: add tips for using
- current->kunit_test
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
+        id S229570AbhDGWqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:46:40 -0400
+Received: from ozlabs.org ([203.11.71.1]:43521 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhDGWqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:46:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFzyh6hjwz9sPf;
+        Thu,  8 Apr 2021 08:46:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617835581;
+        bh=2AI9kqyrCkEU8kUxXeNdqaGbAN/vm2MR4Xc+goQbAoI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V+hKP1zpuULfqr6tCKb5/pJFwTjtasX0J+AkiU+E0amYbs1ANsMO8mIh/Pz/ROqYo
+         P+R79b3zYVEmcjGJbYiInsdxPW6MvTAcrODCaq4wL//Xcqv0phKhdIvQ8mX/syha1s
+         Fk3uHgafELo5ANsapotnSEEDF3h5SyxZrsIs1P7dRqCS31gtuTOA+7qqjcBxLFFDhJ
+         odzzJR37+43Ok840DcGQNm1B12ry3bDdmRNNN2/BY4HivhxlWUPMyX2smA7R4xfpXR
+         mDXciSww7O6W3vUH02VxJdzRRx3JvpCoSMYmGZXZHxjqEN/KoiIyL6JQrnrzLv3i9z
+         U7/xg22pLphtQ==
+Date:   Thu, 8 Apr 2021 08:46:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210406225100.1883967-1-dlatypov@google.com>
- <CAFd5g47EE3J5V9ofZ4r3H+3+16u41-yqa+uwFYVgpVCg4CKOwg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1b7d8261-b501-c118-3bed-9b80983218cb@linuxfoundation.org>
-Date:   Wed, 7 Apr 2021 16:46:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the pinctrl tree
+Message-ID: <20210408084620.3b1e9bd8@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g47EE3J5V9ofZ4r3H+3+16u41-yqa+uwFYVgpVCg4CKOwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/27cZD7fZ1N6aqkO3TQ/G9LM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 2:07 PM, Brendan Higgins wrote:
-> On Tue, Apr 6, 2021 at 3:51 PM Daniel Latypov <dlatypov@google.com> wrote:
->>
->> As of commit 359a376081d4 ("kunit: support failure from dynamic analysis
->> tools"), we can use current->kunit_test to find the current kunit test.
->>
->> Mention this in tips.rst and give an example of how this can be used in
->> conjunction with `test->priv` to pass around state and specifically
->> implement something like mocking.
->> There's a lot more we could go into on that topic, but given that
->> example is already longer than every other "tip" on this page, we just
->> point to the API docs and leave filling in the blanks as an exercise to
->> the reader.
->>
->> Also give an example of kunit_fail_current_test().
->>
->> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> 
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> 
+--Sig_/27cZD7fZ1N6aqkO3TQ/G9LM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you. Applied to linux-kseftest kunit branch for 5.13-rc1
+Hi all,
 
-thanks,
--- Shuah
+Commit
+
+  4f838411c98b ("pinctrl: bcm63xx: Fix More dependencies")
+
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/27cZD7fZ1N6aqkO3TQ/G9LM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBuNjwACgkQAVBC80lX
+0GyFMgf/QAqeh5nzILtPJRe/7t2RuGmk7/eypBbRVMoFTlJK1IK876SEz6p0eRiw
+hVWY7HXE/DENn3hAumP8Lf4Z7RkK/+9CdK1n7KyJ362DLWPsnujEauyrmyEkvsAp
+thyox3ngYgDJG0pFditA101a5qVaxcyRTF4/YL/0veKTwjAajpReBEM9VxESd6Zl
+6T8kU2mrDGwne9WkyJM6HoZr+7FppNYCp+N17zAgkwWeG6TUvWrR1SKOIJvo/iJX
+intxDFXMwLvYjZF9pLFQFyf5WhSWufazbg9PwDTdVJ14BmjhUxR+g+rAfDZtgdWi
+aWrP6QcDEhDlAOw6jfT1rRF1bwHYTg==
+=MzdA
+-----END PGP SIGNATURE-----
+
+--Sig_/27cZD7fZ1N6aqkO3TQ/G9LM--
