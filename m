@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BBE356CA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DD1356CAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352463AbhDGMwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhDGMwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:52:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC7D61279;
-        Wed,  7 Apr 2021 12:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617799924;
-        bh=cyfjEk9jthcsbMRdXa22ian2dfCApQqG6xTpove5ejg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RCn0Ot8ATDqpyS4C66rj2NwsNmng3SdIotwU/xRgyy/tZ2P2byZVLVcD+/+GRWW59
-         XX/AWOQW22nip9SoRXn/W+INkjDuNPFotVxX+hZYgC1Vx/Q0XuU0JIzWjlQUdRBohL
-         zvReB+RpACqLQuLVS54IPk3fDzDF1GxS00o2RjCZr5Nr6LnCCwhNcvIKDCKXjzamhr
-         PShKbXs4RyeuhNS2bIL8IIjniNYZlXZX6SXi4YyLZ6kGEWDALxo374XiikYIbDhW4v
-         hmxtBE1ec42rJwgfEF5chbAuEqc4pEm3L+9kdHQ7ZYzPT4BND22OU6Y8gjbJvX4MGp
-         i6zVANALjAJOg==
-Date:   Wed, 7 Apr 2021 13:51:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Rob Herring <robh@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: codecs: Fix rumtime PM imbalance in tas2552_probe
-Message-ID: <20210407125147.GD5510@sirena.org.uk>
-References: <20210407065402.17729-1-dinghao.liu@zju.edu.cn>
+        id S1352471AbhDGMwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhDGMwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:52:41 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5E1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 05:52:32 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id z8so20492482ljm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 05:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c6MOoIBYaq1FB2jWSG59PiLmzCCOZs346eUtfJNgae4=;
+        b=jO5TJkcVxVu3tzmZF75IY8ZZut5WsUpOx6Ar889EYfG66YONWiO1Tiv99+vCw2lDTJ
+         rwx67c4UfEo8v/dX6vqo8D5nfdO0cfqCEnTeqLSaAtay+pBpaMAmLCEjo2RsrH2Tons2
+         xKoIACfEiINUHYkrBO3Jhkgt06QXn8IDAT3681aGfb8XAcfttlHjeGObqu6dYPLLUvzL
+         GZoA7dehKZjM6vncDr7/h7MnRq2evMxhDEVO5lBbST1zJ0rr24SAOGn7CjODoY4qQIVN
+         iQn9dULPR8fJ2/T4DGW7gzMRz4haqcWbPJQSY1WxEGiFp2Jc8opyeXOa9A09V76AMCMD
+         BGTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c6MOoIBYaq1FB2jWSG59PiLmzCCOZs346eUtfJNgae4=;
+        b=VU85vTz3FUnr2iZe/4V+2pp+mjZMMz4mTpPJLHvpws3Zq3AAgl3DND7XnIVlKLPvdH
+         XjiYj7LBEs5gRuXGrG5rmnCFTi6z6wDQl2L2FaI2cxSNX5u0r7LrtrxQHBg3pr+vlNiP
+         9m0S9HNVqSb4dur9Cv7zGtdDZSpfys0R77iRLouBLyLXkNT4vzsbEIDvc5v/QRVtM8Cl
+         SZ7oVIrDhbrbrV4PcQsEYEVKh/6RUE2IBEB8kUnk4OG20DHXBlXHovvQenX3WerG2BVe
+         rFwCOD5Sz86OJ9gadU+dXHp1hmp8zGSblbHNfrZV4sd1sTdVvuwopW4iPKIVNSZ0lKO/
+         1vqg==
+X-Gm-Message-State: AOAM530G2uMUVJqEwWO4BSgzh5bLqW9vLOcikyCulA/Kpcm88vIQgVuP
+        IqpF3X3o1du30Cfw4nIoyk8RHT6PWfUr/Qtq0nRHctqc6IE1TA==
+X-Google-Smtp-Source: ABdhPJxV7n/Kf8dNdBmeRaU9S6qNbt86uhvn/5D6xRYMV9bk3xv7vbh2O6AjGS8LhNmz8YBjqoKqs4CoaUamjLKjtqk=
+X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr2032872ljm.273.1617799950344;
+ Wed, 07 Apr 2021 05:52:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="J5MfuwkIyy7RmF4Q"
-Content-Disposition: inline
-In-Reply-To: <20210407065402.17729-1-dinghao.liu@zju.edu.cn>
-X-Cookie: Dry clean only.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1617279355.git.mchehab+huawei@kernel.org> <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
+In-Reply-To: <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Apr 2021 14:52:19 +0200
+Message-ID: <CACRpkdaw3Eh=gYPAw+zZM3OCteXDyXzgqOkKsT9q_h0cQZ6GAg@mail.gmail.com>
+Subject: Re: [PATCH 32/32] pinctrl: update pin-control.rst references
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 1, 2021 at 2:17 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 
---J5MfuwkIyy7RmF4Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
+> renamed: Documentation/driver-api/pinctl.rst
+> to: Documentation/driver-api/pin-control.rst.
+>
+> Update the cross-references accordingly.
+>
+> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-On Wed, Apr 07, 2021 at 02:54:00PM +0800, Dinghao Liu wrote:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> -	pm_runtime_set_active(&client->dev);
-> -	pm_runtime_set_autosuspend_delay(&client->dev, 1000);
-> -	pm_runtime_use_autosuspend(&client->dev);
-> -	pm_runtime_enable(&client->dev);
-> -	pm_runtime_mark_last_busy(&client->dev);
-> -	pm_runtime_put_sync_autosuspend(&client->dev);
-> -
->  	dev_set_drvdata(&client->dev, data);
-> =20
->  	ret =3D devm_snd_soc_register_component(&client->dev,
-> @@ -733,6 +726,13 @@ static int tas2552_probe(struct i2c_client *client,
->  	if (ret < 0)
->  		dev_err(&client->dev, "Failed to register component: %d\n", ret);
-> =20
-> +	pm_runtime_set_active(&client->dev);
-> +	pm_runtime_set_autosuspend_delay(&client->dev, 1000);
-> +	pm_runtime_use_autosuspend(&client->dev);
+I assume you will apply this Mauro?
 
-It's not clear to me that just moving the operations after the
-registration is a good fix - once the component is registered we could
-start trying to do runtime PM operations with it which AFAIR won't count
-references and so on properly if runtime PM isn't enabled so if we later
-enable runtime PM we might have the rest of the code in a confused state
-about what's going on.
-
---J5MfuwkIyy7RmF4Q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBtquIACgkQJNaLcl1U
-h9BQtAf+I2hjUyL/9OkE3eGicNAX7nsxLA+2RCglYcJbnP+DPP0fV9PuPWnUP/v+
-AyaTLilVvUCfW/mSQXCrS8s1YZtRjmcWM+C21dyyejn5PTFp2q02jEfVZUsHE1b2
-wbspUe0X+/tNp8AifCdgMfHN0i0MvxsVVwnDTwTy64sF7escwM7LaCsJXOvIo8Q3
-Jfnq/TJFt40FgSRe30GEzoJEVfiWdAGmfOvggULT2iX3tp7F6Dcl1OevhObFFTmX
-SETQzdLXqih7npx1k1RQBBqFPo3mKJ4syuTn3MV4pDWrWqVPFxU1Z2QsNYlslGtk
-V+WLnEHAr27p/pTbLLxjB6XTo549EA==
-=Tb7U
------END PGP SIGNATURE-----
-
---J5MfuwkIyy7RmF4Q--
+Yours,
+Linus Walleij
