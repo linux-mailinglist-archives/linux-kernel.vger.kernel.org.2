@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C88357485
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46358357486
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355407AbhDGSsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38478 "EHLO mail.kernel.org"
+        id S1355421AbhDGSsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235455AbhDGSsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:48:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C322261165;
-        Wed,  7 Apr 2021 18:48:34 +0000 (UTC)
+        id S1355406AbhDGSsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 14:48:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0443961245;
+        Wed,  7 Apr 2021 18:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617821315;
-        bh=XNfsKf0GsS76i2cCjrrJlB/f8XcyulrkeHvCWb4O7ns=;
-        h=From:To:Subject:Date:From;
-        b=GWB3KSrGIpp3iFrqxP2FytmPWHS4X5B67N2lQrp6Tj7E6bcv0o5kvDVEYKQQV4CZi
-         vZNxPQ7gtNiUJj8kjifAXpXzaASFjKZoLPX7f9dNzUyZiU+8QkF+CIGh6x4Nl77T6d
-         uZ8FTWg6kKTuZGci9//8GSEvV9+rXF3pwYWf0iraUmVq1g8J5CNqGBe5IplQZfuEq4
-         zZSusHWHT8Vo2L8xfP0/buNAehtuxOGldScWQ8sbCwT0MZTC6bOevOGSuV719PFQC1
-         JwR1zC11R+M2MBvhMd3muzAk+QxIWKhYb5GDeh2GvW09dPXPGk+QfnBG3BmBqO0eMn
-         4+20ZSNxpv0Vw==
+        s=k20201202; t=1617821316;
+        bh=/uEboQWa0N23boTspbR+ct5lTQeEVJSbhuaoJrqyxI0=;
+        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=bWoFf+sKVq4IhgvNGVDUPUB8fa2vJzur0j9p5omzAJ+pJllcYZHpXcuDUybz9yF6X
+         BachtVlWwmh2UK6AR3R8USbtq5JYI+NYisqFPiJ6U5Uza4nU7yH4ntN7yJHbnROqw3
+         lfswXmLxQQzXEbUJwkg/zJqwJzNs7ycoHjIBKomWv5c+KwvI0UKByxAiYNuKuqiDor
+         cl2jSBR7nOht/GvzeS6JoJKmc6hq7wLFdIda4mPThrJ8PnvnEUCzdZ2zVvivCJW5S/
+         K9Gfl05QAunBH7iwgHrVkZwU5i7LVzaemDtVmmJa2CF3EdEE6BFSJlKQ6jT0uHdrp3
+         4GvCIfPe58+UA==
 From:   zanussi@kernel.org
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -35,61 +36,55 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
         Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH RT 0/2] Linux v5.4.109-rt56-rc1
-Date:   Wed,  7 Apr 2021 13:48:31 -0500
-Message-Id: <cover.1617821301.git.zanussi@kernel.org>
+Subject: [PATCH RT 1/2] mm: slub: Don't resize the location tracking cache on PREEMPT_RT
+Date:   Wed,  7 Apr 2021 13:48:32 -0500
+Message-Id: <53a3ad9181bcdb62d4be6d521d6aeb490eb77e7f.1617821301.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1617821301.git.zanussi@kernel.org>
+References: <cover.1617821301.git.zanussi@kernel.org>
+In-Reply-To: <cover.1617821301.git.zanussi@kernel.org>
+References: <cover.1617821301.git.zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Dear RT Folks,
+v5.4.109-rt56-rc1 stable review patch.
+If anyone has any objections, please let me know.
 
-This is the RT stable review cycle of patch 5.4.109-rt56-rc1.
-
-Please scream at me if I messed something up. Please test the patches
-too.
-
-The -rc release will be uploaded to kernel.org and will be deleted
-when the final release is out. This is just a review release (or
-release candidate).
-
-The pre-releases will not be pushed to the git repository, only the
-final release is.
-
-If all goes well, this patch will be converted to the next main
-release on 2021-04-12.
-
-To build 5.4.109-rt56-rc1 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.109.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.109-rt56-rc1.patch.xz
-
-You can also build from 5.4.109-rt55 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/incr/patch-5.4.109-rt55-rt56-rc1.patch.xz
+-----------
 
 
-Enjoy,
+[ Upstream commit 87bd0bf324f4c5468ea3d1de0482589f491f3145 ]
 
--- Tom
+The location tracking cache has a size of a page and is resized if its
+current size is too small.
+This allocation happens with disabled interrupts and can't happen on
+PREEMPT_RT.
+Should one page be too small, then we have to allocate more at the
+beginning. The only downside is that less callers will be visible.
 
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ mm/slub.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Sebastian Andrzej Siewior (1):
-  mm: slub: Don't resize the location tracking cache on PREEMPT_RT
-
-Tom Zanussi (1):
-  Linux 5.4.109-rt56-rc1
-
- localversion-rt | 2 +-
- mm/slub.c       | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
+diff --git a/mm/slub.c b/mm/slub.c
+index 1815e28852fe..0d78368d149a 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4647,6 +4647,9 @@ static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
+ 	struct location *l;
+ 	int order;
+ 
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && flags == GFP_ATOMIC)
++		return 0;
++
+ 	order = get_order(sizeof(struct location) * max);
+ 
+ 	l = (void *)__get_free_pages(flags, order);
 -- 
 2.17.1
 
