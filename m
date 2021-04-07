@@ -2,200 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003323574F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F783574F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345702AbhDGTbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236379AbhDGTa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:30:58 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B44BC06175F;
-        Wed,  7 Apr 2021 12:30:47 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id o15so13097067ilf.11;
-        Wed, 07 Apr 2021 12:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mZV5oPtIqis6sHUZCb+ofyTYBJYlys/yTPjbRl90xlc=;
-        b=IOKTDh4+NPI4TT/SR4JDEAKOt6hcHk2hyY8PdGqaJoQcbPUHQvN7BJQ81OEKkeruXT
-         3y1/z7pyTF50/aWSHJC74G1vwGZ1NJm7mHgEg/kzse4jMWXCUmsjtK7KwUB2IsIG1cP6
-         2mWtcYIsK+VU9KvRYEBNILmvAImEh9MKgNVoufRoSJa/nsSm2L+eXdSCDQqhzRTe08yL
-         8UNH5AiJzeQ7GqZpbmZw7ixUx/1Ma9cltSzuvak8BHU5GYPN+XXOJC+TXkXUZFOn3QGT
-         hzHz7qEEHofZLdVur7eslE6sMevgptUam6jH83ThBEYOn/YaIPnrBy4TsUEqynrpS17T
-         ivLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mZV5oPtIqis6sHUZCb+ofyTYBJYlys/yTPjbRl90xlc=;
-        b=KGIR8sYZISZxmi3e0wNcwddP2YCeXs2kst1OTNmEkuIrgdFb3fRljvis+Poxg/YyOu
-         5DXKCncgDsl6ZQHvCCo/NgdbO4hVdJaMXtU5OykBOY1yVCHBC3cQqphFaO3WZxT2gmh2
-         R8VWhHO+E7KGkE7KXH5N+Zh8Mo+yjDZn8fk1ay9qWcXxH0pgyaKja//TCAzJM+28vLf1
-         LKiF8GnovXNwM4TR4YX+y5WnEAHNelKRhuD7BVfHHsAcxkTocrQArZpuKv7kqusuBYiz
-         P/4re+YFKNuByXr7U7w6t1b/m6AUatxbYDkgg95DZXsohkEKpI/aRoiiiAc3o7p4ZaTN
-         s+1w==
-X-Gm-Message-State: AOAM530yyLAaZ0rqwqtkZU9rBzGtxZFzMGgDMmBEkA0PRiHT00vj1XiZ
-        khBzoVik93Qwrw2gbH52wzokY13wid35TDf2ln6QPpjYO0A=
-X-Google-Smtp-Source: ABdhPJyZkGCqajzLmOnVtAnY7el+W9khXSigGblYto1zBClyq437Nfym/5/pYVLxPzds4ZiQSdS3Vbh4qzEv0kO5+8o=
-X-Received: by 2002:a05:6e02:1a24:: with SMTP id g4mr3765765ile.56.1617823846602;
- Wed, 07 Apr 2021 12:30:46 -0700 (PDT)
+        id S1345756AbhDGTbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345553AbhDGTbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:31:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4671B6023C;
+        Wed,  7 Apr 2021 19:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617823849;
+        bh=7cOMNq1oMwTCv3juIjgFhKSa19070uFirkx4n4/BBsY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RtT22GKUtbi11GFZ9alnrNwmmDviqxSGHGbLzKRykT60p+d4dGgl7nyHJAn5WcqD4
+         aa8xtgLjHlNycKgS6IOBULiGZPkGzZA87OEf46pRoPO1ypvrlEdaOwdqoC2iy2pkvp
+         g8K1hIOu2eUiBFJEa6qMisaqW0aEdvEBKFPE4uBERgdk41roMc1vIO/VCnUtB0yDGB
+         F2yay5tEtre1w/6ELD4Od7rUWQ30LG2aK++Cm76zHO5NRaijFGVCO7aQsZlSMOBt9v
+         ib+zc6ThRxWqSFE4MYZZovnUXXksxjeRMEWOOsJTn7aFKOLwyYE/ph9xhCuLUMX/AN
+         ZzBCKA0xdKhrg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A3A5640647; Wed,  7 Apr 2021 16:30:46 -0300 (-03)
+Date:   Wed, 7 Apr 2021 16:30:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf annotate: improve --stdio mode
+Message-ID: <YG4IZhfYiE+2tyw7@kernel.org>
+References: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
+ <YDVb4KS/ARbtfoAw@kernel.org>
+ <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
 MIME-Version: 1.0
-References: <20210406185400.377293-1-pctammela@mojatatu.com>
- <20210406185400.377293-3-pctammela@mojatatu.com> <CAEf4BzYmj_ZPDq8Zi4dbntboJKRPU2TVopysBNrdd9foHTfLZw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYmj_ZPDq8Zi4dbntboJKRPU2TVopysBNrdd9foHTfLZw@mail.gmail.com>
-From:   Pedro Tammela <pctammela@gmail.com>
-Date:   Wed, 7 Apr 2021 16:30:35 -0300
-Message-ID: <CAKY_9u3Y9Ay6yBwt27MaCCm=5aVmH92OkFe2aaoD6YWkCkYjBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] libbpf: selftests: refactor
- 'BPF_PERCPU_TYPE()' and 'bpf_percpu()' macros
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        David Verbeiren <david.verbeiren@tessares.net>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qua., 7 de abr. de 2021 =C3=A0s 15:31, Andrii Nakryiko
-<andrii.nakryiko@gmail.com> escreveu:
->
-> On Tue, Apr 6, 2021 at 11:55 AM Pedro Tammela <pctammela@gmail.com> wrote=
-:
-> >
-> > This macro was refactored out of the bpf selftests.
-> >
-> > Since percpu values are rounded up to '8' in the kernel, a careless
-> > user in userspace might encounter unexpected values when parsing the
-> > output of the batched operations.
->
-> I wonder if a user has to be more careful, though? This
-> BPF_PERCPU_TYPE, __bpf_percpu_align and bpf_percpu macros seem to
-> create just another opaque layer. It actually seems detrimental to me.
->
-> I'd rather emphasize in the documentation (e.g., in
-> bpf_map_lookup_elem) that all per-cpu maps are aligning values at 8
-> bytes, so user has to make sure that array of values provided to
-> bpf_map_lookup_elem() has each element size rounded up to 8.
+Em Fri, Feb 26, 2021 at 10:24:00AM +0100, Martin Liška escreveu:
+> On 2/23/21 8:47 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Sun, Feb 21, 2021 at 01:46:36PM +0100, Martin Liška escreveu:
+> > > The patch changes the output format in 2 ways:
+> > > - line number is displayed for all source lines (matching TUI mode)
+> > 
+> > Are you aware of 'perf annotate --stdio2' ? If the goal is to make the
+> > stdio mode better, doing it in that mode would be best, as it was done
+> > to share as much code as possible, not just the looks, with the TUI
+> > mode.
+> 
+> Yes, I'm aware of it. My motivation is to generate a HTML perf annotate report
+> and I see the following parts of --stdio2 not ideal:
+> 
+> - coloring is not available (--stdio-color=always does not work)
+> - 'Sorted summary for file ' is missing so one can't easily search for
+>   hot spots in browser
+> - source line number are displayed, but not the source files
+> - there's a missing option for 'Toggle disassembler output/simplified view' which
+>   is available in TUI mode
+> 
+> That said, the stdio2 annotation report is quite different and so handy for my use case.
 
-From my own experience, the documentation has been a very unreliable
-source, to the point that I usually jump to the code first rather than
-to the documentation nowadays[1].
-Tests, samples and projects have always been my source of truth and we
-are already lacking a bit on those as well. For instance, the samples
-directory contains programs that are very outdated (I didn't check if
-they are still functional).
-I think macros like these will be present in most of the project
-dealing with batched operations and as a daily user of libbpf I don't
-see how this could not be offered by libbpf as a standardized way to
-declare percpu types.
+I'll add these to my TODO list, all valid concerns. And being able to
+directly generate some sort of HTML with CSS, etc also seems a great
+feature to have.
 
-[1] So batched operations were introduced a little bit over a 1 year
-ago and yet the only reference I had for it was the selftests. The
-documentation is on my TODO list, but that's just because I have to
-deal with it daily.
+- Arnaldo
+ 
+> > 
+> > I kept --stdio around because changing the output in that way could
+> > annoy people used to that format.
+> 
+> Sure. But I think the current format provides quite broken visual layout:
+> 
+>       0.00 :   405ef1: inc    %r15
+>       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>    eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
+>           :            TA + tmpsd * (TB +
+> 
+> vs.
+> 
+>       0.00 :   405ef1: inc    %r15
+>       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>       0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
+>            : 1810   TA + tmpsd * (TB +
+> 
+> I bet also the current users of --stdio mode would benefit from it.
+> What do you think?
 
->
-> In practice, I'd recommend users to always use __u64/__s64 when having
-> primitive integers in a map (they are not saving anything by using
-> int, it just creates an illusion of savings). Well, maybe on 32-bit
-> arches they would save a bit of CPU, but not on typical 64-bit
-> architectures. As for using structs as values, always mark them as
-> __attribute__((aligned(8))).
->
-> Basically, instead of obscuring the real use some more, let's clarify
-> and maybe even provide some examples in documentation?
+Agreed, I tried applying but it bitrotted, it seems :-\
 
-Why not do both?
+- Arnaldo
+ 
+> Thanks,
+> Martin
+> 
+> > 
+> > Please take a look at 'man perf-config' and see what can be configured
+> > for both 'perf annotate --tui' and 'perf annotate --stdio2'.
+> > 
+> > Perhaps we can do something like:
+> > 
+> > perf config annotate.stdio=tui_like
+> > 
+> > And, for completeness have:
+> > 
+> > perf config annotate.stdio=classical
+> > 
+> > wdyt?
+> > 
+> > Looking at the other patches now.
+> > 
+> > - Arnaldo
+> > 
+> > > - source locations for the hottest lines are printed
+> > >    at the line end in order to preserve layout
+> > > 
+> > > Before:
+> > > 
+> > >      0.00 :   405ef1: inc    %r15
+> > >           :            tmpsd * (TD + tmpsd * TDD)));
+> > >      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+> > >           :            tmpsd * (TC +
+> > >   eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
+> > >           :            TA + tmpsd * (TB +
+> > >      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+> > >           :            dumbo =
+> > >   eff.c:1809    1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8>
+> > >           :            sumi -= sj * tmpsd * dij2i * dumbo;
+> > >   eff.c:1813    2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0
+> > >      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+> > >      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+> > >           :            for (k = 0; k < lpears[i] + upears[i]; k++) {
+> > >   eff.c:1761    0.90 :   405f29: cmp    %r15d,%r12d
+> > > 
+> > > After:
+> > > 
+> > >      0.00 :   405ef1: inc    %r15
+> > >           : 1812   tmpsd * (TD + tmpsd * TDD)));
+> > >      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+> > >           : 1811   tmpsd * (TC +
+> > >      0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
+> > >           : 1810   TA + tmpsd * (TB +
+> > >      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+> > >           : 1809   dumbo =
+> > >      1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8> // eff.c:1809
+> > >           : 1813   sumi -= sj * tmpsd * dij2i * dumbo;
+> > >      2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0 // eff.c:1813
+> > >      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+> > >      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+> > >           : 1761   for (k = 0; k < lpears[i] + upears[i]; k++) {
+> > > 
+> > > Where e.g. '// eff.c:1811' shares the same color as the percentantage
+> > > at the line beginning.
+> > > 
+> > > Signed-off-by: Martin Liška <mliska@suse.cz>
+> > > ---
+> > >   tools/perf/util/annotate.c | 30 ++++++++++++++----------------
+> > >   1 file changed, 14 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > > index e60841b86d27..80542012ec1b 100644
+> > > --- a/tools/perf/util/annotate.c
+> > > +++ b/tools/perf/util/annotate.c
+> > > @@ -1366,7 +1366,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+> > >   {
+> > >   	struct disasm_line *dl = container_of(al, struct disasm_line, al);
+> > >   	static const char *prev_line;
+> > > -	static const char *prev_color;
+> > >   	if (al->offset != -1) {
+> > >   		double max_percent = 0.0;
+> > > @@ -1405,20 +1404,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+> > >   		color = get_percent_color(max_percent);
+> > > -		/*
+> > > -		 * Also color the filename and line if needed, with
+> > > -		 * the same color than the percentage. Don't print it
+> > > -		 * twice for close colored addr with the same filename:line
+> > > -		 */
+> > > -		if (al->path) {
+> > > -			if (!prev_line || strcmp(prev_line, al->path)
+> > > -				       || color != prev_color) {
+> > > -				color_fprintf(stdout, color, " %s", al->path);
+> > > -				prev_line = al->path;
+> > > -				prev_color = color;
+> > > -			}
+> > > -		}
+> > > -
+> > >   		for (i = 0; i < nr_percent; i++) {
+> > >   			struct annotation_data *data = &al->data[i];
+> > >   			double percent;
+> > > @@ -1439,6 +1424,19 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+> > >   		printf(" : ");
+> > >   		disasm_line__print(dl, start, addr_fmt_width);
+> > > +
+> > > +		/*
+> > > +		 * Also color the filename and line if needed, with
+> > > +		 * the same color than the percentage. Don't print it
+> > > +		 * twice for close colored addr with the same filename:line
+> > > +		 */
+> > > +		if (al->path) {
+> > > +			if (!prev_line || strcmp(prev_line, al->path)) {
+> > > +				color_fprintf(stdout, color, " // %s", al->path);
+> > > +				prev_line = al->path;
+> > > +			}
+> > > +		}
+> > > +
+> > >   		printf("\n");
+> > >   	} else if (max_lines && printed >= max_lines)
+> > >   		return 1;
+> > > @@ -1454,7 +1452,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+> > >   		if (!*al->line)
+> > >   			printf(" %*s:\n", width, " ");
+> > >   		else
+> > > -			printf(" %*s:     %*s %s\n", width, " ", addr_fmt_width, " ", al->line);
+> > > +			printf(" %*s: %-*d %s\n", width, " ", addr_fmt_width, al->line_nr, al->line);
+> > >   	}
+> > >   	return 0;
+> > > -- 
+> > > 2.30.1
+> > > 
+> > 
+> 
 
-Provide a standardized way to declare a percpu value with examples and
-a good documentation with examples.
-Let the user decide what is best for his use case.
+-- 
 
->
-> >
-> > Now that both array and hash maps have support for batched ops in the
-> > percpu variant, let's provide a convenient macro to declare percpu map
-> > value types.
-> >
-> > Updates the tests to a "reference" usage of the new macro.
-> >
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > ---
-> >  tools/lib/bpf/bpf.h                           | 10 ++++
-> >  tools/testing/selftests/bpf/bpf_util.h        |  7 ---
-> >  .../bpf/map_tests/htab_map_batch_ops.c        | 48 ++++++++++---------
-> >  .../selftests/bpf/prog_tests/map_init.c       |  5 +-
-> >  tools/testing/selftests/bpf/test_maps.c       | 16 ++++---
-> >  5 files changed, 46 insertions(+), 40 deletions(-)
-> >
->
-> [...]
->
-> > @@ -400,11 +402,11 @@ static void test_arraymap(unsigned int task, void=
- *data)
-> >  static void test_arraymap_percpu(unsigned int task, void *data)
-> >  {
-> >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
-> > -       BPF_DECLARE_PERCPU(long, values);
-> > +       pcpu_map_value_t values[nr_cpus];
-> >         int key, next_key, fd, i;
-> >
-> >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
-> > -                           sizeof(bpf_percpu(values, 0)), 2, 0);
-> > +                           sizeof(long), 2, 0);
-> >         if (fd < 0) {
-> >                 printf("Failed to create arraymap '%s'!\n", strerror(er=
-rno));
-> >                 exit(1);
-> > @@ -459,7 +461,7 @@ static void test_arraymap_percpu(unsigned int task,=
- void *data)
-> >  static void test_arraymap_percpu_many_keys(void)
-> >  {
-> >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
->
-> This just sets a bad example for anyone using selftests as an
-> aspiration for their own code. bpf_num_possible_cpus() does exit(1)
-> internally if libbpf_num_possible_cpus() returns error. No one should
-> write real production code like that. So maybe let's provide a better
-> example instead with error handling and malloc (or perhaps alloca)?
-
-OK. Makes sense.
-
->
-> > -       BPF_DECLARE_PERCPU(long, values);
-> > +       pcpu_map_value_t values[nr_cpus];
-> >         /* nr_keys is not too large otherwise the test stresses percpu
-> >          * allocator more than anything else
-> >          */
-> > @@ -467,7 +469,7 @@ static void test_arraymap_percpu_many_keys(void)
-> >         int key, fd, i;
-> >
-> >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
-> > -                           sizeof(bpf_percpu(values, 0)), nr_keys, 0);
-> > +                           sizeof(long), nr_keys, 0);
-> >         if (fd < 0) {
-> >                 printf("Failed to create per-cpu arraymap '%s'!\n",
-> >                        strerror(errno));
-> > --
-> > 2.25.1
-> >
+- Arnaldo
