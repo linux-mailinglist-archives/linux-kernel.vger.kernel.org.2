@@ -2,326 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD29357638
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3E035763B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhDGUlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:41:04 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:51403 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhDGUlB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:41:01 -0400
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 11AF160003;
-        Wed,  7 Apr 2021 20:40:47 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-        robh+dt@kernel.org, andrew@lunn.ch, sebastian.hesselbarth@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        chris.packham@alliedtelesis.co.nz,
-        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-Subject: Re: [PATCH v2] ARM: dts: mvebu: Add device tree for ATL-x530 Board
-In-Reply-To: <20201130223507.23571-1-aryan.srivastava@alliedtelesis.co.nz>
-References: <20201130223507.23571-1-aryan.srivastava@alliedtelesis.co.nz>
-Date:   Wed, 07 Apr 2021 22:40:47 +0200
-Message-ID: <87sg41bzg0.fsf@BL-laptop>
+        id S230391AbhDGUlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:41:42 -0400
+Received: from mail.pqgruber.com ([52.59.78.55]:39898 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhDGUlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:41:40 -0400
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 98A9CC6B24A;
+        Wed,  7 Apr 2021 22:41:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617828088;
+        bh=Xl/ESSD4/hhMuitp64+ekC4g7ibiaBi8k1rzUFGoZNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hql7Nxg0TS3eQEQ7YhCH0EaTWzpFa3P5UfnWA0MZd1dMwsnp9xJe/HcZCxUCakeQ0
+         Dp+FDQyf4bi1Xsrpwx7SQYP9ulvc9MhWMlGqgI0mI3UIail/mEq40WtBNLIGag730n
+         av8XwzEjXG3/l9g1MKuwpS7HnKn2pSdqM6LHyYf0=
+Date:   Wed, 7 Apr 2021 22:41:27 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 7/8] pwm: pca9685: Restrict period change for enabled
+ PWMs
+Message-ID: <YG4Y94sIL/xO2u/N@workstation.tuxnet>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-7-clemens.gruber@pqgruber.com>
+ <20210407061229.lsyg7blh3ebxtvx6@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210407061229.lsyg7blh3ebxtvx6@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Aryan,
+On Wed, Apr 07, 2021 at 08:12:29AM +0200, Uwe Kleine-König wrote:
+> On Tue, Apr 06, 2021 at 06:41:39PM +0200, Clemens Gruber wrote:
+> > Previously, the last used PWM channel could change the global prescale
+> > setting, even if other channels are already in use.
+> > 
+> > Fix it by only allowing the first enabled PWM to change the global
+> > chip-wide prescale setting. If there is more than one channel in use,
+> > the prescale settings resulting from the chosen periods must match.
+> > 
+> > GPIOs do not count as enabled PWMs as they are not using the prescaler
+> > and can't change it.
+> > 
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > ---
+> > Changes since v6:
+> > - Only allow the first PWM that is enabled to change the prescaler, not
+> >   the first one that uses the prescaler
+> > 
+> >  drivers/pwm/pwm-pca9685.c | 66 +++++++++++++++++++++++++++++++++------
+> >  1 file changed, 56 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > index 24221ee7a77a..cf0c98e4ef44 100644
+> > --- a/drivers/pwm/pwm-pca9685.c
+> > +++ b/drivers/pwm/pwm-pca9685.c
+> > @@ -23,11 +23,11 @@
+> >  #include <linux/bitmap.h>
+> >  
+> >  /*
+> > - * Because the PCA9685 has only one prescaler per chip, changing the period of
+> > - * one channel affects the period of all 16 PWM outputs!
+> > - * However, the ratio between each configured duty cycle and the chip-wide
+> > - * period remains constant, because the OFF time is set in proportion to the
+> > - * counter range.
+> > + * Because the PCA9685 has only one prescaler per chip, only the first channel
+> > + * that is enabled is allowed to change the prescale register.
+> > + * PWM channels requested afterwards must use a period that results in the same
+> > + * prescale setting as the one set by the first requested channel.
+> > + * GPIOs do not count as enabled PWMs as they are not using the prescaler.
+> >   */
+> >  
+> >  #define PCA9685_MODE1		0x00
+> > @@ -78,8 +78,9 @@
+> >  struct pca9685 {
+> >  	struct pwm_chip chip;
+> >  	struct regmap *regmap;
+> > -#if IS_ENABLED(CONFIG_GPIOLIB)
+> >  	struct mutex lock;
+> > +	DECLARE_BITMAP(pwms_enabled, PCA9685_MAXCHAN + 1);
+> > +#if IS_ENABLED(CONFIG_GPIOLIB)
+> >  	struct gpio_chip gpio;
+> >  	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
+> >  #endif
+> > @@ -90,6 +91,22 @@ static inline struct pca9685 *to_pca(struct pwm_chip *chip)
+> >  	return container_of(chip, struct pca9685, chip);
+> >  }
+> >  
+> > +/* This function is supposed to be called with the lock mutex held */
+> > +static bool pca9685_prescaler_can_change(struct pca9685 *pca, int channel)
+> > +{
+> > +	/* No PWM enabled: Change allowed */
+> > +	if (bitmap_empty(pca->pwms_enabled, PCA9685_MAXCHAN + 1))
+> > +		return true;
+> > +	/* More than one PWM enabled: Change not allowed */
+> > +	if (bitmap_weight(pca->pwms_enabled, PCA9685_MAXCHAN + 1) > 1)
+> > +		return false;
+> > +	/*
+> > +	 * Only one PWM enabled: Change allowed if the PWM about to
+> > +	 * be changed is the one that is already enabled
+> > +	 */
+> > +	return test_bit(channel, pca->pwms_enabled);
+> 
+> Maybe this is a bit more effective?:
+> 
+> 	DECLARE_BITMAP(blablub, PCA9685_MAXCHAN + 1);	
+> 	bitmap_zero(blablub, PCA9685_MAXCHAN + 1);
+> 	bitmap_set(blablub, channel);
+> 	return bitmap_subset(pca->pwms_enabled, blablub);
 
-> Add device tree file for x530 board. This has an Armada 385 SoC. Has
-> NAND-flash for user storage and SPI for booting. Covers majority of x530
-> and GS980MX variants.
->
-> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+But if no PWM is enabled, it should return true, not false.
 
-I don't know why I missed this one but I've finally applied it on
-mvebu/dt and sent a pull request for 5.13.
+> (but that's a minor issue, the suggested algorithm is correct.)
 
-Sorry for this delay.
+I would prefer to keep it explicit because it is a little easier to
+follow and probably not worth optimizing.
 
-Thanks,
+> 
+> So:
+> 
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Gregory
+Thanks.
 
+> 
+> (side-note: I wonder if the handling of the set-all channel is correct
+> here. But given that it is messy anyhow, (e.g. because setting some
+> state to this set-all channel doesn't influence pwm_get_state for the
+> individual channels) I don't object if there is another problem in this
+> corner case. IMHO just dropping this virtual channel would be nice.)
 
-> ---
-> Notes:
-> 	Changes in v2:
-> 	-Adding to Makefile
->
->  arch/arm/boot/dts/Makefile                |   1 +
->  arch/arm/boot/dts/armada-385-atl-x530.dts | 235 ++++++++++++++++++++++
->  2 files changed, 236 insertions(+)
->  create mode 100644 arch/arm/boot/dts/armada-385-atl-x530.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index a60407ad7347..d65d84e9bf9c 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1320,6 +1320,7 @@ dtb-$(CONFIG_MACH_ARMADA_375) += \
->  	armada-375-db.dtb
->  dtb-$(CONFIG_MACH_ARMADA_38X) += \
->  	armada-382-rd-ac3x-48g4x2xl.dtb \
-> +	armada-385-atl-x530.dtb\
->  	armada-385-clearfog-gtr-s4.dtb \
->  	armada-385-clearfog-gtr-l8.dtb \
->  	armada-385-db-88f6820-amc.dtb \
-> diff --git a/arch/arm/boot/dts/armada-385-atl-x530.dts b/arch/arm/boot/dts/armada-385-atl-x530.dts
-> new file mode 100644
-> index 000000000000..2041bf09c578
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/armada-385-atl-x530.dts
-> @@ -0,0 +1,235 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Device Tree file for Armada 385 Allied Telesis x530/GS980MX Board.
-> + (x530/AT-GS980MX)
-> + *
-> + Copyright (C) 2020 Allied Telesis Labs
-> + */
-> +
-> +/dts-v1/;
-> +#include "armada-385.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	model = "x530/AT-GS980MX";
-> +	compatible = "alliedtelesis,gs980mx", "alliedtelesis,x530", "marvell,armada385", "marvell,armada380";
-> +
-> +	chosen {
-> +		stdout-path = "serial1:115200n8";
-> +	};
-> +
-> +	memory {
-> +		device_type = "memory";
-> +		reg = <0x00000000 0x40000000>; /* 1GB */
-> +	};
-> +
-> +	soc {
-> +		ranges = <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
-> +			  MBUS_ID(0x01, 0x3d) 0 0xf4800000 0x80000
-> +			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
-> +
-> +		internal-regs {
-> +			i2c0: i2c@11000 {
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&i2c0_pins>;
-> +				status = "okay";
-> +			};
-> +
-> +			uart0: serial@12000 {
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&uart0_pins>;
-> +				status = "okay";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pciec {
-> +	status = "okay";
-> +};
-> +
-> +&pcie1 {
-> +	status = "okay";
-> +	reset-gpios = <&gpio1 23 GPIO_ACTIVE_LOW>;
-> +	reset-delay-us = <400000>;
-> +};
-> +
-> +&pcie2 {
-> +	status = "okay";
-> +};
-> +
-> +&devbus_cs1 {
-> +	compatible = "marvell,mvebu-devbus";
-> +	status = "okay";
-> +
-> +	devbus,bus-width    = <8>;
-> +	devbus,turn-off-ps  = <60000>;
-> +	devbus,badr-skew-ps = <0>;
-> +	devbus,acc-first-ps = <124000>;
-> +	devbus,acc-next-ps  = <248000>;
-> +	devbus,rd-setup-ps  = <0>;
-> +	devbus,rd-hold-ps   = <0>;
-> +
-> +	/* Write parameters */
-> +	devbus,sync-enable = <0>;
-> +	devbus,wr-high-ps  = <60000>;
-> +	devbus,wr-low-ps   = <60000>;
-> +	devbus,ale-wr-ps   = <60000>;
-> +
-> +	nvs@0 {
-> +		status = "okay";
-> +
-> +		compatible = "mtd-ram";
-> +		reg = <0 0x00080000>;
-> +		bank-width = <1>;
-> +		label = "nvs";
-> +	};
-> +};
-> +
-> +&pinctrl {
-> +	i2c0_gpio_pins: i2c-gpio-pins-0 {
-> +		marvell,pins = "mpp2", "mpp3";
-> +		marvell,function = "gpio";
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	clock-frequency = <100000>;
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "gpio";
-> +	pinctrl-0 = <&i2c0_pins>;
-> +	pinctrl-1 = <&i2c0_gpio_pins>;
-> +	scl-gpio = <&gpio0 2 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
-> +	sda-gpio = <&gpio0 3 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
-> +
-> +	i2c0mux: mux@71 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "nxp,pca9544";
-> +		reg = <0x71>;
-> +		i2c-mux-idle-disconnect;
-> +
-> +		i2c@0 { /* POE devices MUX */
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0>;
-> +		};
-> +
-> +		i2c@1 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <1>;
-> +
-> +			adt7476_2e: hwmon@2e {
-> +				compatible = "adi,adt7476";
-> +				reg = <0x2e>;
-> +			};
-> +
-> +			adt7476_2d: hwmon@2d {
-> +				compatible = "adi,adt7476";
-> +				reg = <0x2d>;
-> +			};
-> +		};
-> +
-> +		i2c@2 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <2>;
-> +
-> +			rtc@68 {
-> +				compatible = "dallas,ds1340";
-> +				reg = <0x68>;
-> +			};
-> +		};
-> +
-> +		i2c@3 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <3>;
-> +
-> +			gpio@20 {
-> +				compatible = "nxp,pca9554";
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x20>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&usb0 {
-> +	status = "okay";
-> +};
-> +
-> +&spi1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi1_pins>;
-> +	status = "okay";
-> +
-> +	spi-flash@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "jedec,spi-nor";
-> +		reg = <1>; /* Chip select 1 */
-> +		spi-max-frequency = <54000000>;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			partition@u-boot {
-> +				reg = <0x00000000 0x00100000>;
-> +				label = "u-boot";
-> +			};
-> +			partition@u-boot-env {
-> +				reg = <0x00100000 0x00040000>;
-> +				label = "u-boot-env";
-> +			};
-> +			partition@unused {
-> +				reg = <0x00140000 0x00e80000>;
-> +				label = "unused";
-> +			};
-> +			partition@idprom {
-> +				reg = <0x00fc0000 0x00040000>;
-> +				label = "idprom";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&nand_controller {
-> +	status = "okay";
-> +
-> +	nand@0 {
-> +		reg = <0>;
-> +		label = "pxa3xx_nand-0";
-> +		nand-rb = <0>;
-> +		nand-on-flash-bbt;
-> +		nand-ecc-strength = <4>;
-> +		nand-ecc-step-size = <512>;
-> +
-> +		marvell,nand-enable-arbiter;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			partition@user {
-> +				reg = <0x00000000 0x0f000000>;
-> +				label = "user";
-> +			};
-> +			partition@errlog {
-> +				/* Maximum mtdoops size is 8MB, so set to that. */
-> +				reg = <0x0f000000 0x00800000>;
-> +				label = "errlog";
-> +			};
-> +			partition@nand-bbt {
-> +				reg = <0x0f800000 0x00800000>;
-> +				label = "nand-bbt";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> -- 
-> 2.29.2
->
+As you can't request the all channel and the individual channels
+together, there shouldn't be any problems.
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+I agree that it would be nice to drop the ALL channel support.
+
+Clemens
