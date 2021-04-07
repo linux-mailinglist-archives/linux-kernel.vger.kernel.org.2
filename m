@@ -2,175 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A6A3561C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66613561A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243728AbhDGDJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:09:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15619 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhDGDJg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:09:36 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFTpC23Bpz17QdR;
-        Wed,  7 Apr 2021 11:07:15 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 11:09:24 +0800
-Subject: Re: [PATCH 2/4] mm/hugeltb: simplify the return code of
- __vma_reservation_common()
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210402093249.25137-1-linmiaohe@huawei.com>
- <20210402093249.25137-3-linmiaohe@huawei.com>
- <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
- <40114ff5-ba3d-ca66-3338-25db80a015da@huawei.com>
- <aaea15d4-c8e0-ee37-8ceb-35326b7ad1ae@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <1926967f-3805-2baf-6b86-24039c6513ca@huawei.com>
-Date:   Wed, 7 Apr 2021 11:09:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1348199AbhDGDDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:03:51 -0400
+Received: from mail-db8eur05on2067.outbound.protection.outlook.com ([40.107.20.67]:1216
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232839AbhDGDDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:03:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g0UgG4GW0iM4JZcVnvL62kU9nfCTqd/vXoTQ4XXhHQ3jwv5cqERDBFeSscgFqqjcDR/lIyIvFb3WEpRnQuJGVkJDCumhnENYW/LA0sop6ceAarCULJVrE/cPoU0DD7298hzRl3d30GSEuVzOwkvQh8arrjYpVir9VZ+52z/zH9yDFftT4Zs2vxWmpB1niB6RSDDrb9dWQ3hxxkUU+5cIvUHsutv828hyup+7czM5FcTjAAp+JVSe/42BRv8txihp/g1NSj5mI9F4KIcVDxDm05EAh6wJkPu4deEkulqwaRhdu9717QmNoFEa6GHcHcvOgZUqKDz0TzqYdQmH/rwgXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmGwXOt7x6JOVfmZskL+T29VygRihfeYT/BA2pD6rPA=;
+ b=LHPkihvUHuTAOyDa0YzmDLa2/5jYNcFoxugtFdfrICebUwHMDpvhxKJdwAylwXKlqBuHDfryUbSEchCSuU1pOb/Xdqb5jHoKNZTinMzOkd/2VfrOwRHpQ15/89cEEpSzrXuoMn7IAB2MPZ4oaSf+G5dx426X2qlVhYrjg4VKQLOzLQkFEmYTl8CzURFBA241oVTgSyXvFVRESo/Mngt5Telx+1gCtz6iRS/vuP+KP/EBpPT9YF5zvDgYCcuqkNw1rVoWh4bMeV7CzTPZPsZcwymLq8y4bnL2CMsgpL9VAWI0nf4Uq5nKUorbRZ9F2e8tyXbLvTqHpoQ7/AHKC7ROmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmGwXOt7x6JOVfmZskL+T29VygRihfeYT/BA2pD6rPA=;
+ b=hWUsOdjOymN83UaVwgATs8hsCoRyeLJvAE0/p7L7x29AjYT9Q5WU6tmsdfUXEOx7XuclBCj3Hw4+qj5t0aOxLwwc4DQfjp2yUgDSYD6TdiNPnLsouwivDnPY73HlFH1s++ofYVPX53tlve11WdksqumIn5ksV4RQRGv9D6zBmbE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
+ by HE1PR04MB3276.eurprd04.prod.outlook.com (2603:10a6:7:22::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Wed, 7 Apr
+ 2021 03:03:32 +0000
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::5df8:1a69:47c3:44fc]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::5df8:1a69:47c3:44fc%3]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
+ 03:03:32 +0000
+From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, bhelgaas@google.com,
+        shawnguo@kernel.org, leoyang.li@nxp.com,
+        gustavo.pimentel@synopsys.com
+Cc:     minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCHv5 0/6] PCI: layerscape: Add power management support
+Date:   Wed,  7 Apr 2021 11:09:42 +0800
+Message-Id: <20210407030948.3845-1-Zhiqiang.Hou@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.73]
+X-ClientProxiedBy: MA1PR01CA0156.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:71::26) To HE1PR0402MB3371.eurprd04.prod.outlook.com
+ (2603:10a6:7:85::27)
 MIME-Version: 1.0
-In-Reply-To: <aaea15d4-c8e0-ee37-8ceb-35326b7ad1ae@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.73) by MA1PR01CA0156.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:71::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 03:03:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f497c16d-b304-40a6-78bc-08d8f971b9e0
+X-MS-TrafficTypeDiagnostic: HE1PR04MB3276:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1PR04MB3276CAFC2148B23CA865166E84759@HE1PR04MB3276.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OTxchFVDDKPA0i2vPNUc/FsQs4DcpO5YeKPUxy8XMS33NZom8o4aDPW82C+5eQTS1Fwgk9S5qFpJwfh1UTRBR+4oBLdAe4HWkOW5MURPshox9JPr6mQO7ZuIH23Ce3kqns9Wk6etQuA86ipjYNiE4HBa0zQor98ji7moZDKhlKR+afsefzp73fMTk/LrYLPisv0FjybRf9QAdXp2TBfqUnrBhrLTlqYZhwCAMfFSYi0OCcdcz8NvNsNVm8usKyPPCQNO4yHZuLBnYND1lP7+9oaKKU7QGCOMcjP3m9BcwXXQo5KQgVhuqtRYMybqdYk/hg+nPYhSi6NAKzYin66TfImxrH8FaczuDwkiSXk85P3Lhm6kBXfc0JXRmjGLZJDJNq45JfRvsIJeDlSo9HzAWRkw7bI716RJpao4gpuRe/veTDbogn0/LPKMrfWfEEHEcpSnnvTnhZsteXF7JebYb26PRwutgNLg536NsmREiSQzi/R5RJqe5GhDEgGj3zN5yUL9kMOTsbaAKOVV1uZVo6jy1BCi3UUfGHDMX/417gCi0YECaHPzjrS3azQ2a4FxIUTAljkcqFrUTyUZAVFU2LMEWxTUghA3mjKGj/X+rOw1hvSSkOIa2b5WEpt6BFyv9GH4H75lMpafD6amJWa2PTzH4Iv5L42irGtj5/Sorl/XPBMNs+5eOe14ThQZRtnBWCoalYVuqdaZlhWVSFcNQ6yA6svuxeDUAtv2bbq/Vrs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(4326008)(6506007)(36756003)(38350700001)(26005)(2906002)(6666004)(6486002)(1076003)(66476007)(16526019)(186003)(66556008)(956004)(86362001)(66946007)(38100700001)(69590400012)(316002)(6512007)(83380400001)(478600001)(4744005)(8936002)(2616005)(8676002)(5660300002)(52116002)(921005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?76ZI6cW+of4pUryQX/TE7TOpTcIhluKIMRI03j67oNr4pLMu2+HuTsJOYcn4?=
+ =?us-ascii?Q?fS/auJinuB9fg2JJhmMxJtpzsw+zFcG7bLR2X729tdNuueDDZyc7sycazTkq?=
+ =?us-ascii?Q?gvQFSoPX1JBB1iJyKvm6osQKudYChJPMiBnbmnr5pg+gDevLYy3bxBw1Lbfy?=
+ =?us-ascii?Q?E01fOeXCm7M81DDpev6wvD1gTObfSSkVZbx52szrMAiqiqXZVYvw4uO/o3YV?=
+ =?us-ascii?Q?Ai1c+CDSwUR4HDb2A3xpC+NtWHYrnFh1FvOucT8CZJRrdoOpAJbhqk+9q57G?=
+ =?us-ascii?Q?9Dhfx1HNWKWSz8YcEAmeBDO5UE4sbCQCSs1Fy757fFOaUhNZdpvXuBi2cZMQ?=
+ =?us-ascii?Q?HwKHeno/SU+HiXLbivp6IBae2cQsiCj6wpSmkDgfNVDpJjVs2rmZQtxrGgru?=
+ =?us-ascii?Q?EAVYSIi0/0YbQOK7LY+MJ1pcG0rr+qaLUwTNoyhVW9K2aqo4Yy9w2pKygc73?=
+ =?us-ascii?Q?upaXQmfKQiP6hunlYVl6HARgvAhSBbW4+reAEXpB8+LLMsiJNk2Td8Ll/rI5?=
+ =?us-ascii?Q?TXQkViGPIv45eyMCzXSJkNOWnACpEevvTCLHZ84wEl6Es8GB8jDm/RMSDTXH?=
+ =?us-ascii?Q?iQiT94cAQkL6RJhJ7gqLXJcVD2Tk1JRYeI3EV1Ka+uhVTHzebux+oBtLB3ax?=
+ =?us-ascii?Q?5e0DgkFEhZE/AD8eGlFyXhCzndbJgf1SnN1eyjZJE3GWk1yKetMfKJiBRVvI?=
+ =?us-ascii?Q?YQ35fJZVFh8NoH7/GsvV5xRd6o2zi2Ri/85oy6BVK2rwJs3cghQ/x1njg6GG?=
+ =?us-ascii?Q?qhmAXiq5vKQtIeHwse2P+JXispGYRuJVSqspNxTILHlPinFeXLb3cVkKyHuV?=
+ =?us-ascii?Q?f/MoCQdm9Kianwp7vZGkN8WU/KyRynIbxltvpUCKqq8l2WvGOMgy3wAY2h/k?=
+ =?us-ascii?Q?HS7g8+MWt8KnF7eWcdunv+OtbI07nhnSv3pcrlnugpB5AVnguwtbon4EdOIP?=
+ =?us-ascii?Q?AOyGDG4oxzWPUBHBwr8/OZ6qD6ElJxTWxXiObymIwI4KtfN1AMiMvJvNaflv?=
+ =?us-ascii?Q?mbKhvNQnpx/I+9VLzgzircwx1NmRUAV02dYSIFF5ln7mnImdG3vWUTM5Vg+p?=
+ =?us-ascii?Q?s1LNVcQ+44RC9bTjw6s1gOEG/2ebyxm1FfrFOkBnhu2aI5L6iszNSg+lAx2x?=
+ =?us-ascii?Q?ThQNtlwChWG0v2RZCecsnaXiS7uJDKJvZstboOc/yByC1V+skOFDc156OYS4?=
+ =?us-ascii?Q?Ns45TqChDrQ+qgKifsGCsc+CLOZSQFalR7SyY6HZKdA67V9VB1FDR/wok/t6?=
+ =?us-ascii?Q?flFNjKd/5K5PtT301DXp+djcg2rYpTDxWDab5Xb5SIv+JKBIzdHD0M0KiPWR?=
+ =?us-ascii?Q?NOBtBA21f2pgnjQjNJyK4bJ/?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f497c16d-b304-40a6-78bc-08d8f971b9e0
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 03:03:32.1719
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wesU9TqbckMeyhzZ3z5gLoX1jTdYS3+im52emMAbr6E+yISNeaen/LuHk0d3Y9VZ6cNOdGzQ2/Kzve/w9edZjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR04MB3276
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/7 10:37, Mike Kravetz wrote:
-> On 4/6/21 7:05 PM, Miaohe Lin wrote:
->> Hi:
->> On 2021/4/7 8:53, Mike Kravetz wrote:
->>> On 4/2/21 2:32 AM, Miaohe Lin wrote:
->>>> It's guaranteed that the vma is associated with a resv_map, i.e. either
->>>> VM_MAYSHARE or HPAGE_RESV_OWNER, when the code reaches here or we would
->>>> have returned via !resv check above. So ret must be less than 0 in the
->>>> 'else' case. Simplify the return code to make this clear.
->>>
->>> I believe we still neeed that ternary operator in the return statement.
->>> Why?
->>>
->>> There are two basic types of mappings to be concerned with:
->>> shared and private.
->>> For private mappings, a task can 'own' the mapping as indicated by
->>> HPAGE_RESV_OWNER.  Or, it may not own the mapping.  The most common way
->>> to create a non-owner private mapping is to have a task with a private
->>> mapping fork.  The parent process will have HPAGE_RESV_OWNER set, the
->>> child process will not.  The idea is that since the child has a COW copy
->>> of the mapping it should not consume reservations made by the parent.
->>
->> The child process will not have HPAGE_RESV_OWNER set because at fork time, we do:
->> 		/*
->> 		 * Clear hugetlb-related page reserves for children. This only
->> 		 * affects MAP_PRIVATE mappings. Faults generated by the child
->> 		 * are not guaranteed to succeed, even if read-only
->> 		 */
->> 		if (is_vm_hugetlb_page(tmp))
->> 			reset_vma_resv_huge_pages(tmp);
->> i.e. we have vma->vm_private_data = (void *)0; for child process and vma_resv_map() will
->> return NULL in this case.
->> Or am I missed something?
->>
->>> Only the parent (HPAGE_RESV_OWNER) is allowed to consume the
->>> reservations.
->>> Hope that makens sense?
->>>
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/hugetlb.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>> index a03a50b7c410..b7864abded3d 100644
->>>> --- a/mm/hugetlb.c
->>>> +++ b/mm/hugetlb.c
->>>> @@ -2183,7 +2183,7 @@ static long __vma_reservation_common(struct hstate *h,
->>>>  			return 1;
->>>>  	}
->>>>  	else
->>>
->>> This else also handles the case !HPAGE_RESV_OWNER.  In this case, we
->>
->> IMO, for the case !HPAGE_RESV_OWNER, we won't reach here. What do you think?
->>
-> 
-> I think you are correct.
-> 
-> However, if this is true we should be able to simply the code even
-> further.  There is no need to check for HPAGE_RESV_OWNER because we know
-> it must be set.  Correct?  If so, the code could look something like:
-> 
-> 	if (vma->vm_flags & VM_MAYSHARE)
-> 		return ret;
-> 
-> 	/* We know private mapping with HPAGE_RESV_OWNER */
-> 	 * ...						 *
-> 	 * Add that existing comment                     */
-> 
-> 	if (ret > 0)
-> 		return 0;
-> 	if (ret == 0)
-> 		return 1;
-> 	return ret;
-> 
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Many thanks for good suggestion! What do you mean is this ?
+This patch series is to add PCIe power management support for NXP
+Layerscape platforms.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a03a50b7c410..9b4c05699a90 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2163,27 +2163,26 @@ static long __vma_reservation_common(struct hstate *h,
+Hou Zhiqiang (6):
+  PCI: layerscape: Change to use the DWC common link-up check function
+  dt-bindings: pci: layerscape-pci: Add a optional property big-endian
+  arm64: dts: layerscape: Add big-endian property for PCIe nodes
+  dt-bindings: pci: layerscape-pci: Update the description of SCFG
+    property
+  arm64: dts: ls1043a: Add SCFG phandle for PCIe nodes
+  PCI: layerscape: Add power management support
 
-        if (vma->vm_flags & VM_MAYSHARE)
-                return ret;
--       else if (is_vma_resv_set(vma, HPAGE_RESV_OWNER) && ret >= 0) {
--               /*
--                * In most cases, reserves always exist for private mappings.
--                * However, a file associated with mapping could have been
--                * hole punched or truncated after reserves were consumed.
--                * As subsequent fault on such a range will not use reserves.
--                * Subtle - The reserve map for private mappings has the
--                * opposite meaning than that of shared mappings.  If NO
--                * entry is in the reserve map, it means a reservation exists.
--                * If an entry exists in the reserve map, it means the
--                * reservation has already been consumed.  As a result, the
--                * return value of this routine is the opposite of the
--                * value returned from reserve map manipulation routines above.
--                */
--               if (ret)
--                       return 0;
--               else
--                       return 1;
--       }
--       else
--               return ret < 0 ? ret : 0;
-+       /*
-+        * We know private mapping must have HPAGE_RESV_OWNER set.
-+        *
-+        * In most cases, reserves always exist for private mappings.
-+        * However, a file associated with mapping could have been
-+        * hole punched or truncated after reserves were consumed.
-+        * As subsequent fault on such a range will not use reserves.
-+        * Subtle - The reserve map for private mappings has the
-+        * opposite meaning than that of shared mappings.  If NO
-+        * entry is in the reserve map, it means a reservation exists.
-+        * If an entry exists in the reserve map, it means the
-+        * reservation has already been consumed.  As a result, the
-+        * return value of this routine is the opposite of the
-+        * value returned from reserve map manipulation routines above.
-+        */
-+       if (ret > 0)
-+               return 0;
-+       if (ret == 0)
-+               return 1;
-+       return ret;
- }
+ .../bindings/pci/layerscape-pci.txt           |   6 +-
+ .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |   1 +
+ .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   6 +
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   3 +
+ drivers/pci/controller/dwc/pci-layerscape.c   | 450 ++++++++++++++----
+ drivers/pci/controller/dwc/pcie-designware.h  |   1 +
+ 6 files changed, 370 insertions(+), 97 deletions(-)
+
+-- 
+2.17.1
+
