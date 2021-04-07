@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C56C35611D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE30435611C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343839AbhDGBxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347851AbhDGBvx (ORCPT
+        id S1348023AbhDGBxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:53:45 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:40059 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347844AbhDGBvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 21:51:53 -0400
-Received: from server.lespinasse.org (unknown [IPv6:2602:303:fcdc:ce10::100:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4976C0613D9
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
  t=1617759902; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=wmzTNOpmvJgU2+ktObZqYl7ztD+8ceDz1BXrR5WVsHA=;
- b=WqfE2X+chCev1QmePRjeuCrLGUj6TXALSmqGZlONI43Pl3PjzGxGJqBzjzNYC5wCMyWzX
- 7kAAXcM9WXxDLhPDw==
+ from; bh=mO5MU45MyVZcFHxHRLPz46S2R58Y3f1o/RvXopsTgug=;
+ b=x8Ntsiwc/FMdqgxnWlPWGRMTMXKGXUd7FH7ae8ZNK07QdvjB9kdBhnKqEpDWUGep8WKgH
+ agBG8aS8vepwuR9DQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617759902; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=wmzTNOpmvJgU2+ktObZqYl7ztD+8ceDz1BXrR5WVsHA=;
- b=j2O1Dn7hwEqXxPaFt1j92dvD5LnaAj1gNu182V8uNbDW77KXiHD/IvchklgWFg+3HdPiu
- 0Wc9n3eoMVW6ufA4LGoVG1h8aMAZnDdsDM87uQC2QGKU45z5x8VGSn2NolG0WP5mUmLyC5w
- wANilgJ5mW8LgdMoel/qRH9I9DLbNlbun1WZwh52o/0QvbkjyX47f9yNvp5K8r6/VRFO8X+
- oTiFyJ4wp1U6mYbAjJaydTepcGkgyyY80luQ3L+1EJIBqxNkK8dts6OyilOpk2JiMaoB/j5
- pIlBWfU3k+iopAQl7hfoymM6wZ6vImnYBVfbuLM7xeJbWFHLEyBN0wo7t5cw==
+ bh=mO5MU45MyVZcFHxHRLPz46S2R58Y3f1o/RvXopsTgug=;
+ b=psR8q2EllG8INTzPGm5GoRHikfJCeKeFiVpoGicOrWGGGHq0JVzKS7chnTxPadxN82J4S
+ jgkUavAqZfvS7qtYoZ30w4IeLh1awXgYDxl7BwEvUJ4oQE6+AhCFkcE0Qzh08C4HXiovxGS
+ hLlPXxtWwLKFOgCkA3eP9WXrmsitGCWenDzpIgjLC7olWkErJSelAlrPp2mvIB7lLX50swf
+ YYOHYT/YnPjrziUErSUmlNX1HI0Z670r9mkloDUGgn4ugJbzNQcZloAxwZcMhUFKxiONRWf
+ tBhnOM8mm/8aax6ivgVkb1HvaqDBIQwG/lC6CHAPXCUknPqfVjHYSjx3gBhg==
 Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
-        by server.lespinasse.org (Postfix) with ESMTPS id AF0A61602CB;
+        by server.lespinasse.org (Postfix) with ESMTPS id B8D011602D1;
         Tue,  6 Apr 2021 18:45:02 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id A162919F31D; Tue,  6 Apr 2021 18:45:02 -0700 (PDT)
+        id A8AAC19F31F; Tue,  6 Apr 2021 18:45:02 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
@@ -51,9 +48,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Rom Lemarchand <romlem@google.com>,
         Linux-Kernel <linux-kernel@vger.kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [RFC PATCH 11/37] x86/mm: attempt speculative mm faults first
-Date:   Tue,  6 Apr 2021 18:44:36 -0700
-Message-Id: <20210407014502.24091-12-michel@lespinasse.org>
+Subject: [RFC PATCH 12/37] mm: refactor __handle_mm_fault() / handle_pte_fault()
+Date:   Tue,  6 Apr 2021 18:44:37 -0700
+Message-Id: <20210407014502.24091-13-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407014502.24091-1-michel@lespinasse.org>
 References: <20210407014502.24091-1-michel@lespinasse.org>
@@ -63,117 +60,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attempt speculative mm fault handling first, and fall back to the
-existing (non-speculative) code if that fails.
+Move the code that initializes vmf->pte and vmf->orig_pte from
+handle_pte_fault() to its single call site in __handle_mm_fault().
 
-The speculative handling closely mirrors the non-speculative logic.
-This includes some x86 specific bits such as the access_error() call.
-This is why we chose to implement the speculative handling in arch/x86
-rather than in common code.
-
-The vma is first looked up and copied, under protection of the rcu
-read lock. The mmap lock sequence count is used to verify the
-integrity of the copied vma, and passed to do_handle_mm_fault() to
-allow checking against races with mmap writers when finalizing the fault.
+This ensures vmf->pte is now initialized together with the higher levels
+of the page table hierarchy. This also prepares for speculative page fault
+handling, where the entire page table walk (higher levels down to ptes)
+needs special care in the speculative case.
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- arch/x86/mm/fault.c           | 36 +++++++++++++++++++++++++++++++++++
- include/linux/vm_event_item.h |  4 ++++
- mm/vmstat.c                   |  4 ++++
- 3 files changed, 44 insertions(+)
+ mm/memory.c | 98 ++++++++++++++++++++++++++---------------------------
+ 1 file changed, 49 insertions(+), 49 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index a73347e2cdfc..f8c8e325af77 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1219,6 +1219,8 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	struct mm_struct *mm;
- 	vm_fault_t fault;
- 	unsigned int flags = FAULT_FLAG_DEFAULT;
-+	struct vm_area_struct pvma;
-+	unsigned long seq;
+diff --git a/mm/memory.c b/mm/memory.c
+index 3691be1f1319..66e7a4554c54 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3516,7 +3516,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+ 	if (pte_alloc(vma->vm_mm, vmf->pmd))
+ 		return VM_FAULT_OOM;
  
- 	tsk = current;
- 	mm = tsk->mm;
-@@ -1316,6 +1318,39 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	}
- #endif
+-	/* See comment in handle_pte_fault() */
++	/* See comment in __handle_mm_fault() */
+ 	if (unlikely(pmd_trans_unstable(vmf->pmd)))
+ 		return 0;
  
-+	count_vm_event(SPF_ATTEMPT);
-+	seq = mmap_seq_read_start(mm);
-+	if (seq & 1)
-+		goto spf_abort;
-+	rcu_read_lock();
-+	vma = find_vma(mm, address);
-+	if (!vma || vma->vm_start > address) {
-+		rcu_read_unlock();
-+		goto spf_abort;
-+	}
-+	pvma = *vma;
-+	rcu_read_unlock();
-+	if (!mmap_seq_read_check(mm, seq))
-+		goto spf_abort;
-+	vma = &pvma;
-+	if (unlikely(access_error(error_code, vma)))
-+		goto spf_abort;
-+	fault = do_handle_mm_fault(vma, address,
-+				   flags | FAULT_FLAG_SPECULATIVE, seq, regs);
-+
-+	/* Quick path to respond to signals */
-+	if (fault_signal_pending(fault, regs)) {
-+		if (!user_mode(regs))
-+			kernelmode_fixup_or_oops(regs, error_code, address,
-+						 SIGBUS, BUS_ADRERR);
-+		return;
-+	}
-+	if (!(fault & VM_FAULT_RETRY))
-+		goto done;
-+
-+spf_abort:
-+	count_vm_event(SPF_ABORT);
-+
- 	/*
- 	 * Kernel-mode access to the user address space should only occur
- 	 * on well-defined single instructions listed in the exception
-@@ -1412,6 +1447,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+@@ -3797,7 +3797,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+ 			return VM_FAULT_OOM;
  	}
  
- 	mmap_read_unlock(mm);
-+done:
- 	if (likely(!(fault & VM_FAULT_ERROR)))
- 		return;
+-	/* See comment in handle_pte_fault() */
++	/* See comment in __handle_mm_fault() */
+ 	if (pmd_devmap_trans_unstable(vmf->pmd))
+ 		return 0;
  
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 18e75974d4e3..cc4f8d14e43f 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -120,6 +120,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- #ifdef CONFIG_SWAP
- 		SWAP_RA,
- 		SWAP_RA_HIT,
-+#endif
-+#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
-+		SPF_ATTEMPT,
-+		SPF_ABORT,
- #endif
- 		NR_VM_EVENT_ITEMS
- };
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 74b2c374b86c..9ae1c27a549e 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1365,6 +1365,10 @@ const char * const vmstat_text[] = {
- 	"swap_ra",
- 	"swap_ra_hit",
- #endif
-+#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
-+	"spf_attempt",
-+	"spf_abort",
-+#endif
- #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
- };
- #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG */
+@@ -4253,53 +4253,6 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ {
+ 	pte_t entry;
+ 
+-	if (unlikely(pmd_none(*vmf->pmd))) {
+-		/*
+-		 * Leave __pte_alloc() until later: because vm_ops->fault may
+-		 * want to allocate huge page, and if we expose page table
+-		 * for an instant, it will be difficult to retract from
+-		 * concurrent faults and from rmap lookups.
+-		 */
+-		vmf->pte = NULL;
+-	} else {
+-		/*
+-		 * If a huge pmd materialized under us just retry later.  Use
+-		 * pmd_trans_unstable() via pmd_devmap_trans_unstable() instead
+-		 * of pmd_trans_huge() to ensure the pmd didn't become
+-		 * pmd_trans_huge under us and then back to pmd_none, as a
+-		 * result of MADV_DONTNEED running immediately after a huge pmd
+-		 * fault in a different thread of this mm, in turn leading to a
+-		 * misleading pmd_trans_huge() retval. All we have to ensure is
+-		 * that it is a regular pmd that we can walk with
+-		 * pte_offset_map() and we can do that through an atomic read
+-		 * in C, which is what pmd_trans_unstable() provides.
+-		 */
+-		if (pmd_devmap_trans_unstable(vmf->pmd))
+-			return 0;
+-		/*
+-		 * A regular pmd is established and it can't morph into a huge
+-		 * pmd from under us anymore at this point because we hold the
+-		 * mmap_lock read mode and khugepaged takes it in write mode.
+-		 * So now it's safe to run pte_offset_map().
+-		 */
+-		vmf->pte = pte_offset_map(vmf->pmd, vmf->address);
+-		vmf->orig_pte = *vmf->pte;
+-
+-		/*
+-		 * some architectures can have larger ptes than wordsize,
+-		 * e.g.ppc44x-defconfig has CONFIG_PTE_64BIT=y and
+-		 * CONFIG_32BIT=y, so READ_ONCE cannot guarantee atomic
+-		 * accesses.  The code below just needs a consistent view
+-		 * for the ifs and we later double check anyway with the
+-		 * ptl lock held. So here a barrier will do.
+-		 */
+-		barrier();
+-		if (pte_none(vmf->orig_pte)) {
+-			pte_unmap(vmf->pte);
+-			vmf->pte = NULL;
+-		}
+-	}
+-
+ 	if (!vmf->pte) {
+ 		if (vma_is_anonymous(vmf->vma))
+ 			return do_anonymous_page(vmf);
+@@ -4439,6 +4392,53 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+ 		}
+ 	}
+ 
++	if (unlikely(pmd_none(*vmf.pmd))) {
++		/*
++		 * Leave __pte_alloc() until later: because vm_ops->fault may
++		 * want to allocate huge page, and if we expose page table
++		 * for an instant, it will be difficult to retract from
++		 * concurrent faults and from rmap lookups.
++		 */
++		vmf.pte = NULL;
++	} else {
++		/*
++		 * If a huge pmd materialized under us just retry later.  Use
++		 * pmd_trans_unstable() via pmd_devmap_trans_unstable() instead
++		 * of pmd_trans_huge() to ensure the pmd didn't become
++		 * pmd_trans_huge under us and then back to pmd_none, as a
++		 * result of MADV_DONTNEED running immediately after a huge pmd
++		 * fault in a different thread of this mm, in turn leading to a
++		 * misleading pmd_trans_huge() retval. All we have to ensure is
++		 * that it is a regular pmd that we can walk with
++		 * pte_offset_map() and we can do that through an atomic read
++		 * in C, which is what pmd_trans_unstable() provides.
++		 */
++		if (pmd_devmap_trans_unstable(vmf.pmd))
++			return 0;
++		/*
++		 * A regular pmd is established and it can't morph into a huge
++		 * pmd from under us anymore at this point because we hold the
++		 * mmap_lock read mode and khugepaged takes it in write mode.
++		 * So now it's safe to run pte_offset_map().
++		 */
++		vmf.pte = pte_offset_map(vmf.pmd, vmf.address);
++		vmf.orig_pte = *vmf.pte;
++
++		/*
++		 * some architectures can have larger ptes than wordsize,
++		 * e.g.ppc44x-defconfig has CONFIG_PTE_64BIT=y and
++		 * CONFIG_32BIT=y, so READ_ONCE cannot guarantee atomic
++		 * accesses.  The code below just needs a consistent view
++		 * for the ifs and we later double check anyway with the
++		 * ptl lock held. So here a barrier will do.
++		 */
++		barrier();
++		if (pte_none(vmf.orig_pte)) {
++			pte_unmap(vmf.pte);
++			vmf.pte = NULL;
++		}
++	}
++
+ 	return handle_pte_fault(&vmf);
+ }
+ 
 -- 
 2.20.1
 
