@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B8A356406
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4B535640D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244690AbhDGGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:35:15 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:33703 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhDGGfO (ORCPT
+        id S1345737AbhDGGf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:35:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3517 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345216AbhDGGfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:35:14 -0400
-X-Originating-IP: 82.65.183.113
-Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 82B662000A;
-        Wed,  7 Apr 2021 06:35:03 +0000 (UTC)
-Subject: Re: [PATCH] driver: of: Properly truncate command line if too long
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Wed, 7 Apr 2021 02:35:54 -0400
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FFZNP6mZ2zRZHy;
+        Wed,  7 Apr 2021 14:33:41 +0800 (CST)
+Received: from dggpemm100007.china.huawei.com (7.185.36.116) by
+ DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 7 Apr 2021 14:35:41 +0800
+Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
+ dggpemm100007.china.huawei.com (7.185.36.116) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 7 Apr 2021 14:35:41 +0800
+Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
+ dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
+ Wed, 7 Apr 2021 14:35:41 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210316193820.3137-1-alex@ghiti.fr>
- <CAHp75VfqztgEcs8wVD7k=F-cmXsVFN=_KTgcRq5+=HpjAJCZPQ@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <3bd1df97-9633-a8cd-291c-906b8574565d@ghiti.fr>
-Date:   Wed, 7 Apr 2021 02:35:03 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+CC:     David Woodhouse <dwmw2@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] iommu/vt-d: Force to flush iotlb before creating
+ superpage
+Thread-Topic: [PATCH] iommu/vt-d: Force to flush iotlb before creating
+ superpage
+Thread-Index: AQHXJsdJgAXY3vlVHUqi4t5f0DX/hKqgIfAAgAh+GPA=
+Date:   Wed, 7 Apr 2021 06:35:41 +0000
+Message-ID: <611cb5849c9a497b8289004dddb71150@huawei.com>
+References: <20210401071834.1639-1-longpeng2@huawei.com>
+ <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
+In-Reply-To: <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.151.207]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfqztgEcs8wVD7k=F-cmXsVFN=_KTgcRq5+=HpjAJCZPQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-Le 4/6/21 à 6:56 PM, Andy Shevchenko a écrit :
-> 
-> 
-> On Tuesday, March 16, 2021, Alexandre Ghiti <alex@ghiti.fr 
-> <mailto:alex@ghiti.fr>> wrote:
-> 
->     In case the command line given by the user is too long, warn about it
->     and truncate it to the last full argument.
-> 
->     This is what efi already does in commit 80b1bfe1cb2f ("efi/libstub:
->     Don't parse overlong command lines").
-> 
->     Reported-by: Dmitry Vyukov <dvyukov@google.com
->     <mailto:dvyukov@google.com>>
->     Signed-off-by: Alexandre Ghiti <alex@ghiti.fr <mailto:alex@ghiti.fr>>
->     ---
->       drivers/of/fdt.c | 21 ++++++++++++++++++++-
->       1 file changed, 20 insertions(+), 1 deletion(-)
-> 
->     diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
->     index dcc1dd96911a..de4c6f9bac39 100644
->     --- a/drivers/of/fdt.c
->     +++ b/drivers/of/fdt.c
->     @@ -25,6 +25,7 @@
->       #include <linux/serial_core.h>
->       #include <linux/sysfs.h>
->       #include <linux/random.h>
->     +#include <linux/ctype.h>
-> 
->       #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
->       #include <asm/page.h>
->     @@ -1050,9 +1051,27 @@ int __init early_init_dt_scan_chosen(unsigned
->     long node, const char *uname,
-> 
->              /* Retrieve command line */
->              p = of_get_flat_dt_prop(node, "bootargs", &l);
->     -       if (p != NULL && l > 0)
->     +       if (p != NULL && l > 0) {
->                      strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
-> 
->     +               /*
->     +                * If the given command line size is larger than
->     +                * COMMAND_LINE_SIZE, truncate it to the last complete
->     +                * parameter.
->     +                */
->     +               if (l > COMMAND_LINE_SIZE) {
->     +                       char *cmd_p = (char *)data +
->     COMMAND_LINE_SIZE - 1;
->     +
->     +                       while (!isspace(*cmd_p))
->     +                               cmd_p--;
-> 
-> 
-> Shouldn’t you check for cmd_p being always bigger than or equal to data?
-
-Yes you're right.
-
-> 
->     +
->     +                       *cmd_p = '\0';
->     +
->     +                       pr_err("Command line is too long: truncated
->     to %d bytes\n",
->     +                              (int)(cmd_p - (char *)data + 1));
-> 
-> 
-> Do you really need that casting?
-
-No, I can use %td to print a pointer difference.
-
-I'll send a v2.
-
-Thanks,
-
-Alex
-
-> 
->     +               }
->     +       }
->     +
->              /*
->               * CONFIG_CMDLINE is meant to be a default in case nothing else
->               * managed to set the command line, unless CONFIG_CMDLINE_FORCE
->     -- 
->     2.20.1
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+SGkgQmFvbHUsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHUgQmFv
+bHUgW21haWx0bzpiYW9sdS5sdUBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgQXBy
+aWwgMiwgMjAyMSAxMjo0NCBQTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3Ry
+dWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPjsg
+aW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmcNCj4gQ2M6IGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbTsgRGF2aWQgV29vZGhvdXNl
+IDxkd213MkBpbmZyYWRlYWQub3JnPjsgTmFkYXYNCj4gQW1pdCA8bmFkYXYuYW1pdEBnbWFpbC5j
+b20+OyBBbGV4IFdpbGxpYW1zb24gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tPjsNCj4gS2V2
+aW4gVGlhbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+OyBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25n
+bGVpQGh1YXdlaS5jb20+Ow0KPiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJl
+OiBbUEFUQ0hdIGlvbW11L3Z0LWQ6IEZvcmNlIHRvIGZsdXNoIGlvdGxiIGJlZm9yZSBjcmVhdGlu
+ZyBzdXBlcnBhZ2UNCj4gDQo+IEhpIExvbmdwZW5nLA0KPiANCj4gT24gNC8xLzIxIDM6MTggUE0s
+IExvbmdwZW5nKE1pa2UpIHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L2lu
+dGVsL2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L2ludGVsL2lvbW11LmMNCj4gPiBpbmRleCBlZTA5
+MzIzLi5jYmNiNDM0IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUu
+Yw0KPiA+ICsrKyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYw0KPiA+IEBAIC0yMzQyLDkg
+KzIzNDIsMjAgQEAgc3RhdGljIGlubGluZSBpbnQgaGFyZHdhcmVfbGFyZ2VwYWdlX2NhcHMoc3Ry
+dWN0DQo+IGRtYXJfZG9tYWluICpkb21haW4sDQo+ID4gICAJCQkJICogcmVtb3ZlZCB0byBtYWtl
+IHJvb20gZm9yIHN1cGVycGFnZShzKS4NCj4gPiAgIAkJCQkgKiBXZSdyZSBhZGRpbmcgbmV3IGxh
+cmdlIHBhZ2VzLCBzbyBtYWtlIHN1cmUNCj4gPiAgIAkJCQkgKiB3ZSBkb24ndCByZW1vdmUgdGhl
+aXIgcGFyZW50IHRhYmxlcy4NCj4gPiArCQkJCSAqDQo+ID4gKwkJCQkgKiBXZSBhbHNvIG5lZWQg
+dG8gZmx1c2ggdGhlIGlvdGxiIGJlZm9yZSBjcmVhdGluZw0KPiA+ICsJCQkJICogc3VwZXJwYWdl
+IHRvIGVuc3VyZSBpdCBkb2VzIG5vdCBwZXJzZXJ2ZXMgYW55DQo+ID4gKwkJCQkgKiBvYnNvbGV0
+ZSBpbmZvLg0KPiA+ICAgCQkJCSAqLw0KPiA+IC0JCQkJZG1hX3B0ZV9mcmVlX3BhZ2V0YWJsZShk
+b21haW4sIGlvdl9wZm4sIGVuZF9wZm4sDQo+ID4gLQkJCQkJCSAgICAgICBsYXJnZXBhZ2VfbHZs
+ICsgMSk7DQo+ID4gKwkJCQlpZiAoZG1hX3B0ZV9wcmVzZW50KHB0ZSkpIHsNCj4gDQo+IFRoZSBk
+bWFfcHRlX2ZyZWVfcGFnZXRhYmxlKCkgY2xlYXJzIGEgYmF0Y2ggb2YgUFRFcy4gU28gY2hlY2tp
+bmcgY3VycmVudCBQVEUgaXMNCj4gaW5zdWZmaWNpZW50LiBIb3cgYWJvdXQgcmVtb3ZpbmcgdGhp
+cyBjaGVjayBhbmQgYWx3YXlzIHBlcmZvcm1pbmcgY2FjaGUNCj4gaW52YWxpZGF0aW9uPw0KPiAN
+Cg0KVW0uLi50aGUgUFRFIGhlcmUgbWF5IGJlIHByZXNlbnQoIGUuZy4gNEsgbWFwcGluZyAtLT4g
+c3VwZXJwYWdlIG1hcHBpbmcgKSBvciBOT1QtcHJlc2VudCAoIGUuZy4gY3JlYXRlIGEgdG90YWxs
+eSBuZXcgc3VwZXJwYWdlIG1hcHBpbmcgKSwgYnV0IHdlIG9ubHkgbmVlZCB0byBjYWxsIGZyZWVf
+cGFnZXRhYmxlIGFuZCBmbHVzaF9pb3RsYiBpbiB0aGUgZm9ybWVyIGNhc2UsIHJpZ2h0ID8NCg0K
+PiA+ICsJCQkJCWludCBpOw0KPiA+ICsNCj4gPiArCQkJCQlkbWFfcHRlX2ZyZWVfcGFnZXRhYmxl
+KGRvbWFpbiwgaW92X3BmbiwgZW5kX3BmbiwNCj4gPiArCQkJCQkJCSAgICAgICBsYXJnZXBhZ2Vf
+bHZsICsgMSk7DQo+ID4gKwkJCQkJZm9yX2VhY2hfZG9tYWluX2lvbW11KGksIGRvbWFpbikNCj4g
+PiArCQkJCQkJaW9tbXVfZmx1c2hfaW90bGJfcHNpKGdfaW9tbXVzW2ldLCBkb21haW4sDQo+ID4g
+KwkJCQkJCQkJICAgICAgaW92X3BmbiwgbnJfcGFnZXMsIDAsIDApOw0KPiA+ICsNCj4gDQo+IEJl
+c3QgcmVnYXJkcywNCj4gYmFvbHUNCg==
