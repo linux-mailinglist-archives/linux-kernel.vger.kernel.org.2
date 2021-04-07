@@ -2,152 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAF935687E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA81356880
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350397AbhDGJxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350328AbhDGJxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:53:32 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8C6C061756;
-        Wed,  7 Apr 2021 02:53:23 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 0C113C759B8;
-        Wed,  7 Apr 2021 11:53:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617789202;
-        bh=LFiHf0QEFRJ4AYLD+eXO5VI/qCJ28NzXBY108U/TRM0=;
+        id S234636AbhDGJyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:54:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232042AbhDGJyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:54:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 738B561382;
+        Wed,  7 Apr 2021 09:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617789277;
+        bh=zWJ+SMOiDDkk14mXom4NjVcpZ2wgtTB1vowz8JWtg5s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mz4hB6THRjLdImcnOlQuUH8io8ULNR06r7iyX15tHPIEpwxhCEfUC7lx0JOjOgKiJ
-         MJLYe72hbowaeXYKxomoFX9hC1v1c7Ikdq7eZBlKduRi+xMLzZOqv759+cHkebb5yI
-         qRVi0llJXs2egQLcx+COEP8KQCyaB280/VV76UfE=
-Date:   Wed, 7 Apr 2021 11:53:20 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/8] pwm: pca9685: Support hardware readout
-Message-ID: <YG2BEGsPU8jWzvPq@workstation.tuxnet>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-2-clemens.gruber@pqgruber.com>
- <20210407053135.tx2q4bzxf2lwtqna@pengutronix.de>
- <YG1gQNdDYA1RwrCo@workstation.tuxnet>
- <20210407090943.vshoxqhaha4j6wq7@pengutronix.de>
+        b=AI+PK3sTplYdXC1BcnmhYfjkvjUTprGlfNsiS2W3IqXnzA/c94mKNyQCoFgK4rsdK
+         4noemkmQdovAnE9sIKXSd9zQme4I1pKT3EG8/LNQ8GF1bW3UugRKI7i+Gc6bgDV0/P
+         xmRyQQdI8hBVyrVN1g/EGl2MMyySKxhW5IcDXp/8=
+Date:   Wed, 7 Apr 2021 11:54:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: Re: [RESEND PATCH] staging: emxx_udc: Ending line with argument
+Message-ID: <YG2BVSOI+UNfEZTT@kroah.com>
+References: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
+ <YGy4LXHBrBb/r3dk@kroah.com>
+ <4c7df741-4e73-2ac4-f0d8-c9513ae29c88@gmail.com>
+ <YG1FI38zNbidjt9q@kroah.com>
+ <4d7ebe9c-8ebc-2fc9-10ed-6756ab42d5d7@gmail.com>
+ <YG1usolTNEOfDqXh@kroah.com>
+ <e7a18709-0b26-751e-6ba4-b43dd89c203f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210407090943.vshoxqhaha4j6wq7@pengutronix.de>
+In-Reply-To: <e7a18709-0b26-751e-6ba4-b43dd89c203f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:09:43AM +0200, Uwe Kleine-König wrote:
-> On Wed, Apr 07, 2021 at 09:33:20AM +0200, Clemens Gruber wrote:
-> > On Wed, Apr 07, 2021 at 07:31:35AM +0200, Uwe Kleine-König wrote:
-> > > On Tue, Apr 06, 2021 at 06:41:34PM +0200, Clemens Gruber wrote:
-> > > > Implements .get_state to read-out the current hardware state.
-> > > > 
-> > > > The hardware readout may return slightly different values than those
-> > > > that were set in apply due to the limited range of possible prescale and
-> > > > counter register values.
-> > > > 
-> > > > Also note that although the datasheet mentions 200 Hz as default
-> > > > frequency when using the internal 25 MHz oscillator, the calculated
-> > > > period from the default prescaler register setting of 30 is 5079040ns.
-> > > > 
-> > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > > ---
-> > > > Changes since v6:
-> > > > - Added a comment regarding the division (Suggested by Uwe)
-> > > > - Rebased
-> > > > 
-> > > >  drivers/pwm/pwm-pca9685.c | 46 +++++++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 46 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > > > index 5a2ce97e71fd..d4474c5ff96f 100644
-> > > > --- a/drivers/pwm/pwm-pca9685.c
-> > > > +++ b/drivers/pwm/pwm-pca9685.c
-> > > > @@ -333,6 +333,51 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > > +				  struct pwm_state *state)
-> > > > +{
-> > > > +	struct pca9685 *pca = to_pca(chip);
-> > > > +	unsigned long long duty;
-> > > > +	unsigned int val = 0;
-> > > > +
-> > > > +	/* Calculate (chip-wide) period from prescale value */
-> > > > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > > > +	/*
-> > > > +	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
-> > > > +	 * The following calculation is therefore only a multiplication
-> > > > +	 * and we are not losing precision.
-> > > > +	 */
-> > > > +	state->period = (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
-> > > > +			(val + 1);
-> > > > +
-> > > > +	/* The (per-channel) polarity is fixed */
-> > > > +	state->polarity = PWM_POLARITY_NORMAL;
-> > > > +
-> > > > +	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
-> > > > +		/*
-> > > > +		 * The "all LEDs" channel does not support HW readout
-> > > > +		 * Return 0 and disabled for backwards compatibility
-> > > > +		 */
-> > > > +		state->duty_cycle = 0;
-> > > > +		state->enabled = false;
-> > > > +		return;
-> > > > +	}
-> > > > +
-> > > > +	duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > > > +
-> > > > +	state->enabled = !!duty;
-> > > > +	if (!state->enabled) {
-> > > > +		state->duty_cycle = 0;
-> > > > +		return;
-> > > > +	} else if (duty == PCA9685_COUNTER_RANGE) {
-> > > > +		state->duty_cycle = state->period;
-> > > > +		return;
-> > > > +	}
-> > > > +
-> > > > +	duty *= state->period;
-> > > > +	state->duty_cycle = duty / PCA9685_COUNTER_RANGE;
-> > > 
-> > > Given that with duty = 0 the chip is still "on" and changing the duty
-> > > will first complete the currently running period, I'd model duty=0 as
-> > > enabled. This also simplifies the code a bit, to something like:
-> > > 
-> > > 
-> > > 	state->enabled = true;
-> > > 	duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > > 	state->duty_cycle = div_round_up(duty * state->period, PCA9685_COUNTER_RANGE);
-> > > 
-> > > (I'm using round-up here assuming apply uses round-down to get
-> > > idempotency. In the current patch set state this is wrong however.)
-> > 
-> > So, in your opinion, every requested PWM of the pca9685 should always be
-> > enabled by default (from the PWM core viewpoint) ?
-> > 
-> > And this wouldn't break the following because pwm_get_state does not
-> > actually read out the hw state:
-> > pwm_get_state -> enabled=true duty=0
-> > pwm_apply_state -> enabled =false duty=0
-> > pwm_get_state -> enabled=false duty=0
+On Wed, Apr 07, 2021 at 10:46:23AM +0100, Beatriz Martins de Carvalho wrote:
 > 
-> I don't see any breakage here. Either there is none or I failed to grasp
-> where you see a problem.
+> Em 07/04/21 09:34, Greg KH escreveu:
+> > On Wed, Apr 07, 2021 at 09:16:44AM +0100, Beatriz Martins de Carvalho wrote:
+> > > Em 07/04/21 06:37, Greg KH escreveu:
+> > > > On Tue, Apr 06, 2021 at 09:00:07PM +0100, Beatriz Martins de Carvalho wrote:
+> > > > > Em 06/04/21 20:36, Greg KH escreveu:
+> > > > > > On Tue, Apr 06, 2021 at 08:34:09PM +0100, Beatriz Martins de Carvalho wrote:
+> > > > > > > Cleans up check of "Lines should not end with a '('"
+> > > > > > > with argument present in next line in file emxx_udc.c
+> > > > > > > 
+> > > > > > > Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+> > > > > > > ---
+> > > > > > >     drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+> > > > > > >     1 file changed, 4 insertions(+), 7 deletions(-)
+> > > > > > Why is this a [RESEND] ?
+> > > > > > 
+> > > > > > What happened to the first version?
+> > > > > Sorry, I didn't receive your review, and in kernelnewbies tutorial, they say
+> > > > > if not receive a response, may have missed the patch, so I resent it.
+> > > > Do you have a pointer to your previous patch in the lore.kernel.org
+> > > > archives anywhere?  I can't seem to find it.
+> > > 
+> > > I found this, it's what is you need?
+> > > 
+> > > https://lore.kernel.org/linux-staging/20210401195457.24512-1-martinsdecarvalhobeatriz@gmail.com/
+> > Ah, yes, I saw Julia's review and assumed you would fix up your patch
+> > based on her comments.  Please do not ignore review comments, it makes
+> > everyone's lives harder.
+> Sorry, I didn't fix up my patch based on her comments, because to do this
+> was
+> to revert all my patch or will break a code line if I remaining within 80
+> characters. How the code line still stays between 85 or 90 I assumed that
+> was
+> ok, so I was waiting for your review. Now I saw that I should send this
+> answer
+> to her. What should I do with the patch?
 
-Me neither, I was just thinking out loud.
+If you do not know, ask the reviewer what they mean by their review
+comments.
 
-Clemens
+thanks,
+
+greg k-h
