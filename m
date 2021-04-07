@@ -2,158 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9B135756C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B617D35756F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355885AbhDGUHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348993AbhDGUHX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:07:23 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF40C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:07:11 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id s17so22196765ljc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/vai0nU8ahUeqHDsInaV1wXMfAHCPGayRkelay9Gu/c=;
-        b=StO8y4z0YJ2sIRuWD+p8e7Q0l2T+hS4BK/yjQ6bJK+W10NuDwLqYxNiiGdsE6ZzdY0
-         j5a8upBcHwOMaeAl62P8GmWlvbXebRR1GVHqOaslaIr91tYKokBXvYck8jWN1FSox0uJ
-         f23DP4ylp17dus6Ds57Y6XXprOAWwypPgbcijbM5PZzQLyV3q+rOPlt1/mn6vWpoNyfW
-         HlLXSB0B4lK9jeO6DQki1BUO7LRGpviFWusMBzKk0drwLzvY+sXaAZ9PQd9l3ODJty6S
-         QeagHf5w5w8L/IkKxk3MQlf4KB8kMF6aejgoi++beiL9iNTK7ECFVgeSUDS7FOUgBEJs
-         v0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/vai0nU8ahUeqHDsInaV1wXMfAHCPGayRkelay9Gu/c=;
-        b=Mu/iKSNNWpwDe2eEzm2nw7A12BA3E6hS2fPSVD9F7WF9X1Z4FeOmJZ5AYwdypF7Mum
-         40hB+0ZWOlhRxFmL9NpFmUbG4+h4cJKvHM4QvbigVcHzuq8EH0v8oUBCN5HaL5NqVzXm
-         sJyqDAWs3nlgw0ae0tLRkO7rYwRfPs23xuF7zkZ/tO8TdHCo+yLL35KPyDKaFd0S5n25
-         enPaNrV80rG3A4CGCaB9Rl4qv18UsigUAO2itVI8YuClUoMuqVcMyZT0MP80IZP07dzx
-         bvI0s/76cZZw4tg05GYJM1yctKGVaaO+3X21drV84+aPOyu3VzrAsSCObtYeiETH5Jw5
-         cD+w==
-X-Gm-Message-State: AOAM531MwpOV6/xhX0rzwJzbCW7ULdexY0LCIaTjvdNuxoQpqG2X5BUy
-        vmYDJojNMhobaHJb9BK17fT58r+d0viztdP8NZX9ZA==
-X-Google-Smtp-Source: ABdhPJyndP97T1i1A544kUEqIbgjl3iGA5vSMvrx036WuFZ7dPSMke1t+D6LyfOzk9N/4LJPbB2474jblVritRHulZY=
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr3264560ljp.479.1617826029695;
- Wed, 07 Apr 2021 13:07:09 -0700 (PDT)
+        id S1355892AbhDGUHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345853AbhDGUHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:07:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E16061158;
+        Wed,  7 Apr 2021 20:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617826047;
+        bh=a6BQBkYBckWILIt+kdw/GGz0d9VSJVSXsYtBOcNTfvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=upetZLxnv0XQGf4pDHYqYTctrM9Xl9I3ZxX+a4L/3q9zB+Bs5gKE37JiLKMvdzsxO
+         bNYCYzvb+lH6XQqK44xPxAwqJ3t0oJCBJjVQ8i+n6lKop77Ra/qnEoe44JrhZ/A2U4
+         u+Hv4xtNHEQ456WmvBYp2+MTv2KK/5Z9+AZH7r3YJ7GBIO0N0CkEOW/90sdManEu+R
+         l21XFXLYa2FrKEotLm7Bl6yKccwZrsFE3rP7x/8TVHtr5RfR9MaV1S7OkaGg7S04X8
+         GGCsk7xj8nI0Tu43OA/OVHsd2dPnldPZXCYxbfqIchUgqelXazhAuGX3O5EaTZG29a
+         NpuVEx6sRNnlA==
+Date:   Wed, 7 Apr 2021 21:07:09 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
+ endpoint device voltage regulators
+Message-ID: <20210407200709.GG5510@sirena.org.uk>
+References: <20210401212148.47033-1-jim2101024@gmail.com>
+ <20210401212148.47033-3-jim2101024@gmail.com>
+ <20210406164708.GM6443@sirena.org.uk>
+ <CANCKTBsiujTkOdh60etBqF_hE8exg6m9TDxkGHVVAGVS2SFCcQ@mail.gmail.com>
+ <20210406173211.GP6443@sirena.org.uk>
+ <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
+ <20210407112713.GB5510@sirena.org.uk>
+ <03852d1a-1ee4-fd29-8523-4673c35f83cd@gmail.com>
 MIME-Version: 1.0
-References: <20210407061456.5914-1-gi-oh.kim@ionos.com>
-In-Reply-To: <20210407061456.5914-1-gi-oh.kim@ionos.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 7 Apr 2021 13:06:58 -0700
-Message-ID: <CAKwvOdnaLT8sn4e3PQoASjKaNP4gUKQikhxtJM5G94-7CMUKTw@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: Introduce sysfs_streqcase
-To:     Gioh Kim <gi-oh.kim@ionos.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        laniel_francis@privacyrequired.com,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Axtens <dja@axtens.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7lMq7vMTJT4tNk0a"
+Content-Disposition: inline
+In-Reply-To: <03852d1a-1ee4-fd29-8523-4673c35f83cd@gmail.com>
+X-Cookie: Dry clean only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 11:15 PM Gioh Kim <gi-oh.kim@ionos.com> wrote:
->
-> As the name shows, it checks if strings are equal in case insensitive
-> manner.
->
-> For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-> strncasecmp to check that the input via sysfs is "mi". But it would
-> work even-if the input is "min-wrongcommand".
->
-> I found some more cases using strncasecmp to check the entire string
-> such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
-> "disable" command with strncasecmp but it would also work if the
-> command is "disable-wrong".
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+--7lMq7vMTJT4tNk0a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I do wonder if these (sysfs_streqcase and sysfs_streq) could or should
-be conditionally available on CONFIG_SYSFS=3Dy; don't pay for what you
-don't use (without needing CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy)?
+On Wed, Apr 07, 2021 at 11:35:57AM -0700, Florian Fainelli wrote:
+> On 4/7/2021 4:27 AM, Mark Brown wrote:
 
-Also, it might be nice to share the second half of the function with
-sysfs_streq via a new static function.  Though it will just get
-inlined in both for CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=3Dy, it might
-help the compiler if CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy was instead chosen
-if the compiler cannot outline/deduplicate the shared code.  At the
-least, there's less duplication between two very similar functions; if
-one changes then authors may need to be careful to update both.
+> > Frankly I'm not clear why you're trying to handle powering on PCI slots
+> > in a specific driver, surely PCI devices are PCI devices regardless of
+> > the controller?
 
-Are either of those concerns worth a v3? =C2=AF\_(=E3=83=84)_/=C2=AF
+> There is no currently a way to deal with that situation since you have a
+> chicken and egg problem to solve: there is no pci_device created until
+> you enumerate the PCI bus, and you cannot enumerate the bus and create
+> those pci_devices unless you power on the slots/PCIe end-points attached
+> to the root complex. There are precedents like the rockchip PCIe RC
+> driver, and yes, we should not be cargo culting this, which is why we
+> are trying to understand what is it that should be done here and there
+> has been conflicting advice, or rather our interpretation has led to
+> perceiving it as a conflicting.
 
->
-> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> ---
->  include/linux/string.h |  1 +
->  lib/string.c           | 23 +++++++++++++++++++++++
->  2 files changed, 24 insertions(+)
->
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index 4fcfb56abcf5..36d00ff8013e 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, =
-int *argcp);
->  extern void argv_free(char **argv);
->
->  extern bool sysfs_streq(const char *s1, const char *s2);
-> +extern bool sysfs_streqcase(const char *s1, const char *s2);
->  extern int kstrtobool(const char *s, bool *res);
->  static inline int strtobool(const char *s, bool *res)
->  {
-> diff --git a/lib/string.c b/lib/string.c
-> index 7548eb715ddb..5e6bc0d3d5c6 100644
-> --- a/lib/string.c
-> +++ b/lib/string.c
-> @@ -714,6 +714,29 @@ bool sysfs_streq(const char *s1, const char *s2)
->  }
->  EXPORT_SYMBOL(sysfs_streq);
->
-> +/**
-> + * sysfs_streqcase - same to sysfs_streq and case insensitive
-> + * @s1: one string
-> + * @s2: another string
-> + *
-> + */
-> +bool sysfs_streqcase(const char *s1, const char *s2)
-> +{
-> +       while (*s1 && tolower(*s1) =3D=3D tolower(*s2)) {
-> +               s1++;
-> +               s2++;
-> +       }
-> +
-> +       if (*s1 =3D=3D *s2)
-> +               return true;
-> +       if (!*s1 && *s2 =3D=3D '\n' && !s2[1])
-> +               return true;
-> +       if (*s1 =3D=3D '\n' && !s1[1] && !*s2)
-> +               return true;
-> +       return false;
-> +}
-> +EXPORT_SYMBOL(sysfs_streqcase);
-> +
->  /**
->   * match_string - matches given string in an array
->   * @array:     array of strings
-> --
-> 2.25.1
->
+As you note below I've pointed you at Slimbus which has a similar
+problem and solves it at a bus level although it thought of this from
+day one which makes life easier; I do think it'd be good to get this
+stuff in the driver core since it's an issue that affects every
+enumerable bus in the end but nobody's summoned up the enthusiasm for
+that (including me).
 
+> If the regulator had a variation where it supported passing a
+> device_node reference to look up regulator properties, we could solve
+> this generically for all devices, that does not exist, and you stated
+> you will not accept changes like those, fair enough.
 
---=20
-Thanks,
-~Nick Desaulniers
+I'm certainly not enthusiastic about the idea and the likely abuse isn't
+inspiring, and of course regulators aren't the only resource that might
+be needed to get something up and running and would need to be extended
+in the end.  That said I've not seen any concrete proposals either.
+
+> When you suggested to look at soundwire for an example of "software
+> devices", we did that but it was not clear where the sdw_slave would be
+> created prior to sdw_slave_add(), but this does not matter too much.
+
+Looks like sdw_acpi_find_slaves() and sdw_of_find_slaves().
+
+> Let us say we try to solve this generically using the same idea that we
+> would pre-populate pci_device prior to calling pci_scan_child_bus(). We
+> could do something along these lines:
+
+...
+
+> - from there on we try to get the regulators of those pci_device objects
+> we just allocated and we try to enable their regulators, either based on
+> a specific list of supplies or just trying to enable all supplied declared.
+
+I'd suggest specfying the supplies that PCI provides to slots in the
+spec with standard names and just using that list, at least as a start.
+That'd probably cover most cases and allow the binding to be written at
+the generic PCI level rather than having individual devices need to name
+their supplies for the binding documentation and validation stuff which
+seems easier.  Devices with extra stuff can always extend the binding.
+
+> - now pci_scan_child_bus() will attempt to scan the bus for real by
+> reading the pci_device objects ID but we already have such objects, so
+> we need to update pci_scan_device() to search bus::devices and if
+> nothing is found we allocate one
+
+> Is that roughly what you have in mind as to what should be done?
+
+Yes, pretty much.  Ideally there'd be some way for drivers to get a
+callback prior to enumeration to handle any custom stuff for embedded
+cases but unless someone actually has a use case for that you could just
+punt.
+
+--7lMq7vMTJT4tNk0a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBuEOwACgkQJNaLcl1U
+h9AdLwf/RsAf7UG+ffz3mi2yHRfdLT+R1kAAHHjvZu3yk1w4XvfbIGwyQ0GqFjsh
+bVGHEaP41hJtr+0o8FQOk2warQy4R2aq1rFUAFUsa3j126r6CmanfM7bBTWPwhxx
+5PL2C3RC27LH4RBK851FFVDOsQ4+Wb7DjGEMxsxaEfadT+EUWGAeNauSyXXefrmZ
+Kpwkcwj2Bif3E8oGWcugThD/rcgI15cf32LKRrwMj259Ba/RiCaZBOUM3AFd72Ep
+BVqo9whlen+wRXMYEGDdC2mnW+yyGQAb36KObjAU0rcHQoHJL8HbT1l02B2oFhKN
+MoH3G5M+ZMogQd8ebBqRK4Eh0WlJIQ==
+=bCrR
+-----END PGP SIGNATURE-----
+
+--7lMq7vMTJT4tNk0a--
