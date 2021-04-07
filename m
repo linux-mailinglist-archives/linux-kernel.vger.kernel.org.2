@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B40356874
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4CF35687B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350362AbhDGJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
+        id S1350406AbhDGJxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350319AbhDGJwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:52:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A86D4610F9;
+        id S1350328AbhDGJwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:52:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B52B3613C0;
         Wed,  7 Apr 2021 09:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617789147;
-        bh=dhB3YFRGCnQZZsZ+E5N95bf1LTkpUAsAw9RDkY2EEo4=;
+        bh=htsE9psDyAopAgk5SadKKKzdBmf+5z0IORwtCSmi050=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZYRgajsEvz0DP6HnsPm4ern3ZNY4RO8P+edgeDM9njQ+hbRA9YDQz/Tpuj/k9Fb/V
-         IngmXtyzgCEpoLOpGpn+HSdyl1Ram87m+J0p1M1SHfklXjZlDSeC2SUnlp4xFSsnL9
-         V29tXd82kKtxGiXQ7KT4XfWKq5Egcs8abWC4KAz38rU8bmjH9PnF0FgW6ZA11rkf+d
-         MoOu3mFXRe3FE0RvDZHm4v2iS7uI/jZCRKoFKeUZ0gAfsbFFlWJGOZLcrXxIzSfUiO
-         OJsw6Ki+NzOt7J5ViXy+7KREslACcOYuOBPPGU8sJmeY1TwcfCo2H23clZp6G9FH4a
-         ss/nRrVWwOrlw==
+        b=IgRr9j+7Bgmvl7RE1qnbySifGNasUNWN8Tmb8qO6US/t/mcaf1Eh4toiH39Phj/nz
+         +qJHt99g6+79o0XB9YFk5qhDZ4GqGWNZxSquCULbBf7SZuB74IjUA33BWJU+TXrz7O
+         ++lE54w9f58+rsHUTgGKfD0bdg6+5Nkb+oS+k7GvKj5IfBFikoE2ttnMDPdz+OUkut
+         VaJd/b75lDM3dfppgsCwGE0/fkWpOyoXqbpRZik/g1G94tBLQFTKRAHdjmhN40WoNe
+         XaR6AUZMM30ywWVf8WzKremzdyGhDQsBATTfFDRQXyNHxECzeG/BC13l+mkEgZT2xf
+         48bQRKgynwXVA==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU4rD-0008IP-QJ; Wed, 07 Apr 2021 11:52:19 +0200
+        id 1lU4rD-0008IR-TC; Wed, 07 Apr 2021 11:52:19 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 1/8] tty: actually undefine superseded ASYNC flags
-Date:   Wed,  7 Apr 2021 11:52:01 +0200
-Message-Id: <20210407095208.31838-2-johan@kernel.org>
+Subject: [PATCH 2/8] tty: fix return value for unsupported ioctls
+Date:   Wed,  7 Apr 2021 11:52:02 +0200
+Message-Id: <20210407095208.31838-3-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407095208.31838-1-johan@kernel.org>
 References: <20210407095208.31838-1-johan@kernel.org>
@@ -42,40 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some kernel-internal ASYNC flags have been superseded by tty-port flags
-and should no longer be used by kernel drivers.
+Drivers should return -ENOTTY ("Inappropriate I/O control operation")
+when an ioctl isn't supported, while -EINVAL is used for invalid
+arguments.
 
-Fix the misspelled "__KERNEL__" compile guards which failed their sole
-purpose to break out-of-tree drivers that have not yet been updated.
+Fix up the TIOCMGET, TIOCMSET and TIOCGICOUNT helpers which returned
+-EINVAL when a tty driver did not implement the corresponding
+operations.
 
-Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
+Note that the TIOCMGET and TIOCMSET helpers predate git and do not get a
+corresponding Fixes tag below.
+
+Fixes: d281da7ff6f7 ("tty: Make tiocgicount a handler")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/uapi/linux/tty_flags.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/tty_io.c       | 10 +++++-----
+ include/linux/tty_driver.h |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/tty_flags.h b/include/uapi/linux/tty_flags.h
-index 900a32e63424..6a3ac496a56c 100644
---- a/include/uapi/linux/tty_flags.h
-+++ b/include/uapi/linux/tty_flags.h
-@@ -39,7 +39,7 @@
-  * WARNING: These flags are no longer used and have been superceded by the
-  *	    TTY_PORT_ flags in the iflags field (and not userspace-visible)
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index ebcde1f96adb..7738514a15fe 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2529,14 +2529,14 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
+  *	@p: pointer to result
+  *
+  *	Obtain the modem status bits from the tty driver if the feature
+- *	is supported. Return -EINVAL if it is not available.
++ *	is supported. Return -ENOTTY if it is not available.
+  *
+  *	Locking: none (up to the driver)
   */
--#ifndef _KERNEL_
-+#ifndef __KERNEL__
- #define ASYNCB_INITIALIZED	31 /* Serial port was initialized */
- #define ASYNCB_SUSPENDED	30 /* Serial port is suspended */
- #define ASYNCB_NORMAL_ACTIVE	29 /* Normal device is active */
-@@ -81,7 +81,7 @@
- #define ASYNC_SPD_WARP		(ASYNC_SPD_HI|ASYNC_SPD_SHI)
- #define ASYNC_SPD_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI|ASYNC_SPD_SHI)
  
--#ifndef _KERNEL_
-+#ifndef __KERNEL__
- /* These flags are no longer used (and were always masked from userspace) */
- #define ASYNC_INITIALIZED	(1U << ASYNCB_INITIALIZED)
- #define ASYNC_NORMAL_ACTIVE	(1U << ASYNCB_NORMAL_ACTIVE)
+ static int tty_tiocmget(struct tty_struct *tty, int __user *p)
+ {
+-	int retval = -EINVAL;
++	int retval = -ENOTTY;
+ 
+ 	if (tty->ops->tiocmget) {
+ 		retval = tty->ops->tiocmget(tty);
+@@ -2554,7 +2554,7 @@ static int tty_tiocmget(struct tty_struct *tty, int __user *p)
+  *	@p: pointer to desired bits
+  *
+  *	Set the modem status bits from the tty driver if the feature
+- *	is supported. Return -EINVAL if it is not available.
++ *	is supported. Return -ENOTTY if it is not available.
+  *
+  *	Locking: none (up to the driver)
+  */
+@@ -2566,7 +2566,7 @@ static int tty_tiocmset(struct tty_struct *tty, unsigned int cmd,
+ 	unsigned int set, clear, val;
+ 
+ 	if (tty->ops->tiocmset == NULL)
+-		return -EINVAL;
++		return -ENOTTY;
+ 
+ 	retval = get_user(val, p);
+ 	if (retval)
+@@ -2606,7 +2606,7 @@ int tty_get_icount(struct tty_struct *tty,
+ 	if (tty->ops->get_icount)
+ 		return tty->ops->get_icount(tty, icount);
+ 	else
+-		return -EINVAL;
++		return -ENOTTY;
+ }
+ EXPORT_SYMBOL_GPL(tty_get_icount);
+ 
+diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
+index 61c3372d3f32..2f719b471d52 100644
+--- a/include/linux/tty_driver.h
++++ b/include/linux/tty_driver.h
+@@ -228,7 +228,7 @@
+  *
+  *	Called when the device receives a TIOCGICOUNT ioctl. Passed a kernel
+  *	structure to complete. This method is optional and will only be called
+- *	if provided (otherwise EINVAL will be returned).
++ *	if provided (otherwise ENOTTY will be returned).
+  */
+ 
+ #include <linux/export.h>
 -- 
 2.26.3
 
