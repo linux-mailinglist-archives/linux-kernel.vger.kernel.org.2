@@ -2,62 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5B5356A0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC6A356A16
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351422AbhDGKli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:41:38 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:53974 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351222AbhDGKkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:40:21 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 06E8B400320;
-        Wed,  7 Apr 2021 18:40:08 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] fs/namei.c: Clean up trailing whitespace
-Date:   Wed,  7 Apr 2021 18:39:58 +0800
-Message-Id: <20210407103958.1081147-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S235374AbhDGKm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234576AbhDGKmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:42:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D7956105A;
+        Wed,  7 Apr 2021 10:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617792136;
+        bh=MHbf/bQAeLgtOsJGl6XD9m82rnO4b7mz7XxYX2+FXdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ee/zkmzr/GCO+FG8YMGgI0NnboYerBcr82gKJwWcDLJ1kKr1vO1MZzVAsGwFME/QG
+         d01O+kPty36J29VHF+zo/1gWMBdMEFP3G4CvuwQ4ibUuFsOJc+2BEpLQ+XnRygLcIK
+         7dL8E2fRvBphDlAB0xsks5jF1M+vb689F9jx5hTlo6bI+ixD7tYpCqYyaUKFHV8TmF
+         vACTcg1DDf6MOu1de0mKSybd94Slp9c7FuXXih/3RC6kkQJ4FAW5lCE0mnXLPRjHf6
+         FlzeVEEarEIrCxxVUh5XlwM+UJoq7VPttmL4wLA+O2iSBoYVhtZ+Xm1qXXV+LlY43z
+         tKWHUi/i+/9iw==
+Date:   Wed, 7 Apr 2021 11:42:10 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v2 3/3] iommu: dart: Add DART iommu driver
+Message-ID: <20210407104209.GA15173@willie-the-truck>
+References: <20210328074009.95932-1-sven@svenpeter.dev>
+ <20210328074009.95932-4-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkJPQkNIS05KSE1DVkpNSkxMQklLS0NJSUNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mj46CDo6FT8WEiMwLCE3KEsS
-        Gj8wCylVSlVKTUpMTEJJS0tDT0NLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEtKNwY+
-X-HM-Tid: 0a78abeaffddd991kuws06e8b400320
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210328074009.95932-4-sven@svenpeter.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up trailing whitespace.
+On Sun, Mar 28, 2021 at 09:40:09AM +0200, Sven Peter wrote:
+> Apple's new SoCs use iommus for almost all peripherals. These Device
+> Address Resolution Tables must be setup before these peripherals can
+> act as DMA masters.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  MAINTAINERS                      |   1 +
+>  drivers/iommu/Kconfig            |  14 +
+>  drivers/iommu/Makefile           |   1 +
+>  drivers/iommu/apple-dart-iommu.c | 858 +++++++++++++++++++++++++++++++
+>  4 files changed, 874 insertions(+)
+>  create mode 100644 drivers/iommu/apple-dart-iommu.c
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- fs/namei.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[...]
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 216f16e74351..6c6cb46c0667 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -52,8 +52,8 @@
-  * The new code replaces the old recursive symlink resolution with
-  * an iterative one (in case of non-nested symlink chains).  It does
-  * this with calls to <fs>_follow_link().
-- * As a side effect, dir_namei(), _namei() and follow_link() are now 
-- * replaced with a single function lookup_dentry() that can handle all 
-+ * As a side effect, dir_namei(), _namei() and follow_link() are now
-+ * replaced with a single function lookup_dentry() that can handle all
-  * the special cases of the former code.
-  *
-  * With the new dcache, the pathname is stored at each inode, at least as
--- 
-2.25.1
+> +/* must be called with held domain->lock */
+> +static int apple_dart_attach_stream(struct apple_dart_domain *domain,
+> +				    struct apple_dart *dart, u32 sid)
+> +{
+> +	unsigned long flags;
+> +	struct apple_dart_stream *stream;
+> +	struct io_pgtable_cfg *pgtbl_cfg;
+> +	int ret;
+> +
+> +	list_for_each_entry(stream, &domain->streams, stream_head) {
+> +		if (stream->dart == dart && stream->sid == sid) {
+> +			stream->num_devices++;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	spin_lock_irqsave(&dart->lock, flags);
+> +
+> +	if (WARN_ON(dart->used_sids & BIT(sid))) {
+> +		ret = -EINVAL;
+> +		goto error;
+> +	}
+> +
+> +	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+> +	if (!stream) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
 
+Just in case you missed it, a cocci bot noticed that you're using GFP_KERNEL
+to allocate while holding a spinlock here:
+
+https://lore.kernel.org/r/alpine.DEB.2.22.394.2104041724340.2958@hadrien
+
+Will
