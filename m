@@ -2,159 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88B8356AB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0514D356ABB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347167AbhDGLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S1347214AbhDGLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351882AbhDGK76 (ORCPT
+        with ESMTP id S235387AbhDGLBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:59:58 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A7FC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 03:59:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r12so26936633ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 03:59:47 -0700 (PDT)
+        Wed, 7 Apr 2021 07:01:31 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A67C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 04:01:22 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id j206so11021715ybj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kwLQH7itFSm2lWvSOLebZG+fQhoRmoJAI/Qf0ZUUORM=;
-        b=dREGV77BLNS5nloGPFiVCgMW2mQcYjeIXB2Nri9Lml4uu4+3Lxjx3GaXWm8uIflOoL
-         6Soo0N4Q5UPPDDtUC9BIK9O81Tqs9Qv7+RDZJU92KLSuTda69A/gdvT/VGdte/SYSH+u
-         zdZw1PnlXVF097eedirfhZiGkob343J3V7UDKnFQoGdU0vnSKo78HDj53KplQqlX4VpE
-         RpmNt/r+p3eMO3HW7TxvESFC/ACaTYiJGBXNR+OFVHNlfzzAvxYDBvFvjaJmnKMV6F8A
-         Y+iiUkavjIfBlUaRyzL6NaCTSn2yP51blSbrIdX83LMyo9aMMOXiCP2AJz/gyoxSMCt5
-         yRaA==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=owbm4A4IMG4sqcQv2/3Uo7ClgudJx95v6vpnM66KkFU=;
+        b=bUvE1/1N/l5voJA7Ui3fX+RNTz+y9x7ktpDuGl3OkWStJMPb/aONqmGwCO9LoIExwR
+         mQXsVu6tgdRhG+/Pj4Bl8sgK1yB5on+G2XhJjEMfhbgRHC2+vbiArymUgLdlBg88z509
+         7KA4JWCsgttHOFd5qvkTuwi2yUGggYrggfYNc8QBzPkTdVJZl3QWmzWt9D98oZU9KRfy
+         AnColcNT49urXCRyRlTvU5UU0f0EM9VFqGMX3zv2UkNsGOGzKWUqilsTc+qdWoc5SWby
+         HOCI3CO3/n4tnEPOCyYjKlTmFR8k+guADRXO4VTHFnJ6dL1zugW+hqhnjFqnE5fbTEsm
+         +FzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kwLQH7itFSm2lWvSOLebZG+fQhoRmoJAI/Qf0ZUUORM=;
-        b=kdniJ9Wz7eszj3PHgbfs6lGGTNp9tnR738a7osvEmWSFN2VDsSoUNY2Jm52M1B6ax/
-         svhqxs9Hl+ll5oNr6wT2sWONe36Kh8fKB3waIA4bON73uO8suRe3bXogya0+v6+MhCFS
-         tnzeV6DBiK6GLF/Fk3hzJqn/GVhIvL8Eh0wjomRUatp4QV4OfqFyTRP8evFbfPRLnsqT
-         kPQMXOikLyqCyp1ZYabz+PDJ1P/DCAnJi1VCvcvCPUt1LmpUG5TEaG0UhdI/VfuKk7sq
-         t9Jcmku4IL9jk8e6k0Ac412J4+OplyFdyhEUSv36OCw8+tVd1Bgm+l7Jgr21cGcr8G0h
-         gBJw==
-X-Gm-Message-State: AOAM531N2YYVr0lQUR0mGzje7j8fjnkD/maA3Xfq9ObpC1iTih4VZKVO
-        k5Ljj5znJBPxo+TdXLyxQBx4ajSZVBygVncT
-X-Google-Smtp-Source: ABdhPJwDRGzDGZdPhpP/iJmSGA40c0/2e5T0qX1y2it4MmTkeME4OsLEudIHAKZ5ra3ehPqpPJXRUQ==
-X-Received: by 2002:a17:906:64f:: with SMTP id t15mr265145ejb.411.1617793186774;
-        Wed, 07 Apr 2021 03:59:46 -0700 (PDT)
-Received: from localhost.localdomain (p200300d997084700e354cc664d363e54.dip0.t-ipconnect.de. [2003:d9:9708:4700:e354:cc66:4d36:3e54])
-        by smtp.googlemail.com with ESMTPSA id w2sm1977062eju.71.2021.04.07.03.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 03:59:46 -0700 (PDT)
-From:   Manfred Spraul <manfred@colorfullife.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de,
-        Manfred Spraul <manfred@colorfullife.com>
-Subject: [RFC] [PATCH] ipc/util.c: Use binary search for max_idx
-Date:   Wed,  7 Apr 2021 12:59:26 +0200
-Message-Id: <20210407105926.198404-1-manfred@colorfullife.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=owbm4A4IMG4sqcQv2/3Uo7ClgudJx95v6vpnM66KkFU=;
+        b=V1tZ2PsScooOvxPuQ6ehxFiGZ/gGel0d8N4zoZPK1onUeApF0Fs4044aUEJUps3r1B
+         S1K2Y8sUxq7Gp6cqTtHTAoIjvZEst7hDGENgSu33hM6LNO8KQ/hVN2fEOmLQd2j4NX9E
+         FLmx9+nC9rQ6Wj3xCZHRLSZAxn17SvNZAZERohhtuE6q4H1rTfDg1Dbyzxx+TIxmL5N2
+         22cMDTEFTPORFrsNyf79Q2LkP50WRuJVqatL0fo1xTmC1nosrmrVmhoytlzUbkPpvRdQ
+         K71HqkBY6vdKfvHXqXv4SxHTQZ+nLLLI6j66aUWuMomm2HFYtPc1ui+gFCZ1kUjMKlKP
+         L4Jw==
+X-Gm-Message-State: AOAM530tASRYO6RgUamiDYQuS/EiW0DUAphjvi1X6mzvS7rdbfxUd28i
+        XDwv6/yhYZNxF4Pm11grgwwmDM4w3pQY4Z8WUTOxWg==
+X-Google-Smtp-Source: ABdhPJwHB1FrhvewWwbmCgUrRJH/CaeA5IOVNNHvijJ81c60pRrgw07MabyDyroA83YBMCs7NGUtqGgmaPfc49fUvH8=
+X-Received: by 2002:a5b:34a:: with SMTP id q10mr3712454ybp.224.1617793281311;
+ Wed, 07 Apr 2021 04:01:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210329195238.9455-1-acz@semihalf.com> <1c086b9e-d5c2-6e8d-1d81-748935b0dd64@intel.com>
+ <20210330154957.GU2542@lahna.fi.intel.com>
+In-Reply-To: <20210330154957.GU2542@lahna.fi.intel.com>
+From:   Angela Czubak <acz@semihalf.com>
+Date:   Wed, 7 Apr 2021 13:01:10 +0200
+Message-ID: <CAB4aORU9N9684j4eqKPUx7s5NrfO_37=EmR3JoSPaA4RvY87OQ@mail.gmail.com>
+Subject: Re: [PATCH] resource: Prevent irqresource_disabled() from erasing flags
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        akpm@linux-foundation.org, john.garry@huawei.com,
+        linux-kernel@vger.kernel.org, upstream@semihalf.com,
+        Dmitry Torokhov <dtor@chromium.org>,
+        linux-acpi <linux-acpi@intel.com>, rafael@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If semctl(), msgctl() and shmctl() are called with IPC_INFO, SEM_INFO,
-MSG_INFO or SHM_INFO, then the return value is the index of the highest
-used entry in the kernel's internal array recording information about
-all SysV objects of the requested type for the current namespace.
-(This information can be used with repeated ..._STAT or ..._STAT_ANY
-operations to obtain information about all SysV objects on the system.)
+On Tue, Mar 30, 2021 at 5:50 PM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Hi,
+>
+> On Tue, Mar 30, 2021 at 05:09:42PM +0200, Rafael J. Wysocki wrote:
+> > On 3/29/2021 9:52 PM, Angela Czubak wrote:
+> > > Do not overwrite flags as it leads to erasing triggering and polarity
+> > > information which might be useful in case of hard-coded interrupts.
+> > > This way the information can be read later on even though mapping to
+> > > APIC domain failed.
+> > >
+> > > Signed-off-by: Angela Czubak <acz@semihalf.com>
+> > > ---
+> > > Some Chromebooks use hard-coded interrupts in their ACPI tables.
+> > > This is an excerpt as dumped on Relm:
+> > >
+> > > ...
+> > >              Name (_HID, "ELAN0001")  // _HID: Hardware ID
+> > >              Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
+> > >              Name (_UID, 0x05)  // _UID: Unique ID
+> > >              Name (ISTP, Zero)
+> > >              Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+> > >              {
+> > >                  Name (BUF0, ResourceTemplate ()
+> > >                  {
+> > >                      I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
+> > >                          AddressingMode7Bit, "\\_SB.I2C1",
+> > >                          0x00, ResourceConsumer, , Exclusive,
+> > >                          )
+> > >                      Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
+> > >                      {
+> > >                          0x000000B8,
+> > >                      }
+> > >                  })
+> > >                  Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */
+> > >              }
+> > > ...
+> > >
+> > > This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
+> > > to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
+> > > fails and irqresource_disabled() is issued, which leads to erasing triggering
+> > > and polarity information.
+> > > If that function added its flags instead of overwriting them the correct IRQ
+> > > type would be set even for the hard-coded interrupts, which allows device driver
+> > > to retrieve it.
+> > > Please, let me know if this kind of modification is acceptable.
+> >
+> > From the quick look it should not be problematic, but it needs to be checked
+> > more carefully.
+> >
+> > Mika, what do you think?
+>
+> I think it makes sense. We still set IORESOURCE_DISABLED unconditionally
+> so this should not cause issues. In theory at least :)
+>
+Is there anything else you would need me to do regarding the patch?
+I suppose there are more platforms that could benefit from not erasing
+the flags, so if this patch is fit for upstream, can we continue the
+process?
 
-If the current highest used entry is destroyed, then the new highest
-used entry is determined by looping over all possible values.
-With the introduction of IPCMNI_EXTEND_SHIFT, this could be a
-loop over 16 million entries.
-
-As there is no get_last() function for idr structures:
-Implement a "get_last()" using a binary search.
-
-As far as I see, ipc is the only user that needs get_last(), thus
-implement it in ipc/util.c and not in a central location.
-
-Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
----
- ipc/util.c | 44 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 39 insertions(+), 5 deletions(-)
-
-diff --git a/ipc/util.c b/ipc/util.c
-index cfa0045e748d..0121bf6b2617 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -64,6 +64,7 @@
- #include <linux/memory.h>
- #include <linux/ipc_namespace.h>
- #include <linux/rhashtable.h>
-+#include <linux/log2.h>
- 
- #include <asm/unistd.h>
- 
-@@ -450,6 +451,40 @@ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
- 				       ipc_kht_params);
- }
- 
-+/**
-+ * ipc_get_maxusedidx - get highest in-use index
-+ * @ids: ipc identifier set
-+ * @limit: highest possible index.
-+ *
-+ * The function determines the highest in use index value.
-+ * ipc_ids.rwsem needs to be owned by the caller.
-+ * If no ipc object is allocated, then -1 is returned.
-+ */
-+static int ipc_get_maxusedidx(struct ipc_ids *ids, int limit)
-+{
-+	void *val;
-+	int tmpidx;
-+	int i;
-+	int retval;
-+
-+	i = ilog2(limit+1);
-+
-+	retval = 0;
-+	for (; i >= 0; i--) {
-+		tmpidx = retval | (1<<i);
-+		/*
-+		 * "0" is a possible index value, thus search using
-+		 * e.g. 15,7,3,1,0 instead of 16,8,4,2,1.
-+		 */
-+		tmpidx = tmpidx-1;
-+		val = idr_get_next(&ids->ipcs_idr, &tmpidx);
-+		if (val)
-+			retval |= (1<<i);
-+	}
-+	retval--;
-+	return retval;
-+}
-+
- /**
-  * ipc_rmid - remove an ipc identifier
-  * @ids: ipc identifier set
-@@ -468,11 +503,10 @@ void ipc_rmid(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
- 	ipcp->deleted = true;
- 
- 	if (unlikely(idx == ids->max_idx)) {
--		do {
--			idx--;
--			if (idx == -1)
--				break;
--		} while (!idr_find(&ids->ipcs_idr, idx));
-+
-+		idx = ids->max_idx-1;
-+		if (idx >= 0)
-+			idx = ipc_get_maxusedidx(ids, idx);
- 		ids->max_idx = idx;
- 	}
- }
--- 
-2.29.2
-
+> > >   include/linux/ioport.h | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+> > > index 55de385c839cf..647744d8514e0 100644
+> > > --- a/include/linux/ioport.h
+> > > +++ b/include/linux/ioport.h
+> > > @@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
+> > >   {
+> > >     res->start = irq;
+> > >     res->end = irq;
+> > > -   res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
+> > > +   res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
+> > >   }
+> > >   extern struct address_space *iomem_get_mapping(void);
+> >
