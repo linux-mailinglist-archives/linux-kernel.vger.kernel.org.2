@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49618356C43
+	by mail.lfdr.de (Postfix) with ESMTP id BBC50356C44
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352271AbhDGMie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:38:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36386 "EHLO
+        id S1352283AbhDGMij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:38:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36392 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245566AbhDGMiY (ORCPT
+        with ESMTP id S1347204AbhDGMiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 08:38:24 -0400
-Date:   Wed, 07 Apr 2021 12:38:13 -0000
+Date:   Wed, 07 Apr 2021 12:38:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1617799094;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YpazOy5WMoaQocENGwsTuJoSihbm3EtZrdg/3sFERII=;
-        b=kDKnvwrDQh0wi599YY6hLT48sMrQsdizRR7tCx0kfFJXEFmwZ+c/bUbdaZMwIwP0Gg/vjg
-        U/ZyIw0sQhyDJXogQAtssD21BS890Z7oV/hJ/o1AgkOPYDnNQqAp0jji9FGkMxFOBj8KGy
-        9xHR4+ZR4dOic9IH1F2EaStIewMuHK6XMO7eCEg67UmNX/39O7mKdmAX32gDgYv1XQsRpK
-        fc62D3ScyAeFhxqO3xH6iOUnIxOnbGjV2ZtENf+1L10UTmcdGFnJbQGTwVylMvx43okMqU
-        9KpNekSf3s0MHfzSQPbaQckTZqDWWIWQPO/TrjFLiaDZXDyJBOh9NAUl4SkoYQ==
+        bh=po8HPnXAOYikLokEypE7OHeYcpgw+gaLrOibrq/o9Ic=;
+        b=S71stYYUV8+Q4/ks3wvatcWUOUts10P2LRCvCZ82V2qCssLyN2sm2iy1W2yZAh5+gFUVyC
+        Wq3TykJ7zd5xwvcIGg1WI3FX1mhxF1KqACSuQ79ry3EkNas8XnS8LDDO5UyXwndjGbWm2n
+        AzYsYr2E+RfLOWf7wCXXVQznx1lWqfYhk5bYhv4ZJ49Mf/z3DXoWhzOG9zdRzPwoNbgvq6
+        ekJWRVp95cWzrnyXdY9KXEjw/9hLiWGDfxUvvh9MKJcUwpibR8aG6inXVPSY/QoGiFSzjd
+        LEZW6QvXawEzxfE3+11OfnzhoSvFFHMkVEpxeZBSWKHiaCmxpeUQzNnajgzqRg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1617799094;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,20 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YpazOy5WMoaQocENGwsTuJoSihbm3EtZrdg/3sFERII=;
-        b=jH3CLNthXEs8JD7kva+0bbX7sNDG77q3hMcQ5eBjJFuvKHBfqrlLgH2DTrKlSrUTil9e5h
-        5Do/iqH8VL2OQMAw==
-From:   "irqchip-bot for Arnd Bergmann" <tip-bot2@linutronix.de>
+        bh=po8HPnXAOYikLokEypE7OHeYcpgw+gaLrOibrq/o9Ic=;
+        b=m+I5hhuu9viGNYUEUNQGlaVvUwkWeow5ZtwnO/Ke0zo+rBavBR4Sp0wASe/FU7VjWPRoz7
+        g/aUiyWV1LWJMjAA==
+From:   "irqchip-bot for Jisheng Zhang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3: Fix OF_BAD_ADDR error handling
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+Subject: [irqchip: irq/irqchip-next] irqchip/sifive-plic: Mark two global
+ variables __ro_after_init
+Cc:     Jisheng Zhang <jszhang@kernel.org>, Marc Zyngier <maz@kernel.org>,
         tglx@linutronix.de
-In-Reply-To: <20210323131842.2773094-1-arnd@kernel.org>
-References: <20210323131842.2773094-1-arnd@kernel.org>
+In-Reply-To: <20210330020911.26423e9e@xhacker>
+References: <20210330020911.26423e9e@xhacker>
 MIME-Version: 1.0
-Message-ID: <161779909366.29796.10784806676911385698.tip-bot2@tip-bot2>
+Message-ID: <161779909401.29796.955163996057547689.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,42 +58,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     8e13d96670a4c050d4883e6743a9e9858e5cfe10
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/8e13d96670a4c050d4883e6743a9e9858e5cfe10
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Tue, 23 Mar 2021 14:18:35 +01:00
+Commit-ID:     e03b7c1bcbfad6f27b4682f638b98627c4e416ba
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/e03b7c1bcbfad6f27b4682f638b98627c4e416ba
+Author:        Jisheng Zhang <jszhang@kernel.org>
+AuthorDate:    Tue, 30 Mar 2021 02:09:11 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Wed, 07 Apr 2021 13:25:52 +01:00
 
-irqchip/gic-v3: Fix OF_BAD_ADDR error handling
+irqchip/sifive-plic: Mark two global variables __ro_after_init
 
-When building with extra warnings enabled, clang points out a
-mistake in the error handling:
+All of these two are never modified after init, so they can be
+ __ro_after_init.
 
-drivers/irqchip/irq-gic-v3-mbi.c:306:21: error: result of comparison of constant 18446744073709551615 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-                if (mbi_phys_base == OF_BAD_ADDR) {
-
-Truncate the constant to the same type as the variable it gets compared
-to, to shut make the check work and void the warning.
-
-Fixes: 505287525c24 ("irqchip/gic-v3: Add support for Message Based Interrupts as an MSI controller")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210323131842.2773094-1-arnd@kernel.org
+Link: https://lore.kernel.org/r/20210330020911.26423e9e@xhacker
 ---
- drivers/irqchip/irq-gic-v3-mbi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-sifive-plic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-mbi.c b/drivers/irqchip/irq-gic-v3-mbi.c
-index 563a9b3..e81e89a 100644
---- a/drivers/irqchip/irq-gic-v3-mbi.c
-+++ b/drivers/irqchip/irq-gic-v3-mbi.c
-@@ -303,7 +303,7 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
- 	reg = of_get_property(np, "mbi-alias", NULL);
- 	if (reg) {
- 		mbi_phys_base = of_translate_address(np, reg);
--		if (mbi_phys_base == OF_BAD_ADDR) {
-+		if (mbi_phys_base == (phys_addr_t)OF_BAD_ADDR) {
- 			ret = -ENXIO;
- 			goto err_free_mbi;
- 		}
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index 6f432d2..97d4d04 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -77,8 +77,8 @@ struct plic_handler {
+ 	void __iomem		*enable_base;
+ 	struct plic_priv	*priv;
+ };
+-static int plic_parent_irq;
+-static bool plic_cpuhp_setup_done;
++static int plic_parent_irq __ro_after_init;
++static bool plic_cpuhp_setup_done __ro_after_init;
+ static DEFINE_PER_CPU(struct plic_handler, plic_handlers);
+ 
+ static inline void plic_toggle(struct plic_handler *handler,
