@@ -2,243 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9A63560C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E356E3560C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347715AbhDGBZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:25:47 -0400
-Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:40288
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241916AbhDGBZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:25:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gqEKBGqMb11CffBLAPKLuzm3lS0/QsAyMTWREsaw8JKP4dxG9UblFH/8Q8z4Lah+Z3x+0N82tbdk/rOg8Xr58PJ/6cmQvL02u/umCZiUM55I9+QpUInhfs3kIjCDYb0ehMQK5vUGHJXNg4BApqPC5aNUR1uScsge5wJ8ZPo6D2/mwVMBK1McvkvVtpw25O6fIQZhnn3Ng+5bQ0dZ5DjWygoNdJCUMw8AjRojt7I7Ki3wr6mAa7u26aFpQ9sPG//EeXxSYGUfgYw3kHrhkv0kRt8nO1V0oWn6DSlawC6v/yoJBoIwKoygOnQ11jDhS08ETcHHFEw+neL9HpcCY2I1Dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
- b=MdesH2FaQUhC4fn/zHn1tvqIzsbUvR0vFnyEcmRDFMxHzhAUtVstGiL+pvs8k9SxFhDjGFUei8waVjqLx9vPqejJS2MduXNlzlc2BZmpF4F4urMjf66Hw+Jsr1m0pm7gqDHZS+LsrqMPUnZvJ0tS6HTlwasoTiC3sK2xxCnrqb0dcdY05ocaz8KhcmnCftjHpQ9NN9aQvIZC7wlwfEG1rhFMV/UObkP6XCym5F0Ilq5T0+CbniUye+suyBwMYJBgRqZlxqMI6fmjoxeoECQcwmnYDDqMoaBn74vfnDu7XeWcp1t7TzgsX2FebMpZ5b+xaM2oBpblHNDm4t8TtHqUgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
- b=UFrV01WNEcGqtq6cHInkgcdR0vLt1ZzTpDttdEpA5sHi9BEu8NuOLsuvaYrM28ifLx5ROFkzkAlVEvSbGSjPqsML6PnZGGh2F5q/HsRT+SBuAFQE5ALHw6bpvbI+AQM40YXfICVcfFL2vvMfhksUUF3y0PYpLF9WoWn4ARtZkF1sCeQU4Y3deNpZFP3EPRhXQuf2/ymTjXKknX/e1WTXF3EblYMLIbByfzN9x+l4ROMxlTlzKKsh1BtuEbtOOMGXSW3NJ4lQbu2+aav4+x+2gtrOOurB+M45HLzFA9uuLxJTAXqo3S2V6UwPaAJVR9LdVsF0h/kygBXmjdSLcJm50A==
-Received: from BN6PR14CA0048.namprd14.prod.outlook.com (2603:10b6:404:13f::34)
- by BYAPR12MB2662.namprd12.prod.outlook.com (2603:10b6:a03:61::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 7 Apr
- 2021 01:25:25 +0000
-Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:13f:cafe::2b) by BN6PR14CA0048.outlook.office365.com
- (2603:10b6:404:13f::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
- Transport; Wed, 7 Apr 2021 01:25:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3999.28 via Frontend Transport; Wed, 7 Apr 2021 01:25:25 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 6 Apr
- 2021 18:25:25 -0700
-Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 7 Apr 2021 01:25:24 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <axboe@kernel.dk>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>
-CC:     <pchandru@nvidia.com>, <devicetree@vger.kernel.org>,
-        <linux-ide@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
-Date:   Tue, 6 Apr 2021 18:25:31 -0700
-Message-ID: <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S243263AbhDGB2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:28:23 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:50102 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232884AbhDGB2R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 21:28:17 -0400
+Received: from localhost (unknown [192.168.167.139])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 9237DF356A;
+        Wed,  7 Apr 2021 09:28:03 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P6247T139731639179008S1617758871505773_;
+        Wed, 07 Apr 2021 09:28:03 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <1bfbef78173915d5cc4e86b5dcb647c6>
+X-RL-SENDER: songqiang@uniontech.com
+X-SENDER: songqiang@uniontech.com
+X-LOGIN-NAME: songqiang@uniontech.com
+X-FST-TO: christian.koenig@amd.com
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   songqiang <songqiang@uniontech.com>
+To:     christian.koenig@amd.com, ray.huang@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        songqiang <songqiang@uniontech.com>
+Subject: [PATCH] drivers/gpu/drm/ttm/ttm_page_allo.c: adjust ttm pages refcount fix the bug: Feb  6 17:13:13 aaa-PC kernel: [  466.271034] BUG: Bad page state in process blur_image  pfn:7aee2 Feb  6 17:13:13 aaa-PC kernel: [  466.271037] page:980000025fca4170 count:0 mapcount:0 mapping:980000025a0dca60 index:0x0 Feb  6 17:13:13 aaa-PC kernel: [  466.271039] flags: 0x1e01fff000000() Feb  6 17:13:13 aaa-PC kernel: [  466.271042] raw: 0001e01fff000000 0000000000000100 0000000000000200 980000025a0dca60 Feb  6 17:13:13 aaa-PC kernel: [  466.271044] raw: 0000000000000000 0000000000000000 00000000ffffffff Feb  6 17:13:13 aaa-PC kernel: [  466.271046] page dumped because: non-NULL mapping Feb  6 17:13:13 aaa-PC kernel: [  466.271047] Modules linked in: bnep fuse bluetooth ecdh_generic sha256_generic cfg80211 rfkill vfat fat serio_raw uio_pdrv_genirq binfmt_misc ip_tables amdgpu chash radeon r8168 loongson gpu_sched Feb  6 17:13:13 aaa-PC kernel: [  466.271059] CPU: 3 PID: 9554 Comm: 
+ blur_image Tainted: G    B             4.19.0-loongson-3-desktop #3036 Feb  6 17:13:13 aaa-PC kernel: [  466.271061] Hardware name: Haier Kunlun-LS3A4000-LS7A-desktop/Kunlun-LS3A4000-LS7A-desktop, BIOS Kunlun-V4.0.12V4.0 LS3A4000 03/19/2020 Feb  6 17:13:13 aaa-PC kernel: [  466.271063] Stack : 000000000000007b 000000007400cce0 0000000000000000 0000000000000007 Feb  6 17:13:13 aaa-PC kernel: [  466.271067]         0000000000000000 0000000000000000 0000000000002a82 ffffffff8202c910 Feb  6 17:13:13 aaa-PC kernel: [  466.271070]         0000000000000000 0000000000002a82 0000000000000000 ffffffff81e20000 Feb  6 17:13:13 aaa-PC kernel: [  466.271074]         0000000000000000 ffffffff8021301c ffffffff82040000 6e754b20534f4942 Feb  6 17:13:13 aaa-PC kernel: [  466.271078]         ffff000000000000 0000000000000000 000000007400cce0 0000000000000000 Feb  6 17:13:13 aaa-PC kernel: [  466.271082]         9800000007155d40 ffffffff81cc5470 0000000000000005 6db6db6db6db0000 Feb  6 17:13:13 
+ aaa-PC kernel: [  466.271086]         0000000000000003 fffffffffffffffb 0000000000006000 98000002559f4000 Feb  6 17:13:13 aaa-PC kernel: [  466.271090]         980000024a448000 980000024a44b7f0 9800000007155d50 ffffffff819f5158 Feb  6 17:13:13 aaa-PC kernel: [  466.271094]         0000000000000000 0000000000000000 0000000000000000 0000000000000000 Feb  6 17:13:13 aaa-PC kernel: [  466.271097]         9800000007155d40 ffffffff802310c4 ffffffff81e70000 ffffffff819f5158 Feb  6 17:13:13 aaa-PC kernel: [  466.271101]         ... Feb  6 17:13:13 aaa-PC kernel: [  466.271103] Call Trace: Feb  6 17:13:13 aaa-PC kernel: [  466.271107] [<ffffffff802310c4>] show_stack+0x44/0x1c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271110] [<ffffffff819f5158>] dump_stack+0x1d8/0x240 Feb  6 17:13:13 aaa-PC kernel: [  466.271113] [<ffffffff80491c10>] bad_page+0x210/0x2c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271116] [<ffffffff804931c8>] free_pcppages_bulk+0x708/0x900 Feb  6 17:13:13 aaa-PC kernel: [  46
+ 6.271119] [<ffffffff804980cc>] free_unref_page_list+0x1cc/0x2c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271122] [<ffffffff804ad2c8>] release_pages+0x648/0x900 Feb  6 17:13:13 aaa-PC kernel: [  466.271125] [<ffffffff804f3b48>] tlb_flush_mmu_free+0x88/0x100 Feb  6 17:13:13 aaa-PC kernel: [  466.271128] [<ffffffff804f8a24>] zap_pte_range+0xa24/0x1480 Feb  6 17:13:13 aaa-PC kernel: [  466.271132] [<ffffffff804f98b0>] unmap_page_range+0x1f0/0x500 Feb  6 17:13:13 aaa-PC kernel: [  466.271135] [<ffffffff804fa054>] unmap_vmas+0x154/0x200 Feb  6 17:13:13 aaa-PC kernel: [  466.271138] [<ffffffff8051190c>] exit_mmap+0x20c/0x380 Feb  6 17:13:13 aaa-PC kernel: [  466.271142] [<ffffffff802bb9c8>] mmput+0x148/0x300 Feb  6 17:13:13 aaa-PC kernel: [  466.271145] [<ffffffff802c80d8>] do_exit+0x6d8/0x1900 Feb  6 17:13:13 aaa-PC kernel: [  466.271148] [<ffffffff802cb288>] do_group_exit+0x88/0x1c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271151] [<ffffffff802cb3d8>] sys_exit_group+0x18/0x40 Feb  6 17
+ :13:13 aaa-PC kernel: [  466.271155] [<ffffffff8023f954>] syscall_common+0x34/0xa4
+Date:   Wed,  7 Apr 2021 09:27:46 +0800
+Message-Id: <20210407012746.16082-1-songqiang@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4647add8-3cad-4493-d8b9-08d8f964058b
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2662:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2662CE8FF1CBAB354F5A2EF2C2759@BYAPR12MB2662.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yEunpsal8ksTm970Fry0vTMPrZcoVUihyNktDFJTfNryujKbM7mC7EqHvEx+TNl2D3VdypAPY+XhjL5c7iG3+aMrDnW6yWaIj041CDW9sY0Lylc1KGHDsUB1rSIBiRXGBHQuAkhB5F3Sw6NTFJBG8ss2VJIjWUnPCuYbMjmtZoDJpRfs0poWwCiwDRCcVnqlJjh7RfsPa7yvLGRQudjA3kf3rScWhOLhRs4bvnB/oIoqZLaABzifmlq5vhmMEqMz1Uey/nIaPN6WtnwpqraxyaEViQPlxEpNHtGYcC1oxWOY6UmGNTSHdTXsPDKi80rzHdi5JbxtYm7GbmedPVTDbzBXedqNeBh75jauvfobODqRXeKvtwGdPGRg2arMQtLqO4lpLMeo+b2poOJposO5FYiLc7uQVVhMN2/HEPTfrAAhFs6QktL7gjWEynHjvtCqiLrAGpKALz1BQwNA6HoWvfW+UprJtyICvte6U5ZkZgfjVWyWo3V5DJgaBDa+PjkZlmHH81/nZ8Z3DUK4UOm2xDYhuCaj1WGNcOULTR5+qB/HbnAATh3zynjWfqxLnAhNLRvrFRwBkkt9kVnb4VTq+tolOqjFJMU4A9HHx5C/LDEgVARQOtfw5wxyzPHk7Rs8ady+6ExEYc8b+0rDNNQit4CkVHjpmP/sAmL7wTO0dfw=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(136003)(46966006)(36840700001)(7696005)(5660300002)(36860700001)(36756003)(4326008)(26005)(356005)(7636003)(82740400003)(2616005)(8676002)(186003)(316002)(70206006)(6666004)(336012)(82310400003)(2906002)(70586007)(8936002)(47076005)(426003)(54906003)(478600001)(86362001)(83380400001)(110136005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 01:25:25.5893
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4647add8-3cad-4493-d8b9-08d8f964058b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2662
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for AHCI-compliant Serial ATA controller
-on Tegra186 SoC.
-
-Tegra186 does not have sata-oob reset.
-Tegra186 SATA_NVOOB register filed COMMA_CNT position and width are
-different compared to Tegra210 and prior.
-
-So, this patch adds a flag has_sata_oob_rst and tegra_ahci_regs to
-SoC specific strcuture tegra_ahci_soc and updated their implementation
-accordingly.
-
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: songqiang <songqiang@uniontech.com>
 ---
- drivers/ata/ahci_tegra.c | 60 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/ttm/ttm_page_alloc.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index cb55ebc1..56612af 100644
---- a/drivers/ata/ahci_tegra.c
-+++ b/drivers/ata/ahci_tegra.c
-@@ -59,8 +59,6 @@
- #define T_SATA0_CFG_PHY_1_PAD_PLL_IDDQ_EN		BIT(22)
+diff --git a/drivers/gpu/drm/ttm/ttm_page_alloc.c b/drivers/gpu/drm/ttm/ttm_page_alloc.c
+index 14660f723f71..f3698f0ad4d7 100644
+--- a/drivers/gpu/drm/ttm/ttm_page_alloc.c
++++ b/drivers/gpu/drm/ttm/ttm_page_alloc.c
+@@ -736,8 +736,16 @@ static void ttm_put_pages(struct page **pages, unsigned npages, int flags,
+ 					if (++p != pages[i + j])
+ 					    break;
  
- #define T_SATA0_NVOOB                                   0x114
--#define T_SATA0_NVOOB_COMMA_CNT_MASK                    (0xff << 16)
--#define T_SATA0_NVOOB_COMMA_CNT                         (0x07 << 16)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK          (0x3 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE               (0x1 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK        (0x3 << 26)
-@@ -154,11 +152,18 @@ struct tegra_ahci_ops {
- 	int (*init)(struct ahci_host_priv *hpriv);
- };
+-				if (j == HPAGE_PMD_NR)
++				if (j == HPAGE_PMD_NR) {
+ 					order = HPAGE_PMD_ORDER;
++					for (j = 1; j < HPAGE_PMD_NR; ++j)
++						page_ref_dec(pages[i+j]);
++				}
+ 			}
+ #endif
  
-+struct tegra_ahci_regs {
-+	unsigned int nvoob_comma_cnt_mask;
-+	unsigned int nvoob_comma_cnt_val;
-+};
-+
- struct tegra_ahci_soc {
- 	const char *const		*supply_names;
- 	u32				num_supplies;
- 	bool				supports_devslp;
-+	bool				has_sata_oob_rst;
- 	const struct tegra_ahci_ops	*ops;
-+	const struct tegra_ahci_regs	*regs;
- };
- 
- struct tegra_ahci_priv {
-@@ -240,11 +245,13 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
- 	if (ret)
- 		return ret;
- 
--	ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
--						tegra->sata_clk,
--						tegra->sata_rst);
--	if (ret)
--		goto disable_regulators;
-+	if (!tegra->pdev->dev.pm_domain) {
-+		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
-+							tegra->sata_clk,
-+							tegra->sata_rst);
-+		if (ret)
-+			goto disable_regulators;
-+	}
- 
- 	reset_control_assert(tegra->sata_oob_rst);
- 	reset_control_assert(tegra->sata_cold_rst);
-@@ -330,10 +337,10 @@ static int tegra_ahci_controller_init(struct ahci_host_priv *hpriv)
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA_CFG_PHY_0);
- 
- 	val = readl(tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
--	val &= ~(T_SATA0_NVOOB_COMMA_CNT_MASK |
-+	val &= ~(tegra->soc->regs->nvoob_comma_cnt_mask |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK);
--	val |= (T_SATA0_NVOOB_COMMA_CNT |
-+	val |= (tegra->soc->regs->nvoob_comma_cnt_val |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_MODE);
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
-@@ -449,15 +456,35 @@ static const struct tegra_ahci_ops tegra124_ahci_ops = {
- 	.init = tegra124_ahci_init,
- };
- 
-+static const struct tegra_ahci_regs tegra124_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(30, 28),
-+	.nvoob_comma_cnt_val = (7 << 28),
-+};
-+
- static const struct tegra_ahci_soc tegra124_ahci_soc = {
- 	.supply_names = tegra124_supply_names,
- 	.num_supplies = ARRAY_SIZE(tegra124_supply_names),
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
- 	.ops = &tegra124_ahci_ops,
-+	.regs = &tegra124_ahci_regs,
- };
- 
- static const struct tegra_ahci_soc tegra210_ahci_soc = {
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
-+	.regs = &tegra124_ahci_regs,
-+};
-+
-+static const struct tegra_ahci_regs tegra186_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(23, 16),
-+	.nvoob_comma_cnt_val = (7 << 16),
-+};
-+
-+static const struct tegra_ahci_soc tegra186_ahci_soc = {
-+	.supports_devslp = false,
-+	.has_sata_oob_rst = false,
-+	.regs = &tegra186_ahci_regs,
- };
- 
- static const struct of_device_id tegra_ahci_of_match[] = {
-@@ -469,6 +496,10 @@ static const struct of_device_id tegra_ahci_of_match[] = {
- 		.compatible = "nvidia,tegra210-ahci",
- 		.data = &tegra210_ahci_soc
- 	},
-+	{
-+		.compatible = "nvidia,tegra186-ahci",
-+		.data = &tegra186_ahci_soc
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, tegra_ahci_of_match);
-@@ -518,10 +549,13 @@ static int tegra_ahci_probe(struct platform_device *pdev)
- 		return PTR_ERR(tegra->sata_rst);
- 	}
- 
--	tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev, "sata-oob");
--	if (IS_ERR(tegra->sata_oob_rst)) {
--		dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
--		return PTR_ERR(tegra->sata_oob_rst);
-+	if (tegra->soc->has_sata_oob_rst) {
-+		tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev,
-+							     "sata-oob");
-+		if (IS_ERR(tegra->sata_oob_rst)) {
-+			dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
-+			return PTR_ERR(tegra->sata_oob_rst);
-+		}
- 	}
- 
- 	tegra->sata_cold_rst = devm_reset_control_get(&pdev->dev, "sata-cold");
--- 
-2.7.4
+@@ -868,10 +876,12 @@ static int ttm_get_pages(struct page **pages, unsigned npages, int flags,
+ 				p = alloc_pages(huge_flags, HPAGE_PMD_ORDER);
+ 				if (!p)
+ 					break;
+-
+-				for (j = 0; j < HPAGE_PMD_NR; ++j)
++				for (j = 0; j < HPAGE_PMD_NR; ++j) {
+ 					pages[i++] = p++;
+-
++					if (j > 0)
++						page_ref_inc(pages[i-1]);
++				}
+ 				npages -= HPAGE_PMD_NR;
+ 			}
+ 		}
+
+
 
