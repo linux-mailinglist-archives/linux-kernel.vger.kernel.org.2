@@ -2,119 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5533560D9
+	by mail.lfdr.de (Postfix) with ESMTP id D84BF3560DB
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347784AbhDGBjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:39:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56507 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347747AbhDGBj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:39:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617759560; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=SMzPWIhKVgVyt+OXV36wrD1CBWot3oCL7BANrZGmW5s=; b=ZxHaYdkkPfnuk/RIkf6ZZe0AN9c0D/x4gJWU87Sf+mruz32LVMzT0JQVdaUfF02pbUBYA/Yx
- yojjYpxr/i3KMBxFDemSMv/Nn1E6QpkIvLFrHhF9JWrkBW5mnMcLebK6Qwwv1QTA/GcW9ObA
- F6fm/wHJjKJVW98agGih885sGPU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 606d0d369a9ff96d95415e7e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 01:39:02
- GMT
-Sender: pkondeti=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF21BC43465; Wed,  7 Apr 2021 01:39:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F9AEC433C6;
-        Wed,  7 Apr 2021 01:38:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0F9AEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
-Date:   Wed, 7 Apr 2021 07:08:56 +0530
-From:   Pavan Kondeti <pkondeti@codeaurora.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Quentin Perret <qperret@google.com>, Wei Wang <wvw@google.com>
-Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
- of root cpu cgroup
-Message-ID: <20210407013856.GC21941@codeaurora.org>
-References: <1617714261-18111-1-git-send-email-pkondeti@codeaurora.org>
- <YGxjwKbec68sCcqo@slm.duckdns.org>
- <20210406152715.GB21941@codeaurora.org>
- <YGyJHAlLKqng2WeS@slm.duckdns.org>
+        id S1347755AbhDGBk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343675AbhDGBkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 21:40:19 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F00C06174A;
+        Tue,  6 Apr 2021 18:40:10 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u17so18674044ejk.2;
+        Tue, 06 Apr 2021 18:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KgaoO4aVIvdCnnxzOAKQPy1sG+snfWsTn2UOD6n6K2M=;
+        b=qp7SBFC/kzC5O8ivCzGDdzsxtGk1CkA3R+tsTwgHn35v+87CgSB/kWhNyVH2k0Y4Ku
+         G+3X8p8Ew7Hq9YSA+VGoo0D+JJtkbNVouyAdDLX2b2vCanEsKUmTHYrMcVfJGA7dIRzu
+         WETqioKWyI3VhJXPNYPMgZVGKAlbycdTw3SGMG54DMPoo56EHnpj95kEEq9IfPArjfcP
+         iA/eDKgPTsBMaARKrG4b2hVg8ro2LDcc39Bufz+8tw3AsSZ92uqBRtZcmlI+WImua25r
+         OUyhBfg7K+tUO4BdSUyYORIP4jRh2MUrZtxrClfDz0oF3nBqOSzJxIiscZT+o9JZDMhx
+         d//Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KgaoO4aVIvdCnnxzOAKQPy1sG+snfWsTn2UOD6n6K2M=;
+        b=hHi+9rY7cma+HGaZ1iiO+OmBqzghdj3T9Fgp+1lj8AjV94BcrYPzEg1C6rx81auwsE
+         5/9QgmmpZDUy7XOf3MaT8ZS97pTpIvBgElHSQq0dDU4nxo63XBlFlvnm03AKKvi/c5uE
+         gVvJWH7t1/Q2PJB8Sp2pzZeXM7o/5m1FeFVVdjpTipM/S7P5JuFhPd41qydSevoqZSVy
+         yWXmIU8MWnG+CMZpGSZ2lYcJu62uzgroxeAmJx3yH7HuVk9+QN/EG1icANc7LfNQSKsq
+         DOc82m4KRgIF30GvAqYpTaCQ6LsVXsfdiiAUJVPRnSzJKpHLl+VxICEGB6Q4lw47sF+J
+         1X/g==
+X-Gm-Message-State: AOAM530h46jFh0EMGPeiFpy/ausrw8JXC21kuXsWYuRzizJzNFCblbBh
+        DtITkuTkGHApmBXICXuapCf7fMo/IpkfCaMoBkChNo1l
+X-Google-Smtp-Source: ABdhPJyFC49JCqUBFLGxZTICw/91v9XINR8ntdSLd19HgHz4dK87x98F9fgW7wEKqC32QU1eFvrk+kgrHAmcQd1hmZc=
+X-Received: by 2002:a17:906:c143:: with SMTP id dp3mr931459ejc.499.1617759609648;
+ Tue, 06 Apr 2021 18:40:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGyJHAlLKqng2WeS@slm.duckdns.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210405054848.GA1077931@in.ibm.com> <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
+ <20210406100509.GA1354243@in.ibm.com>
+In-Reply-To: <20210406100509.GA1354243@in.ibm.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 6 Apr 2021 18:39:57 -0700
+Message-ID: <CAHbLzkoAGo=zdPW2cu0ZFyKq=sB5K8fN4oN48o8maPb-Dg=dhw@mail.gmail.com>
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+To:     Bharata B Rao <bharata@linux.ibm.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        aneesh.kumar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:15:24PM -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Tue, Apr 06, 2021 at 08:57:15PM +0530, Pavan Kondeti wrote:
-> > Yeah. The workqueue attrs comes in handy to reduce the nice/prio of a
-> > background workqueue if we identify that it is cpu intensive. However, this
-> > needs case by case analysis, tweaking etc. If there is no other alternative,
-> > we might end up chasing the background workers and reduce their nice value.
-> 
-> There shouldn't be that many workqueues that consume a lot of cpu cycles.
-> The usual culprit is kswapd, IO related stuff (writeback, encryption), so it
-> shouldn't be a long list and we want them identified anyway.
-> 
-Sure. I have not done a complete study on which workers in our system can
-compete with important tasks in other cgroups. We will have to do that to
-adjust the workqueue priority so that the impact can be minimized.
+On Tue, Apr 6, 2021 at 3:05 AM Bharata B Rao <bharata@linux.ibm.com> wrote:
+>
+> On Mon, Apr 05, 2021 at 11:08:26AM -0700, Yang Shi wrote:
+> > On Sun, Apr 4, 2021 at 10:49 PM Bharata B Rao <bharata@linux.ibm.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
+> > > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
+> > > consumption increases quite a lot (around 172G) when the containers are
+> > > running. Most of it comes from slab (149G) and within slab, the majority of
+> > > it comes from kmalloc-32 cache (102G)
+> > >
+> > > The major allocator of kmalloc-32 slab cache happens to be the list_head
+> > > allocations of list_lru_one list. These lists are created whenever a
+> > > FS mount happens. Specially two such lists are registered by alloc_super(),
+> > > one for dentry and another for inode shrinker list. And these lists
+> > > are created for all possible NUMA nodes and for all given memcgs
+> > > (memcg_nr_cache_ids to be particular)
+> > >
+> > > If,
+> > >
+> > > A = Nr allocation request per mount: 2 (one for dentry and inode list)
+> > > B = Nr NUMA possible nodes
+> > > C = memcg_nr_cache_ids
+> > > D = size of each kmalloc-32 object: 32 bytes,
+> > >
+> > > then for every mount, the amount of memory consumed by kmalloc-32 slab
+> > > cache for list_lru creation is A*B*C*D bytes.
+> >
+> > Yes, this is exactly what the current implementation does.
+> >
+> > >
+> > > Following factors contribute to the excessive allocations:
+> > >
+> > > - Lists are created for possible NUMA nodes.
+> >
+> > Yes, because filesystem caches (dentry and inode) are NUMA aware.
+>
+> True, but creating lists for possible nodes as against online nodes
+> can hurt platforms where possible is typically higher than online.
 
-> > The problem at our hand (which you might be knowing already) is that, lets say
-> > we have 2 cgroups in our setup and we want to prioritize UX over background.
-> > IOW, reduce the cpu.shares of background cgroup. This helps in prioritizing
-> > Task-A and Task-B over Task-X and Task-Y. However, each individual kworker
-> > can potentially have CPU share equal to the entire UX cgroup.
-> > 
-> > -kworker/0:0
-> > -kworker/1:0
-> > - UX
-> > ----Task-A
-> > ----Task-B
-> > - background
-> > ----Task-X
-> > ----Task-Y
-> > Hence we want to move all kernel threads to another cgroup so that this cgroup
-> > will have CPU share equal to UX.
-> > 
-> > The patch presented here allows us to create the above setup. Any other
-> > alternative approaches to achieve the same without impacting any future
-> > designs/requirements?
-> 
-> Not quite the same but we already have
-> /sys/devices/virtual/workqueue/cpumask which affects all unbound workqueues,
-> so maybe a global default priority knob would help here?
-> 
+I'm supposed just because hotplug doesn't handle memcg list_lru
+creation/deletion.
 
-yeah, not exactly what we are looking for. It gives us the abiility to restrict
-the priority of all unbound workqueues at the expense of not being able to
-prioritize one workqueue over another workqueue.
+Get much simpler and less-prone implementation by wasting some memory.
 
-Thanks,
-Pavan
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+>
+> >
+> > > - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
+> > >   list_lrus are created when it grows. Thus we end up creating list_lru_one
+> > >   list_heads even for those memcgs which are yet to be created.
+> > >   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
+> > >   a value of 12286.
+> > > - When a memcg goes offline, the list elements are drained to the parent
+> > >   memcg, but the list_head entry remains.
+> > > - The lists are destroyed only when the FS is unmounted. So list_heads
+> > >   for non-existing memcgs remain and continue to contribute to the
+> > >   kmalloc-32 allocation. This is presumably done for performance
+> > >   reason as they get reused when new memcgs are created, but they end up
+> > >   consuming slab memory until then.
+> >
+> > The current implementation has list_lrus attached with super_block. So
+> > the list can't be freed until the super block is unmounted.
+> >
+> > I'm looking into consolidating list_lrus more closely with memcgs. It
+> > means the list_lrus will have the same life cycles as memcgs rather
+> > than filesystems. This may be able to improve some. But I'm supposed
+> > the filesystem will be unmounted once the container exits and the
+> > memcgs will get offlined for your usecase.
+>
+> Yes, but when the containers are still running, the lists that get
+> created for non-existing memcgs and non-relavent memcgs are the main
+> cause of increased memory consumption.
 
+Since kernel doesn't know about containers so kernel simply doesn't
+know what memcgs are non-relevant.
+
+>
+> >
+> > > - In case of containers, a few file systems get mounted and are specific
+> > >   to the container namespace and hence to a particular memcg, but we
+> > >   end up creating lists for all the memcgs.
+> >
+> > Yes, because the kernel is *NOT* aware of containers.
+> >
+> > >   As an example, if 7 FS mounts are done for every container and when
+> > >   10k containers are created, we end up creating 2*7*12286 list_lru_one
+> > >   lists for each NUMA node. It appears that no elements will get added
+> > >   to other than 2*7=14 of them in the case of containers.
+> > >
+> > > One straight forward way to prevent this excessive list_lru_one
+> > > allocations is to limit the list_lru_one creation only to the
+> > > relevant memcg. However I don't see an easy way to figure out
+> > > that relevant memcg from FS mount path (alloc_super())
+> > >
+> > > As an alternative approach, I have this below hack that does lazy
+> > > list_lru creation. The memcg-specific list is created and initialized
+> > > only when there is a request to add an element to that particular
+> > > list. Though I am not sure about the full impact of this change
+> > > on the owners of the lists and also the performance impact of this,
+> > > the overall savings look good.
+> >
+> > It is fine to reduce the memory consumption for your usecase, but I'm
+> > not sure if this would incur any noticeable overhead for vfs
+> > operations since list_lru_add() should be called quite often, but it
+> > just needs to allocate the list for once (for each memcg +
+> > filesystem), so the overhead might be fine.
+>
+> Let me run some benchmarks to measure the overhead. Any particular
+> benchmark suggestion?
+
+Open/close files should manipulate list_lru.
+
+>
+> >
+> > And I'm wondering how much memory can be saved for real life workload.
+> > I don't expect most containers are idle in production environments.
+>
+> I don't think kmalloc-32 slab cache memory consumption from list_lru
+> would be any different for real life workload compared to idle containers.
+
+I don't mean the memory consumption itself. I mean the list is
+typically not empty with real life workload so the memory is not
+allocated in vain.
+
+>
+> >
+> > Added some more memcg/list_lru experts in this loop, they may have better ideas.
+>
+> Thanks.
+>
+> Regards,
+> Bharata.
