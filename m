@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B7A3566CD
+	by mail.lfdr.de (Postfix) with ESMTP id AAFB63566CE
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240993AbhDGI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbhDGI2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:28:01 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB357C06174A;
-        Wed,  7 Apr 2021 01:27:52 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id y32so9289725pga.11;
-        Wed, 07 Apr 2021 01:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ntPmOtLTBQO17iO2C/J/ncPJWSh08MXYx+HubKJAAco=;
-        b=DgDxwehh+Y1geD1x94gB5CIcgxFxYq2ix10Hazya1dhlitsPuWwtLaeacuzPSmgZKB
-         1jDCyIESK3asjo77f01em0nRZPUJCfa3Z3n3oDJYGrzIJfVGLP4d/z1UzgZg0TsMQpp9
-         F8pb6+cGVhGfTlp+UqfcS/jjuiKrOUT/oBPE7/+PUoaF2GxwIcBuW+oEyIIk43ksimfB
-         rU2XzKJoEsTunZUzcS5/xH+r/p5WH9jEi4bWkCZPYEoqnrMneY6o8TfDDAkak6lQyEhm
-         FUB3uu5oizynLS7Nt0tYZhTyQgOjl58C+BfveOaTxrRRM0IGwtpIu2SmlgC45wXiod+4
-         ylkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ntPmOtLTBQO17iO2C/J/ncPJWSh08MXYx+HubKJAAco=;
-        b=ABCF+M9T5dFSkY8fDez0yROL+pJbwG62hCB0hNVLlOjGj72m03pUBiwqulz2ZdYwtw
-         dutdZLqFIscYrwGCHfakPpIk3UyXqlHgAdYKhOdiUCzilUOxcDa4wUKp+NAQ405cW2QC
-         3rgs3F4ienByUvwlWmKCefWcB8v2M3q+vN6QVA1y62GzLR+/UqPmC93MuKtk6/rZSfNM
-         l4HI6zGIvL/XOcvQEWwSH5Mq1qmM9PGEh3chmJea/AZhQkVZXw5r3PPRMbrnwfrjuBpj
-         Xeq6cdeuUPyjF5dymDR2GD8xhMaWc2mGkdTvYJXn4y0JOuuSoZ2HAOKQCB0uB51eQzF9
-         /Ikg==
-X-Gm-Message-State: AOAM5313oWlKClXgzX1oBvHF1nZVqa72TMnzQcffA51XpuCspM1Q7Pq2
-        gfLsT1kh2ReOTXDr4RuiOxQ=
-X-Google-Smtp-Source: ABdhPJySc6gloAuTNcaXpmXnMgeewxCipjgewulWGsAiSehmJ/N0gclf05LA7y+Ge2ge6B3WJ1aMjw==
-X-Received: by 2002:a65:4082:: with SMTP id t2mr2249130pgp.396.1617784072324;
-        Wed, 07 Apr 2021 01:27:52 -0700 (PDT)
-Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id v25sm20484716pfn.51.2021.04.07.01.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 01:27:51 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 01:27:49 -0700
-From:   Pavle Rohalj <pavle.rohalj@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/49]  staging: sm750fb: Update enum values in dpms
- to snake case
-Message-ID: <YG1tBSqVTwKQChHV@localhost.localdomain>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
- <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
- <YG1eFxQDP6dITlXA@kroah.com>
+        id S241179AbhDGI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:28:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48698 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240739AbhDGI2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:28:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 77DE9AFCF;
+        Wed,  7 Apr 2021 08:27:53 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 10:27:49 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 5/8] hugetlb: call update_and_free_page without
+ hugetlb_lock
+Message-ID: <20210407082744.GA10058@linux>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-6-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG1eFxQDP6dITlXA@kroah.com>
+In-Reply-To: <20210405230043.182734-6-mike.kravetz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:24:07AM +0200, Greg KH wrote:
-> On Tue, Apr 06, 2021 at 11:36:16PM -0700, Pavle Rohalj wrote:
-> > Fix "Avoid CamelCase" checkpatch.pl checks for values in
-> > enum dpms.
-> > 
-> > Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
-> > ---
-> >  drivers/staging/sm750fb/ddk750_power.h | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/staging/sm750fb/ddk750_power.h b/drivers/staging/sm750fb/ddk750_power.h
-> > index 7002567a47d2..4756db1ccb9c 100644
-> > --- a/drivers/staging/sm750fb/ddk750_power.h
-> > +++ b/drivers/staging/sm750fb/ddk750_power.h
-> > @@ -3,10 +3,10 @@
-> >  #define DDK750_POWER_H__
-> >  
-> >  enum dpms {
-> > -	crtDPMS_ON = 0x0,
-> > -	crtDPMS_STANDBY = 0x1,
-> > -	crtDPMS_SUSPEND = 0x2,
-> > -	crtDPMS_OFF = 0x3,
-> > +	CRT_DPMS_ON = 0x0,
-> > +	CRT_DPMS_STANDBY = 0x1,
-> > +	CRT_DPMS_SUSPEND = 0x2,
-> > +	CRT_DPMS_OFF = 0x3,
-> >  };
+On Mon, Apr 05, 2021 at 04:00:40PM -0700, Mike Kravetz wrote:
+> With the introduction of remove_hugetlb_page(), there is no need for
+> update_and_free_page to hold the hugetlb lock.  Change all callers to
+> drop the lock before calling.
 > 
-> And the build does not break with this change?  If so, then why are
-> these here at all?
+> With additional code modifications, this will allow loops which decrease
+> the huge page pool to drop the hugetlb_lock with each page to reduce
+> long hold times.
 > 
-> thanks,
+> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
+> a subsequent patch which restructures free_pool_huge_page.
 > 
-> greg k-h
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-I do not think so, I was able to build and load the driver with these
-changes. It looks like this enum is used as a type of the state parameter of
-ddk750_set_dpms function, but the three defined constants are never referenced. 
-Should we get rid of dpms enum and change the type of the parameter to an unsigned integer?
+Without looking too close at the changes made to alloc_and_dissolve_huge_page():
 
--Pavle
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+One question below:
+
+> @@ -2671,22 +2682,34 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+>  						nodemask_t *nodes_allowed)
+>  {
+>  	int i;
+> +	struct page *page, *next;
+> +	LIST_HEAD(page_list);
+>  
+>  	if (hstate_is_gigantic(h))
+>  		return;
+>  
+> +	/*
+> +	 * Collect pages to be freed on a list, and free after dropping lock
+> +	 */
+>  	for_each_node_mask(i, *nodes_allowed) {
+> -		struct page *page, *next;
+>  		struct list_head *freel = &h->hugepage_freelists[i];
+>  		list_for_each_entry_safe(page, next, freel, lru) {
+>  			if (count >= h->nr_huge_pages)
+> -				return;
+> +				goto out;
+>  			if (PageHighMem(page))
+>  				continue;
+>  			remove_hugetlb_page(h, page, false);
+> -			update_and_free_page(h, page);
+> +			list_add(&page->lru, &page_list);
+>  		}
+>  	}
+> +
+> +out:
+> +	spin_unlock(&hugetlb_lock);
+> +	list_for_each_entry_safe(page, next, &page_list, lru) {
+> +		update_and_free_page(h, page);
+> +		cond_resched();
+> +	}
+> +	spin_lock(&hugetlb_lock);
+
+Can we get here with an empty list? Maybe if someone raced with us manipulating
+nr_huge_pages? AFAICS, this gets called under the lock, and the adjusting in
+remove_hugetlb_page() gets also done under the lock, so I guess this is not
+possible to happen.
+The reason I am asking is whether we want to check for the list to be empty before
+we do the unacquire/acquire lock dancing.
+
+
+-- 
+Oscar Salvador
+SUSE L3
