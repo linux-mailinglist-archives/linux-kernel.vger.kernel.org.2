@@ -2,201 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4A2356916
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA0435691B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244645AbhDGKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:09:08 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:39802 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234217AbhDGKJF (ORCPT
+        id S235119AbhDGKLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234733AbhDGKLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:09:05 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 64685404A3;
-        Wed,  7 Apr 2021 10:08:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1617790136; bh=eu1McAw//AVG679Rm99KEM81EeYNu+rSRmUeWBUkbUU=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=TalrV//l2s8hN09XkplmdN901X7vspjNSQ1t0CzlQLkUtLGUexeUjBz/jsGBP8/+3
-         E7aJD8MTFviEyxBNaU0kujh/+Wx8YOv9eScsD5yOPcNo9P2LdnmVO1Ds8SI4+QrWS9
-         Cxqw1Vyh3x0ejTPFXA6H+SPqp/Wb5JdpQLU7h+XhsWKqdFMc6AELnpcdagbH5ALGmC
-         HVZsq7xClUJhwoRMVF9aTGxlh6iUY6RirNk+KZq96eEmgh6PZNDVp3EcsHVwJc0LKR
-         flt5lYKCWCbI4SM7bKlj75b43FRUgOdcWOBwu45huAf1hKRJf3YXIdF7u91FaiJgWU
-         xCe6qNCMPT1Eg==
-Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 4E974A022E;
-        Wed,  7 Apr 2021 10:08:53 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Wed, 07 Apr 2021 14:08:52 +0400
-Date:   Wed, 07 Apr 2021 14:08:52 +0400
-Message-Id: <bd57036a0724d733b588a1af2aa7b71c3530a6bc.1617782103.git.Arthur.Petrosyan@synopsys.com>
-In-Reply-To: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
-References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
-X-SNPS-Relay: synopsys.com
-From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 13/14] usb: dwc2: Fix partial power down exiting by system resume
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     John Youn <John.Youn@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Paul Zimmerman <paulz@synopsys.com>, <stable@vger.kernel.org>,
-        Kever Yang <kever.yang@rock-chips.com>
+        Wed, 7 Apr 2021 06:11:05 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC03C061756;
+        Wed,  7 Apr 2021 03:10:56 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x15so8106292wrq.3;
+        Wed, 07 Apr 2021 03:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=wPByJzN/lrtdxw7IeGs/VhpNS5SPbMlWIMYIa7XkvgA=;
+        b=Mv1KqnOmWXihqzCTJ7mc3sDMHB2wPVvBiahBlHsncEMZtquH6WvHTwwrUTTh6AONiF
+         J7HgP0UHU1SZn+flahbTYrKdztw8UgHAP0CCxXG0/LHPpiomdNdtCQmSb4u8U+nGYMi0
+         K9FOQJZaQT3Et3YjxjMePQsUoWgUZxmJedTqXXg1VseoePKRo9PcSAgwmLIIpdvExWXK
+         hCxRXLox9jhtz5bP2po8hrakmCjWyk7JUp0ocj3G1iwpSWZHNRx0tORESQjhWPlx1fY+
+         ABXFXsN40JndUn1ldyjab/Iu/C24XoCYUpqdBKTlu4p+O18kE2r2G1YsDyPwccwe6KOK
+         cEXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=wPByJzN/lrtdxw7IeGs/VhpNS5SPbMlWIMYIa7XkvgA=;
+        b=NSu5SoXFD20ygkAeFgidN+ps1WuKs11f5ZolbzAvwP7sfBrlQ0qPU4veQzmwKi3KFB
+         TJTQqiYhIS/1GMEaS12IX5qi9JacVJTyD+TEmz0CKGMVd4WSDZ0jAAP0UrLlTaJRt9CH
+         o50mw07w3EfYzf+aHN4MpXdMVUbDCmubR8FTErUrcsTfLdA6TwDoHMGtMc7KNs9LIyMh
+         hsWPmp1DQw/ihJA4mpc5zspV8hypb2iilVg5xF/73ObMhHDU6hCr8FLRDQzUFnXZ31Ws
+         d7bvP4kgxgLs+vOG3QAsvY1HbvSr74Pnv941GrnhS/nUFM0zMn39tike8nnCKvT7E3Xz
+         W5yA==
+X-Gm-Message-State: AOAM5314tALn/FZiRu6aKTI4RWea/NZyKdThGEyliYSGtUPC+RwDrNBh
+        SAY31u/wqlFN6AhISm3ueOw=
+X-Google-Smtp-Source: ABdhPJzF21Oel/0BU67OgtwJ2Z/9oyBl0+N2CQ9W+9/69ZNDuh80eCyuAPaG2Rmx5fOW9kTaY0xQ1A==
+X-Received: by 2002:adf:d082:: with SMTP id y2mr2920830wrh.176.1617790254787;
+        Wed, 07 Apr 2021 03:10:54 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id k13sm46297544wri.27.2021.04.07.03.10.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 03:10:54 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 15:10:47 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-media@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-amlogic@lists.infradead.org>,
+        "moderated list:ARM/Amlogic Meson SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Cc:     musamaanjum@gmail.com, linqiheng@huawei.com,
+        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
+Subject: [PATCH] staging: axis-fifo: media/meson: remove redundant dev_err
+ call
+Message-ID: <20210407101047.GA1491258@LEGION>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the implementation of exiting from partial power down
-power saving mode when PC is resumed.
+devm_ioremap_resource() prints error message in itself. Remove the
+dev_err call to avoid redundant error message.
 
-Added port connection status checking which prevents exiting from
-Partial Power Down mode from _dwc2_hcd_resume() if not in Partial
-Power Down mode.
-
-Rearranged the implementation to get rid of many "if"
-statements.
-
-NOTE: Switch case statement is used for hibernation partial
-power down and clock gating mode determination. In this patch
-only Partial Power Down is implemented the Hibernation and
-clock gating implementations are planned to be added.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 6f6d70597c15 ("usb: dwc2: bus suspend/resume for hosts with DWC2_POWER_DOWN_PARAM_NONE")
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
 ---
- drivers/usb/dwc2/hcd.c | 90 +++++++++++++++++++++---------------------
- 1 file changed, 46 insertions(+), 44 deletions(-)
+ drivers/staging/axis-fifo/axis-fifo.c   | 1 -
+ drivers/staging/media/meson/vdec/vdec.c | 8 ++------
+ 2 files changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 34030bafdff4..f096006df96f 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -4427,7 +4427,7 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
- {
- 	struct dwc2_hsotg *hsotg = dwc2_hcd_to_hsotg(hcd);
- 	unsigned long flags;
--	u32 pcgctl;
-+	u32 hprt0;
- 	int ret = 0;
- 
- 	spin_lock_irqsave(&hsotg->lock, flags);
-@@ -4438,11 +4438,40 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
- 	if (hsotg->lx_state != DWC2_L2)
- 		goto unlock;
- 
--	if (hsotg->params.power_down > DWC2_POWER_DOWN_PARAM_PARTIAL) {
-+	hprt0 = dwc2_read_hprt0(hsotg);
-+
-+	/*
-+	 * Added port connection status checking which prevents exiting from
-+	 * Partial Power Down mode from _dwc2_hcd_resume() if not in Partial
-+	 * Power Down mode.
-+	 */
-+	if (hprt0 & HPRT0_CONNSTS) {
-+		hsotg->lx_state = DWC2_L0;
-+		goto unlock;
-+	}
-+
-+	switch (hsotg->params.power_down) {
-+	case DWC2_POWER_DOWN_PARAM_PARTIAL:
-+		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
-+		if (ret)
-+			dev_err(hsotg->dev,
-+				"exit partial_power_down failed\n");
-+		/*
-+		 * Set HW accessible bit before powering on the controller
-+		 * since an interrupt may rise.
-+		 */
-+		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
-+		break;
-+	case DWC2_POWER_DOWN_PARAM_HIBERNATION:
-+	case DWC2_POWER_DOWN_PARAM_NONE:
-+	default:
- 		hsotg->lx_state = DWC2_L0;
- 		goto unlock;
+diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
+index 2bb1c2e9cb57..ed9281089738 100644
+--- a/drivers/staging/axis-fifo/axis-fifo.c
++++ b/drivers/staging/axis-fifo/axis-fifo.c
+@@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
+ 	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
+ 	if (IS_ERR(fifo->base_addr)) {
+ 		rc = PTR_ERR(fifo->base_addr);
+-		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
+ 		goto err_initial;
  	}
  
-+	/* Change Root port status, as port status change occurred after resume.*/
-+	hsotg->flags.b.port_suspend_change = 1;
-+
- 	/*
- 	 * Enable power if not already done.
- 	 * This must not be spinlocked since duration
-@@ -4454,52 +4483,25 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
- 		spin_lock_irqsave(&hsotg->lock, flags);
- 	}
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index 5d4db7a5b4b5..e51d69c4729d 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
  
--	if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_PARTIAL) {
--		/*
--		 * Set HW accessible bit before powering on the controller
--		 * since an interrupt may rise.
--		 */
--		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
--
--
--		/* Exit partial_power_down */
--		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
--		if (ret && (ret != -ENOTSUPP))
--			dev_err(hsotg->dev, "exit partial_power_down failed\n");
--	} else {
--		pcgctl = readl(hsotg->regs + PCGCTL);
--		pcgctl &= ~PCGCTL_STOPPCLK;
--		writel(pcgctl, hsotg->regs + PCGCTL);
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
+ 	core->dos_base = devm_ioremap_resource(dev, r);
+-	if (IS_ERR(core->dos_base)) {
+-		dev_err(dev, "Couldn't remap DOS memory\n");
++	if (IS_ERR(core->dos_base))
+ 		return PTR_ERR(core->dos_base);
 -	}
--
--	hsotg->lx_state = DWC2_L0;
--
-+	/* Enable external vbus supply after resuming the port. */
- 	spin_unlock_irqrestore(&hsotg->lock, flags);
-+	dwc2_vbus_supply_init(hsotg);
  
--	if (hsotg->bus_suspended) {
--		spin_lock_irqsave(&hsotg->lock, flags);
--		hsotg->flags.b.port_suspend_change = 1;
--		spin_unlock_irqrestore(&hsotg->lock, flags);
--		dwc2_port_resume(hsotg);
--	} else {
--		if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_PARTIAL) {
--			dwc2_vbus_supply_init(hsotg);
--
--			/* Wait for controller to correctly update D+/D- level */
--			usleep_range(3000, 5000);
--		}
-+	/* Wait for controller to correctly update D+/D- level */
-+	usleep_range(3000, 5000);
-+	spin_lock_irqsave(&hsotg->lock, flags);
- 
--		/*
--		 * Clear Port Enable and Port Status changes.
--		 * Enable Port Power.
--		 */
--		dwc2_writel(hsotg, HPRT0_PWR | HPRT0_CONNDET |
--				HPRT0_ENACHG, HPRT0);
--		/* Wait for controller to detect Port Connect */
--		usleep_range(5000, 7000);
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
+ 	core->esparser_base = devm_ioremap_resource(dev, r);
+-	if (IS_ERR(core->esparser_base)) {
+-		dev_err(dev, "Couldn't remap ESPARSER memory\n");
++	if (IS_ERR(core->esparser_base))
+ 		return PTR_ERR(core->esparser_base);
 -	}
-+	/*
-+	 * Clear Port Enable and Port Status changes.
-+	 * Enable Port Power.
-+	 */
-+	dwc2_writel(hsotg, HPRT0_PWR | HPRT0_CONNDET |
-+			HPRT0_ENACHG, HPRT0);
  
--	return ret;
-+	/* Wait for controller to detect Port Connect */
-+	spin_unlock_irqrestore(&hsotg->lock, flags);
-+	usleep_range(5000, 7000);
-+	spin_lock_irqsave(&hsotg->lock, flags);
- unlock:
- 	spin_unlock_irqrestore(&hsotg->lock, flags);
- 
+ 	core->regmap_ao =
+ 		syscon_regmap_lookup_by_phandle(dev->of_node,
 -- 
 2.25.1
 
