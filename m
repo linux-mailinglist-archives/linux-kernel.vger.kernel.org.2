@@ -2,264 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E17F3572C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333EA3572C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354633AbhDGRHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhDGRHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:07:47 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E77DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 10:07:37 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id r22so9258256edq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 10:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hhFS7+g4d9qhWL1Sxa92fUPKKPAt/A686yXQfYN4jSA=;
-        b=mvlio8357iZkFrvb9V07d4caacQYkmQgSGYLrwalaYkjpFmFCeSuXrz0JQ+ohMhLjc
-         XhLt34QTgac2MVfqUTtmweGj5I3Xvpj4UMrSwwZGcdvy89Fptu/h3kaEKokPakCQCOLF
-         wbDNXYuzP6jxEcpcaWvp+ZnHWYUlcw3dbGckF+rbWd3HXOyZ9psRV9QXATOhihoGiDbN
-         i5TYfgB1RIBpm5gNHF1kV71P37yfKVUTjqRls0mSxtcHlXNjEgzph4ENX18eZaxRqmZd
-         Ab1878HamsONASfCgMEv3kXvhJV8ciI3jpMFuilUVRdHqWP/1i/zj1RznfddAejhoCPU
-         Pfzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hhFS7+g4d9qhWL1Sxa92fUPKKPAt/A686yXQfYN4jSA=;
-        b=sm0Et24zT8GWxs2S2jQLbZMSLS0U7TRyQMSOnhCNW6JAPve0QcT/s+hK1pTzUFbaDI
-         9BxnlN0grUuaEIN3fxEKK6QjZLHkJamq+IKLMQ+q+ZUzpx/K861XPOq5ow5jiBA5Ycuf
-         K8uOgJ/R7mSgFNPzBzF0aETvHfUqrsrWYQjKl0qiVjtYzs6fwuLS3UbcHz81ea528laj
-         kgCXu25E/27KuXvPFk4+V5wlzkaGJ+ssHE32j/JxjlD1fg4r2Vg3s3mUkTm6aBbfcb2Z
-         340uDQKNQKdukT55GQpiouG4p9woopZ5xHTLUZ/2S3VifN42lm3RmajPb5k4mIn8fYLy
-         1X4Q==
-X-Gm-Message-State: AOAM5302wy6uRm9+MBqsAYNxSdIPP/fzT/43lv/5y58OnQOVNLgmD9c/
-        aK9BaWMTYecSu4/u1mAD+Rk=
-X-Google-Smtp-Source: ABdhPJxL8ER8lzOEpr3oSXX6A0ET2Q8mQ8aOEMmKRlo9JAYQWOYZr9cUbiVAdCFUqEwpTFE5GhLLZg==
-X-Received: by 2002:aa7:dbd3:: with SMTP id v19mr5613133edt.314.1617815256001;
-        Wed, 07 Apr 2021 10:07:36 -0700 (PDT)
-Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
-        by smtp.gmail.com with ESMTPSA id la16sm3044067ejb.40.2021.04.07.10.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 10:07:35 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: hal: Remove camelcase in sdio_ops.c
-Date:   Wed,  7 Apr 2021 19:07:31 +0200
-Message-Id: <20210407170731.7190-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S1354634AbhDGRIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:08:51 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:46574 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234050AbhDGRIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:08:48 -0400
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id E1C0040C8C;
+        Wed,  7 Apr 2021 17:08:28 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v10 0/9] Count rlimits in each user namespace
+Date:   Wed,  7 Apr 2021 19:08:05 +0200
+Message-Id: <cover.1617814298.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.4 (raptor.unsafe.ru [5.9.43.93]); Wed, 07 Apr 2021 17:08:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove camelcase. Issue detected by checkpatch.pl. For now, change only
-names of static functions in order to not break the driver's code.
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.12-rc4
 
-Changes from v1: No chenges to the code but only to the subject for the
-purpose to differentiate this patch because other removes of camelcase 
-have been made in other files of the same directory.
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
 
- drivers/staging/rtl8723bs/hal/sdio_ops.c | 44 ++++++++++++------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
 
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-index b1f02bb9f0a9..5e28818e58e0 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-@@ -19,7 +19,7 @@
- /*  */
- /*  Creadted by Roger, 2011.01.31. */
- /*  */
--static void HalSdioGetCmdAddr8723BSdio(
-+static void hal_sdio_get_cmd_addr_8723b_sdio(
- 	struct adapter *adapter,
- 	u8 device_id,
- 	u32 addr,
-@@ -97,7 +97,7 @@ static u8 get_deviceid(u32 addr)
- 
- /*
-  * Ref:
-- *HalSdioGetCmdAddr8723BSdio()
-+ *hal_sdio_get_cmd_addr_8723b_sdio()
-  */
- static u32 _cvrt2ftaddr(const u32 addr, u8 *pdevice_id, u16 *poffset)
- {
-@@ -426,7 +426,7 @@ static u32 sdio_read_port(
- 	psdio = &adapter_to_dvobj(adapter)->intf_data;
- 	hal = GET_HAL_DATA(adapter);
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, addr, hal->SdioRxFIFOCnt++, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, addr, hal->SdioRxFIFOCnt++, &addr);
- 
- 	if (cnt > psdio->block_transfer_len)
- 		cnt = _RND(cnt, psdio->block_transfer_len);
-@@ -475,7 +475,7 @@ static u32 sdio_write_port(
- 	}
- 
- 	cnt = round_up(cnt, 4);
--	HalSdioGetCmdAddr8723BSdio(adapter, addr, cnt >> 2, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, addr, cnt >> 2, &addr);
- 
- 	if (cnt > psdio->block_transfer_len)
- 		cnt = _RND(cnt, psdio->block_transfer_len);
-@@ -528,7 +528,7 @@ static s32 _sdio_local_read(
- 
- 	intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (!mac_pwr_ctrl_on)
-@@ -566,7 +566,7 @@ s32 sdio_local_read(
- 
- 	intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (
-@@ -612,7 +612,7 @@ s32 sdio_local_write(
- 
- 	intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (
-@@ -639,24 +639,24 @@ u8 SdioLocalCmd52Read1Byte(struct adapter *adapter, u32 addr)
- 	u8 val = 0;
- 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	sd_cmd52_read(intfhdl, addr, 1, &val);
- 
- 	return val;
- }
- 
--static u16 SdioLocalCmd52Read2Byte(struct adapter *adapter, u32 addr)
-+static u16 sdio_local_cmd52_read2byte(struct adapter *adapter, u32 addr)
- {
- 	__le16 val = 0;
- 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	sd_cmd52_read(intfhdl, addr, 2, (u8 *)&val);
- 
- 	return le16_to_cpu(val);
- }
- 
--static u32 SdioLocalCmd53Read4Byte(struct adapter *adapter, u32 addr)
-+static u32 sdio_local_cmd53_read4byte(struct adapter *adapter, u32 addr)
- {
- 
- 	u8 mac_pwr_ctrl_on;
-@@ -664,7 +664,7 @@ static u32 SdioLocalCmd53Read4Byte(struct adapter *adapter, u32 addr)
- 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
- 	__le32 le_tmp;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->bFwCurrentInPSMode) {
- 		sd_cmd52_read(intfhdl, addr, 4, (u8 *)&le_tmp);
-@@ -679,21 +679,21 @@ void SdioLocalCmd52Write1Byte(struct adapter *adapter, u32 addr, u8 v)
- {
- 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	sd_cmd52_write(intfhdl, addr, 1, &v);
- }
- 
--static void SdioLocalCmd52Write4Byte(struct adapter *adapter, u32 addr, u32 v)
-+static void sdio_local_cmd52_write4byte(struct adapter *adapter, u32 addr, u32 v)
- {
- 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
- 	__le32 le_tmp;
- 
--	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
-+	hal_sdio_get_cmd_addr_8723b_sdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	le_tmp = cpu_to_le32(v);
- 	sd_cmd52_write(intfhdl, addr, 4, (u8 *)&le_tmp);
- }
- 
--static s32 ReadInterrupt8723BSdio(struct adapter *adapter, u32 *phisr)
-+static s32 read_interrupt_8723b_sdio(struct adapter *adapter, u32 *phisr)
- {
- 	u32 hisr, himr;
- 	u8 val8, hisr_len;
-@@ -935,7 +935,7 @@ void sd_int_dpc(struct adapter *adapter)
- 		status = rtw_malloc(4);
- 		if (status) {
- 			addr = REG_TXDMA_STATUS;
--			HalSdioGetCmdAddr8723BSdio(adapter, WLAN_IOREG_DEVICE_ID, addr, &addr);
-+			hal_sdio_get_cmd_addr_8723b_sdio(adapter, WLAN_IOREG_DEVICE_ID, addr, &addr);
- 			_sd_read(intfhdl, addr, 4, status);
- 			_sd_write(intfhdl, addr, 4, status);
- 			DBG_8192C("%s: SDIO_HISR_TXERR (0x%08x)\n", __func__, le32_to_cpu(*(u32 *)status));
-@@ -986,7 +986,7 @@ void sd_int_dpc(struct adapter *adapter)
- 
- 		hal->sdio_hisr ^= SDIO_HISR_RX_REQUEST;
- 		do {
--			hal->SdioRxFIFOSize = SdioLocalCmd52Read2Byte(adapter, SDIO_REG_RX0_REQ_LEN);
-+			hal->SdioRxFIFOSize = sdio_local_cmd52_read2byte(adapter, SDIO_REG_RX0_REQ_LEN);
- 			if (hal->SdioRxFIFOSize != 0) {
- 				recvbuf = sd_recv_rxfifo(adapter, hal->SdioRxFIFOSize);
- 				if (recvbuf)
-@@ -1002,7 +1002,7 @@ void sd_int_dpc(struct adapter *adapter)
- 				break;
- 
- 			hisr = 0;
--			ReadInterrupt8723BSdio(adapter, &hisr);
-+			read_interrupt_8723b_sdio(adapter, &hisr);
- 			hisr &= SDIO_HISR_RX_REQUEST;
- 			if (!hisr)
- 				break;
-@@ -1026,7 +1026,7 @@ void sd_int_hdl(struct adapter *adapter)
- 	hal = GET_HAL_DATA(adapter);
- 
- 	hal->sdio_hisr = 0;
--	ReadInterrupt8723BSdio(adapter, &hal->sdio_hisr);
-+	read_interrupt_8723b_sdio(adapter, &hal->sdio_hisr);
- 
- 	if (hal->sdio_hisr & hal->sdio_himr) {
- 		u32 v32;
-@@ -1036,7 +1036,7 @@ void sd_int_hdl(struct adapter *adapter)
- 		/*  clear HISR */
- 		v32 = hal->sdio_hisr & MASK_SDIO_HISR_CLEAR;
- 		if (v32)
--			SdioLocalCmd52Write4Byte(adapter, SDIO_REG_HISR, v32);
-+			sdio_local_cmd52_write4byte(adapter, SDIO_REG_HISR, v32);
- 
- 		sd_int_dpc(adapter);
- 	}
-@@ -1059,7 +1059,7 @@ u8 HalQueryTxBufferStatus8723BSdio(struct adapter *adapter)
- 
- 	hal = GET_HAL_DATA(adapter);
- 
--	numof_free_page = SdioLocalCmd53Read4Byte(adapter, SDIO_REG_FREE_TXPG);
-+	numof_free_page = sdio_local_cmd53_read4byte(adapter, SDIO_REG_FREE_TXPG);
- 
- 	memcpy(hal->SdioTxFIFOFreePage, &numof_free_page, 4);
- 
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
+
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
+
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
+
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
+
+Eric W. Biederman mentioned this issue [2][3].
+
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1]: https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2]: https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3]: https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v10:
+* Fixed memory leak in __sigqueue_alloc.
+* Handled an unlikely situation when all consumers will return ucounts at once.
+* Addressed other review comments from Eric W. Biederman.
+
+v9:
+* Used a negative value to check that the ucounts->count is close to overflow.
+* Rebased onto v5.12-rc4.
+
+v8:
+* Used atomic_t for ucounts reference counting. Also added counter overflow
+  check (thanks to Linus Torvalds for the idea).
+* Fixed other issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v7:
+* Fixed issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v6:
+* Fixed issues found by lkp-tests project.
+* Rebased onto v5.11.
+
+v5:
+* Split the first commit into two commits: change ucounts.count type to atomic_long_t
+  and add ucounts to cred. These commits were merged by mistake during the rebase.
+* The __get_ucounts() renamed to alloc_ucounts().
+* The cred.ucounts update has been moved from commit_creds() as it did not allow
+  to handle errors.
+* Added error handling of set_cred_ucounts().
+
+v4:
+* Reverted the type change of ucounts.count to refcount_t.
+* Fixed typo in the kernel/cred.c
+
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (9):
+  Increase size of ucounts to atomic_long_t
+  Add a reference to ucounts for each cred
+  Use atomic_t for ucounts reference counting
+  Reimplement RLIMIT_NPROC on top of ucounts
+  Reimplement RLIMIT_MSGQUEUE on top of ucounts
+  Reimplement RLIMIT_SIGPENDING on top of ucounts
+  Reimplement RLIMIT_MEMLOCK on top of ucounts
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+  ucounts: Set ucount_max to the largest positive value the type can
+    hold
+
+ fs/exec.c                                     |   6 +-
+ fs/hugetlbfs/inode.c                          |  16 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   4 +
+ include/linux/hugetlb.h                       |   4 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   7 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  32 +++-
+ ipc/mqueue.c                                  |  41 ++---
+ ipc/shm.c                                     |  26 +--
+ kernel/cred.c                                 |  50 +++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  18 +-
+ kernel/signal.c                               |  58 +++----
+ kernel/sys.c                                  |  14 +-
+ kernel/ucount.c                               | 123 ++++++++++---
+ kernel/user.c                                 |   3 -
+ kernel/user_namespace.c                       |   9 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  23 ++-
+ mm/mmap.c                                     |   4 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 29 files changed, 490 insertions(+), 145 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
 -- 
-2.30.2
+2.29.3
 
