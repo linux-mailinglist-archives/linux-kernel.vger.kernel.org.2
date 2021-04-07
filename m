@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FAF3574C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0785A3574C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355558AbhDGTEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:04:38 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:13026 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229603AbhDGTEb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:04:31 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AIDj1E6scUsseQbd/8/hkTyCD7skDttV00zAX?=
- =?us-ascii?q?/kB9WHVpW+afkN2jm+le6A/shF8qKRMdsP2JJaXoexjh3LFv5415B92fdS3HnE?=
- =?us-ascii?q?ftE41494vlxFTbak7D38pQz71pfaQ7KPCYNzlHpP336gW5DNosqePvmJyAv/vU?=
- =?us-ascii?q?zHtmUGhRBZ1I0gERMGqmO3FtSBIDLZQ0E4f03Kp6jgvlSDAsYsO3CmJtZYX+jt?=
- =?us-ascii?q?fA/aiIXSI7?=
-X-IronPort-AV: E=Sophos;i="5.82,203,1613430000"; 
-   d="scan'208";a="502073259"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:04:11 +0200
-Date:   Wed, 7 Apr 2021 21:04:11 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Liam Beguin <liambeguin@gmail.com>, mturquette@baylibre.com,
-        sboyd@kernel.org
-cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        kbuild-all@lists.01.org
-Subject: [PATCH] clk: fix semicolon.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2104072102490.11549@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S240294AbhDGTHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:07:34 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58718 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhDGTHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:07:33 -0400
+Received: from zn.tnic (p200300ec2f08fb0068bab63ea534f357.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:68ba:b63e:a534:f357])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CAECB1EC027D;
+        Wed,  7 Apr 2021 21:07:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617822442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=WbaVYOwXFwTp1JFWvOPSCcGySR7lFOrJu5nqezgrt1w=;
+        b=QdRmUV7WzwR34QL+I2v8zKgyRuvH1LCjS/l5FHxE1xzI+dG0pdPG3u5WbmRUxok7NYw23z
+        94iNnSofzzzKYaMeofbG9c9OM55Mp7TuenQq0fhv+OmKTt9ZyBgdYvAweBRXh+enI+g5IU
+        0252eB39O7G9nVdqIEziPY0BTe0XQvM=
+Date:   Wed, 7 Apr 2021 21:07:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] x86/kernel: remove unneeded dead-store initialization
+Message-ID: <20210407190727.GN25319@zn.tnic>
+References: <1617177624-24670-1-git-send-email-yang.lee@linux.alibaba.com>
+ <20210407120239.GD25319@zn.tnic>
+ <CAKwvOdnuKazNhqXAM9Qj7DgCW=PqVHkyyfYWytmkyBzv0QeYsw@mail.gmail.com>
+ <20210407190328.GM25319@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210407190328.GM25319@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Wed, Apr 07, 2021 at 09:03:28PM +0200, Borislav Petkov wrote:
+> On Wed, Apr 07, 2021 at 10:41:26AM -0700, Nick Desaulniers wrote:
+> > You do have clang-tidy installed right? `which clang-tidy`?
 
-Remove unneeded semicolon.
+Btw, for user convenience, that "clang-analyzer" Makefile target could
+check for the presence of clang-tidy and fail if it is not there, with
+an informative error message. Methinks.
 
-Generated by: scripts/coccinelle/misc/semicolon.cocci
+-- 
+Regards/Gruss,
+    Boris.
 
-CC: Liam Beguin <lvb@xiphos.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
-
-url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-support-for-the-lmk04832/20210407-085408
-base:   f40ddce88593482919761f74910f42f4b84c004b
-:::::: branch date: 9 hours ago
-:::::: commit date: 9 hours ago
-
- clk-lmk04832.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/clk/clk-lmk04832.c
-+++ b/drivers/clk/clk-lmk04832.c
-@@ -1172,7 +1172,7 @@ static int lmk04832_probe(struct spi_dev
-
- 		lmk->clkout[reg].sysref =
- 			of_property_read_bool(child, "ti,clkout-sysref");
--	};
-+	}
-
- 	lmk->regmap = devm_regmap_init_spi(spi, &regmap_config);
- 	if (IS_ERR(lmk->regmap)) {
+https://people.kernel.org/tglx/notes-about-netiquette
