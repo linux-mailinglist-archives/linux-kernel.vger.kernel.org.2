@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559E735614C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 04:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671F835614F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 04:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243601AbhDGCF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 22:05:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15927 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344345AbhDGCFY (ORCPT
+        id S243320AbhDGCGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 22:06:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15618 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243034AbhDGCGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 22:05:24 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FFSNb10bVzkhy3;
-        Wed,  7 Apr 2021 10:03:27 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 10:05:12 +0800
-Subject: Re: [PATCH 2/4] mm/hugeltb: simplify the return code of
- __vma_reservation_common()
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210402093249.25137-1-linmiaohe@huawei.com>
- <20210402093249.25137-3-linmiaohe@huawei.com>
- <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <40114ff5-ba3d-ca66-3338-25db80a015da@huawei.com>
-Date:   Wed, 7 Apr 2021 10:05:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 6 Apr 2021 22:06:07 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFSNy5RbYz1BG04;
+        Wed,  7 Apr 2021 10:03:46 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 10:05:53 +0800
+Subject: Re: [PATCH 4.19 00/56] 4.19.185-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210405085022.562176619@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <7cb5135e-09e8-ce3b-b1cb-30a13eb7afd5@huawei.com>
+Date:   Wed, 7 Apr 2021 10:05:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
+X-Originating-IP: [10.174.178.100]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/4/7 8:53, Mike Kravetz wrote:
-> On 4/2/21 2:32 AM, Miaohe Lin wrote:
->> It's guaranteed that the vma is associated with a resv_map, i.e. either
->> VM_MAYSHARE or HPAGE_RESV_OWNER, when the code reaches here or we would
->> have returned via !resv check above. So ret must be less than 0 in the
->> 'else' case. Simplify the return code to make this clear.
-> 
-> I believe we still neeed that ternary operator in the return statement.
-> Why?
-> 
-> There are two basic types of mappings to be concerned with:
-> shared and private.
-> For private mappings, a task can 'own' the mapping as indicated by
-> HPAGE_RESV_OWNER.  Or, it may not own the mapping.  The most common way
-> to create a non-owner private mapping is to have a task with a private
-> mapping fork.  The parent process will have HPAGE_RESV_OWNER set, the
-> child process will not.  The idea is that since the child has a COW copy
-> of the mapping it should not consume reservations made by the parent.
 
-The child process will not have HPAGE_RESV_OWNER set because at fork time, we do:
-		/*
-		 * Clear hugetlb-related page reserves for children. This only
-		 * affects MAP_PRIVATE mappings. Faults generated by the child
-		 * are not guaranteed to succeed, even if read-only
-		 */
-		if (is_vm_hugetlb_page(tmp))
-			reset_vma_resv_huge_pages(tmp);
-i.e. we have vma->vm_private_data = (void *)0; for child process and vma_resv_map() will
-return NULL in this case.
-Or am I missed something?
 
-> Only the parent (HPAGE_RESV_OWNER) is allowed to consume the
-> reservations.
-> Hope that makens sense?
+On 2021/4/5 16:53, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.185 release.
+> There are 56 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/hugetlb.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index a03a50b7c410..b7864abded3d 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -2183,7 +2183,7 @@ static long __vma_reservation_common(struct hstate *h,
->>  			return 1;
->>  	}
->>  	else
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
 > 
-> This else also handles the case !HPAGE_RESV_OWNER.  In this case, we
-
-IMO, for the case !HPAGE_RESV_OWNER, we won't reach here. What do you think?
-
-> never want to indicate reservations are available.  The ternary makes
-> sure a positive value is never returned.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.185-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-Many thanks for review and reply! :)
+Tested on arm64 and x86 for 4.19.185-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.185-rc1
+Commit: e80ef2122d5c0531670cb281f5beea2cb469aee1
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4679
+passed: 4679
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4679
+passed: 4679
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
+
