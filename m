@@ -2,194 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146A6356EBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FC4356EC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352965AbhDGOdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhDGOdg (ORCPT
+        id S1352984AbhDGOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:34:17 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42118 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352977AbhDGOeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:33:36 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB18CC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:33:25 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so4599247oor.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+xPsdblmGzem/7lcmqnJl9sL6OnLBtSMGGgOJbe8nUM=;
-        b=I0xNFJ1ENsf5lwfbo5u9d4dnnXTLBmTO/oHDY2aT3VYgtrMNZEQYySZ2KK92oZQkkG
-         iWAkPX1i7HHnG6NfTRXB+F6HZY05YVr7Jq2RNpGBLU/yq8MQyB7dtXuGSf8kdC21S0qG
-         SrViWMP22KrKoQPd0haL3RBz19TN2rlujp3pQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+xPsdblmGzem/7lcmqnJl9sL6OnLBtSMGGgOJbe8nUM=;
-        b=NHkt/DKpOwbBNxTj7pGjfyeomV1laRXBRgOAzAhoio4Q7C04EUUBGrxlqCq3pHhgSc
-         LU0C/gXrs5HdEoctzgVA6Z8fWUDARBnaxdHhzBxZkxDUcKdUGzTCOlaziJmdDfWijFJ6
-         +EN6h547WCHCBFMNxtJ1kzaIsphixzVXXIVn0wP25h52Zix8bubC4fRodK3ppbot2wj1
-         cxxkK20aJXh0DzHrL6QRvuGr5t107T7b+6j3oElG5DVChoJlTqiPfm7TzTCcf1szbRT3
-         RHTpz6Dcf7dtori+n7PJpbAzFE8l26VCjiIpSyraexbn8YRiLT5JhpHyGmR0AjDITpac
-         eSXQ==
-X-Gm-Message-State: AOAM530FrwI+fQWDJWPKINLmiP5ojAoXM3hkxRdb7CLHhK41u4JjIuSP
-        gNFrhc+DP2Ke1tBD9dPiiEoC8Q==
-X-Google-Smtp-Source: ABdhPJxCy5mdQg6UXu6kWlLFCHoVnQbZ9mjgZJhQg9DXI1Wj9k6o+8n5FBSjX3S73s4RAizE9x2i/Q==
-X-Received: by 2002:a4a:4cd6:: with SMTP id a205mr3305504oob.4.1617806005313;
-        Wed, 07 Apr 2021 07:33:25 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h59sm5427570otb.29.2021.04.07.07.33.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:33:24 -0700 (PDT)
-Subject: Re: [PATCH] selftests/resctrl: Change a few printed messages
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210406005242.3248706-1-fenghua.yu@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <67062f6c-d09a-f8e0-4d22-49c4452d0552@linuxfoundation.org>
-Date:   Wed, 7 Apr 2021 08:33:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 7 Apr 2021 10:34:03 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id ebc5461653ed92d7; Wed, 7 Apr 2021 16:33:53 +0200
+Received: from kreacher.localnet (89-64-81-116.dynamic.chello.pl [89.64.81.116])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 69565669203;
+        Wed,  7 Apr 2021 16:33:52 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v1 5/5] ACPI: scan: Call acpi_get_object_info() from acpi_set_pnp_ids()
+Date:   Wed, 07 Apr 2021 16:33:38 +0200
+Message-ID: <2137295.iZASKD2KPV@kreacher>
+In-Reply-To: <2192169.ElGaqSPkdT@kreacher>
+References: <2192169.ElGaqSPkdT@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210406005242.3248706-1-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.116
+X-CLIENT-HOSTNAME: 89-64-81-116.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedurdduudeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdduudeipdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 6:52 PM, Fenghua Yu wrote:
-> A few printed messages contain pass/fail strings which should be shown
-> in test results. Remove the pass/fail strings in the messages to avoid
-> confusion.
-> 
-> Add "\n" at the end of one printed message.
-> 
-> Suggested-by: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> ---
-> This is a follow-up patch of recent resctrl selftest patches and can be
-> applied cleanly to:
-> git git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git
-> branch next.
-> 
->   tools/testing/selftests/resctrl/cache.c     | 3 +--
->   tools/testing/selftests/resctrl/mba_test.c  | 9 +++------
->   tools/testing/selftests/resctrl/mbm_test.c  | 3 +--
->   tools/testing/selftests/resctrl/resctrlfs.c | 7 ++-----
->   4 files changed, 7 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-> index 362e3a418caa..310bbc997c60 100644
-> --- a/tools/testing/selftests/resctrl/cache.c
-> +++ b/tools/testing/selftests/resctrl/cache.c
-> @@ -301,8 +301,7 @@ int show_cache_info(unsigned long sum_llc_val, int no_of_bits,
->   	ret = platform && abs((int)diff_percent) > max_diff_percent &&
->   	      (cmt ? (abs(avg_diff) > max_diff) : true);
->   
-> -	ksft_print_msg("%s cache miss rate within %d%%\n",
-> -		       ret ? "Fail:" : "Pass:", max_diff_percent);
-> +	ksft_print_msg("Check cache miss rate within %d%%\n", max_diff_percent);
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-You need %s and pass in the ret ? "Fail:" : "Pass:" result for the
-message to read correctly.
+Notice that it is not necessary to call acpi_get_object_info() from
+acpi_add_single_object() in order to pass the pointer returned by it
+to acpi_init_device_object() and from there to acpi_set_pnp_ids().
 
-I am seeing:
+It is more straightforward to call acpi_get_object_info() from
+acpi_set_pnp_ids() and avoid unnecessary pointer passing, so change
+the code accordingly.
 
-# Check kernel support for resctrl filesystem
+No intentional functional impact.
 
-It should say the following:
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/internal.h |    2 +-
+ drivers/acpi/power.c    |    2 +-
+ drivers/acpi/scan.c     |   21 +++++++++------------
+ 3 files changed, 11 insertions(+), 14 deletions(-)
 
-# Fail Check kernel support for resctrl filesystem
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1307,8 +1307,9 @@ static bool acpi_object_is_system_bus(ac
+ }
+ 
+ static void acpi_set_pnp_ids(acpi_handle handle, struct acpi_device_pnp *pnp,
+-				int device_type, struct acpi_device_info *info)
++			     int device_type)
+ {
++	struct acpi_device_info *info = NULL;
+ 	struct acpi_pnp_device_id_list *cid_list;
+ 	int i;
+ 
+@@ -1319,6 +1320,7 @@ static void acpi_set_pnp_ids(acpi_handle
+ 			break;
+ 		}
+ 
++		acpi_get_object_info(handle, &info);
+ 		if (!info) {
+ 			pr_err(PREFIX "%s: Error reading device info\n",
+ 					__func__);
+@@ -1344,6 +1346,8 @@ static void acpi_set_pnp_ids(acpi_handle
+ 		if (info->valid & ACPI_VALID_CLS)
+ 			acpi_add_id(pnp, info->class_code.string);
+ 
++		kfree(info);
++
+ 		/*
+ 		 * Some devices don't reliably have _HIDs & _CIDs, so add
+ 		 * synthetic HIDs to make sure drivers can find them.
+@@ -1649,7 +1653,7 @@ static bool acpi_device_enumeration_by_p
+ }
+ 
+ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+-			     int type, struct acpi_device_info *info)
++			     int type)
+ {
+ 	INIT_LIST_HEAD(&device->pnp.ids);
+ 	device->device_type = type;
+@@ -1658,7 +1662,7 @@ void acpi_init_device_object(struct acpi
+ 	fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
+ 	acpi_set_device_status(device, ACPI_STA_DEFAULT);
+ 	acpi_device_get_busid(device);
+-	acpi_set_pnp_ids(handle, &device->pnp, type, info);
++	acpi_set_pnp_ids(handle, &device->pnp, type);
+ 	acpi_init_properties(device);
+ 	acpi_bus_get_flags(device);
+ 	device->flags.match_driver = false;
+@@ -1688,21 +1692,14 @@ static void acpi_scan_init_status(struct
+ static int acpi_add_single_object(struct acpi_device **child,
+ 				  acpi_handle handle, int type)
+ {
+-	struct acpi_device_info *info = NULL;
+ 	struct acpi_device *device;
+ 	int result;
+ 
+-	if (type == ACPI_BUS_TYPE_DEVICE && handle != ACPI_ROOT_OBJECT)
+-		acpi_get_object_info(handle, &info);
+-
+ 	device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
+-	if (!device) {
+-		kfree(info);
++	if (!device)
+ 		return -ENOMEM;
+-	}
+ 
+-	acpi_init_device_object(device, handle, type, info);
+-	kfree(info);
++	acpi_init_device_object(device, handle, type);
+ 	/*
+ 	 * Getting the status is delayed till here so that we can call
+ 	 * acpi_bus_get_status() and use its quirk handling.  Note that
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -109,7 +109,7 @@ struct acpi_device_bus_id {
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *));
+ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+-			     int type, struct acpi_device_info *info);
++			     int type);
+ int acpi_device_setup_files(struct acpi_device *dev);
+ void acpi_device_remove_files(struct acpi_device *dev);
+ void acpi_device_add_finalize(struct acpi_device *device);
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -925,7 +925,7 @@ int acpi_add_power_resource(acpi_handle
+ 		return -ENOMEM;
+ 
+ 	device = &resource->device;
+-	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER, NULL);
++	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER);
+ 	mutex_init(&resource->resource_lock);
+ 	INIT_LIST_HEAD(&resource->list_node);
+ 	INIT_LIST_HEAD(&resource->dependents);
 
 
-Same for other such messages.
->   
->   	ksft_print_msg("Percent diff=%d\n", abs((int)diff_percent));
->   	ksft_print_msg("Number of bits: %d\n", no_of_bits);
-> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-> index 26f12ad4c663..a909a745754f 100644
-> --- a/tools/testing/selftests/resctrl/mba_test.c
-> +++ b/tools/testing/selftests/resctrl/mba_test.c
-> @@ -80,9 +80,7 @@ static void show_mba_info(unsigned long *bw_imc, unsigned long *bw_resc)
->   		avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
->   		avg_diff_per = (int)(avg_diff * 100);
->   
-> -		ksft_print_msg("%s MBA: diff within %d%% for schemata %u\n",
-> -			       avg_diff_per > MAX_DIFF_PERCENT ?
-> -			       "Fail:" : "Pass:",
-> +		ksft_print_msg("Check MBA diff within %d%% for schemata %u\n",
->   			       MAX_DIFF_PERCENT,
->   			       ALLOCATION_MAX - ALLOCATION_STEP * allocation);
->   
-> @@ -93,10 +91,9 @@ static void show_mba_info(unsigned long *bw_imc, unsigned long *bw_resc)
->   			failed = true;
->   	}
->   
-> -	ksft_print_msg("%s schemata change using MBA\n",
-> -		       failed ? "Fail:" : "Pass:");
-> +	ksft_print_msg("Check schemata change using MBA\n");
->   	if (failed)
-> -		ksft_print_msg("At least one test failed");
-> +		ksft_print_msg("At least one test failed\n");
->   }
->   
->   static int check_results(void)
-> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-> index 02b1ed03f1e5..e2e7ee4ec630 100644
-> --- a/tools/testing/selftests/resctrl/mbm_test.c
-> +++ b/tools/testing/selftests/resctrl/mbm_test.c
-> @@ -37,8 +37,7 @@ show_bw_info(unsigned long *bw_imc, unsigned long *bw_resc, int span)
->   	avg_diff_per = (int)(avg_diff * 100);
->   
->   	ret = avg_diff_per > MAX_DIFF_PERCENT;
-> -	ksft_print_msg("%s MBM: diff within %d%%\n",
-> -		       ret ? "Fail:" : "Pass:", MAX_DIFF_PERCENT);
-> +	ksft_print_msg("Check MBM diff within %d%%\n", MAX_DIFF_PERCENT);
 
-Here
-
->   	ksft_print_msg("avg_diff_per: %d%%\n", avg_diff_per);
->   	ksft_print_msg("Span (MB): %d\n", span);
->   	ksft_print_msg("avg_bw_imc: %lu\n", avg_bw_imc);
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> index ade5f2b8b843..91cb3c48a7da 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -570,15 +570,12 @@ bool check_resctrlfs_support(void)
->   
->   	fclose(inf);
->   
-> -	ksft_print_msg("%s kernel supports resctrl filesystem\n",
-> -		       ret ? "Pass:" : "Fail:");
-> -
-> +	ksft_print_msg("Check kernel support for resctrl filesystem\n");
-
-Here
-
->   	if (!ret)
->   		return ret;
->   
->   	dp = opendir(RESCTRL_PATH);
-> -	ksft_print_msg("%s resctrl mountpoint \"%s\" exists\n",
-> -		       dp ? "Pass:" : "Fail:", RESCTRL_PATH);
-> +	ksft_print_msg("Check resctrl mountpoint \"%s\"\n", RESCTRL_PATH);
-
-Here
-
->   	if (dp)
->   		closedir(dp);
->   
-> 
-
-thanks,
--- Shuah
