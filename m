@@ -2,70 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EC3357746
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A87135774C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhDGWAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234337AbhDGWAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:00:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 58C28611EE;
-        Wed,  7 Apr 2021 22:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617832810;
-        bh=rWObaaR8yHycL/sGZT2kwmqBwrZybXZaPAdWE6IzaOg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NtcopKWkSeoXrwMwqtuN6+PbWIrbEpRPfvNn/THtxlpo5qv0Gwy+1JKSVYx2fLaBV
-         jbsbeTytTDu76EoX3bW9JT2t+9lRt+f8TXTy0Y5AHCe59BPzMgfCXN6bWw7gRHINRX
-         C2rXFVaYAzDT5TmVDSV8nBjZW6kSqrMaGqHSw0OkfP4Q6UinUYwi/vXqPSbUXjc5jB
-         i/xPnFbd6NNqZgRn2EfTqjTMo/0TOVWYNfpYVkfaNyQOgXwzpZ36fwVupDmal3H5Nn
-         0kPw7HuDaMFTMDP1PJomzlTka+uYXmw4+XiMuJF8mx+ylJVGhA0EyaIkkI3lqNHNun
-         rKKxX/LDEtAog==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4C3F360BE6;
-        Wed,  7 Apr 2021 22:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234673AbhDGWBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231845AbhDGWBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:01:15 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DC1C061760;
+        Wed,  7 Apr 2021 15:01:05 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id i81so59880oif.6;
+        Wed, 07 Apr 2021 15:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bpQDQVaiximSYMjzwfzRvG/Ci1pi4zfKCD6X2mMxA6Y=;
+        b=HrWzFrt2rxExckCAtAuTlWYx8EVleJuM7Q75A2dZElCz+6f8VTH1K5pEX7v8x+VJby
+         DoNUNPdlYXem8aycvdD+DV0VqUYG60/1RfsS3vFm37YKSP4Un3QI76FlkCj5fwDIe4pL
+         xYnVv5anmT+KIHTWgJZl8Hdbxx3twc/2w2bpVwclWzZzmDP2pZhrVr7+yZpbtcaU9U9q
+         wFPiT2ZxnRhX0znTtZ5XqA8+lY/JNX9lJ7QRFxkbxYIKDkn5/sI327sMgAaqJmKi48x5
+         w3wBy9sJkI7EKfNVZiQGzxBeV/JmBxa5BFNxXLkq48SXt0mtoLabPHyVqU75w9EuGCO1
+         6FtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=bpQDQVaiximSYMjzwfzRvG/Ci1pi4zfKCD6X2mMxA6Y=;
+        b=Y2QRr1YVQ4SiW91/nk4bl8b+8/jN+NcvAlbMOgSKthsq4NA5cra4/u5v6U1bWq1t3J
+         swf1V2cE5Wexugoh/3oneWzL4uI/Dg7lZjz/5Cy8nT6LTTzj6mxL7hWBe5IiZdzKb9Wn
+         88Xx/k6MpUTQO5jEOvCScV7buX9mR4Hihcw2wvIkCVms6Yn7EHoxncy0J7S0bEM6xzDx
+         C5pxqJaudqkUo+FYObJ3XYnFDOvp4NLzk5a6homVTaU5MTkuxcV+gl3qPRm2/mjuxEx1
+         NOpfqkHfIYt1QA1iV31wiJxLW/s+fnwITRvMqF+UkqFS3FGIy1OkBg5bDUUSmKb5Apvv
+         26ZA==
+X-Gm-Message-State: AOAM5328J09Z7Gpx8A1HDUIyP+BcJnM3DkgxFy0n7cD+gxGQy9Ncml6z
+        OvA7OqiiI3xXEPMrMMi6qQaxtVADgtQ=
+X-Google-Smtp-Source: ABdhPJyho8M22SWysbXckD4vM7TXNm68tAh1+xQ6okPoeEbHC9FRJ/9+CPRVu8jzJsAOgvJ5PkT5VQ==
+X-Received: by 2002:a05:6808:2d2:: with SMTP id a18mr3900168oid.152.1617832864959;
+        Wed, 07 Apr 2021 15:01:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 3sm5124470ood.46.2021.04.07.15.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 15:01:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+References: <20210407205110.2173976-1-frowand.list@gmail.com>
+ <0851cec1-99d1-7de0-81dc-2c82532dc6f7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <09bb81a4-e9e3-8cbf-8c41-c5f0846711ba@roeck-us.net>
+Date:   Wed, 7 Apr 2021 15:01:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: tipc: Fix spelling errors in net/tipc module
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161783281030.1764.11775858542583523130.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Apr 2021 22:00:10 +0000
-References: <20210407015945.420908-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210407015945.420908-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, hulkci@huawei.com
+In-Reply-To: <0851cec1-99d1-7de0-81dc-2c82532dc6f7@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 7 Apr 2021 09:59:45 +0800 you wrote:
-> These patches fix a series of spelling errors in net/tipc module.
+On 4/7/21 1:59 PM, Frank Rowand wrote:
+> Hi Guenter,
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  net/tipc/bearer.h | 6 +++---
->  net/tipc/net.c    | 2 +-
->  net/tipc/node.c   | 2 +-
->  3 files changed, 5 insertions(+), 5 deletions(-)
+> On 4/7/21 3:51 PM, frowand.list@gmail.com wrote:
+>> From: Frank Rowand <frank.rowand@sony.com>
+>>
+>> The Devicetree standard specifies an 8 byte alignment of the FDT.
+>> Code in libfdt expects this alignment for an FDT image in memory.
+>> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
+>> with kmalloc(), align pointer, memcpy() to get proper alignment.
+>>
+>> The 4 byte alignment exposed a related bug which triggered a crash
+>> on openrisc with:
+>> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+>> as reported in:
+>> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+> 
+> Can you please test this patch?
+> 
 
-Here is the summary with links:
-  - [v2] net: tipc: Fix spelling errors in net/tipc module
-    https://git.kernel.org/netdev/net/c/a79ace4b3129
+Sure, will do, after you fixed the problem pointed out by Rob.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Sorry, I should have mentioned it - that problem was the reason
+why I didn't propose a fix myself.
 
-
+Guenter
