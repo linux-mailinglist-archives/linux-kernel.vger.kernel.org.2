@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7570D356F50
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EC4356F54
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344964AbhDGOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:52:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhDGOwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:52:22 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19AB961363;
-        Wed,  7 Apr 2021 14:52:13 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lU9XN-00665o-Vi; Wed, 07 Apr 2021 15:52:10 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Eric Auger <eric.auger@redhat.com>, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, alexandru.elisei@arm.com, drjones@redhat.com,
-        eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org
-Cc:     james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com,
-        shuah@kernel.org
-Subject: Re: [PATCH] KVM: selftests: vgic_init kvm selftests fixup
-Date:   Wed,  7 Apr 2021 15:52:04 +0100
-Message-Id: <161780711779.1927596.2664047995521276237.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210407135937.533141-1-eric.auger@redhat.com>
-References: <20210407135937.533141-1-eric.auger@redhat.com>
+        id S240673AbhDGOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:53:06 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:45638 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231416AbhDGOxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:53:02 -0400
+Received: by mail-pg1-f173.google.com with SMTP id d10so8398682pgf.12;
+        Wed, 07 Apr 2021 07:52:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x11JedQ758JkCFaOFtBqoObk8A4GggupZY+sy4Vsx4U=;
+        b=We6nXCyf2ThfIHiPj+hVS4vBiZUxMaOh96gV0XeUcSuuOyMXQxHLx1enXPs+TmcBbA
+         OkzQx9C2gYdlh2H2XSygfMvVIastHYEpgCJ0xWr/cg4ZoWd8q5+pFn3jWvjybbdcg9H+
+         H8YX4LLCgcC+R/FVi0ffhISyLc6YHt4hTg4uB12xhSM92pW5n/BALOA0UO55w9N/gD1X
+         +2+9CFXGpU2pM+u4Yv5Pj88xpVZoqd7f3uYgphvcr0XeNNgrD87B07p4oACZX4VPoIIk
+         Xms9HTgXNeoTuPC+kEABa8KKyzJefTjbeibMJITuAY/NbFecu8SXcCsIX3zH4/EoQJFV
+         g93A==
+X-Gm-Message-State: AOAM533ZHqqbO64rHSMRiw+RIxKs2mC91r/t6t2JPMVVvssC33+nsg9S
+        pphy0QzBKkg7HXQSPhdJgxU=
+X-Google-Smtp-Source: ABdhPJw+Obi6cmgWa245v+vfQ1ayLJmpONEwFsqx+XnbdVDKj1LvWJlkSOhHu1/VUmuPUn5epZYWdQ==
+X-Received: by 2002:a63:e5c:: with SMTP id 28mr3634340pgo.365.1617807172997;
+        Wed, 07 Apr 2021 07:52:52 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id f2sm20793876pfe.177.2021.04.07.07.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:52:52 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 6804E402D7; Wed,  7 Apr 2021 14:52:51 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 14:52:51 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210407145251.GD4332@42.do-not-panic.com>
+References: <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGtDzH0dEfEngCij@google.com>
+ <20210405190023.GX4332@42.do-not-panic.com>
+ <YGtrzXYDiO3Gf9Aa@google.com>
+ <20210406002909.GY4332@42.do-not-panic.com>
+ <YG0JouWqrJPHbpqz@google.com>
+ <YG0NEIUfJ5lmS4DL@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: eric.auger@redhat.com, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, alexandru.elisei@arm.com, drjones@redhat.com, eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, shuah@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG0NEIUfJ5lmS4DL@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 15:59:37 +0200, Eric Auger wrote:
-> Bring some improvements/rationalization over the first version
-> of the vgic_init selftests:
+On Tue, Apr 06, 2021 at 06:38:24PM -0700, Minchan Kim wrote:
+> To clarify what I understood form the discussion until now:
 > 
-> - ucall_init is moved in run_cpu()
-> - vcpu_args_set is not called as not needed
-> - whenever a helper is supposed to succeed, call the non "_" version
-> - helpers do not return -errno, instead errno is checked by the caller
-> - vm_gic struct is used whenever possible, as well as vm_gic_destroy
-> - _kvm_create_device takes an addition fd parameter
+> 1. zram shouldn't allow creating more zram instance during
+> rmmod(It causes CPU multistate splat)
 
-Applied to kvm-arm64/vgic-5.13, thanks!
+Right!
 
-[1/1] KVM: selftests: vgic_init kvm selftests fixup
-      commit: 4cffb2df4260ed38c7ae4105f6913ad2d71a16ec
+> 2. the private data of gendisk shouldn't destroyed while zram
+> sysfs knob is working(it makes system goes crash)
 
-Cheers,
+Yup, this is resolved with the bdgrab / bdput on each sysfs knob.
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+And the last issue is:
 
+3) which patch 2/2 addresed. If a mutex is shared on sysfs
+knobs and module removal, you must do try_module_get() to prevent
+the deadlock.
 
+  Luis
