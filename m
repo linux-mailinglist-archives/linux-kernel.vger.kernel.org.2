@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA6F356115
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B893356118
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343822AbhDGBx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:53:26 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:52281 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347840AbhDGBvx (ORCPT
+        id S1347841AbhDGBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347846AbhDGBvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Apr 2021 21:51:53 -0400
+Received: from server.lespinasse.org (unknown [IPv6:2602:303:fcdc:ce10::100:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E62CC061765
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
  d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
  t=1617759903; h=from : to : cc : subject : date : message-id :
  in-reply-to : references : mime-version : content-transfer-encoding :
- from; bh=dxj+e2mCTN/mq8/QKyjl2SahvK7RHudQGhkISRnBVig=;
- b=+Q3LDhDV38Tl/5VVpqEc6k0vUGZdg8aC5vuZTmv9XW2HYt5SSVn8xVrXOLUhh39OTr4Yk
- BKC/hKD7DF5025fBQ==
+ from; bh=lXqSL1NodLGVhPgvf3TxvfQ3Pft8FvuZOwvv5Jh0BNQ=;
+ b=FlfakSxMf6XS9pz7xRsk0OujrO1Y78RHmmo/v92A3WTWxqHlRuojP7dpuZjf1jcdjqeSc
+ qyqJph9vO91y4NKAA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
  i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617759903; h=from : to
  : cc : subject : date : message-id : in-reply-to : references :
  mime-version : content-transfer-encoding : from;
- bh=dxj+e2mCTN/mq8/QKyjl2SahvK7RHudQGhkISRnBVig=;
- b=JZCFDV30/yXf6H5J+f3SdyNh3hYLqYl3vEW/Ni6crQkjRh6o64d2cKCZQ12mIdV86AgjG
- 0xb5dvncR9Q3KIcUxaTww6pmfH1dLtaCq1+ywsEV/VkJRKDmMqq2UPyWsGYMvmOB2h81Mps
- ZWcf0+Bkuo1o4Aul81AclAy77gUiuOhdyIRW9wyIF6E+BzIZARbKoxx0xNxmxbu11pF0uPI
- HpgNlVPPyxwfH5rbkK60cLgd+29R2XTs+4kyo2nRLVJ4eIM7XcMOQenuTzpR9GikW/t7IEy
- h18AfoPFjs2trfBmdlGX++FxPVo1dYiS2yW0X60gIkpTzML88X/k546hS3/A==
-Received: from zeus.lespinasse.org (zeus.lespinasse.org [10.0.0.150])
-        by server.lespinasse.org (Postfix) with ESMTPS id 59267160650;
+ bh=lXqSL1NodLGVhPgvf3TxvfQ3Pft8FvuZOwvv5Jh0BNQ=;
+ b=SyzMVd/oPjXcTxIr1A09NN6Sy6JN5EtqFXUb6m3buvczgQ6z+XTzaVJKtKnllmdM9j5M1
+ aPxK0kiyf3ZhqUYkO11qmeybD7YLnpvV96GI0jWIp+EACru/Mg/MeH1B9aVU7sSnNDnBc+k
+ KoSW+sD8JIMrPNMvgDvYJdhyF9IGT+Q3LUMAur5iLxaufNy68Vfa4Fdz60mILR1CZPiQCx8
+ xz+MpCbQG9r9eqzGhlfg4dDWaS6vAl+sR4VEDtucW39saGCi7PdpfSX1/j6bqPaeIlzSpGE
+ FUNB94XMo5K84qpqdA35DgxBaqyZrZAXjtA5jgO+3sQSjH61yDozMsxOp32w==
+Received: from zeus.lespinasse.org (zeus.lespinasse.org [IPv6:fd00::150:0])
+        by server.lespinasse.org (Postfix) with ESMTPS id 604D316068A;
         Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 Received: by zeus.lespinasse.org (Postfix, from userid 1000)
-        id 4A03A19F31F; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
+        id 513F419F31D; Tue,  6 Apr 2021 18:45:03 -0700 (PDT)
 From:   Michel Lespinasse <michel@lespinasse.org>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
@@ -48,9 +51,9 @@ Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Rom Lemarchand <romlem@google.com>,
         Linux-Kernel <linux-kernel@vger.kernel.org>,
         Michel Lespinasse <michel@lespinasse.org>
-Subject: [RFC PATCH 33/37] mm: enable speculative fault handling only for multithreaded user space
-Date:   Tue,  6 Apr 2021 18:44:58 -0700
-Message-Id: <20210407014502.24091-34-michel@lespinasse.org>
+Subject: [RFC PATCH 34/37] mm: rcu safe vma freeing only for multithreaded user space
+Date:   Tue,  6 Apr 2021 18:44:59 -0700
+Message-Id: <20210407014502.24091-35-michel@lespinasse.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407014502.24091-1-michel@lespinasse.org>
 References: <20210407014502.24091-1-michel@lespinasse.org>
@@ -60,38 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Performance tuning: single threaded userspace does not benefit from
-speculative page faults, so we turn them off to avoid any related
-(small) extra overheads.
+Performance tuning: as single threaded userspace does not use
+speculative page faults, it does not require rcu safe vma freeing.
+Turn this off to avoid the related (small) extra overheads.
+
+For multi threaded userspace, we often see a performance benefit from
+the rcu safe vma freeing - even in tests that do not have any frequent
+concurrent page faults ! This is because rcu safe vma freeing prevents
+recently released vmas from being immediately reused in a new thread.
 
 Signed-off-by: Michel Lespinasse <michel@lespinasse.org>
 ---
- arch/x86/mm/fault.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/fork.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 48b86911a6df..b1a07ca82d59 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1318,6 +1318,10 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	}
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 2f20a5c5fed8..623875e8e742 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -389,10 +389,12 @@ static void __vm_area_free(struct rcu_head *head)
+ void vm_area_free(struct vm_area_struct *vma)
+ {
+ #ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+-	call_rcu(&vma->vm_rcu, __vm_area_free);
+-#else
+-	____vm_area_free(vma);
++	if (atomic_read(&vma->vm_mm->mm_users) > 1) {
++		call_rcu(&vma->vm_rcu, __vm_area_free);
++		return;
++	}
  #endif
++	____vm_area_free(vma);
+ }
  
-+	/* Only try spf for multithreaded user space faults. */
-+	if (!(flags & FAULT_FLAG_USER) || atomic_read(&mm->mm_users) == 1)
-+		goto no_spf;
-+
- 	count_vm_event(SPF_ATTEMPT);
- 	seq = mmap_seq_read_start(mm);
- 	if (seq & 1)
-@@ -1351,6 +1355,7 @@ void do_user_addr_fault(struct pt_regs *regs,
- 
- spf_abort:
- 	count_vm_event(SPF_ABORT);
-+no_spf:
- 
- 	/*
- 	 * Kernel-mode access to the user address space should only occur
+ static void account_kernel_stack(struct task_struct *tsk, int account)
 -- 
 2.20.1
 
