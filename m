@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAED356BD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17F3356BD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352038AbhDGMMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhDGMMD (ORCPT
+        id S1352052AbhDGMNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:13:19 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:32293 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234694AbhDGMNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:12:03 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05B0C061756;
-        Wed,  7 Apr 2021 05:11:52 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id i81so18501537oif.6;
-        Wed, 07 Apr 2021 05:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WIjn0AhTwwpTEtbdjQhQORR+T5+cXMTK7UrnuECBFAM=;
-        b=CNs6DRffpuXCMVPbrFrtv07hUayfANj7GT1XCig4urJ/iDJngQ4P1gz39BcSyKnJom
-         ShV8S1iWZQM27nZ04vJyehIKw41MRx7H+OSxtoIKub9FC75sMT7pQeuxvk/KL5EDXOix
-         IIXIjwU7ovxlDb8k8Q3lRXp2UJVpmph0z2004DlfQKs59jact1Y64M7X0sAkYGwaiUXA
-         yyXBZ+GIjVm5MLOSBLVoYGuwb1tHPfdQB7i0/2AASlCYKAv9Bw9ivbng2nIsBBuVc+DK
-         X7jM+3hAO5sfYFZKCQy37xHI7ulOBRQ7Uit08iNl/+ZS1Y+l5LFkwB4/MB6mjnOneGXH
-         dSog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WIjn0AhTwwpTEtbdjQhQORR+T5+cXMTK7UrnuECBFAM=;
-        b=izfQbneRFcy/VYA+NpCR4uB0Dct4e0i/qa6scGXlZB3vfbRS8FJX9sdPl8LryUy4IO
-         wjr3h75YpN8ezDUhxFF4Ktm0C7Qd+XvD8ljLQ2/Mz6BkQhv68aFr6HVk4MtYjltsC24s
-         /yHB+3DGpM/i4iTbJKfP43uc5tNftzEQcg9TgsxNAX06TKA11ezOQqCHHu5pMaLcOAk8
-         rEPkEEOkPtmddK8Ao5Ul2TZzzplSjR6mtMkgbpPGQY7Heqnzxajiw8a8pU9d8hUxyC5d
-         o4PywZSq8seZtg8QdnS3kUudkEHJ2V/iXnYDWHTcVjYG6uhbcL4XZGJFUDTvUvy6yUQs
-         MuBg==
-X-Gm-Message-State: AOAM532+Wx3Lt1oqTGeZuDrC5A49OHHHQRc7K6Pl7OQv8od7YaR/zpVC
-        Jvxe/9WuXhR6EFEdg5bKizY=
-X-Google-Smtp-Source: ABdhPJy1oxNYAiecRNIuLOcN0mlyS7k+p8U1hu5TBgm9PyyMXGacZeU59qzHRA9KGvT9kWJnHBBO/g==
-X-Received: by 2002:aca:ebd7:: with SMTP id j206mr2078266oih.60.1617797512427;
-        Wed, 07 Apr 2021 05:11:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w11sm4720629ooc.35.2021.04.07.05.11.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 05:11:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 3/4] hwmon: smpro: Add Ampere's Altra smpro-hwmon
- driver
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org
-Cc:     Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20210329015238.19474-1-quan@os.amperecomputing.com>
- <20210329015238.19474-4-quan@os.amperecomputing.com>
- <bac92db0-3ef6-1615-0e92-aabd54fd0580@roeck-us.net>
- <136d036c-1d10-cecd-abcb-d206a0c6fa51@os.amperecomputing.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <d9ef40ea-e4ee-cea8-96df-90ffabdff53c@roeck-us.net>
-Date:   Wed, 7 Apr 2021 05:11:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Apr 2021 08:13:18 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 137CCfdj028677;
+        Wed, 7 Apr 2021 21:12:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137CCfdj028677
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617797561;
+        bh=G2OAzpQeE86KD19ErE7vjeVXsj0toXPSm4HsA5jarbY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dDGn3wRBr2p8T5KSmSx/s/1zw/1KHHmyR6+U3AenRCC7mINr+y8dNF9CCLrpPBLZb
+         lYuoLNC6NH1fW/KARSPQ/6Ol4m8GQibp65EVHMJEEFkJCFsDrQdSvr2weFX/BsThSh
+         GlH/pqA3gvAK/YpES1fzGt+e50QorDfkIlplEJdjeH7Mcfb17bgbaOmMZDD60Km0Aq
+         624yxjFGbEAk6GG9GgDpurVzfipZfR3+iJV5EMeHxnMJ5vEgxJyeI7HI7UIoAQhq1J
+         mQ6afwCDd/IzQa085cNqU8Ul2cVtfJfOYokXuTDTn7ol8ZuG2ItNQkK5YfJHASS2Rd
+         hV2MGcFd9khNA==
+X-Nifty-SrcIP: [209.85.210.171]
+Received: by mail-pf1-f171.google.com with SMTP id a12so12763039pfc.7;
+        Wed, 07 Apr 2021 05:12:41 -0700 (PDT)
+X-Gm-Message-State: AOAM5333jjQUGYE11AMb/JPQOQDOl7KGPyggLPqoTNMKxPW7mALoq70V
+        y/DIJBEBn9k4um43onPpuGAKknqiuwkVoGtw7GA=
+X-Google-Smtp-Source: ABdhPJy9LRtHMPkZn9qh/2r5DQZKxJhu13p3bA/4mWPzeVr7P5CaYeg6AhE9FmRVbhEGiTypGdeQ3vqnLaD9Rw0iPLs=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr2965394pgq.7.1617797560602;
+ Wed, 07 Apr 2021 05:12:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <136d036c-1d10-cecd-abcb-d206a0c6fa51@os.amperecomputing.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210326060122.25277-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210326060122.25277-1-unixbhaskar@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 21:12:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARH0dXETXtQOfowkpC6Da9_4htbp1T+t50gFLwTXV3Ang@mail.gmail.com>
+Message-ID: <CAK7LNARH0dXETXtQOfowkpC6Da9_4htbp1T+t50gFLwTXV3Ang@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: streamline_config.pl: Couple of typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 12:41 AM, Quan Nguyen wrote:
-[ ... ]
->>
->> But then why don't you just use reg_ext to store SOC_VR_HOT_THRESHOLD_REG
->> or MEM_HOT_THRESHOLD_REG ? It is already available, after all, and with it
->> the code could be simplified to
->>
->>         ret = regmap_read(hwmon->regmap, temperature[channel].reg_ext, &value);
->>         if (ret)
->>             return ret;
->>
-> Thank you for the comment.
-> 
-> Will change code follow this suggestion, will include in next version
-> 
->> I don't have a datasheet, but I do wonder what is in bit 9..15. Any idea ?
->> Main question is if there is a sign bit, as theoretic as it may be.
->>
-> The original intention was to use this as 9-bit 2-complement value follow LM75, but the fact is that the operation temperature is 0-125 C degree, so we simply use it as-is.
-> 
+On Fri, Mar 26, 2021 at 3:03 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+>
+> s/configuraton/configuration/
+> s/orignal/original/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-The operational temperature is not the question here. The question is if the
-chip _reports_ a sign. If it does, it should be handled, even if it is outside
-the operational range. The reported range is relevant here, not the operational
-range. After all, the chip won't really blow apart at -1 degrees C.
 
-Thanks,
-Guenter
+Applied to linux-kbuild. Thanks.
+
+
+
+> ---
+>  scripts/kconfig/streamline_config.pl | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
+> index 1c78ba49ca99..911c72a2dbc4 100755
+> --- a/scripts/kconfig/streamline_config.pl
+> +++ b/scripts/kconfig/streamline_config.pl
+> @@ -21,7 +21,7 @@
+>  #  1. Boot up the kernel that you want to stream line the config on.
+>  #  2. Change directory to the directory holding the source of the
+>  #       kernel that you just booted.
+> -#  3. Copy the configuraton file to this directory as .config
+> +#  3. Copy the configuration file to this directory as .config
+>  #  4. Have all your devices that you need modules for connected and
+>  #      operational (make sure that their corresponding modules are loaded)
+>  #  5. Run this script redirecting the output to some other file
+> @@ -481,7 +481,7 @@ sub parse_config_depends
+>  # The idea is we look at all the configs that select it. If one
+>  # is already in our list of configs to enable, then there's nothing
+>  # else to do. If there isn't, we pick the first config that was
+> -# enabled in the orignal config and use that.
+> +# enabled in the original config and use that.
+>  sub parse_config_selects
+>  {
+>      my ($config, $p) = @_;
+> --
+> 2.26.2
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
