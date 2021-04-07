@@ -2,121 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA597356091
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A5635609A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhDGBLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50998 "EHLO mail.kernel.org"
+        id S1347668AbhDGBNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232109AbhDGBLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:11:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 015A0613A0;
-        Wed,  7 Apr 2021 01:10:54 +0000 (UTC)
+        id S229612AbhDGBNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 21:13:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BD5613C4;
+        Wed,  7 Apr 2021 01:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617757855;
-        bh=ytSU4fv9jJCH9tfKggHJIkhDskeqyCMamGtUzl3Na78=;
+        s=k20201202; t=1617758008;
+        bh=4wmgtd3m+Ta1X4jkV88q8R8S6J8R9xiITuF0Yr6xVvE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FrtiQ5sDagQepN3AjASAwLRnw0pcyXzUfQXZTS0aAcTKjGhmpdLG1cZqCBHuILjPg
-         4VhEaV/GNvLGDYzcp696BXleG42oicYgbterMCOJ+DfbmR5ewI4kI/U/kObus86rJT
-         LtIqgXlloKkvJCPthv1+Mc9WlLWcCHKVIi0vdgowQHJnXHsKSHXPVpNrXUqPsiV/b1
-         3HNnAz2m5sEjvIzZLf3IAKV6/5Om6Y5d5Bk4T7Xptk5Gk6+EQnmiMduQxDbuvis/FW
-         8GCvzZAM/1561zx+yNNgB2FRlJN1wj63+uL21TTthcRx+/+wlXVLmO7UbV71zgXlgF
-         p8FWSMenPj7Uw==
-Received: by mail-ej1-f49.google.com with SMTP id qo10so14470910ejb.6;
-        Tue, 06 Apr 2021 18:10:54 -0700 (PDT)
-X-Gm-Message-State: AOAM532ZZPajYbjVuYLfewUlqgOPx68XjQo80MKE3EbryKJ5EBvg+CDs
-        a/gdBaVFxeADy6DiDIRs6jLhEqCV2wh9BYIUqA==
-X-Google-Smtp-Source: ABdhPJy2CKzztfCW9UH43JnzMT72WuTc1T3GhkeyYxp2nA14ydyIlrQxibg7BsgW7ZgTrXwfJM+dkpB8zI4Jf39ip5A=
-X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr866148ejw.341.1617757853442;
- Tue, 06 Apr 2021 18:10:53 -0700 (PDT)
+        b=pRLlQVTSNNqQq6FWgIz2B7IVJb0WD4DcmH/q1OoNuEMrYaWQrNUQZE+TGHQqvO7uZ
+         0sbEWPuyB8HyaAmOyOmuJUzxCmp1p115y8GLeeHMULg8c7AuvfXjx5Z564IDbK8lJq
+         gmbN4+vm5P6n1CiJ0TfpP9EWDKvzUd31Ix6pvdON87LVzboxcqirc6EFlZYA+M4j8G
+         jHfCtKJ3iJFDoh1b09Poyvm8SAkLWUaz66KIw278EYEG9sTTsgo5EgmZQ4PmQnu3Wd
+         /7t4s6bK6dnu7hbZeox3JOJGIH6WZmQ5XIo2AS7KlPr83ACsPhjvDPLHQqqdmOaGvc
+         LBaAPBKO1awEA==
+Received: by mail-ej1-f52.google.com with SMTP id n2so18613159ejy.7;
+        Tue, 06 Apr 2021 18:13:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533YnDaot013beTdGHT2EJJKb9olBZ/IgK/ViKzJymm5cml8JSmO
+        J/yoS2/ORwvBWB7zWBhZRT8+yg7Pu5adv2GpWA==
+X-Google-Smtp-Source: ABdhPJzl6RD27BOpLC9b+ksVgecIqSPzz04cn67QiZn3u6NF8pL8OvwlE6sLhJddWpFdEonXi5GuOvvWMqx7AYRmDLw=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr847605ejd.525.1617758006930;
+ Tue, 06 Apr 2021 18:13:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <20210405222540.18145-1-ilya.lipnitskiy@gmail.com> <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
- <20210407003408.GA2551507@robh.at.kernel.org> <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
-In-Reply-To: <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 6 Apr 2021 20:10:41 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
-Message-ID: <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
-Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+References: <20210405164643.21130-1-michael@walle.cc> <20210405164643.21130-3-michael@walle.cc>
+In-Reply-To: <20210405164643.21130-3-michael@walle.cc>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 6 Apr 2021 20:13:15 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKbxY5sCJ_8F7iF0hFr52cwRsSc2bu48H7cqcNeWytDpA@mail.gmail.com>
+Message-ID: <CAL_JsqKbxY5sCJ_8F7iF0hFr52cwRsSc2bu48H7cqcNeWytDpA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] of: net: fix of_get_mac_addr_nvmem() for PCI and DSA nodes
+To:     Michael Walle <michael@walle.cc>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        netdev <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-oxnas@groups.io, linux-omap <linux-omap@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andreas Larsson <andreas@gaisler.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Byungho An <bh74.an@samsung.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 7:46 PM Saravana Kannan <saravanak@google.com> wrote:
+On Mon, Apr 5, 2021 at 11:47 AM Michael Walle <michael@walle.cc> wrote:
 >
-> On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
-> > > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
-> > > <ilya.lipnitskiy@gmail.com> wrote:
-> > > >
-> > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > > not configured by #gpio-cells and can't be parsed along with other
-> > > > "*-gpios" properties.
-> > > >
-> > > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
-> > > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
-> > > > error message continue being printed for non-compliant implementations.
-> > > >
-> > > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
-> > > >  - gpio-adnp.txt
-> > > >  - gpio-xgene-sb.txt
-> > > >  - gpio-xlp.txt
-> > > >  - snps,dw-apb-gpio.yaml
-> > > >
-> > > > [1]:
-> > > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-> > > >
-> > > > Fixes errors such as:
-> > > >   OF: /palmbus@300000/gpio@600: could not find phandle
-> > > >
-> > > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> > > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > > > Cc: Saravana Kannan <saravanak@google.com>
-> > > > Cc: <stable@vger.kernel.org> # 5.5.x
-> > > > ---
-> > > >  drivers/of/property.c | 11 ++++++++++-
-> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > index 2046ae311322..1793303e84ac 100644
-> > > > --- a/drivers/of/property.c
-> > > > +++ b/drivers/of/property.c
-> > > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> > > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> > > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > > > +
-> > > > +static struct device_node *parse_gpios(struct device_node *np,
-> > > > +                                      const char *prop_name, int index)
-> > > > +{
-> > > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
-> > > > +               return NULL;
-> > >
-> > > Ah I somehow missed this patch. This gives a blanked exception for
-> > > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
-> > > of ",nr-gpios" we are grandfathering in. Any future additions should
-> > > be rejected. Can we do that please?
-> > >
-> > > Rob, you okay with making this list more explicit?
-> >
-> > Not the kernel's job IMO. A schema is the right way to handle that.
+> of_get_mac_address() already supports fetching the MAC address by an
+> nvmem provider. But until now, it was just working for platform devices.
+> Esp. it was not working for DSA ports and PCI devices. It gets more
+> common that PCI devices have a device tree binding since SoCs contain
+> integrated root complexes.
 >
-> Ok, that's fine by me. Btw, let's land this in driver-core? I've made
-> changes there and this might cause conflicts. Not sure.
+> Use the nvmem of_* binding to fetch the nvmem cells by a struct
+> device_node. We still have to try to read the cell by device first
+> because there might be a nvmem_cell_lookup associated with that device.
+>
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> Please note, that I've kept the nvmem_get_mac_address() which operates
+> on a device. The new of_get_mac_addr_nvmem() is almost identical and
+> there are no users of the former function right now, but it seems to be
+> the "newer" version to get the MAC address for a "struct device". Thus
+> I've kept it. Please advise, if I should kill it though.
 
-It merges with linux-next fine. You'll need to resend this to Greg if
-you want to do that.
+It seems kind of backwards from how we normally design this type of
+API where the API with a struct device will call a firmware specific
+version if there's a firmware handle. But certainly, I don't think we
+should be operating on platform device if we can help it.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+>  drivers/of/of_net.c | 37 +++++++++++++++++++++++++++++++------
+>  1 file changed, 31 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/of/of_net.c b/drivers/of/of_net.c
+> index 2344ad7fff5e..2323c6063eaf 100644
+> --- a/drivers/of/of_net.c
+> +++ b/drivers/of/of_net.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/phy.h>
+>  #include <linux/export.h>
+>  #include <linux/device.h>
+> +#include <linux/nvmem-consumer.h>
+>
+>  /**
+>   * of_get_phy_mode - Get phy mode for given device_node
+> @@ -56,18 +57,42 @@ static int of_get_mac_addr(struct device_node *np, const char *name, u8 *addr)
+>         return -ENODEV;
+>  }
+>
+> -static int of_get_mac_addr_nvmem(struct device_node *np, u8 addr)
+> +static int of_get_mac_addr_nvmem(struct device_node *np, u8 *addr)
+>  {
+>         struct platform_device *pdev = of_find_device_by_node(np);
+> +       struct nvmem_cell *cell;
+> +       const void *mac;
+> +       size_t len;
+>         int ret;
+>
+> -       if (!pdev)
+> -               return -ENODEV;
+> +       /* Try lookup by device first, there might be a nvmem_cell_lookup
+> +        * associated with a given device.
+> +        */
+> +       if (pdev) {
+> +               ret = nvmem_get_mac_address(&pdev->dev, addr);
+> +               put_device(&pdev->dev);
+> +               return ret;
+> +       }
+> +
+> +       cell = of_nvmem_cell_get(np, "mac-address");
+> +       if (IS_ERR(cell))
+> +               return PTR_ERR(cell);
+> +
+> +       mac = nvmem_cell_read(cell, &len);
+> +       nvmem_cell_put(cell);
+> +
+> +       if (IS_ERR(mac))
+> +               return PTR_ERR(mac);
+> +
+> +       if (len != ETH_ALEN || !is_valid_ether_addr(mac)) {
+> +               kfree(mac);
+> +               return -EINVAL;
+> +       }
+>
+> -       ret = nvmem_get_mac_address(&pdev->dev, addr);
+> -       put_device(&pdev->dev);
+> +       ether_addr_copy(addr, mac);
+> +       kfree(mac);
+>
+> -       return ret;
+> +       return 0;
+>  }
+>
+>  /**
+> --
+> 2.20.1
+>
