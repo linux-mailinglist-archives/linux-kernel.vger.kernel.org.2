@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B003357678
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54DC35767B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhDGVEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S231847AbhDGVH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhDGVEr (ORCPT
+        with ESMTP id S229637AbhDGVH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:04:47 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD88C061760;
-        Wed,  7 Apr 2021 14:04:36 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id j7so14839023qtx.5;
-        Wed, 07 Apr 2021 14:04:36 -0700 (PDT)
+        Wed, 7 Apr 2021 17:07:28 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E143C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 14:07:18 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id s11so251612pfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 14:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ffmLm2hyUUXP4LxBQtwBNm73vqUptqsi9ePxQY+FZvU=;
-        b=YzM+yb8KPifbWBcac+0REB2CbJeNc+LYrxRzU7ifShNBBHeADCOkTAMu95e/5JLILy
-         B3exdf2S7vyQSY0VnnBLVeRlI30ncDVBt9Nh9GUKcsAZnpPlEhm6oBOAfKvvuBgg9YOc
-         Jb4x9gr2a2Hm40lEQHDgudnVbR+z8422z5J9ZdSp7gnwA/b6TDJZ2k3K6eGSJs/MQNUm
-         BOkDo/FBphxD5Augclk+YISNlYDMUiYlvOQ4HN1pt788iZmnOzV9Lb8XGnBUE2nN3uJu
-         Cm9MY3PTa8YY3UezxdwRH+C82okupzDvarGmq372lVadGZFZYn1YTr0fr7F8TiJIecV8
-         Z0Gg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ACcswK5hU55dpZ58cn4BLPhKcaAA2GLfa/PW9xI9wxw=;
+        b=k2NjqpAAfq8AL2/ymsES3ygYDyep6qtZj7Jr/0Ef/MrWol3C+q9Faa9HNB1kHTOpbw
+         ViU6QdmOV2GsCLfmXVIk1EmHkE4Gsr7I6/r+3X0xCRdAhHz+aec5Zly5EogstASwg83W
+         qDQajuqeElWiobeaGXRmVVJBZJr/udWhMkqwXn7E/JMYeW3XtFaSOqtL5cRPs3NUpH6E
+         glJIVgOz+ACksC5Jei05LhdwnJKYrw8qTec6aXuBayZWv7Yd2jPl4EmdoPsRyefvnvDL
+         Yf9Gjh1WAM7hrQNhdg43/u+MkwRn0mQeFPwi3y/AIM8XueDbeWDirc9LaFHUXV683NNv
+         bSRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ffmLm2hyUUXP4LxBQtwBNm73vqUptqsi9ePxQY+FZvU=;
-        b=rw8rBxbWxY9kKJOAyJOknEgu5Lytwn1ttkFQp4HwByorhZnA3KgV4LDxIZ6o+AA3h1
-         X0g3hG5AuXmqjjAGt2U5HiCvHdEIBQnDh3Ccyziu/M69dUIHJDST3I/9otGQZ4Tfm3Bv
-         LD31dYSPT8mmr234uNOSnPqwqaHlvsVhThVjaCdlKhZfmJ0FjBT3Q3LfCYJMiJ7lxIJ6
-         tqsaKOeZROCMWDNswVIG/CJbjPQGnTNxdYsqa/ic0Xt0MN4k4Y/qRtaQl7mlakfCUvNz
-         YVE7TC7ofiFrnRJhSsNJTOZyGpWv0mhNvYjvHMU199pOA9pIm4K9QZoldUFAft+R07iB
-         6WPw==
-X-Gm-Message-State: AOAM530ATUHVU0afAgRVWf0rOhEBsOFZa9vsLTJuuArgJEWh7EEkiOW2
-        pBUYIkJvjvrAaUDf7CEh5Vs=
-X-Google-Smtp-Source: ABdhPJzwOGhYmXE75VXZu3QgKgD+ug/07IGkx4FUKDMaQMhxSrpSQ3I2PJJN26zxCoIcSZHYqiM5QA==
-X-Received: by 2002:ac8:5a51:: with SMTP id o17mr4467902qta.116.1617829475672;
-        Wed, 07 Apr 2021 14:04:35 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id m8sm9596077qtg.67.2021.04.07.14.04.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 14:04:35 -0700 (PDT)
-Subject: Re: [PATCH 1/1] of: properly check for error returned by
- fdt_get_name()
-From:   Frank Rowand <frowand.list@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-References: <20210405032845.1942533-1-frowand.list@gmail.com>
- <20210406192100.GA2050740@robh.at.kernel.org>
- <86171ba4-7251-2a3b-01fe-5da4af3eb8af@gmail.com>
-Message-ID: <2c430615-22ac-2769-9348-f6ccbae6e3f7@gmail.com>
-Date:   Wed, 7 Apr 2021 16:04:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ACcswK5hU55dpZ58cn4BLPhKcaAA2GLfa/PW9xI9wxw=;
+        b=VjA22+zT9kqE5KNnBXQzsHuEYxcMJtcbvhuKcUlp07nBRHxXG9CAU46EAMK5969z8L
+         Rc0xxnzRTh15EA0DjB5YCzfrjpqTGaQHEFwgIBiv9xVc4icMaZFSamboZ/LFDdM/e/H9
+         GuZR2RJCX8SM0iMNyKSbUpLm844XO96tPqS76EoB0YL6NzlUaP36VJzURmOduaMkROjG
+         9uUehgxSJg5V039pahnbRiC5ZTSoKOMzL8j0PRG+RrYwmtgodyuL8rCWdIU4gTVV5tld
+         1QpazCLlfB3+Fs/063B2QQPa20BjFqan7p7mHoAyg3Dao4B834EOO1so5WYZfc+8ep7t
+         +uPw==
+X-Gm-Message-State: AOAM532iH72yS3VGiBgYLCtRzWKanYdbjdYiFwAF/uos6YHW3q+sTfRQ
+        EvBQ9aW1KOud6ip/reCMLaLxZg==
+X-Google-Smtp-Source: ABdhPJymaQU7TAe9TM/9iV99KZ4gYN4DNbSqjCPBQ6QuLx0Z1Kg3WUOOMU8TqwpTa0EW8fNmr9FB3g==
+X-Received: by 2002:a63:ea50:: with SMTP id l16mr5225262pgk.70.1617829637653;
+        Wed, 07 Apr 2021 14:07:17 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id e6sm22162624pgh.17.2021.04.07.14.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 14:07:16 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 21:07:13 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] KVM: SVM: Make sure GHCB is mapped before updating
+Message-ID: <YG4fAeaTy0HdHCsT@google.com>
+References: <03b349cb19b360d4c2bbeebdd171f99298082d28.1617820214.git.thomas.lendacky@amd.com>
+ <YG4RSl88TSPccRfj@google.com>
+ <d46ee7c3-6c8c-1f06-605c-c4f2d1888ba4@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <86171ba4-7251-2a3b-01fe-5da4af3eb8af@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d46ee7c3-6c8c-1f06-605c-c4f2d1888ba4@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 3:30 PM, Frank Rowand wrote:
-> On 4/6/21 2:21 PM, Rob Herring wrote:
->> On Sun, Apr 04, 2021 at 10:28:45PM -0500, frowand.list@gmail.com wrote:
->>> From: Frank Rowand <frank.rowand@sony.com>
->>>
->>> fdt_get_name() returns error values via a parameter pointer
->>> instead of in function return.  Fix check for this error value
->>> in populate_node() and callers of populate_node().
->>>
->>> Chasing up the caller tree showed callers of various functions
->>> failing to initialize the value of pointer parameters that
->>> can return error values.  Initialize those values to NULL.
->>>
->>> The bug was introduced by
->>> commit e6a6928c3ea1 ("of/fdt: Convert FDT functions to use libfdt")
->>> but this patch can not be backported directly to that commit
->>> because the relevant code has further been restructured by
->>> commit dfbd4c6eff35 ("drivers/of: Split unflatten_dt_node()")
->>>
->>> The bug became visible by triggering a crash on openrisc with:
->>> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
->>> as reported in:
->>> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
->>>
->>> Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
->>> Reported-by: Guenter Roeck <linux@roeck-us.net>
->>> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
->>>
->>> ---
->>>
->>> This patch papers over the unaligned pointer passed to
->>> of_fdt_unflatten_tree() bug that Guenter reported in
->>> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
->>>
->>> I will create a separate patch to fix that problem.
+On Wed, Apr 07, 2021, Tom Lendacky wrote:
+> On 4/7/21 3:08 PM, Sean Christopherson wrote:
+> > On Wed, Apr 07, 2021, Tom Lendacky wrote:
+> >> From: Tom Lendacky <thomas.lendacky@amd.com>
+> >>
+> >> The sev_vcpu_deliver_sipi_vector() routine will update the GHCB to inform
+> >> the caller of the AP Reset Hold NAE event that a SIPI has been delivered.
+> >> However, if a SIPI is performed without a corresponding AP Reset Hold,
+> >> then the GHCB may not be mapped, which will result in a NULL pointer
+> >> dereference.
+> >>
+> >> Check that the GHCB is mapped before attempting the update.
+> > 
+> > It's tempting to say the ghcb_set_*() helpers should guard against this, but
+> > that would add a lot of pollution and the vast majority of uses are very clearly
+> > in the vmgexit path.  svm_complete_emulated_msr() is the only other case that
+> > is non-obvious; would it make sense to sanity check svm->ghcb there as well?
 > 
-> Likely to be tomorrow (Wed 4/7).
+> Hmm... I'm not sure if we can get here without having taken the VMGEXIT
+> path to start, but it certainly couldn't hurt to add it.
+
+Yeah, AFAICT it should be impossible to reach the callback without a valid ghcb,
+it'd be purely be a sanity check.
+ 
+> I can submit a v2 with that unless you want to submit it (with one small
+> change below).
+
+I'd say just throw it into v2.
+
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 019ac836dcd0..abe9c765628f 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -2728,7 +2728,8 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >  static int svm_complete_emulated_msr(struct kvm_vcpu *vcpu, int err)
+> >  {
+> >         struct vcpu_svm *svm = to_svm(vcpu);
+> > -       if (!sev_es_guest(vcpu->kvm) || !err)
+> > +
+> > +       if (!err || !sev_es_guest(vcpu->kvm) || !WARN_ON_ONCE(svm->ghcb))
 > 
-> -Frank
-> 
->>
->> Got an ETA for that?
->>
->> Rob
->> .
->>
-> 
+> This should be WARN_ON_ONCE(!svm->ghcb), otherwise you'll get the right
+> result, but get a stack trace immediately.
 
-The patch to fix the alignment issue is:
-
-  https://lore.kernel.org/linux-devicetree/20210407205110.2173976-1-frowand.list@gmail.com/
-
-Hopefully it will pass testing by Guenter.
-  
-Sorry about the previous vertical dyslexia response... :-)
-
--Frank
+Doh, yep.
