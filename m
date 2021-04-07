@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA598356831
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D97356833
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350186AbhDGJkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:40:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49294 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345816AbhDGJjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:39:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4A56FAF9E;
-        Wed,  7 Apr 2021 09:38:47 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 11:38:44 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 7/8] hugetlb: make free_huge_page irq safe
-Message-ID: <20210407093844.GB11066@linux>
-References: <20210405230043.182734-1-mike.kravetz@oracle.com>
- <20210405230043.182734-8-mike.kravetz@oracle.com>
- <20210407091237.GC10058@linux>
- <YG18Xtk3GVa+NY+B@dhcp22.suse.cz>
+        id S1350202AbhDGJka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:40:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35064 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345760AbhDGJjo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:39:44 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lU4eg-0001zG-So; Wed, 07 Apr 2021 09:39:22 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xircom: remove redundant error check on variable err
+Date:   Wed,  7 Apr 2021 10:39:22 +0100
+Message-Id: <20210407093922.484571-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG18Xtk3GVa+NY+B@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:33:18AM +0200, Michal Hocko wrote:
-> Yes. spin_unlock_irq will enable interrupts unconditionally which is
-> certainly not what we want if the path is called with IRQ disabled by
-> the caller.
+From: Colin Ian King <colin.king@canonical.com>
 
-I see, thanks for confirming.
+The error check on err is always false as err is always 0 at the
+port_found label. The code is redundant and can be removed.
 
+Addresses-Coverity: ("Logically dead code")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/xircom/xirc2ps_cs.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/xircom/xirc2ps_cs.c b/drivers/net/ethernet/xircom/xirc2ps_cs.c
+index 3e337142b516..2049d76a0e68 100644
+--- a/drivers/net/ethernet/xircom/xirc2ps_cs.c
++++ b/drivers/net/ethernet/xircom/xirc2ps_cs.c
+@@ -798,8 +798,6 @@ xirc2ps_config(struct pcmcia_device * link)
+ 	    goto config_error;
+     }
+   port_found:
+-    if (err)
+-	 goto config_error;
+ 
+     /****************
+      * Now allocate an interrupt line.	Note that this does not
 -- 
-Oscar Salvador
-SUSE L3
+2.30.2
+
