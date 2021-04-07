@@ -2,109 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863F335740C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BFC357413
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355146AbhDGSP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        id S1355159AbhDGSTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355145AbhDGSPr (ORCPT
+        with ESMTP id S1344500AbhDGST3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:15:47 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A442FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:15:35 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id n8so19650569oie.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:15:35 -0700 (PDT)
+        Wed, 7 Apr 2021 14:19:29 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BE3C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:19:19 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id w23so10762462edx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uoEi3BP3d29vcJAQRKbNC4SG8iDtnjjh94HE5FU651c=;
-        b=K83N5rh9ut515leNqDhrXT9JgDlyPDxDpX77guxK/mO9vXGV3Jbe8iKqVkZHOC5lm3
-         h0RIqlqvs4vpnd7fztqsO4S62/zNapA/6Q/Jz2FC1x2TDQHiF6zPY2h4rqSKJAiWWkXg
-         +wo5BpbBT+qCOujgsniETQRNPwduzfyciOZvs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rQ2L4szMZmU+FnxgASeleGfVwBJfSBTk3LNI3tywmew=;
+        b=GdKHBYlY0SFg391FNZJVMvtMDPrkfA966L5eEw2z4XsBNoEC/FxYU9x2f0DTl4BA1b
+         6M4waxA30cttt4NxY6ZyAdXUF0ti3Apg5j8+X9+qAmIEBvta3aj82qhWal1LyIagTr3/
+         VWc+UJHzODeUu4Jrji8sshRDR9rfg4T5lXAEaPDqMdXpGDmmXZ9ZkKO/bGnqIN+pH/6e
+         98oiq2SK370KSPwdZjEpQluV9aterZ3SRM4cAobatWPs1LGRJT9O0CRZMa/5DlohDBEA
+         +aJ+DyfERQ/AvoOBXonyEKSs0l4b+hCx+AlkXr2qebc4vNoZqe7Vb1onqJq61P5QJ8Vu
+         v/Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uoEi3BP3d29vcJAQRKbNC4SG8iDtnjjh94HE5FU651c=;
-        b=NrLZp/efkm9iLU+C7brltJ9vPf0UjSajYD/Yf2SEkHwygcT5pcwOjR/hOet9mLjtGQ
-         qMTB8bSzViSIQenAJDqFk7hIFG/T0VKu46bDgfxa/WPNHFIUt5oAsvvGZaG2BTSA1uSD
-         JpToA/L+7qn4wnmMnHrUehV/OHWIYWHaoxgfeBsaLcweDBTcbV3PGqOXe5dQ7OoKyNos
-         rYw/JkzIALN1JuBygx79xMLaSSnhQxKqpENNtJiNrfm5rhO6p/U+wehABEcvqh6OyiRh
-         7R11WMnhJWiTqzPfnhpeoC4thNNNzY3i/ouqTQ523s4q3Tr9tI5J3dx14+Jw60zQI9yy
-         tH6w==
-X-Gm-Message-State: AOAM5317VNHErbotQbRBuBTHyAC+2wIBA7S8B8LLwssGytROyfK+9mrU
-        QgNsVbrZw/+8Pv5/NGjsT5Cx375AWxEL4Q==
-X-Google-Smtp-Source: ABdhPJwuzgvRhgvbMl5pTOzFGcrVdkaCXJC/0TY6RWsoDgz8FNEjiObb1YugHss+uSxcImQRZ7yyPA==
-X-Received: by 2002:aca:4a95:: with SMTP id x143mr3106178oia.59.1617819335056;
-        Wed, 07 Apr 2021 11:15:35 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k24sm4416554oic.51.2021.04.07.11.15.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 11:15:34 -0700 (PDT)
-Subject: Re: [PATCH] selftests/resctrl: Change a few printed messages
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210406005242.3248706-1-fenghua.yu@intel.com>
- <67062f6c-d09a-f8e0-4d22-49c4452d0552@linuxfoundation.org>
- <YG3n7gsIhqOGjltv@otcwcpicx3.sc.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9c38f6fd-d53f-0f79-f5fe-456090368330@linuxfoundation.org>
-Date:   Wed, 7 Apr 2021 12:15:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=rQ2L4szMZmU+FnxgASeleGfVwBJfSBTk3LNI3tywmew=;
+        b=GOzD2pMl6LKGwQKVQs0SkDo5r3bJ/bd5XUU2WN5/8bA9/Dod4QOZTQXJ7dEjU46o2j
+         WWNkV1NQAPubmaTp5qXMiW/ab07327J8MlWytCyDxEc1q+G//QGrzc9SU1nu6ap4xM5W
+         6EnjTSQBQ6+TozGNTIqOhAfMucI2lhQix6Qxg0k+vBbHem7ujjtjz8sClMKb6ucjGJ6G
+         0oWXVFNATpqQxO33As6mT6j1efvZy6mNT53byYXflWhPNU6bjYOWdi5QGJ633Fp5sMj6
+         aa4YfUxPPz4MoIDj4i1O+tZQGnI1x/jZxNO+Z0tXiNjGhFK27kphT2QUL5XTwXgh+k6a
+         3Omg==
+X-Gm-Message-State: AOAM533oo66Uedg/PJ4UnY3DFSDQIp8BMcm05Eiqg77xnXuC0pY0a/Sq
+        0l0OKhzCWSWnAUYE5Pv0+gA=
+X-Google-Smtp-Source: ABdhPJynDwMdN8gB6lkDDqRxJMAdzd3kiOsA7IrZxUs4jiloxFtcNY5xZXPFcFKFErCkKUwU9wsgNA==
+X-Received: by 2002:aa7:da0e:: with SMTP id r14mr1931624eds.375.1617819557958;
+        Wed, 07 Apr 2021 11:19:17 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id lf6sm8016376ejc.33.2021.04.07.11.19.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 11:19:17 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v3] staging: rtl8723bs: hal: Remove camelcase in sdio_ops.c
+Date:   Wed,  7 Apr 2021 20:19:14 +0200
+Message-Id: <20210407181914.7079-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YG3n7gsIhqOGjltv@otcwcpicx3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 11:12 AM, Fenghua Yu wrote:
-> Hi, Shuah,
-> 
-> On Wed, Apr 07, 2021 at 08:33:23AM -0600, Shuah Khan wrote:
->> On 4/5/21 6:52 PM, Fenghua Yu wrote:
->>> -	ksft_print_msg("%s cache miss rate within %d%%\n",
->>> -		       ret ? "Fail:" : "Pass:", max_diff_percent);
->>> +	ksft_print_msg("Check cache miss rate within %d%%\n", max_diff_percent);
->>
->> You need %s and pass in the ret ? "Fail:" : "Pass:" result for the
->> message to read correctly.
-> 
-> Should I keep the ":" after "Pass"/"Fail"?
-> 
+Changes from v2: Remove unnecessary comment. Shortened a function name.
+Changes from v1: No changes to the code but only to the subject for the
+purpose to differentiate this patch because other removes of camelcase
+have been made in other files of the same directory.
 
-Yes please.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/rtl8723bs/hal/sdio_ops.c | 46 +++++++++++-------------
+ 1 file changed, 21 insertions(+), 25 deletions(-)
 
->>
->> I am seeing:
->>
->> # Check kernel support for resctrl filesystem
->>
->> It should say the following:
->>
->> # Fail Check kernel support for resctrl filesystem
-> 
-> i.e. should the printed messages be like the following?
-> # Fail: Check kernel support for resctrl filesystem
-> or
-> # Pass: Check kernel support for resctrl filesystem
-> 
-
-This looks good.
-
-thanks,
--- Shuah
-
+diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+index b1f02bb9f0a9..f10ae885c286 100644
+--- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
++++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+@@ -19,7 +19,7 @@
+ /*  */
+ /*  Creadted by Roger, 2011.01.31. */
+ /*  */
+-static void HalSdioGetCmdAddr8723BSdio(
++static void hal_sdio_get_cmd_addr_8723b(
+ 	struct adapter *adapter,
+ 	u8 device_id,
+ 	u32 addr,
+@@ -95,10 +95,6 @@ static u8 get_deviceid(u32 addr)
+ 	return devide_id;
+ }
+ 
+-/*
+- * Ref:
+- *HalSdioGetCmdAddr8723BSdio()
+- */
+ static u32 _cvrt2ftaddr(const u32 addr, u8 *pdevice_id, u16 *poffset)
+ {
+ 	u8 device_id;
+@@ -426,7 +422,7 @@ static u32 sdio_read_port(
+ 	psdio = &adapter_to_dvobj(adapter)->intf_data;
+ 	hal = GET_HAL_DATA(adapter);
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, addr, hal->SdioRxFIFOCnt++, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, addr, hal->SdioRxFIFOCnt++, &addr);
+ 
+ 	if (cnt > psdio->block_transfer_len)
+ 		cnt = _RND(cnt, psdio->block_transfer_len);
+@@ -475,7 +471,7 @@ static u32 sdio_write_port(
+ 	}
+ 
+ 	cnt = round_up(cnt, 4);
+-	HalSdioGetCmdAddr8723BSdio(adapter, addr, cnt >> 2, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, addr, cnt >> 2, &addr);
+ 
+ 	if (cnt > psdio->block_transfer_len)
+ 		cnt = _RND(cnt, psdio->block_transfer_len);
+@@ -528,7 +524,7 @@ static s32 _sdio_local_read(
+ 
+ 	intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 
+ 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+ 	if (!mac_pwr_ctrl_on)
+@@ -566,7 +562,7 @@ s32 sdio_local_read(
+ 
+ 	intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 
+ 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+ 	if (
+@@ -612,7 +608,7 @@ s32 sdio_local_write(
+ 
+ 	intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 
+ 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+ 	if (
+@@ -639,24 +635,24 @@ u8 SdioLocalCmd52Read1Byte(struct adapter *adapter, u32 addr)
+ 	u8 val = 0;
+ 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 	sd_cmd52_read(intfhdl, addr, 1, &val);
+ 
+ 	return val;
+ }
+ 
+-static u16 SdioLocalCmd52Read2Byte(struct adapter *adapter, u32 addr)
++static u16 sdio_local_cmd52_read2byte(struct adapter *adapter, u32 addr)
+ {
+ 	__le16 val = 0;
+ 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 	sd_cmd52_read(intfhdl, addr, 2, (u8 *)&val);
+ 
+ 	return le16_to_cpu(val);
+ }
+ 
+-static u32 SdioLocalCmd53Read4Byte(struct adapter *adapter, u32 addr)
++static u32 sdio_local_cmd53_read4byte(struct adapter *adapter, u32 addr)
+ {
+ 
+ 	u8 mac_pwr_ctrl_on;
+@@ -664,7 +660,7 @@ static u32 SdioLocalCmd53Read4Byte(struct adapter *adapter, u32 addr)
+ 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
+ 	__le32 le_tmp;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+ 	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->bFwCurrentInPSMode) {
+ 		sd_cmd52_read(intfhdl, addr, 4, (u8 *)&le_tmp);
+@@ -679,21 +675,21 @@ void SdioLocalCmd52Write1Byte(struct adapter *adapter, u32 addr, u8 v)
+ {
+ 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 	sd_cmd52_write(intfhdl, addr, 1, &v);
+ }
+ 
+-static void SdioLocalCmd52Write4Byte(struct adapter *adapter, u32 addr, u32 v)
++static void sdio_local_cmd52_write4byte(struct adapter *adapter, u32 addr, u32 v)
+ {
+ 	struct intf_hdl *intfhdl = &adapter->iopriv.intf;
+ 	__le32 le_tmp;
+ 
+-	HalSdioGetCmdAddr8723BSdio(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
++	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+ 	le_tmp = cpu_to_le32(v);
+ 	sd_cmd52_write(intfhdl, addr, 4, (u8 *)&le_tmp);
+ }
+ 
+-static s32 ReadInterrupt8723BSdio(struct adapter *adapter, u32 *phisr)
++static s32 read_interrupt_8723b_sdio(struct adapter *adapter, u32 *phisr)
+ {
+ 	u32 hisr, himr;
+ 	u8 val8, hisr_len;
+@@ -935,7 +931,7 @@ void sd_int_dpc(struct adapter *adapter)
+ 		status = rtw_malloc(4);
+ 		if (status) {
+ 			addr = REG_TXDMA_STATUS;
+-			HalSdioGetCmdAddr8723BSdio(adapter, WLAN_IOREG_DEVICE_ID, addr, &addr);
++			hal_sdio_get_cmd_addr_8723b(adapter, WLAN_IOREG_DEVICE_ID, addr, &addr);
+ 			_sd_read(intfhdl, addr, 4, status);
+ 			_sd_write(intfhdl, addr, 4, status);
+ 			DBG_8192C("%s: SDIO_HISR_TXERR (0x%08x)\n", __func__, le32_to_cpu(*(u32 *)status));
+@@ -986,7 +982,7 @@ void sd_int_dpc(struct adapter *adapter)
+ 
+ 		hal->sdio_hisr ^= SDIO_HISR_RX_REQUEST;
+ 		do {
+-			hal->SdioRxFIFOSize = SdioLocalCmd52Read2Byte(adapter, SDIO_REG_RX0_REQ_LEN);
++			hal->SdioRxFIFOSize = sdio_local_cmd52_read2byte(adapter, SDIO_REG_RX0_REQ_LEN);
+ 			if (hal->SdioRxFIFOSize != 0) {
+ 				recvbuf = sd_recv_rxfifo(adapter, hal->SdioRxFIFOSize);
+ 				if (recvbuf)
+@@ -1002,7 +998,7 @@ void sd_int_dpc(struct adapter *adapter)
+ 				break;
+ 
+ 			hisr = 0;
+-			ReadInterrupt8723BSdio(adapter, &hisr);
++			read_interrupt_8723b_sdio(adapter, &hisr);
+ 			hisr &= SDIO_HISR_RX_REQUEST;
+ 			if (!hisr)
+ 				break;
+@@ -1026,7 +1022,7 @@ void sd_int_hdl(struct adapter *adapter)
+ 	hal = GET_HAL_DATA(adapter);
+ 
+ 	hal->sdio_hisr = 0;
+-	ReadInterrupt8723BSdio(adapter, &hal->sdio_hisr);
++	read_interrupt_8723b_sdio(adapter, &hal->sdio_hisr);
+ 
+ 	if (hal->sdio_hisr & hal->sdio_himr) {
+ 		u32 v32;
+@@ -1036,7 +1032,7 @@ void sd_int_hdl(struct adapter *adapter)
+ 		/*  clear HISR */
+ 		v32 = hal->sdio_hisr & MASK_SDIO_HISR_CLEAR;
+ 		if (v32)
+-			SdioLocalCmd52Write4Byte(adapter, SDIO_REG_HISR, v32);
++			sdio_local_cmd52_write4byte(adapter, SDIO_REG_HISR, v32);
+ 
+ 		sd_int_dpc(adapter);
+ 	}
+@@ -1059,7 +1055,7 @@ u8 HalQueryTxBufferStatus8723BSdio(struct adapter *adapter)
+ 
+ 	hal = GET_HAL_DATA(adapter);
+ 
+-	numof_free_page = SdioLocalCmd53Read4Byte(adapter, SDIO_REG_FREE_TXPG);
++	numof_free_page = sdio_local_cmd53_read4byte(adapter, SDIO_REG_FREE_TXPG);
+ 
+ 	memcpy(hal->SdioTxFIFOFreePage, &numof_free_page, 4);
+ 
+-- 
+2.30.2
 
