@@ -2,116 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7498D3573DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E813573D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355075AbhDGSDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:03:25 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49764 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348357AbhDGSDW (ORCPT
+        id S1355071AbhDGSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232163AbhDGSDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:03:22 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137HtIBr030161
-        for <linux-kernel@vger.kernel.org>; Wed, 7 Apr 2021 11:03:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=1CcQ9x5X2Jkfw8Q9bvOrtQpSZ6g4vQz7LGnG3UaOiBk=;
- b=lc7yeooO73SXdOyiueqQ886L1sJ5lVmuxg8SLucML2Zw7vSa8pmmVOsf92I0PFF5JJsr
- XOFw33Wj+8U6cJVqR2zNTi5laTK8MmRf7/FdcLZP6YX11yux+3CltiqR6yTMRq8OrfL1
- g4SZgwc+N7snGtNPzyGMic6bgvGL6wTLoNo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37seq89h2p-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:03:12 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 7 Apr 2021 11:00:10 -0700
-Received: from devvm1945.atn0.facebook.com (localhost [127.0.0.1])
-        by devvm1945.atn0.facebook.com (Postfix) with ESMTP id 50F1351ACC2D;
-        Wed,  7 Apr 2021 11:00:06 -0700 (PDT)
-Received: (from saravanand@localhost)
-        by devvm1945.atn0.facebook.com (8.15.2/8.15.2/Submit) id 137I05lP4130564;
-        Wed, 7 Apr 2021 11:00:05 -0700
-X-Authentication-Warning: devvm1945.atn0.facebook.com: saravanand set sender to saravanand@fb.com using -f
-From:   Saravanan D <saravanand@fb.com>
-To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <tj@kernel.org>, <kernel-team@fb.com>,
-        Saravanan D <saravanand@fb.com>
-Subject: [PATCH] blk-mq: Fix spurious debugfs directory creation during initialization
-Date:   Wed, 7 Apr 2021 10:59:58 -0700
-Message-ID: <20210407175958.4129976-1-saravanand@fb.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 7 Apr 2021 14:03:03 -0400
+Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B032FC06175F;
+        Wed,  7 Apr 2021 11:02:53 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 19:02:47 +0100
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
+Subject: Re: [PATCH 11/20] kbuild: ia64: use common install script
+Message-ID: <20210407190247.64a4ac46@sf>
+In-Reply-To: <20210407053419.449796-12-gregkh@linuxfoundation.org>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+        <20210407053419.449796-12-gregkh@linuxfoundation.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: OIf-LsZBu8MPtbTr26yvToqIYWfTx_ih
-X-Proofpoint-ORIG-GUID: OIf-LsZBu8MPtbTr26yvToqIYWfTx_ih
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-07_09:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501
- mlxscore=0 impostorscore=0 adultscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070124
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_mq_debugfs_register_sched_hctx() called from
-device_add_disk()->elevator_init_mq()->blk_mq_init_sched()
-initialization sequence does not have relevant parent directory
-setup and thus spuriously attempts "sched" directory creation
-from root mount of debugfs for every hw queue detected on the
-block device
+On Wed,  7 Apr 2021 07:34:10 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-dmesg
-...
-debugfs: Directory 'sched' with parent '/' already present!
-debugfs: Directory 'sched' with parent '/' already present!
-.
-.
-debugfs: Directory 'sched' with parent '/' already present!
-...
+> The common scripts/install.sh script will now work for ia64, all that
+> is needed is to add the compressed image type to it.  So add that file
+> type check and the ability to call /usr/sbin/elilo after copying the
+> kernel.  With that we can remove the ia64-only version of the file.
+> 
+> Cc: linux-ia64@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The parent debugfs directory for hw queues get properly setup
-device_add_disk()->blk_register_queue()->blk_mq_debugfs_register()
-->blk_mq_debugfs_register_hctx() later in the block device
-initialization sequence.
+Reviewed-by: Sergei Trofimovich <slyfox@gentoo.org>
 
-A simple check for debugfs_dir has been added to thwart premature
-debugfs directory/file creation attempts.
+> ---
+>  arch/ia64/Makefile   |  2 +-
+>  arch/ia64/install.sh | 40 ----------------------------------------
+>  scripts/install.sh   |  8 +++++++-
+>  3 files changed, 8 insertions(+), 42 deletions(-)
+>  delete mode 100644 arch/ia64/install.sh
+> 
+> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
+> index 467b7e7f967c..19e20e99f487 100644
+> --- a/arch/ia64/Makefile
+> +++ b/arch/ia64/Makefile
+> @@ -77,7 +77,7 @@ archheaders:
+>  CLEAN_FILES += vmlinux.gz
+>  
+>  install: vmlinux.gz
+> -	sh $(srctree)/arch/ia64/install.sh $(KERNELRELEASE) $< System.map "$(INSTALL_PATH)"
+> +	sh $(srctree)/scripts/install.sh $(KERNELRELEASE) $< System.map "$(INSTALL_PATH)"
+>  
+>  define archhelp
+>    echo '* compressed	- Build compressed kernel image'
+> diff --git a/arch/ia64/install.sh b/arch/ia64/install.sh
+> deleted file mode 100644
+> index 0e932f5dcd1a..000000000000
+> --- a/arch/ia64/install.sh
+> +++ /dev/null
+> @@ -1,40 +0,0 @@
+> -#!/bin/sh
+> -#
+> -# arch/ia64/install.sh
+> -#
+> -# This file is subject to the terms and conditions of the GNU General Public
+> -# License.  See the file "COPYING" in the main directory of this archive
+> -# for more details.
+> -#
+> -# Copyright (C) 1995 by Linus Torvalds
+> -#
+> -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
+> -#
+> -# "make install" script for ia64 architecture
+> -#
+> -# Arguments:
+> -#   $1 - kernel version
+> -#   $2 - kernel image file
+> -#   $3 - kernel map file
+> -#   $4 - default install path (blank if root directory)
+> -#
+> -
+> -# User may have a custom install script
+> -
+> -if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
+> -if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
+> -
+> -# Default install - same as make zlilo
+> -
+> -if [ -f $4/vmlinuz ]; then
+> -	mv $4/vmlinuz $4/vmlinuz.old
+> -fi
+> -
+> -if [ -f $4/System.map ]; then
+> -	mv $4/System.map $4/System.old
+> -fi
+> -
+> -cat $2 > $4/vmlinuz
+> -cp $3 $4/System.map
+> -
+> -test -x /usr/sbin/elilo && /usr/sbin/elilo
+> diff --git a/scripts/install.sh b/scripts/install.sh
+> index 73067b535ea0..b6ca2a0f0983 100644
+> --- a/scripts/install.sh
+> +++ b/scripts/install.sh
+> @@ -52,6 +52,7 @@ if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
+>  base=$(basename "$2")
+>  if [ "$base" = "bzImage" ] ||
+>     [ "$base" = "Image.gz" ] ||
+> +   [ "$base" = "vmlinux.gz" ] ||
+>     [ "$base" = "zImage" ] ; then
+>  	# Compressed install
+>  	echo "Installing compressed kernel"
+> @@ -65,7 +66,7 @@ fi
+>  # Some architectures name their files based on version number, and
+>  # others do not.  Call out the ones that do not to make it obvious.
+>  case "${ARCH}" in
+> -	x86)
+> +	ia64 | x86)
+>  		version=""
+>  		;;
+>  	*)
+> @@ -86,6 +87,11 @@ case "${ARCH}" in
+>  			echo "You have to install it yourself"
+>  		fi
+>  		;;
+> +	ia64)
+> +		if [ -x /usr/sbin/elilo ]; then
+> +			/usr/sbin/elilo
+> +		fi
+> +		;;
+>  	x86)
+>  		if [ -x /sbin/lilo ]; then
+>  			/sbin/lilo
+> -- 
+> 2.31.1
+> 
 
-Signed-off-by: Saravanan D <saravanand@fb.com>
----
- block/blk-mq-debugfs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 271f6596435b..2a75bc7401df 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -972,6 +972,14 @@ void blk_mq_debugfs_register_sched_hctx(struct reque=
-st_queue *q,
- {
- 	struct elevator_type *e =3D q->elevator->type;
-=20
-+	/*
-+	 * If the parent debugfs directory has not been created yet, return;
-+	 * We will be called again later on with appropriate parent debugfs
-+	 * directory from blk_register_queue()
-+	 */
-+	if (!hctx->debugfs_dir)
-+		return;
-+
- 	if (!e->hctx_debugfs_attrs)
- 		return;
-=20
---=20
-2.30.2
+-- 
 
+  Sergei
