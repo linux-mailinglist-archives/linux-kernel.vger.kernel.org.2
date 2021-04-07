@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC73356B60
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D0B356B65
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351856AbhDGLhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbhDGLhK (ORCPT
+        id S1351864AbhDGLiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:38:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16189 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234756AbhDGLiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:37:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DE2C061756;
-        Wed,  7 Apr 2021 04:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2t0FxK0eZ9tbM+DeDFFhi/Gfb5dxvlFCBC8Lc3GTEVc=; b=eu1QGQ+xTWtWV/pDVqaRjoR9in
-        umqpvmIlS2xj4iQzqX+NQh9c/SqNW+BQ94JOjLI+oIxPu/q65tC4XlR6WB0hDa6cFosY7pnhBfmpe
-        /fIEyDMEj3+lAgjXFbtVeUVJsI7eteDFxnY+ozO4/A0mdDspFTfYZYdU3258xlXaWocHbHSZ+vm4P
-        LV4o+de+6wSxUmdpJtyAricd4yRdhD+REoFgz1Yiutyf/hIisjliBcoxOOjasArYbxxctlMM7+zR4
-        25AMoqKeYu9cz0p3x+6htfPpkwOjJ5YXYx3J6Dh1XMjj7d4jnvMNZKK0cBVeCsVGMvL8sTXW7aptZ
-        n58nqxdA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU6UI-004tQo-A8; Wed, 07 Apr 2021 11:36:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 66B363001FB;
-        Wed,  7 Apr 2021 13:36:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4D45A23D3AF81; Wed,  7 Apr 2021 13:36:45 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 13:36:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Stafford Horne <shorne@gmail.com>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <YG2ZTSFMGrikYWuL@hirez.programming.kicks-ass.net>
-References: <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
- <YGNNCEAMSWbBU+hd@hirez.programming.kicks-ass.net>
- <20210330223514.GE1171117@lianli.shorne-pla.net>
- <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
- <CAJF2gTRxPMURTE3M5WMQ_0q1yZ6K8nraGsFjGLUmpG9nYS_hng@mail.gmail.com>
- <20210406085626.GE3288043@lianli.shorne-pla.net>
- <CAK8P3a3Pf3TbGoVP7JP7gfPV-WDM8MHV_hdqSwNKKFDr1Sb3zQ@mail.gmail.com>
+        Wed, 7 Apr 2021 07:38:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617795493; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=BlfJ7ChYdm5fsjVC9Gacn3nxjSF5AqDGwGm8a4pwp7c=; b=HatXvphbHuuL4IppFUZt6OZ8UaDcd4osDcAsXukFS70M9STuXPXpmNwfdlhuSSbpGee91bUm
+ tn3xlXPwMAeKabSRCc69hKeNxUlWSmjd+3jUbImb4/L0Ymb0+leqi3/F+SlgPZr+8YDxKBsq
+ HvXv+Jf0xTBWYc3DEmt64FNB1EU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 606d999c03cfff3452ebcb79 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 11:38:04
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69158C43461; Wed,  7 Apr 2021 11:38:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC1ECC433CA;
+        Wed,  7 Apr 2021 11:37:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC1ECC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] brcmsmac: fix shift on 4 bit masked value
+References: <20210318164513.19600-1-colin.king@canonical.com>
+Date:   Wed, 07 Apr 2021 14:37:56 +0300
+In-Reply-To: <20210318164513.19600-1-colin.king@canonical.com> (Colin King's
+        message of "Thu, 18 Mar 2021 16:45:13 +0000")
+Message-ID: <877dlenx4b.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3Pf3TbGoVP7JP7gfPV-WDM8MHV_hdqSwNKKFDr1Sb3zQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:42:50AM +0200, Arnd Bergmann wrote:
-> Since there are really only a handful of instances in the kernel
-> that use the cmpxchg() or xchg() on u8/u16 variables, it would seem
-> best to just disallow those completely 
+Colin King <colin.king@canonical.com> writes:
 
-Not going to happen. xchg16 is optimal for qspinlock and if we replace
-that with a cmpxchg loop on x86 we're regressing.
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The calculation of offtune_val seems incorrect, the u16 value in
+> pi->tx_rx_cal_radio_saveregs[2] is being masked with 0xf0 and then
+> shifted 8 places right so that always ends up as a zero result. I
+> believe the intended shift was 4 bits to the right. Fix this.
+>
+> [Note: not tested, I don't have the H/W]
+>
+> Addresses-Coverity: ("Operands don't affect result")
+> Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> Interestingly, the s390 version using __sync_val_compare_and_swap()
-> seems to produce nice output on all architectures that have atomic
-> instructions, with any supported compiler, to the point where I think
-> we could just use that to replace most of the inline-asm versions except
-> for arm64:
-> 
-> #define cmpxchg(ptr, o, n)                                              \
-> ({                                                                      \
->         __typeof__(*(ptr)) __o = (o);                                   \
->         __typeof__(*(ptr)) __n = (n);                                   \
->         (__typeof__(*(ptr))) __sync_val_compare_and_swap((ptr),__o,__n);\
-> })
+Can someone ack this?
 
-It generates the LL/SC loop, but doesn't do sensible optimizations when
-it's again used in a loop itself. That is, it generates a loop of a
-loop, just like what you'd expect, which is sub-optimal for LL/SC.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> Not how gcc's acquire/release behavior of __sync_val_compare_and_swap()
-> relates to what the kernel wants here.
-> 
-> The gcc documentation also recommends using the standard
-> __atomic_compare_exchange_n() builtin instead, which would allow
-> constructing release/acquire/relaxed versions as well, but I could not
-> get it to produce equally good output. (possibly I was using it wrong)
-
-I'm scared to death of the C11 crap, the compiler will 'optimize' them
-when it feels like it and use the C11 memory model rules for it, which
-are not compatible with the kernel rules.
-
-But the same thing applies, it won't do the right thing for composites.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
