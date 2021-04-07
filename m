@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C27F356882
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6AD356884
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244223AbhDGJzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        id S1350407AbhDGJ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234496AbhDGJzu (ORCPT
+        with ESMTP id S1346426AbhDGJ4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:55:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B066C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yUV9gzaEqSL588esULqOCO/pkpJA1yvEQI+xvdfazJo=; b=rR/oliWLbXwCjURymy5uXzA9qi
-        MvgMdU4dxnUsk87Ouax18EuA4nwdWEKCeytIFE1X3Vv8qf8+/+TKuCJUUrz72p5AGUXybmYiMocEb
-        h1qX3rPXOOl4pD6mNeJHs52k6wxGSQJ1KYHQSC/Wocb4g6WAlBosh30MB63aUr4lGsE+EyX+Njdp6
-        RKf3FmPpt7rsfGA+ohbpFVEXtY/jbv0oMvNXV+hXiHCfRtuZ90fyo/9BMlMXmW1eO2ls0P07zdG5n
-        voc7c30xZF8MgvXzXJt/DHpKkLH73y1N2Y9emB7IFiQfeO2AcARCjKpDIJKDewbKwj/5pejzn5ffn
-        IJgnM6bA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU4tR-00EGwl-H1; Wed, 07 Apr 2021 09:54:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D2C030005A;
-        Wed,  7 Apr 2021 11:54:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1118B2BE1CA0B; Wed,  7 Apr 2021 11:54:37 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 11:54:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
- differently
-Message-ID: <YG2BXRm60IhpumD8@hirez.programming.kicks-ass.net>
-References: <20210321150358.71ef52b1@imladris.surriel.com>
- <20210322110306.GE3697@techsingularity.net>
- <20210326151932.2c187840@imladris.surriel.com>
- <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
- <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
- <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
- <20210407094217.GA2926@vingu-book>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407094217.GA2926@vingu-book>
+        Wed, 7 Apr 2021 05:56:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41561C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:55:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id d1so23204878ybj.15
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VWa5xUA+9GCbJ9DlX5ZS/vYDVMc9Ch1YyfdrjHd7dd4=;
+        b=l4ISsIo1bCuQjUNIgt5hBLv04y2KMWkLr8ycFUvTmUS1L60UoCeg6r+xF2uXACr9G7
+         gtff5aMua90RcvRhqs0K6ZxyqBgkJLp/O8NIXvdzKp8NSYCQIAVKALwnZtmVzrnlTdqY
+         pLkcrC9RQCmCdoXht41Ltsf1XOEA8n2es//viRP+JwcHmYZdpOdQZxnRB+lJbqEv16sJ
+         9sRqNu9M7dm/gaoNQLvhZAir9oSgytTkAkS8fgzEiQaaTmb5p9nZ+KHrc60CgtvlCvxJ
+         70LmqbFCnO4S53pFGa65A3NYsvKcDw1M9Q+5E2TJN+69oHiHX1MOidauxabSv9wWmBB8
+         eyPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VWa5xUA+9GCbJ9DlX5ZS/vYDVMc9Ch1YyfdrjHd7dd4=;
+        b=qoeeCxj2rK7NxfcBObRmgBUiy2WnzY0B64ibuaHULJSsKN0j/K9MmELPbUHU/yxcmS
+         D9OwW+yTqKlyDCgHaHcq80jmStaV7uIijI5mSXJJyzhjxGGeLVMWug3qffqNXTs9PA/o
+         VLKAfiILCTnw84NZhmmPmQuEp3nXWDL9riU54HDTnBYvjTKOisrZJd0Ds7NwZp1QtJZW
+         4KQ6ndQ6DSGZd0iKAUt3tuBpeFK+W5/LLXiSNwd5e0nHGGCQ823qYXZhs3IJF+NohWBX
+         P34Fgikgf6Hamzb8qGUcvV6oX1UCKe+OnhZdTnXh5y+Trfyv7DAnZqr4fwEc8aibP9gW
+         magQ==
+X-Gm-Message-State: AOAM533sCDoA8tqV5NkByscNNFhDSjHcIws9uqN8PKI+Fm4bMVETc5KZ
+        S4y8kOdHxGAs0ScgnTKhEquj6F0=
+X-Google-Smtp-Source: ABdhPJyJvh62KGCku6InpD3zbdy6kT1gK50K3AlsQwz2jwnin3/vG1dPL3EQ/d36idH/3WQsHniYwSU=
+X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:d5a1:fccd:85fb:f380])
+ (user=wak job=sendgmr) by 2002:a25:d0c7:: with SMTP id h190mr3349871ybg.428.1617789351418;
+ Wed, 07 Apr 2021 02:55:51 -0700 (PDT)
+Date:   Wed,  7 Apr 2021 02:55:27 -0700
+Message-Id: <20210407095527.2771582-1-wak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH] spi: Fix use-after-free with devm_spi_alloc_*
+From:   "William A. Kennington III" <wak@google.com>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        "William A. Kennington III" <wak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:42:17AM +0200, Vincent Guittot wrote:
-> I would really prefer to keep that out of select_idle_cpu which aims to merge in one
-> single loop the walk through sd_llc. In the case of select_idle_smt, this is done outside
-> the loop:
+We can't rely on the contents of the devres list during
+spi_unregister_controller(), as the list is already torn down at the
+time we perform devres_find() for devm_spi_release_controller. This
+causes devices registered with devm_spi_alloc_{master,slave}() to be
+mistakenly identified as legacy, non-devm managed devices and have their
+reference counters decremented below 0.
 
-Fair enough.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
+[<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
+[<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
+ r4:b6700140
+[<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
+[<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
+ r5:b6700180 r4:b6700100
+[<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
+ r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
+[<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
+ r5:b117ad94 r4:b163dc10
+[<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
+ r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
+[<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
 
-> @@ -6317,11 +6339,21 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  		}
->  	}
->  
-> +	if (static_branch_likely(&sched_smt_present)) {
-> +		smt = test_idle_cores(target, false);
-> +		if (!smt && cpus_share_cache(prev, target)) {
-> +			/* No idle core. Check if prev has an idle sibling. */
-> +			i = select_idle_smt(p, sd, prev);
-> +			if ((unsigned int)i < nr_cpumask_bits)
-> +				return i;
-> +		}
-> +	}
-> +
->  	sd = rcu_dereference(per_cpu(sd_llc, target));
->  	if (!sd)
->  		return target;
+Instead, determine the devm allocation state as a flag on the
+controller which is guaranteed to be stable during cleanup.
 
-It needs to be here, otherwise you're using @sd uninitialized.
+Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
+Signed-off-by: William A. Kennington III <wak@google.com>
+---
+ drivers/spi/spi.c       | 9 ++-------
+ include/linux/spi/spi.h | 3 +++
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-> -	i = select_idle_cpu(p, sd, target);
-> +	i = select_idle_cpu(p, sd, smt, target);
->  	if ((unsigned)i < nr_cpumask_bits)
->  		return i;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index b08efe88ccd6..904a353798b6 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2496,6 +2496,7 @@ struct spi_controller *__devm_spi_alloc_controller(struct device *dev,
+ 
+ 	ctlr = __spi_alloc_controller(dev, size, slave);
+ 	if (ctlr) {
++		ctlr->devm_allocated = true;
+ 		*ptr = ctlr;
+ 		devres_add(dev, ptr);
+ 	} else {
+@@ -2842,11 +2843,6 @@ int devm_spi_register_controller(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_spi_register_controller);
+ 
+-static int devm_spi_match_controller(struct device *dev, void *res, void *ctlr)
+-{
+-	return *(struct spi_controller **)res == ctlr;
+-}
+-
+ static int __unregister(struct device *dev, void *null)
+ {
+ 	spi_unregister_device(to_spi_device(dev));
+@@ -2893,8 +2889,7 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+ 	/* Release the last reference on the controller if its driver
+ 	 * has not yet been converted to devm_spi_alloc_master/slave().
+ 	 */
+-	if (!devres_find(ctlr->dev.parent, devm_spi_release_controller,
+-			 devm_spi_match_controller, ctlr))
++	if (!ctlr->devm_allocated)
+ 		put_device(&ctlr->dev);
+ 
+ 	/* free bus id */
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 592897fa4f03..643139b1eafe 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -510,6 +510,9 @@ struct spi_controller {
+ 
+ #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+ 
++	/* flag indicating this is a non-devres managed controller */
++	bool			devm_allocated;
++
+ 	/* flag indicating this is an SPI slave controller */
+ 	bool			slave;
+ 
+-- 
+2.31.0.208.g409f899ff0-goog
 
-Let me have another poke at it.
