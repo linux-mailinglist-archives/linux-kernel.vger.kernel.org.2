@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97287357487
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CB435748A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355429AbhDGSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:48:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355411AbhDGSss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39CAE61246;
-        Wed,  7 Apr 2021 18:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617821318;
-        bh=w3Pc1s+0Z4zxUfBQzlDJZYxBwkEHPt26/nhiCTN8tI4=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=o8HSUXwIsztDpIiQvU81tnntO4SXW8lNCd/PVx/QzC3C1zhHLA9lWNFqj9EPvIM0Z
-         VxSK94R9J40GvRHgNJ8+5sh2N2itXLDeojq+m5DIfxrCLusLcLuHq0OnSNyvhYLti5
-         g0MM3aTmZCVL5/+krZNt8DV3fQsi4hM1HF8meoNYprAUMsK+MshL+41t4OFSEDg8VZ
-         VdqyWMs/KJ+gFvKhC7cUgGpLudBNRzVdVmpU3tqAUT6Wk8T0aVOw4Gori5NpcWtnoB
-         h0OvJFKbE8dBYkfiMeyYJEy+fUtzuSMn7vEZAQfxZxESUUFLDiH5T4tZ+zBYNud1JO
-         65nB0AGuAumwA==
-From:   zanussi@kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH RT 2/2] Linux 5.4.109-rt56-rc1
-Date:   Wed,  7 Apr 2021 13:48:33 -0500
-Message-Id: <30c2ef9db0f19b0883f950000819940e3b178487.1617821301.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1617821301.git.zanussi@kernel.org>
-References: <cover.1617821301.git.zanussi@kernel.org>
-In-Reply-To: <cover.1617821301.git.zanussi@kernel.org>
-References: <cover.1617821301.git.zanussi@kernel.org>
+        id S1355438AbhDGSuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355401AbhDGSt4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 14:49:56 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A8EC06175F;
+        Wed,  7 Apr 2021 11:49:46 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w23so10857588edx.7;
+        Wed, 07 Apr 2021 11:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bCTcZ/9GQSf/Ljck8Jws7/donXio0A+2sc6pD50GSNA=;
+        b=XP/AqdezzDG31JGPQzW3CkebCLWh3Y+APZUHlyVf9kXuhFDZEJKoAtx+kz4ueYuGpz
+         HdWEw7QPLhETea36Riuy6ezER8WM43zLYbohIYC3hldh08uA986tHVL0RNLhFOTIYASk
+         KJwD+gl+U5EGBDBo/lvwVXwNzY0Zb0haAkcNgVebNHkxzcTRDL48VBnu5rDRboZOL9dJ
+         TAwHSCWmyk5wT5tsXQCGpCTpt1M4rTY7OeoUPZL+zBXGoriUxqFT+jXPZyxdLvmAZawH
+         wokJrk/kNRFNVWstBkE8x7TZ0NXkDHjBEQhIzkf5XPnqHQmX5loIuMccXNU/NUL9Ayc9
+         8tMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bCTcZ/9GQSf/Ljck8Jws7/donXio0A+2sc6pD50GSNA=;
+        b=ZEqYMNsH+5JjtzpoARRy1O3btIRJqIQARMkcx8L4vRzk729qdhCcViN39oIdnXg8rK
+         bKR2DnqOMUvYpYYzw5eGjQnaxKw+ZzSGtqnPVqMhAza1PblaugSdquiamsy2ncLOD3HG
+         ugeDXshg+nG/JV2r/WeCTwXBdv/RpbwxdNzp7zo0p37Iq+gpNoCGCwqtR3efaMZz3Mza
+         ogE7YXLI+cCxdUOzsyxkk1i5Zo/Rd9neufxUQ0lFYtQSPk6ws21R2YsN1JH6laE5iqrl
+         rLu/90kU6Q+ZB51uXu3QZ/z2joKrWV02NRzfsqTkZT4lgw8zVp56V4QBAEdXZF9KfY1P
+         g8Fw==
+X-Gm-Message-State: AOAM531aUQDNojp2nSISikba9hisQzSpGPf+azC6zAxZ84KyOzW/fEQr
+        pZcEWX4UGBRVmA4pOMyQJt0CKPopzhSytY2if7U=
+X-Google-Smtp-Source: ABdhPJzeUL/tk90gRs0bfMM7xCgePouT8xjiA55DrmKw+kHCLVKQNbJY2kqB7zNVJgG6s8BD5RIlqA5EYHueyb1TEBI=
+X-Received: by 2002:a05:6402:13ce:: with SMTP id a14mr6282012edx.365.1617821384781;
+ Wed, 07 Apr 2021 11:49:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
+ <20210406203508.476122-3-martin.blumenstingl@googlemail.com>
+ <YGz9hMcgZ1sUkgLO@lunn.ch> <98ef4831-27eb-48d4-1421-c6496b174659@gmail.com>
+In-Reply-To: <98ef4831-27eb-48d4-1421-c6496b174659@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 7 Apr 2021 20:49:33 +0200
+Message-ID: <CAFBinCCv7vSf1H1ONZYU+fo3kRvShYxzemE3-8DqKUzsFFOUPA@mail.gmail.com>
+Subject: Re: [PATCH RFC net 2/2] net: dsa: lantiq_gswip: Configure all
+ remaining GSWIP_MII_CFG bits
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>, vivien.didelot@gmail.com,
+        olteanv@gmail.com, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+Hello,
 
-v5.4.109-rt56-rc1 stable review patch.
-If anyone has any objections, please let me know.
+On Wed, Apr 7, 2021 at 6:47 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 4/6/2021 5:32 PM, Andrew Lunn wrote:
+> >>      case PHY_INTERFACE_MODE_RGMII:
+> >>      case PHY_INTERFACE_MODE_RGMII_ID:
+> >>      case PHY_INTERFACE_MODE_RGMII_RXID:
+> >>      case PHY_INTERFACE_MODE_RGMII_TXID:
+> >>              miicfg |= GSWIP_MII_CFG_MODE_RGMII;
+> >> +
+> >> +            if (phylink_autoneg_inband(mode))
+> >> +                    miicfg |= GSWIP_MII_CFG_RGMII_IBS;
+> >
+> > Is there any other MAC driver doing this? Are there any boards
+> > actually enabling it? Since it is so odd, if there is nothing using
+> > it, i would be tempted to leave this out.
+>
+> Some PHYs (Broadcom namely) support suppressing the RGMII in-band
+> signaling towards the MAC, so if the MAC relies on that signaling to
+> configure itself based on what the PHY reports this may not work.
+point taken. in v2 we'll not set GSWIP_MII_CFG_RGMII_IBS unless
+there's someone who can actually test this.
+so far I don't know any hardware with Lantiq SoC that uses it
 
------------
 
-
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- localversion-rt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/localversion-rt b/localversion-rt
-index 51b05e9abe6f..a6adf38a57d4 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt55
-+-rt56-rc1
--- 
-2.17.1
-
+Best regards,
+Martin
