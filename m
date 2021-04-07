@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CCD356E10
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508D2356E12
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352740AbhDGODI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245299AbhDGODF (ORCPT
+        id S1352750AbhDGODM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:03:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352742AbhDGODK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:03:05 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941FCC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:02:55 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b14so28675862lfv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+17jFXVfSVa1xzkD+yOD2JJxNoeoPowk4/GrnqnOgP0=;
-        b=tbqIMjkSscPvQOqqV3GR+CJbiO0LZOCWdGhAL1qn6AouJzfdHmcLmViEJ64MuUUbgG
-         zHJSJPw8Mgyz6aoHMrmdD7Ut84bEARrsJZt0XMw/VEr9XVBaSO5AB5t51D2MK7cBn5DO
-         8+3C6gG66IkHY/e8nqxl3G56SsNgMKA1pCd1QwldfjnJaQZutbtDvUkLg6R6cZnZMSZM
-         2acJLEON3pbh1Fk4hJmYpmgDZuU71qpNQFBCp6pPQl8FX5qB40ZPqks3RJoEYodnMXVk
-         hlWY6b2dXlDE9u4NKljoDEAVsC0uwQ4AAHen+ShbRbeEoZ7Bt7b4slP5U0nhhq08AmwO
-         FOtA==
+        Wed, 7 Apr 2021 10:03:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617804180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uu7DUKi3aMdx30NPxijI78spi2F+sW6pd08YQfEqN7g=;
+        b=jNU9sqeveZMj2pGlqMQfeNHlmZuXWU/1I1cuB4e6Fi+A//bM0k52Sd1Ful7/Z6snpF4vOx
+        Hdl51QU0gcaoRls6vBLha6xDOgQegDpYXfKbUFQesqWQXKNo+ods20/ZeTYpf0jkjYe5eD
+        oraTyLG2/42sf+tQ576XSQy8ZX1RXao=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-F3ZBWxZaPTqcENHMRoDX2A-1; Wed, 07 Apr 2021 10:02:58 -0400
+X-MC-Unique: F3ZBWxZaPTqcENHMRoDX2A-1
+Received: by mail-ej1-f69.google.com with SMTP id n21so3374367ejl.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:02:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+17jFXVfSVa1xzkD+yOD2JJxNoeoPowk4/GrnqnOgP0=;
-        b=orEVIYU+1gPRlRHK41ve4Pu2t87jRmvSOt1sBDzYXQ76TLaoh9AkPrbD/wECSc47uc
-         ilUS0mXiRhhWMiB2p8V2lpQaYdU0W93xRsiXOf1luHR9U10bp59shove86KJqft/BDx5
-         iXoxur9NAlUkJbKxyvpIcAeXjisSYnJvwvfd7IrZ/VvpEsfWJOJ0eXahpiwtG0fbemVK
-         aUn4MXAh2OlV3au0wZI2wB9d9l5LJ6q6LDMy7rViQqf7Lx4tjSRQqQYuaFg+7ZJi5Tl5
-         O8GU/s1GiOTyTv3Ov962slOUmXRAVcmIHgTT/oBD1bXJ6LVX0FK+cPAtv9E+ml+xAc5g
-         BVMQ==
-X-Gm-Message-State: AOAM532DPCXVsWKSzOzcBM82vw0FhRU7984hwr+ot5MtRuIyAPm9/JSU
-        OFpC4hG3o/KykeWmvSZLb2hzi2h57mJpCv7d9/LayQ==
-X-Google-Smtp-Source: ABdhPJyxkpZuB/fFSn3dWDHHN4He9jWpqo0HNAGqeehLmg84FyfW8Wefz2oTvjbl9qTebbARnASFed2SZemY053dqqM=
-X-Received: by 2002:a19:f812:: with SMTP id a18mr2580296lff.254.1617804172692;
- Wed, 07 Apr 2021 07:02:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Uu7DUKi3aMdx30NPxijI78spi2F+sW6pd08YQfEqN7g=;
+        b=ZWvNm4kb8JV9FSm3fKTgtDmQGluRXw4X+slNYHqkayuhxh00XDT2+iRr6pimWKmM/j
+         AYOVHXZuyA2XxItlnp75UupBXmmvWi4LreympACb7501SvX27x+pHTEUCqFC1qvHFsEg
+         q0vLVS/Y1d2YzfoEjdWcA2Cto+13PAr4b3cjFRM+B73K+ipeMFpVKofBQiyFh6WLEcYc
+         86zRdJJLnK6KiOEu9cxodE+UNhnBh+F1QlXjmO3VbQKIE1LS4LG7t629iOIbg/JyU/56
+         84mkonlxF2ApBtodPIQMDGPjrNmveujrPOuUGSxGwnihyvJhLJcM5ojkgQn/rbNS2wFV
+         YZbA==
+X-Gm-Message-State: AOAM53334tPkmpOPmGkBsYIWCyVdsxzJGo0iD2PTHdOs+FlKTUII85/x
+        rJZuVSf1vbFbAkPl74kbH9+58YdOqHv20CFH9FjlXqZQGodNwLve/wE9FclTZka8wXk6/e9CHKw
+        SpzzpWZW2RoNlcJTNlkOaVm19
+X-Received: by 2002:a05:6402:42d1:: with SMTP id i17mr4441856edc.131.1617804177706;
+        Wed, 07 Apr 2021 07:02:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRY/y/lnspEMRzFi+bpSAp/LmL7KtYGcLjTCU76MWEezzicC4MAIKqO/OW+TvYrU+991QDMw==
+X-Received: by 2002:a05:6402:42d1:: with SMTP id i17mr4441825edc.131.1617804177514;
+        Wed, 07 Apr 2021 07:02:57 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id x17sm12637723ejd.68.2021.04.07.07.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:02:57 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+In-Reply-To: <20210407134302.ng6n4el2km7sujfp@liuwe-devbox-debian-v2>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+ <87y2fxmlmb.fsf@vitty.brq.redhat.com>
+ <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
+ <87eeguc61d.fsf@vitty.brq.redhat.com>
+ <fc88ba72-83ab-025e-682d-4981762ed4f6@linux.microsoft.com>
+ <87eefmczo2.fsf@vitty.brq.redhat.com>
+ <20210407134302.ng6n4el2km7sujfp@liuwe-devbox-debian-v2>
+Date:   Wed, 07 Apr 2021 16:02:56 +0200
+Message-ID: <875z0ychv3.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com> <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com> <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book> <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
- <20210324134437.GA17675@vingu-book> <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
-In-Reply-To: <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 7 Apr 2021 16:02:41 +0200
-Message-ID: <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
- for NOHZ
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
+Wei Liu <wei.liu@kernel.org> writes:
 
-On Wed, 24 Mar 2021 at 17:05, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+> On Wed, Apr 07, 2021 at 09:38:21AM +0200, Vitaly Kuznetsov wrote:
 >
+>> One more though: it is probably a good idea to introduce selftests for
+>> /dev/mshv (similar to KVM's selftests in
+>> /tools/testing/selftests/kvm). Selftests don't really need a stable ABI
+>> as they live in the same linux.git and can be updated in the same patch
+>> series which changes /dev/mshv behavior. Selftests are very useful for
+>> checking there are no regressions, especially in the situation when
+>> there's no publicly available userspace for /dev/mshv.
 >
+> I think this can wait until we merge the first implementation in tree.
+> There are still a lot of moving parts. Our (currently limited) internal
+> test cases need more cleaning up before they are ready. I certainly
+> don't want to distract Nuno from getting the foundation right.
 >
-> On 3/24/21 6:44 AM, Vincent Guittot wrote:
-> > Hi Tim,
->
-> >
-> > IIUC your problem, we call update_blocked_averages() but because of:
-> >
-> >               if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
-> >                       update_next_balance(sd, &next_balance);
-> >                       break;
-> >               }
-> >
-> > the for_each_domain loop stops even before running load_balance on the 1st
-> > sched domain level which means that update_blocked_averages() was called
-> > unnecessarily.
-> >
->
-> That's right
->
-> > And this is even more true with a small sysctl_sched_migration_cost which allows newly
-> > idle LB for very small this_rq->avg_idle. We could wonder why you set such a low value
-> > for sysctl_sched_migration_cost which is lower than the max_newidle_lb_cost of the
-> > smallest domain but that's probably because of task_hot().
-> >
-> > if avg_idle is lower than the sd->max_newidle_lb_cost of the 1st sched_domain, we should
-> > skip spin_unlock/lock and for_each_domain() loop entirely
-> >
-> > Maybe something like below:
-> >
->
-> The patch makes sense.  I'll ask our benchmark team to queue this patch for testing.
 
-Do you have feedback from your benchmark team ?
+I'm absolutely fine with this approach, selftests are a nice add-on, not
+a requirement for the initial implementation. Also, to make them more
+useful to mere mortals, a doc on how to run Linux as root Hyper-V
+partition would come handy)
 
-Regards,
-Vincent
->
-> Tim
->
->
+-- 
+Vitaly
+
