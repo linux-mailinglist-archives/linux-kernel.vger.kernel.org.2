@@ -2,163 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C945357230
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF25357233
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347492AbhDGQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:32:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2802 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhDGQcB (ORCPT
+        id S245545AbhDGQeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232103AbhDGQd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:32:01 -0400
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FFqVT5C43z686MM;
-        Thu,  8 Apr 2021 00:24:49 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 7 Apr 2021 18:31:50 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2106.013;
- Wed, 7 Apr 2021 18:31:50 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 04/12] ima: Move ima_reset_appraise_flags() call to
- post hooks
-Thread-Topic: [PATCH v5 04/12] ima: Move ima_reset_appraise_flags() call to
- post hooks
-Thread-Index: AQHXK5wxlIRVa7+R00Sd1wRbofsWXqqpGlkAgAAkbnA=
-Date:   Wed, 7 Apr 2021 16:31:49 +0000
-Message-ID: <9d2dffa6b21e42c09ce664cfc3fab887@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
- <20210407105252.30721-5-roberto.sassu@huawei.com>
- <d4aba724-2935-467b-e57c-cd961112190b@schaufler-ca.com>
-In-Reply-To: <d4aba724-2935-467b-e57c-cd961112190b@schaufler-ca.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.21.167]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 7 Apr 2021 12:33:59 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B79EC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:33:48 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id x189so20782063ybg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0lwsn0u8IqnICGvyAtiBlcyUYYkzwv4EZu9XbSKhZrg=;
+        b=TWEJp7OutTUnO1JIFD74hY9u3yciqYCtgTdf56knITi6CkAmDtCZZXDMRNzmbxnwrh
+         bLHAUsZyRk7YcRxxvH0CTDeN94hfbeaxsbuMc3jFOmszMsXYQ6t7s+4XYsSSQoYD0XMm
+         g0xESiZe/ihc/ZUZhY1zfewcJSN5cKnL5I05FBSo4ZfGoR6AO9Fbk6mSYP5PU7/ek/WR
+         /2DTrzU+zBKENUWBy14uNSqqlSy3Bj83K+hkINV0y2/4b3cQXOJasAoO0gzC31WUmfgX
+         sK/EqdltijimdWmmrGTeeKImYGQK5Mukh16EitOpxY/MQh11Uz77zdL7q/9GmnfUQp66
+         gw+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0lwsn0u8IqnICGvyAtiBlcyUYYkzwv4EZu9XbSKhZrg=;
+        b=SIBNWJc9C6vm8OXp0e+/egQdtdDZ60nYtgCDoL34axSM8kMjZgJXXbdOzfr8xAxXOF
+         GimAgaiEncQFl0YoSHpV3ht31ODBxaxdvMeSLxeX+yIfyJmwkBqU+J2CIJdCmhfmSJDC
+         qfpIP/6MACzFfDEJeeOi4OvPRgSVILG8+ZEXECIbkP0lo7tfOaN+woXCBYDD5UkZLmtM
+         ntmGxQP3BW+FOopHU6jGNiAcSACmLPsmSPQkpdW76KnCmyRScSfU5JKM0mkJoBbqMPtm
+         A/qorGbY6atKiU7SiOZaCYkVx6gQUSj6rulu1jIj30INIsD5g0GnukmTjpm4qD/3MOw/
+         ADgw==
+X-Gm-Message-State: AOAM531rwhz3Z8cBz83VGrb7SUn4U4hGnsCAN2p+KuWnEXIZV5+s8NO8
+        34d9TXhoScNLdPFQQ2ypDLvlvWkxVOg1wudqq+wE3Q==
+X-Google-Smtp-Source: ABdhPJxMcZIjSk5SxemHmmgHhUXGk613blsBNSxX/7m9hmiZI2uoGUA/6Ddd825mHLMNN1EViUgxwXpkg1G7eOH3h+0=
+X-Received: by 2002:a25:c801:: with SMTP id y1mr5843563ybf.250.1617813224849;
+ Wed, 07 Apr 2021 09:33:44 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+ <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
+In-Reply-To: <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 7 Apr 2021 09:33:34 -0700
+Message-ID: <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
+        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBDYXNleSBTY2hhdWZsZXIgW21haWx0bzpjYXNleUBzY2hhdWZsZXItY2EuY29tXQ0K
-PiBTZW50OiBXZWRuZXNkYXksIEFwcmlsIDcsIDIwMjEgNjoxOCBQTQ0KPiBPbiA0LzcvMjAyMSAz
-OjUyIEFNLCBSb2JlcnRvIFNhc3N1IHdyb3RlOg0KPiA+IGltYV9pbm9kZV9zZXR4YXR0cigpIGFu
-ZCBpbWFfaW5vZGVfcmVtb3ZleGF0dHIoKSBob29rcyBhcmUgY2FsbGVkDQo+IGJlZm9yZSBhbg0K
-PiA+IG9wZXJhdGlvbiBpcyBwZXJmb3JtZWQuIFRodXMsIGltYV9yZXNldF9hcHByYWlzZV9mbGFn
-cygpIHNob3VsZCBub3QgYmUNCj4gPiBjYWxsZWQgdGhlcmUsIGFzIGZsYWdzIG1pZ2h0IGJlIHVu
-bmVjZXNzYXJpbHkgcmVzZXQgaWYgdGhlIG9wZXJhdGlvbiBpcw0KPiA+IGRlbmllZC4NCj4gPg0K
-PiA+IFRoaXMgcGF0Y2ggaW50cm9kdWNlcyB0aGUgcG9zdCBob29rcyBpbWFfaW5vZGVfcG9zdF9z
-ZXR4YXR0cigpIGFuZA0KPiA+IGltYV9pbm9kZV9wb3N0X3JlbW92ZXhhdHRyKCksIGFuZCBhZGRz
-IHRoZSBjYWxsIHRvDQo+ID4gaW1hX3Jlc2V0X2FwcHJhaXNlX2ZsYWdzKCkgaW4gdGhlIG5ldyBm
-dW5jdGlvbnMuDQo+ID4NCj4gPiBDYzogQ2FzZXkgU2NoYXVmbGVyIDxjYXNleUBzY2hhdWZsZXIt
-Y2EuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJvYmVydG8gU2Fzc3UgPHJvYmVydG8uc2Fzc3VA
-aHVhd2VpLmNvbT4NCj4gPiAtLS0NCj4gPiAgZnMveGF0dHIuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAyICsrDQo+ID4gIGluY2x1ZGUvbGludXgvaW1hLmggICAgICAgICAgICAgICAg
-ICAgfCAxOCArKysrKysrKysrKysrKysrKysNCj4gPiAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9p
-bWFfYXBwcmFpc2UuYyB8IDI1ICsrKysrKysrKysrKysrKysrKysrKystLQ0KPiAtDQo+ID4gIHNl
-Y3VyaXR5L3NlY3VyaXR5LmMgICAgICAgICAgICAgICAgICAgfCAgMSArDQo+ID4gIDQgZmlsZXMg
-Y2hhbmdlZCwgNDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYg
-LS1naXQgYS9mcy94YXR0ci5jIGIvZnMveGF0dHIuYw0KPiA+IGluZGV4IGIzNDQ0ZTA2Y2RlZC4u
-ODE4NDdmMTMyZDI2IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL3hhdHRyLmMNCj4gPiArKysgYi9mcy94
-YXR0ci5jDQo+ID4gQEAgLTE2LDYgKzE2LDcgQEANCj4gPiAgI2luY2x1ZGUgPGxpbnV4L25hbWVp
-Lmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9zZWN1cml0eS5oPg0KPiA+ICAjaW5jbHVkZSA8bGlu
-dXgvZXZtLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9pbWEuaD4NCj4gPiAgI2luY2x1ZGUgPGxp
-bnV4L3N5c2NhbGxzLmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9leHBvcnQuaD4NCj4gPiAgI2lu
-Y2x1ZGUgPGxpbnV4L2Zzbm90aWZ5Lmg+DQo+ID4gQEAgLTUwMiw2ICs1MDMsNyBAQCBfX3Zmc19y
-ZW1vdmV4YXR0cl9sb2NrZWQoc3RydWN0DQo+IHVzZXJfbmFtZXNwYWNlICptbnRfdXNlcm5zLA0K
-PiA+DQo+ID4gIAlpZiAoIWVycm9yKSB7DQo+ID4gIAkJZnNub3RpZnlfeGF0dHIoZGVudHJ5KTsN
-Cj4gPiArCQlpbWFfaW5vZGVfcG9zdF9yZW1vdmV4YXR0cihkZW50cnksIG5hbWUpOw0KPiA+ICAJ
-CWV2bV9pbm9kZV9wb3N0X3JlbW92ZXhhdHRyKGRlbnRyeSwgbmFtZSk7DQo+ID4gIAl9DQo+ID4N
-Cj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9pbWEuaCBiL2luY2x1ZGUvbGludXgvaW1h
-LmgNCj4gPiBpbmRleCA2MWQ1NzIzZWMzMDMuLjVlMDU5ZGE0Mzg1NyAxMDA2NDQNCj4gPiAtLS0g
-YS9pbmNsdWRlL2xpbnV4L2ltYS5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9pbWEuaA0KPiA+
-IEBAIC0xNzEsNyArMTcxLDEzIEBAIGV4dGVybiB2b2lkIGltYV9pbm9kZV9wb3N0X3NldGF0dHIo
-c3RydWN0DQo+IHVzZXJfbmFtZXNwYWNlICptbnRfdXNlcm5zLA0KPiA+ICAJCQkJICAgc3RydWN0
-IGRlbnRyeSAqZGVudHJ5KTsNCj4gPiAgZXh0ZXJuIGludCBpbWFfaW5vZGVfc2V0eGF0dHIoc3Ry
-dWN0IGRlbnRyeSAqZGVudHJ5LCBjb25zdCBjaGFyDQo+ICp4YXR0cl9uYW1lLA0KPiA+ICAJCSAg
-ICAgICBjb25zdCB2b2lkICp4YXR0cl92YWx1ZSwgc2l6ZV90IHhhdHRyX3ZhbHVlX2xlbik7DQo+
-ID4gK2V4dGVybiB2b2lkIGltYV9pbm9kZV9wb3N0X3NldHhhdHRyKHN0cnVjdCBkZW50cnkgKmRl
-bnRyeSwNCj4gPiArCQkJCSAgICBjb25zdCBjaGFyICp4YXR0cl9uYW1lLA0KPiA+ICsJCQkJICAg
-IGNvbnN0IHZvaWQgKnhhdHRyX3ZhbHVlLA0KPiA+ICsJCQkJICAgIHNpemVfdCB4YXR0cl92YWx1
-ZV9sZW4pOw0KPiA+ICBleHRlcm4gaW50IGltYV9pbm9kZV9yZW1vdmV4YXR0cihzdHJ1Y3QgZGVu
-dHJ5ICpkZW50cnksIGNvbnN0IGNoYXINCj4gKnhhdHRyX25hbWUpOw0KPiA+ICtleHRlcm4gdm9p
-ZCBpbWFfaW5vZGVfcG9zdF9yZW1vdmV4YXR0cihzdHJ1Y3QgZGVudHJ5ICpkZW50cnksDQo+ID4g
-KwkJCQkgICAgICAgY29uc3QgY2hhciAqeGF0dHJfbmFtZSk7DQo+ID4gICNlbHNlDQo+ID4gIHN0
-YXRpYyBpbmxpbmUgYm9vbCBpc19pbWFfYXBwcmFpc2VfZW5hYmxlZCh2b2lkKQ0KPiA+ICB7DQo+
-ID4gQEAgLTE5MiwxMSArMTk4LDIzIEBAIHN0YXRpYyBpbmxpbmUgaW50IGltYV9pbm9kZV9zZXR4
-YXR0cihzdHJ1Y3QgZGVudHJ5DQo+ICpkZW50cnksDQo+ID4gIAlyZXR1cm4gMDsNCj4gPiAgfQ0K
-PiA+DQo+ID4gK3N0YXRpYyBpbmxpbmUgdm9pZCBpbWFfaW5vZGVfcG9zdF9zZXR4YXR0cihzdHJ1
-Y3QgZGVudHJ5ICpkZW50cnksDQo+ID4gKwkJCQkJICAgY29uc3QgY2hhciAqeGF0dHJfbmFtZSwN
-Cj4gPiArCQkJCQkgICBjb25zdCB2b2lkICp4YXR0cl92YWx1ZSwNCj4gPiArCQkJCQkgICBzaXpl
-X3QgeGF0dHJfdmFsdWVfbGVuKQ0KPiA+ICt7DQo+ID4gK30NCj4gPiArDQo+ID4gIHN0YXRpYyBp
-bmxpbmUgaW50IGltYV9pbm9kZV9yZW1vdmV4YXR0cihzdHJ1Y3QgZGVudHJ5ICpkZW50cnksDQo+
-ID4gIAkJCQkJY29uc3QgY2hhciAqeGF0dHJfbmFtZSkNCj4gPiAgew0KPiA+ICAJcmV0dXJuIDA7
-DQo+ID4gIH0NCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgdm9pZCBpbWFfaW5vZGVfcG9zdF9y
-ZW1vdmV4YXR0cihzdHJ1Y3QgZGVudHJ5ICpkZW50cnksDQo+ID4gKwkJCQkJICAgICAgY29uc3Qg
-Y2hhciAqeGF0dHJfbmFtZSkNCj4gPiArew0KPiA+ICt9DQo+ID4gICNlbmRpZiAvKiBDT05GSUdf
-SU1BX0FQUFJBSVNFICovDQo+ID4NCj4gPiAgI2lmIGRlZmluZWQoQ09ORklHX0lNQV9BUFBSQUlT
-RSkgJiYNCj4gZGVmaW5lZChDT05GSUdfSU5URUdSSVRZX1RSVVNURURfS0VZUklORykNCj4gPiBk
-aWZmIC0tZ2l0IGEvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBwcmFpc2UuYw0KPiBiL3Nl
-Y3VyaXR5L2ludGVncml0eS9pbWEvaW1hX2FwcHJhaXNlLmMNCj4gPiBpbmRleCA1NjVlMzNmZjE5
-ZDAuLjFmMDI5ZTRjOGQ3ZiAxMDA2NDQNCj4gPiAtLS0gYS9zZWN1cml0eS9pbnRlZ3JpdHkvaW1h
-L2ltYV9hcHByYWlzZS5jDQo+ID4gKysrIGIvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBw
-cmFpc2UuYw0KPiA+IEBAIC01NzcsMjEgKzU3Nyw0MCBAQCBpbnQgaW1hX2lub2RlX3NldHhhdHRy
-KHN0cnVjdCBkZW50cnkgKmRlbnRyeSwNCj4gY29uc3QgY2hhciAqeGF0dHJfbmFtZSwNCj4gPiAg
-CWlmIChyZXN1bHQgPT0gMSkgew0KPiA+ICAJCWlmICgheGF0dHJfdmFsdWVfbGVuIHx8ICh4dmFs
-dWUtPnR5cGUgPj0gSU1BX1hBVFRSX0xBU1QpKQ0KPiA+ICAJCQlyZXR1cm4gLUVJTlZBTDsNCj4g
-PiAtCQlpbWFfcmVzZXRfYXBwcmFpc2VfZmxhZ3MoZF9iYWNraW5nX2lub2RlKGRlbnRyeSksDQo+
-ID4gLQkJCXh2YWx1ZS0+dHlwZSA9PSBFVk1fSU1BX1hBVFRSX0RJR1NJRyk7DQo+ID4gIAkJcmVz
-dWx0ID0gMDsNCj4gPiAgCX0NCj4gPiAgCXJldHVybiByZXN1bHQ7DQo+ID4gIH0NCj4gPg0KPiA+
-ICt2b2lkIGltYV9pbm9kZV9wb3N0X3NldHhhdHRyKHN0cnVjdCBkZW50cnkgKmRlbnRyeSwgY29u
-c3QgY2hhcg0KPiAqeGF0dHJfbmFtZSwNCj4gPiArCQkJICAgICBjb25zdCB2b2lkICp4YXR0cl92
-YWx1ZSwgc2l6ZV90IHhhdHRyX3ZhbHVlX2xlbikNCj4gPiArew0KPiA+ICsJY29uc3Qgc3RydWN0
-IGV2bV9pbWFfeGF0dHJfZGF0YSAqeHZhbHVlID0geGF0dHJfdmFsdWU7DQo+ID4gKwlpbnQgcmVz
-dWx0Ow0KPiA+ICsNCj4gPiArCXJlc3VsdCA9IGltYV9wcm90ZWN0X3hhdHRyKGRlbnRyeSwgeGF0
-dHJfbmFtZSwgeGF0dHJfdmFsdWUsDQo+ID4gKwkJCQkgICB4YXR0cl92YWx1ZV9sZW4pOw0KPiA+
-ICsJaWYgKHJlc3VsdCA9PSAxKQ0KPiA+ICsJCWltYV9yZXNldF9hcHByYWlzZV9mbGFncyhkX2Jh
-Y2tpbmdfaW5vZGUoZGVudHJ5KSwNCj4gPiArCQkJeHZhbHVlLT50eXBlID09IEVWTV9JTUFfWEFU
-VFJfRElHU0lHKTsNCj4gPiArfQ0KPiA+ICsNCj4gDQo+IE5vdyB5b3UncmUgY2FsbGluZyBpbWFf
-cHJvdGVjdF94YXR0cigpIHR3aWNlIGZvciBlYWNoIHNldHhhdHRyLg0KPiBJcyB0aGF0IHNhZmU/
-IElzIGl0IHBlcmZvcm1hbnQ/IERvZXMgaXQgbWF0dGVyPw0KDQpIaSBDYXNleQ0KDQpJIHdvdWxk
-IGV4cGVjdCB0aGF0IHRoaXMgZG9lcyBub3QgaGF2ZSBhIHNpZ25pZmljYW50IGltcGFjdCBvbg0K
-dGhlIHBlcmZvcm1hbmNlIChpdCBpcyBqdXN0IGEgc3RyY21wIG9uIHRoZSB4YXR0ciBuYW1lKS4N
-Cg0KVGhhbmtzDQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBH
-bWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkg
-WWFubGkNCg0KPiA+ICBpbnQgaW1hX2lub2RlX3JlbW92ZXhhdHRyKHN0cnVjdCBkZW50cnkgKmRl
-bnRyeSwgY29uc3QgY2hhcg0KPiAqeGF0dHJfbmFtZSkNCj4gPiAgew0KPiA+ICAJaW50IHJlc3Vs
-dDsNCj4gPg0KPiA+ICAJcmVzdWx0ID0gaW1hX3Byb3RlY3RfeGF0dHIoZGVudHJ5LCB4YXR0cl9u
-YW1lLCBOVUxMLCAwKTsNCj4gPiAgCWlmIChyZXN1bHQgPT0gMSkgew0KPiA+IC0JCWltYV9yZXNl
-dF9hcHByYWlzZV9mbGFncyhkX2JhY2tpbmdfaW5vZGUoZGVudHJ5KSwgMCk7DQo+ID4gIAkJcmVz
-dWx0ID0gMDsNCj4gPiAgCX0NCj4gPiAgCXJldHVybiByZXN1bHQ7DQo+ID4gIH0NCj4gPiArDQo+
-ID4gK3ZvaWQgaW1hX2lub2RlX3Bvc3RfcmVtb3ZleGF0dHIoc3RydWN0IGRlbnRyeSAqZGVudHJ5
-LCBjb25zdCBjaGFyDQo+ICp4YXR0cl9uYW1lKQ0KPiA+ICt7DQo+ID4gKwlpbnQgcmVzdWx0Ow0K
-PiA+ICsNCj4gPiArCXJlc3VsdCA9IGltYV9wcm90ZWN0X3hhdHRyKGRlbnRyeSwgeGF0dHJfbmFt
-ZSwgTlVMTCwgMCk7DQo+ID4gKwlpZiAocmVzdWx0ID09IDEpDQo+ID4gKwkJaW1hX3Jlc2V0X2Fw
-cHJhaXNlX2ZsYWdzKGRfYmFja2luZ19pbm9kZShkZW50cnkpLCAwKTsNCj4gPiArfQ0KPiANCj4g
-Tm93IHlvdSdyZSBjYWxsaW5nIGltYV9wcm90ZWN0X3hhdHRyKCkgdHdpY2UgZm9yIGVhY2ggcmVt
-b3ZleGF0dHIuDQo+IElzIHRoYXQgc2FmZT8gSXMgaXQgcGVyZm9ybWFudD8gRG9lcyBpdCBtYXR0
-ZXI/DQo+IA0KPiA+IGRpZmYgLS1naXQgYS9zZWN1cml0eS9zZWN1cml0eS5jIGIvc2VjdXJpdHkv
-c2VjdXJpdHkuYw0KPiA+IGluZGV4IDVhYzk2YjE2ZjhmYS4uZWZiMWY4NzRkYzQxIDEwMDY0NA0K
-PiA+IC0tLSBhL3NlY3VyaXR5L3NlY3VyaXR5LmMNCj4gPiArKysgYi9zZWN1cml0eS9zZWN1cml0
-eS5jDQo+ID4gQEAgLTEzMTksNiArMTMxOSw3IEBAIHZvaWQgc2VjdXJpdHlfaW5vZGVfcG9zdF9z
-ZXR4YXR0cihzdHJ1Y3QgZGVudHJ5DQo+ICpkZW50cnksIGNvbnN0IGNoYXIgKm5hbWUsDQo+ID4g
-IAlpZiAodW5saWtlbHkoSVNfUFJJVkFURShkX2JhY2tpbmdfaW5vZGUoZGVudHJ5KSkpKQ0KPiA+
-ICAJCXJldHVybjsNCj4gPiAgCWNhbGxfdm9pZF9ob29rKGlub2RlX3Bvc3Rfc2V0eGF0dHIsIGRl
-bnRyeSwgbmFtZSwgdmFsdWUsIHNpemUsDQo+IGZsYWdzKTsNCj4gPiArCWltYV9pbm9kZV9wb3N0
-X3NldHhhdHRyKGRlbnRyeSwgbmFtZSwgdmFsdWUsIHNpemUpOw0KPiA+ICAJZXZtX2lub2RlX3Bv
-c3Rfc2V0eGF0dHIoZGVudHJ5LCBuYW1lLCB2YWx1ZSwgc2l6ZSk7DQo+ID4gIH0NCj4gPg0KDQo=
+On Wed, Apr 7, 2021 at 9:07 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Apr 7, 2021 at 6:22 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >
+> > 1) Ignore the issue (outside of Android at least). The security model of zygote
+> > is unusual. Where else a parent of fork() doesn't trust the child, which is the
+> > same binary?
+>
+> Agreed. I think this is basically an android-only issue (with
+> _possibly_ some impact on crazy "pin-and-fork" loads), and doesn't
+> necessarily merit a backport at all.
+>
+> If Android people insist on using very old kernels, knowing that they
+> do things that are questionable with those old kernels, at some point
+> it's just _their_ problem.
+
+We don't really insist on using old kernels but rather we are stuck
+with them for some time.
+Trying my hand at backporting the patchsets Peter mentioned proved
+this to be far from easy with many dependencies. Let me look into
+Vlastimil's suggestion to backport only 17839856fd58 and it sounds
+like 5.4 already followed that path. Thanks for all the information!
+Suren.
+
+>
+>                  Linus
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
