@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7453575FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E733C357600
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356344AbhDGU1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
+        id S1356200AbhDGU1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356096AbhDGU1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:27:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F6D06121E;
-        Wed,  7 Apr 2021 20:26:59 +0000 (UTC)
+        id S244276AbhDGU1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:27:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D14611EE;
+        Wed,  7 Apr 2021 20:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617827219;
-        bh=DbNJfOATZhRLaLqCciLxAQrVD95vTb6G/WEYWfPZ0HA=;
+        s=k20201202; t=1617827222;
+        bh=DapdfZkCmQxiuqMn5+0fag9RbsXzXBztZK5Y2BqkUqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IcMrHIEZIDb57hiR7wzXGoNstuGeQ7K1XeYlonLjjOQ9tAcqOarhp8PaJrcPD7PyU
-         JO0iUHQ2SxvjovsebRa4NZ54nkkcDrgEWQpkT7fuvlEB0RMEz3T1ZGL/fsOPVEmX4M
-         BU7F7maOsVxovcxTBM9hs7VMhO5XyXnRElUxitF0sGNgJmbAS5jADWLlW/hSSDKkpb
-         cS+hB3gKRQ36XJ0DyOE7Kz36bqmTFcqDCQPg7zihuBTDpP1V6oWeBkSOTLWz5d+eGe
-         ESB6/9ej9vskMv76UXVw6ok0vvMqlhZDIZghnx8/SJyHVApZGE/aOqGV8sdlCmWigc
-         Ct8vR5Q20Lvng==
+        b=X9rT4CRPK4Lot0QDWyJSr4PwnWN/TzBK9sxRedCn2FTzKa7PBXqNBXWHXOFAM4CH9
+         Q6hAltC8DX5LJN9LCPOH0jQAr3gYumPmfqD8xc3Qyr0ErNEyZ07uf9zwpm/+DQjiA1
+         o16Fg4y+IZxDoSiO5gu/m59HfTiFllfNpil6bCA9b5OeP7BPTQBNW7/g457QH80WiE
+         VhaqRWny/7OStm0hxCM75br2s89+2haVrv+KqaePiNoC145noTYUIioDyFUAxyY3Ly
+         MevEdbEMwfvSLLa1npz6RxRblWQ0yh42XQM/6xaAdtG3LK6aZxBY2r5AO69hxXDCbP
+         XAlwAIpOkiBfQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+To:     Sameer Pujar <spujar@nvidia.com>, Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: meson: axg-fifo: add NO_PERIOD_WAKEUP support
-Date:   Wed,  7 Apr 2021 21:26:24 +0100
-Message-Id: <161782703231.42756.2000858967744578792.b4-ty@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH] ASoC: simple-card: fix possible uninitialized single_cpu local variable
+Date:   Wed,  7 Apr 2021 21:26:25 +0100
+Message-Id: <161782703230.42756.15970652059464773892.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210407145914.311479-1-jbrunet@baylibre.com>
-References: <20210407145914.311479-1-jbrunet@baylibre.com>
+In-Reply-To: <20210407092027.60769-1-krzysztof.kozlowski@canonical.com>
+References: <20210407092027.60769-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,12 +45,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 16:59:14 +0200, Jerome Brunet wrote:
-> On the AXG family, the fifo irq is not necessary for the HW to operate.
-> It is just used to notify that a period has elapsed. If userpace does not
-> care for these wakeups (such as pipewire), we are just wasting CPU cycles.
+On Wed, 7 Apr 2021 11:20:27 +0200, Krzysztof Kozlowski wrote:
+> The 'single_cpu' local variable is assigned by asoc_simple_parse_dai()
+> and later used in a asoc_simple_canonicalize_cpu() call, assuming the
+> entire function did not exit on errors.
 > 
-> Add support for NO_PERIOD_WAKEUP and disable irq when they are no needed.
+> However the first function returns 0 if passed device_node is NULL,
+> thus leaving the variable uninitialized and reporting success.
 
 Applied to
 
@@ -55,8 +59,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: axg-fifo: add NO_PERIOD_WAKEUP support
-      commit: 9be701ec3493d3348723a38f0c19702d710758ce
+[1/1] ASoC: simple-card: fix possible uninitialized single_cpu local variable
+      commit: fa74c223b6fd78a5314b4c61b9abdbed3c2185b4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
