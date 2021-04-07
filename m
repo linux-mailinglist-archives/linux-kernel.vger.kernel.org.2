@@ -2,108 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660B7356851
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDC335684C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350282AbhDGJr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:47:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15942 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350270AbhDGJrZ (ORCPT
+        id S1350264AbhDGJq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:46:29 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:36534 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233438AbhDGJq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:47:25 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFfdC22jJzyN2J;
-        Wed,  7 Apr 2021 17:45:03 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 17:47:06 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        <liulongfang@huawei.com>
-Subject: [PATCH] crypto: hisilicon/trng - add version to adapt new algorithm
-Date:   Wed, 7 Apr 2021 17:44:33 +0800
-Message-ID: <1617788673-47222-1-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Wed, 7 Apr 2021 05:46:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UUmyvhi_1617788767;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUmyvhi_1617788767)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 07 Apr 2021 17:46:16 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     merez@codeaurora.org
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] wil6210: wmi: Remove useless code
+Date:   Wed,  7 Apr 2021 17:46:06 +0800
+Message-Id: <1617788766-91433-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kunpeng930 supports trng and prng, but Kunpeng920 only supports trng.
+Fix the following whitescan warning:
 
-Therefore, version information is added to ensure that prng is not
-registered to Crypto subsystem on Kunpeng920.
+An unsigned value can never be less than 0.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/crypto/hisilicon/trng/trng.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/wil6210/wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
-index 2971268..829f2ca 100644
---- a/drivers/crypto/hisilicon/trng/trng.c
-+++ b/drivers/crypto/hisilicon/trng/trng.c
-@@ -18,6 +18,8 @@
- #define HISI_TRNG_REG		0x00F0
- #define HISI_TRNG_BYTES		4
- #define HISI_TRNG_QUALITY	512
-+#define HISI_TRNG_VERSION	0x01B8
-+#define HISI_TRNG_VER_V1	GENMASK(31, 0)
- #define SLEEP_US		10
- #define TIMEOUT_US		10000
- #define SW_DRBG_NUM_SHIFT	2
-@@ -50,6 +52,7 @@ struct hisi_trng {
- 	struct hisi_trng_list *trng_list;
- 	struct list_head list;
- 	struct hwrng rng;
-+	u32 ver;
- 	bool is_used;
- 	struct mutex mutex;
- };
-@@ -260,6 +263,7 @@ static int hisi_trng_probe(struct platform_device *pdev)
- 		return PTR_ERR(trng->base);
+diff --git a/drivers/net/wireless/ath/wil6210/wmi.c b/drivers/net/wireless/ath/wil6210/wmi.c
+index 823ec6e..02ad449 100644
+--- a/drivers/net/wireless/ath/wil6210/wmi.c
++++ b/drivers/net/wireless/ath/wil6210/wmi.c
+@@ -1456,7 +1456,7 @@ static void wil_link_stats_store_basic(struct wil6210_vif *vif,
+ 	u8 cid = basic->cid;
+ 	struct wil_sta_info *sta;
  
- 	trng->is_used = false;
-+	trng->ver = readl(trng->base + HISI_TRNG_VERSION);
- 	if (!trng_devices.is_init) {
- 		INIT_LIST_HEAD(&trng_devices.list);
- 		mutex_init(&trng_devices.lock);
-@@ -267,7 +271,8 @@ static int hisi_trng_probe(struct platform_device *pdev)
+-	if (cid < 0 || cid >= wil->max_assoc_sta) {
++	if (cid >= wil->max_assoc_sta) {
+ 		wil_err(wil, "invalid cid %d\n", cid);
+ 		return;
  	}
- 
- 	hisi_trng_add_to_list(trng);
--	if (atomic_inc_return(&trng_active_devs) == 1) {
-+	if (trng->ver != HISI_TRNG_VER_V1 &&
-+	    atomic_inc_return(&trng_active_devs) == 1) {
- 		ret = crypto_register_rng(&hisi_trng_alg);
- 		if (ret) {
- 			dev_err(&pdev->dev,
-@@ -289,7 +294,8 @@ static int hisi_trng_probe(struct platform_device *pdev)
- 	return ret;
- 
- err_crypto_unregister:
--	if (atomic_dec_return(&trng_active_devs) == 0)
-+	if (trng->ver != HISI_TRNG_VER_V1 &&
-+	    atomic_dec_return(&trng_active_devs) == 0)
- 		crypto_unregister_rng(&hisi_trng_alg);
- 
- err_remove_from_list:
-@@ -305,7 +311,8 @@ static int hisi_trng_remove(struct platform_device *pdev)
- 	while (hisi_trng_del_from_list(trng))
- 		;
- 
--	if (atomic_dec_return(&trng_active_devs) == 0)
-+	if (trng->ver != HISI_TRNG_VER_V1 &&
-+	    atomic_dec_return(&trng_active_devs) == 0)
- 		crypto_unregister_rng(&hisi_trng_alg);
- 
- 	return 0;
 -- 
-2.8.1
+1.8.3.1
 
