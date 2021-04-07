@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6225E356B03
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC61356B07
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242984AbhDGLVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:21:23 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:24719 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbhDGLVS (ORCPT
+        id S242977AbhDGLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234024AbhDGLVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:21:18 -0400
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 137BKhnJ013110;
-        Wed, 7 Apr 2021 20:20:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 137BKhnJ013110
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617794444;
-        bh=G0PsxuTCRYleITrpebh/KQqBucXErq8mDiRTnqj+jRc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PwkJd5c/1UdO+tO0105H0IMxV6siXPbzVxpZcPHGP+Xj2f0+vcOZuL4dfEcmQ9kZd
-         Ys56fhrEKzv49PIPH0iSD2kttOcVsAIEi2BJbkXz4tJgdTffiwkMKcQPM9c8FLumKe
-         9Celozv/kMVa/uUGsLtxIdqs4IwyuDbRdOgJyzf1F7pRA1CGN4arQ8dzusla+CAoh/
-         4XdQxNUTHYdi9OOlpXazeqaeDqvR3k0oUy4wrlejdTDSyAMHckfMMaXCv1UxWWO4xY
-         uUyxiXm/9CdFAGVNPTqz1QwAXKKJ4rzJHAlnU9169EXbndf7aq/2t/pVolVKdzx6X/
-         oHmCGuClOR9qg==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id w10so7313338pgh.5;
-        Wed, 07 Apr 2021 04:20:43 -0700 (PDT)
-X-Gm-Message-State: AOAM532Ti1H2HRzcph8hSLmI094clMkOBpOcU8CLWiI3ZqzJWGtV3apm
-        SFFj68XOosdmw0mMzX2uy7N8RxgbkK4Y/3Kf3Jw=
-X-Google-Smtp-Source: ABdhPJyuM3zDq/S6RN/whrMH7XalHhmfB+0ulZ1eAQqznKjj8bFo2KHgbUd1Ts7rlqf/94Rk50eG6Rnra8P8P/PhzlE=
-X-Received: by 2002:a63:181c:: with SMTP id y28mr2918030pgl.175.1617794443128;
- Wed, 07 Apr 2021 04:20:43 -0700 (PDT)
+        Wed, 7 Apr 2021 07:21:40 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB72FC061756;
+        Wed,  7 Apr 2021 04:21:30 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lU6FV-0005Vi-1f; Wed, 07 Apr 2021 13:21:29 +0200
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1617786974.git.linux@leemhuis.info>
+ <813fc7b082a4b47ec6d34542971e9bba74fd4a51.1617786974.git.linux@leemhuis.info>
+ <YG2CztxS4jTia8wM@kroah.com>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [RFC PATCH v1 2/2] docs: reporting-issues: make everyone CC the
+ regressions list
+Message-ID: <3df9566e-bb08-f1e2-7afb-a14a28d2d64f@leemhuis.info>
+Date:   Wed, 7 Apr 2021 13:21:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-14-gregkh@linuxfoundation.org>
-In-Reply-To: <20210407053419.449796-14-gregkh@linuxfoundation.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 20:20:06 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQPizm-VmMDF5FP516OofcwXHRyGWkb6qy9VNFTGP3u4A@mail.gmail.com>
-Message-ID: <CAK7LNAQPizm-VmMDF5FP516OofcwXHRyGWkb6qy9VNFTGP3u4A@mail.gmail.com>
-Subject: Re: [PATCH 13/20] kbuild: nds32: convert to use the common install scripts
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YG2CztxS4jTia8wM@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617794491;ee3826e7;
+X-HE-SMSGID: 1lU6FV-0005Vi-1f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> It seems that no one ever checked in the nds32 install script so trying
-> to build a nds32 kernel would never quite work properly as 'make
-> install' would fail to run.
->
-> Fix that up by having nds32 call the common install.sh script.
->
-> Cc: Nick Hu <nickhu@andestech.com>
-> Cc: Greentime Hu <green.hu@gmail.com>
-> Cc: Vincent Chen <deanbo422@gmail.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  arch/nds32/boot/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/nds32/boot/Makefile b/arch/nds32/boot/Makefile
-> index c4cc0c2689f7..8371e02f6091 100644
-> --- a/arch/nds32/boot/Makefile
-> +++ b/arch/nds32/boot/Makefile
-> @@ -8,9 +8,9 @@ $(obj)/Image.gz: $(obj)/Image FORCE
->         $(call if_changed,gzip)
->
->  install: $(obj)/Image
-> -       $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
-> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh $(KERNELRELEASE) \
->         $(obj)/Image System.map "$(INSTALL_PATH)"
->
->  zinstall: $(obj)/Image.gz
-> -       $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
-> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh $(KERNELRELEASE) \
->         $(obj)/Image.gz System.map "$(INSTALL_PATH)"
-> --
-> 2.31.1
->
 
+On 07.04.21 12:00, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 11:21:56AM +0200, Thorsten Leemhuis wrote:
+>> Make people CC the recently created mailing list dedicated to Linux
+>> kernel regressions when reporting one. Some paragraphs had to be
+>> reshuffled and slightly rewritten during the process, as the text
+>> otherwise would have gotten unnecessarily hard to follow.
+>>
+>> The new text also makes reporters include a line useful for automatic
+>> regression tracking solution which does not exist yet, but is planned.
+>> The term "#regzb" (short for regression bot) is inspired by the "#syz"
+>> which can be used to communicate with syszbot (see
+>> https://github.com/google/syzkaller/blob/master/docs/syzbot.md).
+> 
+> While I understand the wish to automate things like this, the #syz
+> marking will actually cause something to go off and do some work, and is
+> only relevant for a very small number of developers, all of whom know to
+> look up the instructions before doing so.  But the #regzb marking will
+> be requested to be added by random users who never have submitted a
+> problem report before, OR from long-time kernel developers who are lucky
+> to ever remember to read the documentation as they "know" how to do
+> this.
+> 
+> So this increased workload by people on the two ends of experience is
+> going to be rough, I predict a very low rate of adoption :(
 
-Even with this patch, the 'install' target does not work.
+Yup, I'm aware of that. And also well aware that I will need to keep an
+eye on things and jump in and reply with mails to add such tags every
+time they are missing.
+But I think that direction it the best shot, as tying putting all the
+burden on one person (me) is likely to fail, as our history with
+regression tracking showed. And I think such tags with some bot in the
+background
+(as outlined roughly in
+https://linux-regtracking.leemhuis.info/post/hello-world/ ) have at
+least the best chance, as things are not out-of-band like tracking them
+in bugzilla would be – or do you think that would be a better approach
+together with its email-interface?
 
-$ make ARCH=nds32 install
-make: *** No rule to make target 'install'.  Stop.
+> What is the tag going to be good for?  The reports will need to be
+> handled by a person anyway and classified and tracked out-of-band from
+> the list somehow.  Will a tag do all that much here?
 
+I think is has, as then a good regression report will make the
+still-to-be-written regression-bot create and entry that links to the
+report and send a reply with a unique ID; then that ID needs to end up
+in the commit that fixes the regression later (similar to how the IDs
+for issues found by syzbot are mentioned there, which afaics works quite
+well for people) and the regression-bot can close the entry automatically.
 
+At least in this ideal scenario the regression tracker (me) wouldn't
+need to do a single thing.
 
+Obviously that ideal scenario will be rare, especially in the beginning.
+But with some hand-holding from my side (by mailing tags) I hope it will
+work at least sometimes (and over time more often).
 
-If you really want to fix it, you need
-to add something like follows:
+But I'm open for other approaches, as I didn't start to work on the bot
+yet(¹), so it's easy to go into a different direction if someone comes
+up with one that looks more promising.
 
+Ciao, Thorsten
 
-
-
-
-diff --git a/arch/nds32/Makefile b/arch/nds32/Makefile
-index ccdca7142020..3486b78da9ca 100644
---- a/arch/nds32/Makefile
-+++ b/arch/nds32/Makefile
-@@ -53,6 +53,9 @@ core-y += $(boot)/dts/
- Image: vmlinux
-        $(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
-
-+PHONY += install zinstall
-+install zinstall:
-+       $(Q)$(MAKE) $(build)=$(boot) $@
-
- PHONY += vdso_install
- vdso_install:
-
-
-
-
-
-Anyway, I agree that nds32 installation targets are
-terribly broken.
-
-
---
-Best Regards
-Masahiro Yamada
+(¹) still unsure if I should take Go code from syzbot as a base or
+better go with python, as that's what the kernel.org admins iirc prefer
+(or am I wrong there? I wanted to ask Konstantin about this soon anyway)
