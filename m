@@ -2,194 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448D6357877
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6A335787B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhDGXZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 19:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S229895AbhDGXZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 19:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhDGXZC (ORCPT
+        with ESMTP id S229607AbhDGXZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 19:25:02 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E77C061760;
-        Wed,  7 Apr 2021 16:24:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so3832517pjb.0;
-        Wed, 07 Apr 2021 16:24:51 -0700 (PDT)
+        Wed, 7 Apr 2021 19:25:32 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE852C061760;
+        Wed,  7 Apr 2021 16:25:21 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id h19so784126lfu.9;
+        Wed, 07 Apr 2021 16:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hOjU73yvB4ojZ+sZPOFXGqV9d/iCRTNwxzy+KbuVvK8=;
-        b=dXKcc6q8GjUkbkJ/95poYFIObjLfRnwF6XNFwVLYjt+18e1joftKiBSSUAdHDppQao
-         HqIsB8VSne3oSENxvv2Gr9iJSrKytvDtDerLRfeV6rqHSAj4qB6xEswq8Bf3OCSdiyR9
-         9rjhNTa+bMYIC8vyLQGRyr9kiLwOKV4t6/uhIQACtWP3ZoEdA3SlJveZJBqGQgrU8AQw
-         x9tqqjUQWZkKjuBAUbs2Bq5fFaTL3qav/DybkVuPyApeq3dNBfiRYhpwLo5Knt4/DDdW
-         l3Sboc/FDp4lzND3O5PtN5uKRlHBtg8NmW3PGeTwR+l7Er0Ye8oPkvhdxBeOc1aioaaI
-         nRsg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=94h9zhuuoZjZJG0qodCDNY/t7MKNasaws+00zTsAsaE=;
+        b=Rncn5izKr2aD/p+7TPO+/F2VskBfDiL8ocr5SbGD1mpK8pVz4fH9GuvGLh7QMt2AdR
+         lhfp4hzNXb7tzQViyUl4L1yBsjZw7cm/LlMBI0JS6aVSdek6ywO7eTTGWlUavL1yxz5k
+         enIins9C516c3qlvp2Co4b6iGucJX/iGZqhug7R+C85vPiWoDpjSLXGyJ2jbn8LGBI62
+         0Inp0Vvjdvgf+J40jKIr1cReVFNqERn7nTiGq8BJH2woCoq+CzGaDexR0UZEE0Y8Q28D
+         p20RuLWT31T7hb+7nOs407jCDr08tbdZSD+mvLIBmqisuvTpFdTeJnp1gLAoXkn0XkiO
+         /IxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hOjU73yvB4ojZ+sZPOFXGqV9d/iCRTNwxzy+KbuVvK8=;
-        b=JKVLu5ccrwXSyfFZcEjD/lsKfEzQUxXo+bI8sYgBVIbWm2kQAxOHr9kJFaQaPXgjz4
-         Dzu3rmZSSEpNwiRWmLtnBuVLljBDWEUV6BmM8exqUdBtN/itAnLCfOwyUc2kqULb842N
-         mM53cFc4LNulCvt9sl7Lhk2WVTJhtM7m7pmvFCGy26h7uu5CUf3B2nCl4gkPgUxSrPx2
-         y+lrINc2OPFccFeoFq6A1tb20zP+hc9VhhCZ/7PkpIYo4NFJLZod4gREt9zD6tLOGfuM
-         mQBUYw9NMzG2I6rGFGzO6Si6nJgG/X5v+B2WFuFLvrpXUaR7Vdsba5pvj7pSUwYFOZGQ
-         3eaA==
-X-Gm-Message-State: AOAM532nTq0ZbXEHkXOc+xqwyTUaicb6B4Lri/HLjDbxIE6f16Mc6lAG
-        Gs69bVrOvr6w6OEKP9FBJ9I=
-X-Google-Smtp-Source: ABdhPJyLl+Th0EzVxkvcIUmFF6SY+BXjZnTLLGRKYpPNUtOiJW+ASRjJ45VWCNdbChDl+b2doN8U4A==
-X-Received: by 2002:a17:90a:73c2:: with SMTP id n2mr5514651pjk.170.1617837890735;
-        Wed, 07 Apr 2021 16:24:50 -0700 (PDT)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id mu6sm6123970pjb.35.2021.04.07.16.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 16:24:50 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 16:24:44 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>, andrii@kernel.org
-Cc:     syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
-        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: memory leak in bpf
-Message-ID: <YG4/PEhZ9CnKo1K3@nuc10>
-References: <000000000000911d3905b459824c@google.com>
- <000000000000e56a2605b616b2d9@google.com>
- <YD0UjWjQmYgY4Qgh@nuc10>
- <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
- <YD1RE3O4FBkKK32l@nuc10>
- <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=94h9zhuuoZjZJG0qodCDNY/t7MKNasaws+00zTsAsaE=;
+        b=cXP1ldzbX1wPQbzl2qKYjpecZvIu6pzjXUgT1Quzb+9d8uVreYVlenyIIBzR/Bly9K
+         mmWOaZqdJ7vittoCZAtooKtfX0TBA+2Qn8qk2SH1g0zPwknvYykuoRGsoLubbfOVLrWP
+         SpcULChUvM0SBJ/axT6g+WWJz70lacKCYl6nITZBHyuJ8kPJFd5tzN+TUCVbWyhqbmaS
+         cxrsKbf944HEuCcw29qwKgBICrkXL12VI8AA0p0wthcn7nv1eLE/VrtP22Ad05yx8n7O
+         Cqoc3StwIkXQf6KxXiKHS/Bq4Bceb+6Mm1vBEwUt7eE7sdZvP87GyQ5bwtJ4FexQ2dZP
+         2iaw==
+X-Gm-Message-State: AOAM5316C5d95D0uJHod88L+0tS+CkpTRY1s8YAtMJJK4gCBGmSqCy5k
+        CFR+lUjSBTCIsDmJxL/fEO48DZPJgV0=
+X-Google-Smtp-Source: ABdhPJyypgEFoDGX0vbaMG5H5+Zri7dEyUhFXDai3JlFHxX7hYKglgvoqbpfJjqFIoCZwPP1pKvILA==
+X-Received: by 2002:a05:6512:6d6:: with SMTP id u22mr3965920lff.386.1617837920240;
+        Wed, 07 Apr 2021 16:25:20 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id d27sm2624528lfv.226.2021.04.07.16.25.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 16:25:19 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org
+Cc:     pchandru@nvidia.com, devicetree@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+ <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
+ <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
+ <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
+ <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
+Date:   Thu, 8 Apr 2021 02:25:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
+In-Reply-To: <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 09:43:00PM +0100, Dmitry Vyukov wrote:
-> On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> >
-> > On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
-> > > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > >
-> > > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
-> > > > > syzbot has found a reproducer for the following issue on:
-> > > > >
-> > > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
-> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
-> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
-> > > > >
-> > > > > Debian GNU/Linux 9 syzkaller ttyS0
-> > > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
-> > > > > executing program
-> > > > > executing program
-> > > > > executing program
-> > > > > BUG: memory leak
-> > > > > unreferenced object 0xffff88810efccc80 (size 64):
-> > > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
-> > > > >   hex dump (first 32 bytes):
-> > > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
-> > > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
-> > > > >   backtrace:
-> > > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
-> > > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
-> > > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
-> > > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
-> > > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
-> > > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
-> > > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
-> > > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
-> > > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > >
-> > > > >
-> > > >
-> > > > i am pretty sure that this one is a false positive
-> > > > the problem with reproducer is that it does not terminate all of the
-> > > > child processes that it spawns
-> > > >
-> > > > i confirmed that it is a false positive by tracing __fput() and
-> > > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
-> > > > manually killed those running leftover processes from reproducer and
-> > > > then both functions were executed and memory was freed
-> > > >
-> > > > i am marking this one as:
-> > > > #syz invalid
-> > >
-> > > Hi Rustam,
-> > >
-> > > Thanks for looking into this.
-> > >
-> > > I wonder how/where are these objects referenced? If they are not
-> > > leaked and referenced somewhere, KMEMLEAK should not report them as
-> > > leaks.
-> > > So even if this is a false positive for BPF, this is a true positive
-> > > bug and something to fix for KMEMLEAK ;)
-> > > And syzbot will probably re-create this bug report soon as this still
-> > > happens and is not a one-off thing.
-> >
-> > hi Dmitry, i haven't thought of it this way, but i guess you are right,
-> > it is a kmemleak bug, ideally kmemleak should be aware that there are
-> > still running processes holding references to bpf fd/anonymous inodes
-> > which in their turn hold references to allocated bpf maps
+08.04.2021 02:00, Sowjanya Komatineni пишет:
 > 
-> KMEMLEAK scans whole memory, so if there are pointers to the object
-> anywhere in memory, KMEMLEAK should not report them as leaked. Running
-> processes have no direct effect on KMEMLEAK logic.
-> So the question is: where are these pointers to these objects? If we
-> answer this, we can check how/why KMEMLEAK misses them. Are they
-> mangled in some way?
-thank you for your comments, they make sense, and indeed, the pointer
-gets vmaped.
-i should have looked into this sooner, becaused syzbot did trigger the
-issue again, and Andrii had to look into the same bug, sorry about that.
-if i am understanding this correctly here is what the fix should be:
----
- kernel/bpf/ringbuf.c | 2 ++
- 1 file changed, 2 insertions(+)
+> On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
+>>
+>> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
+>>> 07.04.2021 04:25, Sowjanya Komatineni пишет:
+>>>> +    if (!tegra->pdev->dev.pm_domain) {
+>>>> +        ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
+>>>> +                            tegra->sata_clk,
+>>>> +                            tegra->sata_rst);
+>>>> +        if (ret)
+>>>> +            goto disable_regulators;
+>>>> +    }
+>>> Hi,
+>>>
+>>> Why you haven't added condition for tegra_powergate_power_off()? I think
+>>> it should break GENPD and legacy PD API isn't not supported by T186
+>>> at all.
+>>>
+>>> I'm also not sure whether the power up/down sequence is correct using
+>>> GENPD.
+>>>
+>>> Moreover the driver doesn't support runtime PM, so GENPD should be
+>>> always off?
+>>
+>> This driver already using legacy PD API's so thought its supported and
+>> added power domain device check during powergate_sequence_power_up and
+>> yes same should apply for powergate_power_off as well. But if legacy
+>> PD is not supported by T186 then not sure why original driver even
+>> using these API's.
+>>
+>>
+> Sorry just took a look and driver supports T210 and prior tegra as well.
+> T210 and prior supports legacy PD and this check is applicable for
+> those. So we should add power domain device check for power off as well.
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index f25b719ac786..30400e74abe2 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -8,6 +8,7 @@
- #include <linux/vmalloc.h>
- #include <linux/wait.h>
- #include <linux/poll.h>
-+#include <linux/kmemleak.h>
- #include <uapi/linux/btf.h>
- 
- #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
- 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
-+		kmemleak_not_leak((void *) pages);
- 		rb->pages = pages;
- 		rb->nr_pages = nr_pages;
- 		return rb;
--- 
-2.30.2
+You could fix it with a follow up patch. Please try to test that
+power-off works properly, at least try to unload the driver module and
+re-load it.
 
+> But for T186, we should have GENPD working once we add runtime PM
+> support to driver.
+> 
+> Preetham/Thierry, Can you confirm where SATA is un powergated prior to
+> kernel?
+> 
+> 
+>> But as RPM is not implemented yet for this driver, GENPD will be OFF
+>> but SATA is not in power-gate by the time kernel starts and
+>> functionally works.
+>>
+>> But with RPM implementation, I guess we can do proper power gate on/off.
+>>
+
+I now recalled that GENPD turns ON all domains by default and then turns
+them OFF only when driver entered into the RPM-suspended state. This
+means that AHCI GENPD should be always-ON for T186, which should be okay
+if this doesn't break power sequences.
