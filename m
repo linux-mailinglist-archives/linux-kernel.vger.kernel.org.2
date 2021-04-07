@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93ED356CE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D377356CEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbhDGNHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbhDGNHN (ORCPT
+        id S244004AbhDGNIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:08:09 -0400
+Received: from mail-m121143.qiye.163.com ([115.236.121.143]:52458 "EHLO
+        mail-m121143.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233519AbhDGNIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:07:13 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397AAC061756;
-        Wed,  7 Apr 2021 06:07:02 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id d10so8168599pgf.12;
-        Wed, 07 Apr 2021 06:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w6x1JaJJswXDRLPdzMKjakBv3oDpC21g21byrf7hBec=;
-        b=ejHnGwmupOSP6O3pYirdbklm+kJ+2OA2Egwj3xANUZxTm1vqLVNshLMu1RlNYmHBFy
-         xVwiLY1c1OdGP/FFgQAasjJcRIstI/EPpKavIu8JbDmFHeYqknI6oKurz3I3Nno7Ek0T
-         t6l3NFRDJ3Z23r1O4T+vg3sESwkoo4+s3vxhtcj+1vYRxzk/Oxgimy6XsiDAOLNVvLNG
-         QBKXmzlymUVyWyiem+0SQHol1y2K4r5r4BShlFriFkkFspvRXyoPm6prLvKj+UlTqP+8
-         /A6w20lT96pROzb4Y24YXF/EKlFsVNuta8PulBFGs21PhLj068UGMrNTcjN66+Z8G2lu
-         9IiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w6x1JaJJswXDRLPdzMKjakBv3oDpC21g21byrf7hBec=;
-        b=taflkDctOx44CjnupUIPsPZ7cgqLp27TeBtwyAXJinV1BvQZPxQKHvCtAzyyt3jjAG
-         X+93tNRQWGvX7EB9nEY/qkIfzcJeCoXq+zzPpyShHL0MHBvoKsuSjPcdnsPuRiEmhKWm
-         9hGBqFvpLJMAjlzF97PVEppDVfOnZuRbsUL9ADCLcpZ8ZTMV1Ix7bYttGf+Uk/5yFWKv
-         gZJenHyxEFBEhtgbQnfia4DfWBjqaNZUCK5aJV//fIg33smqIK/jhoWp5Qaa4+80klRw
-         iFh2yBdTB1gi5RhHfkQ+Xdt8XxPV9kILVu+fjpbFFwvxSOkntJAyb+6Wld1FD1DByvj2
-         cr1Q==
-X-Gm-Message-State: AOAM533GZ7rnAii7dTt0LuH+NOjqu8+h4uWCv4QjT1PLXiVdRNNAvM6Q
-        TdvJV1S7n3woTAt+3j+h94s=
-X-Google-Smtp-Source: ABdhPJw8U2MstWbZ6Da0Id8vwDXFIANzA23CR1DCHRvQwVep9+ruget3m7Vi/p/KN+fsi9qeGzUfDg==
-X-Received: by 2002:aa7:9a89:0:b029:200:1eed:1388 with SMTP id w9-20020aa79a890000b02902001eed1388mr2876710pfi.79.1617800821618;
-        Wed, 07 Apr 2021 06:07:01 -0700 (PDT)
-Received: from localhost ([103.77.152.190])
-        by smtp.gmail.com with ESMTPSA id w16sm2095444pfn.200.2021.04.07.06.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 06:07:01 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 18:36:01 +0530
-From:   "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        AlexWilliamson@archlinux, alex.williamson@redhat.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Wed, 7 Apr 2021 09:08:07 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.181])
+        by mail-m121143.qiye.163.com (Hmail) with ESMTPA id D428254048C;
+        Wed,  7 Apr 2021 21:07:53 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Bernard Zhao <bernard@vivo.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
-Message-ID: <20210407130601.aleyww5d5mttitry@archlinux>
-References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
- <YGW8Oe9jn+n9sVsw@unreal>
- <20210401105616.71156d08@omen>
- <YGlzEA5HL6ZvNsB8@unreal>
- <20210406081626.31f19c0f@x1.home.shazbot.org>
- <YG1eBUY0vCTV+Za/@unreal>
- <20210407082356.53subv4np2fx777x@archlinux>
- <YG2l+AbQW1N0bbQ9@unreal>
+Subject: [PATCH] drm/msm: remove unneeded variable ret
+Date:   Wed,  7 Apr 2021 06:06:21 -0700
+Message-Id: <20210407130654.3387-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG2l+AbQW1N0bbQ9@unreal>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSUpMTUtIHUNIQ04dVkpNSkxDS0tDTE9JSE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MiI6OBw5Vj8OKCMQSSEIAU8Q
+        TB8aCQFVSlVKTUpMQ0tLQ0xPTktCVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlITVVK
+        TklVSk9OVUpDSllXWQgBWUFIT05LNwY+
+X-HM-Tid: 0a78ac7248b0b038kuuud428254048c
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/07 03:30PM, Leon Romanovsky wrote:
-> On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
-> > On 21/04/07 10:23AM, Leon Romanovsky wrote:
-> > > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
-> > > > On Sun, 4 Apr 2021 11:04:32 +0300
-> > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
-> > > > > > On Thu, 1 Apr 2021 15:27:37 +0300
-> > > > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > >
-> > > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
-> > > > > > > > Slot resets are bus resets with additional logic to prevent a device
-> > > > > > > > from being removed during the reset. Currently slot and bus resets have
-> > > > > > > > separate implementations in pci.c, complicating higher level logic. As
-> > > > > > > > discussed on the mailing list, they should be combined into a generic
-> > > > > > > > function which performs an SBR. This change adds a function,
-> > > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
-> > > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
-> > > > > > > > single device agnostic function to perform an SBR.
-> > > > > > > >
-> > > > > > > > This new function is also needed to add SBR reset quirks and therefore
-> > > > > > > > is exposed in pci.h.
-> > > > > > > >
-> > > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
-> > > > > > > >
-> > > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
-> > > > > > > >  include/linux/pci.h |  1 +
-> > > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > > > > > index 16a17215f633..12a91af2ade4 100644
-> > > > > > > > --- a/drivers/pci/pci.c
-> > > > > > > > +++ b/drivers/pci/pci.c
-> > > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-> > > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> > > > > > > > +{
-> > > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > > > +
-> > > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
-> > > > > > >
-> > > > > > > The previous coding style is preferable one in the Linux kernel.
-> > > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
-> > > > > > > if (rc != -ENOTTY)
-> > > > > > >   return rc;
-> > > > > > > return pci_parent_bus_reset(dev, probe);
-> > > > > >
-> > > > > >
-> > > > > > That'd be news to me, do you have a reference?  I've never seen
-> > > > > > complaints for ternaries previously.  Thanks,
-> > > > >
-> > > > > The complaint is not to ternaries, but to the function call as one of
-> > > > > the parameters, that makes it harder to read.
-> > > >
-> > > > Sorry, I don't find a function call as a parameter to a ternary to be
-> > > > extraordinary, nor do I find it to be a discouraged usage model within
-> > > > the kernel.  This seems like a pretty low bar for hard to read code.
-> > >
-> > > It is up to us where this bar is set.
-> > >
-> > > Thanks
-> > On the side note there are plenty of places where this pattern is used
-> > though
-> > for example -
-> > kernel/time/clockevents.c:328:
-> > return force ? clockevents_program_min_delta(dev) : -ETIME;
-> >
-> > kernel/trace/trace_kprobe.c:233:
-> > return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
-> >        false;
-> >
-> > kernel/signal.c:3104:
-> > return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
-> > etc
->
-> Did you look when they were introduced?
->
-> Thanks
->
-that code trace_kprobe in 2 years old.
-If you want more recent example checkout
-drivers/pci/controller/pcie-brcmstb.c:1112,1117:
-return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
-which was introduced 7 months ago.
-There are lot of examples in pci.c also.
+This patch fix coccicheck warning:
+drivers/gpu/drm/msm/dp/dp_link.c:848:5-8: Unneeded variable: "ret". Return "0" on line 880
+Also remove unneeded function return value check.
 
-Thanks,
-Amey
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/msm/dp/dp_link.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
+index be986da78c4a..3395b08155a6 100644
+--- a/drivers/gpu/drm/msm/dp/dp_link.c
++++ b/drivers/gpu/drm/msm/dp/dp_link.c
+@@ -843,10 +843,8 @@ bool dp_link_send_edid_checksum(struct dp_link *dp_link, u8 checksum)
+ 	return ret == 1;
+ }
+ 
+-static int dp_link_parse_vx_px(struct dp_link_private *link)
++static void dp_link_parse_vx_px(struct dp_link_private *link)
+ {
+-	int ret = 0;
+-
+ 	DRM_DEBUG_DP("vx: 0=%d, 1=%d, 2=%d, 3=%d\n",
+ 		drm_dp_get_adjust_request_voltage(link->link_status, 0),
+ 		drm_dp_get_adjust_request_voltage(link->link_status, 1),
+@@ -876,8 +874,6 @@ static int dp_link_parse_vx_px(struct dp_link_private *link)
+ 	DRM_DEBUG_DP("Requested: v_level = 0x%x, p_level = 0x%x\n",
+ 			link->dp_link.phy_params.v_level,
+ 			link->dp_link.phy_params.p_level);
+-
+-	return ret;
+ }
+ 
+ /**
+@@ -891,8 +887,6 @@ static int dp_link_parse_vx_px(struct dp_link_private *link)
+ static int dp_link_process_phy_test_pattern_request(
+ 		struct dp_link_private *link)
+ {
+-	int ret = 0;
+-
+ 	if (!(link->request.test_requested & DP_TEST_LINK_PHY_TEST_PATTERN)) {
+ 		DRM_DEBUG_DP("no phy test\n");
+ 		return -EINVAL;
+@@ -918,12 +912,9 @@ static int dp_link_process_phy_test_pattern_request(
+ 	link->dp_link.link_params.rate =
+ 		drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
+ 
+-	ret = dp_link_parse_vx_px(link);
+-
+-	if (ret)
+-		DRM_ERROR("parse_vx_px failed. ret=%d\n", ret);
++	dp_link_parse_vx_px(link);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static u8 get_link_status(const u8 link_status[DP_LINK_STATUS_SIZE], int r)
+-- 
+2.31.0
+
