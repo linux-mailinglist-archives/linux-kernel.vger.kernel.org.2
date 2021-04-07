@@ -2,160 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7820A357138
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C8235713C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353975AbhDGP5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:57:19 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52410 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353962AbhDGP5O (ORCPT
+        id S1353977AbhDGP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:57:53 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:50560 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243050AbhDGP5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:57:14 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137Fuvgw116698;
-        Wed, 7 Apr 2021 10:56:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617811017;
-        bh=D1uTZ8PJxXWfw+lIGtWEx/obgfLqJBnOltn3mYjLZdk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=XwZLGecHafCwwNMnfItyXJhrDyeHD1ZtobH01R+bwc2Lk6/sMd6JjHMTCtZja5xnt
-         JuVR+YUxLK8tcgDWp219YKBt2G/sJ9qBLekmXVB/HINerOkG+fawySBgTzIqtrZWAq
-         54yslWZeInxJK/iGsMByc4CriQeHTaPbcIcegKaA=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137FuvMX047528
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Apr 2021 10:56:57 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
- 2021 10:56:57 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Apr 2021 10:56:57 -0500
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137FuvTT041737;
-        Wed, 7 Apr 2021 10:56:57 -0500
-Received: from localhost ([10.250.37.105])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 137FuvKb101693;
-        Wed, 7 Apr 2021 10:56:57 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 3/3] remoteproc: pru: Fix and cleanup firmware interrupt mapping logic
-Date:   Wed, 7 Apr 2021 10:56:41 -0500
-Message-ID: <20210407155641.5501-4-s-anna@ti.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210407155641.5501-1-s-anna@ti.com>
-References: <20210407155641.5501-1-s-anna@ti.com>
+        Wed, 7 Apr 2021 11:57:51 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 212E3C0962;
+        Wed,  7 Apr 2021 15:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617811060; bh=ZSOnZ/loOD0IzvsSHbcmVS+gJrjcbkUoB/bRA1mAF6Q=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=NaPNpQiLaFxOFdXHwYxtmr3iEfZsaHdZK2kRTst8wibE50Aq6u2l1likkcnJFyBv0
+         ibY+9BB0oINE0gmHGWVfXIN4sFZvPqqHoGAtPM41AS0lkNlPVpkK9c28/Gab2FTsc8
+         31yeYTmagtld9HrnJBej09VDYB3WlfjxfGNR7SJJIujcd4L/bL+NxgKTBy4qJshsh+
+         FdRFWxh7vJJqBmOYmn6RCr6oJ14OGJ9gPItns+DRFCNBRc4KBWDHY1KuZjVkFgrnDE
+         rVlIq+WNqKqBTJP40AoCc+b17NP68IDlRAF/LnqOi7i4VTOAejB176IktZzb25slSH
+         zv1peyLbi8Baw==
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 9C85FA007C;
+        Wed,  7 Apr 2021 15:57:35 +0000 (UTC)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 3B0C540132;
+        Wed,  7 Apr 2021 15:57:33 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Kt6eNVa+";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LLqtIe3CIfCejGjtLnZxo6mWcb/77uqnq+kJt2vStPyFlqZF8yofX0ll86UX000PQ0sJ9R4HN2xLvRKFuXjsV6jcN2rc7/8dti4wbEJC3gBdt+4gzrD220ut80X7a+48QYcA+5Xj2nf5D0XPy7Pbz9aaLYnwm2SHILP1QS7EKyVog9ghWi3dFTCJZymwzIjdSGtwmzzPOIfTqvj5oqZOYvN9QQl0JlYKcxlBBp7KUNooma5okhQXnhcLCasEBpqvX2vnrsIvJBjVKiUu9+jYefZSktGbogh8vKVcAdCCwdxtknX1cfa8NDtqRu7axYpMCFCnQOqCOIzhXaWv55ks8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9zuLSx22/KawCY0hPUUlM+q3b5lD7skTnj1X/HHnNeE=;
+ b=O8a3Omj33f9mV/W3GSYgFzsdhtkMMEkl4EG7UYDJCqqI846DHluLFcDDTE/4mluwX7ML2G/b3H80jYuOtm7z+wrCTVo8wDU9gNfgkQ1siaJjad71RKZwqRClEGSecP/BtlwyJ0GBcMpZlQ23qJiyjec9oG+7ome0B6oZiGzTDWJpYWq8oOFyM+hnXF/091YBkAL3ZzkyCacAQeLNdbnCfYVFtOMesTLMl7pL4lY4FoVkbzsAchp/nkSx95QR793XUEjeByL9agkShAlCOXp5Jjxi4AjJ9CU5Ucv6eEm20yg6SnQZPG+iUxA/DlWhO4qDqF7nvNMmqZ0KJg/i1oPupg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9zuLSx22/KawCY0hPUUlM+q3b5lD7skTnj1X/HHnNeE=;
+ b=Kt6eNVa+yv/r77lrgal9HmeCesbZTZbs8iocLXDcDv3Pwl/zFP4S6ftD4LoTXSXvAXds23PUr99dFryoi35vQm6EzkcPKJDdoIGZEEBAOdZRfLgCfFcYQN8OY7oblV9wb7sARKFuoAQ6vjDZFM+BlG1m/kYxVEso4bQaasd/a6I=
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
+ DM6PR12MB3580.namprd12.prod.outlook.com (2603:10b6:5:11e::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3999.32; Wed, 7 Apr 2021 15:57:31 +0000
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::5e:b693:6935:78cb]) by DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::5e:b693:6935:78cb%12]) with mapi id 15.20.4020.018; Wed, 7 Apr 2021
+ 15:57:31 +0000
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: RE: [PATCH v2 1/2] Documentation: misc-devices: Fix indentation,
+ formatting, and update outdated info
+Thread-Topic: [PATCH v2 1/2] Documentation: misc-devices: Fix indentation,
+ formatting, and update outdated info
+Thread-Index: AQHXKypdwVe497OlBUiL4vQIGQWHJqqolPYAgABJ+BA=
+Date:   Wed, 7 Apr 2021 15:57:31 +0000
+Message-ID: <DM5PR12MB183598B5F93D4DBC515F61B1DA759@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <cover.1617743702.git.gustavo.pimentel@synopsys.com>
+ <95bef5f98380bc91b4d321c2638d08da61ef6d6e.1617743702.git.gustavo.pimentel@synopsys.com>
+ <YG1OaKU7slMHfweX@kroah.com>
+In-Reply-To: <YG1OaKU7slMHfweX@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?iso-8859-2?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ3VzdGF2b1?=
+ =?iso-8859-2?Q?xhcHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4?=
+ =?iso-8859-2?Q?NGJhMjllMzViXG1zZ3NcbXNnLWY0MDY2MGFkLTk3YjktMTFlYi05OGVkLW?=
+ =?iso-8859-2?Q?E0NGNjOGU5Y2YwNlxhbWUtdGVzdFxmNDA2NjBhZS05N2I5LTExZWItOThl?=
+ =?iso-8859-2?Q?ZC1hNDRjYzhlOWNmMDZib2R5LnR4dCIgc3o9IjE3NTIiIHQ9IjEzMjYyMj?=
+ =?iso-8859-2?Q?g0NjQ5NjA0ODUxNiIgaD0iVTQzZ3BiQ2M4b0Nza0dySXBidmh2VFc3aGxz?=
+ =?iso-8859-2?Q?PSIgaWQ9IiIgYmw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTk?=
+ =?iso-8859-2?Q?NnVUFBSFlJQUFDRWhYKzJ4aXZYQWFBdWM2SlovYXJ3b0M1em9sbjlxdkFO?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUhBQUFBQUdDQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUVBQVFBQkFBQUFDQzFsQ2dBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFKNEFBQUJtQUdrQWJnQmhBRzRBWXdCbEFGOEFjQUJzQUdFQWJnQnVBR2?=
+ =?iso-8859-2?Q?tBYmdCbkFGOEFkd0JoQUhRQVpRQnlBRzBBWVFCeUFHc0FBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQU?=
+ =?iso-8859-2?Q?FHWUFid0IxQUc0QVpBQnlBSGtBWHdCd0FHRUFjZ0IwQUc0QVpRQnlBSE1B?=
+ =?iso-8859-2?Q?WHdCbkFHWUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWmdCdkFI?=
+ =?iso-8859-2?Q?VUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFiZ0JsQUhJQWN3QmZBSE1BWV?=
+ =?iso-8859-2?Q?FCdEFITUFkUUJ1QUdjQVh3QmpBRzhBYmdCbUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1BRzhBZFFCdUFHUU?=
+ =?iso-8859-2?Q?FjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWN3QnRBR2tBWXdB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FY?=
+ =?iso-8859-2?Q?d0J3QUdFQWNnQjBBRzRBWlFCeUFITUFYd0J6QUhRQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUNBQUFBQUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUU?=
+ =?iso-8859-2?Q?J5QUhRQWJnQmxBSElBY3dCZkFIUUFjd0J0QUdNQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQU?=
+ =?iso-8859-2?Q?FBQUFBSjRBQUFCbUFHOEFkUUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1?=
+ =?iso-8859-2?Q?QUdVQWNnQnpBRjhBZFFCdEFHTUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5n?=
+ =?iso-8859-2?Q?QUFBR2NBZEFCekFGOEFjQUJ5QUc4QVpBQjFBR01BZEFCZkFIUUFjZ0JoQU?=
+ =?iso-8859-2?Q?drQWJnQnBBRzRBWndBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQWN3Qm?=
+ =?iso-8859-2?Q?hBR3dBWlFCekFGOEFZUUJqQUdNQWJ3QjFBRzRBZEFCZkFIQUFiQUJoQUc0?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ6QUdFQWJBQmxB?=
+ =?iso-8859-2?Q?SE1BWHdCeEFIVUFid0IwQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFITUFiZ0J3QUhNQVh3QnNBR2?=
+ =?iso-8859-2?Q?tBWXdCbEFHNEFjd0JsQUY4QWRBQmxBSElBYlFCZkFERUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFDQUFBQUFBQ2VBQUFBY3dCdUFIQUFjd0JmQUd3QWFRQmpBR1VB?=
+ =?iso-8859-2?Q?YmdCekFHVUFYd0IwQUdVQWNnQnRBRjhBY3dCMEFIVUFaQUJsQUc0QWRBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?SUFBQUFBQUo0QUFBQjJBR2NBWHdCckFHVUFlUUIzQUc4QWNnQmtBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-2?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-2?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQU?=
+ =?iso-8859-2?Q?EiLz48L21ldGE+?=
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=synopsys.com;
+x-originating-ip: [89.155.14.32]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d984152d-c86c-4b98-f3c5-08d8f9ddda05
+x-ms-traffictypediagnostic: DM6PR12MB3580:
+x-microsoft-antispam-prvs: <DM6PR12MB358084F7BE4441EEDF3BA5C9DA759@DM6PR12MB3580.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OIywh1iXAmFodaVh2Nef4XPzesAKpPXQrQZERmcpZ3E4aBkO1MWfhyehgZMcfoAq0F5BdSswxihLJTAs66HRWv5AS9jn52DELWBZBGCBxuAyU2mn7PuAlpTEXx9LLQQY3gjr0jQa2QgX6Xb5aC49d2CR0uLX0vdxLOf/bdSIY9wjgwmSxoYJR393QSOVW+W1mfnwcrz2HqCcsd3MnZ8W+vcek7ehEBAZs1+epTXhzvlJO5tFwIGyi4jenngLLYcAmOIedaYaT7T60ZSYeiAPm9l699f/bRn1PNrbvhXQ52XvNNEIcTz5IGZG/BiXTf0tBtPdTnrAn9hRZFnndlN76B2uXZ91+D3WxF3ton4OD6jlXb5TaSqq85krFq6GMy3Sz19dD1C/VGh0uVb5ePAJLvMZH70FErLPehcAyPZY7wo7/tmYZOvCXDmxa8R+BExBXSXZq42mF9k39LoJhdiRbVUA2PDcJ+VU/OUcWRgId09LJxl5nxMCxRP29QkqpgLu49+W11fF4z24ujdx4dn4f7BpY/1OT3Mpmxjo3D9jhi9cXrXEYerPCMhcHcPirli2yIVQVUALIa0VXLSWTFEcRkSU3fJkz7BhWC1dWgOX0fpcaiubY9anNlEJReXM4nTtqCP4vowH6UROqyXxaGGXspUH+sNFv29FuvQ//F2XtIynaCcf9mynU9GFcPnO59sMBf+fQ5lfXGkUEWz2F5bnK/j1IUe8d0RhbaMTABNMRyFkoci/aW5lsKi0SWqpclsf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(366004)(136003)(346002)(396003)(26005)(83380400001)(9686003)(186003)(66446008)(76116006)(7696005)(66946007)(66556008)(64756008)(66476007)(2906002)(52536014)(55016002)(7416002)(316002)(4326008)(5660300002)(54906003)(478600001)(38100700001)(6916009)(966005)(6506007)(53546011)(33656002)(8676002)(86362001)(71200400001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?CNtnUUoPW8/ZNuBqKuvlYpadpnRtyQntVPBLpJAci51RZ1IpLxuKeaL37s?=
+ =?iso-8859-2?Q?7XFppIRCG2hGfHb39fro+/EmvWrQBZ3bgUkqQlHTvR3V8Ff9HWMua8zclv?=
+ =?iso-8859-2?Q?M9TrG02cqSbbtIVI1l2v9Wx96jODunPYWsoFMltRbavON/LGqEy9mkP0rB?=
+ =?iso-8859-2?Q?PUlQ2ZvTFr43DomQ7ehNdeFPncZs5F2E1MTqRjQLPozzB4ezkq02bDbjpJ?=
+ =?iso-8859-2?Q?7Hp9/ckvdE7iy+xC/rznfiYmrD67tFiHbkE8flnWoAPpHRTgZ44j+5pjsX?=
+ =?iso-8859-2?Q?rAmEBcq9vFhUljPX8cONFojw17A2AzYLDgj2HTpCrBn+bH1IPXFDRxWtct?=
+ =?iso-8859-2?Q?owODQgLXGyBwpWBrL5X/Dy++JGwdx2Z5mK4a+BJIjmFcPTwQx3V/OhLLq4?=
+ =?iso-8859-2?Q?z5+mF0mEgexwtcwmoPWTEbDJ7Adm4HfSv2Fow1y1Jh0jqpAQKgJrzq6W7Q?=
+ =?iso-8859-2?Q?h1vt8F80yQDMUrU4vPIgs6zsAR/18plY7esuYYnTxBIa38zW5+jlIjrAbG?=
+ =?iso-8859-2?Q?uWm4UpS807N+uHFnQZa/KOdfCuCIQp2wDyjkKd0RHYfepYoNUmNhY98Ton?=
+ =?iso-8859-2?Q?ARfn7SfgvgujQzirbAcUjxZY0wp+n3WmsXh2ZZSKWJfWAi+mHooPXEpZTk?=
+ =?iso-8859-2?Q?yYKxeVsbV2qW0vxPaFy2VCPcVcIEaUjapKnLt7u4inhKW8v+IWuRkieKIh?=
+ =?iso-8859-2?Q?xAwz/9XC9vvy4sR0CY9XM5w6T/Nd0KvjeOiqBfrNqJNQJHV+u6QJud/UwD?=
+ =?iso-8859-2?Q?vi/bAJ0eiW+71vsdtGuqRAErOzJKHyabfKR+5SwxaENrILWj7Xwdxj1Xwo?=
+ =?iso-8859-2?Q?49PH9yGJP+5qnsJjOzJFSBuuMKRfdS9HDpdtJ9a9o1IQKSYQG3rDBbiHqq?=
+ =?iso-8859-2?Q?2H/NUAPROhRBrdtLaqMxULv3HJyrgIU/Y7IB1qIK7dgoKSX3jrWE8SThOX?=
+ =?iso-8859-2?Q?XnC7hQKsmvHQ0JNh0TIqJUygLLsuGjyrQUwLLpmQNjjl7227nOvqd7vaW3?=
+ =?iso-8859-2?Q?mhC7vIKnEljvtYtrseDJv5m3L8HXy1VRaHGhzsM8A2tO4Dk+MTTTVmQQtU?=
+ =?iso-8859-2?Q?klh0FK2/I2hHXrTvE81lDB05L62J62xjtuehWSBf0M7m66pZuqAafhVN9z?=
+ =?iso-8859-2?Q?lqG+5HGO6+IoCd767X/h7jt/CIqPlsiCwEkdep9daIMI8NW/086nnuHgHK?=
+ =?iso-8859-2?Q?aNLmWQbhfElHKnaUPrSnD4R9Z3M/iTQEM6e8IgCzs5rLZO6DAb4gIqniLG?=
+ =?iso-8859-2?Q?roTnV5czNV5hW0Je3HkhbMY68/q/SLH1dV8RMTPKXszWul04dJNl3IM6zR?=
+ =?iso-8859-2?Q?aSmfQS6KmTUXWFBVKbPu+t9dWEjvEWtHq+p7psFUP/VMc2F1no25FpfENA?=
+ =?iso-8859-2?Q?uo4Ykh7x3l?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d984152d-c86c-4b98-f3c5-08d8f9ddda05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2021 15:57:31.2447
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zgn0afXXiK/zmX54DPFv0XQiOe4Dz7awgZiw3oi/d3xFhtqwUlzhtBlzbeP1yL5lecH89qwLdxEJVjN82BmvcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3580
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PRU firmware interrupt mappings are configured and unconfigured in
-.start() and .stop() callbacks respectively using the variables 'evt_count'
-and a 'mapped_irq' pointer. These variables are modified only during these
-callbacks but are not re-initialized/reset properly during unwind or
-failure paths. These stale values caused a kernel crash while stopping a
-PRU remoteproc running a different firmware with no events on a subsequent
-run after a previous run that was running a firmware with events.
+On Wed, Apr 7, 2021 at 7:17:12, Greg Kroah-Hartman=20
+<gregkh@linuxfoundation.org> wrote:
 
-Fix this crash by ensuring that the evt_count is 0 and the mapped_irq
-pointer is set to NULL in pru_dispose_irq_mapping(). Also, reset these
-variables properly during any failures in the .start() callback. While
-at this, the pru_dispose_irq_mapping() callsites are all made to look
-the same, moving any conditional logic to inside the function.
+> On Tue, Apr 06, 2021 at 11:17:48PM +0200, Gustavo Pimentel wrote:
+> > Fixes indentation issues reported by doing *make htmldocs* as well some
+> > text formatting.
+> >=20
+> > Besides these fixes, there was some outdated information related to sto=
+p
+> > file interface in sysfs.
+>=20
+> You are not doing this for all "misc-devices", you are doing this only
+> for one specific driver file.
+>=20
+> Please look at the example I provided for how to name this and fix up.
 
-Fixes: c75c9fdac66e ("remoteproc: pru: Add support for PRU specific interrupt configuration")
-Reported-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
-v2:
- - Fixed two additional cleanup paths in pru_handle_intrmap()
-   addressing Mathieu's review comment
-v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210323223839.17464-4-s-anna@ti.com/
+Sorry Greg, I didn't see an example provided. Perhaps you forgot it?
 
- drivers/remoteproc/pru_rproc.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+>=20
+> >=20
+> > Fixes: e1181b5bbc3c ("Documentation: misc-devices: Add Documentation fo=
+r dw-xdata-pcie driver")
+> > Link: https://urldefense.com/v3/__https://lore.kernel.org/linux-next/20=
+210406214615.40cf3493@canb.auug.org.au/__;!!A4F2R9G_pg!MeIXpmOYi4yJTBq19JEA=
+Dll7-g6cYBmmwG92EWipqsBiPzeubfMGVllrpMt8FpwvW5ZemHY$=20
+> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> > ---
+> >  Documentation/misc-devices/dw-xdata-pcie.rst | 62 +++++++++++++++++++-=
+--------
+> >  1 file changed, 43 insertions(+), 19 deletions(-)
+>=20
+> What changed from v1?  Always put that below the --- line.
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index 87b43976c51b..04863bf23db8 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -266,12 +266,17 @@ static void pru_rproc_create_debug_entries(struct rproc *rproc)
- 
- static void pru_dispose_irq_mapping(struct pru_rproc *pru)
- {
--	while (pru->evt_count--) {
-+	if (!pru->mapped_irq)
-+		return;
-+
-+	while (pru->evt_count) {
-+		pru->evt_count--;
- 		if (pru->mapped_irq[pru->evt_count] > 0)
- 			irq_dispose_mapping(pru->mapped_irq[pru->evt_count]);
- 	}
- 
- 	kfree(pru->mapped_irq);
-+	pru->mapped_irq = NULL;
- }
- 
- /*
-@@ -307,8 +312,10 @@ static int pru_handle_intrmap(struct rproc *rproc)
- 	pru->evt_count = rsc->num_evts;
- 	pru->mapped_irq = kcalloc(pru->evt_count, sizeof(unsigned int),
- 				  GFP_KERNEL);
--	if (!pru->mapped_irq)
-+	if (!pru->mapped_irq) {
-+		pru->evt_count = 0;
- 		return -ENOMEM;
-+	}
- 
- 	/*
- 	 * parse and fill in system event to interrupt channel and
-@@ -317,13 +324,19 @@ static int pru_handle_intrmap(struct rproc *rproc)
- 	 * corresponding sibling PRUSS INTC node.
- 	 */
- 	parent = of_get_parent(dev_of_node(pru->dev));
--	if (!parent)
-+	if (!parent) {
-+		kfree(pru->mapped_irq);
-+		pru->mapped_irq = NULL;
-+		pru->evt_count = 0;
- 		return -ENODEV;
-+	}
- 
- 	irq_parent = of_get_child_by_name(parent, "interrupt-controller");
- 	of_node_put(parent);
- 	if (!irq_parent) {
- 		kfree(pru->mapped_irq);
-+		pru->mapped_irq = NULL;
-+		pru->evt_count = 0;
- 		return -ENODEV;
- 	}
- 
-@@ -398,8 +411,7 @@ static int pru_rproc_stop(struct rproc *rproc)
- 	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
- 
- 	/* dispose irq mapping - new firmware can provide new mapping */
--	if (pru->mapped_irq)
--		pru_dispose_irq_mapping(pru);
-+	pru_dispose_irq_mapping(pru);
- 
- 	return 0;
- }
--- 
-2.30.1
+I've considered the V1 the 2 patches sent wrongly separately, based on=20
+your feedback I've generated a v2 to include the cover letter and the=20
+reported-by, link, and fixes tags.
+Was this wrong?
+
+I also placed the change list on the cover letter. Or do you prefer on=20
+each patch?
+
+>=20
+> thanks,
+>=20
+> greg k-h
+
 
