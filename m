@@ -2,94 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34C63567BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018473567B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349979AbhDGJKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:10:13 -0400
-Received: from mout.gmx.net ([212.227.17.22]:51413 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349965AbhDGJKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:10:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617786591;
-        bh=odbMq1QkA2+jkrNnf2C3WSIOA2ISmQMSizqtiktlTBU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=QQhapKYluwjps+VHKiPHnQ9NYCqq4hBNW/lMQIE9FDzjpBQoxPGCLzmxrvXY0inYi
-         B/xL7MSwBTWH19kOV0c29g8h+cyZWrdd9o8pKBQFMSfqARgbCFy72TlG+OECC2T2sO
-         pz0QnRl13hSLOyVutbHPEcWvcROcksplEjP6UvCA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.167.102]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQvD5-1lFx1B4Akh-00Nxca; Wed, 07
- Apr 2021 11:09:47 +0200
-Date:   Wed, 7 Apr 2021 11:09:09 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Wan Jiabing <wanjiabing@vivo.com>
-Subject: [GIT PULL] parisc architecture fixes for kernel v5.12-rc7
-Message-ID: <YG12tezhGsQ5R/lG@ls3530>
+        id S1349972AbhDGJKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346321AbhDGJJ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:09:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C40C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:09:50 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU4C0-0000zQ-43; Wed, 07 Apr 2021 11:09:44 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU4Bz-0006cu-EQ; Wed, 07 Apr 2021 11:09:43 +0200
+Date:   Wed, 7 Apr 2021 11:09:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/8] pwm: pca9685: Support hardware readout
+Message-ID: <20210407090943.vshoxqhaha4j6wq7@pengutronix.de>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-2-clemens.gruber@pqgruber.com>
+ <20210407053135.tx2q4bzxf2lwtqna@pengutronix.de>
+ <YG1gQNdDYA1RwrCo@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pshvs3vilf37gue4"
 Content-Disposition: inline
-X-Provags-ID: V03:K1:MlnCGZyT1GWzXv3G1cJVLTYtm35jYDanEuyl8ALG52fIEfLz0CY
- 9wjubHfR8rl8/sVaULwceZE9UgjYygwiJIH9vncy+PfPHpFtY9D9xprRmmvG8se6292sA6b
- 8hZzXEOfC+YbhPV5HQ2lURKw8dw1rqWlx9BZhFwtk+yQeD/rduvRI/dvGvsoyLC0QEzRMtt
- 5Cr5KW8YcbhlJSJvcwBBA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nLkqkVBVmGY=:wJeN/XRNkomy0NWKVwc13a
- nxytWDYGPyFqP2Kq8keaTPU1Sens/v1nhRhXpPDy2eN5fuD6yKBGiBJs1gzCpHFETZ4QZKqFW
- 0es6B7ZL3AVsMCT8p8/qi3QTJEx+FPoAYT82dKWsuh6aKB4/A9PYyghQ04UrAm3XidqWZhxPr
- Mns8THQpcNO05tFXvwDaKoDJpKD48QKDhWEOOanwLineoYA/rzN5xso3mFH59i9MIXbC+5z6X
- /J3Y5l4R/HWb97zsuYiP86ImT6Ptex2htpcHQShNfus2yCv+e988uD74w4YDUi9YQHZl/5Wmm
- ki+JAvjtez617SFWw6A+Y7ll/EOcEysBUuS/4hUP5wMoEX1QUmFXAp2NrZBC4ZPp781QHWOwx
- Ozu6fwWVNPZnoIn+lM9CnfDgDmjyTOB7vWQlu0EDo6BjMbpBIC/57Oc7q995U88woTfE63oUG
- fDMy7O08TyzWazMhtO0eYMylN2uIQnQE8bYr2zZk28TCt/TKtQhT+q1Bl9sCtdFjcD4nCm1/+
- lcCYjcFYBNjczs1xSLcuqK3qJ8CAfLgTKtSQlKuU+ql2hGD1GPRyVAIdt9nU1ofGg+gV/sVlh
- Nxdg96xM36kkDy4BzjGZMMMjCL/t6eTnNvhqDW+pFeaEOxMhfzBkC2TilejjJX8eouxld1dCO
- RRvKE0nTvUVivTgqFGy5qmiyObziOWbL8+UYltqc+P11Sa5EHTu+zLtUtkiNvLVojj0zrKhVT
- OGRZ3qFJUKnXicRUuOPv6qrcrwSDzyZC4gii6hIRfFdVrOvnj8eI+K7tL1b51qPtENdEq3Vv2
- cj1GC9QJJdOwz6uLs/BLCaVz9AyoyVRoU40beJJisHGYf369pBVeFWzDZnau+o2Y0jRQp2kz5
- Hz4aHAnvc0fdufoJZYH0bBZYGJwBDk+KPS5qsHvDRbJ/FVbOdDQrJfdvKNd8dt9qO9NY0N5CA
- a5SkL1v20IYnXHPzEcD3swncNk2eDOZIy1p2HhQen64mKSG1HxVWxj6gsaA6elyPtbfts0L4o
- RpkTMioL/5FKbjj5RiK1C0n9Tb17UCAOfaRlrL7kz0Kr61KJzZ1e2iBYtTGNcYtMbPPV1h7Gh
- /O/l4iUNH0+Efbk0kv4TYgmTmmLzqZESMtxREQHKhV0lmaOn8FVulN08u8eqhMSYQo0UD54yf
- XsJBHRvVZzKJZx3f9TulRNtnHHDCmwGDJYw4xcjZmvZk4QfwVR3cF5KRM+iwPFz5thH18=
+In-Reply-To: <YG1gQNdDYA1RwrCo@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull four small parisc architecture fixes for kernel 5.12-rc7 from:
+--pshvs3vilf37gue4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.12-3
+On Wed, Apr 07, 2021 at 09:33:20AM +0200, Clemens Gruber wrote:
+> On Wed, Apr 07, 2021 at 07:31:35AM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Apr 06, 2021 at 06:41:34PM +0200, Clemens Gruber wrote:
+> > > Implements .get_state to read-out the current hardware state.
+> > >=20
+> > > The hardware readout may return slightly different values than those
+> > > that were set in apply due to the limited range of possible prescale =
+and
+> > > counter register values.
+> > >=20
+> > > Also note that although the datasheet mentions 200 Hz as default
+> > > frequency when using the internal 25 MHz oscillator, the calculated
+> > > period from the default prescaler register setting of 30 is 5079040ns.
+> > >=20
+> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > ---
+> > > Changes since v6:
+> > > - Added a comment regarding the division (Suggested by Uwe)
+> > > - Rebased
+> > >=20
+> > >  drivers/pwm/pwm-pca9685.c | 46 +++++++++++++++++++++++++++++++++++++=
+++
+> > >  1 file changed, 46 insertions(+)
+> > >=20
+> > > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > > index 5a2ce97e71fd..d4474c5ff96f 100644
+> > > --- a/drivers/pwm/pwm-pca9685.c
+> > > +++ b/drivers/pwm/pwm-pca9685.c
+> > > @@ -333,6 +333,51 @@ static int pca9685_pwm_apply(struct pwm_chip *ch=
+ip, struct pwm_device *pwm,
+> > >  	return 0;
+> > >  }
+> > > =20
+> > > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_=
+device *pwm,
+> > > +				  struct pwm_state *state)
+> > > +{
+> > > +	struct pca9685 *pca =3D to_pca(chip);
+> > > +	unsigned long long duty;
+> > > +	unsigned int val =3D 0;
+> > > +
+> > > +	/* Calculate (chip-wide) period from prescale value */
+> > > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
+> > > +	/*
+> > > +	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
+> > > +	 * The following calculation is therefore only a multiplication
+> > > +	 * and we are not losing precision.
+> > > +	 */
+> > > +	state->period =3D (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK=
+_MHZ) *
+> > > +			(val + 1);
+> > > +
+> > > +	/* The (per-channel) polarity is fixed */
+> > > +	state->polarity =3D PWM_POLARITY_NORMAL;
+> > > +
+> > > +	if (pwm->hwpwm >=3D PCA9685_MAXCHAN) {
+> > > +		/*
+> > > +		 * The "all LEDs" channel does not support HW readout
+> > > +		 * Return 0 and disabled for backwards compatibility
+> > > +		 */
+> > > +		state->duty_cycle =3D 0;
+> > > +		state->enabled =3D false;
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
+> > > +
+> > > +	state->enabled =3D !!duty;
+> > > +	if (!state->enabled) {
+> > > +		state->duty_cycle =3D 0;
+> > > +		return;
+> > > +	} else if (duty =3D=3D PCA9685_COUNTER_RANGE) {
+> > > +		state->duty_cycle =3D state->period;
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	duty *=3D state->period;
+> > > +	state->duty_cycle =3D duty / PCA9685_COUNTER_RANGE;
+> >=20
+> > Given that with duty =3D 0 the chip is still "on" and changing the duty
+> > will first complete the currently running period, I'd model duty=3D0 as
+> > enabled. This also simplifies the code a bit, to something like:
+> >=20
+> >=20
+> > 	state->enabled =3D true;
+> > 	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
+> > 	state->duty_cycle =3D div_round_up(duty * state->period, PCA9685_COUNT=
+ER_RANGE);
+> >=20
+> > (I'm using round-up here assuming apply uses round-down to get
+> > idempotency. In the current patch set state this is wrong however.)
+>=20
+> So, in your opinion, every requested PWM of the pca9685 should always be
+> enabled by default (from the PWM core viewpoint) ?
+>=20
+> And this wouldn't break the following because pwm_get_state does not
+> actually read out the hw state:
+> pwm_get_state -> enabled=3Dtrue duty=3D0
+> pwm_apply_state -> enabled =3Dfalse duty=3D0
+> pwm_get_state -> enabled=3Dfalse duty=3D0
 
-One link error fix found by the kernel test robot, one sparse warning fix,
-remove a duplicate declaration and some spelling fixes.
+I don't see any breakage here. Either there is none or I failed to grasp
+where you see a problem.
 
-Thanks,
-Helge
+Best regards
+Uwe
 
-----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      parisc: math-emu: Few spelling fixes in the file fpu.h
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Gao Xiang (1):
-      parisc: avoid a warning on u8 cast for cmpxchg on u8 pointers
+--pshvs3vilf37gue4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Helge Deller (1):
-      parisc: parisc-agp requires SBA IOMMU driver
+-----BEGIN PGP SIGNATURE-----
 
-Wan Jiabing (1):
-      parisc: Remove duplicate struct task_struct declaration
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtdtQACgkQwfwUeK3K
+7AkV9QgAmzkvZmlwDOuD+LCEIwVv5auPUPnPoHRyMlVqa+tf6TGAsf2cIBa8RYTz
+0xAfh5Ur3gt0joZoPFUZwAyegth9iz3wdQLpemqXd5mGQv6VLUE8D7F1szrwO8kx
+G1V3dU7EwqPegD32zeERBm3kLA70Aggw2hnSFeq0AJghTxN8qLVWslrHm1MRaiYS
+1VHnR/bmdgxt33SwmNpzcw2pYwZDsRECA6SE5McR5m7B91hSKVlOJyTjTL9xhihb
+5w3rFI/nC6dFvIyJRmhYoVkkvDABbrqWL0ssLkE41b1U+RyxIKaqvqNJvUPVTaVa
+/1tstHjiLlYeRCUp4IEFTHiijhVClg==
+=FbW8
+-----END PGP SIGNATURE-----
 
- arch/parisc/include/asm/cmpxchg.h   |  2 +-
- arch/parisc/include/asm/processor.h |  1 -
- arch/parisc/math-emu/fpu.h          | 32 +++-----------------------------
- drivers/char/agp/Kconfig            |  2 +-
- 4 files changed, 5 insertions(+), 32 deletions(-)
+--pshvs3vilf37gue4--
