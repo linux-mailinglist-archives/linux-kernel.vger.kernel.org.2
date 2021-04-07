@@ -2,25 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56141357753
+	by mail.lfdr.de (Postfix) with ESMTP id A3B49357754
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhDGWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:06:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:35752 "EHLO foss.arm.com"
+        id S230220AbhDGWGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:06:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:35766 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhDGWGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:06:50 -0400
+        id S229869AbhDGWGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:06:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAD3C1435;
-        Wed,  7 Apr 2021 15:06:39 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95F0A143B;
+        Wed,  7 Apr 2021 15:06:41 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 44E8F3F792;
-        Wed,  7 Apr 2021 15:06:38 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0A76F3F792;
+        Wed,  7 Apr 2021 15:06:39 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -28,10 +27,11 @@ Cc:     Lingutla Chandrasekhar <clingutla@codeaurora.org>,
         Qais Yousef <qais.yousef@arm.com>,
         Quentin Perret <qperret@google.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH v5 1/3] sched/fair: Ignore percpu threads for imbalance pulls
-Date:   Wed,  7 Apr 2021 23:06:26 +0100
-Message-Id: <20210407220628.3798191-2-valentin.schneider@arm.com>
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: [PATCH v5 2/3] sched/fair: Clean up active balance nr_balance_failed trickery
+Date:   Wed,  7 Apr 2021 23:06:27 +0100
+Message-Id: <20210407220628.3798191-3-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210407220628.3798191-1-valentin.schneider@arm.com>
 References: <20210407220628.3798191-1-valentin.schneider@arm.com>
@@ -41,69 +41,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+When triggering an active load balance, sd->nr_balance_failed is set to
+such a value that any further can_migrate_task() using said sd will ignore
+the output of task_hot().
 
-During load balance, LBF_SOME_PINNED will be set if any candidate task
-cannot be detached due to CPU affinity constraints. This can result in
-setting env->sd->parent->sgc->group_imbalance, which can lead to a group
-being classified as group_imbalanced (rather than any of the other, lower
-group_type) when balancing at a higher level.
+This behaviour makes sense, as active load balance intentionally preempts a
+rq's running task to migrate it right away, but this asynchronous write is
+a bit shoddy, as the stopper thread might run active_load_balance_cpu_stop
+before the sd->nr_balance_failed write either becomes visible to the
+stopper's CPU or even happens on the CPU that appended the stopper work.
 
-In workloads involving a single task per CPU, LBF_SOME_PINNED can often be
-set due to per-CPU kthreads being the only other runnable tasks on any
-given rq. This results in changing the group classification during
-load-balance at higher levels when in reality there is nothing that can be
-done for this affinity constraint: per-CPU kthreads, as the name implies,
-don't get to move around (modulo hotplug shenanigans).
+Add a struct lb_env flag to denote active balancing, and use it in
+can_migrate_task(). Remove the sd->nr_balance_failed write that served the
+same purpose. Cleanup the LBF_DST_PINNED active balance special case.
 
-It's not as clear for userspace tasks - a task could be in an N-CPU cpuset
-with N-1 offline CPUs, making it an "accidental" per-CPU task rather than
-an intended one. KTHREAD_IS_PER_CPU gives us an indisputable signal which
-we can leverage here to not set LBF_SOME_PINNED.
-
-Note that the aforementioned classification to group_imbalance (when
-nothing can be done) is especially problematic on big.LITTLE systems, which
-have a topology the likes of:
-
-  DIE [          ]
-  MC  [    ][    ]
-       0  1  2  3
-       L  L  B  B
-
-  arch_scale_cpu_capacity(L) < arch_scale_cpu_capacity(B)
-
-Here, setting LBF_SOME_PINNED due to a per-CPU kthread when balancing at MC
-level on CPUs [0-1] will subsequently prevent CPUs [2-3] from classifying
-the [0-1] group as group_misfit_task when balancing at DIE level. Thus, if
-CPUs [0-1] are running CPU-bound (misfit) tasks, ill-timed per-CPU kthreads
-can significantly delay the upgmigration of said misfit tasks. Systems
-relying on ASYM_PACKING are likely to face similar issues.
-
-Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
-[Use kthread_is_per_cpu() rather than p->nr_cpus_allowed]
-[Reword changelog]
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- kernel/sched/fair.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/sched/fair.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6d73bdbb2d40..04d5e14fa261 100644
+index 04d5e14fa261..d8077f82a380 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -7567,6 +7567,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
- 		return 0;
+@@ -7422,6 +7422,7 @@ enum migration_type {
+ #define LBF_NEED_BREAK	0x02
+ #define LBF_DST_PINNED  0x04
+ #define LBF_SOME_PINNED	0x08
++#define LBF_ACTIVE_LB	0x10
  
-+	/* Disregard pcpu kthreads; they are where they need to be. */
-+	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
-+		return 0;
+ struct lb_env {
+ 	struct sched_domain	*sd;
+@@ -7583,10 +7584,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 		 * our sched_group. We may want to revisit it if we couldn't
+ 		 * meet load balance goals by pulling other tasks on src_cpu.
+ 		 *
+-		 * Avoid computing new_dst_cpu for NEWLY_IDLE or if we have
+-		 * already computed one in current iteration.
++		 * Avoid computing new_dst_cpu
++		 * - for NEWLY_IDLE
++		 * - if we have already computed one in current iteration
++		 * - if it's an active balance
+ 		 */
+-		if (env->idle == CPU_NEWLY_IDLE || (env->flags & LBF_DST_PINNED))
++		if (env->idle == CPU_NEWLY_IDLE ||
++		    env->flags & (LBF_DST_PINNED | LBF_ACTIVE_LB))
+ 			return 0;
+ 
+ 		/* Prevent to re-select dst_cpu via env's CPUs: */
+@@ -7611,10 +7615,14 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 
+ 	/*
+ 	 * Aggressive migration if:
+-	 * 1) destination numa is preferred
+-	 * 2) task is cache cold, or
+-	 * 3) too many balance attempts have failed.
++	 * 1) active balance
++	 * 2) destination numa is preferred
++	 * 3) task is cache cold, or
++	 * 4) too many balance attempts have failed.
+ 	 */
++	if (env->flags & LBF_ACTIVE_LB)
++		return 1;
 +
- 	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
- 		int cpu;
+ 	tsk_cache_hot = migrate_degrades_locality(p, env);
+ 	if (tsk_cache_hot == -1)
+ 		tsk_cache_hot = task_hot(p, env);
+@@ -9805,9 +9813,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 					active_load_balance_cpu_stop, busiest,
+ 					&busiest->active_balance_work);
+ 			}
+-
+-			/* We've kicked active balancing, force task migration. */
+-			sd->nr_balance_failed = sd->cache_nice_tries+1;
+ 		}
+ 	} else {
+ 		sd->nr_balance_failed = 0;
+@@ -9957,13 +9962,7 @@ static int active_load_balance_cpu_stop(void *data)
+ 			.src_cpu	= busiest_rq->cpu,
+ 			.src_rq		= busiest_rq,
+ 			.idle		= CPU_IDLE,
+-			/*
+-			 * can_migrate_task() doesn't need to compute new_dst_cpu
+-			 * for active balancing. Since we have CPU_IDLE, but no
+-			 * @dst_grpmask we need to make that test go away with lying
+-			 * about DST_PINNED.
+-			 */
+-			.flags		= LBF_DST_PINNED,
++			.flags		= LBF_ACTIVE_LB,
+ 		};
  
+ 		schedstat_inc(sd->alb_count);
 -- 
 2.25.1
 
