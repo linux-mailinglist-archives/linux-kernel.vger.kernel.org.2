@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F0B357201
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4354E357206
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354241AbhDGQRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
+        id S1343990AbhDGQST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354182AbhDGQRl (ORCPT
+        with ESMTP id S235674AbhDGQSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:17:41 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327E0C06175F;
-        Wed,  7 Apr 2021 09:17:31 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id e14so28582662ejz.11;
-        Wed, 07 Apr 2021 09:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E8zFxr7NTo5CVZvglNHBf+7krWpX2RzvWzJMpcR4yQU=;
-        b=nTdujkw1uKq0S+SGJxBR8r4B714AbaSBM0uux059cqF/rz53V7JLDV2iDWvUCb/tCQ
-         5Y1mY69mbqp9i9TJDomEL8v4pXcWgPLxaBZw0XZgvW4V5hCsk8WNAdQl1oq2BcLv4I2P
-         +sCgF7GEU+dgun4r4vaLg7LpGk4QmVZec/7un2SmsUOu+8txNhiav4ux1K7bDB6PYbBu
-         1rEInprdjhMmOcqFjfiFR0jGe8WHBfTGC7FrQvOBBvhvEAOQAvOWIQzTHRsmR156zcda
-         snPrUYPi2vlrfh86+D0fS1GRrdTzp6txhxunoeAmNOZmhmN9MxIMbb5dM42FQZiFdFjz
-         oQ5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E8zFxr7NTo5CVZvglNHBf+7krWpX2RzvWzJMpcR4yQU=;
-        b=WRUAshukbHdyJp63tqFT9kmAsr2CpwqdBBfD5XTXwyk7RCkL+/a4OSXX5d/4gSRHyP
-         Dz5wXlCFgWHXs6zjsZ7VSp3G985eYUxf18hYf6NMix/JFecR0VdneSw2IXvjmAJsVO0/
-         46UFeGZS42MgS1TWWpWuXiLuIajwISrV5bVFSWH3V4HCN4/7cIH8TO+IfxmHMosO8/ZK
-         9uGJSZF6CD3wqtr9qBUEdIUztoo4GWEbtfD5gEHZfnPSnE6nr7D67hvcEVuf+mjVYzM6
-         1gLSpEInC0JQEb7tnRROr5DbE255w16c1lejM3vsX1Z5nlY4iCWql7LFQbl77/yZXsqG
-         w6BA==
-X-Gm-Message-State: AOAM5315IxKY2Qt4eu/T0XU0u9VT3x8kmkySg2X8p70/LG0LiVXBRcBc
-        +6g5jdpW8X581bu+q1UytbQ=
-X-Google-Smtp-Source: ABdhPJzibXBuHU2/Tw83MRchlZG+MGW5RIuCWWBmiEydazdb5ErzQqiWilYI8nC8rrxaSzXhlg/ykw==
-X-Received: by 2002:a17:906:2793:: with SMTP id j19mr4733929ejc.205.1617812249930;
-        Wed, 07 Apr 2021 09:17:29 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id t14sm12841163ejc.121.2021.04.07.09.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 09:17:28 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 18:18:02 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, jonathanh@nvidia.com,
-        robh+dt@kernel.org, pchandru@nvidia.com,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] Add AHCI support for Tegra186
-Message-ID: <YG3bOn97gryKOmec@orome.fritz.box>
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
- <2cf9a0ee-034c-7d31-1fa4-66e6ad3ceb43@kernel.dk>
+        Wed, 7 Apr 2021 12:18:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D5C061756;
+        Wed,  7 Apr 2021 09:18:08 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08fb00aad493ab6ea3c721.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:aad4:93ab:6ea3:c721])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0A5C11EC0246;
+        Wed,  7 Apr 2021 18:18:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617812287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=P6gQYKkldKmbml2f//Bn0ffqA/H6YjvWzQ/vYVm3/rE=;
+        b=YyAtkpwNG1UWHqg4KKkM8cmIV8H2qcpl18kyRutrcfm+dmXXYpeKeocNodr1o/VKBz6TUk
+        539RXtP959l5MYry6w3qzFr/OqO41vmNFFad/mooFzHhsSIKPvhxHdzt6NWHkVa6KoQrlu
+        d5jKmWQ+t5gXq5P8FIMbStau6bl9nXo=
+Date:   Wed, 7 Apr 2021 18:18:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] x86/sgx: Do not update sgx_nr_free_pages in
+ sgx_setup_epc_section()
+Message-ID: <20210407161811.GK25319@zn.tnic>
+References: <20210405232653.33680-1-jarkko@kernel.org>
+ <20210407154934.GF25319@zn.tnic>
+ <YG3X454GI4U2BZVU@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NR+2S+88HvHbjOWn"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2cf9a0ee-034c-7d31-1fa4-66e6ad3ceb43@kernel.dk>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <YG3X454GI4U2BZVU@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 07:03:47PM +0300, Jarkko Sakkinen wrote:
+> > Which leads to my question: what is sgx_nr_free_pages supposed to denote?
+> > 
+> > Because I understand the callpath
+> > 
+> > sgx_page_cache_init
+> > ...
+> > for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+> > 	...
+> > 	sgx_setup_epc_section
+> > 	...
+> > 		sgx_nr_free_pages += nr_pages;
+> > 
+> > as adding the number of pages of each new EPC section to the total
+> > number of the free pages. Unless that variable accounts something else.
+> > 
+> > So what does this variable actually mean?
+> 
+> It's used for only to trigger watermark for reclaiming. I.e. causes
+> ksgxd to trigger. And it gives the number of total free EPC pages in
+> all NUMA nodes.
 
---NR+2S+88HvHbjOWn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So the callpath I laid out above is adding the number of pages of each
+section to the total free EPC pages number.
 
-On Wed, Apr 07, 2021 at 09:44:58AM -0600, Jens Axboe wrote:
-> On 4/6/21 7:25 PM, Sowjanya Komatineni wrote:
-> > Re-sending dt-binding and ahci_tegra driver patches as v4 as device
-> > tree patches from v3 are merged but not the AHCI Tegra driver.
-> >=20
-> > Missed to add Jens Axboe to mailing list in v3. Adding for v4.
-> >=20
-> > This series adds support for AHCI-compliant SATA to Tegra186 SoC.
-> >=20
-> > This series includes patches for
-> > - Converting text based dt-binding document to YAML.
-> > - Adding dt-bindings for Tegra186.
-> > - Adding Tegra186 support to Tegra AHCI driver.
-> >=20
-> > Delta between patch versions:
-> > [v4]:	Same as v3 except removed device tree patches as they are
-> > 	merged.
-> > [v3]:	fixed yaml example to pass dt_binding_check
-> > [v2]:	v1 feedback related to yaml dt-binding.
-> > 	Removed conditional reset order in yaml and updated dts files
-> > 	to maintain same order for commonly available resets across
-> > 	Tegra124 thru Tegra186.
->=20
-> Assuming the libata tree is the best way for this to go in, so I applied
-> it for 5.13.
+Why is that wrong and why is your patch needed?
 
-Perfect! Thanks Jens.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thierry
-
---NR+2S+88HvHbjOWn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBt2zgACgkQ3SOs138+
-s6HiwhAAib4j7/WG24WBtUVkrErzlRsDdYMKySHqLxp2k8MZZLzSlItK3rZ77zT6
-oPPPBAnxQiM2HLF4Ca+fSo13xO7qnn+5FKX8WtapcG+CUuim0z/eKif+N3SoXAx9
-VZmfQsLJeJfGcTpE5Wvi35eU8mzH1QK7q6Jfk1duD5ITTv+zA8Qx1vHNAmVC0Ali
-QGKBmOUzdGDnkOu23ZwlV+J0Z4PF1iwxQExiy2MBgjKBSpK+Ba+aZyfWdiv7hC6b
-XD8bYC+5KKKJlGfHiF8Z9CeIeiUUsH8GhHIYgcfmERJkhdbGJEGHNe7ZfJwyqC0M
-fvG4UW5gM42Cvg9kEO9DQnv9YNl76W/k8hZYACjmRFoD5s+3ZZltmYNa07evFWld
-ypcO75ZlhIK1Lzckl72pIctQyaINIeTzkvvPBZsPiqEG4f8DsSjipbtqHP2V/2Fg
-vTr0qU38hX+S0MflqlyvxsfCtJ6FqknnxxqDsA/6Sx3vC9ul7gt2nlj72MGuhqSe
-290rjC5jjI0pl76j5/P581Ci01TNHgnwTAg07h7LQkU7h1xV3Ycfaaoi+soCapLW
-Q9xAoCqrGVPZVBMHH7+eR+pkZDbSr36MAnIuZWrbpSBMlT7dx4r8WnMGaf8Zy9np
-xv9ukSGWOVCgIvY13MSsGUpzu2HDoP+zQuefe0m/FlTKMksUbuY=
-=MTYu
------END PGP SIGNATURE-----
-
---NR+2S+88HvHbjOWn--
+https://people.kernel.org/tglx/notes-about-netiquette
