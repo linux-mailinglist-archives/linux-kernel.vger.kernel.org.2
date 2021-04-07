@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D843568A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179603568A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346391AbhDGKDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350474AbhDGKA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:00:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CFD6139E;
-        Wed,  7 Apr 2021 10:00:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617789648;
-        bh=dq2l8SzGida214C1HlxuWOTmoGpBfHB90BZbdJOThsU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JC6mTEvv+Be4FbH6f9gqgw8eaHBOhDYEsLixBL6cvDGpiGvGCnDymRSWcfCYfVwRH
-         f556wNaG/XlCw3/UYlMSUcVYb2bDQnaLubTjVMKfbjk9z1JuiDocJoBKG80EzE1DFj
-         v463JOEJhvpr3902AGn7sDs/kTfETn3jon9c7wy8=
-Date:   Wed, 7 Apr 2021 12:00:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 2/2] docs: reporting-issues: make everyone CC the
- regressions list
-Message-ID: <YG2CztxS4jTia8wM@kroah.com>
-References: <cover.1617786974.git.linux@leemhuis.info>
- <813fc7b082a4b47ec6d34542971e9bba74fd4a51.1617786974.git.linux@leemhuis.info>
+        id S1350506AbhDGKDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350490AbhDGKBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:01:20 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F74DC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 03:01:11 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 3C04A2A6; Wed,  7 Apr 2021 12:01:09 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 12:01:07 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Will Deacon <will@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/amd: page-specific invalidations for more than one
+ page
+Message-ID: <YG2C42UdIEsWex2L@8bytes.org>
+References: <20210323210619.513069-1-namit@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <813fc7b082a4b47ec6d34542971e9bba74fd4a51.1617786974.git.linux@leemhuis.info>
+In-Reply-To: <20210323210619.513069-1-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:21:56AM +0200, Thorsten Leemhuis wrote:
-> Make people CC the recently created mailing list dedicated to Linux
-> kernel regressions when reporting one. Some paragraphs had to be
-> reshuffled and slightly rewritten during the process, as the text
-> otherwise would have gotten unnecessarily hard to follow.
+On Tue, Mar 23, 2021 at 02:06:19PM -0700, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
-> The new text also makes reporters include a line useful for automatic
-> regression tracking solution which does not exist yet, but is planned.
-> The term "#regzb" (short for regression bot) is inspired by the "#syz"
-> which can be used to communicate with syszbot (see
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md).
+> Currently, IOMMU invalidations and device-IOTLB invalidations using
+> AMD IOMMU fall back to full address-space invalidation if more than a
+> single page need to be flushed.
+> 
+> Full flushes are especially inefficient when the IOMMU is virtualized by
+> a hypervisor, since it requires the hypervisor to synchronize the entire
+> address-space.
+> 
+> AMD IOMMUs allow to provide a mask to perform page-specific
+> invalidations for multiple pages that match the address. The mask is
+> encoded as part of the address, and the first zero bit in the address
+> (in bits [51:12]) indicates the mask size.
+> 
+> Use this hardware feature to perform selective IOMMU and IOTLB flushes.
+> Combine the logic between both for better code reuse.
+> 
+> The IOMMU invalidations passed a smoke-test. The device IOTLB
+> invalidations are untested.
 
-While I understand the wish to automate things like this, the #syz
-marking will actually cause something to go off and do some work, and is
-only relevant for a very small number of developers, all of whom know to
-look up the instructions before doing so.  But the #regzb marking will
-be requested to be added by random users who never have submitted a
-problem report before, OR from long-time kernel developers who are lucky
-to ever remember to read the documentation as they "know" how to do
-this.
+Have you thoroughly tested this on real hardware? I had a patch-set
+doing the same many years ago and it lead to data corruption under load.
+Back then it could have been a bug in my code of course, but it made me
+cautious about using targeted invalidations.
 
-So this increased workload by people on the two ends of experience is
-going to be rough, I predict a very low rate of adoption :(
+Regards,
 
-What is the tag going to be good for?  The reports will need to be
-handled by a person anyway and classified and tracked out-of-band from
-the list somehow.  Will a tag do all that much here?
+	Joerg
 
-thanks,
-
-greg k-h
