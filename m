@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE933570F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020173570FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353791AbhDGPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        id S1353872AbhDGPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353818AbhDGPsq (ORCPT
+        with ESMTP id S1353975AbhDGPtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:48:46 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E93C061760;
-        Wed,  7 Apr 2021 08:48:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso1415388wmq.1;
-        Wed, 07 Apr 2021 08:48:32 -0700 (PDT)
+        Wed, 7 Apr 2021 11:49:50 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B344C061756;
+        Wed,  7 Apr 2021 08:49:40 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id o20-20020a05600c4fd4b0290114265518afso1441023wmq.4;
+        Wed, 07 Apr 2021 08:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=VXyrtGnwTjNkgIA1jrziNG4eeLUP6i3fUCHQ1vhVTNk=;
-        b=AT3fDu5INkxhj3Ycskj+25gD7VvEaPZFZOqS+dhmjSsFiVZ01PPcXhLNUTnVfU6F9T
-         E0XhY4u1NBJm5jTKMs7AcK+gzPIAXkVqEgk+T49IfKZLkDo5mqKZKRVFf11vkcvr5LUA
-         jXeX/IYQl6oBAUQLk3c2+KmMoN8w+LME7R5+tp200su1i7v4ClMarRdCiNqfPZnLAqX1
-         k7FMPChv+9NMP1ym25RwMfvTL/6KVRO1Kh1ziGhSI4x7ijLJK86xHGHdwQJ+fVlh/7Be
-         Z1oGWwNYGPu9/pqRHVoHZRW8mBI6HXAVhCeK00BOayKoSU9s9USmOKT4eQRZ/kGHWoJ4
-         5u1w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OtGi8iltWobRpz30xFsiNPJJuKogqzEN6z4UYJQBbAc=;
+        b=WI/J/iMZQQO51ZTZWAZniyQkKpoIu7fudcqEK0ybIQbt8Dtxo9Rq//NkZZN0Ib3+yR
+         iN5jLBkqg7XtNa1BRMXi8SjyRvv/GjzVY5yy4D8c+xO7ItejABLw3hEHGMeOvrwjFt0n
+         DbIw43u0SQ/D4Csj4dytpchvmOZbASgj3N5nuspr2HojH29Y9iJhUC7ONGnXlv9xakaH
+         eAVvioL1lOcUbB5fbrX+IKnv7ughY/+sKsCdfEQUsLU1oTJWMla0lhWE1/h+XeRRLhYK
+         D3MBvh2hQfBp/+foISZEtmL9kyk7+KEwmzWoDShFDi8F/IqFe0//kgOnEjUDbFLTm3C5
+         mGFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=VXyrtGnwTjNkgIA1jrziNG4eeLUP6i3fUCHQ1vhVTNk=;
-        b=ugFB5YX3YCfTD2hL3v2W5Ah5e7+It42wVwcazLQox/NVinMYV3JFit7TRdpgh6W5jX
-         94RmY51Sus3XleUfkAmNiPfHl0Ap3otzqLSsYaXYillw/Y8YIkE3+/Rj9YX5jTRBiKBw
-         GlGUlWeiqfTmAkjANeR2aUqLoqbk6mYzfmXE5j30tNVC6JAyOgwRK3DZKQTA6j09jA5f
-         RcBpt0pYUJar7KSNZUop/LNkJgeBLZgftYJTZLa1m3DysPFbfovrrgHANa2vBWfzL+pG
-         SgJpZCelxGFvIOhG4+XSU7XGxM7ep7++5hPEM/QsBz50nZJueqt8f44ZHUn735HjbYLG
-         1GvQ==
-X-Gm-Message-State: AOAM531/b7+19UA1PpCp2n0vD7kzfbYW1o9xU/Zwe4jQ+e50dF45kxwB
-        wFgaj2WbLEsRSYQJP8qWIs0=
-X-Google-Smtp-Source: ABdhPJzD7dxKEjfVHj/Mt5EH5n5S/dlaxsmEkejN73MZv+TvkDOrEI5rgccyVlOqrKVUnws2nEHr5A==
-X-Received: by 2002:a05:600c:2946:: with SMTP id n6mr3655449wmd.52.1617810511641;
-        Wed, 07 Apr 2021 08:48:31 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id v185sm9224838wmb.25.2021.04.07.08.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 08:48:31 -0700 (PDT)
-Message-ID: <5daaeac37cfa5c07a1880ae49b712566a561ba1a.camel@gmail.com>
-Subject: Re: [PATCH] staging: axis-fifo: media/meson: remove redundant
- dev_err call
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     musamaanjum@gmail.com, linqiheng@huawei.com,
-        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
-        <linux-media@vger.kernel.org>,
-        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
-        <linux-amlogic@lists.infradead.org>,
-        "moderated list:ARM/Amlogic Meson SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 07 Apr 2021 20:48:21 +0500
-In-Reply-To: <93218bc8-2cbb-bacc-f985-876a842261c4@xs4all.nl>
-References: <20210407101047.GA1491258@LEGION>
-         <93218bc8-2cbb-bacc-f985-876a842261c4@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OtGi8iltWobRpz30xFsiNPJJuKogqzEN6z4UYJQBbAc=;
+        b=Vl+z1NhcUpM3wHPAmRDYC3tEvCtDwiMwdAxizgNjE0odM01lAh3gf5xK28GKCy/jNL
+         Rtc1yoFg41E/ynEZpju5lYrq1BZ7jKydAGM1K+WK45No0p1+uulFa2pGRZZl/RMrmK0c
+         hsdaZ1qBj7zxnHWU0TkSueNI8nqRNwYmucUNT231+0IQ65sQLihPJhO/JWh46mJgF2hv
+         NwDEsdtYymhxI3cy7hKoKolm9efSLv0EvuNzMZtL9lTttLLj/sQupzqgLOyS/qP4jMv/
+         Yt+i2qykO0ym+TsvUjgl5kCECSIAYlcFHcflEsoWLOoCllvi+YKv96rkoABdfGUNUSZX
+         099A==
+X-Gm-Message-State: AOAM5313QZRD4w3ZE2W6vJdjgcWGoD2ikxeZMHIMMpO+EPmfMXgJEOdq
+        H3ol4RY1gYMw7Csk0XeUSqCiVAMc253xdrvwUn+9/77JHzQ=
+X-Google-Smtp-Source: ABdhPJysDp1zr7PSxUM6TDUtGCff00+3vR2+ew2MYnugHBRTus+ZsVM+QsE78dfDTWZIvaeZCem3Jt3Cl+t/37B7YHg=
+X-Received: by 2002:a1c:f701:: with SMTP id v1mr3757648wmh.69.1617810579052;
+ Wed, 07 Apr 2021 08:49:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com> <20210401030558.2301621-10-david.e.box@linux.intel.com>
+In-Reply-To: <20210401030558.2301621-10-david.e.box@linux.intel.com>
+From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Date:   Wed, 7 Apr 2021 11:49:13 -0400
+Message-ID: <CAE2upjQFnAkKVWWZmOt4u=rTEb5QjP7j+-ZgfOXkMA663THDDw@mail.gmail.com>
+Subject: Re: [PATCH 9/9] platform/x86: intel_pmc_core: Add support for Alder
+ Lake PCH-P
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-07 at 16:05 +0200, Hans Verkuil wrote:
-> Hi Muhammad,
-> 
-> On 07/04/2021 12:10, Muhammad Usama Anjum wrote:
-> > devm_ioremap_resource() prints error message in itself. Remove the
-> > dev_err call to avoid redundant error message.
-> 
-> Please split this up into two separate patches! They are independent
-> changes and these two drivers are maintained by different people as well.
-> 
-> The patch itself looks OK, but it really has to be two separate patches.
-> 
-Okay. I'll send two separate patches. Thank you.
+Acked-by: Rajenesh Bhardwaj <irenic.rajneesh@gmail.com>
 
-Regards,
-Usama
-> Regards,
-> 
-> 	Hans
-> 
-> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > ---
-> >  drivers/staging/axis-fifo/axis-fifo.c   | 1 -
-> >  drivers/staging/media/meson/vdec/vdec.c | 8 ++------
-> >  2 files changed, 2 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
-> > index 2bb1c2e9cb57..ed9281089738 100644
-> > --- a/drivers/staging/axis-fifo/axis-fifo.c
-> > +++ b/drivers/staging/axis-fifo/axis-fifo.c
-> > @@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
-> >  	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
-> >  	if (IS_ERR(fifo->base_addr)) {
-> >  		rc = PTR_ERR(fifo->base_addr);
-> > -		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
-> >  		goto err_initial;
-> >  	}
-> >  
-> > diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
-> > index 5d4db7a5b4b5..e51d69c4729d 100644
-> > --- a/drivers/staging/media/meson/vdec/vdec.c
-> > +++ b/drivers/staging/media/meson/vdec/vdec.c
-> > @@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
-> >  
-> >  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
-> >  	core->dos_base = devm_ioremap_resource(dev, r);
-> > -	if (IS_ERR(core->dos_base)) {
-> > -		dev_err(dev, "Couldn't remap DOS memory\n");
-> > +	if (IS_ERR(core->dos_base))
-> >  		return PTR_ERR(core->dos_base);
-> > -	}
-> >  
-> >  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
-> >  	core->esparser_base = devm_ioremap_resource(dev, r);
-> > -	if (IS_ERR(core->esparser_base)) {
-> > -		dev_err(dev, "Couldn't remap ESPARSER memory\n");
-> > +	if (IS_ERR(core->esparser_base))
-> >  		return PTR_ERR(core->esparser_base);
-> > -	}
-> >  
-> >  	core->regmap_ao =
-> >  		syscon_regmap_lookup_by_phandle(dev->of_node,
-> > 
+On Wed, Mar 31, 2021 at 11:06 PM David E. Box
+<david.e.box@linux.intel.com> wrote:
+>
+> Alder PCH-P is based on Tiger Lake PCH.
+>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel_pmc_core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index 9168062c927e..88d582df829f 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -1440,6 +1440,7 @@ static const struct x86_cpu_id intel_pmc_core_ids[] = {
+>         X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,        &tgl_reg_map),
+>         X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,      &icl_reg_map),
+>         X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,          &tgl_reg_map),
+> +       X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,         &tgl_reg_map),
+>         {}
+>  };
+>
+> --
+> 2.25.1
+>
 
+
+-- 
+Thanks,
+Rajneesh
