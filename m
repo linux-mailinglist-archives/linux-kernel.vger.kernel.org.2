@@ -2,62 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95ED3575D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22013575DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356079AbhDGUXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55498 "EHLO mail.kernel.org"
+        id S1356100AbhDGUY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhDGUXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E1D686100A;
-        Wed,  7 Apr 2021 20:23:08 +0000 (UTC)
+        id S1356182AbhDGUYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:24:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D996100A;
+        Wed,  7 Apr 2021 20:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617826988;
-        bh=XjOW73dux/dho35SEWykXJ5ftMUfGmMU9BRzbkdCUwo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eiWyo5kcSXYfMceC21UH4KKY7NQO+EKA7b0M2NXV/YHq/8B5447quS5757p4kzMJV
-         tjQhG3gsbqxV/n4+zHW73IFQb0V+fenDHzGYEaFJ6Q68yzyXY03dIIGpTbh6GlDDZ0
-         EvkeLruqCB2J6arqeLqVqNl/zceHHN0A/cjWu/mSjms93Mz1gaa49w0C2xRfvX8r54
-         +Gkmbi5Zodfg0kIhFwTq0hC8YA/O1B6t64xOQXmmks6r3k0UiIMmcFWgOc2hoyNKUb
-         Vn5rCwTf7AjDauk0dTh9B44SDAe7hngIgktV9kH0zJleSo27ylkhErIhKrkirwik6C
-         NGXntWR16S5KQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8382609B6;
-        Wed,  7 Apr 2021 20:23:08 +0000 (UTC)
-Subject: Re: [GIT PULL] ARC fixes for 5.12-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <2fd4c2ef-6a48-53db-1b22-3742e438ae23@synopsys.com>
-References: <2fd4c2ef-6a48-53db-1b22-3742e438ae23@synopsys.com>
-X-PR-Tracked-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-X-PR-Tracked-Message-Id: <2fd4c2ef-6a48-53db-1b22-3742e438ae23@synopsys.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.12-rc7
-X-PR-Tracked-Commit-Id: 83520d62cc5a94d2ff0e2d37c8204fca13dd2637
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 454859c552da78b0f587205d308401922b56863e
-Message-Id: <161782698875.25152.14511842179891981575.pr-tracker-bot@kernel.org>
-Date:   Wed, 07 Apr 2021 20:23:08 +0000
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Wang Qing <wangqing@vivo.com>,
-        "dean.yang_cp" <yangdianqing@yulong.com>
+        s=k20201202; t=1617827045;
+        bh=2uHxjP0K/6fzzz/cW5MbaH6iXzs/AvsDUZFoJ93O1co=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d3ddt0OPpk4Uy0RaR4VLXZqs1r3z1OjiptoT7CPogETSpCOdn8XOf/OyeG3yMVFH3
+         Z/yf+G3JkHCzbMfVot9Dtu5BGSmVTF9k7GP98iREBmlOpn1vauxGgk1QL14JXdh2Yf
+         VbO+v9/+vNKaGfos3SbWHBW/13/ocI3HROtfgJUGBz03GUBVqhrW2KgNnT9xnXoOP/
+         d6sATvzwdRHavGi1x2TSCxoOjKnvDzmCXUcuysU2Dtg7TIVY2q1Mdp1FfyLg1axtqX
+         9w0TLfV8tPP593C8rnr4ZkIoXdTFSaPnFuEqLGYCNOE2J6KjG27GBtmhasxe2wloFf
+         cjW+6XyPwby7w==
+Date:   Wed, 7 Apr 2021 13:24:04 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Subject: Re: [RFC net-next 1/1] seg6: add counters support for SRv6
+ Behaviors
+Message-ID: <20210407132404.59c95127@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210407180332.29775-2-andrea.mayer@uniroma2.it>
+References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+        <20210407180332.29775-2-andrea.mayer@uniroma2.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 7 Apr 2021 20:15:54 +0000:
+On Wed,  7 Apr 2021 20:03:32 +0200 Andrea Mayer wrote:
+> This patch provides counters for SRv6 Behaviors as defined in [1], section
+> 6. For each SRv6 Behavior instance, the counters defined in [1] are:
+> 
+>  - the total number of packets that have been correctly processed;
+>  - the total amount of traffic in bytes of all packets that have been
+>    correctly processed;
+> 
+> In addition, we introduces a new counter that counts the number of packets
+> that have NOT been properly processed (i.e. errors) by an SRv6 Behavior
+> instance.
+> 
+> Each SRv6 Behavior instance can be configured, at the time of its creation,
+> to make use of counters.
+> This is done through iproute2 which allows the user to create an SRv6
+> Behavior instance specifying the optional "count" attribute as shown in the
+> following example:
+> 
+>  $ ip -6 route add 2001:db8::1 encap seg6local action End count dev eth0
+> 
+> per-behavior counters can be shown by adding "-s" to the iproute2 command
+> line, i.e.:
+> 
+>  $ ip -s -6 route show 2001:db8::1
+>  2001:db8::1 encap seg6local action End packets 0 bytes 0 errors 0 dev eth0
+> 
+> [1] https://www.rfc-editor.org/rfc/rfc8986.html#name-counters
+> 
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.12-rc7
+> +static int put_nla_counters(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+> +{
+> +	struct seg6_local_counters counters = { 0, 0, 0 };
+> +	struct nlattr *nla;
+> +	int i;
+> +
+> +	nla = nla_reserve(skb, SEG6_LOCAL_COUNTERS, sizeof(counters));
+> +	if (!nla)
+> +		return -EMSGSIZE;
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/454859c552da78b0f587205d308401922b56863e
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+nla_reserve_64bit(), IIUC netlink guarantees alignment of 64 bit values.
