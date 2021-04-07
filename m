@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550E7356924
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB8435692E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350501AbhDGKOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:14:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:19565 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235231AbhDGKOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:14:04 -0400
-IronPort-SDR: AIoLtVxKvf1FuyzENS7hQ1wTLT/xWAL+Sa9yet+++OEfrpCI0hlXKSVVdKhPRfy2eRhrxiGxMZ
- p0U2mk+S5O1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="190072126"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="190072126"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 03:13:54 -0700
-IronPort-SDR: qleZDu8eJuLlaSWIaIU2R/RRiC1vGuzKR38sJRfwTstGF8B7y/O9hYQLgv6jK/LT1gQtyupuaz
- wm1Bu6AyahAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="415203417"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 07 Apr 2021 03:13:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2AE3D197; Wed,  7 Apr 2021 13:14:07 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v2 1/1] defconfig: enable SERIAL_SH_SCI
-Date:   Wed,  7 Apr 2021 13:14:06 +0300
-Message-Id: <20210407101406.8562-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S1350807AbhDGKPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:15:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27222 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350755AbhDGKPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:15:32 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137A3b4f058603;
+        Wed, 7 Apr 2021 06:14:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=qyvICg5bOR724dHN0jiYk0GhBKxcKHxFxhx+efkfdP0=;
+ b=gm4eY4fO8pB91ulNkCctgOVnU/mtR5c4og1a5cvGrhbR1Cm9pHAedvD8d1FO5zA9UuT5
+ I7J8dz4TYgOsqFxxQ1rIRCmGXYi5okj9JLNMXs1O7P0Sr4hl6V1KB/q+X0Xfk/U60jEq
+ 12rvuECWUyveozwWKcGxHM7aT5NmcqJVkVz+0okjBzXibYd17x9dGVcXPJY+HXkqCpOP
+ fNTz7RBbQf0qV0mKT/GH1Zk/CO9dTOkiMGyytP27gNriFohtzwFjEcdf5fS3cKmjocfr
+ m/t6lREXynRZUWlsZtr/+PyDg7LrnLen0c3ar+9j9sr363qZvKTOPAjCduJp3hw+0mXS tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rw07bttq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 06:14:24 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137A3wjB060848;
+        Wed, 7 Apr 2021 06:14:23 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rw07btt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 06:14:23 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137A3BvM010573;
+        Wed, 7 Apr 2021 10:14:21 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 37rvbw8knx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:14:21 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137AEJ1o40239448
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 10:14:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B1014C04A;
+        Wed,  7 Apr 2021 10:14:19 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7DAF4C044;
+        Wed,  7 Apr 2021 10:14:18 +0000 (GMT)
+Received: from localhost (unknown [9.85.69.78])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 10:14:18 +0000 (GMT)
+Date:   Wed, 7 Apr 2021 15:44:17 +0530
+From:   riteshh <riteshh@linux.ibm.com>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
+        Ritesh Harjani <riteshh@gmail.com>
+Subject: Re: [PATCH 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210407101417.45mu2m35hfduizpn@riteshh-domain>
+References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
+ <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5kC7Gni9-yvd5Wl2UkGLEjQYyu3MvqY_
+X-Proofpoint-GUID: QQcIOBDcl5-T6SjKoKh9acNasKx7P6Z1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-07_07:2021-04-06,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 malwarescore=0 clxscore=1011 impostorscore=0 mlxlogscore=999
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed one typo
- arch/x86/configs/i386_defconfig   | 1 +
- arch/x86/configs/x86_64_defconfig | 1 +
- drivers/tty/serial/Kconfig        | 2 +-
- 3 files changed, 3 insertions(+), 1 deletion(-)
+On 21/04/07 02:32PM, Shiyang Ruan wrote:
+> The dax page fault code is too long and a bit difficult to read. And it
+> is hard to understand when we trying to add new features. Some of the
+> PTE/PMD codes have similar logic. So, factor them as helper functions to
+> simplify the code.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Ritesh Harjani <riteshh@gmail.com>
 
-diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
-index 396b5d4781ed..d696336674b0 100644
---- a/arch/x86/configs/i386_defconfig
-+++ b/arch/x86/configs/i386_defconfig
-@@ -347,6 +347,7 @@ CONFIG_SERIAL_8250_DMA=y
- CONFIG_SERIAL_8250_DW=y
- CONFIG_SERIAL_PCH_UART=y
- CONFIG_SERIAL_PCH_UART_CONSOLE=y
-+CONFIG_SERIAL_SH_SCI=m
- CONFIG_MMC=m
- CONFIG_MMC_SDHCI=m
- CONFIG_MMC_SDHCI_PCI=m
-diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
-index 49bd168a1f6a..20a955acf775 100644
---- a/arch/x86/configs/x86_64_defconfig
-+++ b/arch/x86/configs/x86_64_defconfig
-@@ -343,6 +343,7 @@ CONFIG_SERIAL_8250_DMA=y
- CONFIG_SERIAL_8250_DW=y
- CONFIG_SERIAL_PCH_UART=y
- CONFIG_SERIAL_PCH_UART_CONSOLE=y
-+CONFIG_SERIAL_SH_SCI=m
- CONFIG_MMC=m
- CONFIG_MMC_SDHCI=m
- CONFIG_MMC_SDHCI_PCI=m
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index e6f55c28cc2e..584e0d166e31 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -651,7 +651,7 @@ config SERIAL_IP22_ZILOG_CONSOLE
- 
- config SERIAL_SH_SCI
- 	tristate "SuperH SCI(F) serial port support"
--	depends on SUPERH || ARCH_RENESAS || H8300 || COMPILE_TEST
-+	depends on SUPERH || ARCH_RENESAS || H8300 || COMPILE_TEST || X86
- 	select SERIAL_CORE
- 	select SERIAL_MCTRL_GPIO if GPIOLIB
- 
--- 
-2.30.2
+Sorry, but above email address is wrong. Either of below is ok.
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+OR
+Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
+
+>
+>
+> ---
+>  fs/dax.c | 152 ++++++++++++++++++++++++++++++-------------------------
+>  1 file changed, 84 insertions(+), 68 deletions(-)
+
 
