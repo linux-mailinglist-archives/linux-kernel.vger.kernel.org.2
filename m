@@ -2,125 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8C135730B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A394635730D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354833AbhDGRW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:22:58 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:56479 "EHLO pegase1.c-s.fr"
+        id S1354845AbhDGRXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:23:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:44718 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354805AbhDGRWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:22:52 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FFrnC60DfzB09Zc;
-        Wed,  7 Apr 2021 19:22:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id nrxjgkZZvQiS; Wed,  7 Apr 2021 19:22:39 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFrnC4K5qzB09ZS;
-        Wed,  7 Apr 2021 19:22:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 487718B7B6;
-        Wed,  7 Apr 2021 19:22:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6g6sCUNW50XK; Wed,  7 Apr 2021 19:22:41 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 15C9B8B75F;
-        Wed,  7 Apr 2021 19:22:41 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id E92986799B; Wed,  7 Apr 2021 17:22:40 +0000 (UTC)
-Message-Id: <a2d0e529c6cff34343244469f0321420f80f2bb7.1617816138.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
-References: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 7/8] powerpc/mem: Inline flush_dcache_page()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  7 Apr 2021 17:22:40 +0000 (UTC)
+        id S1354793AbhDGRW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:22:56 -0400
+IronPort-SDR: NvYdEg7dBCcx2y7w/UeX8UUFtbIW3h2I0w/n0cm4RP9TDI4V5uPElchIwyoNIRPs7FiXKgk/zM
+ 2bOIbvlXFh4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193402814"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="193402814"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:22:46 -0700
+IronPort-SDR: KwRl/Bnk4CW00c6/1V3Y0pBj3HWwW469ITP0J+7ckACoT5J/yen/fYNsRM+UpncpcDyIEyF8sr
+ 7soW871bFdKw==
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="519516437"
+Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:22:43 -0700
+References: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com> <20210324183610.4574-2-maciej.kwapulinski@linux.intel.com> <CAHp75Vf54GNsw_xWqiOhZx5aHHnQ_-wUWugQ8w9vJPRheLxHFA@mail.gmail.com>
+User-agent: mu4e 1.4.13; emacs 26.3
+From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v2 01/13] intel_gna: add driver module
+In-reply-to: <CAHp75Vf54GNsw_xWqiOhZx5aHHnQ_-wUWugQ8w9vJPRheLxHFA@mail.gmail.com>
+Date:   Wed, 07 Apr 2021 19:22:40 +0200
+Message-ID: <85sg42nh5r.fsf@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_dcache_page() is only a few lines, it is worth
-inlining.
 
-ia64, csky, mips, openrisc and riscv have a similar
-flush_dcache_page() and inline it.
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 
-On pmac32_defconfig, we get a small size reduction.
-On ppc64_defconfig, we get a very small size increase.
+> On Wed, Mar 24, 2021 at 8:38 PM Maciej Kwapulinski
+> <maciej.kwapulinski@linux.intel.com> wrote:
+>>
+....
+>> diff --git a/include/uapi/misc/intel/gna.h b/include/uapi/misc/intel/gna.h
+>> new file mode 100644
+>> index 000000000000..a7e435b74a0a
+>> --- /dev/null
+>> +++ b/include/uapi/misc/intel/gna.h
+>> @@ -0,0 +1,155 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+>> +/* Copyright(c) 2017-2021 Intel Corporation */
+>> +
+>> +#ifndef _UAPI_GNA_H_
+>> +#define _UAPI_GNA_H_
+>> +
+>> +#if defined(__cplusplus)
+>> +extern "C" {
+>> +#endif
+>
+>> +#include <linux/types.h>
+>> +#include <linux/ioctl.h>
+>> +#include <linux/const.h>
+>
+> Ordered?
+>
+What do You mean?
 
-In both case that's in the noise (less than 0.1%).
+>>
+......
+>> +struct gna_compute_cfg {
+>> +       __u32 layer_base;
+>> +       __u32 layer_count;
+>> +
+>> +       /* List of GNA memory buffers */
+>> +       __u64 buffers_ptr;
+>> +       __u64 buffer_count;
+>> +
+>> +       __u8 active_list_on;
+>> +       __u8 gna_mode;
+>> +       __u8 hw_perf_encoding;
+>> +       __u8 pad[5];
+>> +};
+>> +
+>> +union gna_parameter {
+>> +       struct {
+>> +               __u64 id;
+>> +       } in;
+>> +
+>> +       struct {
+>> +               __u64 value;
+>> +       } out;
+>> +};
+>> +
+>> +union gna_memory_map {
+>> +       struct {
+>> +               __u64 address;
+>> +               __u32 size;
+>> +               __u32 pad;
+>> +       } in;
+>> +
+>> +       struct {
+>> +               __u64 memory_id;
+>> +       } out;
+>> +};
+>> +
+>> +union gna_compute {
+>> +       struct {
+>> +               struct gna_compute_cfg config;
+>> +       } in;
+>> +
+>> +       struct {
+>> +               __u64 request_id;
+>> +       } out;
+>> +};
+>> +
+>> +union gna_wait {
+>> +       struct {
+>> +               __u64 request_id;
+>> +               __u32 timeout;
+>> +               __u32 pad;
+>> +       } in;
+>> +
+>> +       struct {
+>> +               __u32 hw_status;
+>> +               __u32 pad;
+>> +               struct gna_drv_perf drv_perf;
+>> +               struct gna_hw_perf hw_perf;
+>> +       } out;
+>> +};
+>
+> For all unions:
+> How do you know which branch is used (out, in)? What field and where
+> in the ABI points to that?
 
-text		data	bss	dec		hex	filename
-18991155	5934744	1497624	26423523	19330e3	vmlinux64.before
-18994829	5936732	1497624	26429185	1934701	vmlinux64.after
-9150963		2467502	 184548	11803013	 b41985	vmlinux32.before
-9149689		2467302	 184548	11801539	 b413c3	vmlinux32.after
+each of the unions above plays the role of in/out argument to its
+corresponding ioctl call.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/cacheflush.h | 14 +++++++++++++-
- arch/powerpc/mm/mem.c                 | 15 ---------------
- 2 files changed, 13 insertions(+), 16 deletions(-)
+'in' part is used when ioctl() is called by client (userland
+application) - data is written by app.
 
-diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
-index 9110489ea411..7564dd4fd12b 100644
---- a/arch/powerpc/include/asm/cacheflush.h
-+++ b/arch/powerpc/include/asm/cacheflush.h
-@@ -30,7 +30,19 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
- #endif /* CONFIG_PPC_BOOK3S_64 */
- 
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
--extern void flush_dcache_page(struct page *page);
-+/*
-+ * This is called when a page has been modified by the kernel.
-+ * It just marks the page as not i-cache clean.  We do the i-cache
-+ * flush later when the page is given to a user process, if necessary.
-+ */
-+static inline void flush_dcache_page(struct page *page)
-+{
-+	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE))
-+		return;
-+	/* avoid an atomic op if possible */
-+	if (test_bit(PG_dcache_clean, &page->flags))
-+		clear_bit(PG_dcache_clean, &page->flags);
-+}
- 
- void flush_icache_range(unsigned long start, unsigned long stop);
- #define flush_icache_range flush_icache_range
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 460ab5000a3f..65b2205839fe 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -458,21 +458,6 @@ static void flush_dcache_icache_phys(unsigned long physaddr)
- }
- #endif
- 
--/*
-- * This is called when a page has been modified by the kernel.
-- * It just marks the page as not i-cache clean.  We do the i-cache
-- * flush later when the page is given to a user process, if necessary.
-- */
--void flush_dcache_page(struct page *page)
--{
--	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE))
--		return;
--	/* avoid an atomic op if possible */
--	if (test_bit(PG_dcache_clean, &page->flags))
--		clear_bit(PG_dcache_clean, &page->flags);
--}
--EXPORT_SYMBOL(flush_dcache_page);
--
- static void __flush_dcache_icache(void *p);
- 
- static void flush_dcache_icache_hugepage(struct page *page)
--- 
-2.25.0
+'out' part is read by app on exit from ioctl(), but only when ioctl()
+retuns 0.
 
+do You suggest adding the comment to gna.h for the above?
+
+> .....
