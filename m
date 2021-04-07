@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6E83571ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BBC3571F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbhDGQLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S244147AbhDGQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236529AbhDGQLL (ORCPT
+        with ESMTP id S234072AbhDGQMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:11:11 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D726C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:11:01 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d124so4406119pfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:11:01 -0700 (PDT)
+        Wed, 7 Apr 2021 12:12:18 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DEEC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:12:08 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id f6so12495494wrv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DiVOnoRaOKWzvOjowAkfK5gmTOofYlhr3RJ2hit0GwM=;
-        b=m6AJkn/rVeDyMIthqlgy8KQvKd3h+thfr5PHrr2NxQ7yoFq/nwmn8amXFL4OlD3i4X
-         b4sUW79MlVz2GxS59lNlvqJUMMVdVKpV8JCJHu0pEsaia2VRVGPgKbfSRAJZ96vOQJo1
-         zWvqWycS5RcdPA4/xRdi6vyFgtj+5CMYEgYqIUASdOJPdcUIFR0n2UiQ31WSor1XjN2R
-         KXVLuVwwSKFQyFImJ+YOoVibjCPABKxSuYvuVVTijpkKwsFwve8z/5XfItsgtcVeQjrK
-         XPdIPTIxii3FJVutW7I/heAvz7/6mf0RSfNbsbrdPd28kBQyFrN6x+8tMqXrgpVKG+uR
-         b1xA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=aXJMkbHYuGwBccedw3JgWsefWKqhfd6TEzDaHSegUOk=;
+        b=R1KnRH95esdS9oJngTJiNZ2CatqOweuDjwG7YueIAq4yybD/VqsfZ7XUCxLdZdV6E4
+         EgCwKrBgJakPq7fABuDUdxThqaCjFwI+J0xkoC3TYzYF0De073O6zoat8QwcVZzCMG6l
+         Qw8yzziCKkwuhe3bq1f6I2Cs3c0VMl26WY5EnMT9BstwjrQsRMCGIYBPBUBljreJ9upE
+         +U8Fx16+sZxpq/7UNpd012yPcJ6kSHJAmeAnD+2CbXpGp1W8AqEsO8+HLlTNqXlp7Sk+
+         yHNusFxLGV27vhSQcfcjfAlr4WwAry0e/9qLEkAAk4i/6McwwdFrKKVjsuT0gGdZfdn/
+         laQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DiVOnoRaOKWzvOjowAkfK5gmTOofYlhr3RJ2hit0GwM=;
-        b=a37BB2NMQ8w34AUAQN8JBV5yXyl0ZbzRUNkYtpd5D2TwOHlbw4kj3HckuQryEQvfO4
-         U2XVpSyJ6r0+a2oS0sS/MCK3wiUA8Oj/xmP1lSsb6RIe96yfNXqZVPmt4bB/6oeJyY+V
-         Udajxzf9Fpozd9Ue94IkJSEUhWr1mEdgvJGr981tgDu6dEpnHORGXkk3oi5UmlZA0vyg
-         QcNfqXEloL4sOKwOecdtqZt+K/KiX+rNmSJoqVyvrkOUrxpBcvWO6DOI5jyH7b6dGtiw
-         1HNy3Iw5HpX5oSXOQbhKm/d5yIctscXlQ2WezlPhR85uoS57MEmSS51n4+S8iuVtWtGP
-         djjQ==
-X-Gm-Message-State: AOAM531Vwuz22RxsosB1PSTcbJWmb4vf9q5mVOhiJLJEXJEGBL3odCkP
-        4piGJhCT8a1qgrN3jt4KhOHsmw==
-X-Google-Smtp-Source: ABdhPJxqGgOrRHzTvoA6k1tboczIppwck3D1i8PrK5gDRMlnpocoVFqHNJb6tTx9nV2ErqjVaK8nyA==
-X-Received: by 2002:aa7:9804:0:b029:1f1:5340:77c1 with SMTP id e4-20020aa798040000b02901f1534077c1mr3584600pfl.72.1617811860852;
-        Wed, 07 Apr 2021 09:11:00 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id q19sm22379844pff.91.2021.04.07.09.11.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=aXJMkbHYuGwBccedw3JgWsefWKqhfd6TEzDaHSegUOk=;
+        b=bCSHgqw3aSytidkejTtsbUMhmddqgR0l0G7frGEx3FGC+8ny4e1DadssZ64L4PVjOQ
+         Z6koXghtWswq+7y2gmSc7LGDSF8LEkvBgqt93+8l4Wq7WRC9IQEkHq12jZF8IbgysoPl
+         e7e+urxXbxfR5LIaoKIJYNEktzUUAxHCr5BuKHwTY/4co603jWWHH5bdcqg07IFA+JFw
+         Kv7gbxr5GD/gJifu9QBEh7oV29W96Xrwcii6h65PUgaNZ9+InxRlmrZqhgEKrHK1LKiO
+         tEzc5tpkCJpLm2VVjastAFI7u1EsvRALfgMwvjnSuKotnJ1qny5FtxrpxI67PgFwpZej
+         UJ2g==
+X-Gm-Message-State: AOAM533w42zZKDYfKfmV56JeEV2dTn0dTi24Hau9T8+Wvf91jQDpU2TH
+        2JvCM089GvvU43TqkLyGedU=
+X-Google-Smtp-Source: ABdhPJyGIvPG0ARpLbeJXdpIZSUFIA2iFlDIsg3HEkuSdEsupu8NtfeJLY9X5lt1/1vMEkYcg+Eedw==
+X-Received: by 2002:adf:d4cc:: with SMTP id w12mr5311147wrk.49.1617811927452;
+        Wed, 07 Apr 2021 09:12:07 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id w7sm6211481wro.43.2021.04.07.09.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 09:11:00 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:10:58 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] remoteproc: pru: Fix and cleanup firmware
- interrupt mapping logic
-Message-ID: <20210407161058.GA418374@xps15>
-References: <20210407155641.5501-1-s-anna@ti.com>
- <20210407155641.5501-4-s-anna@ti.com>
+        Wed, 07 Apr 2021 09:12:07 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 21:12:02 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>, hverkuil@xs4all.nl
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] staging: axis-fifo: remove redundant dev_err call
+Message-ID: <20210407161202.GA1505056@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407155641.5501-4-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:56:41AM -0500, Suman Anna wrote:
-> The PRU firmware interrupt mappings are configured and unconfigured in
-> .start() and .stop() callbacks respectively using the variables 'evt_count'
-> and a 'mapped_irq' pointer. These variables are modified only during these
-> callbacks but are not re-initialized/reset properly during unwind or
-> failure paths. These stale values caused a kernel crash while stopping a
-> PRU remoteproc running a different firmware with no events on a subsequent
-> run after a previous run that was running a firmware with events.
-> 
-> Fix this crash by ensuring that the evt_count is 0 and the mapped_irq
-> pointer is set to NULL in pru_dispose_irq_mapping(). Also, reset these
-> variables properly during any failures in the .start() callback. While
-> at this, the pru_dispose_irq_mapping() callsites are all made to look
-> the same, moving any conditional logic to inside the function.
-> 
-> Fixes: c75c9fdac66e ("remoteproc: pru: Add support for PRU specific interrupt configuration")
-> Reported-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> v2:
->  - Fixed two additional cleanup paths in pru_handle_intrmap()
->    addressing Mathieu's review comment
-> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210323223839.17464-4-s-anna@ti.com/
-> 
->  drivers/remoteproc/pru_rproc.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
->
+devm_ioremap_resource() prints error message in itself. Remove the
+dev_err call to avoid redundant error message.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/staging/axis-fifo/axis-fifo.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
+index 2bb1c2e9cb57..ed9281089738 100644
+--- a/drivers/staging/axis-fifo/axis-fifo.c
++++ b/drivers/staging/axis-fifo/axis-fifo.c
+@@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
+ 	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
+ 	if (IS_ERR(fifo->base_addr)) {
+ 		rc = PTR_ERR(fifo->base_addr);
+-		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
+ 		goto err_initial;
+ 	}
  
-> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> index 87b43976c51b..04863bf23db8 100644
-> --- a/drivers/remoteproc/pru_rproc.c
-> +++ b/drivers/remoteproc/pru_rproc.c
-> @@ -266,12 +266,17 @@ static void pru_rproc_create_debug_entries(struct rproc *rproc)
->  
->  static void pru_dispose_irq_mapping(struct pru_rproc *pru)
->  {
-> -	while (pru->evt_count--) {
-> +	if (!pru->mapped_irq)
-> +		return;
-> +
-> +	while (pru->evt_count) {
-> +		pru->evt_count--;
->  		if (pru->mapped_irq[pru->evt_count] > 0)
->  			irq_dispose_mapping(pru->mapped_irq[pru->evt_count]);
->  	}
->  
->  	kfree(pru->mapped_irq);
-> +	pru->mapped_irq = NULL;
->  }
->  
->  /*
-> @@ -307,8 +312,10 @@ static int pru_handle_intrmap(struct rproc *rproc)
->  	pru->evt_count = rsc->num_evts;
->  	pru->mapped_irq = kcalloc(pru->evt_count, sizeof(unsigned int),
->  				  GFP_KERNEL);
-> -	if (!pru->mapped_irq)
-> +	if (!pru->mapped_irq) {
-> +		pru->evt_count = 0;
->  		return -ENOMEM;
-> +	}
->  
->  	/*
->  	 * parse and fill in system event to interrupt channel and
-> @@ -317,13 +324,19 @@ static int pru_handle_intrmap(struct rproc *rproc)
->  	 * corresponding sibling PRUSS INTC node.
->  	 */
->  	parent = of_get_parent(dev_of_node(pru->dev));
-> -	if (!parent)
-> +	if (!parent) {
-> +		kfree(pru->mapped_irq);
-> +		pru->mapped_irq = NULL;
-> +		pru->evt_count = 0;
->  		return -ENODEV;
-> +	}
->  
->  	irq_parent = of_get_child_by_name(parent, "interrupt-controller");
->  	of_node_put(parent);
->  	if (!irq_parent) {
->  		kfree(pru->mapped_irq);
-> +		pru->mapped_irq = NULL;
-> +		pru->evt_count = 0;
->  		return -ENODEV;
->  	}
->  
-> @@ -398,8 +411,7 @@ static int pru_rproc_stop(struct rproc *rproc)
->  	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
->  
->  	/* dispose irq mapping - new firmware can provide new mapping */
-> -	if (pru->mapped_irq)
-> -		pru_dispose_irq_mapping(pru);
-> +	pru_dispose_irq_mapping(pru);
->  
->  	return 0;
->  }
-> -- 
-> 2.30.1
-> 
+-- 
+2.25.1
+
