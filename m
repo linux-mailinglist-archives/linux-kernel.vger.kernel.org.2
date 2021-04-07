@@ -2,84 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501AA35621B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375DC356225
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348445AbhDGDty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:49:54 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:22768 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348435AbhDGDtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:49:53 -0400
-Received: from localhost.localdomain (unknown [10.192.24.118])
-        by mail-app2 (Coremail) with SMTP id by_KCgD3vmzHK21gGWbRAA--.21899S4;
-        Wed, 07 Apr 2021 11:49:31 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: light: gp2ap002: Fix rumtime PM imbalance on error
-Date:   Wed,  7 Apr 2021 11:49:27 +0800
-Message-Id: <20210407034927.16882-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgD3vmzHK21gGWbRAA--.21899S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFWxGw45XF4UZF45Zw45Awb_yoWkJFX_Cr
-        1j93ZrJr45AFnaga47tw15ZryY9Fy2qa18Wr1rtFnxG34Uu393CrZ8XrZxAay5Wr4aqF1D
-        X3yqgFn29w4fGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoGBlZdtTQGhAAJsJ
+        id S1348482AbhDGDuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:50:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348457AbhDGDuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:50:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED77A61245;
+        Wed,  7 Apr 2021 03:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617767396;
+        bh=3yPZvyfKsvop+5Gmiujbfk7NPCkDAXBYVU2vefEFYQo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ipYxTt0FiNQw05eYtHLNJgNAQuT7f/N2I9+GKUFdVSHtU+z6xO39CYuDewaIvfzJ6
+         gSFHN40w7kvHZOYdYu4r6WAakXKxe8KSt4xQYBTwBh/crCtZ9Ibp9JQ+/+0pgZAaJo
+         qxFqh4/JFPpU0qgrzwsI9rEOOOWCA7KuD3X5eYSB/0Zy8VGKfKR1chxSI6kQb9rrDo
+         WYt5kz0JdZtqsi4qPx9Z7vA+XuuQMDqexwPMD6hv8V10rZgY8VqWgH5z8mTjq1XPL1
+         BNGHrRHOP9TZEq1nU0/uXAuq297UfEDZPmt2FTTqTzmJmTaH/UELMnB6F1tGF2yAnj
+         bz78sIBQr5gVw==
+Message-ID: <6b7d173f940ecf02ba1f8c8d636b91329be4a5c1.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5: fix kfree mismatch in indir_table.c
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, vladbu@nvidia.com,
+        dlinkin@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        roid@nvidia.com, dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, xiaoqian9@huawei.com
+Date:   Tue, 06 Apr 2021 20:49:55 -0700
+In-Reply-To: <YGqYfcCMWTW8fN7U@unreal>
+References: <20210405025339.86176-1-nixiaoming@huawei.com>
+         <YGqYfcCMWTW8fN7U@unreal>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When devm_request_threaded_irq() fails, we should decrease the
-runtime PM counter to keep the counter balanced. But when
-iio_device_register() fails, we need not to decrease it because
-we have already decreased it before.
+On Mon, 2021-04-05 at 07:56 +0300, Leon Romanovsky wrote:
+> On Mon, Apr 05, 2021 at 10:53:39AM +0800, Xiaoming Ni wrote:
+> > Memory allocated by kvzalloc() should be freed by kvfree().
+> > 
+> > Fixes: 34ca65352ddf2 ("net/mlx5: E-Switch, Indirect table
+> > infrastructur")
+> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > ---
+> >  .../net/ethernet/mellanox/mlx5/core/esw/indir_table.c  | 10 +++++-
+> > ----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
+> 
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/iio/light/gp2ap002.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Applied to net-mlx5.
 
-diff --git a/drivers/iio/light/gp2ap002.c b/drivers/iio/light/gp2ap002.c
-index 7ba7aa59437c..040d8429a6e0 100644
---- a/drivers/iio/light/gp2ap002.c
-+++ b/drivers/iio/light/gp2ap002.c
-@@ -583,7 +583,7 @@ static int gp2ap002_probe(struct i2c_client *client,
- 					"gp2ap002", indio_dev);
- 	if (ret) {
- 		dev_err(dev, "unable to request IRQ\n");
--		goto out_disable_vio;
-+		goto out_put_pm;
- 	}
- 	gp2ap002->irq = client->irq;
- 
-@@ -613,8 +613,9 @@ static int gp2ap002_probe(struct i2c_client *client,
- 
- 	return 0;
- 
--out_disable_pm:
-+out_put_pm:
- 	pm_runtime_put_noidle(dev);
-+out_disable_pm:
- 	pm_runtime_disable(dev);
- out_disable_vio:
- 	regulator_disable(gp2ap002->vio);
--- 
-2.17.1
+Thanks,
+Saeed.
 
