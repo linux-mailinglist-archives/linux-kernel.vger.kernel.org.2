@@ -2,85 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EC4356F54
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2C3356F5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240673AbhDGOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:53:06 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:45638 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhDGOxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:53:02 -0400
-Received: by mail-pg1-f173.google.com with SMTP id d10so8398682pgf.12;
-        Wed, 07 Apr 2021 07:52:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x11JedQ758JkCFaOFtBqoObk8A4GggupZY+sy4Vsx4U=;
-        b=We6nXCyf2ThfIHiPj+hVS4vBiZUxMaOh96gV0XeUcSuuOyMXQxHLx1enXPs+TmcBbA
-         OkzQx9C2gYdlh2H2XSygfMvVIastHYEpgCJ0xWr/cg4ZoWd8q5+pFn3jWvjybbdcg9H+
-         H8YX4LLCgcC+R/FVi0ffhISyLc6YHt4hTg4uB12xhSM92pW5n/BALOA0UO55w9N/gD1X
-         +2+9CFXGpU2pM+u4Yv5Pj88xpVZoqd7f3uYgphvcr0XeNNgrD87B07p4oACZX4VPoIIk
-         Xms9HTgXNeoTuPC+kEABa8KKyzJefTjbeibMJITuAY/NbFecu8SXcCsIX3zH4/EoQJFV
-         g93A==
-X-Gm-Message-State: AOAM533ZHqqbO64rHSMRiw+RIxKs2mC91r/t6t2JPMVVvssC33+nsg9S
-        pphy0QzBKkg7HXQSPhdJgxU=
-X-Google-Smtp-Source: ABdhPJw+Obi6cmgWa245v+vfQ1ayLJmpONEwFsqx+XnbdVDKj1LvWJlkSOhHu1/VUmuPUn5epZYWdQ==
-X-Received: by 2002:a63:e5c:: with SMTP id 28mr3634340pgo.365.1617807172997;
-        Wed, 07 Apr 2021 07:52:52 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id f2sm20793876pfe.177.2021.04.07.07.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:52:52 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 6804E402D7; Wed,  7 Apr 2021 14:52:51 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 14:52:51 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
-        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210407145251.GD4332@42.do-not-panic.com>
-References: <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGtDzH0dEfEngCij@google.com>
- <20210405190023.GX4332@42.do-not-panic.com>
- <YGtrzXYDiO3Gf9Aa@google.com>
- <20210406002909.GY4332@42.do-not-panic.com>
- <YG0JouWqrJPHbpqz@google.com>
- <YG0NEIUfJ5lmS4DL@google.com>
+        id S1344960AbhDGOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:55:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230426AbhDGOzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:55:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E61A61363;
+        Wed,  7 Apr 2021 14:54:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617807298;
+        bh=T3bdSkR62iNXCFNvEUgWE4U9vYx3ZLghfahBzX69+J8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qkl6gp2hy6ajVoGP2vncEY4HbHaohQtNNsyEYyHtUcFMkmlVkVmHl000rB+4IPWL0
+         sBbwisc/EGoMNr4LLXTu7/eFnyuhUOgs3OxdQ7wu8WqoOYw5JgjlA2JYfbgWjSj7aZ
+         FN8RZuvElC1WR76jaLFWgarG4WGkuTzBbHIm9tEM=
+Date:   Wed, 7 Apr 2021 16:53:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Phy <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [GIT PULL]: Generic phy updates for v5.13-rc1
+Message-ID: <YG3HX6jAqNBQSoc4@kroah.com>
+References: <YG2psdeBIlfYODdJ@vkoul-mobl.Dlink>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG0NEIUfJ5lmS4DL@google.com>
+In-Reply-To: <YG2psdeBIlfYODdJ@vkoul-mobl.Dlink>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 06:38:24PM -0700, Minchan Kim wrote:
-> To clarify what I understood form the discussion until now:
+On Wed, Apr 07, 2021 at 06:16:41PM +0530, Vinod Koul wrote:
+> Hello Greg,
 > 
-> 1. zram shouldn't allow creating more zram instance during
-> rmmod(It causes CPU multistate splat)
+> Please pull to receive generic phy updates for this cycle. This is usual
+> pull includes bunch of new driver/device support and updates to bunch of
+> drivers.
+> 
+> The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+> 
+>   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.13
 
-Right!
+Pulled and pushed out, thanks.
 
-> 2. the private data of gendisk shouldn't destroyed while zram
-> sysfs knob is working(it makes system goes crash)
-
-Yup, this is resolved with the bdgrab / bdput on each sysfs knob.
-
-And the last issue is:
-
-3) which patch 2/2 addresed. If a mutex is shared on sysfs
-knobs and module removal, you must do try_module_get() to prevent
-the deadlock.
-
-  Luis
+greg k-h
