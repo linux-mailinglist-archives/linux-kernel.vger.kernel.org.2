@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2D3356736
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0953A356738
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349712AbhDGIub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        id S1345610AbhDGIwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349709AbhDGIrD (ORCPT
+        with ESMTP id S1349634AbhDGIrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:47:03 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CB5C06174A;
-        Wed,  7 Apr 2021 01:46:54 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y16so318496pfc.5;
-        Wed, 07 Apr 2021 01:46:53 -0700 (PDT)
+        Wed, 7 Apr 2021 04:47:13 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31385C06174A;
+        Wed,  7 Apr 2021 01:47:02 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id y2so8987171plg.5;
+        Wed, 07 Apr 2021 01:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NZttKhZHU6qaVsRmUnPJpvZt0Hi/pFu56dbeZNbDXtU=;
-        b=UDQs+QKztlc50Xzz9tDRt+AdeuvS//lqLAuKnWXU/KpkdRIyYns185alJd77pimmOQ
-         Rm+SXfRq7Nbp44iFj09DlIBP8pB9Q/wr1Jktw0TsONZCLU6cUjKoAcBW9MELgEDcm9Fe
-         pjdoHv/Z1K75roAdGxxxm60OLnxr6B3j/huNdwRUOBcR/NfWwdJ0T2Ry1GSBSm5M8gQG
-         cPX3YXLL7dtqUWW4/37Lsyk3k7L76r1KootJDPbDvQIsbhQfbSpG/LRrVUU53kFzKElU
-         mZPAf+0lfHR42X+g8hHRO6PYug2sgsVVq7CJaXGQetXBqPCEBbWZWj0if+0XEWIBGBV8
-         f3cA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KeY95AeaW248Jdni2uKvtKqKIpZ35VMIWlXLR/IAGFU=;
+        b=QlTa9aP6Od7FRmPn45rgC6QgvbyPeSaUqqGMgJI574hUAXI30YiCad8zR/vfRum8rn
+         bhp59cc10nLLdv2XVktckU+8S7828tO16CSXjgbps66TMuDZFZ0LzxuRVPGbzuslec26
+         +awDgEZR+lA0lrF0Lnga3QictO9eeiBzB1auWCF2sVD4DXbJR6vLI1z/CNINmHvPG6fL
+         qfogY65ne/lrMSGhJW72ytN9SRtIRDCPzSxG+MIdSIiAk1bw/dDODSSlSaqFLodVPo9q
+         DsyX3xViFtQwHSxtWgPQmeXY4dszboeWg2Ua2QdGmRSXfuIaI0IO8liu1qy6E2zbHH3H
+         7uYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NZttKhZHU6qaVsRmUnPJpvZt0Hi/pFu56dbeZNbDXtU=;
-        b=U6xGKAfqxrLQgJHPe8FmLF8x8gAHUPieu4V5pp/CReJ9GyzSX7OxC13PhDrWxFcuBe
-         p+9uywwNqYWqNFlvhv/DwkYgjcNSaVUavom7Y2H3iu/7hryQwVpvtRFxBiKyelypWZBM
-         XmUZqei/7l8wblDlpP0TenIP6K+m/cXFStjyIjcU2V2QQkmLIJkBcVFCtqo3szb6A5FK
-         y9NHvPsQnWrmpnPV1SYsfvrvy+b7jV8bbligwQjcSU5O/HQl/YTv09NzjkNigG1y20XT
-         u1n89YwY7faLBOL4CLLaVrqcJxrWMuueTDsdMTdtKCp7HePLkIzD596S6B9iYSNhAlN2
-         HtkA==
-X-Gm-Message-State: AOAM531S82T3LQNp51YK3OHnBH50CMnAve9+VKkWDXoWcn+2oT/6ajEm
-        gEQVmIbqutQQmub8myghsy5hC2PGm63Mb7qygDI=
-X-Google-Smtp-Source: ABdhPJyOREH8pH5Yw3mdnLvelVM7fjh26m8MXKE2FHM7iVCNEkdX6M5hYPv1kbA5tQgLzWX2dL38Pt50r64dgAgPi18=
-X-Received: by 2002:a63:3e4b:: with SMTP id l72mr2244351pga.203.1617785213524;
- Wed, 07 Apr 2021 01:46:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KeY95AeaW248Jdni2uKvtKqKIpZ35VMIWlXLR/IAGFU=;
+        b=hd0soErQ7VRdrqqRADNwejrVZSifdInyeyHUxjfN4pfBFz/HyISlk145SASc2Zqaw7
+         faKL5LKZx47Vr4+ZI+7Ob8fODHOLwSH32KbJ330hpHwIMnkT0SiBmsd0xl9EXK5JQEda
+         B3XkysFVmgedwa2vrHjbyizjG40rCLgkJpse/T86bp/vnYpvRjfKC1f6tOHPsGi6DzwI
+         yjdKAz5dQ6/mnZAb8S1DlFMqKmPKB7GCz9dihC9T6hy1XjJrNFyoIVJne4L1T4g47l2B
+         WTNTUTAsaA/md/GF8qCV1n8aqY5/AfEHrICrsAFtwgtwimm1geu94pJEgdghNNF37050
+         59Ew==
+X-Gm-Message-State: AOAM532Hym20Pp8gVg8id9TDe7opvSfVE33BYeR521puZkMVK7EiXW8q
+        MNDdkdxzy7hFxiUJaOFBSzg=
+X-Google-Smtp-Source: ABdhPJw44TtNfcCxo7ESQE1gXwUUjSfXVkGGGi1FC8066Y5uIGei+/cRtYs/4Qour1eengsFiwGJuQ==
+X-Received: by 2002:a17:903:2306:b029:e7:1c8d:63fc with SMTP id d6-20020a1709032306b02900e71c8d63fcmr2033664plh.35.1617785221783;
+        Wed, 07 Apr 2021 01:47:01 -0700 (PDT)
+Received: from localhost.localdomain ([134.173.248.5])
+        by smtp.gmail.com with ESMTPSA id k13sm20464718pfc.50.2021.04.07.01.47.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 01:47:01 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 01:46:59 -0700
+From:   Pavle Rohalj <pavle.rohalj@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/49] *** SUBJECT HERE ***
+Message-ID: <YG1xg+EXSWZWn+pE@localhost.localdomain>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+ <YG1aVx3UuXR2JrC+@kroah.com>
+ <YG1cCtbvINJ52tGT@localhost.localdomain>
+ <YG1gDV6vqnUtDnbT@kroah.com>
+ <YG1uNX1ZaZ106iy8@kroah.com>
 MIME-Version: 1.0
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com> <202104061143.E11D2D0@keescook>
-In-Reply-To: <202104061143.E11D2D0@keescook>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Apr 2021 11:46:37 +0300
-Message-ID: <CAHp75Ve+11u=dtNTO8BCohOJHGWSMJtb1nGCOrNde7bXaD4ehA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG1uNX1ZaZ106iy8@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:17 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > Here is the attempt to start cleaning it up by splitting out panic and
-> > oops helpers.
-> >
-> > At the same time convert users in header and lib folder to use new header.
-> > Though for time being include new header back to kernel.h to avoid twisted
-> > indirected includes for existing users.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> I like it! Do you have a multi-arch CI to do allmodconfig builds to
-> double-check this?
+On Wed, Apr 07, 2021 at 10:32:53AM +0200, Greg KH wrote:
+> On Wed, Apr 07, 2021 at 09:32:29AM +0200, Greg KH wrote:
+> > On Wed, Apr 07, 2021 at 12:15:22AM -0700, Pavle Rohalj wrote:
+> > > On Wed, Apr 07, 2021 at 09:08:07AM +0200, Greg KH wrote:
+> > > > On Tue, Apr 06, 2021 at 11:35:54PM -0700, Pavle Rohalj wrote:
+> > > > > Changes in v2:
+> > > > >     - Removed type information from variable names
+> > > > >     - Broken up the changes into smaller patches
+> > > > 
+> > > > Your subject is very odd :(
+> > > 
+> > > Sorry about that, I overlooked the fact that I reran format-patch. The
+> > > subject should be:
+> > > 
+> > > [PATCH] staging: sm750fb: Convert camel case to snake case
+> > > 
+> > > Should I resubmit?
+> > 
+> > Not yet, let me review these first, I think they might need some work...
+> > 
+> 
+> Ok, now you can fix them up, I stopped after reviewing patch 02/49,
+> these need some work.
+> 
+> thanks,
+> 
+> greg k-h
 
-Unfortunately no, I rely on plenty of bots that are harvesting mailing lists.
+Will do. Thank you.
 
-But I will appreciate it if somebody can run this through various build tests.
-
-> Acked-by: Kees Cook <keescook@chromium.org>
-
-Thanks!
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+-Pavle
