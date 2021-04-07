@@ -2,180 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819053567E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80093567E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350060AbhDGJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350049AbhDGJWK (ORCPT
+        id S1350067AbhDGJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:24:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52323 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234682AbhDGJYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:22:10 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45721C06175F;
-        Wed,  7 Apr 2021 02:22:01 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lU4Np-0004en-NP; Wed, 07 Apr 2021 11:21:57 +0200
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Wed, 7 Apr 2021 05:24:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617787450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tlZ5EX4vlLiK7uTh2WOAcGF4VH2fkTpffDQIz6e+AAI=;
+        b=a6UT+masL8LEXM+orIWlkpN/Lrn9oU3oFUgT3I5Qzsy0cBVxhF0poltEYE/6k51YmqXxSa
+        IKHDlVYEB3JNX1haIHUJb23XTrlZWNnoSpqZG5sc0jQ0yXLiI1X4X83Hk3ImoE6m8dIUQn
+        jY1hRuYXjckE3CFBVu01W7pbYsAWFrA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-3yD30eIOMCqcP4ipPn_XgQ-1; Wed, 07 Apr 2021 05:24:08 -0400
+X-MC-Unique: 3yD30eIOMCqcP4ipPn_XgQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9BA91006C80;
+        Wed,  7 Apr 2021 09:24:05 +0000 (UTC)
+Received: from [10.36.114.68] (ovpn-114-68.ams2.redhat.com [10.36.114.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2E3B19C78;
+        Wed,  7 Apr 2021 09:23:53 +0000 (UTC)
+Subject: Re: [PATCH v4 1/8] mm/cma: change cma mutex to irq safe spinlock
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 2/2] docs: reporting-issues: make everyone CC the regressions list
-Date:   Wed,  7 Apr 2021 11:21:56 +0200
-Message-Id: <813fc7b082a4b47ec6d34542971e9bba74fd4a51.1617786974.git.linux@leemhuis.info>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1617786974.git.linux@leemhuis.info>
-References: <cover.1617786974.git.linux@leemhuis.info>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210405230043.182734-1-mike.kravetz@oracle.com>
+ <20210405230043.182734-2-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2a89d349-0657-ba2b-dd07-7117570f8b4e@redhat.com>
+Date:   Wed, 7 Apr 2021 11:23:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617787321;cddfe957;
-X-HE-SMSGID: 1lU4Np-0004en-NP
+In-Reply-To: <20210405230043.182734-2-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make people CC the recently created mailing list dedicated to Linux
-kernel regressions when reporting one. Some paragraphs had to be
-reshuffled and slightly rewritten during the process, as the text
-otherwise would have gotten unnecessarily hard to follow.
+On 06.04.21 01:00, Mike Kravetz wrote:
+> cma_release is currently a sleepable operatation because the bitmap
+> manipulation is protected by cma->lock mutex. Hugetlb code which relies
+> on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
+> irq safe.
+> 
+> The lock doesn't protect any sleepable operation so it can be changed to
+> a (irq aware) spin lock. The bitmap processing should be quite fast in
+> typical case but if cma sizes grow to TB then we will likely need to
+> replace the lock by a more optimized bitmap implementation.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>   mm/cma.c       | 18 +++++++++---------
+>   mm/cma.h       |  2 +-
+>   mm/cma_debug.c |  8 ++++----
+>   3 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index f3bca4178c7f..995e15480937 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -24,7 +24,6 @@
+>   #include <linux/memblock.h>
+>   #include <linux/err.h>
+>   #include <linux/mm.h>
+> -#include <linux/mutex.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+>   #include <linux/log2.h>
+> @@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
+>   			     unsigned long count)
+>   {
+>   	unsigned long bitmap_no, bitmap_count;
+> +	unsigned long flags;
+>   
+>   	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
+>   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irqsave(&cma->lock, flags);
+>   	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irqrestore(&cma->lock, flags);
+>   }
+>   
+>   static void __init cma_activate_area(struct cma *cma)
+> @@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
+>   	     pfn += pageblock_nr_pages)
+>   		init_cma_reserved_pageblock(pfn_to_page(pfn));
+>   
+> -	mutex_init(&cma->lock);
+> +	spin_lock_init(&cma->lock);
+>   
+>   #ifdef CONFIG_CMA_DEBUGFS
+>   	INIT_HLIST_HEAD(&cma->mem_head);
+> @@ -392,7 +392,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>   	unsigned long nr_part, nr_total = 0;
+>   	unsigned long nbits = cma_bitmap_maxno(cma);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	pr_info("number of available pages: ");
+>   	for (;;) {
+>   		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
+> @@ -407,7 +407,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>   		start = next_zero_bit + nr_zero;
+>   	}
+>   	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   }
+>   #else
+>   static inline void cma_debug_show_areas(struct cma *cma) { }
+> @@ -454,12 +454,12 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+>   		goto out;
+>   
+>   	for (;;) {
+> -		mutex_lock(&cma->lock);
+> +		spin_lock_irq(&cma->lock);
+>   		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
+>   				bitmap_maxno, start, bitmap_count, mask,
+>   				offset);
+>   		if (bitmap_no >= bitmap_maxno) {
+> -			mutex_unlock(&cma->lock);
+> +			spin_unlock_irq(&cma->lock);
+>   			break;
+>   		}
+>   		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+> @@ -468,7 +468,7 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+>   		 * our exclusive use. If the migration fails we will take the
+>   		 * lock again and unmark it.
+>   		 */
+> -		mutex_unlock(&cma->lock);
+> +		spin_unlock_irq(&cma->lock);
+>   
+>   		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
+>   		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 68ffad4e430d..2c775877eae2 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -15,7 +15,7 @@ struct cma {
+>   	unsigned long   count;
+>   	unsigned long   *bitmap;
+>   	unsigned int order_per_bit; /* Order of pages represented by one bit */
+> -	struct mutex    lock;
+> +	spinlock_t	lock;
+>   #ifdef CONFIG_CMA_DEBUGFS
+>   	struct hlist_head mem_head;
+>   	spinlock_t mem_head_lock;
+> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
+> index d5bf8aa34fdc..2e7704955f4f 100644
+> --- a/mm/cma_debug.c
+> +++ b/mm/cma_debug.c
+> @@ -36,10 +36,10 @@ static int cma_used_get(void *data, u64 *val)
+>   	struct cma *cma = data;
+>   	unsigned long used;
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	/* pages counter is smaller than sizeof(int) */
+>   	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   	*val = (u64)used << cma->order_per_bit;
+>   
+>   	return 0;
+> @@ -53,7 +53,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>   	unsigned long start, end = 0;
+>   	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	for (;;) {
+>   		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
+>   		if (start >= bitmap_maxno)
+> @@ -61,7 +61,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>   		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
+>   		maxchunk = max(end - start, maxchunk);
+>   	}
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   	*val = (u64)maxchunk << cma->order_per_bit;
+>   
+>   	return 0;
+> 
 
-The new text also makes reporters include a line useful for automatic
-regression tracking solution which does not exist yet, but is planned.
-The term "#regzb" (short for regression bot) is inspired by the "#syz"
-which can be used to communicate with syszbot (see
-https://github.com/google/syzkaller/blob/master/docs/syzbot.md).
+You seem to have dropped my
 
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
-Lo! Now that we have a mailing list for regressions I was inclined to
-remove the "Make the report's subject start with '[REGRESSION]'" part
-from the text. But in the end I left it, to make it obvious on other
-lists that the mail is about a regression. Nevertheless, I'm still
-wondering if it should be toned down a bit, as it might be enough if the
-subject starts with "regression:" or contains the word somewhere.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-That automatic tracking solution hinted at in the commit message is
-something I plan to work on in the next months. It won't be another
-bugzilla-like tracker, more a simple database that works in the
-background like syzbot. I'm not attached to the "#regzb" term, so please
-speak up if you can think of something better that also works when
-searching the internet.
-
-Ciao, Thorsten
----
- .../admin-guide/reporting-issues.rst          | 64 +++++++++++++------
- 1 file changed, 44 insertions(+), 20 deletions(-)
-
-diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-index fd407c6951ea..45065c501beb 100644
---- a/Documentation/admin-guide/reporting-issues.rst
-+++ b/Documentation/admin-guide/reporting-issues.rst
-@@ -23,7 +23,8 @@ longterm series? One still supported? Then search the `LKML
- <https://lore.kernel.org/stable/>`_ archives for matching reports to join. If
- you don't find any, install `the latest release from that series
- <https://kernel.org/>`_. If it still shows the issue, report it to the stable
--mailing list (stable@vger.kernel.org).
-+mailing list (stable@vger.kernel.org) and CC the regressions list
-+(regressions@lists.linux.dev).
- 
- In all other cases try your best guess which kernel part might be causing the
- issue. Check the :ref:`MAINTAINERS <maintainers>` file for how its developers
-@@ -44,10 +45,11 @@ ensure it's vanilla (IOW: not patched and not using add-on modules). Also make
- sure it's built and running in a healthy environment and not already tainted
- before the issue occurs.
- 
--While writing your report, include all information relevant to the issue, like
--the kernel and the distro used. In case of a regression try to include the
--commit-id of the change causing it, which a bisection can find. If you're facing
--multiple issues with the Linux kernel at once, report each separately.
-+If you are facing multiple issues with the Linux kernel at once, report each
-+separately. While writing your report, include all information relevant to the
-+issue, like the kernel and the distro used. In case of a regression, CC the
-+regressions mailing list (regressions@lists.linux.dev) to your report; also try
-+to include the commit-id of the change causing it, which a bisection can find.
- 
- Once the report is out, answer any questions that come up and help where you
- can. That includes keeping the ball rolling by occasionally retesting with newer
-@@ -192,12 +194,14 @@ report them:
-    kernel. Ensure this kernel is not tainted and still shows the problem, as
-    the issue might have already been fixed there. If you first noticed the
-    problem with a vendor kernel, check a vanilla build of the last version
--   known to work performs fine as well.*
-+   known to work performs fine as well.
- 
-  * Send a short problem report to the Linux stable mailing list
--   (stable@vger.kernel.org). Roughly describe the issue and ideally explain
--   how to reproduce it. Mention the first version that shows the problem and
--   the last version that's working fine. Then wait for further instructions.*
-+   (stable@vger.kernel.org) and CC the Linux regressions mailing list
-+   (regressions@lists.linux.dev). Roughly describe the issue and ideally
-+   explain how to reproduce it.  Mention the commit or version that introduced
-+   the regression as outlined in 'Special handling for high priority issues'.
-+   Then wait for further instructions.
- 
- The reference section below explains each of these steps in more detail.
- 
-@@ -1236,14 +1240,32 @@ Reports for high priority issues need special handling.
- **Severe issues**: make sure the subject or ticket title as well as the first
- paragraph makes the severeness obvious.
- 
--**Regressions**: If the issue is a regression add [REGRESSION] to the mail's
--subject or the title in the bug-tracker. If you did not perform a bisection
--mention at least the latest mainline version you tested that worked fine (say
--5.7) and the oldest where the issue occurs (say 5.8). If you did a successful
--bisection mention the commit id and subject of the change that causes the
--regression. Also make sure to add the author of that change to your report; if
--you need to file your bug in a bug-tracker forward the report to him in a
--private mail and mention where your filed it.
-+**Regressions**: Make the report's subject start with '[REGRESSION]'.
-+
-+In case you performed a successful bisection, use the title of the change that
-+introduced the regression as the second part of your subject. Make the report
-+also mention the commit id of the culprit. For tracking purposes, add a line
-+like the following that contains both pieces of information, but with the
-+commit id shortened to 12 characters::
-+
-+    #regzb introduced: 94a632d91ad1 ("usc: xhbi-foo: check bar_params earlier")
-+
-+In case of an unsuccessful bisection, make your report mention the latest tested
-+version that's working fine (say 5.7) and the oldest where the issue occurs (say
-+5.8-rc1). For tracking purposes add a line expressing it like this::
-+
-+    #regzb introduced: v5.7..v5.8-rc1
-+
-+When sending the report by mail, CC the Linux regressions mailing list
-+(regressions@lists.linux.dev). In case the report needs to be filed to some web
-+tracker, proceed to do so; once filed, forward the report by mail to the
-+regressions list. Make sure to inline the forwarded report, hence do not attach
-+it. Also add a short note at the top where you mention the URL to the ticket and
-+repeat the line starting with '#regzb'.
-+
-+When mailing or forwarding the report, in case of a successful bisection add the
-+author of the culprit to the recipients; also CC everyone in the signed-off-by
-+chain, which you find at the end of its commit message.
- 
- **Security issues**: for these issues your will have to evaluate if a
- short-term risk to other users would arise if details were publicly disclosed.
-@@ -1523,9 +1545,11 @@ Report the regression
- ~~~~~~~~~~~~~~~~~~~~~
- 
-     *Send a short problem report to the Linux stable mailing list
--    (stable@vger.kernel.org). Roughly describe the issue and ideally explain
--    how to reproduce it. Mention the first version that shows the problem and
--    the last version that's working fine. Then wait for further instructions.*
-+    (stable@vger.kernel.org) and CC the Linux regressions mailing list
-+    (regressions@lists.linux.dev). Roughly describe the issue and ideally
-+    explain how to reproduce it. Mention the commit or version that introduced
-+    the regression as outlined in 'Special handling for high priority issues'.
-+    Then wait for further instructions.*
- 
- When reporting a regression that happens within a stable or longterm kernel
- line (say when updating from 5.10.4 to 5.10.5) a brief report is enough for
 -- 
-2.30.2
+Thanks,
+
+David / dhildenb
 
