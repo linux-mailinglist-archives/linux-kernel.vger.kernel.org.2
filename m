@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CF935765E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1B335766E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhDGU5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
+        id S231750AbhDGVAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230280AbhDGU5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:57:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2258661131;
-        Wed,  7 Apr 2021 20:57:04 +0000 (UTC)
+        id S231603AbhDGU76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B933461157;
+        Wed,  7 Apr 2021 20:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617829027;
-        bh=1Q2oOXUjRJwdCV+qOUNBymw/y9FGIdzI1jb6hvbjuZc=;
+        s=k20201202; t=1617829188;
+        bh=sNiMUrpcF7JCIFONZnfz0/BK1ymmENjoizIXIsUdAy8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jJg/YWZzVoLd0kBX/rSjkyXLycEWYmylXQ1cHt7V/whjGUBXNxjAc3sv9P5XuEiwm
-         ZBGB2LMPwY8/fh4rqU6SuG8gck+wGF6mabpwZ38fKlVyQp6aZTL5+u4uSQwjP3m4l/
-         GJaJFuEWSt6jJcXQtwFv45OT1478G3MES4y6mB1C6tdYBH3NJAUaO82M89AFI6yZ4u
-         KkMH3yVUQqvV3vNWuYg3SzLN4uu0ISzfxEzctlSDWUjwA/Y+htRSGkeKoEkdxRTN5R
-         SqLk3D1uLeLFmRwDIXyZMtCEL0h3U2jv3OZT9cGnMFG+YNR2kqWcP5Pw4Jw4szZKes
-         WmJiDe4QKNKqg==
-Date:   Wed, 7 Apr 2021 21:57:02 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, zhukeqian1@huawei.com,
-        yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v3 1/2] KVM: arm64: Move CMOs from user_mem_abort to
- the fault handlers
-Message-ID: <20210407205701.GA16198@willie-the-truck>
-References: <20210326031654.3716-1-wangyanan55@huawei.com>
- <20210326031654.3716-2-wangyanan55@huawei.com>
- <cd6c8a86-b7b2-3d3e-121a-c9d1cb23c4b3@arm.com>
+        b=A3lIlDBcoNuzA9mn2/q7yoSwhj/VqmvbRRMkPOw91ZpYqdgYkFmOOAbeMEYNuyf9a
+         mkx0l3la3/1KDC+FjIxHPlVxnN1mPvGibzc3DpQMe4kTAMu38oR1kp0HJBIBs5oETi
+         Z7N/6ezFOwgtchPnLLyx1LAK4Uk8GPZbUFtuGSKszT0f5UD9tRqjE3gvVjE/ZS9em/
+         zPRyJUqaki9uwH5NMbUsbciqfC1BtmkueRIYq6Se9C/meEI9zCcBrshXTM9BK0w+Ks
+         XwdhPYok2WtwQdmE9SEJlwmRQfU56Hle3EQyIpQ/x59lLP3PHVFu4nSsYp66a9drQ5
+         y+KjBL4N3XYvQ==
+Date:   Wed, 7 Apr 2021 13:59:46 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Message-ID: <YG4dQlLrsAAUL3eq@quark.localdomain>
+References: <20210407100421.27542-1-crecklin@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd6c8a86-b7b2-3d3e-121a-c9d1cb23c4b3@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210407100421.27542-1-crecklin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:31:31PM +0100, Alexandru Elisei wrote:
-> On 3/26/21 3:16 AM, Yanan Wang wrote:
-> > We currently uniformly permorm CMOs of D-cache and I-cache in function
-> > user_mem_abort before calling the fault handlers. If we get concurrent
-> > guest faults(e.g. translation faults, permission faults) or some really
-> > unnecessary guest faults caused by BBM, CMOs for the first vcpu are
+On Wed, Apr 07, 2021 at 06:04:21AM -0400, Chris von Recklinghausen wrote:
+> Suspend fails on a system in fips mode because md5 is used for the e820
+> integrity check and is not available. Use crc32 instead.
 > 
-> I can't figure out what BBM means.
+> Prior to this patch, MD5 is used only to create a digest to ensure integrity of
+> the region, no actual encryption is done. This patch set changes the integrity
+> check to use crc32 instead of md5 since crc32 is available in both FIPS and
+> non-FIPS modes.
+> 
+> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+>        by md5 digest")
+> 
+> Tested-by: Dexuan Cui <decui@microsoft.com>
+> Reviewed-by: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
 
-Oh, I know that one! BBM means "Break Before Make". Not to be confused with
-DBM (Dirty Bit Management) or BFM (Bit Field Move).
+Please include an explanation about whether this use case requires cryptographic
+security or not.
 
-Will
+- Eric
