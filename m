@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0ED35756A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9B135756C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355879AbhDGUGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        id S1355885AbhDGUHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348993AbhDGUGs (ORCPT
+        with ESMTP id S1348993AbhDGUHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:06:48 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E267BC06175F;
-        Wed,  7 Apr 2021 13:06:37 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a25so6679766ejk.0;
-        Wed, 07 Apr 2021 13:06:37 -0700 (PDT)
+        Wed, 7 Apr 2021 16:07:23 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF40C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:07:11 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id s17so22196765ljc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aI6cOghiWYjCiHchhUfiqlnmiN5p4vpRRk7oBn0oTfc=;
-        b=pTRv6KdXntHuZQbgOqen/DUsVLkp5O76CbG+CFvIi1N/0cRhoV3XTLnxuxlmtxWP3Y
-         5Dj7myJ2kYsD75gvIxq6WKhbLeg4QqtJp26lKQsVPUCOxpZ0ZlUZy32zJKfr5Zws5LrO
-         Sye8kjaojoYZUunptpvQeheovFfIFgyLWxa84GJvcrtprh3EblbSC4TXhCuLG4U7Hk/t
-         0Cf0+f9dAPWiDjkQy5Lyb6tITCHxGCGrDtA3XN2cInurfEfT2Hek7nKNBNOVXeeZ04Jv
-         X2tvEXkAw6agFpDMzISd4QsRh+kV61TEDy9+Be2QpklepEwjwGSIVWXWDDLuik9lLP17
-         XlcA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/vai0nU8ahUeqHDsInaV1wXMfAHCPGayRkelay9Gu/c=;
+        b=StO8y4z0YJ2sIRuWD+p8e7Q0l2T+hS4BK/yjQ6bJK+W10NuDwLqYxNiiGdsE6ZzdY0
+         j5a8upBcHwOMaeAl62P8GmWlvbXebRR1GVHqOaslaIr91tYKokBXvYck8jWN1FSox0uJ
+         f23DP4ylp17dus6Ds57Y6XXprOAWwypPgbcijbM5PZzQLyV3q+rOPlt1/mn6vWpoNyfW
+         HlLXSB0B4lK9jeO6DQki1BUO7LRGpviFWusMBzKk0drwLzvY+sXaAZ9PQd9l3ODJty6S
+         QeagHf5w5w8L/IkKxk3MQlf4KB8kMF6aejgoi++beiL9iNTK7ECFVgeSUDS7FOUgBEJs
+         v0bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aI6cOghiWYjCiHchhUfiqlnmiN5p4vpRRk7oBn0oTfc=;
-        b=c+R3xqnGd1CcV5T77gWDyA/G0qeVnH2FyJyXKgIxQ1VGQILQhtpRpwBtf1n5wj5bq0
-         Vgs4iS6odrYXDPZs4MXQAOUf810lBXxBnW5cG8oUxPDD2Xph4JFlsTipRkUfjJYSnXO8
-         IK9e/OG62CSNnBOgLnwoNVMws8wfruDtXI6SJuG3Q59jOXj3ANPvi06Wc2sIjgI1Cxo2
-         1Xay2/dgwRSbbwiX+WAUrA9bArsugEsjGUJWpJkaZF0RKXx7KqlUlwdqztmyA5ncOSKJ
-         ZQ8fQwpIjlSaMEoOchCRosdcRbRbbSpWK02XV6Ml9fyb130GjlJDmZV6xPtcfrxkuEXI
-         dfZg==
-X-Gm-Message-State: AOAM533wGeSHWd6L1ThXA7f6lN9UQBE0GDwMLjrXxLjyugtFihYbD15m
-        IEjE+RJp0FT/Y3AyikNsSC36YI2/EA==
-X-Google-Smtp-Source: ABdhPJy2EsZT9JRFlsWFJzIJKhXXNJihCCrih/+ZUzzmfUUT4DhP2RhPo/S3+e4u9l9ARN60H9XLfg==
-X-Received: by 2002:a17:906:2704:: with SMTP id z4mr5691197ejc.137.1617825996663;
-        Wed, 07 Apr 2021 13:06:36 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.252.73])
-        by smtp.gmail.com with ESMTPSA id gn19sm12802439ejc.4.2021.04.07.13.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 13:06:36 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 23:06:34 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] proc: smoke test lseek()
-Message-ID: <YG4QymNCjgGR/cPk@localhost.localdomain>
-References: <20210328221524.ukfuztGsl%akpm@linux-foundation.org>
- <YG4OIhChOrVTPgdN@localhost.localdomain>
- <20210407195809.GG2531743@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/vai0nU8ahUeqHDsInaV1wXMfAHCPGayRkelay9Gu/c=;
+        b=Mu/iKSNNWpwDe2eEzm2nw7A12BA3E6hS2fPSVD9F7WF9X1Z4FeOmJZ5AYwdypF7Mum
+         40hB+0ZWOlhRxFmL9NpFmUbG4+h4cJKvHM4QvbigVcHzuq8EH0v8oUBCN5HaL5NqVzXm
+         sJyqDAWs3nlgw0ae0tLRkO7rYwRfPs23xuF7zkZ/tO8TdHCo+yLL35KPyDKaFd0S5n25
+         enPaNrV80rG3A4CGCaB9Rl4qv18UsigUAO2itVI8YuClUoMuqVcMyZT0MP80IZP07dzx
+         bvI0s/76cZZw4tg05GYJM1yctKGVaaO+3X21drV84+aPOyu3VzrAsSCObtYeiETH5Jw5
+         cD+w==
+X-Gm-Message-State: AOAM531MwpOV6/xhX0rzwJzbCW7ULdexY0LCIaTjvdNuxoQpqG2X5BUy
+        vmYDJojNMhobaHJb9BK17fT58r+d0viztdP8NZX9ZA==
+X-Google-Smtp-Source: ABdhPJyndP97T1i1A544kUEqIbgjl3iGA5vSMvrx036WuFZ7dPSMke1t+D6LyfOzk9N/4LJPbB2474jblVritRHulZY=
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr3264560ljp.479.1617826029695;
+ Wed, 07 Apr 2021 13:07:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210407195809.GG2531743@casper.infradead.org>
+References: <20210407061456.5914-1-gi-oh.kim@ionos.com>
+In-Reply-To: <20210407061456.5914-1-gi-oh.kim@ionos.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 7 Apr 2021 13:06:58 -0700
+Message-ID: <CAKwvOdnaLT8sn4e3PQoASjKaNP4gUKQikhxtJM5G94-7CMUKTw@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Introduce sysfs_streqcase
+To:     Gioh Kim <gi-oh.kim@ionos.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        laniel_francis@privacyrequired.com,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Axtens <dja@axtens.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:58:09PM +0100, Matthew Wilcox wrote:
-> On Wed, Apr 07, 2021 at 10:55:14PM +0300, Alexey Dobriyan wrote:
-> > Now that ->proc_lseek has been made mandatory it would be nice to test
-> > that nothing has been forgotten.
-> 
-> > @@ -45,6 +45,8 @@ static void f_reg(DIR *d, const char *filename)
-> >  	fd = openat(dirfd(d), filename, O_RDONLY|O_NONBLOCK);
-> >  	if (fd == -1)
-> >  		return;
-> > +	/* struct proc_ops::proc_lseek is mandatory if file is seekable. */
-> > +	(void)lseek(fd, 0, SEEK_SET);
-> >  	rv = read(fd, buf, sizeof(buf));
-> >  	assert((0 <= rv && rv <= sizeof(buf)) || rv == -1);
-> >  	close(fd);
-> 
-> why throw away the return value?  if it returns an error seeking to
-> offset 0, something is terribly wrong.
+On Tue, Apr 6, 2021 at 11:15 PM Gioh Kim <gi-oh.kim@ionos.com> wrote:
+>
+> As the name shows, it checks if strings are equal in case insensitive
+> manner.
+>
+> For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
+> strncasecmp to check that the input via sysfs is "mi". But it would
+> work even-if the input is "min-wrongcommand".
+>
+> I found some more cases using strncasecmp to check the entire string
+> such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
+> "disable" command with strncasecmp but it would also work if the
+> command is "disable-wrong".
 
-Some files may use nonseekable_open().
-This smoke test doesn't verify that seeking is done correctly anyway.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+I do wonder if these (sysfs_streqcase and sysfs_streq) could or should
+be conditionally available on CONFIG_SYSFS=3Dy; don't pay for what you
+don't use (without needing CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy)?
+
+Also, it might be nice to share the second half of the function with
+sysfs_streq via a new static function.  Though it will just get
+inlined in both for CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=3Dy, it might
+help the compiler if CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy was instead chosen
+if the compiler cannot outline/deduplicate the shared code.  At the
+least, there's less duplication between two very similar functions; if
+one changes then authors may need to be careful to update both.
+
+Are either of those concerns worth a v3? =C2=AF\_(=E3=83=84)_/=C2=AF
+
+>
+> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+> ---
+>  include/linux/string.h |  1 +
+>  lib/string.c           | 23 +++++++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+>
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index 4fcfb56abcf5..36d00ff8013e 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, =
+int *argcp);
+>  extern void argv_free(char **argv);
+>
+>  extern bool sysfs_streq(const char *s1, const char *s2);
+> +extern bool sysfs_streqcase(const char *s1, const char *s2);
+>  extern int kstrtobool(const char *s, bool *res);
+>  static inline int strtobool(const char *s, bool *res)
+>  {
+> diff --git a/lib/string.c b/lib/string.c
+> index 7548eb715ddb..5e6bc0d3d5c6 100644
+> --- a/lib/string.c
+> +++ b/lib/string.c
+> @@ -714,6 +714,29 @@ bool sysfs_streq(const char *s1, const char *s2)
+>  }
+>  EXPORT_SYMBOL(sysfs_streq);
+>
+> +/**
+> + * sysfs_streqcase - same to sysfs_streq and case insensitive
+> + * @s1: one string
+> + * @s2: another string
+> + *
+> + */
+> +bool sysfs_streqcase(const char *s1, const char *s2)
+> +{
+> +       while (*s1 && tolower(*s1) =3D=3D tolower(*s2)) {
+> +               s1++;
+> +               s2++;
+> +       }
+> +
+> +       if (*s1 =3D=3D *s2)
+> +               return true;
+> +       if (!*s1 && *s2 =3D=3D '\n' && !s2[1])
+> +               return true;
+> +       if (*s1 =3D=3D '\n' && !s1[1] && !*s2)
+> +               return true;
+> +       return false;
+> +}
+> +EXPORT_SYMBOL(sysfs_streqcase);
+> +
+>  /**
+>   * match_string - matches given string in an array
+>   * @array:     array of strings
+> --
+> 2.25.1
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
