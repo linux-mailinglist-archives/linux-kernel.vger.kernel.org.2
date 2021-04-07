@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946E93576F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4089D3576F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhDGVg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbhDGVg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:36:27 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D126BC061760;
-        Wed,  7 Apr 2021 14:36:15 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 15so22521683ljj.0;
-        Wed, 07 Apr 2021 14:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JrUeoWDAwLF8WfYbVwCG1k/leFVTfETayh9XXmigLwk=;
-        b=kFmtJUs1w4nKq60D1Z8YxtsCiBEbdvDH3/I4tZiUyMHXhs4+1MA2XJuNQoYA2uoVOS
-         xNcUY3Dm1Z4XBdtqfVPqoOxW9LjZ4J6zTwNOSD9aIYKTLNCf0YhH8SHT85N7kKEMIoU+
-         SU68YHOFjWDrdyhti4FCfMmSTnrg+6oihdZoAzYlTmYcXplXjUDX9D0wu0c6H6Ss3eyj
-         FrJAbGkOwCCBxZkQj46c+YmKR7cOQ4oVjGxr/Y8Z+TkAPZdAxiyJooQUKpdGUOk6iD0f
-         ifeBAL90FS6OWqc6n4i16QI/uNP0rh5OHfWf6fsJT5jepIF1UUCOzHwaFrnMK4BnqVNM
-         3AKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JrUeoWDAwLF8WfYbVwCG1k/leFVTfETayh9XXmigLwk=;
-        b=NCPHVDrBNAC8KK0laVCXck5sq3TO8qHWK+AzOh/BG86G1ax7sdcRX3tvVsiFC02RG6
-         b4EtUtM5WpYfHtQr5UDrFomZ5H9pArFlOPe5qXHjpeLDXmfbG/UHaB8QyUPG10Lfjvtr
-         yo1n7+pCjagb3RghEZDeP2A6bFUnUL3n3Ssq5dpXAPV1MUkoAy0md5vL4WdU6ZBvt/sa
-         kwdQJmpVOPJe8p5hFuy9IyK3rxOmIg6aOfcAg3V+clK4v3z52RDGEC0KgwWtdVqaxoud
-         HdFAcdp0fw/GR3HWaQmf5O1nDAJ7V279ZGzz7WMTnciq4RHGJD2N4ZxN3dNcQNXWFlyv
-         OuEg==
-X-Gm-Message-State: AOAM531h/nbMdA2/Zjh/suYPhc9fASx3qsQEUgtPE5mNp3wNntGn9HlB
-        0wlY1lbfhqIxAz8BEDtqOBUE6UVujgI=
-X-Google-Smtp-Source: ABdhPJzXy6omT4lMRxJFSdIcGojW5H/pyAypO3SuWneV+c78my2iE3yh5F+IDsk/049EzdtBPXb3Bw==
-X-Received: by 2002:a2e:9acc:: with SMTP id p12mr3334037ljj.442.1617831374250;
-        Wed, 07 Apr 2021 14:36:14 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id f9sm2648610ljg.115.2021.04.07.14.36.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 14:36:13 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org
-Cc:     pchandru@nvidia.com, devicetree@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-tegra@vger.kernel.org,
+        id S233629AbhDGVhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:37:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232943AbhDGVhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B6C61205;
+        Wed,  7 Apr 2021 21:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617831429;
+        bh=RFTs87mWw0H1NgKsi6VoKVt5brrjF6rBaHU/Q3oJcOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WJqDViRiIwRnmM3YMFuWCFiMrlE6kkSCoyOgBYkbhZjOWQy+LU7BrpPRbOuAnIFsF
+         4J/gP9rqJYlB6S+FdzbLcIjo0LcernQ4xfVLqOqv6XGkmkibX8QADKKG3fcooPtKf/
+         5R8638Kj2tsbgQh24sFjWw94F41DOwE/FWdgVA/f/ndVKn5v2IJpWT35L9FDhQN1M8
+         7YU+doIt3z0UPy7LM6kl69Pprv/+2rjJYtlqERzxtnsn4kHhFZFR85DfKdsJCCN2MC
+         yveisBlQZtXyXQVjE49EAxUpf8/ASsb7xDTJT7C5JNvSxDZnwgAs1x90+NU2SUzDxi
+         zRR+acRM2RpKQ==
+Date:   Wed, 7 Apr 2021 22:37:02 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
- <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
-Date:   Thu, 8 Apr 2021 00:36:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH v10 3/6] stack: Optionally randomize kernel stack offset
+ each syscall
+Message-ID: <20210407213702.GB16569@willie-the-truck>
+References: <20210401232347.2791257-1-keescook@chromium.org>
+ <20210401232347.2791257-4-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401232347.2791257-4-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.04.2021 04:25, Sowjanya Komatineni пишет:
-> +	if (!tegra->pdev->dev.pm_domain) {
-> +		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
-> +							tegra->sata_clk,
-> +							tegra->sata_rst);
-> +		if (ret)
-> +			goto disable_regulators;
-> +	}
->  
+On Thu, Apr 01, 2021 at 04:23:44PM -0700, Kees Cook wrote:
+> This provides the ability for architectures to enable kernel stack base
+> address offset randomization. This feature is controlled by the boot
+> param "randomize_kstack_offset=on/off", with its default value set by
+> CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT.
+> 
+> This feature is based on the original idea from the last public release
+> of PaX's RANDKSTACK feature: https://pax.grsecurity.net/docs/randkstack.txt
+> All the credit for the original idea goes to the PaX team. Note that
+> the design and implementation of this upstream randomize_kstack_offset
+> feature differs greatly from the RANDKSTACK feature (see below).
 
-Hi,
+[...]
 
-Why you haven't added condition for tegra_powergate_power_off()? I think
-it should break GENPD and legacy PD API isn't not supported by T186 at all.
+> diff --git a/include/linux/randomize_kstack.h b/include/linux/randomize_kstack.h
+> new file mode 100644
+> index 000000000000..fd80fab663a9
+> --- /dev/null
+> +++ b/include/linux/randomize_kstack.h
+> @@ -0,0 +1,54 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _LINUX_RANDOMIZE_KSTACK_H
+> +#define _LINUX_RANDOMIZE_KSTACK_H
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/jump_label.h>
+> +#include <linux/percpu-defs.h>
+> +
+> +DECLARE_STATIC_KEY_MAYBE(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,
+> +			 randomize_kstack_offset);
+> +DECLARE_PER_CPU(u32, kstack_offset);
+> +
+> +/*
+> + * Do not use this anywhere else in the kernel. This is used here because
+> + * it provides an arch-agnostic way to grow the stack with correct
+> + * alignment. Also, since this use is being explicitly masked to a max of
+> + * 10 bits, stack-clash style attacks are unlikely. For more details see
+> + * "VLAs" in Documentation/process/deprecated.rst
+> + */
+> +void *__builtin_alloca(size_t size);
+> +/*
+> + * Use, at most, 10 bits of entropy. We explicitly cap this to keep the
+> + * "VLA" from being unbounded (see above). 10 bits leaves enough room for
+> + * per-arch offset masks to reduce entropy (by removing higher bits, since
+> + * high entropy may overly constrain usable stack space), and for
+> + * compiler/arch-specific stack alignment to remove the lower bits.
+> + */
+> +#define KSTACK_OFFSET_MAX(x)	((x) & 0x3FF)
+> +
+> +/*
+> + * These macros must be used during syscall entry when interrupts and
+> + * preempt are disabled, and after user registers have been stored to
+> + * the stack.
+> + */
 
-I'm also not sure whether the power up/down sequence is correct using GENPD.
+This comment is out of date, as this is called from preemptible context on
+arm64. Does that matter in terms of offset randomness?
 
-Moreover the driver doesn't support runtime PM, so GENPD should be
-always off?
+Will
