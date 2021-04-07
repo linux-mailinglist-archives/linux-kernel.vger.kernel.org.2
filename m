@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BBC3571F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ECD3571F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244147AbhDGQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhDGQMS (ORCPT
+        id S1344707AbhDGQNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:13:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47195 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhDGQNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:12:18 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DEEC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:12:08 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f6so12495494wrv.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=aXJMkbHYuGwBccedw3JgWsefWKqhfd6TEzDaHSegUOk=;
-        b=R1KnRH95esdS9oJngTJiNZ2CatqOweuDjwG7YueIAq4yybD/VqsfZ7XUCxLdZdV6E4
-         EgCwKrBgJakPq7fABuDUdxThqaCjFwI+J0xkoC3TYzYF0De073O6zoat8QwcVZzCMG6l
-         Qw8yzziCKkwuhe3bq1f6I2Cs3c0VMl26WY5EnMT9BstwjrQsRMCGIYBPBUBljreJ9upE
-         +U8Fx16+sZxpq/7UNpd012yPcJ6kSHJAmeAnD+2CbXpGp1W8AqEsO8+HLlTNqXlp7Sk+
-         yHNusFxLGV27vhSQcfcjfAlr4WwAry0e/9qLEkAAk4i/6McwwdFrKKVjsuT0gGdZfdn/
-         laQw==
+        Wed, 7 Apr 2021 12:13:48 -0400
+Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lUAoC-0001qi-UX
+        for linux-kernel@vger.kernel.org; Wed, 07 Apr 2021 16:13:37 +0000
+Received: by mail-wm1-f71.google.com with SMTP id h7so578531wmm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:13:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=aXJMkbHYuGwBccedw3JgWsefWKqhfd6TEzDaHSegUOk=;
-        b=bCSHgqw3aSytidkejTtsbUMhmddqgR0l0G7frGEx3FGC+8ny4e1DadssZ64L4PVjOQ
-         Z6koXghtWswq+7y2gmSc7LGDSF8LEkvBgqt93+8l4Wq7WRC9IQEkHq12jZF8IbgysoPl
-         e7e+urxXbxfR5LIaoKIJYNEktzUUAxHCr5BuKHwTY/4co603jWWHH5bdcqg07IFA+JFw
-         Kv7gbxr5GD/gJifu9QBEh7oV29W96Xrwcii6h65PUgaNZ9+InxRlmrZqhgEKrHK1LKiO
-         tEzc5tpkCJpLm2VVjastAFI7u1EsvRALfgMwvjnSuKotnJ1qny5FtxrpxI67PgFwpZej
-         UJ2g==
-X-Gm-Message-State: AOAM533w42zZKDYfKfmV56JeEV2dTn0dTi24Hau9T8+Wvf91jQDpU2TH
-        2JvCM089GvvU43TqkLyGedU=
-X-Google-Smtp-Source: ABdhPJyGIvPG0ARpLbeJXdpIZSUFIA2iFlDIsg3HEkuSdEsupu8NtfeJLY9X5lt1/1vMEkYcg+Eedw==
-X-Received: by 2002:adf:d4cc:: with SMTP id w12mr5311147wrk.49.1617811927452;
-        Wed, 07 Apr 2021 09:12:07 -0700 (PDT)
-Received: from LEGION ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id w7sm6211481wro.43.2021.04.07.09.12.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GCaQ4X0i1Zh2bf+++rMGXv8cMwAxvbSBKfO/usQt79g=;
+        b=bldxoM9A1/b0SiwFwCPKG1mQZ7uHSpDHhnYFskPqOqCRmZ8FOb3i1auzl8GB5FQ06N
+         GFH5wUnhQdgC9JVAPANUtagyK4KkMAEu8HXN31Q+3M7MAEcE6gS1ulKOOAg3Rol+967U
+         ZXMZmlj6aCElzkD55wn9t/Ay0uYk/NfDm/fnKTgYfvVzY2BHMCXT8wAV81pk/eQJj1js
+         y0N9NlajOKziZNrvfGZMx8zo2kTASPdXNyVjKD833YC1R3ymSciO5xx+NO+m/ORgQgQ9
+         mWyoCzilGFbNiYvqDkNsZZY9LaIFRdSnBXER1aitsm9C7HF2xoK/tcCvTAQAMWfR7LkD
+         mPXg==
+X-Gm-Message-State: AOAM533+k+4U+TizNvIYdz85I2r1JQXB9ZwNYgSRUY24uuQy8RuBI9B0
+        tZ/25kEjq7g5nvftf2mO2xVMs4rTe5U87e4OnKo3iv8L5TnSSV7+HHqZrJzID1VZE/pniZv36hB
+        W5Az+FuqVXmJfiVanOhuvnVozVrdMVrH1sVs+PxHnRQ==
+X-Received: by 2002:adf:ef0a:: with SMTP id e10mr5159996wro.129.1617812016684;
+        Wed, 07 Apr 2021 09:13:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzStNBdG4/Um9qP4P2r3AXJim8xMhu/B9k05GyAyYX9QtekqyznyOJpI4nqeSYbJB3JRwfhsA==
+X-Received: by 2002:adf:ef0a:: with SMTP id e10mr5159987wro.129.1617812016501;
+        Wed, 07 Apr 2021 09:13:36 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id k16sm20856105wrl.47.2021.04.07.09.13.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 09:12:07 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 21:12:02 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>, hverkuil@xs4all.nl
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] staging: axis-fifo: remove redundant dev_err call
-Message-ID: <20210407161202.GA1505056@LEGION>
+        Wed, 07 Apr 2021 09:13:36 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/2] memory: drivers for v5.13
+Date:   Wed,  7 Apr 2021 18:13:32 +0200
+Message-Id: <20210407161333.73013-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_ioremap_resource() prints error message in itself. Remove the
-dev_err call to avoid redundant error message.
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- drivers/staging/axis-fifo/axis-fifo.c | 1 -
- 1 file changed, 1 deletion(-)
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
-index 2bb1c2e9cb57..ed9281089738 100644
---- a/drivers/staging/axis-fifo/axis-fifo.c
-+++ b/drivers/staging/axis-fifo/axis-fifo.c
-@@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
- 	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
- 	if (IS_ERR(fifo->base_addr)) {
- 		rc = PTR_ERR(fifo->base_addr);
--		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
- 		goto err_initial;
- 	}
- 
--- 
-2.25.1
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-5.13
+
+for you to fetch changes up to 25dcca7fedcd4e31cb368ad846bfd738c0c6307c:
+
+  memory: pl353: fix mask of ECC page_size config register (2021-04-05 16:15:58 +0200)
+
+----------------------------------------------------------------
+Memory controller drivers for v5.13
+
+1. OMAP: fix unlikely but possible out of bounds read.
+2. PL353: fix mask used in setting ECC page_size in config register.
+3. Minor cleanup: Freescale Corenet.
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      memory: gpmc: fix out of bounds read and dereference on gpmc_cs[]
+
+Qiheng Lin (1):
+      memory: fsl-corenet-cf: Remove redundant dev_err call in ccf_probe()
+
+gexueyuan (1):
+      memory: pl353: fix mask of ECC page_size config register
+
+ drivers/memory/fsl-corenet-cf.c | 4 +---
+ drivers/memory/omap-gpmc.c      | 7 +++++--
+ drivers/memory/pl353-smc.c      | 2 +-
+ 3 files changed, 7 insertions(+), 6 deletions(-)
