@@ -2,150 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE281356EC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146A6356EBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352979AbhDGOeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:34:03 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:50129 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhDGOeA (ORCPT
+        id S1352965AbhDGOdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhDGOdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:34:00 -0400
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 137EXYoh012783;
-        Wed, 7 Apr 2021 23:33:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137EXYoh012783
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617806015;
-        bh=6v/t8YW4fUxKSYn99A4YEhTxEl23osNDyu0ZPsHBv2M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GpZ+NATu3MeNUvfJMR2kIxq3HgbWzutWhjPvvh04MkiqJh6f86UgkAZUNtyPUs1NE
-         NfsLsvIojurLwvECVNa0Zz393OpeAV+I6zwpfJ5LcU7ceuVJo/DmZ1054Lx4S81qc/
-         RlF2qTBoMK8sLbdEfAMRilnvPlAJVdRecrrL25o5rUrU/6lRzbassIIZHToj0BpeAt
-         dXW6pK1SHo31+8ZMsP4Id3d0tOIpoh5QvA7dr97d/ssg4DL369lxgGIwg6rZEDqCQH
-         Qi2PUOZfv8q94Dr42AWGvTzHKm7Q5ugLEWtSge3snQ5GfMyiyFpbD8T6E8BSaaAWaX
-         aFWVRmifAzPxg==
-X-Nifty-SrcIP: [209.85.215.181]
-Received: by mail-pg1-f181.google.com with SMTP id d10so8357439pgf.12;
-        Wed, 07 Apr 2021 07:33:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532uEXuv0PSN21neIU++Bcul40jtifBUL4XF7H0DAJSPgL++kzbD
-        1jq8u2AhxOwjnASdXHL7YjrX4DZ2lizvyRl8Un8=
-X-Google-Smtp-Source: ABdhPJzRnytYAujPGOJnjw1p4W5q2KPncm6OEVMwxawx6SvO8IHhg09oOhKZzZepE70E0cuuRAeRzZE87+7tSs1yz1o=
-X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
- c20-20020aa788140000b029021dd2ce07bemr3016290pfo.80.1617806014220; Wed, 07
- Apr 2021 07:33:34 -0700 (PDT)
+        Wed, 7 Apr 2021 10:33:36 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB18CC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:33:25 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so4599247oor.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+xPsdblmGzem/7lcmqnJl9sL6OnLBtSMGGgOJbe8nUM=;
+        b=I0xNFJ1ENsf5lwfbo5u9d4dnnXTLBmTO/oHDY2aT3VYgtrMNZEQYySZ2KK92oZQkkG
+         iWAkPX1i7HHnG6NfTRXB+F6HZY05YVr7Jq2RNpGBLU/yq8MQyB7dtXuGSf8kdC21S0qG
+         SrViWMP22KrKoQPd0haL3RBz19TN2rlujp3pQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+xPsdblmGzem/7lcmqnJl9sL6OnLBtSMGGgOJbe8nUM=;
+        b=NHkt/DKpOwbBNxTj7pGjfyeomV1laRXBRgOAzAhoio4Q7C04EUUBGrxlqCq3pHhgSc
+         LU0C/gXrs5HdEoctzgVA6Z8fWUDARBnaxdHhzBxZkxDUcKdUGzTCOlaziJmdDfWijFJ6
+         +EN6h547WCHCBFMNxtJ1kzaIsphixzVXXIVn0wP25h52Zix8bubC4fRodK3ppbot2wj1
+         cxxkK20aJXh0DzHrL6QRvuGr5t107T7b+6j3oElG5DVChoJlTqiPfm7TzTCcf1szbRT3
+         RHTpz6Dcf7dtori+n7PJpbAzFE8l26VCjiIpSyraexbn8YRiLT5JhpHyGmR0AjDITpac
+         eSXQ==
+X-Gm-Message-State: AOAM530FrwI+fQWDJWPKINLmiP5ojAoXM3hkxRdb7CLHhK41u4JjIuSP
+        gNFrhc+DP2Ke1tBD9dPiiEoC8Q==
+X-Google-Smtp-Source: ABdhPJxCy5mdQg6UXu6kWlLFCHoVnQbZ9mjgZJhQg9DXI1Wj9k6o+8n5FBSjX3S73s4RAizE9x2i/Q==
+X-Received: by 2002:a4a:4cd6:: with SMTP id a205mr3305504oob.4.1617806005313;
+        Wed, 07 Apr 2021 07:33:25 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h59sm5427570otb.29.2021.04.07.07.33.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 07:33:24 -0700 (PDT)
+Subject: Re: [PATCH] selftests/resctrl: Change a few printed messages
+To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210406005242.3248706-1-fenghua.yu@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <67062f6c-d09a-f8e0-4d22-49c4452d0552@linuxfoundation.org>
+Date:   Wed, 7 Apr 2021 08:33:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
-In-Reply-To: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 23:32:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAToxp4DDAjJfaa9tsP5Fmep7YorfD7ObyEGtJ6_4ioc_A@mail.gmail.com>
-Message-ID: <CAK7LNAToxp4DDAjJfaa9tsP5Fmep7YorfD7ObyEGtJ6_4ioc_A@mail.gmail.com>
-Subject: Re: [PATCH] init: add support for zstd compressed modules
-To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210406005242.3248706-1-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 8:33 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wrote:
->
-> kmod 28 supports modules compressed in zstd format so let's add this possibility to kernel.
->
-> Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
+On 4/5/21 6:52 PM, Fenghua Yu wrote:
+> A few printed messages contain pass/fail strings which should be shown
+> in test results. Remove the pass/fail strings in the messages to avoid
+> confusion.
+> 
+> Add "\n" at the end of one printed message.
+> 
+> Suggested-by: Shuah Khan <shuah@kernel.org>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 > ---
->  Makefile     | 7 +++++--
->  init/Kconfig | 9 ++++++---
->  2 files changed, 11 insertions(+), 5 deletions(-)
+> This is a follow-up patch of recent resctrl selftest patches and can be
+> applied cleanly to:
+> git git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git
+> branch next.
+> 
+>   tools/testing/selftests/resctrl/cache.c     | 3 +--
+>   tools/testing/selftests/resctrl/mba_test.c  | 9 +++------
+>   tools/testing/selftests/resctrl/mbm_test.c  | 3 +--
+>   tools/testing/selftests/resctrl/resctrlfs.c | 7 ++-----
+>   4 files changed, 7 insertions(+), 15 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
+> index 362e3a418caa..310bbc997c60 100644
+> --- a/tools/testing/selftests/resctrl/cache.c
+> +++ b/tools/testing/selftests/resctrl/cache.c
+> @@ -301,8 +301,7 @@ int show_cache_info(unsigned long sum_llc_val, int no_of_bits,
+>   	ret = platform && abs((int)diff_percent) > max_diff_percent &&
+>   	      (cmt ? (abs(avg_diff) > max_diff) : true);
+>   
+> -	ksft_print_msg("%s cache miss rate within %d%%\n",
+> -		       ret ? "Fail:" : "Pass:", max_diff_percent);
+> +	ksft_print_msg("Check cache miss rate within %d%%\n", max_diff_percent);
+
+You need %s and pass in the ret ? "Fail:" : "Pass:" result for the
+message to read correctly.
+
+I am seeing:
+
+# Check kernel support for resctrl filesystem
+
+It should say the following:
+
+# Fail Check kernel support for resctrl filesystem
 
 
+Same for other such messages.
+>   
+>   	ksft_print_msg("Percent diff=%d\n", abs((int)diff_percent));
+>   	ksft_print_msg("Number of bits: %d\n", no_of_bits);
+> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
+> index 26f12ad4c663..a909a745754f 100644
+> --- a/tools/testing/selftests/resctrl/mba_test.c
+> +++ b/tools/testing/selftests/resctrl/mba_test.c
+> @@ -80,9 +80,7 @@ static void show_mba_info(unsigned long *bw_imc, unsigned long *bw_resc)
+>   		avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+>   		avg_diff_per = (int)(avg_diff * 100);
+>   
+> -		ksft_print_msg("%s MBA: diff within %d%% for schemata %u\n",
+> -			       avg_diff_per > MAX_DIFF_PERCENT ?
+> -			       "Fail:" : "Pass:",
+> +		ksft_print_msg("Check MBA diff within %d%% for schemata %u\n",
+>   			       MAX_DIFF_PERCENT,
+>   			       ALLOCATION_MAX - ALLOCATION_STEP * allocation);
+>   
+> @@ -93,10 +91,9 @@ static void show_mba_info(unsigned long *bw_imc, unsigned long *bw_resc)
+>   			failed = true;
+>   	}
+>   
+> -	ksft_print_msg("%s schemata change using MBA\n",
+> -		       failed ? "Fail:" : "Pass:");
+> +	ksft_print_msg("Check schemata change using MBA\n");
+>   	if (failed)
+> -		ksft_print_msg("At least one test failed");
+> +		ksft_print_msg("At least one test failed\n");
+>   }
+>   
+>   static int check_results(void)
+> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
+> index 02b1ed03f1e5..e2e7ee4ec630 100644
+> --- a/tools/testing/selftests/resctrl/mbm_test.c
+> +++ b/tools/testing/selftests/resctrl/mbm_test.c
+> @@ -37,8 +37,7 @@ show_bw_info(unsigned long *bw_imc, unsigned long *bw_resc, int span)
+>   	avg_diff_per = (int)(avg_diff * 100);
+>   
+>   	ret = avg_diff_per > MAX_DIFF_PERCENT;
+> -	ksft_print_msg("%s MBM: diff within %d%%\n",
+> -		       ret ? "Fail:" : "Pass:", MAX_DIFF_PERCENT);
+> +	ksft_print_msg("Check MBM diff within %d%%\n", MAX_DIFF_PERCENT);
 
-Piort, sorry for bothering you,
-but could you rebase on top of this
-clean-up patch set?
+Here
 
-https://patchwork.kernel.org/project/linux-kbuild/list/?series=458809
+>   	ksft_print_msg("avg_diff_per: %d%%\n", avg_diff_per);
+>   	ksft_print_msg("Span (MB): %d\n", span);
+>   	ksft_print_msg("avg_bw_imc: %lu\n", avg_bw_imc);
+> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+> index ade5f2b8b843..91cb3c48a7da 100644
+> --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> @@ -570,15 +570,12 @@ bool check_resctrlfs_support(void)
+>   
+>   	fclose(inf);
+>   
+> -	ksft_print_msg("%s kernel supports resctrl filesystem\n",
+> -		       ret ? "Pass:" : "Fail:");
+> -
+> +	ksft_print_msg("Check kernel support for resctrl filesystem\n");
 
-or
+Here
 
-git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git kbuild
+>   	if (!ret)
+>   		return ret;
+>   
+>   	dp = opendir(RESCTRL_PATH);
+> -	ksft_print_msg("%s resctrl mountpoint \"%s\" exists\n",
+> -		       dp ? "Pass:" : "Fail:", RESCTRL_PATH);
+> +	ksft_print_msg("Check resctrl mountpoint \"%s\"\n", RESCTRL_PATH);
 
+Here
 
-The module compression code should not be placed
-in the top Makefile.
+>   	if (dp)
+>   		closedir(dp);
+>   
+> 
 
-
-
-
-
-> diff --git a/Makefile b/Makefile
-> index 5160ff8903c1..82f4f4cc2955 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1156,8 +1156,8 @@ endif # INSTALL_MOD_STRIP
->  export mod_strip_cmd
->
->  # CONFIG_MODULE_COMPRESS, if defined, will cause module to be compressed
-> -# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP
-> -# or CONFIG_MODULE_COMPRESS_XZ.
-> +# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP,
-> +# CONFIG_MODULE_COMPRESS_XZ, or CONFIG_MODULE_COMPRESS_ZSTD.
->
->  mod_compress_cmd = true
->  ifdef CONFIG_MODULE_COMPRESS
-> @@ -1167,6 +1167,9 @@ ifdef CONFIG_MODULE_COMPRESS
->    ifdef CONFIG_MODULE_COMPRESS_XZ
->      mod_compress_cmd = $(XZ) --lzma2=dict=2MiB -f
->    endif # CONFIG_MODULE_COMPRESS_XZ
-> +  ifdef CONFIG_MODULE_COMPRESS_ZSTD
-> +    mod_compress_cmd = $(ZSTD) -T0 --rm -f -q
-> +  endif # CONFIG_MODULE_COMPRESS_ZSTD
->  endif # CONFIG_MODULE_COMPRESS
->  export mod_compress_cmd
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 8c2cfd88f6ef..86a452bc2747 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -2250,8 +2250,8 @@ config MODULE_COMPRESS
->         bool "Compress modules on installation"
->         help
->
-> -         Compresses kernel modules when 'make modules_install' is run; gzip or
-> -         xz depending on "Compression algorithm" below.
-> +         Compresses kernel modules when 'make modules_install' is run; gzip,
-> +         xz, or zstd depending on "Compression algorithm" below.
->
->           module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
->
-> @@ -2273,7 +2273,7 @@ choice
->           This determines which sort of compression will be used during
->           'make modules_install'.
->
-> -         GZIP (default) and XZ are supported.
-> +         GZIP (default), XZ, and ZSTD are supported.
->
->  config MODULE_COMPRESS_GZIP
->         bool "GZIP"
-> @@ -2281,6 +2281,9 @@ config MODULE_COMPRESS_GZIP
->  config MODULE_COMPRESS_XZ
->         bool "XZ"
->
-> +config MODULE_COMPRESS_ZSTD
-> +       bool "ZSTD"
-> +
->  endchoice
->
->  config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
-> --
-> 2.31.0.97.g1424303384
->
-
-
---
-Best Regards
-Masahiro Yamada
+thanks,
+-- Shuah
