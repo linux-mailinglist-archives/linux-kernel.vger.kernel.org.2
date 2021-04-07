@@ -2,151 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CB8356F61
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC4A356F69
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345324AbhDGOzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345305AbhDGOzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:55:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DEA96136A;
-        Wed,  7 Apr 2021 14:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617807305;
-        bh=rYUMRTaKugSsbNVrBH+/0Cj76xuu7UY8XDoCizR5qR8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KxKmzQbmEMU/5eKYaGgXbqXlxGwFTRk7PSL0I+jw8Gz1R2MxxQP9Kp0hKZARdq57X
-         3Nnm/ujng8Jki8sVdzxeV9gTP4o+Ats1wb8Zr2SKzt2tnDD2DOTzF2xPbUrd1J6Rr6
-         cAh24tEUzGZxMLtVdoxYh9jZgAapg8lDi7hfhMGHmUliUWUNiyvEFgdK91B4223DLg
-         OPFNOUIYogu3V4Yp5XL4a5SYN8dLNXNmnMEYx+fUWbeQaJp8Wmrz+Cty1kiyQ1tdTG
-         orngoYXzvzwwnFHOQ4TjWkbA2kzudMdMzMFN78T2+1X5Wcxr+nQRrSJM2hHwrmpTus
-         Rdu/Qtv20HuTg==
-Date:   Wed, 7 Apr 2021 17:55:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <YG3HxVaotTi/Xk5X@unreal>
-References: <20210406232321.12104-1-decui@microsoft.com>
- <YG1o4LXVllXfkUYO@unreal>
- <MW2PR2101MB08923D4417E44C5750BFB964BF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <YG2qxjPJ4ruas1dI@unreal>
- <DM5PR2101MB09342B74ECD56BE4781431EACA759@DM5PR2101MB0934.namprd21.prod.outlook.com>
+        id S1345585AbhDGO4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:56:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1345581AbhDGO4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:56:23 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137EXU36044165;
+        Wed, 7 Apr 2021 10:55:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=1bwHD9URy/4hElStjM6dag7u8DX1yY4nlXxLsVM1eJs=;
+ b=D/kCU8X1QsEMEukpsvjrxNHuL+VP29a1EWYBcwaMxOishLmV85xUxGhj7/B5wLFOLugB
+ eZyTkgWsNvn60KqXrt/leMryizeu0/TWvzd5QQfufPQ5oFXYfvn13vllhBMfSXW367tI
+ JTzDMdaMW5I+LMFjfFf29qv5xygGMxx5cW+EHGD/0gIEQWBUE6vf5FCTr8e9j/6crDvw
+ PP6JMgehbZuvgp3Pmd9MlFW/mCgzPznCqD38dwIgonZAWvbJ0uV99D1zzPXm1Vjcyz53
+ 7U4uocgms+JDg09AKvHDvBTgZdfghKmZr47BHF6o5iq2teCA8Z2sKgjNgLkm3tTv5fP2 kg== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf0k106-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:55:39 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137ErES8030466;
+        Wed, 7 Apr 2021 14:55:39 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01dal.us.ibm.com with ESMTP id 37rvs17nan-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 14:55:39 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137EtcnF33030618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 14:55:38 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2834EAC059;
+        Wed,  7 Apr 2021 14:55:38 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFE5FAC05B;
+        Wed,  7 Apr 2021 14:55:37 +0000 (GMT)
+Received: from localhost (unknown [9.211.35.170])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 14:55:37 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Subject: Re: [PATCH v3] pseries: prevent free CPU ids to be reused on
+ another node
+In-Reply-To: <20210406182554.85197-1-ldufour@linux.ibm.com>
+References: <20210406182554.85197-1-ldufour@linux.ibm.com>
+Date:   Wed, 07 Apr 2021 09:55:37 -0500
+Message-ID: <87blaqkuty.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR2101MB09342B74ECD56BE4781431EACA759@DM5PR2101MB0934.namprd21.prod.outlook.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GgpCroGTG8WFn6oMrz1SgC1Zv1mRw2wR
+X-Proofpoint-ORIG-GUID: GgpCroGTG8WFn6oMrz1SgC1Zv1mRw2wR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:41:45PM +0000, Haiyang Zhang wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Wednesday, April 7, 2021 8:51 AM
-> > To: Dexuan Cui <decui@microsoft.com>
-> > Cc: davem@davemloft.net; kuba@kernel.org; KY Srinivasan
-> > <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Stephen
-> > Hemminger <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
-> > <liuwe@microsoft.com>; netdev@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
-> > Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
-> > Network Adapter (MANA)
-> > 
-> > On Wed, Apr 07, 2021 at 08:40:13AM +0000, Dexuan Cui wrote:
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Wednesday, April 7, 2021 1:10 AM
-> > > >
-> > > > <...>
-> > > >
-> > > > > +int gdma_verify_vf_version(struct pci_dev *pdev)
-> > > > > +{
-> > > > > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > > > > +	struct gdma_verify_ver_req req = { 0 };
-> > > > > +	struct gdma_verify_ver_resp resp = { 0 };
-> > > > > +	int err;
-> > > > > +
-> > > > > +	gdma_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
-> > > > > +			  sizeof(req), sizeof(resp));
-> > > > > +
-> > > > > +	req.protocol_ver_min = GDMA_PROTOCOL_FIRST;
-> > > > > +	req.protocol_ver_max = GDMA_PROTOCOL_LAST;
-> > > > > +
-> > > > > +	err = gdma_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> > > > > +	if (err || resp.hdr.status) {
-> > > > > +		pr_err("VfVerifyVersionOutput: %d, status=0x%x\n", err,
-> > > > > +		       resp.hdr.status);
-> > > > > +		return -EPROTO;
-> > > > > +	}
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > >
-> > > > <...>
-> > > > > +	err = gdma_verify_vf_version(pdev);
-> > > > > +	if (err)
-> > > > > +		goto remove_irq;
-> > > >
-> > > > Will this VF driver be used in the guest VM? What will prevent from users
-> > to
-> > > > change it?
-> > > > I think that such version negotiation scheme is not allowed.
-> > >
-> > > Yes, the VF driver is expected to run in a Linux VM that runs on Azure.
-> > >
-> > > Currently gdma_verify_vf_version() just tells the PF driver that the VF
-> > driver
-> > > is only able to support GDMA_PROTOCOL_V1, and want to use
-> > > GDMA_PROTOCOL_V1's message formats to talk to the PF driver later.
-> > >
-> > > enum {
-> > >         GDMA_PROTOCOL_UNDEFINED = 0,
-> > >         GDMA_PROTOCOL_V1 = 1,
-> > >         GDMA_PROTOCOL_FIRST = GDMA_PROTOCOL_V1,
-> > >         GDMA_PROTOCOL_LAST = GDMA_PROTOCOL_V1,
-> > >         GDMA_PROTOCOL_VALUE_MAX
-> > > };
-> > >
-> > > The PF driver is supposed to always support GDMA_PROTOCOL_V1, so I
-> > expect
-> > > here gdma_verify_vf_version() should succeed. If a user changes the Linux
-> > VF
-> > > driver and try to use a protocol version not supported by the PF driver,
-> > then
-> > > gdma_verify_vf_version() will fail; later, if the VF driver tries to talk to the
-> > PF
-> > > driver using an unsupported message format, the PF driver will return a
-> > failure.
-> > 
-> > The worry is not for the current code, but for the future one when you will
-> > support v2, v3 e.t.c. First, your code will look like a spaghetti and
-> > second, users will try and mix vX with "unsupported" commands just for the
-> > fun.
-> 
-> In the future, if the protocol version updated on the host side, guests need 
-> to support different host versions because not all hosts are updated 
-> (simultaneously). So this negotiation is necessary to know the supported 
-> version, and decide the proper command version to use. 
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+> Changes since V2, addressing Nathan's comments:
+>  - Remove the retry feature
+>  - Reduce the number of local variables (removing 'i')
 
-And how do other paravirtual drivers solve this negotiation scheme?
+I was more interested in not having two variables for NUMA nodes in the
+function named 'node' and 'nid', hoping at least one of them could have
+a more descriptive name. See below.
 
-> 
-> If any user try "unsupported commands just for the fun", the host will deny 
-> and return an error.
-> 
-> Thanks,
-> - Haiyang
+>  static int pseries_add_processor(struct device_node *np)
+>  {
+> -	unsigned int cpu;
+> +	unsigned int cpu, node;
+>  	cpumask_var_t candidate_mask, tmp;
+> -	int err = -ENOSPC, len, nthreads, i;
+> +	int err = -ENOSPC, len, nthreads, nid;
+>  	const __be32 *intserv;
+>  
+>  	intserv = of_get_property(np, "ibm,ppc-interrupt-server#s", &len);
+> @@ -163,9 +169,17 @@ static int pseries_add_processor(struct device_node *np)
+>  	zalloc_cpumask_var(&candidate_mask, GFP_KERNEL);
+>  	zalloc_cpumask_var(&tmp, GFP_KERNEL);
+>  
+> +	/*
+> +	 * Fetch from the DT nodes read by dlpar_configure_connector() the NUMA
+> +	 * node id the added CPU belongs to.
+> +	 */
+> +	nid = of_node_to_nid(np);
+> +	if (nid < 0 || !node_possible(nid))
+> +		nid = first_online_node;
+> +
+>  	nthreads = len / sizeof(u32);
+> -	for (i = 0; i < nthreads; i++)
+> -		cpumask_set_cpu(i, tmp);
+> +	for (cpu = 0; cpu < nthreads; cpu++)
+> +		cpumask_set_cpu(cpu, tmp);
+>  
+>  	cpu_maps_update_begin();
+>  
+> @@ -173,6 +187,19 @@ static int pseries_add_processor(struct device_node *np)
+>  
+>  	/* Get a bitmap of unoccupied slots. */
+>  	cpumask_xor(candidate_mask, cpu_possible_mask, cpu_present_mask);
+> +
+> +	/*
+> +	 * Remove free ids previously assigned on the other nodes. We can walk
+> +	 * only online nodes because once a node became online it is not turned
+> +	 * offlined back.
+> +	 */
+> +	for_each_online_node(node) {
+> +		if (node == nid) /* Keep our node's recorded ids */
+> +			continue;
+> +		cpumask_andnot(candidate_mask, candidate_mask,
+> +			       node_recorded_ids_map[node]);
+> +	}
+> +
+
+e.g. change 'nid' to 'assigned_node' or similar, and I think this
+becomes easier to follow.
+
+Otherwise the patch looks fine to me now.
