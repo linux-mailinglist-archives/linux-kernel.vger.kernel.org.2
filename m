@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9108C35781E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7287B357825
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhDGW73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:59:29 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:38718 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhDGW71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:59:27 -0400
-Received: by mail-ot1-f51.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so444357otk.5;
-        Wed, 07 Apr 2021 15:59:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QKXgCn18Rr1eqfdzx55WXMaeSuXNDv2BM9yLmUwClbs=;
-        b=VESw8pT467vjoArwrVyomMYyeqqbh4HIcU9XANCmWEapiO6jUMGMNQg4HmzTqMIcq+
-         JbH66117F9NvI+GF3qCNYrRRJM6R17bDeL7Bq0Uz6AkFQ3tIGHGRGbvTu6zoR9EqwCVX
-         /aGP9a9tnJaJugjAsxxJstg6UNElmfrq7Y6loluLCE2MtFTiqGgTsfE+LEjRe7DycIFW
-         CPxaNiYX/6gYQo7bYHmQIcMgz7sURjSAc0D5xHE7ghjVyxCSM0OHfG1O1rWQvM6S3WOC
-         L8JvDRcUufLAjgpDVVS+m3TUmxcSBF0TUqaQTviIGV4VPa9b195/1SqWSmQJ1WJVAwv/
-         HVBA==
-X-Gm-Message-State: AOAM532VwXR8f0YE4xX29CHNQdh6oESBow7mexcG7M/AzY40/NwauehC
-        bC61Q4Z4EmxTZ2RHRDOAkg==
-X-Google-Smtp-Source: ABdhPJyvr5jHBGk0riO06gjL1cJLFcP8LjEM1PludhoIvgfnmnAE6t/+wBnt/64MHZhkodj4W6TLdA==
-X-Received: by 2002:a05:6830:22c3:: with SMTP id q3mr4869906otc.56.1617836356986;
-        Wed, 07 Apr 2021 15:59:16 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b22sm5786887ots.59.2021.04.07.15.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 15:59:16 -0700 (PDT)
-Received: (nullmailer pid 174484 invoked by uid 1000);
-        Wed, 07 Apr 2021 22:59:15 -0000
-Date:   Wed, 7 Apr 2021 17:59:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/8] CMDLINE: drivers: of: ifdef out cmdline section
-Message-ID: <20210407225915.GA147338@robh.at.kernel.org>
-References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
- <0c4b839f023f87c451c8aa3c4f7a8d92729c2f02.1617126961.git.danielwa@cisco.com>
- <CAL_Jsq+_gF9Cy7H6ic2q8dxnPf4+FsBa5pFYYRydJsEmDhnNhA@mail.gmail.com>
- <20210330231717.GA2469518@zorba>
+        id S229707AbhDGXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 19:00:40 -0400
+Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:64704
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229449AbhDGXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 19:00:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YLU37oZYRKNESf+0Ig/DN/4A8q8pfYaUCyF6CbmcEKVTr/bNlYZLEuqhCJTBw0vcmOKW5qr2vy/0ka6/bCQ+l3sZZeYvY8aLZPpZhiwS1pvfoEm06wIpkQSJK9uRoAzwWUEVykciECW/mL3DT/fYEooFwQGCj+PBrfZU8mTwu2Niv5GkQS8vgDALNZZewqkGtskXkGa24yiTUGxVdfWMIH7nOsPHKebGpiGjaVXkko92NXariskTUQRXm1HZ/V6IyA1R1/04017Xkopor4XkWsnkRDbREKNd7hVJhqqaaSh6zjBP1dWaKYAH/L9H+wtsGQCxJM2aXCGvNcv2NC8Jew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOpNfZkitU43azEhaIzoaq9rq+K7AAqP5gll3M5uEhc=;
+ b=WyD/F2S96L1gSvxjlQtrgFQDD2SKzKV7XR/BTJrPuZ1uLJ98uQlsowlY/BTUBabN+5NDPWzVQ3iB9SETT6EvE5YWlxeyOivq2g+pdS795POV1PsUmCCbNxIlkfq+dGqSRguj4NfeLPObZmmpvZ6a8J9IYxC+7YPzIn6QSntndDiIAf6WHV8YCXUZDoJylAQs14bmB3/xe4QI2r4MXbRfTaIPX02wbkVkm5hDKPKASV2c30uIjdjIVvS9rMpCLLFm/PfUcF1sOs4PdjtyaREB5et419IAFdXM39wkyzB2w0UXfDOJklhYQMszuH54Y8H6e3ioIRd93lElB4qBTaMvLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOpNfZkitU43azEhaIzoaq9rq+K7AAqP5gll3M5uEhc=;
+ b=Du+4JrYrxp48dDJidgTr/x1OuMXLtBWpxbR3PT9c9Qh6PiJZlqxlhW78sK1EaGMwtgzUdj7N1GdjtKIjvleLqAPdtZx7/fR+IS+otwuPKZs9iEa8XGxw1Nu2IkOTxzLq73DkhqmKHaqul9GyRHHo1h7VPOLvaupOkTCbTuxJsJKv7ftlEtavNi0NHXSP2SEUEuO8X+G5BWVJjMtyrKky4K3FZUmH7bLtcayjPtejSb3p4VcZQkpNxRRHVFzgrbuYAexnO7jT3vbH5wXLm16LqwiVZ6NZGW4J4NDetSlp4eYKS6cEwH8us20Yt2+Igmz3/BrjBtTFwyCzgQ3ghbm4iw==
+Received: from DM5PR1101CA0010.namprd11.prod.outlook.com (2603:10b6:4:4c::20)
+ by DM4PR12MB5295.namprd12.prod.outlook.com (2603:10b6:5:39f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Wed, 7 Apr
+ 2021 23:00:25 +0000
+Received: from DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:4c:cafe::5b) by DM5PR1101CA0010.outlook.office365.com
+ (2603:10b6:4:4c::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
+ Transport; Wed, 7 Apr 2021 23:00:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT022.mail.protection.outlook.com (10.13.172.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 23:00:25 +0000
+Received: from [10.2.165.36] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
+ 2021 23:00:24 +0000
+Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, <axboe@kernel.dk>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+CC:     <pchandru@nvidia.com>, <devicetree@vger.kernel.org>,
+        <linux-ide@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+ <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
+ <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
+ <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
+Message-ID: <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
+Date:   Wed, 7 Apr 2021 16:00:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330231717.GA2469518@zorba>
+In-Reply-To: <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ac8213d2-8264-478e-0036-08d8fa18ee27
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5295:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB529568B7D3365E2CF6BAADFBC2759@DM4PR12MB5295.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vyXOKR3bQ80Zhphg4M5z6x0xaNTEJxVFqloZPy6yWqb/adtTZ98ELYnS3XLuWT28J6AtMb5QcjSnmYOgr9u3f4LYqc4gLX/8jEmUCXGcb0gcvhmLmM8QkumtLbkGarwcDRTy2hh0kvitJ62kQuy0/lv6MVRnqDoNQDiyUvMzGztIu4n+hjf82KFu2x9zpf+0hDeBGJrAK+faUIXVQ0nnYI80EdILPTXXSrewpvLgQPRctbkIXjm7uCMYkEnLdrE4najtAPe6vBnAICyDOLfdA8wqINgu58mTj74MgZhwFXixjPfUVUyRw6kkDWrex1cB0K0Ay0nlcIwHEJ2s8JvxiNFuSL5edDDMX5+Hz/t/qZmnXC3LyLanRq+xXAi61JhpauvPOnpQP3MMCH0XtU3Uv3dXgT2fFfRmglFdyMsFLNzoLn4UxTMN83egCvU1ICh4O5BXJHPoFbVOWeN8jeuecVZYVTY/iU2pZAigCROAMXGd3GwOPSZ5jPEbSVyA+k0wtAjCE9EitriAJ8/+ue3fKHk6Gpqx3NCpKrWcegatMvKQTKLRFm10HKzqBPjPLXjAVPSG+nVMLEpvbs02mH8Vd3Ydu4y4rVIKz0g8UVXIZeU7igRx2/x4KdkjRFYdsQIRljjugcpWaQNKPfiI06teClRKyeWDBF4yzDUvkZTJVAcMhRws16/yFSD9RdMzK2kQ
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(46966006)(36840700001)(82740400003)(16526019)(7636003)(4326008)(83380400001)(31696002)(82310400003)(186003)(31686004)(5660300002)(70586007)(70206006)(356005)(6666004)(26005)(2906002)(36756003)(86362001)(36906005)(426003)(53546011)(8936002)(47076005)(478600001)(336012)(8676002)(54906003)(110136005)(16576012)(36860700001)(2616005)(316002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 23:00:25.3588
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac8213d2-8264-478e-0036-08d8fa18ee27
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5295
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:17:53PM -0700, Daniel Walker wrote:
-> On Tue, Mar 30, 2021 at 02:49:13PM -0500, Rob Herring wrote:
-> > On Tue, Mar 30, 2021 at 12:57 PM Daniel Walker <danielwa@cisco.com> wrote:
-> > >
-> > > It looks like there's some seepage of cmdline stuff into
-> > > the generic device tree code. This conflicts with the
-> > > generic cmdline implementation so I remove it in the case
-> > > when that's enabled.
-> > >
-> > > Cc: xe-linux-external@cisco.com
-> > > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> > > Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> > > ---
-> > >  drivers/of/fdt.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > > index dcc1dd96911a..d8805cd9717a 100644
-> > > --- a/drivers/of/fdt.c
-> > > +++ b/drivers/of/fdt.c
-> > > @@ -25,6 +25,7 @@
-> > >  #include <linux/serial_core.h>
-> > >  #include <linux/sysfs.h>
-> > >  #include <linux/random.h>
-> > > +#include <linux/cmdline.h>
-> > >
-> > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> > >  #include <asm/page.h>
-> > > @@ -1050,6 +1051,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
-> > >
-> > >         /* Retrieve command line */
-> > >         p = of_get_flat_dt_prop(node, "bootargs", &l);
-> > > +
-> > > +#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_GENERIC_CMDLINE_OF)
-> > 
-> > Moving in the wrong direction... This code already has too many
-> > #ifdef's. I like Christophe's version as it gets rid of all the code
-> > here.
->  
-> It's temporary .. Notice CONFIG_GENERIC_CMDLINE_OF is only used on PowerPC. I
-> experienced doubling on arm64 when this was used (i.e. the append and prepend
-> was added twice).
-> 
-> I don't think there are any other users which can't be moved outside the device
-> tree code, but powerpc uses this function three times during boot up plus the
-> prom_init user. It's possible to use the generic command line in all four places,
-> but it become space inefficient.
 
-What's the 3rd use? I count kaslr code and in 
-early_init_dt_scan_chosen_ppc. Do we need to build the command line for 
-kaslr seed? Getting any build time value from the kernel is pointless.
+On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
+>
+> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
+>> 07.04.2021 04:25, Sowjanya Komatineni пишет:
+>>> +    if (!tegra->pdev->dev.pm_domain) {
+>>> +        ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
+>>> +                            tegra->sata_clk,
+>>> +                            tegra->sata_rst);
+>>> +        if (ret)
+>>> +            goto disable_regulators;
+>>> +    }
+>> Hi,
+>>
+>> Why you haven't added condition for tegra_powergate_power_off()? I think
+>> it should break GENPD and legacy PD API isn't not supported by T186 
+>> at all.
+>>
+>> I'm also not sure whether the power up/down sequence is correct using 
+>> GENPD.
+>>
+>> Moreover the driver doesn't support runtime PM, so GENPD should be
+>> always off?
+>
+> This driver already using legacy PD API's so thought its supported and 
+> added power domain device check during powergate_sequence_power_up and 
+> yes same should apply for powergate_power_off as well. But if legacy 
+> PD is not supported by T186 then not sure why original driver even 
+> using these API's.
+>
+>
+Sorry just took a look and driver supports T210 and prior tegra as well. 
+T210 and prior supports legacy PD and this check is applicable for 
+those. So we should add power domain device check for power off as well.
 
-Rob
+But for T186, we should have GENPD working once we add runtime PM 
+support to driver.
+
+Preetham/Thierry, Can you confirm where SATA is un powergated prior to 
+kernel?
+
+
+> But as RPM is not implemented yet for this driver, GENPD will be OFF 
+> but SATA is not in power-gate by the time kernel starts and 
+> functionally works.
+>
+> But with RPM implementation, I guess we can do proper power gate on/off.
+>
