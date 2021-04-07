@@ -2,442 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585F23572EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE97F3572EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354748AbhDGRSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:18:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29039 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347857AbhDGRSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:18:15 -0400
-IronPort-SDR: VzaitwGbcoPcvoUc7H8y5blzETdggmtZbn3FXsmQUzax2ryflKS4jOsW/Kv0ycgxvd9O14mPgY
- sDek2jtUmQ9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="191197547"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="191197547"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:17:49 -0700
-IronPort-SDR: l6ELU6T9o4MFsBBCnqszJNUza3IOL+BpnmuWxrQWIoQuXkN3YyVXk1MKdnpp9gkcs6+g2dvzy/
- VijVBr3OwX7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="381400610"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 07 Apr 2021 10:17:48 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.27])
-        by linux.intel.com (Postfix) with ESMTP id DAA635805A1;
-        Wed,  7 Apr 2021 10:17:48 -0700 (PDT)
-Message-ID: <fb7e62506bdf19a94ba4f837c5189db676a632c6.camel@linux.intel.com>
-Subject: Re: [PATCH v4] platform/x86: intel_pmc_core: export platform
- global_reset via sysfs.
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        "Box, David E" <david.e.box@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Mashiah, Tamar" <tamar.mashiah@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date:   Wed, 07 Apr 2021 10:17:48 -0700
-In-Reply-To: <641444475c66483086b6e2d58f4b859b@intel.com>
-References: <20210402152113.1191796-1-tomas.winkler@intel.com>
-         <d5021cc2-46c7-7c78-73b1-af50524e1db2@redhat.com>
-         <3387dd6987634bffb7a5082d70bdecfc@intel.com>
-         <69b15385-8df2-b825-1977-a03abca70327@redhat.com>
-         <641444475c66483086b6e2d58f4b859b@intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1354761AbhDGRS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:18:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37660 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347857AbhDGRSZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:18:25 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 137HF51Y103607;
+        Wed, 7 Apr 2021 17:18:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
+ b=FWI6IF+7wVMHgqYK8n+zk+Cjy30S5riRhvosEY0Jd3yxZ3smQtpOnyfX6P1J+JglP/Hb
+ Woy0QdsDtXDfEDEyYVReZjhGltCNtjjQ5A8KWtgxGUviUdU8MfXo1THiKVj27fiy+m86
+ NOiVCk1Kr/6bqJaQOeA+geVAWW/qN1ORZsH/4zgcCXdeT9cJRXhzYUKifbL0xM7dk1TK
+ yQ2wj9Udl4B/cvqQ8Q6M8pEOcHcTMArKkslcWswnpDs3kY+J8arRHXxzh+OdT5h+tmAR
+ Dgjb2BMggixcxaK8S/L79JjDUyC5ilZkfZyJThOsC14iKGLwYjNUiO3LnZ00z7F3sZjx KQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 37rvas3bgj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Apr 2021 17:18:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 137HB8LG051391;
+        Wed, 7 Apr 2021 17:18:07 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by userp3020.oracle.com with ESMTP id 37rvb05p1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Apr 2021 17:18:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eDobSeo8X43OCLHiLjhyTivQOdvX/zCWOpGe5H82XmscEO77J2hg4zyvBj0RliO7HRTA3BCgLe8k45Dw0P/ts0TmLaTSDkX5MgrdSOVOKspkFPKZdt4IuYMrVTWQE8/RYlt46Ekkb37o715Ukx0tUnAyxkvVRtKDky2My6/NaocEZGktRI6BkrV73H7JVv5av2SSAO8rm+1pN4jLd+zNv/ea95K8aHMVjRlgJm7qLiIeGmYTinKKNI2oXlZFPlVwnk/taw7Z3uwDgty/I0+kQTw3boZbKVFny2ccGucm+qA5Ay8k/a2OTNFofhAignGG/QGHnyhZxO+Qwnd7Se+37g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
+ b=cuSOe/BaXtdHa8G8zANLrqZgkKnUNQmSTZX5sX8KQcb6Adp8hBr5/qT8EUQgzomAh58/iwT6xOcbjaxIhAH06n/tlZEu/84QdDILWFSFlpmob+TQEiJLP6EM4ULNSrs5vFUeH+HMP50AfIEpFMeh9PLiO2x7mtpQfkmBZ6NRsEb+DKHIThsQGkDM7YCJH7MfFQgwughsTa10CpUQfX03zKVjsGJ+WJDugyrEPUHCzRRIfVEBgg0zO27Zlm5RROuzV9yTYS2/iYnQmmtywIpeKpTNidPWu7vfH1d4jxe72AGDXd1JLvRP4SF8gQ26h//viT+StFpzMGg9qeZOAthUtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=33tr++dHzjxmD24/8hMneUvQuDnlVgnhOjKQVRcelcg=;
+ b=KT42K99hWqjibrflrtqwMIgA9EG58BCKqO+gGL/+Rc7gvyaKB2YTm43Xr5nG7dfCLjh5M2jpKsrwqKzuwoOtfPAR8hfAJAlmNSIsXlJTI4MlIezz6Zw0ADdrBYdRLoIQhdNyzpe/7oyBI+FFCu5ofAr1nkym9hTaSyfjogTYJDs=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
+Received: from CO1PR10MB4754.namprd10.prod.outlook.com (2603:10b6:303:91::24)
+ by MWHPR10MB1376.namprd10.prod.outlook.com (2603:10b6:300:21::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 7 Apr
+ 2021 17:18:05 +0000
+Received: from CO1PR10MB4754.namprd10.prod.outlook.com
+ ([fe80::6091:8d07:2f26:cf44]) by CO1PR10MB4754.namprd10.prod.outlook.com
+ ([fe80::6091:8d07:2f26:cf44%5]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
+ 17:18:05 +0000
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Viswas G <Viswas.G@microchip.com>, linux-scsi@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: pm80xx: Fix potential infinite loop
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blaq9fyx.fsf@ca-mkp.ca.oracle.com>
+References: <20210407135840.494747-1-colin.king@canonical.com>
+Date:   Wed, 07 Apr 2021 13:18:02 -0400
+In-Reply-To: <20210407135840.494747-1-colin.king@canonical.com> (Colin King's
+        message of "Wed, 7 Apr 2021 14:58:40 +0100")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BY3PR05CA0027.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::32) To CO1PR10MB4754.namprd10.prod.outlook.com
+ (2603:10b6:303:91::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY3PR05CA0027.namprd05.prod.outlook.com (2603:10b6:a03:254::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend Transport; Wed, 7 Apr 2021 17:18:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f077595f-8ea2-415f-01f8-08d8f9e91b63
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1376:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB13765577A27F3A63BF36C4D78E759@MWHPR10MB1376.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: msj7Y4SMI3AYw4K4+LgaO4n2YwHhmATOlIXoDntbt0d/4YF3Ad1jk/aLhQFboBgYAmCxj32DrjiKPzsl6ELoBpiFG+VU3OoErg3m7Oy+gXcbSwJrNhtYjtFF7i7aPW6jLIGfGZukvgL7fk9YdvyDV+/F4JUzCNfUNsJQoXqT7S4/wFJIxs9596h2BHZLpK/OJNI6Red+wimIy4llNKEPlRcQ/57+d/hoMuxJbp1oeS9reXPQT0lRoNbM89yQZgCqdhMdtKBPgEqwZLmJiwM9kYxnB7RgVvd/IRC1Yp835sD/mqCqbnrbZhoqkQ32BzM4Pn2JN9O7anibdIGMWMht9HIUQ+DkUTuL9XurmrO9bMhTLBcRNwMXk++vXMkXFLSQrX4KrRZQr/PPr+o+UCv6e2cUoFHQAotDrBXevjGaShoFFFAmISouffoFnt7j4cwbmkVEdlQ1FXnh0OAhHd0wyMA/LdSInRJQ4CWoQhMQL9czqkmZKIvoovC8s94ADTEpaHhZFqYL37d7ecJrYjMtl4Ix/Lbw/G898VyL7oT8qmiY65c1Oku4pSWW9sifJ8TO27C6K/V5o2uRi+5rwZOGAHWiWiOgGjKgG9k6IPb4sVZna9wKKyNjICGrul6wqSaj6yKYqDBm43f96CzoMdNYQIDKojZUZUfNTyvRYHp8ILP+sUSmC7JPsZ56fO8l1Ipj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4754.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(376002)(346002)(39860400002)(956004)(6916009)(38350700001)(36916002)(8936002)(66946007)(8676002)(2906002)(66556008)(5660300002)(26005)(83380400001)(478600001)(86362001)(52116002)(4744005)(54906003)(7696005)(55016002)(316002)(38100700001)(186003)(6666004)(66476007)(4326008)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Fs59wfLw45skekUJVFjaj3QpV75/Moznqsj145k7tnaNaF8EkDAbWo07JRl7?=
+ =?us-ascii?Q?VOkPueYAccSdbttxgVXWAhn7IPFIoBgWkmiNhWM4o8pN6ulAgEdVz/wHkec3?=
+ =?us-ascii?Q?3MOInHNPS9KcXW/40QevHwg1dpwjmIVy2YB2t4lehIO71I34edhApkR4QrSK?=
+ =?us-ascii?Q?JQ091XVrApJkhgfNQNOTUtP3NT8ZKRUZH2NdpokcCMoHwI1nkczA0DlktUFq?=
+ =?us-ascii?Q?ukmfwO76115ZXlCUmFiL1/IV9lh8jGeyxV/iAuN0CaF6bK4hKqjGa9xf9zNO?=
+ =?us-ascii?Q?62oljBipt97McJ8idT92m+O3YUCfyWrSZdcnf1IS3DGlGE2Dv0i1/6n8djzt?=
+ =?us-ascii?Q?ArpLHdZ1VG42785FqWs04YtvZo72eocYCzUtaOvxDSY4nkk3UHm3rajk5Zpz?=
+ =?us-ascii?Q?Pp0judkxC0une/nEtNUfmpMZmbHky6QbkXPtb7JCLZaVdxl58laxFlWabvFc?=
+ =?us-ascii?Q?jMjZXGgn1KtpxFJuBiafWiAu+MvIwvxoYcOrlpFqduMLkNVKw9NTPRDtcEfQ?=
+ =?us-ascii?Q?k3dDdTx2eraj1SoronW+xoiz5FLxLZqVqFk3IBAVPsDZeXxAJida9kSwKCI3?=
+ =?us-ascii?Q?Kn4uCYu2zQWGK2+OMtGLQ5N19TGkCPnVqIuHeXBad30zmULkUSDADguGmfiR?=
+ =?us-ascii?Q?7jvwhuuUTWMJ6+9gvbdtDRh+nAKNZ7uzjrgnvniNbQ6lZZ6VLoURa14DyxwK?=
+ =?us-ascii?Q?GpBXwbRPvf6tOoceeL7rFDtLCfJ5pWyPa1IhL9uQfz8KTY+2gFAkqHrqGmrj?=
+ =?us-ascii?Q?En2QCj/KSCFLPDxUkbVlWGN3ja9wIaKqVLlJilFFNtatAL5kNiWXV2cxSHrO?=
+ =?us-ascii?Q?fz8WSeToDnM0EpUZ8XAaGH7c+/M+4FS3MsGixwPQIwH1umFpybSynYtj5v2g?=
+ =?us-ascii?Q?qdPleu6nZHPrjWrkDRLgANQQ9rmpAb1z3Xv9MvXIlXf/97es/B1YepgnD/Y7?=
+ =?us-ascii?Q?MH0u8V/rmz0wRQ3lbMIEw9mamAkew+twuAZyofYy1ZuYFXTtYjpntXxYmI49?=
+ =?us-ascii?Q?4AaQc7fAlsAYDiQJAedCDpkJy/M6jqd8I5XhWLufocON8VUtFJfdthmeDgKL?=
+ =?us-ascii?Q?/KU8tZItDjR2Nq2Lz3cAenBSUrnUKP5e0CjM/9EQHJJjSKoz3PzGkNVaHF9C?=
+ =?us-ascii?Q?ZQSyb5xRugrv19WyWkWQbE+33JK1INgcF0PQQT2NXXdZFHlHWS9UGom+iGhi?=
+ =?us-ascii?Q?Oxu2F1QlURJHmWWF3G8O8eymwwxllziZN6u8NfcGDmYxT/nFejMIWSRACpkt?=
+ =?us-ascii?Q?QWMVHveLNze0RE+ObwH0KXbsxuAQDAwW50Yl6rrr8XWpw0wxC1kTTvnJqfQu?=
+ =?us-ascii?Q?h2H8h3qXNPDhM3nyo1xQF5sw?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f077595f-8ea2-415f-01f8-08d8f9e91b63
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4754.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 17:18:05.7076
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ehz4gpGLnXbvgPC6Fz4bLhup9hN105uuxnWl0rqlUiwYDQq2jS5jmzuQ/psJ0Jank3oer96FCkHj/hnDMcT7eadZBCHl1qdEB5L+o8qzfSc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1376
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9947 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104070117
+X-Proofpoint-GUID: naKXGQRpoHDg0byGLphyVXpwsk9yRQ_P
+X-Proofpoint-ORIG-GUID: naKXGQRpoHDg0byGLphyVXpwsk9yRQ_P
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9947 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-07 at 09:31 +0000, Winkler, Tomas wrote:
-> 
-> 
-> > Hi,
-> > 
-> > On 4/7/21 8:51 AM, Winkler, Tomas wrote:
-> > > > > 
-> > > > > During PCH (platform/board) manufacturing process a global
-> > > > > reset has
-> > > > > to be induced in order for configuration changes take the
-> > > > > effect
-> > > > > upon following platform reset.
-> > > > > This setting was commonly done by accessing PMC registers via
-> > > > > /dev/mem but due to security concern /dev/mem access is much
-> > > > > restricted, hence the reason for exposing this setting via
-> > > > > dedicated sysfs
-> > interface.
-> > > > > To prevent post manufacturing abuse the register is protected
-> > > > > by
-> > > > > hardware locking.
-> > > > 
-> > > > The purpose of this reset functionality is not entirely clear
-> > > > to me.
-> > > > 
-> > > > Is this only used during production of a board? Or is this also
-> > > > something which a user/reseller may use as part of a factory-
-> > > > reset
-> > procedure?
-> > > 
-> > > Board production and refurbishing of the board. I can try to
-> > > rephrase but I
-> > thought all the info is in the commit message.
-> > > As a runtime feature a user can check that her/his platform is
-> > > correctly
-> > sealed.
-> > 
-> > Manufacturing is clear, refurbishing is very much not clear, do you
-> > mean
-> > actually desoldering the chip and replacing it with a new one ?
-> > 
-> > > > If this is only used once during production, then I'm not sure
-> > > > if
-> > > > introducing a sysfs file for this is desirable.
-> > > 
-> > > What do you suggest, than?  I'm just guessing is where are you
-> > > heading
-> > > so the answer is that the manufacturing is often already run on
-> > > the
-> > production OS installation,  w/o going into details swapping or
-> > reconfiguring
-> > the OS is not always an option.
-> > > The manufacturer is also a user of ours.
-> > 
-> > Ok, so lets compromise here, please make use of the visibility
-> > sysfs attribute
-> > callback, which returns a umask and make the file read-only at the
-> > umask
-> > level if it has been sealed, to make it clear to users that they
-> > cannot write to
-> > it, the -EACCES error means 'Permission denied' so if the user is
-> > already root
-> > they are going to get mightily confused if ls -l shows the file is
-> > writable.
-> Okay, it seems a better solution if the file is the global reset,  
-> but maybe this path should not be taken if we rename it to 
-> extended_test_mode_register3, than it's better to get EACCESS on a
-> specific bit.
-> > 
-> > Also on set you are checking that the written value is bit 20, and
-> > on show you
-> > are showing the contents of the "Extended Test Mode Register 3" in
-> > hex, or
-> > at least those bits you are willing to show.
-> 
-> The intention was to left the user space behave same as with direct
-> register access (/dev/mem)
-> 
-> > So in essence what you are doing here is giving userspace (some)
-> > access to
-> > the "Extended Test Mode Register 3", I would prefer to spell that
-> > out
-> > explicitly. The global_reset sysfs file name to me too much hints
-> > at something
-> > which the user can trigger / use while it is not intended for user
-> > usage.
-> 
-> Yeah, Global reset is maybe too ambiguous name in a general context,
-> this is not the standard platform reset. 
-> 
-> I've left it in register form in order to keep the user space as it
-> has access to the register (/dev/mem)
-> > 
-> > Also the Documentation/ABI/testing/sysfs-platform-intel-pm file
-> > pretty much
-> > describes this as direct register access rather then as some reset
-> > mechanism.
-> > 
-> > So I think it would be better to call the new file
-> > extended_test_mode_register3, this will also be useful if we need
-> > to provide
-> > access to other bits in the same register later; and this will be a
-> > good
-> > template to follow if we need to provide some access to other
-> > registers later
-> > too.
-> 
-> Need to sync with David on that he pointed just ow, that he plans to
-> expose some more bits. 
 
-I just need the offset to read the register. The bits I'm working with
-will not be exposed directly. I'm okay with the name change as long as
-usage remains restricted to the CF9 bits in this patch.
+Hi Colin!
 
-David
+> The for-loop iterates with a u8 loop counter i and compares this with
+> the loop upper limit of pm8001_ha->max_q_num which is a u32 type.
+> There is a potential infinite loop if pm8001_ha->max_q_num is larger
+> than the u8 loop counter. Fix this by making the loop counter the same
+> type as pm8001_ha->max_q_num.
 
-> 
-> > Regards,
-> > 
-> > Hans
-> > 
-> > 
-> > 
-> > > 
-> > > > 
-> > > > Can you please provide a new version where the purpsoe of the
-> > > > newly
-> > > > introduced sysfs file is made more clear, both in the commit-
-> > > > msg as
-> > > > well as in
-> > > > the:
-> > > Okay I can do that.
-> > > > 
-> > > > Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > > > 
-> > > > File ?
-> > > > 
-> > > > Regards,
-> > > > 
-> > > > Hans
-> > > > 
-> > > > 
-> > > > 
-> > > > > 
-> > > > > The register in MMIO space is defined for Cannon Lake and
-> > > > > newer PCHs.
-> > > > > 
-> > > > > Cc: David E Box <david.e.box@intel.com>
-> > > > > Reviewed-by: Andy Shevchenko <
-> > > > > andriy.shevchenko@linux.intel.com>
-> > > > > Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-> > > > > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > > > > ---
-> > > > > 2:
-> > > > > 1. Add locking for reading the ET3 register  (Andy) 2. Fix
-> > > > > few style
-> > > > > issues (Andy)
-> > > > > V3:
-> > > > > 1. Resend
-> > > > > v4:
-> > > > > 1. Fix return statement (Andy)
-> > > > > 2. Specify manufacturing process (Enrico)
-> > > > > 
-> > > > >  .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
-> > > > >  MAINTAINERS                                   |  1 +
-> > > > >  drivers/platform/x86/intel_pmc_core.c         | 97
-> > > > > +++++++++++++++++++
-> > > > >  drivers/platform/x86/intel_pmc_core.h         |  6 ++
-> > > > >  4 files changed, 115 insertions(+)
-> > > > >  create mode 100644
-> > > > > Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > > > > 
-> > > > > diff --git a/Documentation/ABI/testing/sysfs-platform-intel-
-> > > > > pmc
-> > > > > b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > > > > new file mode 100644
-> > > > > index 000000000000..7ce00e77fbcd
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > > > > @@ -0,0 +1,11 @@
-> > > > > +What:          /sys/devices/platform/<platform>/global_reset
-> > > > > +Date:          Apr 2021
-> > > > > +KernelVersion: 5.13
-> > > > > +Contact:       "Tomas Winkler" <tomas.winkler@intel.com>
-> > > > > +Description:
-> > > > > +               Display global reset setting bits for PMC.
-> > > > > +                       * bit 31 - global reset is locked
-> > > > > +                       * bit 20 - global reset is set
-> > > > > +               Writing bit 20 value to the global_reset will
-> > > > > induce
-> > > > > +               a platform global reset upon consequent
-> > > > > platform reset.
-> > > > > +               in case the register is not locked.
-> > > > > diff --git a/MAINTAINERS b/MAINTAINERS index
-> > > > > 04f68e0cda64..618676eba8c8 100644
-> > > > > --- a/MAINTAINERS
-> > > > > +++ b/MAINTAINERS
-> > > > > @@ -9166,6 +9166,7 @@ M:        Rajneesh Bhardwaj
-> > > > <irenic.rajneesh@gmail.com>
-> > > > >  M:     David E Box <david.e.box@intel.com>
-> > > > >  L:     platform-driver-x86@vger.kernel.org
-> > > > >  S:     Maintained
-> > > > > +F:     Documentation/ABI/testing/sysfs-platform-intel-pmc
-> > > > >  F:     drivers/platform/x86/intel_pmc_core*
-> > > > > 
-> > > > >  INTEL PMIC GPIO DRIVERS
-> > > > > diff --git a/drivers/platform/x86/intel_pmc_core.c
-> > > > > b/drivers/platform/x86/intel_pmc_core.c
-> > > > > index ee2f757515b0..8afc198550a4 100644
-> > > > > --- a/drivers/platform/x86/intel_pmc_core.c
-> > > > > +++ b/drivers/platform/x86/intel_pmc_core.c
-> > > > > @@ -401,6 +401,7 @@ static const struct pmc_reg_map
-> > > > > cnp_reg_map =
-> > {
-> > > > >         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
-> > > > >         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
-> > > > >         .ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
-> > > > > +       .etr3_offset = ETR3_OFFSET,
-> > > > >  };
-> > > > > 
-> > > > >  static const struct pmc_reg_map icl_reg_map = { @@ -418,6
-> > > > > +419,7 @@
-> > > > > static const struct pmc_reg_map icl_reg_map = {
-> > > > >         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
-> > > > >         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
-> > > > >         .ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
-> > > > > +       .etr3_offset = ETR3_OFFSET,
-> > > > >  };
-> > > > > 
-> > > > >  static const struct pmc_bit_map tgl_clocksource_status_map[]
-> > > > > = { @@
-> > > > > -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map
-> > > > > = {
-> > > > >         .lpm_sts = tgl_lpm_maps,
-> > > > >         .lpm_status_offset = TGL_LPM_STATUS_OFFSET,
-> > > > >         .lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
-> > > > > +       .etr3_offset = ETR3_OFFSET,
-> > > > >  };
-> > > > > 
-> > > > >  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev,
-> > > > > int
-> > > > > reg_offset) @@ -603,6 +606,99 @@ static inline u64
-> > > > pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
-> > > > >         return (u64)value * pmcdev->map-
-> > > > > >slp_s0_res_counter_step;
-> > > > >  }
-> > > > > 
-> > > > > +static int set_global_reset(struct pmc_dev *pmcdev) {
-> > > > > +       const struct pmc_reg_map *map = pmcdev->map;
-> > > > > +       u32 reg;
-> > > > > +       int err;
-> > > > > +
-> > > > > +       if (!map->etr3_offset)
-> > > > > +               return -EOPNOTSUPP;
-> > > > > +
-> > > > > +       mutex_lock(&pmcdev->lock);
-> > > > > +
-> > > > > +       /* check if CF9 is locked */
-> > > > > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > > > > +       if (reg & ETR3_CF9LOCK) {
-> > > > > +               err = -EACCES;
-> > > > > +               goto out_unlock;
-> > > > > +       }
-> > > > > +
-> > > > > +       /* write CF9 global reset bit */
-> > > > > +       reg |= ETR3_CF9GR;
-> > > > > +       pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
-> > > > > +
-> > > > > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > > > > +       if (!(reg & ETR3_CF9GR)) {
-> > > > > +               err = -EIO;
-> > > > > +               goto out_unlock;
-> > > > > +       }
-> > > > > +
-> > > > > +       err = 0;
-> > > > > +
-> > > > > +out_unlock:
-> > > > > +       mutex_unlock(&pmcdev->lock);
-> > > > > +       return err;
-> > > > > +}
-> > > > > +
-> > > > > +static ssize_t global_reset_show(struct device *dev,
-> > > > > +                                struct device_attribute
-> > > > > *attr, char *buf) {
-> > > > > +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> > > > > +       const struct pmc_reg_map *map = pmcdev->map;
-> > > > > +       u32 reg;
-> > > > > +
-> > > > > +       if (!map->etr3_offset)
-> > > > > +               return -EOPNOTSUPP;
-> > > > > +
-> > > > > +       mutex_lock(&pmcdev->lock);
-> > > > > +
-> > > > > +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> > > > > +       reg &= ETR3_CF9GR | ETR3_CF9LOCK;
-> > > > > +
-> > > > > +       mutex_unlock(&pmcdev->lock);
-> > > > > +
-> > > > > +       return sysfs_emit(buf, "0x%08x", reg); }
-> > > > > +
-> > > > > +static ssize_t global_reset_store(struct device *dev,
-> > > > > +                                 struct device_attribute
-> > > > > *attr,
-> > > > > +                                 const char *buf, size_t
-> > > > > len)
-> > > > > +{
-> > > > > +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> > > > > +       int err;
-> > > > > +       u32 reg;
-> > > > > +
-> > > > > +       err = kstrtouint(buf, 16, &reg);
-> > > > > +       if (err)
-> > > > > +               return err;
-> > > > > +
-> > > > > +       /* allow only CF9 writes */
-> > > > > +       if (reg != ETR3_CF9GR)
-> > > > > +               return -EINVAL;
-> > > > > +
-> > > > > +       err = set_global_reset(pmcdev);
-> > > > > +       if (err)
-> > > > > +               return err;
-> > > > > +
-> > > > > +       return len;
-> > > > > +}
-> > > > > +static DEVICE_ATTR_RW(global_reset);
-> > > > > +
-> > > > > +static struct attribute *pmc_attrs[] = {
-> > > > > +       &dev_attr_global_reset.attr,
-> > > > > +       NULL
-> > > > > +};
-> > > > > +
-> > > > > +static const struct attribute_group pmc_attr_group = {
-> > > > > +       .attrs = pmc_attrs,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct attribute_group *pmc_dev_groups[] = {
-> > > > > +       &pmc_attr_group,
-> > > > > +       NULL
-> > > > > +};
-> > > > > +
-> > > > >  static int pmc_core_dev_state_get(void *data, u64 *val)  {
-> > > > >         struct pmc_dev *pmcdev = data;
-> > > > > @@ -1364,6 +1460,7 @@ static struct platform_driver
-> > > > > pmc_core_driver
-> > = {
-> > > > >                 .name = "intel_pmc_core",
-> > > > >                 .acpi_match_table =
-> > > > > ACPI_PTR(pmc_core_acpi_ids),
-> > > > >                 .pm = &pmc_core_pm_ops,
-> > > > > +               .dev_groups = pmc_dev_groups,
-> > > > >         },
-> > > > >         .probe = pmc_core_probe,
-> > > > >         .remove = pmc_core_remove,
-> > > > > diff --git a/drivers/platform/x86/intel_pmc_core.h
-> > > > > b/drivers/platform/x86/intel_pmc_core.h
-> > > > > index f33cd2c34835..98ebdfe57138 100644
-> > > > > --- a/drivers/platform/x86/intel_pmc_core.h
-> > > > > +++ b/drivers/platform/x86/intel_pmc_core.h
-> > > > > @@ -200,6 +200,11 @@ enum ppfear_regs {
-> > > > >  #define TGL_LPM_STATUS_OFFSET                  0x1C3C
-> > > > >  #define TGL_LPM_LIVE_STATUS_OFFSET             0x1C5C
-> > > > > 
-> > > > > +/* Extended Test Mode Register 3 (CNL and later) */
-> > > > > +#define ETR3_OFFSET                            0x1048
-> > > > > +#define ETR3_CF9GR                             BIT(20)
-> > > > > +#define ETR3_CF9LOCK                           BIT(31)
-> > > > > +
-> > > > >  const char *tgl_lpm_modes[] = {
-> > > > >         "S0i2.0",
-> > > > >         "S0i2.1",
-> > > > > @@ -263,6 +268,7 @@ struct pmc_reg_map {
-> > > > >         const u32 lpm_residency_offset;
-> > > > >         const u32 lpm_status_offset;
-> > > > >         const u32 lpm_live_status_offset;
-> > > > > +       const u32 etr3_offset;
-> > > > >  };
-> > > > > 
-> > > > >  /**
-> > > > > 
-> > > 
-> 
+No particular objections to the patch for future-proofing. However, as
+far as I can tell max_q_num is capped at 64 (PM8001_MAX_MSIX_VEC).
 
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
