@@ -2,110 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF6B356F95
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE17C35703B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349092AbhDGPAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:00:53 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:44970 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348928AbhDGPAo (ORCPT
+        id S1353594AbhDGP3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:29:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353528AbhDGP32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:00:44 -0400
-Received: by mail-wr1-f48.google.com with SMTP id e12so5270703wro.11;
-        Wed, 07 Apr 2021 08:00:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EwbSmztaZBEk6NfE4Xk0DiplD2tvdJVlSEP8EVaTzgI=;
-        b=mMrMzgZBaW4NtQjYbt9ndPz54UL85fxm5xvP+Zz5kRhtlL4YKzvbUgCchRXEC7LF6+
-         e6E9pCaJOfcMYMOUFaFOWR6snHYcCyPuA4epqn4aEHFGl8XJaxpjTF0dbvnu36n8W4Ej
-         MIwMzpcCry3SCpolf9gYmcjjkwVcSa5wJ4jORFNqKvfYBPE6LnHXaO3vYYSZ1QnUmkTo
-         STcbPhVo3Xf7zQp8Bht0eRhJW5cUqrb1vgwk13W/F50m6Zh/+Ig8h4N4ZfdEuHmwIr1n
-         zo/xe5+tXD9NYtEVLJkqsPQH9kKsR0ozzH5GH85ysFaCXT4d4WtrfKlXdjU/WvpWn6lz
-         yIOw==
-X-Gm-Message-State: AOAM533zTORG57kS1UqWBk197A9VcO07Yaod3gGI+C3tJdXtY4gnYFBE
-        Kd8Rkse/zYS74NaNeGma7dg=
-X-Google-Smtp-Source: ABdhPJwIU8dU9ZSylWoXAhdqqz2MvpUuLkN1zsOGbRXUcNgyW0reyvp4B2vCqtwucpNoE9UGhf48qg==
-X-Received: by 2002:a05:6000:1c7:: with SMTP id t7mr4956713wrx.313.1617807632297;
-        Wed, 07 Apr 2021 08:00:32 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r5sm3763370wrx.87.2021.04.07.08.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 08:00:32 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 15:00:30 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <20210407150030.wvwz6cebxjtjpgfv@liuwe-devbox-debian-v2>
-References: <20210406232321.12104-1-decui@microsoft.com>
- <20210407131705.4rwttnj3zneolnh3@liuwe-devbox-debian-v2>
- <DM5PR2101MB0934D037F5541B0FA449FA34CA759@DM5PR2101MB0934.namprd21.prod.outlook.com>
+        Wed, 7 Apr 2021 11:29:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617809357;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=lt6zYqYQXzJ6nG3sWMwPo3r3/e2UA4fAW7Oz3w0+DpU=;
+        b=UBCJhiUFjQ8L5aX2X6+kUFKD7VzwNEPESXVmxc3fJV1/Jg6njwuqv7clERhVoBO9yzZTdK
+        veor16ihPXn0/w3eUKK7YAqGzWpx5GNz3H7WkR7VI4b2GV324HrhVQzxn6QvBcQhfhSTXI
+        IU2+gfMBkZvwtY4JRV/Uf2yUWfEQGKk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-lxbv5R-vO1y3hTr9E94DXQ-1; Wed, 07 Apr 2021 11:28:26 -0400
+X-MC-Unique: lxbv5R-vO1y3hTr9E94DXQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87523A0CAC;
+        Wed,  7 Apr 2021 15:28:22 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9F5D2BFE7;
+        Wed,  7 Apr 2021 15:28:14 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 559BC41486DD; Wed,  7 Apr 2021 10:53:01 -0300 (-03)
+Date:   Wed, 7 Apr 2021 10:53:01 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>
+Subject: [PATCH] hrtimer: avoid retrigger_next_event IPI
+Message-ID: <20210407135301.GA16985@fuller.cnet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM5PR2101MB0934D037F5541B0FA449FA34CA759@DM5PR2101MB0934.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:34:01PM +0000, Haiyang Zhang wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Wei Liu <wei.liu@kernel.org>
-> > Sent: Wednesday, April 7, 2021 9:17 AM
-> > To: Dexuan Cui <decui@microsoft.com>
-> > Cc: davem@davemloft.net; kuba@kernel.org; KY Srinivasan
-> > <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Stephen
-> > Hemminger <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
-> > <liuwe@microsoft.com>; netdev@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
-> > Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
-> > Network Adapter (MANA)
-> > 
-> > On Tue, Apr 06, 2021 at 04:23:21PM -0700, Dexuan Cui wrote:
-> > [...]
-> > > +config MICROSOFT_MANA
-> > > +	tristate "Microsoft Azure Network Adapter (MANA) support"
-> > > +	default m
-> > > +	depends on PCI_MSI
-> > > +	select PCI_HYPERV
-> > 
-> > OOI which part of the code requires PCI_HYPERV?
-> > 
-> > Asking because I can't immediately find code that looks to be Hyper-V
-> > specific (searching for vmbus etc). This device looks like any other PCI devices
-> > to me.
-> 
-> It depends on the VF nic's PCI config space which is presented by the pci_hyperv driver.
 
-I think all it matters is the PCI bus is able to handle the
-configuration space access, right? Assuming there is an emulated PCI
-root complex which exposes the config space to the driver, will this
-driver still work?
+Setting the realtime clock triggers an IPI to all CPUs to reprogram
+hrtimers.
 
-I'm trying to understand how tightly coupled with Hyper-V PCI this
-driver is. In an alternative universe, Microsft may suddenly decide to
-sell this hardware and someone wants to passthrough an VF via VFIO. I
-don't see how this driver wouldn't work, hence the original question.
+However, only base, boottime and tai clocks have their offsets updated
+(and therefore potentially require a reprogram).
 
-There is no need to change the code. I'm just curious about a tiny
-detail in the implementation.
+If the CPU is a nohz_full one, check if it only has 
+monotonic active timers, and in that case update the 
+realtime base offsets, skipping the IPI.
 
-Wei.
+This reduces interruptions to nohz_full CPUs.
 
-> 
-> Thanks,
-> - Haiyang
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 743c852e10f2..b42b1a434b22 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -853,6 +853,28 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	tick_program_event(expires, 1);
+ }
+ 
++#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME)|		\
++			 (1U << HRTIMER_BASE_REALTIME_SOFT)|	\
++			 (1U << HRTIMER_BASE_BOOTTIME)|		\
++			 (1U << HRTIMER_BASE_BOOTTIME_SOFT)|	\
++			 (1U << HRTIMER_BASE_TAI)|		\
++			 (1U << HRTIMER_BASE_TAI_SOFT))
++
++static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
++{
++	unsigned int active = 0;
++
++	if (!cpu_base->softirq_activated)
++		active = cpu_base->active_bases & HRTIMER_ACTIVE_SOFT;
++
++	active = active | (cpu_base->active_bases & HRTIMER_ACTIVE_HARD);
++
++	if ((active & CLOCK_SET_BASES) == 0)
++		return false;
++
++	return true;
++}
++
+ /*
+  * Clock realtime was set
+  *
+@@ -867,9 +889,41 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ void clock_was_set(void)
+ {
+ #ifdef CONFIG_HIGH_RES_TIMERS
+-	/* Retrigger the CPU local events everywhere */
+-	on_each_cpu(retrigger_next_event, NULL, 1);
++	cpumask_var_t mask;
++	int cpu;
++
++	if (!tick_nohz_full_enabled()) {
++		/* Retrigger the CPU local events everywhere */
++		on_each_cpu(retrigger_next_event, NULL, 1);
++		goto set_timerfd;
++	}
++
++	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
++		on_each_cpu(retrigger_next_event, NULL, 1);
++		goto set_timerfd;
++	}
++
++	/* Avoid interrupting nohz_full CPUs if possible */
++	preempt_disable();
++	for_each_online_cpu(cpu) {
++		if (tick_nohz_full_cpu(cpu)) {
++			unsigned long flags;
++			struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
++
++			raw_spin_lock_irqsave(&cpu_base->lock, flags);
++			if (need_reprogram_timer(cpu_base))
++				cpumask_set_cpu(cpu, mask);
++			else
++				hrtimer_update_base(cpu_base);
++			raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
++		}
++	}
++
++	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
++	preempt_enable();
++	free_cpumask_var(mask);
+ #endif
++set_timerfd:
+ 	timerfd_clock_was_set();
+ }
+ 
+
