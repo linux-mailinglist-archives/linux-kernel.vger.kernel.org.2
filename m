@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00D435712B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189AC35712E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353883AbhDGP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbhDGP4n (ORCPT
+        id S1353922AbhDGP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:57:09 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52368 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233852AbhDGP5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:56:43 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC91C061756;
-        Wed,  7 Apr 2021 08:56:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08fb00aad493ab6ea3c721.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:aad4:93ab:6ea3:c721])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6920B1EC0246;
-        Wed,  7 Apr 2021 17:56:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617810992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=2zy9HaPp5QLTjnLtg7mOMCS8VHEuMJmllA5VVq4pXfA=;
-        b=SGUPhPZooTM09vE1dvF+pLLS/ShXMuXgmoIl0QilN7iqvo9i1/02XNw9Qgip2vA0vhWno0
-        CYY+AarzAw07VwmfQIPxeTpFGeMlM/JP9NATAEj2QEVx/owxEPuTHHSFFqA+nsd94tHE85
-        CLZQ4eaPelqxZwjTQf7IKOaxnmVr1lU=
-Date:   Wed, 7 Apr 2021 17:56:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the
- debugfs
-Message-ID: <20210407155636.GG25319@zn.tnic>
-References: <20210405232653.33680-1-jarkko@kernel.org>
- <20210405232653.33680-2-jarkko@kernel.org>
+        Wed, 7 Apr 2021 11:57:06 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137Fulpo116650;
+        Wed, 7 Apr 2021 10:56:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617811007;
+        bh=r78S7ZI4t8HWx+zggh+zIGvWwlMtHHDtztUrnZCJObU=;
+        h=From:To:CC:Subject:Date;
+        b=tGbYaKvDiKH9NIF54rSuMN58mRR1ezK3lCaXY0Thb8N0zgo1d/MhStsmWIf6OVnHU
+         w4brV5JM1C+cslX76fKGDmIa9Ipr9bg7M5JFXIIN1XYVW68+TC7ASTFL/E7U0VDwuM
+         Z3PHCae2DNk2kkJb7eRAWm+TnPppBsT5iDn3NNVg=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137FulfA047396
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Apr 2021 10:56:47 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
+ 2021 10:56:47 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 7 Apr 2021 10:56:47 -0500
+Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137Ful3U112645;
+        Wed, 7 Apr 2021 10:56:47 -0500
+Received: from localhost ([10.250.37.105])
+        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 137Fuk5C075236;
+        Wed, 7 Apr 2021 10:56:47 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] PRU firmware event/interrupt mapping fixes
+Date:   Wed, 7 Apr 2021 10:56:38 -0500
+Message-ID: <20210407155641.5501-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210405232653.33680-2-jarkko@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:26:53AM +0300, Jarkko Sakkinen wrote:
-> Add two debugs attributes:
-> 
-> * /sys/kernel/debug/x86/sgx_nr_all_pages
-> * /sys/kernel/debug/x86/sgx_nr_free_pages
+Hi All,
 
-Definitely under /sys/kernel/debug/x86/sgx/...
-				      ^^^^^^
+The following is a minor revised version of the series [1] that includes fixes
+for various different issues associated with the PRU firmware event/interrupt
+mapping configuration logic. Please see the v1 cover-letter [1] for additional
+details. 
 
-> These provide useful statistics for testing purposes.
+There are currently no in-kernel dts nodes yet in mainline kernel (first
+nodes will appear in v5.13-rc1) so these can be picked up for either v5.13
+merge window or the current -rc cycle.
 
-Testing what exactly?
+Changes in v2:
+ - Picked up Reviewed-by tags on Patches 1 and 2
+ - Revised Patch 3 to address additional error cleanup paths as
+   pointed out by Mathieu.
 
-Also, if those are EPC pages, why isn't "epc" in the name?
+regards
+Suman
 
-> E.g. on a NUC7CJYH2, when no enclaves are running, and EPC set to 32 MB:
-> 
-> $ sudo cat /sys/kernel/debug/x86/sgx_nr_all_pages
-> 5632
-> 
-> $ sudo cat /sys/kernel/debug/x86/sgx_nr_free_pages
-> 5632
+[1] https://patchwork.kernel.org/project/linux-remoteproc/cover/20210323223839.17464-1-s-anna@ti.com/
 
-I have no clue what that is useful for. You want to account how many of
-the EPC pages on all nodes are in use? What for?
+Suman Anna (3):
+  remoteproc: pru: Fixup interrupt-parent logic for fw events
+  remoteproc: pru: Fix wrong success return value for fw events
+  remoteproc: pru: Fix and cleanup firmware interrupt mapping logic
 
-Are those globally useful for people? If so, they need to go to sysfs
-along with documentation what they do.
-
-If not, you can keep this patch in your tree for your own testing.
-
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> 
-> v2:
-> * Use debugfs_create_ulong():
->   https://lore.kernel.org/linux-sgx/57c18e08-3e36-b5b3-aaba-9a21b75a1613@intel.com/
-> 
->  arch/x86/kernel/cpu/sgx/main.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 7df7048cb1c9..07bad864c531 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*  Copyright(c) 2016-20 Intel Corporation. */
->  
-> +#include <linux/debugfs.h>
->  #include <linux/freezer.h>
->  #include <linux/highmem.h>
->  #include <linux/kthread.h>
-> @@ -25,7 +26,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
->  static LIST_HEAD(sgx_active_page_list);
->  static DEFINE_SPINLOCK(sgx_reclaimer_lock);
->  
-> -/* The free page list lock protected variables prepend the lock. */
-> +/* The number of EPC pages in total in all nodes. */
-> +static unsigned long sgx_nr_all_pages;
-> +
-> +/* The number of free EPC pages in all nodes. */
->  static unsigned long sgx_nr_free_pages;
-
-Ok, you're fixing the comment here. Good.
-
-Thx.
+ drivers/remoteproc/pru_rproc.c | 41 ++++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 9 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.30.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
