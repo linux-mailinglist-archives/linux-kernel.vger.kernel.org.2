@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FD2357785
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF743577A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhDGWUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53416 "EHLO mail.kernel.org"
+        id S229644AbhDGW1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:27:05 -0400
+Received: from mga09.intel.com ([134.134.136.24]:14309 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhDGWUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D692361182;
-        Wed,  7 Apr 2021 22:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617834028;
-        bh=rkDaavYWOqsLA80FQfeD64FktxZ9vBDjgDs2spIWCU8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g7JQ9tZ8fE/aph56XXt4VXIIlvpbCrUF+hk7BZLTbCmwrWKMeUo5KmQ/3IO/mCNg3
-         Rwuxnef7Wf4EUqztk1MoBKNeNKb/67I7f4+4lVOSOKxHuO4e+4omgFq5GdtGshOfBH
-         w0q5xfSrkPHlSaSZp077TGdv0LLfYhFwMPabd6WjRqR6ny9Trv0eJZN2FVd7PGz1G7
-         NHu9vN2QK7DH2UnOlJLK/+VbKZKm8T1PWtyAhjRnM6TKKLnt65NyIswMYkHLTcU2fl
-         34+1z2t9PBmzpfIFdc5wasrd5wyofNG9DcNKJD/PY+krRYzcB59K9m5qXm7sNFsuYJ
-         tF77K+gV8SPnA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CD0EC609B6;
-        Wed,  7 Apr 2021 22:20:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229600AbhDGW0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:26:50 -0400
+IronPort-SDR: H3g4hB7cjmsi6Xp8CQ4fmBAMsxni0HQKm36O/Ovt3fBpOdvvy+XvrDkeXEmhIy6vRV55//jDav
+ VFHncyTljhVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193524910"
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="193524910"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 15:26:38 -0700
+IronPort-SDR: +m62Qdw1PiOey2M8i55CJI0Ww/9FUBzguqYhScpU7yN0nhqV5sIH0zsKGmjybAGiNcwZPuFfBH
+ BxlQTtDeQ8zg==
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="458548524"
+Received: from hmfaraby-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.128.243])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 15:26:38 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, ira.weiny@intel.com,
+        vishal.l.verma@intel.com, alison.schofield@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] Enumerate HDM Decoder registers
+Date:   Wed,  7 Apr 2021 15:26:18 -0700
+Message-Id: <20210407222625.320177-1-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: hso: fix null-ptr-deref during tty device
- unregistration
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161783402883.11274.17007849600420610230.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Apr 2021 22:20:28 +0000
-References: <20210407172726.29706-1-mail@anirudhrb.com>
-In-Reply-To: <20210407172726.29706-1-mail@anirudhrb.com>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, oneukum@suse.com,
-        gregkh@linuxfoundation.org, geert@linux-m68k.org,
-        zhengyongjun3@huawei.com, rkovhaev@gmail.com, kernel@esmil.dk,
-        jgarzik@redhat.com, alan@lxorguk.ukuu.org.uk,
-        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The arbiter of a Host-managed Device Memory (HDM) region is an "HDM Decoder".
+An HDM decoder is defined in the Compute eXpress Link (CXL) specification as
+hardware that handles the routing of memory ranges controlled by CXL devices in
+a linear, or interleaved fashion.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+HDM decoders are not specific to CXL devices and therefore live in a different
+part of the MMIO space for CXL *components*. The CXL component registers are
+found and mapped in a similar way to the device registers and so a lot of this
+series is refactoring to try to easily add the new register block type.
 
-On Wed,  7 Apr 2021 22:57:22 +0530 you wrote:
-> Multiple ttys try to claim the same the minor number causing a double
-> unregistration of the same device. The first unregistration succeeds
-> but the next one results in a null-ptr-deref.
-> 
-> The get_free_serial_index() function returns an available minor number
-> but doesn't assign it immediately. The assignment is done by the caller
-> later. But before this assignment, calls to get_free_serial_index()
-> would return the same minor number.
-> 
-> [...]
+Management of HDM decoders is not handled in this series. This work is the
+foundation for the eventual integration with libnvdimm. That integration will
+enable CXL persistent and volatile capacities to be managed by Linux and gain
+use of all the related existing infrastructure.
 
-Here is the summary with links:
-  - [v2] net: hso: fix null-ptr-deref during tty device unregistration
-    https://git.kernel.org/netdev/net/c/8a12f8836145
+These patches go on top of the reworks and improvements recently submitted by
+Dan [1].
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+[1]: https://lore.kernel.org/linux-cxl/161728744224.2474040.12854720917440712854.stgit@dwillia2-desk3.amr.corp.intel.com/T/#t
 
+Ben Widawsky (7):
+  cxl/mem: Use dev instead of pdev->dev
+  cxl/mem: Split creation from mapping in probe
+  cxl/mem: Move register locator logic into reg setup
+  cxl/mem: Get rid of @cxlm.base
+  cxl/mem: Move device register setup
+  cxl/mem: Create a helper to setup device regs
+  cxl: Add HDM decoder capbilities
+
+ drivers/cxl/core.c |  73 +++++++++++++++
+ drivers/cxl/cxl.h  |  48 ++++++++++
+ drivers/cxl/mem.c  | 225 +++++++++++++++++++++++++++------------------
+ drivers/cxl/mem.h  |   2 -
+ drivers/cxl/pci.h  |   1 +
+ 5 files changed, 260 insertions(+), 89 deletions(-)
+
+
+base-commit: 24ca2d6ff18cc59c14c0aff65025b0cc11a72722
+-- 
+2.31.1
 
