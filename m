@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471373576B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB443576B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhDGVWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S232996AbhDGVW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbhDGVVr (ORCPT
+        with ESMTP id S232617AbhDGVVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:21:47 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B67C0613D7;
-        Wed,  7 Apr 2021 14:21:31 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 12so151605wmf.5;
-        Wed, 07 Apr 2021 14:21:31 -0700 (PDT)
+        Wed, 7 Apr 2021 17:21:49 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9575C0613D8;
+        Wed,  7 Apr 2021 14:21:32 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so1856107wma.3;
+        Wed, 07 Apr 2021 14:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C+Sv7ebyhZdmYr8zuNmK8przgQqiTzBeblvn6JjaT24=;
-        b=XKD8B7qsQuuWd1cNL5YOrIfkh/B80SxKacpgd/mGcX8L7wxF5vEB6F3IZKHOJZ+tSi
-         VgxkXjROxu8DOyLlyfrsjSXCk8XuS12BOqOJRtaP0M1S4kwlJYskhOH2zkAwoyy8xtx7
-         cQEcpzBok0YoUup3YateFoVWofliJr13HcV7TPH1fS/sEredskpOhrqGzCMqssc5t6JW
-         aGSizURYMPrnBzP/30BAT/UpdJvsT8wHsAMkHHiw4y1tP2knBZd1/0pbzz02wEqlsp6o
-         oIeajgMDgofsI/9yD2UrnbS/F4HGUGAANXYqCbQ55+zVtFk/I4zPQzSmlcZf0+C+YJuu
-         XEAQ==
+        bh=p1PTOuVujSZNdb+lfDvpozibockRl2kaTT+F2J5Pasw=;
+        b=hU+4+AJxEKpFo9IbdYWwYFG4mcGdHdQEpeyEFyR7KnYM+l3iB/6u7xPo6yYaXgJKb+
+         620IFEIBHIfhYbX5Bf93myZzGJeAUopB0AlVN12TXv6B0DW0QHexQBfUCOGBMbErKELc
+         op20ywP+ZOSEEEdLm+nZwLH3xrnF1ztziA+0m1uIVGZBdkInI1FhjEga+6QKA41YEa4g
+         dmImneFwW3s1WCzKJBxal7MRS9X/66EJNy99Jf9TY2uKUrAU9cBIeg7rSPeKLFqqW06L
+         3Pkp+TBQDpdEfpdMjotT1M2XKmQgEO2SPwhp0sggPhnEBgOMg+OVKSMYW3VG+hX+YkKs
+         r4og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C+Sv7ebyhZdmYr8zuNmK8przgQqiTzBeblvn6JjaT24=;
-        b=I0ndKaHXPEVHYaFRrjlr8h1U8kL6fsnq3gFc2HK7G1oq0EX0RkxVrqIv4K4OAGqJDT
-         WuY/GIzdP5gsJsJoIfWTH62i0dzK62K2/hd2qClxe1gnbyB8YvYBDiVz9mciqz6lZjSf
-         9RE+5SNf+9qkDj03h867hZ9TYefJiBroF7L3AEUkS+5T2ojz0ldNfZWvfeQjS9VX+DRv
-         AKR/lhR9NHX4wcdKHkTOLwDkOdHizwhnIb3qzQ9fEVd6AbCWODEqA6fHGZC0br6HY06c
-         fJvrfBjQ6g6Q4KO0RpbY+TcNU0T+qsFQeU6AP0XzumZaZhpMN4tgIqP0j0HTBlEt5U+2
-         GxLg==
-X-Gm-Message-State: AOAM533CH5bZZ2OrMLJgzLbp/8w2No5AHxZHIkmMirY5f674IKkp7mxO
-        6gArTIiFc3BH7zaHBmsUIPM=
-X-Google-Smtp-Source: ABdhPJzEcI7EbB2e2oDATbJrtla4jwk4IkNB5X15tDJWQzL9U1sVz37qdbX+D8tXFi4fuBGD9a6Ojw==
-X-Received: by 2002:a1c:6a13:: with SMTP id f19mr2241444wmc.145.1617830490525;
-        Wed, 07 Apr 2021 14:21:30 -0700 (PDT)
+        bh=p1PTOuVujSZNdb+lfDvpozibockRl2kaTT+F2J5Pasw=;
+        b=V92UAJI8N7jegq4StekOEeHYrSqnU47WggdzgV3vyJxeI+/i7DzXSLXG/DzRScf1hL
+         sn6vhzPK1jODPhh4xGO6r4m4+b/XxqvC1TwlL3/VWf+Zzn4F1BD8SG+a23jVcE/eUhpb
+         Man8Gajak5j1dEI1g2M54yL75VNKB0htXlKC1+32CDAJNCujtOoBKhLjmsijfAyFaXRL
+         ar/NNREvwNoUg+6XHL9Upo0O6CU8puFCntVh9jCnEik90vAY43efAtFdtngRpHKVfoph
+         90v848c8dgDrSNKXMJNUjorOwG+3OMAm/2u3K3YAs7TaUq7Pw/iKNrRPmkWrHF6yj7Sr
+         gtew==
+X-Gm-Message-State: AOAM531H0hEaoGuuazd0chNGWXjG0KjxpJqxN5M2f1sf47qMcEOOjeiA
+        W3747KhHSOZ+N1DIlDoBsXoYRjmLPx7oiA==
+X-Google-Smtp-Source: ABdhPJzx/PC85Ea03U9I6eTPnMVrWh7e0WLzu4mGuTVWxdV4P0bcDt0SF6lSDD1jMlDkZ4kMtB4zsQ==
+X-Received: by 2002:a7b:c45a:: with SMTP id l26mr4954756wmi.85.1617830491411;
+        Wed, 07 Apr 2021 14:21:31 -0700 (PDT)
 Received: from adgra-XPS-15-9570.home (2a01cb0008bd270041a0a0f4308eafc0.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:41a0:a0f4:308e:afc0])
-        by smtp.gmail.com with ESMTPSA id l14sm17173952wrm.77.2021.04.07.14.21.29
+        by smtp.gmail.com with ESMTPSA id l14sm17173952wrm.77.2021.04.07.14.21.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 14:21:30 -0700 (PDT)
+        Wed, 07 Apr 2021 14:21:31 -0700 (PDT)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -57,9 +57,9 @@ Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v1 4/7] dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
-Date:   Wed,  7 Apr 2021 23:21:19 +0200
-Message-Id: <20210407212122.626137-5-adrien.grassein@gmail.com>
+Subject: [PATCH v1 5/7] soc: imx: gpcv2: add HSIOMIX and USB domains for i.MX8MM
+Date:   Wed,  7 Apr 2021 23:21:20 +0200
+Message-Id: <20210407212122.626137-6-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210407212122.626137-1-adrien.grassein@gmail.com>
 References: <20210407212122.626137-1-adrien.grassein@gmail.com>
@@ -70,67 +70,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update documentation for i.MX8MM.
+Add description for 3 domains of the i.MX8MM:
+  - HSIO
+  - USB OTG 1
+  - USB OTG 2
 
 Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 ---
- .../bindings/power/fsl,imx-gpcv2.yaml         |  7 +++++--
- include/dt-bindings/power/imx8mm-power.h      | 21 +++++++++++++++++++
- 2 files changed, 26 insertions(+), 2 deletions(-)
- create mode 100644 include/dt-bindings/power/imx8mm-power.h
+ drivers/soc/imx/gpcv2.c | 69 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-index a96e6dbf1858..04928a173698 100644
---- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-+++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-@@ -26,6 +26,7 @@ properties:
-     enum:
-       - fsl,imx7d-gpc
-       - fsl,imx8mq-gpc
-+      - fsl,imx8mm-pgc
+diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+index d97a53502753..571d0381dd87 100644
+--- a/drivers/soc/imx/gpcv2.c
++++ b/drivers/soc/imx/gpcv2.c
+@@ -17,6 +17,8 @@
+ #include <linux/sizes.h>
+ #include <dt-bindings/power/imx7-power.h>
+ #include <dt-bindings/power/imx8mq-power.h>
++#include <dt-bindings/power/imx8mm-power.h>
++
  
-   reg:
-     maxItems: 1
-@@ -52,8 +53,10 @@ properties:
-           reg:
-             description: |
-               Power domain index. Valid values are defined in
--              include/dt-bindings/power/imx7-power.h for fsl,imx7d-gpc and
--              include/dt-bindings/power/imx8m-power.h for fsl,imx8mq-gpc
-+              include/dt-bindings/power/imx7-power.h for fsl,imx7d-gpc,
-+              include/dt-bindings/power/imx8m-power.h for fsl,imx8mq-gpc and
-+              include/dt-bindings/power/imx8mm-power.h for fsl,imx8mm-gpc
-+
-             maxItems: 1
+ #define GPC_LPCR_A_CORE_BSC			0x000
  
-           clocks:
-diff --git a/include/dt-bindings/power/imx8mm-power.h b/include/dt-bindings/power/imx8mm-power.h
-new file mode 100644
-index 000000000000..bec25fd32394
---- /dev/null
-+++ b/include/dt-bindings/power/imx8mm-power.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-+/*
-+ *  Copyright (C) 2021 Adrien Grassein <adrien.grassein@gmail.com>
-+ */
+@@ -42,6 +44,9 @@
+ #define IMX8M_PCIE1_A53_DOMAIN			BIT(3)
+ #define IMX8M_MIPI_A53_DOMAIN			BIT(2)
+ 
++#define IMX8MM_OTG2_A53_DOMAIN			BIT(5)
++#define IMX8MM_OTG1_A53_DOMAIN			BIT(4)
 +
-+#ifndef __DT_BINDINGS_IMX8MM_POWER_H__
-+#define __DT_BINDINGS_IMX8MM_POWER_H__
+ #define GPC_PU_PGC_SW_PUP_REQ		0x0f8
+ #define GPC_PU_PGC_SW_PDN_REQ		0x104
+ 
+@@ -65,6 +70,9 @@
+ #define IMX8M_PCIE1_SW_Pxx_REQ			BIT(1)
+ #define IMX8M_MIPI_SW_Pxx_REQ			BIT(0)
+ 
++#define IMX8MM_OTG1_SW_Pxx_REQ			BIT(2)
++#define IMX8MM_OTG2_SW_Pxx_REQ			BIT(3)
 +
-+#define IMX8MM_POWER_DOMAIN_HSIOMIX	0
-+#define IMX8MM_POWER_DOMAIN_PCIE1	1
-+#define IMX8MM_POWER_DOMAIN_USB_OTG1	2
-+#define IMX8MM_POWER_DOMAIN_USB_OTG2	3
-+#define IMX8MM_POWER_DOMAIN_GPU		4
-+#define IMX8MM_POWER_DOMAIN_VPU		5
-+#define IMX8MM_POWER_DOMAIN_VPU_G1	6
-+#define IMX8MM_POWER_DOMAIN_VPU_G2	7
-+#define IMX8MM_POWER_DOMAIN_VPU_H1	8
-+#define IMX8MM_POWER_DOMAIN_DISPLAY	9
-+#define IMX8MM_POWER_DOMAIN_MIPI	10
+ #define GPC_M4_PU_PDN_FLG		0x1bc
+ 
+ #define GPC_PU_PWRHSK			0x1fc
+@@ -76,6 +84,9 @@
+ #define IMX8M_DISP_HSK_PWRDNREQN		BIT(4)
+ #define IMX8M_DISP_HSK_PWRDNACKN		BIT(24)
+ 
++#define IMX8MM_HSIO_HSK_PWRDNREQN		(BIT(5) | BIT(6))
++#define IMX8MM_HSIO_HSK_PWRDNACKN		(BIT(23) | BIT(24))
 +
-+#endif
+ /*
+  * The PGC offset values in Reference Manual
+  * (Rev. 1, 01/2018 and the older ones) GPC chapter's
+@@ -98,6 +109,9 @@
+ #define IMX8M_PGC_MIPI_CSI2		28
+ #define IMX8M_PGC_PCIE2			29
+ 
++#define IMX8MM_PGC_OTG1			18
++#define IMX8MM_PGC_OTG2			19
++
+ #define GPC_PGC_CTRL(n)			(0x800 + (n) * 0x40)
+ #define GPC_PGC_SR(n)			(GPC_PGC_CTRL(n) + 0xc)
+ 
+@@ -572,6 +586,60 @@ static const struct imx_pgc_domain_data imx8m_pgc_domain_data = {
+ 	.reg_access_table = &imx8m_access_table,
+ };
+ 
++static const struct imx_pgc_domain imx8mm_pgc_domains[] = {
++	[IMX8MM_POWER_DOMAIN_HSIOMIX] = {
++		.genpd = {
++			.name = "hsiomix",
++		},
++		.bits  = {
++			.hsk_req = IMX8MM_HSIO_HSK_PWRDNREQN,
++			.hsk_ack = IMX8MM_HSIO_HSK_PWRDNACKN,
++		},
++	},
++
++	[IMX8MM_POWER_DOMAIN_USB_OTG1] = {
++		.genpd      = {
++			.name = "usb-otg1",
++		},
++		.bits       = {
++			.pxx = IMX8MM_OTG1_SW_Pxx_REQ,
++			.map = IMX8MM_OTG1_A53_DOMAIN,
++		},
++		.pgc        = IMX8MM_PGC_OTG1,
++	},
++
++	[IMX8MM_POWER_DOMAIN_USB_OTG2] = {
++		.genpd      = {
++			.name = "usb-otg2",
++		},
++		.bits       =  {
++			.pxx = IMX8MM_OTG2_SW_Pxx_REQ,
++			.map = IMX8MM_OTG2_A53_DOMAIN,
++		},
++		.pgc        = IMX8MM_PGC_OTG2,
++	},
++};
++
++static const struct regmap_range imx8mm_yes_ranges[] = {
++		regmap_reg_range(GPC_LPCR_A_CORE_BSC,
++				 GPC_PU_PWRHSK),
++		regmap_reg_range(GPC_PGC_CTRL(IMX8MM_PGC_OTG1),
++				 GPC_PGC_SR(IMX8MM_PGC_OTG1)),
++		regmap_reg_range(GPC_PGC_CTRL(IMX8MM_PGC_OTG2),
++				 GPC_PGC_SR(IMX8MM_PGC_OTG2)),
++};
++
++static const struct regmap_access_table imx8mm_access_table = {
++	.yes_ranges	= imx8mm_yes_ranges,
++	.n_yes_ranges	= ARRAY_SIZE(imx8mm_yes_ranges),
++};
++
++static const struct imx_pgc_domain_data imx8mm_pgc_domain_data = {
++	.domains = imx8mm_pgc_domains,
++	.domains_num = ARRAY_SIZE(imx8mm_pgc_domains),
++	.reg_access_table = &imx8mm_access_table,
++};
++
+ static int imx_pgc_get_clocks(struct imx_pgc_domain *domain)
+ {
+ 	int i, ret;
+@@ -766,6 +834,7 @@ static int imx_gpcv2_probe(struct platform_device *pdev)
+ static const struct of_device_id imx_gpcv2_dt_ids[] = {
+ 	{ .compatible = "fsl,imx7d-gpc", .data = &imx7_pgc_domain_data, },
+ 	{ .compatible = "fsl,imx8mq-gpc", .data = &imx8m_pgc_domain_data, },
++	{ .compatible = "fsl,imx8mm-gpc", .data = &imx8mm_pgc_domain_data, },
+ 	{ }
+ };
+ 
 -- 
 2.25.1
 
