@@ -2,162 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9734357507
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA5135750A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355656AbhDGThK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:37:10 -0400
-Received: from mail-dm6nam12on2066.outbound.protection.outlook.com ([40.107.243.66]:27360
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345628AbhDGThI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:37:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KLaPi+MpVQsMg23AsBHoYsDaUic+nK7PL9PMIprtKIS+K14OOnftv1dJS3eqwSQaa5VCmJjepq0gp6xw5vtUOGZyrVoezjuLPApSDRIxKwbGoVqNL4Dou+A6Dm4Gyg9OJxeAF6FTNVRmr12IEKZjZv1l0FPO/wbZKL3KbHnM7fELyLVQwNlOk8iDWjDqpbdXhGyzh7Q0JSFeneur3KrdoftINkQfhn34Nm0WENZF2YQL4ctuMuOTivTEfUngskPPeGMQFrzbau0xYcT4LuD4CVkZQsu/nhXntZgU86Yr6i/hKtkRr/6t3VOKtwzpcoEqFIq/TISceXUp0HQlebc3ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=euujbp5ifWbE/nYFGO+RbLm5+vvP3TSgbVZNDwFKczM=;
- b=isYoftzxRFsMJCqZcEJ/ReeGbsZaL5y/L/HxQI0KXEMsQS/RnZ3bTLqxzcjF+F9EHtPYoIclhaVlWsWDzh0cbs9jcnVU/8D/njNsEnF4GfSt74OG6Eo3jIeRar87By3Va5bacdqPjrgPYSt/gR5z+KtVnThu7R3SMeOoUFDwFpvtv/Weogigbuo73JUDMK1T6r5s0CIXlbEtF/DLhe4gR7vvT//aZe1cE1+VNWcc0hahZghpjA83ZTjn2Oa+0Qjs6br8SUXz80oEy7o7AVkbu7firp5BDn9D1vc2QPBmKgjbVwu+rj2FRV98ibCC9JTNDOQRlU/6yV4wzHu65Ar+LA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=euujbp5ifWbE/nYFGO+RbLm5+vvP3TSgbVZNDwFKczM=;
- b=THDHycEP+i9Xg0ob2ax4wnW29tB8MYSz8ME+Iz03t8lRsJi5fk1gIVnw11IiL0vii8NBFZa0agCwg2a0PVWQXxmHneNftOAPqyez3zATYiFaFiCdnrhcWLMmU8/s4Ric+v/dTd8NI6CxUQVWUz42QNkMwkA7S/xdlOcMywTOMy5+NMM4ymUNFx5xj3lvqrApRO0lIhAjHdBxk0IFRSWswrHIojxhogFThhT1uOWoYYJ29CaaebB87wKP4V3/sm9naEk8ZE14+oIbtCU2+zTzNuHaL0Xv60iFYuX7ASsrIrHuUaPlE1x9cphpiS29pMQgFe1cmsueOv10XDo1+oTymA==
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1548.namprd12.prod.outlook.com (2603:10b6:4:a::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.29; Wed, 7 Apr 2021 19:36:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
- 19:36:56 +0000
-Date:   Wed, 7 Apr 2021 16:36:54 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210407193654.GG282464@nvidia.com>
-References: <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210405234230.GF7405@nvidia.com>
- <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
- <20210406124251.GO7405@nvidia.com>
- <MWHPR11MB1886A7E4C6F3E3A81240517B8C759@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YG39ZtnTuyn5uBOa@myrica>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG39ZtnTuyn5uBOa@myrica>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0305.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::10) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S236491AbhDGTiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236301AbhDGTix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:38:53 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8F8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:38:42 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b4so30371941lfi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s0++k5+aPc+N22SIIU1/yHEENceDJcNprr5dTRNIyXY=;
+        b=OayjMM+ZpN3Tv4E8W/sz67OOwpAlMGl4ckhJRZy4/rZy0DmTZ98PacQvhnIQrF6VWd
+         AjJrkbaXWdg4Gl3b1jDnF5TDNxs23a3vGAC0nXCUMLhq5unmN9Bfcz2HBI+5jMavic5C
+         1fsXJMbvMyzRwHFtS3KyXI2OQwckyR30PmrB4wKXmunO+q9v6ssRQhemWQlV9BvPFviN
+         QvQ34FoIDk/YZr9sLTwojC43c7tf1vvh/FK0+/ctjs9CNRs0qAktC40T8CZ8clCZ/3Cl
+         UpRCT50iwRy2WU3eHXIDR7ZHnkrSkTHeRAbP2KlOGZakRKq8wlSxfISpnylSKaGDTBng
+         SH2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s0++k5+aPc+N22SIIU1/yHEENceDJcNprr5dTRNIyXY=;
+        b=UbFR0k9vug8TiLpk2aNDtb8aUIUZo3t/byfCi20PaRIkBuh77NBiIc4ET/C98hHJdy
+         YTRUhBceWThBTBdPzEbOOCdgg3RPS5nnsHRewGD0ze3DwZLloG+p3e2ow4oQemRt9hos
+         QVZV9zH7PKcC7M1uaVL5v5gSswpAjqvAU7OBpvE7jc4S1FUyP+nkiwCgERxfrCnGfBaC
+         /0tk7qodxkJo1qdsBQLcI0i7mmy8TpZYibvcYK2OLyRp9XJC0lVy3LzW5AzALSoxarKb
+         /X9qYq9hXFrH8uRK9eEwOKgOMom7m7wROXhsfS40KKXETUsb1QINSJmSn6kx+uWXXFeb
+         w1Lg==
+X-Gm-Message-State: AOAM533+8zv/d88njqZ+674zF83hfnG7Yrr26wQV4qOLYBIG3jpuFSSn
+        u9hX3GslkBs1Mio8bot8W0tUdCtfcvhKLXm+HUx8sQ==
+X-Google-Smtp-Source: ABdhPJyn2EufVbFPyxxG32IRoYfxIE1ZKw/DKRrd3d/xEFQ9ofFr8zjQdaQV7VS41FE5TcTZy6srdslCIAx2dM0qlGk=
+X-Received: by 2002:a05:6512:1d1:: with SMTP id f17mr3419809lfp.620.1617824319423;
+ Wed, 07 Apr 2021 12:38:39 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0305.namprd13.prod.outlook.com (2603:10b6:208:2c1::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Wed, 7 Apr 2021 19:36:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lUDyw-002LOZ-Mw; Wed, 07 Apr 2021 16:36:54 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f69ebeb-ff10-4f61-bc0f-08d8f9fc80ab
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1548:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1548CFA68C409C0C6503FC4BC2759@DM5PR12MB1548.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: st9BVS9EMJPnXTHmaDcNaoD0CMT2u3o3pLCIxUZrVzi/RQCFf7MLstH2qb4nHITlhQSkujSMx8Rzw43FUtBFeBiRuH0N1f2dDNi0fHWR6KrWlNKFO+EhfBsWwKX9yfga/3m89Wq1xDNjlowjOKFpOrr2cS9kNZbaou8neYk9n/2+BkDMMop1sxWhfBreOQNeUC1+7ctYpYK0rnFj3viMv9sarfmSii4ZMDNO/E3R6SZa6la120cfxBxB/pAUctKtrl03fpl5e0eIgRxXeZTHI37KLOgE6UNlybcKJvgdRgbyxqcfxebnJvZxMykClBJa3gcGOUB0rlGlZd2UmLBJhO2jf9JS+Gi91BuZwvG8JV+d11HjBK989Lp1MTqLoRWBZKnroW2FZP95ERJw07CkM1yKHaVyDQKxCbal7onYIRg18n1lNFVpWhK+6A5fN2GObRY9w+nerV+uiLAI+5Vexvip7YeBkI5T8Gu4pqDROH1MXA7L10iXjUkRa9jka+Bae+ffk1fUQf5PSZKhNGEFxhI7yGiKLZ6mkPdft7EynfJwXUnSuenJ71q+ypX7FXjMFsDbOsQAX43OWIqFNw0flxnOObyCO1s82yWIJozBM2jOYd8nyqbOSR1atxqidHm42UAy13l1d+v5PTJ6T6kyxSTgeKDV+sFK0zw2WtgPiw0J6iZZrLtJXxFBbDIh0Iva
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(4326008)(8676002)(38100700001)(9786002)(66946007)(66556008)(66476007)(8936002)(7416002)(426003)(186003)(26005)(86362001)(36756003)(6916009)(478600001)(316002)(9746002)(33656002)(2616005)(54906003)(2906002)(1076003)(5660300002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?c15cYL6TS4ZwNivccLxMyUFXzlmac/920XGLffvEI0xu0gbT9Uzb7qio2Ffz?=
- =?us-ascii?Q?WGqvAI8qOvdXA8HZVXZywu2d7L6SgvRVEDq65RIbjpa9jimUASmsfY+tDBms?=
- =?us-ascii?Q?aFxpVM9octgvnfUiNqbLs4gjkOX8LpEg7eRfcRHoqjfdjtthProMZ73UOD/c?=
- =?us-ascii?Q?OZmkj3lY/r4tbojlctqRWQK2nFYrSNivqd5JAzjKan/GqmEg7SHZRruyjIhL?=
- =?us-ascii?Q?gNFXqrCirrGbGeOagCmHtYKNpFlaMby4N9gglU4HZDqw7DxNbSM8bEQLqyWS?=
- =?us-ascii?Q?kog9qSPARxTygAlWt2/EGkWbWVzyh6yrDUy2tWtNHKiRJNUJ6P7RRLrzazZu?=
- =?us-ascii?Q?uKl+TXXpSyHuya4eyITuQlZ1w9LCbIbcvTXgJCh8DeJZPV+iz/Uey0CSpwla?=
- =?us-ascii?Q?NcseHKeiI2+9YgA1fFEX8Fw+IkV4T+UW/hkywa8S1tSR+b5KViZFrJ7l0VXe?=
- =?us-ascii?Q?W2oWQbDwjmrL2Kcbb37leFlUw7OpgIsAFSiDGXXx9Wwf82jGo6oKjGx9DPd5?=
- =?us-ascii?Q?qj4vtyy1eKAtThTrrTlpnCa4pLsNl/uJf2aYQ8WHl5PINovwh1N9V29ZN7j7?=
- =?us-ascii?Q?zowwnsx2Hun9bqt+/mf06DRvbEuinahxJ6iNbqs6u3RJVjrt+YrYVGAJPYIY?=
- =?us-ascii?Q?g7Dn/g2bP0k0/PUb26Nl4erePzER8cFJMvMMx6v1/wi3F6SF29/ZGDVeHB75?=
- =?us-ascii?Q?dQNdqVoQdI++rRYfpyVQgSKRki/ex8agEaMR64WJTytmmYqzPV9fUBrmnDEJ?=
- =?us-ascii?Q?LH3opclymLqfh+OQw8m9p9ON5ycB7fO2yXB7skWnPY8au7kxRm1zllyzfBba?=
- =?us-ascii?Q?GZFhd9YFzqD6ssHD6VI/UxMnMkcM++EBUUZr6Fa+UEDGMAqfqAWwsk73uV9r?=
- =?us-ascii?Q?N7cTRarv27BHe8QAvcn7UAJtMBZccrrgpSeANvxaTQOKeuBrx5KE+e3aTebF?=
- =?us-ascii?Q?/mquIl7yy1FhPvtwdjqFRUSUuNJuPzjWL/ULrl8VeBrLN7VtZ/noisY+XiRI?=
- =?us-ascii?Q?YR4lC3hss02p4RE8Ad+zF+CLE7Myn17Dz7AjHHFMknpJ2OFkNjgUYx0Uix/J?=
- =?us-ascii?Q?nshhRyNjHtzhPdr5NL8PHkM0Ob8O09oUeZYZ6fnhJIlAsMpQAIhLULirIPvL?=
- =?us-ascii?Q?aGFnAHvqMWhk7XFCdxQSYvJLQ3aZARV09mpFIXe2Zm/zq+m6DZcKR5uoWeNb?=
- =?us-ascii?Q?8wyCS72kxKXE9ypMIoEK2DW3MfittXv/OfA0iEGnRtGP7ouyoxLUIn6i56Tv?=
- =?us-ascii?Q?xif6BNNDZKhNnqj3Xc2N9F8rqE8pFuSKrAIdURcc0fc1TnC5KQe3wxmdv6Gj?=
- =?us-ascii?Q?TiTk++//ugkao5Bu5DT+E180gT7ggZZ+FBIwYi7aZIMv5w=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f69ebeb-ff10-4f61-bc0f-08d8f9fc80ab
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 19:36:56.0887
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rAmoSmU5xsq8wHhWKXbS/WedxtBNHemApeSU8AQUZa0Lk103AQ2jDyfgA9gMbjbt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1548
+References: <1617765272-20418-1-git-send-email-hangl@codeaurora.org> <1617768715-29338-1-git-send-email-hangl@codeaurora.org>
+In-Reply-To: <1617768715-29338-1-git-send-email-hangl@codeaurora.org>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Wed, 7 Apr 2021 12:38:26 -0700
+Message-ID: <CAHRSSEyTDZTWMrWe+H4awCOBrf+AZd-TEqi3gZONZxYYQSWB5Q@mail.gmail.com>
+Subject: Re: [PATCH v4] binder: tell userspace to dump current backtrace when
+ detecting oneway spamming
+To:     Hang Lu <hangl@codeaurora.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>, rdunlap@infradead.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:43:50PM +0200, Jean-Philippe Brucker wrote:
-
-> * Get a container handle out of /dev/ioasid (or /dev/iommu, really.)
->   No operation available since we don't know what the device and IOMMU
->   capabilities are.
+On Tue, Apr 6, 2021 at 9:15 PM Hang Lu <hangl@codeaurora.org> wrote:
 >
-> * Attach the handle to a VF. With VFIO that would be
->   VFIO_GROUP_SET_CONTAINER. That causes the kernel to associate an IOMMU
->   with the handle, and decide which operations are available.
+> When async binder buffer got exhausted, some normal oneway transactions
+> will also be discarded and may cause system or application failures. By
+> that time, the binder debug information we dump may not be relevant to
+> the root cause. And this issue is difficult to debug if without the
+> backtrace of the thread sending spam.
+>
+> This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when oneway
+> spamming is detected, request to dump current backtrace. Oneway spamming
+> will be reported only once when exceeding the threshold (target process
+> dips below 80% of its oneway space, and current process is responsible for
+> either more than 50 transactions, or more than 50% of the oneway space).
+> And the detection will restart when the async buffer has returned to a
+> healthy state.
+>
+> Signed-off-by: Hang Lu <hangl@codeaurora.org>
+> ---
+> v4: add placeholder for BR_FROZEN_REPLY in binder_return_strings for not triggering BUG_ON in print_binder_stats
 
-Right, this is basically the point, - the VFIO container (/dev/vfio)
-and the /dev/ioasid we are talking about have a core of
-similarity. ioasid is the generalized, modernized, and cross-subsystem
-version of the same idea. Instead of calling it "vfio container" we
-call it something that evokes the idea of controlling the iommu.
+Instead of a placeholder, please rebase this series onto Greg's
+char-misc-next branch in
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git and
+add a new patch that fixes the missing "BR_FROZEN_REPLY".
 
-The issue is to seperate /dev/vfio generic functionality from vfio and
-share it with every subsystem.
+>
+> v3: add BR_ONEWAY_SPAM_SUSPECT to binder_return_strings
+>
+> v2: make the detection on/off switch to be per-proc
+>
+>  drivers/android/binder.c            | 31 +++++++++++++++++++++++++++----
+>  drivers/android/binder_alloc.c      | 15 ++++++++++++---
+>  drivers/android/binder_alloc.h      |  8 +++++++-
+>  drivers/android/binder_internal.h   |  6 +++++-
+>  include/uapi/linux/android/binder.h |  8 ++++++++
+>  5 files changed, 59 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index c119736..7046af90 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -3007,7 +3007,10 @@ static void binder_transaction(struct binder_proc *proc,
+>                         goto err_bad_object_type;
+>                 }
+>         }
+> -       tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
+> +       if (t->buffer->oneway_spam_suspect)
+> +               tcomplete->type = BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT;
+> +       else
+> +               tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
+>         t->work.type = BINDER_WORK_TRANSACTION;
+>
+>         if (reply) {
+> @@ -3875,9 +3878,14 @@ static int binder_thread_read(struct binder_proc *proc,
+>
+>                         binder_stat_br(proc, thread, cmd);
+>                 } break;
+> -               case BINDER_WORK_TRANSACTION_COMPLETE: {
+> +               case BINDER_WORK_TRANSACTION_COMPLETE:
+> +               case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT: {
+> +                       if (proc->oneway_spam_detection_enabled &&
+> +                                  w->type == BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT)
+> +                               cmd = BR_ONEWAY_SPAM_SUSPECT;
+> +                       else
+> +                               cmd = BR_TRANSACTION_COMPLETE;
+>                         binder_inner_proc_unlock(proc);
+> -                       cmd = BR_TRANSACTION_COMPLETE;
+>                         kfree(w);
+>                         binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
+>                         if (put_user(cmd, (uint32_t __user *)ptr))
+> @@ -4727,6 +4735,18 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>                 }
+>                 break;
+>         }
+> +       case BINDER_ENABLE_ONEWAY_SPAM_DETECTION: {
+> +               uint32_t enable;
+> +
+> +               if (copy_from_user(&enable, ubuf, sizeof(enable))) {
+> +                       ret = -EINVAL;
+> +                       goto err;
+> +               }
+> +               binder_inner_proc_lock(proc);
+> +               proc->oneway_spam_detection_enabled = (bool)enable;
+> +               binder_inner_proc_unlock(proc);
+> +               break;
+> +       }
+>         default:
+>                 ret = -EINVAL;
+>                 goto err;
+> @@ -5385,7 +5405,10 @@ static const char * const binder_return_strings[] = {
+>         "BR_FINISHED",
+>         "BR_DEAD_BINDER",
+>         "BR_CLEAR_DEATH_NOTIFICATION_DONE",
+> -       "BR_FAILED_REPLY"
+> +       "BR_FAILED_REPLY",
+> +       /* set placeholder for BR_FROZEN_REPLY */
+> +       "PLACEHOLDER",
 
-It may be that /dev/vfio and /dev/ioasid end up sharing a lot of code,
-with a different IOCTL interface around it. The vfio_iommu_driver_ops
-is not particularly VFIOy.
+This should be in a new patch that fixes the issue for the previous patch.
 
-Creating /dev/ioasid may primarily start as a code reorganization
-exercise.
-
-> * With a map/unmap vIOMMU (or shadow mappings), a single translation level
->   is supported. With a nesting vIOMMU, we're populating the level-2
->   translation (some day maybe by binding the KVM page tables, but
->   currently with map/unmap ioctl).
-> 
->   Single-level translation needs single VF per container. 
-
-Really? Why?
-
-Jason
+> +       "BR_ONEWAY_SPAM_SUSPECT"
+>  };
+>
+>  static const char * const binder_command_strings[] = {
+> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> index 7caf74a..340515f 100644
+> --- a/drivers/android/binder_alloc.c
+> +++ b/drivers/android/binder_alloc.c
+> @@ -338,7 +338,7 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
+>         return vma;
+>  }
+>
+> -static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+> +static bool debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+>  {
+>         /*
+>          * Find the amount and size of buffers allocated by the current caller;
+> @@ -366,13 +366,19 @@ static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+>
+>         /*
+>          * Warn if this pid has more than 50 transactions, or more than 50% of
+> -        * async space (which is 25% of total buffer size).
+> +        * async space (which is 25% of total buffer size). Oneway spam is only
+> +        * detected when the threshold is exceeded.
+>          */
+>         if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
+>                 binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
+>                              "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
+>                               alloc->pid, pid, num_buffers, total_alloc_size);
+> +               if (!alloc->oneway_spam_detected) {
+> +                       alloc->oneway_spam_detected = true;
+> +                       return true;
+> +               }
+>         }
+> +       return false;
+>  }
+>
+>  static struct binder_buffer *binder_alloc_new_buf_locked(
+> @@ -525,6 +531,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+>         buffer->async_transaction = is_async;
+>         buffer->extra_buffers_size = extra_buffers_size;
+>         buffer->pid = pid;
+> +       buffer->oneway_spam_suspect = false;
+>         if (is_async) {
+>                 alloc->free_async_space -= size + sizeof(struct binder_buffer);
+>                 binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
+> @@ -536,7 +543,9 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+>                          * of async space left (which is less than 10% of total
+>                          * buffer size).
+>                          */
+> -                       debug_low_async_space_locked(alloc, pid);
+> +                       buffer->oneway_spam_suspect = debug_low_async_space_locked(alloc, pid);
+> +               } else {
+> +                       alloc->oneway_spam_detected = false;
+>                 }
+>         }
+>         return buffer;
+> diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
+> index 6e8e001..7dea57a 100644
+> --- a/drivers/android/binder_alloc.h
+> +++ b/drivers/android/binder_alloc.h
+> @@ -26,6 +26,8 @@ struct binder_transaction;
+>   * @clear_on_free:      %true if buffer must be zeroed after use
+>   * @allow_user_free:    %true if user is allowed to free buffer
+>   * @async_transaction:  %true if buffer is in use for an async txn
+> + * @oneway_spam_suspect: %true if total async allocate size just exceed
+> + * spamming detect threshold
+>   * @debug_id:           unique ID for debugging
+>   * @transaction:        pointer to associated struct binder_transaction
+>   * @target_node:        struct binder_node associated with this buffer
+> @@ -45,7 +47,8 @@ struct binder_buffer {
+>         unsigned clear_on_free:1;
+>         unsigned allow_user_free:1;
+>         unsigned async_transaction:1;
+> -       unsigned debug_id:28;
+> +       unsigned oneway_spam_suspect:1;
+> +       unsigned debug_id:27;
+>
+>         struct binder_transaction *transaction;
+>
+> @@ -87,6 +90,8 @@ struct binder_lru_page {
+>   * @buffer_size:        size of address space specified via mmap
+>   * @pid:                pid for associated binder_proc (invariant after init)
+>   * @pages_high:         high watermark of offset in @pages
+> + * @oneway_spam_detected: %true if oneway spam detection fired, clear that
+> + * flag once the async buffer has returned to a healthy state
+>   *
+>   * Bookkeeping structure for per-proc address space management for binder
+>   * buffers. It is normally initialized during binder_init() and binder_mmap()
+> @@ -107,6 +112,7 @@ struct binder_alloc {
+>         uint32_t buffer_free;
+>         int pid;
+>         size_t pages_high;
+> +       bool oneway_spam_detected;
+>  };
+>
+>  #ifdef CONFIG_ANDROID_BINDER_IPC_SELFTEST
+> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+> index 6cd7901..94a9133 100644
+> --- a/drivers/android/binder_internal.h
+> +++ b/drivers/android/binder_internal.h
+> @@ -155,7 +155,7 @@ enum binder_stat_types {
+>  };
+>
+>  struct binder_stats {
+> -       atomic_t br[_IOC_NR(BR_FAILED_REPLY) + 1];
+> +       atomic_t br[_IOC_NR(BR_ONEWAY_SPAM_SUSPECT) + 1];
+>         atomic_t bc[_IOC_NR(BC_REPLY_SG) + 1];
+>         atomic_t obj_created[BINDER_STAT_COUNT];
+>         atomic_t obj_deleted[BINDER_STAT_COUNT];
+> @@ -174,6 +174,7 @@ struct binder_work {
+>         enum binder_work_type {
+>                 BINDER_WORK_TRANSACTION = 1,
+>                 BINDER_WORK_TRANSACTION_COMPLETE,
+> +               BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT,
+>                 BINDER_WORK_RETURN_ERROR,
+>                 BINDER_WORK_NODE,
+>                 BINDER_WORK_DEAD_BINDER,
+> @@ -396,6 +397,8 @@ struct binder_ref {
+>   * @outer_lock:           no nesting under innor or node lock
+>   *                        Lock order: 1) outer, 2) node, 3) inner
+>   * @binderfs_entry:       process-specific binderfs log file
+> + * @oneway_spam_detection_enabled: process enabled oneway spam detection
+> + *                        or not
+>   *
+>   * Bookkeeping structure for binder processes
+>   */
+> @@ -426,6 +429,7 @@ struct binder_proc {
+>         spinlock_t inner_lock;
+>         spinlock_t outer_lock;
+>         struct dentry *binderfs_entry;
+> +       bool oneway_spam_detection_enabled;
+>  };
+>
+>  /**
+> diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
+> index ec84ad1..d0da772 100644
+> --- a/include/uapi/linux/android/binder.h
+> +++ b/include/uapi/linux/android/binder.h
+> @@ -227,6 +227,7 @@ struct binder_node_info_for_ref {
+>  #define BINDER_GET_NODE_DEBUG_INFO     _IOWR('b', 11, struct binder_node_debug_info)
+>  #define BINDER_GET_NODE_INFO_FOR_REF   _IOWR('b', 12, struct binder_node_info_for_ref)
+>  #define BINDER_SET_CONTEXT_MGR_EXT     _IOW('b', 13, struct flat_binder_object)
+> +#define BINDER_ENABLE_ONEWAY_SPAM_DETECTION    _IOW('b', 15, __u32)
+>
+>  /*
+>   * NOTE: Two special error codes you should check for when calling
+> @@ -408,6 +409,13 @@ enum binder_driver_return_protocol {
+>          * The last transaction (either a bcTRANSACTION or
+>          * a bcATTEMPT_ACQUIRE) failed (e.g. out of memory).  No parameters.
+>          */
+> +
+> +       BR_ONEWAY_SPAM_SUSPECT = _IO('r', 19),
+> +       /*
+> +        * Current process sent too many oneway calls to target, and the last
+> +        * asynchronous transaction makes the allocated async buffer size exceed
+> +        * detection threshold.  No parameters.
+> +        */
+>  };
+>
+>  enum binder_driver_command_protocol {
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
