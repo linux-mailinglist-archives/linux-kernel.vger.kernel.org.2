@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5134C3576E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946E93576F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhDGVfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:35:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232943AbhDGVfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50C0D611C9;
-        Wed,  7 Apr 2021 21:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617831309;
-        bh=IdAzorjKFWWP7Wbg08Lv/fd2wz/xa0/RkGQZvq+ZFQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hmTeEKanC/hf6TByQCGKkTTUeM0E3DzNiv25DryA5VMVSM3MRfh1VaH/2bbk8mzAQ
-         2l7iQHBwvDXErGQ5gwe6x49SltrcvCmFZv8UdNehv4i436SIzm+GPK66TXcSoKZfFp
-         /DUWiQKJb2d92wMnFU6jW3qYY3vi7sKASbdIp7dhhpxoH+YMTrRJhgoYCOooTZEgiK
-         3+aiEEnTbrwWo6qXF5t0wmK8fQB1MKDEQrNESJknOo+jl6F4Yn9H7EUSsXBReAYM03
-         zYkvCMpwQTJ/ga0Fju36msC7V5ZPjiJpbv/7LWokEKiAW1CinZFro/xOWT6BKLi7Rt
-         9KFhqRBPoiRqA==
-Date:   Wed, 7 Apr 2021 22:35:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        id S233607AbhDGVg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232943AbhDGVg1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:36:27 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D126BC061760;
+        Wed,  7 Apr 2021 14:36:15 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 15so22521683ljj.0;
+        Wed, 07 Apr 2021 14:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JrUeoWDAwLF8WfYbVwCG1k/leFVTfETayh9XXmigLwk=;
+        b=kFmtJUs1w4nKq60D1Z8YxtsCiBEbdvDH3/I4tZiUyMHXhs4+1MA2XJuNQoYA2uoVOS
+         xNcUY3Dm1Z4XBdtqfVPqoOxW9LjZ4J6zTwNOSD9aIYKTLNCf0YhH8SHT85N7kKEMIoU+
+         SU68YHOFjWDrdyhti4FCfMmSTnrg+6oihdZoAzYlTmYcXplXjUDX9D0wu0c6H6Ss3eyj
+         FrJAbGkOwCCBxZkQj46c+YmKR7cOQ4oVjGxr/Y8Z+TkAPZdAxiyJooQUKpdGUOk6iD0f
+         ifeBAL90FS6OWqc6n4i16QI/uNP0rh5OHfWf6fsJT5jepIF1UUCOzHwaFrnMK4BnqVNM
+         3AKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JrUeoWDAwLF8WfYbVwCG1k/leFVTfETayh9XXmigLwk=;
+        b=NCPHVDrBNAC8KK0laVCXck5sq3TO8qHWK+AzOh/BG86G1ax7sdcRX3tvVsiFC02RG6
+         b4EtUtM5WpYfHtQr5UDrFomZ5H9pArFlOPe5qXHjpeLDXmfbG/UHaB8QyUPG10Lfjvtr
+         yo1n7+pCjagb3RghEZDeP2A6bFUnUL3n3Ssq5dpXAPV1MUkoAy0md5vL4WdU6ZBvt/sa
+         kwdQJmpVOPJe8p5hFuy9IyK3rxOmIg6aOfcAg3V+clK4v3z52RDGEC0KgwWtdVqaxoud
+         HdFAcdp0fw/GR3HWaQmf5O1nDAJ7V279ZGzz7WMTnciq4RHGJD2N4ZxN3dNcQNXWFlyv
+         OuEg==
+X-Gm-Message-State: AOAM531h/nbMdA2/Zjh/suYPhc9fASx3qsQEUgtPE5mNp3wNntGn9HlB
+        0wlY1lbfhqIxAz8BEDtqOBUE6UVujgI=
+X-Google-Smtp-Source: ABdhPJzXy6omT4lMRxJFSdIcGojW5H/pyAypO3SuWneV+c78my2iE3yh5F+IDsk/049EzdtBPXb3Bw==
+X-Received: by 2002:a2e:9acc:: with SMTP id p12mr3334037ljj.442.1617831374250;
+        Wed, 07 Apr 2021 14:36:14 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id f9sm2648610ljg.115.2021.04.07.14.36.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 14:36:13 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org
+Cc:     pchandru@nvidia.com, devicetree@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 5/6] arm64: entry: Enable random_kstack_offset support
-Message-ID: <20210407213502.GA16569@willie-the-truck>
-References: <20210401232347.2791257-1-keescook@chromium.org>
- <20210401232347.2791257-6-keescook@chromium.org>
+References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+ <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
+Date:   Thu, 8 Apr 2021 00:36:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401232347.2791257-6-keescook@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 04:23:46PM -0700, Kees Cook wrote:
-> Allow for a randomized stack offset on a per-syscall basis, with roughly
-> 5 bits of entropy. (And include AAPCS rationale AAPCS thanks to Mark
-> Rutland.)
-> 
-> In order to avoid unconditional stack canaries on syscall entry (due to
-> the use of alloca()), also disable stack protector to avoid triggering
-> needless checks and slowing down the entry path. As there is no general
-> way to control stack protector coverage with a function attribute[1],
-> this must be disabled at the compilation unit level. This isn't a problem
-> here, though, since stack protector was not triggered before: examining
-> the resulting syscall.o, there are no changes in canary coverage (none
-> before, none now).
-> 
-> [1] a working __attribute__((no_stack_protector)) has been added to GCC
-> and Clang but has not been released in any version yet:
-> https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=346b302d09c1e6db56d9fe69048acb32fbb97845
-> https://reviews.llvm.org/rG4fbf84c1732fca596ad1d6e96015e19760eb8a9b
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/arm64/Kconfig          |  1 +
->  arch/arm64/kernel/Makefile  |  5 +++++
->  arch/arm64/kernel/syscall.c | 16 ++++++++++++++++
->  3 files changed, 22 insertions(+)
+07.04.2021 04:25, Sowjanya Komatineni пишет:
+> +	if (!tegra->pdev->dev.pm_domain) {
+> +		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
+> +							tegra->sata_clk,
+> +							tegra->sata_rst);
+> +		if (ret)
+> +			goto disable_regulators;
+> +	}
+>  
 
-Acked-by: Will Deacon <will@kernel.org>
+Hi,
 
-Will
+Why you haven't added condition for tegra_powergate_power_off()? I think
+it should break GENPD and legacy PD API isn't not supported by T186 at all.
+
+I'm also not sure whether the power up/down sequence is correct using GENPD.
+
+Moreover the driver doesn't support runtime PM, so GENPD should be
+always off?
