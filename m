@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95080356786
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D6D356784
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349858AbhDGJBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:01:14 -0400
-Received: from mail-bn8nam12on2061.outbound.protection.outlook.com ([40.107.237.61]:6497
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S1349849AbhDGJBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:01:06 -0400
+Received: from mail-bn7nam10on2057.outbound.protection.outlook.com ([40.107.92.57]:41984
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242566AbhDGJBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:01:11 -0400
+        id S242566AbhDGJBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:01:03 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j7DSmJZDRLSS8RIL511pTMI8JsnwrMObBePhaIWjkmSdJbuSs6/xW9NKNS8AfvVnWEduxEx0BzAFr0MsCSN0xNoYqISXzLfM+EOS52yBczSXPYd8JxbFr1js3qXlDXEXPfXgotdnyzvNNAdsZ57DCFd4Oy4TiYwU4/hBNc28uHew6+rzz7HbNue62enr9wCb++LpVq9zuZFRHbComZZ40S2Be52bqNaJiukwJPNe/lEzKpTX+/uVjmFGPgbqWcYZsAPu48omUOAeWb9pndFHJs/umR/wkyAHmebR5/f1YrH5KZogmZJmZeImpNxlQxsjvndq7jr0ZJAXtSUhAK1Cbw==
+ b=n8BvO/mw66XWnNbunOK10p9AN9l8o1BsgOYYNmL3PFtzLJQQgZU0netibHVrvPCKgLraAqx7c3zsZDbZCEw4XvwM93aE9iUBd5MzWbiYzGmIAv6nQV/5Kbtwp2RipMwoOeynksPyb2PBKffWOt2bnvxATB2ze7lFSYP+n96/Ceq11lyRuTilf3rWPhWPUMId4+yEz2U0suPdWUz1TbAF6JDkrGBU7YpY155BfmL0r0RTfM1BQ2ZI5/J4lAcIY69Y/dSIRk//jhILJjzsgmEoWy3UVl3X5OYScoBwue3XUrHy4KbJ0b2LA5qYoV6R7vzgXED5a8c215g9bDP0t4+iQA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y5UKUt63GWMG/q0rdwsQSKZzi5XNYK8gxkE0j7W9Ghw=;
- b=epbPn4asAkCcFZMsK7ld/tqdiUMruXHtTMAGL0Fws7qPJsONWgWNo1lQIy0Ptbwv6vfKN6uDJZ4Auf96z+m34VmGQdct9OZwl5Sa+ckUI6b7O5as4TnGzJSjDspUIrFTxaNZjmn9LVO5PDLFtkpx/D68UBNmPvVs4FfXGV/7MC1SidJq4WaaH0a6+/6ERyN8eAz2TNF3OdSAWj1FkfSijIGLfwRfbzs5SXSjh5rN9mENn+T/Js9xnsNECYFO/utb1xO0jkl9rrt+WLUPk+Nvh/dk9rQ7JNxGZZ9R5Z/VEZx+SzXaCAeb57usnOqwEEcdqW25l5lfLLu4jWA7ymzNlA==
+ bh=f1PlBuDFv+fkoDCHxutPb13euniKAWFWXRYTXtMR9iI=;
+ b=Ykai/ATzEUksvmQ4ZvZSEqBwWbuIUbVOwhXQ4EeAURVeQeUaetBRQXAU4xgVlq92bWa17Xp/ildh3M9PZaj2a89abqocliz1Y+iXI7/m/gqiuhNF+ZRzaw0AbiZEOiHCHJLJrx0TuqXH7OLUhOvFCn/RSHaKMUKW/uevJPO6hh1jr7G/mzHyKNlQ44Cq2ydWnd4bVfkYd7D3uR0cQxY/bUCHEaFPquVIybNgjKs/j65jzKVczxnihqXvjwbJalqm+MtqrR2IE/dyjUnW87gg2pdi3R5fa7Ja0ai4Xic5Gm55hSBt9xAx+7rDhTaToQSan1zsS4dM6nPjEyyxHho54w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=nvidia.com;
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y5UKUt63GWMG/q0rdwsQSKZzi5XNYK8gxkE0j7W9Ghw=;
- b=kSHk4pWjqh6FFOlPfyJ9hV7mCFkjr7lzzQH/P17ERg6rWh0rOJam6OmvF+W/YgwpvbVXrFP5Qrn9R41GJwmqnBZ/MvlnQYJ2zKLN4QClAvAH2IzGtf2drxRmiKxPNWzwl3oIMwD51ucB51UAD43/JK0TmAGNmREFA5vORQJ4jyJhSyjjEtu4lvSCruASrafLcArLuF9ORG1sY0hOBayZJ67Mwh0pn937irTxs03621Wbjl/Ic2u68UH058e8P/gijU0hdzE2zsaMSo51yQE4C+uaxHKjFqG34nXIqU62a65bbERDK8hsH4m+OBTA9znAa+viWHlDZRBlkcnBB6fFvg==
-Received: from BN6PR13CA0031.namprd13.prod.outlook.com (2603:10b6:404:13e::17)
- by BN6PR1201MB0131.namprd12.prod.outlook.com (2603:10b6:405:5b::10) with
+ bh=f1PlBuDFv+fkoDCHxutPb13euniKAWFWXRYTXtMR9iI=;
+ b=WKOmiy9dzXJswIEFvP1EcF9Nh2EWXlqLjmEw1hEM+KMAscewsLt1fqiz9pn+UsCIl82g3IlPrdPt1egvGPpD9e8FdTkj1SL6O0xjhz18kSI9RQ4bmqLQpW0B0XBeeEmH/BEpzU0dEnisxkDr7V0ZobLi2jpVC0KBnIV0ECGPq1KTHoS0isxDtzv0z9QaO4p/kIJk4y4H7unhUKUIIWirwdQruHxsXgGqteIZYL+Cq9723I4FLpvHf1mz2SkOPcUyZWowE/XoSL8tHX7ncMHlhHbAkz9eDsi5zl35n2vh8eHw8QSPCmsxj4wTJysBZx3DCGtFQyMhAKVZCC8aHNGmxQ==
+Received: from BN9PR03CA0784.namprd03.prod.outlook.com (2603:10b6:408:13f::9)
+ by MN2PR12MB4029.namprd12.prod.outlook.com (2603:10b6:208:167::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Wed, 7 Apr
- 2021 08:43:06 +0000
-Received: from BN8NAM11FT013.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:13e:cafe::96) by BN6PR13CA0031.outlook.office365.com
- (2603:10b6:404:13e::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend
- Transport; Wed, 7 Apr 2021 08:43:06 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Wed, 7 Apr
+ 2021 08:43:15 +0000
+Received: from BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13f:cafe::ac) by BN9PR03CA0784.outlook.office365.com
+ (2603:10b6:408:13f::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
+ Transport; Wed, 7 Apr 2021 08:43:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; ffwll.ch; dkim=none (message not signed)
- header.d=none;ffwll.ch; dmarc=pass action=none header.from=nvidia.com;
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.112.34 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.112.34; helo=mail.nvidia.com;
 Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT013.mail.protection.outlook.com (10.13.176.182) with Microsoft SMTP
+ BN8NAM11FT066.mail.protection.outlook.com (10.13.177.138) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3999.28 via Frontend Transport; Wed, 7 Apr 2021 08:43:05 +0000
+ 15.20.3999.28 via Frontend Transport; Wed, 7 Apr 2021 08:43:15 +0000
 Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
- 2021 08:43:04 +0000
+ 2021 08:43:13 +0000
 From:   Alistair Popple <apopple@nvidia.com>
 To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
         <bskeggs@redhat.com>, <akpm@linux-foundation.org>
@@ -58,11 +58,10 @@ CC:     Alistair Popple <apopple@nvidia.com>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
         <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
         <jglisse@redhat.com>, <jgg@nvidia.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>, <willy@infradead.org>, <bsingharora@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v8 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-Date:   Wed, 7 Apr 2021 18:42:33 +1000
-Message-ID: <20210407084238.20443-4-apopple@nvidia.com>
+        <daniel@ffwll.ch>, <willy@infradead.org>, <bsingharora@gmail.com>
+Subject: [PATCH v8 6/8] mm: Selftests for exclusive device memory
+Date:   Wed, 7 Apr 2021 18:42:36 +1000
+Message-ID: <20210407084238.20443-7-apopple@nvidia.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210407084238.20443-1-apopple@nvidia.com>
 References: <20210407084238.20443-1-apopple@nvidia.com>
@@ -74,299 +73,383 @@ X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
  HQMAIL107.nvidia.com (172.20.187.13)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e18c2f3-9582-43fb-dc55-08d8f9a129cd
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0131:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB0131479217FACEB3C9B2F6CBDF759@BN6PR1201MB0131.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 4afcf28f-c2a2-4aea-cffa-08d8f9a12f94
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4029:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4029560043D868B949F06E2FDF759@MN2PR12MB4029.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mu2sQAL702PrFfbqqGuHzlvtaTgZgfJvmdO9TtFm5toMY2UkqMCrQBk0Om96EMl+5813pugJJeSGdLeZPw+qN4y2kyDuYkvGyipXbVpQjfYUjsZsJasWdx07G4PXnCWm/HaloEYik1HDV9s9rHJYnosBGRcEM9qvfXFrijMBJSc1em/zIA+1enlwnnxaHlRrUQYIK/bInfhnXbKaXJ2WeJOLSJ99rIQ0h8Hpr3M0fOphB1EZE93civFfUPD7Z2FXoJO+po04y0nlwnRTodGEaW9XXtAk4/u+JLMxqFRevN2DXrmx3DLFOGpPWTKol/rZ77zi2mpH4AWbIplCu7OVols3Nw+Omtmefyn8Wz3b6bOVoSvw/om5OevTCEIewbn4yhwe1hwM4iD6Patjuyj/M8nX3EqQLgRmj7tBUD3ZhX6R0FNBJ2H3/ZbRHcs1yh0xg9TNZ+vdxJUkxQSqOeuwk1gF+qPVq6UDD3pgZsK8mdqWrWNCsiJgl24rE+bKKGygQqNELjX4KlNS5SA4WQOsg0mHEYJQvbT3LNzSNuHv1Q8cGOBSjtV4LZzo1DjiWZ4lSLXTGbj/XATX1fnNX0H7NLj8ycNnhWDQtJxL1L2E1IB6s30sZjS4ahqG0abJ/+7zf8Pq2vSe8jlBfwtu5AGgRWn0vrf19OFulwUceYPDu8U=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(36840700001)(46966006)(1076003)(356005)(186003)(2906002)(36860700001)(83380400001)(86362001)(82310400003)(16526019)(6666004)(478600001)(70586007)(426003)(70206006)(36756003)(7416002)(2616005)(7636003)(8936002)(336012)(8676002)(4326008)(110136005)(30864003)(54906003)(5660300002)(47076005)(26005)(36906005)(316002)(82740400003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: OSwk/O+Nq0UDIVKrncIIqzzo1R1f9E2aLrcbzO30LS9Q9onB56vosSyF2f3XEFmuannOiQSNLHU40DbAEZ4fiRTl1LYuf9JI5O8PXVf/1KDPFap+rj7ip53ka7H8lYEBefl4Lur6Zck8Fb8UzwsXuJZNX1FPPFjarPqdNrE8c95YcN5ItK07h0+4ExgsHT2IHBg6+OuBr6bgrSiffcwrUMBpOMziMAGw/Sa1SEwozH889FRUkhFPX9j6QRZa+8afG/wkmob5tq0ge/iajOw1RzKMw1a4NgXHm9+q0TAYEOsIsoyonnnCIHm8ZpkmPgKW5tEq8aU2r02CgFzThgoTe77FREoV8ROtxgU6S1UPYxkXTWdc/+Pi+pG/vBR8tEAklI4+re7ZXyGEI/xB5Ozb7fm5wuXNkzwrkNUcHm64fgheREM2uEBFsN3MfeAlHFBa3jLvpi//wlCz0Dvwk4xCKKMAzeV8RjmEqHlJa7BYSSEvZp25mR2KTL4/5mK7JXHlJclvgFA/nR0JQO2vxWoAxR9UBB1x6JLgPrLHQKccAPZr3KnpyE990dH1OfjS1aB5Hq9Lz/uvmUXdhXMFAdHIiX5scBcxae82ImMzxKQVG18TctcinZSKjlogHT6YCF1AyRiED3awGOncwU17dZcxVw==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(36840700001)(46966006)(7636003)(70206006)(86362001)(47076005)(4326008)(426003)(110136005)(2616005)(36756003)(5660300002)(7416002)(356005)(36860700001)(82310400003)(8676002)(82740400003)(16526019)(186003)(54906003)(8936002)(36906005)(478600001)(26005)(6666004)(2906002)(70586007)(83380400001)(316002)(336012)(1076003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 08:43:05.6075
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 08:43:15.4578
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e18c2f3-9582-43fb-dc55-08d8f9a129cd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4afcf28f-c2a2-4aea-cffa-08d8f9a12f94
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT013.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0131
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The behaviour of try_to_unmap_one() is difficult to follow because it
-performs different operations based on a fairly large set of flags used
-in different combinations.
-
-TTU_MUNLOCK is one such flag. However it is exclusively used by
-try_to_munlock() which specifies no other flags. Therefore rather than
-overload try_to_unmap_one() with unrelated behaviour split this out into
-it's own function and remove the flag.
+Adds some selftests for exclusive device memory.
 
 Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+Tested-by: Ralph Campbell <rcampbell@nvidia.com>
 Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-
 ---
+ lib/test_hmm.c                         | 124 +++++++++++++++++++
+ lib/test_hmm_uapi.h                    |   2 +
+ tools/testing/selftests/vm/hmm-tests.c | 158 +++++++++++++++++++++++++
+ 3 files changed, 284 insertions(+)
 
-v8:
-* Renamed try_to_munlock to page_mlock to better reflect what the
-  function actually does.
-* Removed the TODO from the documentation that this patch addresses.
-
-v7:
-* Added Christoph's Reviewed-by
-
-v4:
-* Removed redundant check for VM_LOCKED
----
- Documentation/vm/unevictable-lru.rst | 33 ++++++++-----------
- include/linux/rmap.h                 |  3 +-
- mm/mlock.c                           | 10 +++---
- mm/rmap.c                            | 48 +++++++++++++++++++++-------
- 4 files changed, 55 insertions(+), 39 deletions(-)
-
-diff --git a/Documentation/vm/unevictable-lru.rst b/Documentation/vm/unevictable-lru.rst
-index 0e1490524f53..eae3af17f2d9 100644
---- a/Documentation/vm/unevictable-lru.rst
-+++ b/Documentation/vm/unevictable-lru.rst
-@@ -389,14 +389,14 @@ mlocked, munlock_vma_page() updates that zone statistics for the number of
- mlocked pages.  Note, however, that at this point we haven't checked whether
- the page is mapped by other VM_LOCKED VMAs.
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index 5c9f5a020c1d..305a9d9e2b4c 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -25,6 +25,7 @@
+ #include <linux/swapops.h>
+ #include <linux/sched/mm.h>
+ #include <linux/platform_device.h>
++#include <linux/rmap.h>
  
--We can't call try_to_munlock(), the function that walks the reverse map to
-+We can't call page_mlock(), the function that walks the reverse map to
- check for other VM_LOCKED VMAs, without first isolating the page from the LRU.
--try_to_munlock() is a variant of try_to_unmap() and thus requires that the page
-+page_mlock() is a variant of try_to_unmap() and thus requires that the page
- not be on an LRU list [more on these below].  However, the call to
--isolate_lru_page() could fail, in which case we couldn't try_to_munlock().  So,
-+isolate_lru_page() could fail, in which case we can't call page_mlock().  So,
- we go ahead and clear PG_mlocked up front, as this might be the only chance we
--have.  If we can successfully isolate the page, we go ahead and
--try_to_munlock(), which will restore the PG_mlocked flag and update the zone
-+have.  If we can successfully isolate the page, we go ahead and call
-+page_mlock(), which will restore the PG_mlocked flag and update the zone
- page statistics if it finds another VMA holding the page mlocked.  If we fail
- to isolate the page, we'll have left a potentially mlocked page on the LRU.
- This is fine, because we'll catch it later if and if vmscan tries to reclaim
-@@ -545,31 +545,24 @@ munlock or munmap system calls, mm teardown (munlock_vma_pages_all), reclaim,
- holepunching, and truncation of file pages and their anonymous COWed pages.
+ #include "test_hmm_uapi.h"
  
+@@ -46,6 +47,7 @@ struct dmirror_bounce {
+ 	unsigned long		cpages;
+ };
  
--try_to_munlock() Reverse Map Scan
-+page_mlock() Reverse Map Scan
- ---------------------------------
++#define DPT_XA_TAG_ATOMIC 1UL
+ #define DPT_XA_TAG_WRITE 3UL
  
--.. warning::
--   [!] TODO/FIXME: a better name might be page_mlocked() - analogous to the
--   page_referenced() reverse map walker.
--
- When munlock_vma_page() [see section :ref:`munlock()/munlockall() System Call
- Handling <munlock_munlockall_handling>` above] tries to munlock a
- page, it needs to determine whether or not the page is mapped by any
- VM_LOCKED VMA without actually attempting to unmap all PTEs from the
- page.  For this purpose, the unevictable/mlock infrastructure
--introduced a variant of try_to_unmap() called try_to_munlock().
-+introduced a variant of try_to_unmap() called page_mlock().
- 
--try_to_munlock() calls the same functions as try_to_unmap() for anonymous and
--mapped file and KSM pages with a flag argument specifying unlock versus unmap
--processing.  Again, these functions walk the respective reverse maps looking
--for VM_LOCKED VMAs.  When such a VMA is found, as in the try_to_unmap() case,
--the functions mlock the page via mlock_vma_page() and return SWAP_MLOCK.  This
--undoes the pre-clearing of the page's PG_mlocked done by munlock_vma_page.
-+page_mlock() walks the respective reverse maps looking for VM_LOCKED VMAs. When
-+such a VMA is found the page is mlocked via mlock_vma_page(). This undoes the
-+pre-clearing of the page's PG_mlocked done by munlock_vma_page.
- 
--Note that try_to_munlock()'s reverse map walk must visit every VMA in a page's
-+Note that page_mlock()'s reverse map walk must visit every VMA in a page's
- reverse map to determine that a page is NOT mapped into any VM_LOCKED VMA.
- However, the scan can terminate when it encounters a VM_LOCKED VMA.
--Although try_to_munlock() might be called a great many times when munlocking a
-+Although page_mlock() might be called a great many times when munlocking a
- large region or tearing down a large address space that has been mlocked via
- mlockall(), overall this is a fairly rare event.
- 
-@@ -602,7 +595,7 @@ inactive lists to the appropriate node's unevictable list.
- shrink_inactive_list() should only see SHM_LOCK'd pages that became SHM_LOCK'd
- after shrink_active_list() had moved them to the inactive list, or pages mapped
- into VM_LOCKED VMAs that munlock_vma_page() couldn't isolate from the LRU to
--recheck via try_to_munlock().  shrink_inactive_list() won't notice the latter,
-+recheck via page_mlock().  shrink_inactive_list() won't notice the latter,
- but will pass on to shrink_page_list().
- 
- shrink_page_list() again culls obviously unevictable pages that it could
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index def5c62c93b3..38a746787c2f 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -87,7 +87,6 @@ struct anon_vma_chain {
- 
- enum ttu_flags {
- 	TTU_MIGRATION		= 0x1,	/* migration mode */
--	TTU_MUNLOCK		= 0x2,	/* munlock mode */
- 
- 	TTU_SPLIT_HUGE_PMD	= 0x4,	/* split huge PMD if any */
- 	TTU_IGNORE_MLOCK	= 0x8,	/* ignore mlock */
-@@ -239,7 +238,7 @@ int page_mkclean(struct page *);
-  * called in munlock()/munmap() path to check for other vmas holding
-  * the page mlocked.
-  */
--void try_to_munlock(struct page *);
-+void page_mlock(struct page *page);
- 
- void remove_migration_ptes(struct page *old, struct page *new, bool locked);
- 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index f8f8cc32d03d..9b8b82cfbbff 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -108,7 +108,7 @@ void mlock_vma_page(struct page *page)
  /*
-  * Finish munlock after successful page isolation
-  *
-- * Page must be locked. This is a wrapper for try_to_munlock()
-+ * Page must be locked. This is a wrapper for page_mlock()
-  * and putback_lru_page() with munlock accounting.
-  */
- static void __munlock_isolated_page(struct page *page)
-@@ -118,7 +118,7 @@ static void __munlock_isolated_page(struct page *page)
- 	 * and we don't need to check all the other vmas.
- 	 */
- 	if (page_mapcount(page) > 1)
--		try_to_munlock(page);
-+		page_mlock(page);
- 
- 	/* Did try_to_unlock() succeed or punt? */
- 	if (!PageMlocked(page))
-@@ -158,7 +158,7 @@ static void __munlock_isolation_failed(struct page *page)
-  * munlock()ed or munmap()ed, we want to check whether other vmas hold the
-  * page locked so that we can leave it on the unevictable lru list and not
-  * bother vmscan with it.  However, to walk the page's rmap list in
-- * try_to_munlock() we must isolate the page from the LRU.  If some other
-+ * page_mlock() we must isolate the page from the LRU.  If some other
-  * task has removed the page from the LRU, we won't be able to do that.
-  * So we clear the PageMlocked as we might not get another chance.  If we
-  * can't isolate the page, we leave it for putback_lru_page() and vmscan
-@@ -168,7 +168,7 @@ unsigned int munlock_vma_page(struct page *page)
- {
- 	int nr_pages;
- 
--	/* For try_to_munlock() and to serialize with page migration */
-+	/* For page_mlock() and to serialize with page migration */
- 	BUG_ON(!PageLocked(page));
- 	VM_BUG_ON_PAGE(PageTail(page), page);
- 
-@@ -205,7 +205,7 @@ static int __mlock_posix_error_return(long retval)
-  *
-  * The fast path is available only for evictable pages with single mapping.
-  * Then we can bypass the per-cpu pvec and get better performance.
-- * when mapcount > 1 we need try_to_munlock() which can fail.
-+ * when mapcount > 1 we need page_mlock() which can fail.
-  * when !page_evictable(), we need the full redo logic of putback_lru_page to
-  * avoid leaving evictable page in unevictable list.
-  *
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 977e70803ed8..f09d522725b9 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1405,10 +1405,6 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 	struct mmu_notifier_range range;
- 	enum ttu_flags flags = (enum ttu_flags)(long)arg;
- 
--	/* munlock has nothing to gain from examining un-locked vmas */
--	if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
--		return true;
--
- 	if (IS_ENABLED(CONFIG_MIGRATION) && (flags & TTU_MIGRATION) &&
- 	    is_zone_device_page(page) && !is_device_private_page(page))
- 		return true;
-@@ -1469,8 +1465,6 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 				page_vma_mapped_walk_done(&pvmw);
- 				break;
- 			}
--			if (flags & TTU_MUNLOCK)
--				continue;
- 		}
- 
- 		/* Unexpected PMD-mapped THP? */
-@@ -1784,8 +1778,39 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
- 	return !page_mapcount(page) ? true : false;
+@@ -619,6 +621,54 @@ static void dmirror_migrate_alloc_and_copy(struct migrate_vma *args,
+ 	}
  }
  
-+static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
-+				 unsigned long address, void *arg)
++static int dmirror_check_atomic(struct dmirror *dmirror, unsigned long start,
++			     unsigned long end)
 +{
-+	struct page_vma_mapped_walk pvmw = {
-+		.page = page,
-+		.vma = vma,
-+		.address = address,
-+	};
++	unsigned long pfn;
 +
-+	/* munlock has nothing to gain from examining un-locked vmas */
-+	if (!(vma->vm_flags & VM_LOCKED))
-+		return true;
++	for (pfn = start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++) {
++		void *entry;
++		struct page *page;
 +
-+	while (page_vma_mapped_walk(&pvmw)) {
-+		/* PTE-mapped THP are never mlocked */
-+		if (!PageTransCompound(page)) {
-+			/*
-+			 * Holding pte lock, we do *not* need
-+			 * mmap_lock here
-+			 */
-+			mlock_vma_page(page);
-+		}
-+		page_vma_mapped_walk_done(&pvmw);
-+
-+		/* found a mlocked page, no point continuing munlock check */
-+		return false;
++		entry = xa_load(&dmirror->pt, pfn);
++		page = xa_untag_pointer(entry);
++		if (xa_pointer_tag(entry) == DPT_XA_TAG_ATOMIC)
++			return -EPERM;
 +	}
 +
-+	return true;
++	return 0;
 +}
 +
- /**
-- * try_to_munlock - try to munlock a page
-+ * page_mlock - try to munlock a page
-  * @page: the page to be munlocked
-  *
-  * Called from munlock code.  Checks all of the VMAs mapping the page
-@@ -1793,11 +1818,10 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
-  * returned with PG_mlocked cleared if no other vmas have it mlocked.
-  */
- 
--void try_to_munlock(struct page *page)
-+void page_mlock(struct page *page)
++static int dmirror_atomic_map(unsigned long start, unsigned long end,
++			      struct page **pages, struct dmirror *dmirror)
++{
++	unsigned long pfn, mapped = 0;
++	int i;
++
++	/* Map the migrated pages into the device's page tables. */
++	mutex_lock(&dmirror->mutex);
++
++	for (i = 0, pfn = start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++, i++) {
++		void *entry;
++
++		if (!pages[i])
++			continue;
++
++		entry = pages[i];
++		entry = xa_tag_pointer(entry, DPT_XA_TAG_ATOMIC);
++		entry = xa_store(&dmirror->pt, pfn, entry, GFP_ATOMIC);
++		if (xa_is_err(entry)) {
++			mutex_unlock(&dmirror->mutex);
++			return xa_err(entry);
++		}
++
++		mapped++;
++	}
++
++	mutex_unlock(&dmirror->mutex);
++	return mapped;
++}
++
+ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+ 					    struct dmirror *dmirror)
  {
- 	struct rmap_walk_control rwc = {
--		.rmap_one = try_to_unmap_one,
--		.arg = (void *)TTU_MUNLOCK,
-+		.rmap_one = page_mlock_one,
- 		.done = page_not_mapped,
- 		.anon_lock = page_lock_anon_vma_read,
+@@ -661,6 +711,71 @@ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+ 	return 0;
+ }
  
-@@ -1849,7 +1873,7 @@ static struct anon_vma *rmap_walk_anon_lock(struct page *page,
-  * Find all the mappings of a page using the mapping pointer and the vma chains
-  * contained in the anon_vma struct it points to.
-  *
-- * When called from try_to_munlock(), the mmap_lock of the mm containing the vma
-+ * When called from page_mlock(), the mmap_lock of the mm containing the vma
-  * where the page was found will be held for write.  So, we won't recheck
-  * vm_flags for that VMA.  That should be OK, because that vma shouldn't be
-  * LOCKED.
-@@ -1901,7 +1925,7 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
-  * Find all the mappings of a page using the mapping pointer and the vma chains
-  * contained in the address_space struct it points to.
-  *
-- * When called from try_to_munlock(), the mmap_lock of the mm containing the vma
-+ * When called from page_mlock(), the mmap_lock of the mm containing the vma
-  * where the page was found will be held for write.  So, we won't recheck
-  * vm_flags for that VMA.  That should be OK, because that vma shouldn't be
-  * LOCKED.
++static int dmirror_exclusive(struct dmirror *dmirror,
++			     struct hmm_dmirror_cmd *cmd)
++{
++	unsigned long start, end, addr;
++	unsigned long size = cmd->npages << PAGE_SHIFT;
++	struct mm_struct *mm = dmirror->notifier.mm;
++	struct page *pages[64];
++	struct dmirror_bounce bounce;
++	unsigned long next;
++	int ret;
++
++	start = cmd->addr;
++	end = start + size;
++	if (end < start)
++		return -EINVAL;
++
++	/* Since the mm is for the mirrored process, get a reference first. */
++	if (!mmget_not_zero(mm))
++		return -EINVAL;
++
++	mmap_read_lock(mm);
++	for (addr = start; addr < end; addr = next) {
++		int i, mapped;
++
++		if (end < addr + (ARRAY_SIZE(pages) << PAGE_SHIFT))
++			next = end;
++		else
++			next = addr + (ARRAY_SIZE(pages) << PAGE_SHIFT);
++
++		ret = make_device_exclusive_range(mm, addr, next, pages, NULL);
++		mapped = dmirror_atomic_map(addr, next, pages, dmirror);
++		for (i = 0; i < ret; i++) {
++			if (pages[i]) {
++				unlock_page(pages[i]);
++				put_page(pages[i]);
++			}
++		}
++
++		if (addr + (mapped << PAGE_SHIFT) < next) {
++			mmap_read_unlock(mm);
++			mmput(mm);
++			return -EBUSY;
++		}
++	}
++	mmap_read_unlock(mm);
++	mmput(mm);
++
++	/* Return the migrated data for verification. */
++	ret = dmirror_bounce_init(&bounce, start, size);
++	if (ret)
++		return ret;
++	mutex_lock(&dmirror->mutex);
++	ret = dmirror_do_read(dmirror, start, end, &bounce);
++	mutex_unlock(&dmirror->mutex);
++	if (ret == 0) {
++		if (copy_to_user(u64_to_user_ptr(cmd->ptr), bounce.ptr,
++				 bounce.size))
++			ret = -EFAULT;
++	}
++
++	cmd->cpages = bounce.cpages;
++	dmirror_bounce_fini(&bounce);
++	return ret;
++}
++
+ static int dmirror_migrate(struct dmirror *dmirror,
+ 			   struct hmm_dmirror_cmd *cmd)
+ {
+@@ -949,6 +1064,15 @@ static long dmirror_fops_unlocked_ioctl(struct file *filp,
+ 		ret = dmirror_migrate(dmirror, &cmd);
+ 		break;
+ 
++	case HMM_DMIRROR_EXCLUSIVE:
++		ret = dmirror_exclusive(dmirror, &cmd);
++		break;
++
++	case HMM_DMIRROR_CHECK_EXCLUSIVE:
++		ret = dmirror_check_atomic(dmirror, cmd.addr,
++					cmd.addr + (cmd.npages << PAGE_SHIFT));
++		break;
++
+ 	case HMM_DMIRROR_SNAPSHOT:
+ 		ret = dmirror_snapshot(dmirror, &cmd);
+ 		break;
+diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
+index 670b4ef2a5b6..f14dea5dcd06 100644
+--- a/lib/test_hmm_uapi.h
++++ b/lib/test_hmm_uapi.h
+@@ -33,6 +33,8 @@ struct hmm_dmirror_cmd {
+ #define HMM_DMIRROR_WRITE		_IOWR('H', 0x01, struct hmm_dmirror_cmd)
+ #define HMM_DMIRROR_MIGRATE		_IOWR('H', 0x02, struct hmm_dmirror_cmd)
+ #define HMM_DMIRROR_SNAPSHOT		_IOWR('H', 0x03, struct hmm_dmirror_cmd)
++#define HMM_DMIRROR_EXCLUSIVE		_IOWR('H', 0x04, struct hmm_dmirror_cmd)
++#define HMM_DMIRROR_CHECK_EXCLUSIVE	_IOWR('H', 0x05, struct hmm_dmirror_cmd)
+ 
+ /*
+  * Values returned in hmm_dmirror_cmd.ptr for HMM_DMIRROR_SNAPSHOT.
+diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
+index 5d1ac691b9f4..864f126ffd78 100644
+--- a/tools/testing/selftests/vm/hmm-tests.c
++++ b/tools/testing/selftests/vm/hmm-tests.c
+@@ -1485,4 +1485,162 @@ TEST_F(hmm2, double_map)
+ 	hmm_buffer_free(buffer);
+ }
+ 
++/*
++ * Basic check of exclusive faulting.
++ */
++TEST_F(hmm, exclusive)
++{
++	struct hmm_buffer *buffer;
++	unsigned long npages;
++	unsigned long size;
++	unsigned long i;
++	int *ptr;
++	int ret;
++
++	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
++	ASSERT_NE(npages, 0);
++	size = npages << self->page_shift;
++
++	buffer = malloc(sizeof(*buffer));
++	ASSERT_NE(buffer, NULL);
++
++	buffer->fd = -1;
++	buffer->size = size;
++	buffer->mirror = malloc(size);
++	ASSERT_NE(buffer->mirror, NULL);
++
++	buffer->ptr = mmap(NULL, size,
++			   PROT_READ | PROT_WRITE,
++			   MAP_PRIVATE | MAP_ANONYMOUS,
++			   buffer->fd, 0);
++	ASSERT_NE(buffer->ptr, MAP_FAILED);
++
++	/* Initialize buffer in system memory. */
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ptr[i] = i;
++
++	/* Map memory exclusively for device access. */
++	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
++	ASSERT_EQ(ret, 0);
++	ASSERT_EQ(buffer->cpages, npages);
++
++	/* Check what the device read. */
++	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i], i);
++
++	/* Fault pages back to system memory and check them. */
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i]++, i);
++
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i], i+1);
++
++	/* Check atomic access revoked */
++	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_CHECK_EXCLUSIVE, buffer, npages);
++	ASSERT_EQ(ret, 0);
++
++	hmm_buffer_free(buffer);
++}
++
++TEST_F(hmm, exclusive_mprotect)
++{
++	struct hmm_buffer *buffer;
++	unsigned long npages;
++	unsigned long size;
++	unsigned long i;
++	int *ptr;
++	int ret;
++
++	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
++	ASSERT_NE(npages, 0);
++	size = npages << self->page_shift;
++
++	buffer = malloc(sizeof(*buffer));
++	ASSERT_NE(buffer, NULL);
++
++	buffer->fd = -1;
++	buffer->size = size;
++	buffer->mirror = malloc(size);
++	ASSERT_NE(buffer->mirror, NULL);
++
++	buffer->ptr = mmap(NULL, size,
++			   PROT_READ | PROT_WRITE,
++			   MAP_PRIVATE | MAP_ANONYMOUS,
++			   buffer->fd, 0);
++	ASSERT_NE(buffer->ptr, MAP_FAILED);
++
++	/* Initialize buffer in system memory. */
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ptr[i] = i;
++
++	/* Map memory exclusively for device access. */
++	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
++	ASSERT_EQ(ret, 0);
++	ASSERT_EQ(buffer->cpages, npages);
++
++	/* Check what the device read. */
++	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i], i);
++
++	ret = mprotect(buffer->ptr, size, PROT_READ);
++	ASSERT_EQ(ret, 0);
++
++	/* Simulate a device writing system memory. */
++	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_WRITE, buffer, npages);
++	ASSERT_EQ(ret, -EPERM);
++
++	hmm_buffer_free(buffer);
++}
++
++/*
++ * Check copy-on-write works.
++ */
++TEST_F(hmm, exclusive_cow)
++{
++	struct hmm_buffer *buffer;
++	unsigned long npages;
++	unsigned long size;
++	unsigned long i;
++	int *ptr;
++	int ret;
++
++	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
++	ASSERT_NE(npages, 0);
++	size = npages << self->page_shift;
++
++	buffer = malloc(sizeof(*buffer));
++	ASSERT_NE(buffer, NULL);
++
++	buffer->fd = -1;
++	buffer->size = size;
++	buffer->mirror = malloc(size);
++	ASSERT_NE(buffer->mirror, NULL);
++
++	buffer->ptr = mmap(NULL, size,
++			   PROT_READ | PROT_WRITE,
++			   MAP_PRIVATE | MAP_ANONYMOUS,
++			   buffer->fd, 0);
++	ASSERT_NE(buffer->ptr, MAP_FAILED);
++
++	/* Initialize buffer in system memory. */
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ptr[i] = i;
++
++	/* Map memory exclusively for device access. */
++	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
++	ASSERT_EQ(ret, 0);
++	ASSERT_EQ(buffer->cpages, npages);
++
++	fork();
++
++	/* Fault pages back to system memory and check them. */
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i]++, i);
++
++	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
++		ASSERT_EQ(ptr[i], i+1);
++
++	hmm_buffer_free(buffer);
++}
++
+ TEST_HARNESS_MAIN
 -- 
 2.20.1
 
