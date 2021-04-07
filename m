@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B5535697F
+	by mail.lfdr.de (Postfix) with ESMTP id 3635835697D
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350937AbhDGKYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:24:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44794 "EHLO mail.kernel.org"
+        id S234316AbhDGKYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350940AbhDGKYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350941AbhDGKYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 06:24:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C75613E5;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51F1613E8;
         Wed,  7 Apr 2021 10:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617791030;
-        bh=cHqlYiKXcQ0IRBnlkm7PVPRmIEJqyFZ75CoubzOdkus=;
+        s=k20201202; t=1617791031;
+        bh=9mED6a1UlsVjOYWV/gSUridu6zpw0Q762+4/qNjFRyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n/e/91i4ieF7qae6funTAxgp+x3b3TyXvmNyPwSAdoeZcKKUsAFXJ5jXSlXlWvD+V
-         tkSPUmiAXxSkOuLuoSHLebnq4l12N+8gEJYYm4ERuRoiei1cmy9REQhBWDh4EseBbl
-         ZGW8n3lxZQR36ovk0EEHn6mfnUbFvTqUM8ug2Gtqysi8Fa9oYqRwQVzaC2L+HP5OM/
-         JFWy5KUMDrg6mfcP4LlxMriJFzYszs2kG6ezieY0yeta1rIGx0ZJLimTYmLMVpRfv6
-         GwxPmlZLyq60Zy4j3S7V40UWA/PlK0zhjfmzR9ZvnOCtOXMJGUxE2tt2cOp5kH2w7+
-         /tQrbD7wQkRRQ==
+        b=F3PiCA5B/ziquY8xvHTE8r6n30qKooTfu4EJ9EYaGp4vNxzgZczCJtR3bAp0XzZxm
+         f1QasQrS7YDFlRkX+LXYVQnweEcVlSNAb0GJOLTgOrxs6MXlmIzGyaGVXRDDHARKt1
+         Xy+GX5nMqiJ86hYDI2yAUqXnqaF7/pVtRIAu8tC8dtL3vCjJZsykE7iHALO7fsXtft
+         JBIz4RrVZwV9I1bk6RXOPADoR7ICjphyoTTjb9AlkgrGNW4923lj8i3Qnh5osDTedN
+         N9q7zrChSSUcjjrn+wcmWveD3nKoAk5LKDuG6ahYFUN/CL93qfV/+STzzUpbpCCo5o
+         qB1ykaNoqmDUg==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU5Lb-0008RW-Gp; Wed, 07 Apr 2021 12:23:43 +0200
+        id 1lU5Lb-0008RZ-Jh; Wed, 07 Apr 2021 12:23:43 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-staging@lists.linux.dev,
         greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 11/16] tty: moxa: fix TIOCSSERIAL permission check
-Date:   Wed,  7 Apr 2021 12:23:29 +0200
-Message-Id: <20210407102334.32361-12-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 12/16] tty: moxa: fix TIOCSSERIAL implementation
+Date:   Wed,  7 Apr 2021 12:23:30 +0200
+Message-Id: <20210407102334.32361-13-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407102334.32361-1-johan@kernel.org>
 References: <20210407102334.32361-1-johan@kernel.org>
@@ -43,57 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changing the port close delay or type are privileged operations so make
-sure to return -EPERM if a regular user tries to change them.
+TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
+serial devices is only useful for setting the close_delay and
+closing_wait parameters.
 
-Cc: stable@vger.kernel.org
+A non-privileged user has only ever been able to set the since long
+deprecated ASYNC_SPD flags and trying to change any other *supported*
+feature should result in -EPERM being returned. Setting the current
+values for any supported features should return success.
+
+Fix the moxa implementation which was returning -EPERM also for a
+privileged user when trying to change certain unsupported parameters and
+instead return success consistently.
+
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/moxa.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/tty/moxa.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/drivers/tty/moxa.c b/drivers/tty/moxa.c
-index 5b7bc7af8b1e..63e440d900ff 100644
+index 63e440d900ff..4d4f15b5cd29 100644
 --- a/drivers/tty/moxa.c
 +++ b/drivers/tty/moxa.c
-@@ -2048,6 +2048,7 @@ static int moxa_set_serial_info(struct tty_struct *tty,
- 		struct serial_struct *ss)
- {
- 	struct moxa_port *info = tty->driver_data;
-+	unsigned int close_delay;
+@@ -2055,11 +2055,6 @@ static int moxa_set_serial_info(struct tty_struct *tty,
+ 	if (!info)
+ 		return -ENODEV;
  
- 	if (tty->index == MAX_PORTS)
- 		return -EINVAL;
-@@ -2059,19 +2060,24 @@ static int moxa_set_serial_info(struct tty_struct *tty,
- 			ss->baud_base != 921600)
- 		return -EPERM;
+-	if (ss->irq != 0 || ss->port != 0 ||
+-			ss->custom_divisor != 0 ||
+-			ss->baud_base != 921600)
+-		return -EPERM;
+-
+ 	close_delay = msecs_to_jiffies(ss->close_delay * 10);
  
-+	close_delay = msecs_to_jiffies(ss->close_delay * 10);
-+
  	mutex_lock(&info->port.mutex);
- 	if (!capable(CAP_SYS_ADMIN)) {
--		if (((ss->flags & ~ASYNC_USR_MASK) !=
-+		if (close_delay != info->port.close_delay ||
-+		    ss->type != info->type ||
-+		    ((ss->flags & ~ASYNC_USR_MASK) !=
- 		     (info->port.flags & ~ASYNC_USR_MASK))) {
- 			mutex_unlock(&info->port.mutex);
- 			return -EPERM;
- 		}
--	}
--	info->port.close_delay = msecs_to_jiffies(ss->close_delay * 10);
-+	} else {
-+		info->port.close_delay = close_delay;
- 
--	MoxaSetFifo(info, ss->type == PORT_16550A);
-+		MoxaSetFifo(info, ss->type == PORT_16550A);
- 
--	info->type = ss->type;
-+		info->type = ss->type;
-+	}
- 	mutex_unlock(&info->port.mutex);
- 	return 0;
- }
 -- 
 2.26.3
 
