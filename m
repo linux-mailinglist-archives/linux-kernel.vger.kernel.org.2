@@ -2,165 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEC5356ECB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE281356EC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353070AbhDGOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:34:21 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:53148 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352985AbhDGOeF (ORCPT
+        id S1352979AbhDGOeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:34:03 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:50129 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhDGOeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:34:05 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id 3fefc9d137ea351f; Wed, 7 Apr 2021 16:33:54 +0200
-Received: from kreacher.localnet (89-64-81-116.dynamic.chello.pl [89.64.81.116])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 86987669203;
-        Wed,  7 Apr 2021 16:33:53 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v1 4/5] ACPI: scan: Drop sta argument from acpi_init_device_object()
-Date:   Wed, 07 Apr 2021 16:32:43 +0200
-Message-ID: <7894723.T7Z3S40VBb@kreacher>
-In-Reply-To: <2192169.ElGaqSPkdT@kreacher>
-References: <2192169.ElGaqSPkdT@kreacher>
+        Wed, 7 Apr 2021 10:34:00 -0400
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 137EXYoh012783;
+        Wed, 7 Apr 2021 23:33:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137EXYoh012783
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617806015;
+        bh=6v/t8YW4fUxKSYn99A4YEhTxEl23osNDyu0ZPsHBv2M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GpZ+NATu3MeNUvfJMR2kIxq3HgbWzutWhjPvvh04MkiqJh6f86UgkAZUNtyPUs1NE
+         NfsLsvIojurLwvECVNa0Zz393OpeAV+I6zwpfJ5LcU7ceuVJo/DmZ1054Lx4S81qc/
+         RlF2qTBoMK8sLbdEfAMRilnvPlAJVdRecrrL25o5rUrU/6lRzbassIIZHToj0BpeAt
+         dXW6pK1SHo31+8ZMsP4Id3d0tOIpoh5QvA7dr97d/ssg4DL369lxgGIwg6rZEDqCQH
+         Qi2PUOZfv8q94Dr42AWGvTzHKm7Q5ugLEWtSge3snQ5GfMyiyFpbD8T6E8BSaaAWaX
+         aFWVRmifAzPxg==
+X-Nifty-SrcIP: [209.85.215.181]
+Received: by mail-pg1-f181.google.com with SMTP id d10so8357439pgf.12;
+        Wed, 07 Apr 2021 07:33:34 -0700 (PDT)
+X-Gm-Message-State: AOAM532uEXuv0PSN21neIU++Bcul40jtifBUL4XF7H0DAJSPgL++kzbD
+        1jq8u2AhxOwjnASdXHL7YjrX4DZ2lizvyRl8Un8=
+X-Google-Smtp-Source: ABdhPJzRnytYAujPGOJnjw1p4W5q2KPncm6OEVMwxawx6SvO8IHhg09oOhKZzZepE70E0cuuRAeRzZE87+7tSs1yz1o=
+X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
+ c20-20020aa788140000b029021dd2ce07bemr3016290pfo.80.1617806014220; Wed, 07
+ Apr 2021 07:33:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
+In-Reply-To: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 23:32:56 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAToxp4DDAjJfaa9tsP5Fmep7YorfD7ObyEGtJ6_4ioc_A@mail.gmail.com>
+Message-ID: <CAK7LNAToxp4DDAjJfaa9tsP5Fmep7YorfD7ObyEGtJ6_4ioc_A@mail.gmail.com>
+Subject: Re: [PATCH] init: add support for zstd compressed modules
+To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.116
-X-CLIENT-HOSTNAME: 89-64-81-116.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedgjeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedurdduudeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdduudeipdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Use the observation that the initial status check for
-ACPI_BUS_TYPE_PROCESSOR objects can be carried out in the same way
-as for ACPI_BUS_TYPE_DEVICE objects and it is not necessary to fail
-acpi_add_single_object() if acpi_bus_get_status_handle() returns an
-error for a processor (its status can be set to 0 instead) to
-simplify acpi_add_single_object().
-
-Accordingly, drop the "sta" argument from acpi_init_device_object()
-as it can always set the initial status to ACPI_STA_DEFAULT and let
-its caller correct that later on.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/internal.h |    3 +--
- drivers/acpi/power.c    |    3 +--
- drivers/acpi/scan.c     |   28 ++++++++++++++--------------
- 3 files changed, 16 insertions(+), 18 deletions(-)
-
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -1649,15 +1649,14 @@ static bool acpi_device_enumeration_by_p
- }
- 
- void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
--			     int type, unsigned long long sta,
--			     struct acpi_device_info *info)
-+			     int type, struct acpi_device_info *info)
- {
- 	INIT_LIST_HEAD(&device->pnp.ids);
- 	device->device_type = type;
- 	device->handle = handle;
- 	device->parent = acpi_bus_get_parent(handle);
- 	fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
--	acpi_set_device_status(device, sta);
-+	acpi_set_device_status(device, ACPI_STA_DEFAULT);
- 	acpi_device_get_busid(device);
- 	acpi_set_pnp_ids(handle, &device->pnp, type, info);
- 	acpi_init_properties(device);
-@@ -1680,19 +1679,21 @@ void acpi_device_add_finalize(struct acp
- 	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
- }
- 
-+static void acpi_scan_init_status(struct acpi_device *adev)
-+{
-+	if (acpi_bus_get_status(adev))
-+		acpi_set_device_status(adev, 0);
-+}
-+
- static int acpi_add_single_object(struct acpi_device **child,
- 				  acpi_handle handle, int type)
- {
- 	struct acpi_device_info *info = NULL;
--	unsigned long long sta = ACPI_STA_DEFAULT;
- 	struct acpi_device *device;
- 	int result;
- 
- 	if (type == ACPI_BUS_TYPE_DEVICE && handle != ACPI_ROOT_OBJECT)
- 		acpi_get_object_info(handle, &info);
--	else if (type == ACPI_BUS_TYPE_PROCESSOR &&
--		 ACPI_FAILURE(acpi_bus_get_status_handle(handle, &sta)))
--		return -ENODEV;
- 
- 	device = kzalloc(sizeof(struct acpi_device), GFP_KERNEL);
- 	if (!device) {
-@@ -1700,16 +1701,15 @@ static int acpi_add_single_object(struct
- 		return -ENOMEM;
- 	}
- 
--	acpi_init_device_object(device, handle, type, sta, info);
-+	acpi_init_device_object(device, handle, type, info);
- 	kfree(info);
- 	/*
--	 * For ACPI_BUS_TYPE_DEVICE getting the status is delayed till here so
--	 * that we can call acpi_bus_get_status() and use its quirk handling.
--	 * Note this must be done before the get power-/wakeup_dev-flags calls.
-+	 * Getting the status is delayed till here so that we can call
-+	 * acpi_bus_get_status() and use its quirk handling.  Note that
-+	 * this must be done before the get power-/wakeup_dev-flags calls.
- 	 */
--	if (type == ACPI_BUS_TYPE_DEVICE)
--		if (acpi_bus_get_status(device) < 0)
--			acpi_set_device_status(device, 0);
-+	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR)
-+		acpi_scan_init_status(device);
- 
- 	acpi_bus_get_power_flags(device);
- 	acpi_bus_get_wakeup_device_flags(device);
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -109,8 +109,7 @@ struct acpi_device_bus_id {
- int acpi_device_add(struct acpi_device *device,
- 		    void (*release)(struct device *));
- void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
--			     int type, unsigned long long sta,
--			     struct acpi_device_info *info);
-+			     int type, struct acpi_device_info *info);
- int acpi_device_setup_files(struct acpi_device *dev);
- void acpi_device_remove_files(struct acpi_device *dev);
- void acpi_device_add_finalize(struct acpi_device *device);
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -925,8 +925,7 @@ int acpi_add_power_resource(acpi_handle
- 		return -ENOMEM;
- 
- 	device = &resource->device;
--	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER,
--				ACPI_STA_DEFAULT, NULL);
-+	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER, NULL);
- 	mutex_init(&resource->resource_lock);
- 	INIT_LIST_HEAD(&resource->list_node);
- 	INIT_LIST_HEAD(&resource->dependents);
+On Tue, Mar 30, 2021 at 8:33 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wrote:
+>
+> kmod 28 supports modules compressed in zstd format so let's add this possibility to kernel.
+>
+> Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
+> ---
+>  Makefile     | 7 +++++--
+>  init/Kconfig | 9 ++++++---
+>  2 files changed, 11 insertions(+), 5 deletions(-)
 
 
 
+Piort, sorry for bothering you,
+but could you rebase on top of this
+clean-up patch set?
+
+https://patchwork.kernel.org/project/linux-kbuild/list/?series=458809
+
+or
+
+git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git kbuild
+
+
+The module compression code should not be placed
+in the top Makefile.
+
+
+
+
+
+> diff --git a/Makefile b/Makefile
+> index 5160ff8903c1..82f4f4cc2955 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1156,8 +1156,8 @@ endif # INSTALL_MOD_STRIP
+>  export mod_strip_cmd
+>
+>  # CONFIG_MODULE_COMPRESS, if defined, will cause module to be compressed
+> -# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP
+> -# or CONFIG_MODULE_COMPRESS_XZ.
+> +# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP,
+> +# CONFIG_MODULE_COMPRESS_XZ, or CONFIG_MODULE_COMPRESS_ZSTD.
+>
+>  mod_compress_cmd = true
+>  ifdef CONFIG_MODULE_COMPRESS
+> @@ -1167,6 +1167,9 @@ ifdef CONFIG_MODULE_COMPRESS
+>    ifdef CONFIG_MODULE_COMPRESS_XZ
+>      mod_compress_cmd = $(XZ) --lzma2=dict=2MiB -f
+>    endif # CONFIG_MODULE_COMPRESS_XZ
+> +  ifdef CONFIG_MODULE_COMPRESS_ZSTD
+> +    mod_compress_cmd = $(ZSTD) -T0 --rm -f -q
+> +  endif # CONFIG_MODULE_COMPRESS_ZSTD
+>  endif # CONFIG_MODULE_COMPRESS
+>  export mod_compress_cmd
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 8c2cfd88f6ef..86a452bc2747 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2250,8 +2250,8 @@ config MODULE_COMPRESS
+>         bool "Compress modules on installation"
+>         help
+>
+> -         Compresses kernel modules when 'make modules_install' is run; gzip or
+> -         xz depending on "Compression algorithm" below.
+> +         Compresses kernel modules when 'make modules_install' is run; gzip,
+> +         xz, or zstd depending on "Compression algorithm" below.
+>
+>           module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
+>
+> @@ -2273,7 +2273,7 @@ choice
+>           This determines which sort of compression will be used during
+>           'make modules_install'.
+>
+> -         GZIP (default) and XZ are supported.
+> +         GZIP (default), XZ, and ZSTD are supported.
+>
+>  config MODULE_COMPRESS_GZIP
+>         bool "GZIP"
+> @@ -2281,6 +2281,9 @@ config MODULE_COMPRESS_GZIP
+>  config MODULE_COMPRESS_XZ
+>         bool "XZ"
+>
+> +config MODULE_COMPRESS_ZSTD
+> +       bool "ZSTD"
+> +
+>  endchoice
+>
+>  config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
+> --
+> 2.31.0.97.g1424303384
+>
+
+
+--
+Best Regards
+Masahiro Yamada
