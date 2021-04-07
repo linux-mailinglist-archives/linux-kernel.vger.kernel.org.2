@@ -2,153 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19005356733
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624FB35672B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349701AbhDGIra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:47:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36716 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349662AbhDGIqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:46:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8FC34AFAA;
-        Wed,  7 Apr 2021 08:44:41 +0000 (UTC)
-Message-ID: <25e9fc3bedd8f97dd151b1f36d752f032c6ec628.camel@suse.de>
-Subject: Re: [PATCH 2/3] mmc: sdhci-iproc: Cap min clock frequency on BCM2711
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Ray Jui <ray.jui@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
-        tim.gover@raspberrypi.com, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org, robh@kernel.org
-Date:   Wed, 07 Apr 2021 10:44:39 +0200
-In-Reply-To: <2d40b062-5809-15ce-b9d1-651644ff6e22@i2se.com>
-References: <20210406104802.20898-1-nsaenz@kernel.org>
-         <20210406104802.20898-3-nsaenz@kernel.org>
-         <2d40b062-5809-15ce-b9d1-651644ff6e22@i2se.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-tGvxp0AIZJH+Ku21vLzc"
-User-Agent: Evolution 3.40.0 
+        id S1349674AbhDGIrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:47:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15939 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345882AbhDGIq1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:46:27 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFdFk0r9QzyNLH;
+        Wed,  7 Apr 2021 16:43:06 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 16:45:09 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>
+CC:     <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH] iommu/arm-smmu-v3: Remove the unused fields for PREFETCH_CONFIG command
+Date:   Wed, 7 Apr 2021 16:44:48 +0800
+Message-ID: <20210407084448.1838-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Per SMMUv3 spec, there is no Size and Addr field in the PREFETCH_CONFIG
+command and they're not used by the driver. Remove them.
 
---=-tGvxp0AIZJH+Ku21vLzc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+We can add them back if we're going to use PREFETCH_ADDR in the future.
 
-On Tue, 2021-04-06 at 19:59 +0200, Stefan Wahren wrote:
-> Hi Nicolas,
->=20
-> Am 06.04.21 um 12:48 schrieb Nicolas Saenz Julienne:
-> > There is a known bug on BCM2711's SDHCI core integration where the
-> > controller will hang when the difference between the core clock and the
-> > bus clock is too great. Specifically this can be reproduced under the
-> > following conditions:
-> >=20
-> > - No SD card plugged in, polling thread is running, probing cards at
-> > =C2=A0=C2=A0100KHz.
-> > - BCM2711's core clock configured at 500MHz or more.
-> >=20
-> > So set 200MHz as the minimum clock frequency available for that board.
-> i think it should be 200 kHz?
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 2 --
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 2 --
+ 2 files changed, 4 deletions(-)
 
-Of course... Sorry for that.
-
-Regards,
-Nicolas
-
-> >=20
-> > For more information on the issue see this:
-> > https://lore.kernel.org/linux-mmc/20210322185816.27582-1-nsaenz@kernel.=
-org/T/#m11f2783a09b581da6b8a15f302625b43a6ecdeca
-> >=20
-> > Fixes: f84e411c85be ("mmc: sdhci-iproc: Add support for emmc2 of the BC=
-M2711")
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> > ---
-> > =C2=A0drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
-> > =C2=A01 file changed, 18 insertions(+)
-> >=20
-> > diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-ip=
-roc.c
-> > index ddeaf8e1f72f..1ef888e91f73 100644
-> > --- a/drivers/mmc/host/sdhci-iproc.c
-> > +++ b/drivers/mmc/host/sdhci-iproc.c
-> > @@ -173,6 +173,23 @@ static unsigned int sdhci_iproc_get_max_clock(stru=
-ct sdhci_host *host)
-> > =C2=A0		return pltfm_host->clock;
-> > =C2=A0}
-> > =C2=A0
-> >=20
-> > +/*
-> > + * There is a known bug on BCM2711's SDHCI core integration where the
-> > + * controller will hang when the difference between the core clock and=
- the bus
-> > + * clock is too great. Specifically this can be reproduced under the f=
-ollowing
-> > + * conditions:
-> > + *
-> > + *  - No SD card plugged in, polling thread is running, probing cards =
-at
-> > + *    100KHz.
-> > + *  - BCM2711's core clock configured at 500MHz or more
-> > + *
-> > + * So we set 200MHz as the minimum clock frequency available for that =
-SoC.
-> > + */
-> > +static unsigned int sdhci_iproc_bcm2711_get_min_clock(struct sdhci_hos=
-t *host)
-> > +{
-> > +	return 200000;
-> > +}
-> > +
-> > =C2=A0static const struct sdhci_ops sdhci_iproc_ops =3D {
-> > =C2=A0	.set_clock =3D sdhci_set_clock,
-> > =C2=A0	.get_max_clock =3D sdhci_iproc_get_max_clock,
-> > @@ -271,6 +288,7 @@ static const struct sdhci_ops sdhci_iproc_bcm2711_o=
-ps =3D {
-> > =C2=A0	.set_clock =3D sdhci_set_clock,
-> > =C2=A0	.set_power =3D sdhci_set_power_and_bus_voltage,
-> > =C2=A0	.get_max_clock =3D sdhci_iproc_get_max_clock,
-> > +	.get_min_clock =3D sdhci_iproc_bcm2711_get_min_clock,
-> > =C2=A0	.set_bus_width =3D sdhci_set_bus_width,
-> > =C2=A0	.reset =3D sdhci_reset,
-> > =C2=A0	.set_uhs_signaling =3D sdhci_set_uhs_signaling,
-
-
-
---=-tGvxp0AIZJH+Ku21vLzc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBtcPcACgkQlfZmHno8
-x/52Jgf+N8kWfn+v2p/Ij2knXikk1L0/UbLfSkffUvHLSJ3lSSqzbHoS5cWE5cWT
-Bw1ln4+GmxoCVmJcBlHwsML5w+IgV5mw5AhYnnGLVfb9kAKyxDKupRdE2GcrKMA7
-dYPd4Pd6vzGl244qEcHC2If/zy3oEoWrRs/Kci/6lvithzqxB4IOPV3aKRIEc+sS
-PRKt2j+jEv3NO9r08YvnU9shK4muX5VH29gp+x8s+VlW1yRKCj0L5PJ1Au5y7AcF
-gX8IvW+YVRY8z7fYhh8MnKEk0WVV1qvOk3Zyfut4P/wfwCzIcA2Yb7/Bvd7EgXz0
-NTKjPFG+Fhc4l1TuNoc4xmR1eFKDKA==
-=afNN
------END PGP SIGNATURE-----
-
---=-tGvxp0AIZJH+Ku21vLzc--
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 8594b4a83043..610c9f4b7789 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -245,8 +245,6 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+ 		break;
+ 	case CMDQ_OP_PREFETCH_CFG:
+ 		cmd[0] |= FIELD_PREP(CMDQ_PREFETCH_0_SID, ent->prefetch.sid);
+-		cmd[1] |= FIELD_PREP(CMDQ_PREFETCH_1_SIZE, ent->prefetch.size);
+-		cmd[1] |= ent->prefetch.addr & CMDQ_PREFETCH_1_ADDR_MASK;
+ 		break;
+ 	case CMDQ_OP_CFGI_CD:
+ 		cmd[0] |= FIELD_PREP(CMDQ_CFGI_0_SSID, ent->cfgi.ssid);
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index f985817c967a..83726b6a1cba 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -410,8 +410,6 @@ struct arm_smmu_cmdq_ent {
+ 		#define CMDQ_OP_PREFETCH_CFG	0x1
+ 		struct {
+ 			u32			sid;
+-			u8			size;
+-			u64			addr;
+ 		} prefetch;
+ 
+ 		#define CMDQ_OP_CFGI_STE	0x3
+-- 
+2.19.1
 
