@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDE135770F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01867357710
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhDGVlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233880AbhDGVlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:41:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC70C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 14:41:36 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUFvX-0007ju-B9; Wed, 07 Apr 2021 23:41:31 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUFvX-0002BI-1b; Wed, 07 Apr 2021 23:41:31 +0200
-Date:   Wed, 7 Apr 2021 23:41:30 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 8/8] pwm: pca9685: Add error messages for failed
- regmap calls
-Message-ID: <20210407214130.6retlpofjppl3o53@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-8-clemens.gruber@pqgruber.com>
- <20210407061619.fl6ffos6csvgtnjh@pengutronix.de>
- <YG4acW/xZS2+/kDz@workstation.tuxnet>
+        id S234054AbhDGVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:43:23 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49808 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233811AbhDGVnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:43:22 -0400
+IronPort-SDR: 1dbBq+EmEzE409Fl0e/BS0n0reYvMOgXk6qREwm+36FDYp4pXEL9vOgtHAzi4RJCIISYCqExrn
+ 9DWJwyVrlGyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="213801178"
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="213801178"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 14:43:12 -0700
+IronPort-SDR: QXjxlGXW0x+9VPgS+tegkonZbDPU2J2BJiJlpNhJ738dpvwQA4hc+Qp14IZ42BoOBbh9NQt5ii
+ 6zwasOPyz85g==
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="421890534"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 14:43:11 -0700
+Date:   Wed, 7 Apr 2021 14:43:10 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEoIOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+Subject: Re: [PATCH 3/4] mce/copyin: fix to not SIGBUS when copying from user
+ hits poison
+Message-ID: <20210407214310.GA479383@agluck-desk2.amr.corp.intel.com>
+References: <20210326000235.370514-1-tony.luck@intel.com>
+ <20210326000235.370514-4-tony.luck@intel.com>
+ <20210407211816.GP25319@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qnpc6ko75vlz4xpc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG4acW/xZS2+/kDz@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210407211816.GP25319@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 11:18:16PM +0200, Borislav Petkov wrote:
+> On Thu, Mar 25, 2021 at 05:02:34PM -0700, Tony Luck wrote:
+> > Andy Lutomirski pointed out that sending SIGBUS to tasks that
+> > hit poison in the kernel copying syscall parameters from user
+> > address space is not the right semantic.
+> 
+> What does that mean exactly?
 
---qnpc6ko75vlz4xpc
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Andy said that a task could check a memory range for poison by
+doing:
 
-Hello Clemens,
+	ret = write(fd, buf, size);
+	if (ret == size) {
+		memory range is all good
+	}
 
-On Wed, Apr 07, 2021 at 10:47:45PM +0200, Clemens Gruber wrote:
-> On Wed, Apr 07, 2021 at 08:16:19AM +0200, Uwe Kleine-K=F6nig wrote:
-> > You didn't check all return codes? How did you select the calls to
-> > check?
->=20
-> No, because it would become a big mess and really obstruct readability
-> in my opinion.
->=20
-> So I chose some kind of middleground:
-> I decided to check the first regmap_read and regmap_write in probe and
-> return the error code if something goes wrong there.
-> If something goes wrong after probe, I only print an error message.
->=20
-> Is that acceptable?
+That doesn't work if the kernel sends a SIGBUS.
 
-I wanted to have that in the commit log, but just noticed that I didn't
-read it carefully enough, it's already there.
+It doesn't seem a likely scenario ... but Andy is correct that
+the above ought to work.
 
-So if you change %d in the error messages to %pe I'm happy with this
-patch.
+> 
+> From looking at the code, that is this conditional:
+> 
+>         if (t == EX_HANDLER_UACCESS && regs && is_copy_from_user(regs)) {
+>                 m->kflags |= MCE_IN_KERNEL_RECOV;
+>                 m->kflags |= MCE_IN_KERNEL_COPYIN;
+> 
+> so what does the above have to do with syscall params?
 
-Thanks
-Uwe
+Most "copy from user" instances are the result of a system call parameter
+(e.g. "buf" in the write(2) example above).
 
+> If it is about us being in ring 0 and touching user memory and eating
+> poison in same *user* memory while doing so, then sure, that makes
+> sense.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Yes. This is for kernel reading memory belongng to "current" task.
 
---qnpc6ko75vlz4xpc
-Content-Type: application/pgp-signature; name="signature.asc"
+> > So stop doing that. Add a new kill_me_never() call back that
+> > simply unmaps and offlines the poison page.
+> 
+> Right, that's the same as handling poisoned user memory.
 
------BEGIN PGP SIGNATURE-----
+Same in that the page gets unmapped. Different in that there
+is no SIGBUS if the kernel did the access for the user.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBuJwMACgkQwfwUeK3K
-7AkELQf/aPOL73PAnyQwBMySWiPeBzJKT5lSTj+3b2tF3IVXiaB8NRko/QK04BD0
-i17P0PPHdoDFupi9dOJdhuHLB5jpDddRdYmnWtqBI7NV4czNehZOWvW4D43qnFt4
-tpQp54oweioxbJSBn80SNeb+V+Y8dYZCOelo9aHsqtIH5FPVYYJZZkt/+OtiFtqD
-6VhKq9QshFWXWZUN/7ICmdOtoMZMA00ZMDSLaz953AOYfG6TGmrVhoVzY5YofOuw
-GKQdf5INZp0xVfNHJDPWGsokkuqHE6G+YSuZYN4n6oen/5NcC9kmTdE1ON4+kQLu
-QhvrHd4GFgWn2ra7uTCvAb/IkhX/Fg==
-=RTFu
------END PGP SIGNATURE-----
-
---qnpc6ko75vlz4xpc--
+-Tony
