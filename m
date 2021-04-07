@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBFC356C91
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2682356C95
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352403AbhDGMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:49:49 -0400
-Received: from relay.sw.ru ([185.231.240.75]:57556 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352394AbhDGMtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:49:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=eowKYMJJlOx02BM1yZgvM+Udc16+p9Iw201g2IU9Z6I=; b=kcnSys90lhoVgTg5F
-        oZBA3IRHy1eVLBOgupUS33+GdAo6R6/UT/dVolKE0qO7AgN56lmlnkYty19XVeqYANTfVXyMpOz6x
-        42M3wxSmu5Xm61IJzH7SVrSDugyUKiiOtUAD7w1I9UBCuwdVBtOalE6lQLi9aXD4sgLTl4ICnYPcI
-        =;
-Received: from [192.168.15.55]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1lU7ca-000P3X-2u; Wed, 07 Apr 2021 15:49:24 +0300
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-To:     bharata@linux.ibm.com
-Cc:     Dave Chinner <david@fromorbit.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
- <20210407050541.GC1354243@in.ibm.com>
- <c9bd1744-f15c-669a-b3a9-5a0c47bd4e1d@virtuozzo.com>
- <20210407114723.GD1354243@in.ibm.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <82e806cb-9e3f-c61c-3cbf-484f0661c4f2@virtuozzo.com>
-Date:   Wed, 7 Apr 2021 15:49:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S1352419AbhDGMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:50:19 -0400
+Received: from mail-bn8nam11on2073.outbound.protection.outlook.com ([40.107.236.73]:31584
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1343920AbhDGMuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:50:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Km89rdp0K9nEUaCJwSrIMNjriOhYTslxIFzKwQIBjxRRy8aDjVZRQgUaguTdB8MDC0aanzfvOtWUy5vk4QXMb1Jfc7vvn9NEItOj9VrBOW/BlZye/fXKMpdpT5n6fX9NP0lM8WHA4BsSIP79eatsYDzXB/g7GG+3BNmU3w5pMghvyAaOTTkWFwD/GUppzRaSlunJtygzVk8gitlZqBfjCRs3lpplneoiJWUhv4ERXJ6Kpbdd/uSY2hsWs6ojITL5u/I9zfYsuuMeg3SJa2X26N6+pVvWje12CgwrIzDTHsFLlseXBQ1u89ie9r1GPAecYteCt/Eb8qaTqNf6jYSUgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/VrO8xp+i0su5qodG3FinSt7GM9KMgHaQ4EQJCO6+Ys=;
+ b=Lr9I3H5AizlaQVpogjiJjz1tEu6ym498Rn/b74+vUg25BlkY8abCa9Awfmf654zVK+sgV83sUc/iJJoA5ZYddtnlJ9kyXCNQ4swYtlUidCuQb4K0IPxDtBIvGpBhzjSkho6Nz+9u18IxvLcs3okmOGECiAWT9CGd5HuQxHZD8fTMX+R4bAu+cARg/8Ty0sQuEyuqP2j7J+SQDca9C7cx12NxpkB6F+I0icN9ZIo4U8As5zcDd3GEcmJrP5LG6/vYyuW/IWM3MxIB4BiW+Y17QRlR/FxgoMR5Tv4+iebSCAmNiJY4mMub28ujiDlevbOt2o+BM6aqUZrC42j+h4olvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/VrO8xp+i0su5qodG3FinSt7GM9KMgHaQ4EQJCO6+Ys=;
+ b=ApBIBRX2Ky+lJ7KusZ37/rg0bijcKR89/GQa5RNmGGQQf6SvbDDb8v8zZ0BChp1g8rJ50N8uJCTJNqg+4Osu3hk/y9AsucrLiLjxtgS2sT/I/ramS6wEyiZzoJtWEfPmgesws+YdMdo72b8K6vHmzfiG7b01FBlp7TOgzU2sdVI=
+Received: from MWHPR21CA0058.namprd21.prod.outlook.com (2603:10b6:300:db::20)
+ by BL0PR12MB2371.namprd12.prod.outlook.com (2603:10b6:207:3e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 7 Apr
+ 2021 12:50:04 +0000
+Received: from CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:db:cafe::18) by MWHPR21CA0058.outlook.office365.com
+ (2603:10b6:300:db::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.4 via Frontend
+ Transport; Wed, 7 Apr 2021 12:50:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT041.mail.protection.outlook.com (10.13.174.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 12:50:03 +0000
+Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 7 Apr 2021 07:50:01 -0500
+From:   Ramakrishna Saripalli <rsaripal@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
+CC:     <rsaripal@amd.com>
+Subject: [PATCH 0/5] Introduce support for PSF mitigation
+Date:   Wed, 7 Apr 2021 07:49:48 -0500
+Message-ID: <20210407124948.242399-1-rsaripal@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210407114723.GD1354243@in.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1e8696e3-782f-4c22-1844-08d8f9c3a9a3
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2371:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB23714F439520AB437F11246B9B759@BL0PR12MB2371.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zDqP7dvrypVHoVo4CxIWCMbsJ+CmWFGlvZfPFfRkOt7x775YioLM4VgG7ekkS+bHdll9my+L/9UWkZvsCZxq+vkW5mjrIz0hB59+jVfh3VmJpN396jysaygHjGim9eHQNju/TigNMk6T7kbR3zAR4YP5oxC5wCnB9U1hX//XrLYQPHC4ceeDnuTK+p4Q/i5sYxO9q9HpkuCHi5QLB3sr7UOx8JNFpgADWlVWiHooWzqWqEyKrDC2ZQyqoVWp+VngbMH62UHzyhnL935ikn0cRxD4VvTx0juljTcpXl2Z5TsfsUWl84IU7mdbWVZaSBoaDlg9zeuPxhf4v1df61ozzqp6emqB+YO1fh0E/Y+RCq9z1UCfcaPKFryWUbVqckZvAs+ZT/XCFZEAgn356jYnUBqpsFHY9pm9O1YH+86qjbhmYzMpuwsBroMi0vl4Bm825as2owQILfMGVd1jv7v3mL42nsYrnaCYMagID94u5neWO+80b4xFkmcgdWsb/NTUg2rCfOZbBQIRUcU/mL8jLDhDjRLbbY1MpYZMEmPS5W6Jdivb1teqcK4x8CNv9+r9hgC4QFdtwry5u/hFu2vfQGLp3k5O9D845/H2fZx9a1o4oyzratTyu2AENJwB+CWPURmcCJTno3P9kiDjArKu7q0XHsGW1+ae+InBppiVLWRFuvG0CjoHqYAQD11t/NmJzOYHXXMBo7BtuzqUCtjUnFJ1dht8DDCesBu+TK/qqMn5kiHh3PXtF393hhwHQjemFQ3fpicbi70qZAwtyvWb7A==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(396003)(346002)(36840700001)(46966006)(82310400003)(70586007)(110136005)(36756003)(16526019)(426003)(6666004)(83380400001)(81166007)(966005)(186003)(5660300002)(478600001)(356005)(2906002)(316002)(1076003)(36860700001)(4326008)(26005)(7696005)(2616005)(82740400003)(336012)(47076005)(8676002)(70206006)(8936002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 12:50:03.0303
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e8696e3-782f-4c22-1844-08d8f9c3a9a3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2371
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.04.2021 14:47, Bharata B Rao wrote:
-> On Wed, Apr 07, 2021 at 01:07:27PM +0300, Kirill Tkhai wrote:
->>> Here is how the calculation turns out to be in my setup:
->>>
->>> Number of possible NUMA nodes = 2
->>> Number of mounts per container = 7 (Check below to see which are these)
->>> Number of list creation requests per mount = 2
->>> Number of containers = 10000
->>> memcg_nr_cache_ids for 10k containers = 12286
->>
->> Luckily, we have "+1" in memcg_nr_cache_ids formula: size = 2 * (id + 1).
->> In case of we only multiplied it, you would have to had memcg_nr_cache_ids=20000.
-> 
-> Not really, it would grow like this for size = 2 * id
-> 
-> id 0 size 4
-> id 4 size 8
-> id 8 size 16
-> id 16 size 32
-> id 32 size 64
-> id 64 size 128
-> id 128 size 256
-> id 256 size 512
-> id 512 size 1024
-> id 1024 size 2048
-> id 2048 size 4096
-> id 4096 size 8192
-> id 8192 size 16384
-> 
-> Currently (size = 2 * (id + 1)), it grows like this:
-> 
-> id 0 size 4
-> id 4 size 10
-> id 10 size 22
-> id 22 size 46
-> id 46 size 94
-> id 94 size 190
-> id 190 size 382
-> id 382 size 766
-> id 766 size 1534
-> id 1534 size 3070
-> id 3070 size 6142
-> id 6142 size 12286
+From: Ramakrishna Saripalli <rk.saripalli@amd.com>
 
-Oh, thanks, I forgot what power of two is :)
- 
->>
->> Maybe, we need change that formula to increase memcg_nr_cache_ids more accurate
->> for further growths of containers number. Say,
->>
->> size = id < 2000 ? 2 * (id + 1) : id + 2000
-> 
-> For the above, it would only be marginally better like this:
-> 
-> id 0 size 4
-> id 4 size 10
-> id 10 size 22
-> id 22 size 46
-> id 46 size 94
-> id 94 size 190
-> id 190 size 382
-> id 382 size 766
-> id 766 size 1534
-> id 1534 size 3070
-> id 3070 size 5070
-> id 5070 size 7070
-> id 7070 size 9070
-> id 9070 size 11070
-> 
-> All the above numbers are for 10k memcgs.
+Predictive Store Forwarding:
+AMD Zen3 processors feature a new technology called
+Predictive Store Forwarding (PSF).
 
-I mean the number of containers bigger then your 10000.
+https://www.amd.com/system/files/documents/security-analysis-predictive-store-forwarding.pdf
+
+PSF is a hardware-based micro-architectural optimization designed
+to improve the performance of code execution by predicting address
+dependencies between loads and stores.
+
+How PSF works:
+
+It is very common for a CPU to execute a load instruction to an address
+that was recently written by a store. Modern CPUs implement a technique
+known as Store-To-Load-Forwarding (STLF) to improve performance in such
+cases. With STLF, data from the store is forwarded directly to the load
+without having to wait for it to be written to memory. In a typical CPU,
+STLF occurs after the address of both the load and store are calculated
+and determined to match.
+
+PSF expands on this by speculating on the relationship between loads and
+stores without waiting for the address calculation to complete. With PSF,
+the CPU learns over time the relationship between loads and stores.
+If STLF typically occurs between a particular store and load, the CPU will
+remember this.
+
+In typical code, PSF provides a performance benefit by speculating on
+the load result and allowing later instructions to begin execution
+sooner than they otherwise would be able to.
+
+Causes of Incorrect PSF:
+
+Incorrect PSF predictions can occur due to two reasons.
+
+First, it is possible that the store/load pair had a dependency for a
+while but later stops having a dependency.  This can occur if the address
+of either the store or load changes during the execution of the program.
+
+The second source of incorrect PSF predictions can occur if there is an
+alias in the PSF predictor structure.  The PSF predictor tracks
+store-load pairs based on portions of their RIP. It is possible that a
+store-load pair which does have a dependency may alias in the predictor
+with another store-load pair which does not.
+
+This can result in incorrect speculation when the second store/load pair
+is executed.
+
+Security Analysis:
+
+Previous research has shown that when CPUs speculate on non-architectural
+paths it can lead to the potential of side channel attacks.
+In particular, programs that implement isolation, also known as
+‘sandboxing’, entirely in software may need to be concerned with incorrect
+CPU speculation as they can occur due to bad PSF predictions.
+
+Because PSF speculation is limited to the current program context,
+the impact of bad PSF speculation is very similar to that of
+Speculative Store Bypass (Spectre v4)
+
+Predictive Store Forwarding controls:
+There are two hardware control bits which influence the PSF feature:
+- MSR 48h bit 2 – Speculative Store Bypass (SSBD)
+- MSR 48h bit 7 – Predictive Store Forwarding Disable (PSFD)
+
+The PSF feature is disabled if either of these bits are set.  These bits
+are controllable on a per-thread basis in an SMT system. By default, both
+SSBD and PSFD are 0 meaning that the speculation features are enabled.
+
+While the SSBD bit disables PSF and speculative store bypass, PSFD only
+disables PSF.
+
+PSFD may be desirable for software which is concerned with the
+speculative behavior of PSF but desires a smaller performance impact than
+setting SSBD.
+
+Support for PSFD is indicated in CPUID Fn8000_0008 EBX[28].
+All processors that support PSF will also support PSFD.
+
+Ramakrishna Saripalli (5):
+  x86/cpufeatures: Define feature bits to support mitigation of PSF
+  x86/speculation: Implement support for PSFD detection and reporting
+  x86/speculation: Introduce SPEC_CTRL_MSR bit for PSFD
+  x86/speculation: Implement PSF mitigation support
+  x86/speculation: Add PSF mitigation kernel parameters
+
+ .../admin-guide/kernel-parameters.txt         |  45 +++++
+ arch/x86/include/asm/cpufeatures.h            |   4 +-
+ arch/x86/include/asm/msr-index.h              |   2 +
+ arch/x86/include/asm/nospec-branch.h          |   8 +
+ arch/x86/include/asm/spec-ctrl.h              |  12 ++
+ arch/x86/include/asm/thread_info.h            |   2 +
+ arch/x86/kernel/cpu/bugs.c                    | 191 ++++++++++++++++++
+ arch/x86/kernel/cpu/common.c                  |   6 +
+ arch/x86/kernel/process.c                     |  23 +++
+ include/linux/sched.h                         |  15 ++
+ include/uapi/linux/prctl.h                    |   2 +
+ 11 files changed, 309 insertions(+), 1 deletion(-)
+
+
+base-commit: 0e16f466004d7f04296b9676a712a32a12367d1f
+-- 
+2.25.1
+
