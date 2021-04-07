@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504F13578AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BAE3578AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhDGXwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 19:52:19 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33029 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhDGXwS (ORCPT
+        id S229662AbhDGX4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 19:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhDGX4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 19:52:18 -0400
-Received: by mail-io1-f70.google.com with SMTP id o1so146960iou.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 16:52:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=e/9KI2pt6RZT8NMLCpxHsidWT0O7BDfrY4oQWDeFxuQ=;
-        b=iVd7lobegKinBfI2KlY5/vCLaHhslRMqEpDoCmAOzuwAfKAZuxklzPo50i8bA3r3B5
-         udICdFXemeU8B8hoJkj1JxloXv/JT9P+21zq+FaAuPYFtoj8PiAF0kojhGEA7UyFKPwy
-         wrnKSX5U0WEk7YWMG5Qh8MAYeRVKHjRaMCdPKA9KnBK1BJIUmOLCpBOjd+rdxvi+hGoT
-         kbyLddPtuiscn3s6JG0WgOat52vWbZaiLQn4mvC+Eur3O+s1QbZe3lulwvmcF53udhWi
-         1IxbCNj7dPLDyvmRlbX2Bukeov/Qur3YYxlObElpfvhFKkJnpm1JoRePYfFa65IpZ7FY
-         AnCA==
-X-Gm-Message-State: AOAM533vdueN8nzpWLsEkFIsCEaVuVYxgi83jtGP5cUIrrI65P/PZxoU
-        1vnxL9FU0D2Rd/bMUyJV0XEGFec38QpmyOClU4H1ktFcx+JB
-X-Google-Smtp-Source: ABdhPJzNnxtrEADV1GZMbXPKRUV/9nzLx7VKnkMPGlLoRbvsPr1BXf06muwF7GGKqRb2WhUnzBUK8iATmDHjHgoLySa6iV56hK+e
+        Wed, 7 Apr 2021 19:56:31 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE43C061760;
+        Wed,  7 Apr 2021 16:56:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FG1WL4rwtz9sW5;
+        Thu,  8 Apr 2021 09:56:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617839777;
+        bh=MTgfTD37dIIpg7DZz7+hcC+ZtgH6yMpHA/avIuC/Zcw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oPH/IbQFnhcR0BrJDtqhNDMzw7vrERMsWfg4Ic4gK07Fe1QnuI0GCLaCqE1Ovl8G6
+         m7SoXc3H4nytgfjiJJAPMGfGTvrM3bl/HM9nooK60xr0rD/NVSvH335nupb/nMrn1S
+         ZmOUAJcQyXC5xSPS53ui2Dg0wJs6LQgfTc9j8xcGPu7/dp/3cyNWFkdZMOyR6lLan9
+         ihgDmQ2PLwqKhDnutG/VqAodlaYqTjTiNShrJWlACRbpMAy9PmdcNiBt7h4ID9z8ES
+         zz7Zl69q5yMuDHXy/ZhkABE5MFo47A0wFfOL4A1+OIQNxrD1Sd31n/+SdyrHYhS9op
+         jrGctSy5j78Ww==
+Date:   Thu, 8 Apr 2021 09:56:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the mvebu tree
+Message-ID: <20210408095612.71e8c56e@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a92:3644:: with SMTP id d4mr4896716ilf.53.1617839528408;
- Wed, 07 Apr 2021 16:52:08 -0700 (PDT)
-Date:   Wed, 07 Apr 2021 16:52:08 -0700
-In-Reply-To: <0ed14bc0-136d-e6e2-971b-513099864083@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000064fa3c05bf6a9ec9@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
-From:   syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.BZ40aP60LF.KgS6X1tV9Uo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/.BZ40aP60LF.KgS6X1tV9Uo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in kvm_wait
+Hi all,
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 1 PID: 8751 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 1 PID: 8751 Comm: syz-execprog Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: bf ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 50 f3 2f 04 00 74 01 c3 48 c7 c7 20 92 6b 89 c6 05 3f f3 2f 04 01 e8 77 2d bf ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0000:ffffc90000f1fa00 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88802b5f5d88 RCX: 0000000000000000
-RDX: ffff88802b5f54c0 RSI: ffffffff815c3df5 RDI: fffff520001e3f32
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bcb8e R11: 0000000000000000 R12: 0000000000000003
-R13: ffffed10056bebb1 R14: 0000000000000001 R15: ffff8880b9f35f40
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000454476 CR3: 0000000013f15000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- task_lock include/linux/sched/task.h:168 [inline]
- exit_mm kernel/exit.c:481 [inline]
- do_exit+0xa6f/0x2a60 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2150 kernel/signal.c:2781
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ca23
-Code: Unable to access opcode bytes at RIP 0x46c9f9.
-RSP: 002b:00007ffe5318bb08 EFLAGS: 00000286 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00000000016b3d60 RCX: 000000000046ca23
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000016b3ea8
-RBP: 00007ffe5318bb50 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000286 R12: 0000000000000003
-R13: 00000000016b39a0 R14: 0000000000000005 R15: 00000000000000aa
+After merging the mvebu tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
+arch/arm/boot/dts/armada-385-atl-x530.dts:171.14-199.4: Warning (spi_bus_re=
+g): /soc/spi@10680/spi-flash@0: SPI bus unit address format error, expected=
+ "1"
 
-Tested on:
+Introduced by commit
 
-commit:         1507b68f io_uring: don't quiesce reg buffer
-git tree:       https://github.com/isilence/linux.git syz_test
-console output: https://syzkaller.appspot.com/x/log.txt?x=1008508ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=86318203e865a02b
-dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
-compiler:       
+  c6dfc019c239 ("ARM: dts: mvebu: Add device tree for ATL-x530 Board")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.BZ40aP60LF.KgS6X1tV9Uo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBuRpwACgkQAVBC80lX
+0GywnggAksjzjfhKSK9pbTfcCSBHWD/bM5mG1UsqBDi8sgfE/dk2PV+oDmivI7An
+0PEs6jy6u7yaFEwGgfmD05VHOMH6aHs81Pqq7WSDYe78Oceekij73ZtL17Q192K9
+Y8v0LhWW6h6N5Ydl6o2BFNMSOMAA7Bc/sOu8xvV84Zb+TlOKbe6A4DNTS9CwC+vc
+U1tcUC/akpHPEa2Tn2qQHc4mpwP53c/LNnipx+mo+0UFjToQhRYThurhFXjrPDGY
+bHdC+ou7A5sr4YusTfM1kx2IYggW7BkrFAZlXDvyWDYV683Dt3FLO5uCf/nvwe1p
+JeJlUckewCwIHiMwPl4+wuDKxuVcZA==
+=o4Ou
+-----END PGP SIGNATURE-----
+
+--Sig_/.BZ40aP60LF.KgS6X1tV9Uo--
