@@ -2,199 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B3A3561CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F22C3561D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348273AbhDGDRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:17:11 -0400
-Received: from m12-17.163.com ([220.181.12.17]:59425 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230073AbhDGDRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:17:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mGN4S
-        3cp1MHI+oL9a6SpuEW+SWIbAE/tY+wbQ+oANG4=; b=S9b5ZTwzntMnSsAmQ/QIs
-        srzlBT/Vv8lg17IS1IrNxCgrnmCy61MgHfnhDw6+pfcbmNVBr9yxBgKz0gL8x9zZ
-        /avp3QJ/pLM4x5wSapXsXnkbjeS/RfEmG609GW5jha0NX5jjTIS+EQ+QhZveGzu0
-        4X0rmr/3gSqyL7uT0GOBi4=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.52.2])
-        by smtp13 (Coremail) with SMTP id EcCowAC3v5cXJG1gJoIsuA--.41782S2;
-        Wed, 07 Apr 2021 11:16:41 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     davem@davemloft.net, rdunlap@infradead.org, unixbhaskar@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc/fdp: remove unnecessary assignment and label
-Date:   Wed,  7 Apr 2021 11:16:38 +0800
-Message-Id: <20210407031638.4416-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
+        id S1348292AbhDGDSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:18:54 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39764 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230073AbhDGDSx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:18:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUklsn3_1617765508;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUklsn3_1617765508)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 07 Apr 2021 11:18:43 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] staging: rtl8723bs: remove unused variable
+Date:   Wed,  7 Apr 2021 11:18:19 +0800
+Message-Id: <1617765499-65626-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAC3v5cXJG1gJoIsuA--.41782S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWFW8tFy5AFWxJw4fAr1UWrg_yoWrXFW8pr
-        WYgasxtr1kJr1xGrnayrn8AF1F9r4fCrZrGrW8ta97A3Way34qyFWkKFySvFWfurZ8Gr17
-        Aw40qF1rWF1Utw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jd73kUUUUU=
-X-Originating-IP: [119.137.52.2]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiERltsV7+3gaY3AAAso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Fix the following gcc warning:
 
-In function fdp_nci_patch_otp and fdp_nci_patch_ram，many goto
-out statements are used, and out label just return variable r.
-in some places,just jump to the out label, and in other places,
-assign a value to the variable r,then jump to the out label.
-It is unnecessary, we just use return sentences to replace goto
-sentences and delete out label.
+drivers/staging/rtl8723bs/core/rtw_ieee80211.c:657:15: warning: variable
+‘sec_idx’ set but not used [-Wunused-but-set-variable].
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/nfc/fdp/fdp.c | 42 ++++++++++++++++--------------------------
- 1 file changed, 16 insertions(+), 26 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
-index ee2baa2b..fe0719e 100644
---- a/drivers/nfc/fdp/fdp.c
-+++ b/drivers/nfc/fdp/fdp.c
-@@ -344,7 +344,7 @@ static int fdp_nci_patch_otp(struct nci_dev *ndev)
- 	int r = 0;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+index be4cffc..df00a79 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+@@ -654,7 +654,7 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
  
- 	if (info->otp_version >= info->otp_patch_version)
--		goto out;
-+		return r;
+ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
+ {
+-	u8 authmode, sec_idx, i;
++	u8 authmode, i;
+ 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
+ 	uint	cnt;
  
- 	info->setup_patch_sent = 0;
- 	info->setup_reset_ntf = 0;
-@@ -353,19 +353,17 @@ static int fdp_nci_patch_otp(struct nci_dev *ndev)
- 	/* Patch init request */
- 	r = fdp_nci_patch_cmd(ndev, NCI_PATCH_TYPE_OTP);
- 	if (r)
--		goto out;
-+		return r;
+@@ -662,13 +662,11 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
  
- 	/* Patch data connection creation */
- 	conn_id = fdp_nci_create_conn(ndev);
--	if (conn_id < 0) {
--		r = conn_id;
--		goto out;
--	}
-+	if (conn_id < 0)
-+		return conn_id;
+ 	cnt = (_TIMESTAMP_ + _BEACON_ITERVAL_ + _CAPABILITY_);
  
- 	/* Send the patch over the data connection */
- 	r = fdp_nci_send_patch(ndev, conn_id, NCI_PATCH_TYPE_OTP);
- 	if (r)
--		goto out;
-+		return r;
+-	sec_idx = 0;
+-
+ 	while (cnt < in_len) {
+ 		authmode = in_ie[cnt];
  
- 	/* Wait for all the packets to be send over i2c */
- 	wait_event_interruptible(info->setup_wq,
-@@ -377,13 +375,12 @@ static int fdp_nci_patch_otp(struct nci_dev *ndev)
- 	/* Close the data connection */
- 	r = nci_core_conn_close(info->ndev, conn_id);
- 	if (r)
--		goto out;
-+		return r;
+ 		if ((authmode == WLAN_EID_VENDOR_SPECIFIC) && (!memcmp(&in_ie[cnt+2], &wpa_oui[0], 4))) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n rtw_get_wpa_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
++				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n in_ie[cnt+1]+2 =%d\n", in_ie[cnt+1]+2));
  
- 	/* Patch finish message */
- 	if (fdp_nci_patch_cmd(ndev, NCI_PATCH_TYPE_EOT)) {
- 		nfc_err(dev, "OTP patch error 0x%x\n", r);
--		r = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
+ 				if (wpa_ie) {
+ 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+@@ -684,7 +682,7 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
+ 				cnt += in_ie[cnt+1]+2;  /* get next */
+ 		} else {
+ 			if (authmode == WLAN_EID_RSN) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n get_rsn_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
++				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n in_ie[cnt+1]+2 =%d\n", in_ie[cnt+1]+2));
  
- 	/* If the patch notification didn't arrive yet, wait for it */
-@@ -393,8 +390,7 @@ static int fdp_nci_patch_otp(struct nci_dev *ndev)
- 	r = info->setup_patch_status;
- 	if (r) {
- 		nfc_err(dev, "OTP patch error 0x%x\n", r);
--		r = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/*
-@@ -403,7 +399,6 @@ static int fdp_nci_patch_otp(struct nci_dev *ndev)
- 	 */
- 	wait_event_interruptible(info->setup_wq, info->setup_reset_ntf);
- 
--out:
- 	return r;
- }
- 
-@@ -415,7 +410,7 @@ static int fdp_nci_patch_ram(struct nci_dev *ndev)
- 	int r = 0;
- 
- 	if (info->ram_version >= info->ram_patch_version)
--		goto out;
-+		return r;
- 
- 	info->setup_patch_sent = 0;
- 	info->setup_reset_ntf = 0;
-@@ -424,19 +419,17 @@ static int fdp_nci_patch_ram(struct nci_dev *ndev)
- 	/* Patch init request */
- 	r = fdp_nci_patch_cmd(ndev, NCI_PATCH_TYPE_RAM);
- 	if (r)
--		goto out;
-+		return r;
- 
- 	/* Patch data connection creation */
- 	conn_id = fdp_nci_create_conn(ndev);
--	if (conn_id < 0) {
--		r = conn_id;
--		goto out;
--	}
-+	if (conn_id < 0)
-+		return conn_id;
- 
- 	/* Send the patch over the data connection */
- 	r = fdp_nci_send_patch(ndev, conn_id, NCI_PATCH_TYPE_RAM);
- 	if (r)
--		goto out;
-+		return r;
- 
- 	/* Wait for all the packets to be send over i2c */
- 	wait_event_interruptible(info->setup_wq,
-@@ -448,13 +441,12 @@ static int fdp_nci_patch_ram(struct nci_dev *ndev)
- 	/* Close the data connection */
- 	r = nci_core_conn_close(info->ndev, conn_id);
- 	if (r)
--		goto out;
-+		return r;
- 
- 	/* Patch finish message */
- 	if (fdp_nci_patch_cmd(ndev, NCI_PATCH_TYPE_EOT)) {
- 		nfc_err(dev, "RAM patch error 0x%x\n", r);
--		r = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/* If the patch notification didn't arrive yet, wait for it */
-@@ -464,8 +456,7 @@ static int fdp_nci_patch_ram(struct nci_dev *ndev)
- 	r = info->setup_patch_status;
- 	if (r) {
- 		nfc_err(dev, "RAM patch error 0x%x\n", r);
--		r = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/*
-@@ -474,7 +465,6 @@ static int fdp_nci_patch_ram(struct nci_dev *ndev)
- 	 */
- 	wait_event_interruptible(info->setup_wq, info->setup_reset_ntf);
- 
--out:
- 	return r;
- }
- 
+ 				if (rsn_ie) {
+ 				memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt+1]+2);
 -- 
-1.9.1
-
+1.8.3.1
 
