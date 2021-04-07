@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0514D356ABB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84A6356AC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347214AbhDGLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235387AbhDGLBb (ORCPT
+        id S1351740AbhDGLCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:02:53 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:53568 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237959AbhDGLCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:01:31 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A67C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 04:01:22 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id j206so11021715ybj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=owbm4A4IMG4sqcQv2/3Uo7ClgudJx95v6vpnM66KkFU=;
-        b=bUvE1/1N/l5voJA7Ui3fX+RNTz+y9x7ktpDuGl3OkWStJMPb/aONqmGwCO9LoIExwR
-         mQXsVu6tgdRhG+/Pj4Bl8sgK1yB5on+G2XhJjEMfhbgRHC2+vbiArymUgLdlBg88z509
-         7KA4JWCsgttHOFd5qvkTuwi2yUGggYrggfYNc8QBzPkTdVJZl3QWmzWt9D98oZU9KRfy
-         AnColcNT49urXCRyRlTvU5UU0f0EM9VFqGMX3zv2UkNsGOGzKWUqilsTc+qdWoc5SWby
-         HOCI3CO3/n4tnEPOCyYjKlTmFR8k+guADRXO4VTHFnJ6dL1zugW+hqhnjFqnE5fbTEsm
-         +FzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=owbm4A4IMG4sqcQv2/3Uo7ClgudJx95v6vpnM66KkFU=;
-        b=V1tZ2PsScooOvxPuQ6ehxFiGZ/gGel0d8N4zoZPK1onUeApF0Fs4044aUEJUps3r1B
-         S1K2Y8sUxq7Gp6cqTtHTAoIjvZEst7hDGENgSu33hM6LNO8KQ/hVN2fEOmLQd2j4NX9E
-         FLmx9+nC9rQ6Wj3xCZHRLSZAxn17SvNZAZERohhtuE6q4H1rTfDg1Dbyzxx+TIxmL5N2
-         22cMDTEFTPORFrsNyf79Q2LkP50WRuJVqatL0fo1xTmC1nosrmrVmhoytlzUbkPpvRdQ
-         K71HqkBY6vdKfvHXqXv4SxHTQZ+nLLLI6j66aUWuMomm2HFYtPc1ui+gFCZ1kUjMKlKP
-         L4Jw==
-X-Gm-Message-State: AOAM530tASRYO6RgUamiDYQuS/EiW0DUAphjvi1X6mzvS7rdbfxUd28i
-        XDwv6/yhYZNxF4Pm11grgwwmDM4w3pQY4Z8WUTOxWg==
-X-Google-Smtp-Source: ABdhPJwHB1FrhvewWwbmCgUrRJH/CaeA5IOVNNHvijJ81c60pRrgw07MabyDyroA83YBMCs7NGUtqGgmaPfc49fUvH8=
-X-Received: by 2002:a5b:34a:: with SMTP id q10mr3712454ybp.224.1617793281311;
- Wed, 07 Apr 2021 04:01:21 -0700 (PDT)
+        Wed, 7 Apr 2021 07:02:50 -0400
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 137B24Tv023666;
+        Wed, 7 Apr 2021 20:02:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 137B24Tv023666
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617793325;
+        bh=/AJ00JPGT/P/0HrVBZa/+phO7AM3OfqEyfNeG+0qOho=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rh+Rj4Y1wZlL3vsup52LPEPJsXhPFCQI5D13W2BIUr7AzsTE3AaR8KnVMathvLBmF
+         WNkdzE5gRwCFQ8oDzBpwXTn/r6NePjuyWWqgphgMxGEC6CNe3Tw1TyUXR654zOrN7I
+         rarVCLoKnjLgPcNvPBq5lRSMN1vVIdoxVzUb+7+NS1TPibFY0fYBOZzAPpR4S89gCN
+         jWoYNbF7V8V/Z18RgK3KGupEtWlVfq/cB+6ed0dxt9VEmIbKMWziNRbZD6MhuhW4Av
+         DEY62h9xLoWbzPxxMtwFtoXGJwqLr4kYLR1oibfNd8V5krCHQADv0L+oCwr/Zqbter
+         5XOyuLUm8loXQ==
+X-Nifty-SrcIP: [209.85.214.174]
+Received: by mail-pl1-f174.google.com with SMTP id p10so4009719pld.0;
+        Wed, 07 Apr 2021 04:02:05 -0700 (PDT)
+X-Gm-Message-State: AOAM532Vcjc16M9DfGRmwGyYBGLfxOy4mJguPzc1ukb+S2RItIJYRFBe
+        5vUSEFne78T1zabPdIHbz18D0h7TRqHGb0SOt5o=
+X-Google-Smtp-Source: ABdhPJxX64blu3IjkJJ4l2Qdlp7CBcg26GG4ZfbXOUjpMXipRF3l/0e8VzCr9jb0GHAPl9qew8Vr1RVBgHaRtYofzFA=
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2726619pjb.87.1617793324371;
+ Wed, 07 Apr 2021 04:02:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329195238.9455-1-acz@semihalf.com> <1c086b9e-d5c2-6e8d-1d81-748935b0dd64@intel.com>
- <20210330154957.GU2542@lahna.fi.intel.com>
-In-Reply-To: <20210330154957.GU2542@lahna.fi.intel.com>
-From:   Angela Czubak <acz@semihalf.com>
-Date:   Wed, 7 Apr 2021 13:01:10 +0200
-Message-ID: <CAB4aORU9N9684j4eqKPUx7s5NrfO_37=EmR3JoSPaA4RvY87OQ@mail.gmail.com>
-Subject: Re: [PATCH] resource: Prevent irqresource_disabled() from erasing flags
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        akpm@linux-foundation.org, john.garry@huawei.com,
-        linux-kernel@vger.kernel.org, upstream@semihalf.com,
-        Dmitry Torokhov <dtor@chromium.org>,
-        linux-acpi <linux-acpi@intel.com>, rafael@kernel.org
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-4-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-4-gregkh@linuxfoundation.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 20:01:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARm=SQyue3mpYjLs=RFG087_SpyM=YZuCOmeyya4ppmUw@mail.gmail.com>
+Message-ID: <CAK7LNARm=SQyue3mpYjLs=RFG087_SpyM=YZuCOmeyya4ppmUw@mail.gmail.com>
+Subject: Re: [PATCH 03/20] kbuild: scripts/install.sh: provide a "install" function
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 5:50 PM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
+On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi,
+> Instead of open-coding the "test for file, if present make a backup,
+> then copy the file to the new location" in multiple places, make a
+> single function, install(), to do all of this in one place.
 >
-> On Tue, Mar 30, 2021 at 05:09:42PM +0200, Rafael J. Wysocki wrote:
-> > On 3/29/2021 9:52 PM, Angela Czubak wrote:
-> > > Do not overwrite flags as it leads to erasing triggering and polarity
-> > > information which might be useful in case of hard-coded interrupts.
-> > > This way the information can be read later on even though mapping to
-> > > APIC domain failed.
-> > >
-> > > Signed-off-by: Angela Czubak <acz@semihalf.com>
-> > > ---
-> > > Some Chromebooks use hard-coded interrupts in their ACPI tables.
-> > > This is an excerpt as dumped on Relm:
-> > >
-> > > ...
-> > >              Name (_HID, "ELAN0001")  // _HID: Hardware ID
-> > >              Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
-> > >              Name (_UID, 0x05)  // _UID: Unique ID
-> > >              Name (ISTP, Zero)
-> > >              Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> > >              {
-> > >                  Name (BUF0, ResourceTemplate ()
-> > >                  {
-> > >                      I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
-> > >                          AddressingMode7Bit, "\\_SB.I2C1",
-> > >                          0x00, ResourceConsumer, , Exclusive,
-> > >                          )
-> > >                      Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
-> > >                      {
-> > >                          0x000000B8,
-> > >                      }
-> > >                  })
-> > >                  Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */
-> > >              }
-> > > ...
-> > >
-> > > This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
-> > > to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
-> > > fails and irqresource_disabled() is issued, which leads to erasing triggering
-> > > and polarity information.
-> > > If that function added its flags instead of overwriting them the correct IRQ
-> > > type would be set even for the hard-coded interrupts, which allows device driver
-> > > to retrieve it.
-> > > Please, let me know if this kind of modification is acceptable.
-> >
-> > From the quick look it should not be problematic, but it needs to be checked
-> > more carefully.
-> >
-> > Mika, what do you think?
+> Note, this does change the default x86 kernel map file saved name from
+> "System.old" to "System.map.old".  This brings it into unification with
+> the other architectures as to what they call their backup file for the
+> kernel map file.  As this is a text file, and nothing parses this from a
+> backup file, there should not be any operational differences.
 >
-> I think it makes sense. We still set IORESOURCE_DISABLED unconditionally
-> so this should not cause issues. In theory at least :)
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  scripts/install.sh | 26 +++++++++++++++-----------
+>  1 file changed, 15 insertions(+), 11 deletions(-)
 >
-Is there anything else you would need me to do regarding the patch?
-I suppose there are more platforms that could benefit from not erasing
-the flags, so if this patch is fit for upstream, can we continue the
-process?
+> diff --git a/scripts/install.sh b/scripts/install.sh
+> index c183d6ddd00c..af36c0a82f01 100644
+> --- a/scripts/install.sh
+> +++ b/scripts/install.sh
+> @@ -27,6 +27,19 @@ verify () {
+>         fi
+>  }
+>
+> +install () {
+> +       install_source=${1}
+> +       install_target=${2}
 
-> > >   include/linux/ioport.h | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-> > > index 55de385c839cf..647744d8514e0 100644
-> > > --- a/include/linux/ioport.h
-> > > +++ b/include/linux/ioport.h
-> > > @@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
-> > >   {
-> > >     res->start = irq;
-> > >     res->end = irq;
-> > > -   res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
-> > > +   res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
-> > >   }
-> > >   extern struct address_space *iomem_get_mapping(void);
-> >
+
+
+You double-quoted all variables in 02/20.
+
+For consistency and safety here,
+
+           install_source="${1}"
+
+or
+
+           install_source="$1"
+
+
+so that it will work even if $1 contains spaces.
+
+
+
+
+
+> +
+> +       echo "installing '${install_source}' to '${install_target}'"
+> +
+> +       # if the target is already present, move it to a .old filename
+> +       if [ -f "${install_target}" ]; then
+> +               mv "${install_target}" "${install_target}".old
+> +       fi
+> +       cat "${install_source}" > "${install_target}"
+> +}
+> +
+>  # Make sure the files actually exist
+>  verify "$2"
+>  verify "$3"
+> @@ -37,17 +50,8 @@ if [ -x ~/bin/"${INSTALLKERNEL}" ]; then exec ~/bin/"${INSTALLKERNEL}" "$@"; fi
+>  if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
+>
+>  # Default install - same as make zlilo
+> -
+> -if [ -f "$4"/vmlinuz ]; then
+> -       mv "$4"/vmlinuz "$4"/vmlinuz.old
+> -fi
+> -
+> -if [ -f "$4"/System.map ]; then
+> -       mv "$4"/System.map "$4"/System.old
+> -fi
+> -
+> -cat "$2" > "$4"/vmlinuz
+> -cp "$3" "$4"/System.map
+> +install "$2" "$4"/vmlinuz
+> +install "$3" "$4"/System.map
+>
+>  if [ -x /sbin/lilo ]; then
+>         /sbin/lilo
+> --
+> 2.31.1
+>
+
+
+--
+Best Regards
+
+Masahiro Yamada
