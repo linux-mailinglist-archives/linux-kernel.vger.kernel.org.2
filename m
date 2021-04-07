@@ -2,92 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E356E3560C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A11C3560D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243263AbhDGB2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:28:23 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:50102 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhDGB2R (ORCPT
+        id S1347745AbhDGBjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:39:09 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:16967 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343675AbhDGBjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:28:17 -0400
-Received: from localhost (unknown [192.168.167.139])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 9237DF356A;
-        Wed,  7 Apr 2021 09:28:03 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P6247T139731639179008S1617758871505773_;
-        Wed, 07 Apr 2021 09:28:03 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1bfbef78173915d5cc4e86b5dcb647c6>
-X-RL-SENDER: songqiang@uniontech.com
-X-SENDER: songqiang@uniontech.com
-X-LOGIN-NAME: songqiang@uniontech.com
-X-FST-TO: christian.koenig@amd.com
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   songqiang <songqiang@uniontech.com>
-To:     christian.koenig@amd.com, ray.huang@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        songqiang <songqiang@uniontech.com>
-Subject: [PATCH] drivers/gpu/drm/ttm/ttm_page_allo.c: adjust ttm pages refcount fix the bug: Feb  6 17:13:13 aaa-PC kernel: [  466.271034] BUG: Bad page state in process blur_image  pfn:7aee2 Feb  6 17:13:13 aaa-PC kernel: [  466.271037] page:980000025fca4170 count:0 mapcount:0 mapping:980000025a0dca60 index:0x0 Feb  6 17:13:13 aaa-PC kernel: [  466.271039] flags: 0x1e01fff000000() Feb  6 17:13:13 aaa-PC kernel: [  466.271042] raw: 0001e01fff000000 0000000000000100 0000000000000200 980000025a0dca60 Feb  6 17:13:13 aaa-PC kernel: [  466.271044] raw: 0000000000000000 0000000000000000 00000000ffffffff Feb  6 17:13:13 aaa-PC kernel: [  466.271046] page dumped because: non-NULL mapping Feb  6 17:13:13 aaa-PC kernel: [  466.271047] Modules linked in: bnep fuse bluetooth ecdh_generic sha256_generic cfg80211 rfkill vfat fat serio_raw uio_pdrv_genirq binfmt_misc ip_tables amdgpu chash radeon r8168 loongson gpu_sched Feb  6 17:13:13 aaa-PC kernel: [  466.271059] CPU: 3 PID: 9554 Comm: 
- blur_image Tainted: G    B             4.19.0-loongson-3-desktop #3036 Feb  6 17:13:13 aaa-PC kernel: [  466.271061] Hardware name: Haier Kunlun-LS3A4000-LS7A-desktop/Kunlun-LS3A4000-LS7A-desktop, BIOS Kunlun-V4.0.12V4.0 LS3A4000 03/19/2020 Feb  6 17:13:13 aaa-PC kernel: [  466.271063] Stack : 000000000000007b 000000007400cce0 0000000000000000 0000000000000007 Feb  6 17:13:13 aaa-PC kernel: [  466.271067]         0000000000000000 0000000000000000 0000000000002a82 ffffffff8202c910 Feb  6 17:13:13 aaa-PC kernel: [  466.271070]         0000000000000000 0000000000002a82 0000000000000000 ffffffff81e20000 Feb  6 17:13:13 aaa-PC kernel: [  466.271074]         0000000000000000 ffffffff8021301c ffffffff82040000 6e754b20534f4942 Feb  6 17:13:13 aaa-PC kernel: [  466.271078]         ffff000000000000 0000000000000000 000000007400cce0 0000000000000000 Feb  6 17:13:13 aaa-PC kernel: [  466.271082]         9800000007155d40 ffffffff81cc5470 0000000000000005 6db6db6db6db0000 Feb  6 17:13:13 
- aaa-PC kernel: [  466.271086]         0000000000000003 fffffffffffffffb 0000000000006000 98000002559f4000 Feb  6 17:13:13 aaa-PC kernel: [  466.271090]         980000024a448000 980000024a44b7f0 9800000007155d50 ffffffff819f5158 Feb  6 17:13:13 aaa-PC kernel: [  466.271094]         0000000000000000 0000000000000000 0000000000000000 0000000000000000 Feb  6 17:13:13 aaa-PC kernel: [  466.271097]         9800000007155d40 ffffffff802310c4 ffffffff81e70000 ffffffff819f5158 Feb  6 17:13:13 aaa-PC kernel: [  466.271101]         ... Feb  6 17:13:13 aaa-PC kernel: [  466.271103] Call Trace: Feb  6 17:13:13 aaa-PC kernel: [  466.271107] [<ffffffff802310c4>] show_stack+0x44/0x1c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271110] [<ffffffff819f5158>] dump_stack+0x1d8/0x240 Feb  6 17:13:13 aaa-PC kernel: [  466.271113] [<ffffffff80491c10>] bad_page+0x210/0x2c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271116] [<ffffffff804931c8>] free_pcppages_bulk+0x708/0x900 Feb  6 17:13:13 aaa-PC kernel: [  46
- 6.271119] [<ffffffff804980cc>] free_unref_page_list+0x1cc/0x2c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271122] [<ffffffff804ad2c8>] release_pages+0x648/0x900 Feb  6 17:13:13 aaa-PC kernel: [  466.271125] [<ffffffff804f3b48>] tlb_flush_mmu_free+0x88/0x100 Feb  6 17:13:13 aaa-PC kernel: [  466.271128] [<ffffffff804f8a24>] zap_pte_range+0xa24/0x1480 Feb  6 17:13:13 aaa-PC kernel: [  466.271132] [<ffffffff804f98b0>] unmap_page_range+0x1f0/0x500 Feb  6 17:13:13 aaa-PC kernel: [  466.271135] [<ffffffff804fa054>] unmap_vmas+0x154/0x200 Feb  6 17:13:13 aaa-PC kernel: [  466.271138] [<ffffffff8051190c>] exit_mmap+0x20c/0x380 Feb  6 17:13:13 aaa-PC kernel: [  466.271142] [<ffffffff802bb9c8>] mmput+0x148/0x300 Feb  6 17:13:13 aaa-PC kernel: [  466.271145] [<ffffffff802c80d8>] do_exit+0x6d8/0x1900 Feb  6 17:13:13 aaa-PC kernel: [  466.271148] [<ffffffff802cb288>] do_group_exit+0x88/0x1c0 Feb  6 17:13:13 aaa-PC kernel: [  466.271151] [<ffffffff802cb3d8>] sys_exit_group+0x18/0x40 Feb  6 17
- :13:13 aaa-PC kernel: [  466.271155] [<ffffffff8023f954>] syscall_common+0x34/0xa4
-Date:   Wed,  7 Apr 2021 09:27:46 +0800
-Message-Id: <20210407012746.16082-1-songqiang@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 6 Apr 2021 21:39:07 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210407013855epoutp0464ad5380d7a8ade3a89f52547f1411b5~zb7oAI9zc1039310393epoutp048
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 01:38:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210407013855epoutp0464ad5380d7a8ade3a89f52547f1411b5~zb7oAI9zc1039310393epoutp048
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617759535;
+        bh=/IatyjDjYBtgiMtNZkl+IbeRKfFDmHQeIeY3Cf+rcb8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IHkWLGibQZx7O1cy4BJ53kZWFwtL1H/hiaLLLhKjKEDxze1nbKck7gj8WaKHGYtaA
+         gjVq1NN1vKglnyPgYHkwvEQfc0Nt0moPa54TPMLQ6Wb5CE0e7vQBk92mgtjBgPd5xm
+         mMAB16HRAoVcKDr2Aux9Va5kC6QBC3nb3zAcVYiw=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210407013854epcas1p2d954138f2ce91b2d10cba77a2f489aba~zb7nL81eV0994509945epcas1p2D;
+        Wed,  7 Apr 2021 01:38:54 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.163]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FFRrC4Lqkz4x9Px; Wed,  7 Apr
+        2021 01:38:51 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9C.90.07927.B2D0D606; Wed,  7 Apr 2021 10:38:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210407013850epcas1p2d305f138c9fa1431abba1ec44a382de9~zb7jdf21L0345603456epcas1p2_;
+        Wed,  7 Apr 2021 01:38:50 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210407013850epsmtrp1ad9ace988d6ccbcbb5b99af50a640628~zb7jcYBhD3224532245epsmtrp1G;
+        Wed,  7 Apr 2021 01:38:50 +0000 (GMT)
+X-AuditID: b6c32a35-9bbff70000011ef7-ed-606d0d2bba2c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B1.4F.33967.A2D0D606; Wed,  7 Apr 2021 10:38:50 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210407013850epsmtip2d159c3adfda11c8f0222b518b8b598ec~zb7jMao0u2078720787epsmtip2R;
+        Wed,  7 Apr 2021 01:38:50 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     bvanassche@acm.org
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
+        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [RESEND PATCH v5 2/2] bio: add limit_bio_size sysfs
+Date:   Wed,  7 Apr 2021 10:21:17 +0900
+Message-Id: <20210407012117.21122-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <7c8d9787-f0eb-9ef1-6ebf-f383c27b599a@acm.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xbVRzHPfe2txewenkIJ8VIV4cTGNBSyo5aDGaL3IUlVOcw4gxUuAGk
+        r/VS4kjmyIqMMcYgqHMMGNkYmA7TpQMsIA7bMEDZlCEwIeOhm/UFbCCPTcgsvRD57/f4/M43
+        3985h8T95gkRmaPLY4w6tUZCePPanGHRkRFCbbq0oV2EaixtAF2+c5pAn91/iKOPjy9hyHzR
+        SqDvKy5gqOzuMT5aK53A0OI0i7rGItBQRw2BHFVmDJ25WoOjkckBAXJODPPQdEMljm72z/NR
+        3a8J6FFTD0BzK6MC9J29CkfWrodEQiA99FMSXWmeFdDt1XcE9NUvwumhGybaZjlB0NdqmwX0
+        3DfDBF3eYgH0gu05+nj3SUzlk6pRZjPqTMYoZnQZ+swcXVa8JGl/2u40RZxUFil7Ce2SiHVq
+        LRMv2bNPFfl6jsbtVCLOV2tM7pJKzbKS6FeVRr0pjxFn69m8eAljyNQYZFJDFKvWsiZdVlSG
+        XvuyTCqNUbjJdE12WWMj3zAX8uGD/l5QCMpFpcCLhFQsHHBNEKXAm/Sj7ADe7Jvlcck8gFes
+        LRvJEoCda928zZHx6ycEXKMLQOdKHeCSBQAnmhz4OkVQO2H5zBixHgdQgXDonyUPhFPFPDhW
+        NOJp+FMJcO1Sm2eAR4XCxcs2T11IvQJPltZvyIXA1ckyD+Plrve3OPkc4wv7z971MLibMbee
+        wzn+MQk/cam4eA+cqnVunOMP/+xtEXCxCP5xuthjAVInATQXnwdcUgFgg6sR4yg5nF9YcDdI
+        t0IYtHZEc+VtsP3fWsAJPwVnF8v46wikhLCk2I9DtsOBokl8U8v1ZTvGITT83CXhllUO4Oq1
+        K6ACiKu32KneYqf6f+F6gFtAIGNgtVkMKzPItt6xDXgef7jCDipn7kc5AEYCB4AkLgkQ2k/l
+        pvsJM9WHCxijPs1o0jCsAyjcy67ERc9k6N2/R5eXJlPEyOVyFBu3K04hlwQJ35dOpflRWeo8
+        JpdhDIxxcw4jvUSF2MHRS8Nrdc9L8x3KwrjXfJffHsltqNWtFYwWBE+/9+Nq8qfdZ4uW6irI
+        MPk+OUoxHVoZO9JKawcfVGlMQYS1z+ElfGM89UbnEz3vJq5GNoNhKxP8VvO5F7qSQ/aHHghd
+        +WDHcm5sqlK3m/yLZJRFnfe+zSnpONTnvK0ctNh+7/rtTET93ikf9GJVAsZcaG2Kf2d7kC3Z
+        fluags3k5HerdgzeEh49Ii65lR4zyMYkPVoOOuCK+fr806co5PMDH477+v89mdKiPGy+J0oK
+        SGz8JTE47LHu4vWU5GOdQT0fLR4c+dk+N9P65LL3zp43eXsrJ3D1s0r/bEtCLygu+gqojo4t
+        SHhstloWjhtZ9X92Mj1XhQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWy7bCSvK4Wb26CweEDhhZzVm1jtFh9t5/N
+        YtqHn8wWre3fmCyaF69nszg9YRGTRc+TJlaLv133mCy+Piy22HtL2+LyrjlsFocmNzNZTN88
+        h9ni2v0z7BaH711lsXi4ZCKzxbmTn1gt5j12sPi1/Cijxfsf19ktTu2YzGyxfu9PNgcxj8tX
+        vD0mNr9j99g56y67x+YVWh6Xz5Z6bFrVyeaxf+4ado/3+66yefRtWcXo8XmTnEf7gW6mAO4o
+        LpuU1JzMstQifbsEroyeZctYC97LV3w8eZyxgbFPqouRk0NCwETi9rFO9i5GLg4hgd2MEtu3
+        LGOBSEhJHD/xlrWLkQPIFpY4fLgYouYjo8TKg6+ZQGrYBHQk+t7eYgOxRQTEJC5/+cYIUsQs
+        sIBF4uDOE+wgCWEBB4m/S7cxg9gsAqoSX1dvAmvgFbCW6O5aALVMXuLP/R6wGk6g+Mkth1lB
+        bCEBK4n+7g8sEPWCEidnPgGzmYHqm7fOZp7AKDALSWoWktQCRqZVjJKpBcW56bnFhgWGeanl
+        esWJucWleel6yfm5mxjB0amluYNx+6oPeocYmTgYDzFKcDArifDu6M1OEOJNSaysSi3Kjy8q
+        zUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoHJSlo+xEAnb92VW9lvdxz4tyHE
+        eNrG/28u/O6ZtuTDimIVvRlym73Lj8dwyf/W2nMr+UKr8apn3sce38xwD34fEFZ7q9TdVewe
+        h1/DsakaCTMTz0yy7F0UXLGmjjP4TNbNi9Onz7HXejf3vuE6Rb8jGqZXyn0f/2720lbc2PR5
+        WRv3QlOLK/uXfZujVata9fVrctXch0eTxO1rJ/rMnCM6pyynYNondkuJ9puGgaJySxMdzl70
+        22DqOVezcWnTt70vw8qTNzFPlX63d86iG4aybp+vflrVK3rYx/v4at3XyspHN24P8Fvo/mva
+        0tZLxeLz9m99wHRHf8X13ueX5z02ZT6oymrMvHcDF1/6e7U7jkosxRmJhlrMRcWJAGe86XY9
+        AwAA
+X-CMS-MailID: 20210407013850epcas1p2d305f138c9fa1431abba1ec44a382de9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210407013850epcas1p2d305f138c9fa1431abba1ec44a382de9
+References: <7c8d9787-f0eb-9ef1-6ebf-f383c27b599a@acm.org>
+        <CGME20210407013850epcas1p2d305f138c9fa1431abba1ec44a382de9@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: songqiang <songqiang@uniontech.com>
----
- drivers/gpu/drm/ttm/ttm_page_alloc.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+> On 3/16/21 12:44 AM, Changheun Lee wrote:
+> > Add limit_bio_size block sysfs node to limit bio size.
+> > Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
+> > And bio max size will be limited by queue max sectors via
+> > QUEUE_FLAG_LIMIT_BIO_SIZE set.
+> > 
+> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-block | 10 ++++++++++
+> >  Documentation/block/queue-sysfs.rst   |  7 +++++++
+> >  block/blk-sysfs.c                     |  3 +++
+> >  3 files changed, 20 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-block b/Documentation/ABI/testing/sysfs-block
+> > index e34cdeeeb9d4..86a7b15410cf 100644
+> > --- a/Documentation/ABI/testing/sysfs-block
+> > +++ b/Documentation/ABI/testing/sysfs-block
+> > @@ -316,3 +316,13 @@ Description:
+> >  		does not complete in this time then the block driver timeout
+> >  		handler is invoked. That timeout handler can decide to retry
+> >  		the request, to fail it or to start a device recovery strategy.
+> > +
+> > +What:		/sys/block/<disk>/queue/limit_bio_size
+> > +Date:		Feb, 2021
+> > +Contact:	Changheun Lee <nanich.lee@samsung.com>
+> > +Description:
+> > +		(RW) Toggle for set/clear QUEUE_FLAG_LIMIT_BIO_SIZE queue flag.
+> > +		Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size
+> > +		is set. And bio max size will be limited by queue max sectors.
+> > +		QUEUE_FLAG_LIMIT_BIO_SIZE will be cleared if limit_bio_size is
+> > +		cleard. And limit of bio max size will be cleard.
+> > diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
+> > index 2638d3446b79..cd371a821855 100644
+> > --- a/Documentation/block/queue-sysfs.rst
+> > +++ b/Documentation/block/queue-sysfs.rst
+> > @@ -273,4 +273,11 @@ devices are described in the ZBC (Zoned Block Commands) and ZAC
+> >  do not support zone commands, they will be treated as regular block devices
+> >  and zoned will report "none".
+> >  
+> > +limit_bio_size (RW)
+> > +-------------------
+> > +This indicates QUEUE_FLAG_LIMIT_BIO_SIZE queue flag value. And
+> > +QUEUE_FLAG_LIMIT_BIO_SIZE can be changed via set(1)/clear(0) this node.
+> > +bio max size will be limited by queue max sectors via set this node. And
+> > +limit of bio max size will be cleard via clear this node.
+> > +
+> >  Jens Axboe <jens.axboe@oracle.com>, February 2009
+> > diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> > index b513f1683af0..840d97f427e6 100644
+> > --- a/block/blk-sysfs.c
+> > +++ b/block/blk-sysfs.c
+> > @@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+> >  QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+> >  QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
+> >  QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
+> > +QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
+> >  #undef QUEUE_SYSFS_BIT_FNS
+> >  
+> >  static ssize_t queue_zoned_show(struct request_queue *q, char *page)
+> > @@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
+> >  QUEUE_RW_ENTRY(queue_iostats, "iostats");
+> >  QUEUE_RW_ENTRY(queue_random, "add_random");
+> >  QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
+> > +QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
+> >  
+> >  static struct attribute *queue_attrs[] = {
+> >  	&queue_requests_entry.attr,
+> > @@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
+> >  	&queue_rq_affinity_entry.attr,
+> >  	&queue_iostats_entry.attr,
+> >  	&queue_stable_writes_entry.attr,
+> > +	&queue_limit_bio_size_entry.attr,
+> >  	&queue_random_entry.attr,
+> >  	&queue_poll_entry.attr,
+> >  	&queue_wc_entry.attr,
+> 
+> Has it been considered to introduce a function to set the BIO size limit
+> instead of introducing a new sysfs attribute? See also
+> blk_queue_max_hw_sectors().
 
-diff --git a/drivers/gpu/drm/ttm/ttm_page_alloc.c b/drivers/gpu/drm/ttm/ttm_page_alloc.c
-index 14660f723f71..f3698f0ad4d7 100644
---- a/drivers/gpu/drm/ttm/ttm_page_alloc.c
-+++ b/drivers/gpu/drm/ttm/ttm_page_alloc.c
-@@ -736,8 +736,16 @@ static void ttm_put_pages(struct page **pages, unsigned npages, int flags,
- 					if (++p != pages[i + j])
- 					    break;
- 
--				if (j == HPAGE_PMD_NR)
-+				if (j == HPAGE_PMD_NR) {
- 					order = HPAGE_PMD_ORDER;
-+					for (j = 1; j < HPAGE_PMD_NR; ++j)
-+						page_ref_dec(pages[i+j]);
-+				}
- 			}
- #endif
- 
-@@ -868,10 +876,12 @@ static int ttm_get_pages(struct page **pages, unsigned npages, int flags,
- 				p = alloc_pages(huge_flags, HPAGE_PMD_ORDER);
- 				if (!p)
- 					break;
--
--				for (j = 0; j < HPAGE_PMD_NR; ++j)
-+				for (j = 0; j < HPAGE_PMD_NR; ++j) {
- 					pages[i++] = p++;
--
-+					if (j > 0)
-+						page_ref_inc(pages[i-1]);
-+				}
- 				npages -= HPAGE_PMD_NR;
- 			}
- 		}
+A function to set has been not considered yet.
+But sysfs attribute should be supported I think. Because it can be
+different depending on each system environment including policy.
 
+> 
+> Thanks,
+> 
+> Bart.
 
+Thanks,
 
+Changheun Lee
