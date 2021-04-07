@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17059357565
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0ED35756A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355874AbhDGUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        id S1355879AbhDGUGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348996AbhDGUFI (ORCPT
+        with ESMTP id S1348993AbhDGUGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:05:08 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD390C06175F;
-        Wed,  7 Apr 2021 13:04:57 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4FFwNR0zGjzQjmW;
-        Wed,  7 Apr 2021 22:04:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1617825893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x/SavWgMTIlT38FW/ptNNTaKRDlmmxJUPCoUw3uGMZA=;
-        b=0zO1e2w6vtsV3izioESoLXsQOa62Z2Fh01yHrwfgn+7MvPC3lqPiXzCXhAPK8398zFBgoh
-        8wnBv9AVZAGfNIpsH2hC2yVnIjKM2QZwAQU9MaPf9jk+ds2Uqi6fkEzR91rRc5RtW2uQih
-        R/gjPBHkoMqfqzwlj2wVCCZt9mCH2J/jzN36fGh5cYlfWn6OxwyM2bnOAlieUQXYyABJGd
-        JHNywPFxInZIaNz8dN7T2tCvZr4lPDfky30zRYEp7ol8IxUw5aQZSXmEZjN2BlHeE9FZZS
-        EO3zmJwFpJJJRJBtycFxyh3KTiLyaj5rFzPMiQQrDDgKxqCYKBLFbJPQgaszxQ==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id Gj-CFps7egyi; Wed,  7 Apr 2021 22:04:51 +0200 (CEST)
-Subject: Re: [PATCH RFC net 2/2] net: dsa: lantiq_gswip: Configure all
- remaining GSWIP_MII_CFG bits
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     f.fainelli@gmail.com, vivien.didelot@gmail.com, olteanv@gmail.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
- <20210406203508.476122-3-martin.blumenstingl@googlemail.com>
- <YGz9hMcgZ1sUkgLO@lunn.ch>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <94c2777d-5111-2568-f64b-f68480766c5d@hauke-m.de>
-Date:   Wed, 7 Apr 2021 22:04:49 +0200
+        Wed, 7 Apr 2021 16:06:48 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E267BC06175F;
+        Wed,  7 Apr 2021 13:06:37 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a25so6679766ejk.0;
+        Wed, 07 Apr 2021 13:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aI6cOghiWYjCiHchhUfiqlnmiN5p4vpRRk7oBn0oTfc=;
+        b=pTRv6KdXntHuZQbgOqen/DUsVLkp5O76CbG+CFvIi1N/0cRhoV3XTLnxuxlmtxWP3Y
+         5Dj7myJ2kYsD75gvIxq6WKhbLeg4QqtJp26lKQsVPUCOxpZ0ZlUZy32zJKfr5Zws5LrO
+         Sye8kjaojoYZUunptpvQeheovFfIFgyLWxa84GJvcrtprh3EblbSC4TXhCuLG4U7Hk/t
+         0Cf0+f9dAPWiDjkQy5Lyb6tITCHxGCGrDtA3XN2cInurfEfT2Hek7nKNBNOVXeeZ04Jv
+         X2tvEXkAw6agFpDMzISd4QsRh+kV61TEDy9+Be2QpklepEwjwGSIVWXWDDLuik9lLP17
+         XlcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aI6cOghiWYjCiHchhUfiqlnmiN5p4vpRRk7oBn0oTfc=;
+        b=c+R3xqnGd1CcV5T77gWDyA/G0qeVnH2FyJyXKgIxQ1VGQILQhtpRpwBtf1n5wj5bq0
+         Vgs4iS6odrYXDPZs4MXQAOUf810lBXxBnW5cG8oUxPDD2Xph4JFlsTipRkUfjJYSnXO8
+         IK9e/OG62CSNnBOgLnwoNVMws8wfruDtXI6SJuG3Q59jOXj3ANPvi06Wc2sIjgI1Cxo2
+         1Xay2/dgwRSbbwiX+WAUrA9bArsugEsjGUJWpJkaZF0RKXx7KqlUlwdqztmyA5ncOSKJ
+         ZQ8fQwpIjlSaMEoOchCRosdcRbRbbSpWK02XV6Ml9fyb130GjlJDmZV6xPtcfrxkuEXI
+         dfZg==
+X-Gm-Message-State: AOAM533wGeSHWd6L1ThXA7f6lN9UQBE0GDwMLjrXxLjyugtFihYbD15m
+        IEjE+RJp0FT/Y3AyikNsSC36YI2/EA==
+X-Google-Smtp-Source: ABdhPJy2EsZT9JRFlsWFJzIJKhXXNJihCCrih/+ZUzzmfUUT4DhP2RhPo/S3+e4u9l9ARN60H9XLfg==
+X-Received: by 2002:a17:906:2704:: with SMTP id z4mr5691197ejc.137.1617825996663;
+        Wed, 07 Apr 2021 13:06:36 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.73])
+        by smtp.gmail.com with ESMTPSA id gn19sm12802439ejc.4.2021.04.07.13.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 13:06:36 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 23:06:34 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] proc: smoke test lseek()
+Message-ID: <YG4QymNCjgGR/cPk@localhost.localdomain>
+References: <20210328221524.ukfuztGsl%akpm@linux-foundation.org>
+ <YG4OIhChOrVTPgdN@localhost.localdomain>
+ <20210407195809.GG2531743@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <YGz9hMcgZ1sUkgLO@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.33 / 15.00 / 15.00
-X-Rspamd-Queue-Id: BD48716F2
-X-Rspamd-UID: da13e3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210407195809.GG2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 2:32 AM, Andrew Lunn wrote:
->>   	case PHY_INTERFACE_MODE_RGMII:
->>   	case PHY_INTERFACE_MODE_RGMII_ID:
->>   	case PHY_INTERFACE_MODE_RGMII_RXID:
->>   	case PHY_INTERFACE_MODE_RGMII_TXID:
->>   		miicfg |= GSWIP_MII_CFG_MODE_RGMII;
->> +
->> +		if (phylink_autoneg_inband(mode))
->> +			miicfg |= GSWIP_MII_CFG_RGMII_IBS;
+On Wed, Apr 07, 2021 at 08:58:09PM +0100, Matthew Wilcox wrote:
+> On Wed, Apr 07, 2021 at 10:55:14PM +0300, Alexey Dobriyan wrote:
+> > Now that ->proc_lseek has been made mandatory it would be nice to test
+> > that nothing has been forgotten.
 > 
-> Is there any other MAC driver doing this? Are there any boards
-> actually enabling it? Since it is so odd, if there is nothing using
-> it, i would be tempted to leave this out.
+> > @@ -45,6 +45,8 @@ static void f_reg(DIR *d, const char *filename)
+> >  	fd = openat(dirfd(d), filename, O_RDONLY|O_NONBLOCK);
+> >  	if (fd == -1)
+> >  		return;
+> > +	/* struct proc_ops::proc_lseek is mandatory if file is seekable. */
+> > +	(void)lseek(fd, 0, SEEK_SET);
+> >  	rv = read(fd, buf, sizeof(buf));
+> >  	assert((0 <= rv && rv <= sizeof(buf)) || rv == -1);
+> >  	close(fd);
+> 
+> why throw away the return value?  if it returns an error seeking to
+> offset 0, something is terribly wrong.
 
-We saw this option in the switch documentation and activated it to 
-prepare for such systems, but I do not have any board which uses this 
-and I am also not aware that this is used anywhere.
-
-Hauke
+Some files may use nonseekable_open().
+This smoke test doesn't verify that seeking is done correctly anyway.
