@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AAC35744D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39F135744C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355310AbhDGS2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:28:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35396 "EHLO mail.kernel.org"
+        id S1355303AbhDGS2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355292AbhDGS2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355291AbhDGS2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 14:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7DE40611BD;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 483156113E;
         Wed,  7 Apr 2021 18:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617820090;
-        bh=t0Oj283Ns63qN1NyD+uI+cibuIMIIH/kyvkM9YIThxM=;
+        bh=FAEVW8RxY+1NwvDR94N62hhfOJBG5Mnl2qw8f4BHObg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=upqD5DV5RT0ISGMjtIAfW6NlCnqcVFSCRWPur5L+sFyEyBVDnTcmPTYVUwAoBl3Zt
-         8uKIk80BLNyxkg14NBt0XmlDh7Gy2Prlo2VPBKZYUhQFqegetE8r9wTuTzxRkC6OPT
-         mraz6MBnsvUUC1zkKE5gz63/dXgA1NPfLIO9SYSar/so3MHLzt17gVg6y5+MBFy7V4
-         hcIxq/Pr3KpQgIhLqu8Rra/SDEQuEKCl376vj3JRqN9YRYF/1dWOs/edq+gvc1v+61
-         xfjXMxnvotbmGqlywJE1sf0Cgd3aKQDKMiKhwUcayP2m3t3QBRvlwp/BZD13gb++Bv
-         3y+Z4aaWV0G+w==
+        b=pJS2/WCmArm7F/yHFYJAZg4Q2eWsdZQ9uvQB0y7GatlmXkOVMN15KLAASayxpIp4e
+         gwilGnF4F3r/7nnl8W/NR7B/K5uuiqO+YDZ9QJqhd2H9PFl82b9l4YNuGNUZmSivy2
+         VSw+WJtiOhomRF1kNcQ3iwmCzJZZvQkkMMYVNcoHK9n6VYwe0C6BD4Af5IY4zFrjJl
+         Ap0ISpZ6v/P9ekxaZLV2/MuutARNlRH/cO+PTb7rwNatRNbAaSbDiVDGpWFu4SGGPM
+         ftI7SQiPkjXuHk/r0Pa1Pk7M/n4DvOMwALrl/6RHF7j2Aoa029XDrDopPNL8iHUM09
+         gT3n710tBwPlQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7976060A54;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3A3C9609D8;
         Wed,  7 Apr 2021 18:28:10 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for 5.12-3
+Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.12-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <5dd4526e-b5c2-4071-0f82-6ecbffe085a5@redhat.com>
-References: <5dd4526e-b5c2-4071-0f82-6ecbffe085a5@redhat.com>
+In-Reply-To: <YG12tezhGsQ5R/lG@ls3530>
+References: <YG12tezhGsQ5R/lG@ls3530>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <5dd4526e-b5c2-4071-0f82-6ecbffe085a5@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.12-3
-X-PR-Tracked-Commit-Id: a3790a8a94fc0234c5d38013b48e74ef221ec84c
+X-PR-Tracked-Message-Id: <YG12tezhGsQ5R/lG@ls3530>
+X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.12-3
+X-PR-Tracked-Commit-Id: 0aa2ddc9af44bf9032098a587aeabada4da181a7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5ba091db9386e6f50f32e660253bcc250cdbbca8
-Message-Id: <161782009049.7121.11575887688893335814.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: dbaa5d1c254e1b565caee9ac7b526a9b7267d4c4
+Message-Id: <161782009018.7121.3622472284901915724.pr-tracker-bot@kernel.org>
 Date:   Wed, 07 Apr 2021 18:28:10 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
+To:     Helge Deller <deller@gmx.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Gao Xiang <hsiangkao@redhat.com>,
+        Wan Jiabing <wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 7 Apr 2021 12:07:59 +0200:
+The pull request you sent on Wed, 7 Apr 2021 11:09:09 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.12-3
+> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.12-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5ba091db9386e6f50f32e660253bcc250cdbbca8
+https://git.kernel.org/torvalds/c/dbaa5d1c254e1b565caee9ac7b526a9b7267d4c4
 
 Thank you!
 
