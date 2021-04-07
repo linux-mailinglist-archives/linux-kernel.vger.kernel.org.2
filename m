@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67649356C04
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF825356C0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbhDGMZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:25:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55706 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234902AbhDGMZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:25:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC5F1B135;
-        Wed,  7 Apr 2021 12:25:41 +0000 (UTC)
-Subject: Re: [PATCH] mm: page_owner: detect page_owner recursion via
- task_struct
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-References: <20210401223010.3580480-1-slyfox@gentoo.org>
- <20210401170519.00824fbdf8ab60b720609422@linux-foundation.org>
- <20210402125039.671f1f40@sf>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <876f8349-5b64-6be5-6a97-4cf17d7abfb1@suse.cz>
-Date:   Wed, 7 Apr 2021 14:25:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1352138AbhDGM17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235368AbhDGM15 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:27:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAD2C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 05:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MfqgLWv10IJUoyDmm979n6kaRcDpYx7OQawOsvcvaLo=; b=ehAPGtUP0FPy1+N88OuFRTRS5r
+        QonnsHieZ034bS3NTIN0lbiP9asu7//rg22nLKCOjhmxwUM3/PzcVscIHrVdZ0XA1cZoYoyMFkVKG
+        yC2TasVn2Nw+b+tRFsuqqetzxo6FQnDO6t6bn4EOSedng4iJCySyO15xAVKeWpsLBIq5tsCak1gwz
+        2KwePxMPyVq7GcwBGCBGcPpwzGVjVrguHhGz/7D1GaoXnPyRw/qYXrT6+zY/Kd8oFAVzazRfC6De4
+        9s1QF7GDELhwo5RLCaY6r8TreoVEMvW3aOV9EBpnClzizoLiOFs0XiWUyqXdz8fS7N5ASQUc654ac
+        LR2vXT8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU7Gg-00ESES-My; Wed, 07 Apr 2021 12:26:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A07D300056;
+        Wed,  7 Apr 2021 14:26:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 409A6244029A1; Wed,  7 Apr 2021 14:26:46 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 14:26:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        joshdon@google.com, linux-kernel@vger.kernel.org, greg@kroah.com
+Subject: Re: [PATCH 4/9] sched: Move SCHED_DEBUG to debugfs
+Message-ID: <YG2lBimj3cKMErA7@hirez.programming.kicks-ass.net>
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.025550243@infradead.org>
+ <87blaqnzho.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210402125039.671f1f40@sf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87blaqnzho.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 1:50 PM, Sergei Trofimovich wrote:
-> On Thu, 1 Apr 2021 17:05:19 -0700
-> Andrew Morton <akpm@linux-foundation.org> wrote:
+On Wed, Apr 07, 2021 at 11:46:43AM +0100, Valentin Schneider wrote:
+> On 26/03/21 11:33, Peter Zijlstra wrote:
+> >  __read_mostly bool sched_debug_enabled;
+> >  
+> > +struct dentry *debugfs_sched;
+> > +
+> >  static __init int sched_init_debug(void)
+> >  {
+> > -	debugfs_create_file("sched_features", 0644, NULL, NULL,
+> > -			&sched_feat_fops);
+> > +	struct dentry __maybe_unused *numa;
+> > +
+> > +	debugfs_sched = debugfs_create_dir("sched", NULL);
+> > +
+> > +	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
+> > +	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
+> > +
 > 
->> On Thu,  1 Apr 2021 23:30:10 +0100 Sergei Trofimovich <slyfox@gentoo.org> wrote:
->> 
->> > Before the change page_owner recursion was detected via fetching
->> > backtrace and inspecting it for current instruction pointer.
->> > It has a few problems:
->> > - it is slightly slow as it requires extra backtrace and a linear
->> >   stack scan of the result
->> > - it is too late to check if backtrace fetching required memory
->> >   allocation itself (ia64's unwinder requires it).
->> > 
->> > To simplify recursion tracking let's use page_owner recursion depth
->> > as a counter in 'struct task_struct'.  
->> 
->> Seems like a better approach.
->> 
->> > The change make page_owner=on work on ia64 bu avoiding infinite
->> > recursion in:
->> >   kmalloc()  
->> >   -> __set_page_owner()
->> >   -> save_stack()
->> >   -> unwind() [ia64-specific]
->> >   -> build_script()
->> >   -> kmalloc()
->> >   -> __set_page_owner() [we short-circuit here]
->> >   -> save_stack()
->> >   -> unwind() [recursion]  
->> > 
->> > ...
->> >
->> > --- a/include/linux/sched.h
->> > +++ b/include/linux/sched.h
->> > @@ -1371,6 +1371,15 @@ struct task_struct {
->> >  	struct llist_head               kretprobe_instances;
->> >  #endif
->> >  
->> > +#ifdef CONFIG_PAGE_OWNER
->> > +	/*
->> > +	 * Used by page_owner=on to detect recursion in page tracking.
->> > +	 * Is it fine to have non-atomic ops here if we ever access
->> > +	 * this variable via current->page_owner_depth?  
->> 
->> Yes, it is fine.  This part of the comment can be removed.
+> Could we kill this too? I'm probably biased because I've spent some amount
+> of time banging my head at topology problems, but this two-tiered debugging
+> setup (KCONFIG + cmdline or post-boot write) has always irked me.
 > 
-> Cool! Will do.
-> 
->> > +	 */
->> > +	unsigned int page_owner_depth;
->> > +#endif  
->> 
->> Adding to the task_struct has a cost.  But I don't expect that
->> PAGE_OWNER is commonly used in prodction builds (correct?).
-> 
-> Yeah, PAGE_OWNER should not be enabled for production kernels.
+> I can't find the threads in a hurry, but ISTR justifications for keeping
+> this around were:
+> - Most distros have CONFIG_SCHED_DEBUG=y because knobs and ponies
+> - Topology debug prints are "too verbose"
 
-Note that it was converted to use a static key exactly so that it can be always
-built in production kernels, and simply enabled on boot when needed. Our kernels
-have it enabled.
+^^ that mostly.
 
-> Not having extra memory overhead (or layout disruption) is a nice
-> benefit though. I'll switch to "Unserialized, strictly 'current'" bitfield.
+> - NUMA distance matrix processing gets slower
 > 
->> > --- a/init/init_task.c
->> > +++ b/init/init_task.c
->> > @@ -213,6 +213,9 @@ struct task_struct init_task
->> >  #ifdef CONFIG_SECCOMP
->> >  	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
->> >  #endif
->> > +#ifdef CONFIG_PAGE_OWNER
->> > +	.page_owner_depth	= 0,
->> > +#endif
->> >  };
->> >  EXPORT_SYMBOL(init_task);  
->> 
->> It will be initialized to zero by the compiler.  We can omit this hunk
->> entirely.
->> 
->> > --- a/mm/page_owner.c
->> > +++ b/mm/page_owner.c
->> > @@ -20,6 +20,16 @@
->> >   */
->> >  #define PAGE_OWNER_STACK_DEPTH (16)
->> >  
->> > +/*
->> > + * How many reenters we allow to page_owner.
->> > + *
->> > + * Sometimes metadata allocation tracking requires more memory to be allocated:
->> > + * - when new stack trace is saved to stack depot
->> > + * - when backtrace itself is calculated (ia64)
->> > + * Instead of falling to infinite recursion give it a chance to recover.
->> > + */
->> > +#define PAGE_OWNER_MAX_RECURSION_DEPTH (1)  
->> 
->> So this is presently a boolean.  Is there any expectation that
->> PAGE_OWNER_MAX_RECURSION_DEPTH will ever be greater than 1?  If not, we
->> could use a single bit in the task_struct.  Add it to the
->> "Unserialized, strictly 'current'" bitfields.  Could make it a 2-bit field if we want
->> to permit PAGE_OWNER_MAX_RECURSION_DEPTH=larger.
-> 
-> Let's settle on depth=1. depth>1 is not trivial for other reasons I don't
-> completely understand.
+> If we make it so distros stop / don't need to select CONFIG_SCHED_DEBUG,
 
-That's fine, I don't think depth>1 would bring us much benefit anyway.
+We're not there yet, I think :-(
 
-> Follow-up patch incoming.
-> 
+> then I don't think the above really stands anymore (also, sched_init_numa()
+> now has the same complexity regardless of sched_debug), and we could keep
+> everything under CONFIG_SCHED_DEBUG.
 
+But yes, the reason this knob exists is ebcause I too frequently forget
+to add the boot time knob, so I added this one to enable it at runtime
+and then I get topology prints when I hotplug cycle a cpu.
