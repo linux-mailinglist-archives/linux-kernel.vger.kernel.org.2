@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC53356F0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941A2356F15
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348665AbhDGOmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:42:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353045AbhDGOl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D365600D4;
-        Wed,  7 Apr 2021 14:41:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617806509;
-        bh=sQHFh64TVuIInYNwwXKFf/wPZwrI2OO0eX/1rT7dwnA=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=GOtpP6wwRLpJVwjsoZfX6TxMubaD+/GmZcZ1wsS8fNWHfVLbWGEWar03rGKKG1gKE
-         ldwR3LUo1JqEMWdbGANLySWVvADYDctLexmbPXXtotNhTLRq0GfKr18rxWT1XQkOX6
-         RG+v02o7AO/U0OW7wG2+3zn/wD8aBvIP48mf5F9Hvw7EACucKAXul7eZOBbO+JEdT4
-         8dLz+TZ6FS16infnIzYTsMJueOCT/SozQx+9cvDPPNLRyiVhqiolQ9SnJ1+GO1VtqP
-         XDdTJft5apdppoR4BSM5tmcIkWIIEFVtwrxPx2LaUZXOS7bMWR4fIjbaI6kJV9WQ7X
-         OqQQx04VyMGVA==
-Received: by pali.im (Postfix)
-        id 84435521; Wed,  7 Apr 2021 16:41:46 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 16:41:46 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Koen Vandeputte <koen.vandeputte@citymesh.com>,
-        Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
-Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
-Message-ID: <20210407144146.rl7x2h5l2cc3escy@pali>
-References: <20200716110423.xtfyb3n6tn5ixedh@pali>
+        id S1348553AbhDGOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239804AbhDGOoF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:44:05 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6DEC06175F;
+        Wed,  7 Apr 2021 07:43:55 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id o11so4855628qvh.11;
+        Wed, 07 Apr 2021 07:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/btP8VyRZ+PtRHEtHpKhEBU92313kMIz6dauarfwMLw=;
+        b=FGKaXVsd1J+4FesmYRgTHlNBQriTvi5/iDTaOcVP69WtLq6kN3edC0JqVIFnlLsYCA
+         L72IWqTaluslQzvNuGEb7aMe3IME2oWNyoARDuYUeRNb3welcW+9okrJ7XAOC+swKB4v
+         dMVZ1vwObj+LmQxNnjAWnDXIx49wdxr69g2CrT35DofA+OxaPgZqdQ2NjBafPNOZq8za
+         IdG91Gjcaj0dJ3qIsp2CXt9SOgAWykDlCyJwJmXog8jWDKPbMM+3PA94uAw0Dg5E5jSY
+         6r5WeWHI1+TX5j0RBeDnWTHBfvVDq1edl1gDZywRllmKWg4xKZ28aCg+MrLm+65tRXbP
+         nSqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/btP8VyRZ+PtRHEtHpKhEBU92313kMIz6dauarfwMLw=;
+        b=M1c4qI5jNQEPRi0jVskt57Y/UbhfYFKQFvgX7lOJhO8u5EDSBVLsSDXWOEgOIi7RED
+         krqA/ESt0tGhhlYqd4g/3QzfunOd5CDZ1cvZoSbavCxttr0A5SaNKF82AX+rUkGA6Xoc
+         OUeBVHPNTGW42mjXqULzsjmv++8ytzPhUjxNTmHCb9+RNV1aDdyh4FhZ6g5ioEIfEwsK
+         qcNhc2MgQVD1kaB6Bew0FJPXXOjNLu4QN5Z0Hp0BrX6P7vje2ea8mMC6TXmdySXywOLx
+         B2bna2plJqlZkKEkQ6lcKt/yqVmbsDmLwhZObGRdYP2rOoxYABWRrXRizxQ2qIVR9OjX
+         kKog==
+X-Gm-Message-State: AOAM532jg7KiL7MJ4FOia+ZQhfJwqcH6Csro3ie6dGka+e33JZr/J8hN
+        xyYVVysDUzoY6eO38FzFegiD1id93eg=
+X-Google-Smtp-Source: ABdhPJx72scUaq5TlcVed08ZTISLmlNbmEHtmG617kEvTB0RSvFRyEXWpI7TqiBxKteAikcYxNjhiQ==
+X-Received: by 2002:a0c:9e5e:: with SMTP id z30mr3809678qve.61.1617806634967;
+        Wed, 07 Apr 2021 07:43:54 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:781f])
+        by smtp.gmail.com with ESMTPSA id 75sm18097680qkj.134.2021.04.07.07.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:43:54 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 10:43:52 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/3] loop: Use worker per cgroup instead of kworker
+Message-ID: <YG3FKCkcwk7eGdpc@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
+ <20210403020902.1384-1-hdanton@sina.com>
+ <20210407065300.1478-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200716110423.xtfyb3n6tn5ixedh@pali>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210407065300.1478-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 16 July 2020 13:04:23 Pali Rohár wrote:
-> Hello Bjorn!
-> 
-> I see following error message in dmesg which looks like a race condition:
-> 
-> sysfs: cannot create duplicate filename '/devices/platform/soc/d0070000.pcie/pci0000:00/0000:00:00.0/config'
-> 
-> I looked at it deeper and found out that in PCI subsystem code is race
-> condition between pci_bus_add_device() and pci_sysfs_init() calls. Both
-> of these functions calls pci_create_sysfs_dev_files() and calling this
-> function more times for same pci device throws above error message.
-> 
-> There can be two different race conditions:
-> 
-> 1. pci_bus_add_device() called pcibios_bus_add_device() or
-> pci_fixup_device() but have not called pci_create_sysfs_dev_files() yet.
-> Meanwhile pci_sysfs_init() is running and pci_create_sysfs_dev_files()
-> was called for newly registered device. In this case function
-> pci_create_sysfs_dev_files() is called two times, ones from
-> pci_bus_add_device() and once from pci_sysfs_init().
-> 
-> 2. pci_sysfs_init() is called. It first sets sysfs_initialized to 1
-> which unblock calling pci_create_sysfs_dev_files(). Then another bus
-> registers new PCI device and calls pci_bus_add_device() which calls
-> pci_create_sysfs_dev_files() and registers sysfs files. Function
-> pci_sysfs_init() continues execution and calls function
-> pci_create_sysfs_dev_files() also for this newly registered device. So
-> pci_create_sysfs_dev_files() is again called two times.
-> 
-> 
-> I workaround both race conditions I created following hack patch. After
-> applying it I'm not getting that 'sysfs: cannot create duplicate filename'
-> error message anymore.
+On Wed, Apr 07, 2021 at 02:53:00PM +0800, Hillf Danton wrote:
+> On Tue, 6 Apr 2021 Dan Schatzberg wrote:
+> >On Sat, Apr 03, 2021 at 10:09:02AM +0800, Hillf Danton wrote:
+> >> On Fri,  2 Apr 2021 12:16:32 Dan Schatzberg wrote:
+> >> > +queue_work:
+> >> > +	if (worker) {
+> >> > +		/*
+> >> > +		 * We need to remove from the idle list here while
+> >> > +		 * holding the lock so that the idle timer doesn't
+> >> > +		 * free the worker
+> >> > +		 */
+> >> > +		if (!list_empty(&worker->idle_list))
+> >> > +			list_del_init(&worker->idle_list);
+> >> 
+> >> Nit, only queue work if the worker is inactive - otherwise it is taking
+> >> care of the cmd_list.
+> >
+> >By worker is inactive, you mean worker is on the idle_list? Yes, I
+> >think you're right that queue_work() is unnecessary in that case since
+> >each worker checks empty cmd_list then adds itself to idle_list under
+> >the lock.
 
-Scratch this hack patch, it contains another new race condition.
+A couple other corner cases - When worker is just allocated, it needs
+a queue_work() and rootcg always needs a queue_work() since it never
+sits on the idle_list. It does add to the logic a bit rather than just
+unconditionally invoking queue_work()
 
-The only way how to get rid of this race condition is either to protect
-whole "sysfs_initialized" variable by mutex or by completely removing
-"sysfs_initialized" variable and therefore also removing function
-pci_create_sysfs_dev_files(). I'm for second variant.
+> >
+> >> 
+> >> > +		work = &worker->work;
+> >> > +		cmd_list = &worker->cmd_list;
+> >> > +	} else {
+> >> > +		work = &lo->rootcg_work;
+> >> > +		cmd_list = &lo->rootcg_cmd_list;
+> >> > +	}
+> >> > +	list_add_tail(&cmd->list_entry, cmd_list);
+> >> > +	queue_work(lo->workqueue, work);
+> >> > +	spin_unlock_irq(&lo->lo_work_lock);
+> >> >  }
+> >> [...]
+> >> > +	/*
+> >> > +	 * We only add to the idle list if there are no pending cmds
+> >> > +	 * *and* the worker will not run again which ensures that it
+> >> > +	 * is safe to free any worker on the idle list
+> >> > +	 */
+> >> > +	if (worker && !work_pending(&worker->work)) {
+> >> 
+> >> The empty cmd_list is a good enough reason for worker to become idle.
+> >
+> >This is only true with the above change to avoid a gratuitous
+> >queue_work(), right?
+> 
+> It is always true because of the empty cmd_list - the idle_list is the only
+> place for the worker to go at this point.
+> 
+> >Otherwise we run the risk of freeing a worker
+> >concurrently with loop_process_work() being invoked.
+> 
+> My suggestion is a minor optimization at most without any change to removing
+> worker off the idle_list on queuing work - that cuts the risk for you.
+
+If I just change this line from
+
+if (worker && !work_pending(&worker->work)) {
+
+to
+
+if (worker) {
+
+then the following sequence of events is possible:
+
+1) loop_queue_work runs, adds a command to the worker list
+2) loop_process_work runs, processes a single command and then drops
+the lock and reschedules
+3) loop_queue_work runs again, acquires the lock, adds to the list and
+invokes queue_work() again
+4) loop_process_work resumes, acquires lock, processes work, notices
+list is empty and adds itself to the idle_list
+5) idle timer fires and frees the worker
+6) loop_process_work runs again (because of the queue_work in 3) and
+accesses freed memory
+
+The !work_pending... check prevents 4) from adding itself to the
+idle_list so this is not possible. I believe we can only make this
+change if we also make the other change you suggested to avoid
+gratuitous queue_work()
