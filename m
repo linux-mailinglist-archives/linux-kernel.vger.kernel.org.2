@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8883572B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42513572BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354631AbhDGRGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:06:38 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:46048 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354588AbhDGRG1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:06:27 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so18730766oty.12;
-        Wed, 07 Apr 2021 10:06:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=abnQRkdJvp2BPIa2wpxV2nwwLsa1/aF4RGi27RRL+2M=;
-        b=kSu6+mb1EnRqHaiQyIfq6p+xPeurnN/oYfIQ5wyLJX2kJNHzGui1w4936WBjrNSqJJ
-         NsaDHxpo2lTpITa+6AOY4jiQLNOB5sOjYaxq+wLVT0vXUQQ2AkdoeLZayMT+sxWcGcIc
-         x5b/XXMyWwVp6FQuC0orW4BfK21SMqv67l9nB2kWhv66G43x9h+qkjL3j0ZblthcGKcb
-         xB2XZVgUh8oBXMRrAfkqc/4HHomZhYcR1q8tQs19izoCJ0NewbLUErWayc+SSm+SG/IW
-         ttTk7NZ5ONJ4AtAiIpq5ZTLogFJQuH0hIXT352McRmL5DeWHPkkf2mfnJUBPksgnxqO1
-         xX5Q==
-X-Gm-Message-State: AOAM532+ZP2LUWJGhMjhfvQ2ShiRQjBtWjLBwML78SS0CK4YwzWe02T8
-        wUnCsXHuvnBUgEf1QRcNWW1CkK2IZmKLN78paVg=
-X-Google-Smtp-Source: ABdhPJzCYFheOkHMIqBHjQXvEhsxnEDPLw9Y4mxOzFMKycSTj9M7XrhE/ivVZC6UEsO9Nyggo/LRjbivWc0B0LkQaBI=
-X-Received: by 2002:a9d:4811:: with SMTP id c17mr3947200otf.206.1617815176928;
- Wed, 07 Apr 2021 10:06:16 -0700 (PDT)
+        id S1354609AbhDGRHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:07:07 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:44331 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234050AbhDGRHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:07:05 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FFrR00jRRzB09ZQ;
+        Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 5RNxtr6d0LwG; Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FFrQz6rN1zB09ZJ;
+        Wed,  7 Apr 2021 19:06:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8E54D8B7B6;
+        Wed,  7 Apr 2021 19:06:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Xg2uihRRaosX; Wed,  7 Apr 2021 19:06:53 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C34438B75F;
+        Wed,  7 Apr 2021 19:06:52 +0200 (CEST)
+Subject: Re: [PATCH v2 8/8] KVM: SVM: Allocate SEV command structures on local
+ stack
+To:     Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@suse.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210406224952.4177376-1-seanjc@google.com>
+ <20210406224952.4177376-9-seanjc@google.com>
+ <9df3b755-d71a-bfdf-8bee-f2cd2883ea2f@csgroup.eu>
+ <20210407102440.GA25732@zn.tnic> <YG3mQ+U6ZnoWIZ9a@google.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <24cd7d2b-3b74-6b51-aa9a-554003fe5cec@csgroup.eu>
+Date:   Wed, 7 Apr 2021 19:06:35 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210406155640.564341-1-vkuznets@redhat.com>
-In-Reply-To: <20210406155640.564341-1-vkuznets@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 7 Apr 2021 19:06:05 +0200
-Message-ID: <CAJZ5v0gqSEzkja-eAOvWEFs=HLv=046sj=g03ukVFhDF0xUdTg@mail.gmail.com>
-Subject: Re: [PATCH v3] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Stable <stable@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YG3mQ+U6ZnoWIZ9a@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 5:56 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
-> acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
-> wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
-> into acpi_idle_play_dead(). The problem is that these functions are not
-> exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
->
-> The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
-> (the later from assembly) but it seems putting the whole pattern into a
-> new function and exporting it instead is better.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
-> Cc: <stable@vger.kernel.org> # 5.10+
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-Applied as 5.12-rc material, thanks!
 
-> ---
-> Changes since v2:
-> - Use proper kerneldoc format [Rafael J. Wysocki]
-> ---
->  arch/x86/include/asm/smp.h    |  2 +-
->  arch/x86/kernel/smpboot.c     | 26 ++++++++++++--------------
->  drivers/acpi/processor_idle.c |  4 +---
->  3 files changed, 14 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index 57ef2094af93..630ff08532be 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -132,7 +132,7 @@ void native_play_dead(void);
->  void play_dead_common(void);
->  void wbinvd_on_cpu(int cpu);
->  int wbinvd_on_all_cpus(void);
-> -bool wakeup_cpu0(void);
-> +void cond_wakeup_cpu0(void);
->
->  void native_smp_send_reschedule(int cpu);
->  void native_send_call_func_ipi(const struct cpumask *mask);
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index f877150a91da..16703c35a944 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1659,13 +1659,17 @@ void play_dead_common(void)
->         local_irq_disable();
->  }
->
-> -bool wakeup_cpu0(void)
-> +/**
-> + * cond_wakeup_cpu0 - Wake up CPU0 if needed.
-> + *
-> + * If NMI wants to wake up CPU0, start CPU0.
-> + */
-> +void cond_wakeup_cpu0(void)
->  {
->         if (smp_processor_id() == 0 && enable_start_cpu0)
-> -               return true;
-> -
-> -       return false;
-> +               start_cpu0();
->  }
-> +EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
->
->  /*
->   * We need to flush the caches before going to sleep, lest we have
-> @@ -1734,11 +1738,8 @@ static inline void mwait_play_dead(void)
->                 __monitor(mwait_ptr, 0, 0);
->                 mb();
->                 __mwait(eax, 0);
-> -               /*
-> -                * If NMI wants to wake up CPU0, start CPU0.
-> -                */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +
-> +               cond_wakeup_cpu0();
->         }
->  }
->
-> @@ -1749,11 +1750,8 @@ void hlt_play_dead(void)
->
->         while (1) {
->                 native_halt();
-> -               /*
-> -                * If NMI wants to wake up CPU0, start CPU0.
-> -                */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +
-> +               cond_wakeup_cpu0();
->         }
->  }
->
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 768a6b4d2368..4e2d76b8b697 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -544,9 +544,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
->                         return -ENODEV;
->
->  #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-> -               /* If NMI wants to wake up CPU0, start CPU0. */
-> -               if (wakeup_cpu0())
-> -                       start_cpu0();
-> +               cond_wakeup_cpu0();
->  #endif
->         }
->
-> --
-> 2.30.2
->
+Le 07/04/2021 à 19:05, Sean Christopherson a écrit :
+> On Wed, Apr 07, 2021, Borislav Petkov wrote:
+>> First of all, I'd strongly suggest you trim your emails when you reply -
+>> that would be much appreciated.
+>>
+>> On Wed, Apr 07, 2021 at 07:24:54AM +0200, Christophe Leroy wrote:
+>>>> @@ -258,7 +240,7 @@ static int sev_issue_cmd(struct kvm *kvm, int id, void *data, int *error)
+>>>>    static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>>>>    {
+>>>>    	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+>>>> -	struct sev_data_launch_start *start;
+>>>> +	struct sev_data_launch_start start;
+>>>
+>>> struct sev_data_launch_start start = {0, 0, 0, 0, 0, 0, 0};
+>>
+>> I don't know how this is any better than using memset...
+>>
+>> Also, you can do
+>>
+>> 	... start = { };
+>>
+>> which is certainly the only other alternative to memset, AFAIK.
+>>
+>> But whatever you do, you need to look at the resulting asm the compiler
+>> generates. So let's do that:
+> 
+> I'm ok with Boris' version, I'm not a fan of having to count zeros.  I used
+> memset() to defer initialization until after the various sanity checks, and
+> out of habit.
+> 
+
+Yes I also like Boris' version 	... start = { };  better than mine.
+
