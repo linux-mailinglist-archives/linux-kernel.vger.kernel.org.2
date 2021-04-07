@@ -2,158 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442063564D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0A63564D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346199AbhDGHNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDGHNN (ORCPT
+        id S244170AbhDGHOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:14:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24908 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229514AbhDGHOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:13:13 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666E0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:13:03 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id r8so9288199lfp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=1duyocgLk2hEhX2K9ALNo/yISDtpiTKPyYC4EC6WDJM=;
-        b=jiLUdMSCffdrH06JKNega4yKrS+G2VAC4YoYqQNb/V53MLen81N5I17AR9NhsrtTW+
-         9RJyWPAyq5m3onQsxc9Dylkg80u17q8zDdbm7Sk1AESTFEekJEN6qQ5xqMw3DWK5Bxh2
-         VHnMbNNjSr1WHcRWkShdQow+tMoxEzolhu53gI97XLYk2BAZ8xECwsBF5j9YRk5BDDZm
-         7khxd9fDm31zdwT94haP2fgzIvr3mCc4qFPRJJCutZ3qLcNT0q/cYGcTdcCZSACPkEG2
-         0Rq2wS3JTC/z2kuBgStDrEMilR4WZWiU3ITbD2pKliWOs09M6vi0Kbj/isXf8+e8Wi/E
-         BeUw==
+        Wed, 7 Apr 2021 03:14:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617779678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x5uxaAMCe4qsDYncXjttivmeObDPAYgiHMnx3v4l6to=;
+        b=SGYtOgDjRdfGmRSRcL45lYDW3BR8MKcNreejjMCkYJ/GmnNNQpIQYwpVKMXAxlte9+UZSD
+        iH4Fd7oKn/O7G4NgKcDRiPdYn9An2gy8MBDuHiQ24d1uWANGt+4QLHZ7BmVPO9HPvDC0Rf
+        saVlvVaL35ZBTO5+cmYSPl61xshfsrg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-y5eXcVqYOBedqaOhTPwxsA-1; Wed, 07 Apr 2021 03:14:36 -0400
+X-MC-Unique: y5eXcVqYOBedqaOhTPwxsA-1
+Received: by mail-ed1-f72.google.com with SMTP id r6so11662742edh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:14:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=1duyocgLk2hEhX2K9ALNo/yISDtpiTKPyYC4EC6WDJM=;
-        b=XlwqyZQZ+CW6VSpFcFEei/f2dzOiraV3D2/CmHrCVzynuLkulC2qmZjAi4jqkf5ObR
-         MSm63L12h7S20Y2eKqm5sRDOaLdG/H+N/eQ9/Fy+Xzq+HHKeN7/4W3ePLvqW2j+5oBlD
-         KEdACQPKex6NjgdzlMZFJalJm6qDiw79QGBNsU0sc6s6bTs5n9TmlsnquikiKOHxlRYM
-         DwOdL5JihhRfwj5VWS01iwfsg0aWPK5DYAZPgIVAle2lki+Z7r1GebRf4YwSkSRAAKa5
-         q7VdoGOMtHAQPsKuQrH8BLP1xTuYjgmqy/T3d/RAQ2nwffdaPNDrRXEiU5Q0/4GYwR8Y
-         a/YQ==
-X-Gm-Message-State: AOAM533X2s9hNb/NaeBj+67/v5FbngycFChXT69j94uTZMKDwT41uh++
-        LaP7U3DcewN8hpW2hCAEWM4=
-X-Google-Smtp-Source: ABdhPJxBy5dXrEOlwkezRdPm5zALAijWjyrwxex6qoDNaSY1p3AYn3ps9CKp9kls2kXFbsLq5/OvHA==
-X-Received: by 2002:ac2:5684:: with SMTP id 4mr1584522lfr.378.1617779581947;
-        Wed, 07 Apr 2021 00:13:01 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id g13sm2456027lja.124.2021.04.07.00.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 00:13:01 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:12:58 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        rodrigosiqueiramelo@gmail.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH V4 0/2] Add virtual hardware module
-Message-ID: <20210407101258.72261c5d@eldfell>
-In-Reply-To: <cover.1617602076.git.sylphrenadin@gmail.com>
-References: <cover.1617602076.git.sylphrenadin@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x5uxaAMCe4qsDYncXjttivmeObDPAYgiHMnx3v4l6to=;
+        b=p09fNiw9E8hxcB8szGx7PYET/qxIspDJnjvsTILENtkKrTIpxHCzNH53I6k4DweIVB
+         W1IpdwK5QA1Yr75noJ5eA/j65VtPQmEoQcPTIgFnDktVolNHdtRbfLxW/30ap7Bfl+4Y
+         apWCNFduXbhftM1XIISk42+1KTUJXueKUoSWfrLZoCiEgSGJb8YknSTdlO0lbTLI6i2N
+         hhAQWhz5ZA55EjXcGdhJI89ccIN7bbc/fWsrzAwazgEGgKCHQbQjTwD/mGIOG0h0VqQ4
+         AB6a0cwkKAG+2u6cUoNM3iWUXCc0Zh5+njfjd1lev8bWkIBFqK0s0/7LGpYXWOouPwzp
+         6TMg==
+X-Gm-Message-State: AOAM531evnl+YSNXfDw+hd44laJXg2EDpUaccRm3anaerpod/5qrAVHs
+        MNh6lHGs+CuoN90l3uLs8lOz5/13d1kZ8c8dmGvgJn+uDeu5FpeS9NCvIp3bQE/hEM5k1fRd4o8
+        DAyza/BraCUjWVBfnxHcRjEJL
+X-Received: by 2002:a17:906:8988:: with SMTP id gg8mr2060693ejc.264.1617779675507;
+        Wed, 07 Apr 2021 00:14:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYDvnCb1FB16cvjU4I/CTHGzPohPRbMvFLOVnBhq6jzcOrr5LHkuvwzfAe8isJdtltWRC6mg==
+X-Received: by 2002:a17:906:8988:: with SMTP id gg8mr2060670ejc.264.1617779675217;
+        Wed, 07 Apr 2021 00:14:35 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id i2sm15404019edy.72.2021.04.07.00.14.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 00:14:34 -0700 (PDT)
+Subject: Re: [PATCH v4] platform/x86: intel_pmc_core: export platform
+ global_reset via sysfs.
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        "Box, David E" <david.e.box@intel.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Mashiah, Tamar" <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20210402152113.1191796-1-tomas.winkler@intel.com>
+ <d5021cc2-46c7-7c78-73b1-af50524e1db2@redhat.com>
+ <3387dd6987634bffb7a5082d70bdecfc@intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <69b15385-8df2-b825-1977-a03abca70327@redhat.com>
+Date:   Wed, 7 Apr 2021 09:14:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/8TxTFn5ZIDfMBvvPli94ZI="; protocol="application/pgp-signature"
+In-Reply-To: <3387dd6987634bffb7a5082d70bdecfc@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8TxTFn5ZIDfMBvvPli94ZI=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 5 Apr 2021 11:41:50 +0530
-Sumera Priyadarsini <sylphrenadin@gmail.com> wrote:
-
-> This patchset adds support for emulating virtual hardware with VKMS.
-> The virtual hardware mode can be enabled by using the following command
-> while loading the module:
->         sudo modprobe vkms enable_virtual_hw=3D1
-
 Hi,
 
-every time I see this cover letter subject, I start wondering "what is
-this virtual hardware module, yet another one?" and then I read the
-cover letter and realise it is about adding an option to VKMS.
+On 4/7/21 8:51 AM, Winkler, Tomas wrote:
+>>>
+>>> During PCH (platform/board) manufacturing process a global reset has
+>>> to be induced in order for configuration changes take the effect upon
+>>> following platform reset.
+>>> This setting was commonly done by accessing PMC registers via /dev/mem
+>>> but due to security concern /dev/mem access is much restricted, hence
+>>> the reason for exposing this setting via dedicated sysfs interface.
+>>> To prevent post manufacturing abuse the register is protected by
+>>> hardware locking.
+>>
+>> The purpose of this reset functionality is not entirely clear to me.
+>>
+>> Is this only used during production of a board? Or is this also something
+>> which a user/reseller may use as part of a factory-reset procedure?
+> 
+> Board production and refurbishing of the board. I can try to rephrase but I thought all the info is in the commit message. 
+> As a runtime feature a user can check that her/his platform is correctly sealed. 
 
-The next time you revise this series, could you perhaps clarify the
-subject?
+Manufacturing is clear, refurbishing is very much not clear, do you mean
+actually desoldering the chip and replacing it with a new one ?
 
-The idea of having a mode where VKMS behaves like a virtual hardware
-driver is good, IMO. I do think "vblank-less mode" describes it better
-though, because I would assume things like USB display drivers to work
-like this too, and VKMS is already a virtual driver anyway.
+>> If this is only used once during production, then I'm not sure if introducing a
+>> sysfs file for this is desirable.
+> 
+> What do you suggest, than?  I'm just guessing is where are you heading so the answer is that the manufacturing
+> is often already run on the production OS installation,  w/o going into details swapping or reconfiguring the OS is not always an option.
+> The manufacturer is also a user of ours.
 
-To clarify, as a userspace programmer what I would expect "vblank-less
-mode" to be is that the DRM driver completes pageflips and modesets at
-arbitrary times, perhaps always immediately or perhaps with a variable
-delay that depends on how much processing is needed for the update.
-Also vblank events do not fire and vblank counters do not advance. Is
-this correct?
+Ok, so lets compromise here, please make use of the visibility sysfs attribute
+callback, which returns a umask and make the file read-only at the umask level
+if it has been sealed, to make it clear to users that they cannot write to it,
+the -EACCES error means 'Permission denied' so if the user is already root
+they are going to get mightily confused if ls -l shows the file is writable.
 
+Also on set you are checking that the written value is bit 20, and on
+show you are showing the contents of the "Extended Test Mode Register 3" in hex,
+or at least those bits you are willing to show.
 
-Thanks,
-pq
+So in essence what you are doing here is giving userspace (some) access
+to the "Extended Test Mode Register 3", I would prefer to spell that out
+explicitly. The global_reset sysfs file name to me too much hints at
+something which the user can trigger / use while it is not intended for
+user usage.
 
->=20
-> The first patch is prep work for adding virtual_hw mode and refactors
-> the plane composition in vkms by adding a helper function vkms_composer_c=
-ommon()
-> which can be used for both vblank mode and virtual mode.
->=20
-> The second patch adds virtual hardware support as a module option. It
-> adds new atomic helper functions for the virtual mode
-> and modifies the existing atomic helpers for usage by the vblank mode
-> This gives us two sets of drm_crtc_helper_funcs struct for both modes,
-> making the code flow cleaner and easier to debug.
->=20
-> This patchset has been tested with the igt tests- kms_writeback, kms_atom=
-ic,
-> kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-> subtests related to crc reads and skips tests that rely on vertical
-> blanking. This patchset must be tested after incorporating the
-> igt-tests patch: https://lists.freedesktop.org/archives/igt-dev/2021-Febr=
-uary/029355.html
->=20
-> Sumera Priyadarsini (2):
->   drm/vkms: Refactor vkms_composer_worker() to prep for virtual_hw mode
->   drm/vkms: Add support for virtual hardware mode
->=20
->  drivers/gpu/drm/vkms/vkms_composer.c | 88 +++++++++++++++++-----------
->  drivers/gpu/drm/vkms/vkms_crtc.c     | 51 +++++++++++-----
->  drivers/gpu/drm/vkms/vkms_drv.c      | 18 ++++--
->  drivers/gpu/drm/vkms/vkms_drv.h      |  4 ++
->  4 files changed, 109 insertions(+), 52 deletions(-)
->=20
+Also the Documentation/ABI/testing/sysfs-platform-intel-pm file pretty much
+describes this as direct register access rather then as some reset mechanism.
+
+So I think it would be better to call the new file extended_test_mode_register3,
+this will also be useful if we need to provide access to other bits in the
+same register later; and this will be a good template to follow if we need to
+provide some access to other registers later too.
+
+Regards,
+
+Hans
 
 
---Sig_/8TxTFn5ZIDfMBvvPli94ZI=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> 
+>>
+>> Can you please provide a new version where the purpsoe of the newly
+>> introduced sysfs file is made more clear, both in the commit-msg as well as in
+>> the:
+> Okay I can do that.
+>>
+>> Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>
+>> File ?
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>>
+>>>
+>>> The register in MMIO space is defined for Cannon Lake and newer PCHs.
+>>>
+>>> Cc: David E Box <david.e.box@intel.com>
+>>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>> Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
+>>> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+>>> ---
+>>> 2:
+>>> 1. Add locking for reading the ET3 register  (Andy) 2. Fix few style
+>>> issues (Andy)
+>>> V3:
+>>> 1. Resend
+>>> v4:
+>>> 1. Fix return statement (Andy)
+>>> 2. Specify manufacturing process (Enrico)
+>>>
+>>>  .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
+>>>  MAINTAINERS                                   |  1 +
+>>>  drivers/platform/x86/intel_pmc_core.c         | 97 +++++++++++++++++++
+>>>  drivers/platform/x86/intel_pmc_core.h         |  6 ++
+>>>  4 files changed, 115 insertions(+)
+>>>  create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>> b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>> new file mode 100644
+>>> index 000000000000..7ce00e77fbcd
+>>> --- /dev/null
+>>> +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>> @@ -0,0 +1,11 @@
+>>> +What:		/sys/devices/platform/<platform>/global_reset
+>>> +Date:		Apr 2021
+>>> +KernelVersion:	5.13
+>>> +Contact:	"Tomas Winkler" <tomas.winkler@intel.com>
+>>> +Description:
+>>> +		Display global reset setting bits for PMC.
+>>> +			* bit 31 - global reset is locked
+>>> +			* bit 20 - global reset is set
+>>> +		Writing bit 20 value to the global_reset will induce
+>>> +		a platform global reset upon consequent platform reset.
+>>> +		in case the register is not locked.
+>>> diff --git a/MAINTAINERS b/MAINTAINERS index
+>>> 04f68e0cda64..618676eba8c8 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -9166,6 +9166,7 @@ M:	Rajneesh Bhardwaj
+>> <irenic.rajneesh@gmail.com>
+>>>  M:	David E Box <david.e.box@intel.com>
+>>>  L:	platform-driver-x86@vger.kernel.org
+>>>  S:	Maintained
+>>> +F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+>>>  F:	drivers/platform/x86/intel_pmc_core*
+>>>
+>>>  INTEL PMIC GPIO DRIVERS
+>>> diff --git a/drivers/platform/x86/intel_pmc_core.c
+>>> b/drivers/platform/x86/intel_pmc_core.c
+>>> index ee2f757515b0..8afc198550a4 100644
+>>> --- a/drivers/platform/x86/intel_pmc_core.c
+>>> +++ b/drivers/platform/x86/intel_pmc_core.c
+>>> @@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
+>>>  	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+>>>  	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+>>>  	.ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
+>>> +	.etr3_offset = ETR3_OFFSET,
+>>>  };
+>>>
+>>>  static const struct pmc_reg_map icl_reg_map = { @@ -418,6 +419,7 @@
+>>> static const struct pmc_reg_map icl_reg_map = {
+>>>  	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+>>>  	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+>>>  	.ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
+>>> +	.etr3_offset = ETR3_OFFSET,
+>>>  };
+>>>
+>>>  static const struct pmc_bit_map tgl_clocksource_status_map[] = { @@
+>>> -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
+>>>  	.lpm_sts = tgl_lpm_maps,
+>>>  	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
+>>>  	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
+>>> +	.etr3_offset = ETR3_OFFSET,
+>>>  };
+>>>
+>>>  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int
+>>> reg_offset) @@ -603,6 +606,99 @@ static inline u64
+>> pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
+>>>  	return (u64)value * pmcdev->map->slp_s0_res_counter_step;
+>>>  }
+>>>
+>>> +static int set_global_reset(struct pmc_dev *pmcdev) {
+>>> +	const struct pmc_reg_map *map = pmcdev->map;
+>>> +	u32 reg;
+>>> +	int err;
+>>> +
+>>> +	if (!map->etr3_offset)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	mutex_lock(&pmcdev->lock);
+>>> +
+>>> +	/* check if CF9 is locked */
+>>> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+>>> +	if (reg & ETR3_CF9LOCK) {
+>>> +		err = -EACCES;
+>>> +		goto out_unlock;
+>>> +	}
+>>> +
+>>> +	/* write CF9 global reset bit */
+>>> +	reg |= ETR3_CF9GR;
+>>> +	pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
+>>> +
+>>> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+>>> +	if (!(reg & ETR3_CF9GR)) {
+>>> +		err = -EIO;
+>>> +		goto out_unlock;
+>>> +	}
+>>> +
+>>> +	err = 0;
+>>> +
+>>> +out_unlock:
+>>> +	mutex_unlock(&pmcdev->lock);
+>>> +	return err;
+>>> +}
+>>> +
+>>> +static ssize_t global_reset_show(struct device *dev,
+>>> +				 struct device_attribute *attr, char *buf) {
+>>> +	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+>>> +	const struct pmc_reg_map *map = pmcdev->map;
+>>> +	u32 reg;
+>>> +
+>>> +	if (!map->etr3_offset)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	mutex_lock(&pmcdev->lock);
+>>> +
+>>> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+>>> +	reg &= ETR3_CF9GR | ETR3_CF9LOCK;
+>>> +
+>>> +	mutex_unlock(&pmcdev->lock);
+>>> +
+>>> +	return sysfs_emit(buf, "0x%08x", reg); }
+>>> +
+>>> +static ssize_t global_reset_store(struct device *dev,
+>>> +				  struct device_attribute *attr,
+>>> +				  const char *buf, size_t len)
+>>> +{
+>>> +	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+>>> +	int err;
+>>> +	u32 reg;
+>>> +
+>>> +	err = kstrtouint(buf, 16, &reg);
+>>> +	if (err)
+>>> +		return err;
+>>> +
+>>> +	/* allow only CF9 writes */
+>>> +	if (reg != ETR3_CF9GR)
+>>> +		return -EINVAL;
+>>> +
+>>> +	err = set_global_reset(pmcdev);
+>>> +	if (err)
+>>> +		return err;
+>>> +
+>>> +	return len;
+>>> +}
+>>> +static DEVICE_ATTR_RW(global_reset);
+>>> +
+>>> +static struct attribute *pmc_attrs[] = {
+>>> +	&dev_attr_global_reset.attr,
+>>> +	NULL
+>>> +};
+>>> +
+>>> +static const struct attribute_group pmc_attr_group = {
+>>> +	.attrs = pmc_attrs,
+>>> +};
+>>> +
+>>> +static const struct attribute_group *pmc_dev_groups[] = {
+>>> +	&pmc_attr_group,
+>>> +	NULL
+>>> +};
+>>> +
+>>>  static int pmc_core_dev_state_get(void *data, u64 *val)  {
+>>>  	struct pmc_dev *pmcdev = data;
+>>> @@ -1364,6 +1460,7 @@ static struct platform_driver pmc_core_driver = {
+>>>  		.name = "intel_pmc_core",
+>>>  		.acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
+>>>  		.pm = &pmc_core_pm_ops,
+>>> +		.dev_groups = pmc_dev_groups,
+>>>  	},
+>>>  	.probe = pmc_core_probe,
+>>>  	.remove = pmc_core_remove,
+>>> diff --git a/drivers/platform/x86/intel_pmc_core.h
+>>> b/drivers/platform/x86/intel_pmc_core.h
+>>> index f33cd2c34835..98ebdfe57138 100644
+>>> --- a/drivers/platform/x86/intel_pmc_core.h
+>>> +++ b/drivers/platform/x86/intel_pmc_core.h
+>>> @@ -200,6 +200,11 @@ enum ppfear_regs {
+>>>  #define TGL_LPM_STATUS_OFFSET			0x1C3C
+>>>  #define TGL_LPM_LIVE_STATUS_OFFSET		0x1C5C
+>>>
+>>> +/* Extended Test Mode Register 3 (CNL and later) */
+>>> +#define ETR3_OFFSET				0x1048
+>>> +#define ETR3_CF9GR				BIT(20)
+>>> +#define ETR3_CF9LOCK				BIT(31)
+>>> +
+>>>  const char *tgl_lpm_modes[] = {
+>>>  	"S0i2.0",
+>>>  	"S0i2.1",
+>>> @@ -263,6 +268,7 @@ struct pmc_reg_map {
+>>>  	const u32 lpm_residency_offset;
+>>>  	const u32 lpm_status_offset;
+>>>  	const u32 lpm_live_status_offset;
+>>> +	const u32 etr3_offset;
+>>>  };
+>>>
+>>>  /**
+>>>
+> 
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmBtW3oACgkQI1/ltBGq
-qqdM0hAAmnlL9dhIQ0JJyfdKGqHPrJf2I89HJWh1aROB2K/N0nTIA+GSpXqEV2zA
-N1Cr+Blw4zHVvTZFCg30lVpxNKVWYYb6xBaToJXi1TqI+1T6wmy3KULlg/JUlYTs
-99EDZmfD8w5mLYvWuXZZrFQLluJPUztLr6KGWMkaB7l1e+NTioauxxP0vwRUjftp
-UBqWJrbVq5XXwAOyjvXd4PnJJMxsOhH5w23b+8YnjNslfLBmXL2ns4wctKt3F+hk
-bAaCXtmsK2Oaq/z4t9wFXkgcwUT8/wEEExbhaPt3QJj+ncte+WRCtso3AdlURFEi
-LTQUhPJp+BKHCiWI99QtB00nOccRF74Uu31uzTM/BoMAcTgX4gbv4VQBCOZ7pyt9
-StVAfmLtSlklAFOZxYVcY+ovP93i2QlmXygr38gbI0y6vamYN654PM9ml+xTeXEh
-87eQeLmE9VGjS+BpsRtm+UZqYh6J9cBR/ZSA2fXFRzTkzS7fD1IS/+6jfYa3uCjf
-sI1LFnjA1q5zwIb64R3td5rD8DfbYS9XMQiU4ih2/9rFkKpdQhaMzAPM3agOxB0C
-YOB6fFVNqbt+Kvx+BFt5IeEDjmCp/WebNMKceQLfhgmV8xLl5U20irCB4fCh+27z
-bqwUbirxnZ2LI6Yp/xty/7L2/5Ra67IGixTUQ7K6lNWqAUZHaH4=
-=42dw
------END PGP SIGNATURE-----
-
---Sig_/8TxTFn5ZIDfMBvvPli94ZI=--
