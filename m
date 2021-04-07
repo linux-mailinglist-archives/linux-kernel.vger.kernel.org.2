@@ -2,325 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10E83565C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFE23565C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346856AbhDGHsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346805AbhDGHsE (ORCPT
+        id S1346902AbhDGHso convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Apr 2021 03:48:44 -0400
+Received: from mail.kingsoft.com ([114.255.44.145]:20259 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346805AbhDGHsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:48:04 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD771C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:47:53 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w23so8394034edx.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=qtec.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=plCjkshfPYRJPx8mJ31yMaLutaXbhwBVGKKe4dKObKg=;
-        b=SBNCdqNh5r5ZKz/pliBDgu/zjGwpff6X/nMMNlQmT7otug07Z6cKL91Q8eqijlggW1
-         GIU4Zkpxf9PRcK+1jKgOYrph1WS/8B9detl2G+Zy0E3x6BQs3YQcuMZ3h8Zu+Od6FyDo
-         yAaSC2CsjNIh8jstnXqh4/49PkqX+G1QvY9oi+8j8zsMHlhEmLHg3hDZptpOEOq98/WM
-         5zXIMnL/POlJkAKeagAFrLAo3kNPu/xPJ7Pg8qS3ntuwMV7AH+qxamiHzrENUGdzIejJ
-         kg8olDBaXWedrKL+0s0GV6BP57iWHHu0x2yQbfCclpx4iRguiHa770hQ4f9rXEQSPQXl
-         p9jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=plCjkshfPYRJPx8mJ31yMaLutaXbhwBVGKKe4dKObKg=;
-        b=GWFZHvVttTi1ihLWdYkDufJEDGg1uYxtL+vhodmPov5izN83uj6CYwgj6PjfvBqLfG
-         kW4VWWsqjtm5k3S272otz/TzVb230ImyBse8vhXBJ2QA1yfqgNLwsqbrBPlIOEkoLTj6
-         LzKRVVZHuj6I+FmHtoQWF13YofO99RibE4v0xyz8Wl9Kz1h3Wy0Xv/Ke8rIu2nPTvLcj
-         nW2gHrGeUrM+mSyEUtWyHc+fDqWiJ6YGcV26MudCI64WdN7qEtH1BfrRqZpFAr0jpG8r
-         HtKtNvjltLuv/yHSP8eqjdTytdujxOgSyiebiNVzJrnBVX34mThfAh3AEjo77zWzIaZ0
-         IZSQ==
-X-Gm-Message-State: AOAM532sN9YTZii0RmimpxwagPJMq80KnHQDbCNtj5OMuUvgU0KcLHga
-        zVP+BBDx6F/Sud7Cfjk2SazDZfxKOUkYrq/CQAffiA==
-X-Google-Smtp-Source: ABdhPJwPE23Wtf/N+0juHMu9EwRg37dtZxIPr8lfT3fxHZ1SOMgqe8rN+97/ZzNABnWC5BIc4DkwMgO9e++sDpVmvu8=
-X-Received: by 2002:aa7:c5c4:: with SMTP id h4mr2669994eds.375.1617781672421;
- Wed, 07 Apr 2021 00:47:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210318083236.43578-1-daniel@qtec.com> <MN2PR12MB37755DAAB03FC0065E98EF1183699@MN2PR12MB3775.namprd12.prod.outlook.com>
- <CADnq5_MMTBXt50sqJvYmXWn0uBALz2fNvpSrCfjSuMa99VLa=w@mail.gmail.com>
- <375f0915-83b3-c729-b95f-939d828d24d0@amd.com> <CAH1Ww+TNMpk-LYYaM=SG9XGK4wcGY3+w8rJzihUw=4EpzVV9EQ@mail.gmail.com>
- <aae87a0a-d643-8ee9-d0f8-e983f8613a88@gmail.com> <CADnq5_NbGz3UaXeTybZBeCSUwxaV8bNxKkaVwtLoZQGSvkbYYg@mail.gmail.com>
-In-Reply-To: <CADnq5_NbGz3UaXeTybZBeCSUwxaV8bNxKkaVwtLoZQGSvkbYYg@mail.gmail.com>
-From:   Daniel Gomez <daniel@qtec.com>
-Date:   Wed, 7 Apr 2021 09:47:41 +0200
-Message-ID: <CAH1Ww+TSv3_LR_sf6hm_-i27=1Wb8Aay5FjOQq2Csh9jvKheCA@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon/ttm: Fix memory leak userptr pages
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Felix Kuehling <felix.kuehling@amd.com>,
-        David Airlie <airlied@linux.ie>,
+        Wed, 7 Apr 2021 03:48:43 -0400
+X-AuditID: 0a580155-b7dff7000000169b-51-606d63d06f33
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id F8.13.05787.0D36D606; Wed,  7 Apr 2021 15:48:32 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 7 Apr 2021
+ 15:48:31 +0800
+Date:   Wed, 7 Apr 2021 15:48:31 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>
+CC:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "dagmcr@gmail.com" <dagmcr@gmail.com>
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>, <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v7] mm/gup: check page hwpoison status for memory
+ recovery failures.
+Message-ID: <20210407154831.66524e0a@alex-virtual-machine>
+In-Reply-To: <20210407015428.GA26707@hori.linux.bs1.fc.nec.co.jp>
+References: <20210320003516.GC3420@casper.infradead.org>
+        <20210322193318.377c9ce9@alex-virtual-machine>
+        <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
+        <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
+        <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
+        <20210331104303.145aea53@alex-virtual-machine>
+        <20210331043231.GA26013@hori.linux.bs1.fc.nec.co.jp>
+        <9f49c415-a75a-1ea3-b80c-5ba512331de6@redhat.com>
+        <20210406102346.3890ceb2@alex-virtual-machine>
+        <20210406104123.451ee3c3@alex-virtual-machine>
+        <20210407015428.GA26707@hori.linux.bs1.fc.nec.co.jp>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsXCFcHor3shOTfBYM8uZos569ewWXxd/4vZ
+        4vKuOWwW99b8Z7X4uD/Y4mLjAUaLM9OKLH7/mMPmwOGxeYWWx6ZPk9g9Tsz4zeLx4upGFo+P
+        T2+xeLzfd5XNY/Ppao/Pm+QCOKK4bFJSczLLUov07RK4MrYc3sda8FKt4v6xl+wNjEfluhg5
+        OSQETCQe/OpkA7GFBKYzSbTes+xi5AKyXzJKrF66kBkkwSKgItF8YgmYzSagKrHr3ixWEFtE
+        IEli8eyvTCANzAKHmSXe3T/MDpIQFoiS+NXbxdLFyMHBK2Alcf+nGkiYU8BR4sW008wQC/ay
+        SMyaNwtsKL+AmETvlf9MEBfZS7RtWcQIYvMKCEqcnPmEBcRmFtCUaN3+mx3C1pZYtvA1M8TV
+        ihKHl/xih+hVkjjSPYMNwo6VaDpwi20Co/AsJKNmIRk1C8moBYzMqxhZinPTjTYxQqIldAfj
+        jKaPeocYmTgYDzFKcDArifDu6M1OEOJNSaysSi3Kjy8qzUktPsQozcGiJM4rp5qbICSQnliS
+        mp2aWpBaBJNl4uCUamDqDLh9z2BKk4OyVOezrLJv184XpN9YLaO5ympb9ZKz0zmEeJ67fy1b
+        /NT+ldplc3mrTauOb35+qKbF0+nWroO+3PMY9SQ5G1NWpJfNP/E3Y0LV7Lvh1rWh+jc/fQq8
+        l9LLvyjPv/zNwbzOLj7/k29XZrTO2MnZfGDlzCf1yzaXe0a+iO//F+7L9Pq5zz+3y1ecI+6f
+        sHdcvp919kEe2ayY+vWpSlpSK4/yX1to/WQy1+XqNbP6d0zcJSnqtFNcI2Vj55QT+cKh8p08
+        y7qSVwQYBtz96TL1kOiS/MlLN1rK9nnEXHA6dj6k8vr5D+nT1+99VfQ+Xm2S/a9FjB8Ufi8R
+        eCp/SeRr9fV3eZozS7dNUmIpzkg01GIuKk4EADA6OqgFAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 22:56, Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Mon, Mar 22, 2021 at 6:34 AM Christian K=C3=B6nig
-> <ckoenig.leichtzumerken@gmail.com> wrote:
-> >
-> > Hi Daniel,
-> >
-> > Am 22.03.21 um 10:38 schrieb Daniel Gomez:
-> > > On Fri, 19 Mar 2021 at 21:29, Felix Kuehling <felix.kuehling@amd.com>=
- wrote:
-> > >> This caused a regression in kfdtest in a large-buffer stress test af=
-ter
-> > >> memory allocation for user pages fails:
-> > > I'm sorry to hear that. BTW, I guess you meant amdgpu leak patch and
-> > > not this one.
-> > > Just some background for the mem leak patch if helps to understand th=
-is:
-> > > The leak was introduce here:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
-mmit/?id=3D0b988ca1c7c4c73983b4ea96ef7c2af2263c87eb
-> > > where the bound status was introduced for all drm drivers including
-> > > radeon and amdgpu. So this patch just reverts the logic to the
-> > > original code but keeping the bound status. In my case, the binding
-> > > code allocates the user pages memory and returns without bounding (at
-> > > amdgpu_gtt_mgr_has_gart_addr). So,
-> > > when the unbinding happens, the memory needs to be cleared to prevent=
- the leak.
-> >
-> > Ah, now I understand what's happening here. Daniel your patch is not
-> > really correct.
-> >
-> > The problem is rather that we don't set the tt object to bound if it
-> > doesn't have a GTT address.
-> >
-> > Going to provide a patch for this.
->
-> Did this patch ever land?
+On Wed, 7 Apr 2021 01:54:28 +0000
+HORIGUCHI NAOYA(堀口　直也) <naoya.horiguchi@nec.com> wrote:
 
-I don't think so but I might send a v2 following Christian's comment
-if you guys agree.
+> On Tue, Apr 06, 2021 at 10:41:23AM +0800, Aili Yao wrote:
+> > When we call get_user_pages() to pin user page in memory, there may be
+> > hwpoison page, currently, we just handle the normal case that memory
+> > recovery jod is correctly finished, and we will not return the hwpoison
+> > page to callers, but for other cases like memory recovery fails and the
+> > user process related pte is not correctly set invalid, we will still
+> > return the hwpoison page, and may touch it and lead to panic.
+> > 
+> > In gup.c, for normal page, after we call follow_page_mask(), we will
+> > return the related page pointer; or like another hwpoison case with pte
+> > invalid, it will return NULL. For NULL, we will handle it in if (!page)
+> > branch. In this patch, we will filter out the hwpoison page in
+> > follow_page_mask() and return error code for recovery failure cases.
+> > 
+> > We will check the page hwpoison status as soon as possible and avoid doing
+> > followed normal procedure and try not to grab related pages.
+> > 
+> > Changes since v6:
+> > - Fix wrong page pointer check in follow_trans_huge_pmd();
+> > 
+> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > Cc: Oscar Salvador <osalvador@suse.de>
+> > Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  mm/gup.c         | 27 +++++++++++++++++++++++----
+> >  mm/huge_memory.c | 11 ++++++++---
+> >  mm/hugetlb.c     |  8 +++++++-
+> >  mm/internal.h    | 13 +++++++++++++
+> >  4 files changed, 51 insertions(+), 8 deletions(-)  
+> 
+> Thank you for the work.
+> 
+> Looking through this patch, the internal of follow_page_mask() is
+> very complicated so it's not easy to make this hwpoison-aware.
+> Now I'm getting unsure to judge that this is the best approach.
+> What actually I imagined might be like below (which is totally
+> untested, and I'm sorry about my previous misleading comments):
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e40579624f10..a60a08fc7668 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1090,6 +1090,11 @@ static long __get_user_pages(struct mm_struct *mm,
+>  		} else if (IS_ERR(page)) {
+>  			ret = PTR_ERR(page);
+>  			goto out;
+> +		} else if (gup_flags & FOLL_HWPOISON && PageHWPoison(page)) {
+> +			if (gup_flags & FOLL_GET)
+> +				put_page(page);
+> +			ret = -EHWPOISON;
+> +			goto out;
+>  		}
+>  		if (pages) {
+>  			pages[i] = page;
+> @@ -1532,7 +1537,7 @@ struct page *get_dump_page(unsigned long addr)
+>  	if (mmap_read_lock_killable(mm))
+>  		return NULL;
+>  	ret = __get_user_pages_locked(mm, addr, 1, &page, NULL, &locked,
+> -				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
+> +				      FOLL_FORCE | FOLL_DUMP | FOLL_GET | FOLL_HWPOISON);
+>  	if (locked)
+>  		mmap_read_unlock(mm);
+>  	return (ret == 1) ? page : NULL;
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index a86a58ef132d..03c3d3225c0d 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -4949,6 +4949,14 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+>  			continue;
+>  		}
+>  
+> +		if (flags & FOLL_HWPOISON && PageHWPoison(page)) {
+> +			vaddr += huge_page_size(h);
+> +			remainder -= pages_per_huge_page(h);
+> +			i += pages_per_huge_page(h);
+> +			spin_unlock(ptl);
+> +			continue;
+> +		}
+> +
+>  		refs = min3(pages_per_huge_page(h) - pfn_offset,
+>  			    (vma->vm_end - vaddr) >> PAGE_SHIFT, remainder);
+>  
+> 
+> We can surely say that this change only affects get_user_pages() callers
+> with FOLL_HWPOISON set, so this should pinpoint the current problem only.
+> A side note is that the above change on follow_hugetlb_page() has a room of
+> refactoring to reduce duplicated code.
+> 
+> Could you try to test and complete it?
 
-Also, the patch here is for radeon but the pagefault issue reported by
-Felix is affected by the amdgpu one:
+Got it, I will try to complete it and test it.
 
-radeon patch: drm/radeon/ttm: Fix memory leak userptr pages
-https://patchwork.kernel.org/project/dri-devel/patch/20210318083236.43578-1=
--daniel@qtec.com/
+For the code:
 
-amdgpu patch: drm/amdgpu/ttm: Fix memory leak userptr pages
-https://patchwork.kernel.org/project/dri-devel/patch/20210317160840.36019-1=
--daniel@qtec.com/
+long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+>  			continue;
+>  		}
+>  
+> +		if (flags & FOLL_HWPOISON && PageHWPoison(page)) {
+> +			vaddr += huge_page_size(h);
+> +			remainder -= pages_per_huge_page(h);
+> +			i += pages_per_huge_page(h);
+> +			spin_unlock(ptl);
+> +			continue;
+> +		}
+> +
 
-I assume both need to be fixed with the same approach.
+I am wondering if we still need to continue the loop in follow_hugetlb_page()?  This function
+seems mainly for prerparation of vmas and grab the hugepage, if we meet one hwpoison hugetlb page,
+we will check it after follow_page_mask() return, then we will quit the total loop
+and the num of page or error code will be returned, and the vmas after the hwpoison one will
+not be needed?
 
-Daniel
->
-> Alex
->
-> >
-> > Regards,
-> > Christian.
-> >
-> > >
-> > >> [17359.536303] amdgpu: init_user_pages: Failed to get user pages: -1=
-6
-> > >> [17359.543746] BUG: kernel NULL pointer dereference, address: 000000=
-0000000000
-> > >> [17359.551494] #PF: supervisor read access in kernel mode
-> > >> [17359.557375] #PF: error_code(0x0000) - not-present page
-> > >> [17359.563247] PGD 0 P4D 0
-> > >> [17359.566514] Oops: 0000 [#1] SMP PTI
-> > >> [17359.570728] CPU: 8 PID: 5944 Comm: kfdtest Not tainted 5.11.0-kfd=
--fkuehlin #193
-> > >> [17359.578760] Hardware name: ASUS All Series/X99-E WS/USB 3.1, BIOS=
- 3201 06/17/2016
-> > >> [17359.586971] RIP: 0010:amdgpu_ttm_backend_unbind+0x52/0x110 [amdgp=
-u]
-> > >> [17359.594075] Code: 48 39 c6 74 1b 8b 53 0c 48 8d bd 80 a1 ff ff e8=
- 24 62 00 00 85 c0 0f 85 ab 00 00 00 c6 43 54 00 5b 5d c3 48 8b 46 10 8b 4e=
- 50 <48> 8b 30 48 85 f6 74 ba 8b 50 0c 48 8b bf 80 a1 ff ff 83 e1 01 45
-> > >> [17359.614340] RSP: 0018:ffffa4764971fc98 EFLAGS: 00010206
-> > >> [17359.620315] RAX: 0000000000000000 RBX: ffff950e8d4edf00 RCX: 0000=
-000000000000
-> > >> [17359.628204] RDX: 0000000000000000 RSI: ffff950e8d4edf00 RDI: ffff=
-950eadec5e80
-> > >> [17359.636084] RBP: ffff950eadec5e80 R08: 0000000000000000 R09: 0000=
-000000000000
-> > >> [17359.643958] R10: 0000000000000246 R11: 0000000000000001 R12: ffff=
-950c03377800
-> > >> [17359.651833] R13: ffff950eadec5e80 R14: ffff950c03377858 R15: 0000=
-000000000000
-> > >> [17359.659701] FS:  00007febb20cb740(0000) GS:ffff950ebfc00000(0000)=
- knlGS:0000000000000000
-> > >> [17359.668528] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >> [17359.675012] CR2: 0000000000000000 CR3: 00000006d700e005 CR4: 0000=
-0000001706e0
-> > >> [17359.682883] Call Trace:
-> > >> [17359.686063]  amdgpu_ttm_backend_destroy+0x12/0x70 [amdgpu]
-> > >> [17359.692349]  ttm_bo_cleanup_memtype_use+0x37/0x60 [ttm]
-> > >> [17359.698307]  ttm_bo_release+0x278/0x5e0 [ttm]
-> > >> [17359.703385]  amdgpu_bo_unref+0x1a/0x30 [amdgpu]
-> > >> [17359.708701]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x7e5/0x910 =
-[amdgpu]
-> > >> [17359.716307]  kfd_ioctl_alloc_memory_of_gpu+0x11a/0x220 [amdgpu]
-> > >> [17359.723036]  kfd_ioctl+0x223/0x400 [amdgpu]
-> > >> [17359.728017]  ? kfd_dev_is_large_bar+0x90/0x90 [amdgpu]
-> > >> [17359.734152]  __x64_sys_ioctl+0x8b/0xd0
-> > >> [17359.738796]  do_syscall_64+0x2d/0x40
-> > >> [17359.743259]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > >> [17359.749205] RIP: 0033:0x7febb083b6d7
-> > >> [17359.753681] Code: b3 66 90 48 8b 05 b1 47 2d 00 64 c7 00 26 00 00=
- 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f=
- 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 47 2d 00 f7 d8 64 89 01 48
-> > >> [17359.774340] RSP: 002b:00007ffdb5522cd8 EFLAGS: 00000202 ORIG_RAX:=
- 0000000000000010
-> > >> [17359.782668] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000=
-7febb083b6d7
-> > >> [17359.790566] RDX: 00007ffdb5522d60 RSI: 00000000c0284b16 RDI: 0000=
-000000000003
-> > >> [17359.798459] RBP: 00007ffdb5522d10 R08: 00007ffdb5522dd0 R09: 0000=
-0000c4000004
-> > >> [17359.806352] R10: 0000000000000000 R11: 0000000000000202 R12: 0000=
-559416e4e2aa
-> > >> [17359.814251] R13: 0000000000000000 R14: 0000000000000021 R15: 0000=
-000000000000
-> > >> [17359.822140] Modules linked in: ip6table_filter ip6_tables iptable=
-_filter amdgpu x86_pkg_temp_thermal drm_ttm_helper ttm iommu_v2 gpu_sched i=
-p_tables x_tables
-> > >> [17359.837776] CR2: 0000000000000000
-> > >> [17359.841888] ---[ end trace a6f27d64475b28c8 ]---
-> > >> [17359.847318] RIP: 0010:amdgpu_ttm_backend_unbind+0x52/0x110 [amdgp=
-u]
-> > >> [17359.854479] Code: 48 39 c6 74 1b 8b 53 0c 48 8d bd 80 a1 ff ff e8=
- 24 62 00 00 85 c0 0f 85 ab 00 00 00 c6 43 54 00 5b 5d c3 48 8b 46 10 8b 4e=
- 50 <48> 8b 30 48 85 f6 74 ba 8b 50 0c 48 8b bf 80 a1 ff ff 83 e1 01 45
-> > >> [17359.874929] RSP: 0018:ffffa4764971fc98 EFLAGS: 00010206
-> > >> [17359.881014] RAX: 0000000000000000 RBX: ffff950e8d4edf00 RCX: 0000=
-000000000000
-> > >> [17359.889007] RDX: 0000000000000000 RSI: ffff950e8d4edf00 RDI: ffff=
-950eadec5e80
-> > >> [17359.897008] RBP: ffff950eadec5e80 R08: 0000000000000000 R09: 0000=
-000000000000
-> > >> [17359.905020] R10: 0000000000000246 R11: 0000000000000001 R12: ffff=
-950c03377800
-> > >> [17359.913034] R13: ffff950eadec5e80 R14: ffff950c03377858 R15: 0000=
-000000000000
-> > >> [17359.921050] FS:  00007febb20cb740(0000) GS:ffff950ebfc00000(0000)=
- knlGS:0000000000000000
-> > >> [17359.930047] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >> [17359.936674] CR2: 0000000000000000 CR3: 00000006d700e005 CR4: 0000=
-0000001706e0
-> > >  From what I understand, the init_user_pages fails (returns EBUSY) an=
-d
-> > > the code goes to allocate_init_user_pages_failed where the unbind and
-> > > the userptr clear occurs.
-> > > Can we prevent this if we save the bounding status + userptr alloc? s=
-o
-> > > the function amdgpu_ttm_backend_unbind returns without trying to clea=
-r
-> > > the userptr memory?
-> > >
-> > > Something like:
-> > >
-> > > amdgpu_ttm_backend_bind:
-> > >      if (gtt->userptr) {
-> > >          r =3D amdgpu_ttm_tt_pin_userptr(bdev, ttm);
-> > >          if (r) ...
-> > >         gtt->sg_table =3D true;
-> > >     }
-> > >
-> > > amdgpu_ttm_backend_unbind:
-> > > if (gtt->sg_table) {
-> > >          if (gtt->user_ptr) ...
-> > > }
-> > >
-> > > If you agree, I'll send a v2 patch. Otherwise, maybe we could return
-> > > within amdgpu_ttm_tt_unpin_userptr if memory hasn't been allocated.
-> > >
-> > > Any other ideas?
-> > >
-> > > Regards,
-> > > Daniel
-> > >
-> > >> Reverting this patch fixes the problem for me.
-> > >>
-> > >> Regards,
-> > >>     Felix
-> > >>
-> > >> On 2021-03-18 10:57 p.m., Alex Deucher wrote:
-> > >>> Applied.  Thanks!
-> > >>>
-> > >>> Alex
-> > >>>
-> > >>> On Thu, Mar 18, 2021 at 5:00 AM Koenig, Christian
-> > >>> <Christian.Koenig@amd.com> wrote:
-> > >>>> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > >>>> ________________________________
-> > >>>> Von: Daniel Gomez <daniel@qtec.com>
-> > >>>> Gesendet: Donnerstag, 18. M=C3=A4rz 2021 09:32
-> > >>>> Cc: dagmcr@gmail.com <dagmcr@gmail.com>; Daniel Gomez <daniel@qtec=
-.com>; Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <C=
-hristian.Koenig@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vetter <d=
-aniel@ffwll.ch>; amd-gfx@lists.freedesktop.org <amd-gfx@lists.freedesktop.o=
-rg>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesktop.org>; lin=
-ux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
-> > >>>> Betreff: [PATCH] drm/radeon/ttm: Fix memory leak userptr pages
-> > >>>>
-> > >>>> If userptr pages have been pinned but not bounded,
-> > >>>> they remain uncleared.
-> > >>>>
-> > >>>> Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> > >>>> ---
-> > >>>>    drivers/gpu/drm/radeon/radeon_ttm.c | 5 +++--
-> > >>>>    1 file changed, 3 insertions(+), 2 deletions(-)
-> > >>>>
-> > >>>> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm=
-/radeon/radeon_ttm.c
-> > >>>> index e8c66d10478f..bbcc6264d48f 100644
-> > >>>> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> > >>>> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> > >>>> @@ -485,13 +485,14 @@ static void radeon_ttm_backend_unbind(struct=
- ttm_bo_device *bdev, struct ttm_tt
-> > >>>>            struct radeon_ttm_tt *gtt =3D (void *)ttm;
-> > >>>>            struct radeon_device *rdev =3D radeon_get_rdev(bdev);
-> > >>>>
-> > >>>> +       if (gtt->userptr)
-> > >>>> +               radeon_ttm_tt_unpin_userptr(bdev, ttm);
-> > >>>> +
-> > >>>>            if (!gtt->bound)
-> > >>>>                    return;
-> > >>>>
-> > >>>>            radeon_gart_unbind(rdev, gtt->offset, ttm->num_pages);
-> > >>>>
-> > >>>> -       if (gtt->userptr)
-> > >>>> -               radeon_ttm_tt_unpin_userptr(bdev, ttm);
-> > >>>>            gtt->bound =3D false;
-> > >>>>    }
-> > >>>>
-> > >>>> --
-> > >>>> 2.30.2
-> > >>>>
-> > >>>> _______________________________________________
-> > >>>> dri-devel mailing list
-> > >>>> dri-devel@lists.freedesktop.org
-> > >>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > >>> _______________________________________________
-> > >>> dri-devel mailing list
-> > >>> dri-devel@lists.freedesktop.org
-> > >>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > _______________________________________________
-> > > amd-gfx mailing list
-> > > amd-gfx@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
-> >
+-- 
+Thanks!
+Aili Yao
