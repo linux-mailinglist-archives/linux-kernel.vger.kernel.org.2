@@ -2,134 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082A2356B0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505A7356B15
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241613AbhDGLXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:23:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231138AbhDGLXD (ORCPT
+        id S235131AbhDGLYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:24:30 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:22054 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343506AbhDGLYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617794573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vi6mmAZvR34GygMPmuboiq8nvRacIFz1ApMzney+KHo=;
-        b=Q2RGwKQcxl9ULb1f5Ejpm1kR/Xg9IVaDssHZQ15C65Obc3MOUr+6HH5Shj8Yk4FGy+1POr
-        HRwnr7xJaoJQ9p5CIRv/YPEvc3vJz/6nXuWistloZYxMF6wQXPzfU2aFCA3ZScpPvqb4mm
-        WupNO5e/soAtUu9GTa0tlWnLOjAleB8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-PvP9DU4hO0izYmmzg7BgXw-1; Wed, 07 Apr 2021 07:22:50 -0400
-X-MC-Unique: PvP9DU4hO0izYmmzg7BgXw-1
-Received: by mail-ed1-f71.google.com with SMTP id h9so4965296edb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:22:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vi6mmAZvR34GygMPmuboiq8nvRacIFz1ApMzney+KHo=;
-        b=r848E0zLUd/5u5BlF7qo+ZaHDyxn+x03IguEexhtTd38qbDEBlJ7+CWlh/FAdXSvm5
-         yfFq1y2Ao94Xfm+uxaNA1Kz8eCgqCHmlOCcNw2seEe8GAi7B23QBCDK0DRa/r85NVBHk
-         R9zRhcSS1UyzQaHsEGOaXCeZiACF+D+z6kVSAsdnXnqr0U6RWEZCmPku8gsIrc91QVVp
-         krSQ/i1duvyY3UA7AL9GpqQeSkyWyFzFzyBKY8OynnQMT2cWSaeTCtO6LaDnQvqOaMOY
-         blYBROh8J/3ZoFH9rxCBC5fcOJvSegD70kgUt9Vk25mHL5Dk9B6w/EWYQhM2foifLydc
-         WMqQ==
-X-Gm-Message-State: AOAM532h6xZnfP2ar9ZdA1G8XAUbQujJ+IDHZQo1HXrixBb1O2eJ/qHx
-        RL6sJmPZdBdloSaPsF5VgJOHwbRMpnZaCSYa7zpGBCGiVocvCixodUup9io7Y1wX+ePzKn0qw7P
-        J7rq1+EbS8vYgu1r7lsNTleln73uxDaPHYKDKMdqjLnwicwICBsIwu7eQjBfKfgQVXp1YuYteqx
-        yD
-X-Received: by 2002:aa7:dc0b:: with SMTP id b11mr3839934edu.124.1617794569102;
-        Wed, 07 Apr 2021 04:22:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLRW5PlDd6Dkn0bNfGdzeKg0oo5GGmVEYz0R4lD0wLLioxKvGHcePkwg9NHRv9JzoisN2JKg==
-X-Received: by 2002:aa7:dc0b:: with SMTP id b11mr3839910edu.124.1617794568897;
-        Wed, 07 Apr 2021 04:22:48 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id jo12sm4465038ejb.52.2021.04.07.04.22.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 04:22:48 -0700 (PDT)
-Subject: Re: [PATCH v3] platform/x86: asus-wmi: Add param to turn fn-lock mode
- on by default
-To:     Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     Corentin Chary <corentin.chary@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
- <20210323210126.145286-1-luca.stefani.ge1@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <4e816e9e-b35e-49ff-db91-82476fc4c9f7@redhat.com>
-Date:   Wed, 7 Apr 2021 13:22:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 7 Apr 2021 07:24:20 -0400
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 137BNkMm013375;
+        Wed, 7 Apr 2021 20:23:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137BNkMm013375
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617794626;
+        bh=xRsVc5VOBPahsGiZ0g8g+/BIjtOSuDMTESYsE15eLiU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SJAtKXW7b1M1zP74XO57uXecda87Y4e/PVxEJqeYl8/fxmmfyjB2w8eEewOSR9JLu
+         EmiJEKvyWbbmKB1rksXUG5PyvWhL8b3MykcZpA1OJ+AnhjeFsKestxNY0VjG4PAK9J
+         BOiUWG23/d43QUSnyzzjGxT89msxMxB6gYgUAm/jaVBgqdaBc0LxCLOaKntLTCzJpN
+         GbiamSUlMXDUVvptqXlIY3d2UvIFXDA4zeRQmI/j8qmaUjZP2eBmbFwRWdfObbK4KB
+         /+qatmUj90qvRtPj44S+jFQupWITYdST8+QX1+uEPlHKZHmuOelvY6w41Htv0HoSDR
+         3W0CeLPYk+17A==
+X-Nifty-SrcIP: [209.85.214.169]
+Received: by mail-pl1-f169.google.com with SMTP id z12so5102442plb.9;
+        Wed, 07 Apr 2021 04:23:46 -0700 (PDT)
+X-Gm-Message-State: AOAM531VBasu25l/OKt7nN+DvSWjPWoq/Iz0LPNG8KhucWgoUWS8pupQ
+        c3I9y/qxMz/JkX5MjHeQ5xoXVwvAl2BqRsRJFVY=
+X-Google-Smtp-Source: ABdhPJwfvlXM97/EOlS4tPq2ADHj5VuR1RjangeNyKBFR+o9ytzLscVAQqAaEeHWwJmEVBXLLFxZBIwLzQJOfrSmDKw=
+X-Received: by 2002:a17:902:be10:b029:e9:78a0:dd33 with SMTP id
+ r16-20020a170902be10b02900e978a0dd33mr356753pls.1.1617794625511; Wed, 07 Apr
+ 2021 04:23:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323210126.145286-1-luca.stefani.ge1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-16-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-16-gregkh@linuxfoundation.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 20:23:08 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATkQfwqr9-G5KwGmWDeG81Wn0eb3ZVxopJjxCq18S28=Q@mail.gmail.com>
+Message-ID: <CAK7LNATkQfwqr9-G5KwGmWDeG81Wn0eb3ZVxopJjxCq18S28=Q@mail.gmail.com>
+Subject: Re: [PATCH 15/20] kbuild: parisc: use common install script
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/23/21 10:01 PM, Luca Stefani wrote:
-> * On recent ZenBooks the fn-lock is disabled
->   by default on boot while running Windows.
-> 
-> * Add a module param ( fnlock_default ) that allows
->   changing the default at probe time
-> > Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
+On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> The common scripts/install.sh script will now work for parisc, all that
+> is needed is to add the compressed image type to it.  So add that file
+> type check, and then we can remove the two different copies of the
+> parisc install.sh script that were only different by one line and have
+> the arch call the common install script.
+>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-parisc@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/platform/x86/asus-wmi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 9ca15f724343..ebaeb7bb80f5 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -47,6 +47,9 @@ MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
->  MODULE_DESCRIPTION("Asus Generic WMI Driver");
->  MODULE_LICENSE("GPL");
->  
-> +static bool fnlock_default = true;
-> +module_param(fnlock_default, bool, 0444);
-> +
->  #define to_asus_wmi_driver(pdrv)					\
->  	(container_of((pdrv), struct asus_wmi_driver, platform_driver))
->  
-> @@ -2673,7 +2676,7 @@ static int asus_wmi_add(struct platform_device *pdev)
->  		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
->  
->  	if (asus_wmi_has_fnlock_key(asus)) {
-> -		asus->fnlock_locked = true;
-> +		asus->fnlock_locked = fnlock_default;
->  		asus_wmi_fnlock_update(asus);
->  	}
->  
-> 
+>  arch/parisc/Makefile        |  4 +--
+>  arch/parisc/boot/Makefile   |  2 +-
+>  arch/parisc/boot/install.sh | 65 ------------------------------------
+>  arch/parisc/install.sh      | 66 -------------------------------------
+>  scripts/install.sh          |  1 +
+>  5 files changed, 4 insertions(+), 134 deletions(-)
+>  delete mode 100644 arch/parisc/boot/install.sh
+>  delete mode 100644 arch/parisc/install.sh
+>
+> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+> index 7d9f71aa829a..296d8ab8e2aa 100644
+> --- a/arch/parisc/Makefile
+> +++ b/arch/parisc/Makefile
+> @@ -164,10 +164,10 @@ vmlinuz: vmlinux
+>  endif
+>
+>  install:
+> -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
+> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
+>                         $(KERNELRELEASE) vmlinux System.map "$(INSTALL_PATH)"
+>  zinstall:
+> -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
+> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
+>                         $(KERNELRELEASE) vmlinuz System.map "$(INSTALL_PATH)"
+>
+>  CLEAN_FILES    += lifimage
+> diff --git a/arch/parisc/boot/Makefile b/arch/parisc/boot/Makefile
+> index 61f44142cfe1..ad2611929aee 100644
+> --- a/arch/parisc/boot/Makefile
+> +++ b/arch/parisc/boot/Makefile
+> @@ -17,5 +17,5 @@ $(obj)/compressed/vmlinux: FORCE
+>         $(Q)$(MAKE) $(build)=$(obj)/compressed $@
+>
+>  install: $(CONFIGURE) $(obj)/bzImage
+> -       sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/bzImage \
+> +       sh -x  $(srctree)/scripts/install.sh $(KERNELRELEASE) $(obj)/bzImage \
+>               System.map "$(INSTALL_PATH)"
 
+
+
+As far as I understood, there is no way to invoke this 'install' target
+in arch/parisc/boot/Makefile since everything is done
+by arch/parisc/Makefile.
+
+
+
+Can we remove this 'install' rule entirely?
+
+
+
+
+
+
+
+
+
+
+> diff --git a/arch/parisc/boot/install.sh b/arch/parisc/boot/install.sh
+> deleted file mode 100644
+> index 8f7c365fad83..000000000000
+> --- a/arch/parisc/boot/install.sh
+> +++ /dev/null
+> @@ -1,65 +0,0 @@
+> -#!/bin/sh
+> -#
+> -# arch/parisc/install.sh, derived from arch/i386/boot/install.sh
+> -#
+> -# This file is subject to the terms and conditions of the GNU General Public
+> -# License.  See the file "COPYING" in the main directory of this archive
+> -# for more details.
+> -#
+> -# Copyright (C) 1995 by Linus Torvalds
+> -#
+> -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
+> -#
+> -# "make install" script for i386 architecture
+> -#
+> -# Arguments:
+> -#   $1 - kernel version
+> -#   $2 - kernel image file
+> -#   $3 - kernel map file
+> -#   $4 - default install path (blank if root directory)
+> -#
+> -
+> -verify () {
+> -       if [ ! -f "$1" ]; then
+> -               echo ""                                                   1>&2
+> -               echo " *** Missing file: $1"                              1>&2
+> -               echo ' *** You need to run "make" before "make install".' 1>&2
+> -               echo ""                                                   1>&2
+> -               exit 1
+> -       fi
+> -}
+> -
+> -# Make sure the files actually exist
+> -
+> -verify "$2"
+> -verify "$3"
+> -
+> -# User may have a custom install script
+> -
+> -if [ -n "${INSTALLKERNEL}" ]; then
+> -  if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
+> -  if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
+> -fi
+> -
+> -# Default install
+> -
+> -if [ "$(basename $2)" = "zImage" ]; then
+> -# Compressed install
+> -  echo "Installing compressed kernel"
+> -  base=vmlinuz
+> -else
+> -# Normal install
+> -  echo "Installing normal kernel"
+> -  base=vmlinux
+> -fi
+> -
+> -if [ -f $4/$base-$1 ]; then
+> -  mv $4/$base-$1 $4/$base-$1.old
+> -fi
+> -cat $2 > $4/$base-$1
+> -
+> -# Install system map file
+> -if [ -f $4/System.map-$1 ]; then
+> -  mv $4/System.map-$1 $4/System.map-$1.old
+> -fi
+> -cp $3 $4/System.map-$1
+> diff --git a/arch/parisc/install.sh b/arch/parisc/install.sh
+> deleted file mode 100644
+> index 056d588befdd..000000000000
+> --- a/arch/parisc/install.sh
+> +++ /dev/null
+> @@ -1,66 +0,0 @@
+> -#!/bin/sh
+> -#
+> -# arch/parisc/install.sh, derived from arch/i386/boot/install.sh
+> -#
+> -# This file is subject to the terms and conditions of the GNU General Public
+> -# License.  See the file "COPYING" in the main directory of this archive
+> -# for more details.
+> -#
+> -# Copyright (C) 1995 by Linus Torvalds
+> -#
+> -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
+> -#
+> -# "make install" script for i386 architecture
+> -#
+> -# Arguments:
+> -#   $1 - kernel version
+> -#   $2 - kernel image file
+> -#   $3 - kernel map file
+> -#   $4 - default install path (blank if root directory)
+> -#
+> -
+> -verify () {
+> -       if [ ! -f "$1" ]; then
+> -               echo ""                                                   1>&2
+> -               echo " *** Missing file: $1"                              1>&2
+> -               echo ' *** You need to run "make" before "make install".' 1>&2
+> -               echo ""                                                   1>&2
+> -               exit 1
+> -       fi
+> -}
+> -
+> -# Make sure the files actually exist
+> -
+> -verify "$2"
+> -verify "$3"
+> -
+> -# User may have a custom install script
+> -
+> -if [ -n "${INSTALLKERNEL}" ]; then
+> -  if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
+> -  if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
+> -fi
+> -
+> -# Default install
+> -
+> -if [ "$(basename $2)" = "vmlinuz" ]; then
+> -# Compressed install
+> -  echo "Installing compressed kernel"
+> -  base=vmlinuz
+> -else
+> -# Normal install
+> -  echo "Installing normal kernel"
+> -  base=vmlinux
+> -fi
+> -
+> -if [ -f $4/$base-$1 ]; then
+> -  mv $4/$base-$1 $4/$base-$1.old
+> -fi
+> -cat $2 > $4/$base-$1
+> -
+> -# Install system map file
+> -if [ -f $4/System.map-$1 ]; then
+> -  mv $4/System.map-$1 $4/System.map-$1.old
+> -fi
+> -cp $3 $4/System.map-$1
+> -
+> diff --git a/scripts/install.sh b/scripts/install.sh
+> index 407ffa65062c..e0ffb95737d4 100644
+> --- a/scripts/install.sh
+> +++ b/scripts/install.sh
+> @@ -53,6 +53,7 @@ base=$(basename "$2")
+>  if [ "$base" = "bzImage" ] ||
+>     [ "$base" = "Image.gz" ] ||
+>     [ "$base" = "vmlinux.gz" ] ||
+> +   [ "$base" = "vmlinuz" ] ||
+>     [ "$base" = "zImage" ] ; then
+>         # Compressed install
+>         echo "Installing compressed kernel"
+> --
+> 2.31.1
+>
+
+
+--
+Best Regards
+Masahiro Yamada
