@@ -2,255 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C05335758D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22991357586
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349162AbhDGUJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:09:02 -0400
-Received: from mail-co1nam11olkn2102.outbound.protection.outlook.com ([40.92.18.102]:15489
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345175AbhDGUJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:09:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KgTePlgE7SsZcz4SiM4IjD81jqnCYMpwcMITt96qD6hpdJM0H+QCn5mKLl+0HcFrW8g9sPrKRs0R5T/oPgL3YaEobOOrceYmgeecrn8z5+kUUFJQn0qt6dQMvFHFNhpMgf++WJQURYMTVdMjnK8vhr/UC2bbtf8XXR9cJLuwrBELkF0oeP/aaZujD8J7QBJkvKAaNzufXUGZxTho7lPBXise1SdUczrGjrvIgeGjURzjhcnN0CHRSKp7e1NivYzzCW+oKN8ybtuyl3ypVSLHIg45tcI+IuwlyI+a+5F8P+vym5m4E5MlUCkvjAGqUzQ56xnafHaCDtIlOh5SZkRx4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OlAGGogMyo+JRiFyuGob9lspEQ0E2Kbsz/C2ysTzzfM=;
- b=Afeq18HL4lDcUkYSNKKiHTKrYBXsYy3Wriikjz7akO/Ntszap6bbZZWcl6qKgInXZ0WQDeZDfe/PQbBVbQFaqQYAvS9xoaAfLp4J3QhRhcSfKtF56ZXW5zI1l3+fMQgg7iyo2dwqC0gyUc0vVE+nH7ZeJ2ykTgG34w7AagBRG7NhOJXiRjz/9Arp5MYkObIn95YLTsCf0c477j/OL6hAYZlL2TMxvHZbFFXVvblpU7Ao2TcnA5KMvH8BrCwMz/OzUoa/zYBauYpIiEI+SfFSNpBh/WTWs2qwAUJvJxC7aPqj1H0FCO9TCuQwgRuXnQy+TolO/vKwVZ2o6NZj8X9ygA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
- (2a01:111:e400:3861::53) by
- CO1NAM11HT066.eop-nam11.prod.protection.outlook.com (2a01:111:e400:3861::380)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Wed, 7 Apr
- 2021 20:08:49 +0000
-Received: from BN6PR2001MB1796.namprd20.prod.outlook.com
- (2a01:111:e400:3861::46) by CO1NAM11FT009.mail.protection.outlook.com
- (2a01:111:e400:3861::317) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
- Transport; Wed, 7 Apr 2021 20:08:48 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:08902B370394B0F8A309AD61AB9860A702E5B68B1937AA0AB394DC98E83F94B3;UpperCasedChecksum:D8BD7D01FE4C7768C7BDF57F3DCA4C34958776BD3E0A3816AF9EB28CECE4B487;SizeAsReceived:7753;Count:45
-Received: from BN6PR2001MB1796.namprd20.prod.outlook.com
- ([fe80::2560:2e3:5949:eac6]) by BN6PR2001MB1796.namprd20.prod.outlook.com
- ([fe80::2560:2e3:5949:eac6%7]) with mapi id 15.20.4020.017; Wed, 7 Apr 2021
- 20:08:48 +0000
-From:   Joel Selvaraj <jo@jsfamily.in>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Joel Selvaraj <jo@jsfamily.in>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: [RESEND PATCH] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add audio support
-Date:   Thu,  8 Apr 2021 01:37:53 +0530
-Message-ID: <BN6PR2001MB17963B035BEFCBC740FEB6A9D9759@BN6PR2001MB1796.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-TMN:  [cif71p6CEcP0dNfkFqg8ZIZZROt8GI/SmcL+sGepMHCV7rpX/YDvhj4PedUYpuqZ]
-X-ClientProxiedBy: PN2PR01CA0128.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:6::13) To BN6PR2001MB1796.namprd20.prod.outlook.com
- (2603:10b6:405:23::18)
-X-Microsoft-Original-Message-ID: <20210407200753.22585-1-jo@jsfamily.in>
+        id S1349123AbhDGUIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355924AbhDGUIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:08:16 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD553C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:08:06 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id e10so5547511pls.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mSd/S+8tc7IcQcSS/RpGMSx73CsARnvQdtoCEBJh4RE=;
+        b=kdegvuLLfLm5o78sb3liPn/fXrlCsdbIKwWtIdW5f+cxv+zThPjVXprrQ7NbmPmOi3
+         cFRU83hgkL/FLRMjgr6eNLao39YBnyr35OHA2RE1zjohqTdUvbV2bsDduBEOf4VxShM+
+         TPgYbzkjuEIcQlKz1S+TiOv2wFamsk4RE38gpSUces43Jr7q3/36LXlRXcErMVVhm6Ri
+         6Sz5rfJkdtQEBjOOhxhekCVRiYdg8GIHClJsDP1BzDgMRXjl2WVLhb8qA57M03dYZbBq
+         vfqG+7CRlsaA2MuHX6hy0z1xUV/GNi1sB6GazNRRc592zKl1PzykqXHlcE0ZDcWGYk4+
+         3K2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mSd/S+8tc7IcQcSS/RpGMSx73CsARnvQdtoCEBJh4RE=;
+        b=RGM2pi+0BfuNQ96pU3MocG0oVYPIgiOBN3W+P0UGHwkssMQtuVrTVJ0eQ4JCK6Oria
+         hMS+T61Um35ZHutYZiMK0YUmGd1M8uAgK8tcnUEeddH0JlTTmXC2mD0TIhjStds/E4My
+         LdhrF+l/Htpi4FNEuN7nzx3CEMj2CkSDqdX6MWzp25xlYo72DeeJIAhesp01uRakMrAg
+         AoQD5lcm7mQv/Wf7ACuom3abxM+4eMHuqs764V6ZLCyTPpcLZKKRqKtf/ZkZTEQCu5Vl
+         ejsprX82iXgOHEBGQLbHLbkgJOiwDg/mlQKHr3tcwGQKwKHPtTXEP1DZifFxyY2m3ziJ
+         p8Nw==
+X-Gm-Message-State: AOAM531GK9LKqWbz6STPiyvnA6YyuyrDkGKf/kymdcExgRQgHb/wgkwK
+        ZrIBfUgcAgYs6EkMiDJU0MJcXdLQ3Ssg09V088fnqQ==
+X-Google-Smtp-Source: ABdhPJyyoL7VJ+OqLRPUux+V1NXnU4wvbvky0xki0Lfi2+ZBdBzpwZ+xJbPVPFD/Wd8/DCQHt2XFgpqgMrubjtjKf3c=
+X-Received: by 2002:a17:902:b482:b029:e8:c21a:6ad2 with SMTP id
+ y2-20020a170902b482b02900e8c21a6ad2mr4490815plr.51.1617826086092; Wed, 07 Apr
+ 2021 13:08:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2405:201:e01d:6006:b431:7f85:58c9:1613) by PN2PR01CA0128.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:6::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 20:08:45 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 45
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 4190a50d-af25-4bf2-4f8d-08d8fa00f4a6
-X-MS-TrafficTypeDiagnostic: CO1NAM11HT066:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nYE7f9i1oVHk89AUl5BnpVxpAUJyG+xKNGsc5NNBSm7K1QPWVWbZh6FLH499B5WCJxiszVmrmQ8C7d1CLqpgE2mbtdeB/jLYV3WRZqucMhQKuYHSGZSlDYqgrwbmEEBSjwE4TFwoLJcAIJibvkmwp1KyBkMTuCm2DbkbfIXppH9UbeuFIa9IXuUPpCcr/dmG2hwj5iPG/wAd6TVB0oPApAdvXzlwxfh/GTpuapMPC7AuDZnmeOnFffbrP/mogeKG+I+qo+RC3TyyRLyphWbe97wrOoOpdH+NkXxBYZ+iDKhgvnrNjLlHNVb/IHeyfQA3+/5BWjZ7YFt574qJrhZo0P/KyDuGOGpjRdXRUT5BqJnZjKc3hk5dzHNbyhzZClsdq5n9xYifHQUq4Ubn87uE1Q==
-X-MS-Exchange-AntiSpam-MessageData: 1IfTzbB8muswkLfKrxve8kP4bPygxSkn1xK2tXzhdCejCYyWxOsq+Ofwihd6GkqjGh5lwiv+phhZM6ClKmn6KA5AyF+qTzfmOqmwnkz8pO9feiik9fN/NOqqzjxDO6XPS0gNPH/KPti7IuY2gTza/JT5Urh3PrfL/YudXgEfgf8V8ntDEvakPkltO8knlkTBu7+0JFFWqj0BsSqdZScp6w==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4190a50d-af25-4bf2-4f8d-08d8fa00f4a6
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 20:08:48.8807
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1NAM11HT066
+References: <20210406225100.1883967-1-dlatypov@google.com>
+In-Reply-To: <20210406225100.1883967-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 7 Apr 2021 13:07:54 -0700
+Message-ID: <CAFd5g47EE3J5V9ofZ4r3H+3+16u41-yqa+uwFYVgpVCg4CKOwg@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: add tips for using current->kunit_test
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds audio support for Xiaomi Poco F1 phone. Phone's primary
-Mic and 3.5mm Headphone jack are handled through the SDM845 sound card
-and WCD9340 codec.
+On Tue, Apr 6, 2021 at 3:51 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> As of commit 359a376081d4 ("kunit: support failure from dynamic analysis
+> tools"), we can use current->kunit_test to find the current kunit test.
+>
+> Mention this in tips.rst and give an example of how this can be used in
+> conjunction with `test->priv` to pass around state and specifically
+> implement something like mocking.
+> There's a lot more we could go into on that topic, but given that
+> example is already longer than every other "tip" on this page, we just
+> point to the API docs and leave filling in the blanks as an exercise to
+> the reader.
+>
+> Also give an example of kunit_fail_current_test().
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
-Signed-off-by: Joel Selvaraj <jo@jsfamily.in>
----
- .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 117 ++++++++++++++++++
- 1 file changed, 117 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-index 86cbae63eaf7..5b5786595cdb 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-@@ -5,6 +5,8 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+#include <dt-bindings/sound/qcom,q6asm.h>
- #include "sdm845.dtsi"
- #include "pm8998.dtsi"
- #include "pmi8998.dtsi"
-@@ -240,6 +242,28 @@ resin {
- 	};
- };
- 
-+/* QUAT I2S Uses 1 I2S SD Line for audio on TAS2559/60 amplifiers */
-+&q6afedai {
-+	qi2s@22 {
-+		reg = <22>;
-+		qcom,sd-lines = <0>;
-+	};
-+};
-+
-+&q6asmdai {
-+	dai@0 {
-+		reg = <0>;
-+	};
-+
-+	dai@1 {
-+		reg = <1>;
-+	};
-+
-+	dai@2 {
-+		reg = <2>;
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -257,6 +281,73 @@ &sdhc_2 {
- 	cd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
- };
- 
-+&sound {
-+	compatible = "qcom,db845c-sndcard";
-+	pinctrl-0 = <&quat_mi2s_active
-+			&quat_mi2s_sd0_active>;
-+	pinctrl-names = "default";
-+	model = "Xiaomi Poco F1";
-+	audio-routing =
-+		"RX_BIAS", "MCLK",
-+		"AMIC1", "MIC BIAS1",
-+		"AMIC2", "MIC BIAS2",
-+		"AMIC3", "MIC BIAS3",
-+		"MM_DL1",  "MultiMedia1 Playback",
-+		"MM_DL2",  "MultiMedia2 Playback",
-+		"MultiMedia3 Capture", "MM_UL3";
-+
-+	mm1-dai-link {
-+		link-name = "MultiMedia1";
-+		cpu {
-+			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+		};
-+	};
-+
-+	mm2-dai-link {
-+		link-name = "MultiMedia2";
-+		cpu {
-+			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
-+		};
-+	};
-+
-+	mm3-dai-link {
-+		link-name = "MultiMedia3";
-+		cpu {
-+			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
-+		};
-+	};
-+
-+	slim-dai-link {
-+		link-name = "SLIM Playback";
-+		cpu {
-+			sound-dai = <&q6afedai SLIMBUS_0_RX>;
-+		};
-+
-+		platform {
-+			sound-dai = <&q6routing>;
-+		};
-+
-+		codec {
-+			sound-dai =  <&wcd9340 0>;
-+		};
-+	};
-+
-+	slimcap-dai-link {
-+		link-name = "SLIM Capture";
-+		cpu {
-+			sound-dai = <&q6afedai SLIMBUS_0_TX>;
-+		};
-+
-+		platform {
-+			sound-dai = <&q6routing>;
-+		};
-+
-+		codec {
-+			sound-dai = <&wcd9340 1>;
-+		};
-+	};
-+};
-+
- &tlmm {
- 	gpio-reserved-ranges = <0 4>, <81 4>;
- 
-@@ -285,6 +376,15 @@ sdc2_card_det_n: sd-card-det-n {
- 		function = "gpio";
- 		bias-pull-up;
- 	};
-+
-+	wcd_intr_default: wcd_intr_default {
-+		pins = <54>;
-+		function = "gpio";
-+
-+		input-enable;
-+		bias-pull-down;
-+		drive-strength = <2>;
-+	};
- };
- 
- &uart6 {
-@@ -345,6 +445,23 @@ &usb_1_qmpphy {
- 	vdda-pll-supply = <&vreg_l1a_0p875>;
- };
- 
-+&wcd9340{
-+	pinctrl-0 = <&wcd_intr_default>;
-+	pinctrl-names = "default";
-+	clock-names = "extclk";
-+	clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
-+	reset-gpios = <&tlmm 64 0>;
-+	vdd-buck-supply = <&vreg_s4a_1p8>;
-+	vdd-buck-sido-supply = <&vreg_s4a_1p8>;
-+	vdd-tx-supply = <&vreg_s4a_1p8>;
-+	vdd-rx-supply = <&vreg_s4a_1p8>;
-+	vdd-io-supply = <&vreg_s4a_1p8>;
-+	qcom,micbias1-microvolt = <2700000>;
-+	qcom,micbias2-microvolt = <1800000>;
-+	qcom,micbias3-microvolt = <2700000>;
-+	qcom,micbias4-microvolt = <2700000>;
-+};
-+
- &wifi {
- 	status = "okay";
- 
--- 
-2.25.1
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
