@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13396357592
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39496357595
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345175AbhDGULK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
+        id S1349158AbhDGUMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhDGULG (ORCPT
+        with ESMTP id S232431AbhDGUMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:11:06 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14D8C06175F;
-        Wed,  7 Apr 2021 13:10:53 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k8so18323444iop.12;
-        Wed, 07 Apr 2021 13:10:53 -0700 (PDT)
+        Wed, 7 Apr 2021 16:12:05 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E38C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 13:11:55 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id l8so10319503vsj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 13:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h96VbcSoj8mKhx2i0v1sojDZC+erMxXsZoAnXTC1WKY=;
-        b=l8LKpdFlA2VRNJ9VdxaJK9DGI/Ub7HjuElhkVky7SyZdFgbyGCtVUeocZXxWWzH6Uq
-         dJn34V656hOu4piWNGVwPcYuqLxsj3qOxveQEJDsXQrz0VIRhFMl3bBRRGOkC1q28OJO
-         qLp78W867ZbzBQnssClDnwBUbdPkx4R9QWZ3URrSyC/YmKPxBpdpNGUeIpT1rxTYhzFC
-         0Ue9SMY+Ru3SUY0Gm7U8WhHkvHjUEWWWGFD6H5BszltXe3jukNidacmXaXJ0aph81S2D
-         XY3V7OdP0D1zd00dHZuvMi2FzfYBEY70YyK2a4zJYTIkYoLTHDx8iaVWEDmOePg5BNW/
-         MOBw==
+         :cc;
+        bh=EXdgW9ChrKmdewwnery6En4MfPrzf/7Q8Ep2pcAMqUo=;
+        b=HE+nrv5cu7TnTD1IfkoLvNgz6zakexccn0cKPSvik4Na3RVhOYykO4OkgPnxmrr8gx
+         lIM885FJ4Y+eXBHVTfTPY6h3tqIs/Vtq7AxHG3QYbLpX2CzVnRDdawF89w7nGmtEfERi
+         B1Q6Ld2nKCrNmlziO7N6UbSI+32yFpnOyy4EjwdfH0phzsozTj+KaJ4YWuUiBfHhEy5o
+         cCssRoVWdzE8JK01WJ1InSkcRFMlxPBffm31kttZmzAemSNexvQXdFtRegFGytYloa2a
+         /I7NTWTCnCJy4CgGuk9fU0loFJbda/wovnsOeKCRhOjxOZkI9IHhqG1oT8nnA9OZzWhr
+         kw9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h96VbcSoj8mKhx2i0v1sojDZC+erMxXsZoAnXTC1WKY=;
-        b=ZVDW2eqQjM5wKDXHpr6LpXSdibmqYholWB1D2MqbJpnc5eXL0Tc2CkRwLNVfP+ii2Z
-         O3tFPcSlszKT/JO/cK4PVBeveZytuq2HaZ9JlhASQ1R/WJn9pe6dZIXYANUgt7wjHD56
-         /fCqfeRXQa7TOMR+3EKK3Qai0liXKmsAoKbJ5+ZQ2fVzIw/wVMD66akOz6NmUMshDne6
-         UWgxa2OiOOmg6Xb7yUthqizzcdZ3BDviyJDA8Hhiog4x7ut9e+6gBK0JF3r0+X68tBdb
-         rYUMz/inKEYZGCGN3sgz83k97w+VoEUADV7NJNpldhZbUbqrQHG8j99VXfSHmdtpGlcv
-         sxYw==
-X-Gm-Message-State: AOAM531UjRd27OjJESm4WohLqKAYbmZgyPcG7PD/27QBUPaIEtYW0ioi
-        GUUYGc2CyJTQsUDwhuSkBbbjo+tKLLkRGNmVEqg=
-X-Google-Smtp-Source: ABdhPJzNJNDnaBzh3jb+/hy9dLRNTHYIU+edNNiBw2/xjjUG9YXyN6JxNMmLf5dF88GpHi1ccfWeQR5HJ75vtMjDd0c=
-X-Received: by 2002:a6b:e509:: with SMTP id y9mr3963308ioc.191.1617826252754;
- Wed, 07 Apr 2021 13:10:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=EXdgW9ChrKmdewwnery6En4MfPrzf/7Q8Ep2pcAMqUo=;
+        b=c3iZ00K32Czd9sMfniKMuqV5MbErDPcq2bPOdRa4/9DVqg83+wzUlhUHQjyT20VjXR
+         iGc+hx+ZXfaGQnNcFC4y7qQU67PKOv3G4u3i9JUnMvqqqSx0C6fhy9SuKTDXZYMu1B0/
+         PHV3x8migVzK8r5scAbyAXIi+lxaJ8MrJTFG/3p/F8Ud/5n9aC+x/OqIg7AL4zV11gcq
+         7w3fHBPQdqSjX67r5VpGwKqTmxWC6shsdAWaaiDnoMZ1AnNbar8jTxzf3TJ2QaoP4IZj
+         kVUr9K2KkaDInb23ltJztY0lKCEEOerhHT+RHtCI6/IW4W+xnPzttctFFVrHOXWgzyoZ
+         1vWw==
+X-Gm-Message-State: AOAM5317QjfusjzH+4r9ypHZghZbKmFLKEQlkY8wUQjwC+J6ZeuDxeHx
+        jfoO6XZSIAMIdjF7pky1Thq5o5kEN2nhpmdM9uwDJw==
+X-Google-Smtp-Source: ABdhPJwLiht0i7lb4LXnE2b7s5mj3mQSnxgyZI/JTwKWf2LwwCm8dPnbhJAsUghNAxifvHVnXjJCakjs/P76gv1sV4Q=
+X-Received: by 2002:a67:8c07:: with SMTP id o7mr3577176vsd.43.1617826314610;
+ Wed, 07 Apr 2021 13:11:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406185806.377576-1-pctammela@mojatatu.com>
- <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com> <CAEf4BzaBJH-=iO-P6ZTj3zmycz0VESzBzpZkbVOVTvPaZ9OEaA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaBJH-=iO-P6ZTj3zmycz0VESzBzpZkbVOVTvPaZ9OEaA@mail.gmail.com>
-From:   Pedro Tammela <pctammela@gmail.com>
-Date:   Wed, 7 Apr 2021 17:10:41 -0300
-Message-ID: <CAKY_9u0KV0dW2_xW9g67r9YWAh9UjVpTAsEVWs3xF2htzzVAYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joe Stringer <joe@cilium.io>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
+References: <20210406013643.3280369-1-badhri@google.com> <20210406013643.3280369-4-badhri@google.com>
+ <AM9PR10MB4134EC102F0017423E6822B480759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <AM9PR10MB4134EC102F0017423E6822B480759@AM9PR10MB4134.EURPRD10.PROD.OUTLOOK.COM>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 7 Apr 2021 13:11:19 -0700
+Message-ID: <CAPTae5+j4JyxMEy2b4x9JG-GWAm4QokPb8nuODhewc3bwJuMQA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/6] usb: typec: tcpm: update power supply once partner accepts
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Kyle Tso <kyletso@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qua., 7 de abr. de 2021 =C3=A0s 16:58, Andrii Nakryiko
-<andrii.nakryiko@gmail.com> escreveu:
->
-> On Wed, Apr 7, 2021 at 11:43 AM Joe Stringer <joe@cilium.io> wrote:
-> >
-> > Hi Pedro,
-> >
-> > On Tue, Apr 6, 2021 at 11:58 AM Pedro Tammela <pctammela@gmail.com> wro=
-te:
-> > >
-> > > In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
-> > >
-> > > For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-> > > notification to the process if needed.
-> > >
-> > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 7 +++++++
-> > >  tools/include/uapi/linux/bpf.h | 7 +++++++
-> > >  2 files changed, 14 insertions(+)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 49371eba98ba..8c5c7a893b87 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -4061,12 +4061,15 @@ union bpf_attr {
-> > >   *             of new data availability is sent.
-> > >   *             If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, n=
-otification
-> > >   *             of new data availability is sent unconditionally.
-> > > + *             If **0** is specified in *flags*, notification
-> > > + *             of new data availability is sent if needed.
-> >
-> > Maybe a trivial question, but what does "if needed" mean? Does that
-> > mean "when the buffer is full"?
->
-> I used to call it ns "adaptive notification", so maybe let's use that
-> term instead of "if needed"? It means that in kernel BPF ringbuf code
-> will check if the user-space consumer has caught up and consumed all
-> the available data. In that case user-space might be waiting
-> (sleeping) in epoll_wait() already and not processing samples
-> actively. That means that we have to send notification, otherwise
-> user-space might never wake up. But if the kernel sees that user-space
-> is still processing previous record (consumer position < producer
-> position), then we can bypass sending another notification, because
-> user-space consumer protocol dictates that it needs to consume all the
-> record until consumer position =3D=3D producer position. So no
-> notification is necessary for the newly submitted sample, as
-> user-space will eventually see it without notification.
->
-> Of course there is careful writes and memory ordering involved to make
-> sure that we never miss notification.
->
-> Does someone want to try to condense it into a succinct description? ;)
+>> The reason for this change is missing in the patch description,
+>> or am I missing something ?
 
-OK.
+Ah yes forgot to state this in the commit description which I have
+updated in V2.
+Removed a redundant power_supply_changed as one was already made a
+couple of lines before this one.
 
-I can try to condense this and perhaps add it as code in the comment?
+Thanks,
+Badhri
+
+On Wed, Apr 7, 2021 at 9:08 AM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
+>
+> On 06 April 2021 02:37, Badhri Jagan Sridharan wrote:
+>
+> > power_supply_changed needs to be called to notify clients
+> > after the partner accepts the requested values for the pps
+> > case.
+> >
+> > Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through
+> > power_supply")
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+>
+> Missing commit information aside:
+>
+> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+>
+> >  drivers/usb/typec/tcpm/tcpm.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index d43774cc2ccf..7708b01009cb 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -2564,6 +2564,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port
+> > *port,
+> >                       port->pps_data.max_curr = port-
+> > >pps_data.req_max_curr;
+> >                       port->req_supply_voltage = port-
+> > >pps_data.req_out_volt;
+> >                       port->req_current_limit = port->pps_data.req_op_curr;
+> > +                     power_supply_changed(port->psy);
+> >                       tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
+> >                       break;
+> >               case SOFT_RESET_SEND:
+> > @@ -3132,7 +3133,6 @@ static unsigned int tcpm_pd_select_pps_apdo(struct
+> > tcpm_port *port)
+> >                                                     port-
+> > >pps_data.req_out_volt));
+> >               port->pps_data.req_op_curr = min(port->pps_data.max_curr,
+> >                                                port->pps_data.req_op_curr);
+> > -             power_supply_changed(port->psy);
+> >       }
+> >
+> >       return src_pdo;
+> > @@ -3557,8 +3557,6 @@ static void tcpm_reset_port(struct tcpm_port *port)
+> >       port->sink_cap_done = false;
+> >       if (port->tcpc->enable_frs)
+> >               port->tcpc->enable_frs(port->tcpc, false);
+> > -
+> > -     power_supply_changed(port->psy);
+> >  }
+> >
+> >  static void tcpm_detach(struct tcpm_port *port)
+> > --
+> > 2.31.0.208.g409f899ff0-goog
+>
