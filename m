@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2476335783D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDE0357840
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhDGXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 19:05:54 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:55574 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhDGXFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 19:05:52 -0400
-Received: by sf.home (Postfix, from userid 1000)
-        id 5ABD95A22061; Thu,  8 Apr 2021 00:05:37 +0100 (BST)
-Date:   Thu, 8 Apr 2021 00:05:37 +0100
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: page_poison: print page owner info when corruption
- is caught
-Message-ID: <YG46walP8KBD1yG2@sf>
-References: <20210404141735.2152984-1-slyfox@gentoo.org>
- <2f0d1127-8868-f8a3-203f-2c3d473bd496@suse.cz>
+        id S229818AbhDGXGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 19:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhDGXGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 19:06:51 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E63C061760;
+        Wed,  7 Apr 2021 16:06:41 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id t14so181511ilu.3;
+        Wed, 07 Apr 2021 16:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KdT8k9WThaEXk/i1KdIUz/lLL55KvYS2BmGyHiYmbV4=;
+        b=vMG8xBKLE17PSfo64RlRvfIs0SgnHFQd51M/25/4qnA/rFcVuD+qT9F0Jw/AR4aNuv
+         prRRs6XLW94wMpPt7g5kYWqPEUvyP46uU2iRGFF+F0hIJYaZqFUyxJNpHNfKQmywcUJQ
+         JosvHxyE8NBhCUn5NpqWbs5W4wLdxDb0/5z2psk2d3KcmAFw4SwAfE1tgz60SAXFHRgd
+         2Fu9KfRxR24bUJikmCQoSIP/0rw6jVnpjni6rGwxJ4UB4cIr1q6ktUpGo7SEEKMXuMZM
+         1NQ84twGmD1tSNcaExQ82/x2FYXpOKatQ9Jg4jJnu4uCGgTnPtnSRFb7BxXVxdbscOaD
+         A5WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KdT8k9WThaEXk/i1KdIUz/lLL55KvYS2BmGyHiYmbV4=;
+        b=BJBHNEADHaQ+uyAO/LRj6pstuvJjaE7DZqZfktlMsYXEYHOBB0t2LqLqMAhdKJtz4M
+         iSgpKKoJBSUNi6M3vaEWeq12Ba6YnI3H2XzDwClaXpiCRX7Uz1ootqyeCEp0cDbZOATn
+         Pjh4oU7uAUNams3F2IfvjTJBkFcAmYNDQ+fx5i1amJs9rF0ycbodLuV8iIAHh4CTrUiw
+         VrKXK3PzMiz6EvmsMhrPIzMY6E+HLlVlnV7iMfjpcfL6eODeojtRYhEZzMiwMN7zYEd8
+         1Z9LM10fwcNYZYY5WgcD6Np8BqByYkBKSCnAXciWXeEZk+sYX13+zkmdgu+wuq4u4OTn
+         LE6g==
+X-Gm-Message-State: AOAM533GBnv0bG5W08IHagL/fErMcB3gT5gmBcXs9gl3KQ5y44TbQDyr
+        ey0cmb5FDu1W9tsy/jLgtURXNDCYUwzqbDGglAs=
+X-Google-Smtp-Source: ABdhPJztZvqkUgf+53X/OU/6w3VRVdGjRifBLqqQ36Cnaa0HtUei8KTXcQ8+sNofR4RUCNkvkX4YF01CxU7JqBZrhts=
+X-Received: by 2002:a05:6e02:6cf:: with SMTP id p15mr4670068ils.237.1617836800398;
+ Wed, 07 Apr 2021 16:06:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f0d1127-8868-f8a3-203f-2c3d473bd496@suse.cz>
+References: <20210406123619.rhvtr73xwwlbu2ll@spock.localdomain>
+ <20210406114734.0e00cb2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210407060053.wyo75mqwcva6w6ci@spock.localdomain> <20210407083748.56b9c261@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAKgT0UfLLQycLsAZQ98ofBGYPwejA6zHbG6QsNrU92mizS7e0g@mail.gmail.com> <20210407110722.1eb4ebf2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210407110722.1eb4ebf2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 7 Apr 2021 16:06:29 -0700
+Message-ID: <CAKgT0UcQXVOifi_2r_Y6meg_zvHDBf1me8VwA4pvEtEMzOaw2Q@mail.gmail.com>
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:15:50PM +0200, Vlastimil Babka wrote:
-> On 4/4/21 4:17 PM, Sergei Trofimovich wrote:
-> > When page_poison detects page corruption it's useful to see who
-> > freed a page recently to have a guess where write-after-free
-> > corruption happens.
-> > 
-> > After this change corruption report has extra page_owner data.
-> > Example report from real corruption:
-> > 
-> >     pagealloc: memory corruption
-> >     e00000014cd61d10: 11 00 00 00 00 00 00 00 30 1d d2 ff ff 0f 00 60
-> >     e00000014cd61d20: b0 1d d2 ff ff 0f 00 60 90 fe 1c 00 08 00 00 20
-> >     ...
-> >     CPU: 1 PID: 220402 Comm: cc1plus Not tainted 5.12.0-rc5-00107-g9720c6f59ecf #245
-> >     Hardware name: hp server rx3600, BIOS 04.03 04/08/2008
-> >     ...
-> >     Call Trace:
-> >      [<a000000100015210>] show_stack+0x90/0xc0
-> >      [<a000000101163390>] dump_stack+0x150/0x1c0
-> >      [<a0000001003f1e90>] __kernel_unpoison_pages+0x410/0x440
-> >      [<a0000001003c2460>] get_page_from_freelist+0x1460/0x2ca0
-> >      [<a0000001003c6be0>] __alloc_pages_nodemask+0x3c0/0x660
-> >      [<a0000001003ed690>] alloc_pages_vma+0xb0/0x500
-> >      [<a00000010037deb0>] __handle_mm_fault+0x1230/0x1fe0
-> >      [<a00000010037ef70>] handle_mm_fault+0x310/0x4e0
-> >      [<a00000010005dc70>] ia64_do_page_fault+0x1f0/0xb80
-> >      [<a00000010000ca00>] ia64_leave_kernel+0x0/0x270
-> >     page_owner tracks the page as freed
-> >     page allocated via order 0, migratetype Movable,
-> >       gfp_mask 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), pid 37, ts 8173444098740
-> >      __reset_page_owner+0x40/0x200
-> >      free_pcp_prepare+0x4d0/0x600
-> >      free_unref_page+0x20/0x1c0
-> >      __put_page+0x110/0x1a0
-> >      migrate_pages+0x16d0/0x1dc0
-> >      compact_zone+0xfc0/0x1aa0
-> >      proactive_compact_node+0xd0/0x1e0
-> >      kcompactd+0x550/0x600
-> >      kthread+0x2c0/0x2e0
-> >      call_payload+0x50/0x80
-> > 
-> > Here we can see that page was freed by page migration but something
-> > managed to write to it afterwards.
-> > 
-> > CC: Andrew Morton <akpm@linux-foundation.org>
-> > CC: linux-mm@kvack.org
-> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> > ---
-> >  mm/page_poison.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/page_poison.c b/mm/page_poison.c
-> > index 65cdf844c8ad..ef2a1eab13d7 100644
-> > --- a/mm/page_poison.c
-> > +++ b/mm/page_poison.c
-> > @@ -4,6 +4,7 @@
-> >  #include <linux/mm.h>
-> >  #include <linux/highmem.h>
-> >  #include <linux/page_ext.h>
-> > +#include <linux/page_owner.h>
-> >  #include <linux/poison.h>
-> >  #include <linux/ratelimit.h>
-> >  #include <linux/kasan.h>
-> > @@ -45,7 +46,7 @@ static bool single_bit_flip(unsigned char a, unsigned char b)
-> >  	return error && !(error & (error - 1));
-> >  }
-> >  
-> > -static void check_poison_mem(unsigned char *mem, size_t bytes)
-> > +static void check_poison_mem(struct page *page, unsigned char *mem, size_t bytes)
-> >  {
-> >  	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 10);
-> >  	unsigned char *start;
-> > @@ -70,6 +71,7 @@ static void check_poison_mem(unsigned char *mem, size_t bytes)
-> >  	print_hex_dump(KERN_ERR, "", DUMP_PREFIX_ADDRESS, 16, 1, start,
-> >  			end - start + 1, 1);
-> >  	dump_stack();
-> > +	dump_page_owner(page);
-> 
-> OK but why not a full dump_page()?
+On Wed, Apr 7, 2021 at 11:07 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 7 Apr 2021 09:25:28 -0700 Alexander Duyck wrote:
+> > On Wed, Apr 7, 2021 at 8:37 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > >
+> > > On Wed, 7 Apr 2021 08:00:53 +0200 Oleksandr Natalenko wrote:
+> > > > Thanks for the effort, but reportedly [1] it made no difference,
+> > > > unfortunately.
+> > > >
+> > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=212573#c8
+> > >
+> > > The only other option I see is that somehow the NAPI has no rings.
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > index a45cd2b416c8..24568adc2fb1 100644
+> > > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > @@ -7980,7 +7980,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
+> > >         struct igb_q_vector *q_vector = container_of(napi,
+> > >                                                      struct igb_q_vector,
+> > >                                                      napi);
+> > > -       bool clean_complete = true;
+> > > +       bool clean_complete = q_vector->tx.ring || q_vector->rx.ring;
+> > >         int work_done = 0;
+> > >
+> > >  #ifdef CONFIG_IGB_DCA
+> >
+> > It might make sense to just cast the work_done as a unsigned int, and
+> > then on the end of igb_poll use:
+> >   return min_t(unsigned int, work_done, budget - 1);
+>
+> Sure, that's simplest. I wasn't sure something is supposed to prevent
+> this condition or if it's okay to cover it up.
 
-Oh, I did not know it existed! Looks even better.
-Will send a v2 with dump_page().
+I'm pretty sure it is okay to cover it up. In this case the "budget -
+1" is supposed to be the upper limit on what can be reported. I think
+it was assuming an unsigned value anyway.
 
-> >  }
-> >  
-> >  static void unpoison_page(struct page *page)
-> > @@ -82,7 +84,7 @@ static void unpoison_page(struct page *page)
-> >  	 * that is freed to buddy. Thus no extra check is done to
-> >  	 * see if a page was poisoned.
-> >  	 */
-> > -	check_poison_mem(addr, PAGE_SIZE);
-> > +	check_poison_mem(page, addr, PAGE_SIZE);
-> >  	kunmap_atomic(addr);
-> >  }
-> >  
-> > 
-> 
-
--- 
-
-  Sergei
+Another alternative would be to default clean_complete to !!budget.
+Then if budget is 0 clean_complete would always return false.
