@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FD0356B99
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F86356B92
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351919AbhDGLxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:53:52 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48135 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhDGLxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:53:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617796412; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=ftOQviE1FSzzRGWmikfFzO6yxTTkoqf8WYw+BHbHQdY=; b=xBN4vUrabMc9cTlEyGWRhE8Q5XKyYRY70P1Ks0CD7j8P7QZ2j/ZxhWWUcr/yFtrUFJU+YARu
- n79jA21eEjUolDtDSCfalt3nYwTQay4xtD1dOgRf4hjZNp/2M1HtZ/0Ral3ssTA27BVQ1Xrs
- whj5AUPiBpME4m95MEe9eeJ5Hq8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 606d9d3187ce1fbb56dc048f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 11:53:21
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EB861C43465; Wed,  7 Apr 2021 11:53:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12D51C433C6;
-        Wed,  7 Apr 2021 11:53:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 12D51C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Jouni Malinen <j@w1.fi>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hostap: Fix memleak in prism2_config
-References: <20210329085246.24586-1-dinghao.liu@zju.edu.cn>
-Date:   Wed, 07 Apr 2021 14:53:15 +0300
-In-Reply-To: <20210329085246.24586-1-dinghao.liu@zju.edu.cn> (Dinghao Liu's
-        message of "Mon, 29 Mar 2021 16:52:43 +0800")
-Message-ID: <87tuoimhuc.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S236215AbhDGLzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:55:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37682 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230280AbhDGLy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:54:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617796489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ddpRdKT9wYCe24wptl48nZTWB76xl1PPFUiBI9ZFlHc=;
+        b=QFoOzYFZ0klurN8wSeF86h+RI9rN+UuqSPcBbyy8RJng6XIlHnfWMeTHox7cZfeZt+C5up
+        IdTrJTby1hXTKYzqoM9y5QoZmFJlJcg+lUTdDJxia8mjFwD9liJruBWN6bdZk+jFuCcG3f
+        0eAeBs4xLCWH7V9RTPR8x4Ev4k5H4Ik=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E116FB12B;
+        Wed,  7 Apr 2021 11:54:48 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 13:54:48 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Bharata B Rao <bharata@linux.ibm.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+Message-ID: <YG2diKMPNSK2cMyG@dhcp22.suse.cz>
+References: <20210405054848.GA1077931@in.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405054848.GA1077931@in.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dinghao Liu <dinghao.liu@zju.edu.cn> writes:
+On Mon 05-04-21 11:18:48, Bharata B Rao wrote:
+> Hi,
+> 
+> When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
+> server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
+> consumption increases quite a lot (around 172G) when the containers are
+> running. Most of it comes from slab (149G) and within slab, the majority of
+> it comes from kmalloc-32 cache (102G)
 
-> When prism2_hw_config() fails, we just return an error code
-> without any resource release, which may lead to memleak.
->
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/net/wireless/intersil/hostap/hostap_cs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/intersil/hostap/hostap_cs.c b/drivers/net/wireless/intersil/hostap/hostap_cs.c
-> index ec7db2badc40..7dc16ab50ad6 100644
-> --- a/drivers/net/wireless/intersil/hostap/hostap_cs.c
-> +++ b/drivers/net/wireless/intersil/hostap/hostap_cs.c
-> @@ -536,10 +536,10 @@ static int prism2_config(struct pcmcia_device *link)
->  	sandisk_enable_wireless(dev);
->  
->  	ret = prism2_hw_config(dev, 1);
-> -	if (!ret)
-> -		ret = hostap_hw_ready(dev);
-> +	if (ret)
-> +		goto failed;
->  
-> -	return ret;
-> +	return hostap_hw_ready(dev);;
-
-Two semicolons.
-
-But I'm not sure about this, can someone provide a Reviewed-by tag?
-
+Is this 10k cgroups a testing enviroment or does anybody really use that
+in production? I would be really curious to hear how that behaves when
+those containers are not idle. E.g. global memory reclaim iterating over
+10k memcgs will likely be very visible. I do remember playing with
+similar setups few years back and the overhead was very high.
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Michal Hocko
+SUSE Labs
