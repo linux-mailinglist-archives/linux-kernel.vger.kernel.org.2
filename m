@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304CA356A48
+	by mail.lfdr.de (Postfix) with ESMTP id EE26B356A4A
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbhDGKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:48:16 -0400
-Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:47551 "EHLO
-        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351434AbhDGKra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:47:30 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id EA2E21C3867
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:47:19 +0100 (IST)
-Received: (qmail 13079 invoked from network); 7 Apr 2021 10:47:19 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Apr 2021 10:47:19 -0000
-Date:   Wed, 7 Apr 2021 11:47:17 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Rik van Riel <riel@surriel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
- differently
-Message-ID: <20210407104717.GD3697@techsingularity.net>
-References: <20210321150358.71ef52b1@imladris.surriel.com>
- <20210322110306.GE3697@techsingularity.net>
- <20210326151932.2c187840@imladris.surriel.com>
- <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
- <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
- <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
- <20210407094106.GC3697@techsingularity.net>
- <YG2GMW0EjsqqnET6@hirez.programming.kicks-ass.net>
+        id S1351453AbhDGKsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:48:31 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:45684 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1351514AbhDGKr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:47:57 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id C1F6E412F9;
+        Wed,  7 Apr 2021 10:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        in-reply-to:content-disposition:content-type:content-type
+        :mime-version:references:message-id:subject:subject:from:from
+        :date:date:received:received:received; s=mta-01; t=1617792462;
+         x=1619606863; bh=7roLYt9u/nFm7/UOZ37/Olsn4bZK9xpN3jU+NcjGmeQ=; b=
+        utXguzKjQ/yKRnRMYOe0FqxDJ/4TiOxOROhLK69ULGqJN3lHzYbfu2PxbWrUC/wp
+        pvwMwgExxxFmtDSof8LH8l9RZq1bN+0AnnhVjd+xpuC0NwE+cqRE5IkUvcy0fqYD
+        GMzZYsIZ496zy0DjZA7DKmX3DJvZXYHCLwhzPKF1JpI=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xSrHqna7VsGI; Wed,  7 Apr 2021 13:47:42 +0300 (MSK)
+Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 287F74138E;
+        Wed,  7 Apr 2021 13:47:40 +0300 (MSK)
+Received: from localhost (172.17.204.212) by T-EXCH-03.corp.yadro.com
+ (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 7 Apr
+ 2021 13:47:40 +0300
+Date:   Wed, 7 Apr 2021 13:47:38 +0300
+From:   Roman Bolshakov <r.bolshakov@yadro.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Christie <michael.christie@oracle.com>
+Subject: Re: linux-next: manual merge of the scsi tree with the scsi-fixes
+ tree
+Message-ID: <YG2Nype3/WTD/S0q@SPB-NB-133.local>
+References: <20210407170457.77b88f83@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YG2GMW0EjsqqnET6@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210407170457.77b88f83@canb.auug.org.au>
+X-Originating-IP: [172.17.204.212]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:15:13PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 07, 2021 at 10:41:06AM +0100, Mel Gorman wrote:
+On Wed, Apr 07, 2021 at 05:04:57PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -6112,6 +6112,27 @@ static int select_idle_core(struct task_
-> > >  	return -1;
-> > >  }
-> > >  
-> > > +/*
-> > > + * Scan the local SMT mask for idle CPUs.
-> > > + */
-> > > +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
-> > > +{
-> > > +	int cpu;
-> > > +
-> > > +	if (!static_branch_likely(&sched_smt_present))
-> > > +		return -1;
-> > > +
-> > > +	for_each_cpu(cpu, cpu_smt_mask(target)) {
-> > > +		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-> > > +		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
-> > > +			continue;
-> > 
-> > While I know that !cpumask_test_cpu(cpu, sched_domain_span(sd)) was
-> > done previously, I found it hard to believe that the test matters. If
-> > target/prev share a the LLC domain, why would the SMT siblings *not*
-> > share a LLC?
+> Today's linux-next merge of the scsi tree got a conflict in:
 > 
-> I think the reason for it is that a cpuset might have split the siblings
-> apart and disabled load-balancing across them or something.
+>   drivers/target/iscsi/iscsi_target.c
 > 
-> Then the affinity mask can still cross the partition, but we shouldn't
-> ever move into it through balancing.
+> between commit:
+> 
+>   0352c3d3959a ("scsi: target: iscsi: Fix zero tag inside a trace event")
+> 
+> from the scsi-fixes tree and commit:
+> 
+>   08694199477d ("scsi: target: core: Add gfp_t arg to target_cmd_init_cdb()")
+> 
+> from the scsi tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-Ok, cpusets do split domains. I can't imagine the logic of splitting SMT
-siblings across cpusets but if it's possible, it has to be checked and
-protecting that with cpusets_enabled() would be a little overkill and
-possibly miss some other corner case :(
+Hi Stephen,
 
-Thanks.
+I'm sorry for not mentioning the issue. IIRC I sent 0352c3d3959a off
+linus/master, because 5.12/scsi-fixes was quite behind it. I have to say
+that for this particular fix I didn't try to apply it to 5.13/scsi-queue
+because I didn't expect any conflicts for such a small change :)
 
--- 
-Mel Gorman
-SUSE Labs
+I will apply to both <next>/scsi-queue and <current>/scsi-fixes next
+time before submission even for trivial patches to avoid the confusion.
+
+The conflict resolution is fine.
+
+Thanks,
+Roman
+
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/target/iscsi/iscsi_target.c
+> index e5c443bfbdf9,cf7f0465dd63..000000000000
+> --- a/drivers/target/iscsi/iscsi_target.c
+> +++ b/drivers/target/iscsi/iscsi_target.c
+> @@@ -1166,8 -1166,8 +1166,9 @@@ int iscsit_setup_scsi_cmd(struct iscsi_
+>   
+>   	target_get_sess_cmd(&cmd->se_cmd, true);
+>   
+>  +	cmd->se_cmd.tag = (__force u32)cmd->init_task_tag;
+> - 	cmd->sense_reason = target_cmd_init_cdb(&cmd->se_cmd, hdr->cdb);
+> + 	cmd->sense_reason = target_cmd_init_cdb(&cmd->se_cmd, hdr->cdb,
+> + 						GFP_KERNEL);
+>   	if (cmd->sense_reason) {
+>   		if (cmd->sense_reason == TCM_OUT_OF_RESOURCES) {
+>   			return iscsit_add_reject_cmd(cmd,
+
+
