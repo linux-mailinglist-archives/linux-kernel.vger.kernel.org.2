@@ -2,133 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10FD356583
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9341235658F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349574AbhDGHhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:37:04 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55342 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349484AbhDGHgN (ORCPT
+        id S234885AbhDGHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:38:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233326AbhDGHif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:36:13 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 1ABE41F44FEF
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, lee.jones@linaro.org,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v9 13/13] arm64: dts: imx8mq: Add node to G2 hardware
-Date:   Wed,  7 Apr 2021 09:35:34 +0200
-Message-Id: <20210407073534.376722-14-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+        Wed, 7 Apr 2021 03:38:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617781105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3F/RC/fvqCURdl1YYUj40I8I1hZvQBl3Hi/4LGAyDow=;
+        b=gx84uPm06MR9UriepQ5AFT0G8lFsIndfdd14gxMqZnVCHo6eLIyndbMoRIlp311RWR1FzS
+        bTjP1IhiRraH9q9QUghbtBD6W91WEQD/ABGRu81MXyLlvt6mwM0Yb8m2gMf4idLhZO6dB2
+        rFTZZAtve+3MqDtRd9jTHl75LBzuMm4=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-QUn7dwiaN0yy2j9AQNg-RQ-1; Wed, 07 Apr 2021 03:38:24 -0400
+X-MC-Unique: QUn7dwiaN0yy2j9AQNg-RQ-1
+Received: by mail-ej1-f70.google.com with SMTP id l1so2464912eji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:38:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=3F/RC/fvqCURdl1YYUj40I8I1hZvQBl3Hi/4LGAyDow=;
+        b=DOFFoQKFQ5UryCFt2VXyioDOqhwDfFNHnreMNrYj7iCM2c6iZenjWINUbVbbWbhnf0
+         Mtdbt1rzkntjje1WzN0tYCgPomdBvv52Su6zpCdGszybb8KssIeOakck+AnrGRXESi4b
+         JmRfM1B82GRfnMY7sKyvpLtjPqGcGlJPbAnCJhQJgcFfMNNIXOolF+umVZwkCy8nDxv4
+         8RNmcr3uwcgxBAaHe7W3fdqATRZwhor3nNLU05ppoU6Ku2cndqIwj19MU4i3OtYsjeXg
+         x5BjJT+AC2u+IOHQ6SDO/qmkDcoUD2XNwe15Rmq8NTOmCUNwiKhUKixhvk+HxQbjgdYI
+         m54g==
+X-Gm-Message-State: AOAM5302z/bPtV9PV8aU3VO6Tdtmc7n/U+d5e2ZwhdYgvq22CyK+N3IR
+        HqrDVCx7umOgMB4Kc+xYPvgnnhEla285uV+9M1xj3fGf/bo7RiSoAbpvQG99Tz9b3bsUU51ZRY2
+        3bwiGatB6VXanOZPXAwANMIhg
+X-Received: by 2002:a17:907:9611:: with SMTP id gb17mr2237663ejc.325.1617781102974;
+        Wed, 07 Apr 2021 00:38:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWJdCKOu9XXc7E7scSIAweJhXQCEIOBw2LgfiKIY6UeG+NZrHwNBKvBNLJ+ltcbeg03BcDgQ==
+X-Received: by 2002:a17:907:9611:: with SMTP id gb17mr2237651ejc.325.1617781102784;
+        Wed, 07 Apr 2021 00:38:22 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id bo19sm8418004edb.17.2021.04.07.00.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 00:38:22 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+In-Reply-To: <fc88ba72-83ab-025e-682d-4981762ed4f6@linux.microsoft.com>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+ <87y2fxmlmb.fsf@vitty.brq.redhat.com>
+ <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
+ <87eeguc61d.fsf@vitty.brq.redhat.com>
+ <fc88ba72-83ab-025e-682d-4981762ed4f6@linux.microsoft.com>
+Date:   Wed, 07 Apr 2021 09:38:21 +0200
+Message-ID: <87eefmczo2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split the VPU node in two: one for G1 and one for G2 since they are
-different hardware blocks.
-Add syscon for the hardware control block.
-Remove the reg-names property that is useless.
-Each VPU node only needs one interrupt.
-Change G2 assigned clock to match the specification.
-In both nodes all the clocks need to be assigned to make
-sure that the control block will be correctly clocked even if
-only one device node is enabled.
+Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
-version 9:
- - Corrections in commit message
+> On 3/5/2021 1:18 AM, Vitaly Kuznetsov wrote:
+>> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
+>> 
+>>> On 2/9/2021 5:11 AM, Vitaly Kuznetsov wrote:
+>>>> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
+>>>>
+>> ...
+>>>>> +
+>>>>> +3.1 MSHV_REQUEST_VERSION
+>>>>> +------------------------
+>>>>> +:Type: /dev/mshv ioctl
+>>>>> +:Parameters: pointer to a u32
+>>>>> +:Returns: 0 on success
+>>>>> +
+>>>>> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
+>>>>> +establish the interface version with the kernel module.
+>>>>> +
+>>>>> +The caller should pass the MSHV_VERSION as an argument.
+>>>>> +
+>>>>> +The kernel module will check which interface versions it supports and return 0
+>>>>> +if one of them matches.
+>>>>> +
+>>>>> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
+>>>>> +it is open - this ioctl can only be called once per open.
+>>>>> +
+>>>>
+>>>> KVM used to have KVM_GET_API_VERSION too but this turned out to be not
+>>>> very convenient so we use capabilities (KVM_CHECK_EXTENSION/KVM_ENABLE_CAP)
+>>>> instead.
+>>>>
+>>>
+>>> The goal of MSHV_REQUEST_VERSION is to support changes to APIs in the core set.
+>>> When we add new features/ioctls beyond the core we can use an extension/capability
+>>> approach like KVM.
+>>>
+>> 
+>> Driver versions is a very bad idea from distribution/stable kernel point
+>> of view as it presumes that the history is linear. It is not.
+>> 
+>> Imagine you have the following history upstream:
+>> 
+>> MSHV_REQUEST_VERSION = 1
+>> <100 commits with features/fixes>
+>> MSHV_REQUEST_VERSION = 2
+>> <another 100 commits with features/fixes>
+>> MSHV_REQUEST_VERSION = 2
+>> 
+>> Now I'm a linux distribution / stable kernel maintainer. My kernel is at
+>> MSHV_REQUEST_VERSION = 1. Now I want to backport 1 feature from between
+>> VER=1 and VER=2 and another feature from between VER=2 and VER=3. My
+>> history now looks like
+>> 
+>> MSHV_REQUEST_VERSION = 1
+>> <5 commits from between VER=1 and VER=2>
+>>    Which version should I declare here???? 
+>> <5 commits from between VER=2 and VER=3>
+>>    Which version should I declare here???? 
+>> 
+>> If I keep VER=1 then userspace will think that I don't have any extra
+>> features added and just won't use them. If I change VER to 2/3, it'll
+>> think I have *all* features from between these versions.
+>> 
+>> The only reasonable way to manage this is to attach a "capability" to
+>> every ABI change and expose this capability *in the same commit which
+>> introduces the change to the ABI*. This way userspace will now exactly
+>> which ioctls are available and what are their interfaces.
+>> 
+>> Also, trying to define "core set" is hard but you don't really need
+>> to.
+>> 
+>
+> We've had some internal discussion on this.
+>
+> There is bound to be some iteration before this ABI is stable, since even the
+> underlying Microsoft hypervisor interfaces aren't stable just yet.
+>
+> It might make more sense to just have an IOCTL to check if the API is stable yet.
+> This would be analogous to checking if kVM_GET_API_VERSION returns 12.
+>
+> How does this sound as a proposal?
+> An MSHV_CHECK_EXTENSION ioctl to query extensions to the core /dev/mshv API.
+>
+> It takes a single argument, an integer named MSHV_CAP_* corresponding to
+> the extension to check the existence of.
+>
+> The ioctl will return 0 if the extension is unsupported, or a positive integer
+> if supported.
+>
+> We can initially include a capability called MSHV_CAP_CORE_API_STABLE.
+> If supported, the core APIs are stable.
 
-version 7:
- - use nxp,imx8m-vpu-ctrl as phandle syscon property name
+This sounds reasonable, I'd suggest you reserve MSHV_CAP_CORE_API_STABLE
+right away but don't expose it yet so it's clear the API is not yet
+stable. Test userspace you have may always assume it's running with the
+latest kernel.
 
-version 5:
- - use syscon instead of VPU reset
+Also, please be clear about the fact that /dev/mshv doesn't
+provide a stable API yet so nobody builds an application on top of
+it.
 
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 ++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 9 deletions(-)
+One more though: it is probably a good idea to introduce selftests for
+/dev/mshv (similar to KVM's selftests in
+/tools/testing/selftests/kvm). Selftests don't really need a stable ABI
+as they live in the same linux.git and can be updated in the same patch
+series which changes /dev/mshv behavior. Selftests are very useful for
+checking there are no regressions, especially in the situation when
+there's no publicly available userspace for /dev/mshv.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 17c449e12c2e..65158414d255 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1329,15 +1329,16 @@ usb3_phy1: usb-phy@382f0040 {
- 			status = "disabled";
- 		};
- 
--		vpu: video-codec@38300000 {
-+		vpu_ctrl: syscon@38320000 {
-+			compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
-+			reg = <0x38320000 0x10000>;
-+		};
-+
-+		vpu_g1: video-codec@38300000 {
- 			compatible = "nxp,imx8mq-vpu";
--			reg = <0x38300000 0x10000>,
--			      <0x38310000 0x10000>,
--			      <0x38320000 0x10000>;
--			reg-names = "g1", "g2", "ctrl";
--			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "g1", "g2";
-+			reg = <0x38300000 0x10000>;
-+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g1";
- 			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
- 				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
- 				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-@@ -1350,9 +1351,33 @@ vpu: video-codec@38300000 {
- 						 <&clk IMX8MQ_VPU_PLL_OUT>,
- 						 <&clk IMX8MQ_SYS1_PLL_800M>,
- 						 <&clk IMX8MQ_VPU_PLL>;
--			assigned-clock-rates = <600000000>, <600000000>,
-+			assigned-clock-rates = <600000000>, <300000000>,
-+					       <800000000>, <0>;
-+			power-domains = <&pgc_vpu>;
-+			nxp,imx8m-vpu-ctrl = <&vpu_ctrl>;
-+		};
-+
-+		vpu_g2: video-codec@38310000 {
-+			compatible = "nxp,imx8mq-vpu-g2";
-+			reg = <0x38310000 0x10000>;
-+			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g2";
-+			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-+				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-+				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-+			clock-names = "g1", "g2",  "bus";
-+			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
-+					  <&clk IMX8MQ_CLK_VPU_G2>,
-+					  <&clk IMX8MQ_CLK_VPU_BUS>,
-+					  <&clk IMX8MQ_VPU_PLL_BYPASS>;
-+			assigned-clock-parents = <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_SYS1_PLL_800M>,
-+						 <&clk IMX8MQ_VPU_PLL>;
-+			assigned-clock-rates = <600000000>, <300000000>,
- 					       <800000000>, <0>;
- 			power-domains = <&pgc_vpu>;
-+			nxp,imx8m-vpu-ctrl = <&vpu_ctrl>;
- 		};
- 
- 		pcie0: pcie@33800000 {
 -- 
-2.25.1
+Vitaly
 
