@@ -2,210 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D23356516
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B45356519
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbhDGHSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239419AbhDGHSP (ORCPT
+        id S1346562AbhDGHSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:18:49 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:37652 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234913AbhDGHSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:18:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07218C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Evg2XwAOvha2xlDj30kwfXHj5dszfymtOlIHI8fiTc0=; b=cLyB0t6dbUv9FZHwC4q6QQpCAo
-        hY8llbXfxejiC7zook3BBZpxv/pHAn5n+4hKTUQ0sruSwERDq7+iIusoBs/w8LRBuiquYQNdTqY2z
-        q12rvyyxo6R4LYA4RZt48pvwR/dv5M2C+fycKiSJdq3HN7kg+RSrGRkovr90a3SmE77CR1VJtYLlg
-        btYkHNI3sS9X5m77aa7A/6K8sGJpm6WvewNYH0xcKOasJEcar2H2KSFd8cLlsG0GMh8MBMivzpxyL
-        1f5SztSdEUaU4hME5MA4Z4olyOWems4lSwSaodYXHwDP1MaQesN00jtCq/f1/lhIn+1xWWIH1nWzG
-        wkMuJVPg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU2RE-00E4ak-QQ; Wed, 07 Apr 2021 07:17:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 354623008B7;
-        Wed,  7 Apr 2021 09:17:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F0EAF24BF1B01; Wed,  7 Apr 2021 09:17:18 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 09:17:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
- differently
-Message-ID: <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
-References: <20210321150358.71ef52b1@imladris.surriel.com>
- <20210322110306.GE3697@techsingularity.net>
- <20210326151932.2c187840@imladris.surriel.com>
- <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
- <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+        Wed, 7 Apr 2021 03:18:33 -0400
+Received: by mail-vs1-f51.google.com with SMTP id 2so8215220vsh.4;
+        Wed, 07 Apr 2021 00:18:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kNIWCvfs0ZW4eVgsk+0zdu8i1BkoDuHPkcI6NnFD88o=;
+        b=gsQC9RPM63DO358lomakf4DbH2WZfVVo9SyciFu+0xqndIdhpu5FrRBvpC7eC6kPJZ
+         OP9ACkDWCXHZhZ4XO+rP9w4NWCtD6WkT0fKqsptMMP0ZVPXxoJkS0yxSAd3ixkQgP2om
+         CmyCb7nyYIONWTo68WMY+VmHt43EIXXM/Qyniz6VGzL1ihWOTR3RgnH1lsHHAze4AIaa
+         hw1CClXHnQbuUwdakC0BBBaTPlDPJE5zysWU4GA3hqXKr/9DrUDRllsCpMAukquSZMOF
+         dP9cfG96dIwdkfv1hdeDEnZra7V+pkktKa776ZQK+xCZlEdEkhBa7R2c32fFI4rfTtBp
+         ZKUQ==
+X-Gm-Message-State: AOAM5336vEhhMaP74Fyr4MHG+u9crT+F347ujIYb4dSo2AdUjscQsF0n
+        F8jdsrDG+Qfq6Ij+VAaTowpKLGuzG479fedd9Q4=
+X-Google-Smtp-Source: ABdhPJyftQlnHFXdM0yzdSgYYSKctCxPQ9kcTX65FNLj2mQMzON5fJBl/zAARa/sp8zjhgK4//xwDDnuTn6hpklj5ZM=
+X-Received: by 2002:a67:7d02:: with SMTP id y2mr1034896vsc.18.1617779902678;
+ Wed, 07 Apr 2021 00:18:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 7 Apr 2021 09:18:11 +0200
+Message-ID: <CAMuHMdWGnr1wK3yZdLovxmVQT1yc2DR+J6FwQyCLxQS-Bp29Rw@mail.gmail.com>
+Subject: Re: [PATCH 00/20] kbuild: unify the install.sh script usage
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:26:37AM -0400, Rik van Riel wrote:
-> I would be happy to pull the static branch out of select_idle_smt()
-> and place it into this if condition, though. You are right that
-> would save some overhead on non-smt systems.
->=20
-> Peter, would you prefer a follow-up patch for that or a version 4
-> of the patch?
+Hi Greg,
 
-Sorry, I was side-tracked with that core scheduling crap.. Something
-like the below then?
+Thanks for your series!
 
-(Also fixed that stray line-wrap)
+On Wed, Apr 7, 2021 at 7:34 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> Almost every architecture has copied the "install.sh" script that
+> originally came with i386, and modified it in very tiny ways.  This
+> patch series unifies all of these scripts into one single script to
+> allow people to understand how to correctly install a kernel, and fixes
+> up some issues regarding trying to install a kernel to a path with
+> spaces in it.
+>
+> Note that not all architectures actually seem to have any type of way to
+> install a kernel, they must rely on external scripts or tools which
+> feels odd as everything should be included here in the main repository.
+> I'll work on trying to figure out the missing architecture issues
+> afterward.
 
----
-Subject: sched/fair: Bring back select_idle_smt(), but differently
-=46rom: Rik van Riel <riel@surriel.com>
-Date: Fri, 26 Mar 2021 15:19:32 -0400
+I'll bite ;-)
 
-=46rom: Rik van Riel <riel@surriel.com>
+Does anyone actually use these scripts (outside of x86)?
+I assume the architectures that have them, only have them because they
+were copied from x86 while doing the initial ports ("oh, a file I don't
+have to modify at all.").
+But installing the kernel can be very platform-specific.
+Do you need the vmlinux, vmlinux.gz, Image, zImage, uImage, ...?
+With separate or appended DTB?
 
-Mel Gorman did some nice work in 9fe1f127b913 ("sched/fair: Merge
-select_idle_core/cpu()"), resulting in the kernel being more efficient
-at finding an idle CPU, and in tasks spending less time waiting to be
-run, both according to the schedstats run_delay numbers, and according
-to measured application latencies. Yay.
+Even on x86, the script will bail out with "Cannot find LILO." if you're
+using Grub.
 
-The flip side of this is that we see more task migrations (about 30%
-more), higher cache misses, higher memory bandwidth utilization, and
-higher CPU use, for the same number of requests/second.
+Anyway, having less of them is good.
 
-This is most pronounced on a memcache type workload, which saw a
-consistent 1-3% increase in total CPU use on the system, due to those
-increased task migrations leading to higher L2 cache miss numbers, and
-higher memory utilization. The exclusive L3 cache on Skylake does us
-no favors there.
+Gr{oetje,eeting}s,
 
-On our web serving workload, that effect is usually negligible.
+                        Geert
 
-It appears that the increased number of CPU migrations is generally a
-good thing, since it leads to lower cpu_delay numbers, reflecting the
-fact that tasks get to run faster. However, the reduced locality and
-the corresponding increase in L2 cache misses hurts a little.
 
-The patch below appears to fix the regression, while keeping the
-benefit of the lower cpu_delay numbers, by reintroducing
-select_idle_smt with a twist: when a socket has no idle cores, check
-to see if the sibling of "prev" is idle, before searching all the
-other CPUs.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-This fixes both the occasional 9% regression on the web serving
-workload, and the continuous 2% CPU use regression on the memcache
-type workload.
-
-With Mel's patches and this patch together, task migrations are still
-high, but L2 cache misses, memory bandwidth, and CPU time used are
-back down to what they were before. The p95 and p99 response times for
-the memcache type application improve by about 10% over what they were
-before Mel's patches got merged.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210326151932.2c187840@imladris.surriel.com
----
- kernel/sched/fair.c |   39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
-
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6112,6 +6112,27 @@ static int select_idle_core(struct task_
- 	return -1;
- }
-=20
-+/*
-+ * Scan the local SMT mask for idle CPUs.
-+ */
-+static int select_idle_smt(struct task_struct *p, struct sched_domain *sd,=
- int target)
-+{
-+	int cpu;
-+
-+	if (!static_branch_likely(&sched_smt_present))
-+		return -1;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(target)) {
-+		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-+		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
-+			continue;
-+		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+			return cpu;
-+	}
-+
-+	return -1;
-+}
-+
- #else /* CONFIG_SCHED_SMT */
-=20
- static inline void set_idle_cores(int cpu, int val)
-@@ -6128,6 +6149,11 @@ static inline int select_idle_core(struc
- 	return __select_idle_cpu(core);
- }
-=20
-+static inline int select_idle_smt(struct task_struct *p, struct sched_doma=
-in *sd, int target)
-+{
-+	return -1;
-+}
-+
- #endif /* CONFIG_SCHED_SMT */
-=20
- /*
-@@ -6135,7 +6161,7 @@ static inline int select_idle_core(struc
-  * comparing the average scan cost (tracked in sd->avg_scan_cost) against =
-the
-  * average idle time for this rq (as found in rq->avg_idle).
-  */
--static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd,=
- int target)
-+static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd,=
- int prev, int target)
- {
- 	struct cpumask *cpus =3D this_cpu_cpumask_var_ptr(select_idle_mask);
- 	int i, cpu, idle_cpu =3D -1, nr =3D INT_MAX;
-@@ -6148,6 +6174,15 @@ static int select_idle_cpu(struct task_s
- 	if (!this_sd)
- 		return -1;
-=20
-+	/* If we have SMT but there are no idle cores */
-+	if (static_branch_likely(&sched_smt_presernt) && !smt) {
-+		if (cpus_share_cache(prev, target)) {
-+			i =3D select_idle_smt(p, sd, prev);
-+			if ((unsigned int)i < nr_cpumask_bits)
-+				return i;
-+		}
-+	}
-+
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-=20
- 	if (sched_feat(SIS_PROP) && !smt) {
-@@ -6321,7 +6356,7 @@ static int select_idle_sibling(struct ta
- 	if (!sd)
- 		return target;
-=20
--	i =3D select_idle_cpu(p, sd, target);
-+	i =3D select_idle_cpu(p, sd, prev, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
-=20
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
