@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1080E356891
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056F8356892
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhDGJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S1346361AbhDGJ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbhDGJ5h (ORCPT
+        with ESMTP id S230220AbhDGJ6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:57:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07400C061756;
-        Wed,  7 Apr 2021 02:57:27 -0700 (PDT)
-Date:   Wed, 07 Apr 2021 09:57:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617789445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y5FLxlgSbexvqy2fxlM9SqEVAma4qXNuQhn4SL5UkIk=;
-        b=2Dm7z5zULhx5OvRlLUVkUNNXy8aDsuiZpRWngcivpZ5SrkcKvkmlVIySsDAdvVq5BwRJ9f
-        57JD5evhjgZGgSZpwFaajFmvMm30dsCJpzFma0bor1WEbav0Nj7qme5bE8X51kg4aooKSC
-        /kuK9lVDZFaN4HzjQDC5mkqNxwT/D8zD+zbwNRvV0Y9BktBGzBMctWbTExwuJ7kpiS678y
-        SJSzeEs++B/n3sE/383AQIZgki3UZTFm+TeJdalvEJtBug+t6fsdT75U+gvwZsrzVY9P95
-        8BFu1cVMjxAWxhJLbNrae3YrEr064TdVrerb+oAw6h5vUwAwbLJFvATEXQXYyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617789445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y5FLxlgSbexvqy2fxlM9SqEVAma4qXNuQhn4SL5UkIk=;
-        b=hz+WEwZ1pLiauU75JepV0A8wgi3iGLWLYgXYw5Unu8j7Q4nzo0K+ZyQzBII8BR47ftjfDV
-        1QZF6hf3b17ee/Cw==
-From:   "tip-bot2 for William Roche" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] RAS/CEC: Correct ce_add_elem()'s returned values
-Cc:     William Roche <william.roche@oracle.com>,
-        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
-References: <1617722939-29670-1-git-send-email-william.roche@oracle.com>
+        Wed, 7 Apr 2021 05:58:02 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958E7C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:57:53 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id v140so9737960lfa.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hzVk6mBE61MJw2r5FHmSZRvCYgvwVXp/mZjw884DOo4=;
+        b=K/ahBBVqXGa7skVKcZZvX1P3cWOXCUejCM0xwFV0fYzhHOjlSVvI8D30uTEo8z+9Kw
+         fqokx2nYkHaQ2AvW76EyGUB27UzLK0DCzfFn2PjWHMAbZpgDoOoRjUwQNwZqwP7xMdi5
+         +TEyz46gG1OvtP66TT9UREYJRg2R6u3QZDxb+pG6LU10Q4znoI9vkVqnRw1clSdSH0gv
+         oHY+UhlTVYRYSvovt86zeNTLxeJpS0vvWFVMNW+TfHX4XLBmA85Lzi7qUbtfbc9AUZqw
+         YD2tR8YqDmCVUt0I8YBcKB71ANOAdfSQp7oY5h4oyFR2DjC6M6Nc9qGPlsnjAypVMlAE
+         cqGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hzVk6mBE61MJw2r5FHmSZRvCYgvwVXp/mZjw884DOo4=;
+        b=CfEuHJZPdC9aguJ2WTvMExsxLfutU5hHUx2FcyGqz3tPR6WPyhOCfWxbW7lLPRm4GK
+         b6IkJSFpNU05bxlxGFckWzH1/FtqGh0kz4XuNolNdpLl4d7vQoq5BZNsx2LmIecagoV0
+         SZq79tS3WXin9qCCLSJxXDIqMUtvwflrbtFwnZWwA3m2dujbJf5VcigqDw6jSCda7tnJ
+         0DfMNdAemyA5wZQRgnc8s34jmRxHuBvnloHKFc4wkXldT803NXbXJXAjscLwfOnb3w5l
+         YLmfUiLszp0eESsjR2itL0jjWkQGtPy2+QGGpGCA9/6hGYa0xZ8hNyMAix/WjY4lLRat
+         z+Cw==
+X-Gm-Message-State: AOAM5303Rt/4hQ86vi/MetxEKb82CQH67mQO0rrbT+nA6tyCe0h8cIU5
+        kcAUahzgFZgy/d9oDIioD7oQS4cgY7I6iIPpdZVMqA==
+X-Google-Smtp-Source: ABdhPJxaYtLqugOv8s0AaC29rg4OpugngrVdIOVuzEVFrREaHGm4kSSA/NuZbvlGWGFYfbv94nS3zhqxPfULMTTw0hA=
+X-Received: by 2002:a05:6512:338a:: with SMTP id h10mr1991863lfg.277.1617789472032;
+ Wed, 07 Apr 2021 02:57:52 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <161778944414.29796.5725343346963494205.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210321150358.71ef52b1@imladris.surriel.com> <20210322110306.GE3697@techsingularity.net>
+ <20210326151932.2c187840@imladris.surriel.com> <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
+ <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+ <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net> <20210407094217.GA2926@vingu-book>
+ <YG2BXRm60IhpumD8@hirez.programming.kicks-ass.net>
+In-Reply-To: <YG2BXRm60IhpumD8@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 7 Apr 2021 11:57:40 +0200
+Message-ID: <CAKfTPtB7bSkQttZoOPfvsHmN6yG6BrYTs0r0xBO4Xs-A+UhH6w@mail.gmail.com>
+Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but differently
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, 7 Apr 2021 at 11:55, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Apr 07, 2021 at 11:42:17AM +0200, Vincent Guittot wrote:
+> > I would really prefer to keep that out of select_idle_cpu which aims to merge in one
+> > single loop the walk through sd_llc. In the case of select_idle_smt, this is done outside
+> > the loop:
+>
+> Fair enough.
+>
+> > @@ -6317,11 +6339,21 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+> >               }
+> >       }
+> >
+> > +     if (static_branch_likely(&sched_smt_present)) {
+> > +             smt = test_idle_cores(target, false);
+> > +             if (!smt && cpus_share_cache(prev, target)) {
+> > +                     /* No idle core. Check if prev has an idle sibling. */
+> > +                     i = select_idle_smt(p, sd, prev);
+> > +                     if ((unsigned int)i < nr_cpumask_bits)
+> > +                             return i;
+> > +             }
+> > +     }
+> > +
+> >       sd = rcu_dereference(per_cpu(sd_llc, target));
+> >       if (!sd)
+> >               return target;
+>
+> It needs to be here, otherwise you're using @sd uninitialized.
 
-Commit-ID:     3a62583c2853b0ab37a57dde79decea210b5fb89
-Gitweb:        https://git.kernel.org/tip/3a62583c2853b0ab37a57dde79decea210b5fb89
-Author:        William Roche <william.roche@oracle.com>
-AuthorDate:    Tue, 06 Apr 2021 11:28:59 -04:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 07 Apr 2021 11:52:26 +02:00
+argh yes...
 
-RAS/CEC: Correct ce_add_elem()'s returned values
-
-ce_add_elem() uses different return values to signal a result from
-adding an element to the collector. Commit in Fixes: broke the case
-where the element being added is not found in the array. Correct that.
-
- [ bp: Rewrite commit message, add kernel-doc comments. ]
-
-Fixes: de0e0624d86f ("RAS/CEC: Check count_threshold unconditionally")
-Signed-off-by: William Roche <william.roche@oracle.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/1617722939-29670-1-git-send-email-william.roche@oracle.com
----
- drivers/ras/cec.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index ddecf25..d7894f1 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -309,11 +309,20 @@ static bool sanity_check(struct ce_array *ca)
- 	return ret;
- }
- 
-+/**
-+ * cec_add_elem - Add an element to the CEC array.
-+ * @pfn:	page frame number to insert
-+ *
-+ * Return values:
-+ * - <0:	on error
-+ * -  0:	on success
-+ * - >0:	when the inserted pfn was offlined
-+ */
- static int cec_add_elem(u64 pfn)
- {
- 	struct ce_array *ca = &ce_arr;
-+	int count, err, ret = 0;
- 	unsigned int to = 0;
--	int count, ret = 0;
- 
- 	/*
- 	 * We can be called very early on the identify_cpu() path where we are
-@@ -330,8 +339,8 @@ static int cec_add_elem(u64 pfn)
- 	if (ca->n == MAX_ELEMS)
- 		WARN_ON(!del_lru_elem_unlocked(ca));
- 
--	ret = find_elem(ca, pfn, &to);
--	if (ret < 0) {
-+	err = find_elem(ca, pfn, &to);
-+	if (err < 0) {
- 		/*
- 		 * Shift range [to-end] to make room for one more element.
- 		 */
+>
+> > -     i = select_idle_cpu(p, sd, target);
+> > +     i = select_idle_cpu(p, sd, smt, target);
+> >       if ((unsigned)i < nr_cpumask_bits)
+> >               return i;
+>
+> Let me have another poke at it.
