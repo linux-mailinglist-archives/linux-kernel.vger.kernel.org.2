@@ -2,191 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBBD35729D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036D335729F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354505AbhDGRDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:03:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354499AbhDGRDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:03:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617815008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xDeNUJWj/KwT4DnPD7aB4HG9X9xq0pFkyBbaBZ5x780=;
-        b=JMho7XQI9YwV9l9avF831ZqLC96OjqfQUBZvaXXkSQx5ySX95Tsl3SOGM65NHxoUpfwkHG
-        L2gRnDyPL2QZ2OWoEGTD7Lkb43Fvtvx7GZ3FNdDtx08fpB8XUorDTuLRzDEEXMzPRZajpw
-        SAOM8um+sRgSBf3zfgsPdqYTkIGzFRI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89803B1EF;
-        Wed,  7 Apr 2021 17:03:28 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 19:03:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
-Subject: Re: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
-Message-ID: <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz>
-References: <20210331030520.3816265-1-swboyd@chromium.org>
- <20210331030520.3816265-13-swboyd@chromium.org>
+        id S1354509AbhDGRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242968AbhDGRFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:05:17 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E55DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 10:05:07 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id s17so21564931ljc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 10:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+88jxDCU+SNdWXTN3z3TZI8sQwpTFP6rVmjQ1IvMUp0=;
+        b=NEqJedWWmmdhqwXjNwjktue2V23wNTRtBfoImIIAzQVurOySj5Javl6oNqSxLuGk/6
+         H5db28mPuPm8ZICBA974Hz2HSIUZgFYCpQjj7wNrm2YortKw0r9rkQz6xqx2G3ohOwJL
+         KBqlJrRjasxTbcKYfFCNzd5whuFSFbHBux824=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+88jxDCU+SNdWXTN3z3TZI8sQwpTFP6rVmjQ1IvMUp0=;
+        b=e4TwyX7+nX9TC43e/gy5nKCL33PNJ/rsg4zKSFjOBO7/bjjd7XDQYYh790LuQzg9bK
+         otVdmjQx1MywgEHqirBA4Q8cKZOCfnRKPfOin3EpRTItYn6FsBPCfsqYTFajmtqi0nps
+         axdH/+Z9Yrn736wKNARXt/WLm7quZxzcs+KU7G1iCoiameKPS3+HmiTCSVz0KR/oApAq
+         UYNY/RG+32qoo3A0khjj2Rj1pcz77cSzB58xXRajsENyFWPrzE14uL3+NvXkPBwJofXH
+         U26d9MrcmXNQMNuqJRz1iWP0HPMR+a4zjcJOx5K5Q/fby+lD4F6SHZ9OnexsxM81yfUl
+         3vhw==
+X-Gm-Message-State: AOAM532A/aazcR2lENacT5YqoJyUn4Td/oVT15Nacmo6qzqaxGHbfPUG
+        XC9IpPvY+zRcxwA4ODvD3samOitu0Nk/XKx7
+X-Google-Smtp-Source: ABdhPJwZVlH8xY/iPok7pYoPHJal6Fk3yGtQn/XW3wvcTEWd477mxQDikcJtiNyieNWEEqyPijQ7Ug==
+X-Received: by 2002:a2e:9151:: with SMTP id q17mr2660497ljg.107.1617815106082;
+        Wed, 07 Apr 2021 10:05:06 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id v20sm2513611ljh.105.2021.04.07.10.05.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 10:05:06 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id u20so21525222lja.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 10:05:05 -0700 (PDT)
+X-Received: by 2002:a2e:9acf:: with SMTP id p15mr2701576ljj.61.1617815105311;
+ Wed, 07 Apr 2021 10:05:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331030520.3816265-13-swboyd@chromium.org>
-User-Agent: NeoMutt/20170912 (1.9.0)
+References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+ <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
+ <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
+In-Reply-To: <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 7 Apr 2021 10:04:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj0JH6PnG7dW51Sr5ZqhomqSaSLTQV7z4Si2dLeSVcO_g@mail.gmail.com>
+Message-ID: <CAHk-=wj0JH6PnG7dW51Sr5ZqhomqSaSLTQV7z4Si2dLeSVcO_g@mail.gmail.com>
+Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
+        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-30 20:05:20, Stephen Boyd wrote:
-> We can use the vmlinux_build_id array here now instead of open coding
-> it. This mostly consolidates code.
-> 
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Evan Green <evgreen@chromium.org>
-> Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-> Cc: Dave Young <dyoung@redhat.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: <kexec@lists.infradead.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  include/linux/crash_core.h |  6 +-----
->  kernel/crash_core.c        | 41 ++------------------------------------
->  2 files changed, 3 insertions(+), 44 deletions(-)
-> 
-> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> index 206bde8308b2..fb8ab99bb2ee 100644
-> --- a/include/linux/crash_core.h
-> +++ b/include/linux/crash_core.h
-> @@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
->  #define VMCOREINFO_OSRELEASE(value) \
->  	vmcoreinfo_append_str("OSRELEASE=%s\n", value)
->  #define VMCOREINFO_BUILD_ID(value) \
-> -	vmcoreinfo_append_str("BUILD-ID=%s\n", value)
-> +	vmcoreinfo_append_str("BUILD-ID=%20phN\n", value)
+On Wed, Apr 7, 2021 at 9:33 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> Trying my hand at backporting the patchsets Peter mentioned proved
+> this to be far from easy with many dependencies. Let me look into
+> Vlastimil's suggestion to backport only 17839856fd58 and it sounds
+> like 5.4 already followed that path.
 
-Please, add also build check that BUILD_ID_MAX == 20.
+Well, in many ways 17839856fd58 was the "simple and obvious" fix, and
+I do think it's easily backportable.
 
+But it *did* cause problems too. Those problems may not be issues on
+those old kernels, though.
 
->  #define VMCOREINFO_PAGESIZE(value) \
->  	vmcoreinfo_append_str("PAGESIZE=%ld\n", value)
->  #define VMCOREINFO_SYMBOL(name) \
-> @@ -69,10 +69,6 @@ extern unsigned char *vmcoreinfo_data;
->  extern size_t vmcoreinfo_size;
->  extern u32 *vmcoreinfo_note;
->  
-> -/* raw contents of kernel .notes section */
-> -extern const void __start_notes __weak;
-> -extern const void __stop_notes __weak;
-> -
->  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
->  			  void *data, size_t data_len);
->  void final_note(Elf_Word *buf);
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 825284baaf46..6b560cf9f374 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -4,6 +4,7 @@
->   * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
->   */
->  
-> +#include <linux/buildid.h>
->  #include <linux/crash_core.h>
->  #include <linux/utsname.h>
->  #include <linux/vmalloc.h>
-> @@ -378,51 +379,13 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
->  }
->  EXPORT_SYMBOL(paddr_vmcoreinfo_note);
->  
-> -#define NOTES_SIZE (&__stop_notes - &__start_notes)
-> -#define BUILD_ID_MAX SHA1_DIGEST_SIZE
-> -#define NT_GNU_BUILD_ID 3
-> -
-> -struct elf_note_section {
-> -	struct elf_note	n_hdr;
-> -	u8 n_data[];
-> -};
-> -
->  /*
->   * Add build ID from .notes section as generated by the GNU ld(1)
->   * or LLVM lld(1) --build-id option.
->   */
->  static void add_build_id_vmcoreinfo(void)
->  {
-> -	char build_id[BUILD_ID_MAX * 2 + 1];
-> -	int n_remain = NOTES_SIZE;
-> -
-> -	while (n_remain >= sizeof(struct elf_note)) {
-> -		const struct elf_note_section *note_sec =
-> -			&__start_notes + NOTES_SIZE - n_remain;
-> -		const u32 n_namesz = note_sec->n_hdr.n_namesz;
-> -
-> -		if (note_sec->n_hdr.n_type == NT_GNU_BUILD_ID &&
-> -		    n_namesz != 0 &&
-> -		    !strcmp((char *)&note_sec->n_data[0], "GNU")) {
-> -			if (note_sec->n_hdr.n_descsz <= BUILD_ID_MAX) {
-> -				const u32 n_descsz = note_sec->n_hdr.n_descsz;
-> -				const u8 *s = &note_sec->n_data[n_namesz];
-> -
-> -				s = PTR_ALIGN(s, 4);
-> -				bin2hex(build_id, s, n_descsz);
-> -				build_id[2 * n_descsz] = '\0';
-> -				VMCOREINFO_BUILD_ID(build_id);
-> -				return;
-> -			}
-> -			pr_warn("Build ID is too large to include in vmcoreinfo: %u > %u\n",
-> -				note_sec->n_hdr.n_descsz,
-> -				BUILD_ID_MAX);
-> -			return;
-> -		}
-> -		n_remain -= sizeof(struct elf_note) +
-> -			ALIGN(note_sec->n_hdr.n_namesz, 4) +
-> -			ALIGN(note_sec->n_hdr.n_descsz, 4);
-> -	}
-> +	VMCOREINFO_BUILD_ID(vmlinux_build_id);
->  }
+In particular, commit 17839856fd58 caused uffd-wp to stop working
+right, and it caused some issues with debugging (I forget the exact
+details, but I think it was strace accessing PROT_NONE or write-only
+pages or something like that, and COW failed).
 
-The function add_build_id_vmcoreinfo() is used in
-crash_save_vmcoreinfo_init() in this context:
+But yes, in many ways that commit is a much simpler and more
+straightforward one (which is why I tried it once - we ended up with
+the much more subtle and far-reaching fixes after the UFFD issues
+crept up).
 
+The issues that 17839856fd58 caused may be entire non-events in old
+kernels. In fact, the uffd writeprotect API was added fairly recently
+(see commit 63b2d4174c4a that made it into v5.7), so the uffd-wp issue
+that was triggered probably cannot happen in the old kernels.
 
-	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
-	add_build_id_vmcoreinfo();
-	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+The strace issue might not be relevant either, but I forget what the
+details were. Mikilas should know.
 
-	VMCOREINFO_SYMBOL(init_uts_ns);
-	VMCOREINFO_OFFSET(uts_namespace, name);
-	VMCOREINFO_SYMBOL(node_online_map);
+See
 
-The function is not longer need. VMCOREINFO_BUILD_ID()
-can be used directly:
+  https://lore.kernel.org/lkml/alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com/
 
-	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
-	VMCOREINFO_BUILD_ID(vmlinux_build_id);
-	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+for Mikulas report. I never looked into it in detail, because by then
+the uffd-wp issue had already come up, so it was juat another nail in
+the coffin for that simpler approach.
 
-	VMCOREINFO_SYMBOL(init_uts_ns);
-	VMCOREINFO_OFFSET(uts_namespace, name);
-	VMCOREINFO_SYMBOL(node_online_map);
+Mikulas, do you remember?
 
-
-Best Regards,
-Petr
-
-
->  
->  static int __init crash_save_vmcoreinfo_init(void)
-> -- 
-> https://chromeos.dev
+            Linus
