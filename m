@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2559B356063
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DA3356066
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347559AbhDGAeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 20:34:21 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:42773 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242066AbhDGAeT (ORCPT
+        id S1347567AbhDGAgU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Apr 2021 20:36:20 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61146 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232985AbhDGAgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 20:34:19 -0400
-Received: by mail-ot1-f51.google.com with SMTP id c24-20020a9d6c980000b02902662e210895so15937928otr.9;
-        Tue, 06 Apr 2021 17:34:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lzeGNRdWUJv2a1laWpy/LzDxaThmJOfkKyLxodeO5FE=;
-        b=MG0IWwjhltZ5F6Rn6A4uxZ4GgcsX1y6RTL0W9g1ztOpIfsIAD9l+JF+0MsOJ7B6sd8
-         mP/apYVAYaeo2oIY1nDVpW71rcD+OjK0s/R5FusxWIWl3HlcZA3nnoLkbdFAChz0tmjZ
-         FtdhUQ0b9OJk1rBcWX6cBWsgvGqm1QAF/8tNWqwyLeM5ZLMtLzwfPvlqkl8brr3B/wqs
-         MTGgwWf+FJBausJpnOQ1uvTxKF8LYyj8hkpZHkGjzfoX6rfajguCFxudUmmN9WgHLiu6
-         SW/1ttm5lcdkT6g6XRG2FsHmoj6rm2xp7TXXz+Op2YrRVe07F3SBGvOfGJhUy0yf7evN
-         vknQ==
-X-Gm-Message-State: AOAM5334xNFJZHeXSulY0if8JZylH6WmVuMWZM23XEiurPTLgL/H1mDa
-        3y3hjY6s3jITfbHkdrsOSA==
-X-Google-Smtp-Source: ABdhPJwwyXsQupa/7sAW8FjC80e+JpflpB9uKOjbJBquCfhYxsXsOIqScb4YC0WY433fUEKCuYqDRg==
-X-Received: by 2002:a05:6830:2472:: with SMTP id x50mr629053otr.69.1617755651052;
-        Tue, 06 Apr 2021 17:34:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i17sm4947303ota.53.2021.04.06.17.34.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 17:34:09 -0700 (PDT)
-Received: (nullmailer pid 2558224 invoked by uid 1000);
-        Wed, 07 Apr 2021 00:34:08 -0000
-Date:   Tue, 6 Apr 2021 19:34:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-Message-ID: <20210407003408.GA2551507@robh.at.kernel.org>
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
- <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
+        Tue, 6 Apr 2021 20:36:17 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1370StsL005205
+        for <linux-kernel@vger.kernel.org>; Tue, 6 Apr 2021 17:36:09 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37rvb725g8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 17:36:09 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 6 Apr 2021 17:36:07 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id EF0E562E22EC; Tue,  6 Apr 2021 17:36:04 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <acme@kernel.org>, <acme@redhat.com>,
+        <namhyung@kernel.org>, <jolsa@kernel.org>, <songliubraving@fb.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v2 0/3] perf util: bpf perf improvements
+Date:   Tue, 6 Apr 2021 17:35:58 -0700
+Message-ID: <20210407003601.619158-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: SrJzJksxO5_btDM9kDtbKc3AciKia_5T
+X-Proofpoint-ORIG-GUID: SrJzJksxO5_btDM9kDtbKc3AciKia_5T
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-06_09:2021-04-06,2021-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=882 adultscore=1 spamscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
-> On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
-> <ilya.lipnitskiy@gmail.com> wrote:
-> >
-> > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > not configured by #gpio-cells and can't be parsed along with other
-> > "*-gpios" properties.
-> >
-> > nr-gpios without the "<vendor>," prefix is not allowed by the DT
-> > spec[1], so only add exception for the ",nr-gpios" suffix and let the
-> > error message continue being printed for non-compliant implementations.
-> >
-> > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
-> >  - gpio-adnp.txt
-> >  - gpio-xgene-sb.txt
-> >  - gpio-xlp.txt
-> >  - snps,dw-apb-gpio.yaml
-> >
-> > [1]:
-> > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-> >
-> > Fixes errors such as:
-> >   OF: /palmbus@300000/gpio@600: could not find phandle
-> >
-> > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > Cc: Saravana Kannan <saravanak@google.com>
-> > Cc: <stable@vger.kernel.org> # 5.5.x
-> > ---
-> >  drivers/of/property.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 2046ae311322..1793303e84ac 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > +
-> > +static struct device_node *parse_gpios(struct device_node *np,
-> > +                                      const char *prop_name, int index)
-> > +{
-> > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
-> > +               return NULL;
-> 
-> Ah I somehow missed this patch. This gives a blanked exception for
-> vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
-> of ",nr-gpios" we are grandfathering in. Any future additions should
-> be rejected. Can we do that please?
-> 
-> Rob, you okay with making this list more explicit?
+This patches set improves bpf_perf (perf-stat --bpf-counter) by
+  1) exposing key definitions to a libperf header;
+  2) adding compatibility check for perf_attr_map;
+  3) introducing config stat.bpf-counter-events.
 
-Not the kernel's job IMO. A schema is the right way to handle that.
+Changes v1 => v2:
+1. Separte 2/3 from 1/3. (Jiri)
+2. Rename bperf.h to bpf_perf.h. (Jiri)
+3. Other small fixes/optimizations. (Jiri)
 
-Rob
+Song Liu (3):
+  perf util: move bpf_perf definitions to a libperf header
+  perf bpf: check perf_attr_map is compatible with the perf binary
+  perf-stat: introduce config stat.bpf-counter-events
+
+ tools/lib/perf/include/perf/bpf_perf.h | 31 ++++++++++++++
+ tools/perf/Documentation/perf-stat.txt |  2 +
+ tools/perf/builtin-stat.c              | 43 ++++++++++++-------
+ tools/perf/util/bpf_counter.c          | 57 +++++++++++++++-----------
+ tools/perf/util/config.c               | 32 +++++++++++++++
+ tools/perf/util/evsel.c                |  2 +
+ tools/perf/util/evsel.h                |  6 +++
+ tools/perf/util/target.h               |  5 ---
+ 8 files changed, 134 insertions(+), 44 deletions(-)
+ create mode 100644 tools/lib/perf/include/perf/bpf_perf.h
+
+--
+2.30.2
