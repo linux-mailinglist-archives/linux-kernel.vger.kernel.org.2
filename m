@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0921A356608
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D5835660C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236294AbhDGIFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:05:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40676 "EHLO mail.kernel.org"
+        id S236607AbhDGIGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233970AbhDGIFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:05:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F350061151;
-        Wed,  7 Apr 2021 08:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617782730;
-        bh=mlyMvKhaf1o3icGWjPF64TVY48gFXxVgW8CnfXSrWZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nq46qRCrdrX0lQjTs5Ljvmor6tWA2xpb9rl7blBxjQxqz2lajnmKpTMuSa/2RUmkM
-         HIxswUO03pEkWoP+Qu6+Aj9Js7xm1EaWBer1/90j23Qgm1MAr9/OijbVpou3mNcMt4
-         l46k96xnyNLEPr1/jWZUXMMirn2x3JwALnbZmEqU=
-Date:   Wed, 7 Apr 2021 10:05:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH] staging: rtl8712: fix avoid CamelCase in xmit_osdep.h
-Message-ID: <YG1nyA3ZJbEzVNDu@kroah.com>
-References: <YG1l6QIKRMjqgPiD@kali>
+        id S233970AbhDGIGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3F961222;
+        Wed,  7 Apr 2021 08:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617782793;
+        bh=Saui7R6VgfinD0aYuADSUqh2OGbSYGStZdRURn73p8Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CaQS81BmyDfetD8FswzLLV7h6/zoDjIyjLT15jD5RY5SFKpj834sHX1cqTmUxj7HF
+         tdLn2UaFdycx2uLhSLTyzP+chLrpEN7uIC+nGL9LDhG9tJU+ue7zleKV753cnW6Wfg
+         nppLNQ/JyeS633dDWM0YC3HBygcPZ1TSSlJRPfSJktIpQRAqJDfTWnha+kCMAS+8bS
+         ne9wpH4kn9Wx6Is5UMWw9aL/7zxpgohjtxYOWY6iSUI38HS56YMYIxrzi2h+pp+UWw
+         1Y2UhGFZIdfap22sxk+s9m/KkDZoMcKPsksDKEMY4t35lQl2HBguzAeWeeTavOgrd9
+         fqSeTNLU4bblA==
+Date:   Wed, 7 Apr 2021 10:06:27 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 29/32] docs: dt: update writing-schema.rst references
+Message-ID: <20210407100627.13071b72@coco.lan>
+In-Reply-To: <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        <7cfddf303f1508d26f90d87546d3812faebfc5ba.1617279356.git.mchehab+huawei@kernel.org>
+        <CAL_Jsq+3kqzQi+7emMWkuhyh2aj8qLy6nLS--J2P57Bw_jOCvw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG1l6QIKRMjqgPiD@kali>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:27:29PM +0530, Mitali Borkar wrote:
-> Fixed Check:Avoid CamelCase by renaming SetFilter to set_filter
-> Reported by checkpatch.
-> 
-> Signed-off-by: Mitali Borkar <mitaliborkar810@example.com>
-> ---
->  drivers/staging/rtl8712/xmit_osdep.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8712/xmit_osdep.h b/drivers/staging/rtl8712/xmit_osdep.h
-> index b76021b568f8..7ad2ac6f5ff0 100644
-> --- a/drivers/staging/rtl8712/xmit_osdep.h
-> +++ b/drivers/staging/rtl8712/xmit_osdep.h
-> @@ -35,7 +35,7 @@ struct xmit_frame;
->  struct xmit_buf;
->  
->  int r8712_xmit_entry(_pkt *pkt, struct  net_device *pnetdev);
-> -void r8712_SetFilter(struct work_struct *work);
-> +void r8712_set_filter(struct work_struct *work);
->  int r8712_xmit_resource_alloc(struct _adapter *padapter,
->  			      struct xmit_buf *pxmitbuf);
->  void r8712_xmit_resource_free(struct _adapter *padapter,
-> -- 
-> 2.30.2
-> 
-> 
+Em Tue, 6 Apr 2021 10:04:57 -0500
+Rob Herring <robh+dt@kernel.org> escreveu:
 
-Did you try test-building your change?  Always do so :(
+> On Thu, Apr 1, 2021 at 7:17 AM Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org> wrote:
+> >
+> > Changeset b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
+> > renamed: Documentation/devicetree/writing-schema.rst
+> > to: Documentation/devicetree/bindings/writing-schema.rst.
+> >
+> > Update the cross-references accordingly.
+> >
+> > Fixes: b83db5b84900 ("docs: dt: Group DT docs into relevant sub-sections")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/devicetree/bindings/submitting-patches.rst | 2 +-
+> >  scripts/checkpatch.pl                                    | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
+> > index ee4feb53f8d0..104fa8fb2c17 100644
+> > --- a/Documentation/devicetree/bindings/submitting-patches.rst
+> > +++ b/Documentation/devicetree/bindings/submitting-patches.rst
+> > @@ -25,7 +25,7 @@ I. For patch submitters
+> >
+> >         make dt_binding_check
+> >
+> > -     See Documentation/devicetree/writing-schema.rst for more details about
+> > +     See Documentation/devicetree/bindings/writing-schema.rst for more details about  
+> 
+> We should make this a rSt link instead.
+
+It shouldn't be needed, as Documentation/sphinx/automarkup.py has a rule
+which converts Documentation/* into a cross reference using this
+regex:
+
+	RE_doc = re.compile(r'(\bDocumentation/)?((\.\./)*[\w\-/]+)\.(rst|txt)')
 
 
+Thanks,
+Mauro
