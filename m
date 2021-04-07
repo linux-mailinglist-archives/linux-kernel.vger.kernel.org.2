@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79CE356B23
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0708356B1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245740AbhDGL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:26:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245698AbhDGL0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245697AbhDGL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 7 Apr 2021 07:26:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30DE6102A;
-        Wed,  7 Apr 2021 11:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617794753;
-        bh=fp9e7C8temPHioHnfMeuShTqKsHUij0RHUo6TqZrCNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ckP6pwJ+dw5GZcDOONZJTO3eldsrYzYtzmpJWlUFJYYiPkWVV5P3gltO1FyyMr4Ha
-         mCUF4kKyPhoRYLKfhzNwA3T4TFSKmJK5IWx13/OcXybWG1/pREvOYr1xoQRsktUZml
-         z4wlxd5MfDC+nFo3f5vOdQX6k19Q5W0yZtECoV/VmdyT21cBR26bWkUU83PsQhr5FX
-         newpyk6G3e39jleTDs2NzyOwRPtiJ9MjJP/kQewANJxZWkhHnRdJspyDoVHVR2TYBS
-         zvAsV9tWufIh0ikwGEl1u6yN0VZO7pqcIOgICoEFYr67fHhGIBGe3gYtDgpGXGQwZy
-         JhbbphEYNBDUw==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lU6Jd-0000Sv-Dv; Wed, 07 Apr 2021 13:25:45 +0200
-Date:   Wed, 7 Apr 2021 13:25:45 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Anthony Mallet <anthony.mallet@laas.fr>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] Revert "USB: cdc-acm: fix rounding error in
- TIOCSSERIAL"
-Message-ID: <YG2WuTPjPhLPR/v7@hovoldconsulting.com>
-References: <20210407102845.32720-1-johan@kernel.org>
- <20210407102845.32720-2-johan@kernel.org>
- <24685.37311.759816.776098@gargle.gargle.HOWL>
+Received: from mail.skyhub.de ([5.9.137.197]:35856 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234598AbhDGL0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:26:02 -0400
+Received: from zn.tnic (p200300ec2f08fb002f59ec04e5c6bba4.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:2f59:ec04:e5c6:bba4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9ECD1EC027D;
+        Wed,  7 Apr 2021 13:25:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617794751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=X16VaWChjl8MmKdShkWfeaVAAiA4jnoapC94RAmEKRM=;
+        b=Roxw176gMH3NIQzB4XAV88p3i5EIDcEM7rUTimjRgUad23TNWW0lw/JmPMknSbakFUQU8B
+        WUyUbdAsvWNeVwz94+2UiQdf86lp+c/UWBmUUdjjr+KJ5gIw01VoJAa/X4anH8CqHUs5BZ
+        3EppUkgojBUlnyAoDOOWepE/0SM40sQ=
+Date:   Wed, 7 Apr 2021 13:25:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 06/13] x86/compressed: rescinds and validate
+ the memory used for the GHCB
+Message-ID: <20210407112555.GB25319@zn.tnic>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-7-brijesh.singh@amd.com>
+ <20210406103358.GL17806@zn.tnic>
+ <c9f60432-2484-be1e-7b08-86dae5aa263f@amd.com>
+ <67f92f5c-780c-a4c6-241a-6771558e81a3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <24685.37311.759816.776098@gargle.gargle.HOWL>
+In-Reply-To: <67f92f5c-780c-a4c6-241a-6771558e81a3@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:04:31PM +0200, Anthony Mallet wrote:
-> On Wednesday  7 Apr 2021, at 12:28, Johan Hovold wrote:
-> > With HZ=250, the default 0.5 second value of close_delay is converted to
-> > 125 jiffies when set and is converted back to 50 centiseconds by
-> > TIOCGSERIAL as expected (not 12 cs as was claimed).
-> 
-> It was "12" (instead of 50) because the conversion gor TIOCGSERIAL was
-> initially broken, and that was fixed in the previous commit
-> 633e2b2ded739a34bd0fb1d8b5b871f7e489ea29
+On Tue, Apr 06, 2021 at 02:42:43PM -0500, Tom Lendacky wrote:
+> The GHCB spec only defines the "0" reason code set. We could provide Linux
+> it's own reason code set with some more specific reason codes for
+> failures, if that is needed.
 
-Right, so this patch is still just broken. The missing jiffies
-conversion had already been added.
+Why Linux only?
 
-> > For completeness: With different default values for these parameters or
-> > with a HZ value not divisible by two, the lack of rounding when setting
-> > the default values in tty_port_init() could result in an -EPERM being
-> > returned, but this is hardly something we need to worry about.
-> 
-> The -EPERM is harmful when a regular user wants to update other
-> members of serial_struct without changing the close delays,
-> e.g. ASYNC_LOW_LATENCY, which is granted to regular users.
+Don't we want to have a generalized set of error codes which say what
+has happened so that people can debug?
 
-You're missing the point; -EPERM will *not* be returned -- and this
-patch was never needed.
+Let's take the above case Brijesh explains: guest tries a page state
+change, HV cannot manage for whatever reason and guest terminates with a
+"general request".
 
-Johan
+Wouldn't you want to at least have a *hint* as to why the guest
+terminated instead of just "guest terminated"?
+
+I.e., none of those:
+
+https://duckduckgo.com/?q=dumb+error+messages&iax=images&ia=images
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
