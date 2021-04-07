@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C569E356836
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA1A356837
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350206AbhDGJks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhDGJkq (ORCPT
+        id S234803AbhDGJlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:41:21 -0400
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:56139 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234442AbhDGJlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:40:46 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F9CC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:40:37 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u21so26547313ejo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 02:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CqgxxVtYZOz6q7IqCr4JDKdv/8b/r2zDQXQ3ftTZhUA=;
-        b=xWrWn4mwneIHhQf2Ifutc2Xsc4uk0I6VszC2XxK2Ngvby0DMMA3QixrzmaNZO6DU/d
-         JgpJXyb2Y/OUiA/qYFCPR3bsRczODmD4lVPARBq/wWpBX0ts7ReuwFl8wZCV+22+TTZ/
-         RE26uL15CZqXiud28PNOlYbnzXblbR36DoXMqNh1Xdn/24JnHnLsM6ZzoIz6CvBxBeme
-         OcGCikc/NLixVDQYy5K6J2akSmz9pIIHhsahQq6nFD5Leh5nISNPE+Li1Bf3YuGbLuWr
-         lS+CZrQH76O+3l9SMwCnXTOFepE7Eb4Lhuzwe8wc3UwcFimQGBqkE8dlaL5uPD7HnCU7
-         S51w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CqgxxVtYZOz6q7IqCr4JDKdv/8b/r2zDQXQ3ftTZhUA=;
-        b=PrkjyfxF7V6ZXJe+cxt+tiJABb12hPuqJxDaCnEnb+VZ6whLCJ0fZAJ0R24UFAmh3m
-         wr/Mr/kTJkoQiCWiH2QSzemN1fYd8lOw5nr/is3b7KW+IfvpY3ujA+oFVpM/xE9HfanH
-         mIBYl6hTSf90DHAALMZ+vUREOq06v0/S7eUARLURBZe5A7/urau9/B5ocST2KA8tumY5
-         X8JZsvWaOKfa0dS4aUuORgcL4dS4q+FipJARxS5WoqEfZSm2FgrgCmin91mbJ4lHOU4k
-         YHPGDQ6VWwhkuIyaYjxphg1prQz4TmX4PzAp2ZlzXN9XO/iAkIdYOp5efEzXHRot47rV
-         /lTw==
-X-Gm-Message-State: AOAM531hfDYZrlh6Cqh4lNesnSvaRf6T8hPuPI3UobBaB10a8vmG/t34
-        D0vURXKNKs3tu8Oies4t605fpQ==
-X-Google-Smtp-Source: ABdhPJxzzRQl4cqIEqRKz8DTF0olVr/zvDcpf+Ih7ynA/VUFkrhZyBrVbM6cTGA3tSWXvWKhaigbug==
-X-Received: by 2002:a17:906:8988:: with SMTP id gg8mr2627726ejc.264.1617788436230;
-        Wed, 07 Apr 2021 02:40:36 -0700 (PDT)
-Received: from dell ([91.110.221.225])
-        by smtp.gmail.com with ESMTPSA id cf4sm15327239edb.19.2021.04.07.02.40.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 02:40:35 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 10:40:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: max8997: Replace 8998 with 8997
-Message-ID: <20210407094034.GA2916463@dell>
-References: <20210127073230.1583299-1-timon.baetz@protonmail.com>
+        Wed, 7 Apr 2021 05:41:18 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id C911218E007
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 10:41:08 +0100 (IST)
+Received: (qmail 15390 invoked from network); 7 Apr 2021 09:41:08 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Apr 2021 09:41:08 -0000
+Date:   Wed, 7 Apr 2021 10:41:06 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rik van Riel <riel@surriel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
+ differently
+Message-ID: <20210407094106.GC3697@techsingularity.net>
+References: <20210321150358.71ef52b1@imladris.surriel.com>
+ <20210322110306.GE3697@techsingularity.net>
+ <20210326151932.2c187840@imladris.surriel.com>
+ <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
+ <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+ <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210127073230.1583299-1-timon.baetz@protonmail.com>
+In-Reply-To: <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021, Timon Baetz wrote:
-
-> The max8997 header is using "max8998" in some identifiers.
-> Fix it by replacing 8998 with 8997 in enum and macro.
+On Wed, Apr 07, 2021 at 09:17:18AM +0200, Peter Zijlstra wrote:
+> Subject: sched/fair: Bring back select_idle_smt(), but differently
+> From: Rik van Riel <riel@surriel.com>
+> Date: Fri, 26 Mar 2021 15:19:32 -0400
 > 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
-> v2: Fix commit message.
+> From: Rik van Riel <riel@surriel.com>
 > 
->  include/linux/mfd/max8997.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Mel Gorman did some nice work in 9fe1f127b913 ("sched/fair: Merge
+> select_idle_core/cpu()"), resulting in the kernel being more efficient
+> at finding an idle CPU, and in tasks spending less time waiting to be
+> run, both according to the schedstats run_delay numbers, and according
+> to measured application latencies. Yay.
+> 
+> The flip side of this is that we see more task migrations (about 30%
+> more), higher cache misses, higher memory bandwidth utilization, and
+> higher CPU use, for the same number of requests/second.
+> 
+> This is most pronounced on a memcache type workload, which saw a
+> consistent 1-3% increase in total CPU use on the system, due to those
+> increased task migrations leading to higher L2 cache miss numbers, and
+> higher memory utilization. The exclusive L3 cache on Skylake does us
+> no favors there.
+> 
+> On our web serving workload, that effect is usually negligible.
+> 
+> It appears that the increased number of CPU migrations is generally a
+> good thing, since it leads to lower cpu_delay numbers, reflecting the
+> fact that tasks get to run faster. However, the reduced locality and
+> the corresponding increase in L2 cache misses hurts a little.
+> 
+> The patch below appears to fix the regression, while keeping the
+> benefit of the lower cpu_delay numbers, by reintroducing
+> select_idle_smt with a twist: when a socket has no idle cores, check
+> to see if the sibling of "prev" is idle, before searching all the
+> other CPUs.
+> 
+> This fixes both the occasional 9% regression on the web serving
+> workload, and the continuous 2% CPU use regression on the memcache
+> type workload.
+> 
+> With Mel's patches and this patch together, task migrations are still
+> high, but L2 cache misses, memory bandwidth, and CPU time used are
+> back down to what they were before. The p95 and p99 response times for
+> the memcache type application improve by about 10% over what they were
+> before Mel's patches got merged.
+> 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://lkml.kernel.org/r/20210326151932.2c187840@imladris.surriel.com
 
-Applied, thanks.
+I think this is still ok and should not invalidate the previous tests on
+v3. While test_idle_cores() was checked on target, as long as target/prev
+share cache, the test should be equivalent other than there is a minor
+race so
+
+Reviewed-by: Mel Gorman <mgorman@techsingularity.net>
+
+One minor question below though which previously confused me.
+
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6112,6 +6112,27 @@ static int select_idle_core(struct task_
+>  	return -1;
+>  }
+>  
+> +/*
+> + * Scan the local SMT mask for idle CPUs.
+> + */
+> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+> +{
+> +	int cpu;
+> +
+> +	if (!static_branch_likely(&sched_smt_present))
+> +		return -1;
+> +
+> +	for_each_cpu(cpu, cpu_smt_mask(target)) {
+> +		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+> +		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+> +			continue;
+
+While I know that !cpumask_test_cpu(cpu, sched_domain_span(sd)) was
+done previously, I found it hard to believe that the test matters. If
+target/prev share a the LLC domain, why would the SMT siblings *not*
+share a LLC?
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Mel Gorman
+SUSE Labs
