@@ -2,110 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A034F356F26
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A55356F34
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348740AbhDGOs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:48:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44756 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233168AbhDGOsu (ORCPT
+        id S1348824AbhDGOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:49:44 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60836 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353146AbhDGOtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:48:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617806918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JjWRf2e6o/JzDynLaUHm4RQ83JFb64f/gW9Jl6qFnaQ=;
-        b=OnOIlSjP9gK7jSBTGjcWPP3hSk4MRCXERYxuMs71B5Vwq/MDQQa3qtbPj9jhKDIew2JwnZ
-        M6yjs9RwG+KixA9+hIZdfJQabx6mDmJm5mahbsOKSeFHrcn15kbRXmf+0MKJ/5LHp8HXf2
-        TUDSFJu1urZZAXcLu6cooFZL+CcHW3c=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-1Gc7CZ5mMS-AWKOxmmfztA-1; Wed, 07 Apr 2021 10:48:35 -0400
-X-MC-Unique: 1Gc7CZ5mMS-AWKOxmmfztA-1
-Received: by mail-ed1-f71.google.com with SMTP id q12so12224294edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:48:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JjWRf2e6o/JzDynLaUHm4RQ83JFb64f/gW9Jl6qFnaQ=;
-        b=FpEzS+RFoyc0ZYIyhkx8J7KpKrefdvRLMv/7Vm86MOY8J93oqyedj4LxDnUslExo8P
-         mxmu1rWjhcselNHnkh9G9SiM3u8GlKABtchpVpVxZvrPM7daK0aW/aiuRHhOrxdBY4cT
-         qDjWPzhpTgzkFJzw81fVTTA/9hNN1NuNd7nBSj9eZ8wVaQvBFSFi6jvaLuIzMDt/6/Hj
-         ID/bAyIMfvov0VZxB8AOgHyY9BjCaIJVt7GxKQTM+a12eVM2f2+KiLKQ5kiiY7DUe9dj
-         DtvfQ5ZzrhXJ4k8mxj3xyvBXAmBfjU69xdlnAu6XVOvTZSTxDsrijFZDKc6OWvZJdpCB
-         inaw==
-X-Gm-Message-State: AOAM532Izt+6v4ILNjjHwJEwruw0MFWH41A+uhQy6aC8Rb9uL0OdfcW5
-        aM6v1jh0XmSvCqip7CTcxoxitowNHh/DBi/AN0cqPXTKMQaZ1JebzKdkPm6b2V659l/ndZzyaWV
-        1mZlcTth/GIwJo2hBqC2MAyqGXPWrTppAAyJQv8UGKm5jzzgBQaehmaY3jYL+kJwX1tOvAO1wPU
-        1l
-X-Received: by 2002:a17:906:aad4:: with SMTP id kt20mr4157080ejb.367.1617806913667;
-        Wed, 07 Apr 2021 07:48:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypmXkcI7aFjUtZAONHueGeCKZ2vuS1trA2VvQKkE19ZBHZlRZsYsQZJx3SDVU9wleeMZE23Q==
-X-Received: by 2002:a17:906:aad4:: with SMTP id kt20mr4157051ejb.367.1617806913483;
-        Wed, 07 Apr 2021 07:48:33 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id lf6sm7731455ejc.33.2021.04.07.07.48.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:48:33 -0700 (PDT)
-Subject: Re: [PATCH 9/9] platform/x86: intel_pmc_core: Add support for Alder
- Lake PCH-P
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
- <20210401030558.2301621-10-david.e.box@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <22931e34-f344-b29a-87dc-c80584ed7f37@redhat.com>
-Date:   Wed, 7 Apr 2021 16:48:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 7 Apr 2021 10:49:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 6CAFD1F45083
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v7 0/4] Make UTF-8 encoding loadable
+Date:   Wed,  7 Apr 2021 20:18:41 +0530
+Message-Id: <20210407144845.53266-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210401030558.2301621-10-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
+Currently only UTF-8 encoding is supported but if any other encodings
+are supported in future then the layer file would be responsible for
+loading the desired encoding module.
 
-On 4/1/21 5:05 AM, David E. Box wrote:
-> Alder PCH-P is based on Tiger Lake PCH.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+1st patch in the series resolves the warning reported by kernel test
+robot by using strscpy instead of strncpy.
 
-Thanks, patch looks good to me:
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 2nd and 3rd patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Last patch in the series adds the layer and utf8 module and also uses
+static calls which gives performance benefit when compared to indirect
+calls using function pointers.
 
-Regards,
+---
+Changes in v7
+  - Update the help text in Kconfig
+  - Handle the unicode_load_static_call function failure by decrementing
+    the reference.
+  - Correct the code for handling built-in utf8 option as well.
+  - Correct the synchronization for accessing utf8mod.
+  - Make changes to unicode_unload() for handling the situation where
+    utf8mod != NULL and um == NULL.
 
-Hans
+Changes in v6
+  - Add spinlock to protect utf8mod and avoid NULL pointer
+    dereference.
+  - Change the static call function names for being consistent with
+    kernel coding style.
+  - Merge the unicode_load_module function with unicode_load as it is
+    not really needed to have a separate function.
+  - Use try_then_module_get instead of module_get to avoid loading the
+    module even when it is already loaded.
+  - Improve the commit message.
 
+Changes in v5
+  - Remove patch which adds NULL check in ext4/super.c and f2fs/super.c
+    before calling unicode_unload().
+  - Rename global variables and default static call functions for better
+    understanding
+  - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+    enabled provided UNICODE_UTF8 is enabled.  
+  - Improve the documentation for Kconfig
+  - Improve the commit message.
+ 
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
 
-> ---
->  drivers/platform/x86/intel_pmc_core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index 9168062c927e..88d582df829f 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -1440,6 +1440,7 @@ static const struct x86_cpu_id intel_pmc_core_ids[] = {
->  	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	&tgl_reg_map),
->  	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&icl_reg_map),
->  	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&tgl_reg_map),
-> +	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&tgl_reg_map),
->  	{}
->  };
->  
-> 
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   6 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |   6 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  26 +++-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  | 162 +++++++++++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  98 ++++++++-----
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 100 +++++++++++--
+ 12 files changed, 361 insertions(+), 82 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (57%)
+
+-- 
+2.30.2
 
