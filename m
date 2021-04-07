@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0708356B1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC44C356B28
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245697AbhDGL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:26:04 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35856 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234598AbhDGL0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:26:02 -0400
-Received: from zn.tnic (p200300ec2f08fb002f59ec04e5c6bba4.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:2f59:ec04:e5c6:bba4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9ECD1EC027D;
-        Wed,  7 Apr 2021 13:25:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617794751;
+        id S1343506AbhDGL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:26:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243162AbhDGL0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:26:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617794772;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=X16VaWChjl8MmKdShkWfeaVAAiA4jnoapC94RAmEKRM=;
-        b=Roxw176gMH3NIQzB4XAV88p3i5EIDcEM7rUTimjRgUad23TNWW0lw/JmPMknSbakFUQU8B
-        WUyUbdAsvWNeVwz94+2UiQdf86lp+c/UWBmUUdjjr+KJ5gIw01VoJAa/X4anH8CqHUs5BZ
-        3EppUkgojBUlnyAoDOOWepE/0SM40sQ=
-Date:   Wed, 7 Apr 2021 13:25:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 06/13] x86/compressed: rescinds and validate
- the memory used for the GHCB
-Message-ID: <20210407112555.GB25319@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-7-brijesh.singh@amd.com>
- <20210406103358.GL17806@zn.tnic>
- <c9f60432-2484-be1e-7b08-86dae5aa263f@amd.com>
- <67f92f5c-780c-a4c6-241a-6771558e81a3@amd.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hevnKcQ4I9jq+ZzW4AWSbIV29KiYxHuVFGDAD6+MJjk=;
+        b=InqJH9Na46w5hPszAycdni17NJfTNm4qYSpDXmLNNBh/6csKrSu4cq/mW10hgvxNKG00Zy
+        5TsyV6y5scwq0MrJRIZU5ThFEHfiwix1lQ64mWjIrWPxNfUnu9Q7iw3Af4r5orwStQ3Xaw
+        MCH2jd7WhvkZPsNr5XYpSjQsbIUCQT8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-aqH710yjNv2cQy2MQY91ww-1; Wed, 07 Apr 2021 07:26:11 -0400
+X-MC-Unique: aqH710yjNv2cQy2MQY91ww-1
+Received: by mail-ej1-f71.google.com with SMTP id yk6so3012400ejb.21
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:26:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hevnKcQ4I9jq+ZzW4AWSbIV29KiYxHuVFGDAD6+MJjk=;
+        b=Nu9O0ob4oMypCx7YuTwYQ8Oss+UAxVyFqqVIAPzjS6p/i0F2FqmhMGSMQz3ss+rZQa
+         dPTtJ9wg29FI+waT/RVD1w8s/Fh+GfyF1+zTnYcwbgmqrRpFH0WqQRT8UHijmehEQPUf
+         yvlbUYhVR0d1j240BCFnd8V4zqjKO1LQ4EfGq5wT+RHs8GmTCJnakLsbs9KNwK+0rd6+
+         JwxOqTyJ2sCoxZoEr/05LlirE2o9UxjgBJ+92o9EPIZQ78kL97VmWOsOAghwo7Y6eV8U
+         RvXuW8rt4rLnm6q8pt0Jbdqa6/ONToF3gyxcg79MInQSB5q3952Zg07jYdjU9VxoG58L
+         /XQA==
+X-Gm-Message-State: AOAM530RFoxEGRRd4iC2qeGAF+CFA1/oKsJDX2Qod7RJEAtk/FRyWccZ
+        ZyiJo3hhsNxcKRHZiX//fO/+JBWD4ql+KHIv3wn25RcC+NU0fgAn5hznuFY7rgRRybDqGB5at/q
+        s2RdYBI1mvqpztY8tSYjlqf2htvFj8C59SWMp0ES0Y2S2Q0Zi4jtYd1eut0xM0lmm8WqliLtPE6
+        aK
+X-Received: by 2002:a17:906:5056:: with SMTP id e22mr3077612ejk.289.1617794769550;
+        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJltS0uUBU91wWC+Pkq7DwEgumF1o8eQ6ZXJwpirqAtiwQthRhT5WzUwSkKd89iCBCI/whxQ==
+X-Received: by 2002:a17:906:5056:: with SMTP id e22mr3077593ejk.289.1617794769324;
+        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id k19sm8306722ejk.117.2021.04.07.04.26.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 04:26:09 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: panasonic-laptop: remove redundant
+ assignment of variable result
+To:     Colin King <colin.king@canonical.com>,
+        Kenneth Chan <kenneth.t.chan@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210326192022.623001-1-colin.king@canonical.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e270b8b9-2562-ba49-32af-0f9d5ea1760b@redhat.com>
+Date:   Wed, 7 Apr 2021 13:26:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210326192022.623001-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <67f92f5c-780c-a4c6-241a-6771558e81a3@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 02:42:43PM -0500, Tom Lendacky wrote:
-> The GHCB spec only defines the "0" reason code set. We could provide Linux
-> it's own reason code set with some more specific reason codes for
-> failures, if that is needed.
+Hi,
 
-Why Linux only?
+On 3/26/21 8:20 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable result is being assigned a value that is never
+> read and it is being updated later with a new value. The
+> assignment is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Don't we want to have a generalized set of error codes which say what
-has happened so that people can debug?
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Let's take the above case Brijesh explains: guest tries a page state
-change, HV cannot manage for whatever reason and guest terminates with a
-"general request".
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-Wouldn't you want to at least have a *hint* as to why the guest
-terminated instead of just "guest terminated"?
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-I.e., none of those:
+Regards,
 
-https://duckduckgo.com/?q=dumb+error+messages&iax=images&ia=images
+Hans
 
-:-)
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  drivers/platform/x86/panasonic-laptop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/panasonic-laptop.c b/drivers/platform/x86/panasonic-laptop.c
+> index 6388c3c705a6..d4f444401496 100644
+> --- a/drivers/platform/x86/panasonic-laptop.c
+> +++ b/drivers/platform/x86/panasonic-laptop.c
+> @@ -973,7 +973,7 @@ static int acpi_pcc_hotkey_add(struct acpi_device *device)
+>  	pcc->mute = pcc->sinf[SINF_MUTE];
+>  	pcc->ac_brightness = pcc->sinf[SINF_AC_CUR_BRIGHT];
+>  	pcc->dc_brightness = pcc->sinf[SINF_DC_CUR_BRIGHT];
+> -	result = pcc->current_brightness = pcc->sinf[SINF_CUR_BRIGHT];
+> +	pcc->current_brightness = pcc->sinf[SINF_CUR_BRIGHT];
+>  
+>  	/* add sysfs attributes */
+>  	result = sysfs_create_group(&device->dev.kobj, &pcc_attr_group);
+> 
+
