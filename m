@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415A3356437
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A3D35643B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348990AbhDGGjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:39:43 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:46630 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231335AbhDGGjk (ORCPT
+        id S1349008AbhDGGn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhDGGn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:39:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UUluIAu_1617777564;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUluIAu_1617777564)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 07 Apr 2021 14:39:29 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     bonbons@linux-vserver.org
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] HID: picolcd: remove unused variable
-Date:   Wed,  7 Apr 2021 14:39:22 +0800
-Message-Id: <1617777562-86341-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 7 Apr 2021 02:43:29 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33BAC06174A;
+        Tue,  6 Apr 2021 23:43:18 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so775858pjv.1;
+        Tue, 06 Apr 2021 23:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZAuGglzaZUilwxmfKh+vB3j+5qRuKYKMV1iFQ03oySg=;
+        b=g6gIelmtiXWSl9iuGdO97naDvYmDnPLLIeCo+nOz0LwZQrG3lVCa7DRF+/9bVjM2wr
+         iDgR3R00ajkdSNzDQdJpXxcq/WnHvAHMspdV7Cu6w6Z6ysrJSpOjG8zF9gapZh+7/1bg
+         S7N7c136/ZrRf4Xtgbi+nPXD+6YJr2CZ+Cce1/TAyzMc60R9mB3Nv59+gz7AXVk94ZWt
+         53/IYMrtJ5hJ8MfKPZ7z/ZhoaIwrCnKS3lWkvUz8WFpvuufWEILVtctw70t/eoxLFzol
+         hG3hwEpk3M6SIFgDJ87GJrCkB2ZVg8KuwCWNP+y718zerzJDUP1P91PaQbzP96ebVzoY
+         PTzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZAuGglzaZUilwxmfKh+vB3j+5qRuKYKMV1iFQ03oySg=;
+        b=ZXc8T63bDni4f6c+/qnm+s8vKh6ThIgOeHMfpACc/xuGrmQ8MO3Sw/ZVYsru1Pm4YR
+         jA4IEyn8y2btR5E2yRWaJjz5BEUShb5VwGboImcrlFYQdQuAhDPVH9bplY+yGStSzD6S
+         iIBlDHERbyuEzpLyvfFO1H9ktlxIAkwXnq9cekk1GxbBFJtufidOPyQlKfnS74hD8rBz
+         CpfALcmV8Hh6p28pFbKIc8OJl3IOLjlbqi/5pjHiElSltI2O1cY7vJV6tO4xkZvAMPGD
+         8ugbGUE96z7QY9HM8XUPusdZYxLvzwXgwTJIGpm/iUmhPOdyP/V6Rt/JtG/N6XPUC1XS
+         UY7g==
+X-Gm-Message-State: AOAM532FelZAJbonuQjpBzqcpUoLbjYKsTAlsTsCAJnXKQfuA7MjFCLF
+        +mbyxcDHcLiehGysdVmJtWkyWcFgoYooLQ==
+X-Google-Smtp-Source: ABdhPJxWSmAXAukOFlyPPiMrn1UKacPWX0YrpPIz/Oc7rAqf79rADJkQBtWoKzOPV9hdfH5AU+ht7A==
+X-Received: by 2002:a17:902:ea0e:b029:e4:81d4:ddae with SMTP id s14-20020a170902ea0eb02900e481d4ddaemr1859233plg.12.1617777798266;
+        Tue, 06 Apr 2021 23:43:18 -0700 (PDT)
+Received: from localhost.localdomain ([134.173.248.5])
+        by smtp.gmail.com with ESMTPSA id c11sm20233683pgk.83.2021.04.06.23.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 23:43:17 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:43:15 -0700
+From:   Pavle Rohalj <pavle.rohalj@gmail.com>
+To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 18/49] staging: sm750fb: Rename function params of
+ sii164_init_chip
+Message-ID: <902ae58f025b3cce6004b83d8ee8fbc3f6ecee7a.1617776878.git.pavle.rohalj@gmail.com>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617776878.git.pavle.rohalj@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+Fix "Avoid CamelCase" checkpatch.pl checks for function parameter
+names of the function sii164_init_chip.
 
-drivers/hid/hid-picolcd_core.c:332:6: warning: variable ‘ret’ set but
-not used [-Wunused-but-set-variable].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
 ---
- drivers/hid/hid-picolcd_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/staging/sm750fb/ddk750_sii164.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
-index 1b5c632..682c2a2 100644
---- a/drivers/hid/hid-picolcd_core.c
-+++ b/drivers/hid/hid-picolcd_core.c
-@@ -329,7 +329,6 @@ static int picolcd_raw_event(struct hid_device *hdev,
- {
- 	struct picolcd_data *data = hid_get_drvdata(hdev);
- 	unsigned long flags;
--	int ret = 0;
+diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm750fb/ddk750_sii164.h
+index cf17b9029496..ceafac60340f 100644
+--- a/drivers/staging/sm750fb/ddk750_sii164.h
++++ b/drivers/staging/sm750fb/ddk750_sii164.h
+@@ -16,16 +16,16 @@ enum sii164_hot_plug_mode {
+ };
  
- 	if (!data)
- 		return 1;
-@@ -342,9 +341,9 @@ static int picolcd_raw_event(struct hid_device *hdev,
+ /* Silicon Image SiI164 chip prototype */
+-long sii164_init_chip(unsigned char edgeSelect,
+-		    unsigned char busSelect,
+-		    unsigned char dualEdgeClkSelect,
+-		    unsigned char hsyncEnable,
+-		    unsigned char vsyncEnable,
+-		    unsigned char deskewEnable,
+-		    unsigned char deskewSetting,
+-		    unsigned char continuousSyncEnable,
+-		    unsigned char pllFilterEnable,
+-		    unsigned char pllFilterValue);
++long sii164_init_chip(unsigned char edge_select,
++		    unsigned char bus_select,
++		    unsigned char dual_edge_clk_select,
++		    unsigned char hsync_enable,
++		    unsigned char vsync_enable,
++		    unsigned char deskew_enable,
++		    unsigned char deskew_setting,
++		    unsigned char continuous_sync_enable,
++		    unsigned char pll_filter_enable,
++		    unsigned char pll_filter_value);
  
- 	if (report->id == REPORT_KEY_STATE) {
- 		if (data->input_keys)
--			ret = picolcd_raw_keypad(data, report, raw_data+1, size-1);
-+			picolcd_raw_keypad(data, report, raw_data+1, size-1);
- 	} else if (report->id == REPORT_IR_DATA) {
--		ret = picolcd_raw_cir(data, report, raw_data+1, size-1);
-+			picolcd_raw_cir(data, report, raw_data+1, size-1);
- 	} else {
- 		spin_lock_irqsave(&data->lock, flags);
- 		/*
+ unsigned short sii164_get_vendor_id(void);
+ unsigned short sii164_get_device_id(void);
 -- 
-1.8.3.1
+2.30.2
 
