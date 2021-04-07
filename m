@@ -2,173 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6813568E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68C53568EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346685AbhDGKFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:05:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21494 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350673AbhDGKEk (ORCPT
+        id S1350686AbhDGKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:05:53 -0400
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:38821 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350587AbhDGKEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617789871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=hcG8hAioBizixLnzGlBmF7WJ9S27SPuTNee6pSwarp0=;
-        b=TIIm6FRpXuiYr/PamXbvyTNzn+1lhA/x/muolZ8vhKw/Og0Xea/1ahdtoqSn8divbV/vuJ
-        i5xrkv3qOlNt4Qbxx1ZB44e47hC5olvtHGL44PvUOxHdg4FtBNZYlqWZYjrAcUIzkQzMDD
-        tE/xq3Z/fDBDhhNQ2g2/z5i+u/vxygk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-MbZHkvC-NASv29juh8kWNA-1; Wed, 07 Apr 2021 06:04:27 -0400
-X-MC-Unique: MbZHkvC-NASv29juh8kWNA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 477B518766D2;
-        Wed,  7 Apr 2021 10:04:26 +0000 (UTC)
-Received: from crecklin.bos.com (ovpn-113-158.rdu2.redhat.com [10.10.113.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D1695D762;
-        Wed,  7 Apr 2021 10:04:22 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] use crc32 instead of md5 for hibernation e820 integrity check
-Date:   Wed,  7 Apr 2021 06:04:21 -0400
-Message-Id: <20210407100421.27542-1-crecklin@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Wed, 7 Apr 2021 06:04:52 -0400
+Received: by mail-lj1-f177.google.com with SMTP id s17so19955513ljc.5;
+        Wed, 07 Apr 2021 03:04:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ARM6Xa0K0IyBzPuKZS4XHRdvRVql67sWTUbwnQ4IEaA=;
+        b=o2+JVQm7lpud/E5l4z4lEo8aILDZJO0ekojD3ZK5V++nRmQ/NTYG6DoJN6icoyt1DQ
+         TEwK8Q+g2gmSNXCy63zImVkDky7QnC6P2ukTd6DpnoAdXm1nk4yhezNu2ghq5W5LY+XK
+         hunFIO07r2ft+UFsllj+GQEy8ju/dCLRPUftjp1NT9OeFf62FBPH0S1/wlCDFJaWw0bd
+         7LCRrHzdiPJZxReMtp8qx+CWnMZFWuvfg0KIiE/Jw1yyBJL+/KGacZgmZlaupQoRk0lQ
+         5cUA820ioPK8hSlAgpw4YXAXxXVGKUImG4/icY9EY9Bo4S9SIwGEVkk1BPUA4Tmkmn9t
+         VkbA==
+X-Gm-Message-State: AOAM532IkHeW6aIDxNdUaiO2z1qID6Cmhkhxoe+YUJvkZekdTqM3WmJw
+        qw2PEGLE+rFnmfoTQR57CeI=
+X-Google-Smtp-Source: ABdhPJy5NnrEBOmxfjwZ8f2K+vVykJBS09LSGpk+ihot745r8ko01NWn1Od3m5LgU/IG/cIpYVglCQ==
+X-Received: by 2002:a2e:5804:: with SMTP id m4mr1663738ljb.419.1617789881320;
+        Wed, 07 Apr 2021 03:04:41 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id 130sm729366lfg.263.2021.04.07.03.04.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 03:04:40 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:04:34 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v6 4/8] regulator: add property parsing and callbacks to set
+ protection limits
+Message-ID: <610934713f09696cbca031eaeb4b94696c783907.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suspend fails on a system in fips mode because md5 is used for the e820
-integrity check and is not available. Use crc32 instead.
+Add DT property parsing code and setting callback for regulator over/under
+voltage, over-current and temperature error limits.
 
-Prior to this patch, MD5 is used only to create a digest to ensure integrity of
-the region, no actual encryption is done. This patch set changes the integrity
-check to use crc32 instead of md5 since crc32 is available in both FIPS and
-non-FIPS modes.
-
-Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-       by md5 digest")
-
-Tested-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
-v1 -> v2
-   bump up RESTORE_MAGIC
-v2 -> v3
-   move embelishment from cover letter to commit comments (no code change)
+No changes since RFC-v3
+---
+ drivers/regulator/core.c                  | 122 +++++++++++++++++++++-
+ drivers/regulator/of_regulator.c          |  58 ++++++++++
+ drivers/regulator/qcom-labibb-regulator.c |  10 +-
+ drivers/regulator/qcom_spmi-regulator.c   |   6 +-
+ drivers/regulator/stpmic1_regulator.c     |  20 +++-
+ include/linux/regulator/driver.h          |  41 +++++++-
+ include/linux/regulator/machine.h         |  26 +++++
+ 7 files changed, 274 insertions(+), 9 deletions(-)
 
- arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-index cd3914fc9f3d..b56172553275 100644
---- a/arch/x86/power/hibernate.c
-+++ b/arch/x86/power/hibernate.c
-@@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
- }
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index fabc83288e1b..5a3b932dc8a5 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1312,6 +1312,52 @@ static int machine_constraints_current(struct regulator_dev *rdev,
  
+ static int _regulator_do_enable(struct regulator_dev *rdev);
  
--#define MD5_DIGEST_SIZE 16
-+#define CRC32_DIGEST_SIZE 16
++static int notif_set_limit(struct regulator_dev *rdev,
++			   int (*set)(struct regulator_dev *, int, int, bool),
++			   int limit, int severity)
++{
++	bool enable;
++
++	if (limit == REGULATOR_NOTIF_LIMIT_DISABLE) {
++		enable = false;
++		limit = 0;
++	} else {
++		enable = true;
++	}
++
++	if (limit == REGULATOR_NOTIF_LIMIT_ENABLE)
++		limit = 0;
++
++	return set(rdev, limit, severity, enable);
++}
++
++static int handle_notify_limits(struct regulator_dev *rdev,
++			int (*set)(struct regulator_dev *, int, int, bool),
++			struct notification_limit *limits)
++{
++	int ret = 0;
++
++	if (!set)
++		return -EOPNOTSUPP;
++
++	if (limits->prot)
++		ret = notif_set_limit(rdev, set, limits->prot,
++				      REGULATOR_SEVERITY_PROT);
++	if (ret)
++		return ret;
++
++	if (limits->err)
++		ret = notif_set_limit(rdev, set, limits->err,
++				      REGULATOR_SEVERITY_ERR);
++	if (ret)
++		return ret;
++
++	if (limits->warn)
++		ret = notif_set_limit(rdev, set, limits->warn,
++				      REGULATOR_SEVERITY_WARN);
++
++	return ret;
++}
+ /**
+  * set_machine_constraints - sets regulator constraints
+  * @rdev: regulator source
+@@ -1397,9 +1443,27 @@ static int set_machine_constraints(struct regulator_dev *rdev)
+ 		}
+ 	}
  
- struct restore_data_record {
- 	unsigned long jump_address;
- 	unsigned long jump_address_phys;
- 	unsigned long cr3;
- 	unsigned long magic;
--	u8 e820_digest[MD5_DIGEST_SIZE];
-+	u8 e820_digest[CRC32_DIGEST_SIZE];
++	/*
++	 * Existing logic does not warn if over_current_protection is given as
++	 * a constraint but driver does not support that. I think we should
++	 * warn about this type of issues as it is possible someone changes
++	 * PMIC on board to another type - and the another PMIC's driver does
++	 * not support setting protection. Board composer may happily believe
++	 * the DT limits are respected - especially if the new PMIC HW also
++	 * supports protection but the driver does not. I won't change the logic
++	 * without hearing more experienced opinion on this though.
++	 *
++	 * If warning is seen as a good idea then we can merge handling the
++	 * over-curret protection and detection and get rid of this special
++	 * handling.
++	 */
+ 	if (rdev->constraints->over_current_protection
+ 		&& ops->set_over_current_protection) {
+-		ret = ops->set_over_current_protection(rdev);
++		int lim = rdev->constraints->over_curr_limits.prot;
++
++		ret = ops->set_over_current_protection(rdev, lim,
++						       REGULATOR_SEVERITY_PROT,
++						       true);
+ 		if (ret < 0) {
+ 			rdev_err(rdev, "failed to set over current protection: %pe\n",
+ 				 ERR_PTR(ret));
+@@ -1407,6 +1471,62 @@ static int set_machine_constraints(struct regulator_dev *rdev)
+ 		}
+ 	}
+ 
++	if (rdev->constraints->over_current_detection)
++		ret = handle_notify_limits(rdev,
++					   ops->set_over_current_protection,
++					   &rdev->constraints->over_curr_limits);
++	if (ret) {
++		if (ret != -EOPNOTSUPP) {
++			rdev_err(rdev, "failed to set over current limits: %pe\n",
++				 ERR_PTR(ret));
++			return ret;
++		}
++		rdev_warn(rdev,
++			  "IC does not support requested over-current limits\n");
++	}
++
++	if (rdev->constraints->over_voltage_detection)
++		ret = handle_notify_limits(rdev,
++					   ops->set_over_voltage_protection,
++					   &rdev->constraints->over_voltage_limits);
++	if (ret) {
++		if (ret != -EOPNOTSUPP) {
++			rdev_err(rdev, "failed to set over voltage limits %pe\n",
++				 ERR_PTR(ret));
++			return ret;
++		}
++		rdev_warn(rdev,
++			  "IC does not support requested over voltage limits\n");
++	}
++
++	if (rdev->constraints->under_voltage_detection)
++		ret = handle_notify_limits(rdev,
++					   ops->set_under_voltage_protection,
++					   &rdev->constraints->under_voltage_limits);
++	if (ret) {
++		if (ret != -EOPNOTSUPP) {
++			rdev_err(rdev, "failed to set under voltage limits %pe\n",
++				 ERR_PTR(ret));
++			return ret;
++		}
++		rdev_warn(rdev,
++			  "IC does not support requested under voltage limits\n");
++	}
++
++	if (rdev->constraints->over_temp_detection)
++		ret = handle_notify_limits(rdev,
++					   ops->set_thermal_protection,
++					   &rdev->constraints->temp_limits);
++	if (ret) {
++		if (ret != -EOPNOTSUPP) {
++			rdev_err(rdev, "failed to set temperature limits %pe\n",
++				 ERR_PTR(ret));
++			return ret;
++		}
++		rdev_warn(rdev,
++			  "IC does not support requested temperature limits\n");
++	}
++
+ 	if (rdev->constraints->active_discharge && ops->set_active_discharge) {
+ 		bool ad_state = (rdev->constraints->active_discharge ==
+ 			      REGULATOR_ACTIVE_DISCHARGE_ENABLE) ? true : false;
+diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
+index 564f928eb1db..b70fdc5c7000 100644
+--- a/drivers/regulator/of_regulator.c
++++ b/drivers/regulator/of_regulator.c
+@@ -21,6 +21,62 @@ static const char *const regulator_states[PM_SUSPEND_MAX + 1] = {
+ 	[PM_SUSPEND_MAX]	= "regulator-state-disk",
  };
  
--#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
-+#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
- /**
-- * get_e820_md5 - calculate md5 according to given e820 table
-+ * get_e820_crc32 - calculate crc32 according to given e820 table
-  *
-  * @table: the e820 table to be calculated
-- * @buf: the md5 result to be stored to
-+ * @buf: the crc32 result to be stored to
-  */
--static int get_e820_md5(struct e820_table *table, void *buf)
-+static int get_e820_crc32(struct e820_table *table, void *buf)
- {
- 	struct crypto_shash *tfm;
- 	struct shash_desc *desc;
- 	int size;
- 	int ret = 0;
- 
--	tfm = crypto_alloc_shash("md5", 0, 0);
-+	tfm = crypto_alloc_shash("crc32", 0, 0);
- 	if (IS_ERR(tfm))
- 		return -ENOMEM;
- 
-@@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
- 
- static int hibernation_e820_save(void *buf)
- {
--	return get_e820_md5(e820_table_firmware, buf);
-+	return get_e820_crc32(e820_table_firmware, buf);
- }
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
- 	int ret;
--	u8 result[MD5_DIGEST_SIZE];
-+	u8 result[CRC32_DIGEST_SIZE];
- 
--	memset(result, 0, MD5_DIGEST_SIZE);
-+	memset(result, 0, CRC32_DIGEST_SIZE);
- 	/* If there is no digest in suspend kernel, let it go. */
--	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
-+	if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
- 		return false;
- 
--	ret = get_e820_md5(e820_table_firmware, result);
-+	ret = get_e820_crc32(e820_table_firmware, result);
- 	if (ret)
- 		return true;
- 
--	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
-+	return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
- }
- #else
- static int hibernation_e820_save(void *buf)
-@@ -134,15 +134,15 @@ static int hibernation_e820_save(void *buf)
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
--	/* If md5 is not builtin for restore kernel, let it go. */
-+	/* If crc32 is not builtin for restore kernel, let it go. */
- 	return false;
- }
- #endif
- 
- #ifdef CONFIG_X86_64
--#define RESTORE_MAGIC	0x23456789ABCDEF01UL
-+#define RESTORE_MAGIC	0x23456789ABCDEF02UL
- #else
--#define RESTORE_MAGIC	0x12345678UL
-+#define RESTORE_MAGIC	0x12345679UL
- #endif
- 
- /**
-@@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
- 	rdr->jump_address = (unsigned long)restore_registers;
- 	rdr->jump_address_phys = __pa_symbol(restore_registers);
- 
-+	/* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
-+	memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
++static void fill_limit(int *limit, int val)
++{
++	if (val)
++		if (val == 1)
++			*limit = REGULATOR_NOTIF_LIMIT_ENABLE;
++		else
++			*limit = val;
++	else
++		*limit = REGULATOR_NOTIF_LIMIT_DISABLE;
++}
 +
- 	/*
- 	 * The restore code fixes up CR3 and CR4 in the following sequence:
- 	 *
++static void of_get_regulator_prot_limits(struct device_node *np,
++				struct regulation_constraints *constraints)
++{
++	u32 pval;
++	int i;
++	static const char *const props[] = {
++		"regulator-oc-%s-microamp",
++		"regulator-ov-%s-microvolt",
++		"regulator-temp-%s-kelvin",
++		"regulator-uv-%s-microvolt",
++	};
++	struct notification_limit *limits[] = {
++		&constraints->over_curr_limits,
++		&constraints->over_voltage_limits,
++		&constraints->temp_limits,
++		&constraints->under_voltage_limits,
++	};
++	bool set[4] = {0};
++
++	/* Protection limits: */
++	for (i = 0; i < ARRAY_SIZE(props); i++) {
++		char prop[255];
++		bool found;
++		int j;
++		static const char *const lvl[] = {
++			"protection", "error", "warn"
++		};
++		int *l[] = {
++			&limits[i]->prot, &limits[i]->err, &limits[i]->warn,
++		};
++
++		for (j = 0; j < ARRAY_SIZE(lvl); j++) {
++			snprintf(prop, 255, props[i], lvl[j]);
++			found = !of_property_read_u32(np, prop, &pval);
++			if (found)
++				fill_limit(l[j], pval);
++			set[i] |= found;
++		}
++	}
++	constraints->over_current_detection = set[0];
++	constraints->over_voltage_detection = set[1];
++	constraints->over_temp_detection = set[2];
++	constraints->under_voltage_detection = set[3];
++}
++
+ static int of_get_regulation_constraints(struct device *dev,
+ 					struct device_node *np,
+ 					struct regulator_init_data **init_data,
+@@ -188,6 +244,8 @@ static int of_get_regulation_constraints(struct device *dev,
+ 	constraints->over_current_protection = of_property_read_bool(np,
+ 					"regulator-over-current-protection");
+ 
++	of_get_regulator_prot_limits(np, constraints);
++
+ 	for (i = 0; i < ARRAY_SIZE(regulator_states); i++) {
+ 		switch (i) {
+ 		case PM_SUSPEND_MEM:
+diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+index de25e3279b4b..b3da0dc58782 100644
+--- a/drivers/regulator/qcom-labibb-regulator.c
++++ b/drivers/regulator/qcom-labibb-regulator.c
+@@ -307,13 +307,21 @@ static irqreturn_t qcom_labibb_ocp_isr(int irq, void *chip)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int qcom_labibb_set_ocp(struct regulator_dev *rdev)
++static int qcom_labibb_set_ocp(struct regulator_dev *rdev, int lim,
++			       int severity, bool enable)
+ {
+ 	struct labibb_regulator *vreg = rdev_get_drvdata(rdev);
+ 	char *ocp_irq_name;
+ 	u32 irq_flags = IRQF_ONESHOT;
+ 	int irq_trig_low, ret;
+ 
++	/*
++	 * labibb supports only protection - and does not support setting
++	 * limit. Furthermore, we don't support disabling protection.
++	 */
++	if (lim || severity != REGULATOR_SEVERITY_PROT || !enable)
++		return -EINVAL;
++
+ 	/* If there is no OCP interrupt, there's nothing to set */
+ 	if (vreg->ocp_irq <= 0)
+ 		return -EINVAL;
+diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+index e62e1d72d943..45b29c8856bd 100644
+--- a/drivers/regulator/qcom_spmi-regulator.c
++++ b/drivers/regulator/qcom_spmi-regulator.c
+@@ -594,11 +594,15 @@ static int spmi_regulator_vs_enable(struct regulator_dev *rdev)
+ 	return regulator_enable_regmap(rdev);
+ }
+ 
+-static int spmi_regulator_vs_ocp(struct regulator_dev *rdev)
++static int spmi_regulator_vs_ocp(struct regulator_dev *rdev, int lim_uA,
++				 int severity, bool enable)
+ {
+ 	struct spmi_regulator *vreg = rdev_get_drvdata(rdev);
+ 	u8 reg = SPMI_VS_OCP_OVERRIDE;
+ 
++	if (lim_uA || !enable || severity != REGULATOR_SEVERITY_PROT)
++		return -EINVAL;
++
+ 	return spmi_vreg_write(vreg, SPMI_VS_REG_OCP, &reg, 1);
+ }
+ 
+diff --git a/drivers/regulator/stpmic1_regulator.c b/drivers/regulator/stpmic1_regulator.c
+index cf10fdb72e32..2d7597c76e4a 100644
+--- a/drivers/regulator/stpmic1_regulator.c
++++ b/drivers/regulator/stpmic1_regulator.c
+@@ -32,7 +32,8 @@ struct stpmic1_regulator_cfg {
+ 
+ static int stpmic1_set_mode(struct regulator_dev *rdev, unsigned int mode);
+ static unsigned int stpmic1_get_mode(struct regulator_dev *rdev);
+-static int stpmic1_set_icc(struct regulator_dev *rdev);
++static int stpmic1_set_icc(struct regulator_dev *rdev, int lim, int severity,
++			   bool enable);
+ static unsigned int stpmic1_map_mode(unsigned int mode);
+ 
+ enum {
+@@ -491,11 +492,26 @@ static int stpmic1_set_mode(struct regulator_dev *rdev, unsigned int mode)
+ 				  STPMIC1_BUCK_MODE_LP, value);
+ }
+ 
+-static int stpmic1_set_icc(struct regulator_dev *rdev)
++static int stpmic1_set_icc(struct regulator_dev *rdev, int lim, int severity,
++			   bool enable)
+ {
+ 	struct stpmic1_regulator_cfg *cfg = rdev_get_drvdata(rdev);
+ 	struct regmap *regmap = rdev_get_regmap(rdev);
+ 
++	/*
++	 * The code seems like one bit in a register controls whether OCP is
++	 * enabled. So we might be able to turn it off here is if that
++	 * was requested. I won't support this because I don't have the HW.
++	 * Feel free to try and implement if you have the HW and need kernel
++	 * to disable this.
++	 *
++	 * Also, I don't know if limit can be configured or if we support
++	 * error/warning instead of protect. So I just keep existing logic
++	 * and assume no.
++	 */
++	if (lim || severity != REGULATOR_SEVERITY_PROT || !enable)
++		return -EINVAL;
++
+ 	/* enable switch off in case of over current */
+ 	return regmap_update_bits(regmap, cfg->icc_reg, cfg->icc_mask,
+ 				  cfg->icc_mask);
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+index 03a8eee9fca9..ded1933ae17a 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -40,6 +40,15 @@ enum regulator_status {
+ 	REGULATOR_STATUS_UNDEFINED,
+ };
+ 
++enum regulator_detection_severity {
++	/* Hardware shut down voltage outputs if condition is detected */
++	REGULATOR_SEVERITY_PROT,
++	/* Hardware is probably damaged/inoperable */
++	REGULATOR_SEVERITY_ERR,
++	/* Hardware is still recoverable but recovery action must be taken */
++	REGULATOR_SEVERITY_WARN,
++};
++
+ /* Initialize struct linear_range for regulators */
+ #define REGULATOR_LINEAR_RANGE(_min_uV, _min_sel, _max_sel, _step_uV)	\
+ {									\
+@@ -78,8 +87,25 @@ enum regulator_status {
+  * @get_current_limit: Get the configured limit for a current-limited regulator.
+  * @set_input_current_limit: Configure an input limit.
+  *
+- * @set_over_current_protection: Support capability of automatically shutting
+- *                               down when detecting an over current event.
++ * @set_over_current_protection: Support enabling of and setting limits for over
++ *	current situation detection. Detection can be configured for three
++ *	levels of severity.
++ *	REGULATOR_SEVERITY_PROT should automatically shut down the regulator(s).
++ *	REGULATOR_SEVERITY_ERR should indicate that over-current situation is
++ *		caused by an unrecoverable error but HW does not perform
++ *		automatic shut down.
++ *	REGULATOR_SEVERITY_WARN should indicate situation where hardware is
++ *		still believed to not be damaged but that a board sepcific
++ *		recovery action is needed. If lim_uA is 0 the limit should not
++ *		be changed but the detection should just be enabled/disabled as
++ *		is requested.
++ * @set_over_voltage_protection: Support enabling of and setting limits for over
++ *	voltage situation detection. Detection can be configured for same
++ *	severities as over current protection.
++ * @set_under_voltage_protection: Support enabling of and setting limits for
++ *	under situation detection.
++ * @set_thermal_protection: Support enabling of and setting limits for over
++ *	temperature situation detection.
+  *
+  * @set_active_discharge: Set active discharge enable/disable of regulators.
+  *
+@@ -143,8 +169,15 @@ struct regulator_ops {
+ 	int (*get_current_limit) (struct regulator_dev *);
+ 
+ 	int (*set_input_current_limit) (struct regulator_dev *, int lim_uA);
+-	int (*set_over_current_protection) (struct regulator_dev *);
+-	int (*set_active_discharge) (struct regulator_dev *, bool enable);
++	int (*set_over_current_protection)(struct regulator_dev *, int lim_uA,
++					   int severity, bool enable);
++	int (*set_over_voltage_protection)(struct regulator_dev *, int lim_uV,
++					   int severity, bool enable);
++	int (*set_under_voltage_protection)(struct regulator_dev *, int lim_uV,
++					    int severity, bool enable);
++	int (*set_thermal_protection)(struct regulator_dev *, int lim,
++				      int severity, bool enable);
++	int (*set_active_discharge)(struct regulator_dev *, bool enable);
+ 
+ 	/* enable/disable regulator */
+ 	int (*enable) (struct regulator_dev *);
+diff --git a/include/linux/regulator/machine.h b/include/linux/regulator/machine.h
+index 8a56f033b6cd..68b4a514a410 100644
+--- a/include/linux/regulator/machine.h
++++ b/include/linux/regulator/machine.h
+@@ -83,6 +83,14 @@ struct regulator_state {
+ 	bool changeable;
+ };
+ 
++#define REGULATOR_NOTIF_LIMIT_DISABLE -1
++#define REGULATOR_NOTIF_LIMIT_ENABLE -2
++struct notification_limit {
++	int prot;
++	int err;
++	int warn;
++};
++
+ /**
+  * struct regulation_constraints - regulator operating constraints.
+  *
+@@ -100,6 +108,11 @@ struct regulator_state {
+  * @ilim_uA: Maximum input current.
+  * @system_load: Load that isn't captured by any consumer requests.
+  *
++ * @over_curr_limits:		Limits for acting on over current.
++ * @over_voltage_limits:	Limits for acting on over voltage.
++ * @under_voltage_limits:	Limits for acting on under voltage.
++ * @temp_limits:		Limits for acting on over temperature.
++
+  * @max_spread: Max possible spread between coupled regulators
+  * @max_uV_step: Max possible step change in voltage
+  * @valid_modes_mask: Mask of modes which may be configured by consumers.
+@@ -116,6 +129,11 @@ struct regulator_state {
+  * @pull_down: Enable pull down when regulator is disabled.
+  * @over_current_protection: Auto disable on over current event.
+  *
++ * @over_current_detection: Configure over current limits.
++ * @over_voltage_detection: Configure over voltage limits.
++ * @under_voltage_detection: Configure under voltage limits.
++ * @over_temp_detection: Configure over temperature limits.
++ *
+  * @input_uV: Input voltage for regulator when supplied by another regulator.
+  *
+  * @state_disk: State for regulator when system is suspended in disk mode.
+@@ -172,6 +190,10 @@ struct regulation_constraints {
+ 	struct regulator_state state_disk;
+ 	struct regulator_state state_mem;
+ 	struct regulator_state state_standby;
++	struct notification_limit over_curr_limits;
++	struct notification_limit over_voltage_limits;
++	struct notification_limit under_voltage_limits;
++	struct notification_limit temp_limits;
+ 	suspend_state_t initial_state; /* suspend state to set at init */
+ 
+ 	/* mode to set on startup */
+@@ -193,6 +215,10 @@ struct regulation_constraints {
+ 	unsigned soft_start:1;	/* ramp voltage slowly */
+ 	unsigned pull_down:1;	/* pull down resistor when regulator off */
+ 	unsigned over_current_protection:1; /* auto disable on over current */
++	unsigned over_current_detection:1; /* notify on over current */
++	unsigned over_voltage_detection:1; /* notify on over voltage */
++	unsigned under_voltage_detection:1; /* notify on under voltage */
++	unsigned over_temp_detection:1; /* notify on over temperature */
+ };
+ 
+ /**
 -- 
-2.18.1
+2.25.4
 
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
