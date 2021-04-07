@@ -2,74 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808BC356747
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36073566E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349729AbhDGIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:55:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15624 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345920AbhDGIxT (ORCPT
+        id S245066AbhDGIen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234223AbhDGIem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:53:19 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFdQn4KwKz19L60;
-        Wed,  7 Apr 2021 16:50:57 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 16:52:58 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH 1/1] drm/msm/dpu: remove unused local variable 'cmd_enc'
-Date:   Wed, 7 Apr 2021 16:33:34 +0800
-Message-ID: <20210407083334.2762-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Wed, 7 Apr 2021 04:34:42 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067DFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 01:34:33 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 9C5AE2A6; Wed,  7 Apr 2021 10:34:31 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 10:34:30 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com
+Subject: Re: [PATCH v2 1/2] iommu/mediatek-v1: Allow building as module
+Message-ID: <YG1ulkL15n2MiE7E@8bytes.org>
+References: <20210326032337.24578-1-yong.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326032337.24578-1-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning:
+On Fri, Mar 26, 2021 at 11:23:36AM +0800, Yong Wu wrote:
+> This patch only adds support for building the IOMMU-v1 driver as module.
+> Correspondingly switch the config to tristate and update the iommu_ops's
+> owner to THIS_MODULE.
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 
-drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c: In function ‘dpu_encoder_phys_cmd_wait_for_commit_done’:
-drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c:688:31: warning: variable ‘cmd_enc’ set but not used [-Wunused-but-set-variable]
-
-Fixes: fe286893ed34 ("drm/msm/dpu: Remove unused call in wait_for_commit_done")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-index b2be39b9144e449..088900841bf8baa 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-@@ -685,10 +685,6 @@ static int dpu_encoder_phys_cmd_wait_for_tx_complete(
- static int dpu_encoder_phys_cmd_wait_for_commit_done(
- 		struct dpu_encoder_phys *phys_enc)
- {
--	struct dpu_encoder_phys_cmd *cmd_enc;
--
--	cmd_enc = to_dpu_encoder_phys_cmd(phys_enc);
--
- 	/* only required for master controller */
- 	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
- 		return 0;
--- 
-1.8.3
-
-
+Applied both, thanks.
