@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBECE356888
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6611F35688A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350418AbhDGJ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350410AbhDGJ4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:56:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B51761382;
-        Wed,  7 Apr 2021 09:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617789383;
-        bh=BwRDnij+mE+hDNk3Ct/IamYuy8Ht3UxxQhXaDlPe++Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t/LX4EGIuAEdIVDu6tZP9BVt8jYC9VZjhKYagd5TuDYOzIIJrKbPVsEaM2M+elvDD
-         qzjDkpSyHa99Htmc6TGy7tK9OPfAsrADAVRTW2HTks0Grz6AbSjhLAdwkeOZ9OqzIu
-         z0BKTmGiBjGh1J8SoD7GjhkZF5Rwks3igJWEOtlU=
-Date:   Wed, 7 Apr 2021 11:56:20 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/2] MAINTAINERS: add regressions mailing list
-Message-ID: <YG2BxMBLqEt4mkgS@kroah.com>
-References: <cover.1617786974.git.linux@leemhuis.info>
- <f959331ed0e1a8ed59be9771fcab64378bd6977d.1617786974.git.linux@leemhuis.info>
+        id S1350427AbhDGJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346426AbhDGJ4z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:56:55 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94CBC061756;
+        Wed,  7 Apr 2021 02:56:44 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso865035wmi.0;
+        Wed, 07 Apr 2021 02:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=XI8zjCWrHrG5RIk4b3Hbm5Q3Z+HRUCQWg5bfMzD9Jsw=;
+        b=PFu66/SNVZwtKmaSFIdn/9ceMMmMfrg5wm0jZCzFUOkxp7UMTjNzv+rpxe0GGHZd2t
+         OyUq7Wdpon8ac2O4cHKkqaff7q9WnGVUzBrPFeGiEbUVFvKU3kWjyer2a4ATgUMZDm9b
+         0J+3qUscAHVFfQyzTikzaUaXOOBRcJpsZErg1MNFGMuYnF2lN6VKu3TiA75OUhjxYsNX
+         +i2RPqiOvBGzHehsYWL1vZn/9M3gxc2B7kw4cXkDaED/e5vGrrRg2FJQhKOh1zPdOaL6
+         tfxlWfOxCek89UCQERc0S+8OmZU2a/9n3S87Bzw6VAKoruJH54FsPLrqQkBgpdiqxosf
+         u4bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=XI8zjCWrHrG5RIk4b3Hbm5Q3Z+HRUCQWg5bfMzD9Jsw=;
+        b=q/fZF/Ch5A2Ala9pq02Z3pRAxvOcfFGP9jewAvkgElwlU3VAMSeS31xoFu/i1q7PeL
+         TEusAmmfynEW0DqgwP6LS2DUOD7HQkWJ9mfptvS0NraI8YY56oTZHXfztbVR0jM1QyFc
+         /4pDrwE5Qo7Rgj1yyIbQS5LMWBOsJbLbKuZ5duGsEYLNVcha6KTLtcwx1iSvHal77l7E
+         oiMVjennAhf1ouWe1TTmL1BsgK8nzh8zDCuXzfJg4kAskqULSAFBwW6onKezJ96d72dE
+         496uQiGn5lfLEVJ7RfqB5RLa/1J9qcX3pofXFNnBMocraoXw1YhDYsUiS1NANdqdyFWg
+         YBPw==
+X-Gm-Message-State: AOAM533xgA1legbLCl5WANRsmPsX8cllPzFPzCYymEXhckHgn/Rj3Eg8
+        NPTu34bFgf/vUAz38ngdw+U=
+X-Google-Smtp-Source: ABdhPJyFvIZgCudXxRH75W0b0/ObztMY9OZAeZr5OgyvwLXGLUX3a+7dZmd43PJqWcc67lcFZcMvMQ==
+X-Received: by 2002:a1c:7209:: with SMTP id n9mr2286646wmc.132.1617789402785;
+        Wed, 07 Apr 2021 02:56:42 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id u8sm39863959wrr.42.2021.04.07.02.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 02:56:42 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 14:56:34 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Cc:     musamaanjum@gmail.com, linqiheng@huawei.com,
+        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
+Subject: [PATCH] ASoC: fsl: sunxi: remove redundant dev_err call
+Message-ID: <20210407095634.GA1379642@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f959331ed0e1a8ed59be9771fcab64378bd6977d.1617786974.git.linux@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:21:55AM +0200, Thorsten Leemhuis wrote:
-> Add the newly created regression mailing list finally created after it
-> already had been agreed on during the maintainers summit 2017 (see
-> https://lwn.net/Articles/738216/ ). The topic was recently discussed
-> again, where an idea to create a broader list for all issues was
-> discussed, but Linus preferred a more targeted list:
-> https://lkml.kernel.org/r/CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com/
-> 
-> Hence, the creation for that list was asked for and granted:
-> https://bugzilla.kernel.org/show_bug.cgi?id=212557
-> 
-> In the end it became regressions@lists.linux.dev instead of
-> linux-regressions@lists.linux.dev as 'Linux' is redundant in the latter
-> case.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
-> I was a bit unsure how to add that list to MAINTAINERS. I considered
-> adding a 'M:' with my name and email address there as well, but getting
-> CCed on a lot of regression reports might be a bit much. I also left a
-> 'S: supported' out, as that doesn't make much sense in this case afaics;
-> and I checked, there are other entries that don't have those two (but
-> it's rare).
+devm_ioremap_resource() prints error message in itself. Remove the
+dev_err call to avoid redundant error message.
 
-Put your name there, you are the "maintainer of regressions!"  :)
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ sound/soc/fsl/fsl_aud2htx.c   | 4 +---
+ sound/soc/fsl/fsl_easrc.c     | 4 +---
+ sound/soc/sunxi/sun4i-codec.c | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
 
-Seriously, it's good to do that, maintainers entries that just have no
-one "responsible" always seem to end up being a black hole.
+diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
+index d70d5e75a30c..a328697511f7 100644
+--- a/sound/soc/fsl/fsl_aud2htx.c
++++ b/sound/soc/fsl/fsl_aud2htx.c
+@@ -198,10 +198,8 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs)) {
+-		dev_err(&pdev->dev, "failed ioremap\n");
++	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+-	}
+ 
+ 	aud2htx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+ 						&fsl_aud2htx_regmap_config);
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 5e33afe87c4a..b1765c7d3bcd 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1889,10 +1889,8 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(regs)) {
+-		dev_err(&pdev->dev, "failed ioremap\n");
++	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+-	}
+ 
+ 	easrc->paddr = res->start;
+ 
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 2173991c13db..6f3d9148a185 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1711,10 +1711,8 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(base)) {
+-		dev_err(&pdev->dev, "Failed to map the registers\n");
++	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+-	}
+ 
+ 	quirks = of_device_get_match_data(&pdev->dev);
+ 	if (quirks == NULL) {
+-- 
+2.25.1
 
-> 
-> Ciao, Thorsten
-> ---
->  MAINTAINERS | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 03b2096a5f8f..dd5743d1f743 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15212,6 +15212,10 @@ F:	Documentation/devicetree/bindings/regmap/
->  F:	drivers/base/regmap/
->  F:	include/linux/regmap.h
->  
-> +REGRESSIONS
-> +L:	regressions@lists.linux.dev
-> +K:	regression
-
-A bit more information here perhaps?  This will not really help anyone
-out to know what to do.
-
-thanks,
-
-greg k-h
