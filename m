@@ -2,68 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C307E356654
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D518356656
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240732AbhDGIS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:18:57 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16808 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239849AbhDGISz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:18:55 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FFcg45l8gz7tPr;
-        Wed,  7 Apr 2021 16:16:32 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 16:18:37 +0800
-Subject: Re: [PATCH v6 3/5] i2c: add support for HiSilicon I2C controller
-To:     Wolfram Sang <wsa@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-i2c@vger.kernel.org>, <Sergey.Semin@baikalelectronics.ru>,
-        <linux-kernel@vger.kernel.org>, <digetx@gmail.com>,
-        <treding@nvidia.com>, <jarkko.nikula@linux.intel.com>,
-        <rmk+kernel@armlinux.org.uk>, <song.bao.hua@hisilicon.com>,
-        <john.garry@huawei.com>, <mika.westerberg@linux.intel.com>,
-        <prime.zeng@huawei.com>, <linuxarm@huawei.com>
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-4-git-send-email-yangyicong@hisilicon.com>
- <20210406200248.GH3122@kunai>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <5c64a396-05ca-d19f-04ca-a3770e82c009@hisilicon.com>
-Date:   Wed, 7 Apr 2021 16:18:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S237208AbhDGIU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234102AbhDGIUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:20:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0D2461363;
+        Wed,  7 Apr 2021 08:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617783616;
+        bh=RIQQZ/8OzyrqcVeWTPhjOoZF88p41cOlDYgQorJvWh0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nSFcHHCumsdCEBMoybYS1wxglvtYG8f+/SgA1uBtK0d1UmLZxCYMCwrGHq6U0YPuD
+         OnQG6+sQ9IDUh46edCwkdF9aDA07VEKNRmz0kjTxWaxBLK5NeCAT0qe59jTBB62vNB
+         iAI+Ec2e2X9Uri8tHyeEPlaWTT/ZEJDRjS/R01Hs=
+Date:   Wed, 7 Apr 2021 10:20:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove unused variable
+Message-ID: <YG1rPiYTjo2zkiJp@kroah.com>
+References: <1617765499-65626-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210406200248.GH3122@kunai>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1617765499-65626-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/7 4:02, Wolfram Sang wrote:
+On Wed, Apr 07, 2021 at 11:18:19AM +0800, Jiapeng Chong wrote:
+> Fix the following gcc warning:
 > 
-> Only super minor stuff. Thanks to all the contributors and reviewers!
+> drivers/staging/rtl8723bs/core/rtw_ieee80211.c:657:15: warning: variable
+> ‘sec_idx’ set but not used [-Wunused-but-set-variable].
 > 
->> +#define HZ_PER_KHZ	1000
-> 
-> KHZ_PER_HZ?
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 
-that doesn't match what we want. we want the count of HZs per one KHZ.
+This does not apply to my tree anymore, please update your branch and
+rebase and resend.
 
-> 
->> +	ret = devm_i2c_add_adapter(dev, adapter);
->> +	if (ret) {
->> +		dev_err(dev, "failed to add i2c adapter, ret = %d\n", ret);
-> 
-> No need to print that. The core prints messages on failures.
-> 
+thanks,
 
-i check the code and find a little difference. the print in the core doesn't
-have the device prefix so it may not tell us which device's registeration fails.
-but considering we have device name embedded in the adapter name for this
-driver, it's ok to remove this message.
-
+greg k-h
