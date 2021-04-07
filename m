@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14674356F1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CC9356F47
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348601AbhDGOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:46:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242365AbhDGOq1 (ORCPT
+        id S1353128AbhDGOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353135AbhDGOu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:46:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617806778;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mg+fAs8HiCSf9usDBnxdCzvZm/dqxv2o27VRQ8dpGpE=;
-        b=jPKzwiE/9AoSGrNd6RS6OlZy9VUmoO3MiNoeuBRWjLsQ+vNITic18iddsbp42livXzPLHo
-        p1Pc7bJNBdgyFQeDatDNH8efOGixIhiZmVVV2L1PS9QCoPCjGo2ANNIB6CfCkUarzS6jxd
-        wbmegmsLEDUPPfXB0/4LjcupsH2YUuM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-n_eKW6L1O7ym3wpEAeO2Tg-1; Wed, 07 Apr 2021 10:46:16 -0400
-X-MC-Unique: n_eKW6L1O7ym3wpEAeO2Tg-1
-Received: by mail-ed1-f69.google.com with SMTP id b8so4202730ede.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:46:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mg+fAs8HiCSf9usDBnxdCzvZm/dqxv2o27VRQ8dpGpE=;
-        b=SbV+B3yu+TDRyQtYjUzPsrPQA8jUwLC0HKrmpsrEmac+ppACJhAvEfQ/d6VxB4FrlB
-         6HLni05ci7DgRZQCrzOV489L5otKeutZd62NiHb1UgtB0wi6KqsIj2clMDDi/H9494A5
-         eDwNP41eDExFHI7D+dOf0jtDUoGNsYPgrMT3SREz00Zt+hvGtTL3KU7gmBJaOwQY/Mqp
-         pKeEiGmPGlgnOL+Qy7O1z0REQGIMCU78e5X5vpSfZ2UJOJOnLWPfgSs2RfpnX4J4Salt
-         2NJiikNpbyuiG/i70uHHRJmhM5VwM3/f+dreBPIiBtplJ5Lj6dCxVC6PuN+5tm12fikO
-         8NiA==
-X-Gm-Message-State: AOAM5325lQLdF7u3rJunQ17nBDLvpmnx5z2PjQALOYItATpP3FfujDKY
-        Fcu5XNCef3xbGr/J17+dR1q3+piTDuNX7JwtMzaU8UXz0BBOXbcbXZ1di1exWHgxuJVe6zizkQj
-        boLEO+tRuiHu8r4CQSUgPU9rfqA1BdQ7KRO+G2ab/ae0q/p4mt4JIn+CfyP7E419GFs/UI1hMwc
-        nV
-X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr4143799ejc.326.1617806775320;
-        Wed, 07 Apr 2021 07:46:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHhBqm26Mm7YFhs88gM9OOeiQCRSbPAmpao8DVnIAjK0sCenydd7fdhGuJ2WWq8h5whHoFsw==
-X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr4143783ejc.326.1617806775169;
-        Wed, 07 Apr 2021 07:46:15 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id x17sm12698028ejd.68.2021.04.07.07.46.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:46:14 -0700 (PDT)
-Subject: Re: [PATCH v1 0/5] ACPI: scan: acpi_bus_check_add() simplifications
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <2192169.ElGaqSPkdT@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <c50d3bc1-e40c-a66d-35fe-823a1398989d@redhat.com>
-Date:   Wed, 7 Apr 2021 16:46:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 7 Apr 2021 10:50:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D7BC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AiiGNCBjYcZfRgU7sybUVpHDghOneRNQTa+6Qoodddo=; b=WOfw0rgoWKaJU02SiNuw0A82B7
+        9r5wfYjhQy5j81NgXRYs+/EdCxqykSktmbma8JypoQ3BjyJUsk/TK05vTWaICdjbXSFSnRd5p/ZHG
+        PDoDR1ORkVgcLe+T6f/AU4GyPW2hgVlqOOiX7RWXiOjY1crGgvlIls6GJ+CpmL9evuU3LOBlc/Idq
+        9z1TAhFjWQ0HvDzpOy+VR39oXLxtIJFhatB8np3619DrWGMuGzEWgd/iJtpRaiLgLOmmgtfkwwhnZ
+        9UAgyNHihUk3iSGcTizTp/bNzwPZBc1R4jhU3va+4RUD2pGUIcOifv5lHlP5us5gGvij/3mzsb3Y9
+        TyOvVFmg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU9Sx-00EcVC-Ck; Wed, 07 Apr 2021 14:47:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A1373300219;
+        Wed,  7 Apr 2021 16:47:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8857D2BBEA8E3; Wed,  7 Apr 2021 16:47:34 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 16:47:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michel Lespinasse <michel@lespinasse.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 09/37] mm: add per-mm mmap sequence counter for
+ speculative page fault handling.
+Message-ID: <YG3GBhvVt2cQkZVz@hirez.programming.kicks-ass.net>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-10-michel@lespinasse.org>
 MIME-Version: 1.0
-In-Reply-To: <2192169.ElGaqSPkdT@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407014502.24091-10-michel@lespinasse.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/7/21 4:27 PM, Rafael J. Wysocki wrote:
-> Hi,
+On Tue, Apr 06, 2021 at 06:44:34PM -0700, Michel Lespinasse wrote:
+> The counter's write side is hooked into the existing mmap locking API:
+> mmap_write_lock() increments the counter to the next (odd) value, and
+> mmap_write_unlock() increments it again to the next (even) value.
 > 
-> This series simplifies acpi_bus_check_add() and related code.
+> The counter's speculative read side is supposed to be used as follows:
 > 
-> It mostly is not expected to alter functionality, except for patch [4/5] that
-> unifies the handling of device and processor objects.
+> seq = mmap_seq_read_start(mm);
+> if (seq & 1)
+> 	goto fail;
+> .... speculative handling here ....
+> if (!mmap_seq_read_check(mm, seq)
+> 	goto fail;
 > 
-> Please refer to the patch changelogs for details.
+> This API guarantees that, if none of the "fail" tests abort
+> speculative execution, the speculative code section did not run
+> concurrently with any mmap writer.
 
-Thanks, the entire series looks good to me:
+So this is obviously safe, but it's also super excessive. Any change,
+anywhere, will invalidate and abort a SPF.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
+Since you make a complete copy of the vma, you could memcmp it in its
+entirety instead of this.
