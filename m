@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EEA356846
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660B7356851
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350241AbhDGJoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:44:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15156 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbhDGJoS (ORCPT
+        id S1350282AbhDGJr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:47:26 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15942 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350270AbhDGJrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:44:18 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFfXw0Zz8zpVwS;
-        Wed,  7 Apr 2021 17:41:20 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 17:43:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        James Jones <jajones@nvidia.com>
-Subject: [PATCH 1/1] drm/nouveau/kms: remove unused local variable 'width'
-Date:   Wed, 7 Apr 2021 17:43:44 +0800
-Message-ID: <20210407094344.2924-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Wed, 7 Apr 2021 05:47:25 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFfdC22jJzyN2J;
+        Wed,  7 Apr 2021 17:45:03 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 17:47:06 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/trng - add version to adapt new algorithm
+Date:   Wed, 7 Apr 2021 17:44:33 +0800
+Message-ID: <1617788673-47222-1-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.202]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning:
+Kunpeng930 supports trng and prng, but Kunpeng920 only supports trng.
 
-drivers/gpu/drm/nouveau/nouveau_display.c: In function ‘nouveau_framebuffer_new’:
-drivers/gpu/drm/nouveau/nouveau_display.c:309:15: warning: variable ‘width’ set but not used [-Wunused-but-set-variable]
+Therefore, version information is added to ensure that prng is not
+registered to Crypto subsystem on Kunpeng920.
 
-Fixes: 4f5746c863db ("drm/nouveau/kms: Check framebuffer size against bo")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/gpu/drm/nouveau/nouveau_display.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/crypto/hisilicon/trng/trng.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/nouveau/nouveau_display.c
-index 17831ee897ea46d..7d3b1f8de300784 100644
---- a/drivers/gpu/drm/nouveau/nouveau_display.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_display.c
-@@ -306,7 +306,7 @@
- 	struct nouveau_bo *nvbo = nouveau_gem_object(gem);
- 	struct drm_framebuffer *fb;
- 	const struct drm_format_info *info;
--	unsigned int width, height, i;
-+	unsigned int height, i;
- 	uint32_t tile_mode;
- 	uint8_t kind;
- 	int ret;
-@@ -346,9 +346,6 @@
- 	info = drm_get_format_info(dev, mode_cmd);
+diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
+index 2971268..829f2ca 100644
+--- a/drivers/crypto/hisilicon/trng/trng.c
++++ b/drivers/crypto/hisilicon/trng/trng.c
+@@ -18,6 +18,8 @@
+ #define HISI_TRNG_REG		0x00F0
+ #define HISI_TRNG_BYTES		4
+ #define HISI_TRNG_QUALITY	512
++#define HISI_TRNG_VERSION	0x01B8
++#define HISI_TRNG_VER_V1	GENMASK(31, 0)
+ #define SLEEP_US		10
+ #define TIMEOUT_US		10000
+ #define SW_DRBG_NUM_SHIFT	2
+@@ -50,6 +52,7 @@ struct hisi_trng {
+ 	struct hisi_trng_list *trng_list;
+ 	struct list_head list;
+ 	struct hwrng rng;
++	u32 ver;
+ 	bool is_used;
+ 	struct mutex mutex;
+ };
+@@ -260,6 +263,7 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 		return PTR_ERR(trng->base);
  
- 	for (i = 0; i < info->num_planes; i++) {
--		width = drm_format_info_plane_width(info,
--						    mode_cmd->width,
--						    i);
- 		height = drm_format_info_plane_height(info,
- 						      mode_cmd->height,
- 						      i);
+ 	trng->is_used = false;
++	trng->ver = readl(trng->base + HISI_TRNG_VERSION);
+ 	if (!trng_devices.is_init) {
+ 		INIT_LIST_HEAD(&trng_devices.list);
+ 		mutex_init(&trng_devices.lock);
+@@ -267,7 +271,8 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	hisi_trng_add_to_list(trng);
+-	if (atomic_inc_return(&trng_active_devs) == 1) {
++	if (trng->ver != HISI_TRNG_VER_V1 &&
++	    atomic_inc_return(&trng_active_devs) == 1) {
+ 		ret = crypto_register_rng(&hisi_trng_alg);
+ 		if (ret) {
+ 			dev_err(&pdev->dev,
+@@ -289,7 +294,8 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 	return ret;
+ 
+ err_crypto_unregister:
+-	if (atomic_dec_return(&trng_active_devs) == 0)
++	if (trng->ver != HISI_TRNG_VER_V1 &&
++	    atomic_dec_return(&trng_active_devs) == 0)
+ 		crypto_unregister_rng(&hisi_trng_alg);
+ 
+ err_remove_from_list:
+@@ -305,7 +311,8 @@ static int hisi_trng_remove(struct platform_device *pdev)
+ 	while (hisi_trng_del_from_list(trng))
+ 		;
+ 
+-	if (atomic_dec_return(&trng_active_devs) == 0)
++	if (trng->ver != HISI_TRNG_VER_V1 &&
++	    atomic_dec_return(&trng_active_devs) == 0)
+ 		crypto_unregister_rng(&hisi_trng_alg);
+ 
+ 	return 0;
 -- 
-1.8.3
-
+2.8.1
 
