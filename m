@@ -2,167 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08134356B5B
+	by mail.lfdr.de (Postfix) with ESMTP id C5F24356B5D
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346735AbhDGLg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:36:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37371 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235017AbhDGLgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:36:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617795404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1347077AbhDGLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:37:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55362 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235017AbhDGLhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 07:37:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617795413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1+IGD1lFi/dtjGX1UdNt4cubGIxpuOkFLqRacFVurCI=;
-        b=R3aJLZvYX2k9dZgWLnVQzFAjkEyVBEBaMQojTSvpGys6juDrs+3Kb5JVG80MrboLppkQBi
-        T92oZrNZ9YkRmb2yF8l9Q2TM5apRHqQzgQrMOawuTqbEN91fazh2oqUJ5boQ7y0VYMSdqG
-        OrIhjXrvs4fEEgIJOfII4o0hEcMR5dI=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-xJdS3RDtN-SZVmuqVawpsw-1; Wed, 07 Apr 2021 07:36:42 -0400
-X-MC-Unique: xJdS3RDtN-SZVmuqVawpsw-1
-Received: by mail-ej1-f69.google.com with SMTP id k26so3157863ejs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 04:36:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1+IGD1lFi/dtjGX1UdNt4cubGIxpuOkFLqRacFVurCI=;
-        b=EkM84dHYOkYbb5NeMPSoqrTgHFlTLognj1P8NnuZwGLRk1mflnCN2T/8qlDfUzX0Zl
-         3UJx3EI/AlFZ0ahOhIyFT+gaYMtRf/KXLuFQSQjtolXgIlGgxkqq+5iTH2JsPxcgSIoH
-         5aRpA8ASWSIVUSrDwQvXgj1+A6XLXfHFfyK/SWFdA/6I5D7S7BzPxYfRvHH6a2e/Ptr9
-         eukqV6HE5pX4h/4iB4t3P3guDvgk0DIyAl0zywWqeX3HLS5KoeN2NrCM3ZGzGjFpSyFQ
-         W5GdROr2mpEcfLSiG6UnhEfW/vteyBVQ8CaS+S7xClJlKeZKGsHKzFuR7ZZMcpG1bbCx
-         wjwA==
-X-Gm-Message-State: AOAM531HgfzKwVmX+StwvnZHxakWNtKmbG9JIP2asQXLFyPulSaUj8pb
-        VRKQH8SZvRBTypoFIfYnpgQePFQDDIaw6L49c0TpiZMxLvFZ2s78r9jwtWqmatqGitEDwhgAEOf
-        RoxwnxYZjYHDH6yytGjs6xp5k
-X-Received: by 2002:a17:906:7257:: with SMTP id n23mr3242607ejk.412.1617795401467;
-        Wed, 07 Apr 2021 04:36:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwyo6Bx0tJj9Knj2TC6l9JiTcnZkCkuEq2/kr9RoYoc4xl3FRtc9Ws9ew27rjT4YhYAVTvm+Q==
-X-Received: by 2002:a17:906:7257:: with SMTP id n23mr3242584ejk.412.1617795401306;
-        Wed, 07 Apr 2021 04:36:41 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id r26sm4127077edc.43.2021.04.07.04.36.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 04:36:40 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
-To:     Henning Schild <henning.schild@siemens.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Enrico Weigelt <lkml@metux.net>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
-Date:   Wed, 7 Apr 2021 13:36:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=5B4EydAFySuCx8ASw1PaHZMQMaOqH+r5Eq4RihuTXNA=;
+        b=CrwLL+E/olIlNRBqWPvrbL0WQ2iEw44W3FFa+BGiNYi7CUUhsahv3kR8QnwYS4h6o86vTW
+        KWULfN8tNgXexqlOlvfkdYcLsAY6C4DsVkYPs44dMykSwaTyFI23MLUn1frgmczfahayzP
+        8QgEAwTJtIc10kl8CKHnl09/MEjhLEU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4B88BB122;
+        Wed,  7 Apr 2021 11:36:53 +0000 (UTC)
+Message-ID: <e3cc8ecb4ce8c61b9eb79a2238b2b3570334ce5a.camel@suse.com>
+Subject: Re: [PATCH net-next v4 0/4] usbnet: speed reporting for devices
+ without MDIO
+From:   Oliver Neukum <oneukum@suse.com>
+To:     Grant Grundler <grundler@chromium.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Roland Dreier <roland@kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>, netdev <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 07 Apr 2021 13:36:43 +0200
+In-Reply-To: <CANEJEGs7LtNCG4qPMi1PTK_NWBybO9TjzF3nMrFQYV5S5ZqZ9g@mail.gmail.com>
+References: <20210405231344.1403025-1-grundler@chromium.org>
+         <YGumuzcPl+9l5ZHV@lunn.ch>
+         <CANEJEGsYQm9EhqVLA4oedP2fuKrP=3bOUDV9=7owfdZzX7SpUA@mail.gmail.com>
+         <YGxbXOXquilXNV2W@lunn.ch>
+         <CANEJEGs7LtNCG4qPMi1PTK_NWBybO9TjzF3nMrFQYV5S5ZqZ9g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20210329174928.18816-1-henning.schild@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Am Dienstag, den 06.04.2021, 18:01 +0000 schrieb Grant Grundler:
 
-On 3/29/21 7:49 PM, Henning Schild wrote:
-> changes since v2:
+> > Ethernet does not support
+> > different rates in each direction. So if RX and TX are different, i
+> > would actually say something is broken.
 > 
-> - remove "simatic-ipc" prefix from LED names
-> - fix style issues found in v2, mainly LED driver
-> - fix OEM specific dmi code, and remove magic numbers
-> - more "simatic_ipc" name prefixing
-> - improved pmc quirk code using callbacks
-> 
-> changes since v1:
-> 
-> - fixed lots of style issues found in v1
->   - (debug) printing
->   - header ordering
-> - fixed license issues GPLv2 and SPDX in all files
-> - module_platform_driver instead of __init __exit
-> - wdt simplifications cleanup
-> - lots of fixes in wdt driver, all that was found in v1
-> - fixed dmi length in dmi helper
-> - changed LED names to allowed ones
-> - move led driver to simple/
-> - switched pmc_atom to dmi callback with global variable
-> 
-> --
-> 
-> This series adds support for watchdogs and leds of several x86 devices
-> from Siemens.
-> 
-> It is structured with a platform driver that mainly does identification
-> of the machines. It might trigger loading of the actual device drivers
-> by attaching devices to the platform bus.
-> 
-> The identification is vendor specific, parsing a special binary DMI
-> entry. The implementation of that platform identification is applied on
-> pmc_atom clock quirks in the final patch.
-> 
-> It is all structured in a way that we can easily add more devices and
-> more platform drivers later. Internally we have some more code for
-> hardware monitoring, more leds, watchdogs etc. This will follow some
-> day.
+> Agreed. The question is: Is there data or some heuristics we can use
+> to determine if the physical layer/link is ethernet?
+> I'm pessimistic we will be able to since this is at odds with the
+> intent of the CDC spec.
 
-IT seems there still is significant discussion surrounding the LED and watchdog
-drivers which use patch 1/4 as parent-driver.
+Yes, CDC intends to hide that. We can conclude that an asymmetric link
+rules out ethernet, but anything else is difficult.
 
-I'm going to hold of on merging 1/4 and 4/4 until there is more consensus
-surrounding this series.
+	Regards
+		Oliver
 
-Regards,
-
-Hans
-
-
-> 
-> Henning Schild (4):
->   platform/x86: simatic-ipc: add main driver for Siemens devices
->   leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
->   watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial PCs
->   platform/x86: pmc_atom: improve critclk_systems matching for Siemens
->     PCs
-> 
->  drivers/leds/Kconfig                          |   3 +
->  drivers/leds/Makefile                         |   3 +
->  drivers/leds/simple/Kconfig                   |  11 +
->  drivers/leds/simple/Makefile                  |   2 +
->  drivers/leds/simple/simatic-ipc-leds.c        | 202 ++++++++++++++++
->  drivers/platform/x86/Kconfig                  |  12 +
->  drivers/platform/x86/Makefile                 |   3 +
->  drivers/platform/x86/pmc_atom.c               |  57 +++--
->  drivers/platform/x86/simatic-ipc.c            | 169 ++++++++++++++
->  drivers/watchdog/Kconfig                      |  11 +
->  drivers/watchdog/Makefile                     |   1 +
->  drivers/watchdog/simatic-ipc-wdt.c            | 215 ++++++++++++++++++
->  .../platform_data/x86/simatic-ipc-base.h      |  29 +++
->  include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++
->  14 files changed, 769 insertions(+), 21 deletions(-)
->  create mode 100644 drivers/leds/simple/Kconfig
->  create mode 100644 drivers/leds/simple/Makefile
->  create mode 100644 drivers/leds/simple/simatic-ipc-leds.c
->  create mode 100644 drivers/platform/x86/simatic-ipc.c
->  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
->  create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
->  create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
-> 
 
