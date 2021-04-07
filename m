@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4645B356631
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C8535663B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344434AbhDGIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        id S1346924AbhDGIPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbhDGIOw (ORCPT
+        with ESMTP id S1346787AbhDGIPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:14:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EE5C06174A;
-        Wed,  7 Apr 2021 01:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=W04gx11j9HDZMoV+H3vROcmm6Pmc4F/ugFAAO2XP9Gw=; b=SHlIXxDvv8obO873e/lJYwKtm
-        jkx3MPSaNZZtKfa9m3ub80BedOostT3KeiBcritwdlNjHOO+M8yg40OK2OGnUJDPOd8X63Ko5tdVj
-        Ks/ldDedQsQU64AZnm6q2tHyNGW1KPKykaSvuwojk31Y5iC7f+ABezfpZrUeRKiTS/D87SMUROO93
-        jGq8vqJuaCVAp7gm6696sQI5HG0dJyuofbPUUljWWvZ38ZbxTMSF0MyEVZdRT8n5qbYdWqokcA+SE
-        Vvrg05ZSu9lpJ9fk5QseskDjLuTl2UJFkJNbNDbcrXIEoz6tXQL0p6bnJYKN06axLAO79G/XM/CX6
-        XNcnVUrLQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52178)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lU3Kg-00084X-PH; Wed, 07 Apr 2021 09:14:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lU3Ke-0001pr-IV; Wed, 07 Apr 2021 09:14:36 +0100
-Date:   Wed, 7 Apr 2021 09:14:36 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH 00/20] kbuild: unify the install.sh script usage
-Message-ID: <20210407081436.GG1463@shell.armlinux.org.uk>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <CAMuHMdWGnr1wK3yZdLovxmVQT1yc2DR+J6FwQyCLxQS-Bp29Rw@mail.gmail.com>
- <YG1jSj7BiDscHBhz@kroah.com>
- <20210407080229.GF1463@shell.armlinux.org.uk>
- <YG1oQRc1ayGEI+4G@kroah.com>
+        Wed, 7 Apr 2021 04:15:40 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A0DC06174A;
+        Wed,  7 Apr 2021 01:15:30 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id z1so19191480ybf.6;
+        Wed, 07 Apr 2021 01:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e3srcGijwVkdGEDyqrMyzk7H5PiTF+15Bkn4ScMbDp0=;
+        b=qQdAp7spxgdOft+aBnedQrBRcz6SaeeZBvvEwazNbxrGZSyWr7UmgGG6k3NV0hSyES
+         velHFNv5blS+FV32GYBwDCloZf1HpY6V7FyH7eddT1LLBJahJ+r9EstI1Qt3Qq3+YnX4
+         rJ97GXRW3AnPpFG65ntOYRXN3c/Vmh9QvuQO6nrWKJZNMOYKS04YnxNpWfjzmM6h+Ozy
+         qj/ePXEQMZx7BNaNmVnN/J7AUxdtnz5tfRQiLfGIm5/TIhvf4AsLfYm2PgDBMARuoh6T
+         CPTLgfV4e/UIYkZ/yh6VL/W4JzTimwX6n9cOYhIIkz0hrdtgNGOfpBO+LgZGA4rgFV1m
+         PgYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e3srcGijwVkdGEDyqrMyzk7H5PiTF+15Bkn4ScMbDp0=;
+        b=pxv4g6WFEz7uj8VvL3SSPpitc/BA5SswkC9gvfYqRWOYoAEkBuewcqcVy5PL1EF69J
+         47dn3JXbqfhOKoVBlESS92X6JTjsLM7eHqTsvXQitT3fDHQIQCAEPKw15stBUrg0ONCW
+         fKLuIvvtcrv+BL0VJ2CrcfLPMyXLZ+UVUBYCRhlpunVxfbYMlof8NEuZIfm6+TN3XsKN
+         6r4Nx5xXO+MyRrOCGKsIPkI8i8ebIbNh/KTD/bP5Y+QJgXyt6hG9cutiAyQX2LJMAX1z
+         /y5y/KzMqrl1eq1eWHkVY1ClXhlbY0Wr2dLeNST7cixDpMqDgHijzm6Ofdw3g9tRr69f
+         iudg==
+X-Gm-Message-State: AOAM530htd6x0pDpasA68gEcfYaYueyAdJYH236Q5chladUqPGcn1Tyq
+        hAU6vTiI+JHsjjo/rYfFx5nhQ5x/2TG/xD7/p9Q=
+X-Google-Smtp-Source: ABdhPJxStqW4VQy0A9S4AORqrp2wZPPzZQ51dcczazywBItXEsFf4TaaOcz+LCiXPyJGNBL/H/OI6A3b67NkN22OQsE=
+X-Received: by 2002:a25:68c5:: with SMTP id d188mr2897497ybc.127.1617783329786;
+ Wed, 07 Apr 2021 01:15:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG1oQRc1ayGEI+4G@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Wed, 7 Apr 2021 09:14:54 +0100
+Message-ID: <CADVatmM=LxvGX8BdASA38pLrJ=use8aeVvn+oQFEgUxKbrX+ow@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/126] 5.10.28-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:07:29AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 07, 2021 at 09:02:29AM +0100, Russell King - ARM Linux admin wrote:
-> > On Wed, Apr 07, 2021 at 09:46:18AM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Apr 07, 2021 at 09:18:11AM +0200, Geert Uytterhoeven wrote:
-> > > > Hi Greg,
-> > > > 
-> > > > Thanks for your series!
-> > > > 
-> > > > On Wed, Apr 7, 2021 at 7:34 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > Almost every architecture has copied the "install.sh" script that
-> > > > > originally came with i386, and modified it in very tiny ways.  This
-> > > > > patch series unifies all of these scripts into one single script to
-> > > > > allow people to understand how to correctly install a kernel, and fixes
-> > > > > up some issues regarding trying to install a kernel to a path with
-> > > > > spaces in it.
-> > > > >
-> > > > > Note that not all architectures actually seem to have any type of way to
-> > > > > install a kernel, they must rely on external scripts or tools which
-> > > > > feels odd as everything should be included here in the main repository.
-> > > > > I'll work on trying to figure out the missing architecture issues
-> > > > > afterward.
-> > > > 
-> > > > I'll bite ;-)
-> > > > 
-> > > > Does anyone actually use these scripts (outside of x86)?
-> > 
-> > Yes, every time I build a kernel. My kernel build system involves
-> > typing "kbuild <flags> <dirname> <machines...>" and the kernel gets
-> > built in ../build/<dirname>. When the build completes, it gets
-> > installed into ~/systems/<dirname>, tar'd up, and copied to the
-> > destination machines, unpacked, installed as appropriate, and
-> > the machine rebooted if requested.
-> > 
-> > The installation step is done via the ~/bin/installkernel script.
-> 
-> So you don't use install.sh at all except to invoke your local script.
+Hi Greg,
 
-It depends where the kernel is being built; it has been used in the
-past (one will notice that the arm32 version is not a direct copy of
-the x86 version, and never was - it was modified from day 1.) It's
-placement and naming of the files in /boot is still used today, which
-is slightly different from the x86 version.
+On Mon, Apr 5, 2021 at 10:09 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.28 release.
+> There are 126 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
+
+Booted on my test laptop. No regression.
+
+Tested-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards
+Sudip
