@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15A73562B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 06:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACFE3562C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 06:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbhDGEva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 00:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344432AbhDGEvY (ORCPT
+        id S1344967AbhDGE45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 00:56:57 -0400
+Received: from www381.your-server.de ([78.46.137.84]:52080 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232421AbhDGE44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 00:51:24 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB719C06174A;
-        Tue,  6 Apr 2021 21:51:14 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so640965pjg.5;
-        Tue, 06 Apr 2021 21:51:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V+6L2oYqEs/QSzIuajaQppBr7eHY4K1Hd4WvlAlIz/c=;
-        b=UeAdH92teKX9nqcjZrk6pjPXGRY/rZBLvzZum7GHe0oWmKCSm4tAQ4eAOvRQAT5pgy
-         PF7nSdVhu89VA+F1sjXLLRN9YSm8CeaAXQm/HThDqjJ/5qxZTBR0FRr4iPTXGv44eaAh
-         mn32RaEya6zyckqOH+zEUfmh1v7kWe2tPpGev7txR5rly1tFsWI0fsbXkxy2kYwdtN6n
-         rJEZFeVZV7hA743py53NBrlmr/2FAbsMfrg0Y+ugHTzfLkphin/HBXO1pEkySxvaYL3O
-         Ma86/uJ93tkIAFC9A8krTtyTUfP5xZ9R/ZuHxTfrbv7ljpg4SB2C+Y4kOLzRpAWdVssR
-         rg8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V+6L2oYqEs/QSzIuajaQppBr7eHY4K1Hd4WvlAlIz/c=;
-        b=cOArZdJ8Mv/IutBLmRZOYTS+RNNFXbwTeqw2wVjzHB0OdYNhHy8R9QsST+SXySpRGj
-         kuLIk04N2hmOn73UyyzvnCk0FNZMV11QltvDS8zohdH699H0jKhmlokqHkv6dtB11Vn3
-         jpIfJaUUTOxM3Xk2CPoxWrGZPOD9aDbLUaM9pLIcOPxwHB9AgoqBYQ76t7FKBmVWw8Ke
-         prReyYT3oFVVsoJy09Ep9irsA6rZiCKONlJaYdROwLVCpUr2Ag9oAc0giJU82IYGy/UZ
-         wu/zWIn1OrRBnGbEOVWPiurX3RqT3TzJLp56BoY8EibxXBb5CyQUFfplTve27Fv/60VF
-         HKMQ==
-X-Gm-Message-State: AOAM532LbanVhFbUfHC/u0tBcqCrAVuCGQUkQ3OW+PMfOdZXtbgHZ182
-        3WI1KSbz5zKIbNzC52TnSRw=
-X-Google-Smtp-Source: ABdhPJwwV7+KRnS4AYoBBARd+AzL4vj5vm1mLsxuvTDRCFHHfrgCqfllBL734AbDkmtPtKYUoSdcVA==
-X-Received: by 2002:a17:902:ea10:b029:e8:e2e9:d9a5 with SMTP id s16-20020a170902ea10b02900e8e2e9d9a5mr1414313plg.22.1617771074590;
-        Tue, 06 Apr 2021 21:51:14 -0700 (PDT)
-Received: from localhost.localdomain ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id n52sm882679pfv.13.2021.04.06.21.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 21:51:14 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>
-Subject: [RFC v2 net-next 4/4] staging: mt7621-dts: enable MT7530 interrupt controller
-Date:   Wed,  7 Apr 2021 12:50:38 +0800
-Message-Id: <20210407045038.1436843-5-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210407045038.1436843-1-dqfext@gmail.com>
-References: <20210407045038.1436843-1-dqfext@gmail.com>
+        Wed, 7 Apr 2021 00:56:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=RZpzEYNWECUZqfBw+gAEQrRFLyNX8MYV6WVB9KFUMAM=; b=ljurMm0bLm2UA+fsWpfK8+lYzs
+        hXyFghRNLDUguBDrBG5KNUud4/JtgAcxuwrsS0HeWnjbQO4NVG1XzWI4JonNg3KGbsmZi/M0jfKdA
+        RMRV+Bok4xYBCrt+5GXfmEjXW2NyjpLwK9ip4N53zUzra13rHNb2IxxCy+pwmLg8lscJixdBd45bo
+        c2Fxt/3HdIvBeceExVRriEZ+SeP7VdV13nUrOzzpL2saXmh4S/hyPSPMEkisH/24udUMuzI7xBStF
+        K5akFnS54y+N3W+2EwIEdaClHZbNuUkB3Dn3jSG+UUi+iHy+Z+Od7LmN6fu1jKfc0zy9FFLdoqQMa
+        xFn5ZS/g==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lU0F9-0008Mx-SU; Wed, 07 Apr 2021 06:56:43 +0200
+Received: from [2001:a61:2bab:901:9e5c:8eff:fe01:8578]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lU0F9-0004Ey-MJ; Wed, 07 Apr 2021 06:56:43 +0200
+Subject: Re: [PATCH v3 2/2] iio: temperature: add driver support for ti tmp117
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        alexandru.ardelean@analog.com, jic23@kernel.org,
+        devicetree@vger.kernel.org, knaack.h@gmx.de,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com
+References: <20210406182852.263605-1-puranjay12@gmail.com>
+ <20210406182852.263605-3-puranjay12@gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <3d840334-2c26-5748-8370-54cef6262e02@metafoo.de>
+Date:   Wed, 7 Apr 2021 06:56:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210406182852.263605-3-puranjay12@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26132/Tue Apr  6 13:06:05 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable MT7530 interrupt controller in the MT7621 SoC.
+On 4/6/21 8:28 PM, Puranjay Mohan wrote:
+> +
+> +static int tmp117_write_raw(struct iio_dev *indio_dev,
+> +		struct iio_chan_spec const *channel, int val,
+> +		int val2, long mask)
+> +{
+> +	struct tmp117_data *data = iio_priv(indio_dev);
+> +	s16 off;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_CALIBBIAS:
+> +		off = clamp(val, -32768, 32767);
+> +		if (off == data->calibbias)
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
-RFC v1 -> RFC v2:
-- No changes.
+data->calibbias is only set in probe() and always 0. I'm not sure we 
+need to cache the value. Reading it back from the device seems fine.
 
- drivers/staging/mt7621-dts/mt7621.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
-index 16fc94f65486..ebf8b0633e88 100644
---- a/drivers/staging/mt7621-dts/mt7621.dtsi
-+++ b/drivers/staging/mt7621-dts/mt7621.dtsi
-@@ -447,6 +447,9 @@ switch0: switch0@0 {
- 				mediatek,mcm;
- 				resets = <&rstctrl 2>;
- 				reset-names = "mcm";
-+				interrupt-controller;
-+				interrupt-parent = <&gic>;
-+				interrupts = <GIC_SHARED 23 IRQ_TYPE_LEVEL_HIGH>;
- 
- 				ports {
- 					#address-cells = <1>;
--- 
-2.25.1
+> +			return 0;
+> +		return i2c_smbus_write_word_swapped(data->client,
+> +						TMP117_REG_TEMP_OFFSET, off);
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
 
