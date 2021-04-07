@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94BE356E20
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BBA356E29
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352766AbhDGOFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:05:51 -0400
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:34841 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234067AbhDGOFm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:05:42 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id U8oAlSJzRMxedU8oDlIhgv; Wed, 07 Apr 2021 16:05:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617804330; bh=fm44WbDRvg5ne0yHElY/ZyexmCrcHUZfm1JrxKKHYXg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=aBi0K7CfEbQR3dOy/Dnkf6U3bpGGiR4dImI1ENRMrd+iOMAYetDNcOE91Z8j8c1yC
-         98QOz9QKMQJ7o0rAL7En+I9RvzA80St63ktEqw9ROlHcY5ZDdFUm4NgFitcZOG+tnu
-         5Z1t4Zt0gbDXm3gy687VY76pnednaqr7IO51V1TZHSeefFyzr/GQU6gCvCfttw/d+C
-         wCes29Y50tdio3sxOpP7NsPNqIKN/+1kH6v9jJO0GwazL0J90gS5hQdaLIcNoBq9PD
-         SXGIdhXsy2HKIAnGTaG/4IauQ0ILoRX++5JlV010XIz4QudfpmWj9vo0nXdpXYD3yv
-         0grmeMe/tWusA==
-Subject: Re: [PATCH] staging: axis-fifo: media/meson: remove redundant dev_err
- call
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
-        <linux-media@vger.kernel.org>,
-        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
-        <linux-amlogic@lists.infradead.org>,
-        "moderated list:ARM/Amlogic Meson SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Cc:     linqiheng@huawei.com, kernel-janitors@vger.kernel.org,
-        dan.carpenter@oracle.com
-References: <20210407101047.GA1491258@LEGION>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <93218bc8-2cbb-bacc-f985-876a842261c4@xs4all.nl>
-Date:   Wed, 7 Apr 2021 16:05:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S1352768AbhDGOKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:10:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5732 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235632AbhDGOJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:09:10 -0400
+IronPort-SDR: kyZyT5tZA4FKdE/ZwhTZN/ZICh/I0boBgrzLhUi7V3yf5xyKvewFs/TZGhvdfPxH8D2rAbWG9M
+ R8m1VXW+CBnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="173392698"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="173392698"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 07:09:00 -0700
+IronPort-SDR: hPxEBTTpnEm6zCPwBedLV0vjmkvgtbOhKY4mExcIZZRx2HqXB1MOx29/5/ldkfN3f6QDqEi56e
+ +EMb5TDMGXiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="530217945"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by orsmga004.jf.intel.com with ESMTP; 07 Apr 2021 07:09:00 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 42C653001E2; Wed,  7 Apr 2021 07:09:00 -0700 (PDT)
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Christophe de Dinechin <cdupontd@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen\, Andi" <andi.kleen@intel.com>,
+        "Yamahata\, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+In-Reply-To: <C841A818-7BBE-48B5-8CCB-1F8850CA52AD@redhat.com> (Christophe de
+        Dinechin's message of "Wed, 7 Apr 2021 15:31:28 +0200")
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+        <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+        <c5f2580d-0733-4523-d1e8-c43b487f0aaf@redhat.com>
+        <52518f09-7350-ebe9-7ddb-29095cd3a4d9@intel.com>
+        <d94d3042-098a-8df7-9ef6-b869851a4134@redhat.com>
+        <20210407131647.djajbwhqsmlafsyo@box.shutemov.name>
+        <C841A818-7BBE-48B5-8CCB-1F8850CA52AD@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+Date:   Wed, 07 Apr 2021 07:09:00 -0700
+Message-ID: <87zgyauqyr.fsf@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210407101047.GA1491258@LEGION>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJuuT3CZKUYbj5nNz8R/l8wm1VJrpjTtQH6J0CmLwm7ghIJ918q0+hbMonNISO7KHY8ltQTOpTNtDRJ8Usjw2cLayCjTim5Lj6hbxFqYwUVV/Qtx3fJy
- o0P69y7rvrQfzlLdxH8b3CC78srRQDzdHZJ/x7+amPLWayrB6sc/NMDGDF/cHG6rq/ogA/QwcDjLzibQZp+Ly/oyZywn54zrOCrapWyEC5vw5TRHmZP+c90l
- e6/WiNqO+9zXEPoCZluWJONhoR13VC9A5NrFKRPpOI2J0KxRzbPO4Gn7FH5boVqwzH6s50YHCu/ZKfyl4Ahkf70ldCPaUaP4WnWApKXZKfrCYdd0267PJ4MB
- KxbTjy/4zMZDTC6dZR06qj+JvYW9hvbSONGDCTvmjSAPmMpwJ/DIB5Yq60JfhrVeth0c3dq1te5hwtjReUKEgA9j8tl3pXMpRJ14neeQEs+WEKPmNIy7rVq5
- MLFvYKzilglPPRkGrvsVc97xsoAZnFQ/oablebOTuOfMNKlP/yzYJCOruNtcprpg4nCj+gkXxPkK8cyRe9qTkTMevzx20QTWiPsIxFXgNgvzgUVHFZQyH6sO
- xfkWiBGP+m5OgIhW44sDGDqPdU32hrBv6XcmD+Zu7+WhTsSYh5Sgbd4gujKk3QKL+oiqqoqI4kevS4yXbdXk6+sjioXy5RvgJ6HrECyButS1+fSOwvT/tBs2
- K4PVCUJwHESaKQ8za4+7i4rHtqUjK+Uoi9tfuavJjs+QR1XeqkcFTw==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Muhammad,
+Christophe de Dinechin <cdupontd@redhat.com> writes:
 
-On 07/04/2021 12:10, Muhammad Usama Anjum wrote:
-> devm_ioremap_resource() prints error message in itself. Remove the
-> dev_err call to avoid redundant error message.
+> Is there even a theoretical way to restore an encrypted page e.g. from (host)
+> swap without breaking the integrity check? Or will that only be possible with
+> assistance from within the encrypted enclave?
 
-Please split this up into two separate patches! They are independent
-changes and these two drivers are maintained by different people as well.
+Only the later.
 
-The patch itself looks OK, but it really has to be two separate patches.
+You would need balloning. It's in principle possible, but currently
+not implemented.
 
-Regards,
+In general host swap without balloning is usually a bad idea anyways
+because it often just swaps a lot of cache data that could easily be
+thrown away instead.
 
-	Hans
-
-> 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
->  drivers/staging/axis-fifo/axis-fifo.c   | 1 -
->  drivers/staging/media/meson/vdec/vdec.c | 8 ++------
->  2 files changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
-> index 2bb1c2e9cb57..ed9281089738 100644
-> --- a/drivers/staging/axis-fifo/axis-fifo.c
-> +++ b/drivers/staging/axis-fifo/axis-fifo.c
-> @@ -853,7 +853,6 @@ static int axis_fifo_probe(struct platform_device *pdev)
->  	fifo->base_addr = devm_ioremap_resource(fifo->dt_device, r_mem);
->  	if (IS_ERR(fifo->base_addr)) {
->  		rc = PTR_ERR(fifo->base_addr);
-> -		dev_err(fifo->dt_device, "can't remap IO resource (%d)\n", rc);
->  		goto err_initial;
->  	}
->  
-> diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
-> index 5d4db7a5b4b5..e51d69c4729d 100644
-> --- a/drivers/staging/media/meson/vdec/vdec.c
-> +++ b/drivers/staging/media/meson/vdec/vdec.c
-> @@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
->  
->  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
->  	core->dos_base = devm_ioremap_resource(dev, r);
-> -	if (IS_ERR(core->dos_base)) {
-> -		dev_err(dev, "Couldn't remap DOS memory\n");
-> +	if (IS_ERR(core->dos_base))
->  		return PTR_ERR(core->dos_base);
-> -	}
->  
->  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
->  	core->esparser_base = devm_ioremap_resource(dev, r);
-> -	if (IS_ERR(core->esparser_base)) {
-> -		dev_err(dev, "Couldn't remap ESPARSER memory\n");
-> +	if (IS_ERR(core->esparser_base))
->  		return PTR_ERR(core->esparser_base);
-> -	}
->  
->  	core->regmap_ao =
->  		syscon_regmap_lookup_by_phandle(dev->of_node,
-> 
-
+-andi
