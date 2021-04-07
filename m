@@ -2,60 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519DE356AD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDC7356ADE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351760AbhDGLNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:13:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37627 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhDGLNO (ORCPT
+        id S242922AbhDGLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232429AbhDGLOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:13:14 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lU67J-0007qD-OW; Wed, 07 Apr 2021 11:13:01 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: comedi: drivers: Fix spelling mistake "nubmer" -> "number"
-Date:   Wed,  7 Apr 2021 12:13:01 +0100
-Message-Id: <20210407111301.486853-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 7 Apr 2021 07:14:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529E9C061756;
+        Wed,  7 Apr 2021 04:14:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gXTPe6Z3xf8fN6/+SVbn3oskaMk/+fmn0nXa9QgNoq4=; b=adTni07HAeWwLS2YFlGyWwnHef
+        /sZm3ojRZKo+Ygx1EnVM5PliOVz1wtKizmuCGBSAmi0UJIsH7P6kMBF+ti7Mrf2S1tKMDzlyDFpO0
+        BozxGSdjTVRNpdjd7IRtXJhaaLurr6AHi9d4x+v6JKg99TLPnvcs+ApVba0ZvMRXqgVrLC7CBfWPX
+        hC5TVO5JLQaL446fVish6SQMaP0pZkmtI39bSBclvNEoVk1UvjJlJz/3FPOdGKF/0nxtnnV0a1i7a
+        BeCe93JNy2rJKClRUwuIe5/6KPKkgRyghnTNtdRBO89EYmGqKOehHaE4aBEeR0hLoWj3OqAyOqtyr
+        xRUHT6cQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU68B-00EN6A-FD; Wed, 07 Apr 2021 11:14:06 +0000
+Date:   Wed, 7 Apr 2021 12:13:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
+        Ritesh Harjani <riteshh@gmail.com>
+Subject: Re: [PATCH 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210407111355.GD2531743@casper.infradead.org>
+References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
+ <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Apr 07, 2021 at 02:32:05PM +0800, Shiyang Ruan wrote:
+> +static int dax_fault_cow_page(struct vm_fault *vmf, struct iomap *iomap,
+> +		loff_t pos, vm_fault_t *ret)
+> +{
+> +	int error = 0;
+> +	unsigned long vaddr = vmf->address;
+> +	sector_t sector = dax_iomap_sector(iomap, pos);
+> +
+> +	switch (iomap->type) {
+> +	case IOMAP_HOLE:
+> +	case IOMAP_UNWRITTEN:
+> +		clear_user_highpage(vmf->cow_page, vaddr);
+> +		break;
+> +	case IOMAP_MAPPED:
+> +		error = copy_cow_page_dax(iomap->bdev, iomap->dax_dev,
+> +						sector, vmf->cow_page, vaddr);
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		error = -EIO;
+> +		break;
+> +	}
+> +
+> +	if (error)
+> +		return error;
+> +
+> +	__SetPageUptodate(vmf->cow_page);
+> +	*ret = finish_fault(vmf);
+> +	if (!*ret)
+> +		*ret = VM_FAULT_DONE_COW;
+> +	return 0;
+> +}
+...
 
-There is a spelling mistake in a comment. Fix it.
+> +		error = dax_fault_cow_page(vmf, &iomap, pos, &ret);
+>  		if (error)
+> +			ret = dax_fault_return(error);
+>  		goto finish_iomap;
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/comedi/drivers/addi_apci_16xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/comedi/drivers/addi_apci_16xx.c b/drivers/staging/comedi/drivers/addi_apci_16xx.c
-index 9bbef3b15f3f..c306aa41df97 100644
---- a/drivers/staging/comedi/drivers/addi_apci_16xx.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_16xx.c
-@@ -110,7 +110,7 @@ static int apci16xx_auto_attach(struct comedi_device *dev,
- 	dev->iobase = pci_resource_start(pcidev, 0);
- 
- 	/*
--	 * Work out the nubmer of subdevices needed to support all the
-+	 * Work out the number of subdevices needed to support all the
- 	 * digital i/o channels on the board. Each subdevice supports
- 	 * up to 32 channels.
- 	 */
--- 
-2.30.2
-
+This seems unnecessarily complex.  Why not return the vm_fault_t instead of
+returning the errno and then converting it?
