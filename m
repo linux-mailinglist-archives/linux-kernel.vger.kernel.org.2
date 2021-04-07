@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD9C356201
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAF1356204
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238827AbhDGDiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhDGDiI (ORCPT
+        id S1344435AbhDGDjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:39:01 -0400
+Received: from smtprelay0111.hostedemail.com ([216.40.44.111]:33612 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234337AbhDGDi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:38:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E623C06174A;
-        Tue,  6 Apr 2021 20:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=zfGn3ZCEYuUX2Zf7T586Kb/7P467f6W2NugI8PaU3MA=; b=uwO6woSxzpLnvc5VAiSrRrX58X
-        57Jt16kVTMPztCETXMy9MjChJnEPS15auGf7iBLyOQ6AjNa1QDF1Za1yH+6z8q9aTHxW2/ZitaPk0
-        KmOkrVX9UqNuBxjV0DW9wwJ4oGE4YoJL03Jsh2LHmVH+argW9dN/ry1XQ7s+0VmIEwa5z79hNhQ03
-        mwxzFD/GxGropZW0P30ax7ihtn6RcPtam1+ZVcQnMsEawXWEovPNuNVA3pJ4nWv02OgZli9/5cSpx
-        YjuoWNjuiqFU55eEmfuuaW+j9lhl5NXCy4fxhDlVy4+8OWdcX1ySi4eia0TzlpiNjPEaHAj8TzZy/
-        yhcGZApQ==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTz0l-00DptI-Ux; Wed, 07 Apr 2021 03:37:52 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] vfs: fs_parser: clean up kernel-doc warnings
-Date:   Tue,  6 Apr 2021 20:37:43 -0700
-Message-Id: <20210407033743.9701-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 6 Apr 2021 23:38:58 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 8704E181D337B;
+        Wed,  7 Apr 2021 03:38:48 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 6CCE6C4182;
+        Wed,  7 Apr 2021 03:38:47 +0000 (UTC)
+Message-ID: <b56a44542a338583279893870ec819d4b1b4e23b.camel@perches.com>
+Subject: Re: [PATCH][next] erofs: fix uninitialized variable i used in a
+ while-loop
+From:   Joe Perches <joe@perches.com>
+To:     Gao Xiang <hsiangkao@redhat.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-erofs@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 06 Apr 2021 20:38:44 -0700
+In-Reply-To: <20210406235401.GA210667@xiangao.remote.csb>
+References: <20210406162718.429852-1-colin.king@canonical.com>
+         <20210406235401.GA210667@xiangao.remote.csb>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: ofx9em7xwsozzieswcpenrt3r3r95cat
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 6CCE6C4182
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19GKTF9FPXA2XYpIjjRK9qyadDR5X8MmkM=
+X-HE-Tag: 1617766727-223981
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc notation function arguments to eliminate two
-kernel-doc warnings:
+On Wed, 2021-04-07 at 07:54 +0800, Gao Xiang wrote:
+> Hi Colin,
+> 
+> On Tue, Apr 06, 2021 at 05:27:18PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > The while-loop iterates until src is non-null or i is 3, however, the
+> > loop counter i is not intinitialied to zero, causing incorrect iteration
+> > counts.  Fix this by initializing it to zero.
+> > 
+> > Addresses-Coverity: ("Uninitialized scalar variable")
+> > Fixes: 1aa5f2e2feed ("erofs: support decompress big pcluster for lz4 backend")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Thank you very much for catching this! It looks good to me,
+> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+> 
+> (btw, may I fold this into the original patchset? since such big pcluster
+>  patchset is just applied to for-next for further integration testing, and
+>  the commit id is not stable yet..)
+> 
+> Thanks,
+> Gao Xiang
 
-fs_parser.c:322: warning: Excess function parameter 'name' description in 'validate_constant_table'
-fs_parser.c:367: warning: Function parameter or member 'name' not described in 'fs_validate_description'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org
+I think this code is odd and would be more intelligible using
+a for loop like:
 ---
- fs/fs_parser.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/erofs/decompressor.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
---- linux-next-20210406.orig/fs/fs_parser.c
-+++ linux-next-20210406/fs/fs_parser.c
-@@ -310,7 +310,6 @@ EXPORT_SYMBOL(fs_param_is_path);
- #ifdef CONFIG_VALIDATE_FS_PARSER
- /**
-  * validate_constant_table - Validate a constant table
-- * @name: Name to use in reporting
-  * @tbl: The constant table to validate.
-  * @tbl_size: The size of the table.
-  * @low: The lowest permissible value.
-@@ -360,6 +359,7 @@ bool validate_constant_table(const struc
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 27aa6a99b371..5a64f4649414 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -286,28 +286,24 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
+ 	}
  
- /**
-  * fs_validate_description - Validate a parameter description
-+ * @name: The parameter name to search for.
-  * @desc: The parameter description to validate.
-  */
- bool fs_validate_description(const char *name,
+ 	ret = alg->prepare_destpages(rq, pagepool);
+-	if (ret < 0) {
++	if (ret < 0)
+ 		return ret;
+-	} else if (ret) {
++	if (ret) {
+ 		dst = page_address(*rq->out);
+ 		dst_maptype = 1;
+ 		goto dstmap_out;
+ 	}
+ 
+-	i = 0;
+-	while (1) {
++	for (i = 0; i < 3; i++) {
+ 		dst = vm_map_ram(rq->out, nrpages_out, -1);
+-
++		if (dst) {
++			dst_maptype = 2;
++			goto dstmap_out;
++		}
+ 		/* retry two more times (totally 3 times) */
+-		if (dst || ++i >= 3)
+-			break;
+ 		vm_unmap_aliases();
+ 	}
+-
+-	if (!dst)
+-		return -ENOMEM;
+-
+-	dst_maptype = 2;
++	return -ENOMEM;
+ 
+ dstmap_out:
+ 	ret = alg->decompress(rq, dst + rq->pageofs_out);
+
