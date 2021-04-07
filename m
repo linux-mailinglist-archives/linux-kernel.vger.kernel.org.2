@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A6A356320
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCB4356317
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 07:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348707AbhDGFe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 01:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345230AbhDGFe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 01:34:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CCF61168;
-        Wed,  7 Apr 2021 05:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617773686;
-        bh=Ap6X9FPkMU0Lq3Uh/N+daHn0QRFCYA0Bh3YUBOeqXvQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zDJNB2hiQMshLeFAIxxzwHkK7jXwMfsDHFZal5KRlsyjLWRbVPgxrPVfVpGcEyHHC
-         icS/c2eIoytAOA41UJtHXRMT7QCrr/3sLMnhpt6qUybW8phqpYRBQ+/NcSXZeMWFUx
-         MFNF4XttedJPsMkupgscXzDdzV9qorRUdDnr5dCw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 03/20] kbuild: scripts/install.sh: provide a "install" function
-Date:   Wed,  7 Apr 2021 07:34:02 +0200
-Message-Id: <20210407053419.449796-4-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210407053419.449796-1-gregkh@linuxfoundation.org>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1345179AbhDGFej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 01:34:39 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:34936 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232601AbhDGFe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 01:34:27 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app4 (Coremail) with SMTP id cS_KCgD3SQ5KRG1ggvyUAA--.42542S4;
+        Wed, 07 Apr 2021 13:34:06 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: stm32: Fix rumtime PM imbalance in stm32_dmamux_resume
+Date:   Wed,  7 Apr 2021 13:34:02 +0800
+Message-Id: <20210407053402.3750-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgD3SQ5KRG1ggvyUAA--.42542S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3Aw4rurW8GF1kAr48tFb_yoW3tFb_Kr
+        1UCFsxWrs0gFWIq347G3W5Z34Iva1kXan5uF4FyasxJrW3Zrn0qrWUWFn5A3W3X34UCF9Y
+        vFn2qryxCr4DCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoGBlZdtTQGhAATsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of open-coding the "test for file, if present make a backup,
-then copy the file to the new location" in multiple places, make a
-single function, install(), to do all of this in one place.
+pm_runtime_get_sync() will increase the rumtime PM counter
+even it returns an error. Thus a pairing decrement is needed
+to prevent refcount leak. Fix this by replacing this API with
+pm_runtime_resume_and_get(), which will not change the runtime
+PM counter on error.
 
-Note, this does change the default x86 kernel map file saved name from
-"System.old" to "System.map.old".  This brings it into unification with
-the other architectures as to what they call their backup file for the
-kernel map file.  As this is a text file, and nothing parses this from a
-backup file, there should not be any operational differences.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- scripts/install.sh | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ drivers/dma/stm32-dmamux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/install.sh b/scripts/install.sh
-index c183d6ddd00c..af36c0a82f01 100644
---- a/scripts/install.sh
-+++ b/scripts/install.sh
-@@ -27,6 +27,19 @@ verify () {
-  	fi
- }
+diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32-dmamux.c
+index ef0d0555103d..f9258a63b9c3 100644
+--- a/drivers/dma/stm32-dmamux.c
++++ b/drivers/dma/stm32-dmamux.c
+@@ -361,7 +361,7 @@ static int stm32_dmamux_resume(struct device *dev)
+ 	if (ret < 0)
+ 		return ret;
  
-+install () {
-+	install_source=${1}
-+	install_target=${2}
-+
-+	echo "installing '${install_source}' to '${install_target}'"
-+
-+	# if the target is already present, move it to a .old filename
-+	if [ -f "${install_target}" ]; then
-+		mv "${install_target}" "${install_target}".old
-+	fi
-+	cat "${install_source}" > "${install_target}"
-+}
-+
- # Make sure the files actually exist
- verify "$2"
- verify "$3"
-@@ -37,17 +50,8 @@ if [ -x ~/bin/"${INSTALLKERNEL}" ]; then exec ~/bin/"${INSTALLKERNEL}" "$@"; fi
- if [ -x /sbin/"${INSTALLKERNEL}" ]; then exec /sbin/"${INSTALLKERNEL}" "$@"; fi
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+ 		return ret;
  
- # Default install - same as make zlilo
--
--if [ -f "$4"/vmlinuz ]; then
--	mv "$4"/vmlinuz "$4"/vmlinuz.old
--fi
--
--if [ -f "$4"/System.map ]; then
--	mv "$4"/System.map "$4"/System.old
--fi
--
--cat "$2" > "$4"/vmlinuz
--cp "$3" "$4"/System.map
-+install "$2" "$4"/vmlinuz
-+install "$3" "$4"/System.map
- 
- if [ -x /sbin/lilo ]; then
-        /sbin/lilo
 -- 
-2.31.1
+2.17.1
 
