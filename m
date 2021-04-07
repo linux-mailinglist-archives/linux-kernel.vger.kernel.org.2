@@ -2,172 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB99357027
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11E2357029
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhDGPZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:25:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:15255 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbhDGPY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:24:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617809086; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=psl1A1ZEsRP4pkzzImQ/0PBt/vIS3ULOg0voZ57vuNE=;
- b=mL5MyVEWI/wraSx3qbToMkM9DAifWepW57vYtFPPI42Q6SiBjfeLSzaAqb6XSG6TcVj8yg93
- BBmJVY4JXbrPEVx0XHXFPgjmI/XXwFkJScYQYoOyJvOYaSirL0wyCN33p6dvkbzAHtfKXZxe
- zmL7Ym8RZ9o5OOVRLJbuCF9xWEs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 606dceb78807bcde1df9c2e5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 15:24:39
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C8793C43463; Wed,  7 Apr 2021 15:24:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D307CC433ED;
-        Wed,  7 Apr 2021 15:24:37 +0000 (UTC)
+        id S1353485AbhDGPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234867AbhDGPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53B2561007;
+        Wed,  7 Apr 2021 15:24:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617809094;
+        bh=3zfqWwj1fR2xBsHd0nVJuMbpqLPM1oM6n4YrBwVdJHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RR6dLQAVk6D6PRmU+oiURAC81jWbMIqJldEEiXZrGtJLkYUmh6uwvpIT7XL7CLgLO
+         LENEUesRfGX5CcWd6i0akdiiYc0igz5gC7wOJxGNlHP/J1MfsOlrK1OjxiQP21JvKg
+         XKOFKgLwnO5j901gFAALzMFDUqn9twGv01tqSrPE=
+Date:   Wed, 7 Apr 2021 17:24:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] USB: serial: closing-wait cleanups
+Message-ID: <YG3OxNDPBw8NeRBd@kroah.com>
+References: <20210407104529.1110-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 07 Apr 2021 20:54:37 +0530
-From:   skakit@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 1/5] arm64: dts: qcom: pm7325: Add PMIC peripherals for
- pm7325
-In-Reply-To: <YGdV+un4bGcF6jJH@google.com>
-References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
- <1617268396-1837-2-git-send-email-skakit@codeaurora.org>
- <YGdV+un4bGcF6jJH@google.com>
-Message-ID: <10d26e4cc8888833298b0ebe7756e032@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407104529.1110-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+On Wed, Apr 07, 2021 at 12:45:25PM +0200, Johan Hovold wrote:
+> Now that all USB serial drivers supports changing the closing_wait
+> parameter through TIOCSSERIAL (setserial), we can remove the related
+> driver-specific module parameters and settings.
+> 
+> These depend on the recently posted TIOCSSERIAL series.
 
-On 2021-04-02 23:05, Matthias Kaehlcke wrote:
-> On Thu, Apr 01, 2021 at 02:43:12PM +0530, satya priya wrote:
-> 
->> subject: arm64: dts: qcom: pm7325: Add PMIC peripherals for pm7325
-> 
-> nit: maybe just 'arm64: dts: qcom: Add pm7325 support/.dtsi' or 
-> similar?
-> 
->> Add temp-alarm and GPIO support for pm7325.
-> 
-> nit: it's more than that, you are adding the .dtsi for the PMIC itself.
-> 
+Yes!  Getting rid of the module parameter is so good...
 
-Okay, will change the commit text.
-
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 
->> ++++++++++++++++++++++++++++++++++++
->>  1 file changed, 53 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi 
->> b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> new file mode 100644
->> index 0000000..1e0848a
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> @@ -0,0 +1,53 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
->> +
->> +#include <dt-bindings/interrupt-controller/irq.h>
->> +#include <dt-bindings/spmi/spmi.h>
->> +
->> +&spmi_bus {
->> +	pm7325: pmic@1 {
->> +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
-> 
-> I saw the patches that add the compatible strings for the GPIOs, but
-> can't find those that add the strings for the PMICs themselves. Could
-> you provide a link if they have been sent already?
-> 
-
-They are not sent yet, qcom,spmi-pmic.txt file conversion to yaml [1] is 
-currently on hold as all the child node bindings needs to be converted 
-to yaml first. Once that is done we can add these strings.
-
-[1] https://lore.kernel.org/patchwork/patch/1359552/
-
->> +		reg = <0x1 SPMI_USID>;
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		pm7325_temp_alarm: temp-alarm@a00 {
->> +			compatible = "qcom,spmi-temp-alarm";
->> +			reg = <0xa00>;
->> +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
->> +			#thermal-sensor-cells = <0>;
->> +		};
->> +
->> +		pm7325_gpios: gpios@8800 {
->> +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
->> +			reg = <0x8800>;
->> +			gpio-controller;
->> +			gpio-ranges = <&pm7325_gpios 0 0 10>;
->> +			#gpio-cells = <2>;
->> +			interrupt-controller;
->> +			#interrupt-cells = <2>;
->> +		};
->> +	};
->> +};
->> +
->> +&thermal_zones {
->> +	pm7325_thermal: pm7325-thermal {
->> +		polling-delay-passive = <100>;
->> +		polling-delay = <0>;
->> +		thermal-sensors = <&pm7325_temp_alarm>;
->> +
->> +		trips {
->> +			pm7325_trip0: trip0 {
->> +				temperature = <95000>;
->> +				hysteresis = <0>;
->> +				type = "passive";
->> +			};
->> +
->> +			pm7325_trip1: trip1 {
-> 
-> nit: the critical trip point is often named <name>-crit. One reason for
-> this could be that it allows to add other non-critical trip points (in
-> the .dtsi itself or the <board>.dts), without messing up the
-> enumeration scheme.
-> 
-
-ok.
-
->> +				temperature = <115000>;
->> +				hysteresis = <0>;
->> +				type = "critical";
->> +			};
->> +		};
->> +	};
->> +};
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
