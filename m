@@ -2,166 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F333576E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5134C3576E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhDGVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45616 "EHLO mail.kernel.org"
+        id S233556AbhDGVfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233440AbhDGVe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:34:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D84F86121E;
-        Wed,  7 Apr 2021 21:34:18 +0000 (UTC)
+        id S232943AbhDGVfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50C0D611C9;
+        Wed,  7 Apr 2021 21:35:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617831259;
-        bh=OY6m0O2JLdBR3EMbFN1+c1VP7vp1T7/MtgNCyna3jIM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RYs9ZlZAuW+yAR9OaIBjRAaV4aBe0OW8/MZ5z9KTgN3tqbZopScQkbcA+uBicRd51
-         4ZneoA/QQlXnxW1mnalWPMyOR0Z2hdf4NggDX7ZHLpxuPtbC1KECEBZOZ8ATVEOp0o
-         ZRYJXGXa7RKstjpqR9WjaZWBTHYYZ4AxDwU3zg2/eFVE6OdCvdT6IiakzgokgZmogq
-         u65f+kQQ6AHw0KfEWHtBJEya0m8s8GPTZoJ/6Btx2Z8iIw8QCxN3a4e4eT/2AZiA1j
-         Q9fw2qSWrsIGNjZL8OEr2kDLxPSNC3WipF4gvmHFytN9CT1sguw538cuIkLcoTirBp
-         dUuduyju5h4Mw==
-Received: by mail-qt1-f170.google.com with SMTP id s2so14906787qtx.10;
-        Wed, 07 Apr 2021 14:34:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531uO9pWhGsXL10iJVCbFUSVWoWNTn6sam191ySgBo1Yo+fOD9rd
-        iLtZKeafpgPB4K3XKjd+cUw7abgFM718wLuYtw==
-X-Google-Smtp-Source: ABdhPJxby6ZecdKO6ratrvLVnneOpLeudf1qG1OIN7h5L0Yz59gfd8jPWN8/RStIFd7QYsd5JrUafN+sSZgecZb3vBc=
-X-Received: by 2002:ac8:7f07:: with SMTP id f7mr4495392qtk.134.1617831257998;
- Wed, 07 Apr 2021 14:34:17 -0700 (PDT)
+        s=k20201202; t=1617831309;
+        bh=IdAzorjKFWWP7Wbg08Lv/fd2wz/xa0/RkGQZvq+ZFQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hmTeEKanC/hf6TByQCGKkTTUeM0E3DzNiv25DryA5VMVSM3MRfh1VaH/2bbk8mzAQ
+         2l7iQHBwvDXErGQ5gwe6x49SltrcvCmFZv8UdNehv4i436SIzm+GPK66TXcSoKZfFp
+         /DUWiQKJb2d92wMnFU6jW3qYY3vi7sKASbdIp7dhhpxoH+YMTrRJhgoYCOooTZEgiK
+         3+aiEEnTbrwWo6qXF5t0wmK8fQB1MKDEQrNESJknOo+jl6F4Yn9H7EUSsXBReAYM03
+         zYkvCMpwQTJ/ga0Fju36msC7V5ZPjiJpbv/7LWokEKiAW1CinZFro/xOWT6BKLi7Rt
+         9KFhqRBPoiRqA==
+Date:   Wed, 7 Apr 2021 22:35:03 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 5/6] arm64: entry: Enable random_kstack_offset support
+Message-ID: <20210407213502.GA16569@willie-the-truck>
+References: <20210401232347.2791257-1-keescook@chromium.org>
+ <20210401232347.2791257-6-keescook@chromium.org>
 MIME-Version: 1.0
-References: <20210407205110.2173976-1-frowand.list@gmail.com>
-In-Reply-To: <20210407205110.2173976-1-frowand.list@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 7 Apr 2021 16:34:06 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+UORLXYh_v8WzAq_hH+-s0qjp0r_jObmaEK+yAh299hw@mail.gmail.com>
-Message-ID: <CAL_Jsq+UORLXYh_v8WzAq_hH+-s0qjp0r_jObmaEK+yAh299hw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of: unittest: overlay: ensure proper alignment of
- copied FDT
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401232347.2791257-6-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 3:51 PM <frowand.list@gmail.com> wrote:
->
-> From: Frank Rowand <frank.rowand@sony.com>
->
-> The Devicetree standard specifies an 8 byte alignment of the FDT.
-> Code in libfdt expects this alignment for an FDT image in memory.
-> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
-> with kmalloc(), align pointer, memcpy() to get proper alignment.
->
-> The 4 byte alignment exposed a related bug which triggered a crash
-> on openrisc with:
-> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> as reported in:
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
->
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+On Thu, Apr 01, 2021 at 04:23:46PM -0700, Kees Cook wrote:
+> Allow for a randomized stack offset on a per-syscall basis, with roughly
+> 5 bits of entropy. (And include AAPCS rationale AAPCS thanks to Mark
+> Rutland.)
+> 
+> In order to avoid unconditional stack canaries on syscall entry (due to
+> the use of alloca()), also disable stack protector to avoid triggering
+> needless checks and slowing down the entry path. As there is no general
+> way to control stack protector coverage with a function attribute[1],
+> this must be disabled at the compilation unit level. This isn't a problem
+> here, though, since stack protector was not triggered before: examining
+> the resulting syscall.o, there are no changes in canary coverage (none
+> before, none now).
+> 
+> [1] a working __attribute__((no_stack_protector)) has been added to GCC
+> and Clang but has not been released in any version yet:
+> https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=346b302d09c1e6db56d9fe69048acb32fbb97845
+> https://reviews.llvm.org/rG4fbf84c1732fca596ad1d6e96015e19760eb8a9b
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  drivers/of/of_private.h | 2 ++
->  drivers/of/overlay.c    | 8 ++++++--
->  drivers/of/unittest.c   | 9 +++++++--
->  3 files changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-> index d9e6a324de0a..d717efbd637d 100644
-> --- a/drivers/of/of_private.h
-> +++ b/drivers/of/of_private.h
-> @@ -8,6 +8,8 @@
->   * Copyright (C) 1996-2005 Paul Mackerras.
->   */
->
-> +#define FDT_ALIGN_SIZE 8
-> +
->  /**
->   * struct alias_prop - Alias property in 'aliases' node
->   * @link:      List node to link the structure in aliases_lookup list
-> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> index 50bbe0edf538..8b40711ed202 100644
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
-> @@ -1014,7 +1014,7 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
->  int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
->                          int *ovcs_id)
->  {
-> -       const void *new_fdt;
-> +       void *new_fdt;
->         int ret;
->         u32 size;
->         struct device_node *overlay_root;
-> @@ -1036,10 +1036,14 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
->          * Must create permanent copy of FDT because of_fdt_unflatten_tree()
->          * will create pointers to the passed in FDT in the unflattened tree.
->          */
-> -       new_fdt = kmemdup(overlay_fdt, size, GFP_KERNEL);
-> +       size += FDT_ALIGN_SIZE;
-> +       new_fdt = kmalloc(size, GFP_KERNEL);
->         if (!new_fdt)
->                 return -ENOMEM;
->
-> +       new_fdt = PTR_ALIGN(new_fdt, FDT_ALIGN_SIZE);
-> +       memcpy(new_fdt, overlay_fdt, size);
-> +
->         of_fdt_unflatten_tree(new_fdt, NULL, &overlay_root);
->         if (!overlay_root) {
->                 pr_err("unable to unflatten overlay_fdt\n");
-> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-> index eb100627c186..edd6ce807691 100644
-> --- a/drivers/of/unittest.c
-> +++ b/drivers/of/unittest.c
-> @@ -22,6 +22,7 @@
->  #include <linux/slab.h>
->  #include <linux/device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/kernel.h>
->
->  #include <linux/i2c.h>
->  #include <linux/i2c-mux.h>
-> @@ -1415,7 +1416,7 @@ static int __init unittest_data_add(void)
->          */
->         extern uint8_t __dtb_testcases_begin[];
->         extern uint8_t __dtb_testcases_end[];
-> -       const int size = __dtb_testcases_end - __dtb_testcases_begin;
-> +       u32 size = __dtb_testcases_end - __dtb_testcases_begin;
->         int rc;
->
->         if (!size) {
-> @@ -1425,10 +1426,14 @@ static int __init unittest_data_add(void)
->         }
->
->         /* creating copy */
-> -       unittest_data = kmemdup(__dtb_testcases_begin, size, GFP_KERNEL);
-> +       size += FDT_ALIGN_SIZE;
-> +       unittest_data = kmalloc(size, GFP_KERNEL);
->         if (!unittest_data)
->                 return -ENOMEM;
->
-> +       unittest_data = PTR_ALIGN(unittest_data, FDT_ALIGN_SIZE);
-> +       memcpy(unittest_data, __dtb_testcases_begin, size);
-> +
->         of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
->         if (!unittest_data_node) {
->                 pr_warn("%s: No tree to attach; not running tests\n", __func__);
+>  arch/arm64/Kconfig          |  1 +
+>  arch/arm64/kernel/Makefile  |  5 +++++
+>  arch/arm64/kernel/syscall.c | 16 ++++++++++++++++
+>  3 files changed, 22 insertions(+)
 
-The next line here is a kfree(unittest_data) which I assume will fail
-if the ptr address changed. Same issue in the overlay code.
+Acked-by: Will Deacon <will@kernel.org>
 
-The error path is easy to fix. Freeing the memory later on, not so
-much... One solution is always alloc a power of 2 size, that's
-guaranteed to be 'size' aligned:
-
- * The allocated object address is aligned to at least ARCH_KMALLOC_MINALIGN
- * bytes. For @size of power of two bytes, the alignment is also guaranteed
- * to be at least to the size.
-
-Rob
+Will
