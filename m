@@ -2,136 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB4135647A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D38F35647C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345176AbhDGGq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S243903AbhDGGrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349258AbhDGGq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 02:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349224AbhDGGqe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:46:34 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8733C06175F;
-        Tue,  6 Apr 2021 23:46:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so727643pji.5;
-        Tue, 06 Apr 2021 23:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8KMjQscDTu2f3qX/EIrSUJ8LapWFh940dfHfctQfV8U=;
-        b=nmYWcmTrl1AUYU22euLKozyZVDSQkPaf4gh4z/xzAbjRtmXsQxuKhSN5PMcavyiv2h
-         T9y28cNGSmLtswteu2JAPwKXUwpReeUKLzIodYygr7FfXtfyhNTnx2/rV+TWer9o0y2J
-         o9gLSnZp7N/gLCxrvDb4ziBC17Z4LQ3dhfxWhjCKEhodfqTOBlYmmpjzPXVzDexQmos4
-         m1+RIaEd3lvve7s3FmFEP0g7B4+6hrhBbFo+DMHQG9Hnw9lNRKPw4+Yc+S5orEvJrnQH
-         ZrBrNGuW3xUOrvupsTstOdaS+iQ6OqNva9WopXbYVqXmHxf8M02sdxk9BSPqwWIViQlN
-         ytnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8KMjQscDTu2f3qX/EIrSUJ8LapWFh940dfHfctQfV8U=;
-        b=p8HNNx8PEUTsnaYBOdaPeF4FtqaDfNwLatd4JCh+wiHylsBFST2JOJSHZNBQ7uwnEv
-         fMZH56VvlY6InA5eayqgLSWeMMqHDGlNVah9TMApkxt+VRC7kCIb3vhGCRFhAES0nWFF
-         tNxvzhyq/udI4UuHVJNIU8Th5II3xuoTQqKcLYZZUhQ5fTGdoHbWXgg9gFyTMRKc+LWD
-         h3Gi53kBHazjc5003pqJkcJHFxg4OTbioCouB80AOQLhH+367nizciP5oyoFWUOZzzbM
-         qe1trRLGTtqBN+IZzO92UqjfTojJybvKzwBwSxNjWxvXq5gmQtjgiaksF3Yit/uSIKHF
-         YVNQ==
-X-Gm-Message-State: AOAM533LQdzfQGU2g0YEmgF0qUDRVXNDgXeQuna/JfqrqpkuxseS7e2/
-        0tONNRwGXQFXz8b5D5sgQmM=
-X-Google-Smtp-Source: ABdhPJz1w6XNaPtFfWFzMBtK3MAqep3koqt9yCzs6xcZ4oja/eBFaNTuGevI7KU8w/uF3GmX8g5mtw==
-X-Received: by 2002:a17:90a:77c5:: with SMTP id e5mr1800883pjs.189.1617777985391;
-        Tue, 06 Apr 2021 23:46:25 -0700 (PDT)
-Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id t16sm871809pfc.94.2021.04.06.23.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:46:25 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:46:22 -0700
-From:   Pavle Rohalj <pavle.rohalj@gmail.com>
-To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 49/49] staging: sm750fb: Update members of sm750_pnltype
- struct to snake case
-Message-ID: <5d8d02f140f9ed246cd5a660a06a3f15daa48297.1617776878.git.pavle.rohalj@gmail.com>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A884613CE;
+        Wed,  7 Apr 2021 06:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617778008;
+        bh=q2gJoe3SBJsfyBFqWYPAgFT//ZxFTqmbSyDY6Pp5ZwM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SEGkIcZvDWC+/oDAu12M0Drl5gKrwxVAu9G/PAhGvnFLQi/oarOAysLSKhZrZl3bf
+         6sOic2KC16adDRK6lNl/b3IOP/Sq87B4EPukmuSAN8YQAEG+sfoVyKHniVBirnjO3o
+         rwar9VX/Tes3eAduoJ+y8oQyIAhMclDLwQ/PGOebRV7HC2o6UhgRLJMdu9rUcqQxPz
+         1kYcYBp8zcIDk3tEy/sXgQAsVZXC0733BbJJskevb2Cb3hBKRkeiUTsOAhI83uOsZ3
+         WPdIYcXIKN1mQYAJVMrAonDz1lsPjvxfpD7otAEx7kgLSZLduQ30nl5erpvcbYFG7A
+         GBi2Rjuax9E9Q==
+Date:   Wed, 7 Apr 2021 12:16:41 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Cc:     hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, cchen50@lenovo.com,
+        mpearson@lenovo.com
+Subject: Re: [PATCH] bus: mhi: pci_generic: Introduce Foxconn T99W175 support
+Message-ID: <20210407064641.GH8675@work>
+References: <20210407025029.2616-1-jarvis.w.jiang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617776878.git.pavle.rohalj@gmail.com>
+In-Reply-To: <20210407025029.2616-1-jarvis.w.jiang@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpatch.pl checks for the members of
-sm750_pnltype structure, in particular sm750_24TFT, sm750_dualTFT,
-and sm750_doubleTFT.
+On Tue, Apr 06, 2021 at 07:50:29PM -0700, Jarvis Jiang wrote:
+> Add support for T99W175 modems, this modem series is based on SDX55
+> qcom chip. The modem is mainly based on MBIM protocol for both the
+> data and control path.
+> 
 
-Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
----
- drivers/staging/sm750fb/sm750.c    | 6 +++---
- drivers/staging/sm750fb/sm750.h    | 6 +++---
- drivers/staging/sm750fb/sm750_hw.c | 6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
+List the modems whose support is being added.
 
-diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 946143de11fc..c9b17d6ac9fb 100644
---- a/drivers/staging/sm750fb/sm750.c
-+++ b/drivers/staging/sm750fb/sm750.c
-@@ -894,11 +894,11 @@ static void sm750fb_setup(struct sm750_dev *sm750_dev, char *src)
- 		} else if (!strncmp(opt, "nocrt", strlen("nocrt"))) {
- 			sm750_dev->nocrt = 1;
- 		} else if (!strncmp(opt, "36bit", strlen("36bit"))) {
--			sm750_dev->pnltype = sm750_doubleTFT;
-+			sm750_dev->pnltype = sm750_double_tft;
- 		} else if (!strncmp(opt, "18bit", strlen("18bit"))) {
--			sm750_dev->pnltype = sm750_dualTFT;
-+			sm750_dev->pnltype = sm750_dual_tft;
- 		} else if (!strncmp(opt, "24bit", strlen("24bit"))) {
--			sm750_dev->pnltype = sm750_24TFT;
-+			sm750_dev->pnltype = sm750_24_tft;
- 		} else if (!strncmp(opt, "nohwc0", strlen("nohwc0"))) {
- 			g_hwcursor &= ~0x1;
- 		} else if (!strncmp(opt, "nohwc1", strlen("nohwc1"))) {
-diff --git a/drivers/staging/sm750fb/sm750.h b/drivers/staging/sm750fb/sm750.h
-index 06cf136fa28c..ce02671a1419 100644
---- a/drivers/staging/sm750fb/sm750.h
-+++ b/drivers/staging/sm750fb/sm750.h
-@@ -13,9 +13,9 @@
- #endif
- 
- enum sm750_pnltype {
--	sm750_24TFT = 0,	/* 24bit tft */
--	sm750_dualTFT = 2,	/* dual 18 bit tft */
--	sm750_doubleTFT = 1,	/* 36 bit double pixel tft */
-+	sm750_24_tft = 0,	/* 24bit tft */
-+	sm750_dual_tft = 2,	/* dual 18 bit tft */
-+	sm750_double_tft = 1,	/* 36 bit double pixel tft */
- };
- 
- /* vga channel is not concerned  */
-diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
-index b445f075d0a9..ad81fd5c33ad 100644
---- a/drivers/staging/sm750fb/sm750_hw.c
-+++ b/drivers/staging/sm750fb/sm750_hw.c
-@@ -136,12 +136,12 @@ int hw_sm750_inithw(struct sm750_dev *sm750_dev, struct pci_dev *pdev)
- 			~(PANEL_DISPLAY_CTRL_DUAL_DISPLAY |
- 			  PANEL_DISPLAY_CTRL_DOUBLE_PIXEL);
- 		switch (sm750_dev->pnltype) {
--		case sm750_24TFT:
-+		case sm750_24_tft:
- 			break;
--		case sm750_doubleTFT:
-+		case sm750_double_tft:
- 			val |= PANEL_DISPLAY_CTRL_DOUBLE_PIXEL;
- 			break;
--		case sm750_dualTFT:
-+		case sm750_dual_tft:
- 			val |= PANEL_DISPLAY_CTRL_DUAL_DISPLAY;
- 			break;
- 		}
--- 
-2.30.2
+> This patch was tested with Ubuntu 20.04 X86_64 PC as host
+> 
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+> ---
+>  drivers/bus/mhi/pci_generic.c | 58 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+> 
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 5cf44bcfe040..3e396c65a758 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -260,6 +260,52 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+>  	.dma_data_width = 32
+>  };
+>  
+> +static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+> +	MHI_CHANNEL_CONFIG_UL(0, "LOOPBACK", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(1, "LOOPBACK", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(4, "DIAG", 32, 1),
+> +	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+> +	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(14, "QMI", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(15, "QMI", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(16, "QMI1", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(17, "QMI1", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(18, "IP_CTRL", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(19, "IP_CTRL", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(20, "IPCR", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(21, "IPCR", 32, 0),
+> +	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> +	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> +	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+> +	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+> +};
+> +
+> +static struct mhi_event_config mhi_foxconn_sdx55_events[] = {
+> +	MHI_EVENT_CONFIG_CTRL(0, 128),
+> +	MHI_EVENT_CONFIG_DATA(1, 128),
+> +	MHI_EVENT_CONFIG_HW_DATA(2, 1024, 100),
+> +	MHI_EVENT_CONFIG_HW_DATA(3, 1024, 101)
+> +};
+> +
+> +static struct mhi_controller_config modem_foxconn_sdx55_config = {
+> +	.max_channels = 128,
+> +	.timeout_ms = 20000,
+> +	.num_channels = ARRAY_SIZE(mhi_foxconn_sdx55_channels),
+> +	.ch_cfg = mhi_foxconn_sdx55_channels,
+> +	.num_events = ARRAY_SIZE(mhi_foxconn_sdx55_events),
+> +	.event_cfg = mhi_foxconn_sdx55_events,
+> +};
+> +
+> +static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
+> +	.name = "foxconn-sdx55",
+> +	.fw = "qcom/sdx55m/sbl1.mbn",
+> +	.edl = "qcom/sdx55m/edl.mbn",
+> +	.config = &modem_foxconn_sdx55_config,
+> +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> +	.dma_data_width = 32
+> +};
+> +
+>  static const struct pci_device_id mhi_pci_id_table[] = {
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+>  		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+> @@ -269,6 +315,18 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>  		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+>  	{ PCI_DEVICE(0x1eac, 0x1002), /* EM160R-GL (sdx24) */
+>  		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0ab), /* T99W175 (sdx55) */
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b2), /* T99W175 (sdx55) */
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b3), /* T99W175 (sdx55) */
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
 
+Please add a comment about these devices as you did below. Using T99W175 (sdx55)
+for all is not sufficient.
+
+Thanks,
+Mani
+
+> +	/* DW5930e (sdx55), With eSIM, It's also T99W175 */
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b0),
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+>  	{  }
+>  };
+>  MODULE_DEVICE_TABLE(pci, mhi_pci_id_table);
+> -- 
+> 2.25.1
+> 
