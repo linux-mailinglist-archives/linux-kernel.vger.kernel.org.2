@@ -2,87 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8BE3566D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626393566B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245175AbhDGI3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:29:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16810 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349659AbhDGI3q (ORCPT
+        id S1347423AbhDGIXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349484AbhDGIWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:29:46 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FFcvc3HX9z7tQ2;
-        Wed,  7 Apr 2021 16:27:24 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 16:29:28 +0800
-Subject: Re: [PATCH v6 2/5] i2c: core: add api to provide frequency mode
- strings
-To:     Wolfram Sang <wsa@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-i2c@vger.kernel.org>, <Sergey.Semin@baikalelectronics.ru>,
-        <linux-kernel@vger.kernel.org>, <digetx@gmail.com>,
-        <treding@nvidia.com>, <jarkko.nikula@linux.intel.com>,
-        <rmk+kernel@armlinux.org.uk>, <song.bao.hua@hisilicon.com>,
-        <john.garry@huawei.com>, <mika.westerberg@linux.intel.com>,
-        <prime.zeng@huawei.com>, <linuxarm@huawei.com>
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
- <20210406195414.GG3122@kunai>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <0d48f447-d1f2-1c86-27f4-3c8b23dcaf30@hisilicon.com>
-Date:   Wed, 7 Apr 2021 16:29:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 7 Apr 2021 04:22:50 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD49CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 01:22:41 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so890027pjg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 01:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pUnV0shR/oCMYgnmnNQwL7EnhhWY5mZeQ+eZ+38HoRw=;
+        b=xj9WsROqSPdRyQELlvHezyHuV14Rw0a0E3qAWC3T0by7VCbpgwHKcU4s5cFLMoaSsr
+         8llGJbbkjciSiNz8+rMycl+haAG/K+EXU6nFAbkCvT0yURtNrFsqLeI6xx3cH1QZQf9s
+         wBmKKyVFEkS7oIGGm6Mn3gulSafw6Y+DBTPTngtKJRAY1i8nestLAV5gJ8XxxnaLkxGG
+         G1HdclDgFpdcLHT+DU2GjSY9aY6vL7kyB9ugLxinj5jyOIoigAV557QJoMuyR5HcdXFR
+         rEh+MFb65rzHltJEa+WFjOtcRAiTOY/GuGYzAJF3hcalYrNkktEiW4SVVagxpJKEO4mQ
+         Q/kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pUnV0shR/oCMYgnmnNQwL7EnhhWY5mZeQ+eZ+38HoRw=;
+        b=czD1qc4x5VXhyyIUrq+a7LOJYp2aeZSsQ+uNX87kWxAMePlc4we5os7s4p4eqaDiZJ
+         ztFlvw7y+cuTiq0v7wOlOZ7ZbC0G9qFszIWDxXHGMfLCjtf6wv6C91mIm+XBmiaVRHB7
+         JU3m/IPRJqRHURlKQ4NEh5y/w6RAjbkI/+9DNwEELip15XL74jt4CzBPo9piK9nHd2yv
+         qhmhW/RqHU0/BnwKaVqMSfiiVjVHJvJiKX+s14Do3wgQF9K7UItWJbNNavrdmTPg6aJm
+         sYaBVyNZZX+x1PnvCvI34xDs+REI2ktlhgLsjue2KKhszkrhtLwvTsfbZCOOX+ZI7rU+
+         Ycgw==
+X-Gm-Message-State: AOAM532rJhl44n0Cg4zk4SCyYzNKu6VWewvUSijLOR2cBpsWe7Q/euIv
+        +1ztQQnxf+0FbISKkR2kjuGCzq3WSpDGseslg6o6OQ==
+X-Google-Smtp-Source: ABdhPJzEeehdY7b11JhwjjOUEOJPp0tySkkUR0tm+ie/d3TE9/NFTybrU4fI402JUg5bWgt7tDprQPPRonK9506Ty6k=
+X-Received: by 2002:a17:90a:c781:: with SMTP id gn1mr2209831pjb.205.1617783761158;
+ Wed, 07 Apr 2021 01:22:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406195414.GG3122@kunai>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+References: <20210407025029.2616-1-jarvis.w.jiang@gmail.com>
+In-Reply-To: <20210407025029.2616-1-jarvis.w.jiang@gmail.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 7 Apr 2021 10:30:51 +0200
+Message-ID: <CAMZdPi_CZG1e1H+kf7NDRWDxV9hiG-ZCLca7EXgKtsY_NEKatA@mail.gmail.com>
+Subject: Re: [PATCH] bus: mhi: pci_generic: Introduce Foxconn T99W175 support
+To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        cchen50@lenovo.com, mpearson@lenovo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/7 3:54, Wolfram Sang wrote:
-> 
->> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
->> index 10bd0b0..7268180 100644
->> --- a/include/linux/i2c.h
->> +++ b/include/linux/i2c.h
->> @@ -47,6 +47,26 @@ typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
->>  #define I2C_MAX_HIGH_SPEED_MODE_FREQ	3400000
->>  #define I2C_MAX_ULTRA_FAST_MODE_FREQ	5000000
->>  
->> +static inline const char *i2c_freq_mode_string(u32 bus_freq_hz)
->> +{
->> +	switch (bus_freq_hz) {
->> +	case I2C_MAX_STANDARD_MODE_FREQ:
->> +		return "Standard Mode (100 kHz)";
->> +	case I2C_MAX_FAST_MODE_FREQ:
->> +		return "Fast Mode (400 kHz)";
->> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
->> +		return "Fast Mode Plus (1.0 MHz)";
->> +	case I2C_MAX_TURBO_MODE_FREQ:
->> +		return "Turbo Mode (1.4 MHz)";
->> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
->> +		return "High Speed Mode (3.4 MHz)";
->> +	case I2C_MAX_ULTRA_FAST_MODE_FREQ:
->> +		return "Ultra Fast Mode (5.0 MHz)";
->> +	default:
->> +		return "Unknown Mode";
->> +	}
->> +}
-> 
-> Any reason ehy this is an inline function? My gut feeling says it would
-> be better added to the core?
-> 
+Hi Jarvis,
 
-it's not a complicated function so i didn't think it'll make much difference,
-so i just put it in the header along with the coresponding macro definitions.
-do you want me to move it to the core?
+On Wed, 7 Apr 2021 at 04:51, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+>
+> Add support for T99W175 modems, this modem series is based on SDX55
+> qcom chip. The modem is mainly based on MBIM protocol for both the
+> data and control path.
+>
+> This patch was tested with Ubuntu 20.04 X86_64 PC as host
+>
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+> ---
+>  drivers/bus/mhi/pci_generic.c | 58 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+>
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 5cf44bcfe040..3e396c65a758 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -260,6 +260,52 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+>         .dma_data_width = 32
+>  };
+>
+> +static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+> +       MHI_CHANNEL_CONFIG_UL(0, "LOOPBACK", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(1, "LOOPBACK", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(4, "DIAG", 32, 1),
+> +       MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+> +       MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(14, "QMI", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(15, "QMI", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(16, "QMI1", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(17, "QMI1", 32, 0),
 
-Thanks
+Are these QMI channels need to be exposed, vendors usually expose
+either QMI+QMAP or MBIM (for data and control), here you expose
+IP_HW0_MBIM as 'data' channel, so I would expect that MBIM is all you
+need for the 'control' channel.
 
-
+> +       MHI_CHANNEL_CONFIG_UL(18, "IP_CTRL", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(19, "IP_CTRL", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(20, "IPCR", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(21, "IPCR", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+> +       MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+> +};
+> +
+> +static struct mhi_event_config mhi_foxconn_sdx55_events[] = {
+> +       MHI_EVENT_CONFIG_CTRL(0, 128),
+> +       MHI_EVENT_CONFIG_DATA(1, 128),
+> +       MHI_EVENT_CONFIG_HW_DATA(2, 1024, 100),
+> +       MHI_EVENT_CONFIG_HW_DATA(3, 1024, 101)
+> +};
+> +
+> +static struct mhi_controller_config modem_foxconn_sdx55_config = {
+> +       .max_channels = 128,
+> +       .timeout_ms = 20000,
+> +       .num_channels = ARRAY_SIZE(mhi_foxconn_sdx55_channels),
+> +       .ch_cfg = mhi_foxconn_sdx55_channels,
+> +       .num_events = ARRAY_SIZE(mhi_foxconn_sdx55_events),
+> +       .event_cfg = mhi_foxconn_sdx55_events,
+> +};
+> +
+> +static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
+> +       .name = "foxconn-sdx55",
+> +       .fw = "qcom/sdx55m/sbl1.mbn",
+> +       .edl = "qcom/sdx55m/edl.mbn",
+> +       .config = &modem_foxconn_sdx55_config,
+> +       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> +       .dma_data_width = 32
+> +};
+> +
+>  static const struct pci_device_id mhi_pci_id_table[] = {
+>         { PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+>                 .driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+> @@ -269,6 +315,18 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>                 .driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+>         { PCI_DEVICE(0x1eac, 0x1002), /* EM160R-GL (sdx24) */
+>                 .driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0ab), /* T99W175 (sdx55) */
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b2), /* T99W175 (sdx55) */
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b3), /* T99W175 (sdx55) */
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       /* DW5930e (sdx55), With eSIM, It's also T99W175 */
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b0),
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       /* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+>         {  }
+>  };
+>  MODULE_DEVICE_TABLE(pci, mhi_pci_id_table);
+> --
+> 2.25.1
+>
