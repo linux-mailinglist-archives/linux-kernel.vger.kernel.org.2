@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F723560D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D4B3560D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343642AbhDGBcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:32:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15617 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243397AbhDGBcO (ORCPT
+        id S1343602AbhDGBii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232884AbhDGBih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:32:14 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFRdr26qKz18HS3;
-        Wed,  7 Apr 2021 09:29:52 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 09:31:59 +0800
-Subject: Re: [PATCH] KVM: MMU: protect TDP MMU pages only down to required
- level
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210402121704.3424115-1-pbonzini@redhat.com>
- <8d9b028b-1e3a-b4eb-5d44-604ddab6560e@huawei.com>
- <YGzw/77+zCNri22Z@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <ef75a78b-aa3a-e1b9-96b7-37425f3d9165@huawei.com>
-Date:   Wed, 7 Apr 2021 09:31:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 6 Apr 2021 21:38:37 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82ED4C06174A;
+        Tue,  6 Apr 2021 18:38:28 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id p10so3388383pld.0;
+        Tue, 06 Apr 2021 18:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vYV8q9cPR39r8XTv5NGEbYCLUvn316w9E8k7pBADmqg=;
+        b=T3OjG7pfoC/aH0hlb4jmWpTRfPfin47UDirBmbxO+5Rj/5DfxGzphuvBUIzEE/Z+rE
+         GlrzSByibJQ1StDX05ya8MHWMNDVcKilz6j1vloMRX5iR4r3HveyxoOxcVGGkecF89T1
+         mKpDhU1IGTXlw3wx+fL+xa7nw1lFsv12+Zd3vIbn3knfrEKM8WG39mkDFJn3fbYXOfo5
+         6N3HMl2UUdZTiyU723AcJGlsNkmiVtS1kvrqkGJ4kGWcP1DKjGyQfztygaJbpnO3RKSV
+         raCOr+SANoE4nsZm5d23qlT2x8CQK/wc2GBn7EHP6ROfmBQ7kxOdqWwL8L79iN2cN4pU
+         eROQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vYV8q9cPR39r8XTv5NGEbYCLUvn316w9E8k7pBADmqg=;
+        b=D09tMe5krUeP+cru6MY0C5CJ4TR6sSXgQLF/Gx0uZznRlnPEMUw6dACC1/lZirSOSg
+         oqa8tO4Xtwigib4ZPd/axznDJf+jJtWTZ6aQDvy5eefDj3j8BmQS5r+FAlm8wOntT8Ze
+         6T7jyBSNtzn/Xm/FJf8K0SwNXYN0BlKxvm90UeEUAAkn/NPsQIo3raFYNriM9L1WDeEt
+         30CnfMe9qD8ir0CZ8rRV/zBYvgdOVSp0AXXKZcOHgNzKt7SR+9khySRgxh1jfAqjNv5T
+         Mo3MKkCrf7AFshAzEK1bxsGkhPgOqilMjyxJEp2gVweHp+9RMhTeZ8ACtxQ7/iKL6Rg7
+         ZZfw==
+X-Gm-Message-State: AOAM533l3eCXCwUp3y8uz6bXpB6ad3tkvRwL8a765hzg3MrVI+FqP+ac
+        1LEwJ8hTNMXWvL7ZlH7aA1k=
+X-Google-Smtp-Source: ABdhPJymbio9FUUUVE0VvfQ/hhxcFRjaxvMlfG8qdoolaPAemBXI64vcL/KJSEUD4iuv4PUDAMLdqQ==
+X-Received: by 2002:a17:902:d2c7:b029:e6:dd9e:d652 with SMTP id n7-20020a170902d2c7b02900e6dd9ed652mr977807plc.1.1617759507863;
+        Tue, 06 Apr 2021 18:38:27 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:5a8:9f08:98f1:7659])
+        by smtp.gmail.com with ESMTPSA id d19sm3335897pjs.55.2021.04.06.18.38.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 18:38:26 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 6 Apr 2021 18:38:24 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YG0NEIUfJ5lmS4DL@google.com>
+References: <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGtDzH0dEfEngCij@google.com>
+ <20210405190023.GX4332@42.do-not-panic.com>
+ <YGtrzXYDiO3Gf9Aa@google.com>
+ <20210406002909.GY4332@42.do-not-panic.com>
+ <YG0JouWqrJPHbpqz@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YGzw/77+zCNri22Z@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG0JouWqrJPHbpqz@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 06, 2021 at 06:23:46PM -0700, Minchan Kim wrote:
+> On Tue, Apr 06, 2021 at 12:29:09AM +0000, Luis Chamberlain wrote:
+> > On Mon, Apr 05, 2021 at 12:58:05PM -0700, Minchan Kim wrote:
+> > > On Mon, Apr 05, 2021 at 07:00:23PM +0000, Luis Chamberlain wrote:
+> > > > On Mon, Apr 05, 2021 at 10:07:24AM -0700, Minchan Kim wrote:
+> > > > > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> > > > > > And come to think of it the last patch I had sent with a new
+> > > > > > DECLARE_RWSEM(zram_unload) also has this same issue making most
+> > > > > > sysfs attributes rather fragile.
+> > > > > 
+> > > > > Thanks for looking the way. I agree the single zram_index_rwlock is
+> > > > > not the right approach to fix it. However, I still hope we find more
+> > > > > generic solution to fix them at once since I see it's zram instance
+> > > > > racing problem.
+> > > > 
+> > > > They are 3 separate different problems. Related, but different.
+> > > 
+> > > What are 3 different problems? I am asking since I remember only two:
+> > > one for CPU multistate and the other one for sysfs during rmmod.
+> > 
+> > The third one is the race to use sysfs attributes and those routines
+> > then derefernece th egendisk private_data.
+> 
+> First of all, thanks for keeping discussion, Luis.
+> 
+> That was the one I thought race between sysfs and during rmmod.
+> 
+> > 
+> > > > If the idea then is to busy out rmmod if a sysfs attribute is being
+> > > > read, that could then mean rmmod can sometimes never complete. Hogging
+> > > > up / busying out sysfs attributes means the module cannto be removed.
+> > > 
+> > > It's true but is it a big problem? There are many cases that system
+> > > just return error if it's busy and rely on the admin. IMHO, rmmod should
+> > > be part of them.
+> > 
+> > It depends on existing userspace scripts which are used to test and
+> > expectations set. Consider existing tests, you would know better, and
+> > since you are the maintainer you decide.
+> > 
+> > I at least know for many other types of device drivers an rmmod is
+> > a sledge hammer.
+> > 
+> > You decide. I just thought it would be good to highlight the effect now
+> > rather than us considering it later.
+> 
+> To me, the rmmod faillure is not a big problem for zram since it's
+> common cases in the system with -EBUSY(Having said, I agree that's the
+> best if we could avoid the fail-and-retrial. IOW, -EBUSY should be
+> last resort unless we have nicer way.)
+> 
+> > 
+> > > > Which is why the *try_module_get()* I think is much more suitable, as
+> > > > it will always fails if we're already going down.
+> > > 
+> > > How does the try_module_get solved the problem?
+> > 
+> > The try stuff only resolves the deadlock. The bget() / bdput() resolves
+> > the race to access to the gendisk private_data.
+> 
+> That's the one I missed in this discussion. Now I am reading your [2/2]
+> in original patch. I thought it was just zram instance was destroyed
+> by sysfs race problem so you had seen the deadlock. I might miss the
+> point here, too. 
+> 
+> Hmm, we are discussing several problems all at once. I feel it's time
+> to jump v2 with your way in this point. You said three different
+> problems. As I asked, please write it down with more detail with
+> code sequence as we discussed other thread. If you mean a deadlock,
+> please write what specific locks was deadlock with it.
+> It would make discussion much easier. Let's discuss the issue
+> one by one in each thread.
 
+To clarify what I understood form the discussion until now:
 
-On 2021/4/7 7:38, Sean Christopherson wrote:
-> On Tue, Apr 06, 2021, Keqian Zhu wrote:
->> Hi Paolo,
->>
->> I'm just going to fix this issue, and found that you have done this ;-)
-> 
-> Ha, and meanwhile I'm having a serious case of deja vu[1].  It even received a
-> variant of the magic "Queued, thanks"[2].  Doesn't appear in either of the 5.12
-> pull requests though, must have gotten lost along the way.
-Good job. We should pick them up :)
+1. zram shouldn't allow creating more zram instance during
+rmmod(It causes CPU multistate splat)
 
-> 
-> [1] https://lkml.kernel.org/r/20210213005015.1651772-3-seanjc@google.com
-> [2] https://lkml.kernel.org/r/b5ab72f2-970f-64bd-891c-48f1c303548d@redhat.com
-> 
->> Please feel free to add:
->>
->> Reviewed-by: Keqian Zhu <zhukeqian1@huawei.com>
->>
->> Thanks,
->> Keqian
->>
->> On 2021/4/2 20:17, Paolo Bonzini wrote:
->>> When using manual protection of dirty pages, it is not necessary
->>> to protect nested page tables down to the 4K level; instead KVM
->>> can protect only hugepages in order to split them lazily, and
->>> delay write protection at 4K-granularity until KVM_CLEAR_DIRTY_LOG.
->>> This was overlooked in the TDP MMU, so do it there as well.
->>>
->>> Fixes: a6a0b05da9f37 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
->>> Cc: Ben Gardon <bgardon@google.com>
->>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->>> ---
->>>  arch/x86/kvm/mmu/mmu.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->>> index efb41f31e80a..0d92a269c5fa 100644
->>> --- a/arch/x86/kvm/mmu/mmu.c
->>> +++ b/arch/x86/kvm/mmu/mmu.c
->>> @@ -5538,7 +5538,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
->>>  	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
->>>  				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
->>>  	if (is_tdp_mmu_enabled(kvm))
->>> -		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, PG_LEVEL_4K);
->>> +		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, start_level);
->>>  	write_unlock(&kvm->mmu_lock);
->>>  
->>>  	/*
->>>
-> .
-> 
+2. the private data of gendisk shouldn't destroyed while zram
+sysfs knob is working(it makes system goes crash)
+
+Thank you.
