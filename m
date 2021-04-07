@@ -2,297 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4589357430
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3643357433
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhDGSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:25:58 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3866 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231526AbhDGSZy (ORCPT
+        id S1355209AbhDGS0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236413AbhDGSZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:25:54 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137IOV7O025073;
-        Wed, 7 Apr 2021 11:24:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=inlensKERx98K0gesH+MDUmYuRFVYNkqKy7NTlsD0Tg=;
- b=X8bNFU0dOTs+VaD52dqoe2LNycSeBoXYbYi0ax/WaaWX06jnJNIwxSwH59LcA+Xx54F8
- b/K1hHbsH6VahPGmK2JuIOOowi+BkO2+4aZlrxFY9KDUsfjTdFqzM7ZiOrccGBFW4KO9
- sfhDppnPQ9+iG71qtI7t30pQOqkpy9j4kMw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37sfq6165k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 07 Apr 2021 11:24:31 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 7 Apr 2021 11:24:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YDcXTZyl7m5eKne0/909sA1tvuvKhk3rUDONU31r1RPSRLHc5lFXN1UmYcDGJmhPpJ2pE14A5gSlW093wt5o3zv52BUeVvBD5yv0/w4DoZEXtI9wpGgBuTcX+KbjARRtgBS+IbvcLhDKfnb7kdNTUDfvDBDK/8udlzFivHrpfwXlidhqG6XbeVUDw5uahD/9/y47G/6JYv6x6AAbNaSipeY6lpBzzoYwbO8VeLmZxymS9WY7oOoTRgxR9Ek7HVsICUnz3LfSiv5ncSSbfnUjPmswsjXAJ/SEY2yuhHNqmsQ3tNZzvUZs+EMU0JbQuM597JDidASwbmb67rM+nxxDDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=inlensKERx98K0gesH+MDUmYuRFVYNkqKy7NTlsD0Tg=;
- b=BlBNMh2mFs1G8VqIsntMrqbeQQ6uTB+mGsVf41i9lfU7osD065E5Z03uIU0UoKSVQ9mF0Pn6khtqRCbWXIPibKhd0VBjMrmkks5vACxHO4GeIuFLAN5Asw/ZpiJlTauypgjPL2phA/+XFnf7dr4qMejw9+cp6EhxG3Gs/Cdfjapqra39BUpQf7UKiV7OCD35b+tzpcT6rY8lOy1bp//cfpjmZW68DzRRGY9gpjz4YUhkoOQRHpp3PtDZfqktg0LC51URxnsdEaL3HaVjF7Qdoj+WSwjQuyRZQEYCcu5vNXneGm/a182E+pjXyztxv+m6YUldQgJnkof7e0nj2nRFug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2808.namprd15.prod.outlook.com (2603:10b6:a03:153::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Wed, 7 Apr
- 2021 18:24:24 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
- 18:24:24 +0000
-Date:   Wed, 7 Apr 2021 11:24:19 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 1/8] mm/cma: change cma mutex to irq safe spinlock
-Message-ID: <YG34070Ws5EYENXC@carbon.dhcp.thefacebook.com>
-References: <20210405230043.182734-1-mike.kravetz@oracle.com>
- <20210405230043.182734-2-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210405230043.182734-2-mike.kravetz@oracle.com>
-X-Originating-IP: [2620:10d:c090:400::5:ccee]
-X-ClientProxiedBy: MW2PR2101CA0028.namprd21.prod.outlook.com
- (2603:10b6:302:1::41) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Wed, 7 Apr 2021 14:25:58 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD65AC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:25:48 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id i3so19714723oik.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ks/BuC5TosMhli7r6j39VAzsp/D2+jdZn2ef3OjdQXQ=;
+        b=tY8e1/U1/b/NU7I6j1afi4IJD6KDjVUrhWHo0+DxkxrpKCqe7dREkF64Q5qV4UXYZ3
+         7epYN4DQC/5d0XpFcm7o5a9Tt38jRYnQ5XHYAGFEgHRlV2uTlKn3UoE6igs5eNt4OXxO
+         JaEQKwcqMA1/pSl+fl19aj+W8CvaCepz6I3k+OAQiaUbT7DIY3pHJXMNFZ7zhwuVTVD7
+         QQkEOAWjVHVraPT6svOGj7tCd59aZYeUI2Uk68DitzPYwzilXwZkL64tk0Mu57NiSSfN
+         b91RomSqBwKG1xd2h6kjNKZ7s+WK9bugVPKYINTqhPc6U/84o8DGFwLMUJXsRKoCwO4b
+         iSog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ks/BuC5TosMhli7r6j39VAzsp/D2+jdZn2ef3OjdQXQ=;
+        b=ASjsTApnF7oH8CXBK5/n+ZAoiMbx50qErMCangOSD2Ih8xOMpxG8JQH7RsLuuAGrz8
+         NZjc0gEn0r3UI/Ut5UESq7y+efl2cElopAZrIJTR3BQ3N+SitLzjDG0ssUIrlXdzjlP7
+         LifIPfElHwmLY3AzViNzsKFdxb1BGmxcbaPslEH/BxrWFeHr4xxEugtTHF+0H60O48UD
+         xmNoU/vIztCYUBhEbdKcj0TF1syy6LU0dHtA6tGNmbEp+hBO1AIidofz3DgLvjp+lxzm
+         /Mhz2Hh9yziDg8zyVe20QmaRYIwK1V8tO2i0TUvh9TnDydqgfUCmyECxc5lr/JOxup73
+         lx/Q==
+X-Gm-Message-State: AOAM533krZiHqP2lXebryaeB5Zzcf6dOBJ+uR7kgSlRGo9TiO4tHN5LB
+        yQtvyGnMJFi6+xqpZFos4rgaUOchXQNna4vPRuoyjQ==
+X-Google-Smtp-Source: ABdhPJzbzPbo9He78W+DyRDD6BB2Ds3E4DyyFbLx37Qu9bX3NV09sPWVWYKFiaT/YXZhn97+uZnJQvkDVHjQho1ZPWQ=
+X-Received: by 2002:aca:4c0c:: with SMTP id z12mr3193600oia.109.1617819947957;
+ Wed, 07 Apr 2021 11:25:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:ccee) by MW2PR2101CA0028.namprd21.prod.outlook.com (2603:10b6:302:1::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.3 via Frontend Transport; Wed, 7 Apr 2021 18:24:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4f0f042f-fed0-487b-e38b-08d8f9f25e98
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2808:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB28085FB31A750C968CF098D7BE759@BYAPR15MB2808.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ykbFz59LyYR2TwgycUtO9iyWCdU3mhrj2m8h/YilLLW4krxL2jvR1ovJ2xgLjLlhOzChu9TKtPRi8ygNTi9bDLPN/7f3UaX1UZADh0VwQFnuDMTgYfRAOMSME1lKHad+p9d+yxts2vyZRFO4mCjMh+xoDIR48FE+e1QHHRM2zz4W5yljNCgyc8E1OSBOkbRtfHhKPpp8Gh3+SeLxdGoKxD74sv4vCtFB6Z6MgGNPVmXkucoYi6KXLxdUP/kXEIIOnC5XSg/A889NRxo+/l7xuEcIGugLqw5OetRip1QllP3a8aV33kR9B+mDgXmbSfGpJ1B50mVjHhwpaNsVSynGBBwYnOgg0ip7JgDCkYUGi4FIdtL2+ZUB2xIgFRvBlgl0lxyD2666u4FEpgntZLrsXigZ4VtCB0wuFsgNtqNRrkLjPptKW6l4MpJlPA/rBahQAcXSAEthENo8XJkNN4Xgv2EYFL9f9BAc6waPF+yQkpxyF+iNozwJaoTf2f6W6Jni6KTSC6FxjlsoKcd3TdUd6WWlpRbv921O+m7OEEfptn/qK9hxGWnjy07yNXckHfpE4KRXASYxhD2Ph3ErkUkUIgaV2pDBaMNbR4wgnYddu1EKFfQpr7w9QfuyM+i6Q7q0fSNuAvoWHFM7DheSXn4jBw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(376002)(346002)(2906002)(66476007)(55016002)(86362001)(8676002)(16526019)(54906003)(6506007)(478600001)(52116002)(6916009)(4326008)(83380400001)(66556008)(316002)(38100700001)(7416002)(6666004)(66946007)(186003)(7696005)(5660300002)(8936002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?i5YaYZXUS2hQB77fDMlWfvhLhY5v8nbBbFyJkMJtf17aqCuvvg87fPy06czp?=
- =?us-ascii?Q?sFsNzmkfYX93N/tLV8JGLqGc3at7/tZpVxFtjWZJUHdh02IELI0s9hCN/h3E?=
- =?us-ascii?Q?3/9iTykgnAdTZhq0GRD/azSayT9gD3+Be2BdkhwMi8OUizw+vw63XazQz8ii?=
- =?us-ascii?Q?pA+DsyO7COA2m7DMC6otqGT+lu/VP5oLfNgTrt797H93iTiSlw4E991sDU5F?=
- =?us-ascii?Q?Fc+hr2upELVBBJNiLZXDTDfbBL2bPAQs1DT6grvWONvdbEelxCkodW2XdEd1?=
- =?us-ascii?Q?siIm/4+cynAMumhm0SYTum7yvS/2PnCoGFmMYphecVKML3ZZ1s8xQ5IX5/5R?=
- =?us-ascii?Q?4SBXodF7Vb+YPvHUvfD/9EgpuyO/Qlk8XC0vQ3DhRMumukXo3xYDmJ0H/RNI?=
- =?us-ascii?Q?HvvSm0yTp1z/8M8X2Y1K7946+bqLb3WADa1mXd4DUyg4jwAXod3uFEOm5P8r?=
- =?us-ascii?Q?5T0y7I7bPeFEPkQkYGVjIN2TY8X1dwY1kslh//kG6UxZKEU13aPKJGURxW51?=
- =?us-ascii?Q?oe9aocNoc+axj9IVA/WgWxCXSbU2101ig5C9FU8UaiXFg3F+pRzi60MMEHUz?=
- =?us-ascii?Q?JKHJRTDo2qwjQlUP3gZ5LSmVkijg6Vao53bmxOP8VynkaShp9TXvKhKalLAC?=
- =?us-ascii?Q?IBEg34oaGAnpfiKXSmqyskJH8Rk3hCdChhWPwHo1K6pa7wVrjUrcCa/3WO+T?=
- =?us-ascii?Q?n93f32AXQjskUm5F7yqlqEEQBG3i92zTX2/iZICkZmmell4DEO2VlgmNuytI?=
- =?us-ascii?Q?FmQLYA32vpg6EmnwQfPjE4RfHtWSJDszXLuNAWXZhfmELHe+MKxeeh/yhKs7?=
- =?us-ascii?Q?wa5ID6lPT0yHEGLSZiGttigfO3q6SV1s06DgPpt4sFmEmCaeTFd1srguZz8m?=
- =?us-ascii?Q?+aSSoWnoaaunbC1wIXNXdi54xnUMkRldW7L+29GfDrHNeKTF73xjDqd0kKpJ?=
- =?us-ascii?Q?XxXx3xZHbU29kTKNzwrhjqG4aPw0yc++a3dCTYBxPmJ+kKqOodeROg+3C02q?=
- =?us-ascii?Q?owMXK9hotC55XHF134G9V8g4kipzitSuPVfA/vpThqy9c7cgoqmljE5kFT9M?=
- =?us-ascii?Q?HGzqfXMO7OEOG/ZgWt80IAL9Iw8bPyPDIYyZuOE/C++yLLnMeSOrQQFPEaPQ?=
- =?us-ascii?Q?gepO65wTm4RzbD5BfT96SGBJCJbrP5K2GspgUk3CFEtJ4i3wBQahkafcx9rN?=
- =?us-ascii?Q?FOCXnRjyU0JZf9DuT1dTmOevDDqAU3Q87VX36mae33n0gqaJiTdPAsTzNDAt?=
- =?us-ascii?Q?dQrbycjIajwtiUO+Nqz+M754O5MI/qPRJmzT1hKOwAaZGTICLKtpMBdRo6dU?=
- =?us-ascii?Q?kWCnhEPF6k+pNT+zZwKQPkTbyqg0ubIpUVvyGuhFDTg2zg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0f042f-fed0-487b-e38b-08d8f9f25e98
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 18:24:24.0253
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yRrRgM0DBHqPT5erLk5vLCtU5pq0o6EWaM8fPgT/CEsagD3kxQXuxroeWTAzxGEF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2808
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: EU6pf_g83GErIxw3dRGK9PMcO3K12b6c
-X-Proofpoint-GUID: EU6pf_g83GErIxw3dRGK9PMcO3K12b6c
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-07_09:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070127
-X-FB-Internal: deliver
+References: <20210406183112.1150657-1-jiang.wang@bytedance.com> <1D46A084-5B77-4803-8B5F-B2F36541DA10@vmware.com>
+In-Reply-To: <1D46A084-5B77-4803-8B5F-B2F36541DA10@vmware.com>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Wed, 7 Apr 2021 11:25:36 -0700
+Message-ID: <CAP_N_Z-KFUYZc7p1z_-9nb9CvjtyGFkgkX1PEbh-SgKbX_snQw@mail.gmail.com>
+Subject: Re: [External] Re: [RFC] vsock: add multiple transports support for dgram
+To:     Jorgen Hansen <jhansen@vmware.com>
+Cc:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "xieyongji@bytedance.com" <xieyongji@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 04:00:36PM -0700, Mike Kravetz wrote:
-> cma_release is currently a sleepable operatation because the bitmap
-> manipulation is protected by cma->lock mutex. Hugetlb code which relies
-> on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
-> irq safe.
-> 
-> The lock doesn't protect any sleepable operation so it can be changed to
-> a (irq aware) spin lock. The bitmap processing should be quite fast in
-> typical case but if cma sizes grow to TB then we will likely need to
-> replace the lock by a more optimized bitmap implementation.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Wed, Apr 7, 2021 at 2:51 AM Jorgen Hansen <jhansen@vmware.com> wrote:
+>
+>
+> > On 6 Apr 2021, at 20:31, Jiang Wang <jiang.wang@bytedance.com> wrote:
+> >
+> > From: "jiang.wang" <jiang.wang@bytedance.com>
+> >
+> > Currently, only VMCI supports dgram sockets. To supported
+> > nested VM use case, this patch removes transport_dgram and
+> > uses transport_g2h and transport_h2g for dgram too.
+>
+> Could you provide some background for introducing this change - are you
+> looking at introducing datagrams for a different transport? VMCI datagram=
+s
+> already support the nested use case,
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Yes, I am trying to introduce datagram for virtio transport. I wrote a
+spec patch for
+virtio dgram support and also a code patch, but the code patch is still WIP=
+.
+When I wrote this commit message, I was thinking nested VM is the same as
+multiple transport support. But now, I realize they are different.
+Nested VMs may use
+the same virtualization layer(KVM on KVM), or different virtualization laye=
+rs
+(KVM on ESXi). Thanks for letting me know that VMCI already supported neste=
+d
+use cases. I think you mean VMCI on VMCI, right?
 
-> ---
->  mm/cma.c       | 18 +++++++++---------
->  mm/cma.h       |  2 +-
->  mm/cma_debug.c |  8 ++++----
->  3 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index f3bca4178c7f..995e15480937 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -24,7 +24,6 @@
->  #include <linux/memblock.h>
->  #include <linux/err.h>
->  #include <linux/mm.h>
-> -#include <linux/mutex.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
->  #include <linux/log2.h>
-> @@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
->  			     unsigned long count)
->  {
->  	unsigned long bitmap_no, bitmap_count;
-> +	unsigned long flags;
->  
->  	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
->  	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
->  
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irqsave(&cma->lock, flags);
->  	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irqrestore(&cma->lock, flags);
->  }
->  
->  static void __init cma_activate_area(struct cma *cma)
-> @@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
->  	     pfn += pageblock_nr_pages)
->  		init_cma_reserved_pageblock(pfn_to_page(pfn));
->  
-> -	mutex_init(&cma->lock);
-> +	spin_lock_init(&cma->lock);
->  
->  #ifdef CONFIG_CMA_DEBUGFS
->  	INIT_HLIST_HEAD(&cma->mem_head);
-> @@ -392,7 +392,7 @@ static void cma_debug_show_areas(struct cma *cma)
->  	unsigned long nr_part, nr_total = 0;
->  	unsigned long nbits = cma_bitmap_maxno(cma);
->  
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irq(&cma->lock);
->  	pr_info("number of available pages: ");
->  	for (;;) {
->  		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
-> @@ -407,7 +407,7 @@ static void cma_debug_show_areas(struct cma *cma)
->  		start = next_zero_bit + nr_zero;
->  	}
->  	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irq(&cma->lock);
->  }
->  #else
->  static inline void cma_debug_show_areas(struct cma *cma) { }
-> @@ -454,12 +454,12 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
->  		goto out;
->  
->  	for (;;) {
-> -		mutex_lock(&cma->lock);
-> +		spin_lock_irq(&cma->lock);
->  		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
->  				bitmap_maxno, start, bitmap_count, mask,
->  				offset);
->  		if (bitmap_no >= bitmap_maxno) {
-> -			mutex_unlock(&cma->lock);
-> +			spin_unlock_irq(&cma->lock);
->  			break;
->  		}
->  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
-> @@ -468,7 +468,7 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
->  		 * our exclusive use. If the migration fails we will take the
->  		 * lock again and unmark it.
->  		 */
-> -		mutex_unlock(&cma->lock);
-> +		spin_unlock_irq(&cma->lock);
->  
->  		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
->  		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-> diff --git a/mm/cma.h b/mm/cma.h
-> index 68ffad4e430d..2c775877eae2 100644
-> --- a/mm/cma.h
-> +++ b/mm/cma.h
-> @@ -15,7 +15,7 @@ struct cma {
->  	unsigned long   count;
->  	unsigned long   *bitmap;
->  	unsigned int order_per_bit; /* Order of pages represented by one bit */
-> -	struct mutex    lock;
-> +	spinlock_t	lock;
->  #ifdef CONFIG_CMA_DEBUGFS
->  	struct hlist_head mem_head;
->  	spinlock_t mem_head_lock;
-> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
-> index d5bf8aa34fdc..2e7704955f4f 100644
-> --- a/mm/cma_debug.c
-> +++ b/mm/cma_debug.c
-> @@ -36,10 +36,10 @@ static int cma_used_get(void *data, u64 *val)
->  	struct cma *cma = data;
->  	unsigned long used;
->  
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irq(&cma->lock);
->  	/* pages counter is smaller than sizeof(int) */
->  	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irq(&cma->lock);
->  	*val = (u64)used << cma->order_per_bit;
->  
->  	return 0;
-> @@ -53,7 +53,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
->  	unsigned long start, end = 0;
->  	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
->  
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irq(&cma->lock);
->  	for (;;) {
->  		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
->  		if (start >= bitmap_maxno)
-> @@ -61,7 +61,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
->  		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
->  		maxchunk = max(end - start, maxchunk);
->  	}
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irq(&cma->lock);
->  	*val = (u64)maxchunk << cma->order_per_bit;
->  
->  	return 0;
-> -- 
-> 2.30.2
-> 
+> but if we need to support multiple datagram
+> transports we need to rework how we administer port assignment for datagr=
+ams.
+> One specific issue is that the vmci transport won=E2=80=99t receive any d=
+atagrams for a
+> port unless the datagram socket has already been assigned the vmci transp=
+ort
+> and the port bound to the underlying VMCI device (see below for more deta=
+ils).
+>
+I see.
+
+> > The transport is assgined when sending every packet and
+> > receiving every packet on dgram sockets.
+>
+> Is the intent that the same datagram socket can be used for sending packe=
+ts both
+> In the host to guest, and the guest to directions?
+
+Nope. One datagram socket will only send packets to one direction, either t=
+o the
+host or to the guest. My above description is wrong. When sending packets, =
+the
+transport is assigned with the first packet (with auto_bind).
+
+The problem is when receiving packets. The listener can bind to the
+VMADDR_CID_ANY
+address. Then it is unclear which transport we should use. For stream
+sockets, there will be a new socket for each connection, and transport
+can be decided
+at that time. For datagram sockets, I am not sure how to handle that.
+For VMCI, does the same transport can be used for both receiving from
+host and from
+the guest?
+
+For virtio, the h2g and g2h transports are different,, so we have to choose
+one of them. My original thought is to wait until the first packet arrives.
+
+Another idea is that we always bind to host addr and use h2g
+transport because I think that might
+be more common. If a listener wants to recv packets from the host, then it
+should bind to the guest addr instead of CID_ANY.
+Any other suggestions?
+
+> Also, as mentioned above the vSocket datagram needs to be bound to a port=
+ in the
+> VMCI transport before we can receive any datagrams on that port. This mea=
+ns that
+> vmci_transport_recv_dgram_cb won=E2=80=99t be called unless it is already=
+ associated with
+> a socket as the transport, and therefore we can=E2=80=99t delay the trans=
+port assignment to
+> that point.
+
+Got it. Thanks. Please see the above replies.
+
+>
+> > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> > ---
+> > This patch is not tested. I don't have a VMWare testing
+> > environment. Could someone help me to test it?
+> >
+> > include/net/af_vsock.h         |  2 --
+> > net/vmw_vsock/af_vsock.c       | 63 +++++++++++++++++++++--------------=
+-------
+> > net/vmw_vsock/vmci_transport.c | 20 +++++++++-----
+> > 3 files changed, 45 insertions(+), 40 deletions(-)
+> >
+> > diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+> > index b1c717286993..aba241e0d202 100644
+> > --- a/include/net/af_vsock.h
+> > +++ b/include/net/af_vsock.h
+> > @@ -96,8 +96,6 @@ struct vsock_transport_send_notify_data {
+> > #define VSOCK_TRANSPORT_F_H2G         0x00000001
+> > /* Transport provides guest->host communication */
+> > #define VSOCK_TRANSPORT_F_G2H         0x00000002
+> > -/* Transport provides DGRAM communication */
+> > -#define VSOCK_TRANSPORT_F_DGRAM              0x00000004
+> > /* Transport provides local (loopback) communication */
+> > #define VSOCK_TRANSPORT_F_LOCAL               0x00000008
+> >
+> > diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> > index 92a72f0e0d94..7739ab2521a1 100644
+> > --- a/net/vmw_vsock/af_vsock.c
+> > +++ b/net/vmw_vsock/af_vsock.c
+> > @@ -449,8 +449,6 @@ int vsock_assign_transport(struct vsock_sock *vsk, =
+struct vsock_sock *psk)
+> >
+> >       switch (sk->sk_type) {
+> >       case SOCK_DGRAM:
+> > -             new_transport =3D transport_dgram;
+> > -             break;
+> >       case SOCK_STREAM:
+> >               if (vsock_use_local_transport(remote_cid))
+> >                       new_transport =3D transport_local;
+> > @@ -1096,7 +1094,6 @@ static int vsock_dgram_sendmsg(struct socket *soc=
+k, struct msghdr *msg,
+> >       struct sock *sk;
+> >       struct vsock_sock *vsk;
+> >       struct sockaddr_vm *remote_addr;
+> > -     const struct vsock_transport *transport;
+> >
+> >       if (msg->msg_flags & MSG_OOB)
+> >               return -EOPNOTSUPP;
+> > @@ -1108,25 +1105,30 @@ static int vsock_dgram_sendmsg(struct socket *s=
+ock, struct msghdr *msg,
+> >
+> >       lock_sock(sk);
+> >
+> > -     transport =3D vsk->transport;
+> > -
+> >       err =3D vsock_auto_bind(vsk);
+> >       if (err)
+> >               goto out;
+> >
+> > -
+> >       /* If the provided message contains an address, use that.  Otherw=
+ise
+> >        * fall back on the socket's remote handle (if it has been connec=
+ted).
+> >        */
+> >       if (msg->msg_name &&
+> >           vsock_addr_cast(msg->msg_name, msg->msg_namelen,
+> >                           &remote_addr) =3D=3D 0) {
+> > +             vsock_addr_init(&vsk->remote_addr, remote_addr->svm_cid,
+> > +                     remote_addr->svm_port);
+> > +
+> > +             err =3D vsock_assign_transport(vsk, NULL);
+> > +             if (err) {
+> > +                     err =3D -EINVAL;
+> > +                     goto out;
+> > +             }
+> > +
+> >               /* Ensure this address is of the right type and is a vali=
+d
+> >                * destination.
+> >                */
+> > -
+> >               if (remote_addr->svm_cid =3D=3D VMADDR_CID_ANY)
+> > -                     remote_addr->svm_cid =3D transport->get_local_cid=
+();
+> > +                     remote_addr->svm_cid =3D vsk->transport->get_loca=
+l_cid();
+> >
+> >               if (!vsock_addr_bound(remote_addr)) {
+> >                       err =3D -EINVAL;
+> > @@ -1136,7 +1138,7 @@ static int vsock_dgram_sendmsg(struct socket *soc=
+k, struct msghdr *msg,
+> >               remote_addr =3D &vsk->remote_addr;
+> >
+> >               if (remote_addr->svm_cid =3D=3D VMADDR_CID_ANY)
+> > -                     remote_addr->svm_cid =3D transport->get_local_cid=
+();
+> > +                     remote_addr->svm_cid =3D vsk->transport->get_loca=
+l_cid();
+> >
+> >               /* XXX Should connect() or this function ensure remote_ad=
+dr is
+> >                * bound?
+> > @@ -1150,13 +1152,13 @@ static int vsock_dgram_sendmsg(struct socket *s=
+ock, struct msghdr *msg,
+> >               goto out;
+> >       }
+> >
+> > -     if (!transport->dgram_allow(remote_addr->svm_cid,
+> > +     if (!vsk->transport->dgram_allow(remote_addr->svm_cid,
+> >                                   remote_addr->svm_port)) {
+> >               err =3D -EINVAL;
+> >               goto out;
+> >       }
+> >
+> > -     err =3D transport->dgram_enqueue(vsk, remote_addr, msg, len);
+> > +     err =3D vsk->transport->dgram_enqueue(vsk, remote_addr, msg, len)=
+;
+> >
+> > out:
+> >       release_sock(sk);
+> > @@ -1191,13 +1193,20 @@ static int vsock_dgram_connect(struct socket *s=
+ock,
+> >       if (err)
+> >               goto out;
+> >
+> > +     memcpy(&vsk->remote_addr, remote_addr, sizeof(vsk->remote_addr));
+> > +
+> > +     err =3D vsock_assign_transport(vsk, NULL);
+> > +     if (err) {
+> > +             err =3D -EINVAL;
+> > +             goto out;
+> > +     }
+> > +
+> >       if (!vsk->transport->dgram_allow(remote_addr->svm_cid,
+> >                                        remote_addr->svm_port)) {
+> >               err =3D -EINVAL;
+> >               goto out;
+> >       }
+> >
+> > -     memcpy(&vsk->remote_addr, remote_addr, sizeof(vsk->remote_addr));
+> >       sock->state =3D SS_CONNECTED;
+> >
+> > out:
+> > @@ -1209,6 +1218,16 @@ static int vsock_dgram_recvmsg(struct socket *so=
+ck, struct msghdr *msg,
+> >                              size_t len, int flags)
+> > {
+> >       struct vsock_sock *vsk =3D vsock_sk(sock->sk);
+> > +     long timeo;
+> > +
+> > +     timeo =3D sock_rcvtimeo(sock->sk, flags & MSG_DONTWAIT);
+> > +     do {
+> > +             if (vsk->transport)
+> > +                     break;
+> > +     } while (timeo && !vsk->transport);
+> > +
+> > +     if (!vsk->transport)
+> > +             return -EAGAIN;
+> >
+> >       return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+> > }
+> > @@ -2055,14 +2074,6 @@ static int vsock_create(struct net *net, struct =
+socket *sock,
+> >
+> >       vsk =3D vsock_sk(sk);
+> >
+> > -     if (sock->type =3D=3D SOCK_DGRAM) {
+> > -             ret =3D vsock_assign_transport(vsk, NULL);
+> > -             if (ret < 0) {
+> > -                     sock_put(sk);
+> > -                     return ret;
+> > -             }
+> > -     }
+> > -
+> >       vsock_insert_unbound(vsk);
+> >
+> >       return 0;
+> > @@ -2182,7 +2193,7 @@ EXPORT_SYMBOL_GPL(vsock_core_get_transport);
+> >
+> > int vsock_core_register(const struct vsock_transport *t, int features)
+> > {
+> > -     const struct vsock_transport *t_h2g, *t_g2h, *t_dgram, *t_local;
+> > +     const struct vsock_transport *t_h2g, *t_g2h, *t_local;
+> >       int err =3D mutex_lock_interruptible(&vsock_register_mutex);
+> >
+> >       if (err)
+> > @@ -2190,7 +2201,6 @@ int vsock_core_register(const struct vsock_transp=
+ort *t, int features)
+> >
+> >       t_h2g =3D transport_h2g;
+> >       t_g2h =3D transport_g2h;
+> > -     t_dgram =3D transport_dgram;
+> >       t_local =3D transport_local;
+> >
+> >       if (features & VSOCK_TRANSPORT_F_H2G) {
+> > @@ -2209,14 +2219,6 @@ int vsock_core_register(const struct vsock_trans=
+port *t, int features)
+> >               t_g2h =3D t;
+> >       }
+> >
+> > -     if (features & VSOCK_TRANSPORT_F_DGRAM) {
+> > -             if (t_dgram) {
+> > -                     err =3D -EBUSY;
+> > -                     goto err_busy;
+> > -             }
+> > -             t_dgram =3D t;
+> > -     }
+> > -
+> >       if (features & VSOCK_TRANSPORT_F_LOCAL) {
+> >               if (t_local) {
+> >                       err =3D -EBUSY;
+> > @@ -2227,7 +2229,6 @@ int vsock_core_register(const struct vsock_transp=
+ort *t, int features)
+> >
+> >       transport_h2g =3D t_h2g;
+> >       transport_g2h =3D t_g2h;
+> > -     transport_dgram =3D t_dgram;
+> >       transport_local =3D t_local;
+> >
+> > err_busy:
+> > diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transp=
+ort.c
+> > index 8b65323207db..42ea2a1c92ce 100644
+> > --- a/net/vmw_vsock/vmci_transport.c
+> > +++ b/net/vmw_vsock/vmci_transport.c
+> > @@ -613,6 +613,7 @@ static int vmci_transport_recv_dgram_cb(void *data,=
+ struct vmci_datagram *dg)
+> >       size_t size;
+> >       struct sk_buff *skb;
+> >       struct vsock_sock *vsk;
+> > +     int err;
+> >
+> >       sk =3D (struct sock *)data;
+> >
+> > @@ -629,6 +630,17 @@ static int vmci_transport_recv_dgram_cb(void *data=
+, struct vmci_datagram *dg)
+> >       if (!vmci_transport_allow_dgram(vsk, dg->src.context))
+> >               return VMCI_ERROR_NO_ACCESS;
+> >
+> > +     vsock_addr_init(&vsk->remote_addr, dg->src.context,
+> > +                             dg->src.resource);
+> > +
+> > +     bh_lock_sock(sk);
+> > +     if (!sock_owned_by_user(sk)) {
+> > +             err =3D vsock_assign_transport(vsk, NULL);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +     bh_unlock_sock(sk);
+> > +
+> >       size =3D VMCI_DG_SIZE(dg);
+> >
+> >       /* Attach the packet to the socket's receive queue as an sk_buff.=
+ */
+> > @@ -2093,13 +2105,7 @@ static int __init vmci_transport_init(void)
+> >               goto err_destroy_stream_handle;
+> >       }
+> >
+> > -     /* Register only with dgram feature, other features (H2G, G2H) wi=
+ll be
+> > -      * registered when the first host or guest becomes active.
+> > -      */
+> > -     err =3D vsock_core_register(&vmci_transport, VSOCK_TRANSPORT_F_DG=
+RAM);
+> > -     if (err < 0)
+> > -             goto err_unsubscribe;
+> > -
+> > +     /* H2G, G2H will be registered when the first host or guest becom=
+es active. */
+> >       err =3D vmci_register_vsock_callback(vmci_vsock_transport_cb);
+> >       if (err < 0)
+> >               goto err_unregister;
+> > --
+> > 2.11.0
+> >
+>
