@@ -2,296 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8D83563C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD173563C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345453AbhDGGLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S1345188AbhDGGMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhDGGLK (ORCPT
+        with ESMTP id S244644AbhDGGMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:11:10 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79170C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:11:01 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a12so12142153pfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 23:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qN2XxlGY2OIXErKZ6g1JabWGOxHjV2Xn6BdTpqiouq0=;
-        b=G2GpSwgGO0eLsKs0J8GJlvP7VcKTBZSKUpFvXd8GUazuGyTV4n+urYTL3bZ7Cijpqz
-         jQ4dvtIbrp0bqvgmlR+QHZ+9CgYwSXQkY6/DxR2NNw2gqz/KtISUvgvdmM8mMv+GhQK6
-         36iDiXNBtv/6UKkzRWqVBh08uTXZmoPDa1tH5Y87jmzISCKXu9tz4HkESOAjD9pp3vpK
-         xGOrLTz02Kkfl6eyEPcWABQLqwr54yOn0CrjiKkRBqMj9a+4Z4aPLTxlD3uoAQm9G7Fa
-         9OwQts5drrKREYrViwHLMEFP4/Z26mwPew4SkZSXm2YLW2L9UDccVpA6XKQpQ61vUibO
-         LYXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qN2XxlGY2OIXErKZ6g1JabWGOxHjV2Xn6BdTpqiouq0=;
-        b=sQ4wglp4Ru/8IZJBkMkuviq10QjSEyO+XmncogMJsm+cFuhrQB8xOpLuZ16pcnN2Ny
-         vrQsd/6HbbuMAiwRZNZ9+62y7gblYKLbwefLHUMiQ0isShfhrdB7xggd19WC62GVZL9c
-         Ci1JAbx/b+rOt2FlRyIjCTkXrXUyRoqUIQVWDAl4nIhSxauop2XP5qj7jn0S1p7qL1Xd
-         20z2GYQrF/rfDaOZ20B4DdswxnvSErCBlB+9MVcmr6l6UO8/sjWvg/LBGtpzaqmRaeDE
-         eTUquNxoX+RXmcpbj38/bbw6tS9FpxZLo4uSiQ0RY7/wddY//Lsj3AC4KvCAawRyr6g6
-         vmUg==
-X-Gm-Message-State: AOAM532UYuP60o90KAO79+J7RD71TxANbLJFjnlUyVUy0nSkMlDwkWfC
-        MAiFYL/JyUwDTZgPVztsYs+k
-X-Google-Smtp-Source: ABdhPJxby9uKxxSgM9DQBkqitzAxtSbeTb+1IHwCItJj3cxPfhl6hy6fUqj3VxBF4RBmsGDQtYY/Qg==
-X-Received: by 2002:a05:6a00:24c2:b029:23d:9cba:5491 with SMTP id d2-20020a056a0024c2b029023d9cba5491mr1665681pfv.54.1617775860839;
-        Tue, 06 Apr 2021 23:11:00 -0700 (PDT)
-Received: from localhost.localdomain ([103.77.37.180])
-        by smtp.gmail.com with ESMTPSA id q13sm3648700pfc.86.2021.04.06.23.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:11:00 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     corbet@lwn.net
-Cc:     gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2] docs: driver-model: Update the documentation for device class
-Date:   Wed,  7 Apr 2021 11:40:53 +0530
-Message-Id: <20210407061053.81940-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Apr 2021 02:12:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDEAC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:12:34 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU1QU-00053N-3v; Wed, 07 Apr 2021 08:12:30 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lU1QT-0004F8-QF; Wed, 07 Apr 2021 08:12:29 +0200
+Date:   Wed, 7 Apr 2021 08:12:29 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 7/8] pwm: pca9685: Restrict period change for enabled
+ PWMs
+Message-ID: <20210407061229.lsyg7blh3ebxtvx6@pengutronix.de>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-7-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tn42657ndmzwffdw"
+Content-Disposition: inline
+In-Reply-To: <20210406164140.81423-7-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current documentation about the device class is out of date such
-that it refers to non-existent APIs and structures. This commit updates
-them to the current device class APIs and structures, removes wordings
-that no longer valid while trying to keep the original content intact.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+--tn42657ndmzwffdw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes in v2:
+On Tue, Apr 06, 2021 at 06:41:39PM +0200, Clemens Gruber wrote:
+> Previously, the last used PWM channel could change the global prescale
+> setting, even if other channels are already in use.
+>=20
+> Fix it by only allowing the first enabled PWM to change the global
+> chip-wide prescale setting. If there is more than one channel in use,
+> the prescale settings resulting from the chosen periods must match.
+>=20
+> GPIOs do not count as enabled PWMs as they are not using the prescaler
+> and can't change it.
+>=20
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+> Changes since v6:
+> - Only allow the first PWM that is enabled to change the prescaler, not
+>   the first one that uses the prescaler
+>=20
+>  drivers/pwm/pwm-pca9685.c | 66 +++++++++++++++++++++++++++++++++------
+>  1 file changed, 56 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> index 24221ee7a77a..cf0c98e4ef44 100644
+> --- a/drivers/pwm/pwm-pca9685.c
+> +++ b/drivers/pwm/pwm-pca9685.c
+> @@ -23,11 +23,11 @@
+>  #include <linux/bitmap.h>
+> =20
+>  /*
+> - * Because the PCA9685 has only one prescaler per chip, changing the per=
+iod of
+> - * one channel affects the period of all 16 PWM outputs!
+> - * However, the ratio between each configured duty cycle and the chip-wi=
+de
+> - * period remains constant, because the OFF time is set in proportion to=
+ the
+> - * counter range.
+> + * Because the PCA9685 has only one prescaler per chip, only the first c=
+hannel
+> + * that is enabled is allowed to change the prescale register.
+> + * PWM channels requested afterwards must use a period that results in t=
+he same
+> + * prescale setting as the one set by the first requested channel.
+> + * GPIOs do not count as enabled PWMs as they are not using the prescale=
+r.
+>   */
+> =20
+>  #define PCA9685_MODE1		0x00
+> @@ -78,8 +78,9 @@
+>  struct pca9685 {
+>  	struct pwm_chip chip;
+>  	struct regmap *regmap;
+> -#if IS_ENABLED(CONFIG_GPIOLIB)
+>  	struct mutex lock;
+> +	DECLARE_BITMAP(pwms_enabled, PCA9685_MAXCHAN + 1);
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+>  	struct gpio_chip gpio;
+>  	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
+>  #endif
+> @@ -90,6 +91,22 @@ static inline struct pca9685 *to_pca(struct pwm_chip *=
+chip)
+>  	return container_of(chip, struct pca9685, chip);
+>  }
+> =20
+> +/* This function is supposed to be called with the lock mutex held */
+> +static bool pca9685_prescaler_can_change(struct pca9685 *pca, int channe=
+l)
+> +{
+> +	/* No PWM enabled: Change allowed */
+> +	if (bitmap_empty(pca->pwms_enabled, PCA9685_MAXCHAN + 1))
+> +		return true;
+> +	/* More than one PWM enabled: Change not allowed */
+> +	if (bitmap_weight(pca->pwms_enabled, PCA9685_MAXCHAN + 1) > 1)
+> +		return false;
+> +	/*
+> +	 * Only one PWM enabled: Change allowed if the PWM about to
+> +	 * be changed is the one that is already enabled
+> +	 */
+> +	return test_bit(channel, pca->pwms_enabled);
 
-* Fixed CLASS_ATTR_RW as spotted by Greg
+Maybe this is a bit more effective?:
 
- .../driver-api/driver-model/class.rst         | 144 ++++++++----------
- 1 file changed, 66 insertions(+), 78 deletions(-)
+	DECLARE_BITMAP(blablub, PCA9685_MAXCHAN + 1);=09
+	bitmap_zero(blablub, PCA9685_MAXCHAN + 1);
+	bitmap_set(blablub, channel);
+	return bitmap_subset(pca->pwms_enabled, blablub);
 
-diff --git a/Documentation/driver-api/driver-model/class.rst b/Documentation/driver-api/driver-model/class.rst
-index fff55b80e86a..87441f4ac4ac 100644
---- a/Documentation/driver-api/driver-model/class.rst
-+++ b/Documentation/driver-api/driver-model/class.rst
-@@ -5,12 +5,7 @@ Device Classes
- Introduction
- ~~~~~~~~~~~~
- A device class describes a type of device, like an audio or network
--device. The following device classes have been identified:
--
--<Insert List of Device Classes Here>
--
--
--Each device class defines a set of semantics and a programming interface
-+device. It defines a set of semantics and a programming interface
- that devices of that class adhere to. Device drivers are the
- implementation of that programming interface for a particular device on
- a particular bus.
-@@ -18,23 +13,27 @@ a particular bus.
- Device classes are agnostic with respect to what bus a device resides
- on.
- 
--
- Programming Interface
- ~~~~~~~~~~~~~~~~~~~~~
- The device class structure looks like::
- 
-+  struct class {
-+        const char              *name;
-+        struct module           *owner;
- 
--  typedef int (*devclass_add)(struct device *);
--  typedef void (*devclass_remove)(struct device *);
-+        const struct attribute_group    **class_groups;
-+        const struct attribute_group    **dev_groups;
-+        struct kobject                  *dev_kobj;
-+        ...
-+  };
- 
- See the kerneldoc for the struct class.
- 
- A typical device class definition would look like::
- 
--  struct device_class input_devclass = {
--        .name		= "input",
--        .add_device	= input_add_device,
--	.remove_device	= input_remove_device,
-+  struct class input_class = {
-+        .name           = "input",
-+        .dev_release    = input_dev_release,
-   };
- 
- Each device class structure should be exported in a header file so it
-@@ -42,101 +41,84 @@ can be used by drivers, extensions and interfaces.
- 
- Device classes are registered and unregistered with the core using::
- 
--  int devclass_register(struct device_class * cls);
--  void devclass_unregister(struct device_class * cls);
--
-+  int class_register(struct class *class);
-+  void class_unregister(struct class *class);
- 
- Devices
- ~~~~~~~
--As devices are bound to drivers, they are added to the device class
--that the driver belongs to. Before the driver model core, this would
--typically happen during the driver's probe() callback, once the device
--has been initialized. It now happens after the probe() callback
--finishes from the core.
--
--The device is enumerated in the class. Each time a device is added to
--the class, the class's devnum field is incremented and assigned to the
--device. The field is never decremented, so if the device is removed
--from the class and re-added, it will receive a different enumerated
--value.
--
--The class is allowed to create a class-specific structure for the
--device and store it in the device's class_data pointer.
--
--There is no list of devices in the device class. Each driver has a
--list of devices that it supports. The device class has a list of
--drivers of that particular class. To access all of the devices in the
--class, iterate over the device lists of each driver in the class.
-+When a device is added, it is also added to the 'klist_devices' inside
-+the 'subsys_private' struct of the class. Later, the devices belonging
-+to the class are accessed using::
- 
-+  class_dev_iter_next()
-+  class_find_device()
-+  class_find_device_by_name()
- 
--Device Drivers
--~~~~~~~~~~~~~~
--Device drivers are added to device classes when they are registered
--with the core. A driver specifies the class it belongs to by setting
--the struct device_driver::devclass field.
-+It is also possible to access the devices of a class in a platform
-+dependent way using::
- 
-+  class_find_device_by_of_node()
-+  class_find_device_by_acpi_dev()
- 
- sysfs directory structure
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- There is a top-level sysfs directory named 'class'.
- 
--Each class gets a directory in the class directory, along with two
--default subdirectories::
-+Each class gets a directory in the top-level class directory::
- 
--        class/
--        `-- input
--            |-- devices
--            `-- drivers
-+  class/
-+      |-- input
-+      |-- block
-+      |-- drm
-+      |-- nvme
- 
--
--Drivers registered with the class get a symlink in the drivers/ directory
--that points to the driver's directory (under its bus directory)::
--
--   class/
--   `-- input
--       |-- devices
--       `-- drivers
--           `-- usb:usb_mouse -> ../../../bus/drivers/usb_mouse/
--
--
--Each device gets a symlink in the devices/ directory that points to the
-+Each device gets a symlink in the class directory that points to the
- device's directory in the physical hierarchy::
- 
--   class/
--   `-- input
--       |-- devices
--       |   `-- 1 -> ../../../root/pci0/00:1f.0/usb_bus/00:1f.2-1:0/
--       `-- drivers
--
-+  class/
-+  |-- input
-+           |-- input0 -> ../../devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0E:00/input/input0
-+           |-- input1 -> ../../devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0D:00/input/input1
-+           |-- event0 -> ../../devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0E:00/input/input0/event0
-+           `-- event1 -> ../../devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0D:00/input/input1/event1
- 
- Exporting Attributes
- ~~~~~~~~~~~~~~~~~~~~
- 
- ::
- 
--  struct devclass_attribute {
--        struct attribute        attr;
--        ssize_t (*show)(struct device_class *, char * buf, size_t count, loff_t off);
--        ssize_t (*store)(struct device_class *, const char * buf, size_t count, loff_t off);
-+  struct class_attribute {
-+        struct attribute attr;
-+        ssize_t (*show)(struct class *class, struct class_attribute *attr,
-+                        char *buf);
-+        ssize_t (*store)(struct class *class, struct class_attribute *attr,
-+                        const char *buf, size_t count);
-   };
- 
--Class drivers can export attributes using the DEVCLASS_ATTR macro that works
--similarly to the DEVICE_ATTR macro for devices. For example, a definition
-+Class drivers can export attributes using the CLASS_ATTR_* macros that works
-+similarly to the DEVICE_ATTR_* macros for devices. For example, a definition
- like this::
- 
--  static DEVCLASS_ATTR(debug,0644,show_debug,store_debug);
-+  static CLASS_ATTR_RW(debug);
- 
- is equivalent to declaring::
- 
--  static devclass_attribute devclass_attr_debug;
-+  static struct class_attribute class_attr_debug = {
-+        .attr = {
-+              .name = debug,
-+              .mode = 0644,
-+        },
-+        .show = show_debug,
-+        .store = store_debug,
-+  };
- 
--The bus driver can add and remove the attribute from the class's
--sysfs directory using::
-+The drivers can add and remove the attribute from the class's sysfs
-+directory using::
- 
--  int devclass_create_file(struct device_class *, struct devclass_attribute *);
--  void devclass_remove_file(struct device_class *, struct devclass_attribute *);
-+  int class_create_file(struct class *, struct class_attribute *);
-+  void class_remove_file(struct class *, struct class_attribute *);
- 
--In the example above, the file will be named 'debug' in placed in the
-+In the example above, a file named 'debug' will be placed in the
- class's directory in sysfs.
- 
- 
-@@ -146,4 +128,10 @@ There may exist multiple mechanisms for accessing the same device of a
- particular class type. Device interfaces describe these mechanisms.
- 
- When a device is added to a device class, the core attempts to add it
--to every interface that is registered with the device class.
-+to every interface that is registered with the device class. The
-+interfaces can be added and removed from the class using::
-+
-+  int class_interface_register(struct class_interface *);
-+  void class_interface_unregister(struct class_interface *);
-+
-+For further information, see <linux/device/class.h>.
--- 
-2.25.1
+(but that's a minor issue, the suggested algorithm is correct.)
 
+So:
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+(side-note: I wonder if the handling of the set-all channel is correct
+here. But given that it is messy anyhow, (e.g. because setting some
+state to this set-all channel doesn't influence pwm_get_state for the
+individual channels) I don't object if there is another problem in this
+corner case. IMHO just dropping this virtual channel would be nice.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--tn42657ndmzwffdw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBtTUoACgkQwfwUeK3K
+7AkvNAf/UX3hYfAGdc4ZSGn8iEUYrkPpj8inn5BAMcrpoJ6rW/6mR1kS1L+YqVxI
++hDPOX8DZiotLKIQEBh+zKvYkyvohTKQ2vcn40qRUDfBikSYuoeP6NMfvmFXkI6F
+hsSknJ5ojwHw9WX/tNVm3aCM6Th1fz0iVr7z1v+91DNHlm9UmOTM4eDYoQvchGPd
+dcMJEeT5lkBLZ9OPmrVh9BKbZQLepNyZJHSRjNZucoubvzT7TgNZwyyZ/45VGfJt
+hP6LpuontscPWq906LOKaKJJUHsqj0Y5CHAtD0aAMiV/Zj8QfHBd80eAnLSIQwla
++zqivQWfITI9x/lgnl3CFXpy/6K96Q==
+=rzIS
+-----END PGP SIGNATURE-----
+
+--tn42657ndmzwffdw--
