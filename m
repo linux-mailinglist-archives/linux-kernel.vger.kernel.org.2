@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DF23567D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527AB3567CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350031AbhDGJTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbhDGJTA (ORCPT
+        id S1350009AbhDGJPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:15:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16812 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234354AbhDGJPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:19:00 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46099C061756;
-        Wed,  7 Apr 2021 02:18:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFf2q0vrJz9sCD;
-        Wed,  7 Apr 2021 19:18:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617787126;
-        bh=EDnaGP3ss/eA+SXrY38KkDa0TpIq0mgpfpWkqaDj5mM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=p0YwolNiNG4aSINXKbb7I7oKl9X4yjDz6R0mIDjYkC+EJ/c9bR0YubR8yE4fEqMdi
-         wJ9ga8LEVquD4mDBGxRG/kg1Eb+tMbShoL9zrYiskr9damQAenFu3IK+PKStZ+Hjsd
-         S8eZUV5nSG4CwQtXEUMREiL+6liPq/TVuU5E64t8hUAB+uUubRiPka+/pqzfIHgMN7
-         99J4xJwR41IK6Sdeu2A4k1fv2/2gbo0ZS9nmmnUakvfpDJLH5biSwEkM/ncnKWV1Z2
-         KNBEizpH3XUwXqVQw7jt4wWwzl/MLHYG59fG9xK+xNFTTJpSyaMHegCYmbjDjIlkPM
-         3ku2VxHKupi8Q==
-Date:   Wed, 7 Apr 2021 19:18:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: linux-next: manual merge of the akpm-current tree with the block
- tree
-Message-ID: <20210407191841.0919b2bd@canb.auug.org.au>
+        Wed, 7 Apr 2021 05:15:35 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FFdwT5cVdz9wdf;
+        Wed,  7 Apr 2021 17:13:13 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
+ 17:15:22 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>
+CC:     <sre@kernel.org>, <krzk@kernel.org>
+Subject: [PATCH -next] power: supply: s3c_adc_battery: fix possible use-after-free in s3c_adc_bat_remove()
+Date:   Wed, 7 Apr 2021 17:19:03 +0800
+Message-ID: <20210407091903.3268399-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/859ki+tP=dhmUFljfRp1.r2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/859ki+tP=dhmUFljfRp1.r2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-Hi all,
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/power/supply/s3c_adc_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  block/blk-settings.c
+diff --git a/drivers/power/supply/s3c_adc_battery.c b/drivers/power/supply/s3c_adc_battery.c
+index dc700066d7bc..68d31a3bee48 100644
+--- a/drivers/power/supply/s3c_adc_battery.c
++++ b/drivers/power/supply/s3c_adc_battery.c
+@@ -390,7 +390,7 @@ static int s3c_adc_bat_remove(struct platform_device *pdev)
+ 	if (main_bat.charge_finished)
+ 		free_irq(gpiod_to_irq(main_bat.charge_finished), NULL);
+ 
+-	cancel_delayed_work(&bat_work);
++	cancel_delayed_work_sync(&bat_work);
+ 
+ 	if (pdata->exit)
+ 		pdata->exit();
+-- 
+2.25.1
 
-between commit:
-
-  9bb33f24abbd ("block: refactor the bounce buffering code")
-
-from the block tree and commit:
-
-  1d4982a2dc66 ("include: remove pagemap.h from blkdev.h")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc block/blk-settings.c
-index 9c009090c4b5,976085a44fb8..000000000000
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@@ -7,6 -7,8 +7,7 @@@
-  #include <linux/init.h>
-  #include <linux/bio.h>
-  #include <linux/blkdev.h>
-+ #include <linux/pagemap.h>
- -#include <linux/memblock.h>	/* for max_pfn/max_low_pfn */
-  #include <linux/gcd.h>
-  #include <linux/lcm.h>
-  #include <linux/jiffies.h>
-
---Sig_/859ki+tP=dhmUFljfRp1.r2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBtePIACgkQAVBC80lX
-0GwnHAgAnP++9m1JJrqRmdQqbfUh5lrlYUTWaBwdzyw2rwx0OzwvwijuzAtodH2j
-TzHe4cV0iuwU06tdlMiZYxN1p8kPistfWcMzrJhSlwv9+Sj9x9csGZpqEHP5x3Zn
-VyQ/DmrMSmLxlfPvn/3y/ZH0FeiH3LNgMpqAFAvQtSjuXWebMNAKA1EWX7GaWxoS
-8sRFPXih2ECuto6qoPpI2HybtEvzs92NMhdUfgfzcPgNJGbfAKcTvGIIgCSEpPpp
-QcKTNqI1Vo0n+yxgk+8IVLCqq6avmPGGDgMXp5Q3n/h9M5IPdutot7ePnlGE59Ss
-4Cvd7+3P85GTZj+1crU2Sl104Fd3AA==
-=x8MI
------END PGP SIGNATURE-----
-
---Sig_/859ki+tP=dhmUFljfRp1.r2--
