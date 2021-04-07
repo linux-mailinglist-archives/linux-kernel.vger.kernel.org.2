@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4757C35693D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D9235693F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350836AbhDGKQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:16:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40518 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233746AbhDGKQu (ORCPT
+        id S1350843AbhDGKRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:17:00 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15625 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350821AbhDGKQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:16:50 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137A3brU054162;
-        Wed, 7 Apr 2021 06:16:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=87UggfMIVp6Gf5olhVLLk5wrxUtCzE80ID2noSbNS88=;
- b=qnqe79bEE8iFwkDuBxrkdDFseFdbC8E8iP3UCgtHfBcmxxLm0xeTRfOb1E4G94GrnEo1
- YQsr+4p1EiTA5sKUoaHUXDFyrB/PbG51BiMUv7g7/EJfb+gn2ZkxSfKddRGuCzpd89Bx
- ur2zJQJue6HSmauH6d9XmlOQZgwWRUCDiDxpdA4fwa4lVetWtnAE4T54nQqnXp6NRB8q
- hWyVwG9AXhxbAkFFQzj5fYkd636DvuqhA8oPGaEwgm5qydCGTDSlm+NscJliiMhaF93B
- tsSYHWNbZvoNmBYEjJ+iSCnTk8kyG811bZ+gtxV1UPDhOxXNlHOPIBaYN3vIb4LUo8q8 cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpg4ytg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 06:16:31 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137A4Z6K059582;
-        Wed, 7 Apr 2021 06:16:30 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpg4ysw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 06:16:30 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137A3FpP010982;
-        Wed, 7 Apr 2021 10:16:29 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 37rvbw8kqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 10:16:28 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137AGQtf37290340
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 10:16:26 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3ADD52054;
-        Wed,  7 Apr 2021 10:16:26 +0000 (GMT)
-Received: from localhost (unknown [9.85.69.78])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5D8855204E;
-        Wed,  7 Apr 2021 10:16:26 +0000 (GMT)
-Date:   Wed, 7 Apr 2021 15:46:25 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, willy@infradead.org, jack@suse.cz,
-        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Ritesh Harjani <riteshh@gmail.com>
-Subject: Re: [PATCH 3/3] fsdax: Output address in dax_iomap_pfn() and rename
- it
-Message-ID: <20210407101625.mmz4dg7bf342mvfp@riteshh-domain>
-References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
- <20210407063207.676753-4-ruansy.fnst@fujitsu.com>
+        Wed, 7 Apr 2021 06:16:54 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FFgHF1d6lz19L6J;
+        Wed,  7 Apr 2021 18:14:33 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
+ 18:16:37 +0800
+Subject: Re: [PATCH v6 3/5] i2c: add support for HiSilicon I2C controller
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>, <wsa@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <Sergey.Semin@baikalelectronics.ru>, <linux-kernel@vger.kernel.org>
+CC:     <digetx@gmail.com>, <treding@nvidia.com>,
+        <rmk+kernel@armlinux.org.uk>, <song.bao.hua@hisilicon.com>,
+        <john.garry@huawei.com>, <mika.westerberg@linux.intel.com>,
+        <prime.zeng@huawei.com>, <linuxarm@huawei.com>
+References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
+ <1617197790-30627-4-git-send-email-yangyicong@hisilicon.com>
+ <f1d50200-93f5-2c35-933a-01a1e7622983@linux.intel.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <19f33eff-e7b2-0e03-bbd4-f50b2ef050c5@hisilicon.com>
+Date:   Wed, 7 Apr 2021 18:16:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407063207.676753-4-ruansy.fnst@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MP-udSHZIrOD5XCWtdSJdS1BDJ3nTM25
-X-Proofpoint-GUID: IDKlxdH1nb6AJ0VUVamH8la5swD62Vj2
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-07_07:2021-04-06,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1015 malwarescore=0
- suspectscore=0 bulkscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070070
+In-Reply-To: <f1d50200-93f5-2c35-933a-01a1e7622983@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/07 02:32PM, Shiyang Ruan wrote:
-> Add address output in dax_iomap_pfn() in order to perform a memcpy() in
-> CoW case.  Since this function both output address and pfn, rename it to
-> dax_iomap_direct_access().
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Ritesh Harjani <riteshh@gmail.com>
+On 2021/4/7 16:32, Jarkko Nikula wrote:
+> Hi
+> 
+> On 3/31/21 4:36 PM, Yicong Yang wrote:
+>> +    ret = device_property_read_u64(dev, "clk_rate", &ctlr->clk_rate_khz);
+>> +    if (ret) {
+>> +        dev_err(dev, "failed to get clock frequency, ret = %d\n", ret);
+>> +        return ret;
+>> +    }
+>> +
+>> +    ctlr->clk_rate_khz = DIV_ROUND_UP_ULL(ctlr->clk_rate_khz, HZ_PER_KHZ);
+>> +
+> 
+> I'd use a temp variable here for reading the "clk_rate" property in Hertz and calculating the derived kHz value from it. As a bonus allow to use u32 for clk_rate_khz instead of u64. u32 will still provide plenty of headroom :-)
+> 
+> Reason for temp variable is for me it's confusing to see statement like "rate_khz = rate_khz / 1000".
+> 
 
-Same here. It should be either of below.
+I can get this addressed in the updated version. Thanks for the suggestion!
 
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-OR
-Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
-
-> ---
->  fs/dax.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
