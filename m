@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C09B357475
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB301357473
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhDGSlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S236189AbhDGSkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhDGSlM (ORCPT
+        with ESMTP id S230020AbhDGSkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:41:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A5AC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TevWoQq5Glq6ytD9AXpDyqi4WvX3U1InyNLnaDshZWg=; b=AHWVjJW9sXMfdWd06nX21+YP7H
-        7IdMnbmvoOgZ+ECTL1Grbnkrp4mqzmanNEMnx5cxhvnMz+RlgMAGM9aejmpl3NywWL7IT4iRko3ZS
-        oQEJI0JtN1XUy37VT0sIISDanaPeYhtMwLPB2zIKtHrLrU53dMzuqANprqPrhJG4UW3Xir88vW37P
-        j1Vg4X/pZ7u7RQ9uXk5RXYclwsNTxKj/GI9qZuAUbsHgtQNVtw6UK3xVkEaNpleBW+orp+U1K5X24
-        I5FtXYE5UT4Qx12rygEncgNdNGJaT1AMpQ1aoRPcdidsOS3SAvCwYTys8umi7yaoQ6i0WPJ33Gd7W
-        hxA0vuOA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUD5Z-00EvH0-Op; Wed, 07 Apr 2021 18:39:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1ED3D3001FB;
-        Wed,  7 Apr 2021 20:39:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DA4B62BC07BB4; Wed,  7 Apr 2021 20:39:40 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 20:39:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Zefan Li <lizefan.x@bytedance.com>
-Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
-Message-ID: <YG38bBm+JJXIwgYq@hirez.programming.kicks-ass.net>
-References: <20210401131012.395311786@infradead.org>
- <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
- <YGx+9EVS5kDrLOD0@hirez.programming.kicks-ass.net>
- <YGyHknFJhHO99e5a@slm.duckdns.org>
+        Wed, 7 Apr 2021 14:40:35 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D4EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:40:25 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id 6so7443117ilt.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m1C32+Ws/D/BXd+DIGZBmNk7jd19N3wmSzcAq3Dfs+w=;
+        b=mHnRP/cYm6AvebvssXcW8Y5WB637Pdq6YQItx1eIHoLvW2sqh1sTzxZY5lNRS3DScd
+         70RAIaDFbuDUyDab9m4sdx8nuPkME0ykMMGMTy7p/u7kFVNybCIVO2g1OuQ2v6rcsR5t
+         8m+xhS2GBMprE5PkJ6RrGyjSSj2gDc/My9l7sVVKtNOOpWjNp4T9vBraj3XyzO10Wx16
+         InUqxzzs6+ywZGX/aVn66gYoHXSZvY7oEWmSRT+LMHE8nSt/om6zdZtGs/LxbpwRCEi8
+         Soc8dpGPGTIkGvygZj3Hw6+oT9lOEn5vUGD++kx3yK2tZ6VyyvMdnlMmG0/YwqRvL6T4
+         PVug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m1C32+Ws/D/BXd+DIGZBmNk7jd19N3wmSzcAq3Dfs+w=;
+        b=BL4dYR8/qnJ5NjKgUfz/vyY74TnINT33h5jdB7HhNr2kjrkyOXKkdA+m/lcsPYjF4U
+         OCgRUbefbIOVTpNqMZrvqYqSmNwXnIfcPvYAQJ9yx0Qn0TCe+ZtfSzyc5za0fQvi3R9x
+         USYUMDR8gjUsSeBngyIintmniR9qo9l2s5HPebuMv5s7qC620Y/4dV89sQCF1YpiOdwc
+         ZF4k8XeCZ90eKq3eJ0ZrZILov8ZAaA5mfDMEP0i+i4rX/cQO7BOQxQY+CRaHJc6uyaPG
+         KGhnr3zrNwRgvxSgbuJSnRdaNPGavT9jIJsbJp5Snb5V1+RY3ttWztWH1WuJ04zReSrz
+         lyKg==
+X-Gm-Message-State: AOAM533iB++kbEaAlesSnoEabqkVmyQaQSWxdCWkRsVxGaLg4NnOAaNP
+        lkEanodOKK5ZEHIFZ0GW1E9fvsCqayBtJUPvmKe1qQ==
+X-Google-Smtp-Source: ABdhPJxrOr8UlQInHmCI5WOtRKkP7DU5pbsad3aM8CI9NjQc322ZHlK1Y0YkZVSp1YHXwfJCn17oBbL7EtzZlF6KFYc=
+X-Received: by 2002:a05:6e02:1ca2:: with SMTP id x2mr1011087ill.128.1617820824429;
+ Wed, 07 Apr 2021 11:40:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGyHknFJhHO99e5a@slm.duckdns.org>
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183229.B2360AEA@viggo.jf.intel.com>
+In-Reply-To: <20210401183229.B2360AEA@viggo.jf.intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Wed, 7 Apr 2021 11:40:13 -0700
+Message-ID: <CAAPL-u-OgmT+R=txfO_rFaYLKC0UZ5xEmFOY3spVHEmk_r4iSQ@mail.gmail.com>
+Subject: Re: [PATCH 07/10] mm/vmscan: add helper for querying ability to age
+ anonymous pages
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        shy828301@gmail.com, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>, ying.huang@intel.com,
+        Dan Williams <dan.j.williams@intel.com>, david@redhat.com,
+        osalvador@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:08:50PM -0400, Tejun Heo wrote:
+> +/*
+> + * Anonymous LRU management is a waste if there is
+> + * ultimately no way to reclaim the memory.
+> + */
+> +bool anon_should_be_aged(struct lruvec *lruvec)
+> +{
+> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> +
+> +       /* Aging the anon LRU is valuable if swap is present: */
+> +       if (total_swap_pages > 0)
+> +               return true;
+> +
+> +       /* Also valuable if anon pages can be demoted: */
+> +       if (next_demotion_node(pgdat->node_id) >= 0)
+> +               return true;
+> +
+> +       /* No way to reclaim anon pages.  Should not age anon LRUs: */
+> +       return false;
+> +}
 
-> I see. Yeah, if we really need it, I'm not sure it fits in cgroup interface
-> proper. As I wrote elsewhere, these things are usually implemented on the
-> originating subsystem interface with cgroup ID as a parameter.
-
-This would be something like:
-
-  prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, cgroup-fd, PIDTYPE_CGROUP, NULL);
-
-right? Where we assign to self the cookie from the cgroup.
-
-The problem I see with this is that a task can trivially undo/circumvent
-this by calling PR_SCHED_CORE_CLEAR on itself, at which point it can
-share with system tasks again.
-
-Also, it doesn't really transfer well to the group/tasks thing. When a
-task joins a cgroup, it doesn't automagically gain the cgroup
-properties. Whoever does the transition will then also have to prctl()
-this, which nobody will do.
-
+anon_should_be_aged() doesn't really need "lruvec".  It essentially
+answers whether the pages of the given node can be swapped or demoted.
+So it would be clearer and less confusing if anon_should_be_aged()
+takes "pgdat" instead of "lruvec" as the argument.  The call to
+mem_cgroup_lruvec(NULL, pgdat) in age_active_anon() can then be removed
+as well.
