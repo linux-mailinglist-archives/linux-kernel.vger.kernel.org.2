@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361A1356CCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78570356CD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352522AbhDGNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:00:46 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:37574 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhDGNAj (ORCPT
+        id S1352529AbhDGNCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:02:53 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:41532 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232253AbhDGNCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:00:39 -0400
-Received: by mail-wr1-f53.google.com with SMTP id u11so5456128wrp.4;
-        Wed, 07 Apr 2021 06:00:28 -0700 (PDT)
+        Wed, 7 Apr 2021 09:02:42 -0400
+Received: by mail-wr1-f48.google.com with SMTP id a6so11888866wrw.8;
+        Wed, 07 Apr 2021 06:02:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NwLKTNKDKP75b7p50B/o71iDiFr0JTQFhm3wPogEFdU=;
-        b=uZc1CazioGqDDGzGCDI/kQr2FLSJ+clYEQ85NDTpaTtJ9LTkTeMc2kiOZ6wdebpnii
-         LSoJKiPRbMQUDv5hcCBuCHqQTuAMpCRzY/IEYs+Fs03ZOUxxNfZbFiOeC1EiZysMslrS
-         +yEBhxJja1siX4XqrwJt2uGOW8PWgrnkIuOGd0+vEQoIHuOtaL2UE4CrY0xUjVa/jD+I
-         //SOYsB5MIvNziNlPk5xlcJvoZPRY7G5sBONIAcS+OeMCUttcgtRFfWQblQCfO648AFo
-         dL1FaIx6lpD/x9MhKEtufPn80QVnDmtp8JLmxWoR7+RWiNBFhbW7eTBw3gg/F9XrnctE
-         WPlA==
-X-Gm-Message-State: AOAM531HNNibMTEByaVRxXsqT2vvSfotodaTAzAzf1xrksynCYaxzCub
-        /0bh1KFTfzBC08uFNuN09PQ=
-X-Google-Smtp-Source: ABdhPJze8GqaoC7VT4EBUo/P3ST9s9tLdsZXJdoXUKWyW/Gkw8UQr9VDY3nhMuQID9gqjD7B0tz1BA==
-X-Received: by 2002:a05:6000:2a7:: with SMTP id l7mr3338450wry.413.1617800427739;
-        Wed, 07 Apr 2021 06:00:27 -0700 (PDT)
+        bh=TXqZuGdXJPW/fK3TUxeru63BFIL4FbmmIS0HzVxdfbM=;
+        b=X5lgGmvUnMRNLWpHy7Jb6gw+p79mrEfBjWHd4xO2vcxcdcmwq7CniF9mz288CoG0i5
+         f8mdrwz4E3woXsEIgNzmxlnW6Ax3F6hAPDTsydjmfWt7o40tMW+rI/zgFGR5DuuCuCR5
+         4pzCrTBF0HKJwo+/XB7hXT5g5LR+BwNbCLQS2mqHHUQFPWCq+6hAtisxn/yyfqaqP68v
+         1FGEFw4eAMYeTlm4hzmFCoKRyyCPWxZm6lUXSnVKWoki099Ojt24z7acZXlcKJt2irRq
+         377HHdGrnbz0Ay1GEmFAsWJWL4AzKOa/NGMrD+TyG3Cz5irIopShJ0lOhtU5qTSVfqFJ
+         9uBQ==
+X-Gm-Message-State: AOAM533d5fACy50zky3lR0cyA81coFYx5AUnHRwDbhIwqf68Z09xvyzv
+        bhf8J2p9OvHc+k+jZqUBa5Pnd1QwnUA=
+X-Google-Smtp-Source: ABdhPJx+FU4wwVRbC/815ENUwoRonsyYzkZ47GQ+CV42wf052MLj642jIYNSgfCL+WAfMu8b1Qz2EA==
+X-Received: by 2002:a05:6000:22f:: with SMTP id l15mr4361456wrz.364.1617800551854;
+        Wed, 07 Apr 2021 06:02:31 -0700 (PDT)
 Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id k3sm19834667wrc.67.2021.04.07.06.00.26
+        by smtp.gmail.com with ESMTPSA id k3sm19846458wrc.67.2021.04.07.06.02.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 06:00:26 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 13:00:25 +0000
+        Wed, 07 Apr 2021 06:02:31 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:02:30 +0000
 From:   Wei Liu <wei.liu@kernel.org>
-To:     Luca Fancellu <luca.fancellu@arm.com>
-Cc:     sstabellini@kernel.org, jgross@suse.com, jgrall@amazon.com,
-        boris.ostrovsky@oracle.com, tglx@linutronix.de, wei.liu@kernel.org,
-        jbeulich@suse.com, yyankovskyi@gmail.com,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, bertrand.marquis@arm.com
-Subject: Re: [PATCH] xen/evtchn: Change irq_info lock to raw_spinlock_t
-Message-ID: <20210407130025.tfe6aszjyjzz6ar2@liuwe-devbox-debian-v2>
-References: <20210406105105.10141-1-luca.fancellu@arm.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210407130230.3yszl6zhqzf4pmgm@liuwe-devbox-debian-v2>
+References: <20210406232321.12104-1-decui@microsoft.com>
+ <202104070929.mWRaVyO2-lkp@intel.com>
+ <MW2PR2101MB08922BFEFEBFA44744C5795BBF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406105105.10141-1-luca.fancellu@arm.com>
+In-Reply-To: <MW2PR2101MB08922BFEFEBFA44744C5795BBF759@MW2PR2101MB0892.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:51:04AM +0100, Luca Fancellu wrote:
-> Unmask operation must be called with interrupt disabled,
-> on preempt_rt spin_lock_irqsave/spin_unlock_irqrestore
-> don't disable/enable interrupts, so use raw_* implementation
-> and change lock variable in struct irq_info from spinlock_t
-> to raw_spinlock_t
+On Wed, Apr 07, 2021 at 08:08:59AM +0000, Dexuan Cui wrote:
+> > From: kernel test robot <lkp@intel.com>
+> > Sent: Tuesday, April 6, 2021 6:31 PM
+> > ...
+> > Hi Dexuan, 
+> > I love your patch! Perhaps something to improve:
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    drivers/pci/controller/pci-hyperv.c: In function 'hv_irq_unmask':
+> >    drivers/pci/controller/pci-hyperv.c:1220:2: error: implicit declaration of
+> > function 'hv_set_msi_entry_from_desc'
+> > [-Werror=implicit-function-declaration]
+> >     1220 |  hv_set_msi_entry_from_desc(&params->int_entry.msi_entry,
+> > msi_desc);
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 25da4618af24 ("xen/events: don't unmask an event channel
-> when an eoi is pending")
+> This build error looks strange, because the patch doesn't even touch the driver
+> drivers/pci/controller/pci-hyperv.c.
 > 
-> Signed-off-by: Luca Fancellu <luca.fancellu@arm.com>
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+I think this is normal. The bot doesn't restrict itself to the changed
+code from my experience.
+
+Wei.
