@@ -2,151 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAB83571DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B515E3571DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344882AbhDGQKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:10:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41687 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354327AbhDGQJt (ORCPT
+        id S1354209AbhDGQKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354331AbhDGQJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:09:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617811776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GIdD8KXpZXildX/JzoGMDWLdi24taALA9x3SDqt6Iik=;
-        b=ZvWEMeslR1E+khlqfNhBwhO+Zqwx0VCh3Fs1X0HAEz693HMNV8tj7KfGFi8DDunZMlh5Jp
-        DJylOTRh4v+Z0mDUF2sqp93c82nh9snkPY4awEeA48CySxS/aI+Xh8dhDZQyiIfebu0PA5
-        Qdlp/DIjXh8UvgZrw5WfrxuHfi7pFOA=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-P9s0TnN2OL6VnGxhRbqYog-1; Wed, 07 Apr 2021 12:09:34 -0400
-X-MC-Unique: P9s0TnN2OL6VnGxhRbqYog-1
-Received: by mail-pf1-f197.google.com with SMTP id a6so12819007pfv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:09:34 -0700 (PDT)
+        Wed, 7 Apr 2021 12:09:47 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAE2C06175F;
+        Wed,  7 Apr 2021 09:09:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 12so29253550lfq.13;
+        Wed, 07 Apr 2021 09:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PBKwdDssUFMdLDhmdEFSLKCWRTIQLOXC5T+FtNV34xU=;
+        b=gvzKvCTogQz/PbJTtHwP6IjkOS1Knx6SaycQ0XxpYvhWnPj3krpXT6gMnAf8zpdpXh
+         rJ4f0KETYqQuiXUVCvG6aUDlRpZcOLU522/Bn+jw53YI2wbBDiamRAesBkXO/+As22zt
+         EJmGaAu0AfrlAxpLfsWFaOP+NyY+e/7OAxVTXDNZNdI+sPQ4xNGG/gkoIZ0Qo+wOpARK
+         l0HNgy2ygvVuvYJTDsDjSIPHiZfqsU/wx+7nZFd7pe6fNP9K5yXT017pPFaHor728r7q
+         /dVR6ECUgbRZpv5Ul1MkKz9q8Ve/Du21U31EyN8TkJDNeie3ve1oYhHfZPgkitnI2DGO
+         P4Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GIdD8KXpZXildX/JzoGMDWLdi24taALA9x3SDqt6Iik=;
-        b=mLdyh6tG7wDx/Le3X6E4iqNSAojnf+T1AIheYDT3UGZEzwIHsg5PCN/+e6YWwXEIDi
-         JbIiVL8zk6HzooJbjBBaSeDHp3y4pdFOiOkhTXBhJEOLAJl6S863wQL/TWU9fHKnrSkb
-         81euBuOD+TOte3jTcG40fdOJUxi26kuJg5PdORzvEKM0vpVYPtjKdkyIk8UY6zp835R7
-         nq3/kQiXdWIxr7jpM0lNcrAxhIOGoKJOp9f9lZZt22Gk6q0hz80c7V7Pel8XhX1CjxAm
-         whV2V9iwdpElKuW8LPkqvxNQSZBBB0A2CjeV7PjMW9kcmOIWs5QMHWjTVO56za5j23Jq
-         hxag==
-X-Gm-Message-State: AOAM531KMPTNpq3l7zMrv7zZ8d9WF8lcLthHTdS4rPEwfNBfjHXexmGO
-        dv4aCPzpquCByisIN7RFx3bQPaQhmJSiPjclMq8wqXK5kEEweT4NvSpAPWoAYTwniI8FeTGZYBW
-        Yf371GjoqR90vSInyOyB4T+B43HEVwUPZZPCnJwmG
-X-Received: by 2002:a17:90a:9f0b:: with SMTP id n11mr4041317pjp.56.1617811773506;
-        Wed, 07 Apr 2021 09:09:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQ/h+B/6MXT+kwdnrI/eZUAdaTH42xPX4Fl95aBz/l50kJXCNcNQsRWwTSkwUMdm87PUkq3Q6JFENBMcJAE68=
-X-Received: by 2002:a17:90a:9f0b:: with SMTP id n11mr4041274pjp.56.1617811773205;
- Wed, 07 Apr 2021 09:09:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PBKwdDssUFMdLDhmdEFSLKCWRTIQLOXC5T+FtNV34xU=;
+        b=ns2QAoGdTbRPswRGo7kvNSZ3LfdDuZ3r5GXjne8JFw6idHExGUg+plczxvALco80EW
+         9p48FjyC5vqBYR1jb8urrzXfOVCyD2tdtGtYFR371axhgQB9owu7tMq+66or/CWOfDkb
+         BNGtsWEQ3G8qnAJC+nSMODfvnYwXUsOHSSad4kIQPRdQz6xi4E3r7J2208j1KTiln+Nn
+         1I6gRbBIh6BHpXsW0M5mY4DYzahDPW9dfxfh4FFtlIe+Xku695oBh3do/kT1aP21ErKN
+         iLccJrtXS48Zc9II/9PGvHHcMnfFJtZfAg89iRSPazkrcXW/6MlgDCp5AJLxxZ9qzhHw
+         uGWA==
+X-Gm-Message-State: AOAM5334zymBWw8tZF384PieRllpZ6Q5GJ6uI/uIUkmElEmYkuB97lli
+        Bmy+6ShrXTG4gH3Ym3vavKaylxLG5VA=
+X-Google-Smtp-Source: ABdhPJzrvoUaSwPnhap/82mxyyZOZX6irWHiHso16m7PccUmkOg//P/azP5JgJGAs3T4ni5PFwvXBw==
+X-Received: by 2002:a19:50d:: with SMTP id 13mr2781657lff.443.1617811771110;
+        Wed, 07 Apr 2021 09:09:31 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a31a:e13a:eb00:c5cf:27cc:1ef2:859])
+        by smtp.gmail.com with ESMTPSA id c26sm742467lff.302.2021.04.07.09.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:09:30 -0700 (PDT)
+From:   Piotr Gorski <lucjan.lucjanov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-kbuild@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>
+Subject: [PATCH v3] kbuild: add support for zstd compressed modules
+Date:   Wed,  7 Apr 2021 18:09:27 +0200
+Message-Id: <20210407160927.222092-1-lucjan.lucjanov@gmail.com>
+X-Mailer: git-send-email 2.31.0.97.g1424303384
 MIME-Version: 1.0
-References: <20210326143458.508959-1-lee.jones@linaro.org> <20210406085605.GS2916463@dell>
-In-Reply-To: <20210406085605.GS2916463@dell>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 7 Apr 2021 18:09:22 +0200
-Message-ID: <CAO-hwJ+5Vd6jC2+0pfHLOw3opdXzKoc9pUWzxmBVhSvQvNWMsQ@mail.gmail.com>
-Subject: Re: [RESEND 00/25] Rid W=1 warnings from HID
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Anssi Hannula <anssi.hannula@gmail.com>,
-        =?UTF-8?Q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Drubin <daniel.drubin@intel.com>,
-        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        linaro-mm-sig@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        Lopez Casado <nlopezcasad@logitech.com>,
-        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
-        Masaki Ota <masaki.ota@jp.alps.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        message to <vojtech@ucw.cz>,
-        Michael Haboustak <mike-@cinci.rr.com>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Zhang Lixu <lixu.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 10:56 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 26 Mar 2021, Lee Jones wrote:
->
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> >
-> > Lee Jones (25):
-> >   HID: intel-ish-hid: Remove unused variable 'err'
-> >   HID: ishtp-hid-client: Move variable to where it's actually used
-> >   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
-> >   HID: intel-ish: Supply some missing param descriptions
-> >   HID: intel-ish: Fix a naming disparity and a formatting error
-> >   HID: usbhid: Repair a formatting issue in a struct description
-> >   HID: intel-ish-hid: Fix a little doc-rot
-> >   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
-> >   HID: hid-alps: Correct struct misnaming
-> >   HID: intel-ish-hid: Fix potential copy/paste error
-> >   HID: hid-core: Fix incorrect function name in header
-> >   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
-> >     header
-> >   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
-> >   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
-> >   HID: hid-picolcd_core: Remove unused variable 'ret'
-> >   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
-> >     abuses
-> >   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
-> >   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
-> >   HID: hid-uclogic-params: Ensure function names are present and correct
-> >     in kernel-doc headers
-> >   HID: hid-sensor-custom: Remove unused variable 'ret'
-> >   HID: wacom_sys: Demote kernel-doc abuse
-> >   HID: hid-sensor-hub: Remove unused struct member 'quirks'
-> >   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
-> >     definition
-> >   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
-> >   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
->
-> These have been on the list for a couple of weeks now.
->
-> Is there anything I can do to help expedite their merge?
->
-> I'm concerned since -rc6 has just been released.
+kmod 28 supports modules compressed in zstd format so let's add this possibility to kernel.
 
-Sorry for the delay.
+V2 -> V3
 
-I am currently queuing them locally and running a few tests on them. I
-don't expect anything to happen, but better be safe than anything.
+* Fix a typo
 
-FWIW, I am splitting the series in 3:
-- 11 patches for intel ish are going to be queued in for-5.13/intel-ish
-- the thrustmaster one in for-5.13/thrustmaster
-- the rest (13 patches) will be sent in for-5.13/warnings.
+V1 -> V2
 
-Cheers,
-Benjamin
+* Rebuild against linux-kbuild tree
+
+Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
+---
+ init/Kconfig             | 8 +++++++-
+ scripts/Makefile.modinst | 6 ++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 510f6fcd9b7f..b5744d32c4df 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2242,7 +2242,7 @@ choice
+ 
+ 	  Please note that the tool used to load modules needs to support the
+ 	  corresponding algorithm. module-init-tools MAY support gzip, and kmod
+-	  MAY support gzip and xz.
++	  MAY support gzip, xz and zstd.
+ 
+ 	  Your build system needs to provide the appropriate compression tool
+ 	  to compress the modules.
+@@ -2267,6 +2267,12 @@ config MODULE_COMPRESS_XZ
+ 	  Compress modules with XZ. The installed modules are suffixed
+ 	  with .ko.xz.
+ 
++config MODULE_COMPRESS_ZSTD
++	bool "ZSTD"
++	help
++	  Compress modules with ZSTD. The installed modules are suffixed
++	  with .ko.zst.
++
+ endchoice
+ 
+ config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
+diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+index 191408f7a91a..f9fa2a3808b2 100644
+--- a/scripts/Makefile.modinst
++++ b/scripts/Makefile.modinst
+@@ -21,6 +21,7 @@ endif
+ suffix-y				:=
+ suffix-$(CONFIG_MODULE_COMPRESS_GZIP)	:= .gz
+ suffix-$(CONFIG_MODULE_COMPRESS_XZ)	:= .xz
++suffix-$(CONFIG_MODULE_COMPRESS_ZSTD)	:= .zst
+ 
+ modules := $(patsubst $(extmod_prefix)%, $(dst)/%$(suffix-y), $(modules))
+ 
+@@ -95,6 +96,8 @@ quiet_cmd_gzip = GZIP    $@
+       cmd_gzip = $(KGZIP) -n -f $<
+ quiet_cmd_xz = XZ      $@
+       cmd_xz = $(XZ) --lzma2=dict=2MiB -f $<
++quiet_cmd_zstd = ZSTD      $@
++      cmd_zstd = $(ZSTD) -T0 --rm -f -q $<
+ 
+ $(dst)/%.ko.gz: $(dst)/%.ko FORCE
+ 	$(call cmd,gzip)
+@@ -102,6 +105,9 @@ $(dst)/%.ko.gz: $(dst)/%.ko FORCE
+ $(dst)/%.ko.xz: $(dst)/%.ko FORCE
+ 	$(call cmd,xz)
+ 
++$(dst)/%.ko.zst: $(dst)/%.ko FORCE
++	$(call cmd,zstd)
++
+ PHONY += FORCE
+ FORCE:
+ 
+-- 
+2.31.0.97.g1424303384
 
