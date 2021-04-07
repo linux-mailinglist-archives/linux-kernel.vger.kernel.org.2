@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A14356CDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93ED356CE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352592AbhDGNEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352571AbhDGNEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:04:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDFF6124B;
-        Wed,  7 Apr 2021 13:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617800642;
-        bh=nThm+R6dMYSqhG181+GtVpThubpwnwPwK0c5mCLI0kc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iavD/CG+FWohxaAuelhrZ4/MZsgySf5Qa7RUOa/UoK6YRgYGI3FlNzbPB5+8578n4
-         MAi4pTTeHKCEKwHiwkV7b2hHdsGOwdvdHOD9cLtek81iuqsn3seZy4QvJedVoHm65H
-         Q1OrBnM2X+XcgNIDxcB6fKKP5yQK4hltKwXLtf9s=
-Date:   Wed, 7 Apr 2021 15:03:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 07/20] kbuild: scripts/install.sh: allow for the version
- number
-Message-ID: <YG2tvk010wRkIVSX@kroah.com>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-8-gregkh@linuxfoundation.org>
- <CAK7LNASbZ4hY8ypd8TegnRpxQUM-HB84n2VHUmu=k_RxwCnpXg@mail.gmail.com>
+        id S235222AbhDGNHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233590AbhDGNHN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:07:13 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397AAC061756;
+        Wed,  7 Apr 2021 06:07:02 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id d10so8168599pgf.12;
+        Wed, 07 Apr 2021 06:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w6x1JaJJswXDRLPdzMKjakBv3oDpC21g21byrf7hBec=;
+        b=ejHnGwmupOSP6O3pYirdbklm+kJ+2OA2Egwj3xANUZxTm1vqLVNshLMu1RlNYmHBFy
+         xVwiLY1c1OdGP/FFgQAasjJcRIstI/EPpKavIu8JbDmFHeYqknI6oKurz3I3Nno7Ek0T
+         t6l3NFRDJ3Z23r1O4T+vg3sESwkoo4+s3vxhtcj+1vYRxzk/Oxgimy6XsiDAOLNVvLNG
+         QBKXmzlymUVyWyiem+0SQHol1y2K4r5r4BShlFriFkkFspvRXyoPm6prLvKj+UlTqP+8
+         /A6w20lT96pROzb4Y24YXF/EKlFsVNuta8PulBFGs21PhLj068UGMrNTcjN66+Z8G2lu
+         9IiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w6x1JaJJswXDRLPdzMKjakBv3oDpC21g21byrf7hBec=;
+        b=taflkDctOx44CjnupUIPsPZ7cgqLp27TeBtwyAXJinV1BvQZPxQKHvCtAzyyt3jjAG
+         X+93tNRQWGvX7EB9nEY/qkIfzcJeCoXq+zzPpyShHL0MHBvoKsuSjPcdnsPuRiEmhKWm
+         9hGBqFvpLJMAjlzF97PVEppDVfOnZuRbsUL9ADCLcpZ8ZTMV1Ix7bYttGf+Uk/5yFWKv
+         gZJenHyxEFBEhtgbQnfia4DfWBjqaNZUCK5aJV//fIg33smqIK/jhoWp5Qaa4+80klRw
+         iFh2yBdTB1gi5RhHfkQ+Xdt8XxPV9kILVu+fjpbFFwvxSOkntJAyb+6Wld1FD1DByvj2
+         cr1Q==
+X-Gm-Message-State: AOAM533GZ7rnAii7dTt0LuH+NOjqu8+h4uWCv4QjT1PLXiVdRNNAvM6Q
+        TdvJV1S7n3woTAt+3j+h94s=
+X-Google-Smtp-Source: ABdhPJw8U2MstWbZ6Da0Id8vwDXFIANzA23CR1DCHRvQwVep9+ruget3m7Vi/p/KN+fsi9qeGzUfDg==
+X-Received: by 2002:aa7:9a89:0:b029:200:1eed:1388 with SMTP id w9-20020aa79a890000b02902001eed1388mr2876710pfi.79.1617800821618;
+        Wed, 07 Apr 2021 06:07:01 -0700 (PDT)
+Received: from localhost ([103.77.152.190])
+        by smtp.gmail.com with ESMTPSA id w16sm2095444pfn.200.2021.04.07.06.07.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 06:07:01 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 18:36:01 +0530
+From:   "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        AlexWilliamson@archlinux, alex.williamson@redhat.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <20210407130601.aleyww5d5mttitry@archlinux>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
+ <YGW8Oe9jn+n9sVsw@unreal>
+ <20210401105616.71156d08@omen>
+ <YGlzEA5HL6ZvNsB8@unreal>
+ <20210406081626.31f19c0f@x1.home.shazbot.org>
+ <YG1eBUY0vCTV+Za/@unreal>
+ <20210407082356.53subv4np2fx777x@archlinux>
+ <YG2l+AbQW1N0bbQ9@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNASbZ4hY8ypd8TegnRpxQUM-HB84n2VHUmu=k_RxwCnpXg@mail.gmail.com>
+In-Reply-To: <YG2l+AbQW1N0bbQ9@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:05:23PM +0900, Masahiro Yamada wrote:
-> On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On 21/04/07 03:30PM, Leon Romanovsky wrote:
+> On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
+> > On 21/04/07 10:23AM, Leon Romanovsky wrote:
+> > > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
+> > > > On Sun, 4 Apr 2021 11:04:32 +0300
+> > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
+> > > > > > On Thu, 1 Apr 2021 15:27:37 +0300
+> > > > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
+> > > > > > > > Slot resets are bus resets with additional logic to prevent a device
+> > > > > > > > from being removed during the reset. Currently slot and bus resets have
+> > > > > > > > separate implementations in pci.c, complicating higher level logic. As
+> > > > > > > > discussed on the mailing list, they should be combined into a generic
+> > > > > > > > function which performs an SBR. This change adds a function,
+> > > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
+> > > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
+> > > > > > > > single device agnostic function to perform an SBR.
+> > > > > > > >
+> > > > > > > > This new function is also needed to add SBR reset quirks and therefore
+> > > > > > > > is exposed in pci.h.
+> > > > > > > >
+> > > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
+> > > > > > > >
+> > > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
+> > > > > > > >  include/linux/pci.h |  1 +
+> > > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > > > > > index 16a17215f633..12a91af2ade4 100644
+> > > > > > > > --- a/drivers/pci/pci.c
+> > > > > > > > +++ b/drivers/pci/pci.c
+> > > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+> > > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> > > > > > > > +{
+> > > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > > > +
+> > > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
+> > > > > > >
+> > > > > > > The previous coding style is preferable one in the Linux kernel.
+> > > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > > if (rc != -ENOTTY)
+> > > > > > >   return rc;
+> > > > > > > return pci_parent_bus_reset(dev, probe);
+> > > > > >
+> > > > > >
+> > > > > > That'd be news to me, do you have a reference?  I've never seen
+> > > > > > complaints for ternaries previously.  Thanks,
+> > > > >
+> > > > > The complaint is not to ternaries, but to the function call as one of
+> > > > > the parameters, that makes it harder to read.
+> > > >
+> > > > Sorry, I don't find a function call as a parameter to a ternary to be
+> > > > extraordinary, nor do I find it to be a discouraged usage model within
+> > > > the kernel.  This seems like a pretty low bar for hard to read code.
+> > >
+> > > It is up to us where this bar is set.
+> > >
+> > > Thanks
+> > On the side note there are plenty of places where this pattern is used
+> > though
+> > for example -
+> > kernel/time/clockevents.c:328:
+> > return force ? clockevents_program_min_delta(dev) : -ETIME;
 > >
-> > Some architectures put the version number by default at the end of the
-> > files that are copied, so add support for this to be set by arch type.
+> > kernel/trace/trace_kprobe.c:233:
+> > return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
+> >        false;
 > >
-> > Odds are one day we should change this for x86, but let's not break
-> > anyone's systems just yet.
-> >
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  scripts/install.sh | 15 +++++++++++++--
-> >  1 file changed, 13 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/scripts/install.sh b/scripts/install.sh
-> > index 72dc4c81013e..934619f81119 100644
-> > --- a/scripts/install.sh
-> > +++ b/scripts/install.sh
-> > @@ -60,8 +60,19 @@ else
-> >         base=vmlinux
-> >  fi
-> >
-> > -install "$2" "$4"/"$base"
-> > -install "$3" "$4"/System.map
-> > +# Some architectures name their files based on version number, and
-> > +# others do not.  Call out the ones that do not to make it obvious.
-> > +case "${ARCH}" in
-> > +       x86)
-> > +               version=""
-> > +               ;;
-> > +       *)
-> > +               version="-${1}"
-> > +               ;;
-> > +esac
-> > +
-> > +install "$2" "$4"/"$base""$version"
-> 
-> 
-> Too many quotes are eye sore.
-> 
-> 
->     install "$2" "$4/$base$version"
-> 
-> looks cleaner in my opinion.
-> 
-> Shell correctly understands the end of each
-> variable because a slash or a dollar
-> cannot be a part of a variable name.
+> > kernel/signal.c:3104:
+> > return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
+> > etc
+>
+> Did you look when they were introduced?
+>
+> Thanks
+>
+that code trace_kprobe in 2 years old.
+If you want more recent example checkout
+drivers/pci/controller/pcie-brcmstb.c:1112,1117:
+return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
+which was introduced 7 months ago.
+There are lot of examples in pci.c also.
 
-Good idea, I usually just default to "quote everything!" when dealing
-with bash variables.  I'll fix this up.
-
-Oh, any preference for "$2" vs. "${2}"?  I don't care either way but I
-couldn't tell what is the normal kernel style these days.
-
-thanks for all of the review, much appreciated!
-
-greg k-h
+Thanks,
+Amey
