@@ -2,152 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500A1356ED7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B98356EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353029AbhDGOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:35:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40956 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353009AbhDGOfe (ORCPT
+        id S1344675AbhDGOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235011AbhDGOgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:35:34 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 137EYHA3037410;
-        Wed, 7 Apr 2021 09:34:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617806057;
-        bh=P7s3BojRUYzZI+LPERcl8NdOIdH0Wwr5DaeL5x0Za5A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=SzavdAqQoRHHEDBtHOYwCEB8DOkHvGuzgwAxLho6hwX2yKmOpENOQhfLvFoP96lZi
-         utRAK5HvAW183JV6ZWhSRrCk+zyi8L0IoJu0X+f6WeBZynM1LWXb2d1xCIwSCq1a3Z
-         zad8AH8Pxd/xMOJUL+Eqx8ZZpURRByfTCfHO6H80=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 137EYHq6049658
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Apr 2021 09:34:17 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Apr
- 2021 09:34:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Apr 2021 09:34:17 -0500
-Received: from [10.250.37.105] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 137EYGEG006674;
-        Wed, 7 Apr 2021 09:34:16 -0500
-Subject: Re: [PATCH 3/3] remoteproc: pru: Fix and cleanup firmware interrupt
- mapping logic
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210323223839.17464-1-s-anna@ti.com>
- <20210323223839.17464-4-s-anna@ti.com> <20210406234747.GC330882@xps15>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <98a3bc08-5740-3e2c-0ed6-0381cb20283d@ti.com>
-Date:   Wed, 7 Apr 2021 09:34:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Apr 2021 10:36:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6A9C06175F;
+        Wed,  7 Apr 2021 07:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=umJ6Er88RJ+kjsFdQDsASA99MroOE5xNDgI/QiCH4QM=; b=fhTqx06EzmDXnqGUU8Hs6T2OIO
+        GJheMtfFNne1USTF67q0QdoIrXWnu7eBYLi2ZHmbcI7sUCTZXQKqe0UZW90UqjzGJA8YSkDp80XuM
+        mZ9QxwKvvOiZeBewK5EjK/1DSyld9HuVW6qFKyL30Og1aOCFrgMxdz5AbLkzDwzLSQsUKoyaMmtJr
+        ESsC8Z7fUNoef76ssY+daUwApH2StlHtsqwlZcA+xos4mpyDJ7Cg8FqKR4qMFg3Wc1g1hZYbVtvhU
+        sT5qdbMuxxq+vFQcHComPMpEQMaJtiSsIuc1AZUOvOiHFwfVj+fcBq8djBeDRVzQDTcfz5jQtScev
+        lIpiXB+A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU9GF-00EbQv-KT; Wed, 07 Apr 2021 14:34:58 +0000
+Date:   Wed, 7 Apr 2021 15:34:27 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christoph M??llner <christophm30@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <20210407143427.GA3479728@infradead.org>
+References: <1616868399-82848-4-git-send-email-guoren@kernel.org>
+ <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+ <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+ <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+ <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net>
+ <20210407094224.GA3393992@infradead.org>
+ <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210406234747.GC330882@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+On Wed, Apr 07, 2021 at 04:29:12PM +0200, Christoph M??llner wrote:
+> Gentlemen, please rethink your wording.
+> RISC-V is neither "crap" nor a "trainwreck", regardless if you like it or not.
 
-On 4/6/21 6:47 PM, Mathieu Poirier wrote:
-> On Tue, Mar 23, 2021 at 05:38:39PM -0500, Suman Anna wrote:
->> The PRU firmware interrupt mappings are configured and unconfigured in
->> .start() and .stop() callbacks respectively using the variables 'evt_count'
->> and a 'mapped_irq' pointer. These variables are modified only during these
->> callbacks but are not re-initialized/reset properly during unwind or
->> failure paths. These stale values caused a kernel crash while stopping a
->> PRU remoteproc running a different firmware with no events on a subsequent
->> run after a previous run that was running a firmware with events.
->>
->> Fix this crash by ensuring that the evt_count is 0 and the mapped_irq
->> pointer is set to NULL in pru_dispose_irq_mapping(). Also, reset these
->> variables properly during any failures in the .start() callback. While
->> at this, the pru_dispose_irq_mapping() callsites are all made to look
->> the same, moving any conditional logic to inside the function.
->>
->> Fixes: c75c9fdac66e ("remoteproc: pru: Add support for PRU specific interrupt configuration")
->> Reported-by: Vignesh Raghavendra <vigneshr@ti.com>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->>  drivers/remoteproc/pru_rproc.c | 12 +++++++++---
->>  1 file changed, 9 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
->> index 87b43976c51b..5df19acb90ed 100644
->> --- a/drivers/remoteproc/pru_rproc.c
->> +++ b/drivers/remoteproc/pru_rproc.c
->> @@ -266,12 +266,17 @@ static void pru_rproc_create_debug_entries(struct rproc *rproc)
->>  
->>  static void pru_dispose_irq_mapping(struct pru_rproc *pru)
->>  {
->> -	while (pru->evt_count--) {
->> +	if (!pru->mapped_irq)
->> +		return;
->> +
->> +	while (pru->evt_count) {
->> +		pru->evt_count--;
->>  		if (pru->mapped_irq[pru->evt_count] > 0)
->>  			irq_dispose_mapping(pru->mapped_irq[pru->evt_count]);
->>  	}
->>  
->>  	kfree(pru->mapped_irq);
->> +	pru->mapped_irq = NULL;
->>  }
->>  
->>  /*
->> @@ -324,6 +329,8 @@ static int pru_handle_intrmap(struct rproc *rproc)
->>  	of_node_put(parent);
->>  	if (!irq_parent) {
->>  		kfree(pru->mapped_irq);
->> +		pru->mapped_irq = NULL;
->> +		pru->evt_count = 0;
-> 
-> Patch 1/3 introduced a check on @parent that doesn't free pru->mapped_irq.  I
-> would also expect that error path to do the same has what is done here.  And
-> looking further up I see the error path for !pru->mapped_irq doesn't set
-> pru->evt_count to zero.
-
-Good catch, thank you. I will fix these up in v2.
-
-regards
-Suman
-
-> 
-> Thanks,
-> Mathieu
-> 
->>  		return -ENODEV;
->>  	}
->>  
->> @@ -398,8 +405,7 @@ static int pru_rproc_stop(struct rproc *rproc)
->>  	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
->>  
->>  	/* dispose irq mapping - new firmware can provide new mapping */
->> -	if (pru->mapped_irq)
->> -		pru_dispose_irq_mapping(pru);
->> +	pru_dispose_irq_mapping(pru);
->>  
->>  	return 0;
->>  }
->> -- 
->> 2.30.1
->>
-
+No, by all objective standards the RISC-V memory model and privileged
+architecture is a trainwreck.  Anyone who disagrees is way out there in
+the sky.
