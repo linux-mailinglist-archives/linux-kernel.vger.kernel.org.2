@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AE33575C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E133575C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 22:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349337AbhDGUSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 16:18:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26445 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346203AbhDGUSJ (ORCPT
+        id S1349372AbhDGUSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 16:18:34 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:39091 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244142AbhDGUSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:18:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617826678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aQknNtkrD3GHg+E4N/uth2eOy0S3ZwiKhVq/VQGmwhM=;
-        b=MzWFZc7DTswGljIlCW6cGoU9iHl4xLVC0pKWF4IA1niBW469xcJAp23wlHvE2IL7/mtIqL
-        zhuBi0veWGEHGJgftarbkivJa/zH0i/hqWjuijquPxDk0o0q5upuGsXjxTI7p/rQVLvgKX
-        Na20vTpkWdsSFgjcbtq/9pBiHR3cZVs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-_Ff8sjcSNDalXMd_Kh6KAw-1; Wed, 07 Apr 2021 16:17:53 -0400
-X-MC-Unique: _Ff8sjcSNDalXMd_Kh6KAw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7A07881276;
-        Wed,  7 Apr 2021 20:17:50 +0000 (UTC)
-Received: from treble (ovpn-119-205.rdu2.redhat.com [10.10.119.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A275610AE;
-        Wed,  7 Apr 2021 20:17:48 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 15:17:46 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210407201746.ueijmegmpbyq5quv@treble>
-References: <20210310212128.GR4332@42.do-not-panic.com>
- <YErOkGrvtQODXtB0@google.com>
- <20210312183238.GW4332@42.do-not-panic.com>
- <YEvA1dzDsFOuKdZ/@google.com>
- <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
+        Wed, 7 Apr 2021 16:18:33 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
+ t=1617826703; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=BMiaa8iBHRjb1Y23X3q4l5RYCgQNoBRvKGEa2NM3GUA=;
+ b=pUzorbQlmiOvh+76D2Eb3d9ga2sF6fjQBpr+oyMkL8VIaUWhbEbdZ5YtUubU7Ai3UpRxZ
+ kvfrFmrH6fmPzPvCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617826703; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=BMiaa8iBHRjb1Y23X3q4l5RYCgQNoBRvKGEa2NM3GUA=;
+ b=YRKshN74su2o+lCWMmNX0OPJ4i3iGAoKI5u5Rbc9WHo+0J2etYamQM4Zy+nIJvdycFTTU
+ s3cTlcAB/ugm3Q++zVVLTAFbCuUhfpDxyD5FlcsWE844/9w2fN5QLbsbyUNnkcR6pFsVK7l
+ PR+1cgq28IUDUWbJwcHgQEreqISrMQbJqzFBovNjXMLd+QecwYHtbft0Ssj9xjDe73vxQ7p
+ VGgCmQ/rIE63n8rvTlil+M1UFcTw8jAuXVPoCVxThgMgWwBIWLW6YGoQtqObCIj2tSoDNQ8
+ Wvw4H0myAgZ7h23wlHH6bF5M1Zy6XIKF0cgvKOVVI1H1s8twM44EoUVuYHNQ==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id C4F72160244; Wed,  7 Apr 2021 13:18:23 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:18:23 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Michel Lespinasse <michel@lespinasse.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 11/37] x86/mm: attempt speculative mm faults first
+Message-ID: <20210407201823.GB25738@lespinasse.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-12-michel@lespinasse.org>
+ <YG3GTI8j1ohk4NhS@hirez.programming.kicks-ass.net>
+ <20210407201453.GA25738@lespinasse.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGbNpLKXfWpy0ZZa@kroah.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210407201453.GA25738@lespinasse.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
-> On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
-> > As for the syfs deadlock possible with drivers, this fixes it in a generic way:
+On Wed, Apr 07, 2021 at 01:14:53PM -0700, Michel Lespinasse wrote:
+> On Wed, Apr 07, 2021 at 04:48:44PM +0200, Peter Zijlstra wrote:
+> > On Tue, Apr 06, 2021 at 06:44:36PM -0700, Michel Lespinasse wrote:
+> > > --- a/arch/x86/mm/fault.c
+> > > +++ b/arch/x86/mm/fault.c
+> > > @@ -1219,6 +1219,8 @@ void do_user_addr_fault(struct pt_regs *regs,
+> > >  	struct mm_struct *mm;
+> > >  	vm_fault_t fault;
+> > >  	unsigned int flags = FAULT_FLAG_DEFAULT;
+> > > +	struct vm_area_struct pvma;
 > > 
-> > commit fac43d8025727a74f80a183cc5eb74ed902a5d14
-> > Author: Luis Chamberlain <mcgrof@kernel.org>
-> > Date:   Sat Mar 27 14:58:15 2021 +0000
-> > 
-> >     sysfs: add optional module_owner to attribute
-> >     
-> >     This is needed as otherwise the owner of the attribute
-> >     or group read/store might have a shared lock used on driver removal,
-> >     and deadlock if we race with driver removal.
-> >     
-> >     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > That's 200 bytes on-stack... I suppose that's just about acceptible, but
+> > perhaps we need a comment in struct vm_area_struct to make people aware
+> > this things lives on-stack and size really is an issue now.
 > 
-> No, please no.  Module removal is a "best effort", if the system dies
-> when it happens, that's on you.  I am not willing to expend extra energy
-> and maintance of core things like sysfs for stuff like this that does
-> not matter in any system other than a developer's box.
+> Right, I agree that having the vma copy on-stack is not ideal.
+> 
+> I think what really should be done, is to copy just the attributes of
+> the vma that will be needed during the page fault. Things like vm_mm,
+> vm_page_prot, vm_flags, vm_ops, vm_pgoff, vm_file, vm_private_data,
+> vm_policy. We definitely do not need rbtree and rmap fields such as
+> vm_prev, vm_next, vm_rb, rb_subtree_gap, shared, anon_vma_chain etc...
+> 
+> The reason I did things this way, is because changing the entire fault
+> handler to use attributes stored in struct vm_fault, rather than in
+> the original vma, would be quite intrusive. I think it would be a
+> reasonable step to consider once there is agreement on the rest of the
+> speculative fault patch set, but it's practical doing it before then.
 
-So I mentioned this on IRC, and some folks were surprised to hear that
-module unloading is unsupported and is just a development aid.
-
-Is this stance documented anywhere?
-
-If we really believe this to be true, we should make rmmod taint the
-kernel.
-
--- 
-Josh
-
+I meant it's NOT practical using attributes rather than a vma copy
+until there is sufficient agreement to merge the patchset.
