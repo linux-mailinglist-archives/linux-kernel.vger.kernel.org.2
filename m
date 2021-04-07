@@ -2,148 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7287B357825
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA934357831
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 01:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhDGXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 19:00:40 -0400
-Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:64704
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229449AbhDGXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 19:00:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YLU37oZYRKNESf+0Ig/DN/4A8q8pfYaUCyF6CbmcEKVTr/bNlYZLEuqhCJTBw0vcmOKW5qr2vy/0ka6/bCQ+l3sZZeYvY8aLZPpZhiwS1pvfoEm06wIpkQSJK9uRoAzwWUEVykciECW/mL3DT/fYEooFwQGCj+PBrfZU8mTwu2Niv5GkQS8vgDALNZZewqkGtskXkGa24yiTUGxVdfWMIH7nOsPHKebGpiGjaVXkko92NXariskTUQRXm1HZ/V6IyA1R1/04017Xkopor4XkWsnkRDbREKNd7hVJhqqaaSh6zjBP1dWaKYAH/L9H+wtsGQCxJM2aXCGvNcv2NC8Jew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OOpNfZkitU43azEhaIzoaq9rq+K7AAqP5gll3M5uEhc=;
- b=WyD/F2S96L1gSvxjlQtrgFQDD2SKzKV7XR/BTJrPuZ1uLJ98uQlsowlY/BTUBabN+5NDPWzVQ3iB9SETT6EvE5YWlxeyOivq2g+pdS795POV1PsUmCCbNxIlkfq+dGqSRguj4NfeLPObZmmpvZ6a8J9IYxC+7YPzIn6QSntndDiIAf6WHV8YCXUZDoJylAQs14bmB3/xe4QI2r4MXbRfTaIPX02wbkVkm5hDKPKASV2c30uIjdjIVvS9rMpCLLFm/PfUcF1sOs4PdjtyaREB5et419IAFdXM39wkyzB2w0UXfDOJklhYQMszuH54Y8H6e3ioIRd93lElB4qBTaMvLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OOpNfZkitU43azEhaIzoaq9rq+K7AAqP5gll3M5uEhc=;
- b=Du+4JrYrxp48dDJidgTr/x1OuMXLtBWpxbR3PT9c9Qh6PiJZlqxlhW78sK1EaGMwtgzUdj7N1GdjtKIjvleLqAPdtZx7/fR+IS+otwuPKZs9iEa8XGxw1Nu2IkOTxzLq73DkhqmKHaqul9GyRHHo1h7VPOLvaupOkTCbTuxJsJKv7ftlEtavNi0NHXSP2SEUEuO8X+G5BWVJjMtyrKky4K3FZUmH7bLtcayjPtejSb3p4VcZQkpNxRRHVFzgrbuYAexnO7jT3vbH5wXLm16LqwiVZ6NZGW4J4NDetSlp4eYKS6cEwH8us20Yt2+Igmz3/BrjBtTFwyCzgQ3ghbm4iw==
-Received: from DM5PR1101CA0010.namprd11.prod.outlook.com (2603:10b6:4:4c::20)
- by DM4PR12MB5295.namprd12.prod.outlook.com (2603:10b6:5:39f::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Wed, 7 Apr
- 2021 23:00:25 +0000
-Received: from DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:4c:cafe::5b) by DM5PR1101CA0010.outlook.office365.com
- (2603:10b6:4:4c::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
- Transport; Wed, 7 Apr 2021 23:00:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT022.mail.protection.outlook.com (10.13.172.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 23:00:25 +0000
-Received: from [10.2.165.36] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
- 2021 23:00:24 +0000
-Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <axboe@kernel.dk>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>
-CC:     <pchandru@nvidia.com>, <devicetree@vger.kernel.org>,
-        <linux-ide@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
- <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
- <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
- <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
-Message-ID: <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
-Date:   Wed, 7 Apr 2021 16:00:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229652AbhDGXEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 19:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhDGXEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 19:04:06 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BEDC061760;
+        Wed,  7 Apr 2021 16:03:54 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id k8so82049edn.6;
+        Wed, 07 Apr 2021 16:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LHXdMVGdWqcnLNYCk5kyrmXPUMHY2HsGiWO2SAAgEiA=;
+        b=R0BPXXFqRv//TdoZOB00x29d+8/vUZkJliv4wdexPed9UqN8VwUACs8JyGj1vcpxAo
+         tCnM4zXL7lN28Fcb8p74dhie5g2NpzArD/1o0GkrOU89y9HBQbIzH8YN+huWc0RzbSJV
+         c4vVUAsI3wJGPS3ol5o+6i9MuWvygI4lAGmYjhTVEZDPdd5dWm89EFPk83Ej+gYkSYLA
+         A6Zpsru7gH83jMB0FE3YOlEQR5jC3HQ+NPJlfjzQ+YP//mSUmtwsZh0JC5ori+1GSvgt
+         7K8h6TbGpUpq3pOJMVLdoOOLCkiyzPVh2OCClaj/4W+VwkfySB14UcLjGDFmmHf/0509
+         RQQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LHXdMVGdWqcnLNYCk5kyrmXPUMHY2HsGiWO2SAAgEiA=;
+        b=XBMKblP5/7qWqB6CQleO55JwLll0wxNnlNWc/MyB/QnPOZ4LQlctcDhSVw9aeI1j0/
+         rFjaKpubA8rboCCO2Qm5kLjKS6jvuRer+94MmG2AyoDLfRQe2dW6NBMa2qv0wmmplQPC
+         b3GshloqDcPzrm/FYbfArHzA4gynJ5vUWVmACddoHyDKluB0RqKKzseurbfTaM/U2sds
+         IGb2O1ayDTk1pIuB9JjamArxu39X7uq7psGQH6QuDVWDS4RcAXFyaJwLQrKPnybPtU5/
+         U8zjo62iOyQw6tBpn2KSST8HjuoBHwCNMnIEM+Mj3Icp/MG94YtkRa1j3Pz1U03DgQyp
+         CCMA==
+X-Gm-Message-State: AOAM530Wbv8CqMVoAV9sER0Hqr659CXU0G0kRWWftJz5B5Ybd+Gydd6W
+        Nm+sU6nWNMJsFEWAfpO2g53g1XY22Ktk5ak9AwM=
+X-Google-Smtp-Source: ABdhPJzAdO/+HVBAExtuuZXqjZ+R7OwPEvtRVWBrPK3FpIQ/64dOrW9+udqBN/Smaa/LOP0/L8ZL0cJm+25Ewqxjn8c=
+X-Received: by 2002:a05:6402:354d:: with SMTP id f13mr7484598edd.228.1617836633029;
+ Wed, 07 Apr 2021 16:03:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ac8213d2-8264-478e-0036-08d8fa18ee27
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5295:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB529568B7D3365E2CF6BAADFBC2759@DM4PR12MB5295.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vyXOKR3bQ80Zhphg4M5z6x0xaNTEJxVFqloZPy6yWqb/adtTZ98ELYnS3XLuWT28J6AtMb5QcjSnmYOgr9u3f4LYqc4gLX/8jEmUCXGcb0gcvhmLmM8QkumtLbkGarwcDRTy2hh0kvitJ62kQuy0/lv6MVRnqDoNQDiyUvMzGztIu4n+hjf82KFu2x9zpf+0hDeBGJrAK+faUIXVQ0nnYI80EdILPTXXSrewpvLgQPRctbkIXjm7uCMYkEnLdrE4najtAPe6vBnAICyDOLfdA8wqINgu58mTj74MgZhwFXixjPfUVUyRw6kkDWrex1cB0K0Ay0nlcIwHEJ2s8JvxiNFuSL5edDDMX5+Hz/t/qZmnXC3LyLanRq+xXAi61JhpauvPOnpQP3MMCH0XtU3Uv3dXgT2fFfRmglFdyMsFLNzoLn4UxTMN83egCvU1ICh4O5BXJHPoFbVOWeN8jeuecVZYVTY/iU2pZAigCROAMXGd3GwOPSZ5jPEbSVyA+k0wtAjCE9EitriAJ8/+ue3fKHk6Gpqx3NCpKrWcegatMvKQTKLRFm10HKzqBPjPLXjAVPSG+nVMLEpvbs02mH8Vd3Ydu4y4rVIKz0g8UVXIZeU7igRx2/x4KdkjRFYdsQIRljjugcpWaQNKPfiI06teClRKyeWDBF4yzDUvkZTJVAcMhRws16/yFSD9RdMzK2kQ
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(46966006)(36840700001)(82740400003)(16526019)(7636003)(4326008)(83380400001)(31696002)(82310400003)(186003)(31686004)(5660300002)(70586007)(70206006)(356005)(6666004)(26005)(2906002)(36756003)(86362001)(36906005)(426003)(53546011)(8936002)(47076005)(478600001)(336012)(8676002)(54906003)(110136005)(16576012)(36860700001)(2616005)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 23:00:25.3588
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac8213d2-8264-478e-0036-08d8fa18ee27
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5295
+References: <20210407212122.626137-1-adrien.grassein@gmail.com> <542d469459083fa31e37ca7feb14480831a0445f.camel@pengutronix.de>
+In-Reply-To: <542d469459083fa31e37ca7feb14480831a0445f.camel@pengutronix.de>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 7 Apr 2021 18:03:41 -0500
+Message-ID: <CAHCN7xKePMS2F6sR6iRHrfdLET1Z2=zrXB=79K9HFdW+0VYAJg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/7] imx-gpcv2 improvements
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>, qiangqing.zhang@nxp.com,
+        Alice Guo <alice.guo@nxp.com>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
+On Wed, Apr 7, 2021 at 5:13 PM Lucas Stach <l.stach@pengutronix.de> wrote:
 >
-> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
->> 07.04.2021 04:25, Sowjanya Komatineni пишет:
->>> +    if (!tegra->pdev->dev.pm_domain) {
->>> +        ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
->>> +                            tegra->sata_clk,
->>> +                            tegra->sata_rst);
->>> +        if (ret)
->>> +            goto disable_regulators;
->>> +    }
->> Hi,
->>
->> Why you haven't added condition for tegra_powergate_power_off()? I think
->> it should break GENPD and legacy PD API isn't not supported by T186 
->> at all.
->>
->> I'm also not sure whether the power up/down sequence is correct using 
->> GENPD.
->>
->> Moreover the driver doesn't support runtime PM, so GENPD should be
->> always off?
+> Hi Adrien,
 >
-> This driver already using legacy PD API's so thought its supported and 
-> added power domain device check during powergate_sequence_power_up and 
-> yes same should apply for powergate_power_off as well. But if legacy 
-> PD is not supported by T186 then not sure why original driver even 
-> using these API's.
+> I feel like I already mentioned to you some time ago that there is
+> already a much more complete patch series to add this functionality on
+> the list [1].
 >
+> If you want this functionality to go upstream, please help test and
+> extend this patch series.
 >
-Sorry just took a look and driver supports T210 and prior tegra as well. 
-T210 and prior supports legacy PD and this check is applicable for 
-those. So we should add power domain device check for power off as well.
-
-But for T186, we should have GENPD working once we add runtime PM 
-support to driver.
-
-Preetham/Thierry, Can you confirm where SATA is un powergated prior to 
-kernel?
-
-
-> But as RPM is not implemented yet for this driver, GENPD will be OFF 
-> but SATA is not in power-gate by the time kernel starts and 
-> functionally works.
+> Regards,
+> Lucas
 >
-> But with RPM implementation, I guess we can do proper power gate on/off.
+> [1] https://lore.kernel.org/linux-arm-kernel/20201105174434.1817539-1-l.stach@pengutronix.de/
+
+I took Lucas' code and attempted to build upon it to add Nano support.
+At some point, someone from NXP thought it would get really hard to
+read if we started filling that file with every supported SoC.
+To help with that, I created a patch to split the gpcv2 code into a
+gcpv2 core functions  with the individual SoC's having separate files
+to help keep things a little cleaner, and easier to read:
+gpcv2-imx7, gpcv2-imx8mq, gpcv2-imx8mm, and gpcv2-imx8mn, etc.
+I was holding off on doing anything with it, because the dt-bindings
+appeared to be stalled, and the attempt by Lucas to get the basic
+functionality was stalled.
+
+As of right now, it seems like without any changes, I can not get my
+Mini or Nano to wake from sleep unless I use a U-Boot and ATF based on
+NXP's custom branches.  When using the custom branches, I made some
+additional patches to the gpcv2 to add a flag which would prevent
+disabling USB OTG on Mini and Nano which appeared to help waking from
+sleep, and it matched some of what NXP's custom ATF was doing.
+
+I know there has been some concern about using syscon address the
+resets and enables, but I took some work Marek did, and added to it by
+adding some flags to the structure which could take the syscon and
+write different values to the blk-ctl register depending on whether or
+not it was a Mini or Nano (and probably Plus).   Using some of these,
+I was able to get the dispmix to come out of reset and enable the
+LCDIF on both Mini and Nano, but for some reason, any attempts to
+enable the mipi domain were causing failures in other domains, so I
+strilpped them out again.  I've withheld posting any of these for the
+same reasons I withheld my other patches.
+
+As soon as Lucas' patch [1] above or something similar gets accepted,
+can rebase and submit a few of the patches I have.
+
+adam
+>
+> Am Mittwoch, dem 07.04.2021 um 23:21 +0200 schrieb Adrien Grassein:
+> > Hi,
+> >
+> > This patch set aims is to add the support of the i.MX8 MM power domains
+> > on the mainline kernel.
+> >
+> > To achieve this, I do several patches
+> >   - Check errors when reading or writing registers (concerns i.MX8M base
+> >     implementation);
+> >   - Fix power up/down sequence. Handshake was not checked and it was
+> >     not called at the appropriate time (concerns i.MX8M base
+> > implementaions);
+> >   - Allow domains without power sequence control like the HSIOMIX of the
+> >     i.MX8MM.
+> >   - Add some i.MX8MM domains (HSIO and OTGS);
+> >   - Introduce quirks. For example, i.MX8MM OTG domains should not be
+> >     powered off (seen n the source code of th i.MX ATF). Quirks are
+> > easily upgrable for other cases.
+> >   - Finally I defined power domains into the imx8mm.dtb file.
+> >
+> > I know that this kind of patch is rejected by NXP ut the other way
+> > (callin ATF directly) was also rejected.
+> >
+> > I also know that NXP is concerned abou adding hundred lines of codes for
+> > each new SOC but it' the way it works on Linux. And the "added code"
+> > mainly consist of adding structures, defines and generic methods for
+> > regmap.
+> >
+> > If it's a real problem, maybe we can introduc a new "gpcv3" driver for
+> > i.MX8MM, i.MX8MN and i.MX8MP.
+> >
+> > Thanks,
+> >
+> > Adrien Grassein (7):
+> >   soc: imx: gpcv2: check for errors when r/w registers
+> >   soc: imx: gpcv2: Fix power up/down sequence
+> >   soc: imx: gpcv2: allow domains without power sequence control
+> >   dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
+> >   soc: imx: gpcv2: add HSIOMIX and USB domains for i.MX8MM
+> >   soc: imx: gpcv2: add quirks to domains
+> >   arm64: dts: imx8mm: add power-domains
+> >
+> >  .../bindings/power/fsl,imx-gpcv2.yaml         |   7 +-
+> >  arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  35 ++
+> >  drivers/soc/imx/gpcv2.c                       | 336 ++++++++++++++----
+> >  include/dt-bindings/power/imx8mm-power.h      |  21 ++
+> >  4 files changed, 333 insertions(+), 66 deletions(-)
+> >  create mode 100644 include/dt-bindings/power/imx8mm-power.h
+> >
+>
 >
