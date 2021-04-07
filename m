@@ -2,177 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C35356434
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415A3356437
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348944AbhDGGho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348954AbhDGGhZ (ORCPT
+        id S1348990AbhDGGjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:39:43 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:46630 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231335AbhDGGjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:37:25 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA77C06174A;
-        Tue,  6 Apr 2021 23:37:16 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id n38so2504470pfv.2;
-        Tue, 06 Apr 2021 23:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DYURKtLO6AtN4f6e54JwN9XZV55wF5BkCRQvFn99ABM=;
-        b=ZxX/pDJ/ycCJIAr9JnYgENG2GHwcQVqthIG3lI/ZjHzcciTdYG0WM9Qn5EHVr4dSTR
-         d07E5zpEoFac3yoE1GL+shm57oJYCLnrECJ/FrRKR4+0ncnfbb+uSyHKTX1zEo3dtSlE
-         rwXz0xlHGvHAPTy1ter8A06UZKn16leAqQaNiZgb/4+KLyiv40okJ/7YVCLixloQrLsT
-         SxPsyiQMq0bGeaCpX9XETtV7IANTvFcVBD1U5WY/+d6gnbCW3EsRXB4D1hoARcaZiSQH
-         wuHXFV845voBWjKhQdcnKVtbYu+tekOE6gTMik2S5XCme1CUtyXqN93X2sG0w9TsQcnZ
-         3m6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DYURKtLO6AtN4f6e54JwN9XZV55wF5BkCRQvFn99ABM=;
-        b=OzSixYlAq2gy7yRKW2Gk1h6RyxNzrP81rYOFDY3zXyAmiDXgjm1oA2MLGUzLx+YS52
-         goLeDJjYU63zIg1EDDqn7HakdR0vXGe3aRrxGPTHmdZueSXg3r+1C+AIYGjygPZNlv4d
-         P27TUymTexrB4z64OO/mbaLfOGRuPnxlkOxAXP/4WIvWfuR/vcH8QK3NicvN5o/Rx1aY
-         5trHwLsTxlqiNFrvW/puyR+iCXSFg3pDSdfyuftypGv6+B9gNYcV1lKfktDDUf3s8MZ7
-         6raLoUdC3irbpDjX+uYf1We86Wlo8M4CuviXfISwfBn0YatspVuVVf78ZhZknbNle8Qz
-         DFAw==
-X-Gm-Message-State: AOAM531DNNqv0vGcN4TU/Zpfai/GGd/xbyk8RHSNBEAYSCVi+ojHhmbP
-        vF+lVLyvGFyTBIFXicKmlmk=
-X-Google-Smtp-Source: ABdhPJz2yOyJ5mHpagT/V01zGJIu58qjTR0EquQjsb+wWJOg/2MywFInIX9gMohojTtConxGWnLuZQ==
-X-Received: by 2002:a63:cc05:: with SMTP id x5mr1867032pgf.254.1617777435642;
-        Tue, 06 Apr 2021 23:37:15 -0700 (PDT)
-Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id kk6sm4290581pjb.51.2021.04.06.23.37.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 23:37:15 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 23:37:13 -0700
-From:   Pavle Rohalj <pavle.rohalj@gmail.com>
-To:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 17/49] staging: sm750fb: Rename local variables to snake
- case
-Message-ID: <031bfc81af290969ddfd06d211de6fc85db283ac.1617776878.git.pavle.rohalj@gmail.com>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+        Wed, 7 Apr 2021 02:39:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UUluIAu_1617777564;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUluIAu_1617777564)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 07 Apr 2021 14:39:29 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bonbons@linux-vserver.org
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] HID: picolcd: remove unused variable
+Date:   Wed,  7 Apr 2021 14:39:22 +0800
+Message-Id: <1617777562-86341-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617776878.git.pavle.rohalj@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Avoid CamelCase" checkpatch.pl checks for local
-variables in SII164_FULL_FUNCTIONS block.
+Fix the following gcc warning:
 
-Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
+drivers/hid/hid-picolcd_core.c:332:6: warning: variable ‘ret’ set but
+not used [-Wunused-but-set-variable].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/staging/sm750fb/ddk750_sii164.c | 40 ++++++++++++-------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ drivers/hid/hid-picolcd_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm750fb/ddk750_sii164.c
-index 869d74f53a6a..758a118e4421 100644
---- a/drivers/staging/sm750fb/ddk750_sii164.c
-+++ b/drivers/staging/sm750fb/ddk750_sii164.c
-@@ -304,28 +304,28 @@ void sii164_set_power(unsigned char power_up)
- static
- void sii164_select_hot_plug_detection_mode(enum sii164_hot_plug_mode hot_plug_mode)
+diff --git a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
+index 1b5c632..682c2a2 100644
+--- a/drivers/hid/hid-picolcd_core.c
++++ b/drivers/hid/hid-picolcd_core.c
+@@ -329,7 +329,6 @@ static int picolcd_raw_event(struct hid_device *hdev,
  {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
+ 	struct picolcd_data *data = hid_get_drvdata(hdev);
+ 	unsigned long flags;
+-	int ret = 0;
  
--	detectReg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+	detect_reg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
- 		    ~SII164_DETECT_MONITOR_SENSE_OUTPUT_FLAG;
- 	switch (hot_plug_mode) {
- 	case SII164_HOTPLUG_DISABLE:
--		detectReg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_HIGH;
-+		detect_reg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_HIGH;
- 		break;
- 	case SII164_HOTPLUG_USE_MDI:
--		detectReg &= ~SII164_DETECT_INTERRUPT_MASK;
--		detectReg |= SII164_DETECT_INTERRUPT_BY_HTPLG_PIN;
--		detectReg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_MDI;
-+		detect_reg &= ~SII164_DETECT_INTERRUPT_MASK;
-+		detect_reg |= SII164_DETECT_INTERRUPT_BY_HTPLG_PIN;
-+		detect_reg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_MDI;
- 		break;
- 	case SII164_HOTPLUG_USE_RSEN:
--		detectReg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_RSEN;
-+		detect_reg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_RSEN;
- 		break;
- 	case SII164_HOTPLUG_USE_HTPLG:
--		detectReg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_HTPLG;
-+		detect_reg |= SII164_DETECT_MONITOR_SENSE_OUTPUT_HTPLG;
- 		break;
- 	}
- 
--	i2c_write_reg(SII164_I2C_ADDRESS, SII164_DETECT, detectReg);
-+	i2c_write_reg(SII164_I2C_ADDRESS, SII164_DETECT, detect_reg);
- }
- 
- /*
-@@ -336,9 +336,9 @@ void sii164_select_hot_plug_detection_mode(enum sii164_hot_plug_mode hot_plug_mo
-  */
- void sii164_enable_hot_plug_detection(unsigned char enable_hot_plug)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
- 
--	detectReg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT);
-+	detect_reg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT);
- 
- 	/* Depending on each DVI controller, need to enable the hot plug based
- 	 * on each individual chip design.
-@@ -359,11 +359,11 @@ void sii164_enable_hot_plug_detection(unsigned char enable_hot_plug)
-  */
- unsigned char sii164_is_connected(void)
- {
--	unsigned char hotPlugValue;
-+	unsigned char hot_plug_value;
- 
--	hotPlugValue = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+	hot_plug_value = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
- 		       SII164_DETECT_HOT_PLUG_STATUS_MASK;
--	if (hotPlugValue == SII164_DETECT_HOT_PLUG_STATUS_ON)
-+	if (hot_plug_value == SII164_DETECT_HOT_PLUG_STATUS_ON)
+ 	if (!data)
  		return 1;
- 	else
- 		return 0;
-@@ -379,11 +379,11 @@ unsigned char sii164_is_connected(void)
-  */
- unsigned char sii164_check_interrupt(void)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
+@@ -342,9 +341,9 @@ static int picolcd_raw_event(struct hid_device *hdev,
  
--	detectReg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+	detect_reg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT) &
- 		    SII164_DETECT_MONITOR_STATE_MASK;
--	if (detectReg == SII164_DETECT_MONITOR_STATE_CHANGE)
-+	if (detect_reg == SII164_DETECT_MONITOR_STATE_CHANGE)
- 		return 1;
- 	else
- 		return 0;
-@@ -395,12 +395,12 @@ unsigned char sii164_check_interrupt(void)
-  */
- void sii164_clear_interrupt(void)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
- 
- 	/* Clear the MDI interrupt */
--	detectReg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT);
-+	detect_reg = i2c_read_reg(SII164_I2C_ADDRESS, SII164_DETECT);
- 	i2c_write_reg(SII164_I2C_ADDRESS, SII164_DETECT,
--		    detectReg | SII164_DETECT_MONITOR_STATE_CLEAR);
-+		    detect_reg | SII164_DETECT_MONITOR_STATE_CLEAR);
- }
- 
- #endif
+ 	if (report->id == REPORT_KEY_STATE) {
+ 		if (data->input_keys)
+-			ret = picolcd_raw_keypad(data, report, raw_data+1, size-1);
++			picolcd_raw_keypad(data, report, raw_data+1, size-1);
+ 	} else if (report->id == REPORT_IR_DATA) {
+-		ret = picolcd_raw_cir(data, report, raw_data+1, size-1);
++			picolcd_raw_cir(data, report, raw_data+1, size-1);
+ 	} else {
+ 		spin_lock_irqsave(&data->lock, flags);
+ 		/*
 -- 
-2.30.2
+1.8.3.1
 
