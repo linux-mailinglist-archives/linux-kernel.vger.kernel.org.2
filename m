@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE634357099
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70693570A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344494AbhDGPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S1353686AbhDGPm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235715AbhDGPlR (ORCPT
+        with ESMTP id S1353678AbhDGPm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:41:17 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D9AC061756;
-        Wed,  7 Apr 2021 08:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mnNg26720QrcvOj5pMl+lCkR+DJYA6RC8uuPt2+RH04=; b=dy1lADERjjlGZ2fEGGQ78+xBFZ
-        OkGAC2y9rGJRqmf3k4wKbIY1R4qoAYHruHuWyaNfx4/wpGasRKMNiyG1QvtZYcDJAdOFuhgkZeemt
-        zyuCBLghXqhPJJnY9pIX1YLHTYpTHNlcHbFr7F7Cq+MjIQeIkmRhy7ny6oGScgse3EZm2Fh2Lbo25
-        QHbJD9JRMrBIPE6249ZijiYvLccNV3bTSBhD7C2t0rmvKIScdZSESCe9GEuOGgtxBprjHoUaMlxpI
-        4iFTkrzZlL/T71e2SxceecbrnzAlib7ZyTbbR42lfzTI2ooZdvr05GHoLLZurNLqq2bpZUrF+2FIv
-        OnbCuPWQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUAIS-005IqW-CR; Wed, 07 Apr 2021 15:40:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 142B43001FB;
-        Wed,  7 Apr 2021 17:40:48 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 06A4A2BF09264; Wed,  7 Apr 2021 17:40:48 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 17:40:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        andi@firstfloor.org, kan.liang@linux.intel.com,
-        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Luwei Kang <luwei.kang@intel.com>
-Subject: Re: [PATCH v4 09/16] KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation
- to support adaptive PEBS
-Message-ID: <YG3Sfy2T8tjqSgkp@hirez.programming.kicks-ass.net>
-References: <20210329054137.120994-1-like.xu@linux.intel.com>
- <20210329054137.120994-10-like.xu@linux.intel.com>
+        Wed, 7 Apr 2021 11:42:56 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F6BC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:42:45 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id y1so21222305ljm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bk1tr8gnipD6uFCQutltHcbiRHj4dh2dyGytQA9wCWU=;
+        b=eALrPYdSxG5ztUUc6HNLmohxDavZmiWNBJfKHWtxO2z25tbLT0s77VUc8jnKkT7fTG
+         Jy77kKUVud/7YniQoUals7Kr1C7oq9aQSAzuWi/Wg4BChaO5rokhNH8FUyH4cBoqSXwt
+         Og8djPFUGKELXZauXW7sX5lIy0mvXskCnW3BmQBwZr5Xy3+xnn1kCFzCspcZNg+15DIL
+         N0TUbrS0DZ/SCy9hkCIFrwB6o8AsZzFPlj6AkxEbN0xSYGh7XXaKEGndh2XJJOTqfHrl
+         5YYZEu6C8eKvN5UdN8CDz4w0tBd9Vi+mLclahiyl2yTQb3Jlf4yQH/AI8AjXwleRiWXP
+         vLOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bk1tr8gnipD6uFCQutltHcbiRHj4dh2dyGytQA9wCWU=;
+        b=o75+LghAr+YMehszJsMUyjth7AkDt/cbCBkX9TN01+zH4VwvFMMkYIdMGEHLztqQmE
+         PgGHpxGJ/32dxdD1Ii/7JCGaHt5oCjzWic7LnW9VfXM3bYTJjOeDYg7Ny/Fa0JHy99ed
+         fgyLmYURgv6cG4Jbi7FqSr6lLmwEYsjzkaxqHj6LZxu5fDQfgZdsOZRmOnw49FsLnle6
+         zHz09Ps9hPk93HXdIQIGaJJudBFoBm2L3XL6M0uu7C41SZ9cNF9nnTKbtP53f3EJshtY
+         6GUE5zsCAxqtlIufY2H0IBF8UT8CfjKdd/2X1GQDzJuzKpPMbioBvj9MomgIcGO0x3OT
+         +1tQ==
+X-Gm-Message-State: AOAM532yx9BZ+JfLY0KhiSFHW0kgfrPaddIctd4gLqv9Ww+oCAFjt/H2
+        DGXsfWg0Nk3iInuCRrXz8VkNmawa5qdJbUB4jQiDhPxxr7o=
+X-Google-Smtp-Source: ABdhPJyItEPMRdkdL43c6GKpBK8KvHU+D+sruSGo8iOAoXefA95/2e3w/6+Yu9MghbdpFLXPZb1TTFuchX6pCiMoocY=
+X-Received: by 2002:a2e:85d9:: with SMTP id h25mr2522397ljj.81.1617810163862;
+ Wed, 07 Apr 2021 08:42:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329054137.120994-10-like.xu@linux.intel.com>
+References: <20210405054848.GA1077931@in.ibm.com> <YG2diKMPNSK2cMyG@dhcp22.suse.cz>
+In-Reply-To: <YG2diKMPNSK2cMyG@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 7 Apr 2021 08:42:31 -0700
+Message-ID: <CALvZod79PDmPLYAXm=EQDrn8mQfE9aQL+Mgaai6zu=uqucbMAQ@mail.gmail.com>
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Bharata B Rao <bharata@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 01:41:30PM +0800, Like Xu wrote:
-> @@ -3863,6 +3864,12 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->  		arr[2].host = (unsigned long)ds;
->  		arr[2].guest = pmu->ds_area;
+On Wed, Apr 7, 2021 at 4:55 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 05-04-21 11:18:48, Bharata B Rao wrote:
+> > Hi,
+> >
+> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
+> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
+> > consumption increases quite a lot (around 172G) when the containers are
+> > running. Most of it comes from slab (149G) and within slab, the majority of
+> > it comes from kmalloc-32 cache (102G)
+>
+> Is this 10k cgroups a testing enviroment or does anybody really use that
+> in production? I would be really curious to hear how that behaves when
+> those containers are not idle. E.g. global memory reclaim iterating over
+> 10k memcgs will likely be very visible. I do remember playing with
+> similar setups few years back and the overhead was very high.
+> --
 
-		*nr = 3;
->  
-> +		if (baseline) {
-> +			arr[3].msr = MSR_PEBS_DATA_CFG;
-> +			arr[3].host = cpuc->pebs_data_cfg;
-> +			arr[3].guest = pmu->pebs_data_cfg;
+I can tell about our environment. Couple of thousands of memcgs (~2k)
+are very normal on our machines as machines can be running 100+ jobs
+(and each job can manage their own sub-memcgs). However each job can
+have a high number of mounts. There is no local disk and each package
+of the job is remotely mounted (a bit more complicated).
 
-			*nr = 4;
-> +		}
-> +
->  		/*
->  		 * If PMU counter has PEBS enabled it is not enough to
->  		 * disable counter on a guest entry since PEBS memory
-> @@ -3879,9 +3886,11 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->  		else {
->  			arr[1].guest = arr[1].host;
->  			arr[2].guest = arr[2].host;
-> +			if (baseline)
-> +				arr[3].guest = arr[3].host;
->  		}
->  
-> -		*nr = 3;
-> +		*nr = baseline ? 4 : 3;
-
-And you don't need yet another branch to determine a value you already
-know.
-
->  	}
+We do have issues with global memory reclaim but mostly the proactive
+reclaim makes the global reclaim a tail issue (and at tail it often
+does create havoc).
