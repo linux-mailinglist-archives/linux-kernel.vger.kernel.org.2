@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC574357807
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9917D35780B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhDGWz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDGWz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:55:56 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33262C061760;
-        Wed,  7 Apr 2021 15:55:46 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so399699oty.12;
-        Wed, 07 Apr 2021 15:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zJJBRBmoNh7AVevPubo0Tlu6DWii+4e8891pEEDBHjI=;
-        b=tYauJZsY/gR3rIUod4Y0oKs0ALsaWOKRQ/SVZ7eFqKJptKQns6rV+TMnmCxDCSgR0H
-         wuBShPAAsZ+dybrCY9cNbTsyvDfhhF3dNKfo4gWE9xw9ni4Y5LTj9eFeFDSM44Aq+jyU
-         H9fPWaWDqDANyHBpHTon8b8RDhsmT4jFZpNMt4c7q/AbzfW6bwtxZM0IhhnF/wNLrGHL
-         1UekFF0WctXYmnmziZN/kBHmEG4UP2LQmV0+LUDOmUIHy316lvT14QsoXUewotjznTYz
-         Bc86xajkEV+AewzsPoza9BQHW4EtlUc4sXS/eyX1QkPoVJoDO8DmYbXRyGyvqYHKBOOq
-         aWmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zJJBRBmoNh7AVevPubo0Tlu6DWii+4e8891pEEDBHjI=;
-        b=qAA4TzOynEBVrOtYhEGTdmNo1tNoRCtQQjiGR0Q28ms07BNFL0Zta0iPvaRRPcbq90
-         vHzQSUBNM1XI5QERR1Lkp48rrh3Bj6WBEG3HzYPHftrg+4x2c2hQ9Ep9CZ8O2ev/kuUt
-         UDfxZPFhfZtslJE8CRKsIIVp19ayYEZSokPaNngu/xww4tIkQjVEym5OSis91CcdMSK2
-         AcClJkYqRTFC0HyqoefDVeFwOPKR5wjTPpbqiTA76XQeGeIyhycDzFNPayMw8nSXFonH
-         3SlsZgVwo961xRZFNfOd1Lhq+8Kr7Imhc3hZjZsBy+NFBpKnKPN33fGMLDDLsHA793Og
-         GFGA==
-X-Gm-Message-State: AOAM530LKnrdgFrQFyihY88vbnzR3FzfUvVtKpdQ/IC79hw8+ZsBUQFK
-        LU6ApjCLoW+vlG4KmDnRW1o=
-X-Google-Smtp-Source: ABdhPJysmR1+19ZGEMyK6LNwk3NCDthz5dXudt+ttQYbA3zcKzmGwlqSOOqSPfEQULFC6h0oxGXShw==
-X-Received: by 2002:a9d:1c7:: with SMTP id e65mr4879178ote.259.1617836145665;
-        Wed, 07 Apr 2021 15:55:45 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id 3sm5156627ood.46.2021.04.07.15.55.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 15:55:44 -0700 (PDT)
-Subject: Re: [RFC net-next 1/1] seg6: add counters support for SRv6 Behaviors
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
- <20210407180332.29775-2-andrea.mayer@uniroma2.it>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <26222d31-2a27-c250-97e2-9220c098d836@gmail.com>
-Date:   Wed, 7 Apr 2021 16:55:41 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        id S229780AbhDGW4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:56:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhDGW4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:56:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD8146121E;
+        Wed,  7 Apr 2021 22:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617836193;
+        bh=qwxHfnafLkEtJfvg0xpbJnCPJGqP8nFK5xWmfBv8bsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oK3a9TmRdBL/lPwSif296HMSXd0l6WN1N2MOA+P+zKIotQS2pD10SVJ12sUAgaXu4
+         O5laFgj+aUPyxgbj/+PxFSeGa4BDSEChbd8CvmD8n8WYYUebD6vbX789MZdSIg/R6j
+         CCXDotQDOa+btLFnwgduMjz1WfXCefjT/WY4j9OjYoRg6jGKwc9zQcyHzEq7G+kFMz
+         xMXubwbFu8iSyZdkWM/Zl0Q35xpOpzWdjziSuduyzGmQUY40EPL8FZ6QezrTxWZzXE
+         lkZ99SgB2mpmis0xYjEEZ/SKh+RKxKuRR2srNQHJkusp5JxO5secmyWoj4uC+nWjcu
+         BUC8XMpFF7l6Q==
+Date:   Thu, 8 Apr 2021 00:56:27 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, Sergey.Semin@baikalelectronics.ru,
+        linux-kernel@vger.kernel.org, digetx@gmail.com, treding@nvidia.com,
+        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
+        song.bao.hua@hisilicon.com, john.garry@huawei.com,
+        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v6 2/5] i2c: core: add api to provide frequency mode
+ strings
+Message-ID: <20210407225627.GA860@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, Sergey.Semin@baikalelectronics.ru,
+        linux-kernel@vger.kernel.org, digetx@gmail.com, treding@nvidia.com,
+        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
+        song.bao.hua@hisilicon.com, john.garry@huawei.com,
+        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
+        linuxarm@huawei.com
+References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
+ <1617197790-30627-3-git-send-email-yangyicong@hisilicon.com>
+ <20210406195414.GG3122@kunai>
+ <0d48f447-d1f2-1c86-27f4-3c8b23dcaf30@hisilicon.com>
+ <YG2EjHuMb92mX5G5@smile.fi.intel.com>
+ <3fc130fe-e34a-4aaa-05bf-23db60b3b9f1@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210407180332.29775-2-andrea.mayer@uniroma2.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
+In-Reply-To: <3fc130fe-e34a-4aaa-05bf-23db60b3b9f1@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 12:03 PM, Andrea Mayer wrote:
-> diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
-> index 3b39ef1dbb46..ae5e3fd12b73 100644
-> --- a/include/uapi/linux/seg6_local.h
-> +++ b/include/uapi/linux/seg6_local.h
-> @@ -27,6 +27,7 @@ enum {
->  	SEG6_LOCAL_OIF,
->  	SEG6_LOCAL_BPF,
->  	SEG6_LOCAL_VRFTABLE,
-> +	SEG6_LOCAL_COUNTERS,
->  	__SEG6_LOCAL_MAX,
->  };
->  #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
-> @@ -78,4 +79,11 @@ enum {
->  
->  #define SEG6_LOCAL_BPF_PROG_MAX (__SEG6_LOCAL_BPF_PROG_MAX - 1)
->  
-> +/* SRv6 Behavior counters */
-> +struct seg6_local_counters {
-> +	__u64 rx_packets;
-> +	__u64 rx_bytes;
-> +	__u64 rx_errors;
-> +};
-> +
->  #endif
 
-It's highly likely that more stats would get added over time. It would
-be good to document that here for interested parties and then make sure
-iproute2 can handle different sized stats structs. e.g., commit support
-to your repo, then add a new one (e.g, rx_drops) and verify the
-combinations handle it. e.g., old kernel - new iproute2, new kernel -
-old iproute, old - old and new-new.
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+
+> > I guess exporting will save few dozens of bytes if the function is used=
+ more
+> > than once. (All strings will be duplicated or multiplied in that case)
+> >=20
+>=20
+> yes, that's one concern. since we don't need this to perform fast, an inl=
+ine
+> one maybe unnecessary.
+
+Exactly. I also don't see an advantage of the function being inline. But
+potential disadvantage, even if just small memory overhead. So, I'd
+still rather see it as a core function.
+
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBuOJcACgkQFA3kzBSg
+KbabuBAAkCMkf5eJAiOjcxmdKVrf7CgfTh/sFOhPd9bCNYC6JAtGUYj5XlSAH2Tg
+f3aY6U9A7GL90c/F/Csb0L8DKuWOFZNGHxKAYzqHtZMCyPBc5M25tFiwDOqLpiz3
+n3s11WuXdLrGeqa2ZJB5gLcypaIQbJai1FyOlgQbcLwg+wJs4Ir3XGcXRtZLV/mV
++XZcSO73jjq/EU195V47DvUEc8jNdN2+lR11AE2JOzNSkYRiDHx9dbucBu5piX+y
+/Vp5v0qMx2TbSOX5jRpRIsyRdyMHWmPQCOObuNt69n819Rh35kCqguyPwuKiglSq
+qzO2DOXNb0AH5xJ8p6x97JoRQgfMenh3IyarD+tmKYK1LZdzBEELnT54tJ09IsW6
+uY9sK1H9iQvGyPypyb/FIN6bGjnHBXz2h00SwhPQ3PEBxJfgn/wtwzOFZqwGulMq
+IBWo8nUM30HO9sJvCcClUDwld26P9H8vlNj01rJBJFrZTd7A7wAD4nFvvalcA4u7
+9ACzwPqGSIzWDhnPly1OH9islXGmYz+TloFOphZA2DtMbfIU7DRfblmiQSJ7SJZY
+h/0k8aO1LXi7YQrj44e/NXaKcn6p6BMwB5yJyrpO9jNxemwzrfbV6ZrF0HvvBqP4
+yOXoFV80GaDIJ7vyHyq7V4AvKZEJPmR5M9VgMUVhQe5VEnR9GsM=
+=bksq
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
