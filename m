@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711C1356218
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD9C356201
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348433AbhDGDrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:47:01 -0400
-Received: from m15113.mail.126.com ([220.181.15.113]:36907 "EHLO
-        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344405AbhDGDq7 (ORCPT
+        id S238827AbhDGDiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231741AbhDGDiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:46:59 -0400
-X-Greylist: delayed 1997 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Apr 2021 23:46:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=EYLDIVy5Lq+tCCcmxS
-        9wSWSpPH1DV1dAdlXfneGhR7w=; b=SPFZZtkE7t/KQmLEIBEGSzC7QSWAYnUt+q
-        dJXipiD05wCV/Jdog3/D7te4YJs/PTjZ2b/vSlR1jfNvYM/ZA4+TimnfMyt7r+vk
-        WDXFuIsVLbs7t0W9EpZ1q+ARzkteO2adkMHyoKBG0rEtkFP2Qw23TgxBlWJukXoi
-        UfJY08/2U=
-Received: from localhost.localdomain (unknown [106.16.165.72])
-        by smtp3 (Coremail) with SMTP id DcmowAAHDeGnIm1gdK2IQA--.41702S2;
-        Wed, 07 Apr 2021 11:10:44 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, airlied@redhat.com
-Cc:     wangyingjie55@126.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] drm/radeon: Fix a missing check bug in radeon_dp_mst_detect()
-Date:   Tue,  6 Apr 2021 20:10:04 -0700
-Message-Id: <1617765004-5308-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: DcmowAAHDeGnIm1gdK2IQA--.41702S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrurW8KF4kZrWftr1xKrW3ZFb_yoWkGwbE9r
-        n7Wa4rJayDKryIq3W7Z3WxX3sFgw4j9F1UWr1ftryIqry8Jr1fuF15t3WFyan8Xay7Jrn8
-        K3WrKFy3Ars3KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU9XoDUUUUU==
-X-Originating-IP: [106.16.165.72]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVxRtp1pEDOzDMAAAsE
+        Tue, 6 Apr 2021 23:38:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E623C06174A;
+        Tue,  6 Apr 2021 20:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=zfGn3ZCEYuUX2Zf7T586Kb/7P467f6W2NugI8PaU3MA=; b=uwO6woSxzpLnvc5VAiSrRrX58X
+        57Jt16kVTMPztCETXMy9MjChJnEPS15auGf7iBLyOQ6AjNa1QDF1Za1yH+6z8q9aTHxW2/ZitaPk0
+        KmOkrVX9UqNuBxjV0DW9wwJ4oGE4YoJL03Jsh2LHmVH+argW9dN/ry1XQ7s+0VmIEwa5z79hNhQ03
+        mwxzFD/GxGropZW0P30ax7ihtn6RcPtam1+ZVcQnMsEawXWEovPNuNVA3pJ4nWv02OgZli9/5cSpx
+        YjuoWNjuiqFU55eEmfuuaW+j9lhl5NXCy4fxhDlVy4+8OWdcX1ySi4eia0TzlpiNjPEaHAj8TzZy/
+        yhcGZApQ==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTz0l-00DptI-Ux; Wed, 07 Apr 2021 03:37:52 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] vfs: fs_parser: clean up kernel-doc warnings
+Date:   Tue,  6 Apr 2021 20:37:43 -0700
+Message-Id: <20210407033743.9701-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+Fix kernel-doc notation function arguments to eliminate two
+kernel-doc warnings:
 
-In radeon_dp_mst_detect(), We should check whether or not @connector
-has been unregistered from userspace. If the connector is unregistered,
-we should return disconnected status.
+fs_parser.c:322: warning: Excess function parameter 'name' description in 'validate_constant_table'
+fs_parser.c:367: warning: Function parameter or member 'name' not described in 'fs_validate_description'
 
-Fixes: 9843ead08f18 ("drm/radeon: add DisplayPort MST support (v2)")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: David Howells <dhowells@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org
 ---
- drivers/gpu/drm/radeon/radeon_dp_mst.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/fs_parser.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_dp_mst.c b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-index 2c32186c4acd..4e4c937c36c6 100644
---- a/drivers/gpu/drm/radeon/radeon_dp_mst.c
-+++ b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-@@ -242,6 +242,9 @@ radeon_dp_mst_detect(struct drm_connector *connector,
- 		to_radeon_connector(connector);
- 	struct radeon_connector *master = radeon_connector->mst_port;
+--- linux-next-20210406.orig/fs/fs_parser.c
++++ linux-next-20210406/fs/fs_parser.c
+@@ -310,7 +310,6 @@ EXPORT_SYMBOL(fs_param_is_path);
+ #ifdef CONFIG_VALIDATE_FS_PARSER
+ /**
+  * validate_constant_table - Validate a constant table
+- * @name: Name to use in reporting
+  * @tbl: The constant table to validate.
+  * @tbl_size: The size of the table.
+  * @low: The lowest permissible value.
+@@ -360,6 +359,7 @@ bool validate_constant_table(const struc
  
-+	if (drm_connector_is_unregistered(connector))
-+		return connector_status_disconnected;
-+
- 	return drm_dp_mst_detect_port(connector, ctx, &master->mst_mgr,
- 				      radeon_connector->port);
- }
--- 
-2.7.4
-
+ /**
+  * fs_validate_description - Validate a parameter description
++ * @name: The parameter name to search for.
+  * @desc: The parameter description to validate.
+  */
+ bool fs_validate_description(const char *name,
