@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DD1356CAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B57356CB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352471AbhDGMwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhDGMwl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:52:41 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5E1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 05:52:32 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id z8so20492482ljm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 05:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c6MOoIBYaq1FB2jWSG59PiLmzCCOZs346eUtfJNgae4=;
-        b=jO5TJkcVxVu3tzmZF75IY8ZZut5WsUpOx6Ar889EYfG66YONWiO1Tiv99+vCw2lDTJ
-         rwx67c4UfEo8v/dX6vqo8D5nfdO0cfqCEnTeqLSaAtay+pBpaMAmLCEjo2RsrH2Tons2
-         xKoIACfEiINUHYkrBO3Jhkgt06QXn8IDAT3681aGfb8XAcfttlHjeGObqu6dYPLLUvzL
-         GZoA7dehKZjM6vncDr7/h7MnRq2evMxhDEVO5lBbST1zJ0rr24SAOGn7CjODoY4qQIVN
-         iQn9dULPR8fJ2/T4DGW7gzMRz4haqcWbPJQSY1WxEGiFp2Jc8opyeXOa9A09V76AMCMD
-         BGTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c6MOoIBYaq1FB2jWSG59PiLmzCCOZs346eUtfJNgae4=;
-        b=VU85vTz3FUnr2iZe/4V+2pp+mjZMMz4mTpPJLHvpws3Zq3AAgl3DND7XnIVlKLPvdH
-         XjiYj7LBEs5gRuXGrG5rmnCFTi6z6wDQl2L2FaI2cxSNX5u0r7LrtrxQHBg3pr+vlNiP
-         9m0S9HNVqSb4dur9Cv7zGtdDZSpfys0R77iRLouBLyLXkNT4vzsbEIDvc5v/QRVtM8Cl
-         SZ7oVIrDhbrbrV4PcQsEYEVKh/6RUE2IBEB8kUnk4OG20DHXBlXHovvQenX3WerG2BVe
-         rFwCOD5Sz86OJ9gadU+dXHp1hmp8zGSblbHNfrZV4sd1sTdVvuwopW4iPKIVNSZ0lKO/
-         1vqg==
-X-Gm-Message-State: AOAM530G2uMUVJqEwWO4BSgzh5bLqW9vLOcikyCulA/Kpcm88vIQgVuP
-        IqpF3X3o1du30Cfw4nIoyk8RHT6PWfUr/Qtq0nRHctqc6IE1TA==
-X-Google-Smtp-Source: ABdhPJxV7n/Kf8dNdBmeRaU9S6qNbt86uhvn/5D6xRYMV9bk3xv7vbh2O6AjGS8LhNmz8YBjqoKqs4CoaUamjLKjtqk=
-X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr2032872ljm.273.1617799950344;
- Wed, 07 Apr 2021 05:52:30 -0700 (PDT)
+        id S1352485AbhDGMww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:52:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352473AbhDGMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 08:52:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB3561362;
+        Wed,  7 Apr 2021 12:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617799961;
+        bh=/Aj9ToFr5Y0Mp0vdEWHWke3cHo+D6lrPdkJwkg5yL9U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fopuVWEfqUbU8nVLFT5OpvoeEKpqH2T2URgTJTVKEC/GPfSFaTYbi7BXCGv2cABab
+         Eg9k88fk0VseeW7s20EuCrgq2acxumplScVQuCCzjs2pfv0t9cz5Pz4or2bwxBVTvX
+         U4s0eOXF+E93tjnJebYUYg7ClUqLskikTHNuYT6dkivK70Oawq2QJp03kycTHIP1Fy
+         /BMk784EtOrbD0KEgHDerOGMBBcvRUIC0pcAO/UEiJGUC5Gbl1xYfwx8WgvVt2ZyLz
+         BtXGt+ffRfaieCvA5VuAjRz1XWeRioYwlOfdBzG2NqyaXWxlIElKKmr+u9xUCEOlgh
+         spNuy81doKcWw==
+Received: by mail-ej1-f45.google.com with SMTP id r9so4944328ejj.3;
+        Wed, 07 Apr 2021 05:52:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532/AE899ecnJY/4yCxnb7VQEWQOc43uNiQKDYl2LEZJjf0zyO7Z
+        9nsdZ5wXBJslQbDMcrZ5QisgRiLSmUzMDGX+1Q==
+X-Google-Smtp-Source: ABdhPJzKzLmcyyeHWH7Ez1rGHI2pJz806QzVhSghuT5iXBesrSOuMERFtUiJ9ViiwISTQu1nJy0kKCOjwkNwwYomYGM=
+X-Received: by 2002:a17:906:55c9:: with SMTP id z9mr3470090ejp.360.1617799959659;
+ Wed, 07 Apr 2021 05:52:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1617279355.git.mchehab+huawei@kernel.org> <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-In-Reply-To: <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Apr 2021 14:52:19 +0200
-Message-ID: <CACRpkdaw3Eh=gYPAw+zZM3OCteXDyXzgqOkKsT9q_h0cQZ6GAg@mail.gmail.com>
-Subject: Re: [PATCH 32/32] pinctrl: update pin-control.rst references
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        patches@opensource.cirrus.com
+References: <20210402192054.7934-1-dariobin@libero.it> <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
+ <1727466283.11523.1617746554330@mail1.libero.it> <CAL_JsqLd+BxW9T99Sx9vgEkxdbMFe+tL7X_nZ7ExvRxVd_9GNQ@mail.gmail.com>
+ <1044574275.383115.1617779265390@mail1.libero.it>
+In-Reply-To: <1044574275.383115.1617779265390@mail1.libero.it>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 7 Apr 2021 07:52:27 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLcus=Y5nOuV1wiAiVb1mTq9N8xqJpGJD6ip+Ec_6YDyw@mail.gmail.com>
+Message-ID: <CAL_JsqLcus=Y5nOuV1wiAiVb1mTq9N8xqJpGJD6ip+Ec_6YDyw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
+To:     Dario Binacchi <dariobin@libero.it>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 2:17 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
-
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
+On Wed, Apr 7, 2021 at 2:07 AM Dario Binacchi <dariobin@libero.it> wrote:
 >
-> Update the cross-references accordingly.
 >
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Il 07/04/2021 03:16 Rob Herring <robh+dt@kernel.org> ha scritto:
+> >
+> >
+> > On Tue, Apr 6, 2021 at 5:02 PM Dario Binacchi <dariobin@libero.it> wrote:
+> > >
+> > >
+> > > > Il 06/04/2021 16:06 Rob Herring <robh+dt@kernel.org> ha scritto:
+> > > >
+> > > >
+> > > > On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
+> > > > >
+> > > > >
+> > > > > The series comes from my commit in U-boot
+> > > > > d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
+> > > > > and from the subsequent exchange of emails at the end of which I was
+> > > > > suggested to send the patch to the linux kernel
+> > > > > (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
+> > > >
+> > > > It's 'ranges' that determines translatable which is missing from the
+> > > > DT. This should have not had a 0 size either though maybe we could
+> > > > support that.
+> > >
+> > > I have replied to the email you sent to the u-boot mailing list
+> > >
+> > > >
+> > > > Does the DT have to be updated anyways for your spread spectrum support?
+> > >
+> > > The spread spectrum support patch does not need this patch to work. They belong
+> > > to two different series.
+> >
+> > That's not what I asked. Is the spread spectrum support forcing a DT
+> > update for users?
+>
+> Yes, the deltam and modfreq registers must be added to the DPLL clocks.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+That's a shame given this dts has been mostly untouched since 2013.
 
-I assume you will apply this Mauro?
+> > If the DT has to be changed anyways (not really
+> > great policy), then you could fix this in the DT at the same time.
+>
+> I could put the fix to the device tree in that series, although I wouldn't
+> create a single patch to fix and add the SSC registers. First the size-cells = <0>
+> fix patch and then the SSC patch.
+> Do you agree?
 
-Yours,
-Linus Walleij
+By at the same time, I really just meant within 1 release.
+
+But I'd like to hear TI maintainers' thoughts on this.
+
+Rob
