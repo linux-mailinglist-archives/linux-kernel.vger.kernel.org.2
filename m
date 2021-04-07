@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97B2357236
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C3E35723C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344868AbhDGQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:35:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47362 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236269AbhDGQfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:35:03 -0400
-IronPort-SDR: 6X284qua5KEzvc9w5bAR5IWfLRW4AFLTWZCLxef9vId0i8AHJTyOL85lKG/0wbWfM/HnqtAYx7
- HO42nxorwuSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="254686626"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="254686626"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:34:53 -0700
-IronPort-SDR: MH5hwMcGRORpjQZqM8n+1N8J6UzzEX28yImqYCH1YSGUEV6xgVXxn74zn82rdoSTBPD2yGtNDn
- MgQHjQjBS7uQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="415347307"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga008.fm.intel.com with SMTP; 07 Apr 2021 09:34:50 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Wed, 07 Apr 2021 19:34:46 +0300
-Date:   Wed, 7 Apr 2021 19:34:46 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [Intel-gfx] [PATCH v2] drm/i915: Fix invalid access to ACPI _DSM
- objects
-Message-ID: <YG3fJq6wkeQGafSS@intel.com>
-References: <20210402082317.871-1-tiwai@suse.de>
+        id S1354333AbhDGQhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236269AbhDGQgy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:36:54 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C96AC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 09:36:45 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso1618624pjh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 09:36:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pEEhjTO9JV5okKF7T4MRSprI70KvuiQd/IpVgcL8zGg=;
+        b=o/VII+Jx+ad6iMKK+qAdAYnwhh9a6MQvFh9liFeXv1i74yoOg4/4KHJHadvYQJ8gj6
+         ZAB+0xL/BQT/MwzCoeW1Nkdjo2BzA4JtDQeDZSsvN2/tkIrmMUclyB8bsf9LNz44wlYu
+         mnErsaqChcz4N/LsCo6sHFauznR2iFqheiSCAYaeuWfAX7MLDITO2T9jCNjmXrTDS9hp
+         qqB6ujoz1NMlwZgKys38LYk8XNvqBNIfIiYBExIkPkPzKfa5nzPFkY0Y0oQYCTsHEacI
+         U2ClAZTUJ/pnzHKumNoDWdjWghmRW6ltleYu4/bnBazDTR94cgPRq2fhXdA5nqAoEyDC
+         lGpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pEEhjTO9JV5okKF7T4MRSprI70KvuiQd/IpVgcL8zGg=;
+        b=AqWx5Tb4eOvZM/uf9vWuI8LtRTnVEOu+yKvzps0nwjcxtq8cARUiybHQ+uwSVUZBKM
+         xeNozbexYMKwlihuUn5fThz6l3Mt5+rC/av9zR5lsVB966hIzbjZ3QhNOmakTyQUfY5b
+         1IB69TXt7Byt7E8sUPC6UxH2PMc+WWQ2Nn1inCHDJ+Q+XXT5PN8eygvJtzPyv7NxZtOP
+         mAyVE1jkzYmV98h1bTXCSi5SN2GhsdYOtnS96yYm+kxqDejWcpcZsB7dVwP308ZRUREg
+         gGX69SlXeKK1FWDBNm0PoYaFabFjXUIuHEXyAs1rHryaHX4hcpwFO+FLh3IUNwgMn/IU
+         rvMA==
+X-Gm-Message-State: AOAM533d90UppSPmTXZREUZp5JkgSEoRGkMIiPHSKEhMi8EYLTODbr+3
+        JGaQtodtTjWSl3NzljN4VXDP1A==
+X-Google-Smtp-Source: ABdhPJwwpcXbX3SPUZyeqzlXInVrruizddprEMheMKqVbORqTtMo4h/iT/KC4/GRIcmDyX6msyrC2Q==
+X-Received: by 2002:a17:902:bb8e:b029:e6:3b2:5834 with SMTP id m14-20020a170902bb8eb02900e603b25834mr3815144pls.38.1617813404691;
+        Wed, 07 Apr 2021 09:36:44 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id n16sm21971850pff.119.2021.04.07.09.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:36:44 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 10:36:42 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2 3/4] remoteproc: imx: move memory parsing to rproc_ops
+Message-ID: <20210407163642.GD418374@xps15>
+References: <1617082235-15923-1-git-send-email-peng.fan@oss.nxp.com>
+ <1617082235-15923-4-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210402082317.871-1-tiwai@suse.de>
-X-Patchwork-Hint: comment
+In-Reply-To: <1617082235-15923-4-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 10:23:17AM +0200, Takashi Iwai wrote:
-> intel_dsm_platform_mux_info() tries to parse the ACPI package data
-> from _DSM for the debug information, but it assumes the fixed format
-> without checking what values are stored in the elements actually.
-> When an unexpected value is returned from BIOS, it may lead to GPF or
-> NULL dereference, as reported recently.
+On Tue, Mar 30, 2021 at 01:30:34PM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Add the checks of the contents in the returned values and skip the
-> values for invalid cases.
+> Use the rproc_ops::prepare() hook for doing memory resources
+> reallocation when reattach an remote procesor.
 > 
-> v1->v2: Check the info contents before dereferencing, too
-> 
-> BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1184074
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
->  drivers/gpu/drm/i915/display/intel_acpi.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> index e21fb14d5e07..833d0c1be4f1 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> @@ -84,13 +84,31 @@ static void intel_dsm_platform_mux_info(acpi_handle dhandle)
->  		return;
->  	}
+>  drivers/remoteproc/imx_rproc.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+ 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index b05aae0ad7a2..7cd09971d1a4 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -317,7 +317,7 @@ static int imx_rproc_mem_release(struct rproc *rproc,
+>  	return 0;
+>  }
 >  
-> +	if (!pkg->package.count) {
-> +		DRM_DEBUG_DRIVER("no connection in _DSM\n");
-> +		return;
-> +	}
-> +
->  	connector_count = &pkg->package.elements[0];
->  	DRM_DEBUG_DRIVER("MUX info connectors: %lld\n",
->  		  (unsigned long long)connector_count->integer.value);
->  	for (i = 1; i < pkg->package.count; i++) {
->  		union acpi_object *obj = &pkg->package.elements[i];
-> -		union acpi_object *connector_id = &obj->package.elements[0];
-> -		union acpi_object *info = &obj->package.elements[1];
-> +		union acpi_object *connector_id;
-> +		union acpi_object *info;
-> +
-> +		if (obj->type != ACPI_TYPE_PACKAGE || obj->package.count < 2) {
-> +			DRM_DEBUG_DRIVER("Invalid object for MUX #%d\n", i);
-> +			continue;
-> +		}
-> +
-> +		connector_id = &obj->package.elements[0];
-
-You don't want to check connector_id->type as well?
-
-> +		info = &obj->package.elements[1];
-> +		if (info->type != ACPI_TYPE_BUFFER || info->buffer.length < 4) {
-> +			DRM_DEBUG_DRIVER("Invalid info for MUX obj #%d\n", i);
-> +			continue;
-> +		}
-> +
->  		DRM_DEBUG_DRIVER("Connector id: 0x%016llx\n",
->  			  (unsigned long long)connector_id->integer.value);
->  		DRM_DEBUG_DRIVER("  port id: %s\n",
+> -static int imx_rproc_parse_memory_regions(struct rproc *rproc)
+> +static int imx_rproc_prepare(struct rproc *rproc)
+>  {
+>  	struct imx_rproc *priv = rproc->priv;
+>  	struct device_node *np = priv->dev->of_node;
+> @@ -363,10 +363,7 @@ static int imx_rproc_parse_memory_regions(struct rproc *rproc)
+>  
+>  static int imx_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+>  {
+> -	int ret = imx_rproc_parse_memory_regions(rproc);
+> -
+> -	if (ret)
+> -		return ret;
+> +	int ret;
+>  
+>  	ret = rproc_elf_load_rsc_table(rproc, fw);
+>  	if (ret)
+> @@ -399,6 +396,7 @@ static void imx_rproc_kick(struct rproc *rproc, int vqid)
+>  }
+>  
+>  static const struct rproc_ops imx_rproc_ops = {
+> +	.prepare	= imx_rproc_prepare,
+>  	.start		= imx_rproc_start,
+>  	.stop		= imx_rproc_stop,
+>  	.kick		= imx_rproc_kick,
 > -- 
-> 2.26.2
+> 2.30.0
 > 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
-
--- 
-Ville Syrjälä
-Intel
