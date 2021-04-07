@@ -2,159 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05F6357548
+	by mail.lfdr.de (Postfix) with ESMTP id 9709C357547
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355788AbhDGT4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355794AbhDGT4m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:56:42 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE781C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:56:30 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 30so9658184qva.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:56:30 -0700 (PDT)
+        id S1348913AbhDGT4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:56:43 -0400
+Received: from mail-eopbgr1400093.outbound.protection.outlook.com ([40.107.140.93]:4832
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1355788AbhDGT4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:56:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mkXvaHv+zRbeHDMRfITzcO4gNbRO3OAEJWGGQoO1BMphoSrQYQFnPzoUYAJDnYfJR5KmQftBAzcJDkZKcARrYwhXH0c9i3vRLGFu/Ln5s0q87ijML71evLiRvWkt/007/KXb+Xph3p9xpMSgqP/KUfH9kua7cL+w6sJywQL0oYBwG4eOTALlEBzssRIgRAIjimm1hdQeSzYCIyoC83wjiIgUY48X49fqd8bN/OxiyH7XiJkbhkCLUQlBc2QTQcOLYh/zAKMk4EO7pyLstiV0jyWaixDMEfFLNpAjyi9hMrVQngcnOmS6DjAkuwBH9TiAFwb7utx62vWmA21fkb+/fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AIuQVznldcD7e7XDzDtiMOk4HJyOiUb1RyVMK5T/Hgk=;
+ b=SmIc6hy+a6AU7/g9DW+LwdMc/CKj4TZZSi5tB5VD3w7gLrHazKN9lJJEfbyjdGuOFbyuez03WEpx0EAceUmqFHKAWboG+kriY2nNYVIZ6B5Q0rfoUv+RELWT4fhnPhH+e933q/6T+sE1dzY4b7ujTvNxGC5FU1fhiOHEzk9AlPgUlVqA8iQYRBdn441aTfR7RbzJfANybL6kwonP4Hajx5lexCzBvr42EpzbRdkoV30e+eUumrbyLsTH+Jh98P8a8CPWA+oRG2jldqe5tVAByCVhZ5xoF78WeKpLG60Ur4+posa5jnrXYKHfA4oci+HkGnFsbYrHnL8e1FQSxJhLgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Eng7Tpw0FiWFLkjNvSjq59edTb6xsd45/k2bJyWpHk=;
-        b=IEMh9Y9yToEHrunZIi68gQMCGR+u48t1fn4nt2y7hYbXjuhnwVgszFIB2zsEqiTvyb
-         FrWaWnhhc9nxxKgD/fgdnaDwz2NzpWcsRKlrYwLqbnxnBkLF4k5LEOe+XPXhmg/NMVlK
-         4r0kktRr6l0LuKzPbeBaLuPq6sFN96RCgj7TFWzdTdsdIw6IqKDNOq2Hi+OJxnvSYUGY
-         lyUjKYCCMk0oE5JJIpvmiV1nVuwXPOn4qZn4Pjd57Bwq02Dge9+3DmddfAtlv0q0WgJf
-         +vMZIX/cmFlc3GVvfQmZFaexlxI7EyileSPh1jknFEhk6A9lyhMwJjxPE/bp37sp6ANI
-         MgBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Eng7Tpw0FiWFLkjNvSjq59edTb6xsd45/k2bJyWpHk=;
-        b=c1KgMtsNNSurH5ppHzcexU0XB6w+o7SFY/21a3HjP8sT3RqBt5pSO7fjDifPqdIX+b
-         5FTkk0SvOWPcX4STcc4aAkWYMhmG/akVX6OCjM0TYEX/ftLjz7OUl2Q+PHytdAv+M06r
-         IrxO6cDK3P66iXD9Wfix7bdSaWKS6iSFvtrkuv/t2xDbR7kcwSbLDuQ96znL1d3EF66S
-         cOFpFCyI6EePUyzqsJV1+kMtGsKVUet7SIxeyNJMPqgLuGE7IgAPgbWBT//c+kbBx85E
-         LncgjXQdvBBaKKOQtqpullClF2zR+XGl9PRTJPCtsw7ur2B38Y5z9lHk45F/C+IpF68v
-         4+6A==
-X-Gm-Message-State: AOAM53103ElUIecKVh8LXMI5JfZcz74OJij78MViDWJyJYz30mOpGicf
-        f4Hjg6zmuzPtZLzKEEQkGmsJYVBw8zE=
-X-Google-Smtp-Source: ABdhPJxp+hcbe06ZwiMG5kRIwG9oTXWRPdTZKwgdXT9zklzHRrNr9pQYNKhtbwkrXVCkaru+HsTSmA==
-X-Received: by 2002:a05:6214:164e:: with SMTP id f14mr5347841qvw.60.1617825390157;
-        Wed, 07 Apr 2021 12:56:30 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com ([2804:14c:482:7b04::1000])
-        by smtp.gmail.com with ESMTPSA id a207sm19489303qkc.135.2021.04.07.12.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 12:56:29 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Leonardo Bras <leobras.c@gmail.com>, brking@linux.vnet.ibm.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] powerpc/iommu: Enable remaining IOMMU Pagesizes present in LoPAR
-Date:   Wed,  7 Apr 2021 16:56:13 -0300
-Message-Id: <20210407195613.131140-1-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.30.2
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AIuQVznldcD7e7XDzDtiMOk4HJyOiUb1RyVMK5T/Hgk=;
+ b=VHd2KWHb8TlfxF3rqE7QFVjhwZgNkd3jMEsZVKLBWvTdGk2WDmMaGYNE52BrpG6/NxIT/XDS2HDAZnj7pmOwiC/ApjGPpZ936LSTp0lI4LvqJsKO+FD+X4/X4AzQgY5pvriMi9+/hnDqcGkUcxW+hBb6T5a0JS1bC5avJKDp+r8=
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
+ by OS0PR01MB5778.jpnprd01.prod.outlook.com (2603:1096:604:ba::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Wed, 7 Apr
+ 2021 19:56:22 +0000
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433%7]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
+ 19:56:22 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Topic: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Index: AQHXK9TmRDzfnJqVl0Sq9GK4xidseaqpVNIAgAAjCeA=
+Date:   Wed, 7 Apr 2021 19:56:22 +0000
+Message-ID: <OSBPR01MB4773EA0F8CB5D7ADB62CC370BA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
+ <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
+ <YG3weJsOd2IZ5jRQ@kroah.com>
+In-Reply-To: <YG3weJsOd2IZ5jRQ@kroah.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f85469b9-380e-493d-86c0-08d8f9ff3808
+x-ms-traffictypediagnostic: OS0PR01MB5778:
+x-microsoft-antispam-prvs: <OS0PR01MB57787FEAB597317A6AA8765EBA759@OS0PR01MB5778.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YRPc1piN6H8APotDRMy4cY2EwiAkPXZsUNl2L3IgNHN8dsKlVSXmcT/vbqS3SgfAfiUJsTJ+gD4XuplwzGnTADwA/eC4A53tIp8O70ImyPx+Qk0piK/folZRzTkZnmxG+3rKwM1I5QWA0/cJ3+vZY0C5c95yzF8dApFrUyzS/jrcmRcq7qJn6VfXgt7evKDUZ+QKq5Hixe49L04VqcW7hUwC753a5ixMQJwOgRIC2kiGfjuz6HGpYrNvDhkX1q0PHN9cekqMzjeL+hPOQA9s3JC+Gp8SQzAu/XnPSXX0A2MlSdsGeV2TxhGqvSEZ9g6C9oixSKCO4+i2Z0gl1DbdnqQDJFRCy/suhDOHYfFr5iuEriFH6lJ3KH84s6CrfM58toMK3AIYxx71ehA6TbvifCEqRqnJ8k2heS4Y4XzkMkr69Z0aHEH9Lp6XF4pC4Udc17znuppvfBdoCWJAxKh7SwzHg29lfzvVC+Wh35+Vr5wFsfFxFcwxjbZJQou7PYK3dgN8HQfF4I2pIOtAtt2YG6FNbKEDN8ouS9a4zIy0ASm5DnXFF0uZHf/whApclurWRukdffjqgEVcdA5gb2hODv+B9Kd3ErsScxwN5Ng1WUfqq6UgKzmP2/yWPNtj1I63neI0qtRAcBSQuV7rxwN7xXs2zxbjwQ2est14ltsME7s=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(366004)(396003)(4326008)(66446008)(558084003)(54906003)(52536014)(5660300002)(66476007)(64756008)(66556008)(66946007)(76116006)(2906002)(9686003)(316002)(38100700001)(55016002)(478600001)(71200400001)(86362001)(6916009)(6506007)(7696005)(8676002)(186003)(26005)(8936002)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?aHqNlbPew+4z0Ur35XDHlVHoD07cLifwVHpN8teZVqGWaJKgqT261XSA+YYm?=
+ =?us-ascii?Q?SFZpxRU8+fvsMbdnDGvZe9AgqVfNEmIngKSTPqyQ00+f0FgVW2LxUIjYcSwI?=
+ =?us-ascii?Q?RjrmK8u5Azj9XhNxguKOpDJaz0pQGrhNz+79BG5ymWFrJoROfueFp6nAdpn3?=
+ =?us-ascii?Q?jrs90zIsdwoqaiqkAEY41RoacDCyOW9FfpH4cMYUimdALw+BnhEJ/JWkb8ib?=
+ =?us-ascii?Q?H038vtre27oY3PMA9DSWn6hyk6oNhSo50qQzaYbuD7KmkhWJbPZaSt7PK5YI?=
+ =?us-ascii?Q?B0zAQjjXR35IbcvevC8IaBto/aA7Fl48UZbmgfZKKAuF+qhGrOuyzYZFpVuf?=
+ =?us-ascii?Q?meT9HA/KnOqtJnmNcbBXYAYUFoXZARNiHDDVbkZZHKidIzF1q1lNjwORaKSc?=
+ =?us-ascii?Q?AzWQNz1TPcb3yBSEV3Ab44AGkXNs/kzBysmIjvJu1xVB+RBErU0mnT3cXW8W?=
+ =?us-ascii?Q?3y5xht3jiiaS3dDVZv9goPN+B1UG0nPm7JvC9+C+PHUcrYJnvopg/jt4A4rr?=
+ =?us-ascii?Q?Xe66lxO6gkMJwqZAFEmBdq1I3cES/i8liTxV8cYTG2kgXZssxV/ELILVRTjh?=
+ =?us-ascii?Q?jE0DitgY2YKJKl6XZXZ6UrUM2ZwOpliU/9h9N3N/31GvQyxoUjiZXIVDWdot?=
+ =?us-ascii?Q?30nxvBIPU+nNyWdFoP3hkLpSsrsfHwFxw2gYEOEsSjrpGL6/AQ21RkYUou0m?=
+ =?us-ascii?Q?+OmtwPiM8X7a1YHISSg2sGwrG+6jHpkx55Ev+GEPhLYUBGftNyzDC1hBcJj6?=
+ =?us-ascii?Q?EA+O3zAlZUxIQnJmi628jxO4H0nA7/OxvHYXdRgAk5wM6aYKOHe0DVKT/GyS?=
+ =?us-ascii?Q?x9TtpNjXHj9+pjUWfFGnZsjJJVEhKfcdKzUtysQ5IFqwnqksNHKtUphPnz+V?=
+ =?us-ascii?Q?1aH/Q3IOWF5cNEINPQ9loYIG940ISyMEf3+D4mIoJw5BUmMVu+aNf0DWO/ze?=
+ =?us-ascii?Q?oTP4/2xBNlHj+/R3DXxESWLDUnTj8ViHFbPhahbbCP4Y1pL4FV2IMHPc8aQ/?=
+ =?us-ascii?Q?Cy7XVKx8kM5Cd8juIgwW769cATJQxJ2ZLmJ04vz+kMmnztnFDb4tLsy5L833?=
+ =?us-ascii?Q?0DMq9nNYIiGgtImg89lTmA08VTSBZ4GHaHNxskwayPSg1m+TSJpAVXpjpGxB?=
+ =?us-ascii?Q?0ZI86aOP21DtlSC4YE3GeVCuLgFztiHlGYzG8LZVlGp8tc2qdT8AJyMAGfqM?=
+ =?us-ascii?Q?WZJp7io1blic4APWG+egyHdl1UyjNveIqImpvuyAbl/FVwYiwytHYrOMUmUa?=
+ =?us-ascii?Q?u89585aS0jxQe+dH77ltDDAP8WfgGj+QKEQOIz/Sqpsu1PufUkYjZP2H50e6?=
+ =?us-ascii?Q?RKVgHbH7AY6s/dvqpSSO9KOf?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f85469b9-380e-493d-86c0-08d8f9ff3808
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2021 19:56:22.3185
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: G4fQJ8DdG+2cfD9xQH7K/e2/mpghF1Jeyn91H57M78QCxHbeb8oNmuXjv13Ah8U4dBCMGt6lo6PELNlB0C50RQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5778
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to LoPAR, ibm,query-pe-dma-window output named "IO Page Sizes"
-will let the OS know all possible pagesizes that can be used for creating a
-new DDW.
+>=20
+> If you do nothing in an open/release function, then there is no need to h=
+ave
+> them at all, you can remove them.
+>=20
+> But this feels odd, how do you know what device you are using in your ioc=
+tl
+> command?
+>=20
 
-Currently Linux will only try using 3 of the 8 available options:
-4K, 64K and 16M. According to LoPAR, Hypervisor may also offer 32M, 64M,
-128M, 256M and 16G.
+The type of board is passed by mfd driver through platform data
 
-Enabling bigger pages would be interesting for direct mapping systems
-with a lot of RAM, while using less TCE entries.
-
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
----
- arch/powerpc/platforms/pseries/iommu.c | 49 ++++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index 9fc5217f0c8e..6cda1c92597d 100644
---- a/arch/powerpc/platforms/pseries/iommu.c
-+++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -53,6 +53,20 @@ enum {
- 	DDW_EXT_QUERY_OUT_SIZE = 2
- };
- 
-+#define QUERY_DDW_PGSIZE_4K	0x01
-+#define QUERY_DDW_PGSIZE_64K	0x02
-+#define QUERY_DDW_PGSIZE_16M	0x04
-+#define QUERY_DDW_PGSIZE_32M	0x08
-+#define QUERY_DDW_PGSIZE_64M	0x10
-+#define QUERY_DDW_PGSIZE_128M	0x20
-+#define QUERY_DDW_PGSIZE_256M	0x40
-+#define QUERY_DDW_PGSIZE_16G	0x80
-+
-+struct iommu_ddw_pagesize {
-+	u32 mask;
-+	int shift;
-+};
-+
- static struct iommu_table_group *iommu_pseries_alloc_group(int node)
- {
- 	struct iommu_table_group *table_group;
-@@ -1099,6 +1113,31 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
- 			 ret);
- }
- 
-+/* Returns page shift based on "IO Page Sizes" output at ibm,query-pe-dma-window. See LoPAR */
-+static int iommu_get_page_shift(u32 query_page_size)
-+{
-+	const struct iommu_ddw_pagesize ddw_pagesize[] = {
-+		{ QUERY_DDW_PGSIZE_16G,  __builtin_ctz(SZ_16G)  },
-+		{ QUERY_DDW_PGSIZE_256M, __builtin_ctz(SZ_256M) },
-+		{ QUERY_DDW_PGSIZE_128M, __builtin_ctz(SZ_128M) },
-+		{ QUERY_DDW_PGSIZE_64M,  __builtin_ctz(SZ_64M)  },
-+		{ QUERY_DDW_PGSIZE_32M,  __builtin_ctz(SZ_32M)  },
-+		{ QUERY_DDW_PGSIZE_16M,  __builtin_ctz(SZ_16M)  },
-+		{ QUERY_DDW_PGSIZE_64K,  __builtin_ctz(SZ_64K)  },
-+		{ QUERY_DDW_PGSIZE_4K,   __builtin_ctz(SZ_4K)   }
-+	};
-+
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ddw_pagesize); i++) {
-+		if (query_page_size & ddw_pagesize[i].mask)
-+			return ddw_pagesize[i].shift;
-+	}
-+
-+	/* No valid page size found. */
-+	return 0;
-+}
-+
- /*
-  * If the PE supports dynamic dma windows, and there is space for a table
-  * that can map all pages in a linear offset, then setup such a table,
-@@ -1206,13 +1245,9 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 			goto out_failed;
- 		}
- 	}
--	if (query.page_size & 4) {
--		page_shift = 24; /* 16MB */
--	} else if (query.page_size & 2) {
--		page_shift = 16; /* 64kB */
--	} else if (query.page_size & 1) {
--		page_shift = 12; /* 4kB */
--	} else {
-+
-+	page_shift = iommu_get_page_shift(query.page_size);
-+	if (!page_shift) {
- 		dev_dbg(&dev->dev, "no supported direct page size in mask %x",
- 			  query.page_size);
- 		goto out_failed;
--- 
-2.30.2
-
+rsmu->type =3D pdata->type;
