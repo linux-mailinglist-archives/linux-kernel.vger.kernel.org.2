@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A73A3574C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FAF3574C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355550AbhDGTDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355544AbhDGTDk (ORCPT
+        id S1355558AbhDGTEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:04:38 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:13026 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229603AbhDGTEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:03:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB1EC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:03:30 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08fb0068bab63ea534f357.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:68ba:b63e:a534:f357])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A0E11EC027D;
-        Wed,  7 Apr 2021 21:03:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617822208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=JUOYRsoSNtxMpZveLJ6dY4PyEUlazbU0SkSDty5Zntg=;
-        b=SX+Ta7aY7OoQKmk+/6iAH5iiPBmVuHU5k5NQf0B27AX5iXwtcFXHbOn96kakmdXydwk+JZ
-        i4GelD6ZGHPtUD+5dLGv6YrayKCV/lusYTyu/E7hKNWr7xv0uwlQB+SkND8njXqaWJWIbl
-        6PF6qk1+Kr69fXl9znMbSQIfba3GXyw=
-Date:   Wed, 7 Apr 2021 21:03:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] x86/kernel: remove unneeded dead-store initialization
-Message-ID: <20210407190328.GM25319@zn.tnic>
-References: <1617177624-24670-1-git-send-email-yang.lee@linux.alibaba.com>
- <20210407120239.GD25319@zn.tnic>
- <CAKwvOdnuKazNhqXAM9Qj7DgCW=PqVHkyyfYWytmkyBzv0QeYsw@mail.gmail.com>
+        Wed, 7 Apr 2021 15:04:31 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AIDj1E6scUsseQbd/8/hkTyCD7skDttV00zAX?=
+ =?us-ascii?q?/kB9WHVpW+afkN2jm+le6A/shF8qKRMdsP2JJaXoexjh3LFv5415B92fdS3HnE?=
+ =?us-ascii?q?ftE41494vlxFTbak7D38pQz71pfaQ7KPCYNzlHpP336gW5DNosqePvmJyAv/vU?=
+ =?us-ascii?q?zHtmUGhRBZ1I0gERMGqmO3FtSBIDLZQ0E4f03Kp6jgvlSDAsYsO3CmJtZYX+jt?=
+ =?us-ascii?q?fA/aiIXSI7?=
+X-IronPort-AV: E=Sophos;i="5.82,203,1613430000"; 
+   d="scan'208";a="502073259"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:04:11 +0200
+Date:   Wed, 7 Apr 2021 21:04:11 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Liam Beguin <liambeguin@gmail.com>, mturquette@baylibre.com,
+        sboyd@kernel.org
+cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        kbuild-all@lists.01.org
+Subject: [PATCH] clk: fix semicolon.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2104072102490.11549@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnuKazNhqXAM9Qj7DgCW=PqVHkyyfYWytmkyBzv0QeYsw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:41:26AM -0700, Nick Desaulniers wrote:
-> You do have clang-tidy installed right? `which clang-tidy`?
+From: kernel test robot <lkp@intel.com>
 
-Yah, installed that and was able to repro:
+Remove unneeded semicolon.
 
-arch/x86/kernel/cpu/cacheinfo.c:880:24: warning: Value stored to 'this_cpu_ci' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
-        struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-arch/x86/kernel/cpu/cacheinfo.c:880:24: note: Value stored to 'this_cpu_ci' during its initialization is never read
+Generated by: scripts/coccinelle/misc/semicolon.cocci
 
-Thx.
+CC: Liam Beguin <lvb@xiphos.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
--- 
-Regards/Gruss,
-    Boris.
+url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-support-for-the-lmk04832/20210407-085408
+base:   f40ddce88593482919761f74910f42f4b84c004b
+:::::: branch date: 9 hours ago
+:::::: commit date: 9 hours ago
 
-https://people.kernel.org/tglx/notes-about-netiquette
+ clk-lmk04832.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/clk/clk-lmk04832.c
++++ b/drivers/clk/clk-lmk04832.c
+@@ -1172,7 +1172,7 @@ static int lmk04832_probe(struct spi_dev
+
+ 		lmk->clkout[reg].sysref =
+ 			of_property_read_bool(child, "ti,clkout-sysref");
+-	};
++	}
+
+ 	lmk->regmap = devm_regmap_init_spi(spi, &regmap_config);
+ 	if (IS_ERR(lmk->regmap)) {
