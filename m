@@ -2,126 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B61356CCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361A1356CCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352532AbhDGNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352520AbhDGNAo (ORCPT
+        id S1352522AbhDGNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:00:46 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:37574 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbhDGNAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:00:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60ABC061756;
-        Wed,  7 Apr 2021 06:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=MwmTlFwIZ0WzFA7gpz/Eu4MuKSxZumxg+JxlyNKfb2E=; b=a34kgWuUKrL77AW2ECUJOqgeL
-        fgvzS2gIsLSSqcjUVD8/SOhvbjo4b+c9gEhfFsMIPBQ6AnBD6j56PiTRa3+30bFhPYZVN84GFVmYP
-        TMy3uXGFp5PWXKA8fAFNBo81Eb5kFZbxvwY57wokoZqaPc3YuCCdTQyuUjA/UOdmI9E+hd0ScyaaE
-        TPs1cS9Bztbb5Ia+1a/geN3obzQGxdHepvtOUvJfHlzLO2V9KtERh9fki2g+KTtA0XMVooqz/qjLZ
-        rOoM6r3YmQv1QD2d0giCqngoIN0oRoyZo15oBKvo1zaTsAGF2Gfb4/pLp6PdllUejbs+FQoEV43K6
-        AykgOgGXg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52186)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lU7n1-0008Ht-84; Wed, 07 Apr 2021 14:00:11 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lU7mx-0001zo-Dm; Wed, 07 Apr 2021 14:00:07 +0100
-Date:   Wed, 7 Apr 2021 14:00:07 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "Voon, Weifeng" <weifeng.voon@intel.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
-        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "fugang.duan@nxp.com" <fugang.duan@nxp.com>,
-        "Chuah, Kim Tatt" <kim.tatt.chuah@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next v2 0/2] Enable 2.5Gbps speed for stmmac
-Message-ID: <20210407130006.GH1463@shell.armlinux.org.uk>
-References: <20210405112953.26008-1-michael.wei.hong.sit@intel.com>
- <YGsMbBW9h4H1y/T8@lunn.ch>
- <CO1PR11MB5044B1F80C412E6F0CAFD5509D779@CO1PR11MB5044.namprd11.prod.outlook.com>
- <YGsgHWItHcLFV9Kg@lunn.ch>
- <SN6PR11MB313690E7953BF715A8F488D688769@SN6PR11MB3136.namprd11.prod.outlook.com>
- <YGy/N+cRLGTifJSN@lunn.ch>
- <SN6PR11MB3136E862F38D7C573759989188759@SN6PR11MB3136.namprd11.prod.outlook.com>
- <YG2pN8uupbXP7xqU@lunn.ch>
+        Wed, 7 Apr 2021 09:00:39 -0400
+Received: by mail-wr1-f53.google.com with SMTP id u11so5456128wrp.4;
+        Wed, 07 Apr 2021 06:00:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NwLKTNKDKP75b7p50B/o71iDiFr0JTQFhm3wPogEFdU=;
+        b=uZc1CazioGqDDGzGCDI/kQr2FLSJ+clYEQ85NDTpaTtJ9LTkTeMc2kiOZ6wdebpnii
+         LSoJKiPRbMQUDv5hcCBuCHqQTuAMpCRzY/IEYs+Fs03ZOUxxNfZbFiOeC1EiZysMslrS
+         +yEBhxJja1siX4XqrwJt2uGOW8PWgrnkIuOGd0+vEQoIHuOtaL2UE4CrY0xUjVa/jD+I
+         //SOYsB5MIvNziNlPk5xlcJvoZPRY7G5sBONIAcS+OeMCUttcgtRFfWQblQCfO648AFo
+         dL1FaIx6lpD/x9MhKEtufPn80QVnDmtp8JLmxWoR7+RWiNBFhbW7eTBw3gg/F9XrnctE
+         WPlA==
+X-Gm-Message-State: AOAM531HNNibMTEByaVRxXsqT2vvSfotodaTAzAzf1xrksynCYaxzCub
+        /0bh1KFTfzBC08uFNuN09PQ=
+X-Google-Smtp-Source: ABdhPJze8GqaoC7VT4EBUo/P3ST9s9tLdsZXJdoXUKWyW/Gkw8UQr9VDY3nhMuQID9gqjD7B0tz1BA==
+X-Received: by 2002:a05:6000:2a7:: with SMTP id l7mr3338450wry.413.1617800427739;
+        Wed, 07 Apr 2021 06:00:27 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id k3sm19834667wrc.67.2021.04.07.06.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 06:00:26 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 13:00:25 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Luca Fancellu <luca.fancellu@arm.com>
+Cc:     sstabellini@kernel.org, jgross@suse.com, jgrall@amazon.com,
+        boris.ostrovsky@oracle.com, tglx@linutronix.de, wei.liu@kernel.org,
+        jbeulich@suse.com, yyankovskyi@gmail.com,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, bertrand.marquis@arm.com
+Subject: Re: [PATCH] xen/evtchn: Change irq_info lock to raw_spinlock_t
+Message-ID: <20210407130025.tfe6aszjyjzz6ar2@liuwe-devbox-debian-v2>
+References: <20210406105105.10141-1-luca.fancellu@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG2pN8uupbXP7xqU@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210406105105.10141-1-luca.fancellu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:44:39PM +0200, Andrew Lunn wrote:
-> > Intel mgbe is flexible to pair with any PHY. Only Aquantia/Marvell
-> > multi-gige PHY can do rate adaption right?
+On Tue, Apr 06, 2021 at 11:51:04AM +0100, Luca Fancellu wrote:
+> Unmask operation must be called with interrupt disabled,
+> on preempt_rt spin_lock_irqsave/spin_unlock_irqrestore
+> don't disable/enable interrupts, so use raw_* implementation
+> and change lock variable in struct irq_info from spinlock_t
+> to raw_spinlock_t
 > 
-> The Marvell/Marvell multi-gige PHY can also do rate
-> adaptation. Marvell buying Aquantia made naming messy :-(
-> I should probably use part numbers.
+> Cc: stable@vger.kernel.org
+> Fixes: 25da4618af24 ("xen/events: don't unmask an event channel
+> when an eoi is pending")
 > 
-> > Hence, we still need to take care of others PHYs.
-> 
-> Yes, it just makes working around the broken design harder if you want
-> to get the most out of the hardware.
+> Signed-off-by: Luca Fancellu <luca.fancellu@arm.com>
 
-FYI, we really need to come up with a good solution to the rate
-adaption issue. What we have today really is not good.
-
-For example, take a MAC that supports only 2500base-X connected to a
-PHY that does rate adaption from 2500base-X to media speed.
-
-So, the PHY could be capable of 10, 100, 1G and 2.5G media speeds,
-and would advertise those in its supported mask. The MAC however
-would only report (via the validate callback) support for 2.5G speed
-because that's all that 2500base-X supports.
-
-What we really want when a rate adapting capable PHY is connected is
-to ignore what ethtool link modes the MAC supports beyond "does it
-support this interface type" and just use the PHY supported mask.
-However, that's another property of the PHY that we need to know from
-phylib, and it's not clear when that property should be made available.
-As we know from Marvell PHYs, it depends on the configurable MAC_TYPE
-setting, so could only be available once we've selected an interface
-mode for the PHY. On the other hand, we might need to know what
-interface mode(s) are available from the PHY and MAC to select an
-appropriate mode.
-
-This is not easy problems to overcome; I have had some patches for some
-time which allow some combination of MAC and PHY to advertise which
-interface mode(s) they support but I haven't been entirely happy with
-them to push them upstream - and it would be another phylink API change
-which means having to maintain the new and old code until everything
-has been updated (thereby making stuff a lot more complex.) After the
-last round of phylink API updates and the hostility from people over
-that, this is a big demotivating factor.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
