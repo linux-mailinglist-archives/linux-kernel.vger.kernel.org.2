@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420F13563B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C973563B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345381AbhDGGFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:05:48 -0400
-Received: from muru.com ([72.249.23.125]:51744 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237120AbhDGGFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:05:44 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id D2BE880A4;
-        Wed,  7 Apr 2021 06:06:42 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 09:05:30 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: gpio-keys - fix crash when disabliing GPIO-less
- buttons
-Message-ID: <YG1Lqra86g3GekmG@atomide.com>
-References: <YG1DFFgojSVfdpaz@google.com>
+        id S1345028AbhDGGHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:07:49 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40253 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232594AbhDGGHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 02:07:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUlqnWU_1617775652;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUlqnWU_1617775652)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 07 Apr 2021 14:07:37 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] staging: rtl8192u: remove unused variable
+Date:   Wed,  7 Apr 2021 14:07:30 +0800
+Message-Id: <1617775650-42645-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG1DFFgojSVfdpaz@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dmitry Torokhov <dmitry.torokhov@gmail.com> [210407 05:30]:
-> My brain-damaged adjustments to Paul's patch caused crashes in
-> gpio_keys_disable_button() when driver is used in GPIO-less (i.e.
-> purely interrupt-driven) setups, because I mixed together debounce and
-> release timers when they are in fact separate:
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000c
-> ...
-> PC is at hrtimer_active+0xc/0x98
-> LR is at hrtimer_try_to_cancel+0x24/0x140
-> ...
-> [<c01c43b8>] (hrtimer_active) from [<c01c50f4>] (hrtimer_try_to_cancel+0x24/0x140)
-> [<c01c50f4>] (hrtimer_try_to_cancel) from [<c01c5224>] (hrtimer_cancel+0x14/0x4c)
-> [<c01c5224>] (hrtimer_cancel) from [<bf1cae24>] (gpio_keys_attr_store_helper+0x1b8/0x1d8 [gpio_keys])
-> [<bf1cae24>] (gpio_keys_attr_store_helper [gpio_keys]) from [<bf1cae80>] (gpio_keys_store_disabled_keys+0x18/0x24 [gpio_keys])
-> [<bf1cae80>] (gpio_keys_store_disabled_keys [gpio_keys]) from [<c038ec7c>] (kernfs_fop_write_iter+0x10c/0x1cc)
-> [<c038ec7c>] (kernfs_fop_write_iter) from [<c02df858>] (vfs_write+0x2ac/0x404)
-> [<c02df858>] (vfs_write) from [<c02dfaf4>] (ksys_write+0x64/0xdc)
-> [<c02dfaf4>] (ksys_write) from [<c0100080>] (ret_fast_syscall+0x0/0x58)
-> 
-> Let's fix it up.
-> 
-> Fixes: c9efb0ba281e ("Input: gpio-keys - use hrtimer for software debounce, if possible")
-> Reported-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
-> 
-> Tony, could you please try this patch and see if it fixes the crash you
-> observed?
+Fix the following gcc warning:
 
-Yes great, thanks this works for me:
+drivers/staging/rtl8192u/r8192U_core.c:3419:6: warning: variable
+‘reset_status’ set but not used [-Wunused-but-set-variable].
 
-Tested-by: Tony Lindgren <tony@atomide.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/staging/rtl8192u/r8192U_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index 9fc4adc..f48c042 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -3416,7 +3416,6 @@ int rtl8192_down(struct net_device *dev)
+ void rtl8192_commit(struct net_device *dev)
+ {
+ 	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int reset_status = 0;
+ 
+ 	if (priv->up == 0)
+ 		return;
+@@ -3428,7 +3427,7 @@ void rtl8192_commit(struct net_device *dev)
+ 	ieee80211_softmac_stop_protocol(priv->ieee80211);
+ 
+ 	rtl8192_rtx_disable(dev);
+-	reset_status = _rtl8192_up(dev);
++	_rtl8192_up(dev);
+ }
+ 
+ static void rtl8192_restart(struct work_struct *work)
+-- 
+1.8.3.1
+
