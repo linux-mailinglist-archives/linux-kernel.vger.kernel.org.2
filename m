@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67D73577D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F293577D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhDGWiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:38:50 -0400
-Received: from ozlabs.org ([203.11.71.1]:42145 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhDGWit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:38:49 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S231187AbhDGWj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:39:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229449AbhDGWjV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:39:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617835150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RNasGRICqS6NJiBxRNH7M3e6SxbYtc76TWY+YxUdPJQ=;
+        b=VJ0NWkNpXP5AQ8JyWb8nrKZO0wsQ+LqDIp/V6182HA19pOXuWS7es2MqsFQciNuSogmvie
+        CT7YfwUgnqMKIfeCVJSmkCZg4yW7D22DUMhFIkQq1VMlI/ZF/fB9VZT4o9lxkctvKFXwF+
+        THIAVJZc68fNxzSGaZy2+ReuiUZRtyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-h_7rBo_JPUGEyMxa_5P5PA-1; Wed, 07 Apr 2021 18:39:08 -0400
+X-MC-Unique: h_7rBo_JPUGEyMxa_5P5PA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FFznn2jcJz9sPf;
-        Thu,  8 Apr 2021 08:38:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617835117;
-        bh=GLfpV8xEdZPIt8FbEWYgmNWiNnbuZSPJgayKLkTMwAQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FRwZcKERbNh61M327RHQmw6Tw2S5UWxBgIEB+d7+EiJoT+ccT1k7NFjgUXGbFPtt2
-         EVwxjU74+OV9xS4jdFqGFaa5ALq7v3m+GRsj58sIT9ClLgM+a7T3VcxlXqnJy/pRol
-         5yNEZCZkHOUS/3Y5xzwP1TXDZbT02YkxvLbvDpW5XxaZCI7Y+3u0uP9w9AJJpQcM6+
-         75bNmrqMTJaYR+z7sgXs2P+da1cCGX94heAg/29nSC7oR8caDT10ZOVlPW3pM8LUT+
-         P+bijSaCMHZp8nmCgReJApV+wkrhHrVVf4H5WkmgS6wsZQh0VqVu1I/K/ogIyEUnLs
-         d7dKb66lwXJhw==
-Date:   Thu, 8 Apr 2021 08:38:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the pm tree
-Message-ID: <20210408083836.39c4063a@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03734107ACC7;
+        Wed,  7 Apr 2021 22:39:08 +0000 (UTC)
+Received: from treble (ovpn-119-205.rdu2.redhat.com [10.10.119.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 74C751002388;
+        Wed,  7 Apr 2021 22:39:07 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 17:39:05 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ramakrishna Saripalli <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 0/5] Introduce support for PSF mitigation
+Message-ID: <20210407223905.5dqgzdaibvgq7jeq@treble>
+References: <20210406155004.230790-1-rsaripal@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5Xd=2vVsFS.l91hXittWDoJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210406155004.230790-1-rsaripal@amd.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5Xd=2vVsFS.l91hXittWDoJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 06, 2021 at 10:49:59AM -0500, Ramakrishna Saripalli wrote:
+> Because PSF speculation is limited to the current program context,
+> the impact of bad PSF speculation is very similar to that of
+> Speculative Store Bypass (Spectre v4)
+> 
+> Predictive Store Forwarding controls:
+> There are two hardware control bits which influence the PSF feature:
+> - MSR 48h bit 2 – Speculative Store Bypass (SSBD)
+> - MSR 48h bit 7 – Predictive Store Forwarding Disable (PSFD)
+> 
+> The PSF feature is disabled if either of these bits are set.  These bits
+> are controllable on a per-thread basis in an SMT system. By default, both
+> SSBD and PSFD are 0 meaning that the speculation features are enabled.
+> 
+> While the SSBD bit disables PSF and speculative store bypass, PSFD only
+> disables PSF.
+> 
+> PSFD may be desirable for software which is concerned with the
+> speculative behavior of PSF but desires a smaller performance impact than
+> setting SSBD.
 
-Hi all,
+Hi Ramakrishna,
 
-In commit
+Is there a realistic scenario where an application would want to disable
+PSF, but not disable SSB?
 
-  fa26d0c778b4 ("ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=3Dm")
+Maybe I'm missing something, but I'd presume an application would either
+care about this class of attacks, or not.
 
-Fixes tag
+-- 
+Josh
 
-  Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_d=
-ead()")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5Xd=2vVsFS.l91hXittWDoJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBuNGwACgkQAVBC80lX
-0GyoGQgAgdYTTrsiTCTkkCevms5td/tWbnLVNuWHpfM22NzbmBvFhe28wLf3DhVR
-ymmcfbeM28pd+JIFAWT7dn+obj7xg1Gn9APXmoKPW7FfjgtCdBACazm18mMOpwNz
-PSogBkMN6iqUibcjf+9/s03pq6ClugdN8gWr14pPX8VH7rh1MgjnDgzNbmQwFihI
-YEK80IhHmGFapNaREuQuMpwRApZMGnh2RZblOIT+3FCiu2exSIK6lGguRZF7hOK7
-afEde69YWf6gP4zLoMawePeplT8XT77T3GWUbbYs/iWgZgSJ1nI/22NlkMYtRU9s
-zJHWTpg4d56uso/aC/OTw7e9xWUwfg==
-=Foln
------END PGP SIGNATURE-----
-
---Sig_/5Xd=2vVsFS.l91hXittWDoJ--
