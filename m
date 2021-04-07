@@ -2,169 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B8C356E79
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FB5356E7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352866AbhDGOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:23:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235762AbhDGOX4 (ORCPT
+        id S1344472AbhDGOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:25:41 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:17347 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhDGOZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:23:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617805426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RwbR+/upg2Ec94XWjtYYxLPU9OMlD8Hz5nT5kMrJq8c=;
-        b=bLjc9nAg4ZAD2JlSJX8UOMGICMWZS9rA/E9oDKT951OkW5tJhtLDZdHJ2DUgj5EW/p+SfT
-        +xyV2zUwH7rg54Z8wnAjgFrLfabXhur2fZIiTv+4J5KoPystNjEKC1mjn26vsS9JEwTHOP
-        ElUgIGRsRRRq7RGtM74nRpN/No4UoQY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-aUWFHOw6M2G4RubyBZn_Jw-1; Wed, 07 Apr 2021 10:23:45 -0400
-X-MC-Unique: aUWFHOw6M2G4RubyBZn_Jw-1
-Received: by mail-ed1-f71.google.com with SMTP id m21so2561952edp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:23:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RwbR+/upg2Ec94XWjtYYxLPU9OMlD8Hz5nT5kMrJq8c=;
-        b=E1fpCf4VYPJ35QFoEek2/eI9/1E98c3zLG+qHX5APEPhRC3Ae2hgbYuTBw4JMKUBDb
-         9sZ/iciGFcrBXGEIwl94EJRKRLtwyup9kyv05BjH3R6qlIUtS1lW46GJ/tLA2igEV0lp
-         tuYOUBZeC6egSJDLEpPW5EnQ3QGGoH9FDEqJwt8+syX6Cxc8nCQsXfPlCeo4/yYZmZad
-         rrgKNLxiynFJd0Ym3s+VJHsMX5IQpfwrbH6FPxbQSab2JOtD7n2xfHdnqL/oJqD6W/oS
-         Nd5M/BLeZlb1FNmeyhLwIDXq8IU8Nl8LnTtvjzX8MfduV9sp42QIpn95l+rseNVvDptB
-         HEPA==
-X-Gm-Message-State: AOAM532ZYx6Xm4rXfyU6YQJyJhk2B5Efnv6+AApN8NG5IUqtJ3N39gRK
-        vDUxrOUvW05P5k5Vw3SeUeGsOllVsstv3AZpQKAt6jqZRg76fakjSTyqawsZzrJRQ5+/H4XST95
-        3AVsidAg1L/XDvCXNC1k8HhgAhsJUmk6hXBKEnA7lsbTY2P6Af8qvZJIQyHNgcTq9+sPgegLqGE
-        bV
-X-Received: by 2002:a05:6402:514c:: with SMTP id n12mr4754655edd.224.1617805423319;
-        Wed, 07 Apr 2021 07:23:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPQmenwNkW4XXsq/H03hz8nT5HmasGCyXqHtI5HA/gV3rJvia8PVjZVa6W/saO2Qsdi4l/zg==
-X-Received: by 2002:a05:6402:514c:: with SMTP id n12mr4754634edd.224.1617805423094;
-        Wed, 07 Apr 2021 07:23:43 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id i2sm16079189edy.72.2021.04.07.07.23.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:23:42 -0700 (PDT)
-Subject: Re: [PATCH 4/9] platform/x86: intel_pmc_core: Show LPM residency in
- microseconds
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
- <20210401030558.2301621-5-david.e.box@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <43784b22-885c-4b33-8d8f-05f8a18d31dd@redhat.com>
-Date:   Wed, 7 Apr 2021 16:23:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 7 Apr 2021 10:25:38 -0400
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 137EP7aH022263;
+        Wed, 7 Apr 2021 23:25:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 137EP7aH022263
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617805508;
+        bh=kkn3m/BCSxf2wWzhn6Nistuursiw20cEhHeA63xRAuE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MlzMMEXQEYrfYLb50tmTehRfqFTJ/gDi99r8VznhkQcun5Xdbe9HpoKSawmondCKr
+         BI9R75umLMQyBhHG835MOCRH7jOWZc8slDhI9kzspKkKtNjacBZ8xZgaOvUG7TusKM
+         lpkxPn6wppMbKzHZbXjww2VeOjLfPEmPIFGI271wrfN3AKtAw6GfdFzvWZtr+JVjV+
+         Z3QQZG7PQc7NJLCrn7nGTNcmR2Mh2mbVXC8vDIljdoMiru9QLdG37iYCTQlOHUPI+u
+         gHSiX2DXXCD6Zcvseczplc/5Auj5EBSfKEYhRwcBkwrXwtLOj7xM+BOOXWKJ2UahKy
+         YiOa30rNaGEDQ==
+X-Nifty-SrcIP: [209.85.214.176]
+Received: by mail-pl1-f176.google.com with SMTP id y2so9427199plg.5;
+        Wed, 07 Apr 2021 07:25:08 -0700 (PDT)
+X-Gm-Message-State: AOAM532G7dEJa3kEVCkvMyVuTr7zzsvbV4PUKzxFGzjX+37gMBFziYCn
+        XBry+UMEmdnmleYfDXE/sOdj3OQi/xkqGALyCjQ=
+X-Google-Smtp-Source: ABdhPJz5uhq8IDSf3S/3h7p8BMiaz6Akfdns4mQYFnNyvxGlA0ujmo7PLCgt78eyUaRA8ndd8CZgmTXl1yaWdyMAUmY=
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr3532498pjb.87.1617805507406;
+ Wed, 07 Apr 2021 07:25:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210401030558.2301621-5-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210402123959.5143-1-alobakin@pm.me> <CABCJKufH262ki4FCQJxSO-v+gQzPBsVntQWnNZY7h-cvt1KYTA@mail.gmail.com>
+ <Gt4--xIFQdFQbd97OwKvRwelvfikSSv3Vkc_KKzAeGgp6c2fe8SPW6v_njp0xvwepPwC_UcWdyWeAjSdFEXpheJWlnmWNY-mVsaMEnJV56A=@pm.me>
+In-Reply-To: <Gt4--xIFQdFQbd97OwKvRwelvfikSSv3Vkc_KKzAeGgp6c2fe8SPW6v_njp0xvwepPwC_UcWdyWeAjSdFEXpheJWlnmWNY-mVsaMEnJV56A=@pm.me>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 23:24:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQBYxZ4s4Eg2TPMoLA+NDWXsNrnq2ch1ZQsBgcCXPk7Sw@mail.gmail.com>
+Message-ID: <CAK7LNAQBYxZ4s4Eg2TPMoLA+NDWXsNrnq2ch1ZQsBgcCXPk7Sw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: merge module sections under CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+ too
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jessica Yu <jeyu@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Apr 6, 2021 at 11:42 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> On Friday, 2 April 2021, 18:09, Sami
+> Tolvanen <samitolvanen@google.com> wrote:
+>
+> > On Fri, Apr 2, 2021 at 5:40 AM Alexander Lobakin alobakin@pm.me wrote:
+> >
+> > > When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
+> > > -fdata-sections and -ffunction-sections are being enabled by the
+> > > top-level Makefile, and module section merging is also needed.
+> > > Expand the ifdef (and the comment block) to cover that case too.
+> > > Fixes: 6a3193cdd5e5 ("kbuild: lto: Merge module sections if and only =
+if CONFIG_LTO_CLANG is enabled")
 
-On 4/1/21 5:05 AM, David E. Box wrote:
-> From: Gayatri Kammela <gayatri.kammela@intel.com>
-> 
-> Modify the low power mode (LPM or sub-state) residency counters to display
-> in microseconds just like the slp_s0_residency counter. The granularity of
-> the counter is approximately 30.5us per tick. Double this value then divide
-> by two to maintain accuracy.
-> 
-> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 
-Thanks, patch looks good to me:
+Did you test this patch before submission?
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Regards,
+See the top Makefile closely:
 
-Hans
+ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+KBUILD_CFLAGS_KERNEL +=3D -ffunction-sections -fdata-sections
+LDFLAGS_vmlinux +=3D --gc-sections
+endif
 
-> ---
->  drivers/platform/x86/intel_pmc_core.c | 14 ++++++++++++--
->  drivers/platform/x86/intel_pmc_core.h |  3 +++
->  2 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index ce300c2942d0..ba0db301f07b 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -578,6 +578,7 @@ static const struct pmc_reg_map tgl_reg_map = {
->  	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
->  	.ltr_ignore_max = TGL_NUM_IP_IGN_ALLOWED,
->  	.lpm_num_maps = TGL_LPM_NUM_MAPS,
-> +	.lpm_res_counter_step_x2 = TGL_PMC_LPM_RES_COUNTER_STEP_X2,
->  	.lpm_en_offset = TGL_LPM_EN_OFFSET,
->  	.lpm_priority_offset = TGL_LPM_PRI_OFFSET,
->  	.lpm_residency_offset = TGL_LPM_RESIDENCY_OFFSET,
-> @@ -1026,17 +1027,26 @@ static int pmc_core_ltr_show(struct seq_file *s, void *unused)
->  }
->  DEFINE_SHOW_ATTRIBUTE(pmc_core_ltr);
->  
-> +static inline u64 adjust_lpm_residency(struct pmc_dev *pmcdev, u32 offset,
-> +				       const int lpm_adj_x2)
-> +{
-> +	u64 lpm_res = pmc_core_reg_read(pmcdev, offset);
-> +
-> +	return GET_X2_COUNTER((u64)lpm_adj_x2 * lpm_res);
-> +}
-> +
->  static int pmc_core_substate_res_show(struct seq_file *s, void *unused)
->  {
->  	struct pmc_dev *pmcdev = s->private;
-> +	const int lpm_adj_x2 = pmcdev->map->lpm_res_counter_step_x2;
->  	u32 offset = pmcdev->map->lpm_residency_offset;
->  	int i, mode;
->  
->  	seq_printf(s, "%-10s %-15s\n", "Substate", "Residency");
->  
->  	pmc_for_each_mode(i, mode, pmcdev) {
-> -		seq_printf(s, "%-10s %-15u\n", pmc_lpm_modes[mode],
-> -			   pmc_core_reg_read(pmcdev, offset + (4 * mode)));
-> +		seq_printf(s, "%-10s %-15llu\n", pmc_lpm_modes[mode],
-> +			   adjust_lpm_residency(pmcdev, offset + (4 * mode), lpm_adj_x2));
->  	}
->  
->  	return 0;
-> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-> index 5a4e3a49f5b1..3800c1ba6fb7 100644
-> --- a/drivers/platform/x86/intel_pmc_core.h
-> +++ b/drivers/platform/x86/intel_pmc_core.h
-> @@ -188,9 +188,11 @@ enum ppfear_regs {
->  #define ICL_PMC_SLP_S0_RES_COUNTER_STEP		0x64
->  
->  #define LPM_MAX_NUM_MODES			8
-> +#define GET_X2_COUNTER(v)			((v) >> 1)
->  
->  #define TGL_NUM_IP_IGN_ALLOWED			22
->  #define TGL_PMC_SLP_S0_RES_COUNTER_STEP		0x7A
-> +#define TGL_PMC_LPM_RES_COUNTER_STEP_X2		61	/* 30.5us * 2 */
->  
->  /*
->   * Tigerlake Power Management Controller register offsets
-> @@ -263,6 +265,7 @@ struct pmc_reg_map {
->  	const u32 pm_vric1_offset;
->  	/* Low Power Mode registers */
->  	const int lpm_num_maps;
-> +	const int lpm_res_counter_step_x2;
->  	const u32 lpm_en_offset;
->  	const u32 lpm_priority_offset;
->  	const u32 lpm_residency_offset;
-> 
 
+-ffunction-sections -fdata-sections are passed to only
+built-in objects, but not to module objects in the
+first place.
+
+KBUILD_CFLAGS_KERNEL is only passed to built-in objects.
+
+
+The situation you claimed never happens.
+
+
+
+
+
+
+
+> > Wouldn't this trigger the ld.bfd bug described in the commit message
+> > when LD_DEAD_CODE_DATA_ELIMINATION is enabled? LTO_CLANG always uses
+> > LLD, so it won't have this issue.
+>
+> LD_DEAD_CODE_DATA_ELIMINATION is marked
+> =E2=80=9CEXPERIMENTAL=E2=80=9C in the config prompt, and
+> arches have to opt-in
+> HAS_LD_DEAD_CODE_DATA_ELIMINATION to give
+> an access to it (only a few does). This
+> should be relatively safe.
+>
+> > Sami
+>
+> Thanks,
+> Al
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
