@@ -2,39 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222983563BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6AC3563C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345424AbhDGGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:10:17 -0400
-Received: from verein.lst.de ([213.95.11.211]:57552 "EHLO verein.lst.de"
+        id S1345445AbhDGGK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:10:28 -0400
+Received: from muru.com ([72.249.23.125]:51756 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhDGGKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:10:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 10DD168B05; Wed,  7 Apr 2021 08:10:01 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 08:10:00 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        iommu@lists.linux-foundation.org, stable@vger.kernel.org
-Subject: Re: [PATCH RESEND] lib/scatterlist: Fix NULL pointer deference
-Message-ID: <20210407061000.GA19527@lst.de>
-References: <20210406160435.206115-1-ribalda@chromium.org>
+        id S230075AbhDGGKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 02:10:24 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 5805780A4;
+        Wed,  7 Apr 2021 06:11:24 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 09:10:11 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Vignesh R <vigneshr@ti.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: omap: Fix rumtime PM imbalance on error
+Message-ID: <YG1Mw89UGIuuIp80@atomide.com>
+References: <20210407033030.13419-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406160435.206115-1-ribalda@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210407033030.13419-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+* Dinghao Liu <dinghao.liu@zju.edu.cn> [210407 03:31]:
+> pm_runtime_get_sync() will increase the rumtime PM counter
+> even it returns an error. Thus a pairing decrement is needed
+> to prevent refcount leak. Fix this by replacing this API with
+> pm_runtime_resume_and_get(), which will not change the runtime
+> PM counter on error.
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+
+> ---
+>  drivers/i2c/busses/i2c-omap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-omap.c b/drivers/i2c/busses/i2c-omap.c
+> index 12ac4212aded..c9ee0875a79d 100644
+> --- a/drivers/i2c/busses/i2c-omap.c
+> +++ b/drivers/i2c/busses/i2c-omap.c
+> @@ -1404,7 +1404,7 @@ omap_i2c_probe(struct platform_device *pdev)
+>  	pm_runtime_set_autosuspend_delay(omap->dev, OMAP_I2C_PM_TIMEOUT);
+>  	pm_runtime_use_autosuspend(omap->dev);
+>  
+> -	r = pm_runtime_get_sync(omap->dev);
+> +	r = pm_runtime_resume_and_get(omap->dev);
+>  	if (r < 0)
+>  		goto err_free_mem;
+>  
+> -- 
+> 2.17.1
+> 
