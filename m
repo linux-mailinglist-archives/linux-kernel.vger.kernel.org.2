@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA81356880
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C27F356882
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 11:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhDGJyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 05:54:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232042AbhDGJyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 05:54:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 738B561382;
-        Wed,  7 Apr 2021 09:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617789277;
-        bh=zWJ+SMOiDDkk14mXom4NjVcpZ2wgtTB1vowz8JWtg5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AI+PK3sTplYdXC1BcnmhYfjkvjUTprGlfNsiS2W3IqXnzA/c94mKNyQCoFgK4rsdK
-         4noemkmQdovAnE9sIKXSd9zQme4I1pKT3EG8/LNQ8GF1bW3UugRKI7i+Gc6bgDV0/P
-         xmRyQQdI8hBVyrVN1g/EGl2MMyySKxhW5IcDXp/8=
-Date:   Wed, 7 Apr 2021 11:54:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: Re: [RESEND PATCH] staging: emxx_udc: Ending line with argument
-Message-ID: <YG2BVSOI+UNfEZTT@kroah.com>
-References: <20210406193409.96428-1-martinsdecarvalhobeatriz@gmail.com>
- <YGy4LXHBrBb/r3dk@kroah.com>
- <4c7df741-4e73-2ac4-f0d8-c9513ae29c88@gmail.com>
- <YG1FI38zNbidjt9q@kroah.com>
- <4d7ebe9c-8ebc-2fc9-10ed-6756ab42d5d7@gmail.com>
- <YG1usolTNEOfDqXh@kroah.com>
- <e7a18709-0b26-751e-6ba4-b43dd89c203f@gmail.com>
+        id S244223AbhDGJzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 05:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234496AbhDGJzu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 05:55:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B066C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 02:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yUV9gzaEqSL588esULqOCO/pkpJA1yvEQI+xvdfazJo=; b=rR/oliWLbXwCjURymy5uXzA9qi
+        MvgMdU4dxnUsk87Ouax18EuA4nwdWEKCeytIFE1X3Vv8qf8+/+TKuCJUUrz72p5AGUXybmYiMocEb
+        h1qX3rPXOOl4pD6mNeJHs52k6wxGSQJ1KYHQSC/Wocb4g6WAlBosh30MB63aUr4lGsE+EyX+Njdp6
+        RKf3FmPpt7rsfGA+ohbpFVEXtY/jbv0oMvNXV+hXiHCfRtuZ90fyo/9BMlMXmW1eO2ls0P07zdG5n
+        voc7c30xZF8MgvXzXJt/DHpKkLH73y1N2Y9emB7IFiQfeO2AcARCjKpDIJKDewbKwj/5pejzn5ffn
+        IJgnM6bA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU4tR-00EGwl-H1; Wed, 07 Apr 2021 09:54:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D2C030005A;
+        Wed,  7 Apr 2021 11:54:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1118B2BE1CA0B; Wed,  7 Apr 2021 11:54:37 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 11:54:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
+ differently
+Message-ID: <YG2BXRm60IhpumD8@hirez.programming.kicks-ass.net>
+References: <20210321150358.71ef52b1@imladris.surriel.com>
+ <20210322110306.GE3697@techsingularity.net>
+ <20210326151932.2c187840@imladris.surriel.com>
+ <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
+ <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+ <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
+ <20210407094217.GA2926@vingu-book>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e7a18709-0b26-751e-6ba4-b43dd89c203f@gmail.com>
+In-Reply-To: <20210407094217.GA2926@vingu-book>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:46:23AM +0100, Beatriz Martins de Carvalho wrote:
-> 
-> Em 07/04/21 09:34, Greg KH escreveu:
-> > On Wed, Apr 07, 2021 at 09:16:44AM +0100, Beatriz Martins de Carvalho wrote:
-> > > Em 07/04/21 06:37, Greg KH escreveu:
-> > > > On Tue, Apr 06, 2021 at 09:00:07PM +0100, Beatriz Martins de Carvalho wrote:
-> > > > > Em 06/04/21 20:36, Greg KH escreveu:
-> > > > > > On Tue, Apr 06, 2021 at 08:34:09PM +0100, Beatriz Martins de Carvalho wrote:
-> > > > > > > Cleans up check of "Lines should not end with a '('"
-> > > > > > > with argument present in next line in file emxx_udc.c
-> > > > > > > 
-> > > > > > > Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-> > > > > > > ---
-> > > > > > >     drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
-> > > > > > >     1 file changed, 4 insertions(+), 7 deletions(-)
-> > > > > > Why is this a [RESEND] ?
-> > > > > > 
-> > > > > > What happened to the first version?
-> > > > > Sorry, I didn't receive your review, and in kernelnewbies tutorial, they say
-> > > > > if not receive a response, may have missed the patch, so I resent it.
-> > > > Do you have a pointer to your previous patch in the lore.kernel.org
-> > > > archives anywhere?  I can't seem to find it.
-> > > 
-> > > I found this, it's what is you need?
-> > > 
-> > > https://lore.kernel.org/linux-staging/20210401195457.24512-1-martinsdecarvalhobeatriz@gmail.com/
-> > Ah, yes, I saw Julia's review and assumed you would fix up your patch
-> > based on her comments.  Please do not ignore review comments, it makes
-> > everyone's lives harder.
-> Sorry, I didn't fix up my patch based on her comments, because to do this
-> was
-> to revert all my patch or will break a code line if I remaining within 80
-> characters. How the code line still stays between 85 or 90 I assumed that
-> was
-> ok, so I was waiting for your review. Now I saw that I should send this
-> answer
-> to her. What should I do with the patch?
+On Wed, Apr 07, 2021 at 11:42:17AM +0200, Vincent Guittot wrote:
+> I would really prefer to keep that out of select_idle_cpu which aims to merge in one
+> single loop the walk through sd_llc. In the case of select_idle_smt, this is done outside
+> the loop:
 
-If you do not know, ask the reviewer what they mean by their review
-comments.
+Fair enough.
 
-thanks,
+> @@ -6317,11 +6339,21 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  		}
+>  	}
+>  
+> +	if (static_branch_likely(&sched_smt_present)) {
+> +		smt = test_idle_cores(target, false);
+> +		if (!smt && cpus_share_cache(prev, target)) {
+> +			/* No idle core. Check if prev has an idle sibling. */
+> +			i = select_idle_smt(p, sd, prev);
+> +			if ((unsigned int)i < nr_cpumask_bits)
+> +				return i;
+> +		}
+> +	}
+> +
+>  	sd = rcu_dereference(per_cpu(sd_llc, target));
+>  	if (!sd)
+>  		return target;
 
-greg k-h
+It needs to be here, otherwise you're using @sd uninitialized.
+
+> -	i = select_idle_cpu(p, sd, target);
+> +	i = select_idle_cpu(p, sd, smt, target);
+>  	if ((unsigned)i < nr_cpumask_bits)
+>  		return i;
+
+Let me have another poke at it.
