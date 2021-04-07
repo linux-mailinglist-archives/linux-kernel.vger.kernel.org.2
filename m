@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25D3356D82
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279CC356D83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352577AbhDGNj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:39:26 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:46708 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1347403AbhDGNjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:39:06 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AlI4bwazfs6gfkON58gYmKrPwzL1zdoIgy1kn?=
- =?us-ascii?q?xilNYDZSddGVkN3roeQD2XbP+VIscVwDufTFAqmPRnvA6YV4iLN9AZ6OVBTr0V?=
- =?us-ascii?q?HHEKhM4YfuyDXrGWnf24dmv5tIXLN5DLTLbGRSqebfzE2GH807wN+BmZrY4Nv2?=
- =?us-ascii?q?63t2VwllZ+VBwm5Ce2WmO3Z7TgVHGpY1faD0jqV6jgC9cncaZNnTPAhmY8H/ob?=
- =?us-ascii?q?Tw9K7OUFovAh4LzE20hyq01biSKXOl9yZbfzRR4bpKywT4rzA=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,203,1613404800"; 
-   d="scan'208";a="106746651"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 07 Apr 2021 21:38:49 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 8FCE44D0B8A3;
-        Wed,  7 Apr 2021 21:38:47 +0800 (CST)
-Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 7 Apr 2021 21:38:41 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Wed, 7 Apr 2021 21:38:41 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <david@fromorbit.com>, <hch@lst.de>,
-        <rgoldwyn@suse.de>, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCH v2 3/3] fsdax: Output address in dax_iomap_pfn() and rename it
-Date:   Wed, 7 Apr 2021 21:38:23 +0800
-Message-ID: <20210407133823.828176-4-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210407133823.828176-1-ruansy.fnst@fujitsu.com>
-References: <20210407133823.828176-1-ruansy.fnst@fujitsu.com>
+        id S1352607AbhDGNj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:39:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:62455 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352628AbhDGNjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:39:16 -0400
+IronPort-SDR: qf2ehWiRWqQ5b1ouurAKUi+AU0hZxh59JhEYAURE10vqJjDc0MJwogQNgscJVm9UufwzzwFrlz
+ TBCyN+zJUVqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193419886"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="193419886"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 06:39:06 -0700
+IronPort-SDR: oGtJTC5Aw3mYa53Xfrm1IauqF79CxKFALgbkGBCrkY3n3SqjqF06SEgp2qRhejrerNbdlwBQnF
+ lzQ9+ZlEuWIA==
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="519439721"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 06:39:04 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lU8Ob-0021O4-Qr; Wed, 07 Apr 2021 16:39:01 +0300
+Date:   Wed, 7 Apr 2021 16:39:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2 1/1] serial: sh-sci: Respect deferred probe when
+ getting IRQ
+Message-ID: <YG219ZnbCDZFmpiB@smile.fi.intel.com>
+References: <20210407101713.8694-1-andriy.shevchenko@linux.intel.com>
+ <33a5ee25-d4c9-b5c2-b5f9-05316b1139c0@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 8FCE44D0B8A3.A396E
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33a5ee25-d4c9-b5c2-b5f9-05316b1139c0@roeck-us.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add address output in dax_iomap_pfn() in order to perform a memcpy() in
-CoW case.  Since this function both output address and pfn, rename it to
-dax_iomap_direct_access().
+On Wed, Apr 07, 2021 at 06:11:46AM -0700, Guenter Roeck wrote:
+> On 4/7/21 3:17 AM, Andy Shevchenko wrote:
+> > With platform_get_irq() and its optional variant it's possible to get
+> > a deferred probe error code. Since the commit ed7027fdf4ec ("driver core:
+> > platform: Make platform_get_irq_optional() optional") the error code
+> > can be distinguished from no IRQ case. With this, rewrite IRQ resource
+> > handling in sh-sci driver to follow above and allow to respect deferred
+> > probe.
+> > 
+> > Fixes: ed7027fdf4ec ("driver core: platform: Make platform_get_irq_optional() optional")
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> This patch alone causes a hard hang early during boot. It works if applied
+> together with ed7027fdf4ec. Ultimately that means that ed7027fdf4ec introduces
+> a functional change, and will need to be applied very carefully. A cursory
+> glance through callers of platform_get_irq_optional() shows that many
+> do not handle this correctly: various drivers handle a return value of 0
+> as valid interrupt, and others treat errors other than -ENXIO as fatal.
+> 
+> Also, each patch on its own causes failures on sh, which is problematic
+> when applying them even as series. See below for an idea how to
+> address that.
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/dax.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Right, that's why I think I have to slow down with it (as I answered to Greg).
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 6dea1fc11b46..8d7e4e2cc0fb 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -998,8 +998,8 @@ static sector_t dax_iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + (pos & PAGE_MASK) - iomap->offset) >> 9;
- }
- 
--static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
--			 pfn_t *pfnp)
-+static int dax_iomap_direct_access(struct iomap *iomap, loff_t pos, size_t size,
-+		void **kaddr, pfn_t *pfnp)
- {
- 	const sector_t sector = dax_iomap_sector(iomap, pos);
- 	pgoff_t pgoff;
-@@ -1011,11 +1011,13 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
- 		return rc;
- 	id = dax_read_lock();
- 	length = dax_direct_access(iomap->dax_dev, pgoff, PHYS_PFN(size),
--				   NULL, pfnp);
-+				   kaddr, pfnp);
- 	if (length < 0) {
- 		rc = length;
- 		goto out;
- 	}
-+	if (!pfnp)
-+		goto out_check_addr;
- 	rc = -EINVAL;
- 	if (PFN_PHYS(length) < size)
- 		goto out;
-@@ -1025,6 +1027,12 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
- 	if (length > 1 && !pfn_t_devmap(*pfnp))
- 		goto out;
- 	rc = 0;
-+
-+out_check_addr:
-+	if (!kaddr)
-+		goto out;
-+	if (!*kaddr)
-+		rc = -EFAULT;
- out:
- 	dax_read_unlock(id);
- 	return rc;
-@@ -1389,7 +1397,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
- 		return pmd ? VM_FAULT_FALLBACK : VM_FAULT_SIGBUS;
- 	}
- 
--	err = dax_iomap_pfn(iomap, pos, size, &pfn);
-+	err = dax_iomap_direct_access(iomap, pos, size, NULL, &pfn);
- 	if (err)
- 		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
- 
+> Since sh never gets -EPROBE_DEFER, the following code can be applied
+> on its own and does not depend on ed7027fdf4ec.
+> 
+> 	sci_port->irqs[i] = platform_get_irq_optional(dev, i);
+> 	if (sci_port->irqs[i] <= 0)
+> 		sci_port->irqs[i] = sci_port->irqs[0];
+> 
+> With this change, sh images boot in qemu both with and without ed7027fdf4ec.
+
+Yeah, thanks! But I think we still can avoid double loops there.
+
 -- 
-2.31.0
-
+With Best Regards,
+Andy Shevchenko
 
 
