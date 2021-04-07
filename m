@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D33561D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A72E3561D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348301AbhDGDTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:19:20 -0400
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:37778 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhDGDTS (ORCPT
+        id S243542AbhDGDXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:23:49 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56165 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231781AbhDGDXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:19:18 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 1373IlOm011940; Wed, 7 Apr 2021 12:18:47 +0900
-X-Iguazu-Qid: 34tKBH9CWNuW27lu1p
-X-Iguazu-QSIG: v=2; s=0; t=1617765527; q=34tKBH9CWNuW27lu1p; m=4Rk8Yy35/YxTcI9zmUL2k/6IE3AVe3IiJbKViOaxY6I=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1512) id 1373IjQZ007437
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 7 Apr 2021 12:18:46 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id A1F7F1000C7;
-        Wed,  7 Apr 2021 12:18:45 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 1373Ij3f001364;
-        Wed, 7 Apr 2021 12:18:45 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
-Date:   Wed,  7 Apr 2021 12:18:39 +0900
-X-TSB-HOP: ON
-Message-Id: <20210407031839.386088-4-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Tue, 6 Apr 2021 23:23:45 -0400
+X-UUID: a1f7880b9a0441a58af7d8279786b932-20210407
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6p+Sqw+2wiM1G9Ia9wdDLxw/Y5+M1qO/dO+F1uZZDGk=;
+        b=IXXcWshEAKNEyft7pQP3wF5j9gSHIlyls3bXxSThTBGJKdyPJtvaeeszJi/+kDqKO2WmPXeGk+8AEqbYv21+bBFn2NeSRfCsq1Z43QHsW59LKfuGmWcuhAG1LQkHaKGmU5oB+wTl46ulI5MjfVmvXTx8Jf4Zvwj8fcEZ5jFxu5M=;
+X-UUID: a1f7880b9a0441a58af7d8279786b932-20210407
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <guochun.mao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 886263453; Wed, 07 Apr 2021 11:23:30 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs07n1.mediatek.inc
+ (172.21.101.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Apr
+ 2021 11:23:29 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Apr 2021 11:23:28 +0800
+Message-ID: <1617765808.4370.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v1 1/1] ubifs: only check replay with inode type to
+ judge if inode linked
+From:   Guochun Mao <guochun.mao@mediatek.com>
+To:     Richard Weinberger <richard@nod.at>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date:   Wed, 7 Apr 2021 11:23:28 +0800
+In-Reply-To: <20210316085214.25024-2-guochun.mao@mediatek.com>
+References: <20210316085214.25024-1-guochun.mao@mediatek.com>
+         <20210316085214.25024-2-guochun.mao@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for Toshiba Visconti PCIe controller binding and driver.
-
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8a154939ae27..3e5187c5b8d2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2621,11 +2621,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
- F:	Documentation/devicetree/bindings/arm/toshiba.yaml
- F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
- F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-+F:	Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
- F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
- F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
- F:	arch/arm64/boot/dts/toshiba/
- F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
- F:	drivers/gpio/gpio-visconti.c
-+F:	drivers/pci/controller/dwc/pcie-visconti.c
- F:	drivers/pinctrl/visconti/
- F:	drivers/watchdog/visconti_wdt.c
- N:	visconti
--- 
-2.30.0.rc2
+SGkgUmljaGFyZCwNCg0KR2VudGxlIHBpbmcuDQoNCg0KT24gVHVlLCAyMDIxLTAzLTE2IGF0IDE2
+OjUyICswODAwLCBndW9jaHVuLm1hb0BtZWRpYXRlay5jb20gd3JvdGU6DQo+IEZyb206IEd1b2No
+dW4gTWFvIDxndW9jaHVuLm1hb0BtZWRpYXRlay5jb20+DQo+IA0KPiBDb25zaWRlIHRoZSBmb2xs
+b3dpbmcgY2FzZSwgaXQganVzdCB3cml0ZSBhIGJpZyBmaWxlIGludG8gZmxhc2gsDQo+IHdoZW4g
+Y29tcGxldGUgd3JpdGluZywgZGVsZXRlIHRoZSBmaWxlLCBhbmQgdGhlbiBwb3dlciBvZmYgcHJv
+bXB0bHkuDQo+IE5leHQgdGltZSBwb3dlciBvbiwgd2UnbGwgZ2V0IGEgcmVwbGF5IGxpc3QgbGlr
+ZToNCj4gLi4uDQo+IExFQiAxMTA1OjIxMTM0NCBsZW4gNDE0NCBkZWxldGlvbiAwIHNxbnVtIDQy
+ODc4MyBrZXkgdHlwZSAxIGlub2RlIDgwDQo+IExFQiAxNToyMzM1NDQgbGVuIDE2MCBkZWxldGlv
+biAxIHNxbnVtIDQyODc4NSBrZXkgdHlwZSAwIGlub2RlIDgwDQo+IExFQiAxMTA1OjIxNTQ4OCBs
+ZW4gNDE0NCBkZWxldGlvbiAwIHNxbnVtIDQyODc4NyBrZXkgdHlwZSAxIGlub2RlIDgwDQo+IC4u
+Lg0KPiBJbiB0aGUgcmVwbGF5IGxpc3QsIGRhdGEgbm9kZXMnIGRlbGV0aW9uIGFyZSAwLCBhbmQg
+dGhlIGlub2RlIG5vZGUncw0KPiBkZWxldGlvbiBpcyAxLiBJbiBjdXJyZW50IGxvZ2ljLCB0aGUg
+ZmlsZSdzIGRlbnRyeSB3aWxsIGJlIHJlbW92ZWQsDQo+IGJ1dCBpbm9kZSBhbmQgdGhlIGZsYXNo
+IHNwYWNlIGl0IG9jY3VwaWVkIHdpbGwgYmUgcmVzZXJ2ZWQuDQo+IFVzZXIgd2lsbCBzZWUgdGhh
+dCBtdWNoIGZyZWUgc3BhY2UgYmVlbiBkaXNhcHBlYXJlZC4NCj4gDQo+IFdlIG9ubHkgbmVlZCB0
+byBjaGVjayB0aGUgZGVsZXRpb24gdmFsdWUgb2YgdGhlIGZvbGxvd2luZyBpbm9kZSB0eXBlDQo+
+IG5vZGUgb2YgdGhlIHJlcGxheSBlbnRyeS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEd1b2NodW4g
+TWFvIDxndW9jaHVuLm1hb0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZnMvdWJpZnMvcmVwbGF5
+LmMgfCAzICsrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
+bigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3JlcGxheS5jIGIvZnMvdWJpZnMvcmVw
+bGF5LmMNCj4gaW5kZXggMGY4YTZhMTY0MjFiLi4xOTI5ZWM2M2EwY2IgMTAwNjQ0DQo+IC0tLSBh
+L2ZzL3ViaWZzL3JlcGxheS5jDQo+ICsrKyBiL2ZzL3ViaWZzL3JlcGxheS5jDQo+IEBAIC0yMjMs
+NyArMjIzLDggQEAgc3RhdGljIGJvb2wgaW5vZGVfc3RpbGxfbGlua2VkKHN0cnVjdCB1Ymlmc19p
+bmZvICpjLCBzdHJ1Y3QgcmVwbGF5X2VudHJ5ICpyaW5vKQ0KPiAgCSAqLw0KPiAgCWxpc3RfZm9y
+X2VhY2hfZW50cnlfcmV2ZXJzZShyLCAmYy0+cmVwbGF5X2xpc3QsIGxpc3QpIHsNCj4gIAkJdWJp
+ZnNfYXNzZXJ0KGMsIHItPnNxbnVtID49IHJpbm8tPnNxbnVtKTsNCj4gLQkJaWYgKGtleV9pbnVt
+KGMsICZyLT5rZXkpID09IGtleV9pbnVtKGMsICZyaW5vLT5rZXkpKQ0KPiArCQlpZiAoa2V5X2lu
+dW0oYywgJnItPmtleSkgPT0ga2V5X2ludW0oYywgJnJpbm8tPmtleSkgJiYNCj4gKwkJICAgIGtl
+eV90eXBlKGMsICZyLT5rZXkpID09IFVCSUZTX0lOT19LRVkpDQo+ICAJCQlyZXR1cm4gci0+ZGVs
+ZXRpb24gPT0gMDsNCj4gIA0KPiAgCX0NCg0K
 
