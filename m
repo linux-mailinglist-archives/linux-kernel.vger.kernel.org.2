@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95F13568D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724843568D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350533AbhDGKEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350494AbhDGKDn (ORCPT
+        id S1350670AbhDGKEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:04:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35436 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350516AbhDGKDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 06:03:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74345C061765;
-        Wed,  7 Apr 2021 03:03:33 -0700 (PDT)
-Date:   Wed, 07 Apr 2021 10:03:31 -0000
+Date:   Wed, 07 Apr 2021 10:03:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617789812;
+        s=2020; t=1617789813;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MIHJ+siW+aqTpevFtkqB+bSjz/bp55L6t4itcX64O0g=;
-        b=Kk1q9XZhRi1g4AEqAFnFMHS0BoAUt3Kuiagq5DSQeeZhg58gMY7EMmYz2HtVfUKQYhDGoY
-        qWhnh0b5smkKjJceFdpVGRz2FOMCmLTPfqDR6doNs+HamGvi23996gqSSMYAW3voLdIkmp
-        59WgfrUViEogRPT/mPLMfZz7tu5Z0fl6Nl5F/nxKjzBKPNbLobARg6eaikYh9vI2gCuyST
-        ePnPiryGQnwGZx57isTmPPjxhCQja4qAyTigmG30wjpKnNfkdu0Erp5qqdggcKCG9+5FBz
-        fAPVP021GZekiz88m/1wuulk1FZUeaTGEciB5/PnhCuMJa1dZBbyOLYsEUijPA==
+        bh=R8zs9F+Uvfh643CkArrL2kRjedrEap8jFGvwGzRwIKs=;
+        b=isGwk0n49f/sY1eS5J5G0RzPkvqPpKWT81ZAEHaZwiIP5Wsu6mjogc7xp64jFUdsvfKDR6
+        vO1ZTS0goqKkOH22YOJzfcoHitHqRKRH25npE+kkp7vi2eDgzojYwy2SwvKLWzm4wdg2Lq
+        0tnJTY4CHJszth1MwqM/6DWlxL9e3hSSN4q6KnTmU3+GH68eVffU35izhXJYF3k9ANVVUJ
+        yJsx5q3izcR4GINj5V4IoOobb3UFKNsdMd3XCZ9HIMsDvi+c0aOazDV9hyOv7yRsrTE73S
+        cqEwbIwdDqKqyozoCUYl0w83Ue58FB4VCSJjQnVOZKB/jU8i7PKlppYhqFNJpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617789812;
+        s=2020e; t=1617789813;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MIHJ+siW+aqTpevFtkqB+bSjz/bp55L6t4itcX64O0g=;
-        b=/kVI7Lhct8c29luivjmVcr0QLFoH3Edu4ap9JTDoOdlVI6dk9X7lkXHITHrJ9o8ZYNf6Eb
-        7EkpIuASUaW7KlDQ==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
+        bh=R8zs9F+Uvfh643CkArrL2kRjedrEap8jFGvwGzRwIKs=;
+        b=wgWmc0ZjfmbEzfS8Ihk4mymDIdkJF2iJ38vlEholW9SLxNyESGXKcV4nCtnfjCv6fO/2oi
+        61w2k8mQuZAcPLBg==
+From:   "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Add SGX2 ENCLS leaf definitions (EAUG, EMODPR
- and EMODT)
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@intel.com>, Borislav Petkov <bp@suse.de>,
+Subject: [tip: x86/sgx] x86/sgx: Initialize virtual EPC driver even when SGX
+ driver is disabled
+Cc:     Kai Huang <kai.huang@intel.com>, Borislav Petkov <bp@suse.de>,
+        Sean Christopherson <seanjc@google.com>,
         Jarkko Sakkinen <jarkko@kernel.org>,
         Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <5f0970c251ebcc6d5add132f0d750cc753b7060f.1616136308.git.kai.huang@intel.com>
-References: <5f0970c251ebcc6d5add132f0d750cc753b7060f.1616136308.git.kai.huang@intel.com>
+In-Reply-To: <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
+References: <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Message-ID: <161778981135.29796.2908264440005666587.tip-bot2@tip-bot2>
+Message-ID: <161778981256.29796.1413620154236553864.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,40 +61,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     32ddda8e445df3de477db14d386fb3518042224a
-Gitweb:        https://git.kernel.org/tip/32ddda8e445df3de477db14d386fb3518042224a
-Author:        Sean Christopherson <sean.j.christopherson@intel.com>
-AuthorDate:    Fri, 19 Mar 2021 20:23:05 +13:00
+Commit-ID:     faa7d3e6f3b983a28bf0f88f82dcb1c162e61105
+Gitweb:        https://git.kernel.org/tip/faa7d3e6f3b983a28bf0f88f82dcb1c162e61105
+Author:        Kai Huang <kai.huang@intel.com>
+AuthorDate:    Fri, 19 Mar 2021 20:23:02 +13:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 06 Apr 2021 09:43:42 +02:00
+CommitterDate: Tue, 06 Apr 2021 09:43:41 +02:00
 
-x86/sgx: Add SGX2 ENCLS leaf definitions (EAUG, EMODPR and EMODT)
+x86/sgx: Initialize virtual EPC driver even when SGX driver is disabled
 
-Define the ENCLS leafs that are available with SGX2, also referred to as
-Enclave Dynamic Memory Management (EDMM).  The leafs will be used by KVM
-to conditionally expose SGX2 capabilities to guests.
+Modify sgx_init() to always try to initialize the virtual EPC driver,
+even if the SGX driver is disabled.  The SGX driver might be disabled
+if SGX Launch Control is in locked mode, or not supported in the
+hardware at all.  This allows (non-Linux) guests that support non-LC
+configurations to use SGX.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+ [ bp: De-silli-fy the test. ]
+
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 Acked-by: Dave Hansen <dave.hansen@intel.com>
-Link: https://lkml.kernel.org/r/5f0970c251ebcc6d5add132f0d750cc753b7060f.1616136308.git.kai.huang@intel.com
+Link: https://lkml.kernel.org/r/d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com
 ---
- arch/x86/include/asm/sgx.h | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kernel/cpu/sgx/main.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 34f4423..3b025af 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -40,6 +40,9 @@ enum sgx_encls_function {
- 	EPA	= 0x0A,
- 	EWB	= 0x0B,
- 	ETRACK	= 0x0C,
-+	EAUG	= 0x0D,
-+	EMODPR	= 0x0E,
-+	EMODT	= 0x0F,
- };
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index b227629..1c8a228 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -743,8 +743,17 @@ static int __init sgx_init(void)
+ 		goto err_page_cache;
+ 	}
  
- /**
++	/*
++	 * Always try to initialize the native *and* KVM drivers.
++	 * The KVM driver is less picky than the native one and
++	 * can function if the native one is not supported on the
++	 * current system or fails to initialize.
++	 *
++	 * Error out only if both fail to initialize.
++	 */
+ 	ret = sgx_drv_init();
+-	if (ret)
++
++	if (sgx_vepc_init() && ret)
+ 		goto err_kthread;
+ 
+ 	return 0;
