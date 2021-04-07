@@ -2,96 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7309A3574E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386EC3574E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355617AbhDGTXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
+        id S1355629AbhDGTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhDGTXK (ORCPT
+        with ESMTP id S1355620AbhDGTXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:23:10 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E25C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:23:00 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id a1so22079318ljp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:23:00 -0700 (PDT)
+        Wed, 7 Apr 2021 15:23:14 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5433DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:23:04 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id qo10so19135986ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:23:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hq3OhgeTuQUA0PjJz23JVz00wO7dXBNObsytreflNCg=;
-        b=eCs1MmuZhzl6TlzwYJCrgdonogfEDf++9zDPp5n3yN7O6rr/XUokUy1nBpm2iClbZ+
-         PLgL+MdamCMbDAvFj1z1GiONnaysf9/lwlgcTxtWwHPs3i4zNzTzb5LZqTrt4IxO4MUd
-         jfIJ/FVa6bfd8eLTSkso09lvbZXO2sZM/MBKc=
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=JopOz03EEkTqIxcI1fz3+f5sIDcGohgXhrqvwOa7zzc=;
+        b=fYgEat3S5TRjhsX5Sy5lurynyLrcfD1do1btfeGSlk6AA0LO+vKYEeGCZiY0Qan/u5
+         Wt3cpybQYXh16FTDgHW7Z1CY/8xL4glHerxUVL9Wq9Y2Je+qpRiVLLdTFYRNdkiFqLOK
+         L8nQBP5pL5yLawNZFoptGEaueJ4/gTbNXz7YM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hq3OhgeTuQUA0PjJz23JVz00wO7dXBNObsytreflNCg=;
-        b=piK7pAlfX2ARs37UoF3Y3sc/F+NN0OLLfllKWiEVQyo8FArzf7GMFqNX4d9PxPZkcs
-         /MQxTj0iNpqTXRK/zP8zzAEt+awGio3SqQoqRrYYyfILAmWX8WQE9AEeWSIL4YBZ7IK3
-         qU86o1htFFNm7f+paj5h0oaklmJZy+GCaN/7HSTlf00gh7nIMzQ5sMGl+/m/WOKxMgy9
-         hJ+hfKdPEvJbO6vHpltQ+XbOGK1st4dKBhuEs5isocEoL+KEl7N5zJ6sJkw3E/RazILC
-         AzBCyPvnI20ozbH6/BqIuiMi6X5+6hc+AkKrM0aQeYdPhzehkbL0DWDNAQ9iQg9JaZKZ
-         QBfQ==
-X-Gm-Message-State: AOAM532RsBkJwQ7fm/j76x9vWFXfTGIuPZEY6Ch3k2uRay0L2Lm37SUf
-        0AsNbB+ugYAD8nglsRnxhDWoxLDJDTZFzHcK
-X-Google-Smtp-Source: ABdhPJx8Vu/8aoiJpGLvOZJGuIr8/pXd6rLhz5RNwwZOGiX570TJh0eyNqBpLjVQMvrQqZFXdYYbxA==
-X-Received: by 2002:a2e:b053:: with SMTP id d19mr3125329ljl.82.1617823378875;
-        Wed, 07 Apr 2021 12:22:58 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id p26sm664433lfo.127.2021.04.07.12.22.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 12:22:58 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id z8so22017148ljm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:22:58 -0700 (PDT)
-X-Received: by 2002:a2e:b6c6:: with SMTP id m6mr2990148ljo.411.1617823377841;
- Wed, 07 Apr 2021 12:22:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=JopOz03EEkTqIxcI1fz3+f5sIDcGohgXhrqvwOa7zzc=;
+        b=fDF7TiERzZJO/qVFti1Z6FeR9raqZbOlo4aU78+1Z2bPgebxftPrTmjlrlO6KgXx/e
+         SMO8A1j+WGSGzcwGkoxncDJyOma90NoReHQlbBPHw6eJRpeZA9PTguWdZLchaRDiKKOV
+         ijA1CC05EqwOL0PjjKyv736pZ22hLBkXW0wOKpRhW9kIQYDL5bJhIqHGEtLyj+bgH1O7
+         r9ttOIe/CfC3nxIA0xZPSOvNdbpiEL2rWhheYx3LxjqvXyKGhfRujt1L3xRq3gevCVoB
+         ySuvomrUMitqY0RA1ljhAUbDGGflnuFi6LKSe5RcTk4mpOHarCxHazKypaouKBlfQ71y
+         3ydw==
+X-Gm-Message-State: AOAM530sDDoLkpRnaI/jiIIFLW0x/9ltviE6eaPw0Ev90iweqnNPHxfD
+        dimCQhBGZr33wDusvtKrMErb1Q==
+X-Google-Smtp-Source: ABdhPJy4/lwlB88/hwiGMlYHEeQrMmjB5Z20uF1ATkPSuvZqEg5oBfNN5tljocnGD3JClC9IxLrtcA==
+X-Received: by 2002:a17:906:3487:: with SMTP id g7mr5490963ejb.222.1617823383009;
+        Wed, 07 Apr 2021 12:23:03 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id q25sm16243267edt.51.2021.04.07.12.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 12:23:02 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 21:22:52 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [GIT PULL] fileattr API
+Message-ID: <YG4GjNEqC6Pmhmod@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
- <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
- <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
- <CAHk-=wj0JH6PnG7dW51Sr5ZqhomqSaSLTQV7z4Si2dLeSVcO_g@mail.gmail.com> <alpine.LRH.2.02.2104071432420.31819@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2104071432420.31819@file01.intranet.prod.int.rdu2.redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 7 Apr 2021 12:22:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whUKYdWbKfFzXXnK8n04oCMwEgSnG8Y3tgE=YZUjiDvbA@mail.gmail.com>
-Message-ID: <CAHk-=whUKYdWbKfFzXXnK8n04oCMwEgSnG8Y3tgE=YZUjiDvbA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:47 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
->
-> So, we fixed it, but we don't know why.
->
-> Peter Xu's patchset that fixed it is here:
-> https://lore.kernel.org/lkml/20200821234958.7896-1-peterx@redhat.com/
+Hi Al,
 
-Yeah, that's the part that ends up being really painful to backport
-(with all the subsequent fixes too), so the 4.14 people would prefer
-to avoid it.
+Please pull from:
 
-But I think that if it's a "requires dax pmem and ptrace on top", it
-may simply be a non-issue for those users. Although who knows - maybe
-that ends up being a real issue on Android..
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git fileattr_v4
 
-            Linus
+Convert all (with the exception of CIFS) filesystems from handling
+FS_IOC_[GS]ETFLAGS and FS_IOC_FS[GS]ETXATTR themselves to new i_ops and
+common code moved into the VFS for these ioctls.  This removes boilerplate
+from filesystems, and allows these operations to be properly stacked in
+overlayfs.
+
+Thanks,
+Miklos
+
+---
+Changes since v3:
+
+ - converted fuse
+ - removed overlayfs ioctl code
+ - moved d_is_special() check to callbacks where necessary
+ - user copy cosmetics
+
+Changes since v2:
+
+ - renaming, most notably miscattr -> fileattr
+ - use memset instead of structure initialization
+ - drop gratuitous use of file_dentry()
+ - kerneldoc, comments, spelling improvements
+ - xfs: enable getting/setting FS_PROJINHERIT_FL and other tweaks
+ - btrfs: patch logistics
+
+Changes since v1:
+
+ - rebased on 5.12-rc1 (mnt_userns churn)
+ - fixed LSM hook on overlayfs
+
+----------------------------------------------------------------
+Miklos Szeredi (23):
+      vfs: add fileattr ops
+      ecryptfs: stack fileattr ops
+      ovl: stack fileattr ops
+      btrfs: convert to fileattr
+      ext2: convert to fileattr
+      ext4: convert to fileattr
+      f2fs: convert to fileattr
+      gfs2: convert to fileattr
+      orangefs: convert to fileattr
+      xfs: convert to fileattr
+      efivars: convert to fileattr
+      hfsplus: convert to fileattr
+      jfs: convert to fileattr
+      nilfs2: convert to fileattr
+      ocfs2: convert to fileattr
+      reiserfs: convert to fileattr
+      ubifs: convert to fileattr
+      vfs: remove unused ioctl helpers
+      fuse: move ioctl to separate source file
+      fuse: unsigned open flags
+      fuse: add internal open/release helpers
+      fuse: convert to fileattr
+      ovl: remove unneeded ioctls
+
+---
+ Documentation/filesystems/locking.rst |   5 +
+ Documentation/filesystems/vfs.rst     |  15 ++
+ fs/btrfs/ctree.h                      |   3 +
+ fs/btrfs/inode.c                      |   4 +
+ fs/btrfs/ioctl.c                      | 226 +++-------------
+ fs/ecryptfs/inode.c                   |  22 ++
+ fs/efivarfs/file.c                    |  77 ------
+ fs/efivarfs/inode.c                   |  44 +++
+ fs/ext2/ext2.h                        |   7 +-
+ fs/ext2/file.c                        |   2 +
+ fs/ext2/ioctl.c                       |  88 +++---
+ fs/ext2/namei.c                       |   2 +
+ fs/ext4/ext4.h                        |  12 +-
+ fs/ext4/file.c                        |   2 +
+ fs/ext4/ioctl.c                       | 208 +++------------
+ fs/ext4/namei.c                       |   2 +
+ fs/f2fs/f2fs.h                        |   3 +
+ fs/f2fs/file.c                        | 216 +++------------
+ fs/f2fs/namei.c                       |   2 +
+ fs/fuse/Makefile                      |   2 +-
+ fs/fuse/dir.c                         |   6 +-
+ fs/fuse/file.c                        | 435 +++---------------------------
+ fs/fuse/fuse_i.h                      |  40 ++-
+ fs/fuse/ioctl.c                       | 490 ++++++++++++++++++++++++++++++++++
+ fs/gfs2/file.c                        |  63 ++---
+ fs/gfs2/inode.c                       |   4 +
+ fs/gfs2/inode.h                       |   3 +
+ fs/hfsplus/dir.c                      |   2 +
+ fs/hfsplus/hfsplus_fs.h               |  14 +-
+ fs/hfsplus/inode.c                    |  54 ++++
+ fs/hfsplus/ioctl.c                    |  84 ------
+ fs/inode.c                            |  87 ------
+ fs/ioctl.c                            | 325 ++++++++++++++++++++++
+ fs/jfs/file.c                         |   6 +-
+ fs/jfs/ioctl.c                        | 111 +++-----
+ fs/jfs/jfs_dinode.h                   |   7 -
+ fs/jfs/jfs_inode.h                    |   4 +-
+ fs/jfs/namei.c                        |   6 +-
+ fs/nilfs2/file.c                      |   2 +
+ fs/nilfs2/ioctl.c                     |  61 ++---
+ fs/nilfs2/namei.c                     |   2 +
+ fs/nilfs2/nilfs.h                     |   3 +
+ fs/ocfs2/file.c                       |   2 +
+ fs/ocfs2/ioctl.c                      |  59 ++--
+ fs/ocfs2/ioctl.h                      |   3 +
+ fs/ocfs2/namei.c                      |   3 +
+ fs/ocfs2/ocfs2_ioctl.h                |   8 -
+ fs/orangefs/file.c                    |  79 ------
+ fs/orangefs/inode.c                   |  50 ++++
+ fs/overlayfs/dir.c                    |   2 +
+ fs/overlayfs/file.c                   | 110 --------
+ fs/overlayfs/inode.c                  |  77 ++++++
+ fs/overlayfs/overlayfs.h              |   5 +-
+ fs/overlayfs/readdir.c                |   4 -
+ fs/reiserfs/file.c                    |   2 +
+ fs/reiserfs/ioctl.c                   | 121 ++++-----
+ fs/reiserfs/namei.c                   |   2 +
+ fs/reiserfs/reiserfs.h                |   7 +-
+ fs/reiserfs/super.c                   |   2 +-
+ fs/ubifs/dir.c                        |   2 +
+ fs/ubifs/file.c                       |   2 +
+ fs/ubifs/ioctl.c                      |  78 +++---
+ fs/ubifs/ubifs.h                      |   3 +
+ fs/xfs/libxfs/xfs_fs.h                |   4 -
+ fs/xfs/xfs_ioctl.c                    | 258 +++++-------------
+ fs/xfs/xfs_ioctl.h                    |  11 +
+ fs/xfs/xfs_ioctl32.c                  |   2 -
+ fs/xfs/xfs_ioctl32.h                  |   2 -
+ fs/xfs/xfs_iops.c                     |   7 +
+ include/linux/fileattr.h              |  59 ++++
+ include/linux/fs.h                    |  16 +-
+ 71 files changed, 1724 insertions(+), 2007 deletions(-)
+ create mode 100644 fs/fuse/ioctl.c
+ create mode 100644 include/linux/fileattr.h
