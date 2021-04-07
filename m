@@ -2,141 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2C43574A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE723574A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 20:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355499AbhDGS4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 14:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        id S1355480AbhDGS4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355485AbhDGS4Z (ORCPT
+        with ESMTP id S1355469AbhDGS4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 14:56:25 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B3AC061760;
-        Wed,  7 Apr 2021 11:56:14 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j18so6409355lfg.5;
-        Wed, 07 Apr 2021 11:56:14 -0700 (PDT)
+        Wed, 7 Apr 2021 14:56:18 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B843C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 11:56:08 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c5so254513plg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 11:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sqCYS/CZAfWK/te/TXf/5fA6YQW/6TBwZyYpp2SH+v4=;
-        b=AHll28d352WOBUobfVUMEp3cy5IdxPDlST8FWjTO0mhkMoSBg1A4Of9op2bYccbsV6
-         RgFncfZUBu6+VWLWJpSLuc+xg8ZZIWuaArFCKhsroolZ4kUWfsgdUlPKB/TNa1XJHpdM
-         UsVh7UAwmbOdqwp/kv9GKM2NaQUOE9UWiW9mPsWDLaHFrVmyknx0/WLGnJr6uzZhsU4n
-         ZFV3BBItSRS7QzZWEjm1Czn1kszEeZxhPY5V/kPym/NkR5iLMW7sEwg532YLAz2yJGA1
-         2bx7OSYwPg4J5gkrKLd5tMrifzNZbDAlw1+M8uIeHYXUPtcEyrpX9L5UpDrBGKBthWwG
-         WXtg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bUFX8OZjFldaYb/6zcLiSui0pTc7lp3Q3DWh7esaF8g=;
+        b=a1xRCOqlDFc7fMaWuNejJHG4Uwf7By9zy2OKAtPQ27xGklMzMvChcENop0/v+mOMEx
+         MW6+86rti2fEGc6b+oX4cnfwPSqf7GbCQ41o+BKscycaOnSgArho8f9BO6FrTo4gYnow
+         aM5rfU2N378Fjx1Amj6OkdpP5/Dtb0+r7QDOA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sqCYS/CZAfWK/te/TXf/5fA6YQW/6TBwZyYpp2SH+v4=;
-        b=VDnZ5K6gUckJh28GXd8ONYqk+diAno+lSc/hcZAsqs1L94253RQUIibg2rXtJ3RFvU
-         sAFrHKirXQ1ywp+NPOWar33vl+dyhLzCdseP9iZDxTuG9erCCn2CZFvZa3LWO0+Y2Vkk
-         +Hnlzj/EC8BGfdwpmfSMYfga6acHP6zkaxYLemgzTy6uvjVx8Qp01fG7Wk+W4Tpsh+hN
-         MVPrg2i7vpy1SqxTvbU3+kapKGn/spogMc1Gl/xTzp985FsysMaX8GiaMS3z04bbyq5x
-         cvLzgD9t0gMEPPR42SlY/HFAW7ws4vapPTMocggjSe9vYi5dWQEXboGja3rcp7Zztl0A
-         XAtQ==
-X-Gm-Message-State: AOAM533ZsZ29EBV79hdeEl1xDisLDOvLd+1bPlhnushy1tDJ/s/ma5vZ
-        kKC5Igei3wcEc91V0e6Z1cckc3AXxa+ni4xaeX0=
-X-Google-Smtp-Source: ABdhPJzA95p0YdnMvuPKs6+hQkjWiknPgGEWN1kURPrTWLaR6nQNbA01kQgU1P8Cc4rQ/wPiJzJk5758kYC7LRgRNsg=
-X-Received: by 2002:a19:7515:: with SMTP id y21mr3461350lfe.282.1617821772792;
- Wed, 07 Apr 2021 11:56:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bUFX8OZjFldaYb/6zcLiSui0pTc7lp3Q3DWh7esaF8g=;
+        b=R3Z87ksw8E7SoayNjW4RZK81rn35j+d/mxnppUqb1m5Ca2dhHOzmPUNINkK19vQTOO
+         feS+ra9GYKu5ZpWKU5wf78i3SHbHfEA/9ngaZJ9GTbS5JXKaADl+OFfWePn7UX1jMXpP
+         LOdKTq6CDBHeQjsPQv8hT1Ha1OoPDj9EfocZrTziI2i92r0w1xM65Jz9nC+UwUIDLypX
+         9lf0GflPTsAQ9UNWc2Zyk75ezR8Yi3rqmwJB8ULH4BrouA+lozgx5OF5f0/6Ku96IhCx
+         IkLp8dlr7r0NR1+JPOx6FHLN1hecVcAGuQqpy+E0zMi13sntygsxKnuV8JZ5uWH5WUWr
+         FrRQ==
+X-Gm-Message-State: AOAM533LxZvhTeBlOhXeYgemtwFl7ndqOpRiAre9bRY4RXZXGxnL9S1E
+        +BMYtkvjXiU/8fpzX6R4lmXvuA==
+X-Google-Smtp-Source: ABdhPJyqOjE2YRcwObcLLiGu2bq48+Q2tF9rRkC6ywJ1L+rDrieu6AYwkNRmg39F3ypuOEZU45TvvA==
+X-Received: by 2002:a17:90a:a389:: with SMTP id x9mr3803993pjp.232.1617821767869;
+        Wed, 07 Apr 2021 11:56:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h19sm22438097pfc.172.2021.04.07.11.56.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 11:56:07 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 11:56:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 1/2][next] wl3501_cs: Fix out-of-bounds warning in
+ wl3501_send_pkt
+Message-ID: <202104071154.49B15A3AB4@keescook>
+References: <cover.1617226663.git.gustavoars@kernel.org>
+ <e03d36114bcbcf814ad13deb7812b0b5c196dadb.1617226663.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-References: <dc18955dda8844bf7b27dfd2cce50f7c62eb82e5.1617720952.git.maciek.borzecki@gmail.com>
-In-Reply-To: <dc18955dda8844bf7b27dfd2cce50f7c62eb82e5.1617720952.git.maciek.borzecki@gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 7 Apr 2021 13:56:01 -0500
-Message-ID: <CAH2r5msOOnnaD7PSmPQNwppsiRPRyhmZ1StYp+kGoEyV6tCScA@mail.gmail.com>
-Subject: Re: [PATCH] cifs: escape spaces in share names
-To:     Maciek Borzecki <maciek.borzecki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Steve French <sfrench@samba.org>
-Content-Type: multipart/mixed; boundary="00000000000013d39f05bf667ced"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e03d36114bcbcf814ad13deb7812b0b5c196dadb.1617226663.git.gustavoars@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000013d39f05bf667ced
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Mar 31, 2021 at 04:44:29PM -0500, Gustavo A. R. Silva wrote:
+> Fix the following out-of-bounds warning by enclosing
+> structure members daddr and saddr into new struct addr:
+> 
+> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
+> 
+> Refactor the code, accordingly:
+> 
+> $ pahole -C wl3501_md_req drivers/net/wireless/wl3501_cs.o
+> struct wl3501_md_req {
+> 	u16                        next_blk;             /*     0     2 */
+> 	u8                         sig_id;               /*     2     1 */
+> 	u8                         routing;              /*     3     1 */
+> 	u16                        data;                 /*     4     2 */
+> 	u16                        size;                 /*     6     2 */
+> 	u8                         pri;                  /*     8     1 */
+> 	u8                         service_class;        /*     9     1 */
+> 	struct {
+> 		u8                 daddr[6];             /*    10     6 */
+> 		u8                 saddr[6];             /*    16     6 */
+> 	} addr;                                          /*    10    12 */
+> 
+> 	/* size: 22, cachelines: 1, members: 8 */
+> 	/* last cacheline: 22 bytes */
+> };
+> 
+> The problem is that the original code is trying to copy data into a
+> couple of arrays adjacent to each other in a single call to memcpy().
+> Now that a new struct _addr_ enclosing those two adjacent arrays
+> is introduced, memcpy() doesn't overrun the length of &sig.daddr[0],
+> because the address of the new struct object _addr_ is used as
+> destination, instead.
+> 
+> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+> avoid confusing the compiler.
+> 
+> Link: https://github.com/KSPP/linux/issues/109
+> Reported-by: kernel test robot <lkp@intel.com>
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Good catch - added one other minor thing, whitespace in share name
-could be a space or a tab, so changed that line to:
+Thanks, this makes the code much easier for the compiler to validate
+at compile time. These cross-field memcpy()s are weird. I like the
+solution here.
 
-+               seq_escape(m, devname, " \t");
-
-from
-+               seq_escape(m, devname, " ");
-
-On Wed, Apr 7, 2021 at 12:35 AM Maciek Borzecki
-<maciek.borzecki@gmail.com> wrote:
->
-> Commit 653a5efb849a ("cifs: update super_operations to show_devname")
-> introduced the display of devname for cifs mounts. However, when mounting
-> a share which has a whitespace in the name, that exact share name is also
-> displayed in mountinfo. Make sure that all whitespace is escaped.
->
-> Signed-off-by: Maciek Borzecki <maciek.borzecki@gmail.com>
-> ---
->  fs/cifs/cifsfs.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-> index 099ad9f3660bb28db1b6a9aea9538282b41c6455..3c6cb85b95e207df222248f10cc9df937cdda24e 100644
-> --- a/fs/cifs/cifsfs.c
-> +++ b/fs/cifs/cifsfs.c
-> @@ -476,7 +476,8 @@ static int cifs_show_devname(struct seq_file *m, struct dentry *root)
->                 seq_puts(m, "none");
->         else {
->                 convert_delimiter(devname, '/');
-> -               seq_puts(m, devname);
-> +               /* escape all spaces in share names */
-> +               seq_escape(m, devname, " ");
->                 kfree(devname);
->         }
->         return 0;
-> --
-> 2.31.1
->
-
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Thanks,
-
-Steve
-
---00000000000013d39f05bf667ced
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-cifs-escape-spaces-in-share-names.patch"
-Content-Disposition: attachment; 
-	filename="0001-cifs-escape-spaces-in-share-names.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kn7taqr20>
-X-Attachment-Id: f_kn7taqr20
-
-RnJvbSAxZWU0ZjMzZmZhODMwMjY3ZDMyNGIwZDU0N2ZhY2QyNWRkNjgzYTEyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYWNpZWsgQm9yemVja2kgPG1hY2llay5ib3J6ZWNraUBnbWFp
-bC5jb20+CkRhdGU6IFR1ZSwgNiBBcHIgMjAyMSAxNzowMjoyOSArMDIwMApTdWJqZWN0OiBbUEFU
-Q0hdIGNpZnM6IGVzY2FwZSBzcGFjZXMgaW4gc2hhcmUgbmFtZXMKCkNvbW1pdCA2NTNhNWVmYjg0
-OWEgKCJjaWZzOiB1cGRhdGUgc3VwZXJfb3BlcmF0aW9ucyB0byBzaG93X2Rldm5hbWUiKQppbnRy
-b2R1Y2VkIHRoZSBkaXNwbGF5IG9mIGRldm5hbWUgZm9yIGNpZnMgbW91bnRzLiBIb3dldmVyLCB3
-aGVuIG1vdW50aW5nCmEgc2hhcmUgd2hpY2ggaGFzIGEgd2hpdGVzcGFjZSBpbiB0aGUgbmFtZSwg
-dGhhdCBleGFjdCBzaGFyZSBuYW1lIGlzIGFsc28KZGlzcGxheWVkIGluIG1vdW50aW5mby4gTWFr
-ZSBzdXJlIHRoYXQgYWxsIHdoaXRlc3BhY2UgaXMgZXNjYXBlZC4KClNpZ25lZC1vZmYtYnk6IE1h
-Y2llayBCb3J6ZWNraSA8bWFjaWVrLmJvcnplY2tpQGdtYWlsLmNvbT4KQ0M6IDxzdGFibGVAdmdl
-ci5rZXJuZWwub3JnPiAjIDUuMTErClJldmlld2VkLWJ5OiBTaHlhbSBQcmFzYWQgTiA8c3ByYXNh
-ZEBtaWNyb3NvZnQuY29tPgpTaWduZWQtb2ZmLWJ5OiBTdGV2ZSBGcmVuY2ggPHN0ZnJlbmNoQG1p
-Y3Jvc29mdC5jb20+Ci0tLQogZnMvY2lmcy9jaWZzZnMuYyB8IDMgKystCiAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZnMvY2lmcy9j
-aWZzZnMuYyBiL2ZzL2NpZnMvY2lmc2ZzLmMKaW5kZXggMDk5YWQ5ZjM2NjBiLi4zYzZjYjg1Yjk1
-ZTIgMTAwNjQ0Ci0tLSBhL2ZzL2NpZnMvY2lmc2ZzLmMKKysrIGIvZnMvY2lmcy9jaWZzZnMuYwpA
-QCAtNDc2LDcgKzQ3Niw4IEBAIHN0YXRpYyBpbnQgY2lmc19zaG93X2Rldm5hbWUoc3RydWN0IHNl
-cV9maWxlICptLCBzdHJ1Y3QgZGVudHJ5ICpyb290KQogCQlzZXFfcHV0cyhtLCAibm9uZSIpOwog
-CWVsc2UgewogCQljb252ZXJ0X2RlbGltaXRlcihkZXZuYW1lLCAnLycpOwotCQlzZXFfcHV0cyht
-LCBkZXZuYW1lKTsKKwkJLyogZXNjYXBlIGFsbCBzcGFjZXMgaW4gc2hhcmUgbmFtZXMgKi8KKwkJ
-c2VxX2VzY2FwZShtLCBkZXZuYW1lLCAiIFx0Iik7CiAJCWtmcmVlKGRldm5hbWUpOwogCX0KIAly
-ZXR1cm4gMDsKLS0gCjIuMjcuMAoK
---00000000000013d39f05bf667ced--
+Kees Cook
