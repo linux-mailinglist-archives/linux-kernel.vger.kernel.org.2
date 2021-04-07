@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FB5356E7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C2B356E7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344472AbhDGOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:25:41 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:17347 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhDGOZi (ORCPT
+        id S1348307AbhDGOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:25:52 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52120 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235723AbhDGOZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:25:38 -0400
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 137EP7aH022263;
-        Wed, 7 Apr 2021 23:25:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 137EP7aH022263
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617805508;
-        bh=kkn3m/BCSxf2wWzhn6Nistuursiw20cEhHeA63xRAuE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MlzMMEXQEYrfYLb50tmTehRfqFTJ/gDi99r8VznhkQcun5Xdbe9HpoKSawmondCKr
-         BI9R75umLMQyBhHG835MOCRH7jOWZc8slDhI9kzspKkKtNjacBZ8xZgaOvUG7TusKM
-         lpkxPn6wppMbKzHZbXjww2VeOjLfPEmPIFGI271wrfN3AKtAw6GfdFzvWZtr+JVjV+
-         Z3QQZG7PQc7NJLCrn7nGTNcmR2Mh2mbVXC8vDIljdoMiru9QLdG37iYCTQlOHUPI+u
-         gHSiX2DXXCD6Zcvseczplc/5Auj5EBSfKEYhRwcBkwrXwtLOj7xM+BOOXWKJ2UahKy
-         YiOa30rNaGEDQ==
-X-Nifty-SrcIP: [209.85.214.176]
-Received: by mail-pl1-f176.google.com with SMTP id y2so9427199plg.5;
-        Wed, 07 Apr 2021 07:25:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532G7dEJa3kEVCkvMyVuTr7zzsvbV4PUKzxFGzjX+37gMBFziYCn
-        XBry+UMEmdnmleYfDXE/sOdj3OQi/xkqGALyCjQ=
-X-Google-Smtp-Source: ABdhPJz5uhq8IDSf3S/3h7p8BMiaz6Akfdns4mQYFnNyvxGlA0ujmo7PLCgt78eyUaRA8ndd8CZgmTXl1yaWdyMAUmY=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr3532498pjb.87.1617805507406;
- Wed, 07 Apr 2021 07:25:07 -0700 (PDT)
+        Wed, 7 Apr 2021 10:25:43 -0400
+Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 137EOcIX079120;
+        Wed, 7 Apr 2021 23:24:39 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
+ Wed, 07 Apr 2021 23:24:38 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 137EOc4s079117
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 7 Apr 2021 23:24:38 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v2] tty: use printk_deferred() at tty_msg()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <YGx59PEq2Y015YdK@alley>
+ <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+ <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+ <YG24F9Kx+tjxhh8G@kroah.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+Date:   Wed, 7 Apr 2021 23:24:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210402123959.5143-1-alobakin@pm.me> <CABCJKufH262ki4FCQJxSO-v+gQzPBsVntQWnNZY7h-cvt1KYTA@mail.gmail.com>
- <Gt4--xIFQdFQbd97OwKvRwelvfikSSv3Vkc_KKzAeGgp6c2fe8SPW6v_njp0xvwepPwC_UcWdyWeAjSdFEXpheJWlnmWNY-mVsaMEnJV56A=@pm.me>
-In-Reply-To: <Gt4--xIFQdFQbd97OwKvRwelvfikSSv3Vkc_KKzAeGgp6c2fe8SPW6v_njp0xvwepPwC_UcWdyWeAjSdFEXpheJWlnmWNY-mVsaMEnJV56A=@pm.me>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 23:24:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQBYxZ4s4Eg2TPMoLA+NDWXsNrnq2ch1ZQsBgcCXPk7Sw@mail.gmail.com>
-Message-ID: <CAK7LNAQBYxZ4s4Eg2TPMoLA+NDWXsNrnq2ch1ZQsBgcCXPk7Sw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: merge module sections under CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
- too
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jessica Yu <jeyu@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YG24F9Kx+tjxhh8G@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 11:42 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> On Friday, 2 April 2021, 18:09, Sami
-> Tolvanen <samitolvanen@google.com> wrote:
->
-> > On Fri, Apr 2, 2021 at 5:40 AM Alexander Lobakin alobakin@pm.me wrote:
-> >
-> > > When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
-> > > -fdata-sections and -ffunction-sections are being enabled by the
-> > > top-level Makefile, and module section merging is also needed.
-> > > Expand the ifdef (and the comment block) to cover that case too.
-> > > Fixes: 6a3193cdd5e5 ("kbuild: lto: Merge module sections if and only =
-if CONFIG_LTO_CLANG is enabled")
+On 2021/04/07 22:48, Greg Kroah-Hartman wrote:
+>> By the way, as soon as applying this patch, I guess that syzkaller starts
+>> generating hung task reports because /dev/ttyprintk can trivially trigger
+>> flood of
+>>
+>>   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+>>            port->count);
+>>
+>> message, and adding
+>>
+>>   if (strcmp(tty_driver_name(tty), "ttyprintk"))
+> 
+> Odd, how can ttyprintk() generate that mess?
 
+So far three tests and results:
 
-Did you test this patch before submission?
+  https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/WifLgadvAAAJ
+  https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/w2_MiMmAAAAJ
+  https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/hfsQqSOPAAAJ
 
+Patch https://syzkaller.appspot.com/x/patch.diff?x=145e4c9ad00000 generated
+console output https://syzkaller.appspot.com/x/log.txt?x=162f9fced00000 .
 
-See the top Makefile closely:
+Patch https://syzkaller.appspot.com/x/patch.diff?x=14839931d00000 did not
+flood the console output enough to fire khungtaskd.
 
-ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-KBUILD_CFLAGS_KERNEL +=3D -ffunction-sections -fdata-sections
-LDFLAGS_vmlinux +=3D --gc-sections
-endif
+Maybe it is because /dev/ttyprintk can be opened/closed by multiple processes
+without serialization?
 
+Running
 
--ffunction-sections -fdata-sections are passed to only
-built-in objects, but not to module objects in the
-first place.
+  for i in $(seq 1 100); do sleep 1 > /dev/ttyprintk & done
 
-KBUILD_CFLAGS_KERNEL is only passed to built-in objects.
+results in
 
+  tty_port_close_start: tty->count = 1 port count = 100
 
-The situation you claimed never happens.
+. If tty_port_open() from tpk_open() can do
 
+  spin_lock_irq(&port->lock);
+  ++port->count;
+  spin_unlock_irq(&port->lock);
 
+when tty_port_close_start() from tty_port_close() from tpk_close() is doing
 
+  spin_lock_irqsave(&port->lock, flags);
+  if (tty->count == 1 && port->count != 1) {
+    tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+             port->count);
+    port->count = 1;
+  }
+  if (--port->count < 0) {
+    tty_warn(tty, "%s: bad port count (%d)\n", __func__,
+             port->count);
+    port->count = 0;
+  }
 
+  if (port->count) {
+    spin_unlock_irqrestore(&port->lock, flags);
+    return 0;
+  }
+  spin_unlock_irqrestore(&port->lock, flags);
 
-
-
-> > Wouldn't this trigger the ld.bfd bug described in the commit message
-> > when LD_DEAD_CODE_DATA_ELIMINATION is enabled? LTO_CLANG always uses
-> > LLD, so it won't have this issue.
->
-> LD_DEAD_CODE_DATA_ELIMINATION is marked
-> =E2=80=9CEXPERIMENTAL=E2=80=9C in the config prompt, and
-> arches have to opt-in
-> HAS_LD_DEAD_CODE_DATA_ELIMINATION to give
-> an access to it (only a few does). This
-> should be relatively safe.
->
-> > Sami
->
-> Thanks,
-> Al
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+, what prevents port->count from getting larger than 1 ?
