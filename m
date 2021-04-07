@@ -2,215 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C9535774F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFD7357752
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhDGWEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhDGWEK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:04:10 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5617C061760;
-        Wed,  7 Apr 2021 15:03:59 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id l9so441244ybm.0;
-        Wed, 07 Apr 2021 15:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8RptQ+5dbbOnoj82Wc9yFBjeciaToNnjyluawSljZBY=;
-        b=h/ItTBbX0dQ9/CfFMRBTuFwnxxjeAX5YBCqsbhtxNlrhIXeZqNIlJXdaumYPFuJHd1
-         oH7FBTmo0awBZSiyFHi3TMYjT0rvk1d3a90yXBaXo6edkOpTi6rJRxNT71HVkcUA0WMJ
-         BonKyqopiA+QUWHPHS4v1FUssyw6n6peG0XwMmKxtjo5MTjYrXV7pQTnIKbQF2wfFdZL
-         q8+T+cNMrQxQe4hrNYyWdn7ux5Zkj71J2isZo7Z1h1VQCmTmdToNIIWuVjRFmA0nPQBy
-         u3A6xCM6rVOh3tUrF8WGoa6bvNlwHYqcQX76aQhInz9EnvL1MqVZ2b8EMXBdWl8AZDmq
-         cxLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8RptQ+5dbbOnoj82Wc9yFBjeciaToNnjyluawSljZBY=;
-        b=fa0p8P9pSxfOxL/VtUzYYiT1G3o+0woc8N3NZAi0dwkELlvqmhXYEMcVels3SM9sjh
-         ZzggBawe4yoaVd2ZGqe9Wklgd2a6lclLbzq/HsidiOCD30GxpFJWHj5vCvGUkBZ+wcNe
-         rbhfsqcnU5LrNIggM4+96S/ydD/XrJvFFXGLLug4zsCxMid3zkcO3TlCPRr794lGPhYs
-         DF2T0kGtoZF2UDxhNJPNCg6HGDeRg5sILkYJBfqiLPKwtcCmpuPxkB7J+gWypGHfXcd5
-         5Fn+RTmWT/U2RnaigbfXGH9o0sZTUeNWjWvxPCIDr3pdgxdf46OkqiYc5ty0ecuiENKY
-         dD4Q==
-X-Gm-Message-State: AOAM530H4dMf4oGc9yQ3pR0v0bCofCfxWd5m0CnK6r9zgU6mCNxu4aXV
-        eZ4Jthwbk/D87dbVYyfso5RsUSHh9IDxCCvgPG8gfWwfBzo=
-X-Google-Smtp-Source: ABdhPJylNGwAi9gm5uZaJR0kVTamxFe1pkziARuHZU8+lEOXuCpCnfDEyUZmx34bHBJp3oe0HIBU7L04G1nSTmrR1Sw=
-X-Received: by 2002:a05:6902:6a3:: with SMTP id j3mr7283642ybt.403.1617833039127;
- Wed, 07 Apr 2021 15:03:59 -0700 (PDT)
+        id S229811AbhDGWGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:06:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:35740 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhDGWGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:06:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1138F1063;
+        Wed,  7 Apr 2021 15:06:38 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7DA083F792;
+        Wed,  7 Apr 2021 15:06:36 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: [PATCH v5 0/3] sched/fair: load-balance vs capacity margins
+Date:   Wed,  7 Apr 2021 23:06:25 +0100
+Message-Id: <20210407220628.3798191-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-4-revest@chromium.org>
- <CAEf4Bzbfyd7r4cx8Lcjx7gm8beKxuf=wYW5StM1ZFaVaNL9U-g@mail.gmail.com> <CABRcYm+3q7a64heRVHLUu+S6xqmTGg2TuyB=JwD6V8pFiFpz_g@mail.gmail.com>
-In-Reply-To: <CABRcYm+3q7a64heRVHLUu+S6xqmTGg2TuyB=JwD6V8pFiFpz_g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 15:03:48 -0700
-Message-ID: <CAEf4BzbKJ9msu5Y5y_wvAfzeykkBxXp606YFv32iE2DoN=ZVXg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: Add a bpf_snprintf helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 9:06 AM Florent Revest <revest@chromium.org> wrote:
->
-> On Fri, Mar 26, 2021 at 11:55 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
-> > > The implementation takes inspiration from the existing bpf_trace_printk
-> > > helper but there are a few differences:
-> > >
-> > > To allow for a large number of format-specifiers, parameters are
-> > > provided in an array, like in bpf_seq_printf.
-> > >
-> > > Because the output string takes two arguments and the array of
-> > > parameters also takes two arguments, the format string needs to fit in
-> > > one argument. But because ARG_PTR_TO_CONST_STR guarantees to point to a
-> > > NULL-terminated read-only map, we don't need a format string length arg.
-> > >
-> > > Because the format-string is known at verification time, we also move
-> > > most of the format string validation, currently done in formatting
-> > > helper calls, into the verifier logic. This makes debugging easier and
-> > > also slightly improves the runtime performance.
-> > >
-> > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > > ---
-> > >  include/linux/bpf.h            |  6 ++++
-> > >  include/uapi/linux/bpf.h       | 28 ++++++++++++++++++
-> > >  kernel/bpf/helpers.c           |  2 ++
-> > >  kernel/bpf/verifier.c          | 41 +++++++++++++++++++++++++++
-> > >  kernel/trace/bpf_trace.c       | 52 ++++++++++++++++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h | 28 ++++++++++++++++++
-> > >  6 files changed, 157 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 7b5319d75b3e..f3d9c8fa60b3 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -1893,6 +1893,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
-> > >  extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
-> > >  extern const struct bpf_func_proto bpf_copy_from_user_proto;
-> > >  extern const struct bpf_func_proto bpf_snprintf_btf_proto;
-> > > +extern const struct bpf_func_proto bpf_snprintf_proto;
-> > >  extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
-> > >  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
-> > >  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
-> > > @@ -2018,4 +2019,9 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-> > >  struct btf_id_set;
-> > >  bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
-> > >
-> > > +enum bpf_printf_mod_type;
-> > > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
-> > > +                       u32 num_args);
-> > > +
-> > >  #endif /* _LINUX_BPF_H */
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 2d3036e292a9..86af61e912c6 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -4660,6 +4660,33 @@ union bpf_attr {
-> > >   *     Return
-> > >   *             The number of traversed map elements for success, **-EINVAL** for
-> > >   *             invalid **flags**.
-> > > + *
-> > > + * long bpf_snprintf(char *str, u32 str_size, const char *fmt, u64 *data, u32 data_len)
-> > > + *     Description
-> > > + *             Outputs a string into the **str** buffer of size **str_size**
-> > > + *             based on a format string stored in a read-only map pointed by
-> > > + *             **fmt**.
-> > > + *
-> > > + *             Each format specifier in **fmt** corresponds to one u64 element
-> > > + *             in the **data** array. For strings and pointers where pointees
-> > > + *             are accessed, only the pointer values are stored in the *data*
-> > > + *             array. The *data_len* is the size of *data* in bytes.
-> > > + *
-> > > + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
-> > > + *             memory. Reading kernel memory may fail due to either invalid
-> > > + *             address or valid address but requiring a major memory fault. If
-> > > + *             reading kernel memory fails, the string for **%s** will be an
-> > > + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
-> >
-> > would it make sense for sleepable programs to allow memory fault when
-> > reading memory?
->
-> Probably yes. How would you do that ? I'm guessing that in
-> bpf_trace_copy_string you would call either strncpy_from_X_nofault or
-> strncpy_from_X depending on a condition but I'm not sure which one.
+Hi folks,
 
-So you'd have different bpf_snprintf_proto definitions for sleepable
-and non-sleepable programs. And each implementation would call
-bpf_printf_prepare() with a flag specifying which copy_string variant
-to use (sleepable or not). So for BPF users it would be the same
-bpf_snprintf() helper, but it would transparently be doing different
-things depending on which BPF program it is being called from. That's
-how we do bpf_get_stack(), for example, see
-bpf_get_stack_proto_pe/bpf_get_stack_proto_raw_tp/bpf_get_stack_proto_tp.
+I split up the extra misfit patches from v3 as I'm still playing around with
+those following Vincent's comments. In the meantime, I believe the first few
+patches of the series can still be considered as standalone.
 
-But consider that for a follow up, no need to address right now.
+o Patch 1 prevents pcpu kworkers from causing group_imbalanced
+o Patch 2 is an independent active balance cleanup
+o Patch 3 introduces yet another margin for capacity to capacity
+  comparisons
 
->
-> > > + *             Not returning error to bpf program is consistent with what
-> > > + *             **bpf_trace_printk**\ () does for now.
-> > > + *
-> > > + *     Return
-> > > + *             The strictly positive length of the formatted string, including
-> > > + *             the trailing zero character. If the return value is greater than
-> > > + *             **str_size**, **str** contains a truncated string, guaranteed to
-> > > + *             be zero-terminated.
-> >
-> > Except when str_size == 0.
->
-> Right
->
+The "important" one is patch 3, as it solves misfit migration issues on newer
+platforms.
+  
+This is based on top of today's tip/sched/core at:
 
-So I assume you'll adjust the comment? I always find it confusing when
-zero case is allowed but it is not specified what's the behavior is.
+  0a2b65c03e9b ("sched/topology: Remove redundant cpumask_and() in init_overlap_sched_group()")
 
-> > > + *
-> > > + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
-> > >   */
+Testing
+=======
 
-[...]
+I ran my usual [1] misfit tests on
+o TC2
+o Juno
+o HiKey960
+o Dragonboard845C
+o RB5
 
-> > > +       err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
-> > > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
-> > > +               BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
-> > > +               BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
-> > > +               BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
-> > > +               BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
-> > > +               BPF_CAST_FMT_ARG(11, args, mod));
-> > > +       if (str_size)
-> > > +               str[str_size - 1] = '\0';
-> >
-> > hm... what if err < str_size ?
->
-> Then there would be two zeroes, one set by snprintf in the middle and
-> one set by us at the end. :| I was a bit lazy there, I agree it would
-> be nicer if we'd do if (err >= str_size) instead.
->
-
-snprintf() seems to be always zero-terminating the string if str_size
-> 0, and does nothing if str_size == 0, which is exactly what you
-want, so you can just drop that zero termination logic.
-
-> Also makes me wonder what if str == NULL and str_size != 0. I just
-> assumed that the verifier would prevent that from happening but
-> discussions in the other patches make me unsure now.
+RB5 has a similar topology to Pixel4 and highlights the problem of having
+two different CPU capacity values above 819 (in this case 871 and 1024):
+without these patches, CPU hogs (i.e. misfit tasks) running on the "medium"
+CPUs will never be upmigrated to a "big" via misfit balance.
 
 
-ARG_CONST_SIZE_OR_ZERO should make sure that ARG_PTR_TO_MEM before
-that is a valid initialized memory. But please double-check, of
-course.
+The 0day bot reported [3] the first patch causes a ~14% regression on its
+stress-ng.vm-segv testcase. I ran that testcase on: 
+
+o Ampere eMAG (arm64, 32 cores)
+o 2-socket Xeon E5-2690 (x86, 40 cores)
+
+and found at worse a -0.3% regression and at best a 2% improvement - I'm
+getting nowhere near -14%.
+  
+Revisions
+=========
+
+v4 -> v5
+--------
+o Collected Reviewed-by (Vincent, Dietmar)
+o Fixed typo in patch 1 (Dietmar)
+o Appended paragraph about using local group vs dst cpu in patch 3 (Dietmar)
+
+v3 -> v4
+--------
+o Tore out the extra misfit patches
+
+o Rewrote patch 1 changelog (Dietmar)
+o Reused LBF_ACTIVE_BALANCE to ditch LBF_DST_PINNED active balance logic
+  (Dietmar)
+o Collected Tested-by (Lingutla)  
+
+o Squashed capacity_greater() introduction and use (Vincent)
+o Removed sched_asym_cpucapacity() static key proliferation (Vincent)
+
+v2 -> v3
+--------
+
+o Rebased on top of latest tip/sched/core
+o Added test results vs stress-ng.vm-segv
+
+v1 -> v2
+--------
+
+o Collected Reviewed-by
+o Minor comment and code cleanups
+
+o Consolidated static key vs SD flag explanation (Dietmar)
+
+  Note to Vincent: I didn't measure the impact of adding said static key to
+  load_balance(); I do however believe it is a low hanging fruit. The
+  wrapper keeps things neat and tidy, and is also helpful for documenting
+  the intricacies of the static key status vs the presence of the SD flag
+  in a CPU's sched_domain hierarchy.
+  
+o Removed v1 patch 4 - root_domain.max_cpu_capacity is absolutely not what
+  I had convinced myself it was.
+o Squashed capacity margin usage with removal of
+  group_smaller_{min, max}_capacity() (Vincent)   
+o Replaced v1 patch 7 with Lingutla's can_migrate_task() patch [2]
+o Rewrote task_hot() modification changelog
+
+Links
+=====
+
+[1]: https://lisa-linux-integrated-system-analysis.readthedocs.io/en/master/kernel_tests.html#lisa.tests.scheduler.misfit.StaggeredFinishes
+[2]: http://lore.kernel.org/r/20210217120854.1280-1-clingutla@codeaurora.org
+[3]: http://lore.kernel.org/r/20210223023004.GB25487@xsang-OptiPlex-9020
+
+Cheers,
+Valentin
+
+Lingutla Chandrasekhar (1):
+  sched/fair: Ignore percpu threads for imbalance pulls
+
+Valentin Schneider (2):
+  sched/fair: Clean up active balance nr_balance_failed trickery
+  sched/fair: Introduce a CPU capacity comparison helper
+
+ kernel/sched/fair.c | 68 +++++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 39 deletions(-)
+
+--
+2.25.1
+
