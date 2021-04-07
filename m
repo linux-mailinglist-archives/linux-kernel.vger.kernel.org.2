@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574503568DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03703568E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346633AbhDGKFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350508AbhDGKDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:03:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 062EF6139C;
-        Wed,  7 Apr 2021 10:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617789824;
-        bh=U2Q8yQRaIx4QiUDT92JbWKR5p2N8Pmme+7zcvnbeJJ0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=D2H4UEtHja2iIv2loa+fuuitQ959MN2FGakHGD8VX07eZKsavECG1occPJR8NZ+iw
-         syCag3ZhloduOHJ+yp6Le+QJENnSEuMZqR5GbzOES4ZpFa42BJgZbhbEnRrAuqnWar
-         EVGT8td4AqmWmQqfnuY4wOdlnLFki+xiAvxvxKlS1mesefU/1v0wUgcdRY0bh4SIsZ
-         n7Yv0VJpeH4MZw32BL2wIBGrHRG/Kw4LPc6QlePUA2WjVRCIqHb1+bpS6iVGM2H6sB
-         moflSRRRevnPCGjCAOAwOqW112u/0PAHVJOdUV8SSOd/jHlT3TOoAnV++GhUKmduTT
-         Nec2+miWZIEUg==
-Subject: Re: [PATCH] clk: exynos7: Mark aclk_fsys1_200 as critical
-To:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Cc:     s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kgene@kernel.org, krzk@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org
-References: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <53be0d9d-a64a-9108-85f0-40ac360757c4@kernel.org>
-Date:   Wed, 7 Apr 2021 12:03:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1350672AbhDGKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233218AbhDGKE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:04:27 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D880AC0613E4
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 03:04:15 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id h10so20075176edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 03:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=44ZqeD5EPkyiyFJAkLWDYZXBNtCAIXuuyBZhNmXgs0M=;
+        b=u/qSxrao7mOSvvfEmGSW2fzH0XEfHO8maFw5c9HCl34YysuTze6lqPLTjRnRTvJ3me
+         RfeTYTn0WukHHg9JeTEtw6cCmzAfr+l2qh9Q5siNCsPO5I5r0GHTPXtZvqLNQmU6L1d1
+         wKJV/ADf9TZ28i+Y8tdjLy68CMO3m3/WgOK/kh0MtfBUwbHAjHC94ZtH325G3FzYiMO5
+         cXRJ+UeqwkTirPwow9jl4Jp8tiM45Ow24x3s+5tsur1cXD+1HXlnsayU50aAWNDX0+OV
+         LsYOYcQzPL0//hgaTNPNA4xDXIr9OXhDzqwMppSwnLF8SByTteK6Kq1UWvHjSLtyMuOr
+         b3+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=44ZqeD5EPkyiyFJAkLWDYZXBNtCAIXuuyBZhNmXgs0M=;
+        b=ltRA43c0ZBaA5u5dQ8rkbk5+CdPXuf8ajOIW5wXKiOzj5prr0+LBV0SQS6MIkIeT94
+         IWVTATk53KNbRq4A3Tz0Yx9CTk8Bmje7d34u2PDPLurZerZS9q4ltXAVFBLm1d9rTU+N
+         tiV3ONdodnOl1usPG8DOHUcf7+YWCql5WcvP59njnG+HC78LJRAhQX+M6GniodHR8ixI
+         NCB5hI9l5j7a+EKSEqGGbu3ueefTeNY9uvUR+vc9MZtBRuF1JFHVcHOtsv852IndmcC4
+         0QvyzZLWqBbvTykaQqZvMZ7kHW6/Raql/g8eqs298+6APHcDpt45u80z7wS8TWNvnOUd
+         poHQ==
+X-Gm-Message-State: AOAM532Sf531abkaxK8YeuIQgg8OgAxj2QaUXxLmesK6CbyiMQ1f/y+K
+        iRgokk+oN6T2pv4kgPImr7I=
+X-Google-Smtp-Source: ABdhPJwTPdIlhDnf3qWqbIT1K3D1vTVfwJAOzx9LyF4DagVoXaJs33p7OdefzswJ1sNPCSoEIOJ1Qg==
+X-Received: by 2002:a05:6402:b26:: with SMTP id bo6mr3559011edb.162.1617789854662;
+        Wed, 07 Apr 2021 03:04:14 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id g22sm12427533ejm.69.2021.04.07.03.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 03:04:14 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, outreachy-kernel@googlegroups.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v4] staging: rtl8723bs: hal: Remove camelcase
+Date:   Wed,  7 Apr 2021 12:04:10 +0200
+Message-Id: <20210407100410.8058-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.10.2020 17:43, Paweł Chmiel wrote:
-> This clock must be always enabled to allow access to any registers in
-> fsys1 CMU. Until proper solution based on runtime PM is applied
-> (similar to what was done for Exynos5433), mark that clock as critical
-> so it won't be disabled.
-> 
-> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
-> UFS module is probed before pmic used to power that device.
-> In this case defer probe was happening and that clock was disabled by
-> UFS driver, causing whole boot to hang on next CMU access.
-> 
-> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-> ---
->   drivers/clk/samsung/clk-exynos7.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
-> index c1ff715e960c..1048d83f097b 100644
-> --- a/drivers/clk/samsung/clk-exynos7.c
-> +++ b/drivers/clk/samsung/clk-exynos7.c
-> @@ -538,7 +538,8 @@ static const struct samsung_gate_clock top1_gate_clks[] __initconst = {
->   		ENABLE_ACLK_TOP13, 28, CLK_SET_RATE_PARENT |
->   		CLK_IS_CRITICAL, 0),
+Remove camelcase. Issue detected by checkpatch.pl. The symbols aren't
+used in other files, so this change doesn't break the driver's code.
 
-As this patch can be backported up to the commit that introduced regression
-I have applied it instead of your v3, with a comment as below.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-+       /*
-+        * This clock is required for the CMU_FSYS1 registers access, keep it
-+        * enabled permanently until proper runtime PM support is added.
-+        */
+Changes since v3: the previous patch cannot anymore be applied to the current
+staging-testing.
+Changes since v2: forgot to cc some recipients (again); no changes to
+the code.
+Changes since v1: forgot to cc some recipients; no changes to the code.
 
->   	GATE(CLK_ACLK_FSYS1_200, "aclk_fsys1_200", "dout_aclk_fsys1_200",
-> -		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT, 0),
-> +		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT |
-> +		CLK_IS_CRITICAL, 0),
->   
->   	GATE(CLK_SCLK_PHY_FSYS1_26M, "sclk_phy_fsys1_26m",
->   		"dout_sclk_phy_fsys1_26m", ENABLE_SCLK_TOP1_FSYS11,
-  
---
-Regards,
-Sylwester
+ drivers/staging/rtl8723bs/hal/Hal8723BReg.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/hal/Hal8723BReg.h b/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
+index b9aca99478db..616d20106392 100644
+--- a/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
++++ b/drivers/staging/rtl8723bs/hal/Hal8723BReg.h
+@@ -112,7 +112,7 @@
+ #define REG_RSVD3_8723B					0x0168
+ #define REG_C2HEVT_MSG_NORMAL_8723B	0x01A0
+ #define REG_C2HEVT_CMD_SEQ_88XX		0x01A1
+-#define REG_C2hEVT_CMD_CONTENT_88XX	0x01A2
++#define REG_C2HEVT_CMD_CONTENT_88XX	0x01A2
+ #define REG_C2HEVT_CMD_LEN_88XX		0x01AE
+ #define REG_C2HEVT_CLEAR_8723B			0x01AF
+ #define REG_MCUTST_1_8723B				0x01C0
+@@ -429,13 +429,13 @@
+ #define	IMR_RXFOVW_8723B		BIT8	/*  Receive FIFO Overflow */
+ 
+ /* 2 ACMHWCTRL 0x05C0 */
+-#define	AcmHw_HwEn_8723B		BIT(0)
+-#define	AcmHw_VoqEn_8723B		BIT(1)
+-#define	AcmHw_ViqEn_8723B		BIT(2)
+-#define	AcmHw_BeqEn_8723B		BIT(3)
+-#define	AcmHw_VoqStatus_8723B		BIT(5)
+-#define	AcmHw_ViqStatus_8723B		BIT(6)
+-#define	AcmHw_BeqStatus_8723B		BIT(7)
++#define	ACMHW_HWEN_8723B		BIT(0)
++#define	ACMHW_VOQEN_8723B		BIT(1)
++#define	ACMHW_VIQEN_8723B		BIT(2)
++#define	ACMHW_BEQEN_8723B		BIT(3)
++#define	ACMHW_VOQSTATUS_8723B		BIT(5)
++#define	ACMHW_VIQSTATUS_8723B		BIT(6)
++#define	ACMHW_BEQSTATUS_8723B		BIT(7)
+ 
+ /*        8195 (RCR) Receive Configuration Register	(Offset 0x608, 32 bits) */
+ #define	RCR_TCPOFLD_EN			BIT25	/*  Enable TCP checksum offload */
+-- 
+2.30.2
+
