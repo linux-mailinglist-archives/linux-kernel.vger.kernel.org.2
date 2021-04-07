@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4285B3566CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B7A3566CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239484AbhDGI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S240993AbhDGI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbhDGI2A (ORCPT
+        with ESMTP id S234075AbhDGI2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:28:00 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFE9C06174A;
-        Wed,  7 Apr 2021 01:27:51 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z136so9784577iof.10;
-        Wed, 07 Apr 2021 01:27:51 -0700 (PDT)
+        Wed, 7 Apr 2021 04:28:01 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB357C06174A;
+        Wed,  7 Apr 2021 01:27:52 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id y32so9289725pga.11;
+        Wed, 07 Apr 2021 01:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=djudLDvHwEVU2WU8NDvA4IyM3ENxYTXigjVkyoD/6zA=;
-        b=YVtMO4qROFI2J7M7msR5I/ifZpotUbDk9w+rRLP04uVJomAUAtR/Cx3JpT4QpCyUHM
-         tuBEsVUO0hE/v7uXs1ya24JtCLYFtHoUZ6sEYqJ8A3YAL9lTR+R+7CKgKCOvE+0Xomuk
-         KNigI7Dio0f1Zf7shf5vIB4C6Q6xxMddkBhg3JsDHMMa0O95ssdrFvlWtouiMmrbrn8s
-         e51SarZBEa5r42cLvUEWPKlum5z5LAojm65hyX575gDM6zMsixt7/pBB/lVuT1twp2xI
-         DJ43xcs5AUUBQCboa9vzR1L94GEQhZ7UHStB14o/EvqUk7RguwIWDm17z9alJ00F/nzJ
-         AoxQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ntPmOtLTBQO17iO2C/J/ncPJWSh08MXYx+HubKJAAco=;
+        b=DgDxwehh+Y1geD1x94gB5CIcgxFxYq2ix10Hazya1dhlitsPuWwtLaeacuzPSmgZKB
+         1jDCyIESK3asjo77f01em0nRZPUJCfa3Z3n3oDJYGrzIJfVGLP4d/z1UzgZg0TsMQpp9
+         F8pb6+cGVhGfTlp+UqfcS/jjuiKrOUT/oBPE7/+PUoaF2GxwIcBuW+oEyIIk43ksimfB
+         rU2XzKJoEsTunZUzcS5/xH+r/p5WH9jEi4bWkCZPYEoqnrMneY6o8TfDDAkak6lQyEhm
+         FUB3uu5oizynLS7Nt0tYZhTyQgOjl58C+BfveOaTxrRRM0IGwtpIu2SmlgC45wXiod+4
+         ylkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=djudLDvHwEVU2WU8NDvA4IyM3ENxYTXigjVkyoD/6zA=;
-        b=Qu6+ECK9IlZpy8S4bR3FAdI4iA/iTqIp3FhHd1caxjc6eIvIQsjpBTakvDx0YZGETS
-         daIqjOvpwx6mEJYEcskazeUGL7h9hKPbWZ+dM0OVFET7Erbyt75gh51TvngNIdKo4kUI
-         e+K2jqsQ936FUwRd2xb/5kGQp6lDZ7azNWu0ucM2hrcD7qLvMEZfSYKCvCBSKvYoG8CJ
-         UcE4NRW34+POxIGaeT27wy+Icpx8ms2oS+BJoZHeT/ZtD+Nx94P3Y6lQHtq+poUxYx8E
-         DOAC9bEoWndL9RZSPtHkUm45lHhtEfG3nVfpSii6kA+ihhb1q9ds4y+Uvc+AZYsUEkX/
-         1QnA==
-X-Gm-Message-State: AOAM532nyKE3qUSBRId0+m/JTWKC/Xj4QwPI/ekh8wF/SFRfSO+X6lra
-        Zmz9JH5e+CPaEPsPYRH/IW1TxdsCRCIcpjdnaYA=
-X-Google-Smtp-Source: ABdhPJzL90CZ4H7yfHpvZX2YphgdvTHneERnJtP3zRX/dAAcA0ssysTUIBIrRDUmiyQcAxOXB2AvkybJU9h30AuRX+Q=
-X-Received: by 2002:a02:9645:: with SMTP id c63mr2375068jai.84.1617784070654;
- Wed, 07 Apr 2021 01:27:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ntPmOtLTBQO17iO2C/J/ncPJWSh08MXYx+HubKJAAco=;
+        b=ABCF+M9T5dFSkY8fDez0yROL+pJbwG62hCB0hNVLlOjGj72m03pUBiwqulz2ZdYwtw
+         dutdZLqFIscYrwGCHfakPpIk3UyXqlHgAdYKhOdiUCzilUOxcDa4wUKp+NAQ405cW2QC
+         3rgs3F4ienByUvwlWmKCefWcB8v2M3q+vN6QVA1y62GzLR+/UqPmC93MuKtk6/rZSfNM
+         l4HI6zGIvL/XOcvQEWwSH5Mq1qmM9PGEh3chmJea/AZhQkVZXw5r3PPRMbrnwfrjuBpj
+         Xeq6cdeuUPyjF5dymDR2GD8xhMaWc2mGkdTvYJXn4y0JOuuSoZ2HAOKQCB0uB51eQzF9
+         /Ikg==
+X-Gm-Message-State: AOAM5313oWlKClXgzX1oBvHF1nZVqa72TMnzQcffA51XpuCspM1Q7Pq2
+        gfLsT1kh2ReOTXDr4RuiOxQ=
+X-Google-Smtp-Source: ABdhPJySc6gloAuTNcaXpmXnMgeewxCipjgewulWGsAiSehmJ/N0gclf05LA7y+Ge2ge6B3WJ1aMjw==
+X-Received: by 2002:a65:4082:: with SMTP id t2mr2249130pgp.396.1617784072324;
+        Wed, 07 Apr 2021 01:27:52 -0700 (PDT)
+Received: from localhost.localdomain ([134.173.248.5])
+        by smtp.gmail.com with ESMTPSA id v25sm20484716pfn.51.2021.04.07.01.27.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 01:27:51 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 01:27:49 -0700
+From:   Pavle Rohalj <pavle.rohalj@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/49]  staging: sm750fb: Update enum values in dpms
+ to snake case
+Message-ID: <YG1tBSqVTwKQChHV@localhost.localdomain>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+ <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
+ <YG1eFxQDP6dITlXA@kroah.com>
 MIME-Version: 1.0
-References: <20210330202829.4825-1-varad.gautam@suse.com> <20210330202829.4825-2-varad.gautam@suse.com>
-In-Reply-To: <20210330202829.4825-2-varad.gautam@suse.com>
-From:   hongbo li <herbert.tencent@gmail.com>
-Date:   Wed, 7 Apr 2021 16:27:40 +0800
-Message-ID: <CABpmuw+ht5BmNtqN+pJt7A0ZHp7JJArZtj51hkhBc96L8iwvwg@mail.gmail.com>
-Subject: Re: [PATCH 01/18] X.509: Parse RSASSA-PSS style certificates
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG1eFxQDP6dITlXA@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Varad=EF=BC=8C
+On Wed, Apr 07, 2021 at 09:24:07AM +0200, Greg KH wrote:
+> On Tue, Apr 06, 2021 at 11:36:16PM -0700, Pavle Rohalj wrote:
+> > Fix "Avoid CamelCase" checkpatch.pl checks for values in
+> > enum dpms.
+> > 
+> > Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
+> > ---
+> >  drivers/staging/sm750fb/ddk750_power.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/staging/sm750fb/ddk750_power.h b/drivers/staging/sm750fb/ddk750_power.h
+> > index 7002567a47d2..4756db1ccb9c 100644
+> > --- a/drivers/staging/sm750fb/ddk750_power.h
+> > +++ b/drivers/staging/sm750fb/ddk750_power.h
+> > @@ -3,10 +3,10 @@
+> >  #define DDK750_POWER_H__
+> >  
+> >  enum dpms {
+> > -	crtDPMS_ON = 0x0,
+> > -	crtDPMS_STANDBY = 0x1,
+> > -	crtDPMS_SUSPEND = 0x2,
+> > -	crtDPMS_OFF = 0x3,
+> > +	CRT_DPMS_ON = 0x0,
+> > +	CRT_DPMS_STANDBY = 0x1,
+> > +	CRT_DPMS_SUSPEND = 0x2,
+> > +	CRT_DPMS_OFF = 0x3,
+> >  };
+> 
+> And the build does not break with this change?  If so, then why are
+> these here at all?
+> 
+> thanks,
+> 
+> greg k-h
 
-I also made an implementation of rsa pss: "[PATCH v3 0/4] crypto: add
-rsa pss support for x509".
-I notice your patches and did some review,  find the following
-differences between our patches:
-1. You rework the rsa pad framework. This is reasonable.
-2. You did some changes on the keyctl and asymmetric struct. I don't
-see the reason.
-    Because for x509 layer, it only need to know the hash param, and
-could ignore other params(salt len, mgfhash).
-    Let rsa-pss itself parse the pss related params. So it seems we
-don't need to change asymmetric's
-    common struct.
-3. Why reject the cert whose MGF is different from the hash function
-used for signature generation?
-   My implementation could support different hashes, so don't get your poin=
-t.
-4. I add a test vector and a patch to support using rsa-pss for iam.
-5. Other implementation difference, i.e. the mgf and verify functions.
+I do not think so, I was able to build and load the driver with these
+changes. It looks like this enum is used as a type of the state parameter of
+ddk750_set_dpms function, but the three defined constants are never referenced. 
+Should we get rid of dpms enum and change the type of the parameter to an unsigned integer?
 
-Maybe we could merge our patches, what's your opinion?
-
-Best regards
-
-Hongbo
-
-Varad Gautam <varad.gautam@suse.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=8831=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=884:31=E5=86=99=E9=81=93=EF=BC=9A
->
-> An X.509 wrapper for a RSASSA-PSS signature contains additional
-> signature parameters over the PKCSv.15 encoding scheme. Extend the
-> x509 parser to allow parsing RSASSA-PSS encoded certificates, with
-> the defaults taken from RFC8017.
->
-> A certificate is rejected if the hash function used for the MGF is
-> different from the hash function used for signature generation,
-> although this is allowed in RFC8017.
->
-> References: https://tools.ietf.org/html/rfc8017#appendix-C
-> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-> ---
->  crypto/asymmetric_keys/Makefile           |   5 +-
->  crypto/asymmetric_keys/x509_cert_parser.c | 152 ++++++++++++++++++++++
->  crypto/asymmetric_keys/x509_rsassa.asn1   |  17 +++
->  include/crypto/public_key.h               |   4 +
->  include/linux/oid_registry.h              |   3 +
->  5 files changed, 180 insertions(+), 1 deletion(-)
->  create mode 100644 crypto/asymmetric_keys/x509_rsassa.asn1
->
+-Pavle
