@@ -2,196 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386EC3574E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB153574E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355629AbhDGTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        id S1355609AbhDGTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355620AbhDGTXO (ORCPT
+        with ESMTP id S229512AbhDGTXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:23:14 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5433DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:23:04 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id qo10so19135986ejb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:23:04 -0700 (PDT)
+        Wed, 7 Apr 2021 15:23:04 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F32C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:22:54 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id f29so11351760pgm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=JopOz03EEkTqIxcI1fz3+f5sIDcGohgXhrqvwOa7zzc=;
-        b=fYgEat3S5TRjhsX5Sy5lurynyLrcfD1do1btfeGSlk6AA0LO+vKYEeGCZiY0Qan/u5
-         Wt3cpybQYXh16FTDgHW7Z1CY/8xL4glHerxUVL9Wq9Y2Je+qpRiVLLdTFYRNdkiFqLOK
-         L8nQBP5pL5yLawNZFoptGEaueJ4/gTbNXz7YM=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ke0rc9XfMf9BcEhOIRjBDFSOHCSu8Insw4la98udkfI=;
+        b=dkn2z9paIb5VYx0wtP5aKvdI23w7VMZ1O7ju3Ca/pZzlkns43wwtyfBWl5DKnfcUpz
+         wr7X5Hf/BjaaCgvjQwbIqLRWndt+MItgIzOGEZhpnX70qcFNN6audlLSe8gS6z1DADdf
+         iU11sqKHX1CtZ6PY/r6enXrWbZVVhr/GAfoYU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=JopOz03EEkTqIxcI1fz3+f5sIDcGohgXhrqvwOa7zzc=;
-        b=fDF7TiERzZJO/qVFti1Z6FeR9raqZbOlo4aU78+1Z2bPgebxftPrTmjlrlO6KgXx/e
-         SMO8A1j+WGSGzcwGkoxncDJyOma90NoReHQlbBPHw6eJRpeZA9PTguWdZLchaRDiKKOV
-         ijA1CC05EqwOL0PjjKyv736pZ22hLBkXW0wOKpRhW9kIQYDL5bJhIqHGEtLyj+bgH1O7
-         r9ttOIe/CfC3nxIA0xZPSOvNdbpiEL2rWhheYx3LxjqvXyKGhfRujt1L3xRq3gevCVoB
-         ySuvomrUMitqY0RA1ljhAUbDGGflnuFi6LKSe5RcTk4mpOHarCxHazKypaouKBlfQ71y
-         3ydw==
-X-Gm-Message-State: AOAM530sDDoLkpRnaI/jiIIFLW0x/9ltviE6eaPw0Ev90iweqnNPHxfD
-        dimCQhBGZr33wDusvtKrMErb1Q==
-X-Google-Smtp-Source: ABdhPJy4/lwlB88/hwiGMlYHEeQrMmjB5Z20uF1ATkPSuvZqEg5oBfNN5tljocnGD3JClC9IxLrtcA==
-X-Received: by 2002:a17:906:3487:: with SMTP id g7mr5490963ejb.222.1617823383009;
-        Wed, 07 Apr 2021 12:23:03 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id q25sm16243267edt.51.2021.04.07.12.23.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ke0rc9XfMf9BcEhOIRjBDFSOHCSu8Insw4la98udkfI=;
+        b=hptvq6927LdVPc4b9uil/J0CkX3odXPMXN3iVrAMlpBejD7PNiUI8999CiQSFSleNE
+         2BvXYKCz1usW054Dn1I0aQIwyRX4qFBHrQTrgFS/ddlSQPxWgcrIOZ400t60q/PvG0z0
+         nWkQWV15P/68Zy7B4IDiAXZmd8D2VO4uxSI7pRElBcbv7fh/zM72qauu3km577riADiS
+         QPjoJzjyqk0FAdknhqiO1a96DJqpwLE7OyDydFzcGBC7y2SQhHIjhC18hBbFYR4plgET
+         hSO8u4hQfKzYT+EkwwA84eoyGPqmV2qucCgHEXr/bTimVCH/FyhNUxsgkBvh/ge8rvVd
+         5WfA==
+X-Gm-Message-State: AOAM532uttSZfb81HaLIyfJLfXYukJ5P8RVhmtRfnb/gn36jJRkk/Npu
+        DD5CP4VLXwYOjCrgafUhG8TkNg==
+X-Google-Smtp-Source: ABdhPJw3gwG8i+ZTCLIXPStASuu7D+EAq3vNs4JWpjSG/O34E4hVG4WXQ3XIWlQKIJJlCyJnmouMKw==
+X-Received: by 2002:aa7:96bc:0:b029:1f6:9937:fe43 with SMTP id g28-20020aa796bc0000b02901f69937fe43mr4376117pfk.68.1617823373801;
+        Wed, 07 Apr 2021 12:22:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h16sm21556115pfc.194.2021.04.07.12.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 12:23:02 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 21:22:52 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] fileattr API
-Message-ID: <YG4GjNEqC6Pmhmod@miu.piliscsaba.redhat.com>
+        Wed, 07 Apr 2021 12:22:53 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 12:22:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+Message-ID: <202104071216.5BEA350@keescook>
+References: <20210304203822.GA102218@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210304203822.GA102218@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Thu, Mar 04, 2021 at 02:38:22PM -0600, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
+> 
+> Refactor the code according to the use of a flexible-array member in
+> struct aac_raw_io2 instead of one-element array, and use the
+> struct_size() and flex_array_size() helpers.
+> 
+> Also, this helps with the ongoing efforts to enable -Warray-bounds by
+> fixing the following warnings:
+> 
+> drivers/scsi/aacraid/aachba.c: In function ‘aac_build_sgraw2’:
+> drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  3970 |     if (rio2->sge[j].length % (i*PAGE_SIZE)) {
+>       |         ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:3974:27: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  3974 |     nseg_new += (rio2->sge[j].length / (i*PAGE_SIZE));
+>       |                  ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4011:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4011 |   for (j = 0; j < rio2->sge[i].length / (pages * PAGE_SIZE); ++j) {
+>       |                   ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4012:24: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4012 |    addr_low = rio2->sge[i].addrLow + j * pages * PAGE_SIZE;
+>       |               ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4014:33: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4014 |    sge[pos].addrHigh = rio2->sge[i].addrHigh;
+>       |                        ~~~~~~~~~^~~
+> drivers/scsi/aacraid/aachba.c:4015:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
+>  4015 |    if (addr_low < rio2->sge[i].addrLow)
+>       |                   ~~~~~~~~~^~~
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/60414244.ur4%2FkI+fBF1ohKZs%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/scsi/aacraid/aachba.c  | 13 +++++++------
+>  drivers/scsi/aacraid/aacraid.h |  2 +-
+>  2 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+> index 4ca5e13a26a6..0f5617e40b94 100644
+> --- a/drivers/scsi/aacraid/aachba.c
+> +++ b/drivers/scsi/aacraid/aachba.c
+> @@ -1235,8 +1235,8 @@ static int aac_read_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u3
+>  		if (ret < 0)
+>  			return ret;
+>  		command = ContainerRawIo2;
+> -		fibsize = sizeof(struct aac_raw_io2) +
+> -			((le32_to_cpu(readcmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
+> +		fibsize = struct_size(readcmd2, sge,
+> +				     le32_to_cpu(readcmd2->sgeCnt));
 
-Please pull from:
+readcmd2 is struct aac_raw_io2, and sge is the struct sge_ieee1212
+array, so this looks correct to me with the change to struct
+aac_raw_io2..
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git fileattr_v4
+>  	} else {
+>  		struct aac_raw_io *readcmd;
+>  		readcmd = (struct aac_raw_io *) fib_data(fib);
+> @@ -1366,8 +1366,8 @@ static int aac_write_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u
+>  		if (ret < 0)
+>  			return ret;
+>  		command = ContainerRawIo2;
+> -		fibsize = sizeof(struct aac_raw_io2) +
+> -			((le32_to_cpu(writecmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
+> +		fibsize = struct_size(writecmd2, sge,
+> +				      le32_to_cpu(writecmd2->sgeCnt));
 
-Convert all (with the exception of CIFS) filesystems from handling
-FS_IOC_[GS]ETFLAGS and FS_IOC_FS[GS]ETXATTR themselves to new i_ops and
-common code moved into the VFS for these ioctls.  This removes boilerplate
-from filesystems, and allows these operations to be properly stacked in
-overlayfs.
+writecmd2 is struct aac_raw_io2, and sge is the struct sge_ieee1212
+array, so this looks correct to me with the change to struct
+aac_raw_io2.
 
-Thanks,
-Miklos
+>  	} else {
+>  		struct aac_raw_io *writecmd;
+>  		writecmd = (struct aac_raw_io *) fib_data(fib);
+> @@ -4003,7 +4003,7 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
+>  	if (aac_convert_sgl == 0)
+>  		return 0;
+>  
+> -	sge = kmalloc_array(nseg_new, sizeof(struct sge_ieee1212), GFP_ATOMIC);
+> +	sge = kmalloc_array(nseg_new, sizeof(*sge), GFP_ATOMIC);
 
----
-Changes since v3:
+Technically, this is unrelated (struct sge_ieee1212 has not changed),
+but sge is a struct sge_ieee1212 pointer, so this is good robustness
+change, IMO.
 
- - converted fuse
- - removed overlayfs ioctl code
- - moved d_is_special() check to callbacks where necessary
- - user copy cosmetics
+>  	if (sge == NULL)
+>  		return -ENOMEM;
+>  
+> @@ -4020,7 +4020,8 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
+>  		}
+>  	}
+>  	sge[pos] = rio2->sge[nseg-1];
+> -	memcpy(&rio2->sge[1], &sge[1], (nseg_new-1)*sizeof(struct sge_ieee1212));
+> +	memcpy(&rio2->sge[1], &sge[1],
+> +	       flex_array_size(rio2, sge, nseg_new - 1));
 
-Changes since v2:
+This was hard to validate, but looks correct to me. The flex array
+helper here is the same as the prior code (but now tied to the
+variables, which is more robust IMO). The use of seg[1] here appears to
+be just how this code works -- the loop above is rewriting the 1 through
+nseg_new - 1 array entries, and then this copies back the results.
 
- - renaming, most notably miscattr -> fileattr
- - use memset instead of structure initialization
- - drop gratuitous use of file_dentry()
- - kerneldoc, comments, spelling improvements
- - xfs: enable getting/setting FS_PROJINHERIT_FL and other tweaks
- - btrfs: patch logistics
+>  
+>  	kfree(sge);
+>  	rio2->sgeCnt = cpu_to_le32(nseg_new);
+> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
+> index e3e4ecbea726..3733df77bc65 100644
+> --- a/drivers/scsi/aacraid/aacraid.h
+> +++ b/drivers/scsi/aacraid/aacraid.h
+> @@ -1929,7 +1929,7 @@ struct aac_raw_io2 {
+>  	u8		bpComplete;	/* reserved for F/W use */
+>  	u8		sgeFirstIndex;	/* reserved for F/W use */
+>  	u8		unused[4];
+> -	struct sge_ieee1212	sge[1];
+> +	struct sge_ieee1212	sge[];
+>  };
+>  
+>  #define CT_FLUSH_CACHE 129
+> -- 
+> 2.27.0
+> 
 
-Changes since v1:
+Thanks!
 
- - rebased on 5.12-rc1 (mnt_userns churn)
- - fixed LSM hook on overlayfs
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-----------------------------------------------------------------
-Miklos Szeredi (23):
-      vfs: add fileattr ops
-      ecryptfs: stack fileattr ops
-      ovl: stack fileattr ops
-      btrfs: convert to fileattr
-      ext2: convert to fileattr
-      ext4: convert to fileattr
-      f2fs: convert to fileattr
-      gfs2: convert to fileattr
-      orangefs: convert to fileattr
-      xfs: convert to fileattr
-      efivars: convert to fileattr
-      hfsplus: convert to fileattr
-      jfs: convert to fileattr
-      nilfs2: convert to fileattr
-      ocfs2: convert to fileattr
-      reiserfs: convert to fileattr
-      ubifs: convert to fileattr
-      vfs: remove unused ioctl helpers
-      fuse: move ioctl to separate source file
-      fuse: unsigned open flags
-      fuse: add internal open/release helpers
-      fuse: convert to fileattr
-      ovl: remove unneeded ioctls
-
----
- Documentation/filesystems/locking.rst |   5 +
- Documentation/filesystems/vfs.rst     |  15 ++
- fs/btrfs/ctree.h                      |   3 +
- fs/btrfs/inode.c                      |   4 +
- fs/btrfs/ioctl.c                      | 226 +++-------------
- fs/ecryptfs/inode.c                   |  22 ++
- fs/efivarfs/file.c                    |  77 ------
- fs/efivarfs/inode.c                   |  44 +++
- fs/ext2/ext2.h                        |   7 +-
- fs/ext2/file.c                        |   2 +
- fs/ext2/ioctl.c                       |  88 +++---
- fs/ext2/namei.c                       |   2 +
- fs/ext4/ext4.h                        |  12 +-
- fs/ext4/file.c                        |   2 +
- fs/ext4/ioctl.c                       | 208 +++------------
- fs/ext4/namei.c                       |   2 +
- fs/f2fs/f2fs.h                        |   3 +
- fs/f2fs/file.c                        | 216 +++------------
- fs/f2fs/namei.c                       |   2 +
- fs/fuse/Makefile                      |   2 +-
- fs/fuse/dir.c                         |   6 +-
- fs/fuse/file.c                        | 435 +++---------------------------
- fs/fuse/fuse_i.h                      |  40 ++-
- fs/fuse/ioctl.c                       | 490 ++++++++++++++++++++++++++++++++++
- fs/gfs2/file.c                        |  63 ++---
- fs/gfs2/inode.c                       |   4 +
- fs/gfs2/inode.h                       |   3 +
- fs/hfsplus/dir.c                      |   2 +
- fs/hfsplus/hfsplus_fs.h               |  14 +-
- fs/hfsplus/inode.c                    |  54 ++++
- fs/hfsplus/ioctl.c                    |  84 ------
- fs/inode.c                            |  87 ------
- fs/ioctl.c                            | 325 ++++++++++++++++++++++
- fs/jfs/file.c                         |   6 +-
- fs/jfs/ioctl.c                        | 111 +++-----
- fs/jfs/jfs_dinode.h                   |   7 -
- fs/jfs/jfs_inode.h                    |   4 +-
- fs/jfs/namei.c                        |   6 +-
- fs/nilfs2/file.c                      |   2 +
- fs/nilfs2/ioctl.c                     |  61 ++---
- fs/nilfs2/namei.c                     |   2 +
- fs/nilfs2/nilfs.h                     |   3 +
- fs/ocfs2/file.c                       |   2 +
- fs/ocfs2/ioctl.c                      |  59 ++--
- fs/ocfs2/ioctl.h                      |   3 +
- fs/ocfs2/namei.c                      |   3 +
- fs/ocfs2/ocfs2_ioctl.h                |   8 -
- fs/orangefs/file.c                    |  79 ------
- fs/orangefs/inode.c                   |  50 ++++
- fs/overlayfs/dir.c                    |   2 +
- fs/overlayfs/file.c                   | 110 --------
- fs/overlayfs/inode.c                  |  77 ++++++
- fs/overlayfs/overlayfs.h              |   5 +-
- fs/overlayfs/readdir.c                |   4 -
- fs/reiserfs/file.c                    |   2 +
- fs/reiserfs/ioctl.c                   | 121 ++++-----
- fs/reiserfs/namei.c                   |   2 +
- fs/reiserfs/reiserfs.h                |   7 +-
- fs/reiserfs/super.c                   |   2 +-
- fs/ubifs/dir.c                        |   2 +
- fs/ubifs/file.c                       |   2 +
- fs/ubifs/ioctl.c                      |  78 +++---
- fs/ubifs/ubifs.h                      |   3 +
- fs/xfs/libxfs/xfs_fs.h                |   4 -
- fs/xfs/xfs_ioctl.c                    | 258 +++++-------------
- fs/xfs/xfs_ioctl.h                    |  11 +
- fs/xfs/xfs_ioctl32.c                  |   2 -
- fs/xfs/xfs_ioctl32.h                  |   2 -
- fs/xfs/xfs_iops.c                     |   7 +
- include/linux/fileattr.h              |  59 ++++
- include/linux/fs.h                    |  16 +-
- 71 files changed, 1724 insertions(+), 2007 deletions(-)
- create mode 100644 fs/fuse/ioctl.c
- create mode 100644 include/linux/fileattr.h
+-- 
+Kees Cook
