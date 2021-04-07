@@ -2,154 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EBE3573BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8183573BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354987AbhDGR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:57:19 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:46751 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhDGR5N (ORCPT
+        id S1354999AbhDGR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:57:25 -0400
+Received: from smtpcmd03117.aruba.it ([62.149.158.117]:40280 "EHLO
+        smtpcmd03117.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354992AbhDGR5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:57:13 -0400
-Received: by mail-oi1-f170.google.com with SMTP id m13so19617378oiw.13;
-        Wed, 07 Apr 2021 10:57:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=QNzMVzWilCW7GFTxLzRY3CP4tmq1W5icoQKlT8/AnWk=;
-        b=Z6TtqcoFi7PQaIOj33YC9aYv3kVPCQAiskqeHpf3tuHFfXsxObOliyES43FyiWygay
-         OOfxHoBACoA1Z4+iHb1Cps5azG6hMSDSt4S1kwhpN4YnThmqwv6HSqDc1piFTRrubxUO
-         jZyHaKnoX6puNLaA4bdNGxqw+wNtlworYRRqHqcdOOncOBgmwr6bZRLMvMLZUUJxUXq7
-         aAyghzy4O1FcdOEs5S8jeoSVdciPRBRwRSqGiegIAlA9mnW4WsU02ez1lzD9YvC+aM1O
-         u3WYJ8gya/SI0nqcpWUltYHHLY78yDVGAWwr1OfHjYMn02QSTaOdY2uqyLUDMunZoUfa
-         iNGA==
-X-Gm-Message-State: AOAM530RZdve3zgcaRb5o4V0fNZmVyqt+B4SI6fISTS4YNqjZIFtfm5G
-        MspdKFJhZc0xDyPlqDP9gdSopiPCDg==
-X-Google-Smtp-Source: ABdhPJyh+dZAA4LSnKxmF0EOEA4uSe+tbhoQ5Wxz7RY90APCrr0Og407DSjgRv5tgOdIep9D8EsfHA==
-X-Received: by 2002:aca:3152:: with SMTP id x79mr3249066oix.154.1617818210978;
-        Wed, 07 Apr 2021 10:56:50 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h23sm5434980ots.0.2021.04.07.10.56.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 10:56:50 -0700 (PDT)
-Received: (nullmailer pid 3971004 invoked by uid 1000);
-        Wed, 07 Apr 2021 17:56:49 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hector Yuan <hector.yuan@mediatek.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20210407135913.2067694-1-sudeep.holla@arm.com>
-References: <20210407135913.2067694-1-sudeep.holla@arm.com>
-Subject: Re: [PATCH v3] dt-bindings: dvfs: Add support for generic performance domains
-Date:   Wed, 07 Apr 2021 12:56:49 -0500
-Message-Id: <1617818209.066751.3971003.nullmailer@robh.at.kernel.org>
+        Wed, 7 Apr 2021 13:57:20 -0400
+Received: from [192.168.126.129] ([146.241.148.6])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id UCQLlVtqOzPKKUCQMlNmK0; Wed, 07 Apr 2021 19:57:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1617818229; bh=nwmThOXSC10gnNNTfexSz5aVrAbukhDIsh+yemnFx7E=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=V3HWJ8/CvuvzUnN7M81ZE5qAz4eheOzL3Qgq/wZuOQxxh+f0tzhntH3+x9LESLFD9
+         wsrPDGNaGnWub4N8ZzFPNi4V0kOpn5faADY8ZMz5BK93VK2XBc10CnFAtvvpJHM4NW
+         MRDV3NJqw32x48JXWvhi1qjk3YvDHIlWuKwX+UKYpOAYROVBk7JAZrtUc0Ko2d+K+s
+         nVyiAfw6gEN+L+xOJt2C/0A6sGKTx140a8r+ldJ4aR6GcDaILcfoLvPyKWNziKTUVF
+         X3TeGXxDPia9S1+los8THvBopnRxnt0tp5EocOfXaEO0G7LzXW1o0xIZiJ1Q5gaG5g
+         cA/kryRw4WIKg==
+Subject: Re: [PATCH v3 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <YGbc7Qbu6s659Mx4@latitude>
+ <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
+ <20210402161627.2546145-3-giulio.benetti@benettiengineering.com>
+ <1617715445.154812.1674495.nullmailer@robh.at.kernel.org>
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Message-ID: <937f75d4-6c2e-d476-f272-39f8ed2826f2@benettiengineering.com>
+Date:   Wed, 7 Apr 2021 19:57:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <1617715445.154812.1674495.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfKCqP0Nfxq3fxYo/ESnA/0fFCPkq2SZ5IupcmLZF0htN4+M5MaXJGTdOjdYX3NSWWJSQYSWQBBA9zJ1V2krvxSPXeaV1URaFUPrs+53KcEhGJbV7Utmj
+ aCI2O0mLTTo6ii8gquYN4xBkZ8Gi6siYnjmH6vLiD+ST6Nnpm7ACT1vYdnyvqaRW29jkOHOjQ4F3Q7bIVxKXO4NCDHzhoQM5K0yk7OcN2BLgeiO4ZVhHIg2e
+ NJNijppq4O+ommYFTSIq5okW3watBMle5P0Ip/UtBJeScn7AALqBVE5V/A/9PP+An68/9qH7hFOixXYDbOEY3OH2II0IwNETacdBF1t2apmnfb5S3z0HVybb
+ qOIvSPi6CJ5eCpiqwFtzAMkN0iZNViK7R3ZR0pf1CyCBUw81IuNyhlWqz+5sUCqBrkBJ+0EMoXMPqVNqQQDR5S3QBDmLvQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Apr 2021 14:59:13 +0100, Sudeep Holla wrote:
-> The CLKSCREW attack [0] exposed security vulnerabilities in energy management
-> implementations where untrusted software had direct access to clock and
-> voltage hardware controls. In this attack, the malicious software was able to
-> place the platform into unsafe overclocked or undervolted configurations. Such
-> configurations then enabled the injection of predictable faults to reveal
-> secrets.
-> 
-> Many Arm-based systems used to or still use voltage regulator and clock
-> frameworks in the kernel. These frameworks allow callers to independently
-> manipulate frequency and voltage settings. Such implementations can render
-> systems susceptible to this form of attack.
-> 
-> Attacks such as CLKSCREW are now being mitigated by not having direct and
-> independent control of clock and voltage in the kernel and moving that
-> control to a trusted entity, such as the SCP firmware or secure world
-> firmware/software which are to perform sanity checking on the requested
-> performance levels, thereby preventing any attempted malicious programming.
-> 
-> With the advent of such an abstraction, there is a need to replace the
-> generic clock and regulator bindings used by such devices with a generic
-> performance domains bindings.
-> 
-> [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
-> 
-> Link: https://lore.kernel.org/r/20201116181356.804590-1-sudeep.holla@arm.com
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
-> 
-> Hi All,
-> 
-> Sorry for the delay, I thought I had sent this out last week and it turns
-> out that I had dry-run in my git email command and never removed it. Just
-> noticed now looking for response for this patch on the list to find out
-> that I never sent it out :(.
-> 
-> v2[2]->v3:
-> 	- Dropped required properties
-> 	- Added non cpu device example
-> 	- Updated cpu bindings too
-> 
-> v1[1]->v2[2]:
-> 	- Changed to Dual License
-> 	- Added select: true, enum for #performance-domain-cells and
-> 	  $ref for performance-domain
-> 	- Changed the example to use real existing compatibles instead
-> 	  of made-up ones
-> 
-> [1] https://lore.kernel.org/lkml/20201105173539.1426301-1-sudeep.holla@arm.com
-> [2] https://lore.kernel.org/lkml/20201116181356.804590-1-sudeep.holla@arm.com
-> 
->  .../devicetree/bindings/arm/cpus.yaml         |  7 ++
->  .../bindings/dvfs/performance-domain.yaml     | 80 +++++++++++++++++++
->  2 files changed, 87 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-> 
+Hello Rob, All,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On 4/6/21 3:24 PM, Rob Herring wrote:
+> On Fri, 02 Apr 2021 18:16:26 +0200, Giulio Benetti wrote:
+>> This adds device tree bindings for the Hycon HY46XX touchscreen series.
+>>
+>> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>> ---
+>> V1->V2:
+>> As suggested by Rob Herring:
+>> * fixed $id: address
+>> * added "hycon," in front of every custom property
+>> * changed all possible property to boolean type
+>> * removed proximity-sensor-switch property since it's not handled in driver
+>> V2->V3:
+>> As suggested by Jonathan Neuschäfer:
+>> * fixed some typo
+>> * fixed description indentation
+>> * improved boolean properties descriptions
+>> * improved hycon,report-speed description
+>> ---
+>>   .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++++
+>>   MAINTAINERS                                   |   6 +
+>>   2 files changed, 126 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+>>
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.example.dt.yaml:0:0: /example-0/i2c/hycon-hy4633@1c: failed to match any schema with compatible: ['hycon,hy4633']
+> 
+> See https://patchwork.ozlabs.org/patch/1461797
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
 
-yamllint warnings/errors:
+I've just send corrected patches.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml:0:0: /example-0/performance-controller@12340000: failed to match any schema with compatible: ['qcom,cpufreq-hw']
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml: gpu@2d000000: compatible: 'oneOf' conditional failed, one must be fixed:
-	['arm,mali-t624'] is too short
-	'arm,mali-t624' is not one of ['samsung,exynos5250-mali']
-	'arm,mali-t624' is not one of ['samsung,exynos5420-mali']
-	'arm,mali-t624' is not one of ['allwinner,sun50i-h6-mali']
-	'arm,mali-t624' is not one of ['amlogic,meson-gxm-mali', 'realtek,rtd1295-mali']
-	'arm,mali-t624' is not one of ['arm,juno-mali']
-	'arm,mali-t624' is not one of ['rockchip,rk3288-mali', 'samsung,exynos5433-mali']
-	'arm,mali-t624' is not one of ['rockchip,rk3399-mali']
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml: gpu@2d000000: 'interrupt-names' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml: gpu@2d000000: 'clocks' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml: gpu@2d000000: 'performance-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.example.dt.yaml: gpu@2d000000: 'oneOf' conditional failed, one must be fixed:
-	'interrupts' is a required property
-	'interrupts-extended' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+Anyway I'd like to understand how to make dt_binding_check works correctly.
 
-See https://patchwork.ozlabs.org/patch/1463354
+I've installed yamllint and 'make dt_binding_check' works but it still 
+doesn't show that error up on compatible string.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+yamllint I have is version 1.20.0
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+> pip3 install dtschema --upgrade
 
-pip3 install dtschema --upgrade
+I've already tried with that too and dtschema version is:
+1.3.8
 
-Please check and re-submit.
+I've read that dtc must be compiled with YAML output enabled and it 
+seems to be so, since when I issue 'make dt_binding_check' from my file:
+hycon,hy46xx.yaml(with compatible string wrong "hycon,hy4633")
 
+these files are generated:
+hycon,hy46xx.example.dts
+```
+
+/dts-v1/;
+/plugin/; // silence any missing phandle references
+
+
+/{
+     compatible = "foo";
+     model = "foo";
+     interrupt-parent = <&foo>;
+     #address-cells = <1>;
+     #size-cells = <1>;
+
+
+
+     example-0 {
+         #address-cells = <1>;
+         #size-cells = <1>;
+
+         #include <dt-bindings/gpio/gpio.h>
+         #include <dt-bindings/interrupt-controller/arm-gic.h>
+         i2c {
+           #address-cells = <1>;
+           #size-cells = <0>;
+           hycon-hy4633@1c {
+             compatible = "hycon,hy4633";
+             reg = <0x1c>;
+             interrupt-parent = <&gpio2>;
+             interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+             reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+           };
+         };
+
+     };
+};
+
+```
+
+AND
+
+hycon,hy46xx.example.dt.yaml
+```
+---
+- compatible: ["foo"]
+   model: ["foo"]
+   interrupt-parent: [[!phandle 0xffffffff]]
+   '#address-cells': [[0x1]]
+   '#size-cells': [[0x1]]
+   example-0:
+     '#address-cells': [[0x1]]
+     '#size-cells': [[0x1]]
+     i2c:
+       '#address-cells': [[0x1]]
+       '#size-cells': [[0x0]]
+       hycon-hy4633@1c:
+         compatible: ["hycon,hy4633"]
+         reg: [[0x1c]]
+         interrupt-parent: [[!phandle 0xffffffff]]
+         interrupts: [[0x5, 0x2]]
+         reset-gpios: [[!phandle 0xffffffff, 0x6, 0x1]]
+   __fixups__:
+     foo: ["/:interrupt-parent:0"]
+     gpio2: ["/example-0/i2c/hycon-hy4633@1c:interrupt-parent:0", 
+"/example-0/i2c/hycon-hy4633@1c:reset-gpios:0"]
+...
+```
+
+So I can't reproduce the problem, can you point me some documentation 
+that I didn't see before?
+
+Thank in advance
+Best regards
+-- 
+Giulio Benetti
+Benetti Engineering sas
