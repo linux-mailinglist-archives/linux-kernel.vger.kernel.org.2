@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA74357150
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A18357153
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354051AbhDGQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48778 "EHLO mail.kernel.org"
+        id S1354061AbhDGQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:04:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:37500 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242044AbhDGQD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:03:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B88D161279;
-        Wed,  7 Apr 2021 16:03:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617811430;
-        bh=n/agv0valY0hx6ycipcKyxiZ3nl4xB9w+3C8S6m6t4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E5GePytE5LYKwNNQkoJIQXWOzokqQehUi6TINPlqXENTusEIsXOitbXgC9L6Xq7lm
-         N/6dFg0VFw/M4/RHath1rl8LZosXWF6I+hjkfm2zkWVLDYOhxTxpz2L/ZgzoqV0U6D
-         HkK6kCdUdV87QOjDQEtvzgPI2ZtCGBdBL4fnms344EwYT3gx7kj9jsThsnvfHx3p5p
-         43LbIj/cZE/GKnB8AvFdVxLULWSot7DTcuRTOsdhecfmhEk8bAKwrewBFfaK4HjZeu
-         k0Mks0To314FbIOjLqFA5ba4naV9+1fW/Lq2VLJu7BxRRWSR5ZIXNzSAjA81GejfaA
-         B+aw+qqz4y3EQ==
-Date:   Wed, 7 Apr 2021 19:03:47 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] x86/sgx: Do not update sgx_nr_free_pages in
- sgx_setup_epc_section()
-Message-ID: <YG3X454GI4U2BZVU@kernel.org>
-References: <20210405232653.33680-1-jarkko@kernel.org>
- <20210407154934.GF25319@zn.tnic>
+        id S1354053AbhDGQE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:04:29 -0400
+IronPort-SDR: 0eGKqXn/0Zu+FxMxERXi0fvb3JIt8RAlbDfC4elYX1obp+yjpbx7MBd/u9pAIHlmUB5G6yVPNX
+ F9Xwl2mprQPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193384331"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="193384331"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:04:19 -0700
+IronPort-SDR: gsM3lRPWQshHLRsDLC1g4VPdVnd2MUl9ost+JWA0WWA7I4WIp0Pv+ObIxpDt1a2m3fgK1rV/MQ
+ 0W0xSmiqLIlw==
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="387051253"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 09:04:17 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lUAes-0022t3-UJ; Wed, 07 Apr 2021 19:03:58 +0300
+Date:   Wed, 7 Apr 2021 19:03:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v1 1/1] ata: Drop unneeded inclusion of kernel.h in the
+ header
+Message-ID: <YG3X7ogK/Oq2Hv4J@smile.fi.intel.com>
+References: <20210407134706.81383-1-andriy.shevchenko@linux.intel.com>
+ <202104072325.Zv0JLqbH-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407154934.GF25319@zn.tnic>
+In-Reply-To: <202104072325.Zv0JLqbH-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:49:34PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 06, 2021 at 02:26:52AM +0300, Jarkko Sakkinen wrote:
-> > Now that the sanitization process will make pages available by calling
-> > sgx_free_epc_page(), sgx_setup_epc_section() should not touch to
-> > sgx_nr_free_pages. This will result sgx_nr_free_pages to contain 2x the
-> > number of actual free pages. Simply, remove the statement.
-> > 
-> > Fixes: 51ab30eb2ad4 ("x86/sgx: Replace section->init_laundry_list with sgx_dirty_page_list")
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >  arch/x86/kernel/cpu/sgx/main.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index 13a7599ce7d4..7df7048cb1c9 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -657,7 +657,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
-> >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
-> >  	}
-> >  
-> > -	sgx_nr_free_pages += nr_pages;
-> >  	return true;
-> >  }
-> >  
+On Wed, Apr 07, 2021 at 11:51:31PM +0800, kernel test robot wrote:
+> Hi Andy,
 > 
-> First of all, I don't know how I didn't catch this:
+> I love your patch! Yet something to improve:
 > 
-> /* The free page list lock protected variables prepend the lock. */
-> static unsigned long sgx_nr_free_pages;
+> [auto build test ERROR on block/for-next]
+> [also build test ERROR on v5.12-rc6 next-20210407]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> I need some sort of translator to understand what this comment means. I
-> can guess what is trying to tell me.
+> url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/ata-Drop-unneeded-inclusion-of-kernel-h-in-the-header/20210407-214746
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+> config: x86_64-randconfig-s021-20210407 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-279-g6d5d9b42-dirty
+>         # https://github.com/0day-ci/linux/commit/d2574103b692b4fc73f1ed36ee9e4d3324902fd9
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Andy-Shevchenko/ata-Drop-unneeded-inclusion-of-kernel-h-in-the-header/20210407-214746
+>         git checkout d2574103b692b4fc73f1ed36ee9e4d3324902fd9
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64 
 > 
-> Which leads to my question: what is sgx_nr_free_pages supposed to denote?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Because I understand the callpath
-> 
-> sgx_page_cache_init
-> ...
-> for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
-> 	...
-> 	sgx_setup_epc_section
-> 	...
-> 		sgx_nr_free_pages += nr_pages;
-> 
-> as adding the number of pages of each new EPC section to the total
-> number of the free pages. Unless that variable accounts something else.
-> 
-> So what does this variable actually mean?
+> All errors (new ones prefixed by >>):
 
-It's used for only to trigger watermark for reclaiming. I.e. causes
-ksgxd to trigger. And it gives the number of total free EPC pages in
-all NUMA nodes.
+Thanks, we need to include bits.h.
+(It passed my simple build, but appears I have no such driver included)
 
-/Jarkko
+Jens, I saw your message, should I send a follow up fix, or a v2?
+
+>    In file included from drivers/hwmon/drivetemp.c:98:
+>    include/linux/ata.h: In function 'ata_id_has_ncq_send_and_recv':
+> >> include/linux/ata.h:929:40: error: implicit declaration of function 'BIT' [-Werror=implicit-function-declaration]
+>      929 |  return id[ATA_ID_SATA_CAPABILITY_2] & BIT(6);
+>          |                                        ^~~
+>    cc1: some warnings being treated as errors
+> 
+> 
+> vim +/BIT +929 include/linux/ata.h
+> 
+> 4bca3286433585 Martin K. Petersen 2009-05-15  926  
+> ed36911c747c18 Marc Carino        2013-08-24  927  static inline bool ata_id_has_ncq_send_and_recv(const u16 *id)
+> ed36911c747c18 Marc Carino        2013-08-24  928  {
+> ed36911c747c18 Marc Carino        2013-08-24 @929  	return id[ATA_ID_SATA_CAPABILITY_2] & BIT(6);
+> ed36911c747c18 Marc Carino        2013-08-24  930  }
+> ed36911c747c18 Marc Carino        2013-08-24  931  
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
