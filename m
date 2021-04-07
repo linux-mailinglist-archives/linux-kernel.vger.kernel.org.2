@@ -2,202 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDDB356E60
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF25356E62
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352812AbhDGOTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352902AbhDGOTX (ORCPT
+        id S1352837AbhDGOTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:19:38 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:36493 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352824AbhDGOTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:19:23 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D91C061756;
-        Wed,  7 Apr 2021 07:19:13 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id a4so1244237wrr.2;
-        Wed, 07 Apr 2021 07:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=hk6O1+YsLCe8qBF6gMN+3M1D1gXE0oXAs3ZDrHvZOkc=;
-        b=qbwAVGrCFye6M/nU4HSaDpQmhzHWShlbTv2YMAlwPD73fUgpT8QLzXMRb1A97RvM9x
-         WnfAc9NtdVTS5rvXaxatLWLe4o6xVlG8C69A0LWuLO0jU/sHVA+kaucL7n7VajWnOGF7
-         4D8pK3J38YC23K2O6umsL3CYV0fnqbTYdayfjgYc5ShPqereBe8sliGCg1cNsWauhR9x
-         TebZrnwOPnDU0sCESFvlee45TRgSt4as7rpEjPKo+LJKIdIwePcnCxsjYEyxje1Yn9P5
-         smBX17QZFgvqsGuQ8DsqYZT12B/AbficNYOlM+xcyyXaKyctpuzwTcEy5wmRaCApLENj
-         D1ng==
+        Wed, 7 Apr 2021 10:19:36 -0400
+Received: by mail-wm1-f45.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso1248065wmq.1;
+        Wed, 07 Apr 2021 07:19:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=hk6O1+YsLCe8qBF6gMN+3M1D1gXE0oXAs3ZDrHvZOkc=;
-        b=U9rEshPT9tErVv51ncUSV5THmvvDRlKg7WdY9f6yY4xQKDRAYXiWoQUKhdTZGb259t
-         odjHdyClhlJp00UtClo+20uZBa1muOHnBPjRP5lxm42pwdvJuCPMeVZFoiyyO/62Aaa8
-         gNDHOuDKNtUdonchW3+E2LxKLSQhnfIuUljgz64tNf4zMyWb2Cl1IXn294IkSGZlEBHu
-         cdEQD2qGRaw8hDBFAfMmTMXqlmQr7Fl2uTuMC2YlOnZsTb/rCexvwemF7ZxpnDVkGerv
-         PNQkWh5X6HsHOyS+TYhNqzOGRgh6Z2o8n4GIXtDXOXawXCA6nJLGwAatNNMyjD3CT1q1
-         l8mg==
-X-Gm-Message-State: AOAM533PIudfHo5gRuW3oPEvUB5bX4IXuw6y1AcLNr8l2uo3+UrC12UO
-        lpvdqJwI/hvFSrnBqdI5+qA=
-X-Google-Smtp-Source: ABdhPJwUcwSJAIHk2OCtR+24DQShpSo3zGo/9gzczxTU1Ct2vayQA6uI0NS42UkEL7Nyzxbv3sIGcA==
-X-Received: by 2002:a5d:424c:: with SMTP id s12mr4803031wrr.174.1617805152679;
-        Wed, 07 Apr 2021 07:19:12 -0700 (PDT)
-Received: from ?IPv6:2001:818:de85:7e00:ef5c:3f2a:a646:d6ec? ([2001:818:de85:7e00:ef5c:3f2a:a646:d6ec])
-        by smtp.gmail.com with ESMTPSA id 61sm29613174wrn.25.2021.04.07.07.19.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 07:19:11 -0700 (PDT)
-Subject: Re: [PATCH 1/2] staging: media: omap4iss: Ending line with argument
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-References: <cover.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
- <441d27060ff6477d0ad418f41e194b96373c1f7f.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
- <e1b25826-1359-24dd-47ad-41fbd3a406b9@xs4all.nl>
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Message-ID: <1df312a9-6216-1926-ff42-012654b81f3b@gmail.com>
-Date:   Wed, 7 Apr 2021 15:19:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9m75QxnXJIDFvd04jFuU+jAebNsaXnrFEZtwPGGiQ6I=;
+        b=hy/UShkRuKlEBnY4DnlQ5swvDeszqHFjvepcCLZAmOihTZkegZI05vJTSra9Cl7LXt
+         ALunM83N4x4J9NerkawCXuvhAA+dZj0Pje+RurRmY8Q6ljgLy+W5GAdkBcdADC6zcmdC
+         YeFc/pfJCGOLckZ/qnhoCvWYV/+O+DPwTlraBBosr9xdYFyATWNCYxKkRcrrUaTASmmH
+         ZkG05209AgIPH9d2iAAgtIAcbXEu4teuD/4rliA7np815eCbby1jgQ2YoRXwNB1DEkaW
+         amHcv4mdwA8xtO94Z2sWiWmTMhxVPHggRXzKU3CaY3de6AQSw/wf9jgCfLdADlXbUA8h
+         vGdg==
+X-Gm-Message-State: AOAM533mX35qyfE/b266WwubGqknzdnTD5v12466rAvSpICmPGGAo7zc
+        jYdjkTWCzyI73mEVY8ibpVU=
+X-Google-Smtp-Source: ABdhPJwBnX0Ez4uvqR15d2CNOLfxYcbZiHDxpYoR+YreH8iCinoqqpy3ifThs9C2Em96oABEhH6V4Q==
+X-Received: by 2002:a7b:c186:: with SMTP id y6mr3420630wmi.84.1617805164174;
+        Wed, 07 Apr 2021 07:19:24 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id w10sm11862981wrv.95.2021.04.07.07.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 07:19:23 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 14:19:22 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        ligrassi@microsoft.com, kys@microsoft.com
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+Message-ID: <20210407141922.ksxdngftdaruhnki@liuwe-devbox-debian-v2>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+ <87y2fxmlmb.fsf@vitty.brq.redhat.com>
+ <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
+ <87eeguc61d.fsf@vitty.brq.redhat.com>
+ <fc88ba72-83ab-025e-682d-4981762ed4f6@linux.microsoft.com>
+ <87eefmczo2.fsf@vitty.brq.redhat.com>
+ <20210407134302.ng6n4el2km7sujfp@liuwe-devbox-debian-v2>
+ <875z0ychv3.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <e1b25826-1359-24dd-47ad-41fbd3a406b9@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875z0ychv3.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 04:02:56PM +0200, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+> 
+> > On Wed, Apr 07, 2021 at 09:38:21AM +0200, Vitaly Kuznetsov wrote:
+> >
+> >> One more though: it is probably a good idea to introduce selftests for
+> >> /dev/mshv (similar to KVM's selftests in
+> >> /tools/testing/selftests/kvm). Selftests don't really need a stable ABI
+> >> as they live in the same linux.git and can be updated in the same patch
+> >> series which changes /dev/mshv behavior. Selftests are very useful for
+> >> checking there are no regressions, especially in the situation when
+> >> there's no publicly available userspace for /dev/mshv.
+> >
+> > I think this can wait until we merge the first implementation in tree.
+> > There are still a lot of moving parts. Our (currently limited) internal
+> > test cases need more cleaning up before they are ready. I certainly
+> > don't want to distract Nuno from getting the foundation right.
+> >
+> 
+> I'm absolutely fine with this approach, selftests are a nice add-on, not
+> a requirement for the initial implementation. Also, to make them more
+> useful to mere mortals, a doc on how to run Linux as root Hyper-V
+> partition would come handy)
 
+Making this system easier for others to use and consume is on our radar.
+Currently you need Windows bootloader and a not-yet-released loader to
+load the hypervisor. We're making progress in bringing in GRUB.
 
-Em 07/04/21 14:46, Hans Verkuil escreveu:
-> Hi Beatriz,
-Hi,
->
-> I'm now reviewing staging/media patches instead of Greg KH. See Vaishali's
-> email from today: "Sending patches for the drivers/staging/media".
-Yes, I saw the email! Thanks for helping us!
->
-> On 01/04/2021 17:07, Beatriz Martins de Carvalho wrote:
->> Remove checkpatch check "CHECK: Lines should not end with a '('" with
->> argument present in next line and reorganize characters so the lines
->> are under 100 columns
->>
->> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
->> ---
->>   drivers/staging/media/omap4iss/iss.c | 46 +++++++++++++---------------
->>   1 file changed, 22 insertions(+), 24 deletions(-)
->>
->> diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
->> index dae9073e7d3c..e8f724dbf810 100644
->> --- a/drivers/staging/media/omap4iss/iss.c
->> +++ b/drivers/staging/media/omap4iss/iss.c
->> @@ -559,9 +559,10 @@ static int iss_reset(struct iss_device *iss)
->>   	iss_reg_set(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG,
->>   		    ISS_HL_SYSCONFIG_SOFTRESET);
->>   
->> -	timeout = iss_poll_condition_timeout(
->> -		!(iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG) &
->> -		ISS_HL_SYSCONFIG_SOFTRESET), 1000, 10, 100);
->> +	timeout = iss_poll_condition_timeout(!(iss_reg_read(iss,
->> +							    OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG)
->> +							    & ISS_HL_SYSCONFIG_SOFTRESET),
->> +							    1000, 10, 100);
->>   	if (timeout) {
->>   		dev_err(iss->dev, "ISS reset timeout\n");
->>   		return -ETIMEDOUT;
->> @@ -583,9 +584,10 @@ static int iss_isp_reset(struct iss_device *iss)
->>   
->>   	iss_reg_set(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL, ISP5_CTRL_MSTANDBY);
->>   
->> -	timeout = iss_poll_condition_timeout(
->> -		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL) &
->> -		ISP5_CTRL_MSTANDBY_WAIT, 1000000, 1000, 1500);
->> +	timeout = iss_poll_condition_timeout(iss_reg_read(iss,
->> +							  OMAP4_ISS_MEM_ISP_SYS1, ISP5_CTRL)
->> +							  & ISP5_CTRL_MSTANDBY_WAIT, 1000000,
->> +							  1000, 1500);
->>   	if (timeout) {
->>   		dev_err(iss->dev, "ISP5 standby timeout\n");
->>   		return -ETIMEDOUT;
->> @@ -595,9 +597,10 @@ static int iss_isp_reset(struct iss_device *iss)
->>   	iss_reg_set(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_SYSCONFIG,
->>   		    ISP5_SYSCONFIG_SOFTRESET);
->>   
->> -	timeout = iss_poll_condition_timeout(
->> -		!(iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1, ISP5_SYSCONFIG) &
->> -		ISP5_SYSCONFIG_SOFTRESET), 1000000, 1000, 1500);
->> +	timeout = iss_poll_condition_timeout(!(iss_reg_read(iss, OMAP4_ISS_MEM_ISP_SYS1,
->> +							    ISP5_SYSCONFIG) &
->> +							    ISP5_SYSCONFIG_SOFTRESET), 1000000,
->> +							    1000, 1500);
-> As several other people already commented, these changes do not improve readability.
-> Just leave this code alone, it's good enough. Even splitting up the condition into
-> a separate function would degrade readability since that would make it harder to
-> discover the exact condition that will be polled for.
->
-> Not everything that checkpatch.pl flags is necessarily bad code :-)
+Needless to say there are technical and non-technical challenges for
+this work, so don't expect it to happen very soon. :-)
 
-Yes, I learning about this. And I will using this for the next patches.
->
->>   	if (timeout) {
->>   		dev_err(iss->dev, "ISP5 reset timeout\n");
->>   		return -ETIMEDOUT;
->> @@ -1104,33 +1107,28 @@ static int iss_create_links(struct iss_device *iss)
->>   	}
->>   
->>   	/* Connect the submodules. */
->> -	ret = media_create_pad_link(
->> -			&iss->csi2a.subdev.entity, CSI2_PAD_SOURCE,
->> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->> +	ret = media_create_pad_link(&iss->csi2a.subdev.entity, CSI2_PAD_SOURCE,
->> +				    &iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	ret = media_create_pad_link(
->> -			&iss->csi2b.subdev.entity, CSI2_PAD_SOURCE,
->> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->> +	ret = media_create_pad_link(&iss->csi2b.subdev.entity, CSI2_PAD_SOURCE,
->> +				    &iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	ret = media_create_pad_link(
->> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
->> -			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->> +	ret = media_create_pad_link(&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
->> +				    &iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	ret = media_create_pad_link(
->> -			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
->> -			&iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0);
->> +	ret = media_create_pad_link(&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
->> +				    &iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0);
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	ret = media_create_pad_link(
->> -			&iss->ipipe.subdev.entity, IPIPE_PAD_SOURCE_VP,
->> -			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->> +	ret = media_create_pad_link(&iss->ipipe.subdev.entity, IPIPE_PAD_SOURCE_VP,
->> +				    &iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
->>   	if (ret < 0)
->>   		return ret;
->>   
->>
-> These, however, are readability improvements, so I'm happy with that.
-Thank!
->
-> Regards,
->
-> 	Hans
-Best wishes,
-Beatriz Carvalho
+Wei.
 
+> 
+> -- 
+> Vitaly
+> 
