@@ -2,99 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B7E3570B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905D53570BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353721AbhDGPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
+        id S1353738AbhDGPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244287AbhDGPpL (ORCPT
+        with ESMTP id S1353705AbhDGPqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:45:11 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF9CC061761
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 08:45:00 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c204so9428393pfc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:45:00 -0700 (PDT)
+        Wed, 7 Apr 2021 11:46:07 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2489C061756;
+        Wed,  7 Apr 2021 08:45:57 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id u11so6056694wrp.4;
+        Wed, 07 Apr 2021 08:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+qfQCQqId0WTspRAj4kz6DuPB09HIJxxoSgf5ROVgtM=;
-        b=zmWDPmjOJmFr7kDuBGoTtaYx65S49XI98JpsvFJrN+najC/kfuYlju+4YXn2rnHmUi
-         hKq9yUAR5Hwnc9WnhI7+GZ3iJQCBlLZ8HXqvdrIg96e3uB0ancsgISylaUSWqVmXEpU4
-         hh10dqyrwlEo9q/hJ0S7WdeynSlbcT2CA5aM0AlXyPP2nRHf79TDkn3djBC6sPIriyWO
-         xrkkUgoxRlKNfEAXyKMfeSTntfwt27rm61Xb7lqMuTAgs3EZ3ON8UuXiLye6oHU22zxl
-         Ne7ffG+3Xzb+BEyrXLheNR++l2nfE82BE3WWePEyL/TJz2GW8N0cfxJZK6jZAQxeXFnt
-         nXTg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jGBFXOvLGMSZviZxbm30epWCygLIhUM6cpx63lkaaRA=;
+        b=qg5+BMZmpBYLOt5baQoODnuhF65Vpkt6ZN/T13ukIjPy3BS6DsiSkjxQYv9NX2jU9w
+         ST0CVgXkQbyLnCRXHM2MF7ageeuSXqLMGfVcsNF0FtuXeCKXyjtn4nSTc5l9B1XYiFhG
+         1T8lt3/h7OHz0Mhm41McMOg/WZ5GWHIEVNMPouZZdILYI2VcldGtSl+tpcxQV2FiTzBn
+         Bsd2PXLzUgV7kpvSN/pxd+pmD6OYKOoUvgLJvBJRyN+7nfyOZScs9sLzJgD2BM5DDR2q
+         EE6rAA75XJTzdH3KYkbsmYg9B2st9lzuErFNBasfOAfFSryPokYmUm/HKz5kKRosvaMF
+         +TXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+qfQCQqId0WTspRAj4kz6DuPB09HIJxxoSgf5ROVgtM=;
-        b=t8RBGmPpnSVoyuA5jdqREABHd5WTll/cRKOOTEx8UlPVxcxcETUWqwbdK/t6Ss9R5x
-         X+I0QGZ3Iph4E6c2bmUKe0cDZdlyuqOqK9VO/vEjjpEcFFOhqj96OOZRw5TCg3T1Nn7E
-         5hcdoEQDqZIZGjH5GJz932noGKx8dexOUCaWOe1SHbdkNNwHH8QIa9Q0MZ2xTDHh27zw
-         1E0wNI37zScQM3mwduYGnYrTj5pBjV2uhTwEWhg4tJ5CW8XIDUtYuRgBUzRB0M3RO1jI
-         pf58PTD9AoAJcyaqe/Bxa4fW/nF4IZEEG32vHE3LPYd7836KQIms3/mg0iAEZLzhfy3f
-         p9+A==
-X-Gm-Message-State: AOAM532a+Axc4BZt39Bv91iowgItSjSA3jhj3Jr9uzodu18ZQdmZkw1U
-        hPW/xWSRfaebxZfGfCQ9HLL6/pXNHOxsTQ==
-X-Google-Smtp-Source: ABdhPJzuYOTIM+pn84VM/EafCuxxJjRcVVjW6OOlNG5TbX/HcZet0ywbD5ohAK0Cux12gVhNKEUXuA==
-X-Received: by 2002:a63:770e:: with SMTP id s14mr3749330pgc.377.1617810299745;
-        Wed, 07 Apr 2021 08:44:59 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id x1sm21865932pfj.209.2021.04.07.08.44.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 08:44:58 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] Add AHCI support for Tegra186
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org
-Cc:     pchandru@nvidia.com, devicetree@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2cf9a0ee-034c-7d31-1fa4-66e6ad3ceb43@kernel.dk>
-Date:   Wed, 7 Apr 2021 09:44:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jGBFXOvLGMSZviZxbm30epWCygLIhUM6cpx63lkaaRA=;
+        b=S6NpJsX8YiLkFjfDgQF48m+tmEOiJHuaqVH5PEGIm5wNQG0gPQ1L1VqF6cqtK7OTBv
+         O5TyqFEQFbwMCxOuS9RBvWzkaxGwD8i1jgK//3qV4OmjqZud+GR95KL0AC841GAIFO0k
+         4t8F1aBCor62ahwlM/cv/1cDcQj1es9Rl77JPBF364ox46pGFI1ePFmr+D7b2ynclYV8
+         MEEo4qOLLQj6JfPv3WXgIBTqs5KXGFMehmTppBfNwcwBBzargq22SwMoaiADXGleabLe
+         jmyp4FSaxcY9aCnuxpzwYMi/nc5olrPKbm6yrV0YxGSL3CjNdRuSmdKGGozKkTDUCZ/X
+         VgGg==
+X-Gm-Message-State: AOAM533HDnQ/OwPdCRPOPcX37pImam1PQhRDqrWvnMDVs1u0O429jzUw
+        OrlsUDiTBbU+njxXa4Tbzwv2yjRbYf4zQHu719K8bZFa+28=
+X-Google-Smtp-Source: ABdhPJyYjSKFqR3DnlSH2JvI7O2ybR5BfTLazWkUIY2AHclFwgUYsiohC0qZVCeP49OPkasBVyIjo8QupEeQ6KeWdiw=
+X-Received: by 2002:a5d:6a0b:: with SMTP id m11mr5265157wru.108.1617810356088;
+ Wed, 07 Apr 2021 08:45:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com> <20210401030558.2301621-7-david.e.box@linux.intel.com>
+In-Reply-To: <20210401030558.2301621-7-david.e.box@linux.intel.com>
+From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Date:   Wed, 7 Apr 2021 11:45:30 -0400
+Message-ID: <CAE2upjR2062tGztm15NVTTKOACtrO-Rc4PH7t=_t-Bm5RGzVhw@mail.gmail.com>
+Subject: Re: [PATCH 6/9] platform/x86: intel_pmc_core: Add requirements file
+ to debugfs
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 7:25 PM, Sowjanya Komatineni wrote:
-> Re-sending dt-binding and ahci_tegra driver patches as v4 as device
-> tree patches from v3 are merged but not the AHCI Tegra driver.
-> 
-> Missed to add Jens Axboe to mailing list in v3. Adding for v4.
-> 
-> This series adds support for AHCI-compliant SATA to Tegra186 SoC.
-> 
-> This series includes patches for
-> - Converting text based dt-binding document to YAML.
-> - Adding dt-bindings for Tegra186.
-> - Adding Tegra186 support to Tegra AHCI driver.
-> 
-> Delta between patch versions:
-> [v4]:	Same as v3 except removed device tree patches as they are
-> 	merged.
-> [v3]:	fixed yaml example to pass dt_binding_check
-> [v2]:	v1 feedback related to yaml dt-binding.
-> 	Removed conditional reset order in yaml and updated dts files
-> 	to maintain same order for commonly available resets across
-> 	Tegra124 thru Tegra186.
+On Wed, Mar 31, 2021 at 11:06 PM David E. Box
+<david.e.box@linux.intel.com> wrote:
+>
+> From: Gayatri Kammela <gayatri.kammela@intel.com>
+>
+> Add the debugfs file, substate_requirements, to view the low power mode
+> (LPM) requirements for each enabled mode alongside the last latched status
+> of the condition.
+>
+> After this patch, the new file will look like this:
+>
+>                     Element |    S0i2.0 |    S0i3.0 |    S0i2.1 |    S0i3.1 |    S0i3.2 |    Status |
+>             USB2PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |           |
+> PCIe/USB3.1_Gen2PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |           |
+>        PCIe_Gen3PLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
+>             OPIOPLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
+>               OCPLL_OFF_STS |  Required |  Required |  Required |  Required |  Required |       Yes |
+>             MainPLL_OFF_STS |           |  Required |           |  Required |  Required |           |
+>
+> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> Co-developed-by: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel_pmc_core.c | 86 +++++++++++++++++++++++++++
+>  1 file changed, 86 insertions(+)
+>
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index 0ec26a4c715e..0b47a1da5f49 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -1122,6 +1122,86 @@ static int pmc_core_substate_l_sts_regs_show(struct seq_file *s, void *unused)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_l_sts_regs);
+>
+> +static void pmc_core_substate_req_header_show(struct seq_file *s)
+> +{
+> +       struct pmc_dev *pmcdev = s->private;
+> +       int i, mode;
+> +
+> +       seq_printf(s, "%30s |", "Element");
+> +       pmc_for_each_mode(i, mode, pmcdev)
+> +               seq_printf(s, " %9s |", pmc_lpm_modes[mode]);
+> +
+> +       seq_printf(s, " %9s |\n", "Status");
+> +}
+> +
+> +static int pmc_core_substate_req_regs_show(struct seq_file *s, void *unused)
+> +{
+> +       struct pmc_dev *pmcdev = s->private;
+> +       const struct pmc_bit_map **maps = pmcdev->map->lpm_sts;
+> +       const struct pmc_bit_map *map;
+> +       const int num_maps = pmcdev->map->lpm_num_maps;
+> +       u32 sts_offset = pmcdev->map->lpm_status_offset;
+> +       u32 *lpm_req_regs = pmcdev->lpm_req_regs;
+> +       int mp;
+> +
+> +       /* Display the header */
+> +       pmc_core_substate_req_header_show(s);
+> +
+> +       /* Loop over maps */
+> +       for (mp = 0; mp < num_maps; mp++) {
+> +               u32 req_mask = 0;
+> +               u32 lpm_status;
+> +               int mode, idx, i, len = 32;
+> +
+> +               /*
+> +                * Capture the requirements and create a mask so that we only
+> +                * show an element if it's required for at least one of the
+> +                * enabled low power modes
+> +                */
+> +               pmc_for_each_mode(idx, mode, pmcdev)
+> +                       req_mask |= lpm_req_regs[mp + (mode * num_maps)];
+> +
+> +               /* Get the last latched status for this map */
+> +               lpm_status = pmc_core_reg_read(pmcdev, sts_offset + (mp * 4));
+> +
+> +               /*  Loop over elements in this map */
+> +               map = maps[mp];
+> +               for (i = 0; map[i].name && i < len; i++) {
+> +                       u32 bit_mask = map[i].bit_mask;
+> +
+> +                       if (!(bit_mask & req_mask))
+> +                               /*
+> +                                * Not required for any enabled states
+> +                                * so don't display
+> +                                */
+> +                               continue;
+> +
+> +                       /* Display the element name in the first column */
+> +                       seq_printf(s, "%30s |", map[i].name);
+> +
+> +                       /* Loop over the enabled states and display if required */
+> +                       pmc_for_each_mode(idx, mode, pmcdev) {
+> +                               if (lpm_req_regs[mp + (mode * num_maps)] & bit_mask)
+> +                                       seq_printf(s, " %9s |",
+> +                                                  "Required");
+> +                               else
+> +                                       seq_printf(s, " %9s |", " ");
+> +                       }
+> +
+> +                       /* In Status column, show the last captured state of this agent */
+> +                       if (lpm_status & bit_mask)
+> +                               seq_printf(s, " %9s |", "Yes");
+> +                       else
+> +                               seq_printf(s, " %9s |", " ");
 
-Assuming the libata tree is the best way for this to go in, so I applied
-it for 5.13.
+Why is this left blank, maybe NA (Not Available)?
+
+> +
+> +                       seq_puts(s, "\n");
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_req_regs);
+> +
+>  static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
+>  {
+>         struct pmc_dev *pmcdev = s->private;
+> @@ -1241,6 +1321,12 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
+>                                     pmcdev->dbgfs_dir, pmcdev,
+>                                     &pmc_core_substate_l_sts_regs_fops);
+>         }
+> +
+> +       if (pmcdev->lpm_req_regs) {
+> +               debugfs_create_file("substate_requirements", 0444,
+> +                                   pmcdev->dbgfs_dir, pmcdev,
+> +                                   &pmc_core_substate_req_regs_fops);
+> +       }
+>  }
+>
+>  static const struct x86_cpu_id intel_pmc_core_ids[] = {
+> --
+> 2.25.1
+>
+
 
 -- 
-Jens Axboe
-
+Thanks,
+Rajneesh
