@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBF43568DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574503568DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350699AbhDGKFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350529AbhDGKDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:03:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DF0C0613DA;
-        Wed,  7 Apr 2021 03:03:37 -0700 (PDT)
-Date:   Wed, 07 Apr 2021 10:03:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617789815;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83VQLn6NKsei4RkjAGT/OVSC1OxMiBmypxMNM01aLe0=;
-        b=T7twzqtffVGz1ehemb7LiWpOSaTcy6Pz5hOVeDX0KeunVjTqoWPWyzwgUxXeyY0L/8MGVv
-        WgwbDkjFWSOTyBmwIV6Aytplt96unAR6T45/eoaQZ83jFoonoo1kIZSe7Ga+lJX2lGBcZZ
-        WZUTmoZr2ViEkldUIZ6zWeUdw7zQ+m9zpUrHGpxB66riUUO25Me4FmczdCvrlKVhq84fX2
-        aqlt5KPya+txOyjWCG6DuBC+KqbN5rZ6lb03SU/qEmJ7XBnk7Gu2tj7C7DRZ5/bm1zCna5
-        oCmzj9X1Ul7fZLdW+Q7MH0JSWz9XLW1zIhg5s31uIrMqr9CsLLLqZRNacKx4eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617789815;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83VQLn6NKsei4RkjAGT/OVSC1OxMiBmypxMNM01aLe0=;
-        b=dpMDNSUsm3Sy9X8xqYhdt27KKs2SdagyPn7QZ3vJQ4pTjEs86Fq/XQp2h6+hCEEWLoL/h6
-        vawlCISOL9k8SHCA==
-From:   "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/cpufeatures: Make SGX_LC feature bit depend on SGX bit
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>, Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <5d4220fd0a39f52af024d3fa166231c1d498dd10.1616136308.git.kai.huang@intel.com>
-References: <5d4220fd0a39f52af024d3fa166231c1d498dd10.1616136308.git.kai.huang@intel.com>
+        id S1346633AbhDGKFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350508AbhDGKDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:03:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 062EF6139C;
+        Wed,  7 Apr 2021 10:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617789824;
+        bh=U2Q8yQRaIx4QiUDT92JbWKR5p2N8Pmme+7zcvnbeJJ0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=D2H4UEtHja2iIv2loa+fuuitQ959MN2FGakHGD8VX07eZKsavECG1occPJR8NZ+iw
+         syCag3ZhloduOHJ+yp6Le+QJENnSEuMZqR5GbzOES4ZpFa42BJgZbhbEnRrAuqnWar
+         EVGT8td4AqmWmQqfnuY4wOdlnLFki+xiAvxvxKlS1mesefU/1v0wUgcdRY0bh4SIsZ
+         n7Yv0VJpeH4MZw32BL2wIBGrHRG/Kw4LPc6QlePUA2WjVRCIqHb1+bpS6iVGM2H6sB
+         moflSRRRevnPCGjCAOAwOqW112u/0PAHVJOdUV8SSOd/jHlT3TOoAnV++GhUKmduTT
+         Nec2+miWZIEUg==
+Subject: Re: [PATCH] clk: exynos7: Mark aclk_fsys1_200 as critical
+To:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Cc:     s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kgene@kernel.org, krzk@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org
+References: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <53be0d9d-a64a-9108-85f0-40ac360757c4@kernel.org>
+Date:   Wed, 7 Apr 2021 12:03:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Message-ID: <161778981468.29796.2007667039534925425.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On 24.10.2020 17:43, Paweł Chmiel wrote:
+> This clock must be always enabled to allow access to any registers in
+> fsys1 CMU. Until proper solution based on runtime PM is applied
+> (similar to what was done for Exynos5433), mark that clock as critical
+> so it won't be disabled.
+> 
+> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
+> UFS module is probed before pmic used to power that device.
+> In this case defer probe was happening and that clock was disabled by
+> UFS driver, causing whole boot to hang on next CMU access.
+> 
+> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> ---
+>   drivers/clk/samsung/clk-exynos7.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
+> index c1ff715e960c..1048d83f097b 100644
+> --- a/drivers/clk/samsung/clk-exynos7.c
+> +++ b/drivers/clk/samsung/clk-exynos7.c
+> @@ -538,7 +538,8 @@ static const struct samsung_gate_clock top1_gate_clks[] __initconst = {
+>   		ENABLE_ACLK_TOP13, 28, CLK_SET_RATE_PARENT |
+>   		CLK_IS_CRITICAL, 0),
 
-Commit-ID:     e9a15a40e857fc6ccfbb05fec7b184e9003057df
-Gitweb:        https://git.kernel.org/tip/e9a15a40e857fc6ccfbb05fec7b184e9003057df
-Author:        Kai Huang <kai.huang@intel.com>
-AuthorDate:    Fri, 19 Mar 2021 20:22:17 +13:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 25 Mar 2021 17:33:11 +01:00
+As this patch can be backported up to the commit that introduced regression
+I have applied it instead of your v3, with a comment as below.
 
-x86/cpufeatures: Make SGX_LC feature bit depend on SGX bit
++       /*
++        * This clock is required for the CMU_FSYS1 registers access, keep it
++        * enabled permanently until proper runtime PM support is added.
++        */
 
-Move SGX_LC feature bit to CPUID dependency table to make clearing all
-SGX feature bits easier. Also remove clear_sgx_caps() since it is just
-a wrapper of setup_clear_cpu_cap(X86_FEATURE_SGX) now.
-
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/5d4220fd0a39f52af024d3fa166231c1d498dd10.1616136308.git.kai.huang@intel.com
----
- arch/x86/kernel/cpu/cpuid-deps.c |  1 +
- arch/x86/kernel/cpu/feat_ctl.c   | 12 +++---------
- 2 files changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-index 42af31b..d40f8e0 100644
---- a/arch/x86/kernel/cpu/cpuid-deps.c
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c
-@@ -72,6 +72,7 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_AVX512_FP16,		X86_FEATURE_AVX512BW  },
- 	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
- 	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
-+	{ X86_FEATURE_SGX_LC,			X86_FEATURE_SGX	      },
- 	{}
- };
- 
-diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-index 3b1b01f..27533a6 100644
---- a/arch/x86/kernel/cpu/feat_ctl.c
-+++ b/arch/x86/kernel/cpu/feat_ctl.c
-@@ -93,15 +93,9 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
- }
- #endif /* CONFIG_X86_VMX_FEATURE_NAMES */
- 
--static void clear_sgx_caps(void)
--{
--	setup_clear_cpu_cap(X86_FEATURE_SGX);
--	setup_clear_cpu_cap(X86_FEATURE_SGX_LC);
--}
--
- static int __init nosgx(char *str)
- {
--	clear_sgx_caps();
-+	setup_clear_cpu_cap(X86_FEATURE_SGX);
- 
- 	return 0;
- }
-@@ -116,7 +110,7 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
- 
- 	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
- 		clear_cpu_cap(c, X86_FEATURE_VMX);
--		clear_sgx_caps();
-+		clear_cpu_cap(c, X86_FEATURE_SGX);
- 		return;
- 	}
- 
-@@ -177,6 +171,6 @@ update_sgx:
- 	    !(msr & FEAT_CTL_SGX_LC_ENABLED) || !enable_sgx) {
- 		if (enable_sgx)
- 			pr_err_once("SGX disabled by BIOS\n");
--		clear_sgx_caps();
-+		clear_cpu_cap(c, X86_FEATURE_SGX);
- 	}
- }
+>   	GATE(CLK_ACLK_FSYS1_200, "aclk_fsys1_200", "dout_aclk_fsys1_200",
+> -		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT, 0),
+> +		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT |
+> +		CLK_IS_CRITICAL, 0),
+>   
+>   	GATE(CLK_SCLK_PHY_FSYS1_26M, "sclk_phy_fsys1_26m",
+>   		"dout_sclk_phy_fsys1_26m", ENABLE_SCLK_TOP1_FSYS11,
+  
+--
+Regards,
+Sylwester
