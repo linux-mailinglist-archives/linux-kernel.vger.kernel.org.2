@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747C4356A03
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862E0356A00
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351373AbhDGKlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49096 "EHLO mail.kernel.org"
+        id S1351352AbhDGKkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244114AbhDGKkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351092AbhDGKkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 06:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B4CF613DF;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5D4613E1;
         Wed,  7 Apr 2021 10:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617791990;
-        bh=sNeOBPVqsjxF0gDECWn/9gulNwkDtwDce1h8BbPrewQ=;
+        bh=J7A9LOi+J2merRNWLKmFzr4cbMWHH3iYqNceVJSnJbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLjk8w3xPIhjVmdzQnyX6yScGs+rVR1KZLTEHn50yX1kvuz6FaRX+5RnC1LuvOike
-         LSFjowa3IEvzOwlM1nHFIjkd99fqN8cmqBfXlMagHLdnUwBJVDPcSUW2KTkprG6Ydz
-         KnPHOpPgdIZOjYapg1qwVq13nqXoAYCqn/UqR1ND/eCDwk5I1ZNYu2AZ7n9+6pR9V0
-         8Rw/W85lg+BCwVgBhLxy3Uc/m9Y0iLS4O59qe8y4HnzV2GMjBqoHaLQcmvaUUvYzt9
-         rJP++xO8XYYiTDXnQ37K40clFpCYkXuFawEpDOCuO5h7zS3QpZM2hKE7CvS/ERLuim
-         YCECRaosz2WGA==
+        b=cy3jl1yNwqSfbBcwnF2F6zTzde5lBZ+TFvnHo73GkTrPVwlqvJGVfmNZug0gDqROG
+         cAhkH35c/6AzOMz0i8O4493vCDLrDho0gUS08Su3b2+JKrvaEyBMFKRJvJD5pA6irB
+         AqD3v71C5KPoBmmhALTaFx2nvwssg9uYAlZBVSFul75T1eDwT4LUbtUeW5536e/QYr
+         2QIpurNE6JhyrDkm7axabUx85qlPII99QTrjbnWSXXytJoMYr8+0uKVZzWS/T/5yKs
+         JbgNHc8MNXdbaELGd2hU2zhN+QoOs/SOCxb/oYpFug036KZTtx/Rrni7xRC5VO6Xw2
+         3xUqKFftWnT1A==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU5b5-0000F6-9z; Wed, 07 Apr 2021 12:39:43 +0200
+        id 1lU5b5-0000F9-Cr; Wed, 07 Apr 2021 12:39:43 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/24] USB: serial: ssu100: fix TIOCGSERIAL implementation
-Date:   Wed,  7 Apr 2021 12:39:13 +0200
-Message-Id: <20210407103925.829-13-johan@kernel.org>
+Subject: [PATCH 13/24] USB: serial: ti_usb_3410_5052: fix TIOCGSERIAL implementation
+Date:   Wed,  7 Apr 2021 12:39:14 +0200
+Message-Id: <20210407103925.829-14-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407103925.829-1-johan@kernel.org>
 References: <20210407103925.829-1-johan@kernel.org>
@@ -45,42 +45,37 @@ TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
 serial devices is only useful for setting the close_delay and
 closing_wait parameters.
 
+The port parameter is used to set the I/O port and does not make any
+sense to use for USB serial devices.
+
 The xmit_fifo_size parameter could be used to set the hardware transmit
 fifo size of a legacy UART when it could not be detected, but the
 interface is limited to eight bits and should be left unset when not
 used.
 
-Similarly, baud_base could be used to set the UART base clock when it
-could not be detected but might as well be left unset when it is not
-known.
-
 The close_delay and closing_wait parameters returned by TIOCGSERIAL are
-specified in centiseconds (not jiffies). The driver does not yet support
-changing these, but let's report back the default values actually used
-(0.5 and 30 seconds, respectively).
+specified in centiseconds. The driver does not yet support changing
+close_delay, but let's report back the default value actually used (0.5
+seconds).
 
-Fixes: 52af95459939 ("USB: add USB serial ssu100 driver")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/ssu100.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/usb/serial/ti_usb_3410_5052.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/serial/ssu100.c b/drivers/usb/serial/ssu100.c
-index 89fdc5c19285..c4616c37f33f 100644
---- a/drivers/usb/serial/ssu100.c
-+++ b/drivers/usb/serial/ssu100.c
-@@ -337,12 +337,9 @@ static int get_serial_info(struct tty_struct *tty,
- 	struct usb_serial_port *port = tty->driver_data;
+diff --git a/drivers/usb/serial/ti_usb_3410_5052.c b/drivers/usb/serial/ti_usb_3410_5052.c
+index 7252b0ce75a6..4b497c1e850b 100644
+--- a/drivers/usb/serial/ti_usb_3410_5052.c
++++ b/drivers/usb/serial/ti_usb_3410_5052.c
+@@ -1406,10 +1406,10 @@ static int ti_get_serial_info(struct tty_struct *tty,
  
- 	ss->line		= port->minor;
--	ss->port		= 0;
--	ss->irq			= 0;
--	ss->xmit_fifo_size	= port->bulk_out_size;
--	ss->baud_base		= 9600;
--	ss->close_delay		= 5*HZ;
--	ss->closing_wait	= 30*HZ;
-+	ss->close_delay		= 50;
-+	ss->closing_wait	= 3000;
+ 	ss->type = PORT_16550A;
+ 	ss->line = port->minor;
+-	ss->port = port->port_number;
+-	ss->xmit_fifo_size = kfifo_size(&port->write_fifo);
+ 	ss->baud_base = tport->tp_tdev->td_is_3410 ? 921600 : 460800;
++	ss->close_delay = 50;
+ 	ss->closing_wait = cwait;
 +
  	return 0;
  }
