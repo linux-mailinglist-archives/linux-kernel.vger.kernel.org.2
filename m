@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE063561FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711C1356218
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhDGDbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:31:04 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:20178 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231741AbhDGDbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:31:00 -0400
-Received: from localhost.localdomain (unknown [10.192.24.118])
-        by mail-app4 (Coremail) with SMTP id cS_KCgDn73tXJ21g_ECUAA--.16160S4;
-        Wed, 07 Apr 2021 11:30:34 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Tony Lindgren <tony@atomide.com>, Vignesh R <vigneshr@ti.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: omap: Fix rumtime PM imbalance on error
-Date:   Wed,  7 Apr 2021 11:30:30 +0800
-Message-Id: <20210407033030.13419-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgDn73tXJ21g_ECUAA--.16160S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3Aw4rurW8GF1kAr48tFb_yoWfKrX_Gw
-        s5Aan7Xr4Y9Fyqq347Ja15Zr9agrZYgr4kuw40vw1akFWYyw1DKrWUZF93Aw43Xa17GF1Y
-        qw1qgFWxArsrWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoGBlZdtTQGhAAHsH
+        id S1348433AbhDGDrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:47:01 -0400
+Received: from m15113.mail.126.com ([220.181.15.113]:36907 "EHLO
+        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344405AbhDGDq7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:46:59 -0400
+X-Greylist: delayed 1997 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Apr 2021 23:46:58 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=EYLDIVy5Lq+tCCcmxS
+        9wSWSpPH1DV1dAdlXfneGhR7w=; b=SPFZZtkE7t/KQmLEIBEGSzC7QSWAYnUt+q
+        dJXipiD05wCV/Jdog3/D7te4YJs/PTjZ2b/vSlR1jfNvYM/ZA4+TimnfMyt7r+vk
+        WDXFuIsVLbs7t0W9EpZ1q+ARzkteO2adkMHyoKBG0rEtkFP2Qw23TgxBlWJukXoi
+        UfJY08/2U=
+Received: from localhost.localdomain (unknown [106.16.165.72])
+        by smtp3 (Coremail) with SMTP id DcmowAAHDeGnIm1gdK2IQA--.41702S2;
+        Wed, 07 Apr 2021 11:10:44 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, airlied@redhat.com
+Cc:     wangyingjie55@126.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] drm/radeon: Fix a missing check bug in radeon_dp_mst_detect()
+Date:   Tue,  6 Apr 2021 20:10:04 -0700
+Message-Id: <1617765004-5308-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: DcmowAAHDeGnIm1gdK2IQA--.41702S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrurW8KF4kZrWftr1xKrW3ZFb_yoWkGwbE9r
+        n7Wa4rJayDKryIq3W7Z3WxX3sFgw4j9F1UWr1ftryIqry8Jr1fuF15t3WFyan8Xay7Jrn8
+        K3WrKFy3Ars3KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU9XoDUUUUU==
+X-Originating-IP: [106.16.165.72]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVxRtp1pEDOzDMAAAsE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() will increase the rumtime PM counter
-even it returns an error. Thus a pairing decrement is needed
-to prevent refcount leak. Fix this by replacing this API with
-pm_runtime_resume_and_get(), which will not change the runtime
-PM counter on error.
+From: Yingjie Wang <wangyingjie55@126.com>
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+In radeon_dp_mst_detect(), We should check whether or not @connector
+has been unregistered from userspace. If the connector is unregistered,
+we should return disconnected status.
+
+Fixes: 9843ead08f18 ("drm/radeon: add DisplayPort MST support (v2)")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
 ---
- drivers/i2c/busses/i2c-omap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/radeon/radeon_dp_mst.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-omap.c b/drivers/i2c/busses/i2c-omap.c
-index 12ac4212aded..c9ee0875a79d 100644
---- a/drivers/i2c/busses/i2c-omap.c
-+++ b/drivers/i2c/busses/i2c-omap.c
-@@ -1404,7 +1404,7 @@ omap_i2c_probe(struct platform_device *pdev)
- 	pm_runtime_set_autosuspend_delay(omap->dev, OMAP_I2C_PM_TIMEOUT);
- 	pm_runtime_use_autosuspend(omap->dev);
+diff --git a/drivers/gpu/drm/radeon/radeon_dp_mst.c b/drivers/gpu/drm/radeon/radeon_dp_mst.c
+index 2c32186c4acd..4e4c937c36c6 100644
+--- a/drivers/gpu/drm/radeon/radeon_dp_mst.c
++++ b/drivers/gpu/drm/radeon/radeon_dp_mst.c
+@@ -242,6 +242,9 @@ radeon_dp_mst_detect(struct drm_connector *connector,
+ 		to_radeon_connector(connector);
+ 	struct radeon_connector *master = radeon_connector->mst_port;
  
--	r = pm_runtime_get_sync(omap->dev);
-+	r = pm_runtime_resume_and_get(omap->dev);
- 	if (r < 0)
- 		goto err_free_mem;
- 
++	if (drm_connector_is_unregistered(connector))
++		return connector_status_disconnected;
++
+ 	return drm_dp_mst_detect_port(connector, ctx, &master->mst_mgr,
+ 				      radeon_connector->port);
+ }
 -- 
-2.17.1
+2.7.4
 
