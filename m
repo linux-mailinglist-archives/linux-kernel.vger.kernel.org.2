@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815243570F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4B93570FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353900AbhDGPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:50:46 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:39414 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353955AbhDGPtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:49:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1617810574; x=1649346574;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=91UF3XDHR+5BK9OsUH3n8K3X1hOKJSJ2ZUtlIirwwrM=;
-  b=F2XnK/8q+SM+xmHGC5iOEfVFV1j1ARGrCqJQctdf3QlZ0Lo3p6Jdn3RE
-   Q7yof4SbCPTio6ciAYw88Ifu/6k6HOdnsFg3stzIsqGnW5ntfEHg/Yrfs
-   UA285lRS5iZL1qhRjvGf8ouubWl0lIAEbDyOUHpUKzG3vn0RiMieTR3tS
-   zJgUZVRjIvJqdhqsGPcRUsHaBdqVNYeHq6U4uAKtYUgeKn1Z/FJmqS1mM
-   o8M/39lXKpHp55KNJdny3peGan4hJaigraIvhoMvO4oacab9CQBzcJ7+S
-   Q3Zz+i8MioHh5gxK9cMLGB2c+A2RfCnarW6zbUdKSIF9KkQsgb4YJZVyy
-   Q==;
-IronPort-SDR: RzVj9WcQIfE3WnXf37+13c3AJfDQLE31KKFLzwnwjOipQRFg/lYv+89HmyWrKCgSGa61+KPlya
- zJPAlByHQCkm7p/7JmjSL3SASZFYI9FsUqOcBPDb8trJ9JbmfTAYEGkrk1wZRJUNTz43jcrbUQ
- AZFMUCUl9LCk7asIPL/0zCNQ6nt/8x42Dwni3b6r8+2kDRKNzbJMBtl0sSek57ywzfO1Zcgh+v
- fNts2aPO2Vwrd1QNCqX5AtUep5QUdew/V6yrYdjmb1IHw3qHZaD8RXPePgJDn1g1JVpZ9SO0zC
- XQ4=
-X-IronPort-AV: E=Sophos;i="5.82,203,1613404800"; 
-   d="scan'208";a="274931697"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Apr 2021 23:49:33 +0800
-IronPort-SDR: EbStP34IYgiCdPbgbgOcCyBBz7yhk/GPp8fOF6/wPH5ejRLLlB6XXN1FbNMDugqCnIKPRiNKkn
- RYqrRGcTIPHhL7x1bbfFD3vUSlqC/fPJQrpeNzZO+Url6vwM9OP8CBQ1pQCpLuEg9ZyHd+ioP0
- QMWA13u9L/trV9uM5Q0eeFrubDfgVh5aC2gYzZFhzgRsD6CmoGSKGzS5fOx3mNTE2dtKDRsBCn
- t3M+6UkM9ydK755Lnpzmb7M9HwZlXnGmsW/AESZfcUqWuttE9+4MZC1mfcrwkk+dcdh3zs1FRA
- kR2Mkr4doTSDu+uLV7r0Ou9V
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 08:30:53 -0700
-IronPort-SDR: S/zRMmFYPV/GfPI1LS+wpGzLIjw7o2v/mGiuL8CAguAfgkFeylt/UnGYKywFpaTukM6ayibUy8
- U8s6c8bznjYQF/fFN25skPrIhbKmj2+f4YegA1lx8mRySeparspDzx4toCMPUWOEK4phZjpe8T
- 1T6E8/kKepyQacW34LF5dGeONW75ZVW80qbMzgxKyO+I3QnqEukPhCkDP2SZMlhn+WTyYTra/j
- 7mUbbYKqIMyhmpoftI+CByFNFaxFhOB56JO2jdoGin5eh4rAnp+vCFkZ/ZOsFVxFOzfCpnh4fZ
- P3I=
-WDCIronportException: Internal
-Received: from unknown (HELO twashi.fujisawa.hgst.com) ([10.225.163.90])
-  by uls-op-cesaip01.wdc.com with ESMTP; 07 Apr 2021 08:49:33 -0700
-From:   Damien Le Moal <damien.lemoal@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Cc:     Max Filippov <jcmvbkbc@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 2/2] riscv: Disable text-data gap in flat binaries
-Date:   Thu,  8 Apr 2021 00:49:24 +0900
-Message-Id: <20210407154924.1557489-3-damien.lemoal@wdc.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210407154924.1557489-1-damien.lemoal@wdc.com>
-References: <20210407154924.1557489-1-damien.lemoal@wdc.com>
+        id S1353891AbhDGPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:51:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53810 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353957AbhDGPtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:49:46 -0400
+Received: from zn.tnic (p200300ec2f08fb00aad493ab6ea3c721.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:aad4:93ab:6ea3:c721])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 127181EC0301;
+        Wed,  7 Apr 2021 17:49:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617810575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=d1Opu7AKJgNAtUx5a3eSNKbEBw8Cs3g1lPL7E4oO9mE=;
+        b=INpuBN5dtpg+hBiXg2WZP+vbIXyHD/tZNAyqyR8gnO1tRsm/D9Xk0fk0OC3Pmu2UAUt6Tu
+        FPIUd3/PBmgUYC/+8AMBGD/athVrnrY0/RHYHOVZ7GaNDCl29eeD+1ncAskSoNx8cNjfS6
+        6MLJ39hZwn+gcGWuNLEwgMcytzow0qQ=
+Date:   Wed, 7 Apr 2021 17:49:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] x86/sgx: Do not update sgx_nr_free_pages in
+ sgx_setup_epc_section()
+Message-ID: <20210407154934.GF25319@zn.tnic>
+References: <20210405232653.33680-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210405232653.33680-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uclibc/gcc combined with elf2flt riscv linker file fully resolve the
-PC relative __global_pointer$ value at compile time and do not generate
-a relocation entry to set a runtime gp value. As a result, if the
-flatbin loader introduces a gap between the text and data sections, the
-gp value becomes incorrect and prevent correct execution of a flatbin
-executable.
+On Tue, Apr 06, 2021 at 02:26:52AM +0300, Jarkko Sakkinen wrote:
+> Now that the sanitization process will make pages available by calling
+> sgx_free_epc_page(), sgx_setup_epc_section() should not touch to
+> sgx_nr_free_pages. This will result sgx_nr_free_pages to contain 2x the
+> number of actual free pages. Simply, remove the statement.
+> 
+> Fixes: 51ab30eb2ad4 ("x86/sgx: Replace section->init_laundry_list with sgx_dirty_page_list")
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 13a7599ce7d4..7df7048cb1c9 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -657,7 +657,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+>  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+>  	}
+>  
+> -	sgx_nr_free_pages += nr_pages;
+>  	return true;
+>  }
+>  
 
-Avoid this problem by enabling CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP
-automatically when CONFIG_RISCV is enabled and CONFIG_MMU disabled.
+First of all, I don't know how I didn't catch this:
 
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
----
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+/* The free page list lock protected variables prepend the lock. */
+static unsigned long sgx_nr_free_pages;
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 0d0cf67359cb..6a85fbbd056e 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -33,6 +33,7 @@ config RISCV
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
-+	select BINFMT_FLAT_NO_TEXT_DATA_GAP if !MMU
- 	select CLONE_BACKWARDS
- 	select CLINT_TIMER if !MMU
- 	select COMMON_CLK
+I need some sort of translator to understand what this comment means. I
+can guess what is trying to tell me.
+
+Which leads to my question: what is sgx_nr_free_pages supposed to denote?
+
+Because I understand the callpath
+
+sgx_page_cache_init
+...
+for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+	...
+	sgx_setup_epc_section
+	...
+		sgx_nr_free_pages += nr_pages;
+
+as adding the number of pages of each new EPC section to the total
+number of the free pages. Unless that variable accounts something else.
+
+So what does this variable actually mean?
+
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
