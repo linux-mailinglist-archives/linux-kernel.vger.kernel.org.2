@@ -2,182 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD94A357372
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD745357374
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 19:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354930AbhDGRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 13:47:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19530 "EHLO m43-7.mailgun.net"
+        id S1354939AbhDGRre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 13:47:34 -0400
+Received: from mga03.intel.com ([134.134.136.65]:46900 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348347AbhDGRrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 13:47:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617817630; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=4mZIARSOdo9stIP1eUaunAS4d7T3T1hUnN71XRlKleo=; b=GoyIFHLJraPEH0PYOqW2IokdxxVEdqfIKFYVfME/XkNyUqIDgC43i6eaeRjQJZYnNwhI37eb
- kFKeJ59C5o3qNcNnI1PucGeIlWDL5QL1pdFzHR8UICRLBaX3IUsG/xYlksXbO1okVnSE1qz/
- QwW6VYMsgTGuib+iddnqaS9SZ9M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 606df0132cc44d3aea46f514 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 17:46:58
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E50F9C43462; Wed,  7 Apr 2021 17:46:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE43BC433CA;
-        Wed,  7 Apr 2021 17:46:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE43BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v15 1/2] scsi: ufs: Enable power management for wlun
-To:     Adrian Hunter <adrian.hunter@intel.com>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Yue Hu <huyue2@yulong.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1617731442.git.asutoshd@codeaurora.org>
- <5536f19fbbcfed1177a63458c6bd0b42ee6aa2e2.1617731442.git.asutoshd@codeaurora.org>
- <d1e694cb-e3ba-6066-d0c0-8c17120e7ba5@intel.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <2f3126fc-9145-a190-37ab-c4814056cfba@codeaurora.org>
-Date:   Wed, 7 Apr 2021 10:46:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1348347AbhDGRrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 13:47:32 -0400
+IronPort-SDR: Dde14vc2vtiT1csGrkybK6NAAr0v1hHl+dRfQBhss68cmOkVyBzosTilFIaQ7QCV5g8duPK4R0
+ thVYlmgtyLZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193407519"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="193407519"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 10:47:22 -0700
+IronPort-SDR: nGgmK1qyn7/l7moB6WrUsZuJ0r58toV3Lq3JPIp8ib7M6aatvjx6evX4I0VAV4EFEZgsO1ygX7
+ F/ft4BSA+6kw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="598441116"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 07 Apr 2021 10:47:22 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.27])
+        by linux.intel.com (Postfix) with ESMTP id 08CAA5808F1;
+        Wed,  7 Apr 2021 10:47:22 -0700 (PDT)
+Message-ID: <5e397222e452d909cf81326b4303532b18562fac.camel@linux.intel.com>
+Subject: Re: [PATCH 6/9] platform/x86: intel_pmc_core: Add requirements file
+ to debugfs
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 07 Apr 2021 10:47:21 -0700
+In-Reply-To: <CAE2upjR2062tGztm15NVTTKOACtrO-Rc4PH7t=_t-Bm5RGzVhw@mail.gmail.com>
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
+         <20210401030558.2301621-7-david.e.box@linux.intel.com>
+         <CAE2upjR2062tGztm15NVTTKOACtrO-Rc4PH7t=_t-Bm5RGzVhw@mail.gmail.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <d1e694cb-e3ba-6066-d0c0-8c17120e7ba5@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/2021 3:21 AM, Adrian Hunter wrote:
-> On 6/04/21 8:52 pm, Asutosh Das wrote:
->> During runtime-suspend of ufs host, the scsi devices are
->> already suspended and so are the queues associated with them.
->> But the ufs host sends SSU (START_STOP_UNIT) to wlun
->> during its runtime-suspend.
->> During the process blk_queue_enter checks if the queue is not in
->> suspended state. If so, it waits for the queue to resume, and never
->> comes out of it.
->> The commit
->> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->> adds the check if the queue is in suspended state in blk_queue_enter().
->>
->> Call trace:
->>   __switch_to+0x174/0x2c4
->>   __schedule+0x478/0x764
->>   schedule+0x9c/0xe0
->>   blk_queue_enter+0x158/0x228
->>   blk_mq_alloc_request+0x40/0xa4
->>   blk_get_request+0x2c/0x70
->>   __scsi_execute+0x60/0x1c4
->>   ufshcd_set_dev_pwr_mode+0x124/0x1e4
->>   ufshcd_suspend+0x208/0x83c
->>   ufshcd_runtime_suspend+0x40/0x154
->>   ufshcd_pltfrm_runtime_suspend+0x14/0x20
->>   pm_generic_runtime_suspend+0x28/0x3c
->>   __rpm_callback+0x80/0x2a4
->>   rpm_suspend+0x308/0x614
->>   rpm_idle+0x158/0x228
->>   pm_runtime_work+0x84/0xac
->>   process_one_work+0x1f0/0x470
->>   worker_thread+0x26c/0x4c8
->>   kthread+0x13c/0x320
->>   ret_from_fork+0x10/0x18
->>
->> Fix this by registering ufs device wlun as a scsi driver and
->> registering it for block runtime-pm. Also make this as a
->> supplier for all other luns. That way, this device wlun
->> suspends after all the consumers and resumes after
->> hba resumes.
->>
->> Co-developed-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> ---
+On Wed, 2021-04-07 at 11:45 -0400, Rajneesh Bhardwaj wrote:
+> On Wed, Mar 31, 2021 at 11:06 PM David E. Box
+> <david.e.box@linux.intel.com> wrote:
+> > 
+> > From: Gayatri Kammela <gayatri.kammela@intel.com>
+> > 
+> > Add the debugfs file, substate_requirements, to view the low power
+> > mode
+> > (LPM) requirements for each enabled mode alongside the last latched
+> > status
+> > of the condition.
+> > 
+> > After this patch, the new file will look like this:
+> > 
+> >                     Element |    S0i2.0 |    S0i3.0 |    S0i2.1
+> > |    S0i3.1 |    S0i3.2 |    Status |
+> >             USB2PLL_OFF_STS |  Required |  Required |  Required | 
+> > Required |  Required |           |
+> > PCIe/USB3.1_Gen2PLL_OFF_STS |  Required |  Required |  Required | 
+> > Required |  Required |           |
+> >        PCIe_Gen3PLL_OFF_STS |  Required |  Required |  Required | 
+> > Required |  Required |       Yes |
+> >             OPIOPLL_OFF_STS |  Required |  Required |  Required | 
+> > Required |  Required |       Yes |
+> >               OCPLL_OFF_STS |  Required |  Required |  Required | 
+> > Required |  Required |       Yes |
+> >             MainPLL_OFF_STS |           |  Required |           | 
+> > Required |  Required |           |
+> > 
+> > Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> > Co-developed-by: David E. Box <david.e.box@linux.intel.com>
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> >  drivers/platform/x86/intel_pmc_core.c | 86
+> > +++++++++++++++++++++++++++
+> >  1 file changed, 86 insertions(+)
+> > 
+> > diff --git a/drivers/platform/x86/intel_pmc_core.c
+> > b/drivers/platform/x86/intel_pmc_core.c
+> > index 0ec26a4c715e..0b47a1da5f49 100644
+> > --- a/drivers/platform/x86/intel_pmc_core.c
+> > +++ b/drivers/platform/x86/intel_pmc_core.c
+> > @@ -1122,6 +1122,86 @@ static int
+> > pmc_core_substate_l_sts_regs_show(struct seq_file *s, void *unused)
+> >  }
+> >  DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_l_sts_regs);
+> > 
+> > +static void pmc_core_substate_req_header_show(struct seq_file *s)
+> > +{
+> > +       struct pmc_dev *pmcdev = s->private;
+> > +       int i, mode;
+> > +
+> > +       seq_printf(s, "%30s |", "Element");
+> > +       pmc_for_each_mode(i, mode, pmcdev)
+> > +               seq_printf(s, " %9s |", pmc_lpm_modes[mode]);
+> > +
+> > +       seq_printf(s, " %9s |\n", "Status");
+> > +}
+> > +
+> > +static int pmc_core_substate_req_regs_show(struct seq_file *s,
+> > void *unused)
+> > +{
+> > +       struct pmc_dev *pmcdev = s->private;
+> > +       const struct pmc_bit_map **maps = pmcdev->map->lpm_sts;
+> > +       const struct pmc_bit_map *map;
+> > +       const int num_maps = pmcdev->map->lpm_num_maps;
+> > +       u32 sts_offset = pmcdev->map->lpm_status_offset;
+> > +       u32 *lpm_req_regs = pmcdev->lpm_req_regs;
+> > +       int mp;
+> > +
+> > +       /* Display the header */
+> > +       pmc_core_substate_req_header_show(s);
+> > +
+> > +       /* Loop over maps */
+> > +       for (mp = 0; mp < num_maps; mp++) {
+> > +               u32 req_mask = 0;
+> > +               u32 lpm_status;
+> > +               int mode, idx, i, len = 32;
+> > +
+> > +               /*
+> > +                * Capture the requirements and create a mask so
+> > that we only
+> > +                * show an element if it's required for at least
+> > one of the
+> > +                * enabled low power modes
+> > +                */
+> > +               pmc_for_each_mode(idx, mode, pmcdev)
+> > +                       req_mask |= lpm_req_regs[mp + (mode *
+> > num_maps)];
+> > +
+> > +               /* Get the last latched status for this map */
+> > +               lpm_status = pmc_core_reg_read(pmcdev, sts_offset +
+> > (mp * 4));
+> > +
+> > +               /*  Loop over elements in this map */
+> > +               map = maps[mp];
+> > +               for (i = 0; map[i].name && i < len; i++) {
+> > +                       u32 bit_mask = map[i].bit_mask;
+> > +
+> > +                       if (!(bit_mask & req_mask))
+> > +                               /*
+> > +                                * Not required for any enabled
+> > states
+> > +                                * so don't display
+> > +                                */
+> > +                               continue;
+> > +
+> > +                       /* Display the element name in the first
+> > column */
+> > +                       seq_printf(s, "%30s |", map[i].name);
+> > +
+> > +                       /* Loop over the enabled states and display
+> > if required */
+> > +                       pmc_for_each_mode(idx, mode, pmcdev) {
+> > +                               if (lpm_req_regs[mp + (mode *
+> > num_maps)] & bit_mask)
+> > +                                       seq_printf(s, " %9s |",
+> > +                                                  "Required");
+> > +                               else
+> > +                                       seq_printf(s, " %9s |", "
+> > ");
+> > +                       }
+> > +
+> > +                       /* In Status column, show the last captured
+> > state of this agent */
+> > +                       if (lpm_status & bit_mask)
+> > +                               seq_printf(s, " %9s |", "Yes");
+> > +                       else
+> > +                               seq_printf(s, " %9s |", " ");
 > 
-> v15 seems to be missing the updates to ufs_debugfs_get/put_user_access
-> that were in v14:
-> 
-> 
-> @@ -60,14 +60,14 @@ __acquires(&hba->host_sem)
->   		up(&hba->host_sem);
->   		return -EBUSY;
->   	}
-> -	pm_runtime_get_sync(hba->dev);
-> +	scsi_autopm_get_device(hba->sdev_ufs_device);
->   	return 0;
->   }
->   
->   static void ufs_debugfs_put_user_access(struct ufs_hba *hba)
->   __releases(&hba->host_sem)
->   {
-> -	pm_runtime_put_sync(hba->dev);
-> +	scsi_autopm_put_device(hba->sdev_ufs_device);
->   	up(&hba->host_sem);
->   }
->   
-> 
-> Also from last comments, the issue below:
-> 
-> <SNIP>
-> 
->> +#ifdef CONFIG_PM_SLEEP
->> +static int ufshcd_wl_poweroff(struct device *dev)
->> +{
->> +	ufshcd_wl_shutdown(dev);
-> 
-> This turned out to be wrong.  This is a PM op and SCSI has already
-> quiesced the sdev's.  All that is needed is:
-> 
-> 	__ufshcd_wl_suspend(hba, UFS_SHUTDOWN_PM);
-> 
-> 
-Yikes! Thanks, let me fix this and push the correct series.
+> Why is this left blank, maybe NA (Not Available)?
 
--asd
+The last column shows that last latched state of that agent. So if
+anything it would be "Not Seen". But a blank space makes it visually
+easier to parse.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+David
+
+> 
+> > +
+> > +                       seq_puts(s, "\n");
+> > +               }
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_req_regs);
+> > +
+> >  static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
+> >  {
+> >         struct pmc_dev *pmcdev = s->private;
+> > @@ -1241,6 +1321,12 @@ static void pmc_core_dbgfs_register(struct
+> > pmc_dev *pmcdev)
+> >                                     pmcdev->dbgfs_dir, pmcdev,
+> >                                    
+> > &pmc_core_substate_l_sts_regs_fops);
+> >         }
+> > +
+> > +       if (pmcdev->lpm_req_regs) {
+> > +               debugfs_create_file("substate_requirements", 0444,
+> > +                                   pmcdev->dbgfs_dir, pmcdev,
+> > +                                  
+> > &pmc_core_substate_req_regs_fops);
+> > +       }
+> >  }
+> > 
+> >  static const struct x86_cpu_id intel_pmc_core_ids[] = {
+> > --
+> > 2.25.1
+> > 
+> 
+> 
+
+
