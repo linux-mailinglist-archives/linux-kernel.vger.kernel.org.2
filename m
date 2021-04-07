@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F22C3561D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0843561D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348292AbhDGDSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:18:54 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39764 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230073AbhDGDSx (ORCPT
+        id S1348321AbhDGDT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:19:26 -0400
+Received: from mo-csw1516.securemx.jp ([210.130.202.155]:37828 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348294AbhDGDTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:18:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUklsn3_1617765508;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUklsn3_1617765508)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 07 Apr 2021 11:18:43 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] staging: rtl8723bs: remove unused variable
-Date:   Wed,  7 Apr 2021 11:18:19 +0800
-Message-Id: <1617765499-65626-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 6 Apr 2021 23:19:20 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 1373Im4f012009; Wed, 7 Apr 2021 12:18:48 +0900
+X-Iguazu-Qid: 34tKsSMCifwFP2m4qR
+X-Iguazu-QSIG: v=2; s=0; t=1617765528; q=34tKsSMCifwFP2m4qR; m=3Rg2dNMK+BiYMP+O60RfHf8tcAtN0nkQ49kntlaEmj4=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1513) id 1373Ilsc040172
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 7 Apr 2021 12:18:47 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 47E8C1000BC;
+        Wed,  7 Apr 2021 12:18:47 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 1373Iksc020194;
+        Wed, 7 Apr 2021 12:18:46 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 0/3] PCI: dwc: Visoconti: PCIe RC controller driver
+Date:   Wed,  7 Apr 2021 12:18:36 +0900
+X-TSB-HOP: ON
+Message-Id: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.30.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+Hi,
 
-drivers/staging/rtl8723bs/core/rtw_ieee80211.c:657:15: warning: variable
-‘sec_idx’ set but not used [-Wunused-but-set-variable].
+This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Best regards,
+  Nobuhiro
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index be4cffc..df00a79 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -654,7 +654,7 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
- 
- void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
- {
--	u8 authmode, sec_idx, i;
-+	u8 authmode, i;
- 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
- 	uint	cnt;
- 
-@@ -662,13 +662,11 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 
- 	cnt = (_TIMESTAMP_ + _BEACON_ITERVAL_ + _CAPABILITY_);
- 
--	sec_idx = 0;
--
- 	while (cnt < in_len) {
- 		authmode = in_ie[cnt];
- 
- 		if ((authmode == WLAN_EID_VENDOR_SPECIFIC) && (!memcmp(&in_ie[cnt+2], &wpa_oui[0], 4))) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n rtw_get_wpa_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
-+				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n in_ie[cnt+1]+2 =%d\n", in_ie[cnt+1]+2));
- 
- 				if (wpa_ie) {
- 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
-@@ -684,7 +682,7 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 				cnt += in_ie[cnt+1]+2;  /* get next */
- 		} else {
- 			if (authmode == WLAN_EID_RSN) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n get_rsn_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
-+				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n in_ie[cnt+1]+2 =%d\n", in_ie[cnt+1]+2));
- 
- 				if (rsn_ie) {
- 				memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+Nobuhiro Iwamatsu (3):
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+  PCI: dwc: Visoconti: PCIe RC controller driver
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+
+ .../bindings/pci/toshiba,visconti-pcie.yaml   | 121 ++++++
+ MAINTAINERS                                   |   2 +
+ drivers/pci/controller/dwc/Kconfig            |  10 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-visconti.c    | 358 ++++++++++++++++++
+ 5 files changed, 492 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+
 -- 
-1.8.3.1
-
+2.30.0.rc2
