@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE37D35706B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587BE357074
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhDGPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:35:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:59356 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhDGPfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:35:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 470861424;
-        Wed,  7 Apr 2021 08:35:23 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 402603F792;
-        Wed,  7 Apr 2021 08:35:21 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 2/2] KVM: arm64: Distinguish cases of memcache
- allocations completely
-To:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, zhukeqian1@huawei.com,
-        yuzenghui@huawei.com
-References: <20210326031654.3716-1-wangyanan55@huawei.com>
- <20210326031654.3716-3-wangyanan55@huawei.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <4348b555-2a38-6f00-8ef0-0d5fd801d753@arm.com>
-Date:   Wed, 7 Apr 2021 16:35:55 +0100
+        id S230441AbhDGPgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:36:50 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:56289 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhDGPgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 11:36:46 -0400
+Received: by mail-pj1-f48.google.com with SMTP id nh5so7781141pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 08:36:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o/2zfrGIfr2WuDjiaGGlJLgOkerEw8dys41o+yaEHFo=;
+        b=XNRoNd5ffnUbqc6wSS2Ck9wUD2LKqvBHTMy0jy+pGyxa0yFWxsKPV9NvjW5olY6WyP
+         gz4ZYmkmVDIpxvEr11ST2iYj65OqY0eUKloAOFUiPVA2Qccr0Z4yMAkMKrS/1OinjcQ1
+         u9zf18qJsD+tWwlCJa+kVgmVxx6EX0ZVWuT3vjafK7dlRqDdnLx8MLPmk4jrbDKeJxKj
+         N1waPzweIKp5DvwE2xhHKMQIPlWFhqd0v76SQ0FZVHy8+HdjxfX3mQ9JSobsUyCOBxMO
+         omqIgx2pvgcmkCLr7lQejOCA3jMSYirci97qt+jZlsfgsMGJzXRl/CY5P3p63vJbvdTK
+         V1vA==
+X-Gm-Message-State: AOAM533/wWZY4uP5iGvrmYZ3bBFx5epF6W6Ah8Fz1JMOhlC2zEZeFWVk
+        oVlBCFrPJ1wc93Oo56PjECayNA==
+X-Google-Smtp-Source: ABdhPJxAm5VRu1azG8bdwhzoCuoZnWgkzGuQZn+pSWa6NvsaTNY8AOkDybzpeoC5PYZ1Dyqay8mQ2Q==
+X-Received: by 2002:a17:90a:9b0a:: with SMTP id f10mr3868148pjp.213.1617809795022;
+        Wed, 07 Apr 2021 08:36:35 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:3602:86ff:fef6:e86b? ([2601:646:c200:1ef2:3602:86ff:fef6:e86b])
+        by smtp.googlemail.com with ESMTPSA id t65sm1801935pfd.5.2021.04.07.08.36.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 08:36:34 -0700 (PDT)
+Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
+ __handle_mm_fault().
+To:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-14-michel@lespinasse.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
+Date:   Wed, 7 Apr 2021 08:36:01 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210326031654.3716-3-wangyanan55@huawei.com>
+In-Reply-To: <20210407014502.24091-14-michel@lespinasse.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+On 4/6/21 6:44 PM, Michel Lespinasse wrote:
+> The page table tree is walked with local irqs disabled, which prevents
+> page table reclamation (similarly to what fast GUP does). The logic is
+> otherwise similar to the non-speculative path, but with additional
+> restrictions: in the speculative path, we do not handle huge pages or
+> wiring new pages tables.
 
-On 3/26/21 3:16 AM, Yanan Wang wrote:
-> With a guest translation fault, the memcache pages are not needed if KVM
-> is only about to install a new leaf entry into the existing page table.
-> And with a guest permission fault, the memcache pages are also not needed
-> for a write_fault in dirty-logging time if KVM is only about to update
-> the existing leaf entry instead of collapsing a block entry into a table.
->
-> By comparing fault_granule and vma_pagesize, cases that require allocations
-> from memcache and cases that don't can be distinguished completely.
->
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
->  1 file changed, 12 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 1eec9f63bc6f..05af40dc60c1 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -810,19 +810,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	gfn = fault_ipa >> PAGE_SHIFT;
->  	mmap_read_unlock(current->mm);
->  
-> -	/*
-> -	 * Permission faults just need to update the existing leaf entry,
-> -	 * and so normally don't require allocations from the memcache. The
-> -	 * only exception to this is when dirty logging is enabled at runtime
-> -	 * and a write fault needs to collapse a block entry into a table.
-> -	 */
-> -	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
-> -		ret = kvm_mmu_topup_memory_cache(memcache,
-> -						 kvm_mmu_cache_min_pages(kvm));
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
->  	mmu_seq = vcpu->kvm->mmu_notifier_seq;
->  	/*
->  	 * Ensure the read of mmu_notifier_seq happens before we call
-> @@ -880,6 +867,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
->  		prot |= KVM_PGTABLE_PROT_X;
->  
-> +	/*
-> +	 * Allocations from the memcache are required only when granule of the
-> +	 * lookup level where the guest fault happened exceeds vma_pagesize,
-> +	 * which means new page tables will be created in the fault handlers.
-> +	 */
-> +	if (fault_granule > vma_pagesize) {
-> +		ret = kvm_mmu_topup_memory_cache(memcache,
-> +						 kvm_mmu_cache_min_pages(kvm));
-> +		if (ret)
-> +			return ret;
-> +	}
+Not on most architectures.  Quoting the actual comment in mm/gup.c:
 
-As I explained in v1 [1], this looks correct to me. I still think that someone
-else should have a look, but if Marc decides to pick up this patch as-is, he can
-add my Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>.
+>  * Before activating this code, please be aware that the following assumptions
+>  * are currently made:
+>  *
+>  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
+>  *  free pages containing page tables or TLB flushing requires IPI broadcast.
 
-[1] https://lore.kernel.org/lkml/2c65bff2-be7f-b20c-9265-939bc73185b6@arm.com/
+On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
+assumption that it is safe to dereference a pointer in a page table just
+because irqs are off.  You need RCU protection, too.
 
-Thanks,
+You have the same error in the cover letter.
 
-Alex
-
-> +
->  	/*
->  	 * Under the premise of getting a FSC_PERM fault, we just need to relax
->  	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+--Andy
