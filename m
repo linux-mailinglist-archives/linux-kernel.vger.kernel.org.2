@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733DD35691E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550E7356924
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241011AbhDGKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:13:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36071 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234398AbhDGKND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 06:13:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lU5B2-00049z-Al; Wed, 07 Apr 2021 10:12:48 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Derek Chickles <dchickles@marvell.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Raghu Vatsavayi <rvatsavayi@caviumnetworks.com>,
-        netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] liquidio: Fix unintented sign extension of a left shift of a u16
-Date:   Wed,  7 Apr 2021 11:12:48 +0100
-Message-Id: <20210407101248.485307-1-colin.king@canonical.com>
+        id S1350501AbhDGKOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:14:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19565 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235231AbhDGKOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:14:04 -0400
+IronPort-SDR: AIoLtVxKvf1FuyzENS7hQ1wTLT/xWAL+Sa9yet+++OEfrpCI0hlXKSVVdKhPRfy2eRhrxiGxMZ
+ p0U2mk+S5O1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="190072126"
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="190072126"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 03:13:54 -0700
+IronPort-SDR: qleZDu8eJuLlaSWIaIU2R/RRiC1vGuzKR38sJRfwTstGF8B7y/O9hYQLgv6jK/LT1gQtyupuaz
+ wm1Bu6AyahAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208";a="415203417"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Apr 2021 03:13:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2AE3D197; Wed,  7 Apr 2021 13:14:07 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v2 1/1] defconfig: enable SERIAL_SH_SCI
+Date:   Wed,  7 Apr 2021 13:14:06 +0300
+Message-Id: <20210407101406.8562-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-The macro CN23XX_PEM_BAR1_INDEX_REG is being used to shift oct->pcie_port
-(a u16) left 24 places. There are two subtle issues here, first the
-shift gets promoted to an signed int and then sign extended to a u64.
-If oct->pcie_port is 0x80 or more then the upper bits get sign extended
-to 1. Secondly shfiting a u16 24 bits will lead to an overflow so it
-needs to be cast to a u64 for all the bits to not overflow.
-
-It is entirely possible that the u16 port value is never large enough
-for this to fail, but it is useful to fix unintended overflows such
-as this.
-
-Fix this by casting the port parameter to the macro to a u64 before
-the shift.
-
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: 5bc67f587ba7 ("liquidio: CN23XX register definitions")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: fixed one typo
+ arch/x86/configs/i386_defconfig   | 1 +
+ arch/x86/configs/x86_64_defconfig | 1 +
+ drivers/tty/serial/Kconfig        | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-index e6d4ad99cc38..92c27b148176 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-@@ -521,7 +521,7 @@
- #define    CN23XX_BAR1_INDEX_OFFSET                3
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index 396b5d4781ed..d696336674b0 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -347,6 +347,7 @@ CONFIG_SERIAL_8250_DMA=y
+ CONFIG_SERIAL_8250_DW=y
+ CONFIG_SERIAL_PCH_UART=y
+ CONFIG_SERIAL_PCH_UART_CONSOLE=y
++CONFIG_SERIAL_SH_SCI=m
+ CONFIG_MMC=m
+ CONFIG_MMC_SDHCI=m
+ CONFIG_MMC_SDHCI_PCI=m
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 49bd168a1f6a..20a955acf775 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -343,6 +343,7 @@ CONFIG_SERIAL_8250_DMA=y
+ CONFIG_SERIAL_8250_DW=y
+ CONFIG_SERIAL_PCH_UART=y
+ CONFIG_SERIAL_PCH_UART_CONSOLE=y
++CONFIG_SERIAL_SH_SCI=m
+ CONFIG_MMC=m
+ CONFIG_MMC_SDHCI=m
+ CONFIG_MMC_SDHCI_PCI=m
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index e6f55c28cc2e..584e0d166e31 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -651,7 +651,7 @@ config SERIAL_IP22_ZILOG_CONSOLE
  
- #define    CN23XX_PEM_BAR1_INDEX_REG(port, idx)		\
--		(CN23XX_PEM_BAR1_INDEX_START + ((port) << CN23XX_PEM_OFFSET) + \
-+		(CN23XX_PEM_BAR1_INDEX_START + (((u64)port) << CN23XX_PEM_OFFSET) + \
- 		 ((idx) << CN23XX_BAR1_INDEX_OFFSET))
+ config SERIAL_SH_SCI
+ 	tristate "SuperH SCI(F) serial port support"
+-	depends on SUPERH || ARCH_RENESAS || H8300 || COMPILE_TEST
++	depends on SUPERH || ARCH_RENESAS || H8300 || COMPILE_TEST || X86
+ 	select SERIAL_CORE
+ 	select SERIAL_MCTRL_GPIO if GPIOLIB
  
- /*############################ DPI #########################*/
 -- 
 2.30.2
 
