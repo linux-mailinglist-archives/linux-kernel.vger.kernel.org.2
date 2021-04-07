@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3294356042
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3924C356047
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 02:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhDGAY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 20:24:58 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:33522 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236278AbhDGAY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 20:24:56 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4FFQBl6hJsz9vCC1
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:24:47 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wD7cK2PYysIM for <linux-kernel@vger.kernel.org>;
-        Tue,  6 Apr 2021 19:24:47 -0500 (CDT)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4FFQBl51Btz9vCBq
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 19:24:47 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4FFQBl51Btz9vCBq
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4FFQBl51Btz9vCBq
-Received: by mail-io1-f72.google.com with SMTP id a1so14094862iow.17
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 17:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eCJcxMq9XZ++9qNavNyMD/aAoy0l305S7aiP1i3rmqg=;
-        b=mb2tJAXU29fdFTkxo7nqslpfvc0HvmFoXGjkGRtJnPe1+AIgtWfzE9payVst0jmkgX
-         O+0zJKAN0XUgyUbXSGZMX782GZNrXRenDyhV172TH0C1tX5oiytfgwnx7AaDxzgg0SSr
-         Ice1JG1vM0e6U46szVk6XUt8fPdETgeCCF8DjT21SccvBO7ADxrGhDu4ND+EWAz30k0o
-         r8G6kh5cMHVgAac+6/kLxSO+gLSvNoivr6/YaIZ+qNyfPawFuCv1rOPnSwTZlY3PWYUn
-         z5LGV+ukBHuQ3U4t4pLbKJj+qczPPnW7zE8xJOtbCV91NxVjJvxQb4RxGReDAMfiHpGp
-         H5zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eCJcxMq9XZ++9qNavNyMD/aAoy0l305S7aiP1i3rmqg=;
-        b=FPP9R4fDE/9Ea81T8fRVlfnK2Tj5LGzhheq4DjyHBjKWIrNJOvkBFoTWI9ctWoUQnG
-         qXHFDqpBRcIyAKrKlZSD1UWA5T/8W3Qafesm/BS/XikwksW+6uFTrMOG5jfXULkcgS2M
-         OkFTR/wnaxS6gEvk1ViEePpSV7s/0Xyxq5Dns7ENnAeEZePoWF3JZNYyyp3/hKgChtuD
-         spa18me/wMEcJz/6cbY2JIUR9B9ZZMO0xEr4TqUQVlwMbqp1nqyFh3vV6h6be6yfEDcB
-         0szKZdPYfqGJG7AxkCPhKNkqheJI96RgM8JTWVNWtxFnJ8ftnv7TR1OludhCjMZbkINp
-         JIAw==
-X-Gm-Message-State: AOAM530oWZyLtW1p0WW0QF0dcUP8ZOygDrzYMCvejyfRDFA8BOSQUT7x
-        eyPXvPwmWouF55oVa2pv2ugThwm6m8/TnX99IRb8lWRvaKH1jArpvVNpzq+jVF3kiTV4yyA1obR
-        vjct7HpzC3skEiaadfhnfoOxN0A9c
-X-Received: by 2002:a05:6e02:15c7:: with SMTP id q7mr693318ilu.228.1617755087378;
-        Tue, 06 Apr 2021 17:24:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGRsolhynPcwdmdikCWxWk9mcbSGu+Qg83CUnO520JGA9T6/ph1a5RkcqsyebjW9+7sR0qcw==
-X-Received: by 2002:a05:6e02:15c7:: with SMTP id q7mr693303ilu.228.1617755087216;
-        Tue, 06 Apr 2021 17:24:47 -0700 (PDT)
-Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:6ecd:6512:5d03:eeb6])
-        by smtp.googlemail.com with ESMTPSA id r7sm9530767ilj.72.2021.04.06.17.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 17:24:46 -0700 (PDT)
-From:   Aditya Pakki <pakki001@umn.edu>
-To:     pakki001@umn.edu
-Cc:     Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: be2iscsi: Reset the address passed in beiscsi_iface_create_default
-Date:   Tue,  6 Apr 2021 19:24:45 -0500
-Message-Id: <20210407002445.2209330-1-pakki001@umn.edu>
-X-Mailer: git-send-email 2.25.1
+        id S236700AbhDGA0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 20:26:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37144 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236599AbhDGA0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Apr 2021 20:26:12 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTw17-00FDi1-2A; Wed, 07 Apr 2021 02:25:57 +0200
+Date:   Wed, 7 Apr 2021 02:25:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     hauke@hauke-m.de, f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH RFC net 1/2] net: dsa: lantiq_gswip: Don't use PHY auto
+ polling
+Message-ID: <YGz8FRBsj68xIbX/@lunn.ch>
+References: <20210406203508.476122-1-martin.blumenstingl@googlemail.com>
+ <20210406203508.476122-2-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406203508.476122-2-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if_info is a local variable that is passed to beiscsi_if_get_info. In
-case of failure, the variable is free'd but not reset to NULL. The patch
-avoids security issue by passing NULL to if_info.
+On Tue, Apr 06, 2021 at 10:35:07PM +0200, Martin Blumenstingl wrote:
+> PHY auto polling on the GSWIP hardware can be used so link changes
+> (speed, link up/down, etc.) can be detected automatically. Internally
+> GSWIP reads the PHY's registers for this functionality. Based on this
+> automatic detection GSWIP can also automatically re-configure it's port
+> settings. Unfortunately this auto polling (and configuration) mechanism
+> seems to cause various issues observed by different people on different
+> devices:
+> - FritzBox 7360v2: the two Gbit/s ports (connected to the two internal
+>   PHY11G instances) are working fine but the two Fast Ethernet ports
+>   (using an AR8030 RMII PHY) are completely dead (neither RX nor TX are
+>   received). It turns out that the AR8030 PHY sets the BMSR_ESTATEN bit
+>   as well as the ESTATUS_1000_TFULL and ESTATUS_1000_XFULL bits. This
+>   makes the PHY auto polling state machine (rightfully?) think that the
+>   established link speed (when the other side is Gbit/s capable) is
+>   1Gbit/s.
+> - None of the Ethernet ports on the Zyxel P-2812HNU-F1 (two are
+>   connected to the internal PHY11G GPHYs while the other three are
+>   external RGMII PHYs) are working. Neither RX nor TX traffic was
+>   observed. It is not clear which part of the PHY auto polling state-
+>   machine caused this.
+> - FritzBox 7412 (only one LAN port which is connected to one of the
+>   internal GPHYs running in PHY22F / Fast Ethernet mode) was seeing
+>   random disconnects (link down events could be seen). Sometimes all
+>   traffic would stop after such disconnect. It is not clear which part
+>   of the PHY auto polling state-machine cauased this.
+> - TP-Link TD-W9980 (two ports are connected to the internal GPHYs
+>   running in PHY11G / Gbit/s mode, the other two are external RGMII
+>   PHYs) was affected by similar issues as the FritzBox 7412 just without
+>   the "link down" events
+> 
+> Switch to software based configuration instead of PHY auto polling (and
+> letting the GSWIP hardware configure the ports automatically) for the
+> following link parameters:
+> - link up/down
+> - link speed
+> - full/half duplex
+> - flow control (RX / TX pause)
+> 
+> After a big round of manual testing by various people (who helped test
+> this on OpenWrt) it turns out that this fixes all reported issues.
+> 
+> Additionally it can be considered more future proof because any
+> "quirk" which is implemented for a PHY on the driver side can now be
+> used with the GSWIP hardware as well because Linux is in control of the
+> link parameters.
+> 
+> As a nice side-effect this also solves a problem where fixed-links were
+> not supported previously because we were relying on the PHY auto polling
+> mechanism, which cannot work for fixed-links as there's no PHY from
+> where it can read the registers. Configuring the link settings on the
+> GSWIP ports means that we now use the settings from device-tree also for
+> ports with fixed-links.
+> 
+> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+> Fixes: 3e6fdeb28f4c33 ("net: dsa: lantiq_gswip: Let GSWIP automatically set the xMII clock")
+> Cc: stable@vger.kernel.org
+> Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
----
- drivers/scsi/be2iscsi/be_iscsi.c | 2 ++
- 1 file changed, 2 insertions(+)
+Having the MAC polling the PHY is pretty much always a bad idea.
 
-diff --git a/drivers/scsi/be2iscsi/be_iscsi.c b/drivers/scsi/be2iscsi/be_iscsi.c
-index a13c203ef7a9..1ff9d2a2a876 100644
---- a/drivers/scsi/be2iscsi/be_iscsi.c
-+++ b/drivers/scsi/be2iscsi/be_iscsi.c
-@@ -274,11 +274,13 @@ void beiscsi_iface_create_default(struct beiscsi_hba *phba)
- 	if (!beiscsi_if_get_info(phba, BEISCSI_IP_TYPE_V4, &if_info)) {
- 		beiscsi_iface_create_ipv4(phba);
- 		kfree(if_info);
-+		if_info = NULL;
- 	}
- 
- 	if (!beiscsi_if_get_info(phba, BEISCSI_IP_TYPE_V6, &if_info)) {
- 		beiscsi_iface_create_ipv6(phba);
- 		kfree(if_info);
-+		if_info = NULL;
- 	}
- }
- 
--- 
-2.25.1
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
+    Andrew
