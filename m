@@ -2,116 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624B3356BD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAED356BD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 14:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352027AbhDGMLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 08:11:52 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:58132 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhDGMLu (ORCPT
+        id S1352038AbhDGMMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 08:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232553AbhDGMMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 08:11:50 -0400
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 137CBMr5006327;
-        Wed, 7 Apr 2021 21:11:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 137CBMr5006327
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617797483;
-        bh=hqBFPUHJ/EQjNJo6qBFrtPSHi5ReTrkUBC0xXlnGehE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2ed/59lthRuCld1bE//l2D9NxVjpdVRL87iPqGmUsdWIyU/bBzw7z7B88gOo/0XsU
-         nbeW6TkWBnrHsHtJUGcpzwAfRjEKtxkTl0EX3ELKPDUKYskkEYcpGnLIhbNuRyI6jf
-         uizYWwmMaroeSebaRABiXk3N90v/3CPPrbfsSik1pEMmlxgIhj1yVcefCaH/jBjI+Q
-         IIHKA5uShW+vKIr8rarAiBNTppdNEtNYJXgKAM3WjX2OAolZYhFMBHB8eG3giJgqlY
-         WVkKSiXT43B+SQDqGi+2jz5haBMkY5QUKsB/pLl0NKQebKmOXyn/evUJncVQ8zGpxj
-         WU8NtuCn3YG8g==
-X-Nifty-SrcIP: [209.85.210.182]
-Received: by mail-pf1-f182.google.com with SMTP id g15so12768007pfq.3;
-        Wed, 07 Apr 2021 05:11:23 -0700 (PDT)
-X-Gm-Message-State: AOAM531t6MnapGrHvxqL5l6zc43FNr40KI3lrTqX0BNL6fq66APDlBjk
-        OgbNrQVGvMb+8i5ErGhHR23j+/5lTBIK0jTSUCI=
-X-Google-Smtp-Source: ABdhPJwYbqCqg01mVDsc4xayyULxUXgfsQVLmi08B/Lr6gtEyso5e1eeH0+LN95gRlTbfwJk4Mv0C1UqCJodwMRIT18=
-X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
- c20-20020aa788140000b029021dd2ce07bemr2512266pfo.80.1617797482284; Wed, 07
- Apr 2021 05:11:22 -0700 (PDT)
+        Wed, 7 Apr 2021 08:12:03 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05B0C061756;
+        Wed,  7 Apr 2021 05:11:52 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id i81so18501537oif.6;
+        Wed, 07 Apr 2021 05:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WIjn0AhTwwpTEtbdjQhQORR+T5+cXMTK7UrnuECBFAM=;
+        b=CNs6DRffpuXCMVPbrFrtv07hUayfANj7GT1XCig4urJ/iDJngQ4P1gz39BcSyKnJom
+         ShV8S1iWZQM27nZ04vJyehIKw41MRx7H+OSxtoIKub9FC75sMT7pQeuxvk/KL5EDXOix
+         IIXIjwU7ovxlDb8k8Q3lRXp2UJVpmph0z2004DlfQKs59jact1Y64M7X0sAkYGwaiUXA
+         yyXBZ+GIjVm5MLOSBLVoYGuwb1tHPfdQB7i0/2AASlCYKAv9Bw9ivbng2nIsBBuVc+DK
+         X7jM+3hAO5sfYFZKCQy37xHI7ulOBRQ7Uit08iNl/+ZS1Y+l5LFkwB4/MB6mjnOneGXH
+         dSog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WIjn0AhTwwpTEtbdjQhQORR+T5+cXMTK7UrnuECBFAM=;
+        b=izfQbneRFcy/VYA+NpCR4uB0Dct4e0i/qa6scGXlZB3vfbRS8FJX9sdPl8LryUy4IO
+         wjr3h75YpN8ezDUhxFF4Ktm0C7Qd+XvD8ljLQ2/Mz6BkQhv68aFr6HVk4MtYjltsC24s
+         /yHB+3DGpM/i4iTbJKfP43uc5tNftzEQcg9TgsxNAX06TKA11ezOQqCHHu5pMaLcOAk8
+         rEPkEEOkPtmddK8Ao5Ul2TZzzplSjR6mtMkgbpPGQY7Heqnzxajiw8a8pU9d8hUxyC5d
+         o4PywZSq8seZtg8QdnS3kUudkEHJ2V/iXnYDWHTcVjYG6uhbcL4XZGJFUDTvUvy6yUQs
+         MuBg==
+X-Gm-Message-State: AOAM532+Wx3Lt1oqTGeZuDrC5A49OHHHQRc7K6Pl7OQv8od7YaR/zpVC
+        Jvxe/9WuXhR6EFEdg5bKizY=
+X-Google-Smtp-Source: ABdhPJy1oxNYAiecRNIuLOcN0mlyS7k+p8U1hu5TBgm9PyyMXGacZeU59qzHRA9KGvT9kWJnHBBO/g==
+X-Received: by 2002:aca:ebd7:: with SMTP id j206mr2078266oih.60.1617797512427;
+        Wed, 07 Apr 2021 05:11:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w11sm4720629ooc.35.2021.04.07.05.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 05:11:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 3/4] hwmon: smpro: Add Ampere's Altra smpro-hwmon
+ driver
+To:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org
+Cc:     Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+References: <20210329015238.19474-1-quan@os.amperecomputing.com>
+ <20210329015238.19474-4-quan@os.amperecomputing.com>
+ <bac92db0-3ef6-1615-0e92-aabd54fd0580@roeck-us.net>
+ <136d036c-1d10-cecd-abcb-d206a0c6fa51@os.amperecomputing.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <d9ef40ea-e4ee-cea8-96df-90ffabdff53c@roeck-us.net>
+Date:   Wed, 7 Apr 2021 05:11:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210326055219.6448-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210326055219.6448-1-unixbhaskar@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 7 Apr 2021 21:10:45 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATG20fZXFMhftXN2-DxCo8FNOqLo=PFsrovvmdn2p1N+w@mail.gmail.com>
-Message-ID: <CAK7LNATG20fZXFMhftXN2-DxCo8FNOqLo=PFsrovvmdn2p1N+w@mail.gmail.com>
-Subject: Re: [PATCH] scripts: modpost.c: Fix a few typos
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <136d036c-1d10-cecd-abcb-d206a0c6fa51@os.amperecomputing.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 2:54 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
-> s/agorithm/algorithm/
-> s/criterias/criteria/
-> s/targetting/targeting/   ....two different places.
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
+On 4/7/21 12:41 AM, Quan Nguyen wrote:
+[ ... ]
+>>
+>> But then why don't you just use reg_ext to store SOC_VR_HOT_THRESHOLD_REG
+>> or MEM_HOT_THRESHOLD_REG ? It is already available, after all, and with it
+>> the code could be simplified to
+>>
+>>         ret = regmap_read(hwmon->regmap, temperature[channel].reg_ext, &value);
+>>         if (ret)
+>>             return ret;
+>>
+> Thank you for the comment.
+> 
+> Will change code follow this suggestion, will include in next version
+> 
+>> I don't have a datasheet, but I do wonder what is in bit 9..15. Any idea ?
+>> Main question is if there is a sign bit, as theoretic as it may be.
+>>
+> The original intention was to use this as 9-bit 2-complement value follow LM75, but the fact is that the operation temperature is 0-125 C degree, so we simply use it as-is.
+> 
 
-Applied to linux-kbuild. Thanks.
+The operational temperature is not the question here. The question is if the
+chip _reports_ a sign. If it does, it should be handled, even if it is outside
+the operational range. The reported range is relevant here, not the operational
+range. After all, the chip won't really blow apart at -1 degrees C.
 
-
-
->  scripts/mod/modpost.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 24725e50c7b4..9b971ec9e58d 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -202,7 +202,7 @@ struct symbol {
->
->  static struct symbol *symbolhash[SYMBOL_HASH_SIZE];
->
-> -/* This is based on the hash agorithm from gdbm, via tdb */
-> +/* This is based on the hash algorithm from gdbm, via tdb */
->  static inline unsigned int tdb_hash(const char *name)
->  {
->         unsigned value; /* Used to compute the hash value.  */
-> @@ -985,7 +985,7 @@ enum mismatch {
->  };
->
->  /**
-> - * Describe how to match sections on different criterias:
-> + * Describe how to match sections on different criteria:
->   *
->   * @fromsec: Array of sections to be matched.
->   *
-> @@ -993,12 +993,12 @@ enum mismatch {
->   * this array is forbidden (black-list).  Can be empty.
->   *
->   * @good_tosec: Relocations applied to a section in @fromsec must be
-> - * targetting sections in this array (white-list).  Can be empty.
-> + * targeting sections in this array (white-list).  Can be empty.
->   *
->   * @mismatch: Type of mismatch.
->   *
->   * @symbol_white_list: Do not match a relocation to a symbol in this list
-> - * even if it is targetting a section in @bad_to_sec.
-> + * even if it is targeting a section in @bad_to_sec.
->   *
->   * @handler: Specific handler to call when a match is found.  If NULL,
->   * default_mismatch_handler() will be called.
-> --
-> 2.26.2
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Guenter
