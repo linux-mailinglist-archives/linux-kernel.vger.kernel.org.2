@@ -2,233 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68915356DF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A128D356DFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347971AbhDGN5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344205AbhDGN5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:57:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4138C6128D;
-        Wed,  7 Apr 2021 13:57:32 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 15:57:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Bharata B Rao <bharata@linux.ibm.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210407135729.qgbj6shvmfuzo7r7@wittgenstein>
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
+        id S1347995AbhDGN64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:58:56 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:57827 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233192AbhDGN6z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:58:55 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id U8halSGbnMxedU8hdlIfBo; Wed, 07 Apr 2021 15:58:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617803924; bh=onZYKiO2ryB03rtiquvQWthJJoRJUhP6gwwyRt4KCtk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=FZpurIKOh5wU1UJu1zZ2+O/0cbRq0jshGbXAxzToJ3LyY9qumckoxIXG02+dKsIX3
+         HPHe2IkCPWJEZyqY8Jde43fTxAv6mSFtLai3+O+ZR5qpVZeW2YRhfa9TUuuwTrAqdq
+         lXj7OAEjcPeM3SziNe40iHXNO/Z3dxdIxbCr5Mmth4ssZRB0BPd82iREF18rpVFLh/
+         lJ7nMwJ022CWMAJe3+TE6VeIUDtUzpUiTrnlLyJaHIRTsmpAdRHIlJxm2DOWg9Xfu3
+         pWFHCGAkwKz5k3mOy2m5EDRHB2p9Imf2o+sjsoUIrLak453z4y9pIzB32bd6RYESJJ
+         gxLPvISvE3CRw==
+Subject: Re: [PATCH] media: platform: sti: Fix rumtime PM imbalance in
+ regs_show
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210407054313.5570-1-dinghao.liu@zju.edu.cn>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b6a94215-4445-dd94-1e54-fe0c1397b2b4@xs4all.nl>
+Date:   Wed, 7 Apr 2021 15:58:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210407054313.5570-1-dinghao.liu@zju.edu.cn>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210406222807.GD1990290@dread.disaster.area>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIWyhgy0yEkkE9M6C2ta9p6aNs5j/M8qPKQIB+f2MdFhbueUBlWCek85pPSSnjSQEhDVSy8rVz/1r9ttg97d6I8OsePspaoNwKEKxPZsJCIBbrb3hHlt
+ vyAJW/d3V/vKJ23jMnmzO/BGR0fMXb4ImyUMJ9zTUapXKRhp/2hq9Vd7iixjR8aveUcysPZvH4m4fVhqehlRgxbUeUkYIh4U66UJlfKvEAAAR5Lz7YiHVdBM
+ dvs/Vn1e8c/PlfKT8X3isVDCDH2P/8Pa7gur9eyT9rCG2ktVBtuFtY53ATLKIVp3TPZvLuGnNhv3uOXEQMnfngCgvYuPBLRBrvKsxel1x5qN4rK9RY68S8uf
+ Dameai2u
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
-> On Mon, Apr 05, 2021 at 11:18:48AM +0530, Bharata B Rao wrote:
-> > Hi,
-> > 
-> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
-> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
-> > consumption increases quite a lot (around 172G) when the containers are
-> > running. Most of it comes from slab (149G) and within slab, the majority of
-> > it comes from kmalloc-32 cache (102G)
-> > 
-> > The major allocator of kmalloc-32 slab cache happens to be the list_head
-> > allocations of list_lru_one list. These lists are created whenever a
-> > FS mount happens. Specially two such lists are registered by alloc_super(),
-> > one for dentry and another for inode shrinker list. And these lists
-> > are created for all possible NUMA nodes and for all given memcgs
-> > (memcg_nr_cache_ids to be particular)
-> > 
-> > If,
-> > 
-> > A = Nr allocation request per mount: 2 (one for dentry and inode list)
-> > B = Nr NUMA possible nodes
-> > C = memcg_nr_cache_ids
-> > D = size of each kmalloc-32 object: 32 bytes,
-> > 
-> > then for every mount, the amount of memory consumed by kmalloc-32 slab
-> > cache for list_lru creation is A*B*C*D bytes.
-> > 
-> > Following factors contribute to the excessive allocations:
-> > 
-> > - Lists are created for possible NUMA nodes.
-> > - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
-> >   list_lrus are created when it grows. Thus we end up creating list_lru_one
-> >   list_heads even for those memcgs which are yet to be created.
-> >   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
-> >   a value of 12286.
-> 
-> So, by your numbers, we have 2 * 2 * 12286 * 32 = 1.5MB per mount.
-> 
-> So for that to make up 100GB of RAM, you must have somewhere over
-> 500,000 mounted superblocks on the machine?
-> 
-> That implies 50+ unique mounted superblocks per container, which
-> seems like an awful lot.
-> 
-> > - When a memcg goes offline, the list elements are drained to the parent
-> >   memcg, but the list_head entry remains.
-> > - The lists are destroyed only when the FS is unmounted. So list_heads
-> >   for non-existing memcgs remain and continue to contribute to the
-> >   kmalloc-32 allocation. This is presumably done for performance
-> >   reason as they get reused when new memcgs are created, but they end up
-> >   consuming slab memory until then.
-> > - In case of containers, a few file systems get mounted and are specific
-> >   to the container namespace and hence to a particular memcg, but we
-> >   end up creating lists for all the memcgs.
-> >   As an example, if 7 FS mounts are done for every container and when
-> >   10k containers are created, we end up creating 2*7*12286 list_lru_one
-> >   lists for each NUMA node. It appears that no elements will get added
-> >   to other than 2*7=14 of them in the case of containers.
-> 
-> Yeah, at first glance this doesn't strike me as a problem with the
-> list_lru structure, it smells more like a problem resulting from a
-> huge number of superblock instantiations on the machine. Which,
-> probably, mostly have no significant need for anything other than a
-> single memcg awareness?
-> 
-> Can you post a typical /proc/self/mounts output from one of these
-> idle/empty containers so we can see exactly how many mounts and
-> their type are being instantiated in each container?
+On 07/04/2021 07:43, Dinghao Liu wrote:
+> pm_runtime_get_sync() will increase the rumtime PM counter
+> even it returns an error. Thus a pairing decrement is needed
+> to prevent refcount leak. Fix this by replacing this API with
+> pm_runtime_resume_and_get(), which will not change the runtime
+> PM counter on error.
 
-Similar to Michal I wonder how much of that is really used in production
-environments. From our experience it really depends on the type of
-container we're talking about.
-For a regular app container that essentially serves as an application
-isolator the number of mounts could be fairly limited and essentially be
-restricted to:
+Nice that a new function was created for this. Good news.
 
-tmpfs
-devptfs
-sysfs
-[cgroupfs]
-and a few bind-mounts of standard devices such as
-/dev/null
-/dev/zero
-/dev/full
-.
-.
-.
-from the host's devtmpfs into the container.
+Just a heads up: if you make more patches like this, make sure you
+fix the typo 'rumtime' to 'runtime'. I'll fix it manually, no need
+to repost. And 'rumtime' does sound tasty!
 
-Then there are containers that behave like regular systems and are
-managed like regular systems and those might have quite a bit more. For
-example, here is the output of a regular unprivileged Fedora 33
-container I created out of the box:
+Regards,
 
-[root@f33 ~]# findmnt 
-TARGET                                SOURCE                                                                       FSTYPE      OPTIONS
-/                                     /dev/mapper/ubuntu--vg-ubuntu--lv[/var/lib/lxd/storage-pools/default/containers/f33/rootfs]
-│                                                                                                                  xfs         rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
-├─/run                                tmpfs                                                                        tmpfs       rw,nosuid,nodev,size=3226884k,nr_inodes=819200,mode=755,uid=100000,gid=100000
-│ └─/run/user/0                       tmpfs                                                                        tmpfs       rw,nosuid,nodev,relatime,size=1613440k,nr_inodes=403360,mode=700,uid=100000,gid=100000
-├─/tmp                                tmpfs                                                                        tmpfs       rw,nosuid,nodev,nr_inodes=409600,uid=100000,gid=100000
-├─/dev                                none                                                                         tmpfs       rw,relatime,size=492k,mode=755,uid=100000,gid=100000
-│ ├─/dev/shm                          tmpfs                                                                        tmpfs       rw,nosuid,nodev,uid=100000,gid=100000
-│ ├─/dev/fuse                         udev[/fuse]                                                                  devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/net/tun                      udev[/net/tun]                                                               devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/mqueue                       mqueue                                                                       mqueue      rw,nosuid,nodev,noexec,relatime
-│ ├─/dev/lxd                          tmpfs                                                                        tmpfs       rw,relatime,size=100k,mode=755
-│ ├─/dev/.lxd-mounts                  tmpfs[/f33]                                                                  tmpfs       rw,relatime,size=100k,mode=711
-│ ├─/dev/full                         udev[/full]                                                                  devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/null                         udev[/null]                                                                  devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/random                       udev[/random]                                                                devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/tty                          udev[/tty]                                                                   devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/urandom                      udev[/urandom]                                                               devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/zero                         udev[/zero]                                                                  devtmpfs    rw,nosuid,noexec,relatime,size=8019708k,nr_inodes=2004927,mode=755
-│ ├─/dev/console                      devpts[/40]                                                                  devpts      rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000
-│ ├─/dev/pts                          devpts                                                                       devpts      rw,nosuid,noexec,relatime,gid=100005,mode=620,ptmxmode=666,max=1024
-│ └─/dev/ptmx                         devpts[/ptmx]                                                                devpts      rw,nosuid,noexec,relatime,gid=100005,mode=620,ptmxmode=666,max=1024
-├─/proc                               proc                                                                         proc        rw,nosuid,nodev,noexec,relatime
-│ ├─/proc/sys/fs/binfmt_misc          binfmt_misc                                                                  binfmt_misc rw,nosuid,nodev,noexec,relatime
-│ └─/proc/sys/kernel/random/boot_id   none[/.lxc-boot-id]                                                          tmpfs       ro,nosuid,nodev,noexec,relatime,size=492k,mode=755,uid=100000,gid=100000
-└─/sys                                sysfs                                                                        sysfs       rw,relatime
-  ├─/sys/fs/cgroup                    tmpfs                                                                        tmpfs       ro,nosuid,nodev,noexec,size=4096k,nr_inodes=1024,mode=755,uid=100000,gid=100000
-  │ ├─/sys/fs/cgroup/unified          cgroup2                                                                      cgroup2     rw,nosuid,nodev,noexec,relatime
-  │ ├─/sys/fs/cgroup/systemd          cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,xattr,name=systemd
-  │ ├─/sys/fs/cgroup/net_cls,net_prio cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,net_cls,net_prio
-  │ ├─/sys/fs/cgroup/hugetlb          cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,hugetlb
-  │ ├─/sys/fs/cgroup/cpu,cpuacct      cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,cpu,cpuacct
-  │ ├─/sys/fs/cgroup/blkio            cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,blkio
-  │ ├─/sys/fs/cgroup/cpuset           cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,cpuset,clone_children
-  │ ├─/sys/fs/cgroup/memory           cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,memory
-  │ ├─/sys/fs/cgroup/devices          cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,devices
-  │ ├─/sys/fs/cgroup/perf_event       cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,perf_event
-  │ ├─/sys/fs/cgroup/freezer          cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,freezer
-  │ ├─/sys/fs/cgroup/pids             cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,pids
-  │ └─/sys/fs/cgroup/rdma             cgroup                                                                       cgroup      rw,nosuid,nodev,noexec,relatime,rdma
-  ├─/sys/firmware/efi/efivars         efivarfs                                                                     efivarfs    rw,nosuid,nodev,noexec,relatime
-  ├─/sys/fs/fuse/connections          fusectl                                                                      fusectl     rw,nosuid,nodev,noexec,relatime
-  ├─/sys/fs/pstore                    pstore                                                                       pstore      rw,nosuid,nodev,noexec,relatime
-  ├─/sys/kernel/config                configfs                                                                     configfs    rw,nosuid,nodev,noexec,relatime
-  ├─/sys/kernel/debug                 debugfs                                                                      debugfs     rw,nosuid,nodev,noexec,relatime
-  ├─/sys/kernel/security              securityfs                                                                   securityfs  rw,nosuid,nodev,noexec,relatime
-  ├─/sys/kernel/tracing               tracefs                                                                      tracefs     rw,nosuid,nodev,noexec,relatime
-
-People that use those tend to also run systemd services in there and
-newer systemd has a range of service isolation features that may also
-create quite a few mounts. Those will again mostly be pseudo filesystems
-(A service might have private proc, tmp etc.) and bind-mounts. The
-number of actual separate superblocks for "real" filesystem such as xfs,
-ext4 per container is usually quite low. (For one, most of them can't
-even be mounted in a user namespace.). From experience it's rare to see
-workloads that exceed 500 containers (of this type at least) on a single
-machine. At least on x86_64 we have not yet had issues with memory
-consumption.
-
-We do run stress tests with thousands of such system containers. They
-tend to boot busybox, not e.g. Fedora or Debian or Ubuntu and that
-hasn't pushed us over the edge yet.
+	Hans
 
 > 
-> > One straight forward way to prevent this excessive list_lru_one
-> > allocations is to limit the list_lru_one creation only to the
-> > relevant memcg. However I don't see an easy way to figure out
-> > that relevant memcg from FS mount path (alloc_super())
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/media/platform/sti/bdisp/bdisp-debug.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Superblocks have to support an unknown number of memcgs after they
-> have been mounted. bind mounts, child memcgs, etc, all mean that we
-> can't just have a static, single mount time memcg instantiation.
+> diff --git a/drivers/media/platform/sti/bdisp/bdisp-debug.c b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+> index 2b270093009c..a27f638df11c 100644
+> --- a/drivers/media/platform/sti/bdisp/bdisp-debug.c
+> +++ b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+> @@ -480,7 +480,7 @@ static int regs_show(struct seq_file *s, void *data)
+>  	int ret;
+>  	unsigned int i;
+>  
+> -	ret = pm_runtime_get_sync(bdisp->dev);
+> +	ret = pm_runtime_resume_and_get(bdisp->dev);
+>  	if (ret < 0) {
+>  		seq_puts(s, "Cannot wake up IP\n");
+>  		return 0;
 > 
-> > As an alternative approach, I have this below hack that does lazy
-> > list_lru creation. The memcg-specific list is created and initialized
-> > only when there is a request to add an element to that particular
-> > list. Though I am not sure about the full impact of this change
-> > on the owners of the lists and also the performance impact of this,
-> > the overall savings look good.
-> 
-> Avoiding memory allocation in list_lru_add() was one of the main
-> reasons for up-front static allocation of memcg lists. We cannot do
-> memory allocation while callers are holding multiple spinlocks in
-> core system algorithms (e.g. dentry_kill -> retain_dentry ->
-> d_lru_add -> list_lru_add), let alone while holding an internal
-> spinlock.
-> 
-> Putting a GFP_ATOMIC allocation inside 3-4 nested spinlocks in a
-> path we know might have memory demand in the *hundreds of GB* range
-> gets an NACK from me. It's a great idea, but it's just not a
-> feasible, robust solution as proposed. Work out how to put the
-> memory allocation outside all the locks (including caller locks) and
-> it might be ok, but that's messy.
-> 
-> Another approach may be to identify filesystem types that do not
-> need memcg awareness and feed that into alloc_super() to set/clear
-> the SHRINKER_MEMCG_AWARE flag. This could be based on fstype - most
-> virtual filesystems that expose system information do not really
 
-I think that might already help quite a bit as those tend to make up
-most of the mounts and even unprivileged containers can create new
-instances of such mounts and will do so when they e.g. run systemd and
-thus also systemd services.
-
-Christian
