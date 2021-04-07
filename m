@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159613569FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCA63569FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 12:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351323AbhDGKkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 06:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49066 "EHLO mail.kernel.org"
+        id S1351319AbhDGKkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 06:40:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234868AbhDGKkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234888AbhDGKkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Apr 2021 06:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B2C613B8;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2785F613C6;
         Wed,  7 Apr 2021 10:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617791990;
-        bh=nEsXEXQJxRf/84Q7AHuwDjFlmGoeWC6cQeEgYeaswuk=;
+        bh=LIcRc7NYbE0x58pDWh179Yiiu/bA6nM3mAum4rSZ6K8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EWyfL2CwR8MCQShWHCS0Ls+RpVAAlwlJyuaU/OHihgmErttfSEZfZ+V3XW+xX2Jyl
-         Cuha0b1oMt4+/UM7Kn0LflyUNrcWjuK9rCoVEJ9xnKSq74glJ7rdSReV51P52gFxfN
-         srlKvvrzi8yanO/uWope0K5YSFLt67FkcBcsfjktXrew2cdtpnLoqGV8Jcmlar8Moq
-         iIDLTxGhJ+DRNDlavUDzpV09bT67P1iwt6Vk2KBi700ILYEZBO4ybE0aKDvS5MlXk9
-         Gm0auu8c+NtoWsn2lsyaK+JapC/pe3n5P51Qf3uk7LwxMX3zp2mCV95ap338ntLwxx
-         gF+xBibWyLmsQ==
+        b=NScENpAnjzvxauWoRJWyrjJrKvw+wYzXWqDX3f5vtQq7qd65bLoRtY27PEmgyAX1+
+         kJWSr0WKJzMc8Hpe7zqRxdsKiekwqQIYihWSuIeUm3LiXABFjFcEMHufg3ANwuxqc+
+         fTJhCAZJ4Y28D9Zm45aaTnm82/7zcnK0WQYOBa6hhboVXUWCfjmKVm2EAyrE+4kqGO
+         gz3HYdzOCuiel2LUGdefsYX4tQTTV66Qzs+y3BFHOnx4MYQFGBN4hFd1WzlKeKsV0R
+         5EPMQJTZV4HtVWoiYAkY+wrxaeo/tR9A5YWmjmNA3Qgo/rI8OKeY5avFEfqJoNw8NB
+         MPe2wjoMTKHhw==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lU5b4-0000Eu-Te; Wed, 07 Apr 2021 12:39:42 +0200
+        id 1lU5b5-0000Ex-0b; Wed, 07 Apr 2021 12:39:43 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/24] USB: serial: mos7840: fix TIOCGSERIAL implementation
-Date:   Wed,  7 Apr 2021 12:39:09 +0200
-Message-Id: <20210407103925.829-9-johan@kernel.org>
+Subject: [PATCH 09/24] USB: serial: opticon: fix TIOCGSERIAL implementation
+Date:   Wed,  7 Apr 2021 12:39:10 +0200
+Message-Id: <20210407103925.829-10-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210407103925.829-1-johan@kernel.org>
 References: <20210407103925.829-1-johan@kernel.org>
@@ -44,9 +44,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
 serial devices is only useful for setting the close_delay and
 closing_wait parameters.
-
-The port parameter is used to set the I/O port and does not make any
-sense to use for USB serial devices.
 
 The xmit_fifo_size parameter could be used to set the hardware transmit
 fifo size of a legacy UART when it could not be detected, but the
@@ -62,33 +59,28 @@ specified in centiseconds (not jiffies). The driver does not yet support
 changing these, but let's report back the default values actually used
 (0.5 and 30 seconds, respectively).
 
-Fixes: 3f5429746d91 ("USB: Moschip 7840 USB-Serial Driver")
+Fixes: faac64ad9c7b ("USB: serial: opticon: add serial line ioctls")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/mos7840.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/usb/serial/opticon.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/serial/mos7840.c b/drivers/usb/serial/mos7840.c
-index 1bf0d066f55a..77cbe18a1629 100644
---- a/drivers/usb/serial/mos7840.c
-+++ b/drivers/usb/serial/mos7840.c
-@@ -1392,16 +1392,12 @@ static int mos7840_get_serial_info(struct tty_struct *tty,
- 				   struct serial_struct *ss)
- {
- 	struct usb_serial_port *port = tty->driver_data;
--	struct moschip_port *mos7840_port = usb_get_serial_port_data(port);
- 
- 	ss->type = PORT_16550A;
--	ss->line = mos7840_port->port->minor;
--	ss->port = mos7840_port->port->port_number;
--	ss->irq = 0;
--	ss->xmit_fifo_size = NUM_URBS * URB_TRANSFER_BUFFER_SIZE;
--	ss->baud_base = 9600;
--	ss->close_delay = 5 * HZ;
--	ss->closing_wait = 30 * HZ;
-+	ss->line = port->minor;
-+	ss->close_delay = 50;
-+	ss->closing_wait = 3000;
+diff --git a/drivers/usb/serial/opticon.c b/drivers/usb/serial/opticon.c
+index eecb72aef83e..1c7e5dc2c272 100644
+--- a/drivers/usb/serial/opticon.c
++++ b/drivers/usb/serial/opticon.c
+@@ -360,12 +360,9 @@ static int get_serial_info(struct tty_struct *tty,
+ 	/* fake emulate a 16550 uart to make userspace code happy */
+ 	ss->type		= PORT_16550A;
+ 	ss->line		= port->minor;
+-	ss->port		= 0;
+-	ss->irq			= 0;
+-	ss->xmit_fifo_size	= 1024;
+-	ss->baud_base		= 9600;
+-	ss->close_delay		= 5*HZ;
+-	ss->closing_wait	= 30*HZ;
++	ss->close_delay		= 50;
++	ss->closing_wait	= 3000;
 +
  	return 0;
  }
