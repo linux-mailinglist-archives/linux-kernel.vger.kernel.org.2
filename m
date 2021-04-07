@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5743565C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD323565CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245522AbhDGHuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:50:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15938 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbhDGHuh (ORCPT
+        id S239851AbhDGHvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236233AbhDGHvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:50:37 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFc2R3p9rzyNSk;
-        Wed,  7 Apr 2021 15:48:15 +0800 (CST)
-Received: from [10.67.110.73] (10.67.110.73) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 7 Apr 2021
- 15:50:19 +0800
-Subject: Re: [PATCH -next] drm/bridge: lt8912b: DRM_LONTIUM_LT8912B select
- GPIOLIB
-To:     Robert Foss <robert.foss@linaro.org>
-CC:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        "Jernej Skrabec" <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <johnny.chenyi@huawei.com>, <heying24@huawei.com>
-References: <20210406090733.169989-1-zhangjianhua18@huawei.com>
- <CAG3jFyvC6ozPxQ=TPdPgLAugKky5AhOZGJSiw0Dc3Kn5Pba0cA@mail.gmail.com>
-From:   "zhangjianhua (E)" <zhangjianhua18@huawei.com>
-Message-ID: <d9bd5abf-0293-6155-dee0-20199fed1fc0@huawei.com>
-Date:   Wed, 7 Apr 2021 15:50:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 7 Apr 2021 03:51:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3022BC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CHFFE0IfNGrwjKPVmMEwSeRRbfQevybTuM/Pl0JrUSg=; b=F5UdTDJm6I56taSSiF57+ZOAvH
+        +nPR0SdTuHJFbeq7q1z4avxpubf/M10mvQJK1l/N37NwEwqN9UQZF9efRkYfdOwZppSnGqNHnlGPQ
+        Cg5d1NJ912g2j7WDnGRPgcoZo4I7YrH4KOEhoAVlEnraL5Mffv3ZjXadH/ICO7FrE+1ECfFY5jVx4
+        RpjcsB1ZrBWUc6q7K4jd4NzAXFuY2DLMTT6WWD3oLINTLSnTA3VqtYfqlHJPrHDw6spKDXLIixFPw
+        NvZcdLqK3frMhGq7f0Pjkz/qgYPlEYa+WRuHe+bDzhRhvYU5i7UKE6ejmjHDA466feyRIxnAu1yo4
+        3WclzIlw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU2xh-00E76k-Nd; Wed, 07 Apr 2021 07:50:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C767B3008B7;
+        Wed,  7 Apr 2021 09:50:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AB74924403DA3; Wed,  7 Apr 2021 09:50:52 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 09:50:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Hillf Danton <hdanton@sina.com>, Song Liu <songliubraving@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        syzbot <syzbot+b804f902bbb6bcf290cb@syzkaller.appspotmail.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: perf_buffer.event_list is not RCU-safe?
+Message-ID: <YG1kXApqMm/XOcDR@hirez.programming.kicks-ass.net>
+References: <00000000000030aca605be6e0102@google.com>
+ <20210327042150.7460-1-hdanton@sina.com>
+ <20210328025217.7312-1-hdanton@sina.com>
+ <20210401092907.1098-1-hdanton@sina.com>
+ <20210402074636.1270-1-hdanton@sina.com>
+ <20210406172322.GA13270@redhat.com>
+ <20210406174352.GB13270@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFyvC6ozPxQ=TPdPgLAugKky5AhOZGJSiw0Dc3Kn5Pba0cA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.73]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406174352.GB13270@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert
+On Tue, Apr 06, 2021 at 07:43:53PM +0200, Oleg Nesterov wrote:
+> On 04/06, Oleg Nesterov wrote:
+> >
+> > perf_mmap_close() was added by 9bb5d40cd93c9 ("perf: Fix mmap() accounting hole")
+> 
+> I meant perf_mmap_close() -> put_event()
+> 
+> > and this commit doesn't look right anyway
+> 
+> It seems there is another problem or I am totally confused. I do not
+> understand why can we use list_for_each_entry_rcu(event, rb->event_list)
+> if this can race with perf_event_set_output(event) which can move "event"
+> to another list, in this case list_for_each_entry_rcu() can loop forever.
+> 
+> perf_mmap_close() even mentions this race and restarts the iteration to
+> avoid it but I don't think this is enough,
+> 
+> 	rcu_read_lock();
+> 	list_for_each_entry_rcu(event, &rb->event_list, rb_entry) {
+> 		if (!atomic_long_inc_not_zero(&event->refcount)) {
+> 			/*
+> 			 * This event is en-route to free_event() which will
+> 			 * detach it and remove it from the list.
+> 			 */
+> 			continue;
+> 		}
+> 
+> just suppose that "this event" is moved to another list first and after
+> that it goes away so that atomic_long_inc_not_zero() fails; in this case
+> the next iteration will play with event->rb_entry.next, and this is not
+> necessarily "struct perf_event", it can can be "list_head event_list".
 
-Yes, you are right, there are many files reference 
-gpiod_set_value_cansleep() and
+We observe an RCU GP in ring_buffer_attach(), between detach and attach,
+no?
 
-devm_gpiod_get_optional(). How about add config dependencies for all 
-releated
+Normally, when we attach to a rb for the first time, or when we remove
+it first, no GP is required and everything is fine. But when we remove
+it and then attach it again to another rb, we must observe a GP because
+of that list_rcu, agreed?
 
-configs or only add config dependencies for the top level config?
-
-
-Best regards
-
-Zhang Jianhua
-
-在 2021/4/6 18:21, Robert Foss 写道:
-> Hey Zhang
->
-> On Tue, 6 Apr 2021 at 11:07, Zhang Jianhua <zhangjianhua18@huawei.com> wrote:
->> If CONFIG_DRM_LONTIUM_LT8912B=y, the following errors will be seen while
->> compiling lontium-lt8912b.c
->>
->> drivers/gpu/drm/bridge/lontium-lt8912b.c: In function
->> ‘lt8912_hard_power_on’:
->> drivers/gpu/drm/bridge/lontium-lt8912b.c:252:2: error: implicit
->> declaration of function ‘gpiod_set_value_cansleep’; did you mean
->> ‘gpio_set_value_cansleep’? [-Werror=implicit-function-declaration]
->>    gpiod_set_value_cansleep(lt->gp_reset, 0);
->>    ^~~~~~~~~~~~~~~~~~~~~~~~
->>    gpio_set_value_cansleep
->> drivers/gpu/drm/bridge/lontium-lt8912b.c: In function ‘lt8912_parse_dt’:
->> drivers/gpu/drm/bridge/lontium-lt8912b.c:628:13: error: implicit
->> declaration of function ‘devm_gpiod_get_optional’; did you mean
->> ‘devm_gpio_request_one’? [-Werror=implicit-function-declaration]
->>    gp_reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
->>               ^~~~~~~~~~~~~~~~~~~~~~~
->>               devm_gpio_request_one
->> drivers/gpu/drm/bridge/lontium-lt8912b.c:628:51: error: ‘GPIOD_OUT_HIGH’
->> undeclared (first use in this function); did you mean ‘GPIOF_INIT_HIGH’?
->>    gp_reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
->>                                                     ^~~~~~~~~~~~~~
->>                                                     GPIOF_INIT_HIGH
->>
->> Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
->> ---
->>   drivers/gpu/drm/bridge/Kconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
->> index dba62f92d051..caa9658ec933 100644
->> --- a/drivers/gpu/drm/bridge/Kconfig
->> +++ b/drivers/gpu/drm/bridge/Kconfig
->> @@ -67,6 +67,7 @@ config DRM_LONTIUM_LT8912B
->>          select DRM_PANEL_BRIDGE
->>          select DRM_KMS_HELPER
->>          select REGMAP_I2C
->> +       select GPIOLIB
-> This appears like the right fix for this problem. However, a number of
-> drm/bridge drivers seem to call both gpio_set_value_cansleep() and
-> devm_gpiod_get_optional() without having the GPIOLIB kconfig option
-> selected so this can't be a new issue. Maybe some more investigation
-> is in order.
-> .
+The cond_synchronize_rcu() in ring_buffer_attach() should capture
+exactly that case.
