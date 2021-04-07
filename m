@@ -2,137 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8B33571D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4955D3571DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344641AbhDGQKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:10:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354214AbhDGQJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:09:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8F9060232;
-        Wed,  7 Apr 2021 16:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617811754;
-        bh=fLoBP1zlGVzAiQlkRSpUhLWqsQma3rzz/VOi1IPRvjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N4erpKd3LaUsMWqR9U8Xv7128BHavJyOuGmbFOdxf5n584ZpVeoxX+FjmbiRLM7/y
-         jaDj94ZWKa0CQl4G+p/TuEkg3hMJeTF2BU/93Z5fTOOpz0V4l/ywkJhpsOkVxf+aV8
-         J2kAgNyspyEBy4iuZl61bj/0SmA72mEifkqaMxVjZZSEuA7ZZuFhLmu9iWM+Y2qsj0
-         OmMxGKpfn4p8D2fm7E2bxD81VAkDD+79+HxCOp77e6SppQiFS97ueU71gVarMkOFs5
-         lKOBh78gGSV1UTMH+TT1H6vJIex+GhpKNZFk4rv1ET6GxnXKgK8Df0FjYyp0/9rSaA
-         CtukGg1vYj2SQ==
-Date:   Wed, 7 Apr 2021 19:09:11 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the
- debugfs
-Message-ID: <YG3ZJyMB+S5LcUso@kernel.org>
-References: <20210405232653.33680-1-jarkko@kernel.org>
- <20210405232653.33680-2-jarkko@kernel.org>
- <20210407155636.GG25319@zn.tnic>
+        id S237474AbhDGQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354322AbhDGQJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:09:40 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F580C061756;
+        Wed,  7 Apr 2021 09:09:30 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so1448119wma.3;
+        Wed, 07 Apr 2021 09:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=JvelsXiWFhKiuGc95HnXl80V7C2PAh9toMttuEic8p4=;
+        b=IrIk1cIvAGMsMIbtfA6TTDf4CDC8HoNmKqtJ2r9DRCj59ZO4+q9oJtLk0SNeP+QqSg
+         PDs6Szt1xf8k/Vy81oW9lcyhG2yJufDjgayLf7YQTQy/PUt8iP6E3xEJ64q/R8K7kqTe
+         huqXuL9FCwm5zisZd2cywcoQ/PX3+L6dS8gKzUBVziWBP47/P6kPOmBytVStyrlWRUjt
+         /vXJg4XJXjaA5RPEcXVYrPZY1QgmIyLuPIykLN7kszLdy3ySpz3AyOlJNXQwvO+k9+Dy
+         RXjkvbuNTsXpoCDfXUoVJcNXV/RrDg+uIxUf7N0tVZ71nrYzovG7wM9DhQD8Dn5GovCj
+         5nIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=JvelsXiWFhKiuGc95HnXl80V7C2PAh9toMttuEic8p4=;
+        b=XL4azrUhNCCSnNAzu9np1TDcKIJGejKoaxDNPJW/hYzRc+bhkfBXWM3+g5cVOij3at
+         gCJ4WtIgwUgT8UIQIiYvRdHv3I6KHNHAPok4Zf4TLNO4BzsYg3LBomYGrawft1GxFwaI
+         gmgDflVdQPVIY0y0h/HM9HcXlTrM09GbQ8bGmv+kN0Afd+9EXS4A3I4ofewHk2r5TJiV
+         v1eMS8Z4KjkuS34KteR5+fcQmV2ZQ2I3csPXVlW00jZZxuqGqyuevQs26YKP1lkE/ZEn
+         j1gOu3vKJK+Cf8YJiTgumi0a2KQBWyufkh3kL8XwroN9BJbameisBb9GDN+ZnRAl1qTL
+         I8hg==
+X-Gm-Message-State: AOAM5334+pfuGq0Gm9c011cHPmZ+gy9U2RaF+yPo01PD6CblB9bs2kSn
+        OEceXp0go1y8Kixtc+OiK8k=
+X-Google-Smtp-Source: ABdhPJyuSEjgC8gxcdCSq+RmMhMDpIj2VfgSm4mV8lRxLBxVjOmi7Jvkw3oGCeM9Sps9dZfNkLyqaQ==
+X-Received: by 2002:a1c:df55:: with SMTP id w82mr3826801wmg.162.1617811769001;
+        Wed, 07 Apr 2021 09:09:29 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id j6sm8376112wmq.16.2021.04.07.09.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 09:09:28 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 21:09:21 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     hverkuil@xs4all.nl, Neil Armstrong <narmstrong@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-media@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-amlogic@lists.infradead.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        "moderated list:ARM/Amlogic Meson SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: [PATCH] staging: media/meson: remove redundant dev_err call
+Message-ID: <20210407160921.GA1504294@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407155636.GG25319@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:56:36PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 06, 2021 at 02:26:53AM +0300, Jarkko Sakkinen wrote:
-> > Add two debugs attributes:
-> > 
-> > * /sys/kernel/debug/x86/sgx_nr_all_pages
-> > * /sys/kernel/debug/x86/sgx_nr_free_pages
-> 
-> Definitely under /sys/kernel/debug/x86/sgx/...
-> 				      ^^^^^^
-> 
-> > These provide useful statistics for testing purposes.
-> 
-> Testing what exactly?
-> 
-> Also, if those are EPC pages, why isn't "epc" in the name?
+devm_ioremap_resource() prints error message in itself. Remove the
+dev_err call to avoid redundant error message.
 
-When debugging the SGX code it is useful to quickly check the amount of
-EPC pages, and also total amount of EPC available.
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/staging/media/meson/vdec/vdec.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-I left out "epc" because they are already prefixed with "sgx_".
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index 5d4db7a5b4b5..e51d69c4729d 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
+ 
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
+ 	core->dos_base = devm_ioremap_resource(dev, r);
+-	if (IS_ERR(core->dos_base)) {
+-		dev_err(dev, "Couldn't remap DOS memory\n");
++	if (IS_ERR(core->dos_base))
+ 		return PTR_ERR(core->dos_base);
+-	}
+ 
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
+ 	core->esparser_base = devm_ioremap_resource(dev, r);
+-	if (IS_ERR(core->esparser_base)) {
+-		dev_err(dev, "Couldn't remap ESPARSER memory\n");
++	if (IS_ERR(core->esparser_base))
+ 		return PTR_ERR(core->esparser_base);
+-	}
+ 
+ 	core->regmap_ao =
+ 		syscon_regmap_lookup_by_phandle(dev->of_node,
+-- 
+2.25.1
 
-> > E.g. on a NUC7CJYH2, when no enclaves are running, and EPC set to 32 MB:
-> > 
-> > $ sudo cat /sys/kernel/debug/x86/sgx_nr_all_pages
-> > 5632
-> > 
-> > $ sudo cat /sys/kernel/debug/x86/sgx_nr_free_pages
-> > 5632
-> 
-> I have no clue what that is useful for. You want to account how many of
-> the EPC pages on all nodes are in use? What for?
-> 
-> Are those globally useful for people? If so, they need to go to sysfs
-> along with documentation what they do.
-> 
-> If not, you can keep this patch in your tree for your own testing.
-
-E.g. when stress testing this might be useful information to scale the
-workload for example, or even sample the number of EPC pages. When
-otherwise testing this might be useful to catch any leaks. I created
-1/2 based on what I saw with these variables.
-
-debugfs was my first shot, but for sure these could be sysfs.
-
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> > 
-> > v2:
-> > * Use debugfs_create_ulong():
-> >   https://lore.kernel.org/linux-sgx/57c18e08-3e36-b5b3-aaba-9a21b75a1613@intel.com/
-> > 
-> >  arch/x86/kernel/cpu/sgx/main.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index 7df7048cb1c9..07bad864c531 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /*  Copyright(c) 2016-20 Intel Corporation. */
-> >  
-> > +#include <linux/debugfs.h>
-> >  #include <linux/freezer.h>
-> >  #include <linux/highmem.h>
-> >  #include <linux/kthread.h>
-> > @@ -25,7 +26,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
-> >  static LIST_HEAD(sgx_active_page_list);
-> >  static DEFINE_SPINLOCK(sgx_reclaimer_lock);
-> >  
-> > -/* The free page list lock protected variables prepend the lock. */
-> > +/* The number of EPC pages in total in all nodes. */
-> > +static unsigned long sgx_nr_all_pages;
-> > +
-> > +/* The number of free EPC pages in all nodes. */
-> >  static unsigned long sgx_nr_free_pages;
-> 
-> Ok, you're fixing the comment here. Good.
-
-Should that be part of the first patch?
-
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
-
-/Jarkko
