@@ -2,207 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CA8356215
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344D835621F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 05:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348422AbhDGDqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 23:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S1348466AbhDGDuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 23:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344405AbhDGDqD (ORCPT
+        with ESMTP id S1348435AbhDGDuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:46:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD518C06174A;
-        Tue,  6 Apr 2021 20:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=9ExJJ7YOeb9duMavNOLOVia4gmkxk4wXEJK45NMP4AU=; b=Aejap9z126V7EqqQKnZIhxwKwX
-        VStchJiEAp0EB0hSBN8qqmcYDgB/OILRhEm1A40n9nWm6NDbgMDAFO53yD6sxBaeOYeUrwr7UrakE
-        uFINJX5Ac5zoZ+57L42ur9gXYvKs0u7MZq0eCGFWXNZIIMOYjXr19I4rgxUL/TJBtdWDXkwxS1y51
-        i7favCC+Bs4MaK8MpSLkZ2i3VyVg8dandFbUlsaOBhMCCww7+7Hyt+fUgnz04agd2csDw59MZCVpN
-        82n07kOYR41lHoiqvt7kVwogxX2M3iQm7d81Ohe16CT/yUAgMMGK9l0FTs2ui0U4fc/iPfH+drNM4
-        kPZ/UORQ==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTz81-00DqP3-E5; Wed, 07 Apr 2021 03:45:35 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] lib: parser: clean up kernel-doc
-Date:   Tue,  6 Apr 2021 20:45:14 -0700
-Message-Id: <20210407034514.5651-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 6 Apr 2021 23:50:04 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BD2C06174A;
+        Tue,  6 Apr 2021 20:49:55 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c17so11930011pfn.6;
+        Tue, 06 Apr 2021 20:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mb6pSf8jYcC2SPBXAnnfVa04OpwGqbwk0AimKEd04X0=;
+        b=YQ4AkC0ft4IxGUiJQ+88IqN63+N0ZKGoG273VBWkjsB//Bh4+jWI7lcqVrC/U7IC86
+         dahyZ/UUwTravJ2DAoCTleHPDDy3PfZaCHrVDdf5zgBZlQexZ0/sAi+MhXNnrPCQJAdT
+         a0QK6p49FEyFgfkocRjyYZUbZST/jrQIiqnxgj+C4EF/jce+NYvyRKLJeHRztvHRdsNh
+         wzBko7PY/JUoTjLkzz7XrPxWQwMt2vMsVaXOLaWw78TKCDztgIeBokKFqte7XqL6QMkx
+         F7/+0VlWqgulJSVkYX2y7Wi/LEWAu15lxuuLf67k35NKHnTSg4bDiC3ndfQr5zDOmMOx
+         neFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mb6pSf8jYcC2SPBXAnnfVa04OpwGqbwk0AimKEd04X0=;
+        b=dJKLmfD4Mh/NjUFzoaIHSTjYNObIUcrYWnLLhMjOJ7qvDcuwheKG6YVQoCFFCY3M+c
+         G57fWyrR3yya3OmojNAoGVUZs1f/E/bDfoOoPI4aRs+wfssi1MiXhj4u7TZcHMeUw09O
+         ju8PWHqhjqurX4Cq95PGMSaUBSTfHmVquVnGeC3OTUuIFOfs/dxryhNCJtMDCmAak1va
+         hqvC8FQLkn/vz9/0SHu6zXuHtuO+Cp0cfinPx09t6wm7eGRP9uxPhMID/zEQLEpkuOj7
+         XNjwD1YZ9IG8DdysQbeuyIfPUE4c0O2uISc3pdrns4DPy+3+KUnBKKLMfKiL5VlEUBDL
+         5N8w==
+X-Gm-Message-State: AOAM531RchiVQ/hI35lWhBnsEe64IvMDq1C9bS1JkWX1W336a/QB+B4s
+        lnsjqTqGQTyAPuvfqaITEkjIfMsF6ZnMhw==
+X-Google-Smtp-Source: ABdhPJwzp4Mvba46wvWikrcNEZ7xAzTiLoZi0xHi9gUuS8qt8AbSwDORa7I8DrDzGo7/1pfYW7aVqw==
+X-Received: by 2002:a63:5f88:: with SMTP id t130mr1373821pgb.403.1617767395076;
+        Tue, 06 Apr 2021 20:49:55 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id s21sm6000922pgl.36.2021.04.06.20.49.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Apr 2021 20:49:54 -0700 (PDT)
+From:   Hongbo Li <herbert.tencent@gmail.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, dhowells@redhat.com,
+        zohar@linux.ibm.com, jarkko@kernel.org, herberthbli@tencent.com
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Hongbo Li <herbert.tencent@gmail.com>
+Subject: [PATCH v3 0/4] crypto: add rsa pss support for x509
+Date:   Wed,  7 Apr 2021 11:49:14 +0800
+Message-Id: <1617767358-25279-1-git-send-email-herbert.tencent@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark match_uint() as kernel-doc notation since it is already
-fully annotated as such.
-Use % prefix on constants in kernel-doc comments.
-Convert function return descriptions to use the "Return:" kernel-doc
-notation.
+From: Hongbo Li <herberthbli@tencent.com>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org
----
- lib/parser.c |   61 ++++++++++++++++++++++++++++++-------------------
- 1 file changed, 38 insertions(+), 23 deletions(-)
+This series of patches adds support for x509 cert signed by RSA
+with PSS encoding method. RSA PSS is described in rfc8017.
 
---- linux-next-20210406.orig/lib/parser.c
-+++ linux-next-20210406/lib/parser.c
-@@ -98,7 +98,7 @@ static int match_one(char *s, const char
-  * locations.
-  *
-  * Description: Detects which if any of a set of token strings has been passed
-- * to it. Tokens can include up to MAX_OPT_ARGS instances of basic c-style
-+ * to it. Tokens can include up to %MAX_OPT_ARGS instances of basic c-style
-  * format identifiers which will be taken into account when matching the
-  * tokens, and whose locations will be returned in the @args array.
-  */
-@@ -120,8 +120,10 @@ EXPORT_SYMBOL(match_token);
-  * @base: base to use when converting string
-  *
-  * Description: Given a &substring_t and a base, attempts to parse the substring
-- * as a number in that base. On success, sets @result to the integer represented
-- * by the string and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * as a number in that base.
-+ *
-+ * Return: On success, sets @result to the integer represented by the
-+ * string and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- static int match_number(substring_t *s, int *result, int base)
- {
-@@ -153,8 +155,10 @@ static int match_number(substring_t *s,
-  * @base: base to use when converting string
-  *
-  * Description: Given a &substring_t and a base, attempts to parse the substring
-- * as a number in that base. On success, sets @result to the integer represented
-- * by the string and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * as a number in that base.
-+ *
-+ * Return: On success, sets @result to the integer represented by the
-+ * string and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- static int match_u64int(substring_t *s, u64 *result, int base)
- {
-@@ -178,9 +182,10 @@ static int match_u64int(substring_t *s,
-  * @s: substring_t to be scanned
-  * @result: resulting integer on success
-  *
-- * Description: Attempts to parse the &substring_t @s as a decimal integer. On
-- * success, sets @result to the integer represented by the string and returns 0.
-- * Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * Description: Attempts to parse the &substring_t @s as a decimal integer.
-+ *
-+ * Return: On success, sets @result to the integer represented by the string
-+ * and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- int match_int(substring_t *s, int *result)
- {
-@@ -188,14 +193,15 @@ int match_int(substring_t *s, int *resul
- }
- EXPORT_SYMBOL(match_int);
- 
--/*
-+/**
-  * match_uint - scan a decimal representation of an integer from a substring_t
-  * @s: substring_t to be scanned
-  * @result: resulting integer on success
-  *
-- * Description: Attempts to parse the &substring_t @s as a decimal integer. On
-- * success, sets @result to the integer represented by the string and returns 0.
-- * Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * Description: Attempts to parse the &substring_t @s as a decimal integer.
-+ *
-+ * Return: On success, sets @result to the integer represented by the string
-+ * and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- int match_uint(substring_t *s, unsigned int *result)
- {
-@@ -217,9 +223,10 @@ EXPORT_SYMBOL(match_uint);
-  * @result: resulting unsigned long long on success
-  *
-  * Description: Attempts to parse the &substring_t @s as a long decimal
-- * integer. On success, sets @result to the integer represented by the
-- * string and returns 0.
-- * Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * integer.
-+ *
-+ * Return: On success, sets @result to the integer represented by the string
-+ * and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- int match_u64(substring_t *s, u64 *result)
- {
-@@ -232,9 +239,10 @@ EXPORT_SYMBOL(match_u64);
-  * @s: substring_t to be scanned
-  * @result: resulting integer on success
-  *
-- * Description: Attempts to parse the &substring_t @s as an octal integer. On
-- * success, sets @result to the integer represented by the string and returns
-- * 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ * Description: Attempts to parse the &substring_t @s as an octal integer.
-+ *
-+ * Return: On success, sets @result to the integer represented by the string
-+ * and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- int match_octal(substring_t *s, int *result)
- {
-@@ -248,8 +256,9 @@ EXPORT_SYMBOL(match_octal);
-  * @result: resulting integer on success
-  *
-  * Description: Attempts to parse the &substring_t @s as a hexadecimal integer.
-- * On success, sets @result to the integer represented by the string and
-- * returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-+ *
-+ * Return: On success, sets @result to the integer represented by the string
-+ * and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
-  */
- int match_hex(substring_t *s, int *result)
- {
-@@ -263,10 +272,11 @@ EXPORT_SYMBOL(match_hex);
-  * @str: the string to be parsed
-  *
-  * Description: Parse the string @str to check if matches wildcard
-- * pattern @pattern. The pattern may contain two type wildcardes:
-+ * pattern @pattern. The pattern may contain two types of wildcards:
-  *   '*' - matches zero or more characters
-  *   '?' - matches one character
-- * If it's matched, return true, else return false.
-+ *
-+ * Return: If the @str matches the @pattern, return true, else return false.
-  */
- bool match_wildcard(const char *pattern, const char *str)
- {
-@@ -316,7 +326,9 @@ EXPORT_SYMBOL(match_wildcard);
-  *
-  * Description: Copy the characters in &substring_t @src to the
-  * c-style string @dest.  Copy no more than @size - 1 characters, plus
-- * the terminating NUL.  Return length of @src.
-+ * the terminating NUL.
-+ *
-+ * Return: length of @src.
-  */
- size_t match_strlcpy(char *dest, const substring_t *src, size_t size)
- {
-@@ -338,6 +350,9 @@ EXPORT_SYMBOL(match_strlcpy);
-  * Description: Allocates and returns a string filled with the contents of
-  * the &substring_t @s. The caller is responsible for freeing the returned
-  * string with kfree().
-+ *
-+ * Return: the address of the newly allocated NUL-terminated string or
-+ * %NULL on error.
-  */
- char *match_strdup(const substring_t *s)
- {
+Patch1 make x509 support rsa pss encoding and parse hash parameter.
+
+Patch2 add rsa pss template.
+
+Patch3 add test vector for rsa pss.
+
+Patch4 is the rsa-pss's ima patch.
+
+Test by the following script, it tests different saltlen, hash, mgfhash.
+
+keyctl newring test @u
+
+while :; do
+    for modbits in 1024 2048 4096; do
+        if [ $modbits -eq 1024 ]; then
+            saltlen=(-1 -2 0 20 32 48 64 94)
+        elif [ $modbits -eq 2048 ]; then
+            saltlen=(-1 -2 0 20 32 48 64 222)
+        else
+            saltlen=(-1 -2 0 20 32 48 64 478)
+        fi
+
+        for slen in ${saltlen[@]}; do
+            for hash in sha1 sha224 sha256 sha384 sha512; do
+                for mgfhash in sha1 sha224 sha256 sha384 sha512; do
+                    certfile="cert.der"
+                    echo slen $slen
+                    openssl req \
+                            -x509 \
+                            -${hash} \
+                            -newkey rsa:$modbits \
+                            -keyout key.pem \
+                            -days 365 \
+                            -subj '/CN=test' \
+                            -nodes \
+                            -sigopt rsa_padding_mode:pss \
+                            -sigopt rsa_mgf1_md:$mgfhash \
+                            -sigopt rsa_pss_saltlen:${slen} \
+                            -outform der \
+                            -out ${certfile} 2>/dev/null
+
+                    exp=0
+                    id=$(keyctl padd asymmetric testkey %keyring:test < "${certfile}")
+                    rc=$?
+                    if [ $rc -ne $exp ]; then
+                        case "$exp" in
+                            0) echo "Error: Could not load rsa-pss certificate!";;
+                        esac
+                        echo "modbits $modbits sha: $hash mgfhash $mgfhash saltlen: $slen"
+                        exit 1
+                    else
+                        case "$rc" in
+                            0) echo "load cert: keyid: $id modbits $modbits hash: $hash mgfhash $mgfhash saltlen $slen"
+                        esac
+                    fi
+                done
+            done
+        done
+    done
+done
+
+Best Regards
+
+Hongbo
+
+v2-v3:
+  -add the crypto/rsa-psspad.c which is missed in previous patch
+
+v1->v2:
+  -rebase patches to cryptodev/master to fix the issues that
+   reported-by: kernel test robot <lkp@intel.com>
+
+Hongbo Li (4):
+  x509: add support for rsa-pss
+  crypto: support rsa-pss encoding
+  crypto: add rsa pss test vector
+  ima: add support for rsa pss verification
+
+ crypto/Makefile                                |   7 +-
+ crypto/asymmetric_keys/Makefile                |   7 +-
+ crypto/asymmetric_keys/public_key.c            |   5 +
+ crypto/asymmetric_keys/x509_cert_parser.c      |  71 ++++-
+ crypto/asymmetric_keys/x509_rsapss_params.asn1 |  19 ++
+ crypto/rsa-psspad.c                            | 398 +++++++++++++++++++++++++
+ crypto/rsa.c                                   |  14 +-
+ crypto/rsa_helper.c                            | 127 ++++++++
+ crypto/testmgr.c                               |   7 +
+ crypto/testmgr.h                               |  90 ++++++
+ include/crypto/internal/rsa.h                  |  25 +-
+ include/linux/oid_registry.h                   |   2 +
+ security/integrity/digsig_asymmetric.c         |  18 +-
+ 13 files changed, 770 insertions(+), 20 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/x509_rsapss_params.asn1
+ create mode 100644 crypto/rsa-psspad.c
+
+-- 
+1.8.3.1
+
