@@ -2,226 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C5B3560A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949BD3560B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhDGBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S1347706AbhDGBZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhDGBX6 (ORCPT
+        with ESMTP id S1347695AbhDGBZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:23:58 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E38C06174A;
-        Tue,  6 Apr 2021 18:23:49 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id h25so11789981pgm.3;
-        Tue, 06 Apr 2021 18:23:49 -0700 (PDT)
+        Tue, 6 Apr 2021 21:25:07 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C1AC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 18:24:58 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id x189so18328488ybg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 18:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6KvFpjitWE2M71REdtEXIgBjJz1CwbeZTnbvXxt51AQ=;
-        b=D4tkcUpI9qx5koPGyD4RUbTMcgdcD+9c8ADP6ykzCOVV1HCLfJQ6D2iFofpGVPcQQk
-         5S1Hf7iIQ0ruOxa0tynVE6lzFa3o2IzZ0dxI18hSp/QZSgC0GoiQXWTKJyMZKpbTW3O1
-         9ffdmQiTm9H0ESsvkmk62Iq721Yh0+EyIDjmACNyWe5TdEjDdGiX81GMIZRHT0aCWsPz
-         w1zn1sxaX5rR0QhHMpUc4fFUfMjKdrXWBOh2xsVt9hXNKKVqIehfDIE53e8QwpYVpacT
-         xzwSs+3q7/90aElFIwPipZ4fEl45WRvIyJSLN4cpPJgbGUY/FZ/cMiY8qxYDEBczoRKF
-         dCZg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f51iZjknc5u2AWAwTDyD4aSak7KE5kMCHStgrZoI5UA=;
+        b=Lb8ixtya79eOwQ/bxt7clK7iVx4183UImzCSc7Z5LI4d2dPk6R0YAlDjEhoWHVgy9o
+         Ku6wQqKgNOB897sIWqMsYBYQkl1w2IVBf34PfW30cAi1F3LXC78/oUVw1fZIsxh5SubN
+         Grkxz5s7Cm3C43qkMp1TmCXMzqt5x/ZpeBTtoaydSRfdYVj4G9elS/u6Bo6RQnQXr6ey
+         0dGH9B04ye0LOp2Tc2nN8U1HPqSLrSXBxyNbxSKZBZm+iQS/6YqG7hgVn7Cq7Hv1vlwi
+         2Ehv0quyoZY6qJqfumpP0UpdkTfYOl2mgDjbq/vr9PLw4JvgNxoVkmggcr9anue7Wks0
+         taLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6KvFpjitWE2M71REdtEXIgBjJz1CwbeZTnbvXxt51AQ=;
-        b=cMabC5P9rPEw2SW4WUJWA874mHwgoc46lurRrqC2ndcPJbuKmcL8pe9+0ESbuz2Adr
-         SDLawIS6mS9MuYY8jffV/cp6wwAvFOm1G2KtzRtO9OPipcqyhvmtwJY+AJTV/7wCbQ3D
-         oVfzw1n7RJEWhbGasyAjtdCFmBb2eb4sudYSSIH7DnkJjLJsQhB9rgFfFWoQDa0nU4AE
-         TxmdeFzQx6hahVGxJgwnk99GWCIca2l3gTfTsIgBDO8+3oc3nrggcYATcpEu3/cd8eCM
-         gcO1bsKaVURUq8+JmzLeC9K7+grL9Utp78QmJCYy8eiCPMuO9jNsoSsmaGOkoQG6NyXJ
-         bvGw==
-X-Gm-Message-State: AOAM530V73VaW4MPDB94qsgDYNi2LvGvH57YVyLO/+ONeB3x4rxmW/H5
-        jd6GkhZ19JxpeoY1vwSYzIg=
-X-Google-Smtp-Source: ABdhPJybi/R6FL+dQhERuz2JkHwBysW1ib9wOcdjZ8nfxF3HceaeJEjhqEec2GuFbCWTnFPjUuiSDQ==
-X-Received: by 2002:a62:76cf:0:b029:241:ba8d:eac1 with SMTP id r198-20020a6276cf0000b0290241ba8deac1mr836749pfc.71.1617758629188;
-        Tue, 06 Apr 2021 18:23:49 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:5a8:9f08:98f1:7659])
-        by smtp.gmail.com with ESMTPSA id t16sm89596pfc.94.2021.04.06.18.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 18:23:48 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 6 Apr 2021 18:23:46 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
-        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YG0JouWqrJPHbpqz@google.com>
-References: <YEvA1dzDsFOuKdZ/@google.com>
- <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGtDzH0dEfEngCij@google.com>
- <20210405190023.GX4332@42.do-not-panic.com>
- <YGtrzXYDiO3Gf9Aa@google.com>
- <20210406002909.GY4332@42.do-not-panic.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f51iZjknc5u2AWAwTDyD4aSak7KE5kMCHStgrZoI5UA=;
+        b=asY81wkg0aLUmrJf64Q1PX9EYBFiyQu3vQXOIeqjbCSkfgQ/TkvDCPm8ecU9MrzpAW
+         FS3dE9leLchDwr72w8k0X0JX8sd7+mNh3EH64O4YXTt8h+H9TuvuZKUQHR2aJUs+iPL8
+         T2X/TzJv7DOorwzE6e0pLvJCDYtttbqhm1SJh29UXSHnhYckFmqz3b9cfrc5MibNTuE+
+         SdtKqpSYBQL5/QhGxgGjF+nr/0y0QHYWHrlATyeAdNPIhwkDAbf0JscgyK1q+wrTMxBL
+         iaNeJutQbn8DGUaLbJI5sLH+VJlRgTTDQSqv403rU/UzUve9R7JcYmF2GxWzFoCWQC1S
+         Oy7g==
+X-Gm-Message-State: AOAM530Dvfkubu3EQKNWEOEwk+J47obhT+nfECSsteXeRUqDj73T36sp
+        /GFeUMdsrpNvNfAmUtoYkm5ms4xzOrbjtIdKBHP/7g==
+X-Google-Smtp-Source: ABdhPJziXA3cYD18qd8f0vEBXDCxDI8SA8pagWx4cuMAOp7Xxj8iRWPuWkU2CiBsh5SfsGzraBa324Ea0SUZNC05PXs=
+X-Received: by 2002:a25:907:: with SMTP id 7mr1140032ybj.346.1617758697690;
+ Tue, 06 Apr 2021 18:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406002909.GY4332@42.do-not-panic.com>
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+ <20210405222540.18145-1-ilya.lipnitskiy@gmail.com> <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
+ <20210407003408.GA2551507@robh.at.kernel.org> <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
+ <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
+In-Reply-To: <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 6 Apr 2021 18:24:21 -0700
+Message-ID: <CAGETcx-W_K9NFV51iBvyZ-Q+1LCUM3qipMmap9yEW_eu9B7CCg@mail.gmail.com>
+Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:29:09AM +0000, Luis Chamberlain wrote:
-> On Mon, Apr 05, 2021 at 12:58:05PM -0700, Minchan Kim wrote:
-> > On Mon, Apr 05, 2021 at 07:00:23PM +0000, Luis Chamberlain wrote:
-> > > On Mon, Apr 05, 2021 at 10:07:24AM -0700, Minchan Kim wrote:
-> > > > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
-> > > > > And come to think of it the last patch I had sent with a new
-> > > > > DECLARE_RWSEM(zram_unload) also has this same issue making most
-> > > > > sysfs attributes rather fragile.
-> > > > 
-> > > > Thanks for looking the way. I agree the single zram_index_rwlock is
-> > > > not the right approach to fix it. However, I still hope we find more
-> > > > generic solution to fix them at once since I see it's zram instance
-> > > > racing problem.
-> > > 
-> > > They are 3 separate different problems. Related, but different.
-> > 
-> > What are 3 different problems? I am asking since I remember only two:
-> > one for CPU multistate and the other one for sysfs during rmmod.
-> 
-> The third one is the race to use sysfs attributes and those routines
-> then derefernece th egendisk private_data.
+On Tue, Apr 6, 2021 at 6:10 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Apr 6, 2021 at 7:46 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
+> > > > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
+> > > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > > >
+> > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> > > > > not configured by #gpio-cells and can't be parsed along with other
+> > > > > "*-gpios" properties.
+> > > > >
+> > > > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
+> > > > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
+> > > > > error message continue being printed for non-compliant implementations.
+> > > > >
+> > > > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
+> > > > >  - gpio-adnp.txt
+> > > > >  - gpio-xgene-sb.txt
+> > > > >  - gpio-xlp.txt
+> > > > >  - snps,dw-apb-gpio.yaml
+> > > > >
+> > > > > [1]:
+> > > > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
+> > > > >
+> > > > > Fixes errors such as:
+> > > > >   OF: /palmbus@300000/gpio@600: could not find phandle
+> > > > >
+> > > > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
+> > > > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> > > > > Cc: Saravana Kannan <saravanak@google.com>
+> > > > > Cc: <stable@vger.kernel.org> # 5.5.x
+> > > > > ---
+> > > > >  drivers/of/property.c | 11 ++++++++++-
+> > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > > index 2046ae311322..1793303e84ac 100644
+> > > > > --- a/drivers/of/property.c
+> > > > > +++ b/drivers/of/property.c
+> > > > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+> > > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+> > > > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+> > > > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> > > > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
+> > > > > +
+> > > > > +static struct device_node *parse_gpios(struct device_node *np,
+> > > > > +                                      const char *prop_name, int index)
+> > > > > +{
+> > > > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
+> > > > > +               return NULL;
+> > > >
+> > > > Ah I somehow missed this patch. This gives a blanked exception for
+> > > > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
+> > > > of ",nr-gpios" we are grandfathering in. Any future additions should
+> > > > be rejected. Can we do that please?
+> > > >
+> > > > Rob, you okay with making this list more explicit?
+> > >
+> > > Not the kernel's job IMO. A schema is the right way to handle that.
+> >
+> > Ok, that's fine by me. Btw, let's land this in driver-core? I've made
+> > changes there and this might cause conflicts. Not sure.
+>
+> It merges with linux-next fine. You'll need to resend this to Greg if
+> you want to do that.
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-First of all, thanks for keeping discussion, Luis.
+Hi Greg,
 
-That was the one I thought race between sysfs and during rmmod.
+Can you pull this into driver-core please? I touch this file a lot and
+might need to do so again if any fw_devlink=on issues come up. So
+trying to preemptively avoid conflicts.
 
-> 
-> > > If the idea then is to busy out rmmod if a sysfs attribute is being
-> > > read, that could then mean rmmod can sometimes never complete. Hogging
-> > > up / busying out sysfs attributes means the module cannto be removed.
-> > 
-> > It's true but is it a big problem? There are many cases that system
-> > just return error if it's busy and rely on the admin. IMHO, rmmod should
-> > be part of them.
-> 
-> It depends on existing userspace scripts which are used to test and
-> expectations set. Consider existing tests, you would know better, and
-> since you are the maintainer you decide.
-> 
-> I at least know for many other types of device drivers an rmmod is
-> a sledge hammer.
-> 
-> You decide. I just thought it would be good to highlight the effect now
-> rather than us considering it later.
-
-To me, the rmmod faillure is not a big problem for zram since it's
-common cases in the system with -EBUSY(Having said, I agree that's the
-best if we could avoid the fail-and-retrial. IOW, -EBUSY should be
-last resort unless we have nicer way.)
-
-> 
-> > > Which is why the *try_module_get()* I think is much more suitable, as
-> > > it will always fails if we're already going down.
-> > 
-> > How does the try_module_get solved the problem?
-> 
-> The try stuff only resolves the deadlock. The bget() / bdput() resolves
-> the race to access to the gendisk private_data.
-
-That's the one I missed in this discussion. Now I am reading your [2/2]
-in original patch. I thought it was just zram instance was destroyed
-by sysfs race problem so you had seen the deadlock. I might miss the
-point here, too. 
-
-Hmm, we are discussing several problems all at once. I feel it's time
-to jump v2 with your way in this point. You said three different
-problems. As I asked, please write it down with more detail with
-code sequence as we discussed other thread. If you mean a deadlock,
-please write what specific locks was deadlock with it.
-It would make discussion much easier. Let's discuss the issue
-one by one in each thread.
-
-> 
-> > > > I see one of the problems is how I could make new zram object's
-> > > > attribute group for zram knobs under /sys/block/zram0 since block
-> > > > layer already made zram0 kobject via device_add_disk.
-> > > 
-> > > Right.. well the syfs attribute races uncovered here actually do
-> > > apply to any block driver as well. And which is why I was aiming
-> > > for something generic if possible.
-> > 
-> > It would be great but that's not the one we have atm so want to
-> > proceed to fix anyway.
-> 
-> What is not the one we have atm? I *do* have a proposed generic solution
-> for 2/3 issues we have been disussing:
-> 
->  a) deadlock on sysfs access
-
-This is the one I didn't understand.
-
->  b) gendisk private_data race
-
-Yub.
-
-> 
-> But so far Greg does not see enough justification for a), so we can either
-> show how wider this issue is (which I can do using coccinelle), or we
-> just open code the try_module_get() / put on each driver that needs it
-> for now. Either way it would resolve the issue.
-
-I second if it's general problem for drivers, I agree it's worth to
-addresss in the core unless the driver introduce the mess. I have
-no idea here since I didn't understand the problem, yet.
-
-> 
-> As for b), given that I think even you had missed my attempt to
-> generialzie the bdget/bdput solution for any attribute type (did you see
-> my dev_type_get() and dev_type_put() proposed changes?), I don't think
-> this problem is yet well defined in a generic way for us to rule it out.
-> It is however easier to simply open code this per driver that needs it
-> for now given that I don't think Greg is yet convinced the deadlock is
-> yet a widespread issue. I however am pretty sure both races races *do*
-> exist outside of zram in many places.
-
-It would be good sign to propose general solution.
-
-> 
-> > > I am not sure if you missed the last hunks of the generic solution,
-> > > but that would resolve the issue you noted. Here is the same approach
-> > > but in a non-generic solution, specific to just one attribute so far
-> > > and to zram:
-> > 
-> > So idea is refcount of the block_device's inode 
-> 
-> Yes that itself prevents races against the gendisk private_data from
-> being invalid. Why because a bdget() would not be successful after
-> del_gendisk():
-> 
-> del_gendisk() --> invalidate_partition() --> __invalidate_device() --> invalidate_inodes()
-> 
-> > and module_exit path
-> > checks also the inode refcount to make rmmod failure?
-> 
-> They try_module_get() approach resolves the deadlock race, but it does
-> so in a lazy way. I mean lazy in that then rmmod wins over sysfs knobs.
-> So touching sysfs knobs won't make an rmmod fail. I think that's more
-> typical expected behaviour. Why? Because I find it odd that looping
-> forever touching sysfs attributes should prevent a module removal. But
-> that's a personal preference.
-
-I agree with you that would be better but let's see how it could go
-clean.
-
-FYI, please look at hot_remove_store which also can remove zram
-instance on demand. I am looking forward to seeing your v2.
-
-Thanks for your patience, Luis.
+-Saravana
