@@ -2,89 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6939435779C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA133577B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 00:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhDGW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 18:26:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54150 "EHLO mail.kernel.org"
+        id S229803AbhDGW1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 18:27:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:14322 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhDGW0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 18:26:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7965861245;
-        Wed,  7 Apr 2021 22:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617834382;
-        bh=ntxkGEATiH0rQC7t9uR0Mpm44wLWaECdQOQgbePh6qg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=v9spXbJrD3jgXYAir83CkcC1/9yVQeh8ENVfqYJr5V2vzjny6uhjgvak37lfu+Qy8
-         qgvk7EBU04FAyEMN0FxC6RzOpd63WdlkSFqjnWmVCHKGnJwBkgNxsi0ZNBlLUkcOtP
-         R/eXdyDalX4BdNXiJjTGbteZsMViBl5DDCS02Vgs=
-Date:   Wed, 7 Apr 2021 15:26:21 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Subject: Re: [PATCH 1/2] gcov: re-fix clang-11+ support
-Message-Id: <20210407152621.3826f93e893c0cf9b327071f@linux-foundation.org>
-In-Reply-To: <CAKwvOdnSRsUj9dvKP_1Dd9+WwLJwaK0mC-T9mL+jsQvRfwLZmg@mail.gmail.com>
-References: <20210407185456.41943-1-ndesaulniers@google.com>
-        <20210407185456.41943-2-ndesaulniers@google.com>
-        <20210407142121.677e971e9e5dc85643441811@linux-foundation.org>
-        <CAKwvOdnSRsUj9dvKP_1Dd9+WwLJwaK0mC-T9mL+jsQvRfwLZmg@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229751AbhDGW1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 18:27:09 -0400
+IronPort-SDR: 3f8t/ToPf5qo75uizm0+DPfYsBG8tGexY6lDb29dHzgfDq6duvuscpA4d8GARY9z2ljnoQvVxS
+ Qu2uKGendfnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193524929"
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="193524929"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 15:26:39 -0700
+IronPort-SDR: KFu7CyY6/zJ+KBMtr+wAANDK+6kSKw9/27JY/eRm14ynO44VTmO1N3CC/Wllhfa4HEqtdq55EC
+ riQD0VljYM7w==
+X-IronPort-AV: E=Sophos;i="5.82,204,1613462400"; 
+   d="scan'208";a="458548542"
+Received: from hmfaraby-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.128.243])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 15:26:39 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, ira.weiny@intel.com,
+        vishal.l.verma@intel.com, alison.schofield@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 4/7] cxl/mem: Get rid of @cxlm.base
+Date:   Wed,  7 Apr 2021 15:26:22 -0700
+Message-Id: <20210407222625.320177-5-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210407222625.320177-1-ben.widawsky@intel.com>
+References: <20210407222625.320177-1-ben.widawsky@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 14:28:21 -0700 Nick Desaulniers <ndesaulniers@google.com> wrote:
+@cxlm.base only existed to support holding the base found in the
+register block mapping code, and pass it along to the register setup
+code. Now that the register setup function has all logic around managing
+the registers, from DVSEC to iomapping up to populating our CXL specific
+information, it is easy to turn the @base values into local variables
+and remove them from our device driver state.
 
-> On Wed, Apr 7, 2021 at 2:21 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Wed,  7 Apr 2021 11:54:55 -0700 Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > > LLVM changed the expected function signature for
-> > > llvm_gcda_emit_function() in the clang-11 release.  Users of clang-11 or
-> > > newer may have noticed their kernels producing invalid coverage
-> > > information:
-> > >
-> > > $ llvm-cov gcov -a -c -u -f -b <input>.gcda -- gcno=<input>.gcno
-> > > 1 <func>: checksum mismatch, \
-> > >   (<lineno chksum A>, <cfg chksum B>) != (<lineno chksum A>, <cfg chksum C>)
-> > > 2 Invalid .gcda File!
-> > > ...
-> > >
-> > > Fix up the function signatures so calling this function interprets its
-> > > parameters correctly and computes the correct cfg checksum. In
-> > > particular, in clang-11, the additional checksum is no longer optional.
-> >
-> > Which tree is this against?  I'm seeing quite a lot of rejects against
-> > Linus's current.
-> 
-> Today's linux-next; the only recent changes to this single source file
-> since my last patches were:
-> 
-> commit b3c4e66c908b ("gcov: combine common code")
-> commit 17d0508a080d ("gcov: use kvmalloc()")
-> 
-> both have your sign off, so I assume those are in your tree?
+Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+---
+ drivers/cxl/mem.c | 24 +++++++++++-------------
+ drivers/cxl/mem.h |  2 --
+ 2 files changed, 11 insertions(+), 15 deletions(-)
 
-Yes, I presently have
-
-gcov-clang-drop-support-for-clang-10-and-older.patch
-gcov-combine-common-code.patch
-gcov-simplify-buffer-allocation.patch
-gcov-use-kvmalloc.patch
-
-But this patch ("gcov: re-fix clang-11+ support") has cc:stable, so it
-should be against Linus's tree, to give the -stable trees something
-more mergeable.
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 04b4f7445083..60b95c524c3e 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -922,11 +922,10 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev)
+ 	return cxlm;
+ }
+ 
+-static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
++static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
+ {
+ 	struct pci_dev *pdev = cxlm->pdev;
+ 	struct device *dev = &pdev->dev;
+-	void __iomem *regs;
+ 	u64 offset;
+ 	u8 bar;
+ 	int rc;
+@@ -938,20 +937,18 @@ static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
+ 	if (pci_resource_len(pdev, bar) < offset) {
+ 		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+ 			&pdev->resource[bar], (unsigned long long)offset);
+-		return -ENXIO;
++		return (void __iomem *)ERR_PTR(-ENXIO);
+ 	}
+ 
+ 	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
+ 	if (rc) {
+ 		dev_err(dev, "failed to map registers\n");
+-		return rc;
++		return (void __iomem *)ERR_PTR(rc);
+ 	}
+-	regs = pcim_iomap_table(pdev)[bar];
+-
+-	cxlm->base = regs + offset;
+ 
+ 	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+-	return 0;
++
++	return pcim_iomap_table(pdev)[bar] + offset;
+ }
+ 
+ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+@@ -993,7 +990,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+ 	struct pci_dev *pdev = cxlm->pdev;
+ 	struct device *dev = &pdev->dev;
+ 	u32 regloc_size, regblocks;
+-	int rc, regloc, i;
++	void __iomem *base;
++	int regloc, i;
+ 
+ 	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_OFFSET);
+ 	if (!regloc) {
+@@ -1019,9 +1017,9 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+ 		reg_type = FIELD_GET(CXL_REGLOC_RBI_MASK, reg_lo);
+ 
+ 		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
+-			rc = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
+-			if (rc)
+-				return rc;
++			base = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
++			if (IS_ERR(base))
++				return PTR_ERR(base);
+ 			break;
+ 		}
+ 	}
+@@ -1031,7 +1029,7 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+ 		return -ENXIO;
+ 	}
+ 
+-	cxl_setup_device_regs(dev, cxlm->base, &regs->device_regs);
++	cxl_setup_device_regs(dev, base, &regs->device_regs);
+ 
+ 	if (!regs->status || !regs->mbox || !regs->memdev) {
+ 		dev_err(dev, "registers not found: %s%s%s\n",
+diff --git a/drivers/cxl/mem.h b/drivers/cxl/mem.h
+index 8bad7166adba..bfcfef461b16 100644
+--- a/drivers/cxl/mem.h
++++ b/drivers/cxl/mem.h
+@@ -49,7 +49,6 @@ struct cxl_memdev {
+ /**
+  * struct cxl_mem - A CXL memory device
+  * @pdev: The PCI device associated with this CXL device.
+- * @base: IO mappings to the device's MMIO
+  * @cxlmd: Logical memory device chardev / interface
+  * @regs: Parsed register blocks
+  * @payload_size: Size of space for payload
+@@ -62,7 +61,6 @@ struct cxl_memdev {
+  */
+ struct cxl_mem {
+ 	struct pci_dev *pdev;
+-	void __iomem *base;
+ 	struct cxl_memdev *cxlmd;
+ 
+ 	struct cxl_regs regs;
+-- 
+2.31.1
 
