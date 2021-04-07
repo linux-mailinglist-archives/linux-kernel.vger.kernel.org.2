@@ -2,51 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFCE356DCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D559E356DE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347660AbhDGNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:50:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33257 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347595AbhDGNuI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:50:08 -0400
-IronPort-SDR: dFQ7hPWgwcaBzb895WplB6IiNxvsnT7qzHKgOTN/WgZBCtVfPQXGZcSlVY6aw1LZVIs8CWWqAT
- yTC7aSi8JtOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="192849141"
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="192849141"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 06:49:58 -0700
-IronPort-SDR: IqWjyWZBkEBzXYUqTzIAKiym3dSoKWlI/Mkp4dZX6NdwGxr7Wawd5Bra3UbuZuQPLT+/L7hLgY
- uVMQxku+kswg==
-X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
-   d="scan'208";a="458375612"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 06:49:58 -0700
-Date:   Wed, 7 Apr 2021 06:49:57 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, kan.liang@intel.com,
-        yao.jin@intel.com
-Subject: Re: [PATCH] perf report: Fix wrong LBR block sorting
-Message-ID: <20210407134957.GL1285835@tassilo.jf.intel.com>
-References: <20210407024452.29988-1-yao.jin@linux.intel.com>
+        id S1347832AbhDGNwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238334AbhDGNwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:52:49 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C38E1C061756;
+        Wed,  7 Apr 2021 06:52:39 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id B5A6F92009C; Wed,  7 Apr 2021 15:52:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id AEA7D92009B;
+        Wed,  7 Apr 2021 15:52:38 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 15:52:38 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        liwei391@huawei.com, nbd@nbd.name,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        yangtiezhu@loongson.cn
+Subject: Re: [PATCH v2] MIPS: add support for buggy MT7621S core detection
+In-Reply-To: <20210406042334.1318117-1-ilya.lipnitskiy@gmail.com>
+Message-ID: <alpine.DEB.2.21.2104071549560.65251@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104060311490.65251@angie.orcam.me.uk> <20210406042334.1318117-1-ilya.lipnitskiy@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407024452.29988-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Now the hottest block is reported at the top of output.
-> 
-> Fixes: b65a7d372b1a ("perf hist: Support block formats with compare/sort/display")
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+On Mon, 5 Apr 2021, Ilya Lipnitskiy wrote:
 
+> diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
+> index fd43d876892e..9f495ffef2b7 100644
+> --- a/arch/mips/include/asm/mips-cps.h
+> +++ b/arch/mips/include/asm/mips-cps.h
+> @@ -165,11 +167,29 @@ static inline uint64_t mips_cps_cluster_config(unsigned int cluster)
+>   */
+>  static inline unsigned int mips_cps_numcores(unsigned int cluster)
+>  {
+> +	struct cpulaunch *launch;
+> +	unsigned int ncores;
+> +
+>  	if (!mips_cm_present())
+>  		return 0;
+>  
+>  	/* Add one before masking to handle 0xff indicating no cores */
+> -	return (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+> +	ncores = (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+> +
+> +	if (IS_ENABLED(CONFIG_SOC_MT7621)) {
+> +		/*
+> +		 * Ralink MT7621S SoC is single core, but the GCR_CONFIG method
+> +		 * always reports 2 cores. Check the second core's LAUNCH_FREADY
+> +		 * flag to detect if the second core is missing. This method
+> +		 * only works before the core has been started.
+> +		 */
+> +		launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
+> +		launch += 2; /* MT7621 has 2 VPEs per core */
+> +		if (!(launch->flags & LAUNCH_FREADY))
+> +			ncores = 1;
+> +	}
+> +
+> +	return ncores;
+>  }
+>  
+>  /**
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
--Andi
+ Much better to me, but please move the declaration of `launch' into the 
+conditional block, which is the only place that uses it.
+
+  Maciej
