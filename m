@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5133564DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD0B356509
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 09:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346231AbhDGHPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 03:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S1349401AbhDGHQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 03:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhDGHPe (ORCPT
+        with ESMTP id S1349390AbhDGHQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 03:15:34 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2B1C06174A;
-        Wed,  7 Apr 2021 00:15:25 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id t22so5189291pgu.0;
-        Wed, 07 Apr 2021 00:15:25 -0700 (PDT)
+        Wed, 7 Apr 2021 03:16:49 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624B9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 00:16:39 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id r8so9301940lfp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 00:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xQE1x5Wlwo0FkTtk1ID3OZqFs74eCdmYBQNxjWcjwgo=;
-        b=qcKNudJvXRZGAb6RMTkLyyjO6OXwMsp0WiJOh0k225yb162e+0nVK7PkEXi2HJuEDP
-         GnM7NOnF+yIF4f8kD5yIsZIBBux3GJ/t5tWw12Q9TnHb+W027qCYfkToYVss6ms1FTQW
-         KVXD/ubqTm9esBiKWYRVnF344XyRhp/DFM7gxtNLE3iW6d9pMWiXScWSeoT+3Qq6nSER
-         5pJ/GTCueomOAmDG/d/LaSfX9G/Ub0nKctmBvwDRxs365q9hY2XCxW1BlK23VLQOk9y+
-         KF40+Qwh3BiI76aK+Ld1tT4NvvI/SkOVVxTHyynrpPYJPHTgq2LW59t4XEDWa031c/No
-         2TKg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rQ2f2+Kk40JX+D7VfT4wjmPcjRCue3hUmLtbdEUVmtU=;
+        b=w9Y0KRg7NfgkhAhzdUrsNuMOCIXrLZg0jlD1QPgr7AVAvE8oaOHoxK+nBAKzF43GY7
+         HtGU7HOZZM2j9G/LW5pa/HGw+kb+ooVa9yj2kTpMMH88Vg1LvWanp0e5+L3pYubfwAkw
+         sBh3JzTEZfLTf9fz8ZZawcxYJqPdsQtzHtwU/6eRBiVNju8KGVx+oUkZWn/MX+BYnnqx
+         1lrLoWCsHscoMMJ720+yzzndpNI1x9+XXTxYUsq0xcVK7zk12d+A2qNqOlIjwcHiHmn1
+         4EdcDzvoW4b8YkqA6+KEFc1AAaysNl/kWgHMJ+W5cqXjqfCnq5QV2gMghBo74Zz8mTP2
+         SydQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xQE1x5Wlwo0FkTtk1ID3OZqFs74eCdmYBQNxjWcjwgo=;
-        b=jYPWDYbtpV7q0nLzJhF7qnn2ChUyRNaDNEtAbDJC293aZj5/90WjZwQCZPd68oE8HA
-         zvsgba+BI/rthNL7pNp5POQpvewqBElEf4biQku8ytxsy5G203dlHEPJyWrQUtpRuHjv
-         xh/7Mm4mdqhxoM1Esd0XOs64dVNjEwqVeuZD3E/nbDst1MBbOmZVoPX0iWJnExgQNlJk
-         B52D5iEmGLKgv2MgQUqvLbaUXoHdbXthanxfJBn8WWYRQ85ExBaxIwP8ma3AkfLwuLuC
-         T1j0b1aA994Qzzi29+89+uW1P/imzPWChKaRqpw2yNVEE13H+pD9x5ko6mq0PzjKBKF9
-         WiMg==
-X-Gm-Message-State: AOAM532bsWGAfwvMkw/0UbV5M4rptwePBQMumP/YlekFAbYZ+oDZ4Jak
-        CszKCLvx+Owi5BqsxrUx5qVepM7VUuecnw==
-X-Google-Smtp-Source: ABdhPJzoeFNegPROiZUCkPiphoW7Hrg9bxg2xwnfw33qrrc+B6UkpFtMMh4cRXqTW2vUL/vnqOk+Pw==
-X-Received: by 2002:a05:6a00:1585:b029:203:6bc9:3ca6 with SMTP id u5-20020a056a001585b02902036bc93ca6mr1658045pfk.79.1617779724531;
-        Wed, 07 Apr 2021 00:15:24 -0700 (PDT)
-Received: from localhost.localdomain ([134.173.248.5])
-        by smtp.gmail.com with ESMTPSA id i7sm19631273pgq.16.2021.04.07.00.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 00:15:24 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 00:15:22 -0700
-From:   Pavle Rohalj <pavle.rohalj@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/49] *** SUBJECT HERE ***
-Message-ID: <YG1cCtbvINJ52tGT@localhost.localdomain>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
- <YG1aVx3UuXR2JrC+@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rQ2f2+Kk40JX+D7VfT4wjmPcjRCue3hUmLtbdEUVmtU=;
+        b=NJoUmpwmJUpkFw2/RV+KJxCgPnPfg+Ly5YnuAF0X4uDWAf3Oir3CfvHl3bDYxKiw+G
+         LKZUanYcxhIwy+MrNgXGgfHyZPvx95TW+DgaKTGwOQrL2tFbFLof/LitdZylrBDUacao
+         lX7dxgSMtDb+51fJwIEna0QimmG490d+j4fsQ8+ONcZESFr+MkSnKV5UZeXlJMXGe1+Z
+         tHcAojWmPBLlZTVWxXMyLj7Y+pLOl3kmVtQ6/YNwodADcrUFveir1sJkyPKSd8RNAdJU
+         FdGkgWqCJAECfHhdGfmUu6bTRUxsVkz0zqxEGFX1UqoWTvwetJN+dUOHAqR9idyQRjQd
+         7B9Q==
+X-Gm-Message-State: AOAM531nK5UgYzc8PsHuJCBICDcDUpst8B9xlaBx+vpgPh4PdsZT3Wrg
+        GxpyOte91aiJNWpf18qIG+yMEOe4zh7WdhqD01gXwA==
+X-Google-Smtp-Source: ABdhPJzO81Quh59/U5y3og/InemAPc+SixXY8vU5+STsw8ZLy9f4Xv4HrGFGMYmTu4aaAkD+Tqc6rgzK3B1Jx8C9Jxc=
+X-Received: by 2002:a05:6512:c0b:: with SMTP id z11mr1643665lfu.586.1617779797862;
+ Wed, 07 Apr 2021 00:16:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG1aVx3UuXR2JrC+@kroah.com>
+References: <20210407034927.16882-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210407034927.16882-1-dinghao.liu@zju.edu.cn>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Apr 2021 09:16:25 +0200
+Message-ID: <CACRpkdZ8WpBgZpTjuxz2F6BryARo6eC0z_dGG_+r7KfG3kwKqw@mail.gmail.com>
+Subject: Re: [PATCH] iio: light: gp2ap002: Fix rumtime PM imbalance on error
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:08:07AM +0200, Greg KH wrote:
-> On Tue, Apr 06, 2021 at 11:35:54PM -0700, Pavle Rohalj wrote:
-> > Changes in v2:
-> >     - Removed type information from variable names
-> >     - Broken up the changes into smaller patches
-> 
-> Your subject is very odd :(
+On Wed, Apr 7, 2021 at 5:49 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 
-Sorry about that, I overlooked the fact that I reran format-patch. The
-subject should be:
+> When devm_request_threaded_irq() fails, we should decrease the
+> runtime PM counter to keep the counter balanced. But when
+> iio_device_register() fails, we need not to decrease it because
+> we have already decreased it before.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[PATCH] staging: sm750fb: Convert camel case to snake case
+Looks correct, this semantic ordering always confuse me
+a bit:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Should I resubmit?
-
--Pavle
+Yours,
+Linus Walleij
