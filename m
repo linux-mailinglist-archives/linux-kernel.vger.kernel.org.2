@@ -2,224 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED70F3574BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD693574BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 21:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355528AbhDGTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 15:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhDGTCM (ORCPT
+        id S1348646AbhDGTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 15:02:47 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:54047 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348647AbhDGTCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:02:12 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F55C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 12:02:02 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mj7-20020a17090b3687b029014d162a65b6so1819148pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 12:02:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8q0QHq9l4LF9PHx0etSU7nJSKEAb9gzaAE8xuzl5E8k=;
-        b=Vg46FhLEi9cn5jYSsZNA7SRRcJq634l6s+jrMmkoqB8xEbtmmZ3wO0+i1v/Jo9fjn3
-         oG4viB354PfuNOXJ8vqJe/WHaqlQzkM0LicWuKOMjK4f91/1AhJt4dYFNN/BS0308Fod
-         5wfSG+iCSyUKclk/Z05Y4mSX2SkUtUPcPReto=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8q0QHq9l4LF9PHx0etSU7nJSKEAb9gzaAE8xuzl5E8k=;
-        b=NVzBCv72wUAZwe79p3/62YJA7l9U2Xs7s/Hb/Ddhg61Z6XoDV6cZENRqC5tPOXymfr
-         u5lsU2UVniADwyPrQ+ioOTy6mLszIHM1FOoHV455k+gk+NnJEjTSlfCFLlVtyrNh4cLW
-         InqtmHc4sOjOLpGE2kuilKwiaZm38zEO6pH/j1iOaB6BKKJG2/Avk1DXc9t9CQ6NCxIv
-         EPjXGogtEFntfrJd3fdNOKgIybHVvuDLww6CBS3XR1XWJTQwMg1xBvFABRk/WMUwYsqV
-         jTc0ACsn2bWSyALpAzzYAEM1uNDYotVVWn3Xk8coiXvmGglCBH91iQAKwqXAw1kT9me6
-         O3zA==
-X-Gm-Message-State: AOAM5333TJsjT7EoRXTWoKKaMAzALQONKuBhYj907/3AbGAtZRYk6CYX
-        mZuUIhMnCtxZ/riLf2hSGwIVTg==
-X-Google-Smtp-Source: ABdhPJz4ys47YHIOPJKyCBVOUB1raDUBV8qm1x+U7bt/dMyiob+58CCl5Yya5TA7z1nvNhyYeF4uKg==
-X-Received: by 2002:a17:902:c411:b029:e9:3d37:afc with SMTP id k17-20020a170902c411b02900e93d370afcmr4402507plk.17.1617822122466;
-        Wed, 07 Apr 2021 12:02:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t8sm5840623pjj.0.2021.04.07.12.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 12:02:01 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 12:02:00 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 2/2][next] wl3501_cs: Fix out-of-bounds warning in
- wl3501_mgmt_join
-Message-ID: <202104071158.B4FA1956@keescook>
-References: <cover.1617226663.git.gustavoars@kernel.org>
- <83b0388403a61c01fad8d638db40b4245666ff53.1617226664.git.gustavoars@kernel.org>
+        Wed, 7 Apr 2021 15:02:44 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ab65nEaqqUu3gUIbyN2DEw68aV5vDL9V00zAX?=
+ =?us-ascii?q?/kB9WHVpW+aT/vrOoN0w0xjohDENHEw6kdebN6WaBV/a/5h54Y4eVI3SOjXOkm?=
+ =?us-ascii?q?2uMY1k8M/e0yTtcheOkdJ1+IVBV+xFCNP2BUVnlsqS2mOFOvsp3dXvys2VrMjE?=
+ =?us-ascii?q?yXMFd21XQoFmqzx0EwOKVnBxLTM2ZqYRMZqH+45uvDCgeWsaB/7LekUteujYup?=
+ =?us-ascii?q?nqufvdEGM7Ljsm8hTLtDWz9dfBYmel9zIfSS4K/bA57WPemRf47anLiYDE9jb5?=
+ =?us-ascii?q?23XI55pb3PvNo+EiOOWpiswYbgrhkRypYoMJYczngBkNu+2k5Fsnl9PByi1QRv?=
+ =?us-ascii?q?hb0H/acmGrrRaF4WCJuwoG0HPsxUSVhnHuu6XCNVAHIvFMnIdINibegnBOgPhH?=
+ =?us-ascii?q?zKlJ02iF3qAnaC/ooSKV3bb1fiAvvlaopz4YnfQLiXtEXc8ldKZJtoAE5ipuYe?=
+ =?us-ascii?q?Y9NRO/xoA7MfVkSPrR7OxRdjqhHgrkl1gq7tywf2g5WiyLSEgausCTzlFt7QtE?=
+ =?us-ascii?q?5npd6swDv2sKsKkwQZlc5+jCL+BBmbxUQtUNBJgNdNspcI+YCnHtXRmJCm6ULF?=
+ =?us-ascii?q?j9fZt3Q07wlw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,203,1613430000"; 
+   d="scan'208";a="502073127"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:02:32 +0200
+Date:   Wed, 7 Apr 2021 21:02:32 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Liam Beguin <liambeguin@gmail.com>, mturquette@baylibre.com,
+        sboyd@kernel.org
+cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        kbuild-all@lists.01.org
+Subject: [PATCH] clk: fix for_each_child.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2104072100410.11549@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83b0388403a61c01fad8d638db40b4245666ff53.1617226664.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 04:45:34PM -0500, Gustavo A. R. Silva wrote:
-> Fix the following out-of-bounds warning by enclosing
-> some structure members into new struct req:
-> 
-> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
-> 
-> Refactor the code, accordingly:
-> 
-> $ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
-> struct wl3501_join_req {
-> 	u16                        next_blk;             /*     0     2 */
-> 	u8                         sig_id;               /*     2     1 */
-> 	u8                         reserved;             /*     3     1 */
-> 	struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
-> 	u16                        reserved2;            /*    14     2 */
-> 	u16                        timeout;              /*    16     2 */
-> 	u16                        probe_delay;          /*    18     2 */
-> 	u8                         timestamp[8];         /*    20     8 */
-> 	u8                         local_time[8];        /*    28     8 */
-> 	struct {
-> 		u16                beacon_period;        /*    36     2 */
-> 		u16                dtim_period;          /*    38     2 */
-> 		u16                cap_info;             /*    40     2 */
-> 		u8                 bss_type;             /*    42     1 */
-> 		u8                 bssid[6];             /*    43     6 */
-> 		struct iw_mgmt_essid_pset ssid;          /*    49    34 */
-> 		/* --- cacheline 1 boundary (64 bytes) was 19 bytes ago --- */
-> 		struct iw_mgmt_ds_pset ds_pset;          /*    83     3 */
-> 		struct iw_mgmt_cf_pset cf_pset;          /*    86     8 */
-> 		struct iw_mgmt_ibss_pset ibss_pset;      /*    94     4 */
-> 		struct iw_mgmt_data_rset bss_basic_rset; /*    98    10 */
-> 	} req;                                           /*    36    72 */
+From: kernel test robot <lkp@intel.com>
 
-This section is the same as a large portion of struct wl3501_scan_confirm:
+For_each_child_of_node should have of_node_put() before goto.
 
-struct wl3501_scan_confirm {
-        u16                         next_blk;
-        u8                          sig_id;
-        u8                          reserved;
-        u16                         status;
-        char                        timestamp[8];
-        char                        localtime[8];
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
-from here
-        u16                         beacon_period;
-        u16                         dtim_period;
-        u16                         cap_info;
-        u8                          bss_type;
-        u8                          bssid[ETH_ALEN];
-        struct iw_mgmt_essid_pset   ssid;
-        struct iw_mgmt_ds_pset      ds_pset;
-        struct iw_mgmt_cf_pset      cf_pset;
-        struct iw_mgmt_ibss_pset    ibss_pset;
-        struct iw_mgmt_data_rset    bss_basic_rset;
-through here
+CC: Liam Beguin <lvb@xiphos.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-        u8                          rssi;
-};
+url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-support-for-the-lmk04832/20210407-085408
+base:   f40ddce88593482919761f74910f42f4b84c004b
+:::::: branch date: 9 hours ago
+:::::: commit date: 9 hours ago
 
-It seems like maybe extracting that and using it in both structures
-would make more sense?
+ clk-lmk04832.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> 	/* size: 108, cachelines: 2, members: 10 */
-> 	/* last cacheline: 44 bytes */
-> };
-> 
-> The problem is that the original code is trying to copy data into a
-> bunch of struct members adjacent to each other in a single call to
-> memcpy(). Now that a new struct _req_ enclosing all those adjacent
-> members is introduced, memcpy() doesn't overrun the length of
-> &sig.beacon_period, because the address of the new struct object
-> _req_ is used as the destination, instead.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds and
-> avoid confusing the compiler.
-> 
-> Link: https://github.com/KSPP/linux/issues/109
-> Reported-by: kernel test robot <lkp@intel.com>
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - None.
-> 
->  drivers/net/wireless/wl3501.h    | 22 ++++++++++++----------
->  drivers/net/wireless/wl3501_cs.c |  4 ++--
->  2 files changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
-> index ef9d605d8c88..774d8cac046d 100644
-> --- a/drivers/net/wireless/wl3501.h
-> +++ b/drivers/net/wireless/wl3501.h
-> @@ -389,16 +389,18 @@ struct wl3501_join_req {
->  	u16			    probe_delay;
->  	u8			    timestamp[8];
->  	u8			    local_time[8];
-> -	u16			    beacon_period;
-> -	u16			    dtim_period;
-> -	u16			    cap_info;
-> -	u8			    bss_type;
-> -	u8			    bssid[ETH_ALEN];
-> -	struct iw_mgmt_essid_pset   ssid;
-> -	struct iw_mgmt_ds_pset	    ds_pset;
-> -	struct iw_mgmt_cf_pset	    cf_pset;
-> -	struct iw_mgmt_ibss_pset    ibss_pset;
-> -	struct iw_mgmt_data_rset    bss_basic_rset;
-> +	struct {
-> +		u16			    beacon_period;
-> +		u16			    dtim_period;
-> +		u16			    cap_info;
-> +		u8			    bss_type;
-> +		u8			    bssid[ETH_ALEN];
-> +		struct iw_mgmt_essid_pset   ssid;
-> +		struct iw_mgmt_ds_pset	    ds_pset;
-> +		struct iw_mgmt_cf_pset	    cf_pset;
-> +		struct iw_mgmt_ibss_pset    ibss_pset;
-> +		struct iw_mgmt_data_rset    bss_basic_rset;
-> +	} req;
->  };
->  
->  struct wl3501_join_confirm {
-> diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-> index e149ef81d6cc..399d3bd2ae76 100644
-> --- a/drivers/net/wireless/wl3501_cs.c
-> +++ b/drivers/net/wireless/wl3501_cs.c
-> @@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
->  	struct wl3501_join_req sig = {
->  		.sig_id		  = WL3501_SIG_JOIN_REQ,
->  		.timeout	  = 10,
-> -		.ds_pset = {
-> +		.req.ds_pset = {
->  			.el = {
->  				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
->  				.len = 1,
-> @@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
->  		},
->  	};
->  
-> -	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
-> +	memcpy(&sig.req, &this->bss_set[stas].beacon_period, sizeof(sig.req));
+--- a/drivers/clk/clk-lmk04832.c
++++ b/drivers/clk/clk-lmk04832.c
+@@ -1159,6 +1159,7 @@ static int lmk04832_probe(struct spi_dev
+ 		if (ret) {
+ 			dev_err(lmk->dev, "missing reg property in child: %s\n",
+ 				child->full_name);
++			of_node_put(child);
+ 			goto err_disable_oscin;
+ 		}
 
-If not, then probably something like this should be added to make sure
-nothing unexpected happens to change structure sizes:
-
-BUILD_BUG_ON(sizeof(sig.req) != 72);
-
->  	return wl3501_esbq_exec(this, &sig, sizeof(sig));
->  }
->  
-> -- 
-> 2.27.0
-> 
-
--- 
-Kees Cook
