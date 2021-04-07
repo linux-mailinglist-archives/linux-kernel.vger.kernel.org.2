@@ -2,190 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D4535649C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C9135649F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 08:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349285AbhDGG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 02:56:04 -0400
-Received: from mga02.intel.com ([134.134.136.20]:62003 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349235AbhDGGz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 02:55:58 -0400
-IronPort-SDR: H5TtZ0hRCx2aklzeZ83miQR2vXuTqAAVGQdOOYPeQrjgmQuI3ou1A0+bJq1srLxPTgMo+5uiAQ
- ZMonmdvkejfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="180372050"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="180372050"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 23:55:49 -0700
-IronPort-SDR: Lb4njW5mZfdxwJqJITaT9NBKECGI458dmiuiFOOpMzdGnUcknGJQ+1zh5PZ9J6+8OUqdZ5tIZn
- 73cXyW92vr2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="519326286"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Apr 2021 23:55:47 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/4] usb: typec: Link all ports during connector registration
-Date:   Wed,  7 Apr 2021 09:55:55 +0300
-Message-Id: <20210407065555.88110-5-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210407065555.88110-1-heikki.krogerus@linux.intel.com>
-References: <20210407065555.88110-1-heikki.krogerus@linux.intel.com>
+        id S1349235AbhDGG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 02:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243717AbhDGG4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 02:56:54 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A09FC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Apr 2021 23:56:44 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id g35so7539534pgg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Apr 2021 23:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qlzTZxMrHlq9IaqoYKOJhu98bRmyXXyoDWHeXFeO+Y4=;
+        b=S7iJhWrBVnhGLodRiVAEYpbEsjKXcw36YgsCvXSjljjp6i6wKWJ9cYhc2vpHOm9yFT
+         SVcL3hqCEe14me2bFzG7Zei5iXci3bSEhBKMZ9pdEXeQADcsQzYuyCXILXut1qSEsWOs
+         Do71CGaJO3dntbwkxCovcRu5yK6r0e1BiFdmrWFRLpObGfsDWaPM0Kp+8wz5O8JZYRIR
+         ryRR9gEZ19ZYRP2I0fkJ+SNsNi9gGdSi0P9QbL6GIVGt2CGse0f4+CzXVPlb9fJaEiub
+         5pMy9O4jfSwlC2gkZHiVS0/i8B9X4qRpvGfRa3cUI/hndGF83/mgAqaUPoq3U91XR9z6
+         KMGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qlzTZxMrHlq9IaqoYKOJhu98bRmyXXyoDWHeXFeO+Y4=;
+        b=kjvQ1jFCs7s85tViEFVyqqgffU+xEH9l8mgnBrVS0vrzE/t1Oi3nHWdc++WCu2y0pc
+         nhanXqift/V0QKauA3dZwUMCJV/FTnd4OKHzuLj/7lkDUdtFm9B3gTQsh3xuh635pacX
+         Xcb6OghHSE2YFfNduj5Ig78sO7/dNeMG1kFOX63aWshemLwhyaCR5oUp77hm6TL7sMnk
+         9d8fjmYGotk6MmAztnVaXeX3QOxw52bhxCDS9mXhZuZChpZGPOHCr1LmYOM3r9c0TYzE
+         SnQLFUXUaV5JvwMGfizlkAs18q7uqwDZeEDhKaHgeoLYDvQFxoZNABNFKkL7U9cg6O/C
+         FISw==
+X-Gm-Message-State: AOAM5330tW50q7Nz5bA89v8X73XgIU2fcEP5J/2rmPxcXlPvb5i5gato
+        cO070/7Y97pRNvrKuDtFlEqD
+X-Google-Smtp-Source: ABdhPJxfVatsZMv7+MAExdQodk/gPS37IrjWs/+GZhw62k+votfbyNuu4FQhziXufV+UJfaUVxB/Mg==
+X-Received: by 2002:a63:48c:: with SMTP id 134mr1937231pge.347.1617778603893;
+        Tue, 06 Apr 2021 23:56:43 -0700 (PDT)
+Received: from work ([103.77.37.180])
+        by smtp.gmail.com with ESMTPSA id p5sm4315078pfg.85.2021.04.06.23.56.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 06 Apr 2021 23:56:43 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 12:26:39 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: your mail
+Message-ID: <20210407065639.GM8675@work>
+References: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The connectors may be registered after the ports, so the
-"connector" links need to be created for the ports also when
-ever a new connector gets registered.
+On Thu, Apr 01, 2021 at 02:16:09PM -0700, Bhaumik Bhatt wrote:
+> Subject: [PATCH v8 0/9] Updates to MHI channel handling
+> 
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/usb/typec/class.c       |  9 +++--
- drivers/usb/typec/class.h       |  4 +--
- drivers/usb/typec/port-mapper.c | 62 +++++++++++++++++++++++++++++++--
- 3 files changed, 68 insertions(+), 7 deletions(-)
+Subject is present in the body ;)
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index ff199e2d26c7b..f1c2d823c6509 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1601,7 +1601,6 @@ static void typec_release(struct device *dev)
- 	ida_destroy(&port->mode_ids);
- 	typec_switch_put(port->sw);
- 	typec_mux_put(port->mux);
--	free_pld(port->pld);
- 	kfree(port->cap);
- 	kfree(port);
- }
-@@ -2027,7 +2026,9 @@ struct typec_port *typec_register_port(struct device *parent,
- 		return ERR_PTR(ret);
- 	}
- 
--	port->pld = get_pld(&port->dev);
-+	ret = typec_link_ports(port);
-+	if (ret)
-+		dev_warn(&port->dev, "failed to create symlinks (%d)\n", ret);
- 
- 	return port;
- }
-@@ -2041,8 +2042,10 @@ EXPORT_SYMBOL_GPL(typec_register_port);
-  */
- void typec_unregister_port(struct typec_port *port)
- {
--	if (!IS_ERR_OR_NULL(port))
-+	if (!IS_ERR_OR_NULL(port)) {
-+		typec_unlink_ports(port);
- 		device_unregister(&port->dev);
-+	}
- }
- EXPORT_SYMBOL_GPL(typec_unregister_port);
- 
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index 52294f7020a8b..aef03eb7e1523 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -79,7 +79,7 @@ extern const struct device_type typec_port_dev_type;
- extern struct class typec_mux_class;
- extern struct class typec_class;
- 
--void *get_pld(struct device *dev);
--void free_pld(void *pld);
-+int typec_link_ports(struct typec_port *connector);
-+void typec_unlink_ports(struct typec_port *connector);
- 
- #endif /* __USB_TYPEC_CLASS__ */
-diff --git a/drivers/usb/typec/port-mapper.c b/drivers/usb/typec/port-mapper.c
-index 5bee7a97242fe..fae736eb0601e 100644
---- a/drivers/usb/typec/port-mapper.c
-+++ b/drivers/usb/typec/port-mapper.c
-@@ -34,7 +34,7 @@ static int acpi_pld_match(const struct acpi_pld_info *pld1,
- 	return 0;
- }
- 
--void *get_pld(struct device *dev)
-+static void *get_pld(struct device *dev)
- {
- #ifdef CONFIG_ACPI
- 	struct acpi_pld_info *pld;
-@@ -53,7 +53,7 @@ void *get_pld(struct device *dev)
- #endif
- }
- 
--void free_pld(void *pld)
-+static void free_pld(void *pld)
- {
- #ifdef CONFIG_ACPI
- 	ACPI_FREE(pld);
-@@ -217,3 +217,61 @@ void typec_unlink_port(struct device *port)
- 	class_for_each_device(&typec_class, NULL, port, port_match_and_unlink);
- }
- EXPORT_SYMBOL_GPL(typec_unlink_port);
-+
-+static int each_port(struct device *port, void *connector)
-+{
-+	struct port_node *node;
-+	int ret;
-+
-+	node = create_port_node(port);
-+	if (IS_ERR(node))
-+		return PTR_ERR(node);
-+
-+	if (!connector_match(connector, node)) {
-+		remove_port_node(node);
-+		return 0;
-+	}
-+
-+	ret = link_port(to_typec_port(connector), node);
-+	if (ret) {
-+		remove_port_node(node->pld);
-+		return ret;
-+	}
-+
-+	get_device(connector);
-+
-+	return 0;
-+}
-+
-+int typec_link_ports(struct typec_port *con)
-+{
-+	int ret = 0;
-+
-+	con->pld = get_pld(&con->dev);
-+	if (!con->pld)
-+		return 0;
-+
-+	ret = usb_for_each_port(&con->dev, each_port);
-+	if (ret)
-+		typec_unlink_ports(con);
-+
-+	return ret;
-+}
-+
-+void typec_unlink_ports(struct typec_port *con)
-+{
-+	struct port_node *node;
-+	struct port_node *tmp;
-+
-+	mutex_lock(&con->port_list_lock);
-+
-+	list_for_each_entry_safe(node, tmp, &con->port_list, list) {
-+		__unlink_port(con, node);
-+		remove_port_node(node);
-+		put_device(&con->dev);
-+	}
-+
-+	mutex_unlock(&con->port_list_lock);
-+
-+	free_pld(con->pld);
-+}
--- 
-2.30.2
+> MHI specification shows a state machine with support for STOP channel command
+> and the validity of certain state transitions. MHI host currently does not
+> provide any mechanism to stop a channel and restart it without resetting it.
+> There are also times when the device moves on to a different execution
+> environment while client drivers on the host are unaware of it and still
+> attempt to reset the channels facing unnecessary timeouts.
+> 
+> This series addresses the above areas to provide support for stopping an MHI
+> channel, resuming it back, improved documentation and improving upon channel
+> state machine handling in general.
+> 
+> This set of patches was tested on arm64 and x86_64 architecture.
+> 
 
+Series applied to mhi-next!
+
+Thanks,
+Mani
+
+> v8:
+> -Split the state machine improvements patch to three patches as per review
+> 
+> v7:
+> -Tested on x86_64 architecture
+> -Drop the patch "Do not clear channel context more than once" as issue is fixed
+> differently using "bus: mhi: core: Fix double dma free()"
+> -Update the commit text to better reflect changes on state machine improvements
+> 
+> v6:
+> -Dropped the patch which introduced start/stop transfer APIs for lack of users
+> -Updated error handling and debug prints on channel handling improvements patch
+> -Improved commit text to better explain certain patches based on review comments
+> -Removed references to new APIs from the documentation improvement patch
+> 
+> v5:
+> -Added reviewed-by tags from Hemant I missed earlier
+> -Added patch to prevent kernel warnings on clearing channel context twice
+> 
+> v4:
+> -Updated commit text/descriptions and addressed checkpatch checks
+> -Added context validity check before starting/stopping channels from new API
+> -Added patch to clear channel context configuration after reset/unprepare
+> 
+> v3:
+> -Updated documentation for channel transfer APIs to highlight differences
+> -Create separate patch for "allowing channel to be disabled from stopped state"
+> 
+> v2:
+> -Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+> -Added improved documentation to avoid confusion with the new APIs
+> -Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+> 
+> Bhaumik Bhatt (9):
+>   bus: mhi: core: Allow sending the STOP channel command
+>   bus: mhi: core: Clear context for stopped channels from remove()
+>   bus: mhi: core: Improvements to the channel handling state machine
+>   bus: mhi: core: Update debug messages to use client device
+>   bus: mhi: core: Hold device wake for channel update commands
+>   bus: mhi: core: Clear configuration from channel context during reset
+>   bus: mhi: core: Check channel execution environment before issuing
+>     reset
+>   bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+>   bus: mhi: Improve documentation on channel transfer setup APIs
+> 
+>  drivers/bus/mhi/core/init.c     |  22 ++++-
+>  drivers/bus/mhi/core/internal.h |  12 +++
+>  drivers/bus/mhi/core/main.c     | 190 ++++++++++++++++++++++++----------------
+>  include/linux/mhi.h             |  18 +++-
+>  4 files changed, 162 insertions(+), 80 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
