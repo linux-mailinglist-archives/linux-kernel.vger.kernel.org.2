@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F84356E97
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59407356E9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352898AbhDGO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S1352913AbhDGO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDGO2m (ORCPT
+        with ESMTP id S229772AbhDGO3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:28:42 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCBEC061756;
-        Wed,  7 Apr 2021 07:28:32 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso18245169otq.3;
-        Wed, 07 Apr 2021 07:28:32 -0700 (PDT)
+        Wed, 7 Apr 2021 10:29:34 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158DEC061756;
+        Wed,  7 Apr 2021 07:29:25 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id h136so3997136vka.7;
+        Wed, 07 Apr 2021 07:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jOETYTM8063hIe+H5kFUr3hMwnez+idh/fGpidnkrFU=;
-        b=LareH35xQvx6q7WindtheaqOLJg6+SkWSAntFgw7HjS3Tk4qDPoemJ1YOk85nmgPvg
-         9mZw56tpm53uQl29e+NuknOwYdP0xUGUxUvEzj64/Y7PD4nxPHMwswMAL8E4iHbcAhMx
-         h0MdSnsyeyH4HD8RzChFdMtN/SVH7ahCvfGaZEIguKsC0HUgs97KIN7GkKUfnrLM2q+p
-         MiRkxAMy9OTppt3tkoTAy1Zc4dPeODYOUi9GXRMbSxlEeRbbwdMytDy+G8hVjD1aj6yC
-         LVzR9U89e8uevanQxmVqNCGOgMvZJvLBAuD6ahPOCf7aN31WHqeQdfIWyETLDQl2tc04
-         +zlg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrhplHEW9q4d4F2AHFjRpj1n00z5X3YyF8zpTfRSZEQ=;
+        b=DW9Y5KjGvU2yBGp9bPuo/LtmusFtpNJ53EdSdllv8/hBrdn8yjuCk4TX21DjDIzCqs
+         8Epv8EhP7pkUSbtM2AGCrAi3H5cnasOs7yLUsdNqWnW+mYicauNf0x4oBHn6m0+3PWk8
+         0Sl94xjjsqigSqsj+NxQ55ZKShHmtqcJSM9UcpEsVTWbCzsGPZcJCA1YcR5WRVA4SJNa
+         L3Qbqg06CRduvti69UL1RiCjT3Pg5MEpmKjSVqWMb4WU1QuaqUS05rdXYgySLsoe8fYE
+         td96MHExqIAxSKRURHJ8YBjHSkCKtvCqI1vvkX8efLklahklx6jTvIp1JvS0wdGT4uQl
+         Hr1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=jOETYTM8063hIe+H5kFUr3hMwnez+idh/fGpidnkrFU=;
-        b=O+sUwYEZLXGk49XvVpKky91ioIhwz2qmw7xSIcuyDmrianZedtloujq91tX7IKOabl
-         I54ipugZrY5xl1HCaTUFz6c9MHo42qOyvOoey3+O6unZoiVv5S0/CsxHj3u2DMwGHsdf
-         5gNF3l4N6B+qj+rKgW7uAmY8b7lAThGr6jrWD1Vpc4JCKzNri+Wh9pThJ2wf7sO9b6Dq
-         Wtq6mmUn6Hf292eK8Gny9XNgLfUZG14Sbot0jQ3+I79Ufkbgvc0B2WmkpRbiVOlTQtRq
-         SPfNcNZv3qMFwY4MPHLfe5bK+aXzmZRS/gOwL7FwCLH7b+JqFSp0EvdBDXuzKZ4yUPRY
-         hlng==
-X-Gm-Message-State: AOAM532sewWqvpfSCiC4FZuswdJc4+55524+tS5YatmwCyXtKg8OmaFo
-        mwZE6em8CGWGgphSSNNw+1GSd70SfsCr
-X-Google-Smtp-Source: ABdhPJxYDEUlP0EObBbm9VfamGrvC+u2TKkp/NeoRSzuuBtqMWkEEaA6ECIMT4B8dpnH6MIjEYoYqQ==
-X-Received: by 2002:a9d:37b4:: with SMTP id x49mr3212457otb.237.1617805711619;
-        Wed, 07 Apr 2021 07:28:31 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id h24sm5501853otg.20.2021.04.07.07.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:28:30 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f036:ecd9:2bd0:ef09])
-        by serve.minyard.net (Postfix) with ESMTPSA id 89595180570;
-        Wed,  7 Apr 2021 14:28:29 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 09:28:28 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Wolfram Sang <wsa@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v2 0/3] Add Aspeed SSIF BMC driver
-Message-ID: <20210407142828.GE7166@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210330141029.20412-1-quan@os.amperecomputing.com>
- <20210402142124.GV507977@minyard.net>
- <0e7fceff-4a01-5cb0-72eb-8b47d598f1c3@os.amperecomputing.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrhplHEW9q4d4F2AHFjRpj1n00z5X3YyF8zpTfRSZEQ=;
+        b=Q7cgsf+q22dYJiC3A1quSnsadrE0Spx/lIMV4VQzk//c7qGgQdkszdszjP8UNVSLkq
+         RtkUsXBX6tk6hj4ZTdUDT+GI5EW3x3nUGXhqyUyntt3qUNA46XpwLgBZ0A5dyLQ+onN+
+         uvmaRFop3s56fBACUcV8jK53GVGxL+PzYwLvTEZFaZTaF2ehBJd5VTnM+nSjspGl0bfJ
+         6QU7tB0GbqdQoAPHcm1CjNZ8v8L1oAhkzHZVHb4CTAma7VbH9FhNAt+7W61m00BtKf5s
+         YfJrqx0/SlzqCaGcScBJYZCIrM9YqmWjvOE2G+2dr7oA4CYNdQXHEl4NWScUEPQ8pTcT
+         uL2A==
+X-Gm-Message-State: AOAM5311SXVaPUrDuOlgg12b4dMkYjTQJ+WaQYBDQq94lqMcxgoXII43
+        AidK19cIm7aexx6djXRWeIo/fErTU+ABgBugRmo=
+X-Google-Smtp-Source: ABdhPJy6Hg+rsTi1P6bo6wi7EKEqiwOO7Rb2mBxRJDCxdvZywLSUQAaS33Vao9Z7pxmRUnNi1vgVo8GSBPCu+3i9Gyg=
+X-Received: by 2002:a1f:5682:: with SMTP id k124mr1995507vkb.20.1617805764137;
+ Wed, 07 Apr 2021 07:29:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e7fceff-4a01-5cb0-72eb-8b47d598f1c3@os.amperecomputing.com>
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+ <YGwKpmPkn5xIxIyx@hirez.programming.kicks-ass.net> <20210407094224.GA3393992@infradead.org>
+In-Reply-To: <20210407094224.GA3393992@infradead.org>
+From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>
+Date:   Wed, 7 Apr 2021 16:29:12 +0200
+Message-ID: <CAHB2gtROGuoNzv5f9QrhWX=3ZtZmUM=SAjYhKqP7dTiTTQwkqA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:09:50PM +0700, Quan Nguyen wrote:
-> Hi Corey,
-> 
-> Thank you for reviewing
-> I'll put my respond inline below.
-> 
-> -Quan
-> 
-> On 02/04/2021 21:21, Corey Minyard wrote:
-> > On Tue, Mar 30, 2021 at 09:10:26PM +0700, Quan Nguyen wrote:
-> > > This series add support for the Aspeed specific SSIF BMC driver which
-> > > is to perform in-band IPMI communication with the host in management
-> > > (BMC) side.
-> > 
-> > I don't have any specific feedback for this, but I'm wondering if it's
-> > really necessary.
-> > 
-> > Why can't the BMC just open the I2C device and use it?  Is there any
-> > functionality that this provides that cannot be accomplished from
-> > userland access to the I2C device?  I don't see any.
-> > 
-> > If it tied into some existing framework to give abstract access to a BMC
-> > slave side interface, I'd be ok with this.  But I don't see that.
-> > 
-> 
-> The SSIF at the BMC side acts as an I2C slave and we think that the kernel
-> driver is unavoidable to handle the I2c slave events
-> (https://www.kernel.org/doc/html/latest/i2c/slave-interface.html)
-> 
-> And to make it works with existing OpenBMC IPMI stack, a userspace part,
-> ssifbridge, is needed (https://github.com/openbmc/ssifbridge). This
-> ssifbridge is to connect this driver with the OpenBMC IPMI stack so the IPMI
-> stack can communicate via SSIF channel in similar way that was implemented
-> with BT and KCS (ie: btbridge/kcsbridge and its corespondent kernel drivers
-> (https://github.com/openbmc/btbridge and
-> https://github.com/openbmc/kcsbridge))
+On Wed, Apr 7, 2021 at 11:43 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Apr 06, 2021 at 09:15:50AM +0200, Peter Zijlstra wrote:
+> > Anyway, given you have such a crap architecture (and here I thought
+> > RISC-V was supposed to be a modern design *sigh*), you had better go
+> > look at the sparc64 atomic implementation which has a software backoff
+> > for failed CAS in order to make fwd progress.
+>
+> It wasn't supposed to be modern.  It was supposed to use boring old
+> ideas.  Where it actually did that it is a great ISA, in parts where
+> academics actually tried to come up with cool or state of the art
+> ideas (interrupt handling, tlb shootdowns, the totally fucked up
+> memory model) it turned into a trainwreck.
 
-Dang, I don't know why there's not a generic userland interface for
-the slave.  And I've made this mistake before :(.
+Gentlemen, please rethink your wording.
+RISC-V is neither "crap" nor a "trainwreck", regardless if you like it or not.
 
-Anyway, you are right, you need a driver.  I'll review.
+The comparison with sparc64 is not applicable, as sparc64 does not
+have LL/SC instructions.
 
--corey
+Further, it is not the case that RISC-V has no guarantees at all.
+It just does not provide a forward progress guarantee for a
+synchronization implementation,
+that writes in an endless loop to a memory location while trying to
+complete an LL/SC
+loop on the same memory location at the same time.
+If there's a reasonable algorithm, that relies on forward progress in this case,
+then we should indeed think about that, but I haven't seen one so far.
+The whole MCF lock idea is to actually spin on different memory
+locations per CPU
+to improve scalability (reduce cacheline bouncing). That's a clear indicator,
+that well-scaling synchronization algorithms need to avoid contended cache lines
+anyways.
 
-> 
-> > Unless there is a big need to have this in the kernel, I'm against
-> > including this and would suggest you do all this work in userland.
-> > Perhaps write a library.  Sorry, but I'm trying to do my part to reduce
-> > unnecessary things in the kernel.
-> > 
-> > Thanks,
-> > 
-> > -corey
-> > 
+RISC-V defines LR/SC loops consisting of up to 16 instructions as
+constrained LR/SC loops.
+Such constrained LR/SC loops provide the required forward guarantees,
+that are expected
+(similar to what other architectures, like AArch64, have).
+
+What RISC-V does not have is sub-word atomics and if required, we
+would have to implement
+them as LL/SC sequences. And yes, using atomic instructions is
+preferred over using LL/SC,
+because atomics will tend to perform better (less instructions and
+less spilled registers).
+But that actually depends on the actual ISA implementation.
+
+Respectfully,
+Christoph
