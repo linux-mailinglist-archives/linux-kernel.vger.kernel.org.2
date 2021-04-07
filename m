@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45FC3566FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6ACD356700
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 10:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348610AbhDGIjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 04:39:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231909AbhDGIjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 04:39:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6469B61177;
-        Wed,  7 Apr 2021 08:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617784778;
-        bh=f4c3ezjYH23cJMIbwrMMR0u7/xkmBRyfpVCol87Gd6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9NhKvHdDc6hrVG3JwQf+J8PrYuUEy1DiNKkWcsDoacJxBNkBkLA6W0V3i9Qse9Cl
-         5Jpi+ksbUqPb1Q4G6my3HlOot3VMZz5j505PLMKRC/m2vhxjSxjHwptoCLiaMtGGIm
-         F1f/7Ms8nceHeChzLqLDiTyD8/AQ9A0QtsTE+ESo=
-Date:   Wed, 7 Apr 2021 10:39:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pavle Rohalj <pavle.rohalj@gmail.com>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/49]  staging: sm750fb: Update enum values in dpms
- to snake case
-Message-ID: <YG1vx/9FGXcApNEZ@kroah.com>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
- <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
- <YG1eFxQDP6dITlXA@kroah.com>
- <YG1tBSqVTwKQChHV@localhost.localdomain>
+        id S1349627AbhDGIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 04:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231909AbhDGIlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 04:41:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB30C06174A;
+        Wed,  7 Apr 2021 01:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pm5+BhR2cUpRyMJC2aIbNNtM1LjZJ9DWAVkZw86zhBE=; b=CI5xZ1RXdGdwTpFA766l3JgwrG
+        zo8qhk2L0zX9WsU/pD2KeXwR7ZZTV4YKaE8pXlTiusWDAOV4pdb6Vk/bTOwxJvLeqlciBH0xUjNVI
+        Y8nZ6R0gfcYma3Omn2gStLFmxgcQ+dbIt4+r8E2qgQ1P9sz/wYzyNW8vmdzanUU7VqBiHKVKc8sMV
+        1bCzhFMdws7SmGj0oIRWmQOMEhz6NxcNFmf3cP4Man4zI/x5gRrr4Ll9FusgaPXF4UHMwWjSlWvdY
+        T3Lvl+/EARw7NcJ0m08ozE30L54q7PEPHQLYUwzdL/hFk/tNNQQVbg0aJSbKfGdh1XLSnoAY0i/4Y
+        7CvDZlcQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lU3jG-00EBC2-NY; Wed, 07 Apr 2021 08:40:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 176E9300119;
+        Wed,  7 Apr 2021 10:40:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0237424403D8F; Wed,  7 Apr 2021 10:40:00 +0200 (CEST)
+Date:   Wed, 7 Apr 2021 10:40:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v4 06/16] KVM: x86/pmu: Reprogram guest PEBS event to
+ emulate guest PEBS counter
+Message-ID: <YG1v4KFCPSoKcoyd@hirez.programming.kicks-ass.net>
+References: <20210329054137.120994-1-like.xu@linux.intel.com>
+ <20210329054137.120994-7-like.xu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG1tBSqVTwKQChHV@localhost.localdomain>
+In-Reply-To: <20210329054137.120994-7-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:27:49AM -0700, Pavle Rohalj wrote:
-> On Wed, Apr 07, 2021 at 09:24:07AM +0200, Greg KH wrote:
-> > On Tue, Apr 06, 2021 at 11:36:16PM -0700, Pavle Rohalj wrote:
-> > > Fix "Avoid CamelCase" checkpatch.pl checks for values in
-> > > enum dpms.
-> > > 
-> > > Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
-> > > ---
-> > >  drivers/staging/sm750fb/ddk750_power.h | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/sm750fb/ddk750_power.h b/drivers/staging/sm750fb/ddk750_power.h
-> > > index 7002567a47d2..4756db1ccb9c 100644
-> > > --- a/drivers/staging/sm750fb/ddk750_power.h
-> > > +++ b/drivers/staging/sm750fb/ddk750_power.h
-> > > @@ -3,10 +3,10 @@
-> > >  #define DDK750_POWER_H__
-> > >  
-> > >  enum dpms {
-> > > -	crtDPMS_ON = 0x0,
-> > > -	crtDPMS_STANDBY = 0x1,
-> > > -	crtDPMS_SUSPEND = 0x2,
-> > > -	crtDPMS_OFF = 0x3,
-> > > +	CRT_DPMS_ON = 0x0,
-> > > +	CRT_DPMS_STANDBY = 0x1,
-> > > +	CRT_DPMS_SUSPEND = 0x2,
-> > > +	CRT_DPMS_OFF = 0x3,
-> > >  };
-> > 
-> > And the build does not break with this change?  If so, then why are
-> > these here at all?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> I do not think so, I was able to build and load the driver with these
-> changes. It looks like this enum is used as a type of the state parameter of
-> ddk750_set_dpms function, but the three defined constants are never referenced. 
-> Should we get rid of dpms enum and change the type of the parameter to an unsigned integer?
+On Mon, Mar 29, 2021 at 01:41:27PM +0800, Like Xu wrote:
 
-If the enum is used, but the names are not used, that's not good and
-should be fixed up.
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 827886c12c16..3509b18478b9 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -74,11 +74,20 @@ static void kvm_perf_overflow_intr(struct perf_event *perf_event,
+>  {
+>  	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
+>  	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
+> +	bool skip_pmi = false;
+>  
+>  	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi)) {
+> -		__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
+> +		if (perf_event->attr.precise_ip) {
+> +			/* Indicate PEBS overflow PMI to guest. */
+> +			skip_pmi = test_and_set_bit(GLOBAL_STATUS_BUFFER_OVF_BIT,
+> +				(unsigned long *)&pmu->global_status);
 
-thanks,
+Is there actual concurrency here, or did you forget to type __?
 
-greg k-h
+And in case you're using vim, use something like: set cino=(0:0
+
+> +		} else
+> +			__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
+>  		kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
+>  
+> +		if (skip_pmi)
+> +			return;
+> +
+>  		/*
+>  		 * Inject PMI. If vcpu was in a guest mode during NMI PMI
+>  		 * can be ejected on a guest mode re-entry. Otherwise we can't
