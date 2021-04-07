@@ -2,83 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E8C356E35
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9BC356E3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348130AbhDGOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:11:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:57824 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234134AbhDGOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:11:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BFAA1FB;
-        Wed,  7 Apr 2021 07:11:43 -0700 (PDT)
-Received: from [10.57.54.6] (unknown [10.57.54.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 590DC3F792;
-        Wed,  7 Apr 2021 07:11:40 -0700 (PDT)
-From:   Pierre <pierre.gondois@arm.com>
-Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in
- eas
-To:     Xuewen Yan <xuewen.yan94@gmail.com>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>, qperret@google.com
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
-References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
- <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
- <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com>
-Message-ID: <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
-Date:   Wed, 7 Apr 2021 15:11:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S1348120AbhDGONj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:13:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11204 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344132AbhDGONa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 10:13:30 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137E3kt8119026;
+        Wed, 7 Apr 2021 10:13:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=aqnqIgMzXfCzMFs55KYzIHDb9lF9/sDiNyVnHLTi510=;
+ b=dHczxa3EpQ1D/kAE51b8m5n8ZYqfQLCquGRWTkmSR09mr3Xa3kOcN5UuyXQW8GqOU90l
+ ynCFAuTu/yTFrVMA9pAmn3WQtCQ3JGZexkdN6t+IyNCZ4MyDVlX50reI6Hpvu5JAwjs/
+ /oLyjI5OYft3lx/WCspz2n6IyaekuqaFJoKS94/AM79zqAg19sHc0+C+1wFYkSEFyup3
+ MTOq3TurGBjShOfJJWnb47FDYKaoRnmJXPbx+Bu9H07shaw0OC4ET/5KIEOKv+FLs/ja
+ KLKZ9ZUSM9RXO7gIbmZNiuiHmF2LMxXACWF7Lt/z6NAB6ub7y4fztxNoLGhnKH+qSLW8 UA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rw6kb4bq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:13:08 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137E3tHL119953;
+        Wed, 7 Apr 2021 10:13:08 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rw6kb4b7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:13:08 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137ECb7Y030808;
+        Wed, 7 Apr 2021 14:13:07 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03dal.us.ibm.com with ESMTP id 37rvc2fhqy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 14:13:07 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137ED6Oj19661130
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 14:13:06 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50304136055;
+        Wed,  7 Apr 2021 14:13:05 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B636136051;
+        Wed,  7 Apr 2021 14:13:04 +0000 (GMT)
+Received: from [9.211.151.211] (unknown [9.211.151.211])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 14:13:04 +0000 (GMT)
+Subject: Re: crashkernel reservation failed - No suitable area found on a
+ cortina/gemini SoC
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>, ebiederm@xmission.com,
+        kexec@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+References: <YG2rfzRvHIZKXkf/@Red>
+From:   Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
+Message-ID: <34ff1fcc-e9ee-02c2-b2a8-d98a24ce94c3@linux.vnet.ibm.com>
+Date:   Wed, 7 Apr 2021 07:13:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YG2rfzRvHIZKXkf/@Red>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K2XIyBGV-_XjVZPnaJyeCNhAdRI8bU6a
+X-Proofpoint-ORIG-GUID: O9DCT7bLto1-O2_YcNCdk5zpF0o6jX2f
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 phishscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104070099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-> I test the patch, but the overflow still exists.
-> In the "sched/fair: Use pd_cache to speed up find_energy_efficient_cpu()"
-> I wonder why recompute the cpu util when cpu==dst_cpu in compute_energy(),
-> when the dst_cpu's util change, it also would cause the overflow.
+On 4/7/2021 05:54, Corentin Labbe wrote:
+> Hello
+> 
+> I try to do kexec on a cortina/gemini SoC.
+> On a "normal" boot, kexec fail to find memory so I added crashkernel=8M to cmdline. (kernel size is ~6M).
+> But now, kernel fail to reserve memory:
+> Load Kern image from 0x30020000 to 0x800000 size 7340032
+> Booting Linux on physical CPU 0x0
+> Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #98 PREEMPT Wed Apr 7 14:14:08 CEST 2021
+> CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
+> CPU: VIVT data cache, VIVT instruction cache
+> OF: fdt: Machine model: Edimax NS-2502
+> Memory policy: Data cache writeback
+> Zone ranges:
+>    Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+>    HighMem  empty
+> Movable zone start for each node
+> Early memory node ranges
+>    node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+> Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+> crashkernel reservation failed - No suitable area found.
+> Built 1 zonelists, mobility grouping on.  Total pages: 32512
+> Kernel command line: console=ttyS0,19200n8 ip=dhcp crashkernel=8M
+> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+> mem auto-init: stack:off, heap alloc:off, heap free:off
+> Memory: 119476K/131072K available (5034K kernel code, 579K rwdata, 1372K rodata, 3020K init, 210K bss, 11596K reserved, 0K cma-reserved, 0K highmem)
+> SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> 
+> What can I do ?
+> 
+> Thanks
+> Regards
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
-The patches aim to cache the energy values for the CPUs whose 
-utilization is not modified (so we don't have to compute it multiple 
-times). The values cached are the 'base values' of the CPUs, i.e. when 
-the task is not placed on the CPU. When (cpu==dst_cpu) in 
-compute_energy(), it means the energy values need to be updated instead 
-of using the cached ones.
+Hello Corentin,
 
-You are right, there is still a possibility to have a negative delta 
-with the patches at:
-https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129
-Adding a check before subtracting the values, and bailing out in such 
-case would avoid this, such as at:
-https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/
+I see much larger crashkernel=xxM being shown here
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kdump/kdump.rst
+and from many of my other searches.
 
-I think a similar modification should be done in your patch. Even though 
-this is a good idea to group the calls to compute_energy() to reduce the 
-chances of having updates of utilization values in between the 
-compute_energy() calls,
-there is still a chance to have updates. I think it happened when I 
-applied your patch.
+Here is an interesting article on kdump for ARM-32
+https://kaiwantech.wordpress.com/2017/07/13/setting-up-kdump-and-crash-for-arm-32-an-ongoing-saga/
 
-About changing the delta(s) from 'unsigned long' to 'long', I am not 
-sure of the meaning of having a negative delta. I thing it would be 
-better to check and fail before it happens instead.
 
-Regards
+Here is the kernel command line reference
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kernel-parameters.txt?h=v5.11#n732
 
+I feel your frustrations too.
+
+
+-- 
+Bruce
