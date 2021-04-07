@@ -2,135 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AA5356D2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51E0356D38
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235977AbhDGNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:22:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40544 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232568AbhDGNWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:22:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2220AB08C;
-        Wed,  7 Apr 2021 13:21:56 +0000 (UTC)
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>
-Cc:     stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20210401181741.168763-1-surenb@google.com>
- <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-Message-ID: <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz>
-Date:   Wed, 7 Apr 2021 15:21:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S242895AbhDGNXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:23:19 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:17968 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233053AbhDGNXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:23:10 -0400
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 137DMab6004819;
+        Wed, 7 Apr 2021 22:22:36 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 137DMab6004819
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617801756;
+        bh=Usra8KcBYgGZoqiKSYtDpYF/LC0cwPSDqgPA0XLdu0U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kf/VzT3qMbMcvWtm2f4X35CJ2YRHwIRNAR+wfKuAd2HPMTg2UqpLg+3vczEjyvQ17
+         lC03gDJdWN7SPtrw2xBkJKVfnThUHZxSmHo1O701c7vh2e55L6YXdUiCAjYW1K7WxZ
+         08Ld4ItN6MzcVqe13Rp2CdP+WqL05VNEyrcVAWZWteR++jCWtgMrrTd3vdBTNeKH+G
+         lRumuXWlo3Du9++4rN2GAN/Z9SC4wgbRVLVq4Q2TzrfEniUmnx1UqK2XmoC7ThkuA/
+         jkz+56D3P0qntBmoybHbd/oVYydmR/0k5BW+PU2iCvneRLzkZ0nub4y8oVH1PqcZP9
+         a5yfGYOLypjmg==
+X-Nifty-SrcIP: [209.85.215.172]
+Received: by mail-pg1-f172.google.com with SMTP id t22so5903083pgu.0;
+        Wed, 07 Apr 2021 06:22:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532Qql37xHrpMq5+gApKeaa5P59Zgyln4dYYtPbek+m9U2JNpwLQ
+        SD6WuSlFBrzHrlu3KM5RVbSXcbTDeElMuXrh5qI=
+X-Google-Smtp-Source: ABdhPJwk9qS0BMUYh5/qdYqoHXSyq4h3xksMbErCbs90p3+A591ceXgm4FOBcMs5kvsm1Qs6lHOiJttPXHcA8V+G7cw=
+X-Received: by 2002:a65:428b:: with SMTP id j11mr3299165pgp.47.1617801755787;
+ Wed, 07 Apr 2021 06:22:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+ <20210407053419.449796-8-gregkh@linuxfoundation.org> <CAK7LNASbZ4hY8ypd8TegnRpxQUM-HB84n2VHUmu=k_RxwCnpXg@mail.gmail.com>
+ <YG2tvk010wRkIVSX@kroah.com>
+In-Reply-To: <YG2tvk010wRkIVSX@kroah.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 7 Apr 2021 22:21:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARewRB3JENY1vXecz23W+XtOuO4MP4MNTPUx1KKRLKQGA@mail.gmail.com>
+Message-ID: <CAK7LNARewRB3JENY1vXecz23W+XtOuO4MP4MNTPUx1KKRLKQGA@mail.gmail.com>
+Subject: Re: [PATCH 07/20] kbuild: scripts/install.sh: allow for the version number
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 8:59 PM, Linus Torvalds wrote:
-> On Thu, Apr 1, 2021 at 11:17 AM Suren Baghdasaryan <surenb@google.com> wrote:
+On Wed, Apr 7, 2021 at 10:04 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Apr 07, 2021 at 08:05:23PM +0900, Masahiro Yamada wrote:
+> > On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > Some architectures put the version number by default at the end of the
+> > > files that are copied, so add support for this to be set by arch type.
+> > >
+> > > Odds are one day we should change this for x86, but let's not break
+> > > anyone's systems just yet.
+> > >
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > >  scripts/install.sh | 15 +++++++++++++--
+> > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/scripts/install.sh b/scripts/install.sh
+> > > index 72dc4c81013e..934619f81119 100644
+> > > --- a/scripts/install.sh
+> > > +++ b/scripts/install.sh
+> > > @@ -60,8 +60,19 @@ else
+> > >         base=vmlinux
+> > >  fi
+> > >
+> > > -install "$2" "$4"/"$base"
+> > > -install "$3" "$4"/System.map
+> > > +# Some architectures name their files based on version number, and
+> > > +# others do not.  Call out the ones that do not to make it obvious.
+> > > +case "${ARCH}" in
+> > > +       x86)
+> > > +               version=""
+> > > +               ;;
+> > > +       *)
+> > > +               version="-${1}"
+> > > +               ;;
+> > > +esac
+> > > +
+> > > +install "$2" "$4"/"$base""$version"
+> >
+> >
+> > Too many quotes are eye sore.
+> >
+> >
+> >     install "$2" "$4/$base$version"
+> >
+> > looks cleaner in my opinion.
+> >
+> > Shell correctly understands the end of each
+> > variable because a slash or a dollar
+> > cannot be a part of a variable name.
+>
+> Good idea, I usually just default to "quote everything!" when dealing
+> with bash variables.  I'll fix this up.
+>
+> Oh, any preference for "$2" vs. "${2}"?  I don't care either way but I
+> couldn't tell what is the normal kernel style these days.
 
-Thanks Suren for bringing this up!
 
->> We received a report that the copy-on-write issue repored by Jann Horn in
->> https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
->> reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
->> coded in vmsplice.c).
+I do not see a well-defined coding style guideline
+for shell scripts.
 
-Note that even upstream AFAIK still has the issue unfixed when Jann's reproducer
-is converted to use THPs, as Andrea has shown in
-https://lore.kernel.org/linux-mm/X%2FjgLGPgPb+Xms1t@redhat.com/
+If you want to know my personal preference,
+I use "$2" without braces.
 
-> Gaah.
-> 
->> I confirmed this and also that the issue was not
->> reproducible with 5.10 kernel. I tracked the fix to the following patch
->> introduced in 5.9 which changes the do_wp_page() logic:
->>
->> 09854ba94c6a 'mm: do_wp_page() simplification'
-> 
-> The problem here is that there's a _lot_ more patches than the few you
-> found that fixed various other cases (THP etc).
-> 
->> I backported this patch (#2 in the series) along with 2 prerequisite patches
->> (#1 and #4) that keep the backports clean and two followup fixes to the main
->> patch (#3 and #5). I had to skip the following fix:
->>
->> feb889fb40fa 'mm: don't put pinned pages into the swap cache'
->>
->> because it uses page_maybe_dma_pinned() which does not exists in earlier
->> kernels. Because pin_user_pages() does not exist there as well, I *think*
->> we can safely skip this fix on older kernels, but I would appreciate if
->> someone could confirm that claim.
-> 
-> Hmm. I think this means that swap activity can now break the
-> connection to a GUP page (the whole pre-pinning model), but it
-> probably isn't a new problem for 4.9/4.19.
-> 
-> I suspect the test there should be something like
-> 
->         /* Single mapper, more references than us and the map? */
->         if (page_mapcount(page) == 1 && page_count(page) > 2)
->                 goto keep_locked;
-> 
-> in the pre-pinning days.
-> 
-> But I really think that there are a number of other commits you're
-> missing too, because we had a whole series for THP fixes for the same
-> exact issue.
-> 
-> Added Peter Xu to the cc, because he probably tracked those issues
-> better than I did.
 
-Let me shamelessly plug these links for illustrating what kind of minefield we
-would be going into backporting this. Also for references what not to miss, and
-what may still become broken afterwards:
+Thanks.
 
-https://lwn.net/Articles/849638/
-https://lwn.net/Articles/849876/
 
-> So NAK on this for now, I think this limited patch-set likely
-> introduces more problems than it fixes.
+>
+> thanks for all of the review, much appreciated!
 
-I personally think there are only two options safe enough for stable backports
-(so that not more harm is caused than actually prevented).
+My pleasure.
 
-1) Ignore the issue (outside of Android at least). The security model of zygote
-is unusual. Where else a parent of fork() doesn't trust the child, which is the
-same binary?
+>
+> greg k-h
 
-BTW, I think the CVE description is very misleading:
-https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-29374
 
-"does not properly consider the semantics of read operations and therefore can
-grant unintended write access" - the bug was never about an unintended write
-access, but about an info leak from parent to child, no?
 
-2) For backports go with the original approach of 17839856fd58 ("gup: document
-and work around "COW can break either way" issue"), thus break COW during the
-GUP. But only for vmplice() so that nothing else gets broken. I think 5.4 stable
-(another LTS) actually backported only 17839856fd58 out of everything else, so
-it should have even the THP case covered, but its userfaultfd() is now probably
-broken...
-
->         Linus
-> 
-
+-- 
+Best Regards
+Masahiro Yamada
