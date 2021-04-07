@@ -2,94 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B9E356DA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7347356DA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 15:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245734AbhDGNoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 09:44:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29446 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236584AbhDGNoE (ORCPT
+        id S236546AbhDGNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 09:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233321AbhDGNoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:44:04 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137DXNF7150093;
-        Wed, 7 Apr 2021 09:43:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=ut34vTc6pDXsycRccgnTEyFOYJEGJnIMiBKnzo/o+K4=;
- b=N4oe9t7MN4uSn/z10cv4wBQFnTmfUyITLJTKWCHqm2Exard1eZ4O+B5Y79K2tpBAcU8+
- ZyRgxqTupJmNqNHe4rCdqgrMqJwHwyPgVmLMkHR2OmzBJoNJJiPtjtPXtId8ECbS78dA
- c7JTH7PQ/3h3tRbPnJUfCDNezvT7N1cWfET/Cfy5MdXTumbulokBlWPKLrnwFY27mLSc
- NjUlYG88Y33O5x0Gx3vZCIvaEL5NEtZYjd+cWGRb6r+hIKyaYXU2CqVBfDnqZIIdnuxf
- 1C5iz0F9VdLclHnAXjowVvY9r1Kgav3mlOKtbJs1Eqt6Bs2gkYglmIC650CkebFGkjF3 FQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf0gs9j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 09:43:50 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137DhTpK014113;
-        Wed, 7 Apr 2021 13:43:48 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 37rvbw0dkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Apr 2021 13:43:48 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137Dhkh123790020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Apr 2021 13:43:46 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 486735204F;
-        Wed,  7 Apr 2021 13:43:46 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.199.44.82])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 175D65204E;
-        Wed,  7 Apr 2021 13:43:44 +0000 (GMT)
-Date:   Wed, 7 Apr 2021 19:13:42 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210407134342.GA1386511@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <YG2diKMPNSK2cMyG@dhcp22.suse.cz>
+        Wed, 7 Apr 2021 09:44:54 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0859BC061756;
+        Wed,  7 Apr 2021 06:44:44 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p12so9092617pgj.10;
+        Wed, 07 Apr 2021 06:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yvoTrhwWmXyM0wgHP8pY/H3NzCMF21CuCGmfBMdW+Vs=;
+        b=DoKAZLxODOMVxOKmpKVH+qV6lHmQ9tHVmr6Z/OdhuA3EHOK4iTP/OpoG/KhjduHuET
+         RMB5XGOCZzKBofrSD0EfLhyA3C6Sd87ftvlOWlS1KiJxCQQEHyHjae/nGhQ6TRZYq+uk
+         yOKjdaQpPQZe7+V5NrMtri+Wed+IRpTbJ4jr8ipBGKZPol7ctA/EQp9cLbL6/QEp0q2Z
+         Z6XzZhQyoAcqdvijFEdm78ptP8OWvPHCTgwR44bwaJR826quPjMH3lshrcAssPz+UmCF
+         zNhhroAlF+7bCUjedb447o3Cuhf5gIe01iffw5SVEQFWb+JJOIqLgaVeg4kqE3QCo7DB
+         e7mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yvoTrhwWmXyM0wgHP8pY/H3NzCMF21CuCGmfBMdW+Vs=;
+        b=Bs1HrocFpfvz0f6P91b6fDHx9wQfaLjzaPyCbzko48xMAJbcJc6ILH6h7O0eMLuQOS
+         QK7e4vDDlm81/oShZR7ez+Jfl6PyZJcGkQcgEjT/HashhspiMRSrlOdeqJEZkJTN4rB6
+         o5tQ3cQ9Vn0iWZl/N+lTCKrX6Mmap4p898nR9aijlyutWGM3iYAnVa9lVi6urFJliC+T
+         EL/bN2vGVh9X/iNxs+FAhxvCw70tvg51reOTZ5Fn7RLRvEeFXeFsNOpP0h84Eeys4kYW
+         BtwJ3cyd5s/q7933zeTg9IkRBiN5Wj+D38LYpi5qckLmGMq7mXUWyRrLQ5tOl/naODCy
+         QigQ==
+X-Gm-Message-State: AOAM5305BFToT49CSP4Q//EvsOthpynvBbe8fAnHjZsFSC8AJGSgAnFl
+        iHZqty0hgZlOwGBFpXR6llc=
+X-Google-Smtp-Source: ABdhPJzRyVqodpiDGZq1wRg0jF6R5KocBXyhlIs+hVvasRMzKMsXIekD1S9q/Z3qKsZhIAOPWkeGqw==
+X-Received: by 2002:a63:ab05:: with SMTP id p5mr3379513pgf.149.1617803083467;
+        Wed, 07 Apr 2021 06:44:43 -0700 (PDT)
+Received: from localhost ([103.77.152.190])
+        by smtp.gmail.com with ESMTPSA id b1sm6304272pgf.84.2021.04.07.06.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 06:44:43 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 19:13:43 +0530
+From:   "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        alex.williamson@redhat.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <20210407134343.6u2vbxavhes32zwj@archlinux>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
+ <YGW8Oe9jn+n9sVsw@unreal>
+ <20210401105616.71156d08@omen>
+ <YGlzEA5HL6ZvNsB8@unreal>
+ <20210406081626.31f19c0f@x1.home.shazbot.org>
+ <YG1eBUY0vCTV+Za/@unreal>
+ <20210407082356.53subv4np2fx777x@archlinux>
+ <YG2l+AbQW1N0bbQ9@unreal>
+ <20210407130601.aleyww5d5mttitry@archlinux>
+ <YG21k6/4QQNrw41S@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG2diKMPNSK2cMyG@dhcp22.suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eic6vawrVTddkbSgnSTIykSKr_OQiEmN
-X-Proofpoint-ORIG-GUID: eic6vawrVTddkbSgnSTIykSKr_OQiEmN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=918 mlxscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104070094
+In-Reply-To: <YG21k6/4QQNrw41S@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:54:48PM +0200, Michal Hocko wrote:
-> On Mon 05-04-21 11:18:48, Bharata B Rao wrote:
-> > Hi,
-> > 
-> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
-> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
-> > consumption increases quite a lot (around 172G) when the containers are
-> > running. Most of it comes from slab (149G) and within slab, the majority of
-> > it comes from kmalloc-32 cache (102G)
-> 
-> Is this 10k cgroups a testing enviroment or does anybody really use that
-> in production? I would be really curious to hear how that behaves when
-> those containers are not idle. E.g. global memory reclaim iterating over
-> 10k memcgs will likely be very visible. I do remember playing with
-> similar setups few years back and the overhead was very high.
+On 21/04/07 04:37PM, Leon Romanovsky wrote:
+> On Wed, Apr 07, 2021 at 06:36:01PM +0530, ameynarkhede03@gmail.com wrote:
+> > On 21/04/07 03:30PM, Leon Romanovsky wrote:
+> > > On Wed, Apr 07, 2021 at 01:53:56PM +0530, ameynarkhede03@gmail.com wrote:
+> > > > On 21/04/07 10:23AM, Leon Romanovsky wrote:
+> > > > > On Tue, Apr 06, 2021 at 08:16:26AM -0600, Alex Williamson wrote:
+> > > > > > On Sun, 4 Apr 2021 11:04:32 +0300
+> > > > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > > On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
+> > > > > > > > On Thu, 1 Apr 2021 15:27:37 +0300
+> > > > > > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
+> > > > > > > > > > Slot resets are bus resets with additional logic to prevent a device
+> > > > > > > > > > from being removed during the reset. Currently slot and bus resets have
+> > > > > > > > > > separate implementations in pci.c, complicating higher level logic. As
+> > > > > > > > > > discussed on the mailing list, they should be combined into a generic
+> > > > > > > > > > function which performs an SBR. This change adds a function,
+> > > > > > > > > > pci_reset_bus_function(), which first attempts a slot reset and then
+> > > > > > > > > > attempts a bus reset if -ENOTTY is returned, such that there is now a
+> > > > > > > > > > single device agnostic function to perform an SBR.
+> > > > > > > > > >
+> > > > > > > > > > This new function is also needed to add SBR reset quirks and therefore
+> > > > > > > > > > is exposed in pci.h.
+> > > > > > > > > >
+> > > > > > > > > > Link: https://lkml.org/lkml/2021/3/23/911
+> > > > > > > > > >
+> > > > > > > > > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > > > > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > > > > > > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  drivers/pci/pci.c   | 17 +++++++++--------
+> > > > > > > > > >  include/linux/pci.h |  1 +
+> > > > > > > > > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > > > > > > > index 16a17215f633..12a91af2ade4 100644
+> > > > > > > > > > --- a/drivers/pci/pci.c
+> > > > > > > > > > +++ b/drivers/pci/pci.c
+> > > > > > > > > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+> > > > > > > > > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> > > > > > > > > > +{
+> > > > > > > > > > +	int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > > > > > +
+> > > > > > > > > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
+> > > > > > > > >
+> > > > > > > > > The previous coding style is preferable one in the Linux kernel.
+> > > > > > > > > int rc = pci_dev_reset_slot_function(dev, probe);
+> > > > > > > > > if (rc != -ENOTTY)
+> > > > > > > > >   return rc;
+> > > > > > > > > return pci_parent_bus_reset(dev, probe);
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > That'd be news to me, do you have a reference?  I've never seen
+> > > > > > > > complaints for ternaries previously.  Thanks,
+> > > > > > >
+> > > > > > > The complaint is not to ternaries, but to the function call as one of
+> > > > > > > the parameters, that makes it harder to read.
+> > > > > >
+> > > > > > Sorry, I don't find a function call as a parameter to a ternary to be
+> > > > > > extraordinary, nor do I find it to be a discouraged usage model within
+> > > > > > the kernel.  This seems like a pretty low bar for hard to read code.
+> > > > >
+> > > > > It is up to us where this bar is set.
+> > > > >
+> > > > > Thanks
+> > > > On the side note there are plenty of places where this pattern is used
+> > > > though
+> > > > for example -
+> > > > kernel/time/clockevents.c:328:
+> > > > return force ? clockevents_program_min_delta(dev) : -ETIME;
+> > > >
+> > > > kernel/trace/trace_kprobe.c:233:
+> > > > return tk ? within_error_injection_list(trace_kprobe_address(tk)) :
+> > > >        false;
+> > > >
+> > > > kernel/signal.c:3104:
+> > > > return oset ? put_compat_sigset(oset, &old_set, sizeof(*oset)) : 0;
+> > > > etc
+> > >
+> > > Did you look when they were introduced?
+> > >
+> > > Thanks
+> > >
+> > that code trace_kprobe in 2 years old.
+> > If you want more recent example checkout
+> > drivers/pci/controller/pcie-brcmstb.c:1112,1117:
+> > return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
+> > which was introduced 7 months ago.
+> > There are lot of examples in pci.c also.
+>
+> Yeah, I know, copy-paste is a powerful tool.
+>
+> Can we please progress with this patch instead of doing
+> archaeological research?
+>
+> Thanks
+>
+Sorry I didn't understand what you said.
 
-This 10k containers is only a test scenario that we are looking at.
 
-Regards,
-Bharata.
+Thanks,
+Amey
