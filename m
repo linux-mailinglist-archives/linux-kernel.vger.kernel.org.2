@@ -2,85 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F541357036
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196C0357039
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 17:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353538AbhDGP1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 11:27:38 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:55619 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353530AbhDGP1h (ORCPT
+        id S1353542AbhDGP3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 11:29:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63749 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243092AbhDGP3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:27:37 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id UA5SlSuMKMxedUA5VlJ54J; Wed, 07 Apr 2021 17:27:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617809246; bh=/yvspusDwD2Yz4H8lHTCCe0s/3szVQ04FM7RR51J0KU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=NowVl4K+7YSSXJ+KhuUz+0dm51y00wjWrMox7iWtaRZK8hnCi9DLNHR+CZxTZM+h8
-         43P6o2B/kPX01skLA9c7P3BEgfVD1cT7+yxUcXs87xg+9fZnCmolC064U4DpJ395gU
-         qAU75bCqyZzXijU6n3mWfjYxUTZxxrm0eAzRHQosZ1HDvR8id6PiKw2iWscyU41HUV
-         AXm99t7LBi6TFVaxgSDS4KAMoOTU8Kx6p9DreysqXRcH8GE1VUQXO+AL3Bp/n/B1La
-         4SWtDT7KAPNDUXXaP/nB/ODmmkGeetVKWjPwL+cDSQJwUvy/ziDSZT+DT6NR95BWz5
-         whDq2P1QURP1Q==
-Subject: Re: [PATCH 0/7] staging: media: zoran: Eliminate camelcase
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
-        clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-References: <cover.1617472411.git.zhansayabagdaulet@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <0bbd7601-f97c-96c3-bce3-223738536a91@xs4all.nl>
-Date:   Wed, 7 Apr 2021 17:27:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Wed, 7 Apr 2021 11:29:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617809336; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=F7RjGzHLnOe0x2KX4TmumeGbgFQFa61KbFmmuF6pD7k=;
+ b=phn2oEaBQXLxIT3o6zvrBAhO66DRgL4pwIMR/QdvjEmtOIXKA4RxPzcuSf73xeiBL7fJGRnR
+ TJQwvh2YZlLjTBcCbrXEgOJyOVi6RKO4vlpqFqTb+mnt355CXRd7nUCf1FQF9Tc2Nf18S2Ei
+ 3/KqZlmCJglgQL1+v/vVu7UYC80=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 606dcfb887ce1fbb5689d978 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 15:28:56
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 726C5C433ED; Wed,  7 Apr 2021 15:28:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8FC1C433C6;
+        Wed,  7 Apr 2021 15:28:54 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <cover.1617472411.git.zhansayabagdaulet@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDBZlQ2oNVN1KeNZG4iM0INfUP94bL1ZV3hwc81k2YtvUuDQ1DZsVyWcVizGh7XVnRQL8u9rbsx6/82vUnyqPNw5uOFG6tR7snA2MBRfj/OTyMjRdTlM
- eHijmC1DhLzrjIwZ6IO4D1D77gb6vPgMWnx2eNEUcTrVyL21WTITU16t2P7Wi92eEdKTwtzNCaqXpMwC6TT7gh0rB9Hk3DeQcxmI+gdym3K6SkR1wqH9dsP8
- obYeSm+QaNwXhY8FoLihcqynFFBSXMrgvWdqIxD6wW5gJRJEPwxbHP/GkQDXvsGecTDgqUS9QLBLnlT1ypA2YJJW9EfGQ8d+5VO609dTB6kvthUHsNCvhT8A
- YWc/HKOnqEfhoyZUOmOFDR7xQtx9LlirjLYObrUdphhP9jm1BhdIKSF7yxOSyEvmwHfyfZT61ENxlYmC/SGvquxNvsQaOwuLIF/15MeZ6xHIeSJFD///5fWc
- yG5rpPIchquKGN3J
+Date:   Wed, 07 Apr 2021 20:58:54 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: pmk8350: Add PMIC peripherals
+ for pmk8350
+In-Reply-To: <YGdmS8Ih5TGGMbdE@google.com>
+References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
+ <1617268396-1837-4-git-send-email-skakit@codeaurora.org>
+ <YGdmS8Ih5TGGMbdE@google.com>
+Message-ID: <ee0a5b81ab66870b7e13c9af7ce5b29f@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhansaya,
-
-On 03/04/2021 20:08, Zhansaya Bagdauletkyzy wrote:
-> This patchset fixes 'avoid camelcase' warning by converting local variables to lowercase and separating words using '_'.
-> Renaming of each variable is implemented in separate patches.
+On 2021-04-03 00:15, Matthias Kaehlcke wrote:
+> On Thu, Apr 01, 2021 at 02:43:14PM +0530, satya priya wrote:
+>> subject: arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
 > 
-> Zhansaya Bagdauletkyzy (7):
->   Rename 'HEnd' to 'h_end'
->   Rename 'VEnd' to 'v_end'
->   Rename 'DispMode' to 'disp_mode'
->   Rename 'VidWinWid' to 'vid_win_wid'
->   Rename 'VidWinHt' to 'vid_win_ht'
->   Rename 'We' to 'we'
->   Rename 'He' to 'he'
+> same nit as for 1/5: maybe just 'arm64: dts: qcom: Add pml7350 
+> support/.dtsi'
+> or similar since this adds the initial .dtsi for the pmk8350?
 > 
->  drivers/staging/media/zoran/zoran_device.c | 48 +++++++++++-----------
->  1 file changed, 24 insertions(+), 24 deletions(-)
+>> Add PON, GPIO, RTC and other PMIC infra modules support for pmk8350.
 > 
 
-Looks good. I'll take these patches.
+I see that pmk8350 DT file is already added in linux-next.
+Only GPIO node has been added, will add remaining nodes and change 
+commit text accordingly.
 
-You can use this reference to record your contributions:
+> nit: also mention that it adds the pmk8350 .dtsi in the first place.
+> 
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 100 
+>> ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 100 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi 
+>> b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>> new file mode 100644
+>> index 0000000..13631f2
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>> @@ -0,0 +1,100 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+>> +
+>> +#include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/input/linux-event-codes.h>
+>> +#include <dt-bindings/interrupt-controller/irq.h>
+>> +#include <dt-bindings/spmi/spmi.h>
+>> +#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+>> +#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+>> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
+>> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+>> +
+>> +&spmi_bus {
+>> +	pmk8350: pmic@0 {
+>> +		compatible = "qcom,pmk8350", "qcom,spmi-pmic";
+> 
+> Please provide a link to the binding if it has been sent.
+> 
+>> +		reg = <0x0 SPMI_USID>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +
+>> +		pmk8350_pon: pon@1300 {
+>> +			compatible = "qcom,pm8998-pon";
+>> +			reg = <0x1300>;
+>> +
+>> +			pwrkey {
+>> +				compatible = "qcom,pmk8350-pwrkey";
+>> +				interrupts = <0x0 0x13 0x7 IRQ_TYPE_EDGE_BOTH>;
+>> +				linux,code = <KEY_POWER>;
+>> +			};
+>> +
+>> +			resin {
+>> +				compatible = "qcom,pmk8350-resin";
+>> +				interrupts = <0x0 0x13 0x6 IRQ_TYPE_EDGE_BOTH>;
+>> +				linux,code = <KEY_VOLUMEDOWN>;
+>> +			};
+> 
+> Is the usage of this keys really universal across different boards?
+> 
 
-https://patchwork.linuxtv.org/project/linux-media/list/?series=5052
+Yes, It is universal across different boards.
 
-The patch states will change to Accepted once it is merged in our media tree
-here: https://git.linuxtv.org/media_tree.git/log/
+> At least for the volume down key for most PMICs the config is in the
+> board file, which seems to make more sense.
+> 
+>> +		};
+>> +
+>> +		pmk8350_vadc: adc@3100 {
+>> +			compatible = "qcom,spmi-adc7";
+>> +			reg = <0x3100>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+>> +			interrupt-names = "eoc-int-en-set";
+>> +			#io-channel-cells = <1>;
+>> +			io-channel-ranges;
+>> +
+>> +			pmk8350_die_temp {
+>> +				reg = <PMK8350_ADC7_DIE_TEMP>;
+>> +				label = "pmk8350_die_temp";
+>> +				qcom,pre-scaling = <1 1>;
+>> +			};
+>> +
+>> +			pm8350_die_temp {
+>> +				reg = <PM8350_ADC7_DIE_TEMP>;
+>> +				label = "pm8350_die_temp";
+>> +				qcom,pre-scaling = <1 1>;
+>> +			};
+> 
+> nit: I think this should be 'alphabetical' order, so 'pm8350_die_temp' 
+> should
+> be before 'pmk8350_die_temp'.
+> 
 
-I hate CamelCase, so this is a nice cleanup :-)
+Ok.
 
-Regards,
+>> +
+>> +			pmr735a_die_temp {
+>> +				reg = <PMR735A_ADC7_DIE_TEMP>;
+>> +				label = "pmr735a_die_temp";
+>> +				qcom,pre-scaling = <1 1>;
+>> +			};
+>> +
+>> +			pmr735b_die_temp {
+>> +				reg = <PMR735B_ADC7_DIE_TEMP>;
+>> +				label = "pmr735b_die_temp";
+>> +				qcom,pre-scaling = <1 1>;
+>> +			};
+> 
+> Is it guaranteed that a board with the pmk8350 will always have the
+> other 3 PMICs?
+> 
 
-	Hans
+No.
+Ok, will move this to idp board dts file.
 
+>> +		};
+>> +
+>> +		pmk8350_adc_tm: adc-tm@3400 {
+>> +			compatible = "qcom,adc-tm7";
+>> +			reg = <0x3400>;
+>> +			interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;
+>> +			interrupt-names = "threshold";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			#thermal-sensor-cells = <1>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		pmk8350_gpios: gpios@b000 {
+>> +			compatible = "qcom,pmk8350-gpio", "qcom,spmi-gpio";
+>> +			reg = <0xb000>;
+>> +			gpio-controller;
+>> +			gpio-ranges = <&pmk8350_gpios 0 0 4>;
+>> +			#gpio-cells = <2>;
+>> +			interrupt-controller;
+>> +			#interrupt-cells = <2>;
+>> +		};
+>> +
+>> +		pmk8350_rtc: rtc@6100 {
+> 
+> nit: nodes should be ordered by address, hence 'rtc@6100' should be 
+> before
+> 'gpios@b000'.
+> 
+
+Ok.
+
+>> +			compatible = "qcom,pmk8350-rtc";
+>> +			reg = <0x6100>, <0x6200>;
+>> +			reg-names = "rtc", "alarm";
+>> +			interrupts = <0x0 0x62 0x1 IRQ_TYPE_EDGE_RISING>;
+>> +		};
+>> +	};
+>> +};
