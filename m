@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F29356127
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C833560EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 03:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238663AbhDGB7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Apr 2021 21:59:03 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16367 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhDGB7C (ORCPT
+        id S1347818AbhDGBqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Apr 2021 21:46:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15501 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347808AbhDGBp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Apr 2021 21:59:02 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FFSDk6nJGz9x5N;
-        Wed,  7 Apr 2021 09:56:38 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 09:58:45 +0800
-Subject: Re: [PATCH 5.10 000/126] 5.10.28-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tue, 6 Apr 2021 21:45:57 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFRxj1HP3zyNW7;
+        Wed,  7 Apr 2021 09:43:37 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 09:45:37 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <jmaloy@redhat.com>, <ying.xue@windriver.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <tipc-discussion@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210405085031.040238881@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <96142558-6861-d5e7-2106-0a85a136ea31@huawei.com>
-Date:   Wed, 7 Apr 2021 09:58:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH v2] net: tipc: Fix spelling errors in net/tipc module
+Date:   Wed, 7 Apr 2021 09:59:45 +0800
+Message-ID: <20210407015945.420908-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches fix a series of spelling errors in net/tipc module.
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ net/tipc/bearer.h | 6 +++---
+ net/tipc/net.c    | 2 +-
+ net/tipc/node.c   | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-On 2021/4/5 16:52, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.28 release.
-> There are 126 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.28-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-Tested on arm64 and x86 for 5.10.28-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.28-rc1
-Commit: 17879c574df0acdfddd69065b191a3c1b1f00d48
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4720
-passed: 4720
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4720
-passed: 4720
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+diff --git a/net/tipc/bearer.h b/net/tipc/bearer.h
+index 6bf4550aa1ac..57c6a1a719e2 100644
+--- a/net/tipc/bearer.h
++++ b/net/tipc/bearer.h
+@@ -154,9 +154,9 @@ struct tipc_media {
+  * care of initializing all other fields.
+  */
+ struct tipc_bearer {
+-	void __rcu *media_ptr;			/* initalized by media */
+-	u32 mtu;				/* initalized by media */
+-	struct tipc_media_addr addr;		/* initalized by media */
++	void __rcu *media_ptr;			/* initialized by media */
++	u32 mtu;				/* initialized by media */
++	struct tipc_media_addr addr;		/* initialized by media */
+ 	char name[TIPC_MAX_BEARER_NAME];
+ 	struct tipc_media *media;
+ 	struct tipc_media_addr bcast_addr;
+diff --git a/net/tipc/net.c b/net/tipc/net.c
+index a129f661bee3..faf6bf554514 100644
+--- a/net/tipc/net.c
++++ b/net/tipc/net.c
+@@ -89,7 +89,7 @@
+  *     - A spin lock to protect the registry of kernel/driver users (reg.c)
+  *     - A global spin_lock (tipc_port_lock), which only task is to ensure
+  *       consistency where more than one port is involved in an operation,
+- *       i.e., whe a port is part of a linked list of ports.
++ *       i.e., when a port is part of a linked list of ports.
+  *       There are two such lists; 'port_list', which is used for management,
+  *       and 'wait_list', which is used to queue ports during congestion.
+  *
+diff --git a/net/tipc/node.c b/net/tipc/node.c
+index 008670d1f43e..81430da244b9 100644
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -1734,7 +1734,7 @@ int tipc_node_xmit(struct net *net, struct sk_buff_head *list,
+ }
+ 
+ /* tipc_node_xmit_skb(): send single buffer to destination
+- * Buffers sent via this functon are generally TIPC_SYSTEM_IMPORTANCE
++ * Buffers sent via this function are generally TIPC_SYSTEM_IMPORTANCE
+  * messages, which will not be rejected
+  * The only exception is datagram messages rerouted after secondary
+  * lookup, which are rare and safe to dispose of anyway.
+-- 
+2.25.1
 
