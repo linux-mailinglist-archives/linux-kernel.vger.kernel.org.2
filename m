@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17F33571DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF883571E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 18:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344836AbhDGQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 12:10:09 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57512 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354320AbhDGQJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 12:09:40 -0400
-Received: from zn.tnic (p200300ec2f08fb00aad493ab6ea3c721.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:fb00:aad4:93ab:6ea3:c721])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3D4571EC0246;
-        Wed,  7 Apr 2021 18:09:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617811769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sxVXkcApyvWgRpvz11rKwU3ny4asbFyeyFcDJmEYY4Y=;
-        b=Jti5HoimSVXTmsMwJCv2kI1KP+LX5MCLeIhCghkd+qTJfK6oP6MWmTijWFbADr1GjW+28H
-        axA+m1b0eTCX47GNLKGOpxI+iNKoNXudwQB350WlEEUfcziZXhyp388N+7voUeP62ijsS9
-        GW0RyxaI6h6HNHeX1PqQNTufuzpL4XQ=
-Date:   Wed, 7 Apr 2021 18:09:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/7] hyperv: Detect Nested virtualization support for SVM
-Message-ID: <20210407160933.GI25319@zn.tnic>
-References: <cover.1617804573.git.viremana@linux.microsoft.com>
- <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
+        id S243675AbhDGQKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 12:10:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35390 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354264AbhDGQK3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 12:10:29 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137G3sWC029259;
+        Wed, 7 Apr 2021 12:10:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=iyuIeRM9JjLviQuQ1jDmWzFfYJRvFJJlRmqg3El918E=;
+ b=MC6jPpnpNfUVaCej0s53MckrWunS7gXqcwp831ocS6svhpKHVK5F4OqshkCidaXPEBcJ
+ XaHy0fLQOBqtetBx422iAptp7GHrPFA3Wx7Ly4Ln6Jck9abfCQne/wt5TgL98R+z6MyN
+ ExBfWM7ak2Y27HTwDP5WZvWSC6RP9TPAJNDdSvKCG+IdREE2naO5XDWRswoiBJXvaSNp
+ fjTY5icQXQo7PDXL8gYXzoxj4W5BHSNjSpJyMF/RTSR/Gs0gvglh63CDelH6WVc0nTGq
+ 3FEQ0EfI+Yr3w43XQ2y2JnH6/bmxumCfc9qD17yQt79JI5b6rj8WdbBYAIuXo6/woPXe Vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvumx328-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 12:10:13 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137G3sp9029186;
+        Wed, 7 Apr 2021 12:10:13 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvumx31c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 12:10:13 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137FqwES003725;
+        Wed, 7 Apr 2021 16:10:11 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 37rvc5gf4b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 16:10:10 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137GA7uZ40567056
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 16:10:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D64B042056;
+        Wed,  7 Apr 2021 16:10:07 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B03834204F;
+        Wed,  7 Apr 2021 16:10:05 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.51.22])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 16:10:05 +0000 (GMT)
+Message-ID: <5a217256a53f9c33aba4528ab0393b84c42b1813.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/2] Add support for ECDSA-signed kernel modules
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Cc:     keyrings@vger.kernel.org, dhowells@redhat.com, nayna@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 07 Apr 2021 12:10:04 -0400
+In-Reply-To: <YG3Ve9CR0zZE+tUu@kernel.org>
+References: <20210406185340.1079403-1-stefanb@linux.ibm.com>
+         <YG3Ve9CR0zZE+tUu@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GHNp2yJADpnwlPmy52pwiXdGXKRvpJ_W
+X-Proofpoint-ORIG-GUID: gZWz4D_PUfW4i3oYORtowjjx2Pnu8Nrp
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:41:22PM +0000, Vineeth Pillai wrote:
-> Detect nested features exposed by Hyper-V if SVM is enabled.
+On Wed, 2021-04-07 at 18:53 +0300, Jarkko Sakkinen wrote:
+> On Tue, Apr 06, 2021 at 02:53:38PM -0400, Stefan Berger wrote:
+> > This series adds support for ECDSA-signed kernel modules.
+> > 
+> > The first patch in this series attempts to address the issue where a
+> > developer created an ECDSA key for signing modules and then falls back
+> > to compiling an older version of the kernel that does not support
+> > ECDSA keys. In this case this patch would delete that ECDSA key if it is
+> > in certs/signing_key.pem and trigger the creation of an RSA key. However,
+> > for this to work this patch would have to be applied to previous versions
+> > of the kernel but would also only work for the developer if he/she used a
+> > stable version of the kernel to which this patch was applied. So whether
+> > this patch actually achieves the wanted effect is not always guaranteed.
 > 
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 3546d3e21787..4d364acfe95d 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -325,9 +325,17 @@ static void __init ms_hyperv_init_platform(void)
->  			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
->  	}
->  
-> -	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
-> +	/*
-> +	 * AMD does not need enlightened VMCS as VMCB is already a
-> +	 * datastructure in memory. We need to get the nested
-> +	 * features if SVM is enabled.
-> +	 */
-> +	if (boot_cpu_has(X86_FEATURE_SVM) ||
+> Just wondering why the key needs to be removed in the fallback.
 
-Pls use:
+The main concern is with bisecting the kernel.  Either elliptic curve
+support or the first patch needs to be backported.  This patch will
+cause the kernel module signing key to be regenerated.
 
-	    cpu_feature_enabled
+Mimi
 
-here.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
