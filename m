@@ -2,189 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE82356F2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4068A356F42
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348773AbhDGOti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348818AbhDGOtN (ORCPT
+        id S1353186AbhDGOua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:50:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56980 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353100AbhDGOt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:49:13 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69081C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 07:49:03 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id f6so12202603wrv.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YlgnuHeYHkIlwZWqKdtj564syi960rzQJLYLQDOe8Ww=;
-        b=r3njU+ENP0K4zVP8dThBvirphS9V7vb7sHdwNiVovXrcEHKhjkN2M9qlh7aPgjbnaE
-         SzHJMAYOlwVbYIl3+9GU2gG9yQm0TafUbnybLNhtPNCCEFw42tScgIC6R0+zyqVKmhFb
-         5wF8LFddwB9IIrdZIyIbU76IURI9pYhxIbiyWqy/QwmUjecnGnsCpvcH7/KfAoM1XlwQ
-         yvgmaaQWsrvOIeup+PBofpI7ONUOy9234dGP9inzC0Aw9l71mYYVEuSnbQoZhBQR4y8g
-         TJUunewfEA327kkMgjDKsW+r+c8ZX+D5IE6iB0jbuXw4nKUO8aJhznKu6dQ63XqrRGSD
-         ErFQ==
+        Wed, 7 Apr 2021 10:49:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617806986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2JsGWtEoCdr3zGRUAMmhrIg8TDL4ft+B27TPb9qYrBY=;
+        b=LGx6I3PJ8cDn/Kq/ezpe5x7TS5yW1uLyTxxeXLtxO50JkNjMmVC/G4AOyjNty+CV6AnJ13
+        8EKVx2KZvIFzBR8wskwimH7UKsIa9uTzgADuXirwdDRjxBNh/l5TVvN1QCxQNlqC5k2mjr
+        HJUf/4239HXe1YXVkhONB/y1KOcT0KI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-u85dIExIO3qSr9fFZ1-8Vg-1; Wed, 07 Apr 2021 10:49:44 -0400
+X-MC-Unique: u85dIExIO3qSr9fFZ1-8Vg-1
+Received: by mail-ej1-f70.google.com with SMTP id jx20so3447880ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 07:49:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YlgnuHeYHkIlwZWqKdtj564syi960rzQJLYLQDOe8Ww=;
-        b=mu7IIvJriJtD3+i+092a7+NLYz5Mkq+0VWSg2FjvqgNV35ZgC1TrKwqrIJcUPfyDHn
-         TSc4JK4PSiBcrhms3jIOL7z4jBgF8g/xMovTm0TF+mnQYTIum9XMRQ5R6roMjJWL4qJp
-         CkkpPENvN3i706CowBC7zsh8rS85fexmPp8p8PZjU0kZeOia9MeLHiA8ew7SwDEntJi7
-         7ifOJgAO6OHZ3LUCdc1IK3pQuRToY0tKQqbVXHSOgnKSXRLT+0OBRYY6DfsfNZlW4wzK
-         LY0ZOiP3FLS6yEa7Eo8zVr9nsElZ3Ga8fxnu1V+oxYFXDFiGC7EJJ4eMWj1YUDHdXarP
-         /ebg==
-X-Gm-Message-State: AOAM533DWiQrsIVdHVEiZnmE98kqfUlgDqlVExWgTfchjrHmv02bAhdp
-        Jq2qrTJ8TR4kZua1vym75j4=
-X-Google-Smtp-Source: ABdhPJxl7tENphRlyAFgRA5Cf3uYmh+9b9rbl5yhsuHjQSAdKSgz/7QEhFgZcQDiBUoVpbKO5SMPVg==
-X-Received: by 2002:adf:f948:: with SMTP id q8mr4943741wrr.296.1617806941967;
-        Wed, 07 Apr 2021 07:49:01 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id z15sm5984856wml.4.2021.04.07.07.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 07:49:01 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 16:48:59 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
-Cc:     ebiederm@xmission.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: crashkernel reservation failed - No suitable area found on a
- cortina/gemini SoC
-Message-ID: <YG3GWxYU02UhOnUX@Red>
-References: <YG2rfzRvHIZKXkf/@Red>
- <34ff1fcc-e9ee-02c2-b2a8-d98a24ce94c3@linux.vnet.ibm.com>
- <YG3AZ4K2auqEz9BK@Red>
- <7a75028b-4495-cd51-6a32-59fcf6e0f166@linux.vnet.ibm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2JsGWtEoCdr3zGRUAMmhrIg8TDL4ft+B27TPb9qYrBY=;
+        b=hsAd1kJOto8avFwmXGl+2QTi0HnEbX6WNI73BkmAWncSt17AVDmOCg1a6ZSyjHqIUE
+         eAQ2CYhQXH9qxwjGjob/5FHRg30jgZRCNVg7vIoNdDZ2hmJkAgW2dqPu0unIWFTHC7lG
+         8sdrCDq+33u6xXhboXCF0d7dj0Slt8ak7wFG8alaqtNMBN8jDye/pCvE7xtaiQffImCG
+         ZndYDLlm7lgnvXUmSQrJKj9IepOkGWxLbFkFaR1TZMW1P7ekFia4wHXUc25KC3S4O/S2
+         odQvNUAyv88WWHcv9eedIXMTHPwq7vpCCznogOa6fAZuMrbhfcjxpsz0rOqrMISz/60a
+         OChA==
+X-Gm-Message-State: AOAM531XUlzC6HXD99PZ8NtjgxPe3AUalqxuP/kvaapxRtilL0vkfQyH
+        DTf5muH5FWBsap6WAK5G1A7ZEZjL+feBGWn/tlYCySmbCis63x1wQYlysDJLXq6VGRFnBQW0w5I
+        Hlal0sYsnq2BZxiok8tphiCbxjUUP7nbc8p2AsQNLLD27batw2lYr2ItE47O7Rl5kxPiADAKIX0
+        Pg
+X-Received: by 2002:a17:906:6bcf:: with SMTP id t15mr4255002ejs.252.1617806982640;
+        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywzceHMmr/aBnghYFEU/cRHINVV7jvAY6AaT0S4fVfyNds5n7GPvYOsJRF+ILpB089AE4QCA==
+X-Received: by 2002:a17:906:6bcf:: with SMTP id t15mr4254975ejs.252.1617806982278;
+        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e5sm7975833edr.64.2021.04.07.07.49.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 07:49:42 -0700 (PDT)
+Subject: Re: [PATCH 0/9] intel_pmc_core: Add sub-state requirements and mode
+ latching support
+To:     "David E. Box" <david.e.box@linux.intel.com>,
+        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a5d476c8-5c38-b8fc-a0da-65a28c5a14e3@redhat.com>
+Date:   Wed, 7 Apr 2021 16:49:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a75028b-4495-cd51-6a32-59fcf6e0f166@linux.vnet.ibm.com>
+In-Reply-To: <20210401030558.2301621-1-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Apr 07, 2021 at 07:28:26AM -0700, Bruce Mitchell a écrit :
-> On 4/7/2021 07:23, Corentin Labbe wrote:
-> > Le Wed, Apr 07, 2021 at 07:13:04AM -0700, Bruce Mitchell a écrit :
-> >> On 4/7/2021 05:54, Corentin Labbe wrote:
-> >>> Hello
-> >>>
-> >>> I try to do kexec on a cortina/gemini SoC.
-> >>> On a "normal" boot, kexec fail to find memory so I added crashkernel=8M to cmdline. (kernel size is ~6M).
-> >>> But now, kernel fail to reserve memory:
-> >>> Load Kern image from 0x30020000 to 0x800000 size 7340032
-> >>> Booting Linux on physical CPU 0x0
-> >>> Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #98 PREEMPT Wed Apr 7 14:14:08 CEST 2021
-> >>> CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
-> >>> CPU: VIVT data cache, VIVT instruction cache
-> >>> OF: fdt: Machine model: Edimax NS-2502
-> >>> Memory policy: Data cache writeback
-> >>> Zone ranges:
-> >>>     Normal   [mem 0x0000000000000000-0x0000000007ffffff]
-> >>>     HighMem  empty
-> >>> Movable zone start for each node
-> >>> Early memory node ranges
-> >>>     node   0: [mem 0x0000000000000000-0x0000000007ffffff]
-> >>> Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
-> >>> crashkernel reservation failed - No suitable area found.
-> >>> Built 1 zonelists, mobility grouping on.  Total pages: 32512
-> >>> Kernel command line: console=ttyS0,19200n8 ip=dhcp crashkernel=8M
-> >>> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
-> >>> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
-> >>> mem auto-init: stack:off, heap alloc:off, heap free:off
-> >>> Memory: 119476K/131072K available (5034K kernel code, 579K rwdata, 1372K rodata, 3020K init, 210K bss, 11596K reserved, 0K cma-reserved, 0K highmem)
-> >>> SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-> >>>
-> >>> What can I do ?
-> >>>
-> >>> Thanks
-> >>> Regards
-> >>>
-> >>> _______________________________________________
-> >>> kexec mailing list
-> >>> kexec@lists.infradead.org
-> >>> http://lists.infradead.org/mailman/listinfo/kexec
-> >>>
-> >>
-> >> Hello Corentin,
-> >>
-> >> I see much larger crashkernel=xxM being shown here
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kdump/kdump.rst
-> >> and from many of my other searches.
-> >>
-> >> Here is an interesting article on kdump for ARM-32
-> >> https://kaiwantech.wordpress.com/2017/07/13/setting-up-kdump-and-crash-for-arm-32-an-ongoing-saga/
-> >>
-> >>
-> >> Here is the kernel command line reference
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/kernel-parameters.txt?h=v5.11#n732
-> >>
-> >> I feel your frustrations too.
-> > 
-> > Hello
-> > 
-> > Thanks but I have already read those documentation.
-> > I search to know why the kernel cannot find 8M of memory ouf of 128.
-> > 
-> > Regards
-> > 
+Hi,
+
+On 4/1/21 5:05 AM, David E. Box wrote:
+> - Patch 1 and 2 remove the use of the global struct pmc_dev
+> - Patches 3-7 add support for reading low power mode sub-state
+>   requirements, latching sub-state status on different low power mode
+>   events, and displaying the sub-state residency in microseconds
+> - Patch 8 adds missing LTR IPs for TGL
+> - Patch 9 adds support for ADL-P which is based on TGL
 > 
-> How much more memory does the kernel and initrd above and beyond just 
-> their physical size?  (heaps, stacks, buffers, virtual filesystems)
+> Applied on top of latest 5.12-rc2 based hans-review/review-hans
 
-The kernel size include a rootfs.cpio.lzma of 3MB and dtb is appended.
-The total kernel size is 7MB.
-The uncompressed size of the kernel is 13M (size of vmlinux)
-The uncompressed size of rootfs is 11M.
+Thnak you for this series, this mostly is fine, a few small remarks
+on patch 5/9 and 7/9 if you can send a v2 addressing those, then
+this is ready for merging.
 
-cat /proc/meminfo 
-MemTotal:         122496 kB
-MemFree:          103700 kB
-MemAvailable:     101936 kB
-Buffers:               0 kB
-Cached:            10904 kB
-SwapCached:            0 kB
-Active:             4304 kB
-Inactive:           8012 kB
-Active(anon):       4304 kB
-Inactive(anon):     8012 kB
-Active(file):          0 kB
-Inactive(file):        0 kB
-Unevictable:           0 kB
-Mlocked:               0 kB
-HighTotal:             0 kB
-HighFree:              0 kB
-LowTotal:         122496 kB
-LowFree:          103700 kB
-SwapTotal:             0 kB
-SwapFree:              0 kB
-Dirty:                 0 kB
-Writeback:             0 kB
-AnonPages:          1428 kB
-Mapped:             3552 kB
-Shmem:             10904 kB
-KReclaimable:        608 kB
-Slab:               2960 kB
-SReclaimable:        608 kB
-SUnreclaim:         2352 kB
-KernelStack:         312 kB
-PageTables:          136 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:       61248 kB
-Committed_AS:      14336 kB
-VmallocTotal:     901120 kB
-VmallocUsed:          64 kB
-VmallocChunk:          0 kB
-Percpu:               32 kB
-CmaTotal:              0 kB
-CmaFree:               0 kB
+Regards,
+
+Hans
+
+
+> 
+> David E. Box (4):
+>   platform/x86: intel_pmc_core: Don't use global pmcdev in quirks
+>   platform/x86: intel_pmc_core: Remove global struct pmc_dev
+>   platform/x86: intel_pmc_core: Add option to set/clear LPM mode
+>   platform/x86: intel_pmc_core: Add support for Alder Lake PCH-P
+> 
+> Gayatri Kammela (5):
+>   platform/x86: intel_pmc_core: Handle sub-states generically
+>   platform/x86: intel_pmc_core: Show LPM residency in microseconds
+>   platform/x86: intel_pmc_core: Get LPM requirements for Tiger Lake
+>   platform/x86: intel_pmc_core: Add requirements file to debugfs
+>   platform/x86: intel_pmc_core: Add LTR registers for Tiger Lake
+> 
+>  drivers/platform/x86/intel_pmc_core.c | 359 +++++++++++++++++++++++---
+>  drivers/platform/x86/intel_pmc_core.h |  47 +++-
+>  2 files changed, 370 insertions(+), 36 deletions(-)
+> 
 
