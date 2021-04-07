@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D0B356B65
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7032356B73
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 13:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351864AbhDGLiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 07:38:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:16189 "EHLO
+        id S1351879AbhDGLmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 07:42:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36368 "EHLO
         so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbhDGLiW (ORCPT
+        with ESMTP id S234582AbhDGLmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 07:38:22 -0400
+        Wed, 7 Apr 2021 07:42:20 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617795493; h=Content-Type: MIME-Version: Message-ID:
+ s=smtp; t=1617795731; h=Content-Type: MIME-Version: Message-ID:
  In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=BlfJ7ChYdm5fsjVC9Gacn3nxjSF5AqDGwGm8a4pwp7c=; b=HatXvphbHuuL4IppFUZt6OZ8UaDcd4osDcAsXukFS70M9STuXPXpmNwfdlhuSSbpGee91bUm
- tn3xlXPwMAeKabSRCc69hKeNxUlWSmjd+3jUbImb4/L0Ymb0+leqi3/F+SlgPZr+8YDxKBsq
- HvXv+Jf0xTBWYc3DEmt64FNB1EU=
+ bh=2bEXU07KJTPWcpqZSC9pNhP9GNRo/qR1ochtvmF+2FY=; b=qjwCYKnbh1gLux8GpYqW90qUNEqb2EO6f1Z8R7AjzTsLdBnLY9OmQaD93eiWMWS4T3dburXx
+ RM090KoEdYJglp5oh6Rcfd/wjjR6qK/P5JtKLIQBGhuPacGpHBYqHwxeh5Nxl+/YyIjd4mVi
+ jAOQO/97k1YE7kD5lqFelNvCvrc=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 606d999c03cfff3452ebcb79 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 11:38:04
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 606d9a8bc06dd10a2dadfe5e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 11:42:03
  GMT
 Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 69158C43461; Wed,  7 Apr 2021 11:38:03 +0000 (UTC)
+        id DEC5FC433C6; Wed,  7 Apr 2021 11:42:02 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,31 +38,26 @@ Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC1ECC433CA;
-        Wed,  7 Apr 2021 11:37:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC1ECC433CA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AE15C433C6;
+        Wed,  7 Apr 2021 11:41:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9AE15C433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S . Miller" <davem@davemloft.net>,
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] brcmsmac: fix shift on 4 bit masked value
-References: <20210318164513.19600-1-colin.king@canonical.com>
-Date:   Wed, 07 Apr 2021 14:37:56 +0300
-In-Reply-To: <20210318164513.19600-1-colin.king@canonical.com> (Colin King's
-        message of "Thu, 18 Mar 2021 16:45:13 +0000")
-Message-ID: <877dlenx4b.fsf@codeaurora.org>
+        Luciano Coelho <coelho@ti.com>, Arik Nemtsov <arik@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] wlcore: fix overlapping snprintf arguments in debugfs
+References: <20210323125723.1961432-1-arnd@kernel.org>
+Date:   Wed, 07 Apr 2021 14:41:57 +0300
+In-Reply-To: <20210323125723.1961432-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Tue, 23 Mar 2021 13:57:14 +0100")
+Message-ID: <8735w2nwxm.fsf@codeaurora.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -70,22 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> writes:
+Arnd Bergmann <arnd@kernel.org> writes:
 
-> From: Colin Ian King <colin.king@canonical.com>
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> The calculation of offtune_val seems incorrect, the u16 value in
-> pi->tx_rx_cal_radio_saveregs[2] is being masked with 0xf0 and then
-> shifted 8 places right so that always ends up as a zero result. I
-> believe the intended shift was 4 bits to the right. Fix this.
+> gcc complains about undefined behavior in calling snprintf()
+> with the same buffer as input and output:
 >
-> [Note: not tested, I don't have the H/W]
+> drivers/net/wireless/ti/wl18xx/debugfs.c: In function
+> 'diversity_num_of_packets_per_ant_read':
+> drivers/net/wireless/ti/wl18xx/../wlcore/debugfs.h:86:3: error:
+> 'snprintf' argument 4 overlaps destination object 'buf'
+> [-Werror=restrict]
+>    86 |   snprintf(buf, sizeof(buf), "%s[%d] = %d\n",  \
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    87 |     buf, i, stats->sub.name[i]);   \
+>       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ti/wl18xx/debugfs.c:24:2: note: in expansion of
+> macro 'DEBUGFS_FWSTATS_FILE_ARRAY'
+>    24 |  DEBUGFS_FWSTATS_FILE_ARRAY(a, b, c, wl18xx_acx_statistics)
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ti/wl18xx/debugfs.c:159:1: note: in expansion of macro 'WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY'
+>   159 | WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY(diversity, num_of_packets_per_ant,
 >
-> Addresses-Coverity: ("Operands don't affect result")
-> Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> There are probably other ways of handling the debugfs file, without
+> using on-stack buffers, but a simple workaround here is to remember the
+> current position in the buffer and just keep printing in there.
+>
+> Fixes: bcca1bbdd412 ("wlcore: add debugfs macro to help print fw statistics arrays")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ti/wlcore/boot.c    | 13 ++++++++-----
+>  drivers/net/wireless/ti/wlcore/debugfs.h |  7 ++++---
 
-Can someone ack this?
+This should go to wireless-drivers-next, not net-next.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
