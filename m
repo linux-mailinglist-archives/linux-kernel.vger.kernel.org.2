@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831CE356E2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35FD356E33
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 16:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352781AbhDGOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 10:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352778AbhDGOKP (ORCPT
+        id S1352788AbhDGOK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 10:10:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42993 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235710AbhDGOKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 10:10:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093E2C061756;
-        Wed,  7 Apr 2021 07:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7sbNlPhjEYhjZGoqh242EY0zecg74ddTeHMZo1SyTcw=; b=Wg/1qF2fbwWrJpzQawsS///gGp
-        XQ9StNDGIlaE3iPHUUb3EGaAuZk2Zc5FRfDzFVgQZnL7sNTPoKY+C7yb1BimFYOjpPYqbMMS5w4Kx
-        uFOJz/gGd5nC9D+EK9D4aV0wggSSSTOt0Ppq2/iTnGiqkpBL5Wi8U0ZbpuikTIQioX+tdLuJbkBEn
-        JepDILTjCM2VhjRCmh1TAnRmTciNhkCY0wDeHtiRCHNnX7ba4kQnsc2MceQxNCQ7CxkH0Tq2mP4EZ
-        4DRK6DiL203mb0O8hrMQXfRbUxcED+K8eNRwHaXWs+8SxMTj0qbAnM80cwc8x9G7NgZSsppNDFm2O
-        fTutICVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lU8sL-0055qy-2a; Wed, 07 Apr 2021 14:09:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39616300219;
-        Wed,  7 Apr 2021 16:09:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1B72A2BBEA8E2; Wed,  7 Apr 2021 16:09:44 +0200 (CEST)
-Date:   Wed, 7 Apr 2021 16:09:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, mbenes@suse.com,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YG29KAuOHbJd3Bll@hirez.programming.kicks-ass.net>
-References: <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <20210402183016.GU4332@42.do-not-panic.com>
- <YGgHg7XCHD3rATIK@kroah.com>
- <20210406003152.GZ4332@42.do-not-panic.com>
- <alpine.LSU.2.21.2104061354110.10372@pobox.suse.cz>
- <20210406155423.t7dagp24bupudv3p@treble>
+        Wed, 7 Apr 2021 10:10:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lU8se-00029E-Ox; Wed, 07 Apr 2021 14:10:04 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: venus: hfi,pm,firmware: Fix dereference before null check on hdev
+Date:   Wed,  7 Apr 2021 15:10:04 +0100
+Message-Id: <20210407141004.495093-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406155423.t7dagp24bupudv3p@treble>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:54:23AM -0500, Josh Poimboeuf wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> Same for Red Hat.  Unloading livepatch modules seems to work fine, but
-> isn't officially supported.
-> 
-> That said, if rmmod is just considered a development aid, and we're
-> going to be ignoring bugs, we should make it official with a new
-> TAINT_RMMOD.
+The pointer hdev is being dereferenced twice on the assignment of
+pointers cpu_cs_base and wrapper_base before hdev is being null
+checked.  Fix the potential null pointer dereference issues by
+performing the null check of hdev before dereferencing it when
+assigning cpu_cs_base and wrapper_base.
 
-Another option would be to have live-patch modules leak a module
-reference by default, except when some debug sysctl is set or something.
-Then only those LP modules loaded while the sysctl is set to 'YOLO' can
-be unloaded.
+Addresses-Coverity: ("Dereference before null check")
+Fixes: ff2a7013b3e6 ("media: venus: hfi,pm,firmware: Convert to block relative addressing")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/platform/qcom/venus/hfi_venus.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
+index cebb20cf371f..3eabb2646572 100644
+--- a/drivers/media/platform/qcom/venus/hfi_venus.c
++++ b/drivers/media/platform/qcom/venus/hfi_venus.c
+@@ -1094,12 +1094,14 @@ static irqreturn_t venus_isr(struct venus_core *core)
+ {
+ 	struct venus_hfi_device *hdev = to_hfi_priv(core);
+ 	u32 status;
+-	void __iomem *cpu_cs_base = hdev->core->cpu_cs_base;
+-	void __iomem *wrapper_base = hdev->core->wrapper_base;
++	void __iomem *cpu_cs_base, *wrapper_base;
+ 
+ 	if (!hdev)
+ 		return IRQ_NONE;
+ 
++	cpu_cs_base = hdev->core->cpu_cs_base;
++	wrapper_base = hdev->core->wrapper_base;
++
+ 	status = readl(wrapper_base + WRAPPER_INTR_STATUS);
+ 	if (IS_V6(core)) {
+ 		if (status & WRAPPER_INTR_STATUS_A2H_MASK ||
+-- 
+2.30.2
+
