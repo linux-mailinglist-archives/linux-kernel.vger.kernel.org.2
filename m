@@ -2,444 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877FF357732
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8FD357738
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Apr 2021 23:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhDGVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 17:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234434AbhDGVyM (ORCPT
+        id S234459AbhDGV4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 17:56:35 -0400
+Received: from mail-pf1-f172.google.com ([209.85.210.172]:47094 "EHLO
+        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231545AbhDGV41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:54:12 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317C3C061762;
-        Wed,  7 Apr 2021 14:54:02 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id o198so374863yba.2;
-        Wed, 07 Apr 2021 14:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AvfD1dcQstydTAnPhC7lkNFIzoP257wsWncfM4nrT4Y=;
-        b=hNfwbo6dC9Ul07Zt/6R2fzryyvF/5PINP8siT6sLhYaL1joZku+yETT8kmcFfrFFpA
-         QqGe0+C91d5vXOMOEOTFl88Nr1MZrL8xlIVrKvnFw6VoPLLpk+uJS29Xn5Crwxukwt4A
-         6yjp97ryO4qhXrcZqUVReE5M3bZCsne/qs37+YfljI/4+YCentHGloOmAj6kXuBhD+Uq
-         dCyJBRgUKpxsd6kkAuY5u+s/zmE+ojZFVp/L5dxi6L/Lqb8fexh5y9F6qJuHeWIg3h89
-         R5ByOXrriEiyjcS8e+SqEWiWZJXxJHbl75wNrecIh7Ni7UBszEMdMCKrbPLq1G02dc64
-         nCGw==
+        Wed, 7 Apr 2021 17:56:27 -0400
+Received: by mail-pf1-f172.google.com with SMTP id d124so283177pfa.13;
+        Wed, 07 Apr 2021 14:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AvfD1dcQstydTAnPhC7lkNFIzoP257wsWncfM4nrT4Y=;
-        b=rccKwX28QuNfjvtwJH+yExvNbQuaC6DG0cvg3TZBXGLOSKYE1bTsReaCM44b4MqNXf
-         WnTsquxTPl6V8+e1v4NbUqdzIq67JkfFFNveRAF+bhmIHy8FtqeT7LL1fnVXY1nlsgSo
-         MF2gBwt6r5SVSQFDKd68H+WIxGssMnYQbMuU6k5Bm7HOxfY+8ewyZU5heIG9WEvKScVM
-         Y+hv5dR7QqwW20aCpMDlKtUWZ1+GPHhhrmwWfLvDpfB8t34txV91qcRlFC3BMy7yiRJ9
-         zafnvZcdAjZNRJuTbuTReF2wJMXsYBIxPZr8Zx37U7y3Eh9d/M4oaDiVnvZx/A3q6TBN
-         +YIg==
-X-Gm-Message-State: AOAM530TjOfVS51ZPHifPMajyRlvkalzLvelr9cUvZPxlErDtAIER7sn
-        qsGvF84oxOd4ww5bnBpDM2qXryqr6PVtNfhtuQo=
-X-Google-Smtp-Source: ABdhPJwCexO+5xqwv+wiegBIH7/33vukqRH7pzhAjhurC6pJ/KQYXXHcMf+WIQr/1ZH8slCcRp6K7GKZofTzPH/kHt0=
-X-Received: by 2002:a05:6902:6a3:: with SMTP id j3mr7233781ybt.403.1617832441317;
- Wed, 07 Apr 2021 14:54:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ibmtw0ysWt020Up+NK0WF++Cj5A9I9G2v83UTNMUTYk=;
+        b=dQiRa6wF75jdNRTiPUj6gCBJrfHBLsKx4Zy+buapp7YB7aSLs9iltsIf0q/E9be8Yt
+         9+LiOD1rayPQd4smEAL9ewDXy347SLZNd9AAoXiVnJW41K+K/PSZD8QPkXZ7WzA3yId7
+         nXAVm4ePrroXAr69ybC3E/MTS25nI0sZTaHBl/XARaF534B5Nc6c74BQmY+UbkJvgknY
+         E8vXqoYD24W+U/5kWbxTMpW+o6TM5wurKzIlD4cCpHbEJhRLxde+ZPLcbb2tpcntNw9r
+         L47/1XjiCrQUaulkuB/+B4gX9Y6NiuhpoRy2rCuBAbvPgzj6p84c8rl2JtIyAktv1JCQ
+         sqnA==
+X-Gm-Message-State: AOAM533s6K2B5c3BqU0haCnwHqUM/t/bnS+fcRBbmn7zAKQD6tHAdqoR
+        jdcXmii611ftx2O2rf/apdA=
+X-Google-Smtp-Source: ABdhPJzahWR8lrgSn27RynzC+SSKbrb5IL7acaLMe7ll9inYP7ZgPXlQrPy8V8WtT/JpiiAU1oEntg==
+X-Received: by 2002:a05:6a00:c93:b029:20d:1b8e:cfaa with SMTP id a19-20020a056a000c93b029020d1b8ecfaamr4734081pfv.48.1617832577086;
+        Wed, 07 Apr 2021 14:56:17 -0700 (PDT)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id j30sm23046881pgm.59.2021.04.07.14.56.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 14:56:16 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] scsi: pm8001: clean up for white space
+To:     luojiaxing <luojiaxing@huawei.com>, jinpu.wang@cloud.ionos.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+References: <1617354522-17113-1-git-send-email-luojiaxing@huawei.com>
+ <1617354522-17113-2-git-send-email-luojiaxing@huawei.com>
+ <7f8aef00-07bc-6b63-19a1-85a8153387cd@acm.org>
+ <3dd042b3-eb86-f0aa-5542-3f763f6830e0@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e3532ffe-f750-5c95-7f8f-aafc86b094ca@acm.org>
+Date:   Wed, 7 Apr 2021 14:56:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
- <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
- <CAEf4BzYVTHm5Zrr7RPoRB7EL9nsE5kUzciHEv5fPipbMoEtQxA@mail.gmail.com> <CABRcYmJpRyqbeZmMT=SxAg95p8ndtEbTR9EUWK0CfSNhSF3egw@mail.gmail.com>
-In-Reply-To: <CABRcYmJpRyqbeZmMT=SxAg95p8ndtEbTR9EUWK0CfSNhSF3egw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 14:53:50 -0700
-Message-ID: <CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3dd042b3-eb86-f0aa-5542-3f763f6830e0@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
->
-> [Sorry for the late replies, I'm just back from a long easter break :)]
->
-> On Fri, Mar 26, 2021 at 11:51 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Fri, Mar 26, 2021 at 2:53 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > > On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
-> > > > Unfortunately, the implementation of the two existing helpers already
-> > > > drifted quite a bit and unifying them entailed a lot of changes:
-> > >
-> > > "Unfortunately" as in a lot of extra work for you? I think overall
-> > > though it was very fortunate that you ended up doing it, all
-> > > implementations are more feature-complete and saner now, no? Thanks a
-> > > lot for your hard work!
->
-> Ahah, "unfortunately" a bit of extra work for me, indeed. But I find
-> this kind of refactoring patches even harder to review than to write
-> so thank you too!
->
-> > > > - bpf_trace_printk always expected fmt[fmt_size] to be the terminating
-> > > >   NULL character, this is no longer true, the first 0 is terminating.
-> > >
-> > > You mean if you had bpf_trace_printk("bla bla\0some more bla\0", 24)
-> > > it would emit that zero character? If yes, I don't think it was a sane
-> > > behavior anyways.
->
-> The call to snprintf in bpf_do_trace_printk would eventually ignore
-> "some more bla" but the parsing done in bpf_trace_printk would indeed
-> read the whole string.
->
-> > > This is great, you already saved some lines of code! I suspect I'll
-> > > have some complaints about mods (it feels like this preample should
-> > > provide extra information about which arguments have to be read from
-> > > kernel/user memory, but I'll see next patches first.
-> >
-> > Disregard the last part (at least for now). I had a mental model that
-> > it should be possible to parse a format string once and then remember
-> > "instructions" (i.e., arg1 is long, arg2 is string, and so on). But
-> > that's too complicated, so I think re-parsing the format string is
-> > much simpler.
->
-> I also wanted to do that originally but realized it would keep a lot
-> of the complexity in the helpers themselves and not really move the
-> needle.
->
-> > > > +/* Horrid workaround for getting va_list handling working with different
-> > > > + * argument type combinations generically for 32 and 64 bit archs.
-> > > > + */
-> > > > +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-> > > > +       ((mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                        \
-> > > > +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64))     \
-> > > > +         ? args[arg_nb]                                                \
-> > > > +         : ((mod[arg_nb] == BPF_PRINTF_LONG ||                         \
-> > > > +            (mod[arg_nb] == BPF_PRINTF_INT && __BITS_PER_LONG == 32))  \
-> > >
-> > > is this right? INT is always 32-bit, it's only LONG that differs.
-> > > Shouldn't the rule be
-> > >
-> > > (LONG_LONG || LONG && __BITS_PER_LONG) -> (__u64)args[args_nb]
-> > > (INT || LONG && __BITS_PER_LONG == 32) -> (__u32)args[args_nb]
-> > >
-> > > Does (long) cast do anything fancy when casting from u64? Sorry, maybe
-> > > I'm confused.
->
-> To be honest, I am also confused by that logic... :p My patch tries to
-> conserve exactly the same logic as "88a5c690b6 bpf: fix
-> bpf_trace_printk on 32 bit archs" because I was also afraid of missing
-> something and could not test it on 32 bit arches. From that commit
-> description, it is unclear to me what "u32 and long are passed
-> differently to u64, since the result of C conditional operators
-> follows the "usual arithmetic conversions" rules" means. Maybe Daniel
-> can comment on this ?
+On 4/5/21 11:39 PM, luojiaxing wrote:
+> 
+> On 2021/4/3 0:01, Bart Van Assche wrote:
+>> On 4/2/21 2:08 AM, Luo Jiaxing wrote:
+>>>   #define AAP1_MEMMAP(r, c) \
+>>> -    (*(u32 *)((u8*)pm8001_ha->memoryMap.region[AAP1].virt_ptr + (r) 
+>>> * 32 \
+>>> +    (*(u32 *)((u8 *)pm8001_ha->memoryMap.region[AAP1].virt_ptr + (r) 
+>>> * 32 \
+>>>       + (c)))
+>> Since this macro is being modified, please convert it into an inline
+>> function such that the type of the arguments can be verified by the
+>> compiler.
+> 
+> Sure, but still keep the function name as AAP1_MEMMAP?
 
-Yeah, no idea. Seems like the code above should work fine for 32 and
-64 bitness and both little- and big-endianness.
+The coding style requires lower case names for functions so the function 
+name probably should be converted to lower case.
 
->
-> > > > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > > > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
-> > > > +                       u32 num_args)
-> > > > +{
-> > > > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
-> > > > +       int err, i, fmt_cnt = 0, copy_size, used;
-> > > > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
-> > > > +       bool prepare_args = final_args && mod;
-> > >
-> > > probably better to enforce that both or none are specified, otherwise
-> > > return error
->
-> Fair :)
->
-> > it's actually three of them: raw_args, mod, and num_args, right? All
-> > three are either NULL or non-NULL.
->
-> It is a bit tricky to see from that patch but in "3/6 bpf: Add a
-> bpf_snprintf helper" the verifier code calls this function with
-> num_args != 0 to check whether the number of arguments is correct
-> without actually converting anything.
->
-> Also when the helper gets called, raw_args can come from the BPF
-> program and be NULL but in that case we will also have num_args = 0
-> guaranteed by the helper so the loop will bail out if it encounters a
-> format specifier.
+Thanks,
 
-ok, but at least final_args and mod are locked together, so should be
-enforced to be either null or not, right?
-
->
-> > > > +       enum bpf_printf_mod_type current_mod;
-> > > > +       size_t tmp_buf_len;
-> > > > +       u64 current_arg;
-> > > > +       char fmt_ptype;
-> > > > +
-> > > > +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
-> > >
-> > > Can we say that if the last character is not '\0' then it's a bad
-> > > format string and return -EINVAL? And if \0 is inside the format
-> > > string, then it's also a bad format string? I wonder what others think
-> > > about this?... I think sanity should prevail.
->
-> Overall, there are two situations:
-> - bpf_seq_printf, bpf_trace_printk: we have a pointer and size but we
-> are not guaranteed zero-termination
-> - bpf_snprintf: we have a pointer, no size but it's guaranteed to be
-> zero-terminated (by ARG_PTR_TO_CONST_STR)
->
-> Currently, in the bpf_snprintf helper, I set fmt_size to UINT_MAX and
-> the terminating condition will be fmt[i] == '\0'.
-> As you pointed out a bit further, I got a bit carried away with the
-> refactoring and dropped the zero-termination checks for the existing
-> helpers !
->
-> So I see two possibilities:
-> - either we check fmt[last] == '\0', add a bail out condition in the
-> loop if we encounter another `\0` and set fmt_size to sprintf(fmt) in
-> the bpf_snprintf verifier and helper code.
-> - or we unconditionally call strnlen(fmt, fmt_size) in
-> bpf_printf_preamble. If no 0 is found, we return an error, if there is
-> one we treat it as the NULL terminating character.
-
-I was thinking about the second one. It is clearly acceptable on BPF
-verifier side, though one might argue that we are doing extra work on
-the BPF helper side. I don't think it matters in practice, so I'll be
-fine with that, if that makes code cleaner and simpler.
-
->
-> > > > +               if ((!isprint(fmt[i]) && !isspace(fmt[i])) ||
-> > > > +                   !isascii(fmt[i])) {
-> > >
-> > > && always binds tighter than ||, so you can omit extra (). I'd put
-> > > this on a single line as well, but that's a total nit.
->
-> Neat! :)
-
-I just got a compilation warning in a similar situation yesterday when
-I dropped unnecessary parentheses, so some versions of compilers might
-think it is not a good practice. Just keep that in mind. I don't think
-I care enough.
-
->
-> > > > +                       err = -EINVAL;
-> > > > +                       goto out;
-> > > > +               }
-> > > >
-> > > >                 if (fmt[i] != '%')
-> > > >                         continue;
-> > > >
-> > > > -               if (fmt_cnt >= 3)
-> > > > -                       return -EINVAL;
-> > > > +               if (fmt[i + 1] == '%') {
-> > > > +                       i++;
-> > > > +                       continue;
-> > > > +               }
-> > > > +
-> > > > +               if (fmt_cnt >= num_args) {
-> > > > +                       err = -EINVAL;
-> > > > +                       goto out;
-> > > > +               }
-> > > >
-> > > >                 /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
-> > > >                 i++;
-> > > > -               if (fmt[i] == 'l') {
-> > > > -                       mod[fmt_cnt]++;
-> > > > +
-> > > > +               /* skip optional "[0 +-][num]" width formating field */
-> > >
-> > > typo: formatting
->
-> Fixed
->
-> > > > +               while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
-> > > > +                      fmt[i] == ' ')
-> > > > +                       i++;
-> > > > +               if (fmt[i] >= '1' && fmt[i] <= '9') {
-> > > >                         i++;
-> > >
-> > > Are we worried about integer overflow here? %123123123123123d
-> > > hopefully won't crash anything, right?
->
-> I expect that this should be handled gracefully by the subsequent call
-> to snprintf(). Our parsing logic does not guarantee that the format
-> string is 100% legit but it guarantees that it's safe to call
-> vsnprintf with arguments coming from BPF. If the output buffer is too
-> small to hold the output, the output will be truncated.
->
-> Note that this is already how bpf_seq_printf already works.
-
-Ok, but let's not hope and add the test for this.
-
->
-> > > > -               } else if (fmt[i] == 'p') {
-> > > > -                       mod[fmt_cnt]++;
-> > > > -                       if ((fmt[i + 1] == 'k' ||
-> > > > -                            fmt[i + 1] == 'u') &&
-> > > > +                       while (fmt[i] >= '0' && fmt[i] <= '9')
-> > > > +                               i++;
-> > >
-> > > whoa, fmt_size shouldn't be ignored
->
-> Oh no, I'll attach the stone of shame! It all made sense with
-> bpf_snprintf() in mind because, there, we are guaranteed to have a
-> NULL terminated string already but in an excess of refactoring
-> enthusiasm I dropped the zero-termination check for the other helpers.
->
-> But if we implement either of the options discussed above, then we do
-> not need to constantly check fmt_size.
-
-let's see when we get to the next version ;) I don't remember code
-enough by now, but I'll keep that in mind for the next revision
-anyways
-
->
-> > > > +               }
-> > > > +
-> > >
-> > > and here if we exhausted all format string but haven't gotten to
-> > > format specified, we should -EINVAL
-> > >
-> > > if (i >= fmt_size) return -EINVAL?
->
-> Same comment as above, if we are already guaranteed zero-termination
-> by a prior check, we don't need that.
->
-> > > > +               if (fmt[i] == 'p') {
-> > > > +                       current_mod = BPF_PRINTF_LONG;
-> > > > +
-> > > > +                       if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
-> > > >                             fmt[i + 2] == 's') {
-> > >
-> > > right, if i + 2 is ok to access? always be remembering about fmt_size
->
-> Same.
->
-> > > >                                 fmt_ptype = fmt[i + 1];
-> > > >                                 i += 2;
-> > > >                                 goto fmt_str;
-> > > >                         }
-> > > >
-> > > > -                       if (fmt[i + 1] == 'B') {
-> > > > -                               i++;
-> > > > +                       if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
-> > > > +                           ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
-> > > > +                           fmt[i + 1] == 'x' || fmt[i + 1] == 'B' ||
-> > > > +                           fmt[i + 1] == 's' || fmt[i + 1] == 'S') {
-> > > > +                               /* just kernel pointers */
-> > > > +                               if (prepare_args)
-> > > > +                                       current_arg = raw_args[fmt_cnt];
-> > >
-> > > fmt_cnt is not the best name, imo. arg_cnt makes more sense
->
-> Mh, we already have "num_args" that can make it confusing. The way I see it:
-> - the number of format specifiers is the number of %d %s... in the format string
-> - the number of arguments is the number of values given in the raw_args array.
->
-
-Well, if you read "fmt_cnt" as "number of formatters" then yeah, I
-suppose it's fine. Never mind. Just fmt_cnt and fmt_size refers to
-slightly different "fmt"s, which confused me for a bit, but that's ok.
-You use different naming conventions, which is inconsistent, so maybe
-adjust that for purists (i.e., if you have num_args, then you should
-have num_fmts; or, alternatively, arg_cnt and fmt_cnt). But I'm just
-nitpicking, obviously.
-
-> Potentially, the number of arguments can be higher than the number of
-> format specifiers, for example printf("%d\n", i, j); so calling them
-> differently sorta makes sense.
-> But to be honest I don't have a strong opinion about this and this is
-> mainly just a remaining from the current bpf_seq_printf
-> implementation.
-
-Yep. I think it's ok to allow num_args > fmt_cnt.
-
->
-> > > > +                       if (!tmp_buf) {
-> > > > +                               used = this_cpu_inc_return(bpf_printf_buf_used);
-> > > > +                               if (WARN_ON_ONCE(used > 1)) {
-> > > > +                                       this_cpu_dec(bpf_printf_buf_used);
-> > > > +                                       return -EBUSY;
-> > > > +                               }
-> > > > +                               preempt_disable();
-> > >
-> > > shouldn't we preempt_disable before we got bpf_printf_buf_used? if we
-> > > get preempted after incrementing counter, buffer will be unusable for
-> > > a while, potentially, right?
->
-> Good catch :)
->
-> > > > +                       if (!tmp_buf) {
-> > > > +                               used = this_cpu_inc_return(bpf_printf_buf_used);
-> > > > +                               if (WARN_ON_ONCE(used > 1)) {
-> > > > +                                       this_cpu_dec(bpf_printf_buf_used);
-> > > > +                                       return -EBUSY;
-> > > > +                               }
-> > > > +                               preempt_disable();
-> > > > +                               tmp_buf = bufs->tmp_buf;
-> > > > +                               tmp_buf_len = MAX_PRINTF_BUF_LEN;
-> > > > +                       }
-> > >
-> > > how about helper used like this:
-> > >
-> > > if (try_get_fmt_tmp_buf(&tmp_buf, &tmp_buf_len))
-> > >    return -EBUSY;
-> > >
-> > > which will do nothing if tmp_buf != NULL?
->
-> Yep, I quite like that. :)
->
-> > > >  fmt_next:
-> > > > +               if (prepare_args) {
-> > >
-> > > I'd ditch prepare_args variable and just check final_args (and that
-> > > check to ensure both mods and final_args are specified I suggested
-> > > above)
->
-> Agreed.
->
-> > > > +                       mod[fmt_cnt] = current_mod;
-> > > > +                       final_args[fmt_cnt] = current_arg;
-> > > > +               }
-> > > >                 fmt_cnt++;
-> > > >         }
-> > >
-> > > [...]
-> > >
-> > > > -
-> > > > -       return __BPF_TP_EMIT();
-> > > > +       err = 0;
-> > > > +out:
-> > > > +       bpf_printf_postamble();
-> > >
-> > > naming is hard, but preamble and postamble reads way too fancy :)
-> > > bpf_printf_prepare() and bpf_printf_cleanup() or something like that
-> > > is a bit more to the point, no?
->
-> Haha, you're totally right.
->
-> > > > +       if (data_len & 7 || data_len > MAX_SEQ_PRINTF_VARARGS * 8 ||
-> > > > +           (data_len && !data))
-> > >
-> > > data && !data_len is also an error, no?
->
-> Isn't that checked by the verifier ?
-
-data_len is ARG_CONST_SIZE_OR_ZERO, so data_len == 0 is allowed by
-verifier. But it's probably no harm either to allow data != NULL and
-data_len = 0. Might simplify some more dynamic use of snprintf(),
-actually.
-
->
-> I don't mind adding an explicit check for it (data_len ^ data or two
-> clearer conditions ?) but I think that even if this were to happen,
-> this would not be a problem: if we encounter a format specifier,
-> num_args will be zero so bpf_printf_preamble will bail out before it
-> tries to access data.
-
-agree
+Bart.
