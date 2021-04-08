@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5901E358A10
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7442358A0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhDHQsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
+        id S232411AbhDHQrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhDHQr6 (ORCPT
+        with ESMTP id S232398AbhDHQrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:47:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64357C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:47:47 -0700 (PDT)
+        Thu, 8 Apr 2021 12:47:24 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2106C061762;
+        Thu,  8 Apr 2021 09:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m77l0LMkgbw2ALxLnDVFN2K5i3Pq//YHsmmOYp1h6hQ=; b=lxvrE1T76sLMMEvVcTFsRP4eaq
-        wVLNx/cj89yv0GS5Fd6R6Hl0ymRof58782SkkCScq1ZAAkCHJ5f8VhAf71E5mV5se1ldMJCNdHYqY
-        RxyeGlFNwVi7Zyi2Sj+hh8nhZqFFzquv6d3WcPqLFEhMqIhvTaFEbDfz4NrIRi2F/lUqpHC7SdpVO
-        sCGLm3J8AQx1oMuCyp/H885UN550zQvnQ0dw0MlQjVwY3k+MFXScWiU7M8hYcXYUbYgRmCe8PBwpa
-        U7WgpcL5BR0e0aYDqsY8jjHlf51qQbvZ88oLt/Aofp2C/lgmN/VPgl/pmRUlh9GBOwVYs+Kg/g1zJ
-        Pxn0pBFg==;
+        bh=rPSDzrfrowrO77gFeqY3scGy/8/d4rLkbSq9WX5pPKE=; b=g4gIFCTjZ2YwfqCdI4fvKFNi04
+        xcM97NxBfimA6tHY047VWTQeGou2dQbOmYz5UE7LdSCgbsrif9fg2jgzjDOUMGK4D6k06/qljK64R
+        HBxd4r9t64Z8cdxQDJFGGrdCMKqgv4WIEnyAumwcOCm34Ssg04ALRNRh0e6PIh67WBBHOvF7pvbHL
+        dw+uBcGs0NJHmEXgfH4rWd3gVM1cjjDA7LAxIXXl3VbeD/rk0gTJhZLSmrkidr++PXidw86MNmiFE
+        N/wWhrlYUq0Ck3Re2OFbzJQOcU1/s+5WA5UtN9rSecP/8hDQ0Y8ftpPOth+lPqy9b950qT4WyWfSc
+        a/GHJ4Nw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUXna-00GXc2-Rx; Thu, 08 Apr 2021 16:46:43 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUXnx-008g4t-2v; Thu, 08 Apr 2021 16:46:53 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6C8B30015B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECE373001BF;
         Thu,  8 Apr 2021 18:46:29 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 66A8D2C56484D; Thu,  8 Apr 2021 12:18:02 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 12:18:02 +0200
+        id 4ACD52C1E1B6B; Thu,  8 Apr 2021 12:52:07 +0200 (CEST)
+Date:   Thu, 8 Apr 2021 12:52:07 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [RFC PATCH] Add split_lock
-Message-ID: <YG7YWiaEZ1VKqFmb@hirez.programming.kicks-ass.net>
-References: <20210408052338.3722069-1-willy@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
+ local_lock
+Message-ID: <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-3-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408052338.3722069-1-willy@infradead.org>
+In-Reply-To: <20210407202423.16022-3-mgorman@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 06:23:38AM +0100, Matthew Wilcox (Oracle) wrote:
-> bit_spinlocks are horrible on RT because there's absolutely nowhere
-> to put the mutex to sleep on.  They also do not participate in lockdep
-> because there's nowhere to put the map.
+On Wed, Apr 07, 2021 at 09:24:14PM +0100, Mel Gorman wrote:
+> There is a lack of clarity of what exactly local_irq_save/local_irq_restore
+> protects in page_alloc.c . It conflates the protection of per-cpu page
+> allocation structures with per-cpu vmstat deltas.
 > 
-> Most (all?) bit spinlocks are actually a split lock; logically they
-> could be treated as a single spinlock, but for performance, we want to
-> split the lock over many objects.  Introduce the split_lock as somewhere
-> to store the lockdep map and as somewhere that the RT kernel can put
-> a mutex.  It may also let us store a ticket lock for better performance
-> on non-RT kernels in the future, but I have left the current cpu_relax()
-> implementation intact for now.
+> This patch protects the PCP structure using local_lock which for most
+> configurations is identical to IRQ enabling/disabling.  The scope of the
+> lock is still wider than it should be but this is decreased laster.
 
-I think I like it, but I'm not sure it'll work for RT as is. It's a bit
-like qrwlock in that it only uses the internal (split) lock for
-contention, but that doesn't work for PI.
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index a4393ac27336..106da8fbc72a 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
 
-I've not recently looked at RT, but I think they simply used to bloat a
-number of the data structures with a real lock. Sebastian and Thomas
-will know better.
+> @@ -337,6 +338,7 @@ enum zone_watermarks {
+>  #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
+>  #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
+>  
+> +/* Fields and list protected by pagesets local_lock in page_alloc.c */
+>  struct per_cpu_pages {
+>  	int count;		/* number of pages in the list */
+>  	int high;		/* high watermark, emptying needed */
+
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index a68bacddcae0..e9e60d1a85d4 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -112,6 +112,13 @@ typedef int __bitwise fpi_t;
+>  static DEFINE_MUTEX(pcp_batch_high_lock);
+>  #define MIN_PERCPU_PAGELIST_FRACTION	(8)
+>  
+> +struct pagesets {
+> +	local_lock_t lock;
+> +};
+> +static DEFINE_PER_CPU(struct pagesets, pagesets) = {
+> +	.lock = INIT_LOCAL_LOCK(lock),
+> +};
+
+So why isn't the local_lock_t in struct per_cpu_pages ? That seems to be
+the actual object that is protected by it and is already per-cpu.
+
+Is that because you want to avoid the duplication across zones? Is that
+worth the effort?
