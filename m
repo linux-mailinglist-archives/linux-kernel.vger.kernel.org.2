@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF9357C2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E825A357C98
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhDHGMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:12:20 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:23844 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDHGMR (ORCPT
+        id S229887AbhDHG1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:27:21 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:50641 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhDHG1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:12:17 -0400
+        Thu, 8 Apr 2021 02:27:20 -0400
 Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210408061204epoutp01eecac56a7975cdeaa54ac3ea28d8e3a1~zzTZmicJv2147921479epoutp01J
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:12:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210408061204epoutp01eecac56a7975cdeaa54ac3ea28d8e3a1~zzTZmicJv2147921479epoutp01J
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210408062708epoutp03760eafd7679bd07916dc5926b1aa1864~zzgjKGFMw1719517195epoutp034
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:27:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210408062708epoutp03760eafd7679bd07916dc5926b1aa1864~zzgjKGFMw1719517195epoutp034
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617862324;
-        bh=fekVOjDvvz+FINWicYu+XcKH+bARMLDdV5/NPFDoKIo=;
+        s=mail20170921; t=1617863228;
+        bh=R7rGjjvXxtZaWN8oUFSKjNosrBlTy2YoWS09dnwcrcQ=;
         h=From:Subject:To:Cc:Date:References:From;
-        b=jReDeOiqZn1xlyStfsbJi76/a39yPrvSgbZTgfXPpDzakJLZn7VBezjlO/BKgtFZK
-         V7rOf4TED8JK0AY3uVLP73hHyH8GRaLnUCkb7aZgoUkOdX/4cNcn1whWB5gHVRkJ65
-         4ATrnRexxRjcKXLFTucs0LCGyKomkREk5sRx0w94=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210408061203epcas1p3c56b46c45a47233f8a4fff2d91818f31~zzTYh3iPJ2547725477epcas1p3b;
-        Thu,  8 Apr 2021 06:12:03 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FG9rs1DGXz4x9Q6; Thu,  8 Apr
-        2021 06:11:57 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        b=JFhiP3ooxdW9+eTTntTsqIjrxA5X/+q0yFbMJ/v2j9MxSlVJw93FPos4QJ6rztGBl
+         4rPF74qFNC8M76gNzj5wnPivd5VbyqcR20XI6M82gBkC4ejy6MDz8wwZ8ey2d1I9vD
+         Cd6nw9zPKu+JV9yg5ZXT1cvsl/uF/wf2wjIBizxg=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210408062707epcas1p1c14cd44f909a57d7413b6be483136bfd~zzgivk6HB3169731697epcas1p12;
+        Thu,  8 Apr 2021 06:27:07 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FGBBJ42kYz4x9Q1; Thu,  8 Apr
+        2021 06:27:04 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
         epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        42.11.23820.9AE9E606; Thu,  8 Apr 2021 15:11:53 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210408061152epcas1p195531dcfe84ab8d4a8f15f7d550993cf~zzTN4T5YK0312803128epcas1p1o;
-        Thu,  8 Apr 2021 06:11:52 +0000 (GMT)
+        8A.16.23820.832AE606; Thu,  8 Apr 2021 15:27:04 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210408062703epcas1p22b2d793d4c5f7231964ff258e2ba40e5~zzgfGMFP12329223292epcas1p2D;
+        Thu,  8 Apr 2021 06:27:03 +0000 (GMT)
 Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210408061152epsmtrp1ae0463c68d46cb580616727271965fd8~zzTN3G2pn3268332683epsmtrp1w;
-        Thu,  8 Apr 2021 06:11:52 +0000 (GMT)
-X-AuditID: b6c32a37-0031da8000015d0c-6f-606e9ea9ed6c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210408062703epsmtrp2f692124a8af1d43e1bed608201c8969f~zzgfCjppz2782227822epsmtrp2f;
+        Thu,  8 Apr 2021 06:27:03 +0000 (GMT)
+X-AuditID: b6c32a37-a59ff70000015d0c-2e-606ea238ae7f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
         epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0D.93.08745.7AE9E606; Thu,  8 Apr 2021 15:11:51 +0900 (KST)
+        E2.B5.08745.732AE606; Thu,  8 Apr 2021 15:27:03 +0900 (KST)
 Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408061151epsmtip2d3d5832d0994d5b43c2f96bd4a194cc3~zzTNmGE6N0146601466epsmtip2P;
-        Thu,  8 Apr 2021 06:11:51 +0000 (GMT)
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210408062703epsmtip17a35c74694002e3442bd498d5d744f5a~zzge2ortq1703017030epsmtip1N;
+        Thu,  8 Apr 2021 06:27:03 +0000 (GMT)
 From:   Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [GIT PULL] devfreq next for v5.13
+Subject: [GIT PULL] extcon next for v5.13
 Organization: Samsung Electronics
-To:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
-        chanwoo@kernel.org, cwchoi00@gmail.com,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-Message-ID: <3d4f6d28-5d8e-df33-882e-0e5dafe575b9@samsung.com>
-Date:   Thu, 8 Apr 2021 15:29:23 +0900
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        cw00.choi@samsung.com, chanwoo@kernel.org, cwchoi00@gmail.com,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
+Message-ID: <6b1dea1d-331c-e349-6ff4-14585826cc52@samsung.com>
+Date:   Thu, 8 Apr 2021 15:44:35 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
         Thunderbird/59.0
 MIME-Version: 1.0
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmnu7KeXkJBt8m8FlMvHGFxeL6l+es
-        Fs+OalucbXrDbnF51xw2i8+9RxgtbjeuYLM4c/oSqwOHx85Zd9k9Nq3qZPPYcrWdxaNvyypG
-        j8+b5AJYo7JtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0y
-        c4BOUVIoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUWBboFSfmFpfmpesl5+daGRoY
-        GJkCFSZkZ3zfOp+t4IpcRduWlAbGiRJdjJwcEgImEj3v57F2MXJxCAnsYJTY8WwilPOJUeLU
-        59csEM5nRonPS/+ww7R8/v4bqmoXo8T+Y2uYIJz3jBLzdu9nBKliE9CS2P/iBhuILQxkH+78
-        zwpi8wsoSlz98RiohoNDRMBeouNDJkgvs8A+JomtX1czg9TwCthJLPy5DWgoOweLgIrEvDqQ
-        qKhAmMTJbS2MEBWCEidnPmEBsZkFxCVuPZnPBGHLSzRvnc0McWcnh8SyLYkQtovEvba7UPcL
-        S7w6vgXKlpJ42d8GZVdLrDx5hA3kHAmBDkaJLfsvsEIkjCX2L53MBHIys4CmxPpd+hBhRYmd
-        v+cyQuzlk3j3tYcVpERCgFeio00IokRZ4vKDu0wQtqTE4vZONgjbQ+Lapc2sExgVZyH5ZhaS
-        b2Yh+WYWwuIFjCyrGMVSC4pz01OLDQuMkaN6EyM4jWqZ72Cc9vaD3iFGJg7GQ4wSHMxKIrw7
-        erMThHhTEiurUovy44tKc1KLDzGaAkN3IrOUaHI+MJHnlcQbmhoZGxtbmBiamRoaKonzJhk8
-        iBcSSE8sSc1OTS1ILYLpY+LglGpgSj/8x7NCqleUZ6foRuVu+X15gSVLpQ6UukwwFSv2Vbs0
-        v89D7XqnT+dTrRlaJm21+ju1DtxdGLu1RjuTac0XseZIwZnzuFfsXjcr+1JQ5OZri/v3OE3N
-        qGRKmX9qsVXXtnWbfGpF1YKfHjzldud3hM593q27Xk0T3vNacFqR0p2gvthNv3tOKdnmsP2P
-        0aor6P06q4eZL3bVCb4Vjk83z7mT2BR86M9G5anXnpTt3Sm1/55quYN+WuSGlg/ng8ydK9xt
-        OWPaE58Upr9wnn4mxS/T7MjOPblvH9n/crFOqSkO8f12/uGi9oXXLi7c+Obx97BHTYtn6dz1
-        7Vk3X73qk5PLYqW0q/dlBLXdi49OVGIpzkg01GIuKk4EALEpv+MsBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvO7yeXkJBkeuWVhMvHGFxeL6l+es
-        Fs+OalucbXrDbnF51xw2i8+9RxgtbjeuYLM4c/oSqwOHx85Zd9k9Nq3qZPPYcrWdxaNvyypG
-        j8+b5AJYo7hsUlJzMstSi/TtErgyvm+dz1ZwRa6ibUtKA+NEiS5GTg4JAROJz99/s3YxcnEI
-        CexglDh+eAI7REJSYtrFo8xdjBxAtrDE4cPFEDVvGSW2Ni9lA6lhE9CS2P/iBpgtDGQf7vzP
-        CmLzCyhKXP3xmBGkV0TAXqLjQyZIL7PAPiaJTYePM4PU8ArYSSz8uY2pi5Gdg0VARWJeHUhU
-        VCBMYueSx0wQFYISJ2c+YQGxmQXUJf7Mu8QMYYtL3HoynwnClpdo3jqbeQKj4CwkLbOQtMxC
-        0jILScsCRpZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjB8aGltYNxz6oPeocYmTgY
-        DzFKcDArifDu6M1OEOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyW
-        iYNTqoEpVGmeseSBkpLJlXyGVztjTxcG5LMtiO31/cecX3bcXGJXktGfHWXiPEnlrrV/TN+4
-        +m1b8D1MuPDKIsci0SarvLYMyzXzrbms/1zZmxVup2GSxfphru3NOQ+b8xb279c75tBw5vDz
-        uQzbBU4ECnbc8japK1/Vxfk3JXPLypce8v8mLf4Rqb7RofLQFyndazwGJxy4az4d1b/u2fim
-        UaynvOfQwrbOozdjrJynheu8Fz/W5HV+R1RmzwLt0sBy9vNrdk1OO/nBsvqFWlfyvhXpS3R4
-        ZIROXi+Y8apV39zCdcJln9wjn/fs1N/36Zu8xrN9NxU+LeuWsElrK185M1+7MXK24vrAYH/H
-        3VuP/FdiKc5INNRiLipOBAC+HgD9/gIAAA==
-X-CMS-MailID: 20210408061152epcas1p195531dcfe84ab8d4a8f15f7d550993cf
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmga7ForwEgxk3ZSwm3rjCYnH9y3NW
+        i2dHtS2aF69ns7i8aw6bxe3GFWwObB47Z91l99i0qpPNY//cNewefVtWMXp83iQXwBqVbZOR
+        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdICSQlliTilQ
+        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CyQK84Mbe4NC9dLzk/18rQwMDIFKgwITuj/216
+        wXaBisYzm1gaGFfydjFycEgImEj03/HpYuTiEBLYwSjRtOsBWxcjJ5DziVFiwiI5iMRnRolt
+        Pa+ZQRIgDZ/+vmCCSOxilGh5/J4NwnnPKHFrYgMLSBWbgJbE/hc3wEYJC2hKzL7Uxw5i8wso
+        Slz98ZgRxBYR0JB4efQWC0gzs8BORon5L66CFfEK2Emsm/oXrJlFQEViwYafYKtFBcIkTm5r
+        YYSoEZQ4OfMJ2DJmAXGJW0/mM0HY8hLb385hBhkqIfCTXeL1+n1Qd7tIXJ4/nQ3CFpZ4dXwL
+        O4QtJfH53V6oeLXEypNH2CCaOxgltuy/wAqRMJbYv3QyEyjEmIHeWb9LHyKsKLHz91xGiMV8
+        Eu++9rBCApVXoqNNCKJEWeLyg7tMELakxOL2TqhVHhKdxxvZJzAqzkLyziwk78xC8s4shMUL
+        GFlWMYqlFhTnpqcWGxYYI0f2JkZw2tQy38E47e0HvUOMTByMhxglOJiVRHh39GYnCPGmJFZW
+        pRblxxeV5qQWH2I0BQbwRGYp0eR8YOLOK4k3NDUyNja2MDE0MzU0VBLnTTJ4EC8kkJ5Ykpqd
+        mlqQWgTTx8TBKdXAtEL8uYbgG9H8X6+kBd0NZF6Kru2rFF+uJBMoGfn2pJCBs8qT3ALW/NkV
+        r7527l5+2pxZI6esKM5O89xbvbMfTq1If79MaUfd3aL7l+YnKjpWTCzV95a5LLaYjSN4RofE
+        lJm/pH2CPgjwpCYsqPky4enmG+wxckzvN3hP7fU+s61rF4+3UNi0vJtszw1Zy6awZrs6+FVM
+        tK485bZgpvb+hHaegHOa6/b2RGVyppunC9ufvrNy2wHP3rUrbjYkW07dzNFxL8k069fjmfOP
+        ad1g1zymX7xtd1Gy3Kt2bp59TftuH2c4s2DOhaXMefszv006/Piau+omkTlzGETnPjYVU8g6
+        MlnJsoXDyvNeGb+eEktxRqKhFnNRcSIA9rELVCQEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsWy7bCSnK75orwEg97dhhYTb1xhsbj+5Tmr
+        xbOj2hbNi9ezWVzeNYfN4nbjCjYHNo+ds+6ye2xa1cnmsX/uGnaPvi2rGD0+b5ILYI3isklJ
+        zcksSy3St0vgyuh/m16wXaCi8cwmlgbGlbxdjJwcEgImEp/+vmDqYuTiEBLYwSixdv8NdoiE
+        pMS0i0eZuxg5gGxhicOHiyFq3jJKHHlwhgmkhk1AS2L/ixtsILawgKbE7Et9YL38AooSV388
+        ZgSxRQQ0JF4evcUC0swssJNRYumyFmaQBK+AncS6qX/BmlkEVCQWbPgJFhcVCJPYueQxE0SN
+        oMTJmU9YQGxmAXWJP/MuMUPY4hK3nsxngrDlJba/ncM8gVFwFpKWWUhaZiFpmYWkZQEjyypG
+        ydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOCI0NLawbhn1Qe9Q4xMHIyHGCU4mJVEeHf0
+        ZicI8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1OzW1ILUIJsvEwSnVwLSleHqt
+        67o/M10T72p3afKWp+9ZtLZAJvfvX8HaKwc5J8xR6v9uqd0isUcud1dC8Ycnlo3aM7+l7mHM
+        U/K3dV18h+drq+72WTtSPmx0X23gfM2r4+m0n+sutvxymK1XsFQ6hVPgul7M4ZKmc0lfWlhc
+        I203mOfJ1c2p8rit8juK7+iBjIRuZn+PZaFnm+Izf1TYcAdb9L82ybizYm3llacNbFulzQ8v
+        8HeOE1e9vS/OsDr+hKK5wO4pzCG+9q0G/x692WU/O15y/9Wl2Y+YvdzeXk5MXjr7ieh8tZdB
+        MlyqvyM2W+nG1B4t6ImNDeeq3pkTbf63XiXM6FuNm3FNQZ5BAFeRFKfTvJZzKtOUWIozEg21
+        mIuKEwEVUNsK9wIAAA==
+X-CMS-MailID: 20210408062703epcas1p22b2d793d4c5f7231964ff258e2ba40e5
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210408061152epcas1p195531dcfe84ab8d4a8f15f7d550993cf
-References: <CGME20210408061152epcas1p195531dcfe84ab8d4a8f15f7d550993cf@epcas1p1.samsung.com>
+X-CMS-RootMailID: 20210408062703epcas1p22b2d793d4c5f7231964ff258e2ba40e5
+References: <CGME20210408062703epcas1p22b2d793d4c5f7231964ff258e2ba40e5@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Rafael,
+Dear Greg,
 
-This is devfreq-next pull request for v5.13-rc1. I add detailed description of
-this pull request on the following tag. Please pull devfreq with following updates.
-- tag name : devfreq-next-for-5.12
-
-This pull request contains the immutable branch to keep the immutable patch[1]
-between devfreq and drm for gpu driver.
-[1] https://patchwork.kernel.org/project/linux-pm/patch/20210308133041.10516-1-daniel.lezcano@linaro.org/
+This is extcon-next pull request for v5.13. I add detailed description of
+this pull request on below. Please pull extcon with following updates.
 
 Best Regards,
 Chanwoo Choi
@@ -131,80 +123,44 @@ The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.13
+  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.13
 
-for you to fetch changes up to 0a7dc8318c2817fb33dc50946f7ca6e0ff28f036:
+for you to fetch changes up to 7b1222b224aff41739319ae81cd266825464ad8f:
 
-  PM / devfreq: imx8m-ddrc: Remove unneeded of_match_ptr() (2021-04-08 13:14:51 +0900)
+  extcon: qcom-spmi: Add support for VBUS detection (2021-04-08 13:10:16 +0900)
 
 ----------------------------------------------------------------
+
 Detailed description for this pull request:
-1. Update devfreq core
-- Register devfreq as a cooling device when adding devfreq device
-basically if the flag of devfreq device is set as cooling device.
 
-- Add missing unlock opeation in devfreq_add_device
+1. Update extcon provider driver
+- Add the support of charging interrupt to detect charger connector
+for extcon-max8997.c
 
-- Use the next frequency as resume_freq instead of previous frequency
-  when using opp-suspend property
+- Detect OTG when USB_ID pin is connected to ground for extcon-sm5502.c
 
-- Check whether .get_dev_status in struct devfreq_dev_profile is
-implemented or not by devfreq driver before calling .get_dev_status
-function.
+- Add the support for VBUS detection for extcon-qcom-spmi-misc.c
+and replace qcom,pm8941-misc binding document with yaml style.
 
-2. Update devfreq driver
-- Use dev_err_probe to simplify the error handling on rk3399_dmc.c
-
-- Remove unused .get_dev_status function on imx8m-ddrc.c because
-imx8m_ddrc_get_dev_status has not returend the any current status of
-device.
-
-- Remove unneeded of_match_ptr() from imx-bus.c and imx8m-ddrc.ca
-
-- Add missing phandle informatioon and replace undefined variable
-with integer value for rk3399_dmc.txt devicetree binding document.
-
-3. Update minor issue
-- Fix the wrong set_freq path of userspace governor in drivers/devfreq/Kconfig
-- Remove the invalid description from .get_target_freq in struct
-devfreq_dev_profile
 ----------------------------------------------------------------
-Chanwoo Choi (1):
-      Merge branch 'immutable-devfreq-v5.13-rc1' into devfreq-next
+Anirudh Ghayal (1):
+      extcon: qcom-spmi: Add support for VBUS detection
 
-Daniel Lezcano (1):
-      PM / devfreq: Register devfreq as a cooling device on demand
+Guru Das Srinagesh (2):
+      bindings: pm8941-misc: Convert bindings to YAML
+      bindings: pm8941-misc: Add support for VBUS detection
 
-Dong Aisheng (5):
-      PM / devfreq: Use more accurate returned new_freq as resume_freq
-      PM / devfreq: Fix the wrong set_freq path for userspace governor in Kconfig
-      PM / devfreq: Check get_dev_status in devfreq_update_stats
-      PM / devfreq: Remove the invalid description for get_target_freq
-      PM / devfreq: imx8m-ddrc: Remove imx8m_ddrc_get_dev_status
+Nikita Travkin (1):
+      extcon: sm5502: Detect OTG when USB_ID is connected to ground
 
-Enric Balletbo i Serra (1):
-      dt-bindings: devfreq: rk3399_dmc: Add rockchip,pmu phandle.
+Timon Baetz (1):
+      extcon: max8997: Add CHGINS and CHGRM interrupt handling
 
-Fabio Estevam (2):
-      PM / devfreq: imx-bus: Remove unneeded of_match_ptr()
-      PM / devfreq: imx8m-ddrc: Remove unneeded of_match_ptr()
-
-Gaël PORTAY (1):
-      dt-bindings: devfreq: rk3399_dmc: Remove references of unexistant defines
-
-Krzysztof Kozlowski (1):
-      PM / devfreq: rk3399_dmc: Simplify with dev_err_probe()
-
-Lukasz Luba (1):
-      PM / devfreq: Unlock mutex and free devfreq struct in error path
-
- Documentation/ABI/testing/sysfs-class-devfreq      |  5 +-
- .../devicetree/bindings/devfreq/rk3399_dmc.txt     | 75 +++++++++++-----------
- drivers/devfreq/Kconfig                            |  2 +-
- drivers/devfreq/devfreq.c                          | 14 +++-
- drivers/devfreq/governor.h                         |  5 +-
- drivers/devfreq/imx-bus.c                          |  2 +-
- drivers/devfreq/imx8m-ddrc.c                       | 16 +----
- drivers/devfreq/rk3399_dmc.c                       | 20 ++----
- include/linux/devfreq.h                            |  9 +++
- 9 files changed, 70 insertions(+), 78 deletions(-)
+ .../bindings/extcon/qcom,pm8941-misc.txt           | 41 ---------
+ .../bindings/extcon/qcom,pm8941-misc.yaml          | 62 ++++++++++++++
+ drivers/extcon/extcon-max8997.c                    |  4 +
+ drivers/extcon/extcon-qcom-spmi-misc.c             | 99 +++++++++++++++++-----
+ drivers/extcon/extcon-sm5502.c                     | 22 ++++-
+ 5 files changed, 166 insertions(+), 62 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.txt
+ create mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
