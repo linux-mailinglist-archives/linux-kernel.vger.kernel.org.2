@@ -2,339 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679EB358923
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC10F358920
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhDHQAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:00:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:52852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhDHQAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:00:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09EE4D6E;
-        Thu,  8 Apr 2021 09:00:14 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE32F3F73D;
-        Thu,  8 Apr 2021 09:00:11 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 1/2] KVM: arm64: Move CMOs from user_mem_abort to
- the fault handlers
-To:     "wangyanan (Y)" <wangyanan55@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, zhukeqian1@huawei.com,
-        yuzenghui@huawei.com
-References: <20210326031654.3716-1-wangyanan55@huawei.com>
- <20210326031654.3716-2-wangyanan55@huawei.com>
- <cd6c8a86-b7b2-3d3e-121a-c9d1cb23c4b3@arm.com>
- <b688cf37-16e6-d068-d97f-146c64afca08@huawei.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <94911842-d55d-bd6f-74ea-a947c09584c2@arm.com>
-Date:   Thu, 8 Apr 2021 16:59:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231919AbhDHQAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:00:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231791AbhDHQAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:00:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617897604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PNTuOs8cwmVPsb+XPqRB51lDxbRlJnUP7klH9+xffsY=;
+        b=RlAYxJ85yy7pXQNicDShjHZInxuOLNNuC+3AvKOKP7568raqBUvp24apiKhvWrW1pLmxSU
+        89sMu7HliA/dUu/vYaMMd0CjHOqQKW5DNbW3Jtc6xCrGmAYLNdhEr2woRBGqkEgwbvwQhI
+        Gnd5mV7aH8EjuDNLKn4fF0Q1/sKPIOc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-Ug8bzuhaMnmOFDQnaFZ4iA-1; Thu, 08 Apr 2021 12:00:01 -0400
+X-MC-Unique: Ug8bzuhaMnmOFDQnaFZ4iA-1
+Received: by mail-wr1-f70.google.com with SMTP id s10so1187801wre.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:00:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PNTuOs8cwmVPsb+XPqRB51lDxbRlJnUP7klH9+xffsY=;
+        b=IoV1Yu7lSjVMvUrUcj/2pu+GuVya1ehzdH7q0PY9a3nzehmZHY9s1WafZTrypA2wjE
+         B7OsGHzT0SdgvKpUh4uvCDq10VX1+co0Ux8EIhLmYiy7bTbcx1L8ZjcwaNWcpuzL+as2
+         We/L8Z+EuL3BmuNPwP75oKeO2r4zC/r0aN3J4AM5RdQnYrFyZ3M8YkQMM5gLJzGWhbeN
+         jF/ZJj/zTXyqArOYutPsc0ZsrW7cOFZLasdq/lzWgDJr+FQoU8V9MbRSC4nZusUKOJnB
+         IXat3cP7bVpYFxGQ4Hsromdiu8AO9rtuKmtovM1BIgBU/nXcj4sSh9JQBwGAt1jA/dlM
+         6ESw==
+X-Gm-Message-State: AOAM533A5G1fu3Br+AQV6w02GtQccLSloo9XQXHOvJ6MoHnPx255iYZl
+        ITI+vv1rDYmPc0vnPb6m8bmuR706wXmpTi/v90X/1PlzQSL/bkArfW4/EQaH58Jid+EbKCPraPo
+        rm1kcauHACnUv/jw/srfiSLoh
+X-Received: by 2002:a05:600c:2e53:: with SMTP id q19mr9436932wmf.187.1617897599787;
+        Thu, 08 Apr 2021 08:59:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqoM3onIvGeRXWXv4QE785/eHcNM4dldKx3uveQOhko4iWcZKhOBw/s+pXUoh6UaqBx9fHKw==
+X-Received: by 2002:a05:600c:2e53:: with SMTP id q19mr9436917wmf.187.1617897599571;
+        Thu, 08 Apr 2021 08:59:59 -0700 (PDT)
+Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
+        by smtp.gmail.com with ESMTPSA id j14sm47053447wrw.69.2021.04.08.08.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 08:59:59 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 11:59:56 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com
+Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
+Message-ID: <20210408115834-mutt-send-email-mst@kernel.org>
+References: <20210408082648.20145-1-jasowang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <b688cf37-16e6-d068-d97f-146c64afca08@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408082648.20145-1-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
+> This patch mandates 1.0 for vDPA devices. The goal is to have the
+> semantic of normative statement in the virtio spec and eliminate the
+> burden of transitional device for both vDPA bus and vDPA parent.
+> 
+> uAPI seems fine since all the vDPA parent mandates
+> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+> 
+> For legacy guests, it can still work since Qemu will mediate when
+> necessary (e.g doing the endian conversion).
+> 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
-On 4/8/21 10:23 AM, wangyanan (Y) wrote:
-> Hi Alex,
->
-> On 2021/4/7 23:31, Alexandru Elisei wrote:
->> Hi Yanan,
->>
->> On 3/26/21 3:16 AM, Yanan Wang wrote:
->>> We currently uniformly permorm CMOs of D-cache and I-cache in function
->>> user_mem_abort before calling the fault handlers. If we get concurrent
->>> guest faults(e.g. translation faults, permission faults) or some really
->>> unnecessary guest faults caused by BBM, CMOs for the first vcpu are
->> I can't figure out what BBM means.
-> Just as Will has explained, it's Break-Before-Make rule. When we need to
-> replace an old table entry with a new one, we should firstly invalidate
-> the old table entry(Break), before installation of the new entry(Make).
+Hmm. If we do this, don't we still have a problem with
+legacy drivers which don't ack 1.0?
+Note 1.0 affects ring endianness which is not mediated in QEMU
+so QEMU can't pretend to device guest is 1.0.
 
-Got it, thank you and Will for the explanation.
 
->
->
-> And I think this patch mainly introduces benefits in two specific scenarios:
-> 1) In a VM startup, it will improve efficiency of handling page faults incurred
-> by vCPUs, when initially populating stage2 page tables.
-> 2) After live migration, the heavy workload will be resumed on the destination
-> VMs, however all the stage2 page tables need to be rebuilt.
->>> necessary while the others later are not.
->>>
->>> By moving CMOs to the fault handlers, we can easily identify conditions
->>> where they are really needed and avoid the unnecessary ones. As it's a
->>> time consuming process to perform CMOs especially when flushing a block
->>> range, so this solution reduces much load of kvm and improve efficiency
->>> of the page table code.
->>>
->>> So let's move both clean of D-cache and invalidation of I-cache to the
->>> map path and move only invalidation of I-cache to the permission path.
->>> Since the original APIs for CMOs in mmu.c are only called in function
->>> user_mem_abort, we now also move them to pgtable.c.
->>>
->>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->>> ---
->>>   arch/arm64/include/asm/kvm_mmu.h | 31 ---------------
->>>   arch/arm64/kvm/hyp/pgtable.c     | 68 +++++++++++++++++++++++++-------
->>>   arch/arm64/kvm/mmu.c             | 23 ++---------
->>>   3 files changed, 57 insertions(+), 65 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
->>> index 90873851f677..c31f88306d4e 100644
->>> --- a/arch/arm64/include/asm/kvm_mmu.h
->>> +++ b/arch/arm64/include/asm/kvm_mmu.h
->>> @@ -177,37 +177,6 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu
->>> *vcpu)
->>>       return (vcpu_read_sys_reg(vcpu, SCTLR_EL1) & 0b101) == 0b101;
->>>   }
->>>   -static inline void __clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long
->>> size)
->>> -{
->>> -    void *va = page_address(pfn_to_page(pfn));
->>> -
->>> -    /*
->>> -     * With FWB, we ensure that the guest always accesses memory using
->>> -     * cacheable attributes, and we don't have to clean to PoC when
->>> -     * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
->>> -     * PoU is not required either in this case.
->>> -     */
->>> -    if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
->>> -        return;
->>> -
->>> -    kvm_flush_dcache_to_poc(va, size);
->>> -}
->>> -
->>> -static inline void __invalidate_icache_guest_page(kvm_pfn_t pfn,
->>> -                          unsigned long size)
->>> -{
->>> -    if (icache_is_aliasing()) {
->>> -        /* any kind of VIPT cache */
->>> -        __flush_icache_all();
->>> -    } else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
->>> -        /* PIPT or VPIPT at EL2 (see comment in __kvm_tlb_flush_vmid_ipa) */
->>> -        void *va = page_address(pfn_to_page(pfn));
->>> -
->>> -        invalidate_icache_range((unsigned long)va,
->>> -                    (unsigned long)va + size);
->>> -    }
->>> -}
->>> -
->>>   void kvm_set_way_flush(struct kvm_vcpu *vcpu);
->>>   void kvm_toggle_cache(struct kvm_vcpu *vcpu, bool was_enabled);
->>>   diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>> index 4d177ce1d536..829a34eea526 100644
->>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>> @@ -464,6 +464,43 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot
->>> prot,
->>>       return 0;
->>>   }
->>>   +static bool stage2_pte_cacheable(kvm_pte_t pte)
->>> +{
->>> +    u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
->>> +    return memattr == PAGE_S2_MEMATTR(NORMAL);
->>> +}
->>> +
->>> +static bool stage2_pte_executable(kvm_pte_t pte)
->>> +{
->>> +    return !(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN);
->>> +}
->>> +
->>> +static void stage2_flush_dcache(void *addr, u64 size)
->>> +{
->>> +    /*
->>> +     * With FWB, we ensure that the guest always accesses memory using
->>> +     * cacheable attributes, and we don't have to clean to PoC when
->>> +     * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
->>> +     * PoU is not required either in this case.
->>> +     */
->>> +    if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
->>> +        return;
->>> +
->>> +    __flush_dcache_area(addr, size);
->>> +}
->>> +
->>> +static void stage2_invalidate_icache(void *addr, u64 size)
->>> +{
->>> +    if (icache_is_aliasing()) {
->>> +        /* Flush any kind of VIPT icache */
->>> +        __flush_icache_all();
->>> +    } else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
->>> +        /* PIPT or VPIPT at EL2 */
->>> +        invalidate_icache_range((unsigned long)addr,
->>> +                    (unsigned long)addr + size);
->>> +    }
->>> +}
->>> +
->>>   static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->>>                         kvm_pte_t *ptep,
->>>                         struct stage2_map_data *data)
->>> @@ -495,6 +532,13 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end,
->>> u32 level,
->>>           put_page(page);
->>>       }
->>>   +    /* Perform CMOs before installation of the new PTE */
->>> +    if (!kvm_pte_valid(old) || stage2_pte_cacheable(old))
->> I'm not sure why the stage2_pte_cacheable(old) condition is needed.
->>
->> kvm_handle_guest_abort() handles three types of stage 2 data or instruction
->> aborts: translation faults (fault_status == FSC_FAULT), access faults
->> (fault_status == FSC_ACCESS) and permission faults (fault_status == FSC_PERM).
->>
->> Access faults are handled in handle_access_fault(), which means user_mem_abort()
->> handles translation and permission faults.
-> Yes, and we are certain that it's a translation fault here in
-> stage2_map_walker_try_leaf.
->> The original code did the dcache clean
->> + inval when not a permission fault, which means the CMO was done only on a
->> translation fault. Translation faults mean that the IPA was not mapped, so the old
->> entry will always be invalid. Even if we're coalescing multiple last level leaf
->> entries int oa  block mapping, the table entry which is replaced is invalid
->> because it's marked as such in stage2_map_walk_table_pre().
->>
->> Is there something I'm missing?
-> I originally thought that we could possibly have a translation fault on a valid
-> stage2 table
-> descriptor due to some special cases, and that's the reason
-> stage2_pte_cacheable(old)
-> condition exits, but I can't image any scenario like this.
->
-> I think your above explanation is right, maybe I should just drop that condition.
->>
->>> +        stage2_flush_dcache(__va(phys), granule);
->>> +
->>> +    if (stage2_pte_executable(new))
->>> +        stage2_invalidate_icache(__va(phys), granule);
->> This, together with the stage2_attr_walker() changes below, look identical to the
->> current code in user_mem_abort(). The executable permission is set on an exec
->> fault (instruction abort not on a stage 2 translation table walk), and as a result
->> of the fault we either need to map a new page here, or relax permissions in
->> kvm_pgtable_stage2_relax_perms() -> stage2_attr_walker() below.
-> I agree.
-> Do you mean this part of change is right?
 
-Yes, I was trying to explain that the behaviour with regard to icache invalidation
-from this patch is identical to the current behaviour of user_mem_abort ()
-(without this patch).
 
-Thanks,
 
-Alex
+> ---
+>  include/linux/vdpa.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index 0fefeb976877..cfde4ec999b4 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -6,6 +6,7 @@
+>  #include <linux/device.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/vhost_iotlb.h>
+> +#include <uapi/linux/virtio_config.h>
+>  
+>  /**
+>   * vDPA callback definition.
+> @@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+>  {
+>          const struct vdpa_config_ops *ops = vdev->config;
+>  
+> +        /* Mandating 1.0 to have semantics of normative statements in
+> +         * the spec. */
+> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
+> +		return -EINVAL;
+> +
+>  	vdev->features_valid = true;
+>          return ops->set_features(vdev, features);
+>  }
+> -- 
+> 2.25.1
 
->
-> Thanks,
-> Yanan
->> Thanks,
->>
->> Alex
->>
->>> +
->>>       smp_store_release(ptep, new);
->>>       get_page(page);
->>>       data->phys += granule;
->>> @@ -651,20 +695,6 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64
->>> addr, u64 size,
->>>       return ret;
->>>   }
->>>   -static void stage2_flush_dcache(void *addr, u64 size)
->>> -{
->>> -    if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
->>> -        return;
->>> -
->>> -    __flush_dcache_area(addr, size);
->>> -}
->>> -
->>> -static bool stage2_pte_cacheable(kvm_pte_t pte)
->>> -{
->>> -    u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
->>> -    return memattr == PAGE_S2_MEMATTR(NORMAL);
->>> -}
->>> -
->>>   static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>>                      enum kvm_pgtable_walk_flags flag,
->>>                      void * const arg)
->>> @@ -743,8 +773,16 @@ static int stage2_attr_walker(u64 addr, u64 end, u32
->>> level, kvm_pte_t *ptep,
->>>        * but worst-case the access flag update gets lost and will be
->>>        * set on the next access instead.
->>>        */
->>> -    if (data->pte != pte)
->>> +    if (data->pte != pte) {
->>> +        /*
->>> +         * Invalidate the instruction cache before updating
->>> +         * if we are going to add the executable permission.
->>> +         */
->>> +        if (!stage2_pte_executable(*ptep) && stage2_pte_executable(pte))
->>> +            stage2_invalidate_icache(kvm_pte_follow(pte),
->>> +                         kvm_granule_size(level));
->>>           WRITE_ONCE(*ptep, pte);
->>> +    }
->>>         return 0;
->>>   }
->>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>> index 77cb2d28f2a4..1eec9f63bc6f 100644
->>> --- a/arch/arm64/kvm/mmu.c
->>> +++ b/arch/arm64/kvm/mmu.c
->>> @@ -609,16 +609,6 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm
->>> *kvm,
->>>       kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
->>>   }
->>>   -static void clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long size)
->>> -{
->>> -    __clean_dcache_guest_page(pfn, size);
->>> -}
->>> -
->>> -static void invalidate_icache_guest_page(kvm_pfn_t pfn, unsigned long size)
->>> -{
->>> -    __invalidate_icache_guest_page(pfn, size);
->>> -}
->>> -
->>>   static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
->>>   {
->>>       send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
->>> @@ -882,13 +872,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu,
->>> phys_addr_t fault_ipa,
->>>       if (writable)
->>>           prot |= KVM_PGTABLE_PROT_W;
->>>   -    if (fault_status != FSC_PERM && !device)
->>> -        clean_dcache_guest_page(pfn, vma_pagesize);
->>> -
->>> -    if (exec_fault) {
->>> +    if (exec_fault)
->>>           prot |= KVM_PGTABLE_PROT_X;
->>> -        invalidate_icache_guest_page(pfn, vma_pagesize);
->>> -    }
->>>         if (device)
->>>           prot |= KVM_PGTABLE_PROT_DEVICE;
->>> @@ -1144,10 +1129,10 @@ int kvm_set_spte_hva(struct kvm *kvm, unsigned long
->>> hva, pte_t pte)
->>>       trace_kvm_set_spte_hva(hva);
->>>         /*
->>> -     * We've moved a page around, probably through CoW, so let's treat it
->>> -     * just like a translation fault and clean the cache to the PoC.
->>> +     * We've moved a page around, probably through CoW, so let's treat
->>> +     * it just like a translation fault and the map handler will clean
->>> +     * the cache to the PoC.
->>>        */
->>> -    clean_dcache_guest_page(pfn, PAGE_SIZE);
->>>       handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
->>>       return 0;
->>>   }
->> .
