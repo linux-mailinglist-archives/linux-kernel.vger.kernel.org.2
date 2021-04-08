@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE1835898B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521DD35898E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhDHQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:21:14 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49250 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhDHQVL (ORCPT
+        id S231785AbhDHQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:21:22 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:50054 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232182AbhDHQVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:21:11 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id B82A11F45CF6
-Message-ID: <d4000598fddcf45e578462aa04b556c0ca057091.camel@collabora.com>
-Subject: Re: [PATCH 1/2 v2] staging: media: hantro: Align line break to the
- open parenthesis in file hantro_hw.h
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Thu, 08 Apr 2021 13:20:49 -0300
-In-Reply-To: <1e6d73432d60dfb8bb3f7f2bd6bf3084091a2a39.1617890467.git.alinesantanacordeiro@gmail.com>
-References: <cover.1617890467.git.alinesantanacordeiro@gmail.com>
-         <1e6d73432d60dfb8bb3f7f2bd6bf3084091a2a39.1617890467.git.alinesantanacordeiro@gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Thu, 8 Apr 2021 12:21:18 -0400
+Date:   Thu, 08 Apr 2021 16:21:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1617898865;
+        bh=gmq6lQd1NWtTBrDin6uNBMByAAtGgaIcn+myFTSLQ/s=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=OzsyUehO7T00DunatQBQ4rsCMr+sej+mRiMP0VPZVxZr4wNcMilHRWW/se56kkLSE
+         BvIjym1RmGVMUKS6b1SxnDecpHiMABKgCBXViYpRR1iiMhgJxMDdwylME3d2tvtFZw
+         9VNBfkUC3HkamN2NxO8D7QH/n0S2zwJ+EIvq3Pzs=
+To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v2 1/3] arm64: dts: qcom: sm8150: add other QUP nodes and iommus
+Message-ID: <20210408161953.26298-2-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ola Aline,
+Add the first and third qupv3 nodes used to hook
+up peripherals on some devices, as well as the iommus properties for all
+of them.
 
-Welcome to the kernel community. Hope you enjoy some of this
-Outreachy adventures.
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+---
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Normally, when you submit a v2, we want to know what changed
-between the first submission and v2.
-
-If you are subscribed to linux-media, you can read some
-of the series with a vN+1 and look how it's done. Examples:
-
-https://www.spinics.net/lists/linux-media/msg190043.html
-
-https://www.spinics.net/lists/linux-media/msg189923.html
-
-I'm sure your Outreachy mentors can tell you more.
-
-On Thu, 2021-04-08 at 11:07 -0300, Aline Santana Cordeiro wrote:
-> Aligns line break with the remaining function arguments
-> to the open parenthesis. Issue found by checkpatch.
-> 
-> Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-> ---
->  drivers/staging/media/hantro/hantro_hw.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index 34c9e46..a650b9c 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -207,7 +207,7 @@ hantro_h264_mv_size(unsigned int width, unsigned int height)
->  void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
->  void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx);
->  void hantro_mpeg2_dec_copy_qtable(u8 *qtable,
-> -       const struct v4l2_ctrl_mpeg2_quantization *ctrl);
-> +                                 const struct v4l2_ctrl_mpeg2_quantization *ctrl);
->  int hantro_mpeg2_dec_init(struct hantro_ctx *ctx);
->  void hantro_mpeg2_dec_exit(struct hantro_ctx *ctx);
->  
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qco=
+m/sm8150.dtsi
+index e5bb17bc2f46..543417d74216 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -577,12 +577,26 @@ gcc: clock-controller@100000 {
+ =09=09=09=09 <&sleep_clk>;
+ =09=09};
+=20
++=09=09qupv3_id_0: geniqup@8c0000 {
++=09=09=09compatible =3D "qcom,geni-se-qup";
++=09=09=09reg =3D <0x0 0x008c0000 0x0 0x6000>;
++=09=09=09clock-names =3D "m-ahb", "s-ahb";
++=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
++=09=09=09=09 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0xc3 0x0>;
++=09=09=09#address-cells =3D <2>;
++=09=09=09#size-cells =3D <2>;
++=09=09=09ranges;
++=09=09=09status =3D "disabled";
++=09=09};
++
+ =09=09qupv3_id_1: geniqup@ac0000 {
+ =09=09=09compatible =3D "qcom,geni-se-qup";
+ =09=09=09reg =3D <0x0 0x00ac0000 0x0 0x6000>;
+ =09=09=09clock-names =3D "m-ahb", "s-ahb";
+ =09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
+ =09=09=09=09 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0x603 0x0>;
+ =09=09=09#address-cells =3D <2>;
+ =09=09=09#size-cells =3D <2>;
+ =09=09=09ranges;
+@@ -598,6 +612,20 @@ uart2: serial@a90000 {
+ =09=09=09};
+ =09=09};
+=20
++=09=09qupv3_id_2: geniqup@cc0000 {
++=09=09=09compatible =3D "qcom,geni-se-qup";
++=09=09=09reg =3D <0x0 0x00cc0000 0x0 0x6000>;
++
++=09=09=09clock-names =3D "m-ahb", "s-ahb";
++=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
++=09=09=09=09 <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0x7a3 0x0>;
++=09=09=09#address-cells =3D <2>;
++=09=09=09#size-cells =3D <2>;
++=09=09=09ranges;
++=09=09=09status =3D "disabled";
++=09=09};
++
+ =09=09config_noc: interconnect@1500000 {
+ =09=09=09compatible =3D "qcom,sm8150-config-noc";
+ =09=09=09reg =3D <0 0x01500000 0 0x7400>;
+--=20
+2.30.2
 
 
