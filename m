@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A0C358878
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C22358879
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhDHPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:31:10 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11431 "EHLO pegase1.c-s.fr"
+        id S232119AbhDHPbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:31:12 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:11667 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232017AbhDHPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:30:40 -0400
+        id S232021AbhDHPal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:30:41 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FGQFH1Mpzz9txf7;
-        Thu,  8 Apr 2021 17:30:27 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4FGQFJ0V0Wz9txf8;
+        Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id bixdd4THtti4; Thu,  8 Apr 2021 17:30:27 +0200 (CEST)
+        with ESMTP id NSCVrtUycyuL; Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGQFH0RpNz9txf2;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGQFH6pCXz9txf2;
         Thu,  8 Apr 2021 17:30:27 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 94F9A8B7D4;
-        Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82E198B7D4;
+        Thu,  8 Apr 2021 17:30:29 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NymC662j49z3; Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
+        with ESMTP id lQM7cJNku8cq; Thu,  8 Apr 2021 17:30:29 +0200 (CEST)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4376D8B7D1;
-        Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B97C8B7D1;
+        Thu,  8 Apr 2021 17:30:29 +0200 (CEST)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 20E97679BA; Thu,  8 Apr 2021 15:30:28 +0000 (UTC)
-Message-Id: <5f063986e325d2efdd404b8f8c5f4bcbd4eb11a6.1617895813.git.christophe.leroy@csgroup.eu>
+        id 27544679BA; Thu,  8 Apr 2021 15:30:29 +0000 (UTC)
+Message-Id: <ab03712b70105fccfceef095aa03007de9295a40.1617895813.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <7bf6f1600acad146e541a4e220940062f2e5b03d.1617895813.git.christophe.leroy@csgroup.eu>
 References: <7bf6f1600acad146e541a4e220940062f2e5b03d.1617895813.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 4/9] powerpc/mem: Call flush_coherent_icache() at higher
- level
+Subject: [PATCH v2 5/9] powerpc/mem: Optimise flush_dcache_icache_hugepage()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  8 Apr 2021 15:30:28 +0000 (UTC)
+Date:   Thu,  8 Apr 2021 15:30:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_coherent_icache() doesn't need the address anymore,
-so it can be called immediately when entering the public
-functions and doesn't need to be disseminated among
-lower level functions.
+flush_dcache_icache_hugepage() is a static function, with
+only one caller. That caller calls it when PageCompound() is true,
+so bugging on !PageCompound() is useless if we can trust the
+compiler a little. Remove the BUG_ON(!PageCompound()).
 
-And use page_to_phys() instead of open coding the calculation
-of phys address to call flush_dcache_icache_phys().
+The number of elements of a page won't change over time, but
+GCC doesn't know about it, so it gets the value at every iteration.
+
+To avoid that, call compound_nr() outside the loop and save it in
+a local variable.
+
+Whether the page is a HIGHMEM page or not doesn't change over time.
+
+But GCC doesn't know it so it does the test on every iteration.
+
+Do the test outside the loop.
+
+When the page is not a HIGHMEM page, page_address() will fallback on
+lowmem_page_address(), so call lowmem_page_address() directly and
+don't suffer the call to page_address() on every iteration.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/cacheflush.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ arch/powerpc/mm/cacheflush.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
-index dc2d39da6f63..811045c50d82 100644
+index 811045c50d82..3268a3e55c3f 100644
 --- a/arch/powerpc/mm/cacheflush.c
 +++ b/arch/powerpc/mm/cacheflush.c
-@@ -143,9 +143,6 @@ static void __flush_dcache_icache(void *p)
+@@ -162,14 +162,14 @@ static void __flush_dcache_icache(void *p)
+ static void flush_dcache_icache_hugepage(struct page *page)
  {
- 	unsigned long addr = (unsigned long)p;
+ 	int i;
++	int nr = compound_nr(page);
+ 	void *start;
  
--	if (flush_coherent_icache())
--		return;
+-	BUG_ON(!PageCompound(page));
 -
- 	clean_dcache_range(addr, addr + PAGE_SIZE);
- 
- 	/*
-@@ -182,6 +179,8 @@ static void flush_dcache_icache_hugepage(struct page *page)
- 
- void flush_dcache_icache_page(struct page *page)
- {
-+	if (flush_coherent_icache())
-+		return;
- 
- 	if (PageCompound(page))
- 		return flush_dcache_icache_hugepage(page);
-@@ -195,11 +194,7 @@ void flush_dcache_icache_page(struct page *page)
- 		__flush_dcache_icache(start);
- 		kunmap_atomic(start);
- 	} else {
--		unsigned long addr = page_to_pfn(page) << PAGE_SHIFT;
--
--		if (flush_coherent_icache())
--			return;
--		flush_dcache_icache_phys(addr);
-+		flush_dcache_icache_phys(page_to_phys(page));
- 	}
- #endif
- }
+-	for (i = 0; i < compound_nr(page); i++) {
+-		if (!PageHighMem(page)) {
+-			__flush_dcache_icache(page_address(page+i));
+-		} else {
++	if (!PageHighMem(page)) {
++		for (i = 0; i < nr; i++)
++			__flush_dcache_icache(lowmem_page_address(page + i));
++	} else {
++		for (i = 0; i < nr; i++) {
+ 			start = kmap_atomic(page+i);
+ 			__flush_dcache_icache(start);
+ 			kunmap_atomic(start);
 -- 
 2.25.0
 
