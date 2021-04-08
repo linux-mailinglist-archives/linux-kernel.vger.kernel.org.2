@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39DB35813B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD936358142
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhDHLBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:01:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24732 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230387AbhDHLBM (ORCPT
+        id S230452AbhDHLCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:02:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63496 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhDHLCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:01:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617879660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WQhqnjeZkCOh2eK1FDK8AD+p6DMcS/hFEdzGcfPMAFo=;
-        b=Vbirf+j5/oeKrWyHHsAyReKkCVP8+9mSK+SYEN/DKRbvwPxg7sh293vcSCMuaXwb1GtqPn
-        ho08YQA1oDMqYtSgMTU4su5nfupkCnix8QZuYQ0zG3/1vEIzPzNDNPkr2JoCqKHsaUFMYf
-        FuhK1E8jOpmDnJdFpoRIcG3OmK1d6no=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-546-cf3ok8EPM6mmTtU9zSKjug-1; Thu, 08 Apr 2021 07:00:57 -0400
-X-MC-Unique: cf3ok8EPM6mmTtU9zSKjug-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 8 Apr 2021 07:02:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617879743; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=EBCTzcCpiezgLCr+xr3ZuWx+g0smdSsuogy2SblDCSc=; b=Lx5+9X8P03HgHDESg1FMrp4HEfxUI1MbunPV2MRDNcikiEjoPpol92fVqNa+KLg7oa8DPJqw
+ py+mZuKZwbqoMwCn0LaXDo1WtsI+cjgHct8KjDwcngCAf4/l5RwVcyk2CEKRHCW6/A71pFwj
+ KvqzTJFTU+oLsg1pCqx253+DB4M=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 606ee29874f773a6640f5452 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Apr 2021 11:01:44
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6D557C43461; Thu,  8 Apr 2021 11:01:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.79.43.230] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E56F83DD21;
-        Thu,  8 Apr 2021 11:00:54 +0000 (UTC)
-Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EF0CA5D9D0;
-        Thu,  8 Apr 2021 11:00:48 +0000 (UTC)
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
- <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-Message-ID: <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
-Date:   Thu, 8 Apr 2021 13:00:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6F994C433ED;
+        Thu,  8 Apr 2021 11:01:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6F994C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+Subject: Re: [PATCH] soc: qcom: mdt_loader: Detect truncated read of segments
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210107232526.716989-1-bjorn.andersson@linaro.org>
+From:   Sibi Sankar <sibis@codeaurora.org>
+Message-ID: <b26cbf35-0500-1e79-9de8-de447a69f78f@codeaurora.org>
+Date:   Thu, 8 Apr 2021 16:31:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
+In-Reply-To: <20210107232526.716989-1-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> In particular, it does not prevent a configuration with 'DRM_CMA=m'
->>
->> I assume you meant "DRM_CMA=n" ? DRM_CMA cannot be built as a module.
+
+Hey Bjorn,
+
+Thanks for the patch!
+
+On 1/8/21 4:55 AM, Bjorn Andersson wrote:
+> Given that no validation of how much data the firmware loader read in
+> for a given segment truncated segment files would best case result in a
+> hash verification failure, without any indication of what went wrong.
 > 
-> Ok, at least that makes it easier.
+> Improve this by validating that the firmware loader did return the
+> amount of data requested.
 > 
->>> and 'DRMA_ASPEED_GFX=y', or any build failures from such
->>> a configuration.
->>
->> I don't follow. "DRM_CMA=n" and 'DRMA_ASPEED_GFX=y' is supposed to work
->> just fine (e.g., without HAVE_DMA_CONTIGUOUS) or what am I missing?
+> Fixes: 445c2410a449 ("soc: qcom: mdt_loader: Use request_firmware_into_buf()")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   drivers/soc/qcom/mdt_loader.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 > 
-> I thought you were trying to solve the problem where DRMA_ASPEED_GFX
-> can optionally link against CMA but would fail to build when the CMA code
-> is in a loadable module.
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 24cd193dec55..e01d18e9ad2b 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -253,6 +253,14 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>   				break;
+>   			}
+>   
+> +			if (seg_fw->size != phdr->p_filesz) {
+> +				dev_err(dev,
+> +					"failed to load segment %d from truncated file %s\n",
+> +					i, fw_name);
+> +				ret = -EINVAL;
+> +				break;
 
-Yes. I was trying to say: it works with this patch just fine. The issue 
-you described does not seem to apply (DRM_CMA=m).
+seg_fw has to be released on error condition as well.
+With ^^ fixed you can have my R-b.
 
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+
+> +			}
+> +
+>   			release_firmware(seg_fw);
+>   		}
+>   
 > 
->> Your example looks more like a NOP - no?
->> Or will it have the same effect?
-> 
-> The example I gave is only meaningful if both are tristate, which is
-> not the case here as you explain.
-
-Okay, thanks.
-
-> 
-> It is a somewhat awkward way to say "prevent this symbol from
-> being =y if the dependency is =m".
-
-What would be the right thing to do in the case here then to achieve the 
-"if DRMA_ASPEED_GFX is enabled, also enable DMA_CMA id possible"?
-
-One approach could be to have for DMA_CMA
-
-default y if DRMA_ASPEED_GFX
-
-but it feels like the wrong way to tackle this.
-
-Thanks!
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc, is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
