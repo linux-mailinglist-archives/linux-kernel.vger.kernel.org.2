@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B6A358A09
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5901E358A10
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbhDHQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        id S232441AbhDHQsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbhDHQrS (ORCPT
+        with ESMTP id S231908AbhDHQr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:47:18 -0400
+        Thu, 8 Apr 2021 12:47:58 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95854C061760;
-        Thu,  8 Apr 2021 09:47:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64357C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=VAaxG7DlA7LeEZLGQT4kdCo/q34NW8YrEoeuVr25p5M=; b=Gyj3FrmnULP7lQRybm7S3yj4qD
-        B/GaTufZN+kEXewgtAMcVD5ukz5ql3LJH2LRk8yQJtH/tcLW92dQgcS2BUQPZ5qwsXD84ZcRymulN
-        QV3ZUjwut8tGZcEVwBo7hUIADrNyFsQ9UmZV1wsW3dGPbw3XkhGuhl/o4WQzVF9MbN6BrL4/AwtLW
-        2Dq977YtYltmFn8usn+2hTEsfBY44EfX4YDOerl9gFwppM48r8Hdzten93iYQL4jrygYCWApr6grV
-        /ffjNwN3TR+348ifDNwvnDT3RVy/1TbR8qfx/0blAISMoYwaQRc/8SkmcRExUKV86tWvWlEBIeWNn
-        Zd0rQBLA==;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m77l0LMkgbw2ALxLnDVFN2K5i3Pq//YHsmmOYp1h6hQ=; b=lxvrE1T76sLMMEvVcTFsRP4eaq
+        wVLNx/cj89yv0GS5Fd6R6Hl0ymRof58782SkkCScq1ZAAkCHJ5f8VhAf71E5mV5se1ldMJCNdHYqY
+        RxyeGlFNwVi7Zyi2Sj+hh8nhZqFFzquv6d3WcPqLFEhMqIhvTaFEbDfz4NrIRi2F/lUqpHC7SdpVO
+        sCGLm3J8AQx1oMuCyp/H885UN550zQvnQ0dw0MlQjVwY3k+MFXScWiU7M8hYcXYUbYgRmCe8PBwpa
+        U7WgpcL5BR0e0aYDqsY8jjHlf51qQbvZ88oLt/Aofp2C/lgmN/VPgl/pmRUlh9GBOwVYs+Kg/g1zJ
+        Pxn0pBFg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUXna-00GXc3-SG; Thu, 08 Apr 2021 16:46:43 +0000
+        id 1lUXna-00GXc2-Rx; Thu, 08 Apr 2021 16:46:43 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CD4A3001CD;
-        Thu,  8 Apr 2021 18:46:30 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6C8B30015B;
+        Thu,  8 Apr 2021 18:46:29 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E90432BE57BBA; Thu,  8 Apr 2021 11:46:12 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 11:46:12 +0200
+        id 66A8D2C56484D; Thu,  8 Apr 2021 12:18:02 +0200 (CEST)
+Date:   Thu, 8 Apr 2021 12:18:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] block: Fix sys_ioprio_set(.which=IOPRIO_WHO_PGRP) task
- iteration
-Message-ID: <YG7Q5C4Rb5dx5GFx@hirez.programming.kicks-ass.net>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [RFC PATCH] Add split_lock
+Message-ID: <YG7YWiaEZ1VKqFmb@hirez.programming.kicks-ass.net>
+References: <20210408052338.3722069-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210408052338.3722069-1-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 08, 2021 at 06:23:38AM +0100, Matthew Wilcox (Oracle) wrote:
+> bit_spinlocks are horrible on RT because there's absolutely nowhere
+> to put the mutex to sleep on.  They also do not participate in lockdep
+> because there's nowhere to put the map.
+> 
+> Most (all?) bit spinlocks are actually a split lock; logically they
+> could be treated as a single spinlock, but for performance, we want to
+> split the lock over many objects.  Introduce the split_lock as somewhere
+> to store the lockdep map and as somewhere that the RT kernel can put
+> a mutex.  It may also let us store a ticket lock for better performance
+> on non-RT kernels in the future, but I have left the current cpu_relax()
+> implementation intact for now.
 
-do_each_pid_thread() { } while_each_pid_thread() is a double loop and
-thus break doesn't work as expected. Also, it should be used under
-tasklist_lock because otherwise we can race against change_pid() for
-PGID/SID.
+I think I like it, but I'm not sure it'll work for RT as is. It's a bit
+like qrwlock in that it only uses the internal (split) lock for
+contention, but that doesn't work for PI.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- block/ioprio.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
---- a/block/ioprio.c
-+++ b/block/ioprio.c
-@@ -119,11 +119,17 @@ SYSCALL_DEFINE3(ioprio_set, int, which,
- 				pgrp = task_pgrp(current);
- 			else
- 				pgrp = find_vpid(who);
-+
-+			read_lock(&tasklist_lock);
- 			do_each_pid_thread(pgrp, PIDTYPE_PGID, p) {
- 				ret = set_task_ioprio(p, ioprio);
--				if (ret)
--					break;
-+				if (ret) {
-+					read_unlock(&tasklist_lock);
-+					goto out;
-+				}
- 			} while_each_pid_thread(pgrp, PIDTYPE_PGID, p);
-+			read_unlock(&tasklist_lock);
-+
- 			break;
- 		case IOPRIO_WHO_USER:
- 			uid = make_kuid(current_user_ns(), who);
-@@ -153,6 +159,7 @@ SYSCALL_DEFINE3(ioprio_set, int, which,
- 			ret = -EINVAL;
- 	}
- 
-+out:
- 	rcu_read_unlock();
- 	return ret;
- }
+I've not recently looked at RT, but I think they simply used to bloat a
+number of the data structures with a real lock. Sebastian and Thomas
+will know better.
