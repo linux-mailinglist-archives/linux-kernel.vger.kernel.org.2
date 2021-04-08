@@ -2,132 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828FB357995
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87513357997
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhDHBiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 21:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhDHBiI (ORCPT
+        id S230376AbhDHBkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 21:40:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3078 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhDHBkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 21:38:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99202C061760;
-        Wed,  7 Apr 2021 18:37:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617845873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a1BCSKnRJSmnulmmzbhuhAMxM+/DLB/JexNDahjWLa0=;
-        b=xuBVbUs3z9Bnm4bh7y9nkiDZwIYlBMsdlf/6VTYRSMuAlVZIGT30/+gSx4OxNMrEjqJHZE
-        xOZql7/EzwQ3Y+kiHFxsy1M/BW9vCBJM8GZIkWYbJOgraCd78LABhQjhtzMS4wTNU9ENog
-        e/XToar/ufqgQPiR0KCkgltsSa2NpDG2evP0RNHiQCWzZSVJ9PnAes/twUtA+MluCXKrXG
-        Ihn+GcTTrVGdEi45YqHiCHvqVvYVT8TsYyuf5rOYwvsOqGv3mRMLgbxhBq0RD5VO+eHjEJ
-        1Gq/PJUw95nSgYoZFg3YSsdyWGF9zOA2YvNSBCYr+aYScGTgLvioiQYr4SaY1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617845873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a1BCSKnRJSmnulmmzbhuhAMxM+/DLB/JexNDahjWLa0=;
-        b=HsoOFep9I3XJmkK8n7opatm/BF8jqrGSOa/mmqXOAoutNdwnOvBIxNs8ojSoJtK5Q0DM3e
-        vjFwUgr3XEOO5MCg==
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug multistate
-In-Reply-To: <YGbNpLKXfWpy0ZZa@kroah.com>
-References: <YEbjom8FIclEgRYv@google.com> <20210310212128.GR4332@42.do-not-panic.com> <YErOkGrvtQODXtB0@google.com> <20210312183238.GW4332@42.do-not-panic.com> <YEvA1dzDsFOuKdZ/@google.com> <20210319190924.GK4332@42.do-not-panic.com> <YFjHvUolScp3btJ9@google.com> <20210322204156.GM4332@42.do-not-panic.com> <YFkWMZ0m9nKCT69T@google.com> <20210401235925.GR4332@42.do-not-panic.com> <YGbNpLKXfWpy0ZZa@kroah.com>
-Date:   Thu, 08 Apr 2021 03:37:53 +0200
-Message-ID: <87blap4kum.ffs@nanos.tec.linutronix.de>
+        Wed, 7 Apr 2021 21:40:21 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FG3l946rvzWQJW;
+        Thu,  8 Apr 2021 09:36:37 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 8 Apr 2021 09:40:07 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 09:40:07 +0800
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+To:     "Xu, Like" <like.xu@intel.com>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+ <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+CC:     <andi@firstfloor.org>, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        <kan.liang@linux.intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wei.w.wang@intel.com>,
+        <x86@kernel.org>
+From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Message-ID: <606E5EF6.2060402@huawei.com>
+Date:   Thu, 8 Apr 2021 09:40:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg,
 
-On Fri, Apr 02 2021 at 09:54, Greg KH wrote:
-> On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
->> As for the syfs deadlock possible with drivers, this fixes it in a generic way:
->> 
->> commit fac43d8025727a74f80a183cc5eb74ed902a5d14
->> Author: Luis Chamberlain <mcgrof@kernel.org>
->> Date:   Sat Mar 27 14:58:15 2021 +0000
->> 
->>     sysfs: add optional module_owner to attribute
->>     
->>     This is needed as otherwise the owner of the attribute
->>     or group read/store might have a shared lock used on driver removal,
->>     and deadlock if we race with driver removal.
->>     
->>     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+On 2021/4/6 13:14, Xu, Like wrote:
+> Hi Xiangdong,
 >
-> No, please no.  Module removal is a "best effort", if the system dies
-> when it happens, that's on you.  I am not willing to expend extra energy
-> and maintance of core things like sysfs for stuff like this that does
-> not matter in any system other than a developer's box.
+> On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service 
+> Product Dept.) wrote:
+>> Hi，like.
+>> Some questions about this new pebs patches set：
+>> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/ 
+>>
+>>
+>> The new hardware facility supporting guest PEBS is only available
+>> on Intel Ice Lake Server platforms for now.
 >
-> Lock data, not code please.  Trying to tie data structure's lifespans
-> to the lifespan of code is a tangled mess, and one that I do not want to
-> add to in any form.
+> Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
+> 18.3.10.1 Processor Event Based Sampling (PEBS) Facility
 >
-> sorry,
+> And again, this patch set doesn't officially support guest PEBS on the 
+> Skylake.
+>
+>>
+>>
+>> AFAIK， Icelake supports adaptive PEBS and extended PEBS which 
+>> Skylake doesn't.
+>> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
+>> counter in Skylake.
+>
+> For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
+> mask the other unsupported bits in the pmu->pebs_enable_mask.
+>
+>> Is there anything else that only Icelake supports in this patches set?
+>
+> The PDIR counter on the Ice Lake is the fixed counter 0
+> while the PDIR counter on the Sky Lake is the gp counter 1.
+>
+> You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
+>
 
-Sorry, but you are fundamentaly off track here. This has absolutely
-nothing to do with module removal.
+Yes. In fact, I have tried using this patch set in Skylake after these 
+modifications:
+1.  Expose x86_pmu.pebs_vmx for Skylake.
+2.  Use PMC0-PMC3 for pebs
+     2.1 Replace "INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed" with 
+"x86_pmu.max_pebs_events" in "x86_pmu_handle_guest_pebs"
+     2.2 Unmask other unsupported bits in the pmu->pebs_enable_mask. 
+IA32_PERF_CAPABILITIES.PEBS_BASELINE [bit 14]
+           is always 0 in Skylake, so pmu->pebs_enable_mask equals 
+`((1ull << pmu->nr_arch_gp_counters)-1).
+     2.3  Replace "pmc->idx == 32 " with "pmc->idx == 1" because the 
+PDIR counter on the Skylake is the gp counter 1.
+3.  Shield patch-09 because Skylake does not support adaptive pebs.
+4.  Shield all cpu check code in this patch set just for test.
 
-The point is that module removal is the reverse operation of module
-insertion. So far so good.
 
-But module insertion can fail. So if you have nested functionalities
-which hang off or are enabled by moduled insertion then any fail in that
-sequence has to be able to roll back and clean up properly no matter
-what.
+But, unfortunately, guest will record only a few seconds and then host 
+will certainly soft lockup .
+Is there anything wrong?
 
-Which it turn makes modules removal a reverse operation of module
-insertion.
-
-If you think otherwise, then please provide a proper plan how nested
-operations like sysfs - not to talk about more complex things like multi
-instance discovery which can happen inside a module insertion sequence
-can be properly rolled back.
-
-Just declaring that rmmod is evil does not cut it. rmmod is the least of
-the problems. If that fails, then a lot of rollback, failure handling
-mechanisms are missing in the setup path already.
-
-Anything which cannot cleanly rollback no matter whether the fail or
-rollback request happens at insertion time or later is broken by design.
-
-So either you declare module removal as disfunctional or you stop making
-up semantically ill defined and therefore useless claims about it.
-
-Your argument in:
-
- https://lore.kernel.org/linux-block/YGbNpLKXfWpy0ZZa@kroah.com/
-
- "Lock data, not code please.  Trying to tie data structure's lifespans
-  to the lifespan of code is a tangled mess, and one that I do not want to
-  add to in any form"
-
-is just useless blurb because the fundamental purpose of discovery code
-is to create the data structures which are tied to the code which is
-associated to it.
-
-Please stop this 'module removal' is not supported nonsense unless you
-can prove a complete indepenence of module init/discovery code to
-subsequent discovered entities depending on it.
-
-Thanks,
-
-        tglx
+>>
+>>
+>> Besides, we have tried this patches set in Icelake.  We can use 
+>> pebs(eg: "perf record -e cycles:pp")
+>> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
+>> minimum guest kernel version requirement?
+>
+> The Ice Lake CPU model has been added since v5.4.
+>
+> You may double check whether the stable tree(s) code has
+> INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
+>
+>>
+>>
+>> Thanks,
+>> Xiangdong Liu
+>
 
