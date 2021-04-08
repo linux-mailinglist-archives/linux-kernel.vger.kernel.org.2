@@ -2,217 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56998357FFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DF4358008
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhDHJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+        id S231404AbhDHJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhDHJyu (ORCPT
+        with ESMTP id S229686AbhDHJ5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:54:50 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302F6C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:54:40 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id l123so1406252pfl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:54:40 -0700 (PDT)
+        Thu, 8 Apr 2021 05:57:04 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12A7C061760;
+        Thu,  8 Apr 2021 02:56:53 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t140so1024474pgb.13;
+        Thu, 08 Apr 2021 02:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=F06Z1RXUI5OZQHllx6yIelYubQ59fvVFVd2c1q8aYFo=;
-        b=lFey3WOVaEoUGK+gffnBEpyZ85Q8vR72KNL7iQWslR0Dsuw+Qfd9pWdCFEMJN0S2Lf
-         lDfiSrMZ0bvyr9HpQ1mdr0wOzq6x7HAf4Ltx7i6kZuMn22oHwfvSly1Sw5P23rSLVzCc
-         Eiij/wKY6lESQsif5OiYrqsXIGqyONMMct5mk=
+        bh=qjas6KXkAso9tZS0xachLDZT9jXyy102BfQigMLfs5Q=;
+        b=ZHfsAxlWuMoAC90JtmGXFDFhGet/a8iFMmxha3DYZVnKOgp0GBFKNRYK4qyQHjparV
+         2FNZMQskEX9xbZ++dpOT9/HD0yF8KiBYOSSMYhZadG92sbwpYp/guguvMHm0ynxZo2Nz
+         inlTakN9g+jPUvKulTFnnTWinBPmHpPqtwecmkDztdUIoq4Uvb5dpan+1ighyHZQIsAC
+         R/ngTnbtIq3nU71f/A690n+5SvX4gLkqDABfa7ZZ063raBPKvMjj3AC3aR5wfvnwcTLT
+         bIIiaXrmSsPR0Xv43kt5O9jsuKZUIT9dAZgH2hUfEzE7em47ZelG6MGN7v/6LVRPj9Uc
+         JzCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=F06Z1RXUI5OZQHllx6yIelYubQ59fvVFVd2c1q8aYFo=;
-        b=d17UVVhP8DZvaQxmtEXZ5Rt5B4jPzSs+jaRAL9gAb6eqAZfJpbByCIKac6Mmo879KG
-         O3sGxxBHZEdqZLUCNb/zgdp/Sb8lTO14CZIBFSVTJU0j+C6YxsODveltH3I7c9wuA0XR
-         y3yliPcbeCaGVI0qq81Mo1J7Di50VBR5FWc9jBDvHcLDclGRA/TDYh7Z1qO5pZ3uiJ9V
-         D8RDxWLMIMGlauuTjw4PeWMU/Ar3QCYjjQA7pwxgCzF70OlgcZQexb5NTaObmrfbXjg6
-         Nyc4OV5w8cbk/lV0XzW/1sV9fv7zuxXUqQ1T+84a08vrKqMU+GUCGj+ztnQ8WwOT45ih
-         eFZA==
-X-Gm-Message-State: AOAM532qVj2QJo24vb6IXM2nyb8HKIa5co9r/mmjlF1RDsxIrnuSygUy
-        jX4YqaVi5FeneKpizasqErwtIw==
-X-Google-Smtp-Source: ABdhPJxqkTB+8ooQy09dyBF9z9TbQVzPFo13ucXTs4ZmBx6F2XZyy5mEcW4yJMjsd5Y9vdSh3MDdMA==
-X-Received: by 2002:a63:f056:: with SMTP id s22mr7279239pgj.369.1617875679652;
-        Thu, 08 Apr 2021 02:54:39 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:25d8:8458:73e8:75ac])
-        by smtp.gmail.com with UTF8SMTPSA id js16sm7528068pjb.21.2021.04.08.02.54.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 02:54:39 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v3] drm/syncobj: use newly allocated stub fences
-Date:   Thu,  8 Apr 2021 18:54:28 +0900
-Message-Id: <20210408095428.3983055-1-stevensd@google.com>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+        bh=qjas6KXkAso9tZS0xachLDZT9jXyy102BfQigMLfs5Q=;
+        b=paqJf9aveQAJH9XW/+nk1MmqMoQZVZfLTjhN/UnyqX29BZvbzLdJa5VpudeCOIwLwz
+         Txq174mia5X3PZuKXUWC5genHKrT7uUO+b6bGwcSaOn2tUNvAt2l2jNNFNcNeD4MWKMM
+         gQR3NZU4Qv9549P3T0bpBgZNOiPZmrorcS5Y3t39h/vGKXWoNJ1wSq6OSt9/7bJtMpQm
+         uWVtPmXr+SboFLaUFSNmNvYiV4Nl75Vnr37Otek5AEgodrEQoeNVwAxKbkqI70TBp+Ur
+         kFNAFkUY5OlEHoAGPWSSsrMSb0e8hdHhNL5m8s6TdjyJ5AcJlyGnse5Ca+aW/R4uv46B
+         15Fg==
+X-Gm-Message-State: AOAM532Rt8mQ/SzRiyE0qeSOX3sxSMzmJFFDcYb1LqRgDr/xYdeIjwIN
+        378r5Id+BKkTMeUnOqPJfMM=
+X-Google-Smtp-Source: ABdhPJz/1NJOz5J+Ib5cVb+NUk6W79W7kt3rH3y4U6R8xQr8tyhvBBABRvUEBcKr4gZh8hkaPTsZQw==
+X-Received: by 2002:a05:6a00:2292:b029:214:7a33:7f08 with SMTP id f18-20020a056a002292b02902147a337f08mr6665544pfe.15.1617875813340;
+        Thu, 08 Apr 2021 02:56:53 -0700 (PDT)
+Received: from localhost.localdomain ([2.58.242.54])
+        by smtp.gmail.com with ESMTPSA id az9sm6481947pjb.54.2021.04.08.02.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 02:56:53 -0700 (PDT)
+From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
+To:     mani@kernel.org, hemantk@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        cchen50@lenovo.com, mpearson@lenovo.com,
+        Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Subject: [PATCH 1/2] [v2] bus: mhi: pci_generic: Introduce Foxconn T99W175 support
+Date:   Thu,  8 Apr 2021 02:55:24 -0700
+Message-Id: <20210408095524.3559-1-jarvis.w.jiang@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+Add support for T99W175 modems, this modem series is based on SDX55
+qcom chip. The modem is mainly based on MBIM protocol for both the
+data and control path.
 
-Allocate a new private stub fence in drm_syncobj_assign_null_handle,
-instead of using a static stub fence.
+This patch adds support for below modems:
 
-When userspace creates a fence with DRM_SYNCOBJ_CREATE_SIGNALED or when
-userspace signals a fence via DRM_IOCTL_SYNCOBJ_SIGNAL, the timestamp
-obtained when the fence is exported and queried with SYNC_IOC_FILE_INFO
-should match when the fence's status was changed from the perspective of
-userspace, which is during the respective ioctl.
+ - T99W175(based on sdx55), Both for eSIM and Non-eSIM
+ - DW5930e(based on sdx55), With eSIM, It's also T99W175
+ - DW5930e(based on sdx55), Non-eSIM, It's also T99W175
 
-When a static stub fence started being used in by these ioctls, this
-behavior changed. Instead, the timestamp returned by SYNC_IOC_FILE_INFO
-became the first time anything used the static stub fence, which has no
-meaning to userspace.
+This patch was tested with Ubuntu 20.04 X86_64 PC as host
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
+Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
 ---
-v2 -> v3:
- - reuse the static stub spinlock
-v1 -> v2:
- - checkpatch style fixes
+ drivers/bus/mhi/pci_generic.c | 47 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
- drivers/dma-buf/dma-fence.c   | 27 ++++++++++++++++++++++++++-
- drivers/gpu/drm/drm_syncobj.c | 25 +++++++++++++++++++------
- include/linux/dma-fence.h     |  1 +
- 3 files changed, 46 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-index d64fc03929be..ce0f5eff575d 100644
---- a/drivers/dma-buf/dma-fence.c
-+++ b/drivers/dma-buf/dma-fence.c
-@@ -123,7 +123,9 @@ static const struct dma_fence_ops dma_fence_stub_ops = {
- /**
-  * dma_fence_get_stub - return a signaled fence
-  *
-- * Return a stub fence which is already signaled.
-+ * Return a stub fence which is already signaled. The fence's
-+ * timestamp corresponds to the first time after boot this
-+ * function is called.
-  */
- struct dma_fence *dma_fence_get_stub(void)
- {
-@@ -141,6 +143,29 @@ struct dma_fence *dma_fence_get_stub(void)
- }
- EXPORT_SYMBOL(dma_fence_get_stub);
+diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+index 544853c67e02..c66fb73e47ad 100644
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -269,6 +269,44 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+ 	.dma_data_width = 32
+ };
  
-+/**
-+ * dma_fence_allocate_private_stub - return a private, signaled fence
-+ *
-+ * Return a newly allocated and signaled stub fence.
-+ */
-+struct dma_fence *dma_fence_allocate_private_stub(void)
-+{
-+	struct dma_fence *fence;
++static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
++	MHI_CHANNEL_CONFIG_UL(0, "LOOPBACK", 32, 0),
++	MHI_CHANNEL_CONFIG_DL(1, "LOOPBACK", 32, 0),
++	MHI_CHANNEL_CONFIG_UL(4, "DIAG", 32, 1),
++	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
++	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
++	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
++	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
++	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
++	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
++	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
++};
 +
-+	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
-+	if (fence == NULL)
-+		return ERR_PTR(-ENOMEM);
++static struct mhi_event_config mhi_foxconn_sdx55_events[] = {
++	MHI_EVENT_CONFIG_CTRL(0, 128),
++	MHI_EVENT_CONFIG_DATA(1, 128),
++	MHI_EVENT_CONFIG_HW_DATA(2, 1024, 100),
++	MHI_EVENT_CONFIG_HW_DATA(3, 1024, 101)
++};
 +
-+	dma_fence_init(fence,
-+		       &dma_fence_stub_ops,
-+		       &dma_fence_stub_lock,
-+		       0, 0);
-+	dma_fence_signal(fence);
++static struct mhi_controller_config modem_foxconn_sdx55_config = {
++	.max_channels = 128,
++	.timeout_ms = 20000,
++	.num_channels = ARRAY_SIZE(mhi_foxconn_sdx55_channels),
++	.ch_cfg = mhi_foxconn_sdx55_channels,
++	.num_events = ARRAY_SIZE(mhi_foxconn_sdx55_events),
++	.event_cfg = mhi_foxconn_sdx55_events,
++};
 +
-+	return fence;
-+}
-+EXPORT_SYMBOL(dma_fence_allocate_private_stub);
++static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
++	.name = "foxconn-sdx55",
++	.fw = "qcom/sdx55m/sbl1.mbn",
++	.edl = "qcom/sdx55m/edl.mbn",
++	.config = &modem_foxconn_sdx55_config,
++	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
++	.dma_data_width = 32
++};
 +
- /**
-  * dma_fence_context_alloc - allocate an array of fence contexts
-  * @num: amount of contexts to allocate
-diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
-index 349146049849..a54aa850d143 100644
---- a/drivers/gpu/drm/drm_syncobj.c
-+++ b/drivers/gpu/drm/drm_syncobj.c
-@@ -350,12 +350,16 @@ EXPORT_SYMBOL(drm_syncobj_replace_fence);
-  *
-  * Assign a already signaled stub fence to the sync object.
-  */
--static void drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
-+static int drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
- {
--	struct dma_fence *fence = dma_fence_get_stub();
-+	struct dma_fence *fence = dma_fence_allocate_private_stub();
-+
-+	if (IS_ERR(fence))
-+		return PTR_ERR(fence);
- 
- 	drm_syncobj_replace_fence(syncobj, fence);
- 	dma_fence_put(fence);
-+	return 0;
- }
- 
- /* 5s default for wait submission */
-@@ -469,6 +473,7 @@ EXPORT_SYMBOL(drm_syncobj_free);
- int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
- 		       struct dma_fence *fence)
- {
-+	int ret;
- 	struct drm_syncobj *syncobj;
- 
- 	syncobj = kzalloc(sizeof(struct drm_syncobj), GFP_KERNEL);
-@@ -479,8 +484,13 @@ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
- 	INIT_LIST_HEAD(&syncobj->cb_list);
- 	spin_lock_init(&syncobj->lock);
- 
--	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED)
--		drm_syncobj_assign_null_handle(syncobj);
-+	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED) {
-+		ret = drm_syncobj_assign_null_handle(syncobj);
-+		if (ret < 0) {
-+			drm_syncobj_put(syncobj);
-+			return ret;
-+		}
-+	}
- 
- 	if (fence)
- 		drm_syncobj_replace_fence(syncobj, fence);
-@@ -1322,8 +1332,11 @@ drm_syncobj_signal_ioctl(struct drm_device *dev, void *data,
- 	if (ret < 0)
- 		return ret;
- 
--	for (i = 0; i < args->count_handles; i++)
--		drm_syncobj_assign_null_handle(syncobjs[i]);
-+	for (i = 0; i < args->count_handles; i++) {
-+		ret = drm_syncobj_assign_null_handle(syncobjs[i]);
-+		if (ret < 0)
-+			break;
-+	}
- 
- 	drm_syncobj_array_free(syncobjs, args->count_handles);
- 
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 9f12efaaa93a..6ffb4b2c6371 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -587,6 +587,7 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
- }
- 
- struct dma_fence *dma_fence_get_stub(void);
-+struct dma_fence *dma_fence_allocate_private_stub(void);
- u64 dma_fence_context_alloc(unsigned num);
- 
- #define DMA_FENCE_TRACE(f, fmt, args...) \
+ static const struct pci_device_id mhi_pci_id_table[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+@@ -280,6 +318,15 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+ 		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
++	/* T99W175 (sdx55), Both for eSIM and Non-eSIM */
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0ab),
++		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
++	/* DW5930e (sdx55), With eSIM, It's also T99W175 */
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b0),
++		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
++	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
++		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+ 	{  }
+ };
+ MODULE_DEVICE_TABLE(pci, mhi_pci_id_table);
 -- 
-2.31.0.208.g409f899ff0-goog
+2.25.1
 
