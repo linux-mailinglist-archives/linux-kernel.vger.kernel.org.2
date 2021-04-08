@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEBF358824
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C03358825
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhDHPXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S232127AbhDHPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:23:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231893AbhDHPWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:22:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4070A61139;
-        Thu,  8 Apr 2021 15:22:43 +0000 (UTC)
+        id S232066AbhDHPW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:22:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B03461107;
+        Thu,  8 Apr 2021 15:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617895364;
-        bh=sumEOB2I8fspNl1loGYLtnzYv1+mSmu3vHvTzrh962o=;
+        s=k20201202; t=1617895365;
+        bh=7WFAnQ/8djE+dqJ6MwJ6l6HQ1G1zogJCj7MupyVIWXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=harhIV2PqShc1VF2Ut39ASS/aLgtC+/cn9++se3CIS/QdHWlk1Ot89mos6NEyKraK
-         Xaw+4d1dDrSsOiUbQWAiK1LBiyxpVobECcy1tCnKhwpy6RLjE4BGvycs/beHhElbUk
-         r4BOZiHqcqz5YViGiD3dNhYI94qqcZDbhhNGjS4PSBc4l6/m5ykR05cixtYjZSNUxs
-         p/O+oYA5sfweelcPR9hgFYVoRjx+9/1SsOxS0Ltfl2yTDXNJaX/Ccq6gj8deIDw9FG
-         WKdJxzulAxxBaqLuXwvQxCsjOxRaBlKNk1RGDoGj/fcEvQRnzQSBqFG42v2XDwn1v/
-         pM9fUBL6E4j7Q==
+        b=LoPBhkPPkuJlDRP4wlRR9OJNyNSySSvHAjGLNh6QLP6+Ia4SBs4g+hHaCJ9LPS7d0
+         bNSnbULz4lrfbo7E4JNq3Qny5dyAPaU4jQ0ID6eoUFIq6wdIO/rjVaw5HQYILv/Gio
+         f9U9ggq/T/21Q/a+kdoTO/JoHxY9W5yXp7t4jK4qZMXtYxZRxOEcrzt35DKj0yOQt4
+         6pFonr/oHQ8llmN0ymYmSge0UjBJklpbmcyPIDK+Jipx12bJhP38QRfgBSoWFoNVxR
+         81mFP3MibQ+UhXuVYwQoOGz8MIng/qpiIVCY6W5R+l5SsN2b9SwaacnPbUu9c5t3/j
+         TIiibxazY7J1g==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 4/7] habanalabs/gaudi: derive security status from pci id
-Date:   Thu,  8 Apr 2021 18:22:31 +0300
-Message-Id: <20210408152234.15383-4-ogabbay@kernel.org>
+Subject: [PATCH 5/7] habanalabs/gaudi: skip iATU if F/W security is enabled
+Date:   Thu,  8 Apr 2021 18:22:32 +0300
+Message-Id: <20210408152234.15383-5-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210408152234.15383-1-ogabbay@kernel.org>
 References: <20210408152234.15383-1-ogabbay@kernel.org>
@@ -40,191 +40,208 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ofir Bitton <obitton@habana.ai>
 
-As F/ security indication must be available before driver approaches
-PCI bus, F/W security should be derived from PCI id rather than be
-fetched during boot handshake with F/W.
+As part of the securing GAUDI, the F/W will configure the PCI iATU
+regions. If the driver identifies a secured PCI ID, it will know to
+skip iATU configuration in a very early stage.
 
 Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c       |  4 ++++
- drivers/misc/habanalabs/common/firmware_if.c  |  6 +++---
- drivers/misc/habanalabs/common/habanalabs.h   |  4 +++-
- .../misc/habanalabs/common/habanalabs_drv.c   | 21 +++++++++++++++++++
- drivers/misc/habanalabs/common/mmu/mmu.c      |  1 +
- drivers/misc/habanalabs/common/sysfs.c        |  3 +++
- drivers/misc/habanalabs/gaudi/gaudi.c         |  2 --
- drivers/misc/habanalabs/goya/goya.c           |  2 --
- 8 files changed, 35 insertions(+), 8 deletions(-)
+ drivers/misc/habanalabs/common/habanalabs.h |  3 ++
+ drivers/misc/habanalabs/common/pci/pci.c    | 52 +++++++++++++++++++++
+ drivers/misc/habanalabs/gaudi/gaudi.c       | 23 +++++++++
+ drivers/misc/habanalabs/goya/goya.c         | 24 +++++++++-
+ 4 files changed, 101 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 2ed4f2bedc08..00e92b678828 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -327,6 +327,10 @@ static int device_early_init(struct hl_device *hdev)
- 		gaudi_set_asic_funcs(hdev);
- 		strscpy(hdev->asic_name, "GAUDI", sizeof(hdev->asic_name));
- 		break;
-+	case ASIC_GAUDI_SEC:
-+		gaudi_set_asic_funcs(hdev);
-+		strscpy(hdev->asic_name, "GAUDI SEC", sizeof(hdev->asic_name));
-+		break;
- 	default:
- 		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
- 			hdev->asic_type);
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 532a2fd7bfb4..652571d3b8e6 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -819,16 +819,16 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
- 	if (security_status & CPU_BOOT_DEV_STS0_ENABLED) {
- 		prop->fw_security_status_valid = 1;
- 
-+		/* FW security should be derived from PCI ID, we keep this
-+		 * check for backward compatibility
-+		 */
- 		if (security_status & CPU_BOOT_DEV_STS0_SECURITY_EN)
- 			prop->fw_security_disabled = false;
--		else
--			prop->fw_security_disabled = true;
- 
- 		if (security_status & CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
- 			prop->hard_reset_done_by_fw = true;
- 	} else {
- 		prop->fw_security_status_valid = 0;
--		prop->fw_security_disabled = true;
- 	}
- 
- 	dev_dbg(hdev->dev, "Firmware preboot security status %#x\n",
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 867986ef4588..c1b46126c522 100644
+index c1b46126c522..44e89da30b4a 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -766,11 +766,13 @@ struct hl_eq {
-  * @ASIC_INVALID: Invalid ASIC type.
-  * @ASIC_GOYA: Goya device.
-  * @ASIC_GAUDI: Gaudi device.
-+ * @ASIC_GAUDI_SEC: Gaudi secured device (HL-2000).
+@@ -445,6 +445,7 @@ struct hl_mmu_properties {
+  * @dram_supports_virtual_memory: is there an MMU towards the DRAM
+  * @hard_reset_done_by_fw: true if firmware is handling hard reset flow
+  * @num_functional_hbms: number of functional HBMs in each DCORE.
++ * @iatu_done_by_fw: true if iATU configuration is being done by FW.
   */
- enum hl_asic_type {
- 	ASIC_INVALID,
- 	ASIC_GOYA,
--	ASIC_GAUDI
-+	ASIC_GAUDI,
-+	ASIC_GAUDI_SEC
+ struct asic_fixed_properties {
+ 	struct hw_queue_properties	*hw_queues_props;
+@@ -508,6 +509,7 @@ struct asic_fixed_properties {
+ 	u8				dram_supports_virtual_memory;
+ 	u8				hard_reset_done_by_fw;
+ 	u8				num_functional_hbms;
++	u8				iatu_done_by_fw;
  };
  
- struct hl_cs_parser;
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 59896566dca1..7135f1e03864 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -47,10 +47,12 @@ MODULE_PARM_DESC(memory_scrub,
+ /**
+@@ -2400,6 +2402,7 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
  
- #define PCI_IDS_GOYA			0x0001
- #define PCI_IDS_GAUDI			0x1000
-+#define PCI_IDS_GAUDI_SEC		0x1010
- 
- static const struct pci_device_id ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HABANALABS, PCI_IDS_GOYA), },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HABANALABS, PCI_IDS_GAUDI), },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_HABANALABS, PCI_IDS_GAUDI_SEC), },
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, ids);
-@@ -74,6 +76,9 @@ static enum hl_asic_type get_asic_type(u16 device)
- 	case PCI_IDS_GAUDI:
- 		asic_type = ASIC_GAUDI;
- 		break;
-+	case PCI_IDS_GAUDI_SEC:
-+		asic_type = ASIC_GAUDI_SEC;
-+		break;
- 	default:
- 		asic_type = ASIC_INVALID;
- 		break;
-@@ -82,6 +87,16 @@ static enum hl_asic_type get_asic_type(u16 device)
- 	return asic_type;
+ int hl_pci_bars_map(struct hl_device *hdev, const char * const name[3],
+ 			bool is_wc[3]);
++int hl_pci_elbi_read(struct hl_device *hdev, u64 addr, u32 *data);
+ int hl_pci_iatu_write(struct hl_device *hdev, u32 addr, u32 data);
+ int hl_pci_set_inbound_region(struct hl_device *hdev, u8 region,
+ 		struct hl_inbound_pci_region *pci_region);
+diff --git a/drivers/misc/habanalabs/common/pci/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
+index b799f9258fb0..e941b7eef346 100644
+--- a/drivers/misc/habanalabs/common/pci/pci.c
++++ b/drivers/misc/habanalabs/common/pci/pci.c
+@@ -85,6 +85,58 @@ static void hl_pci_bars_unmap(struct hl_device *hdev)
+ 	pci_release_regions(pdev);
  }
  
-+static bool is_asic_secured(enum hl_asic_type asic_type)
++int hl_pci_elbi_read(struct hl_device *hdev, u64 addr, u32 *data)
 +{
-+	switch (asic_type) {
-+	case ASIC_GAUDI_SEC:
-+		return true;
-+	default:
-+		return false;
++	struct pci_dev *pdev = hdev->pdev;
++	ktime_t timeout;
++	u64 msec;
++	u32 val;
++
++	if (hdev->pldm)
++		msec = HL_PLDM_PCI_ELBI_TIMEOUT_MSEC;
++	else
++		msec = HL_PCI_ELBI_TIMEOUT_MSEC;
++
++	/* Clear previous status */
++	pci_write_config_dword(pdev, mmPCI_CONFIG_ELBI_STS, 0);
++
++	pci_write_config_dword(pdev, mmPCI_CONFIG_ELBI_ADDR, (u32) addr);
++	pci_write_config_dword(pdev, mmPCI_CONFIG_ELBI_CTRL, 0);
++
++	timeout = ktime_add_ms(ktime_get(), msec);
++	for (;;) {
++		pci_read_config_dword(pdev, mmPCI_CONFIG_ELBI_STS, &val);
++		if (val & PCI_CONFIG_ELBI_STS_MASK)
++			break;
++		if (ktime_compare(ktime_get(), timeout) > 0) {
++			pci_read_config_dword(pdev, mmPCI_CONFIG_ELBI_STS,
++						&val);
++			break;
++		}
++
++		usleep_range(300, 500);
 +	}
++
++	if ((val & PCI_CONFIG_ELBI_STS_MASK) == PCI_CONFIG_ELBI_STS_DONE) {
++		pci_read_config_dword(pdev, mmPCI_CONFIG_ELBI_DATA, data);
++
++		return 0;
++	}
++
++	if (val & PCI_CONFIG_ELBI_STS_ERR) {
++		dev_err(hdev->dev, "Error reading from ELBI\n");
++		return -EIO;
++	}
++
++	if (!(val & PCI_CONFIG_ELBI_STS_MASK)) {
++		dev_err(hdev->dev, "ELBI read didn't finish in time\n");
++		return -EIO;
++	}
++
++	dev_err(hdev->dev, "ELBI read has undefined bits in status\n");
++	return -EIO;
 +}
 +
- /*
-  * hl_device_open - open function for habanalabs device
-  *
-@@ -287,6 +302,12 @@ int create_hdev(struct hl_device **dev, struct pci_dev *pdev,
- 		hdev->asic_type = asic_type;
- 	}
- 
-+	if (pdev)
-+		hdev->asic_prop.fw_security_disabled =
-+				!is_asic_secured(pdev->device);
-+	else
-+		hdev->asic_prop.fw_security_disabled = true;
-+
- 	/* Assign status description string */
- 	strncpy(hdev->status[HL_DEVICE_STATUS_MALFUNCTION],
- 					"disabled", HL_STR_MAX);
-diff --git a/drivers/misc/habanalabs/common/mmu/mmu.c b/drivers/misc/habanalabs/common/mmu/mmu.c
-index ae1778103e23..b37189956b14 100644
---- a/drivers/misc/habanalabs/common/mmu/mmu.c
-+++ b/drivers/misc/habanalabs/common/mmu/mmu.c
-@@ -591,6 +591,7 @@ int hl_mmu_if_set_funcs(struct hl_device *hdev)
- 	switch (hdev->asic_type) {
- 	case ASIC_GOYA:
- 	case ASIC_GAUDI:
-+	case ASIC_GAUDI_SEC:
- 		hl_mmu_v1_set_funcs(hdev, &hdev->mmu_func[MMU_DR_PGT]);
- 		break;
- 	default:
-diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-index c7ac5dc0cda4..9fa61573a89d 100644
---- a/drivers/misc/habanalabs/common/sysfs.c
-+++ b/drivers/misc/habanalabs/common/sysfs.c
-@@ -257,6 +257,9 @@ static ssize_t device_type_show(struct device *dev,
- 	case ASIC_GAUDI:
- 		str = "GAUDI";
- 		break;
-+	case ASIC_GAUDI_SEC:
-+		str = "GAUDI SEC";
-+		break;
- 	default:
- 		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
- 				hdev->asic_type);
+ /**
+  * hl_pci_elbi_write() - Write through the ELBI interface.
+  * @hdev: Pointer to hl_device structure.
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 62e3c63bec20..841748392e49 100644
+index 841748392e49..8730b691ec61 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -575,8 +575,6 @@ static int gaudi_get_fixed_properties(struct hl_device *hdev)
- 	for (i = 0 ; i < HL_MAX_DCORES ; i++)
- 		prop->first_available_cq[i] = USHRT_MAX;
+@@ -629,6 +629,11 @@ static int gaudi_init_iatu(struct hl_device *hdev)
+ 	struct hl_outbound_pci_region outbound_region;
+ 	int rc;
  
--	/* disable fw security for now, set it in a later stage */
--	prop->fw_security_disabled = true;
- 	prop->fw_security_status_valid = false;
- 	prop->hard_reset_done_by_fw = false;
++	if (hdev->asic_prop.iatu_done_by_fw) {
++		hdev->asic_funcs->set_dma_mask_from_fw(hdev);
++		return 0;
++	}
++
+ 	/* Inbound Region 0 - Bar 0 - Point to SRAM + CFG */
+ 	inbound_region.mode = PCI_BAR_MATCH_MODE;
+ 	inbound_region.bar = SRAM_BAR_ID;
+@@ -673,6 +678,7 @@ static int gaudi_early_init(struct hl_device *hdev)
+ {
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+ 	struct pci_dev *pdev = hdev->pdev;
++	u32 fw_boot_status;
+ 	int rc;
  
+ 	rc = gaudi_get_fixed_properties(hdev);
+@@ -706,6 +712,23 @@ static int gaudi_early_init(struct hl_device *hdev)
+ 
+ 	prop->dram_pci_bar_size = pci_resource_len(pdev, HBM_BAR_ID);
+ 
++	/* If FW security is enabled at this point it means no access to ELBI */
++	if (!hdev->asic_prop.fw_security_disabled) {
++		hdev->asic_prop.iatu_done_by_fw = true;
++		goto pci_init;
++	}
++
++	rc = hl_pci_elbi_read(hdev, CFG_BASE + mmCPU_BOOT_DEV_STS0,
++				&fw_boot_status);
++	if (rc)
++		goto free_queue_props;
++
++	/* Check whether FW is configuring iATU */
++	if ((fw_boot_status & CPU_BOOT_DEV_STS0_ENABLED) &&
++			(fw_boot_status & CPU_BOOT_DEV_STS0_FW_IATU_CONF_EN))
++		hdev->asic_prop.iatu_done_by_fw = true;
++
++pci_init:
+ 	rc = hl_pci_init(hdev);
+ 	if (rc)
+ 		goto free_queue_props;
 diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 9d49ba649db0..44dd4d8d8822 100644
+index 44dd4d8d8822..e27338f4aad2 100644
 --- a/drivers/misc/habanalabs/goya/goya.c
 +++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -484,8 +484,6 @@ int goya_get_fixed_properties(struct hl_device *hdev)
- 	for (i = 0 ; i < HL_MAX_DCORES ; i++)
- 		prop->first_available_cq[i] = USHRT_MAX;
+@@ -555,6 +555,11 @@ static int goya_init_iatu(struct hl_device *hdev)
+ 	struct hl_outbound_pci_region outbound_region;
+ 	int rc;
  
--	/* disable fw security for now, set it in a later stage */
--	prop->fw_security_disabled = true;
- 	prop->fw_security_status_valid = false;
- 	prop->hard_reset_done_by_fw = false;
++	if (hdev->asic_prop.iatu_done_by_fw) {
++		hdev->asic_funcs->set_dma_mask_from_fw(hdev);
++		return 0;
++	}
++
+ 	/* Inbound Region 0 - Bar 0 - Point to SRAM and CFG */
+ 	inbound_region.mode = PCI_BAR_MATCH_MODE;
+ 	inbound_region.bar = SRAM_CFG_BAR_ID;
+@@ -602,7 +607,7 @@ static int goya_early_init(struct hl_device *hdev)
+ {
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+ 	struct pci_dev *pdev = hdev->pdev;
+-	u32 val;
++	u32 fw_boot_status, val;
+ 	int rc;
  
+ 	rc = goya_get_fixed_properties(hdev);
+@@ -636,6 +641,23 @@ static int goya_early_init(struct hl_device *hdev)
+ 
+ 	prop->dram_pci_bar_size = pci_resource_len(pdev, DDR_BAR_ID);
+ 
++	/* If FW security is enabled at this point it means no access to ELBI */
++	if (!hdev->asic_prop.fw_security_disabled) {
++		hdev->asic_prop.iatu_done_by_fw = true;
++		goto pci_init;
++	}
++
++	rc = hl_pci_elbi_read(hdev, CFG_BASE + mmCPU_BOOT_DEV_STS0,
++				&fw_boot_status);
++	if (rc)
++		goto free_queue_props;
++
++	/* Check whether FW is configuring iATU */
++	if ((fw_boot_status & CPU_BOOT_DEV_STS0_ENABLED) &&
++			(fw_boot_status & CPU_BOOT_DEV_STS0_FW_IATU_CONF_EN))
++		hdev->asic_prop.iatu_done_by_fw = true;
++
++pci_init:
+ 	rc = hl_pci_init(hdev);
+ 	if (rc)
+ 		goto free_queue_props;
 -- 
 2.25.1
 
