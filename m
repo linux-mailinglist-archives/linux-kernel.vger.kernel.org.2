@@ -2,142 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC813357E44
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD24357E42
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhDHIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhDHIib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:38:31 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A871C061760;
-        Thu,  8 Apr 2021 01:38:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f095000c11580856fe05acf.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:c115:8085:6fe0:5acf])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E1B411EC03CE;
-        Thu,  8 Apr 2021 10:38:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617871095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Kxh8yxt419FOMUzcjS1sp7cQfN4dfxrZXCO9G9/LPLs=;
-        b=o0qqxJ1JzVVmPhtCc06e0Zs3ccsPt4yTLpjUArkfRalbVy1cLaYahJ87Afn48n8rubLeph
-        6DXjUkomsf0u3V3kHLdcQPFJx0eaPFcwq0rTRMh0IUByxsQ8zg+VUpyhVF+TsCtZ1OH1sw
-        qc4lR7F8T9uFhD1ppYMAOhnAsZM81+w=
-Date:   Thu, 8 Apr 2021 10:38:14 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 08/13] x86/sev-es: register GHCB memory when
- SEV-SNP is active
-Message-ID: <20210408083814.GB10192@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-9-brijesh.singh@amd.com>
+        id S230028AbhDHIia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:38:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhDHIi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:38:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2325E61164;
+        Thu,  8 Apr 2021 08:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617871097;
+        bh=EKla77SyEE6T1IP9Pxi4AGFbASgxAkPmq1KCXqQuZno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=goWJm9RhgyKuNh03lo5q4cSfTABSVGna27lFbZWGokfszw7t0e5WeAEFWQK/imU8e
+         v0wxWyEpSXKOlEGZUV1GfkPNkg30uBwtt3UTxEq5WDSsFtUNQcPzC1evE08JVnkI5O
+         /hp0t2+PxYRrDBA8F+sS8crSgm6LQO3/YHELIcQE=
+Date:   Thu, 8 Apr 2021 10:38:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 1/1] usb: typec: tcpm: remove unused static variable
+ 'tcpm_altmode_ops'
+Message-ID: <YG7A94eekRgvskUg@kroah.com>
+References: <20210407091540.2815-1-thunder.leizhen@huawei.com>
+ <YG6+mfqIc15rc9H1@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210324164424.28124-9-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YG6+mfqIc15rc9H1@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:44:19AM -0500, Brijesh Singh wrote:
-> @@ -88,6 +89,13 @@ struct sev_es_runtime_data {
->  	 * is currently unsupported in SEV-ES guests.
->  	 */
->  	unsigned long dr7;
-> +
-> +	/*
-> +	 * SEV-SNP requires that the GHCB must be registered before using it.
-> +	 * The flag below will indicate whether the GHCB is registered, if its
-> +	 * not registered then sev_es_get_ghcb() will perform the registration.
-> +	 */
-> +	bool ghcb_registered;
+On Thu, Apr 08, 2021 at 11:28:09AM +0300, Heikki Krogerus wrote:
+> On Wed, Apr 07, 2021 at 05:15:40PM +0800, Zhen Lei wrote:
+> > Fixes the following W=1 kernel build warning:
+> > 
+> > drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> > 
+> > The reference to the variable 'tcpm_altmode_ops' is deleted by the
+> > commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration
+> > mechanism").
+> > 
+> > By the way, the static functions referenced only by the variable
+> > 'tcpm_altmode_ops' are deleted accordingly.
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> Oh, I thought this was already fixed. Should this go into the stable
+> trees as well?
 
-snp_ghcb_registered
+We do not build kernels by default with "W=1" yet, so it's not needed
+in stable kernels.
 
-because it is SNP-specific.
+thanks,
 
->  };
->  
->  struct ghcb_state {
-> @@ -196,6 +204,12 @@ static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state)
->  		data->ghcb_active = true;
->  	}
->  
-> +	/* SEV-SNP guest requires that GHCB must be registered before using it. */
-> +	if (sev_snp_active() && !data->ghcb_registered) {
-> +		sev_snp_register_ghcb(__pa(ghcb));
-> +		data->ghcb_registered = true;
-
-This needs to be set to true in the function itself, in the success
-case.
-
-> +static inline u64 sev_es_rd_ghcb_msr(void)
-> +{
-> +	return __rdmsr(MSR_AMD64_SEV_ES_GHCB);
-> +}
-> +
-> +static inline void sev_es_wr_ghcb_msr(u64 val)
-> +{
-> +	u32 low, high;
-> +
-> +	low  = (u32)(val);
-> +	high = (u32)(val >> 32);
-> +
-> +	native_wrmsr(MSR_AMD64_SEV_ES_GHCB, low, high);
-> +}
-
-Those copies will go away once you create the common sev.c
-
-> +
-> +/* Provides sev_es_terminate() */
-> +#include "sev-common-shared.c"
-> +
-> +void sev_snp_register_ghcb(unsigned long paddr)
-> +{
-> +	u64 pfn = paddr >> PAGE_SHIFT;
-> +	u64 old, val;
-> +
-> +	/* save the old GHCB MSR */
-> +	old = sev_es_rd_ghcb_msr();
-> +
-> +	/* Issue VMGEXIT */
-> +	sev_es_wr_ghcb_msr(GHCB_REGISTER_GPA_REQ_VAL(pfn));
-> +	VMGEXIT();
-> +
-> +	val = sev_es_rd_ghcb_msr();
-> +
-> +	/* If the response GPA is not ours then abort the guest */
-> +	if ((GHCB_SEV_GHCB_RESP_CODE(val) != GHCB_REGISTER_GPA_RESP) ||
-> +	    (GHCB_REGISTER_GPA_RESP_VAL(val) != pfn))
-> +		sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
-> +
-> +	/* Restore the GHCB MSR value */
-> +	sev_es_wr_ghcb_msr(old);
-> +}
-
-This is an almost identical copy of the version in compressed/. Move to
-the shared file?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
