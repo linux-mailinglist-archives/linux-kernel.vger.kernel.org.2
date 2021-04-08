@@ -2,97 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41F4358806
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D875F35880B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhDHPSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:18:44 -0400
-Received: from mga18.intel.com ([134.134.136.126]:12959 "EHLO mga18.intel.com"
+        id S232154AbhDHPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:18:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:51202 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhDHPSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:18:43 -0400
-IronPort-SDR: uwv3zUhJX8P/oJJYaY1fyYfdA+SaE6ZTMb9um9Nyd+wTFY8RIPojpvv54Gr5CrV6fERwGWDfOB
- zSig7IAo363w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="181100255"
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="181100255"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:18:27 -0700
-IronPort-SDR: CN0TnCj9/GfHpXe0J91ryrKNLjRxO8VDVphFqV0GVR6NMENKY/CdBbEIcBbIIOP4v9cbAPMMPi
- wiXr70/7gf5w==
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="397121016"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:18:24 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lUWQH-002Jst-EX; Thu, 08 Apr 2021 18:18:21 +0300
-Date:   Thu, 8 Apr 2021 18:18:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 1/6] software node: Free resources explicitly when
- swnode_register() fails
-Message-ID: <YG8evZfHNyBmTJu7@smile.fi.intel.com>
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <YGRXmOMfCTxy31Rj@kuha.fi.intel.com>
- <CAJZ5v0jJCYD9+j57-CL-OqiZKL7bBQ7NetcewE_37wODOG_Jkg@mail.gmail.com>
- <YG8YSPHMBbBJadvp@smile.fi.intel.com>
- <CAJZ5v0j0XpD6mbaCxAjBARsiScSG2T0v_2m8NdrnoQVmsqDDXQ@mail.gmail.com>
+        id S232141AbhDHPSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:18:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57521D6E;
+        Thu,  8 Apr 2021 08:18:41 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33FC33F694;
+        Thu,  8 Apr 2021 08:18:40 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 16:18:37 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] arm64: mte: Move MTE TCF0 check in entry-common
+Message-ID: <20210408151837.GB37165@C02TD0UTHF1T.local>
+References: <20210408143723.13024-1-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j0XpD6mbaCxAjBARsiScSG2T0v_2m8NdrnoQVmsqDDXQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210408143723.13024-1-vincenzo.frascino@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 05:04:32PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Apr 8, 2021 at 4:50 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Apr 08, 2021 at 04:15:37PM +0200, Rafael J. Wysocki wrote:
-> > > On Wed, Mar 31, 2021 at 1:06 PM Heikki Krogerus
-> > > <heikki.krogerus@linux.intel.com> wrote:
-> > > >
-> > > > On Mon, Mar 29, 2021 at 06:12:02PM +0300, Andy Shevchenko wrote:
-> > > > > Currently we have a slightly twisted logic in swnode_register().
-> > > > > It frees resources that it doesn't allocate on error path and
-> > > > > in once case it relies on the ->release() implementation.
-> > > > >
-> > > > > Untwist the logic by freeing resources explicitly when swnode_register()
-> > > > > fails. Currently it happens only in fwnode_create_software_node().
-> > > > >
-> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > >
-> > > > It all looks OK to me. FWIW, for the whole series:
-> > > >
-> > > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > >
-> > > Whole series applied (with some minor changelog edits) as 5.13 material, thanks!
-> >
-> > It seems Greg applied it already. Was it dropped there?
+Hi Vincenzo,
+
+On Thu, Apr 08, 2021 at 03:37:23PM +0100, Vincenzo Frascino wrote:
+> The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+> race with another CPU doing a set_tsk_thread_flag() and the flag can be
+> lost in the process.
 > 
-> Did he?
+> Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+> exit_to_user_mode() to address the problem.
+
+Beware that these are called at critical points of the entry sequence,
+so we need to take care that nothing is instrumented (e.g. we can only
+safely use noinstr functions here).
+
+> Note: Moving the check in entry-common allows to use set_thread_flag()
+> which is safe.
 > 
-> OK, so please let me know if it's still there in the Greg's tree.
+> Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous
+> tag check faults")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Reported-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/include/asm/mte.h     |  8 ++++++++
+>  arch/arm64/kernel/entry-common.c |  6 ++++++
+>  arch/arm64/kernel/entry.S        | 30 ------------------------------
+>  arch/arm64/kernel/mte.c          | 25 +++++++++++++++++++++++--
+>  4 files changed, 37 insertions(+), 32 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 9b557a457f24..188f778c6f7b 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -31,6 +31,8 @@ void mte_invalidate_tags(int type, pgoff_t offset);
+>  void mte_invalidate_tags_area(int type);
+>  void *mte_allocate_tag_storage(void);
+>  void mte_free_tag_storage(char *storage);
+> +void check_mte_async_tcf0(void);
+> +void clear_mte_async_tcf0(void);
+>  
+>  #ifdef CONFIG_ARM64_MTE
+>  
+> @@ -83,6 +85,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+>  {
+>  	return -EIO;
+>  }
+> +void check_mte_async_tcf0(void)
+> +{
+> +}
+> +void clear_mte_async_tcf0(void)
+> +{
+> +}
 
-Here [1] what I see. Seems still there.
+Were these meant to be static inline?
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=6e11b376fd74356e32d842be588e12dc9bf6e197
+>  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>  {
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 9d3588450473..837d3624a1d5 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+>  	user_exit_irqoff();
+>  	trace_hardirqs_off_finish();
+> +
+> +	/* Check for asynchronous tag check faults in user space */
+> +	check_mte_async_tcf0();
+>  }
+>  
+>  asmlinkage void noinstr exit_to_user_mode(void)
+>  {
+> +	/* Ignore asynchronous tag check faults in the uaccess routines */
+> +	clear_mte_async_tcf0();
+> +
+>  	trace_hardirqs_on_prepare();
+>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+>  	user_enter_irqoff();
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index a31a0a713c85..fafd74ae5021 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -147,32 +147,6 @@ alternative_cb_end
+>  .L__asm_ssbd_skip\@:
+>  	.endm
+>  
+> -	/* Check for MTE asynchronous tag check faults */
+> -	.macro check_mte_async_tcf, flgs, tmp
+> -#ifdef CONFIG_ARM64_MTE
+> -alternative_if_not ARM64_MTE
+> -	b	1f
+> -alternative_else_nop_endif
+> -	mrs_s	\tmp, SYS_TFSRE0_EL1
+> -	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
+> -	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
+> -	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
+> -	str	\flgs, [tsk, #TSK_TI_FLAGS]
+> -	msr_s	SYS_TFSRE0_EL1, xzr
+> -1:
+> -#endif
+> -	.endm
+> -
+> -	/* Clear the MTE asynchronous tag check faults */
+> -	.macro clear_mte_async_tcf
+> -#ifdef CONFIG_ARM64_MTE
+> -alternative_if ARM64_MTE
+> -	dsb	ish
+> -	msr_s	SYS_TFSRE0_EL1, xzr
+> -alternative_else_nop_endif
+> -#endif
+> -	.endm
+> -
+>  	.macro mte_set_gcr, tmp, tmp2
+>  #ifdef CONFIG_ARM64_MTE
+>  	/*
+> @@ -243,8 +217,6 @@ alternative_else_nop_endif
+>  	ldr	x19, [tsk, #TSK_TI_FLAGS]
+>  	disable_step_tsk x19, x20
+>  
+> -	/* Check for asynchronous tag check faults in user space */
+> -	check_mte_async_tcf x19, x22
+>  	apply_ssbd 1, x22, x23
+>  
+>  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+> @@ -775,8 +747,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
+>  	cbnz	x2, work_pending
+>  finish_ret_to_user:
+>  	user_enter_irqoff
+> -	/* Ignore asynchronous tag check faults in the uaccess routines */
+> -	clear_mte_async_tcf
+>  	enable_step_tsk x19, x2
+>  #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+>  	bl	stackleak_erase
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index b3c70a612c7a..e759b0eca47e 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -166,14 +166,35 @@ static void set_gcr_el1_excl(u64 excl)
+>  	 */
+>  }
+>  
+> +void check_mte_async_tcf0(void)
 
--- 
-With Best Regards,
-Andy Shevchenko
+As above, this'll need to be noinstr. I also reckon we should put this
+in the header so that it can be inlined.
 
+> +{
+> +	/*
+> +	 * dsb(ish) is not required before the register read
+> +	 * because the TFSRE0_EL1 is automatically synchronized
+> +	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
+> +	 * is set.
+> +	 */
+> +	u64 tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
 
+Shouldn't we have an MTE feature check first?
+
+> +
+> +	if (tcf0 & SYS_TFSR_EL1_TF0)
+> +		set_thread_flag(TIF_MTE_ASYNC_FAULT);
+> +
+> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> +}
+> +
+> +void clear_mte_async_tcf0(void)
+> +{
+> +	dsb(ish);
+> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> +}
+
+Likewise here on all counts.
+
+Thanks,
+Mark.
+
+>  void flush_mte_state(void)
+>  {
+>  	if (!system_supports_mte())
+>  		return;
+>  
+>  	/* clear any pending asynchronous tag fault */
+> -	dsb(ish);
+> -	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> +	clear_mte_async_tcf0();
+>  	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
+>  	/* disable tag checking */
+>  	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+> -- 
+> 2.30.2
+> 
