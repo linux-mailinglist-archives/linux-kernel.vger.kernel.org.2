@@ -2,180 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79104358EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0BA358EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhDHUu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHUu5 (ORCPT
+        id S232402AbhDHUxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:53:20 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:42735 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232327AbhDHUxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:50:57 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249AEC061760;
-        Thu,  8 Apr 2021 13:50:45 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n2so5252978ejy.7;
-        Thu, 08 Apr 2021 13:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nSkcR4vgYfQ9bCiomxJK4YRcFfPacWHOv81qx13uXCk=;
-        b=S+jRaaDesoRNqSTt0/e0qy7JOw05Ck9EsUF9SiuA3sBxm9U/qNUCvFFH6486LuDeXI
-         wbNusF9mGCJxP1RKbUuQqZLicwrX7SWzwTHnbP4TQzIvUITOnNeD0Fni+HQXSFGGTyI9
-         UnCIiMhdLvmiMjTDDyue4KlFrxDiRrdRhN+RVSF/MKyJ7FwmZ75epJ9C8ekNhEqt+qcm
-         FDppNgO5h5AyDiEFW/JaQ/zL+dZOjnAAnd1shc9Fa7oDWIgJP25tIqTbDj+63aw5aP5Y
-         /BknCfTYUOySH6gHm0TbwTzxonlU2WA5Brrv6BOpjoKpDvBbRSE08NPegH/Tyl7DnsEm
-         OcUw==
+        Thu, 8 Apr 2021 16:53:18 -0400
+Received: by mail-oi1-f174.google.com with SMTP id n140so3569290oig.9;
+        Thu, 08 Apr 2021 13:53:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nSkcR4vgYfQ9bCiomxJK4YRcFfPacWHOv81qx13uXCk=;
-        b=pb5dHCRlhruxxXKduiXKFygjKxBAMmNmo7WRR4JODa5hHYsRDtSeKNGZMqXdfJPI3L
-         hDmRTVlgtKrpJFGVKFBk8W0RMu8nVlBexR0vDYjpejznUbvwkFSVplVQTIjQnGBHcMsE
-         RfezCaU+n8NfR2i5uNFc4+kzu6/yvwmw1bp5fggzmOgXDCYsob3L9YwEX3WXya2hP9ec
-         A+mLqs0IvxlocIFevZsZcKdqm9dupN4rpnnzaAVR7sqp83MjdNBzDGjIvXksi0tOWXvr
-         7MrJXBwsS4RBoSrlDSF6+rbp5ZDjmh2m8Gu4KAWGINyg89PQsApv58BWr7qrSd5Xo+tW
-         KBJg==
-X-Gm-Message-State: AOAM5312glkjmHXsO7/m5r0nhlpOUsXD9fZLCx+I9euHKuAfM4NCGLRX
-        c/lJMPLIRuc4lYjX56EcutyeSwtns92kyovcbFg=
-X-Google-Smtp-Source: ABdhPJzDT4h97XJaHF/PbtM16viIv5D560gqJE9uxih1mtbScheWKyhXhZv6JlID3X0eZrK6FPC8CHmEXn9gQ6gyxJg=
-X-Received: by 2002:a17:906:c143:: with SMTP id dp3mr11934552ejc.499.1617915043821;
- Thu, 08 Apr 2021 13:50:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=46Uzc8wMeij8opq/aUJAyokWFKKz/7neG5XHu3unxu0=;
+        b=OkABf1+XbWdIeQxiBdv4TAHxatiCvhmftbmC0y+lvpXxyvV9/fDBATHhVheUExRAPD
+         I/WZxjjJa1nDGL920ynbM/kC7zcXZgw/NapAJGhPtRmQ7wAGThDxI+b8JoakI2kvci6q
+         JHgWYHRc1OtMnfRFG8P8jc3SyZj1KMTOCPN61DOmSDSAf7lspsM3MrmNlHWu5wu4j3T9
+         RWLbN0Kmf236wq0iO7oJGm9eayGpT6al/D9jJTQaCo8A8c/DbYGdPnAW4d/w/E8njFeO
+         vx9AHDRWvvkkTb812gZAgszbO0g7M2RgExxhZ3Hc7CL4PEpCrbQ1/NLFP8qMe7i01QLF
+         tEzA==
+X-Gm-Message-State: AOAM532gUBCLAFqWqjPzDqMTvDFODuoEVQ7ae/nNu/hCecPNrxr1xppo
+        Z7dLY9K6p0xHiGELoOGu98Yl3tQhfg==
+X-Google-Smtp-Source: ABdhPJxFrflQnRzo0BZjpJR0OEzuPqx/VjSm+Shm8/YIdpNiM0ZUQOjZ7tBjP4gmguX4T2sh1aOjGQ==
+X-Received: by 2002:a05:6808:1413:: with SMTP id w19mr7790722oiv.20.1617915185992;
+        Thu, 08 Apr 2021 13:53:05 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a13sm117398ooj.14.2021.04.08.13.53.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 13:53:05 -0700 (PDT)
+Received: (nullmailer pid 1940093 invoked by uid 1000);
+        Thu, 08 Apr 2021 20:53:04 -0000
+Date:   Thu, 8 Apr 2021 15:53:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] dt-bindings: pinctrl: qcom-pmic-gpio: Convert
+ qcom pmic gpio bindings to YAML
+Message-ID: <20210408205304.GA1929460@robh.at.kernel.org>
+References: <1617280546-9583-1-git-send-email-skakit@codeaurora.org>
+ <1617280546-9583-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
- <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com> <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
-In-Reply-To: <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 8 Apr 2021 13:50:32 -0700
-Message-ID: <CAHbLzkoce41b-pJ5x=6nRhex_xBdC-+cYACBw9HKtA87H71A-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617280546-9583-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 1:29 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > On Thu, Apr 8, 2021 at 10:19 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > Hi Tim,
-> > >
-> > > On Mon, Apr 5, 2021 at 11:08 AM Tim Chen <tim.c.chen@linux.intel.com> wrote:
-> > > >
-> > > > Traditionally, all memory is DRAM.  Some DRAM might be closer/faster than
-> > > > others NUMA wise, but a byte of media has about the same cost whether it
-> > > > is close or far.  But, with new memory tiers such as Persistent Memory
-> > > > (PMEM).  there is a choice between fast/expensive DRAM and slow/cheap
-> > > > PMEM.
-> > > >
-> > > > The fast/expensive memory lives in the top tier of the memory hierachy.
-> > > >
-> > > > Previously, the patchset
-> > > > [PATCH 00/10] [v7] Migrate Pages in lieu of discard
-> > > > https://lore.kernel.org/linux-mm/20210401183216.443C4443@viggo.jf.intel.com/
-> > > > provides a mechanism to demote cold pages from DRAM node into PMEM.
-> > > >
-> > > > And the patchset
-> > > > [PATCH 0/6] [RFC v6] NUMA balancing: optimize memory placement for memory tiering system
-> > > > https://lore.kernel.org/linux-mm/20210311081821.138467-1-ying.huang@intel.com/
-> > > > provides a mechanism to promote hot pages in PMEM to the DRAM node
-> > > > leveraging autonuma.
-> > > >
-> > > > The two patchsets together keep the hot pages in DRAM and colder pages
-> > > > in PMEM.
-> > >
-> > > Thanks for working on this as this is becoming more and more important
-> > > particularly in the data centers where memory is a big portion of the
-> > > cost.
-> > >
-> > > I see you have responded to Michal and I will add my more specific
-> > > response there. Here I wanted to give my high level concern regarding
-> > > using v1's soft limit like semantics for top tier memory.
-> > >
-> > > This patch series aims to distribute/partition top tier memory between
-> > > jobs of different priorities. We want high priority jobs to have
-> > > preferential access to the top tier memory and we don't want low
-> > > priority jobs to hog the top tier memory.
-> > >
-> > > Using v1's soft limit like behavior can potentially cause high
-> > > priority jobs to stall to make enough space on top tier memory on
-> > > their allocation path and I think this patchset is aiming to reduce
-> > > that impact by making kswapd do that work. However I think the more
-> > > concerning issue is the low priority job hogging the top tier memory.
-> > >
-> > > The possible ways the low priority job can hog the top tier memory are
-> > > by allocating non-movable memory or by mlocking the memory. (Oh there
-> > > is also pinning the memory but I don't know if there is a user api to
-> > > pin memory?) For the mlocked memory, you need to either modify the
-> > > reclaim code or use a different mechanism for demoting cold memory.
-> >
-> > Do you mean long term pin? RDMA should be able to simply pin the
-> > memory for weeks. A lot of transient pins come from Direct I/O. They
-> > should be less concerned.
-> >
-> > The low priority jobs should be able to be restricted by cpuset, for
-> > example, just keep them on second tier memory nodes. Then all the
-> > above problems are gone.
-> >
->
-> Yes that's an extreme way to overcome the issue but we can do less
-> extreme by just (hard) limiting the top tier usage of low priority
-> jobs.
->
-> > >
-> > > Basically I am saying we should put the upfront control (limit) on the
-> > > usage of top tier memory by the jobs.
-> >
-> > This sounds similar to what I talked about in LSFMM 2019
-> > (https://lwn.net/Articles/787418/). We used to have some potential
-> > usecase which divides DRAM:PMEM ratio for different jobs or memcgs
-> > when I was with Alibaba.
-> >
-> > In the first place I thought about per NUMA node limit, but it was
-> > very hard to configure it correctly for users unless you know exactly
-> > about your memory usage and hot/cold memory distribution.
-> >
-> > I'm wondering, just off the top of my head, if we could extend the
-> > semantic of low and min limit. For example, just redefine low and min
-> > to "the limit on top tier memory". Then we could have low priority
-> > jobs have 0 low/min limit.
-> >
->
-> The low and min limits have semantics similar to the v1's soft limit
-> for this situation i.e. letting the low priority job occupy top tier
-> memory and depending on reclaim to take back the excess top tier
-> memory use of such jobs.
+On Thu, Apr 01, 2021 at 06:05:45PM +0530, satya priya wrote:
+> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V3:
+>  - As per Rob's comments fixed bot erros.
+>  - Moved this patch to end of the series so that other patches are not
+>    blocked on this.
+> 
+>  .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 280 --------------------
+>  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 281 +++++++++++++++++++++
+>  2 files changed, 281 insertions(+), 280 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
-I don't get why low priority jobs can *not* use top tier memory? I can
-think of it may incur latency overhead for high priority jobs. If it
-is not allowed, it could be restricted by cpuset without introducing
-in any new interfaces.
 
-I'm supposed the memory utilization could be maximized by allowing all
-jobs allocate memory from all applicable nodes, then let reclaimer (or
-something new if needed) do the job to migrate the memory to proper
-nodes by time. We could achieve some kind of balance between memory
-utilization and resource isolation.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> new file mode 100644
+> index 0000000..e7e7027
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -0,0 +1,281 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm PMIC GPIO block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
+> +
+> +description: |
+> +  This binding describes the GPIO block(s) found in the 8xxx series of
+> +  PMIC's from Qualcomm.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,pm8005-gpio
+> +          - qcom,pm8018-gpio
+> +          - qcom,pm8038-gpio
+> +          - qcom,pm8058-gpio
+> +          - qcom,pm8916-gpio
+> +          - qcom,pm8917-gpio
+> +          - qcom,pm8921-gpio
+> +          - qcom,pm8941-gpio
+> +          - qcom,pm8950-gpio
+> +          - qcom,pm8994-gpio
+> +          - qcom,pm8998-gpio
+> +          - qcom,pma8084-gpio
+> +          - qcom,pmi8950-gpio
+> +          - qcom,pmi8994-gpio
+> +          - qcom,pmi8998-gpio
+> +          - qcom,pms405-gpio
+> +          - qcom,pm660-gpio
+> +          - qcom,pm660l-gpio
+> +          - qcom,pm8150-gpio
+> +          - qcom,pm8150b-gpio
+> +          - qcom,pm6150-gpio
+> +          - qcom,pm6150l-gpio
+> +          - qcom,pmx55-gpio
+> +          - qcom,pm7325-gpio
+> +          - qcom,pm8350c-gpio
+> +          - qcom,pmk8350-gpio
+> +          - qcom,pmr735a-gpio
+> +
+> +      - enum:
+> +          - qcom,spmi-gpio
+> +          - qcom,ssbi-gpio
 
->
-> I have some thoughts on NUMA node limits which I will share in the other thread.
+Any combination of the 1st and 2nd entry is valid?
 
-Look forward to reading it.
+> +
+> +  reg:
+> +    description: Register base of the GPIO block and length.
+
+Just: 
+
+maxItems: 1
+
+> +
+> +  interrupts:
+> +    description: |
+> +        Must contain an array of encoded interrupt specifiers for
+> +        each available GPIO
+
+Need to define how many interrupts. I assume there's some max.
+
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  gpio-controller: true
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +    description: |
+> +        The first cell will be used to define gpio number and the
+> +        second denotes the flags for this gpio
+> +
+> +  gpio-keys:
+> +    type: object
+> +    properties:
+> +      volume-keys:
+> +        type: object
+
+Needs a $ref to pinmux-node.yaml and pincfg-node.yaml.
+
+> +        properties:
+> +          pins:
+> +            description: |
+> +                List of gpio pins affected by the properties specified in
+> +                this subnode.  Valid pins are
+> +                     - gpio1-gpio4 for pm8005
+> +                     - gpio1-gpio6 for pm8018
+> +                     - gpio1-gpio12 for pm8038
+> +                     - gpio1-gpio40 for pm8058
+> +                     - gpio1-gpio4 for pm8916
+> +                     - gpio1-gpio38 for pm8917
+> +                     - gpio1-gpio44 for pm8921
+> +                     - gpio1-gpio36 for pm8941
+> +                     - gpio1-gpio8 for pm8950 (hole on gpio3)
+> +                     - gpio1-gpio22 for pm8994
+> +                     - gpio1-gpio26 for pm8998
+> +                     - gpio1-gpio22 for pma8084
+> +                     - gpio1-gpio2 for pmi8950
+> +                     - gpio1-gpio10 for pmi8994
+> +                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
+> +                                                and gpio10)
+> +                     - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
+> +                                                gpio7 and gpio8)
+> +                     - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
+> +                                                 and gpio7)
+> +                     - gpio1-gpio12 for pm8150l (hole on gpio7)
+> +                     - gpio1-gpio10 for pm6150
+> +                     - gpio1-gpio12 for pm6150l
+> +                     - gpio1-gpio10 for pm7325
+> +                     - gpio1-gpio9 for pm8350c
+> +                     - gpio1-gpio4 for pmk8350
+> +                     - gpio1-gpio4 for pmr735a
+> +
+> +            $ref: /schemas/types.yaml#/definitions/string-array
+
+Already has a type in pinmux-node.yaml.
+
+> +            items:
+> +              pattern: "^gpio([0-9]+)$"
+> +
+> +          function:
+> +            $ref: /schemas/types.yaml#/definitions/string
+
+ditto
+
+> +            description: |
+> +                Specify the alternative function to be configured for the
+> +                specified pins.
+> +            items:
+> +              - enum:
+> +                  - normal
+> +                  - paired
+> +                  - func1
+> +                  - func2
+> +                  - dtest1
+> +                  - dtest2
+> +                  - dtest3
+> +                  - dtest4
+> +                  - func3  # supported by LV/MV GPIO subtypes
+> +                  - func4  # supported by LV/MV GPIO subtypes
+> +
+> +          bias-disable:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+
+And all these have a type and description. Just:
+
+bias-disable: true
+
+If no further constraints.
+
+> +            description:
+> +              The specified pins should be configured as no pull.
+> +
+> +          bias-pull-down:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins should be configured as pull down.
+> +
+> +          bias-pull-up:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins should be configured as pull up.
+> +
+> +          qcom,pull-up-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Specifies the strength to use for pull up, if selected.
+> +                Valid values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +                If this property is omitted 30uA strength will be used
+> +                if pull up is selected
+> +
+> +          bias-high-impedance:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins will put in high-Z mode and disabled.
+> +
+> +          input-enable:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: The specified pins are put in input mode.
+> +
+> +          output-high:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: |
+> +                The specified pins are configured in output mode,
+> +                driven high.
+> +
+> +          output-low:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: |
+> +                The specified pins are configured in output mode,
+> +                driven low.
+> +
+> +          power-source:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects the power source for the specified pins.
+> +                Valid power sources are defined per chip in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +
+> +          qcom,drive-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects the drive strength for the specified pins
+> +                Valid drive strength values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +
+> +          drive-push-pull:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins are configured in push-pull mode.
+> +
+> +          drive-open-drain:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins are configured in open-drain mode.
+> +
+> +          drive-open-source:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description:
+> +              The specified pins are configured in open-source mode.
+> +
+> +          qcom,analog-pass:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: |
+> +                The specified pins are configured in
+> +                analog-pass-through mode.
+> +
+> +          qcom,atest:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects ATEST rail to route to GPIO when it's
+> +                configured in analog-pass-through mode.
+> +            enum: [1 2 3 4]
+> +
+> +          qcom,dtest-buffer:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects DTEST rail to route to GPIO when it's
+> +                configured as digital input.
+> +            enum: [1 2 3 4]
+> +
+> +        required:
+> +          - pins
+> +          - function
+> +
+> +        additionalProperties: true
+> +
+> +additionalProperties: true
+
+Should be 'false'.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +
+> +    pm8921_gpio: gpio@150 {
+> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+> +      reg = <0x150 0x160>;
+> +      interrupts = <192 1>, <193 1>, <194 1>,
+> +                   <195 1>, <196 1>, <197 1>,
+> +                   <198 1>, <199 1>, <200 1>,
+> +                   <201 1>, <202 1>, <203 1>,
+> +                   <204 1>, <205 1>, <206 1>,
+> +                   <207 1>, <208 1>, <209 1>,
+> +                   <210 1>, <211 1>, <212 1>,
+> +                   <213 1>, <214 1>, <215 1>,
+> +                   <216 1>, <217 1>, <218 1>,
+> +                   <219 1>, <220 1>, <221 1>,
+> +                   <222 1>, <223 1>, <224 1>,
+> +                   <225 1>, <226 1>, <227 1>,
+> +                   <228 1>, <229 1>, <230 1>,
+> +                   <231 1>, <232 1>, <233 1>,
+> +                   <234 1>, <235 1>;
+> +
+> +      gpio-controller;
+> +      #gpio-cells = <2>;
+> +
+> +      pm8921_gpio_keys: gpio-keys {
+> +        volume-keys {
+> +          pins = "gpio20", "gpio21";
+> +          function = "normal";
+> +
+> +          input-enable;
+> +          bias-pull-up;
+> +          drive-push-pull;
+> +          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +          power-source = <PM8921_GPIO_S4>;
+> +        };
+> +      };
+> +    };
+> +...
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
