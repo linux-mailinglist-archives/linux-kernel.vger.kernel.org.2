@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9BD358FF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2126358FFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhDHWqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S232845AbhDHWtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbhDHWqd (ORCPT
+        with ESMTP id S232696AbhDHWth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:46:33 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CECAC061760;
-        Thu,  8 Apr 2021 15:46:20 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bx20so3123276edb.12;
-        Thu, 08 Apr 2021 15:46:20 -0700 (PDT)
+        Thu, 8 Apr 2021 18:49:37 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC103C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 15:49:23 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id o123so2931117pfb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 15:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=oAeXxEdVlznuiPjvchmS6RIRpHke1PU0HYUnkTGypso=;
-        b=JuSjNgq7hyche6rTysSqRfv22oC866jtESS9MuITNIHHQNgolbO5c+6x4J8vTGBKFO
-         R7KmRnjOqRbSPO+rbdTNCgsUfQVXrZ3PUK75SZDOKWgc+Hvx35FYFj0iEqiZ94gnBCVw
-         GDRuzw7+kuvXUlKLPNapidv46BxXsrjOXwqD1mNEj919S9CuD42y1UCQ4iBYdY79Og5o
-         ICSRSQTbCoLTmq7o2qEpLhzAyVZOpnHdD1RGtHTm7r0KmTjEyFWvuCxtn1FnfwQIHp/V
-         5ytL1zlrOsN5mSRc6RyTORFHvFHZHo+4jx7qGY8bf+UAFOxo83CoFEps7Cz3EyT/lAWy
-         Vcog==
+        bh=OA781OccRNwXE7rt2K4lFZ5YBX2tVVTL8OP2VVE7W5k=;
+        b=WV51htl117L8zuAaqHXXoY7ed5xTWBqk5ntWuoyogOc/YvHhI2fi3POHYHV+gyiI+h
+         7jwQJ5n3UeNi0UQ+xcGrHwjZQTU4J95PvkA1frsL8un4AnJ2cNbmyci9oGBSQX11Nx04
+         lLiHi1bh92wdh08yNIMHySzMNYC96WXXNunv8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oAeXxEdVlznuiPjvchmS6RIRpHke1PU0HYUnkTGypso=;
-        b=l5hYNDfS2AhCf14Xajx/h3JXW+Duu9bnszMbFYqvsCQbyv6w2WUEPWS6WaaaFXWuYi
-         2S665yBoATR0OCEaAm6gx8bhYuCwIM8b4fy5uf47rmc545JOmurMAtXg1qvfeyHrljNC
-         3GJd8vV9NWrYWh3f/QBn7beRmo4RijTmD8znTHoRINH521QQqU8EBp3JYxWU6BzKbHOb
-         vDVgJv5wvJlO4PFoV0eGosSTaLTjf4oGPe5ZJu54nhg5TUV1X5qWv5QkHP6OHmqvXFfl
-         vY/gqKdbZaU0iqxU+xfMZwCm8p+vGlpieSinmHnrOi1UZJzoGHGONL5jdELfytsm1XtR
-         I62A==
-X-Gm-Message-State: AOAM5302Nr9JiT7FluJpN6LAUm3uTwSdSCNdh6+skpdfKa+SMjhIRj2N
-        HKS/NPcKMrVVA16NBHg1Uus=
-X-Google-Smtp-Source: ABdhPJzGfeW4yc8tC/zigJemFnDb0zZZDVYrcQrCrJKbgEdNEYGIRv4n2bIY7oKOD9oeS4iIPQ56RQ==
-X-Received: by 2002:aa7:c950:: with SMTP id h16mr14330826edt.381.1617921978972;
-        Thu, 08 Apr 2021 15:46:18 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id q16sm374237edv.61.2021.04.08.15.46.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 15:46:18 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 01:46:17 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     hauke@hauke-m.de, andrew@lunn.ch, f.fainelli@gmail.com,
-        vivien.didelot@gmail.com, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net v2 1/2] net: dsa: lantiq_gswip: Don't use PHY auto
- polling
-Message-ID: <20210408224617.crnllsf7eedxr6cp@skbuf>
-References: <20210408183828.1907807-1-martin.blumenstingl@googlemail.com>
- <20210408183828.1907807-2-martin.blumenstingl@googlemail.com>
+        bh=OA781OccRNwXE7rt2K4lFZ5YBX2tVVTL8OP2VVE7W5k=;
+        b=ui4OZMKVhekW3b2c8fcQ6KpbAyt6VtMG0Emn4k/JrmT6ktgoVah17AS+/qUq+oS0WJ
+         3tUc62iSgXX9gKDCZorCSd8FEWgQm9dpsfZqZaR7xwiczwJZiP48/s/9sDDJMLF+TBXw
+         x7I0gZuxTqWrCSzrHmOW/wkdzEw1HSCeJn/0kjkCNj4BXftK3SGJ5MfNrkh6/MF/9qWq
+         Zhv+xKQUKiMmLd5V1A3dwl119PU9NXzA1ZS/9bVTvWg4cJQqGSFVlzGv66ROnMVxn9vt
+         HdekYlNpGOrWD0HWbxWw+XRL4mzahzXP2ZetdV0c0rpAAI531Cuo2MWw7SdLenlPv4Q8
+         muug==
+X-Gm-Message-State: AOAM531y/5CafN6xLb+qRhgXmVl8h9VoWYcDsZ/6oclFyDdbhfaKsPcH
+        sw6BYEUitypS2OkWSpprqTHxLA==
+X-Google-Smtp-Source: ABdhPJzBrRR/poki5sG+OHaXYR11z6gwhKEfjfuEHH4IEwICWTvaml5hGOyodyjI9brEWQS0oONOvQ==
+X-Received: by 2002:a05:6a00:2389:b029:21a:d3b4:e5 with SMTP id f9-20020a056a002389b029021ad3b400e5mr9858217pfc.39.1617922163264;
+        Thu, 08 Apr 2021 15:49:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:d013:d350:4066:89b8])
+        by smtp.gmail.com with UTF8SMTPSA id d26sm417094pfo.162.2021.04.08.15.49.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 15:49:22 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 15:49:21 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-usb@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>, devicetree@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: Re: [PATCH v6 1/5] dt-bindings: usb: Add binding for Realtek RTS5411
+ hub controller
+Message-ID: <YG+IcUvJPAa3NieK@google.com>
+References: <20210405201817.3977893-1-mka@chromium.org>
+ <20210405124900.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20210406163001.GA1910748@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210408183828.1907807-2-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20210406163001.GA1910748@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:38:27PM +0200, Martin Blumenstingl wrote:
-> PHY auto polling on the GSWIP hardware can be used so link changes
-> (speed, link up/down, etc.) can be detected automatically. Internally
-> GSWIP reads the PHY's registers for this functionality. Based on this
-> automatic detection GSWIP can also automatically re-configure it's port
-> settings. Unfortunately this auto polling (and configuration) mechanism
-> seems to cause various issues observed by different people on different
-> devices:
-> - FritzBox 7360v2: the two Gbit/s ports (connected to the two internal
->   PHY11G instances) are working fine but the two Fast Ethernet ports
->   (using an AR8030 RMII PHY) are completely dead (neither RX nor TX are
->   received). It turns out that the AR8030 PHY sets the BMSR_ESTATEN bit
->   as well as the ESTATUS_1000_TFULL and ESTATUS_1000_XFULL bits. This
->   makes the PHY auto polling state machine (rightfully?) think that the
->   established link speed (when the other side is Gbit/s capable) is
->   1Gbit/s.
-
-Why do you say "rightfully"? The PHY is gigabit capable, and it reports
-that via the Extended Status register. This is one of the reasons why
-the "advertising" and "supported" link modes are separate concepts,
-because even though you support gigabit, you don't advertise it because
-you are in RMII mode.
-
-How does turning off the auto polling feature help circumvent the
-Atheros PHY reporting "issue"? Do we even know that is the problem, or
-is it simply a guess on your part based on something that looked strange?
-
-> - None of the Ethernet ports on the Zyxel P-2812HNU-F1 (two are
->   connected to the internal PHY11G GPHYs while the other three are
->   external RGMII PHYs) are working. Neither RX nor TX traffic was
->   observed. It is not clear which part of the PHY auto polling state-
->   machine caused this.
-
-Great.
-
-> - FritzBox 7412 (only one LAN port which is connected to one of the
->   internal GPHYs running in PHY22F / Fast Ethernet mode) was seeing
->   random disconnects (link down events could be seen). Sometimes all
->   traffic would stop after such disconnect. It is not clear which part
->   of the PHY auto polling state-machine cauased this.
-> - TP-Link TD-W9980 (two ports are connected to the internal GPHYs
->   running in PHY11G / Gbit/s mode, the other two are external RGMII
->   PHYs) was affected by similar issues as the FritzBox 7412 just without
->   the "link down" events
+On Tue, Apr 06, 2021 at 11:30:01AM -0500, Rob Herring wrote:
+> On Mon, Apr 05, 2021 at 01:18:13PM -0700, Matthias Kaehlcke wrote:
+> > The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
+> > 
+> > This initial version of the binding only describes USB related
+> > aspects of the RTS5411, it does not cover the option of
+> > connecting the controller as an i2c slave.
+> > 
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > 
+> > Changes in v7:
+> > - added type ref for 'companion-hub' property
+> > 
+> > Changes in v6:
+> > - Realtek binding instead of generic onboard_usb_hub
+> > - added 'companion-hub' property
+> > - added reference to 'usb-device.yaml'
+> > - 'fixed' indentation of compatible entries to keep yamllint happy
+> > - added 'additionalProperties' entry
+> > - updated commit message
+> > 
+> > Changes in v5:
+> > - updated 'title'
+> > - only use standard USB compatible strings
+> > - deleted 'usb_hub' node
+> > - renamed 'usb_controller' node to 'usb-controller'
+> > - removed labels from USB nodes
+> > - added 'vdd-supply' to USB nodes
+> > 
+> > Changes in v4:
+> > - none
+> > 
+> > Changes in v3:
+> > - updated commit message
+> > - removed recursive reference to $self
+> > - adjusted 'compatible' definition to support multiple entries
+> > - changed USB controller phandle to be a node
+> > 
+> > Changes in v2:
+> > - removed 'wakeup-source' and 'power-off-in-suspend' properties
+> > - consistently use spaces for indentation in example
+> > 
+> >  .../bindings/usb/realtek,rts5411.yaml         | 59 +++++++++++++++++++
+> >  1 file changed, 59 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> > new file mode 100644
+> > index 000000000000..b59001972749
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> > @@ -0,0 +1,59 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/usb/realtek,rts5411.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Binding for the Realtek RTS5411 USB 3.0 hub controller
+> > +
+> > +maintainers:
+> > +  - Matthias Kaehlcke <mka@chromium.org>
+> > +
+> > +allOf:
+> > +  - $ref: usb-device.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          - usbbda,5411
+> > +          - usbbda,411
+> > +
 > 
-> Switch to software based configuration instead of PHY auto polling (and
-> letting the GSWIP hardware configure the ports automatically) for the
-> following link parameters:
-> - link up/down
-> - link speed
-> - full/half duplex
-> - flow control (RX / TX pause)
+> reg: true
+> 
+> to fix the error.
 
-What does the auto polling feature consist of, exactly? Is there some
-sort of microcontroller accessing the MDIO bus simultaneously with
-Linux?
+Will fix in v8 (this is v7, even though the subject says otherwise,
+I forgot to increment the version number when sending).
 
-> After a big round of manual testing by various people (who helped test
-> this on OpenWrt) it turns out that this fixes all reported issues.
+> > +  vdd-supply:
+> > +    description:
+> > +      phandle to the regulator that provides power to the hub.
+> > +
+> > +  companion-hub:
+> > +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> > +    description:
+> > +      phandle to the companion hub on the controller.
 > 
-> Additionally it can be considered more future proof because any
-> "quirk" which is implemented for a PHY on the driver side can now be
-> used with the GSWIP hardware as well because Linux is in control of the
-> link parameters.
+> This should be required I think. I suppose you could only hook up 2.0
+> ports, but why. And 3.0 only wouldn't be USB compliant, would it?
+
+Agreed, that makes sense now that this is a specific binding for the
+RTS5411. It seems unlikely that a system would use a USB 3.0 capable
+hub on a USB 2.0 controller, and as you said 3.0 only wouldn't be USB
+compliant.
+
+I made the attribute initially optional because the binding was
+intended to be generic (bad idea), and for certain hubs a required
+'companion-hub' wouldn't make sense (e.g. USB 2.0 only).
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    usb-controller {
 > 
-> As a nice side-effect this also solves a problem where fixed-links were
-> not supported previously because we were relying on the PHY auto polling
-> mechanism, which cannot work for fixed-links as there's no PHY from
-> where it can read the registers. Configuring the link settings on the
-> GSWIP ports means that we now use the settings from device-tree also for
-> ports with fixed-links.
-> 
-> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-> Fixes: 3e6fdeb28f4c33 ("net: dsa: lantiq_gswip: Let GSWIP automatically set the xMII clock")
-> Cc: stable@vger.kernel.org
-> Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
+> 'usb' is the standard name.
+
+ack
+
+Thanks for your comments!
+
+m.
