@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AEB3587DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFBD3587DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhDHPI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:08:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40031 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231843AbhDHPIX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:08:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617894492;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SRK35NZb8F0GlyP9zPwaWoJ38d3PF8a3EWrwShnrRxY=;
-        b=BqZZK/K6c9duwMVqilPS7HUlxM0E7lVwY2lQS9Uj2SkXy2doE+y8aebyVQf1YTcQdEtYz4
-        rW0uDxqaIEM6M6QQ3A9OVzXz/V6TTC61zOr2TAbEwua5hHcPBJJa6HgKXFF2hZ7BrC4F+c
-        C1Zh7cENyZSdqO0Qwy1h3YnFTREHBtg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-Zj79LQ1EPX61PwRan7PMyQ-1; Thu, 08 Apr 2021 11:08:08 -0400
-X-MC-Unique: Zj79LQ1EPX61PwRan7PMyQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DF0C56C9F;
-        Thu,  8 Apr 2021 15:08:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A6F260636;
-        Thu,  8 Apr 2021 15:08:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210408141516.11369-1-varad.gautam@suse.com>
-References: <20210408141516.11369-1-varad.gautam@suse.com>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vt@altlinux.org,
-        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org
-Subject: Re: [PATCH v2 00/18] Implement RSASSA-PSS signature verification
+        id S232107AbhDHPIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:08:32 -0400
+Received: from mga04.intel.com ([192.55.52.120]:20617 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231995AbhDHPI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:08:29 -0400
+IronPort-SDR: sBgCErCiu50mTO6P65OaWvgXZXmZpfGnHbKLYI8fy39LO2tW9bn6K53LrSE+GkIpm5Cpdkp5uU
+ ioa7mS8a7FxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="191406154"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="191406154"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:08:16 -0700
+IronPort-SDR: eyr3XZ4aMEISqgXdcU5mtNIg+bh+K3PnYPQbTtIz5W7c8WvkKTZStEsTbpK2D+42s2odi13GjK
+ UVm7E8cJyBiQ==
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="449710603"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:08:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lUWGO-002JkX-L9; Thu, 08 Apr 2021 18:08:08 +0300
+Date:   Thu, 8 Apr 2021 18:08:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        vilhelm.gray@gmail.com
+Subject: Re: [PATCH v1 4/5] gpio: xilinx: Switch to use bitmap APIs
+Message-ID: <YG8cWBkcF8ulHW0D@smile.fi.intel.com>
+References: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
+ <20210408145601.68651-5-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <13251.1617894484.1@warthog.procyon.org.uk>
-Date:   Thu, 08 Apr 2021 16:08:04 +0100
-Message-ID: <13252.1617894484@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408145601.68651-5-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Varad Gautam <varad.gautam@suse.com> wrote:
+On Thu, Apr 08, 2021 at 05:56:00PM +0300, Andy Shevchenko wrote:
+> It seems that Xilinx GPIO driver operates with bit arrays longer than 32 and
+> thus can leverage bitmap APIs for that. It makes code better to understand.
+> 
+> The ->probe() function is modified to try read properties for both channels
+> since is_dual check makes only sense for the amount of pins used for the second
+> channel. On top of that kzalloc() guarantees zero initial values for the fields
+> in the private data structure, hence drop unneeded conditionals and assignments.
+> 
+> The change is inspired by Syed Nayyar Waris' ideas about bitmap API extension.
 
-> The test harness is available at [5].
+As I was afraid in the cover letter, I found some mistakes already.
+In any case, I'll wait for the comments and test of other patches if possible.
 
-Can you add this to the keyutils testsuite?
+Out of curiosity, below I point out the issues.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git
+...
 
-David
+> +	return bitmap_bitremap(gpio, chip->sw_map, chip->hw_map, chip->gc.ngpio);
+
+Seems we have to use 64 instead of ngpio here.
+
+...
+
+> +	bitmap_replace(state, chip->state, hw_bits, hw_mask, gc->ngpio);
+
+Ditto.
+
+...
+
+> +	bitmap_copy(chip->state, state, gc->ngpio);
+
+Ditto.
+
+...
+
+> +	for_each_set_bit(bit, all, 64)
+> +		generic_handle_irq(irq_find_mapping(gc->irq.domain, bit));
+
+Here should be used gpio actually and ngpio IIUC.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
