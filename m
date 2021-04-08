@@ -2,243 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51FC358558
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1980535855A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhDHNzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S231748AbhDHN4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhDHNzr (ORCPT
+        with ESMTP id S230322AbhDHN4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:55:47 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FF5C061760;
-        Thu,  8 Apr 2021 06:55:36 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id a8so2216340oic.11;
-        Thu, 08 Apr 2021 06:55:36 -0700 (PDT)
+        Thu, 8 Apr 2021 09:56:21 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F401C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:56:10 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id d13so4179193lfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3re1I37r87aFxYxrphUDCko+e4HXCuExsB7EJxVTJnI=;
-        b=W8+tb1VAjTGGsCsrydoFCGprnchoPpDKykCAZnHlGp8qkYvnTBKcgPMcXQpqPKG8rE
-         9X46jyV7F3k+utBJLmktBLgwy6x5RWRp255gAy5vZn6agDUisXyUdYX2TH9eVOLwu67G
-         r8R4VgpGNFexoG5z8ozGCJYuDB5KXHvrrGUvx59jtpYwB592CwiTJDtKHeAnvJ+TXeB6
-         uOR8ICtWt1Lx9p1p2MCgnYYT5gTi97A00mT84BLhl/BkExPSRH9qeQJEp7qg5lZgYMxM
-         nOJwd2DnUSAOj8RMWpUrud5nhjKCNYTvXA4j757BTB0WCCNW5rAemlhq1vPpAWb0YxvG
-         xYoA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DdaKYAD+3uox0bnZyMc0CsziZH9vJmOYjQVhGpA3+bo=;
+        b=YVghXLhw3Z1qU+4wuVKseRBYeubkYqgAsKCgA0PxXp6D+PFpFAqS9YyfftG/bJcAOe
+         tfR/28lkz8QJ0zOYBx6bCWSNSAHVV2Hc3wLV94wD7EDkgsUtqfGRN2GENGFACqN9QhE3
+         eDKrudUengMXc/PEE+vIrkJlxaeoTr8L4SCvioqPpdZOegqqMS7A2X5dc3yrhYXqVykb
+         8ybpP5k4ITTpptf/kANs7HKh5UAmHvtoO9AiO0rwpcDDJNeR5FrjBKah8bsKRaKNZ31Y
+         ZQ186ms7DHjsoxRYYyOc5bsDEf7mdZvubUrwnHJ6D5bCDWwvz38CmH0WUGx0KX/gp5j3
+         68gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=3re1I37r87aFxYxrphUDCko+e4HXCuExsB7EJxVTJnI=;
-        b=B7xyz3rJDmSVUJ9mmNM5XAIz291GgMDwA7v4PxgqFaFjME9LyAtZygtHBsBSo7piTC
-         JoA+yp2/8YgEt5vXRzTTL5KQSxey+2XLALIKADFfCYu5OZCFCuz6nv0BMvKThihaUub/
-         uzHky7TkO8Z/UP5gwFxcBX6J+UyuH+Qnbk9HCvHLNMyVedQJyiLJaq3K54fglDw4C/11
-         PthU50Y3hCSoFACpXhOxCCGt4G7bXSbjkQWc/0bq+MIvKTKwykdqqBmiAypLn+Qv9o0B
-         IsOBJKg2QbBH3mkD8C/Ij0uryUcWARfiWLfhDAFcO9+1IP4iduecUQpC6Fz9p6//1Iwg
-         K9JQ==
-X-Gm-Message-State: AOAM533Rrms01NxOmxtdcorheTiB97OLp+GwfKN7qBNxK1LN2fdX/dw+
-        gBabUGaVgDbmOW9aO+4r0Z8=
-X-Google-Smtp-Source: ABdhPJzinviwwF6999L2Dnv+sb+hlBFL/6MAbJXTiQjVwuMJZBdU7yyiYQGxrm+Ot9Adn4EnFOzyiw==
-X-Received: by 2002:aca:ac09:: with SMTP id v9mr1319324oie.139.1617890135437;
-        Thu, 08 Apr 2021 06:55:35 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 3sm5526175ood.46.2021.04.08.06.55.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 06:55:34 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/1] usb: typec: tcpm: remove unused static variable
- 'tcpm_altmode_ops'
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <20210407091540.2815-1-thunder.leizhen@huawei.com>
- <YG6+mfqIc15rc9H1@kuha.fi.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <aa30675b-a487-a605-7dae-4b9c18ad11e0@roeck-us.net>
-Date:   Thu, 8 Apr 2021 06:55:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DdaKYAD+3uox0bnZyMc0CsziZH9vJmOYjQVhGpA3+bo=;
+        b=GBV1+EAsBC2LH8AN9YsXL2PIADRtkAmbnFDUDUWV0lGJgM0uwfKeJoLqP/mAq+VQL0
+         kCgjxi/CTfwhnq/q83RyQExU+j/ZyA6RmOzp/vlaogRBlYYYBR5isZE1Yrhqq+2vN439
+         w8BGNsdqybj3wXDs1ImfXsQlbHx/cIJoGt1wJv4CBrd8D/JUtvH4wapWsujkG5Mqf58a
+         6R15zPcShCCsTRcNl0U28BtESqCgUs4MURbXUWviLnhvFyeD1BuekVzFc1hxgozelLDx
+         0UIAtfVj9zMYpGYZUlzqHKemp12FrFBg621Rfzc7kQSf/qsxSZZkrh/d97L9Yabkw2yu
+         cLUA==
+X-Gm-Message-State: AOAM533e4lyK82inFPIc3BZs47tZWH4bt7M7KunZR22r8KstIxcYYquz
+        7jOYfyiVX+G5+SvmC1RD2JVB1brDfkOvlQU7bKjcZw==
+X-Google-Smtp-Source: ABdhPJycTGo9B/FZL0du4dld8W6D9Zxj3z3lWKgajccSdIPeTFaPJjD+54DfV1FLl972qg+8JKE5ENgx5iKvvmlQYgc=
+X-Received: by 2002:a05:6512:3a85:: with SMTP id q5mr6435636lfu.465.1617890168968;
+ Thu, 08 Apr 2021 06:56:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YG6+mfqIc15rc9H1@kuha.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210324081923.20379-1-noltari@gmail.com> <CACRpkdZE55ixxSp6H1SKx19trGE_uVGgkLttzAVQuLzw4=Jutw@mail.gmail.com>
+ <609f038d-3037-5cda-b489-f0816eb95658@gmail.com>
+In-Reply-To: <609f038d-3037-5cda-b489-f0816eb95658@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 8 Apr 2021 15:55:58 +0200
+Message-ID: <CACRpkdZubgHyBqPnZxOw7QXgf=AHMcb1E0Y7bj5v3v_Am+3Ttw@mail.gmail.com>
+Subject: Re: [PATCH v9 00/22] pinctrl: add BCM63XX pincontrol support
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 1:28 AM, Heikki Krogerus wrote:
-> On Wed, Apr 07, 2021 at 05:15:40PM +0800, Zhen Lei wrote:
->> Fixes the following W=1 kernel build warning:
->>
->> drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
->>
->> The reference to the variable 'tcpm_altmode_ops' is deleted by the
->> commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration
->> mechanism").
->>
->> By the way, the static functions referenced only by the variable
->> 'tcpm_altmode_ops' are deleted accordingly.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> Oh, I thought this was already fixed. Should this go into the stable
-> trees as well?
-> 
+On Tue, Mar 30, 2021 at 10:57 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
-I thought there was some code supposed to be coming which would make use of it,
-but my memory may defeat me. Either case, it is getting old. It it is ever needed,
-it can be reintroduced.
+> > Now, what about a patch set for the IRQ support? :)
+>
+> If you could give me some guidance on that matter it would be much
+> appreciated, because your comments [1] are now outdated since I switched
+> to GPIO_REGMAP
+> [1]
+> http://patchwork.ozlabs.org/project/linux-gpio/patch/20210225164216.21124=
+-3-noltari@gmail.com/
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+I think it mostly holds: GPIOLIB_IRQCHIP should always be used if there
+is a reasonably straight-forward interrupts whether cascaded or hierarchica=
+l.
+Very few exceptions there. If there is one IRQ line per GPIO
+line, the hierarchical support should be used as outlined. GPIO_REGMAP
+should be mostly (famous last words) orthogonal.
 
-Guenter
-
-> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
->> ---
->>  drivers/usb/typec/tcpm/tcpm.c | 60 -------------------------------------------
->>  1 file changed, 60 deletions(-)
->>
->> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
->> index ce7af398c7c1c1f..2f89bae29c0c297 100644
->> --- a/drivers/usb/typec/tcpm/tcpm.c
->> +++ b/drivers/usb/typec/tcpm/tcpm.c
->> @@ -1365,14 +1365,6 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->>  	mod_vdm_delayed_work(port, 0);
->>  }
->>  
->> -static void tcpm_queue_vdm_unlocked(struct tcpm_port *port, const u32 header,
->> -				    const u32 *data, int cnt)
->> -{
->> -	mutex_lock(&port->lock);
->> -	tcpm_queue_vdm(port, header, data, cnt);
->> -	mutex_unlock(&port->lock);
->> -}
->> -
->>  static void svdm_consume_identity(struct tcpm_port *port, const u32 *p, int cnt)
->>  {
->>  	u32 vdo = p[VDO_INDEX_IDH];
->> @@ -1705,8 +1697,6 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->>  	 *
->>  	 * And we also have this ordering:
->>  	 * 1. alt-mode driver takes the alt-mode's lock
->> -	 * 2. alt-mode driver calls tcpm_altmode_enter which takes the
->> -	 *    tcpm port lock
->>  	 *
->>  	 * Dropping our lock here avoids this.
->>  	 */
->> @@ -2060,56 +2050,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
->>  	return 0;
->>  }
->>  
->> -static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
->> -{
->> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
->> -	int svdm_version;
->> -	u32 header;
->> -
->> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
->> -	if (svdm_version < 0)
->> -		return svdm_version;
->> -
->> -	header = VDO(altmode->svid, vdo ? 2 : 1, svdm_version, CMD_ENTER_MODE);
->> -	header |= VDO_OPOS(altmode->mode);
->> -
->> -	tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
->> -	return 0;
->> -}
->> -
->> -static int tcpm_altmode_exit(struct typec_altmode *altmode)
->> -{
->> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
->> -	int svdm_version;
->> -	u32 header;
->> -
->> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
->> -	if (svdm_version < 0)
->> -		return svdm_version;
->> -
->> -	header = VDO(altmode->svid, 1, svdm_version, CMD_EXIT_MODE);
->> -	header |= VDO_OPOS(altmode->mode);
->> -
->> -	tcpm_queue_vdm_unlocked(port, header, NULL, 0);
->> -	return 0;
->> -}
->> -
->> -static int tcpm_altmode_vdm(struct typec_altmode *altmode,
->> -			    u32 header, const u32 *data, int count)
->> -{
->> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
->> -
->> -	tcpm_queue_vdm_unlocked(port, header, data, count - 1);
->> -
->> -	return 0;
->> -}
->> -
->> -static const struct typec_altmode_ops tcpm_altmode_ops = {
->> -	.enter = tcpm_altmode_enter,
->> -	.exit = tcpm_altmode_exit,
->> -	.vdm = tcpm_altmode_vdm,
->> -};
->> -
->>  /*
->>   * PD (data, control) command handling functions
->>   */
->> -- 
->> 1.8.3
->>
-> 
-
+Yours,
+Linus Walleij
