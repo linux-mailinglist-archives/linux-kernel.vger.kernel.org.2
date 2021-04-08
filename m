@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6F73582FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486563582F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhDHMN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhDHMNz (ORCPT
+        id S231479AbhDHMNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:13:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43200 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhDHMNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:13:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626AFC061761;
-        Thu,  8 Apr 2021 05:13:44 -0700 (PDT)
+        Thu, 8 Apr 2021 08:13:53 -0400
 Date:   Thu, 08 Apr 2021 12:13:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1617884021;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mb3zMgvlnGxL7DKphWI0Z11QYg4DNvzY1OA8OqKJB9Q=;
-        b=hlu92RImu4S4cLSFL6iPTQpxfzLiGJtT6rTBXIvg2qX0fPMXYrHWb6FMwtoiroo424/APy
-        JONFR/DId3ihfeUODDoXnRPh3iT30zmjWL2gfyK7hSqC6cZNZFrI45VNzK0u9kiKC/dR5H
-        sCAr8VgaMFqnjvLExlaWoEozPjddgCJOSonAeK/l9MpZjemrdkNwZdES5vCG5zS7Phb5/R
-        WQ4DkWdPahKsOjnN/o6iMfK+BNxV6+7DYHgwHQAanYgvMP7O/Sd5t/JF7+iIGWogY9L48T
-        o4TyBvJORVlLIb5S+o9+L2EPz/CoRupOmJHJIExac3gDWbJF33bnhxD+7RypTg==
+        bh=NFRpOciehEP7XXap4n9wiWt3b54WKnAhswjRmZ64ELs=;
+        b=EO4WmbNPaiVcqEAPONpyeqZFkLbeZtrPpSOxRElFj/Gzts9lux+P8ZYiKTByKPkAoxD95j
+        kc336VWrSIqU5rR5zUNGjwiMzQ0jNQKBX/Eh3YYHa7wUUqrCVlp/ZeJdQVyHcesxNDwCqQ
+        9YX92ElkKi9p3h8KOJ0R5fXy2D3lQ7dgbC82rZE2UCQEve7+3+x4/TSONxzwdW0/0nVS0S
+        YFXawSShF1N1/sqj6y3FGdIW/bnuIyOjSy2NPzwhvAA9b8k4PprmqxdFB9zYut/PNIPEhP
+        rLSGSGdG0bqcmPvKh15tVdUF7DHwVmJq423ld7GdqHARR3Dzoe/JjCJYUWWvUw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1617884021;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mb3zMgvlnGxL7DKphWI0Z11QYg4DNvzY1OA8OqKJB9Q=;
-        b=/89g/qvTUencI3aUG4Ts+hVdTib74dAjEBxCJlvO1WEAgZe8dXWeQfNs1iKFN5MmukF71j
-        simNHYCvnrm6tsDA==
+        bh=NFRpOciehEP7XXap4n9wiWt3b54WKnAhswjRmZ64ELs=;
+        b=iPpROZl0+LEdEMo1H16XNSWvSznLfzJ51lXbVfsAMoeFscrpHEyLjGPWr1VoYGEyHh+RoS
+        MlOgq8WhOFqK7OBA==
 From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] arm64: entry: Enable random_kstack_offset support
+Subject: [tip: x86/entry] lkdtm: Add REPORT_STACK for checking stack offsets
 Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210401232347.2791257-6-keescook@chromium.org>
-References: <20210401232347.2791257-6-keescook@chromium.org>
+In-Reply-To: <20210401232347.2791257-7-keescook@chromium.org>
+References: <20210401232347.2791257-7-keescook@chromium.org>
 MIME-Version: 1.0
-Message-ID: <161788402015.29796.16586093156076434452.tip-bot2@tip-bot2>
+Message-ID: <161788402056.29796.10077892383325680647.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,110 +58,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     70918779aec9bd01d16f4e6e800ffe423d196021
-Gitweb:        https://git.kernel.org/tip/70918779aec9bd01d16f4e6e800ffe423d196021
+Commit-ID:     68ef8735d253f3d840082b78f996bf2d89ee6e5f
+Gitweb:        https://git.kernel.org/tip/68ef8735d253f3d840082b78f996bf2d89ee6e5f
 Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Thu, 01 Apr 2021 16:23:46 -07:00
+AuthorDate:    Thu, 01 Apr 2021 16:23:47 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 08 Apr 2021 14:12:19 +02:00
+CommitterDate: Thu, 08 Apr 2021 14:05:20 +02:00
 
-arm64: entry: Enable random_kstack_offset support
+lkdtm: Add REPORT_STACK for checking stack offsets
 
-Allow for a randomized stack offset on a per-syscall basis, with roughly
-5 bits of entropy. (And include AAPCS rationale AAPCS thanks to Mark
-Rutland.)
-
-In order to avoid unconditional stack canaries on syscall entry (due to
-the use of alloca()), also disable stack protector to avoid triggering
-needless checks and slowing down the entry path. As there is no general
-way to control stack protector coverage with a function attribute[1],
-this must be disabled at the compilation unit level. This isn't a problem
-here, though, since stack protector was not triggered before: examining
-the resulting syscall.o, there are no changes in canary coverage (none
-before, none now).
-
-[1] a working __attribute__((no_stack_protector)) has been added to GCC
-and Clang but has not been released in any version yet:
-https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=346b302d09c1e6db56d9fe69048acb32fbb97845
-https://reviews.llvm.org/rG4fbf84c1732fca596ad1d6e96015e19760eb8a9b
+For validating the stack offset behavior, report the offset from a given
+process's first seen stack address. Add s script to calculate the results
+to the LKDTM kselftests.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20210401232347.2791257-6-keescook@chromium.org
+Link: https://lore.kernel.org/r/20210401232347.2791257-7-keescook@chromium.org
 
 ---
- arch/arm64/Kconfig          |  1 +
- arch/arm64/kernel/Makefile  |  5 +++++
- arch/arm64/kernel/syscall.c | 16 ++++++++++++++++
- 3 files changed, 22 insertions(+)
+ drivers/misc/lkdtm/bugs.c                      | 17 ++++++++-
+ drivers/misc/lkdtm/core.c                      |  1 +-
+ drivers/misc/lkdtm/lkdtm.h                     |  1 +-
+ tools/testing/selftests/lkdtm/.gitignore       |  1 +-
+ tools/testing/selftests/lkdtm/Makefile         |  1 +-
+ tools/testing/selftests/lkdtm/stack-entropy.sh | 36 +++++++++++++++++-
+ 6 files changed, 57 insertions(+)
+ create mode 100755 tools/testing/selftests/lkdtm/stack-entropy.sh
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b65..4640d25 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -146,6 +146,7 @@ config ARM64
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
- 	select HAVE_ARCH_PFN_VALID
- 	select HAVE_ARCH_PREL32_RELOCATIONS
-+	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_STACKLEAK
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index ed65576..6cc9773 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -9,6 +9,11 @@ CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
- 
-+# Remove stack protector to avoid triggering unneeded stack canary
-+# checks due to randomize_kstack_offset.
-+CFLAGS_REMOVE_syscall.o	 = -fstack-protector -fstack-protector-strong
-+CFLAGS_syscall.o	+= -fno-stack-protector
-+
- # Object file lists.
- obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
- 			   entry-common.o entry-fpsimd.o process.o ptrace.o	\
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index b9cf12b..263d6c1 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -5,6 +5,7 @@
- #include <linux/errno.h>
- #include <linux/nospec.h>
- #include <linux/ptrace.h>
-+#include <linux/randomize_kstack.h>
- #include <linux/syscalls.h>
- 
- #include <asm/daifflags.h>
-@@ -43,6 +44,8 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- {
- 	long ret;
- 
-+	add_random_kstack_offset();
-+
- 	if (scno < sc_nr) {
- 		syscall_fn_t syscall_fn;
- 		syscall_fn = syscall_table[array_index_nospec(scno, sc_nr)];
-@@ -55,6 +58,19 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 		ret = lower_32_bits(ret);
- 
- 	regs->regs[0] = ret;
-+
-+	/*
-+	 * Ultimately, this value will get limited by KSTACK_OFFSET_MAX(),
-+	 * but not enough for arm64 stack utilization comfort. To keep
-+	 * reasonable stack head room, reduce the maximum offset to 9 bits.
-+	 *
-+	 * The actual entropy will be further reduced by the compiler when
-+	 * applying stack alignment constraints: the AAPCS mandates a
-+	 * 16-byte (i.e. 4-bit) aligned SP at function boundaries.
-+	 *
-+	 * The resulting 5 bits of entropy is seen in SP[8:4].
-+	 */
-+	choose_random_kstack_offset(get_random_int() & 0x1FF);
+diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+index 110f5a8..0e8254d 100644
+--- a/drivers/misc/lkdtm/bugs.c
++++ b/drivers/misc/lkdtm/bugs.c
+@@ -134,6 +134,23 @@ noinline void lkdtm_CORRUPT_STACK_STRONG(void)
+ 	__lkdtm_CORRUPT_STACK((void *)&data);
  }
  
- static inline bool has_syscall_work(unsigned long flags)
++static pid_t stack_pid;
++static unsigned long stack_addr;
++
++void lkdtm_REPORT_STACK(void)
++{
++	volatile uintptr_t magic;
++	pid_t pid = task_pid_nr(current);
++
++	if (pid != stack_pid) {
++		pr_info("Starting stack offset tracking for pid %d\n", pid);
++		stack_pid = pid;
++		stack_addr = (uintptr_t)&magic;
++	}
++
++	pr_info("Stack offset: %d\n", (int)(stack_addr - (uintptr_t)&magic));
++}
++
+ void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void)
+ {
+ 	static u8 data[5] __attribute__((aligned(4))) = {1, 2, 3, 4, 5};
+diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+index b2aff4d..8024b6a 100644
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -110,6 +110,7 @@ static const struct crashtype crashtypes[] = {
+ 	CRASHTYPE(EXHAUST_STACK),
+ 	CRASHTYPE(CORRUPT_STACK),
+ 	CRASHTYPE(CORRUPT_STACK_STRONG),
++	CRASHTYPE(REPORT_STACK),
+ 	CRASHTYPE(CORRUPT_LIST_ADD),
+ 	CRASHTYPE(CORRUPT_LIST_DEL),
+ 	CRASHTYPE(STACK_GUARD_PAGE_LEADING),
+diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+index 5ae48c6..99f90d3 100644
+--- a/drivers/misc/lkdtm/lkdtm.h
++++ b/drivers/misc/lkdtm/lkdtm.h
+@@ -17,6 +17,7 @@ void lkdtm_LOOP(void);
+ void lkdtm_EXHAUST_STACK(void);
+ void lkdtm_CORRUPT_STACK(void);
+ void lkdtm_CORRUPT_STACK_STRONG(void);
++void lkdtm_REPORT_STACK(void);
+ void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void);
+ void lkdtm_SOFTLOCKUP(void);
+ void lkdtm_HARDLOCKUP(void);
+diff --git a/tools/testing/selftests/lkdtm/.gitignore b/tools/testing/selftests/lkdtm/.gitignore
+index f262126..d4b0be8 100644
+--- a/tools/testing/selftests/lkdtm/.gitignore
++++ b/tools/testing/selftests/lkdtm/.gitignore
+@@ -1,2 +1,3 @@
+ *.sh
+ !run.sh
++!stack-entropy.sh
+diff --git a/tools/testing/selftests/lkdtm/Makefile b/tools/testing/selftests/lkdtm/Makefile
+index 1bcc9ee..c71109c 100644
+--- a/tools/testing/selftests/lkdtm/Makefile
++++ b/tools/testing/selftests/lkdtm/Makefile
+@@ -5,6 +5,7 @@ include ../lib.mk
+ 
+ # NOTE: $(OUTPUT) won't get default value if used before lib.mk
+ TEST_FILES := tests.txt
++TEST_PROGS := stack-entropy.sh
+ TEST_GEN_PROGS = $(patsubst %,$(OUTPUT)/%.sh,$(shell awk '{print $$1}' tests.txt | sed -e 's/\#//'))
+ all: $(TEST_GEN_PROGS)
+ 
+diff --git a/tools/testing/selftests/lkdtm/stack-entropy.sh b/tools/testing/selftests/lkdtm/stack-entropy.sh
+new file mode 100755
+index 0000000..b1b8a50
+--- /dev/null
++++ b/tools/testing/selftests/lkdtm/stack-entropy.sh
+@@ -0,0 +1,36 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Measure kernel stack entropy by sampling via LKDTM's REPORT_STACK test.
++set -e
++samples="${1:-1000}"
++
++# Capture dmesg continuously since it may fill up depending on sample size.
++log=$(mktemp -t stack-entropy-XXXXXX)
++dmesg --follow >"$log" & pid=$!
++report=-1
++for i in $(seq 1 $samples); do
++        echo "REPORT_STACK" >/sys/kernel/debug/provoke-crash/DIRECT
++	if [ -t 1 ]; then
++		percent=$(( 100 * $i / $samples ))
++		if [ "$percent" -ne "$report" ]; then
++			/bin/echo -en "$percent%\r"
++			report="$percent"
++		fi
++	fi
++done
++kill "$pid"
++
++# Count unique offsets since last run.
++seen=$(tac "$log" | grep -m1 -B"$samples"0 'Starting stack offset' | \
++	grep 'Stack offset' | awk '{print $NF}' | sort | uniq -c | wc -l)
++bits=$(echo "obase=2; $seen" | bc | wc -L)
++echo "Bits of stack entropy: $bits"
++rm -f "$log"
++
++# We would expect any functional stack randomization to be at least 5 bits.
++if [ "$bits" -lt 5 ]; then
++	exit 1
++else
++	exit 0
++fi
