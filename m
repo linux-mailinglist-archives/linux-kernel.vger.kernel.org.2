@@ -2,42 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE8A358A3E
+	by mail.lfdr.de (Postfix) with ESMTP id D2074358A40
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhDHQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41706 "EHLO mail.kernel.org"
+        id S232420AbhDHQzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:55:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231752AbhDHQzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:55:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1870F6113A;
-        Thu,  8 Apr 2021 16:55:35 +0000 (UTC)
+        id S232400AbhDHQzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DED42610A2;
+        Thu,  8 Apr 2021 16:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617900936;
-        bh=htlRiJ3+W5yCVRkjQ85b0eszxfKwlo/CNzzLketzYTs=;
+        s=k20201202; t=1617900939;
+        bh=bADBejaDDFUvPit3yESreAk5CCNK7QnwI7lBb+jFjuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RmBy6b20oW2rFEaDuRn0qGKuUvtdaQhBhwTM6wrUFb9JqTVTyqVRfna5v/SQGI6Lq
-         v6Agsvy6ZnKc/k3rf2irLJiEr/sVBhv+LiefbLH9rxOhmkx/RWNFIZ/tw11+ot01A2
-         LJEJYXKZAU1Z9WhG/U59IbQt70pt5gtjmKOHDArwvCk4DhCZArwXftTD3xQhIYzC6E
-         thuMwK5G7Rm3PUnFNnBXvR959caxIGB7oLeF5FRmVffNdjlUlEGRAnGxT0iRwJgVkj
-         rDCd2inJ+M2tvII4ZJZJj9e8ZS2z7v/wUuYDmUttCp2FAmRIeRG3t6Z1mqwgWYi7vY
-         5vCNjl1dEYK9w==
+        b=V3PoMP8PWrYTANRipi8JY/moMuFySOsdM6qc0jJ40mGGWWL3w5S51fbPA9wWjEi2Z
+         X/zD/laG2yXM3sy0IoPjtcy5ODU5UC73huouPRC3swZGw0skdiQ0raPkrESrmXhIgX
+         m4dgbfa+EWmSm+UaXdszeMoHJEvwoCxKTcGibgJ0Lu72kGXVobcPX36v3K0Xzm+Bi6
+         HlvqCSkia0jzef0oX2up6l0rvIX9iCD9QbDmEBGjkwCkWykmG4OngatgN9lpEYOn14
+         oDdPh3suF7DtROY15rxmFznBTIZKd9sCaG6hSON8oyktgiQ1P1bYLEIkJmBvDSAREt
+         V3hE7q7fMOPvA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>, Ye Bin <yebin10@huawei.com>,
+To:     Dan Murphy <dmurphy@ti.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ye Bin <yebin10@huawei.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
         Jaroslav Kysela <perex@perex.cz>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         Takashi Iwai <tiwai@suse.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Hulk Robot <hulkci@huawei.com>,
         kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] ASoC: tas2764: constify static struct snd_soc_dai_ops
-Date:   Thu,  8 Apr 2021 17:54:40 +0100
-Message-Id: <161790012551.16915.4640106834409822350.b4-ty@kernel.org>
+Subject: Re: [PATCH -next] ASoC: tas2770: Constify static struct snd_soc_dai_ops
+Date:   Thu,  8 Apr 2021 17:54:41 +0100
+Message-Id: <161790012551.16915.15616439731032639355.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210408062643.802908-1-yebin10@huawei.com>
-References: <20210408062643.802908-1-yebin10@huawei.com>
+In-Reply-To: <20210408062646.803053-1-yebin10@huawei.com>
+References: <20210408062646.803053-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,7 +49,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 14:26:43 +0800, Ye Bin wrote:
+On Thu, 8 Apr 2021 14:26:46 +0800, Ye Bin wrote:
 > The snd_soc_dai_ops structures is only stored in the ops field of a
 > snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
 > const to allow the compiler to put it in read-only memory.
@@ -56,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tas2764: constify static struct snd_soc_dai_ops
-      commit: b186e7c17d9f2c2bc9cd0bd362402eddbea7749b
+[1/1] ASoC: tas2770: Constify static struct snd_soc_dai_ops
+      commit: f2ec1ebb257155fb534cad390575d696dfd567fb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
