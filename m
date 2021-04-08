@@ -2,126 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00968357E40
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC813357E44
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhDHIhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:37:47 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:46927 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhDHIhp (ORCPT
+        id S230214AbhDHIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhDHIib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:37:45 -0400
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-11-ed;
- t=1617871054; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=gH+b4I4bYfVPVRG0SYb4pP96/w8P3/5+22wPxKEwskg=;
- b=pgoXWpws4/PUCkj+rX0Qwd2+X7AYlNZlVOFvVF2tPzXLBl1jIJZaH9K9VkPgLmUouITnT
- AmkqIjnpxE/dUenDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-11-rsa; t=1617871054; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=gH+b4I4bYfVPVRG0SYb4pP96/w8P3/5+22wPxKEwskg=;
- b=MGs3R/B2t569QkXYWkSa9xq6ocgFqad1DlVj99zaBgEeiY+fGwpmjYuw1tUeWPhq+6jRf
- hHWHDBekGKfZTzaK+tA9qPr4pSKjWXzlRuhNcSbiPnCIwsJPjQl66v0J4WSD5uR8C9wGS+x
- EdB2A3cCPenSiMmsEQIzFGEKTcrIWj1EDSRlvvGI6YOwhKpxq+hEY15KStk1rI4alDoluCQ
- nuxQU/5fCd/vdpIJeaPwg4fjZB2lqAB4iXLmLrPHTvlN5imkREPxgpv81XG5n4aoTooiKma
- R31H2elk0i5vhPbeSvB8TSKG/31y5GkEMnK8kDG5iVUSvZ1B/RB2xmLfSXhg==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id D8EDB160253; Thu,  8 Apr 2021 01:37:34 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 01:37:34 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 24/37] mm: implement speculative handling in
- __do_fault()
-Message-ID: <20210408083734.GB27824@lespinasse.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-25-michel@lespinasse.org>
- <YG3EYjVDrZ54QCLq@hirez.programming.kicks-ass.net>
- <20210407212027.GE25738@lespinasse.org>
- <20210407212712.GH2531743@casper.infradead.org>
- <YG6qCtRcz2ESUiFy@hirez.programming.kicks-ass.net>
- <20210408071343.GJ2531743@casper.infradead.org>
+        Thu, 8 Apr 2021 04:38:31 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A871C061760;
+        Thu,  8 Apr 2021 01:38:20 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f095000c11580856fe05acf.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:c115:8085:6fe0:5acf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E1B411EC03CE;
+        Thu,  8 Apr 2021 10:38:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617871095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Kxh8yxt419FOMUzcjS1sp7cQfN4dfxrZXCO9G9/LPLs=;
+        b=o0qqxJ1JzVVmPhtCc06e0Zs3ccsPt4yTLpjUArkfRalbVy1cLaYahJ87Afn48n8rubLeph
+        6DXjUkomsf0u3V3kHLdcQPFJx0eaPFcwq0rTRMh0IUByxsQ8zg+VUpyhVF+TsCtZ1OH1sw
+        qc4lR7F8T9uFhD1ppYMAOhnAsZM81+w=
+Date:   Thu, 8 Apr 2021 10:38:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 08/13] x86/sev-es: register GHCB memory when
+ SEV-SNP is active
+Message-ID: <20210408083814.GB10192@zn.tnic>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-9-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210408071343.GJ2531743@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210324164424.28124-9-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:13:43AM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 08, 2021 at 09:00:26AM +0200, Peter Zijlstra wrote:
-> > On Wed, Apr 07, 2021 at 10:27:12PM +0100, Matthew Wilcox wrote:
-> > > Doing I/O without any lock held already works; it just uses the file
-> > > refcount.  It would be better to use a vma refcount, as I already said.
-> > 
-> > The original workload that I developed SPF for (waaaay back when) was
-> > prefaulting a single huge vma. Using a vma refcount was a total loss
-> > because it resulted in the same cacheline contention that down_read()
-> > was having.
-> > 
-> > As such, I'm always incredibly sad to see mention of vma refcounts.
-> > They're fundamentally not solving the problem :/
-> 
-> OK, let me outline my locking scheme because I think it's rather better
-> than Michel's.  The vma refcount is the slow path.
-> 
-> 1. take the RCU read lock
-> 2. walk the pgd/p4d/pud/pmd
-> 3. allocate page tables if necessary.  *handwave GFP flags*.
-> 4. walk the vma tree
-> 5. call ->map_pages
-> 6. take ptlock
-> 7. insert page(s)
-> 8. drop ptlock
-> if this all worked out, we're done, drop the RCU read lock and return.
-> 9. increment vma refcount
-> 10. drop RCU read lock
-> 11. call ->fault
-> 12. decrement vma refcount
+On Wed, Mar 24, 2021 at 11:44:19AM -0500, Brijesh Singh wrote:
+> @@ -88,6 +89,13 @@ struct sev_es_runtime_data {
+>  	 * is currently unsupported in SEV-ES guests.
+>  	 */
+>  	unsigned long dr7;
+> +
+> +	/*
+> +	 * SEV-SNP requires that the GHCB must be registered before using it.
+> +	 * The flag below will indicate whether the GHCB is registered, if its
+> +	 * not registered then sev_es_get_ghcb() will perform the registration.
+> +	 */
+> +	bool ghcb_registered;
 
-Note that most of your proposed steps seem similar in principle to mine.
-Looking at the fast path (steps 1-8):
-- step 2 sounds like the speculative part of __handle_mm_fault()
-- (step 3 not included in my proposal)
-- step 4 is basically the lookup I currently have in the arch fault handler
-- step 6 sounds like the speculative part of map_pte_lock()
+snp_ghcb_registered
 
-I have working implementations for each step, while your proposal
-summarizes each as a point item. It's not clear to me what to make of it;
-presumably you would be "filling in the blanks" in a different way
-than I have but you are not explaining how. Are you suggesting that
-the precautions taken in each step to avoid races with mmap writers
-would not be necessary in your proposal ? if that is the case, what is
-the alternative mechanism would you use to handle such races ?
+because it is SNP-specific.
 
-Going back to the source of this, you suggested not copying the VMA,
-what is your proposed alternative ? Do you suggest that fault handlers
-should deal with the vma potentially mutating under them ? Or should
-mmap writers consider vmas as immutable and copy them whenever they
-want to change them ? or are you implying a locking mechanism that would
-prevent mmap writers from executing while the fault is running ?
+>  };
+>  
+>  struct ghcb_state {
+> @@ -196,6 +204,12 @@ static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state)
+>  		data->ghcb_active = true;
+>  	}
+>  
+> +	/* SEV-SNP guest requires that GHCB must be registered before using it. */
+> +	if (sev_snp_active() && !data->ghcb_registered) {
+> +		sev_snp_register_ghcb(__pa(ghcb));
+> +		data->ghcb_registered = true;
 
-> Compared to today, where we bump the refcount on the file underlying the
-> vma, this is _better_ scalability -- different mappings of the same file
-> will not contend on the file's refcount.
-> 
-> I suspect your huge VMA was anon, and that wouldn't need a vma refcount
-> as faulting in new pages doesn't need to do I/O, just drop the RCU
-> lock, allocate and retry.
+This needs to be set to true in the function itself, in the success
+case.
+
+> +static inline u64 sev_es_rd_ghcb_msr(void)
+> +{
+> +	return __rdmsr(MSR_AMD64_SEV_ES_GHCB);
+> +}
+> +
+> +static inline void sev_es_wr_ghcb_msr(u64 val)
+> +{
+> +	u32 low, high;
+> +
+> +	low  = (u32)(val);
+> +	high = (u32)(val >> 32);
+> +
+> +	native_wrmsr(MSR_AMD64_SEV_ES_GHCB, low, high);
+> +}
+
+Those copies will go away once you create the common sev.c
+
+> +
+> +/* Provides sev_es_terminate() */
+> +#include "sev-common-shared.c"
+> +
+> +void sev_snp_register_ghcb(unsigned long paddr)
+> +{
+> +	u64 pfn = paddr >> PAGE_SHIFT;
+> +	u64 old, val;
+> +
+> +	/* save the old GHCB MSR */
+> +	old = sev_es_rd_ghcb_msr();
+> +
+> +	/* Issue VMGEXIT */
+> +	sev_es_wr_ghcb_msr(GHCB_REGISTER_GPA_REQ_VAL(pfn));
+> +	VMGEXIT();
+> +
+> +	val = sev_es_rd_ghcb_msr();
+> +
+> +	/* If the response GPA is not ours then abort the guest */
+> +	if ((GHCB_SEV_GHCB_RESP_CODE(val) != GHCB_REGISTER_GPA_RESP) ||
+> +	    (GHCB_REGISTER_GPA_RESP_VAL(val) != pfn))
+> +		sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
+> +
+> +	/* Restore the GHCB MSR value */
+> +	sev_es_wr_ghcb_msr(old);
+> +}
+
+This is an almost identical copy of the version in compressed/. Move to
+the shared file?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
