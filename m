@@ -2,159 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0057E357BE5
+	by mail.lfdr.de (Postfix) with ESMTP id 7251B357BE6
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhDHFg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhDHFg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:36:58 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E7CC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:36:48 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id p12so576127pgj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=gOhPIYPxLTtIj6swyLzTqCfJIXn8QSZHEweUbL4PxTI=;
-        b=ATB1Oiv7JHIb+CimHENN4Sk5QKrt/O79rOfl+rtjBjZBxe2SBI6QWLKRvvJL2+lj0q
-         uTkPrGw7dtI6xLfhfcoQo/e6Dokx+4IJAQmR/9kUltN7pkc3T301xF2DqrbQ+A7rYSPE
-         8oFw1862rmDVEgZbUI0yqfbcjbzolcdNvWnXU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=gOhPIYPxLTtIj6swyLzTqCfJIXn8QSZHEweUbL4PxTI=;
-        b=gINewg1I4ff5bpg2iWb0/toWphQanbRRBwILgdTcihrv1aKBlA/jLmK7CSXDAA0DKn
-         PQQ9llf/cTo9NKcOAzEfoqJfHvSBLaussb5X/ADjA7iLm6mYcfGVKYvldt/q9p9YnuKb
-         UbHD0O7MBn9DRWNIENR4QfJm9Gx2UxtoZUWILX+UFIz9zyDgUu8dagFx1qG7CvnmcNgN
-         eSxKCiayLAgI5z+wgo0pegau6MQ52DHlTIzvK0EUblXX+Wf4914t6rBxVUfIHrxVjCgq
-         ifUQUMX7+HXMJmT16OWidBMkUcFx1wLlTHuM003LQlSq809jg5QEaEM2rnZ5TW6ZnEg3
-         mF3A==
-X-Gm-Message-State: AOAM532cU+swQhdnDeSmZCwkv+WhaNrf0MGH4wPderKGA/hHjeESplX5
-        MUXU+EP4QuPLPUaqmrFkL9bVgw==
-X-Google-Smtp-Source: ABdhPJxaszEeExtIJU2xlpUKoYJRBZPYeKxy0Xq+Pd3AHJPz+AFBXuQcTcW6hBRfosmJZ8ivnF5utQ==
-X-Received: by 2002:aa7:87cf:0:b029:23f:6559:f189 with SMTP id i15-20020aa787cf0000b029023f6559f189mr5848090pfo.34.1617860207405;
-        Wed, 07 Apr 2021 22:36:47 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:e193:83c5:6e95:43de])
-        by smtp.gmail.com with ESMTPSA id a65sm23959278pfb.116.2021.04.07.22.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 22:36:46 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S229723AbhDHFiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:38:16 -0400
+Received: from ozlabs.org ([203.11.71.1]:60701 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhDHFiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 01:38:15 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FG95h3Bvjz9sWC;
+        Thu,  8 Apr 2021 15:38:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1617860283;
+        bh=JiVj825bhXGerOdP3QAAJMvSLpKA8dLeyo8ezDkiuDg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=F3GBQPT4mEx/8UkzNuegEdJ28NhDHhgsr9HJvlDE7uXSSaAw6IdFqMAYZXDWV7+Eo
+         lxJ4CDT0qLPAjiMnAya9GMevNEnEFfqaAczcOBH3IRRegrMn8om4wumf8ie9Bw2ZJl
+         BUw3Mql7pGCEcwwoWufvaQ6QoSIKUUw1U60PLqSmXrBn8HCgwfSlxgCFv/9tcn62po
+         V3KvMBMHUe3Uio50BV5m5dJ1uos+qyNSt7kwUZruM3aRb0r+jUu+neItbrh7s2cRpX
+         sBhrC2+id98VPf+zzKZXQ8kI3T0TprP5wN59SOMfZ+lEQdMWrpmsUuzMfhFpjltdow
+         O+nx4sd3B6QBA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Leonardo Bras <leobras.c@gmail.com>, brking@linux.vnet.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] powerpc/iommu: Enable remaining IOMMU Pagesizes
+ present in LoPAR
+In-Reply-To: <20210407195613.131140-1-leobras.c@gmail.com>
+References: <20210407195613.131140-1-leobras.c@gmail.com>
+Date:   Thu, 08 Apr 2021 15:37:59 +1000
+Message-ID: <87im4xe3pk.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz>
-References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-13-swboyd@chromium.org> <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz>
-Subject: Re: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
-To:     Petr Mladek <pmladek@suse.com>
-Date:   Wed, 07 Apr 2021 22:36:45 -0700
-Message-ID: <161786020531.3790633.14618419586085886962@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Petr Mladek (2021-04-07 10:03:28)
-> On Tue 2021-03-30 20:05:20, Stephen Boyd wrote:
-> > We can use the vmlinux_build_id array here now instead of open coding
-> > it. This mostly consolidates code.
-> >=20
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Jessica Yu <jeyu@kernel.org>
-> > Cc: Evan Green <evgreen@chromium.org>
-> > Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-> > Cc: Dave Young <dyoung@redhat.com>
-> > Cc: Baoquan He <bhe@redhat.com>
-> > Cc: Vivek Goyal <vgoyal@redhat.com>
-> > Cc: <kexec@lists.infradead.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> >  include/linux/crash_core.h |  6 +-----
-> >  kernel/crash_core.c        | 41 ++------------------------------------
-> >  2 files changed, 3 insertions(+), 44 deletions(-)
-> >=20
-> > diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> > index 206bde8308b2..fb8ab99bb2ee 100644
-> > --- a/include/linux/crash_core.h
-> > +++ b/include/linux/crash_core.h
-> > @@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
-> >  #define VMCOREINFO_OSRELEASE(value) \
-> >       vmcoreinfo_append_str("OSRELEASE=3D%s\n", value)
-> >  #define VMCOREINFO_BUILD_ID(value) \
-> > -     vmcoreinfo_append_str("BUILD-ID=3D%s\n", value)
-> > +     vmcoreinfo_append_str("BUILD-ID=3D%20phN\n", value)
->=20
-> Please, add also build check that BUILD_ID_MAX =3D=3D 20.
->=20
+Leonardo Bras <leobras.c@gmail.com> writes:
+> According to LoPAR, ibm,query-pe-dma-window output named "IO Page Sizes"
+> will let the OS know all possible pagesizes that can be used for creating a
+> new DDW.
+>
+> Currently Linux will only try using 3 of the 8 available options:
+> 4K, 64K and 16M. According to LoPAR, Hypervisor may also offer 32M, 64M,
+> 128M, 256M and 16G.
 
-I added a BUILD_BUG_ON() in kernel/crash_core.c. I tried static_assert()
-here but got mixed ISO errors from gcc-10, although it feels like it
-should work.
+Do we know of any hardware & hypervisor combination that will actually
+give us bigger pages?
 
-In file included from ./arch/arm64/include/asm/cmpxchg.h:10,
-                 from ./arch/arm64/include/asm/atomic.h:16,
-                 from ./include/linux/atomic.h:7,
-                 from ./include/linux/mm_types_task.h:13,
-                 from ./include/linux/mm_types.h:5,
-                 from ./include/linux/buildid.h:5,
-                 from kernel/crash_core.c:7:
-kernel/crash_core.c: In function 'crash_save_vmcoreinfo_init':
-./include/linux/build_bug.h:78:41: warning: ISO C90 forbids mixed declarati=
-ons and code [-Wdeclaration-after-statement]
-   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-      |                                         ^~~~~~~~~~~~~~
-./include/linux/build_bug.h:77:34: note: in expansion of macro '__static_as=
-sert'
-   77 | #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS_=
-_, #expr)
-      |                                  ^~~~~~~~~~~~~~~
-./include/linux/crash_core.h:42:2: note: in expansion of macro 'static_asse=
-rt'
-   42 |  static_assert(ARRAY_SIZE(value) =3D=3D BUILD_ID_SIZE_MAX); \
-      |  ^~~~~~~~~~~~~
-kernel/crash_core.c:401:2: note: in expansion of macro 'VMCOREINFO_BUILD_ID'
-  401 |  VMCOREINFO_BUILD_ID(vmlinux_build_id);
+> Enabling bigger pages would be interesting for direct mapping systems
+> with a lot of RAM, while using less TCE entries.
+>
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> ---
+>  arch/powerpc/platforms/pseries/iommu.c | 49 ++++++++++++++++++++++----
+>  1 file changed, 42 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index 9fc5217f0c8e..6cda1c92597d 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -53,6 +53,20 @@ enum {
+>  	DDW_EXT_QUERY_OUT_SIZE = 2
+>  };
 
->=20
-> The function add_build_id_vmcoreinfo() is used in
-> crash_save_vmcoreinfo_init() in this context:
->=20
->=20
->         VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
->         add_build_id_vmcoreinfo();
->         VMCOREINFO_PAGESIZE(PAGE_SIZE);
->=20
->         VMCOREINFO_SYMBOL(init_uts_ns);
->         VMCOREINFO_OFFSET(uts_namespace, name);
->         VMCOREINFO_SYMBOL(node_online_map);
->=20
-> The function is not longer need. VMCOREINFO_BUILD_ID()
-> can be used directly:
->=20
->         VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
->         VMCOREINFO_BUILD_ID(vmlinux_build_id);
->         VMCOREINFO_PAGESIZE(PAGE_SIZE);
->=20
->         VMCOREINFO_SYMBOL(init_uts_ns);
->         VMCOREINFO_OFFSET(uts_namespace, name);
->         VMCOREINFO_SYMBOL(node_online_map);
->=20
->=20
+A comment saying where the values come from would be good.
 
-Thanks. Makes sense. I've rolled that in.
+> +#define QUERY_DDW_PGSIZE_4K	0x01
+> +#define QUERY_DDW_PGSIZE_64K	0x02
+> +#define QUERY_DDW_PGSIZE_16M	0x04
+> +#define QUERY_DDW_PGSIZE_32M	0x08
+> +#define QUERY_DDW_PGSIZE_64M	0x10
+> +#define QUERY_DDW_PGSIZE_128M	0x20
+> +#define QUERY_DDW_PGSIZE_256M	0x40
+> +#define QUERY_DDW_PGSIZE_16G	0x80
+
+I'm not sure the #defines really gain us much vs just putting the
+literal values in the array below?
+
+> +struct iommu_ddw_pagesize {
+> +	u32 mask;
+> +	int shift;
+> +};
+> +
+>  static struct iommu_table_group *iommu_pseries_alloc_group(int node)
+>  {
+>  	struct iommu_table_group *table_group;
+> @@ -1099,6 +1113,31 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
+>  			 ret);
+>  }
+>  
+> +/* Returns page shift based on "IO Page Sizes" output at ibm,query-pe-dma-window. See LoPAR */
+> +static int iommu_get_page_shift(u32 query_page_size)
+> +{
+> +	const struct iommu_ddw_pagesize ddw_pagesize[] = {
+> +		{ QUERY_DDW_PGSIZE_16G,  __builtin_ctz(SZ_16G)  },
+> +		{ QUERY_DDW_PGSIZE_256M, __builtin_ctz(SZ_256M) },
+> +		{ QUERY_DDW_PGSIZE_128M, __builtin_ctz(SZ_128M) },
+> +		{ QUERY_DDW_PGSIZE_64M,  __builtin_ctz(SZ_64M)  },
+> +		{ QUERY_DDW_PGSIZE_32M,  __builtin_ctz(SZ_32M)  },
+> +		{ QUERY_DDW_PGSIZE_16M,  __builtin_ctz(SZ_16M)  },
+> +		{ QUERY_DDW_PGSIZE_64K,  __builtin_ctz(SZ_64K)  },
+> +		{ QUERY_DDW_PGSIZE_4K,   __builtin_ctz(SZ_4K)   }
+> +	};
+
+
+cheers
