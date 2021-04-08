@@ -2,323 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE885357DF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0009E357DF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhDHITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhDHITv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5519B61154;
-        Thu,  8 Apr 2021 08:19:38 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 10:19:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Message-ID: <20210408081935.b3xollrzl6lejbyf@wittgenstein>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+        id S229586AbhDHIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhDHIUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:20:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5BFC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:20:00 -0700 (PDT)
+Date:   Thu, 08 Apr 2021 08:19:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617869998;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=alfA4ypXUfBInobLUZVYh+K8tOo4KTlYKum0gvgYAzE=;
+        b=Jf4/4VXwOu5TB+iiXeA3Uz9xC04RfCWG/fGII8nmY21bSkfjUS6LwgRpjrVTmS6et+AwF3
+        pz8+9SzUQPQkLraA1lz8IYmgZc+M7rX4DJj80s66/AjeayEpnZ88xnzo74f0yu3v2xTPND
+        ncWsQXjdbgQRwlV99UWNWvjxXuw4Ru0/EVEkM/YOL+9+jj5DGqrCFgnS5G/E5Uz1GHihz2
+        LLK3h6JpMpQrvGyxxEJpP2z30WN/P6BV+iKICU5HwYuvJ8FAj3bEJBaEBw2MNSTNhW295i
+        CARW6yOC7VHVsk5HhN3EcUG5BKGMx3/Y5WcDFkY8/0Qx5eGJ+EdWBJhdVMkh6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617869998;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=alfA4ypXUfBInobLUZVYh+K8tOo4KTlYKum0gvgYAzE=;
+        b=ZvwtftH3GmnRVi/hiUzJjdLa47KBQg5tgzR/lGMxZEAnRxUugzN+nzENZU+9vnwTsTzqSv
+        5KBVpfDbB36q6gBQ==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip/wpcm450: Drop COMPILE_TEST
+Cc:     j.neuschaefer@gmx.net, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+Message-ID: <161786999788.29796.11651304556354814065.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:46:11PM -0700, Daniel Xu wrote:
-> This commit introduces the bpf page cache iterator. This iterator allows
-> users to run a bpf prog against each page in the "page cache".
-> Internally, the "page cache" is extremely tied to VFS superblock + inode
-> combo. Because of this, iter_pagecache will only examine pages in the
-> caller's mount namespace.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  kernel/bpf/Makefile         |   2 +-
->  kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 294 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/pagecache_iter.c
-> 
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 7f33098ca63f..3deb6a8d3f75 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
->  endif
->  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
->  
-> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o pagecache_iter.o map_iter.o task_iter.o prog_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
-> diff --git a/kernel/bpf/pagecache_iter.c b/kernel/bpf/pagecache_iter.c
-> new file mode 100644
-> index 000000000000..8442ab0d4221
-> --- /dev/null
-> +++ b/kernel/bpf/pagecache_iter.c
-> @@ -0,0 +1,293 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/init.h>
-> +#include <linux/mm_types.h>
-> +#include <linux/mnt_namespace.h>
-> +#include <linux/nsproxy.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/radix-tree.h>
-> +#include <linux/seq_file.h>
-> +#include "../../fs/mount.h"
+The following commit has been merged into the irq/irqchip-next branch of irqc=
+hip:
 
-This is a private header on purpose. Outside of fs/ poking around in
-struct mount or struct mount_namespace should not be done.
+Commit-ID:     384cf046e474b40db4773e9358241a5de11ed8a7
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platfo=
+rms/384cf046e474b40db4773e9358241a5de11ed8a7
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Thu, 08 Apr 2021 08:56:27 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 08 Apr 2021 08:56:27 +01:00
 
-> +
-> +struct bpf_iter_seq_pagecache_info {
-> +	struct mnt_namespace *ns;
-> +	struct radix_tree_root superblocks;
-> +	struct super_block *cur_sb;
-> +	struct inode *cur_inode;
-> +	unsigned long cur_page_idx;
-> +};
-> +
-> +static struct super_block *goto_next_sb(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct super_block *sb = NULL;
-> +	struct radix_tree_iter iter;
-> +	void **slot;
-> +
-> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter,
-> +				 ((unsigned long)info->cur_sb + 1)) {
-> +		sb = (struct super_block *)iter.index;
-> +		break;
-> +	}
-> +
-> +	info->cur_sb = sb;
-> +	info->cur_inode = NULL;
-> +	info->cur_page_idx = 0;
-> +	return sb;
-> +}
-> +
-> +static bool inode_unusual(struct inode *inode) {
-> +	return ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
-> +		(inode->i_mapping->nrpages == 0));
-> +}
-> +
-> +static struct inode *goto_next_inode(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct inode *prev_inode = info->cur_inode;
-> +	struct inode *inode;
-> +
-> +retry:
-> +	BUG_ON(!info->cur_sb);
-> +	spin_lock(&info->cur_sb->s_inode_list_lock);
-> +
-> +	if (!info->cur_inode) {
-> +		list_for_each_entry(inode, &info->cur_sb->s_inodes, i_sb_list) {
-> +			spin_lock(&inode->i_lock);
-> +			if (inode_unusual(inode)) {
-> +				spin_unlock(&inode->i_lock);
-> +				continue;
-> +			}
-> +			__iget(inode);
-> +			spin_unlock(&inode->i_lock);
-> +			info->cur_inode = inode;
-> +			break;
-> +		}
-> +	} else {
-> +		inode = info->cur_inode;
-> +		info->cur_inode = NULL;
-> +		list_for_each_entry_continue(inode, &info->cur_sb->s_inodes,
-> +					     i_sb_list) {
-> +			spin_lock(&inode->i_lock);
-> +			if (inode_unusual(inode)) {
-> +				spin_unlock(&inode->i_lock);
-> +				continue;
-> +			}
-> +			__iget(inode);
-> +			spin_unlock(&inode->i_lock);
-> +			info->cur_inode = inode;
-> +			break;
-> +		}
-> +	}
-> +
-> +	/* Seen all inodes in this superblock */
-> +	if (!info->cur_inode) {
-> +		spin_unlock(&info->cur_sb->s_inode_list_lock);
-> +		if (!goto_next_sb(info)) {
-> +			inode = NULL;
-> +			goto out;
-> +		}
-> +
-> +		goto retry;
-> +	}
-> +
-> +	spin_unlock(&info->cur_sb->s_inode_list_lock);
-> +	info->cur_page_idx = 0;
-> +out:
-> +	iput(prev_inode);
-> +	return info->cur_inode;
-> +}
-> +
-> +static struct page *goto_next_page(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct page *page, *ret = NULL;
-> +	unsigned long idx;
-> +
-> +	rcu_read_lock();
-> +retry:
-> +	BUG_ON(!info->cur_inode);
-> +	ret = NULL;
-> +	xa_for_each_start(&info->cur_inode->i_data.i_pages, idx, page,
-> +			  info->cur_page_idx) {
-> +		if (!page_cache_get_speculative(page))
-> +			continue;
-> +
-> +		ret = page;
-> +		info->cur_page_idx = idx + 1;
-> +		break;
-> +	}
-> +
-> +	if (!ret) {
-> +		/* Seen all inodes and superblocks */
-> +		if (!goto_next_inode(info))
-> +			goto out;
-> +
-> +		goto retry;
-> +	}
-> +
-> +out:
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +static void *pagecache_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
-> +	struct page *page;
-> +
-> +	if (!info->cur_sb && !goto_next_sb(info))
-> +		return NULL;
-> +	if (!info->cur_inode && !goto_next_inode(info))
-> +		return NULL;
-> +
-> +	page = goto_next_page(info);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	if (*pos == 0)
-> +		++*pos;
-> +
-> +	return page;
-> +
-> +}
-> +
-> +static void *pagecache_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
-> +	struct page *page;
-> +
-> +	++*pos;
-> +	put_page((struct page *)v);
-> +	page = goto_next_page(info);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	return page;
-> +}
-> +
-> +struct bpf_iter__pagecache {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct page *, page);
-> +};
-> +
-> +DEFINE_BPF_ITER_FUNC(pagecache, struct bpf_iter_meta *meta, struct page *page)
-> +
-> +static int __pagecache_seq_show(struct seq_file *seq, struct page *page,
-> +				bool in_stop)
-> +{
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_iter__pagecache ctx;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = seq;
-> +	prog = bpf_iter_get_info(&meta, in_stop);
-> +	if (!prog)
-> +		return 0;
-> +
-> +	meta.seq = seq;
-> +	ctx.meta = &meta;
-> +	ctx.page = page;
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
-> +
-> +static int pagecache_seq_show(struct seq_file *seq, void *v)
-> +{
-> +	return __pagecache_seq_show(seq, v, false);
-> +}
-> +
-> +static void pagecache_seq_stop(struct seq_file *seq, void *v)
-> +{
-> +	(void)__pagecache_seq_show(seq, v, true);
-> +	if (v)
-> +		put_page((struct page *)v);
-> +}
-> +
-> +static int init_seq_pagecache(void *priv_data, struct bpf_iter_aux_info *aux)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = priv_data;
-> +	struct radix_tree_iter iter;
-> +	struct super_block *sb;
-> +	struct mount *mnt;
-> +	void **slot;
-> +	int err;
-> +
-> +	info->ns = current->nsproxy->mnt_ns;
-> +	get_mnt_ns(info->ns);
-> +	INIT_RADIX_TREE(&info->superblocks, GFP_KERNEL);
-> +
-> +	spin_lock(&info->ns->ns_lock);
-> +	list_for_each_entry(mnt, &info->ns->list, mnt_list) {
+irqchip/wpcm450: Drop COMPILE_TEST
 
-Not just are there helpers for taking ns_lock
-static inline void lock_ns_list(struct mnt_namespace *ns)
-static inline void unlock_ns_list(struct mnt_namespace *ns)
-they are private to fs/namespace.c because it's the only place that
-should ever walk this list.
+This driver is (for now) ARM specific, and currently doesn't
+build with a variety of architectures (ia64, RISC-V, x86_64
+at the very least).
 
-This seems buggy: why is it ok here to only take ns_lock and not also
-namespace_sem like mnt_already_visible() and __is_local_mountpoint() or
-the relevant proc iterators? I might be missing something.
+Drop COMPILE_TEST from Kconfig until it gets sorted out.
 
-> +		sb = mnt->mnt.mnt_sb;
-> +
-> +		/* The same mount may be mounted in multiple places */
-> +		if (radix_tree_lookup(&info->superblocks, (unsigned long)sb))
-> +			continue;
-> +
-> +		err = radix_tree_insert(&info->superblocks,
-> +				        (unsigned long)sb, (void *)1);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-> +		sb = (struct super_block *)iter.index;
-> +		atomic_inc(&sb->s_active);
+Cc: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/irqchip/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It also isn't nice that you mess with sb->s_active directly.
-
-Imho, this is poking around in a lot of fs/ specific stuff that other
-parts of the kernel should not care about or have access to.
-
-Christian
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 38ad9dc..715eb43 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -579,7 +579,7 @@ config MST_IRQ
+=20
+ config WPCM450_AIC
+ 	bool "Nuvoton WPCM450 Advanced Interrupt Controller"
+-	depends on ARCH_WPCM450 || COMPILE_TEST
++	depends on ARCH_WPCM450
+ 	help
+ 	  Support for the interrupt controller in the Nuvoton WPCM450 BMC SoC.
+=20
