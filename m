@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809CE35822F
+	by mail.lfdr.de (Postfix) with ESMTP id D89BA358230
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhDHLlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:41:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231341AbhDHLlT (ORCPT
+        id S231422AbhDHLlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231375AbhDHLlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:41:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617882068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s9XSwEEi1zJXTpbPUBOMu9HhV0dFlRjs6EwHYbE6+e4=;
-        b=UGQeJKMsI6sVo/j8EdVBKlfNDxJ0MtgonPs4JE9o0imPQrFC++vpAksyx/5fODikUmHDd4
-        2gQ0EtVtk0uYD00dlqT3W2amSdQ42uWYLDiC7kzRAmclQ18PCBE0pqxnhMsq+N871+HJ18
-        BLktZ6z8Oa6T4rtfWFg9ni3Jla7U6Qw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-43aYF8UWPWSBl4bbMFHnGw-1; Thu, 08 Apr 2021 07:41:01 -0400
-X-MC-Unique: 43aYF8UWPWSBl4bbMFHnGw-1
-Received: by mail-ej1-f72.google.com with SMTP id de56so712429ejc.16
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:41:01 -0700 (PDT)
+        Thu, 8 Apr 2021 07:41:20 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC00BC061760;
+        Thu,  8 Apr 2021 04:41:08 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id m3so2011510edv.5;
+        Thu, 08 Apr 2021 04:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9W5u9JNowWa9GKxAEJ2E0StodFgzOY5U/p+9mBXj95I=;
+        b=JS9eJVgfynJVA/3KbS/hCW7MZIRKZOZIb53vErZBMLiiUIDtvkF1fooyQqBpG/Nkha
+         KDqgCL/4YxMOHY4MTNymEdVId38BxQKiBv+9mgVVOwdTua1aDF4OB+lwfCIYXz/74RSX
+         IvcwsAmiN9MvOQ2G8IJn8//yx9tHkXRpfIBLRk9Qh8ONXrg7pMxB5LHfqjy8KX1W3RKW
+         NxYTE4UbK4zYnK/rNUNvbIbItAkTqolE4KbtEO7FDHdne+Hg0ED8YZC0ja8qbIQ9ufdM
+         FyXdrjraBx40JUUtVYMdxfSkd1LQOQ2C04485KMr/UUrOXpVamPb9JC2UT0Hz9OX3W/z
+         Tm0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s9XSwEEi1zJXTpbPUBOMu9HhV0dFlRjs6EwHYbE6+e4=;
-        b=Mncr07M2jcRMPR+SE+MfN2sMN8V1MKzu7FaW8hZ1CeC8Lk7lI56xPbxt/uoTTiICHz
-         BM2Q2hlNYJMQKAILAeSma7xkyvC03ZjEkC9N4KS/xM4n+jWa9JmyHd2dGRACiBjIY285
-         S7PD6qvKoRP164ybDPSNMxOe+NssLmJqWJpHHFj9vZNT1QiigIk/jYa/D68CPH1jLp4O
-         HVUvT+b6mOouDAKDfA2g//pOkrsZS1fjo4YXW4XK7Yr0avYcjIGpVJITHmbHgzM5aU5G
-         BGFkOf3S5yd+GJNd+7yTTYynGB54vzol0Q7EySOWfrCQc4fGxhqP1PD/r0/+JXLqp4M9
-         646A==
-X-Gm-Message-State: AOAM531zEazBw3GOtjgFF5IAjI/Ld/yWkLmde4pJnqSceb1KpB3hosZU
-        SSS/WdWwVrKC6H+OZMgArsa7/z2t9B3zrg6c90avD8DUcpn5LO8sm+671KZdxXs2pvkj55R7G+Y
-        9kRnQIsjHM17CMQxqmlgSEiuD
-X-Received: by 2002:aa7:cf90:: with SMTP id z16mr10682029edx.273.1617882060784;
-        Thu, 08 Apr 2021 04:41:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUNwVjPU6LZkoTiJz3z03af3SU7UKs6cSUJv0KPBteAvMvZy2H6osTmzxUIJoPNr0/d/3eYQ==
-X-Received: by 2002:aa7:cf90:: with SMTP id z16mr10682002edx.273.1617882060615;
-        Thu, 08 Apr 2021 04:41:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t1sm4680038eds.53.2021.04.08.04.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 04:41:00 -0700 (PDT)
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
- <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
- <20210329133101.GA1168973@nvidia.com> <YG7VWWkvnv2IPEXt@phenom.ffwll.local>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
-Message-ID: <5f956a46-da38-e72a-edaa-3b746a275f1e@redhat.com>
-Date:   Thu, 8 Apr 2021 13:40:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9W5u9JNowWa9GKxAEJ2E0StodFgzOY5U/p+9mBXj95I=;
+        b=qJkr4Mn04mBKgNYlHGtflnHpIF2D9eu5xHbM2tkWKu3UbWPmWBg2j36ZGfDWfDebr0
+         NU7/AtfnQCX5hQz2Ooyw6xHz2ktxz9jsoVIHQDUV2ycIWZep0D+C4vUvCT1ob6me6Wyj
+         gcBe4YXvs2lC5uAbK+yqCbu7GvriyHBlDOETIGr4w+l5gcHfPvcRmyo/g3OQDgvX7S/1
+         yhAQuAZtdmATwmax4LIn42E1POFbrFnuNEwdwnRbArs7xNdNJVFqBRXiEEXq/L5UffpG
+         oVq0iAAJTrm/GunHQjfODg1LpsPJ/Z9mWyYifdsE3IK03vPKpKj4MPdIhSOPwwbd7fv4
+         A1/g==
+X-Gm-Message-State: AOAM531/KwcTk5rbk+QH51fp07MQbWeplVJz+yTEXbFmyvKoe4kPQh7J
+        cZ11ZFbViht1IEg+VHDs4V0=
+X-Google-Smtp-Source: ABdhPJxHjMV9iH5aPR/Kq3Q/3Ykz/dCa08ogguDQJ1C7Z1FnpkfIOpxzgMQf5JbPNlDlihhMHL27mw==
+X-Received: by 2002:a50:d84e:: with SMTP id v14mr11046764edj.357.1617882067518;
+        Thu, 08 Apr 2021 04:41:07 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id q25sm17449500edt.51.2021.04.08.04.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 04:41:06 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Thu, 8 Apr 2021 13:41:05 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steven French <Steven.French@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
+ CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
+Message-ID: <YG7r0UaivWZL762N@eldamar.lan>
+References: <20210301161031.684018251@linuxfoundation.org>
+ <20210301161032.337414143@linuxfoundation.org>
+ <YGxIMCsclG4E1/ck@eldamar.lan>
+ <YGxlJXv/+IPaErUr@kroah.com>
+ <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+ <YGx3u01Wa/DDnjlV@eldamar.lan>
 MIME-Version: 1.0
-In-Reply-To: <YG7VWWkvnv2IPEXt@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGx3u01Wa/DDnjlV@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/21 12:05, Daniel Vetter wrote:
-> On Mon, Mar 29, 2021 at 10:31:01AM -0300, Jason Gunthorpe wrote:
->> On Tue, Mar 16, 2021 at 04:33:03PM +0100, Daniel Vetter wrote:
->>> Both kvm (in bd2fae8da794 ("KVM: do not assume PTE is writable after
->>> follow_pfn")) and vfio (in 07956b6269d3 ("vfio/type1: Use
->>> follow_pte()")) have lost their callsites of follow_pfn(). All the
->>> other ones have been switched over to unsafe_follow_pfn because they
->>> cannot be fixed without breaking userspace api.
->>>
->>> Argueably the vfio code is still racy, but that's kinda a bigger
->>
->> vfio and kvm
-> 
-> Hm I thought kvm is non-racy due to the mmu notifier catch races?
+Hi Shyam,
 
-No, but the plan is indeed to have some struct for each page that uses 
-follow_pfn and update it from the MMU notifiers.
-
-Paolo
-
->>
->>> picture. But since it does leak the pte beyond where it drops the pt
->>> lock, without anything else like an mmu notifier guaranteeing
->>> coherence, the problem is at least clearly visible in the vfio code.
->>> So good enough with me.
->>>
->>> I've decided to keep the explanation that after dropping the pt lock
->>> you must have an mmu notifier if you keep using the pte somehow by
->>> adjusting it and moving it into the kerneldoc for the new follow_pte()
->>> function.
->>>
->>> Cc: 3pvd@google.com
->>> Cc: Jann Horn <jannh@google.com>
->>> Cc: Paolo Bonzini <pbonzini@redhat.com>
->>> Cc: Jason Gunthorpe <jgg@nvidia.com>
->>> Cc: Cornelia Huck <cohuck@redhat.com>
->>> Cc: Peter Xu <peterx@redhat.com>
->>> Cc: Alex Williamson <alex.williamson@redhat.com>
->>> Cc: linux-mm@kvack.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-samsung-soc@vger.kernel.org
->>> Cc: linux-media@vger.kernel.org
->>> Cc: kvm@vger.kernel.org
->>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
->>> ---
->>>   include/linux/mm.h |  2 --
->>>   mm/memory.c        | 26 +++++---------------------
->>>   mm/nommu.c         | 13 +------------
->>>   3 files changed, 6 insertions(+), 35 deletions(-)
->>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+On Tue, Apr 06, 2021 at 05:01:17PM +0200, Salvatore Bonaccorso wrote:
+> Hi,
 > 
-> Thanks for your r-b tags, I'll add them.
-> -Daniel
+> On Tue, Apr 06, 2021 at 02:00:48PM +0000, Shyam Prasad wrote:
+> > Hi Greg,
+> > We'll need to debug this further to understand what's going on. 
 > 
->>
->> Jason
+> Greg asked it the same happens with 5.4 as well, I do not know I was
+> not able to test 5.4.y (yet) but only 5.10.y and 4.19.y.
+> > 
+> > Hi Salvatore,
+> > Any chance that you'll be able to provide us the cifsFYI logs from the time of mount failure?
+> > https://wiki.samba.org/index.php/LinuxCIFS_troubleshooting#Enabling_Debugging
 > 
+> Please find it attached. Is this enough information?
+> 
+> The mentioned home DFS link 'home' is a DFS link to
+> msdfs:SECONDHOST\REDACTED on a Samba host.
+> 
+> The mount is triggered as
+> 
+> mount -t cifs //HOSTIP/REDACTED/home /mnt --verbose -o username='REDACTED,domain=DOMAIN'
 
+So I can confirm the issue is both present in 4.19.185 and 5.4.110
+upstream (without any Debian patches applied, we do not anyway apply
+any cifs related one on top of the respetive upstream version).
+
+The issue is not present in 5.10.28.
+
+So I think there are commits as dependency of a738c93fb1c1 ("cifs: Set
+CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.") which
+are required and not applied in the released before 5.10.y which make
+introducing the regression.
+
+Regards,
+Salvatore
