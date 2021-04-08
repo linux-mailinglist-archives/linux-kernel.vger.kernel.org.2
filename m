@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39D358F21
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B63358F24
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhDHV3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:29:37 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40902 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhDHV3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:29:35 -0400
-IronPort-SDR: rAZ6wjKTFk2DOthQCCyWc5xmpu2c0b1tLW6R/5lMjI3blqyT+1pKIq7Q83LqZ9tqRXYkW34Cp5
- kxVZr6H7tN3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="257617231"
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="257617231"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:29:22 -0700
-IronPort-SDR: 2RrEtGIEtynwwzYKouchzvrqsM04fyEnd46yHPDrH5hlvNVv9SDQ+RlAIlyaPvYIwFtx6Tb4YK
- nmg9ixjEbHbw==
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="449873447"
-Received: from mongkaiw-mobl.amr.corp.intel.com (HELO [10.209.62.147]) ([10.209.62.147])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:29:22 -0700
-Subject: Re: [PATCH 01/10] mm/numa: node demotion data structure and lookup
-To:     Oscar Salvador <osalvador@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        shy828301@gmail.com, weixugc@google.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183218.E7C9CE24@viggo.jf.intel.com>
- <YG64w7NC59fn8Py+@localhost.localdomain>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4573cb9a-31ca-3b3d-96bc-5d94876b9709@intel.com>
-Date:   Thu, 8 Apr 2021 14:29:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232570AbhDHVaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232350AbhDHVaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:30:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B53C061760;
+        Thu,  8 Apr 2021 14:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FMwsbzIx2vhE3AUqGng1fDydGgdG4KsD5JUXQdwoJ+w=; b=ZxjfWMBPLVX108xUoD3fxC9LtV
+        GXYGhxpBrxOZBsUh44HUWr/CHWB9mc+dHoAoJXCPYBBcg6r9FWxoWze7gYmBh/InxbGY+oZiib2/e
+        uSiPXADkWIuCB7BPPYc8jAI8K5299K4EmEGVIsMuhq6WN6HzH44P5V6ehuhmAYrlbvRIpvlkZj3QB
+        vMAlYFJ0RSwGbaABVxZ55vWznbJtOhiytyUr8lsGvOGsVUjuqNqgv3OmXc6nD2marT8BrKu+l3du0
+        2Ll4ZUu8wtjpPHQ15i/yRYnEFgA52ZX9NSdHi71qA4xU4ABcomSEwgISzH37BDAugOThzCej9KTH4
+        ou83SQiw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUcDP-00Gtps-RP; Thu, 08 Apr 2021 21:29:33 +0000
+Date:   Thu, 8 Apr 2021 22:29:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com
+Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
+Message-ID: <20210408212927.GQ2531743@casper.infradead.org>
+References: <cover.1617831474.git.dxu@dxuuu.xyz>
+ <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+ <20210408061401.GI2531743@casper.infradead.org>
+ <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
 MIME-Version: 1.0
-In-Reply-To: <YG64w7NC59fn8Py+@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 1:03 AM, Oscar Salvador wrote:
-> I think this patch and patch#2 could be squashed
+On Thu, Apr 08, 2021 at 12:48:49PM -0700, Daniel Xu wrote:
+> No reason other than I didn't know about the latter. Thanks for the
+> hint. find_get_entries() seems to return a pagevec of entries which
+> would complicate the iteration (a 4th layer of things to iterate over).
 > 
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> But I did find find_get_pages_range() which I think can be used to find
+> 1 page at a time. I'll look into it further.
 
-Yeah, that makes a lot of sense.  I'll do that for the next version.
+Please don't, that's going to be a pagevec too.
+
+> > I'm not really keen on the idea of random BPF programs being able to poke
+> > at pages in the page cache like this.  From your initial description,
+> > it sounded like all you needed was a list of which pages are present.
+> 
+> Could you elaborate on what "list of which pages are present" implies?
+> The overall goal with this patch is to detect duplicate content in the
+> page cache. So anything that helps achieve that goal I would (in theory)
+> be OK with.
+> 
+> My understanding is the user would need to hash the contents
+> of each page in the page cache. And BPF provides the flexibility such
+> that this work could be reused for currently unanticipated use cases.
+
+But if you need the contents, then you'll need to kmap() the pages.
+I don't see people being keen on exposing kmap() to bpf either.  I think
+you're much better off providing an interface that returns a hash of
+each page to the BPF program.
+
+> Furthermore, bpf programs could already look at all the pages in the
+> page cache by hooking into tracepoint:filemap:mm_filemap_add_to_page_cache,
+> albeit at a much slower rate. I figure the downside of adding this
+> page cache iterator is we're explicitly condoning the behavior.
+
+That should never have been exposed.  It's only supposed to be for error
+injection.  If people have started actually using it for something,
+then it's time we delete that tracepoint.
+
+> The idea behind the radix tree was to deduplicate the mounts by
+> superblock. Because a single filesystem may be mounted in different
+> locations. I didn't find a set data structure I could reuse so I
+> figured radix tree / xarray would work too.
+> 
+> Happy to take any better ideas too.
+> 
+> > If you don't understand why this is so bad, call xa_dump() on it after
+> > constructing it.  I'll wait.
+> 
+> I did a dump and got the following results: http://ix.io/2VpY .
+> 
+> I receieved a hint that you may be referring to how the xarray/radix
+> tree would be as large as the largest pointer. To my uneducated eye it
+> doesn't look like that's the case in this dump. Could you please
+> clarify?
+
+We get seven nodes per 4kB page.
+
+$ grep -c 'value 0' 2VpY 
+15
+$ grep -c node 2VpY 
+43
+
+so we use 6+1/7 pages in order to store 15 values.  That's 387 cache
+lines, for the amount of data that could fit in two.
+
+Liam and I are working on a data structure that would support doing
+something along these lines in an efficient manner, but it's not
+ready yet.
