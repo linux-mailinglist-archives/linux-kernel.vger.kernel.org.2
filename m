@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA51358577
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6282835858C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhDHOA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:00:57 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16847 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhDHOA4 (ORCPT
+        id S231601AbhDHOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhDHOCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:00:56 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGNCC1GrHz9wsX;
-        Thu,  8 Apr 2021 21:58:31 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.175) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 22:00:36 +0800
-From:   Lu Jialin <lujialin4@huawei.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Lu Jialin <lujialin4@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>,
-        Xiang Yang <xiangyang3@huawei.com>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Cui GaoSheng <cuigaosheng1@huawei.com>,
-        Gong Ruiqi <gongruiqi1@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: [PATCH -next] mm: Fix typos in comments
-Date:   Thu, 8 Apr 2021 22:00:27 +0800
-Message-ID: <20210408140027.60623-1-lujialin4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 10:02:36 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF42C061760;
+        Thu,  8 Apr 2021 07:02:23 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id a12so2247174wrq.13;
+        Thu, 08 Apr 2021 07:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=igTKAmMYpIX3jIexr3RV8HU9f+iEVVnyRrMeX7x7lP0=;
+        b=ADTyExqRLnsjOpDBxlZTkB23Fxhbs1SU5hstlaYZxcN5fyQTcmngIPwFRPomy3cVhx
+         UWCj/DxEvNQPeOwxNwMPPG2qJ2/Rxog/B5diaFj5tBOm46BeiWdo3mYd29xIYCqVqVSw
+         G7FUjI1lPBru1u8cKF2HVuG+1NJmQYahiyexPkjuaViK1uAtinloMKf7+ta9JKlPRBz3
+         JAyjQ/hfCx7t98rr2Zg86TcoAJAVdozi1JoPEos9YwfJHGhGd3ee/Aloa+0ZksiVGvEm
+         HeUFeg4rRwmMJFhNdpc71GGV8VnjGo4S8QSVIt48OoOWFndavT1qoBm4/xYnumBy5hO/
+         Q6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=igTKAmMYpIX3jIexr3RV8HU9f+iEVVnyRrMeX7x7lP0=;
+        b=aG9wIin/zZvSSZw1tV+up4mrWaIqP8aO8eBqXqeoejxuOyE8kpqkCRwEbj0HCs5xTQ
+         RFzJjfyrHLQJxlREnEQFF70milGv9vuANip1JqxRtXsOr7Z1IeWlOvXOLKUWogDgB5of
+         qLjeoQuK+FIv6r2ZWmEC18K9ItioQzfzuCJAwJL4am+qglsJVYrjWQRH7aBaoXRry9zC
+         +CwmhVOvAnUKpN0nmfBHYkHWU/WYYEG+JWHHkru6JfcPeSQQwZik0sqv6BJoGpBlUTF8
+         z9m3z81Zn4x1YLdZrWFpV0wRgikQgE/6XDuw7siOLBQBypoksIljUH9u8zEbvLY0ENmY
+         gYjQ==
+X-Gm-Message-State: AOAM533fxAWiXRULB+joiKyrHU7MXk4vwV8Qg+zUuH85fM7MpjtbRnrp
+        z/23EWrB48ii0+kJBVlD6hkSAY5t3+QyAA==
+X-Google-Smtp-Source: ABdhPJxSIguQ12gBl6WzZKJg4WS46EsfruD/egiVoVVDPg6f5vhZKQKxEK6+QWPjXxGcdfisi2Ejbw==
+X-Received: by 2002:adf:fb91:: with SMTP id a17mr11848258wrr.118.1617890542474;
+        Thu, 08 Apr 2021 07:02:22 -0700 (PDT)
+Received: from [192.168.8.158] ([148.252.128.224])
+        by smtp.gmail.com with ESMTPSA id r11sm30924582wrp.70.2021.04.08.07.02.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 07:02:21 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
+To:     syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000526a4305bf766cd5@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <346fb87c-6fae-284d-62a0-edafde451861@gmail.com>
+Date:   Thu, 8 Apr 2021 14:58:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.175]
-X-CFilter-Loop: Reflected
+In-Reply-To: <000000000000526a4305bf766cd5@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-succed -> succeed in mm/hugetlb.c
-wil -> will in mm/mempolicy.c
-wit -> with in mm/page_alloc.c
-Retruns -> Returns in mm/page_vma_mapped.c
-confict -> conflict in mm/secretmem.c
-No functionality changed.
+On 08/04/2021 14:57, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> INFO: task hung in io_ring_exit_work
+> 
+> commit:         07c3d710 Revert "Revert "io_uring: wait potential ->releas..
 
-Signed-off-by: Lu Jialin <lujialin4@huawei.com>
----
- mm/hugetlb.c         | 2 +-
- mm/mempolicy.c       | 2 +-
- mm/page_alloc.c      | 2 +-
- mm/page_vma_mapped.c | 2 +-
- mm/secretmem.c       | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Err, not right commit...
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index c22111f3da20..e414534e1fc4 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2304,7 +2304,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
- 	} else if (!HPageFreed(old_page)) {
- 		/*
- 		 * Page's refcount is 0 but it has not been enqueued in the
--		 * freelist yet. Race window is small, so we can succed here if
-+		 * freelist yet. Race window is small, so we can succeed here if
- 		 * we retry.
- 		 */
- 		spin_unlock(&hugetlb_lock);
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 5690513c5668..d79fa299b70c 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -994,7 +994,7 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
- 		if (flags & MPOL_F_ADDR) {
- 			/*
- 			 * Take a refcount on the mpol, lookup_node()
--			 * wil drop the mmap_lock, so after calling
-+			 * will drop the mmap_lock, so after calling
- 			 * lookup_node() only "pol" remains valid, "vma"
- 			 * is stale.
- 			 */
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 604dcd69397b..b457cc316009 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4173,7 +4173,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- }
- 
- /*
-- * Maximum number of compaction retries wit a progress before OOM
-+ * Maximum number of compaction retries with a progress before OOM
-  * killer is consider as the only way to move forward.
-  */
- #define MAX_COMPACT_RETRIES 16
-diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-index 86e3a3688d59..2cf01d933f13 100644
---- a/mm/page_vma_mapped.c
-+++ b/mm/page_vma_mapped.c
-@@ -134,7 +134,7 @@ static bool check_pte(struct page_vma_mapped_walk *pvmw)
-  * regardless of which page table level the page is mapped at. @pvmw->pmd is
-  * NULL.
-  *
-- * Retruns false if there are no more page table entries for the page in
-+ * Returns false if there are no more page table entries for the page in
-  * the vma. @pvmw->ptl is unlocked and @pvmw->pte is unmapped.
-  *
-  * If you need to stop the walk before page_vma_mapped_walk() returned false,
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index 3b1ba3991964..38e22c45e482 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -204,7 +204,7 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
- 	struct file *file;
- 	int fd, err;
- 
--	/* make sure local flags do not confict with global fcntl.h */
-+	/* make sure local flags do not conflict with global fcntl.h */
- 	BUILD_BUG_ON(SECRETMEM_FLAGS_MASK & O_CLOEXEC);
- 
- 	if (!secretmem_enable)
+#syz test: https://github.com/isilence/linux.git syz_test3
+
+
+> git tree:       https://github.com/isilence/linux.git syz_test2
+> console output: https://syzkaller.appspot.com/x/log.txt?x=145716fcd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=86318203e865a02b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
+> compiler:       
+> 
+
 -- 
-2.17.1
-
+Pavel Begunkov
