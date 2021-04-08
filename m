@@ -2,264 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2558358FE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C63358FEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhDHWkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232915AbhDHWkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8384B61159;
-        Thu,  8 Apr 2021 22:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617921605;
-        bh=K2jD0akbYdLKdPVjxAi9o8SNykZ+szmTFeSEaBQvdAs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WrCiUDzFMVQIkHOkYS3MG06pbKBK/bbzYf/4K8GIVKhJT75yUCKPt96COtV2NsKLF
-         SJi23FEsbZp9zBWmaA9MtxaVxUszXe+0JejeHHYrgboPLEiKi3noeW0g4x2+2jW5Zq
-         gfqw9b+/5/2k/jGe2AHoPa/iS6fU6C0V/LByEVpLrHGEPNU6m6ijKKU2KLzXDXetRh
-         t/LqBwK8aJ5mUGOF8vcuHrw1rfO5rIbIC6zh4pAQcYgNrulUQ86wFCBRFJlIfbjgKj
-         9xTRcK5vL/OpkXoKKImAntaD+xFRaYcRmr/yR9rgIaacZmEQENbXWMpvztIYKkpCiA
-         LxzqwV8hjxIpg==
-Date:   Thu, 8 Apr 2021 15:40:04 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH v4 6/7] fs/xfs: Handle CoW for fsdax write() path
-Message-ID: <20210408224004.GC3957620@magnolia>
-References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-7-ruansy.fnst@fujitsu.com>
+        id S232959AbhDHWk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232951AbhDHWkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:40:25 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA40C061760;
+        Thu,  8 Apr 2021 15:40:14 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id y5so4016582qkl.9;
+        Thu, 08 Apr 2021 15:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zqNhDpCeYS6QSJxT3ix+09XaNUJtxgOgbVp2qXDUwE0=;
+        b=Kx8tLTz5k1pUsYsYbQ9rbZxWBPx/5tEGEUzUJZUtg5+bYQkCL66Fhc9HjxRcOtGhav
+         0XrHjEVZPxED1Ea/354dZwNAS0IqfHn+HKH6IHIh1IXDo9nJv++aSOyl+SOWFHkv+rfJ
+         81YbiGSwAlDFmGNXKsMXm38+D+z3GJCV4h4c2z68gm5PwsiXgGNzoPnJt1WTk+86Cvef
+         uj58fX+Z+9Li01p4AvBbELqsetCg4geG9ncJdKS/C8Kr1LSGRHCGH9fITBIHhjo0JzBK
+         elInXbQ30gZzm/Uhuy5Ik3M9VYSSnuFs1SfoQ9gKqDUOlLM8DyX5AHwzCGutSMHlqpj0
+         TWbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zqNhDpCeYS6QSJxT3ix+09XaNUJtxgOgbVp2qXDUwE0=;
+        b=bhnnQo+Pqu67ajmOLiu4FKdrXtzWRifIE4z9w7A62R2Hi6We7kh2G4xZEW0r4I1chT
+         56gwLz+XKQ9Pgn0QxsZ27lN6NMNhk1VRbYToNxK3gUxGR1TENYgJIu4JE52RBBTPrMsC
+         T/ILafzFwrovi04V0MaOzeuEuux2v9SBKggB2ZmXHD0f372N9J5h8OEyJNhM7676vpbj
+         Pjob90AbjEpPfPEeoYOfMnSZJGXJ/40S3Z5rgoUgEaspInfuVU8wXN2AIEZGOOL0f/A0
+         /AQNQrLmKfPG0ZdeKUVXjh6LL1dYpuAtUjux/9NmCeM157CZU/m+oi6hM5VDYp1gw5si
+         4DcA==
+X-Gm-Message-State: AOAM53179banCpCEcXaQv35IM7NDn8AW2jkMp67K6mW3QSpHywfVYnEB
+        1bQLcXi9zoFL4636qMUDcrE=
+X-Google-Smtp-Source: ABdhPJwt6Bakcht1PibcyW2KY9OwBJDjMvdCl5uSNNXvVD9ncA79xivfDYYoE1rhP//W/DSl5xJKXA==
+X-Received: by 2002:a05:620a:1585:: with SMTP id d5mr11231214qkk.325.1617921613371;
+        Thu, 08 Apr 2021 15:40:13 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id c5sm551610qkl.21.2021.04.08.15.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 15:40:13 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210408204508.2276230-1-frowand.list@gmail.com>
+ <CAL_Jsq+Os6O6CpRYurmf_4-Xnzgpkd1jbDbnp0en1TPbZXTf7w@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <ad805b26-4bf4-bfbc-d3b6-522295302791@gmail.com>
+Date:   Thu, 8 Apr 2021 17:40:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408120432.1063608-7-ruansy.fnst@fujitsu.com>
+In-Reply-To: <CAL_Jsq+Os6O6CpRYurmf_4-Xnzgpkd1jbDbnp0en1TPbZXTf7w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:04:31PM +0800, Shiyang Ruan wrote:
-> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed. After
-> CoW, new allocated extents needs to be remapped to the file.  So, add an
-> iomap_end for dax write ops to do the remapping work.
+On 4/8/21 4:28 PM, Rob Herring wrote:
+> On Thu, Apr 8, 2021 at 3:45 PM <frowand.list@gmail.com> wrote:
+>>
+>> From: Frank Rowand <frank.rowand@sony.com>
+>>
+>> The Devicetree standard specifies an 8 byte alignment of the FDT.
+>> Code in libfdt expects this alignment for an FDT image in memory.
+>> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
+>> with kmalloc(), align pointer, memcpy() to get proper alignment.
+>>
+>> The 4 byte alignment exposed a related bug which triggered a crash
+>> on openrisc with:
+>> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+>> as reported in:
+>> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+>>
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+>>
+>> ---
+>>
+>> changes since version 1:
+>>   - use pointer from kmalloc() for kfree() instead of using pointer that
+>>     has been modified for FDT alignment
+>>
+>> changes since version 2:
+>>   - version 1 was a work in progress version, I failed to commit the following
+>>     final changes
+>>   - reorder first two arguments of of_overlay_apply()
+>>
+>> changes since version 3:
+>>   - size of memory allocation and size of copy after pointer alignment
+>>     differ, use separate variables with correct values for each case
+>>   - edit comment to more clearly describe that ovcs->fdt is the allocated
+>>     memory region, which may be different than where the aligned pointer points
+>>   - remove unused parameter from of_overlay_apply()
+>>
+>>  drivers/of/of_private.h |  2 ++
+>>  drivers/of/overlay.c    | 27 +++++++++++++++++----------
+>>  drivers/of/unittest.c   | 13 ++++++++++---
+>>  3 files changed, 29 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+>> index d9e6a324de0a..d717efbd637d 100644
+>> --- a/drivers/of/of_private.h
+>> +++ b/drivers/of/of_private.h
+>> @@ -8,6 +8,8 @@
+>>   * Copyright (C) 1996-2005 Paul Mackerras.
+>>   */
+>>
+>> +#define FDT_ALIGN_SIZE 8
+>> +
+>>  /**
+>>   * struct alias_prop - Alias property in 'aliases' node
+>>   * @link:      List node to link the structure in aliases_lookup list
+>> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+>> index 50bbe0edf538..ecf967c57900 100644
+>> --- a/drivers/of/overlay.c
+>> +++ b/drivers/of/overlay.c
+>> @@ -57,7 +57,7 @@ struct fragment {
+>>   * struct overlay_changeset
+>>   * @id:                        changeset identifier
+>>   * @ovcs_list:         list on which we are located
+>> - * @fdt:               FDT that was unflattened to create @overlay_tree
+>> + * @fdt:               base of memory allocated to hold aligned FDT that was unflattened to create @overlay_tree
+>>   * @overlay_tree:      expanded device tree that contains the fragment nodes
+>>   * @count:             count of fragment structures
+>>   * @fragments:         fragment nodes in the overlay expanded device tree
+>> @@ -719,8 +719,8 @@ static struct device_node *find_target(struct device_node *info_node)
+>>  /**
+>>   * init_overlay_changeset() - initialize overlay changeset from overlay tree
+>>   * @ovcs:      Overlay changeset to build
+>> - * @fdt:       the FDT that was unflattened to create @tree
+>> - * @tree:      Contains all the overlay fragments and overlay fixup nodes
+>> + * @fdt:       base of memory allocated to hold aligned FDT that was unflattened to create @tree
+>> + * @tree:      Contains the overlay fragments and overlay fixup nodes
+>>   *
+>>   * Initialize @ovcs.  Populate @ovcs->fragments with node information from
+>>   * the top level of @tree.  The relevant top level nodes are the fragment
+>> @@ -873,7 +873,7 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>>   * internal documentation
+>>   *
+>>   * of_overlay_apply() - Create and apply an overlay changeset
+>> - * @fdt:       the FDT that was unflattened to create @tree
+>> + * @fdt:       base of memory allocated to hold the aligned FDT
+>>   * @tree:      Expanded overlay device tree
+>>   * @ovcs_id:   Pointer to overlay changeset id
+>>   *
+>> @@ -913,7 +913,7 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>>   */
+>>
+>>  static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>> -               int *ovcs_id)
+>> +                           int *ovcs_id)
+>>  {
+>>         struct overlay_changeset *ovcs;
+>>         int ret = 0, ret_revert, ret_tmp;
+>> @@ -953,7 +953,9 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>>         /*
+>>          * after overlay_notify(), ovcs->overlay_tree related pointers may have
+>>          * leaked to drivers, so can not kfree() tree, aka ovcs->overlay_tree;
+>> -        * and can not free fdt, aka ovcs->fdt
+>> +        * and can not free memory containing aligned fdt.  The aligned fdt
+>> +        * is contained within the memory at ovcs->fdt, possibly at an offset
+>> +        * from ovcs->fdt.
+>>          */
+>>         ret = overlay_notify(ovcs, OF_OVERLAY_PRE_APPLY);
+>>         if (ret) {
+>> @@ -1014,9 +1016,10 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>>  int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>>                          int *ovcs_id)
+>>  {
+>> -       const void *new_fdt;
+>> +       void *new_fdt;
+>> +       void *new_fdt_align;
+>>         int ret;
+>> -       u32 size;
+>> +       u32 size, size_alloc;
+>>         struct device_node *overlay_root;
+>>
+>>         *ovcs_id = 0;
+>> @@ -1036,11 +1039,15 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>>          * Must create permanent copy of FDT because of_fdt_unflatten_tree()
+>>          * will create pointers to the passed in FDT in the unflattened tree.
+>>          */
+>> -       new_fdt = kmemdup(overlay_fdt, size, GFP_KERNEL);
+>> +       size_alloc = size + FDT_ALIGN_SIZE;
+>> +       new_fdt = kmalloc(size_alloc, GFP_KERNEL);
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/xfs/xfs_bmap_util.c |  3 +--
->  fs/xfs/xfs_file.c      |  9 +++----
->  fs/xfs/xfs_iomap.c     | 58 +++++++++++++++++++++++++++++++++++++++++-
->  fs/xfs/xfs_iomap.h     |  4 +++
->  fs/xfs/xfs_iops.c      |  7 +++--
->  fs/xfs/xfs_reflink.c   |  3 +--
->  6 files changed, 69 insertions(+), 15 deletions(-)
+> As size_alloc is only used once, you can just do:
 > 
-> diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-> index e7d68318e6a5..9fcea33dd2c9 100644
-> --- a/fs/xfs/xfs_bmap_util.c
-> +++ b/fs/xfs/xfs_bmap_util.c
-> @@ -954,8 +954,7 @@ xfs_free_file_space(
->  		return 0;
->  	if (offset + len > XFS_ISIZE(ip))
->  		len = XFS_ISIZE(ip) - offset;
-> -	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	error = xfs_iomap_zero_range(VFS_I(ip), offset, len, NULL);
->  	if (error)
->  		return error;
->  
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index a007ca0711d9..5795d5d6f869 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -684,11 +684,8 @@ xfs_file_dax_write(
->  	pos = iocb->ki_pos;
->  
->  	trace_xfs_file_dax_write(iocb, from);
-> -	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-> -	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
-> -		i_size_write(inode, iocb->ki_pos);
-> -		error = xfs_setfilesize(ip, pos, ret);
-> -	}
-> +	ret = dax_iomap_rw(iocb, from, &xfs_dax_write_iomap_ops);
-> +
->  out:
->  	if (iolock)
->  		xfs_iunlock(ip, iolock);
-> @@ -1309,7 +1306,7 @@ __xfs_filemap_fault(
->  
->  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
->  				(write_fault && !vmf->cow_page) ?
-> -				 &xfs_direct_write_iomap_ops :
-> +				 &xfs_dax_write_iomap_ops :
->  				 &xfs_read_iomap_ops);
->  		if (ret & VM_FAULT_NEEDDSYNC)
->  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index e17ab7f42928..f818f989687b 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -760,7 +760,8 @@ xfs_direct_write_iomap_begin(
->  
->  		/* may drop and re-acquire the ilock */
->  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> -				&lockmode, flags & IOMAP_DIRECT);
-> +				&lockmode,
-> +				flags & IOMAP_DIRECT || IS_DAX(inode));
-
-Parentheses, please:
-				(flags & IOMAP_DIRECT) || IS_DAX(inode));
-
->  		if (error)
->  			goto out_unlock;
->  		if (shared)
-> @@ -853,6 +854,38 @@ const struct iomap_ops xfs_direct_write_iomap_ops = {
->  	.iomap_begin		= xfs_direct_write_iomap_begin,
->  };
->  
-> +static int
-> +xfs_dax_write_iomap_end(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	loff_t			length,
-> +	ssize_t			written,
-> +	unsigned int		flags,
-> +	struct iomap		*iomap)
-> +{
-> +	int			error = 0;
-> +	xfs_inode_t		*ip = XFS_I(inode);
-
-Please don't use typedefs:
-
-	struct xfs_inode	*ip = XFS_I(inode);
-
-> +	bool			cow = xfs_is_cow_inode(ip);
-> +
-> +	if (pos + written > i_size_read(inode)) {
-
-What if we wrote zero bytes?  Usually that means error, right?
-
-> +		i_size_write(inode, pos + written);
-> +		error = xfs_setfilesize(ip, pos, written);
-> +		if (error && cow) {
-> +			xfs_reflink_cancel_cow_range(ip, pos, written, true);
-> +			return error;
-> +		}
-> +	}
-> +	if (cow)
-> +		error = xfs_reflink_end_cow(ip, pos, written);
-> +
-> +	return error;
-> +}
-> +
-> +const struct iomap_ops xfs_dax_write_iomap_ops = {
-> +	.iomap_begin		= xfs_direct_write_iomap_begin,
-> +	.iomap_end		= xfs_dax_write_iomap_end,
-> +};
-> +
->  static int
->  xfs_buffered_write_iomap_begin(
->  	struct inode		*inode,
-> @@ -1314,3 +1347,26 @@ xfs_xattr_iomap_begin(
->  const struct iomap_ops xfs_xattr_iomap_ops = {
->  	.iomap_begin		= xfs_xattr_iomap_begin,
->  };
-> +
-> +int
-> +xfs_iomap_zero_range(
-> +	struct inode		*inode,
-
-Might as well pass the xfs_inode pointers directly into these two functions.
-
---D
-
-> +	loff_t			offset,
-> +	loff_t			len,
-> +	bool			*did_zero)
-> +{
-> +	return iomap_zero_range(inode, offset, len, did_zero,
-> +			IS_DAX(inode) ? &xfs_dax_write_iomap_ops :
-> +					&xfs_buffered_write_iomap_ops);
-> +}
-> +
-> +int
-> +xfs_iomap_truncate_page(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	bool			*did_zero)
-> +{
-> +	return iomap_truncate_page(inode, pos, did_zero,
-> +			IS_DAX(inode) ? &xfs_dax_write_iomap_ops :
-> +					&xfs_buffered_write_iomap_ops);
-> +}
-> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-> index 7d3703556d0e..8adb2bf78a5a 100644
-> --- a/fs/xfs/xfs_iomap.h
-> +++ b/fs/xfs/xfs_iomap.h
-> @@ -14,6 +14,9 @@ struct xfs_bmbt_irec;
->  int xfs_iomap_write_direct(struct xfs_inode *ip, xfs_fileoff_t offset_fsb,
->  		xfs_fileoff_t count_fsb, struct xfs_bmbt_irec *imap);
->  int xfs_iomap_write_unwritten(struct xfs_inode *, xfs_off_t, xfs_off_t, bool);
-> +int xfs_iomap_zero_range(struct inode *inode, loff_t offset, loff_t len,
-> +		bool *did_zero);
-> +int xfs_iomap_truncate_page(struct inode *inode, loff_t pos, bool *did_zero);
->  xfs_fileoff_t xfs_iomap_eof_align_last_fsb(struct xfs_inode *ip,
->  		xfs_fileoff_t end_fsb);
->  
-> @@ -42,6 +45,7 @@ xfs_aligned_fsb_count(
->  
->  extern const struct iomap_ops xfs_buffered_write_iomap_ops;
->  extern const struct iomap_ops xfs_direct_write_iomap_ops;
-> +extern const struct iomap_ops xfs_dax_write_iomap_ops;
->  extern const struct iomap_ops xfs_read_iomap_ops;
->  extern const struct iomap_ops xfs_seek_iomap_ops;
->  extern const struct iomap_ops xfs_xattr_iomap_ops;
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 66ebccb5a6ff..db8eeaa8a773 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -879,8 +879,8 @@ xfs_setattr_size(
->  	 */
->  	if (newsize > oldsize) {
->  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
-> -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
-> -				&did_zeroing, &xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_zero_range(inode, oldsize, newsize - oldsize,
-> +				&did_zeroing);
->  	} else {
->  		/*
->  		 * iomap won't detect a dirty page over an unwritten block (or a
-> @@ -892,8 +892,7 @@ xfs_setattr_size(
->  						     newsize);
->  		if (error)
->  			return error;
-> -		error = iomap_truncate_page(inode, newsize, &did_zeroing,
-> -				&xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_truncate_page(inode, newsize, &did_zeroing);
->  	}
->  
->  	if (error)
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 9ef9f98725a2..a4cd6e8a7aa0 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1266,8 +1266,7 @@ xfs_reflink_zero_posteof(
->  		return 0;
->  
->  	trace_xfs_zero_eof(ip, isize, pos - isize);
-> -	return iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	return xfs_iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL);
->  }
->  
->  /*
-> -- 
-> 2.31.0
+> new_fdt = kmalloc(size + FDT_ALIGN_SIZE, GFP_KERNEL);
 > 
+> Same for the unittest. I can fix up.
 > 
+> Applying now so this gets into linux-next this week.
+
+Thanks, that change looks like an improvement to me.
+
 > 
+> Rob
+> 
+
