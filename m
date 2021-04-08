@@ -2,201 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14308357EBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE83A357EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhDHJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:10:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhDHJKy (ORCPT
+        id S230448AbhDHJLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhDHJLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:10:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617873043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RkhdQwgUHvi0PETPC2fnnJ9lJ4y8w2d+cYZRPXBPSOw=;
-        b=V6iB3QoIlYSxuNDzC2SqbCQvlFnFX48rCbI3XF9wIMrqoiWQH/7zLkR2coTIxgqxhAsLQW
-        QdvcfVtr3fvkBU6BRvQUEPyfIqp5/s1NSWESgDtNpV5AEYzRbvbhzcfxdXwouNljC6YGUE
-        TsPZRih+qc0Sh3SaNMahPVMAbCDXJ18=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-ze2KDILwP4arBdB27shEUA-1; Thu, 08 Apr 2021 05:10:41 -0400
-X-MC-Unique: ze2KDILwP4arBdB27shEUA-1
-Received: by mail-ej1-f69.google.com with SMTP id gv58so560524ejc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:10:41 -0700 (PDT)
+        Thu, 8 Apr 2021 05:11:12 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807E3C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:10:56 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id u17so1804795ejk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1cebnpBVTUp19RdwzFmR6GsyPKlfHDikB45ydVihbfs=;
+        b=jvhOcjxhOgsQBBS5Km0GfSfMVbsV6jIYjlZ6C5yGROvR3tO8to08j1y84xEmcnk4MI
+         7Q6MEHoqhNpc03e3cecctIRQLxUj3flh9oPoTZHW9iiEuqD4KZMgm61wgX740iEX+V+Q
+         cdT1Dx86BAe0DoKs47BGfaffGkO7UtGCAWcksJQvgDQud/+5YbiM5AVYiT5SN7KJfJGW
+         brVqQfCTJ1QYHxu/t3ZLfPlxZaB9gZP99g6NMsNTZ81HaU+C/JP44biQMe19tLQAvKR/
+         vW4x3VKnyBUR1TE91zI1N6aXFuldV5gvqlxq2/6qHZ0mM8XeqoulDd4Ojeb3VzWXldLX
+         rQug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RkhdQwgUHvi0PETPC2fnnJ9lJ4y8w2d+cYZRPXBPSOw=;
-        b=niV1wAvgNY1RR1iZ5TZa6JYV4utOAUGGDRuhL4pRyBgMeZjoRegGSgq0j93nU4Wky+
-         km+83LzRwlPmrK/1YMWJER2BdHmlm/cJnJTfcPlJuss0QvohEhXUWy5E9XSVZSNvCreR
-         50yDDx0uMv7QLOwbtpZDUJfqBPcfSJhT/u+mM5VYfOXvhwhLRimTUN47apDNHdIViFmF
-         iPh0ZIzrS7EXwiMRuKDfsd3wNmU6dwwAsFMV59ZDyo5aGrDDQNlQq2ehsRtgZq7iYnNp
-         CFnlPTkGt4PZlvbRMeQkZhXLK1KdCtfTNixBmmVD92I/0AKlAI+2R0ZLk7VYBLypH45c
-         u+Xw==
-X-Gm-Message-State: AOAM5302QpRQsXt5n0DYbjgtkkGoEzUzDftLsXa5gjVdjmpoerzYbZkJ
-        trgYcPpoHCSzYINo8lg469Dq68BYIXWe0Zw9AzP9zf5tTFo1jHtqqw1uPKJ5zq8tbwZLwL5wrS9
-        AJMUqZNZZUs0KYJfNWWozw1IWYLLUQxbY0UhZGFb9IVLUp8y1k3z6N8seLbdviGHPobJC8bmtqI
-        KX
-X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9167361eji.84.1617873039827;
-        Thu, 08 Apr 2021 02:10:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRihNaVCbYKVJyY0EjQkNhqVl4UyfOoyDnKt13PCSviz0rnl5QOerXDAplktnSaZz3b+7QXg==
-X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9167338eji.84.1617873039599;
-        Thu, 08 Apr 2021 02:10:39 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id bf14sm8473713edb.67.2021.04.08.02.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 02:10:39 -0700 (PDT)
-Subject: Re: [PATCH 1/1] usb: typec: tcpm: remove unused static variable
- 'tcpm_altmode_ops'
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210407091540.2815-1-thunder.leizhen@huawei.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7e2797f7-0ba7-0362-ae34-a1d4fb265cd7@redhat.com>
-Date:   Thu, 8 Apr 2021 11:10:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1cebnpBVTUp19RdwzFmR6GsyPKlfHDikB45ydVihbfs=;
+        b=iXXsJofde7xQ6Bm6JSPUdoeRLxVHVb3sqfPRYJyFnJKdXlgDTpyApk1pwGYMdRD+xn
+         Q+aTFbFTYDcqWb/ZKaTjY2vIzwbQ82x4/PIi6TXxbK7Q2Ks7J+o3KXECO8J7D4gy+l2U
+         AQTDf2dhKSrQVM+n4+LLTSx7132uE0KbE/xIfFngU0Qz8Fb9I8ZT9DpTZmTuTDEjav18
+         UEftZG+sbZ6AWvAJNV1rRvUkR27rD4Jy21zoDzknO5hizVsDbB2zYgFvqs9rywUkhyjZ
+         KcVBrDa6E3kitjdaIcLLy+gY51zQ3zwlnyB8wI9LccTAhMwoDO9EPXIqB+vI17q9jJaG
+         fMHg==
+X-Gm-Message-State: AOAM533BdHR58FsMZMjrW0u1zxRSugxSjk3WYJ9gaQg/yNSnhsVlpTbR
+        zIRY8TdfLBtmqIOcRh85Hl8=
+X-Google-Smtp-Source: ABdhPJwHqQHnKNFTgZV41DrGxvAlj6PDZXkDg4PDdv9LE+rxVn5DqEFzTynEkSBUo7kEgwOZS0t9PQ==
+X-Received: by 2002:a17:906:688e:: with SMTP id n14mr9011306ejr.439.1617873055302;
+        Thu, 08 Apr 2021 02:10:55 -0700 (PDT)
+Received: from localhost.localdomain (host-79-42-91-147.retail.telecomitalia.it. [79.42.91.147])
+        by smtp.gmail.com with ESMTPSA id o17sm5644526ejm.13.2021.04.08.02.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 02:10:54 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Remove camelcase in several files
+Date:   Thu, 08 Apr 2021 11:10:53 +0200
+Message-ID: <8385147.KfrnKTb6Rc@localhost.localdomain>
+In-Reply-To: <alpine.DEB.2.22.394.2104081053200.5197@hadrien>
+References: <20210408080714.29481-1-fmdefrancesco@gmail.com> <2284292.R3b5UFg5HO@localhost.localdomain> <alpine.DEB.2.22.394.2104081053200.5197@hadrien>
 MIME-Version: 1.0
-In-Reply-To: <20210407091540.2815-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="US-ASCII"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/7/21 11:15 AM, Zhen Lei wrote:
-> Fixes the following W=1 kernel build warning:
+On Thursday, April 8, 2021 10:54:09 AM CEST Julia Lawall wrote:
+> On Thu, 8 Apr 2021, Fabio M. De Francesco wrote:
+> > On Thursday, April 8, 2021 10:36:32 AM CEST Greg KH wrote:
+> > > On Thu, Apr 08, 2021 at 10:07:14AM +0200, Fabio M. De Francesco 
+wrote:
+> > > > Remove camelcase in a symbol that is used by several files.
+> > > 
+> > > What symbol?
+> > 
+> > I'm not sure I understand what you are asking. You mean
+> > that I have to specify the name of the variable that I changed?
+> > Or you mean that I shouldn't use the term "symbol" but write
+> > "variable", "function", "macro", and so on?
 > 
-> drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> He wants the name of the symbol.  Each changed line includes lots of
+> symbols, so it is a significant effort to scan the patch to see what
+> symbol is being changed.
 > 
-> The reference to the variable 'tcpm_altmode_ops' is deleted by the
-> commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration
-> mechanism").
+> julia
 > 
-> By the way, the static functions referenced only by the variable
-> 'tcpm_altmode_ops' are deleted accordingly.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-I have a patch pending:
+Thank you for clarifying this topic,
 
-https://www.spinics.net/lists/linux-usb/msg197684.html
+Fabio
 
-Which actually uses this. I really need to (and plan to) brush the dust of
-this one soon and submit a new version.
+> > > > --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > > > +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > > > @@ -203,7 +203,7 @@ struct pwrctrl_priv {
+> > > > 
+> > > >  	u8 LpsIdleCount;
+> > > >  	u8 power_mgnt;
+> > > >  	u8 org_power_mgnt;
+> > > > 
+> > > > -	u8 bFwCurrentInPSMode;
+> > > > +	u8 b_fw_current_in_ps_mode;
+> > > 
+> > > The "b" here means "byte" so you can drop the "b_" as that means
+> > > nothing, we do not use this type of notation in the kernel as the
+> > > compiler can check it for us.
+> > 
+> > OK, I didn't know what the 'b' meant in this context. I'll drop it.
+> > 
+> > Thanks,
+> > 
+> > Fabio
+> > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > --
+> > You received this message because you are subscribed to the Google
+> > Groups "outreachy-kernel" group. To unsubscribe from this group and
+> > stop receiving emails from it, send an email to
+> > outreachy-kernel+unsubscribe@googlegroups.com. To view this discussion
+> > on the web visit
+> > https://groups.google.com/d/msgid/outreachy-kernel/2284292.R3b5UFg5HO%
+> > 40localhost.localdomain.
 
-As such I would prefer for these ops to not get removed. But I guess I
-can always include a patch in my series reverting the removal...
-
-Regards,
-
-Hans
 
 
-
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 60 -------------------------------------------
->  1 file changed, 60 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index ce7af398c7c1c1f..2f89bae29c0c297 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1365,14 +1365,6 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->  	mod_vdm_delayed_work(port, 0);
->  }
->  
-> -static void tcpm_queue_vdm_unlocked(struct tcpm_port *port, const u32 header,
-> -				    const u32 *data, int cnt)
-> -{
-> -	mutex_lock(&port->lock);
-> -	tcpm_queue_vdm(port, header, data, cnt);
-> -	mutex_unlock(&port->lock);
-> -}
-> -
->  static void svdm_consume_identity(struct tcpm_port *port, const u32 *p, int cnt)
->  {
->  	u32 vdo = p[VDO_INDEX_IDH];
-> @@ -1705,8 +1697,6 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->  	 *
->  	 * And we also have this ordering:
->  	 * 1. alt-mode driver takes the alt-mode's lock
-> -	 * 2. alt-mode driver calls tcpm_altmode_enter which takes the
-> -	 *    tcpm port lock
->  	 *
->  	 * Dropping our lock here avoids this.
->  	 */
-> @@ -2060,56 +2050,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
->  	return 0;
->  }
->  
-> -static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -	int svdm_version;
-> -	u32 header;
-> -
-> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
-> -	if (svdm_version < 0)
-> -		return svdm_version;
-> -
-> -	header = VDO(altmode->svid, vdo ? 2 : 1, svdm_version, CMD_ENTER_MODE);
-> -	header |= VDO_OPOS(altmode->mode);
-> -
-> -	tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
-> -	return 0;
-> -}
-> -
-> -static int tcpm_altmode_exit(struct typec_altmode *altmode)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -	int svdm_version;
-> -	u32 header;
-> -
-> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
-> -	if (svdm_version < 0)
-> -		return svdm_version;
-> -
-> -	header = VDO(altmode->svid, 1, svdm_version, CMD_EXIT_MODE);
-> -	header |= VDO_OPOS(altmode->mode);
-> -
-> -	tcpm_queue_vdm_unlocked(port, header, NULL, 0);
-> -	return 0;
-> -}
-> -
-> -static int tcpm_altmode_vdm(struct typec_altmode *altmode,
-> -			    u32 header, const u32 *data, int count)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -
-> -	tcpm_queue_vdm_unlocked(port, header, data, count - 1);
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct typec_altmode_ops tcpm_altmode_ops = {
-> -	.enter = tcpm_altmode_enter,
-> -	.exit = tcpm_altmode_exit,
-> -	.vdm = tcpm_altmode_vdm,
-> -};
-> -
->  /*
->   * PD (data, control) command handling functions
->   */
-> 
 
