@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34F9358939
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C82A35893D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhDHQFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhDHQFg (ORCPT
+        id S232195AbhDHQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:05:57 -0400
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:44000 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhDHQFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:05:36 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3626CC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:05:25 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id i4so1396878pjk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tMpvuw4Dh1XLxT2uBdDI6pLUzC3nDjV8ZP4ZU+oHty0=;
-        b=psxEOtbqErsbiYdmdyyqxvSUlj08ZH3OMBVs8rhyASQ7AZzbbAtbkeLl9b7UZtY+Ah
-         ZWUw7063Eg9YW+MJfHfOGqbrWqixOlkkD2E24K756JRYVOH8N6rywbYECmiqzXufBAdQ
-         EUjPZlPmtIPvAjV3mIcW5H3hjvBXlONmgjIWaodyPs+ZovRIMc9jPbSZwWouWdfkrx1A
-         lXYj8jaGkGfMX7EBNobmMTCgRW6VxPj9gAo/7XXxN05iJauutjgm85iU/vWYUKn2TUGL
-         VfwzNs8t/WBBTn0t5u0kbhIXKnfc5dP93zvslSIh9I5Osbr0OxYtUiQwldANslXDz317
-         itIg==
+        Thu, 8 Apr 2021 12:05:55 -0400
+Received: by mail-oo1-f53.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so621861ooa.10;
+        Thu, 08 Apr 2021 09:05:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tMpvuw4Dh1XLxT2uBdDI6pLUzC3nDjV8ZP4ZU+oHty0=;
-        b=M70L5L7CzFKpG+G++9FPe7XhO8/qKPH4AQ2406f/S531u/uCkoQmkXyIABcv/kPnNe
-         ANiRiqYcGrKcx5b5O9XgbXM1XhDGAAyzWlEkGhno+TG7rTPviQduyD+MO5BJPVAv4JwU
-         eJ7QthSg4965xYfxv6mUwgTsBDlD4PmX5zu62Q2lQvwgfXkW/IVl538S1Mcca4V3GNW3
-         qpEfQpjmqXGXt3CJrooC+KGI9V0fPzJ+JMaspZhQbBvohtZ4XwPcc1o9EVUp2OM+C/Zz
-         uw5a+0apBb/Ql8eKBhm+0JVY7KSd1oLstSLTJpHkBrqEGWE2yqPk8NFDCX2CYhOsSbb5
-         bZ5A==
-X-Gm-Message-State: AOAM530DQVmjqwNYrI+9ShjzohgO04e7OQDW0nlrLGvA+f1LxzsaTtAt
-        FjYYjzbcKTGqruDFHw1GdDpPTQ==
-X-Google-Smtp-Source: ABdhPJwIlEU51j1XgwiAhmy2QSaGgS/XhMa9JJ03cZQJngGCYpl4RB1baYPrEthuG1pe4SgqQz8fuQ==
-X-Received: by 2002:a17:90a:e60c:: with SMTP id j12mr9386207pjy.13.1617897924535;
-        Thu, 08 Apr 2021 09:05:24 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 6sm25374609pfv.179.2021.04.08.09.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 09:05:23 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 16:05:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     lihaiwei.kernel@gmail.com
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: Re: [PATCH] KVM: vmx: add mismatched size in vmcs_check32
-Message-ID: <YG8pwERmjxYQoquP@google.com>
-References: <20210408075436.13829-1-lihaiwei.kernel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=89GBzc2bbepFcIw25Q1AatCj5mIj6s7KJYpVy/c3qPA=;
+        b=P0t8He/1VAEjZ7GKaTsvjk/ibBrjeSyB1+JRlXczLxC3pLPfeSdH90fsqsugwyFk09
+         lKr2Dj6WyOim0F7CVlSLfraAwKjUi9+u6+RAu+7TTBA0NGAOU0B4Nk8WjwKoNyYbA4+M
+         1nm44J6lSFfkYILeSKdUK5YM+wGPmfFA04/76QBY8MQZaY9DnlsagVKxJxlzlOYut0o1
+         d4fKjHqRrdFh44zQiR8iMjiIEVf87ExPcllkqm5qd8xFMHbXU+VmVcMCZik+SifkDLMi
+         q0njsoEc2j1Tb79nW0UQlmqbk/bBq/W3M4NEeSRi3lQuK6xg2KPieIZJ6IXihy5rMF55
+         9YeA==
+X-Gm-Message-State: AOAM531I8Zqa8n8k3dLoVW/klZv6g72QU36fxwrTkT0HY4glPrxaSxaQ
+        /XDC/0xMwJGVjy1Z7on4cxLbychzpO46HnqpDzY=
+X-Google-Smtp-Source: ABdhPJzEV++CuhlA2YB8TcryrXXxfR5W+L9v5/DP3P/8iIkl8mXys5IFjX8yHkHEpgm9HpOWMh5BKf7s03p90uLLd18=
+X-Received: by 2002:a4a:d781:: with SMTP id c1mr8131686oou.44.1617897944147;
+ Thu, 08 Apr 2021 09:05:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408075436.13829-1-lihaiwei.kernel@gmail.com>
+References: <20210408131506.17941-1-crecklin@redhat.com> <CAJZ5v0ib+jmbsD9taGW0RujY5c9BCK8yLHv065u44mb0AwO9vQ@mail.gmail.com>
+ <YG8gqZoZGutPmROz@sol.localdomain>
+In-Reply-To: <YG8gqZoZGutPmROz@sol.localdomain>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Apr 2021 18:05:33 +0200
+Message-ID: <CAJZ5v0g65irXKmy7pdgD8-5KWrxdtwiWbJsBD2A=PKf1D3RVZg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Chris von Recklinghausen <crecklin@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Simo Sorce <simo@redhat.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021, lihaiwei.kernel@gmail.com wrote:
-> From: Haiwei Li <lihaiwei@tencent.com>
-> 
-> vmcs_check32 misses the check for 64-bit and 64-bit high.
+On Thu, Apr 8, 2021 at 5:26 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Thu, Apr 08, 2021 at 03:32:38PM +0200, Rafael J. Wysocki wrote:
+> > On Thu, Apr 8, 2021 at 3:15 PM Chris von Recklinghausen
+> > <crecklin@redhat.com> wrote:
+> > >
+> > > Suspend fails on a system in fips mode because md5 is used for the e820
+> > > integrity check and is not available. Use crc32 instead.
+> > >
+> > > This patch changes the integrity check algorithm from md5 to
+> > > crc32. This integrity check is used only to verify accidental
+> > > corruption of the hybernation data
+> >
+> > It isn't used for that.
+> >
+> > In fact, it is used to detect differences between the memory map used
+> > before hibernation and the one made available by the BIOS during the
+> > subsequent resume.  And the check is there, because it is generally
+> > unsafe to load the hibernation image into memory if the current memory
+> > map doesn't match the one used when the image was created.
+>
+> So what types of "differences" are you trying to detect?  If you need to detect
+> differences caused by someone who maliciously made changes ("malicious" implies
+> they may try to avoid detection), then you need to use a cryptographic hash
+> function (or a cryptographic MAC if the hash value isn't stored separately).  If
+> you only need to detect non-malicious changes (normally these would be called
+> "accidental" changes, but sure, it could be changes that are "intentionally"
+> made provided that the other side can be trusted to not try to avoid
+> detection...)
 
-Can you clarify in the changelog that, while it is architecturally legal to
-access 64-bit and 64-bit high fields with a 32-bit read/write in 32-bit mode,
-KVM should never do partial accesses to VMCS fields.  And/or note that the
-32-bit accesses are done in vmcs_{read,write}64() when necessary?  Hmm, maybe:
+That's the case here.
 
-  Add compile-time assertions in vmcs_check32() to disallow accesses to
-  64-bit and 64-bit high fields via vmcs_{read,write}32().  Upper level
-  KVM code should never do partial accesses to VMCS fields.  KVM handles
-  the split accesses automatically in vmcs_{read,write}64() when running
-  as a 32-bit kernel.
-
-With something along those lines:
-
-Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com> 
-
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-> ---
->  arch/x86/kvm/vmx/vmx_ops.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-> index 692b0c3..164b64f 100644
-> --- a/arch/x86/kvm/vmx/vmx_ops.h
-> +++ b/arch/x86/kvm/vmx/vmx_ops.h
-> @@ -37,6 +37,10 @@ static __always_inline void vmcs_check32(unsigned long field)
->  {
->  	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0,
->  			 "32-bit accessor invalid for 16-bit field");
-> +	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2000,
-> +			 "32-bit accessor invalid for 64-bit field");
-> +	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2001,
-> +			 "32-bit accessor invalid for 64-bit high field");
->  	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0x6000,
->  			 "32-bit accessor invalid for natural width field");
->  }
-> -- 
-> 1.8.3.1
-> 
+> then a non-cryptographic checksum would be sufficient.
