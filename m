@@ -2,182 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE384358FA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C939358FA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbhDHWLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232265AbhDHWLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:11:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C668361107;
-        Thu,  8 Apr 2021 22:11:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617919893;
-        bh=JHtxDsKdHaTfSByGIt0LBvw1nnygzJIyZWR4wvxXFYU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aDiatDdZBUiYkGFU31JmrQVsKVFW+mN8umpeZ/t6bTNxSRnI5VgIPtNZ0MqMtEDqS
-         vilyR6P1dNLbbfLdTouNeKeSrC2k04mpG8ByCKDq/o+Ygtyj/AKYpYSD6Fbnz5oe7y
-         pkn3Xw+QZS8m0zNkxyRlaIeSJa5zWPvsxTYUxeExxOugb3cD79zY4yodH+5lpUWA56
-         s+G4R/UyRUko2Lw4YPpOwRyprb3A5jk4wbKXMlSAQ+dtkvuCalCzujDGYGQUy0I+DF
-         S2h8jZiMahtkDhjLIK7CDFpWe7FLBYBDXAItu5WnWcA93WgFhkFAr6NpuD/ZebOjsA
-         kNL51WVseojZQ==
-Date:   Thu, 8 Apr 2021 15:11:31 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de, Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v4 2/7] fsdax: Replace mmap entry in case of CoW
-Message-ID: <20210408221131.GZ3957620@magnolia>
-References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
+        id S232781AbhDHWLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhDHWLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:11:51 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02638C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 15:11:40 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id w10so2378740pgh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 15:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=C80Mo1mdqkfUGzCOjeM9jPvl7FbavRoAbteSG3nDKMU=;
+        b=rS/7l9KUqbfhS64Mq/5Qz9Jhdr8BRjcDNm+1amDclct1i2KnmhNjXcUh8aN7mX3u8M
+         wjfDVLZQqCuiCNFc5c0Slf7gUKqlgjMtaQU3Zc0spp+8aA32iBOdj/OV+4FQACsikJMZ
+         mUHw0I00Nd/k1Lqjq3q9aMcyAqqKI4ZiDzC5+oOMB4dldqPf5Y3o6B67YN730ibF5acE
+         jQDA4JoXl3Wrh9hr7OHCEPasvgjIzS8B3A/p4BJ4co47vaLcZsNq5Mwr/bQn4Dspy3o9
+         tQ2za3fY6QjFRWrwq5KXcPQ33yJ5CvelYARobVFQHZdU7Izyu6wpWi2rJyohVr1ASYrB
+         sttg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=C80Mo1mdqkfUGzCOjeM9jPvl7FbavRoAbteSG3nDKMU=;
+        b=FlGlUYFNC6vjqw7aSFXPmtC7HgarR9s5u/d1jGyfJ4IenfCzfx4K00v0ALm3yNqMt5
+         irHLV9aYlpu6/CqlorxcnOZouEv4tVnITslGWpzSDxaT5Zce5r7bKqAko/q5lpL8XMiF
+         nwHHtXtxFSy32/AcozHvSwszY4OBMB74CTUdBY33buJrjuBob6hUgvle7M1k04gqX497
+         eml3Q1JwRyhZhZdoCpRjbjeYzLSEKoQ+pZqtvy59Diy3GhSxAT/AfLH/YWOQlZ5V3jCW
+         wrOq7mSOMgXrkk1aCic5om2zv133FbhzLMKJiPsysBXFlh376gNE0TlEgSjwNmMQqdrZ
+         GR9A==
+X-Gm-Message-State: AOAM532PtShf+5mxvnlMQ7tIszF5ivw27X/qegS/BnwLQplGPUwcfbzb
+        uCDVN8MZuShtefJbzIxa6WsaTw==
+X-Google-Smtp-Source: ABdhPJwAa3SieigGGLEnrtdfc36+sjUyYL+38gcWbf35dtujOWs9Zg3K7/9GvsbAxjWqreysl0P0hQ==
+X-Received: by 2002:a63:da0a:: with SMTP id c10mr10029888pgh.255.1617919899485;
+        Thu, 08 Apr 2021 15:11:39 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id w17sm368136pfu.29.2021.04.08.15.11.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Apr 2021 15:11:38 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <F46B045A-D207-409A-ACD0-956851B46D6D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: add a configurable parameter to prevent endless
+ loop in ext4_mb_discard_group_p
+Date:   Thu, 8 Apr 2021 16:11:35 -0600
+In-Reply-To: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
+Cc:     riteshh@linux.ibm.com, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        jack@suse.cz, linux-kernel@vger.kernel.org,
+        baoyou.xie@alibaba-inc.com
+To:     Wen Yang <wenyang@linux.alibaba.com>
+References: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:04:27PM +0800, Shiyang Ruan wrote:
-> We replace the existing entry to the newly allocated one in case of CoW.
-> Also, we mark the entry as PAGECACHE_TAG_TOWRITE so writeback marks this
-> entry as writeprotected.  This helps us snapshots so new write
-> pagefaults after snapshots trigger a CoW.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/dax.c | 39 ++++++++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index b4fd3813457a..e6c1354b27a8 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -722,6 +722,10 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->  	return 0;
+
+--Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Apr 8, 2021, at 12:50 PM, Wen Yang <wenyang@linux.alibaba.com> wrote:
+>=20
+> Hi Ritesh and Andreas,
+>=20
+> Thank you for your reply. Since there is still a faulty machine, we =
+have analyzed it again and found it is indeed a very special case:
+>=20
+>=20
+> crash> struct ext4_group_info ffff8813bb5f72d0
+> struct ext4_group_info {
+>  bb_state =3D 0,
+>  bb_free_root =3D {
+>    rb_node =3D 0x0
+>  },
+>  bb_first_free =3D 1681,
+>  bb_free =3D 0,
+>  bb_fragments =3D 0,
+>  bb_largest_free_order =3D -1,
+>  bb_prealloc_list =3D {
+>    next =3D 0xffff880268291d78,
+>    prev =3D 0xffff880268291d78     ---> *** The list is empty
+>  },
+>  alloc_sem =3D {
+>    count =3D {
+>      counter =3D 0
+>    },
+>    wait_list =3D {
+>      next =3D 0xffff8813bb5f7308,
+>      prev =3D 0xffff8813bb5f7308
+>    },
+>    wait_lock =3D {
+>      raw_lock =3D {
+>        {
+>          val =3D {
+>            counter =3D 0
+>          },
+>          {
+>            locked =3D 0 '\000',
+>            pending =3D 0 '\000'
+>          },
+>          {
+>            locked_pending =3D 0,
+>            tail =3D 0
+>          }
+>        }
+>      }
+>    },
+>    osq =3D {
+>      tail =3D {
+>        counter =3D 0
+>      }
+>    },
+>    owner =3D 0x0
+>  },
+>  bb_counters =3D 0xffff8813bb5f7328
+> }
+> crash>
+>=20
+>=20
+> crash> list 0xffff880268291d78  -l ext4_prealloc_space.pa_group_list =
+-s ext4_prealloc_space.pa_count
+> ffff880268291d78
+>  pa_count =3D {
+>    counter =3D 1      ---> ****pa->pa_count
 >  }
->  
-> +/* DAX Insert Flag for the entry we insert */
-
-Might be worth mentioning that these are xarray marks for the inserted
-entry, since this comment didn't help much.
-
-> +#define DAX_IF_DIRTY		(1 << 0)
-> +#define DAX_IF_COW		(1 << 1)
-> +
->  /*
->   * By this point grab_mapping_entry() has ensured that we have a locked entry
->   * of the appropriate size so we don't have to worry about downgrading PMDs to
-> @@ -729,16 +733,19 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->   * already in the tree, we will skip the insertion and just dirty the PMD as
->   * appropriate.
->   */
-> -static void *dax_insert_entry(struct xa_state *xas,
-> -		struct address_space *mapping, struct vm_fault *vmf,
-> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
-> +static void *dax_insert_entry(struct xa_state *xas, struct vm_fault *vmf,
-> +		void *entry, pfn_t pfn, unsigned long flags,
-> +		unsigned int insert_flags)
-
-Urk, two flags arguments.  Oh, I see.  We insert (shifted) pfn_t values
-into the mapping as xarray values, so @flags determines the state flags
-of the new entry value, whereas @insert_flags determines what xarray
-mark we're going to attach (if any) to the inserted value.
-
---D
-
->  {
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->  	void *new_entry = dax_make_entry(pfn, flags);
-> +	bool dirty = insert_flags & DAX_IF_DIRTY;
-> +	bool cow = insert_flags & DAX_IF_COW;
->  
->  	if (dirty)
->  		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->  
-> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
-> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
->  		unsigned long index = xas->xa_index;
->  		/* we are replacing a zero page with block mapping */
->  		if (dax_is_pmd_entry(entry))
-> @@ -750,7 +757,7 @@ static void *dax_insert_entry(struct xa_state *xas,
->  
->  	xas_reset(xas);
->  	xas_lock_irq(xas);
-> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
-> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
->  		void *old;
->  
->  		dax_disassociate_entry(entry, mapping, false);
-> @@ -774,6 +781,9 @@ static void *dax_insert_entry(struct xa_state *xas,
->  	if (dirty)
->  		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
->  
-> +	if (cow)
-> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
-> +
->  	xas_unlock_irq(xas);
->  	return entry;
+> ffff8813bb5f72f0
+>  pa_count =3D {
+>    counter =3D -30701
 >  }
-> @@ -1109,8 +1119,7 @@ static vm_fault_t dax_load_hole(struct xa_state *xas,
->  	pfn_t pfn = pfn_to_pfn_t(my_zero_pfn(vaddr));
->  	vm_fault_t ret;
->  
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, DAX_ZERO_PAGE, 0);
->  
->  	ret = vmf_insert_mixed(vmf->vma, vaddr, pfn);
->  	trace_dax_load_hole(inode, vmf, ret);
-> @@ -1137,8 +1146,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  		goto fallback;
->  
->  	pfn = page_to_pfn_t(zero_page);
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_PMD | DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn,
-> +				  DAX_PMD | DAX_ZERO_PAGE, 0);
->  
->  	if (arch_needs_pgtable_deposit()) {
->  		pgtable = pte_alloc_one(vma->vm_mm);
-> @@ -1444,6 +1453,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	bool write = vmf->flags & FAULT_FLAG_WRITE;
->  	bool sync = dax_fault_is_synchronous(flags, vmf->vma, iomap);
->  	unsigned long entry_flags = pmd ? DAX_PMD : 0;
-> +	unsigned int insert_flags = 0;
->  	int err = 0;
->  	pfn_t pfn;
->  	void *kaddr;
-> @@ -1466,8 +1476,15 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	if (err)
->  		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
->  
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn, entry_flags,
-> -				  write && !sync);
-> +	if (write) {
-> +		if (!sync)
-> +			insert_flags |= DAX_IF_DIRTY;
-> +		if (iomap->flags & IOMAP_F_SHARED)
-> +			insert_flags |= DAX_IF_COW;
-> +	}
-> +
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, entry_flags,
-> +				  insert_flags);
->  
->  	if (write &&
->  	    srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
-> -- 
-> 2.31.0
-> 
-> 
-> 
+>=20
+>=20
+> crash> struct -xo  ext4_prealloc_space
+> struct ext4_prealloc_space {
+>   [0x0] struct list_head pa_inode_list;
+>  [0x10] struct list_head pa_group_list;
+>         union {
+>             struct list_head pa_tmp_list;
+>             struct callback_head pa_rcu;
+>  [0x20] } u;
+>  [0x30] spinlock_t pa_lock;
+>  [0x34] atomic_t pa_count;
+>  [0x38] unsigned int pa_deleted;
+>  [0x40] ext4_fsblk_t pa_pstart;
+>  [0x48] ext4_lblk_t pa_lstart;
+>  [0x4c] ext4_grpblk_t pa_len;
+>  [0x50] ext4_grpblk_t pa_free;
+>  [0x54] unsigned short pa_type;
+>  [0x58] spinlock_t *pa_obj_lock;
+>  [0x60] struct inode *pa_inode;
+> }
+> SIZE: 0x68
+>=20
+>=20
+> Before "goto repeat", it is necessary to check whether =
+grp->bb_prealloc_list is empty.  This patch may fix it.
+> Please kindly give us your comments and suggestions.
+> Thanks.
+
+This patch definitely looks more reasonable than the previous one, but
+I don't think it is correct?
+
+It isn't clear how the system could get into this state, or stay there.
+
+If bb_prealloc_list is empty, then "busy" should be 0, since busy =3D 1
+is only set inside "list_for_each_entry_safe(bb_prealloc_list)", and
+that implies the list is *not* empty?  The ext4_lock_group() is held
+over this code, so the list should not be changing in this case, and
+even if the list changed, it _should_ only affect the loop one time.
+
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 99bf091..8082e2d 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4290,7 +4290,7 @@ static void ext4_mb_new_preallocation(struct =
+ext4_allocation_context *ac)
+>        free_total +=3D free;
+>=20
+>        /* if we still need more blocks and some PAs were used, try =
+again */
+> -       if (free_total < needed && busy) {
+> +       if (free_total < needed && busy && =
+!list_empty(&grp->bb_prealloc_list)) {
+>                ext4_unlock_group(sb, group);
+>                cond_resched();
+>                busy =3D 0;
+>                goto repeat;
+
+Minor suggestion - moving "busy =3D 0" right after "repeat:" and =
+removing
+the "int busy =3D 0" initializer would make this code a bit more clear.
+
+Cheers, Andreas
+
+
+
+
+--Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBvf5cACgkQcqXauRfM
+H+CJaRAAsJW5zFKob3DjTlJ4M08Edj43NqNjQANTCX2ftnwWuPYLKyssYkM98pSJ
+yMWR+Hy34sOUBnB5gk2TCAsyQm0QE5yz/7AY/yA0ddctd01Q07X1/qmzL+p7O/sQ
+TO0dUl4ogApeOnJ+bYi1HkqX7akYaX4AnQ609t5NzmjsHobMdptBk2GTB3M9NKex
+Lpho0po1tPful85luF9wg2JFVNduFrYngktU4UL24KSzavwb7C02+eXXh716UGCZ
+7oqtBaknmMO7lJWwmYJH+/XAVoU6+jPtYdV/YvEDcSUStx1MpA1TNS9jQ4c6tskc
+n+uiiG7kjE8OIdL6Rt7uLcxY9jVYNPCAsTFU5hg/CeYS5X6PoKDHSea9tabOxvJV
+ssbz1nKXSVhSF5eceMvsygewQHzpKiHwnAdWN/Pj8i6K3WjwUHlWNOcnS8roQo53
+UDpn3ZJ3xLuB1afxZCCYZVqOYKY5nC4dm63dGnKilpFeBD7zN4YaYUg0nrKZzlQS
+C8njKgq6iZhHb8e1mYWSdx/SoCn0kndENDS0UkWGySGiaepzIEWNfNJQfD7XQpXV
+s7/rluDQMVLBJjQd5soLy16lgDNxfhae0HMq6mvN/Tqp4RrGQ3GAwD+su0lqoH92
+nTA/IXlTaKvm4r30KSWS4FHj0nMZMND62oknIvywHdpsph7AIoY=
+=eiw9
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8--
