@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1079357E20
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BC5357E24
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhDHIda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        id S230099AbhDHIdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhDHId3 (ORCPT
+        with ESMTP id S229741AbhDHIdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:33:29 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4ABC061760;
-        Thu,  8 Apr 2021 01:33:16 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id w3so1617679ejc.4;
-        Thu, 08 Apr 2021 01:33:16 -0700 (PDT)
+        Thu, 8 Apr 2021 04:33:45 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4CDC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:33:32 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id u21so1570625ejo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 01:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Exo3uKERlOorL8sYR7oV52Cn5+SfGTGaWwxNlmktpDQ=;
-        b=VhpWVORxuid4K2b27HoDl2AYyP69gLKfqeNvy19T7oyNBS0eLlKVj1HTdtekZCvjGM
-         dCYX+7+7jy/QXBf2u+EDQli+MC2A6TRt26EKjtJWzudSucQ9kt77PgcGtJESRzabL+0p
-         MA1p0T2+l0pwVaeVrllSeWnBkorqTxSgRlIUFkkvzyOM3W6rcKTa/qlW7zUCx1nn6jXB
-         cqYqHae4nsnlcJqkvdm92QUOSm/fnVwvqVC3GW7qKgf6n/HZO5CpcOzQ9UzvTO2OinRa
-         Vg1RdBvD+nznzH0x8qYaPr0kvVFQgGJSYRLPDRvyOnf6NDyGm8I02w7LWWSMqFD/4lr0
-         SdUA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5yCCjiWkAwqATqPSjIjQNyLbmG/huiKlevGSmwkEyR8=;
+        b=IILPK87co6cRB30SBUD84s8jNEWHphYGfXu/trBxCn+HYZUD6LJxbIvbuvoFnHEIkJ
+         8pT9+YwIxsWGPJRTvxmuhYnpdDMWE7ehCgXLZT0USf+os5lIdDr2/icw83jnnqMaPnDJ
+         xXGMlpCnW+2Bu77aPYpaluIWMrDqKvl0b4qJ+jfLyt0aqMRftlIA69uuWYb5OSO+DKwb
+         4bGlRcnt0chwis+3AaomfayoRZ6xkjTia6ZhRGhXeGDRVC2/knn8LJ4eYbjKQEIthRZr
+         ela4zkCP9xWbLI0gWkQc5AW86VMw5RLYQeftE2A7cyrwz4VxXYWsVzKjDOPL7iBUiTGz
+         7W1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Exo3uKERlOorL8sYR7oV52Cn5+SfGTGaWwxNlmktpDQ=;
-        b=Q0GWDaE0UhRFTTk52KAMHcigLH/XF3b6XUVtPGoYBFuAMxwnTIKYbpagS1E+Q5U4j4
-         ltrxdz7Ai0sZfuVczXeD5Ip/oXzASEw1+paYWtDYrP71YPsmClHHNBGC64o9WwgapsIP
-         27zpZWpUJu6DOcQ8Cs+/urbQOqT+Q+TSacLRICxHZw8MOilma6FNPkxlZnCTtPWA2dRs
-         K55yQEYG4bXYgJ/VmfZPfBM+v5KNpLSn+mNbLTqj63FZ739gjI6eIDb8kVYyZmTO0hPk
-         iXQw6UmEw3yOgIHXSuUSs2AOD+Np5BYW4/iEZK7Mz+Y/tCdkDKbS75aNLWgc+ceDPHuG
-         lSvg==
-X-Gm-Message-State: AOAM532zo4k1YQj+us0n6wqmMzwlff5qO+7yX06uV/gj8lOwgQvvW1Wb
-        I7m3uQJsxKlrSZ9+u2LYj3Q=
-X-Google-Smtp-Source: ABdhPJwR95/4pR3u/U+9Z5ks/A7/FkmTTdsgUE0MbZDz3MHwSAkNlKNcvoE0ArY+CCCyDTeU8owpyQ==
-X-Received: by 2002:a17:906:27c9:: with SMTP id k9mr8563485ejc.26.1617870795620;
-        Thu, 08 Apr 2021 01:33:15 -0700 (PDT)
-Received: from test-VirtualBox ([87.116.165.76])
-        by smtp.gmail.com with ESMTPSA id t15sm155883ejd.7.2021.04.08.01.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 01:33:15 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 10:33:12 +0200
-From:   Sergei Krainov <sergei.krainov.lkd@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] staging: rtl8712: remove unused variable from rtl871x_mlme.c
-Message-ID: <20210408083312.GA3118@test-VirtualBox>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5yCCjiWkAwqATqPSjIjQNyLbmG/huiKlevGSmwkEyR8=;
+        b=S1cwc34gMD8S+A88Q48LU9VVHxp5o/UofU0NCLx/Wx7qfggVkgu7BvgLUeZUwd+jP+
+         w/bfB7KOnbloVg8v0O0B3gH831e5YjaRtpEUWbIkjZpqWiQPhGF5gQ6LXybE7/wvo7zV
+         h6wCgL2+/ovGclQ9ch/V8Kbw2L4iSXPxb/0kU1r4niXynZmPtM+apepqLBg4slYSXWWQ
+         HvBJOHrvsKtI+Z1yi85eTLDd6XpwX6EmHwtYIHbYduHaVdXl9J+XhFRiBs+ZsJ4zOXq2
+         stBUaVWzgC8HpN5JXNE8GEd3sVZmugE0hUhv2kQ94LVG4OcdeqoSDlcvwVp3fvZZfLs1
+         GRAw==
+X-Gm-Message-State: AOAM532Kqs6FJCTqPDuOwzBXDFoWihIVC9dCfboXV9sn/huB/A4w9WRH
+        wH3mBH9gVMolShgkE3dBk1OchaSq05RgLWtQy4AlKf36BcccKqb9
+X-Google-Smtp-Source: ABdhPJyu6/8vxWkUZcupdWZS44/FuHmo3e72vR0EqZhptpOKA0zGOzhX+uQpSlk8g3+BrTRTBir+tAGqYdWiAxlxXLk=
+X-Received: by 2002:a17:906:9605:: with SMTP id s5mr8993580ejx.287.1617870811400;
+ Thu, 08 Apr 2021 01:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CA+G9fYsiRYaE+y44ApDkvPvbDCdiJ+nnCMhiiaPVsg6p8m4+1Q@mail.gmail.com>
+ <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com>
+In-Reply-To: <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 8 Apr 2021 14:03:20 +0530
+Message-ID: <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com>
+Subject: Re: [next] [arm64] [gpio] BUG: key has not been registered! DEBUG_LOCKS_WARN_ON:
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Colin King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused variable from rtl871x_mlme.c.
+On Thu, 8 Apr 2021 at 04:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Apr 8, 2021 at 12:38 AM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > While running kselftest recently added gpio gpio-sim.sh test case the following
+> > warning was triggered on Linux next tag 20210330 tag running on arm64 juno
+> > and hikey devices.
+> >
+> > GOOD: next-20210326
+> > BAD: next-20210330
+> >
+> > This is still happening today on Linux next tag 20210407.
+>
+> Can you add the following
+>
+>   sysfs_attr_init(attrs[i]);
+>
+> to the end of the loop in gpio_sim_setup_sysfs()?
 
-No side effects can be seen locally or in r8712_find_network()
+Do you mean like this,
 
-Signed-off-by: Sergei Krainov <sergei.krainov.lkd@gmail.com>
----
- drivers/staging/rtl8712/rtl871x_mlme.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index ea17289a869c..5fe67ccf45f7 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -296,6 +296,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+                dev_attr->store = gpio_sim_sysfs_line_store;
 
-diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
-index 8a97307fbbd6..4f41e321ea63 100644
---- a/drivers/staging/rtl8712/rtl871x_mlme.c
-+++ b/drivers/staging/rtl8712/rtl871x_mlme.c
-@@ -656,7 +656,7 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
- 	struct sta_priv	*pstapriv = &adapter->stapriv;
- 	struct mlme_priv	*pmlmepriv = &adapter->mlmepriv;
- 	struct wlan_network	*cur_network = &pmlmepriv->cur_network;
--	struct wlan_network	*pcur_wlan = NULL, *ptarget_wlan = NULL;
-+	struct wlan_network	*ptarget_wlan = NULL;
- 	unsigned int		the_same_macaddr = false;
- 	struct wlan_network *pnetwork;
- 
-@@ -721,13 +721,6 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
- 					    scanned_queue,
- 					    cur_network->network.MacAddress);
- 				} else {
--					pcur_wlan =
--					     r8712_find_network(&pmlmepriv->
--					     scanned_queue,
--					     cur_network->network.MacAddress);
--					if (pcur_wlan)
--						pcur_wlan->fixed = false;
--
- 					pcur_sta = r8712_get_stainfo(pstapriv,
- 					     cur_network->network.MacAddress);
- 					spin_lock_irqsave(&pstapriv->
--- 
-2.25.1
+                attrs[i] = &dev_attr->attr;
++               sysfs_attr_init(attrs[i]);
+        }
 
+        chip->attr_group.name = "line-ctrl";
+
+
+>
+> If it fixes an issue I'll send a formal patch.
+
+I will build and test this and report here.
+
+- Naresh
