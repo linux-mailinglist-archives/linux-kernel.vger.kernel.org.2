@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235F9358B7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4DC358B7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhDHRg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S232614AbhDHRhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhDHRg5 (ORCPT
+        with ESMTP id S232374AbhDHRhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:36:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFBFC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:36:46 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUYa7-0005zi-0m; Thu, 08 Apr 2021 19:36:39 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUYa6-0001dJ-5j; Thu, 08 Apr 2021 19:36:38 +0200
-Date:   Thu, 8 Apr 2021 19:36:37 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <20210408173637.w26njwystfuyrgan@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
- <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
- <YG4UNoBCQJkEEfwi@workstation.tuxnet>
- <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
- <YG78IHIMGtl8Pokp@orome.fritz.box>
- <YG8miEOZXsH0NTcA@workstation.tuxnet>
+        Thu, 8 Apr 2021 13:37:09 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44534C061760;
+        Thu,  8 Apr 2021 10:36:58 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w70so3053793oie.0;
+        Thu, 08 Apr 2021 10:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9A7WE4oNJYMOtIeZ4f1kRgh1llUM0leZ6aBbZlOQsEY=;
+        b=qlHnLwUvHXlaPTOE5gLf2vh569G7Ws5cqIyuSqc8hW2Ixy3lsQNhGWCqE0dSr95qUW
+         4BUV6LRdrAJCLQ2HvbD4vQQbFn264j2Y7+ZXo3EWj5T3IOTTfwl2Uja/cAqkZKD3l/NT
+         f250f9u6+dKGLFqvG0ZegZWxCV+86FujawYB0UDaUoATUVQr6dzvMs4CLuc+ZnYnsFG/
+         wHrKzpwt+gd8AicVU099/PA0rPxZb4WnH05LUUlAGxX7ActL3tX59xip+D4i6+SZIhV6
+         xO64OXJ+gNUQ49bCqFZjqHIfWKpziKhJHPVMDwCCzuicSDd8SNWEEhN6Sg7Z+NH2fMtS
+         lOUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9A7WE4oNJYMOtIeZ4f1kRgh1llUM0leZ6aBbZlOQsEY=;
+        b=lcoPfoOp5MHA+ydpdoGctN5yi6qA6EE5+EtWIVZiTBdAJYEc+vQK2pbuqepYTV/kWT
+         NQN6crpZmFhhuwvSrC05f0GchQjABpxryGvc/rfYzI8iUw0cbkkBSVss+0fTUWd9OTE4
+         1nov/Dcbujk8I4e6glTKTltazIP/jlKZpV8CtC0zO8+935kSVyehOp33GezHaerv1ZYE
+         VHAYwEkMehH4955LBBAzuAOc0VW8eFBU+sB/3LTJK+KsIUUlVsViYXrAkyqd5Js2QAMM
+         2OFGw6Ib9uBQkSpFMXKE9MHSq2mhaeSERjADH17S0F8DGyhoZCOMP7qBifQxwOhvUyIR
+         SaKQ==
+X-Gm-Message-State: AOAM531xRMmJfr+aizqSfnhqk6ypRjoslZwauOJe6DUqo0xyj3bky6ZE
+        Dip9GDX9GELjSM6rVngMnFPrXOLApew5fmxpPJa5yaLzHA==
+X-Google-Smtp-Source: ABdhPJxTVtVpRXLoBvJcXq+Xtif9ClFSbu6H0JvFQFlIABCgnWYdOPXu0bOqo9Ks9ZmjapvPDC4t0VhDdkSlFGqpmkI=
+X-Received: by 2002:aca:fc41:: with SMTP id a62mr7102824oii.92.1617903417601;
+ Thu, 08 Apr 2021 10:36:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lp7gtrg7jitfyjpi"
-Content-Disposition: inline
-In-Reply-To: <YG8miEOZXsH0NTcA@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210408172353.21143-1-TheSven73@gmail.com>
+In-Reply-To: <20210408172353.21143-1-TheSven73@gmail.com>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Thu, 8 Apr 2021 12:36:45 -0500
+Message-ID: <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
+Subject: Re: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
+ just 2"
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 8, 2021 at 12:23 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> From: Sven Van Asbroeck <thesven73@gmail.com>
+>
+> This reverts commit 3e21a10fdea3c2e4e4d1b72cb9d720256461af40.
+>
+> The reverted patch completely breaks all network connectivity on the
+> lan7430. tcpdump indicates missing bytes when receiving ping
+> packets from an external host:
 
---lp7gtrg7jitfyjpi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can you explain the difference in behavior with what I was observing
+on the LAN7431? I'll retest but if this is reverted I'm going to start
+seeing 2 extra bytes on the end of frames and it's going to break DSA
+with the LAN7431 again.
 
-On Thu, Apr 08, 2021 at 05:51:36PM +0200, Clemens Gruber wrote:
-> On Thu, Apr 08, 2021 at 02:50:40PM +0200, Thierry Reding wrote:
-> > Yes, I think that's basically what this is saying. I think we're perhaps
-> > getting hung up on the terminology here. PWM_STAGGERING_ALLOWED gives
-> > the impression that we're dealing with some provider-specific feature,
-> > whereas what we really want to express is that the PWM doesn't care
-> > exactly when the active cycle starts and based on that a provider that
-> > can support it may optimize the EMI behavior.
-> >=20
-> > Maybe we can find a better name for this? Ultimately what this means is
-> > that the consumer is primarily interested in the power output of the PWM
-> > rather than the exact shape of the signal. So perhaps something like
-> > PWM_USAGE_POWER would be more appropriate.
->=20
-> Yes, although it would then no longer be obvious that this feature leads
-> to improved EMI behavior, as long as we mention that in the docs, I
-> think it's a good idea
->=20
-> Maybe document it as follows?
-> PWM_USAGE_POWER - Allow the driver to delay the start of the cycle
-> for EMI improvements, as long as the power output stays the same
+>
+> host$ ping $lan7430_ip
+> lan7430$ tcpdump -v
+> IP truncated-ip - 2 bytes missing! (tos 0x0, ttl 64, id 21715,
+>     offset 0, flags [DF], proto ICMP (1), length 84)
+>
+> Fixes: 3e21a10fdea3 ("lan743x: trim all 4 bytes of the FCS; not just 2")
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+> ---
+>
+> To: Bryan Whitehead <bryan.whitehead@microchip.com>
+> To: "David S. Miller" <davem@davemloft.net>
+> To: Jakub Kicinski <kuba@kernel.org>
+> To: George McCollister <george.mccollister@gmail.com>
+> Cc: UNGLinuxDriver@microchip.com
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+>
+>  drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+> index 1c3e204d727c..dbdfabff3b00 100644
+> --- a/drivers/net/ethernet/microchip/lan743x_main.c
+> +++ b/drivers/net/ethernet/microchip/lan743x_main.c
+> @@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
+>                 dev_kfree_skb_irq(skb);
+>                 return NULL;
+>         }
+> -       frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 4);
+> +       frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 2);
+>         if (skb->len > frame_length) {
+>                 skb->tail -= skb->len - frame_length;
+>                 skb->len = frame_length;
+> --
+> 2.17.1
+>
 
-I don't like both names, because for someone who is only halfway into
-PWM stuff it is not understandable. Maybe ALLOW_PHASE_SHIFT?
-When a consumer is only interested in the power output than
-
-	.period =3D 20
-	.duty_cycle =3D 5
-
-would also be an allowed response for the request
-
-	.period =3D 200
-	.duty_cycle =3D 50
-
-and this is not what is in the focus here.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---lp7gtrg7jitfyjpi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBvPyEACgkQwfwUeK3K
-7Amyxwf/eaL3FxWvGWQHZWUSKXVy2VMYq4wDy9TcDkiWclNcfgI5tEmYe9ERzL7K
-1EpCi8RMTK1g9fZBOy47fH7s3apm+fs3WaawiuMcQn1KXvD/Amq/zBh5K9IKpev2
-EGlef+Msxzx8OZjaAjU+Ywxmd/9aGwOdvbFcvLxGPV4/y8/w16XQcuRVRbEeNQrM
-ZLVaBpVHfaOs8UcWllrNZjIv3PBhx3yF6x04XzoG+wk8y+mH8L6f4AsvMMyg+nkH
-8ysXMNazz5+OufTTTnq9Zf9Dka6r+4G1CsXXJzJdEfv9GNgTy9SOpBpwfCSlgLpR
-AqyuPekXjdjSY6UrHkJER7tqGY+Czw==
-=AqmW
------END PGP SIGNATURE-----
-
---lp7gtrg7jitfyjpi--
+Regards,
+George
