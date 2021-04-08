@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC64358F17
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F33F358F19
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhDHVUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:20:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232331AbhDHVUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:20:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C993A61181;
-        Thu,  8 Apr 2021 21:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617916809;
-        bh=o/aOzT6oaL9RJgtIV/dvs6yshDusJOtkol7NcdjfAE4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SK7pPAIIqbnYuhkoOaJfymeuHISjNp22wljpL1h5IXd0BlMqGoScssAnCqv3zInPT
-         sKf1PGkK4C/fa4wDisJcvygf4KMegQSMHbrkyOKjOCA1+VpcXbu2p0A0IDhl3PlLbn
-         FWxe76BVR/slWmZZZKaZrR4p/wXeInABMAnj5e9fjQhXuhuyiahjJmfNQFORpEKKot
-         ZSRu7IvBFz4sWGahyeMCew2atKpIyQjityXUp+muaN1CMObO2YJrYVc/GN3XHQD6hv
-         V6BbIrrb8XgHnMpRPZOQzdz9Kv64NbbsDlMD24oh8NcVB5YHDrhy0K/hhX0OFCp7ZT
-         MLLDqVnFmlq2Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BCF3D60A2A;
-        Thu,  8 Apr 2021 21:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232564AbhDHVVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDHVVY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:21:24 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E250C061760;
+        Thu,  8 Apr 2021 14:21:11 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id t140so2276226pgb.13;
+        Thu, 08 Apr 2021 14:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=7KQ9dgyFpGmrno3NBnr3xvBzKME75uzvWjBYKMlTxeM=;
+        b=GDc+O5ahwo0oKQQ/6akBDra6B3nJJ/iUovHy/hU4srnxmdKW9FsIN3hOg2CleNfyvU
+         PYJg4Ixki7oSoXUbVmJknOSp7P9gFwaxNXU3BFWRdZoVN90ZR9Olsm/VsWdshBFQ5Xy5
+         sMf7Nyfjxwg8Q1cpjAYlkFqrXFkp3KF4SR4IvE0+QzqCaIfTT33cYElCjmEctXL06sI+
+         yqQcrSzIo3/nKOdjrFmeUoIjQsvPnoFTEVbdTIqkOn080GC2+EtOefGfTGmIrVevihx5
+         Snj0Arn3ka4V2OCqn0vwI+p4uz1mqNMKIj9GUZo4La+l+2JBQ7F+246Vr9hq/yS21HdZ
+         zVsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=7KQ9dgyFpGmrno3NBnr3xvBzKME75uzvWjBYKMlTxeM=;
+        b=VBLpcwRmZiKu30W5MOQjsriYv9dn4mSveX5eIewDHMA2RBCBl37jKz6AFyhWZYAxZq
+         4MhZy42mjjeFwkE0jezc5GAK7uV25dOPUv6gawFW+cvqtjsxMwN3idoIqPKGQvsJK/SL
+         uaDcI2BcH/eeUcwWw2WWEVFANgeH6Xgxx4U29E51z0zWmnHeRHwDSD1DsiJBbgfJwnIa
+         3rAO3iO9/Sh0dGYOk2Us/3n+R5nwoi+WvhB1OGnI2qmfQpDhrqmpuc0lHX6QiOAkTKKl
+         vv9wI/3ffOSP+ksfKsSCgzswRTpfFy7ibHCYEVPJL6PLqXS3vCi4UfgqiOStdFRwWLy9
+         COVg==
+X-Gm-Message-State: AOAM531AHja0ttKF2v38kEVvGEzTcWYFPSdlpLvb6o0uSIi7B9PV0vOg
+        G0y6cGMzML7Sh81G26i3ryo=
+X-Google-Smtp-Source: ABdhPJwfinViQvp3s3C1Ztqe6bd0Xb92TsO8+3f8xSRMoFUH1NZcuef62xbT7jg4LCMRBPNZv9XXCg==
+X-Received: by 2002:aa7:8389:0:b029:209:da1c:17b5 with SMTP id u9-20020aa783890000b0290209da1c17b5mr9439756pfm.29.1617916870938;
+        Thu, 08 Apr 2021 14:21:10 -0700 (PDT)
+Received: from kali ([152.57.243.224])
+        by smtp.gmail.com with ESMTPSA id q2sm322538pfk.143.2021.04.08.14.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 14:21:10 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 02:51:00 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH] staging: media: zoran: reduce length of a line
+Message-ID: <YG9zvMnYlZVbJhQn@kali>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: sched: sch_teql: fix null-pointer dereference
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161791680976.13372.4479863088354346844.git-patchwork-notify@kernel.org>
-Date:   Thu, 08 Apr 2021 21:20:09 +0000
-References: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
-In-Reply-To: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Reduced length of a line which exceed the 100 columns limit by splitting
+the line into two statements and commenting it with '*'
+Reported by checkpatch.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/media/zoran/zr36060.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Thu,  8 Apr 2021 18:14:31 +0300 you wrote:
-> Reproduce:
-> 
->   modprobe sch_teql
->   tc qdisc add dev teql0 root teql0
-> 
-> This leads to (for instance in Centos 7 VM) OOPS:
-> 
-> [...]
-
-Here is the summary with links:
-  - net: sched: sch_teql: fix null-pointer dereference
-    https://git.kernel.org/netdev/net/c/1ffbc7ea9160
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
+index 4f9eb9ff2c42..035634fc1c6d 100644
+--- a/drivers/staging/media/zoran/zr36060.c
++++ b/drivers/staging/media/zoran/zr36060.c
+@@ -249,7 +249,9 @@ static const char zr36060_ta[8] = { 0, 1, 1, 0, 0, 0, 0, 0 };	//table idx's AC
+ static const char zr36060_decimation_h[8] = { 2, 1, 1, 0, 0, 0, 0, 0 };
+ static const char zr36060_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+ 
+-/* SOF (start of frame) segment depends on width, height and sampling ratio of each color component */
++/* SOF (start of frame) segment depends on width,
++ * height and sampling ratio of each color component
++ */
+ static int zr36060_set_sof(struct zr36060 *ptr)
+ {
+ 	char sof_data[34];	// max. size of register set
+-- 
+2.30.2
 
