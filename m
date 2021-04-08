@@ -2,178 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B7A35810C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AC035810F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhDHKqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:46:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51415 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhDHKqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:46:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617878800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=STb3jemIR0oAseGZ4IZyjWqpuAar06/ylX4SI0DH0XM=;
-        b=ZgcnQnFP/Ra6mRFve0yENV7UPpksYfya66ZYV6FlrcpZRUVHwaBsCPDAHih02/PQO9QPDa
-        P2bjKZ2mmlkD5kVSwiAmJjuF/2WVUkLGV0hVAM9KmElkTDBaHYB4X0V3AxvV+13faHUesi
-        tIyK1Uc2K6C47nBkHv5Wg/OcBdhU2X4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-1UrL5Wv3MrmZ4_OmNDd8vw-1; Thu, 08 Apr 2021 06:46:36 -0400
-X-MC-Unique: 1UrL5Wv3MrmZ4_OmNDd8vw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F39781006701;
-        Thu,  8 Apr 2021 10:46:34 +0000 (UTC)
-Received: from crecklin.bos.com (ovpn-113-158.rdu2.redhat.com [10.10.113.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ED50660C0F;
-        Thu,  8 Apr 2021 10:46:30 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/1] use crc32 instead of md5 for hibernation e820 integrity check
-Date:   Thu,  8 Apr 2021 06:46:29 -0400
-Message-Id: <20210408104629.31357-1-crecklin@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S230424AbhDHKr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:47:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59754 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhDHKrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 06:47:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7AA1DAF0C;
+        Thu,  8 Apr 2021 10:47:13 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 12:47:10 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        weixugc@google.com, yang.shi@linux.alibaba.com,
+        rientjes@google.com, ying.huang@intel.com, dan.j.williams@intel.com
+Subject: Re: [PATCH 05/10] mm/migrate: demote pages during reclaim
+Message-ID: <YG7fLpeSw1dF4tiS@localhost.localdomain>
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+ <20210401183225.2EDC224F@viggo.jf.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401183225.2EDC224F@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suspend fails on a system in fips mode because md5 is used for the e820
-integrity check and is not available. Use crc32 instead.
+On Thu, Apr 01, 2021 at 11:32:25AM -0700, Dave Hansen wrote:
+> 
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> This is mostly derived from a patch from Yang Shi:
+> 
+> 	https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
+> 
+> Add code to the reclaim path (shrink_page_list()) to "demote" data
+> to another NUMA node instead of discarding the data.  This always
+> avoids the cost of I/O needed to read the page back in and sometimes
+> avoids the writeout cost when the pagee is dirty.
+> 
+> A second pass through shrink_page_list() will be made if any demotions
+> fail.  This essentally falls back to normal reclaim behavior in the
+> case that demotions fail.  Previous versions of this patch may have
+> simply failed to reclaim pages which were eligible for demotion but
+> were unable to be demoted in practice.
+> 
+> Note: This just adds the start of infratructure for migration. It is
+> actually disabled next to the FIXME in migrate_demote_page_ok().
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: osalvador <osalvador@suse.de>
 
-Prior to this patch, MD5 is used only to create a digest to ensure integrity of
-the region, no actual encryption is done. This patch set changes the integrity
-check to use crc32 instead of md5 since crc32 is available in both FIPS and
-non-FIPS modes.
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-Note that the digest is only used as an integrity check. No actual encryption
-is done.
-
-Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-       by md5 digest")
-
-Tested-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
----
-v1 -> v2
-   bump up RESTORE_MAGIC
-v2 -> v3
-   move embelishment from cover letter to commit comments (no code change)
-v3 -> v4
-   add note to comments that md5 isn't used for encryption here.
-
- arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-index cd3914fc9f3d..b56172553275 100644
---- a/arch/x86/power/hibernate.c
-+++ b/arch/x86/power/hibernate.c
-@@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
- }
- 
- 
--#define MD5_DIGEST_SIZE 16
-+#define CRC32_DIGEST_SIZE 16
- 
- struct restore_data_record {
- 	unsigned long jump_address;
- 	unsigned long jump_address_phys;
- 	unsigned long cr3;
- 	unsigned long magic;
--	u8 e820_digest[MD5_DIGEST_SIZE];
-+	u8 e820_digest[CRC32_DIGEST_SIZE];
- };
- 
--#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
-+#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
- /**
-- * get_e820_md5 - calculate md5 according to given e820 table
-+ * get_e820_crc32 - calculate crc32 according to given e820 table
-  *
-  * @table: the e820 table to be calculated
-- * @buf: the md5 result to be stored to
-+ * @buf: the crc32 result to be stored to
-  */
--static int get_e820_md5(struct e820_table *table, void *buf)
-+static int get_e820_crc32(struct e820_table *table, void *buf)
- {
- 	struct crypto_shash *tfm;
- 	struct shash_desc *desc;
- 	int size;
- 	int ret = 0;
- 
--	tfm = crypto_alloc_shash("md5", 0, 0);
-+	tfm = crypto_alloc_shash("crc32", 0, 0);
- 	if (IS_ERR(tfm))
- 		return -ENOMEM;
- 
-@@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
- 
- static int hibernation_e820_save(void *buf)
- {
--	return get_e820_md5(e820_table_firmware, buf);
-+	return get_e820_crc32(e820_table_firmware, buf);
- }
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
- 	int ret;
--	u8 result[MD5_DIGEST_SIZE];
-+	u8 result[CRC32_DIGEST_SIZE];
- 
--	memset(result, 0, MD5_DIGEST_SIZE);
-+	memset(result, 0, CRC32_DIGEST_SIZE);
- 	/* If there is no digest in suspend kernel, let it go. */
--	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
-+	if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
- 		return false;
- 
--	ret = get_e820_md5(e820_table_firmware, result);
-+	ret = get_e820_crc32(e820_table_firmware, result);
- 	if (ret)
- 		return true;
- 
--	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
-+	return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
- }
- #else
- static int hibernation_e820_save(void *buf)
-@@ -134,15 +134,15 @@ static int hibernation_e820_save(void *buf)
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
--	/* If md5 is not builtin for restore kernel, let it go. */
-+	/* If crc32 is not builtin for restore kernel, let it go. */
- 	return false;
- }
- #endif
- 
- #ifdef CONFIG_X86_64
--#define RESTORE_MAGIC	0x23456789ABCDEF01UL
-+#define RESTORE_MAGIC	0x23456789ABCDEF02UL
- #else
--#define RESTORE_MAGIC	0x12345678UL
-+#define RESTORE_MAGIC	0x12345679UL
- #endif
- 
- /**
-@@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
- 	rdr->jump_address = (unsigned long)restore_registers;
- 	rdr->jump_address_phys = __pa_symbol(restore_registers);
- 
-+	/* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
-+	memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
-+
- 	/*
- 	 * The restore code fixes up CR3 and CR4 in the following sequence:
- 	 *
 -- 
-2.18.1
-
+Oscar Salvador
+SUSE L3
