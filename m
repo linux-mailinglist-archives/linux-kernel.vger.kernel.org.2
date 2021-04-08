@@ -2,43 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C7B358A42
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB3C358A44
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhDHQz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:55:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
+        id S232479AbhDHQz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:55:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232418AbhDHQzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:55:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B840A61158;
-        Thu,  8 Apr 2021 16:55:41 +0000 (UTC)
+        id S232458AbhDHQz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:55:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AAD36115B;
+        Thu,  8 Apr 2021 16:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617900942;
-        bh=I1Rg2nveovVTb3EpMQgIGYLULEwlNQWKYxhFMmedRtM=;
+        s=k20201202; t=1617900944;
+        bh=GWpb/4CWrW5dOgeUJNjVwnPmhCH3Tqxz6l+xlJjGsZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q5r0xaTF+ERvgelyEYxIg7OzPZRFkbgewP8I0Qrp58CHKwvJ56tqWn6QeqKIuKlun
-         ZErLhPkzpBRZl3bssOO11Jq+vEubqeUWxQnE9zdkLma9H0GLJRoc0ue3/HOkBNcj9D
-         JklwhmGphaYpfqdK41KQKVtClMXQlsAHFbG4vGhhRcQZMKiJaRZlgh0b2xidDZyRsV
-         JBNQb3WCWi53+2oJN6m6M9WNRijmoQbXWEPc9Clv0EojhDO6IJnmzq/qyjWwF5bd9Y
-         ftJtdzaA2ClO/6GZd3Vwt064wiT5hudntVi3gvkqKmPV7NbWvmEBC+A9zt8VQpSc02
-         xIKTlQecaRAxA==
+        b=o6+NQEY10TfULYi/XtxUE45DQd7LGoHX/+xCtDoIam/6qWkrXbsxqumFwCoNt8bwe
+         tQyL3mq7+Mp+0i4gjH9ZuoZz9fIhZUs7K0GflIVOmKjTS68Lh6QUNXgQ92QrnZ3NUz
+         swg92H8hYpLl7hzxgqYyFHHauARAcljBzSeLgj+Wrlgyr58Qn1RKsTS5hrtALWIqB6
+         LBls/auxgyXtr+I9gcmByIyYdOOOi71eok8Mk/fD4YBheay1Yvl/quoiZRAwXSUSVG
+         p7AR3On/otsnP4YNOFIZaA3pxGoTGP1nzc0xroUh/byr9K97xvCXjXBowWYx9dpME3
+         sAG9D5C+Mrxcw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ye Bin <yebin10@huawei.com>,
+To:     linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, linux-sunxi@lists.linux.dev,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Hulk Robot <hulkci@huawei.com>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] ASoC: cx2072x: constify static struct snd_soc_dai_ops
-Date:   Thu,  8 Apr 2021 17:54:42 +0100
-Message-Id: <161790012551.16915.11291748382496909531.b4-ty@kernel.org>
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, dan.carpenter@oracle.com,
+        linqiheng@huawei.com, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl: sunxi: remove redundant dev_err call
+Date:   Thu,  8 Apr 2021 17:54:43 +0100
+Message-Id: <161790012549.16915.4440454202344762892.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210408062656.803606-1-yebin10@huawei.com>
-References: <20210408062656.803606-1-yebin10@huawei.com>
+In-Reply-To: <20210407095634.GA1379642@LEGION>
+References: <20210407095634.GA1379642@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,10 +52,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 14:26:56 +0800, Ye Bin wrote:
-> The snd_soc_dai_ops structures is only stored in the ops field of a
-> snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
-> const to allow the compiler to put it in read-only memory.
+On Wed, 7 Apr 2021 14:56:34 +0500, Muhammad Usama Anjum wrote:
+> devm_ioremap_resource() prints error message in itself. Remove the
+> dev_err call to avoid redundant error message.
 
 Applied to
 
@@ -57,8 +62,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cx2072x: constify static struct snd_soc_dai_ops
-      commit: e9a216d8f14ac4d926078885e7e772db08e6aad9
+[1/1] ASoC: fsl: sunxi: remove redundant dev_err call
+      commit: a93799d55fd479f540ed97066e69114aa7709787
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
