@@ -2,127 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0515835870D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4749E358711
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhDHOVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:21:39 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:57534 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhDHOVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:21:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1617891681; x=1649427681;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=dTvu0dXT7xw3uuDTIqR63vsmGvsn9MVKfGVQJlXp8PY=;
-  b=o57F5JCcsR9cgWlMc0oNe9ifrHLxQWZM9U22Ka7ueC2Jrnq0HismTQy/
-   Ajt8Do6UYuBuTASMAqn41SpkgAYpX1XL03n37Mne3qOVmS06cZM0zG5zC
-   L2PM7OBc/VUo61w0Ma7nVoV4aK6LD/U6LL9CDtE4bPOqAfsCTVwkIm1kP
-   A=;
-X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
-   d="scan'208";a="101951940"
-Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM hypercalls
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Apr 2021 14:21:12 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 6FB1DA03EB;
-        Thu,  8 Apr 2021 14:21:06 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.160.48) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 8 Apr 2021 14:20:58 +0000
-Date:   Thu, 8 Apr 2021 16:20:54 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-CC:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>
-Message-ID: <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
-References: <20210407211954.32755-1-sidcha@amazon.de>
- <20210407211954.32755-5-sidcha@amazon.de>
- <87blap7zha.fsf@vitty.brq.redhat.com>
+        id S231972AbhDHOVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:21:54 -0400
+Received: from mga11.intel.com ([192.55.52.93]:21652 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231474AbhDHOVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:21:51 -0400
+IronPort-SDR: F/zCS/PYFiPqBewprAPKHdDlhLr4eFJ3YwOljlzSgkYyxb4wrCvEi+j2sY2du/IQA1gOL3DtIn
+ OglBt3YOuslg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="190348333"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="190348333"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 07:21:40 -0700
+IronPort-SDR: PN568oKrfQ7hkG6wer9c5pBIDEvPW/meQgHrFz9VTph76i/i77DXF7BW9QpnMfrjZQVcvPG3IY
+ gU/PiJHhtqfQ==
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="422268065"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 07:21:40 -0700
+Date:   Thu, 8 Apr 2021 07:21:39 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+Subject: Re: [PATCH v4 05/12] perf record: start threads in the beginning of
+ trace streaming
+Message-ID: <20210408142139.GE3762101@tassilo.jf.intel.com>
+References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com>
+ <d11bab8e-74e8-ed4d-c3a3-af4d42244806@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87blap7zha.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D24UWA002.ant.amazon.com (10.43.160.200) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+In-Reply-To: <d11bab8e-74e8-ed4d-c3a3-af4d42244806@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
-> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
->
-> > Now that all extant hypercalls that can use XMM registers (based on
-> > spec) for input/outputs are patched to support them, we can start
-> > advertising this feature to guests.
-> >
-> > Cc: Alexander Graf <graf@amazon.com>
-> > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
-> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> > ---
-> >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
-> >  arch/x86/kvm/hyperv.c              | 1 +
-> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> > index e6cd3fee562b..1f160ef60509 100644
-> > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> > @@ -49,10 +49,10 @@
-> >  /* Support for physical CPU dynamic partitioning events is available*/
-> >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
-> >  /*
-> > - * Support for passing hypercall input parameter block via XMM
-> > + * Support for passing hypercall input and output parameter block via XMM
-> >   * registers is available
-> >   */
-> > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
-> > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
->
-> TLFS 6.0b states that there are two distinct bits for input and output:
->
-> CPUID Leaf 0x40000003.EDX:
-> Bit 4: support for passing hypercall input via XMM registers is available.
-> Bit 15: support for returning hypercall output via XMM registers is available.
->
-> and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
-> anywhere, I'd suggest we just rename
->
-> HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
-> and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
+> +	err = write(thread->pipes.ack[1], &msg, sizeof(msg));
+> +	if (err == -1)
+> +		pr_err("threads[%d]: failed to notify on start. Error %m", thread->tid);
 
-That is how I had it initially; but then noticed that we would never
-need to use either of them separately. So it seemed like a reasonable
-abstraction to put them together.
-
-~ Sid.
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+It might be safer to not use %m. I'm not sure if all the non glibc
+libcs that people use support it.
 
