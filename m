@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5DB35884A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B1C358850
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhDHPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:25:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232177AbhDHPZ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617895546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGwlC/hESn7y7qGIlb10fpokHrJdwvIGgWjnr/18nGE=;
-        b=TiLMDIBiS/jlzQQ+rwUi5xeSqhxE8lRoYgpGQQEbBvYft7De7oHz+jrYtmWIrvlL2dZ95D
-        VeLgWH8Xy/obp0lDe5lTm4YqNSbSe/JkyJUeLDGo5WX36NNV3qxt+ItGByLuSL7qhQ87es
-        9u8EtPYxU27jTWcSpK7lfHvSYXPJt7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-fI44sw60N3C0hNH1bdmEJA-1; Thu, 08 Apr 2021 11:25:45 -0400
-X-MC-Unique: fI44sw60N3C0hNH1bdmEJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D75CE8189C8;
-        Thu,  8 Apr 2021 15:25:41 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DD1710013C1;
-        Thu,  8 Apr 2021 15:25:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210408145057.GN2531743@casper.infradead.org>
-References: <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/30] mm: Add set/end/wait functions for PG_private_2
+        id S231979AbhDHP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231791AbhDHP0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:26:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19BA861103;
+        Thu,  8 Apr 2021 15:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617895557;
+        bh=BsPq63IUE5jWhjlxvaXJnOCOfTCS2YyV8dn/2ZoA/lo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=eRDFNz9LLPJlb7/BO6iRuz8b20it6l/spqCku3w8cbhaSpg/uE6wm3qFl2VgumX+J
+         QGl8TcngavSZ94kjkK+MfyRPumJaImgi+zhrvAdWTUUIyNYstatpSWj9NYi58erxTZ
+         5v9E9NY7ZXetBWUcDuzu0Pnrz2le9TKBGNjXLCLfFGJ8NyCUyJrtLHCQCVH5j1D1j3
+         5M2euKQTUg5rF2AhXOefkgpw1/xl2QFW0A7nsSG/7cub4Z8UI5jjFr9vl2KCUP8AcA
+         8xLwFVczImw0H9sfcx/mqXDSRojENwVBX1wAc0ibb/LNz9Nc8fIuDRnqXI512nz71n
+         7LhpciDYlH++Q==
+Date:   Thu, 8 Apr 2021 10:25:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>
+Subject: Re: [PATCH v2] ACPI / hotplug / PCI: fix memory leak in enable_slot()
+Message-ID: <20210408152555.GA1928260@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <14839.1617895534.1@warthog.procyon.org.uk>
-Date:   Thu, 08 Apr 2021 16:25:34 +0100
-Message-ID: <14840.1617895534@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0j2a803ye6KYzM9dZ_inCTqiwmN7UvAdYeynk+A9F97Fg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> > +void end_page_private_2(struct page *page)
-> > +{
-> > +	page = compound_head(page);
-> > +	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
-> > +	clear_bit_unlock(PG_private_2, &page->flags);
-> > +	wake_up_page_bit(page, PG_private_2);
+On Thu, Apr 08, 2021 at 05:18:46PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Mar 25, 2021 at 8:27 AM Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
+> >
+> > From: Feilong Lin <linfeilong@huawei.com>
+> >
+> > In enable_slot() in drivers/pci/hotplug/acpiphp_glue.c, if pci_get_slot()
+> > will return NULL, we will do not set SLOT_ENABLED flag of slot. if one
+> > device is found by calling pci_get_slot(), its reference count will be
+> > increased. In this case, we did not call pci_dev_put() to decrement the
+> > its reference count, the memory of the device (struct pci_dev type) will
+> > leak.
+> >
+> > Fix it by calling pci_dev_put() to decrement its reference count after that
+> > pci_get_slot() returns a PCI device.
+> >
+> > Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+> > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> > --
+> > v2: rewrite subject and commit log as suggested by Bjorn Helgaas.
 > 
-> ... but when we try to end on a tail, we actually wake up the head ...
+> The fix is correct AFAICS, so
+> 
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Bjorn, has this been applied already?  If not, do you want me to take
+> it or are you going to queue it up yourself?
 
-Question is, should I remove compound_head() here or add it into the other
-functions?
+I'll pick it up; thanks for the review and the reminder!
 
-David
-
+> > ---
+> >  drivers/pci/hotplug/acpiphp_glue.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+> > index 3365c93abf0e..f031302ad401 100644
+> > --- a/drivers/pci/hotplug/acpiphp_glue.c
+> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> > @@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+> >                         slot->flags &= ~SLOT_ENABLED;
+> >                         continue;
+> >                 }
+> > +               pci_dev_put(dev);
+> >         }
+> >  }
+> >
+> > --
+> > 2.19.1
+> >
