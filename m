@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972FC357A47
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F053357A5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhDHCXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        id S229688AbhDHCZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhDHCXU (ORCPT
+        with ESMTP id S229585AbhDHCZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:23:20 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FD8C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 19:23:08 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id b17so479838ilh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 19:23:08 -0700 (PDT)
+        Wed, 7 Apr 2021 22:25:56 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00166C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 19:25:45 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id i4so325098pjk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 19:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
-        b=PiO3u4/m0+GfnO3UZv+gV/RqTs4xH4wxAHdYthfbhE5JE9Jksw8fq4+z33SydgChX9
-         b4MIdNOPX14YWUwgNO1TVDueyKwkcAcUkOdOKTSxzRp5P4+7nLTcBHx7zN/nMllt4jC+
-         j2I+QZHZjMJ3N86ANYrckWYetY9eLBYmh/dRvPzvbJVz1kI9po/nMHIyWO1bxO0O389X
-         Q9p/pvgMfBP+h8XxzZGKwJjXBLIiHvtcYJb9PbFtNSnqhI6iXgaV+ucX8rQF9h7BLEvb
-         l4Y/CSjExA27lP0Vt4O2LiWEZ7kA72Si9EbTEIpFD3p4WW7HyN51+zSOJ/CDijwjqvz8
-         ye5A==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=B3nkOxLt37ikjNh1dmCrH27OA3QKrjj/aIwluo8z8/M=;
+        b=uRmM/eDkM6Mu88gsKVMeW6KK3rf9K4CU2TQnuBwcItC5Cp9qQ7+equPDnXIxXiLxc5
+         x/b/9hGqVXVUxZ3WDd6MVWKgbvUn+9iX/Fb9pbu2zNDjz+wDQ71M8kJ2rphL6JPc6/HV
+         9bdwrX1rDLw37WrJ+oDcqo2h8V1M3czpXQAqFumMf0GmVHXbANoN5KK6bDFm4NGj2huu
+         31RYoSfoCjIV2TSUxRBx5o4PDNGV2i0Oq1DSfZ5mtL/dApxMJRP0KlsiqZdsquxzI5vW
+         LD8GQovQWF88mo2lwUP3UUTYlOTFbBq+8gdRA6n0kmb1wMxQS7bdX0+m4zOEvXyuCdC4
+         AIQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
-        b=AeK+L/ec/U1Er2nRHcVfhQRcZ5VzqaMbklgB4go7bscJIf1lKk/8h+pDCehmoxNzWX
-         BiMsE12j5XaJ8z0mmPcm+Ew/7xLBGEQ+JVfU0Byf8yXP6BsQ8s21HEVhfD0Of/GeexRe
-         SWOhWemsRf5c0ZgumFxVUNxpqFJfn7Dw54ZKR9JNsKG2SYQ95spKxhzrN5iunkFmReTk
-         kAm3A3delIF7Kz3JAvx5aZPLTopc54coe8/b7jwYEDkftWf8CwKJ20waNQg7NAPHSzlv
-         AME51gT84N8vfSS4DgRz+SZRcXlKzNioiDHsDXjy3MPG1oSRZpzZ6UXGxmGWsev+Vp95
-         e1hg==
-X-Gm-Message-State: AOAM530G4Fw+ou3E2dwRVdaocmb0QoZ6V5Ubb4ZANmDEVDPKy1DZ7SRV
-        v4o0otQiiGx0jU5aZTDjhBKYWb1hVobX3vBcG+Q=
-X-Google-Smtp-Source: ABdhPJy0hY/3zTtx1XbCNnIXtmpcDNMvhDJKRB5Wf3BxZDl+3jyIcaB55sEl5YM8cMQSE5wgNXDjDq6yySqMcf814Sk=
-X-Received: by 2002:a05:6e02:1288:: with SMTP id y8mr4447378ilq.111.1617848587865;
- Wed, 07 Apr 2021 19:23:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=B3nkOxLt37ikjNh1dmCrH27OA3QKrjj/aIwluo8z8/M=;
+        b=h3EAyPGmiwmhxqBuvXnoLihXX0MK56GEseXn9nfFCvVAz69V+M6v7KBcp0XJECdo4B
+         3R3KRZFOcrxCJRSunUV/zWPGaMGppz6YqilmESu327J8oL7GkJ5pS3klQZ3u+U4bzPvf
+         uU7gBOzJWdokfZpC+WR0olewJmGn/V098AJSuSEF7kHPpJsZj9RxccXiiM9uPG5DGRLP
+         YcYgxcFVX0GxL0onjiYXSdHiTZ9if3E6bGoI0sKlw1mmwTMclcfLWhstaNRbYw3UhyrM
+         VHBueBj2rr7EvNr1wODdMtpqv5Ux/sQRCR3YliKGLwvJMP21hgZQaZsM2MrAfB9hN6Lc
+         f7zw==
+X-Gm-Message-State: AOAM531TrpkLpDN7yEir4J5sM4WV60f3Noj575mM82ybOyyq/uzZ/X5C
+        9/ZW2WMYLHWNxlZCl3EOnMffsWTd14gJI2AI
+X-Google-Smtp-Source: ABdhPJxnf6JAZajUJLzftpFtX64NfI54a4Qom6zNJLrZ7QUbsxdUyEZ6oNDsHMeDcBkUZnz9ppjYQw==
+X-Received: by 2002:a17:90a:1b05:: with SMTP id q5mr4951105pjq.104.1617848745303;
+        Wed, 07 Apr 2021 19:25:45 -0700 (PDT)
+Received: from kali ([152.57.40.190])
+        by smtp.gmail.com with ESMTPSA id i7sm21876193pgq.16.2021.04.07.19.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 19:25:44 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 07:55:41 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8712: removed extra blank line
+Message-ID: <YG5ppTlGhRp5WVgS@kali>
 MIME-Version: 1.0
-Sender: mohamdsanu515@gmail.com
-Received: by 2002:a92:dcc3:0:0:0:0:0 with HTTP; Wed, 7 Apr 2021 19:23:07 -0700 (PDT)
-From:   Mr Dabire Basole <mrdabirebsole@gmail.com>
-Date:   Wed, 7 Apr 2021 19:23:07 -0700
-X-Google-Sender-Auth: ki-O35AReS3qSALg_CatiVoLGUg
-Message-ID: <CAN39zcXe58vC+8+1wneM=5ioBbb9BUyDQdVigww7t+-B9eKKPA@mail.gmail.com>
-Subject: PERSONAL TREAT AS URGENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Removed an extra blank line so that only one blank line is present in
+between two functions which separates them out.
+Reported by checkpatch
 
-Greetings!
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/rtl8712/rtl8712_wmac_regdef.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-How are you with your family today? I hope both of you are in good
-health decently, I know that this message might meet you in utmost
-surprise as we never know each other before. I am Mr. Dabire Basole a
-banker by profession, I need your urgent assist in transferring the
-sum of USD$18.6 ( Eighteen Million Six Hundred Thousand United State Dollars)
-into your account. It is 100% risk free and under this achievement you are
-entitled to receive 50% of the total cash and 50% will be for me.
-More details will be sent to you on confirmation of your interest.
-Please if you are real interest on my proposer, just providing me your
-following information details such as:
+diff --git a/drivers/staging/rtl8712/rtl8712_wmac_regdef.h b/drivers/staging/rtl8712/rtl8712_wmac_regdef.h
+index 662383fe7a8d..dfe3e9fbed43 100644
+--- a/drivers/staging/rtl8712/rtl8712_wmac_regdef.h
++++ b/drivers/staging/rtl8712/rtl8712_wmac_regdef.h
+@@ -32,6 +32,5 @@
+ #define AMPDU_MIN_SPACE			(RTL8712_WMAC_ + 0x37)
+ #define	TXOP_STALL_CTRL			(RTL8712_WMAC_ + 0x38)
+ 
+-
+ #endif /*__RTL8712_WMAC_REGDEF_H__*/
+ 
+-- 
+2.30.2
 
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:................ .....
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-
-Mr.  Dabire Basole.
