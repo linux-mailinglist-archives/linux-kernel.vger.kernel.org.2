@@ -2,165 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44869358383
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E1E358389
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhDHMoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S231409AbhDHMpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHMoH (ORCPT
+        with ESMTP id S231255AbhDHMp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:44:07 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7072C061760;
-        Thu,  8 Apr 2021 05:43:56 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 7CA971F45CCE
-Received: by earth.universe (Postfix, from userid 1000)
-        id 59D743C0C96; Thu,  8 Apr 2021 14:43:52 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 14:43:52 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     zhuguangqing83@gmail.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: Fix missing IRQF_ONESHOT as only threaded
- handler
-Message-ID: <20210408124352.3kvfpwj74ymfjqfm@earth.universe>
-References: <20210406052829.22826-1-zhuguangqing83@gmail.com>
+        Thu, 8 Apr 2021 08:45:27 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C779C061764
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 05:45:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id e14so2773613ejz.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
+        b=JXlbvdv6BKxL2QLt+A6EZMYCjKur7zKVGHA+SPjjhttU3LjU5J8CTsvMPL70CwGYsq
+         CUXz1jkKLkBNcttlxCmAirFDD+kjBSkQXhxTFfLF/zDE+suTqi1E02kHIf/SGivtkXXC
+         r7MEDlKMlo41vpb3rOrLkq/HnnmBY745AuXsE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
+        b=iCKQH5gp5wWn0vOi33zaMQZ79CBIQs2i889MiiBqIxMGxIzAJ/MQV1frU5er1r/8pt
+         AknqQ8/RXJ3w3GrOIGdQYPB6GiDc2RwrXUxwNDpKqSWwdns/FarsDwrwtSgtNrVgyW0/
+         b+3HLj+xkxrTgy4b6rj/91xT+TC4qh/pN/aITwKX49Gp//5mTzyFuBlmZ5MRLWYdKNRq
+         fWaE4ULI3mipP0uTyOXzR5tE1pQzJqIvntCbnQr1z5H/FuWqUeqmjDiEz3votnZmG38G
+         GBggLi2/Gr2G2jGPFHBqyZ+OdDB4cGUxYAPh/wXeI7sMwgfwt4C80flnozMQ4SKcIbGi
+         qTfw==
+X-Gm-Message-State: AOAM531rGaR0t6oQACierpjjkulYoTDBBh2u82CxVKhGsHfFmrOVzivl
+        YYOialwrUwrHy1c9jMF9ehGJnA==
+X-Google-Smtp-Source: ABdhPJwq7QZNDA3D6CGhNZXcz6mj8YzK/fNHfbq7NkBvOdUqzkgcZZF3Ehka2wUefbZcZbtsp6oq8w==
+X-Received: by 2002:a17:906:1fd7:: with SMTP id e23mr400958ejt.528.1617885914623;
+        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id r4sm14262813ejd.125.2021.04.08.05.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
+        kexec@lists.infradead.org, rcu@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Corey Minyard <minyard@acm.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <03be4ed9-8e8d-e2c2-611d-ac09c61d84f9@rasmusvillemoes.dk>
+Date:   Thu, 8 Apr 2021 14:45:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="25m4cz6hxukmhk4d"
-Content-Disposition: inline
-In-Reply-To: <20210406052829.22826-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/04/2021 15.31, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt to start cleaning it up by splitting out panic and
+> oops helpers.
 
---25m4cz6hxukmhk4d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yay.
 
-Hi,
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-On Tue, Apr 06, 2021 at 01:28:29PM +0800, zhuguangqing83@gmail.com wrote:
-> From: Guangqing Zhu <zhuguangqing83@gmail.com>
->=20
-> Coccinelle noticed:
->  1. drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR: Threaded IRQ
->     with no primary handler requested without IRQF_ONESHOT
->  2. drivers/power/supply/tps65090-charger.c:303:8-33: ERROR: Threaded IRQ
->     with no primary handler requested without IRQF_ONESHOT
->  3. drivers/power/supply/tps65217_charger.c:239:8-33: ERROR: Threaded IRQ
->     with no primary handler requested without IRQF_ONESHOT
->  4. drivers/power/supply/lp8788-charger.c:502:8-28: ERROR: Threaded IRQ
->     with no primary handler requested without IRQF_ONESHOT
->=20
-> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
-> ---
+> At the same time convert users in header and lib folder to use new header.
+> Though for time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
 
-I merged a patch fixing missing IRQF_ONESHOT flags in power-supply
-=66rom dongjian two weeks ago as 2469b836fa83. Please make sure you
-are basing your work on up to date for-next branches before sending
-out patches!
+I think it would be good to have some place to note that "This #include
+is just for backwards compatibility, it will go away RealSoonNow, so if
+you rely on something from linux/panic.h, include that explicitly
+yourself TYVM. And if you're looking for a janitorial task, write a
+script to check that every file that uses some identifier defined in
+panic.h actually includes that file. When all offenders are found and
+dealt with, remove the #include and this note.".
 
-Thanks,
+> +
+> +struct taint_flag {
+> +	char c_true;	/* character printed when tainted */
+> +	char c_false;	/* character printed when not tainted */
+> +	bool module;	/* also show as a per-module taint flag */
+> +};
+> +
+> +extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
 
--- Sebastian
+While you're doing this, nothing outside of kernel/panic.c cares about
+the definition of struct taint_flag or use the taint_flags array, so
+could you make the definition private to that file and make the array
+static? (Another patch, of course.)
 
->  drivers/power/supply/lp8788-charger.c   | 2 +-
->  drivers/power/supply/pm2301_charger.c   | 2 +-
->  drivers/power/supply/tps65090-charger.c | 3 ++-
->  drivers/power/supply/tps65217_charger.c | 4 ++--
->  4 files changed, 6 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply=
-/lp8788-charger.c
-> index e7931ffb7151..397e5a03b7d9 100644
-> --- a/drivers/power/supply/lp8788-charger.c
-> +++ b/drivers/power/supply/lp8788-charger.c
-> @@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pd=
-ev,
-> =20
->  		ret =3D request_threaded_irq(virq, NULL,
->  					lp8788_charger_irq_thread,
-> -					0, name, pchg);
-> +					IRQF_ONESHOT, name, pchg);
->  		if (ret)
->  			break;
->  	}
-> diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply=
-/pm2301_charger.c
-> index ac06ecf7fc9c..a3bfb9612b17 100644
-> --- a/drivers/power/supply/pm2301_charger.c
-> +++ b/drivers/power/supply/pm2301_charger.c
-> @@ -1089,7 +1089,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_cli=
-ent *i2c_client,
->  	ret =3D request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
->  				NULL,
->  				pm2xxx_charger_irq[0].isr,
-> -				pm2->pdata->irq_type,
-> +				pm2->pdata->irq_type | IRQF_ONESHOT,
->  				pm2xxx_charger_irq[0].name, pm2);
-> =20
->  	if (ret !=3D 0) {
-> diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supp=
-ly/tps65090-charger.c
-> index 6b0098e5a88b..d55bcc341854 100644
-> --- a/drivers/power/supply/tps65090-charger.c
-> +++ b/drivers/power/supply/tps65090-charger.c
-> @@ -301,7 +301,8 @@ static int tps65090_charger_probe(struct platform_dev=
-ice *pdev)
-> =20
->  	if (irq !=3D -ENXIO) {
->  		ret =3D devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> -			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-> +			tps65090_charger_isr, IRQF_ONESHOT,
-> +			"tps65090-charger", cdata);
->  		if (ret) {
->  			dev_err(cdata->dev,
->  				"Unable to register irq %d err %d\n", irq,
-> diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supp=
-ly/tps65217_charger.c
-> index 814c2b81fdfe..cba3967ff275 100644
-> --- a/drivers/power/supply/tps65217_charger.c
-> +++ b/drivers/power/supply/tps65217_charger.c
-> @@ -238,8 +238,8 @@ static int tps65217_charger_probe(struct platform_dev=
-ice *pdev)
->  	for (i =3D 0; i < NUM_CHARGER_IRQS; i++) {
->  		ret =3D devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
->  						tps65217_charger_irq,
-> -						0, "tps65217-charger",
-> -						charger);
-> +						IRQF_ONESHOT,
-> +						"tps65217-charger", charger);
->  		if (ret) {
->  			dev_err(charger->dev,
->  				"Unable to register irq %d err %d\n", irq[i],
-> --=20
-> 2.17.1
->=20
+> +enum lockdep_ok {
+> +	LOCKDEP_STILL_OK,
+> +	LOCKDEP_NOW_UNRELIABLE,
+> +};
+> +
+> +extern const char *print_tainted(void);
+> +extern void add_taint(unsigned flag, enum lockdep_ok);
+> +extern int test_taint(unsigned flag);
+> +extern unsigned long get_taint(void);
 
---25m4cz6hxukmhk4d
-Content-Type: application/pgp-signature; name="signature.asc"
+I know you're just moving code, but it would be a nice opportunity to
+drop the redundant externs.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBu+ogACgkQ2O7X88g7
-+pr2Sw//WaQngatrCsqnO9qhac4PWDv+5Qe11OdgvwB453MMiSqeZFd5BO/b/z2O
-6zctraiKJWyhQAOZOGZPL8RPb2psFaFmGGJCAXPYEmIxFhF8y/r5YoMNOjPoJrSy
-mSumlKeIU2jbwm6q7flQogjiKQeyiO/7TGfqgqIlBNjRon5bSOPzjExEyq5SGc+V
-iiAhPt1ng0wdTDlLOns/gMBK2HgWpPShrSFzKOtbThc6REAV2NEgvsSiOGp0MF5i
-YBV/11M9E8eNrtnNvOnLc2QLTEzuUPlvhmN1JkBVDQqcJ6InQCf0xqZQhnDhtty5
-clCKs4IDklUWuCIwmRBLOJ1i/C6YoQmIKn5M5XtGM/o2xA29LXc7h5ieXwyiOmWM
-x7lH4NIzjShoj8na0pPcQN/7v18B4BQbuV5rwvj5m7OlKdeEXyhPv6853zb4ZutM
-mB+NwtILbPGMwtpQKveFbvOPkLRd9gmOcT3r6WFefoscng6RXwXK1kbuTyeibsvy
-xRtAQBaH0BKQQTUEzzI4Bdasf7PzHDJbHECfFG18si4LiVFcz0tlf3GTGn2APHQ7
-g/YzCh/9hJtyUNzT8SHIq10709b67ckpW89QfbZ9JNuX9h0GUkPHoXPJRNh+ZZ4Z
-jj2/YaZ4q6XCbSOWpZVgWhWmykd5b1MPxm7mx19yZiw3ZXsuqh4=
-=dScd
------END PGP SIGNATURE-----
-
---25m4cz6hxukmhk4d--
+Rasmus
