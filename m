@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431C8358F0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C78E358F11
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhDHVQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:16:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57064 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232452AbhDHVQC (ORCPT
+        id S232622AbhDHVQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:16:56 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:63589 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232397AbhDHVQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:16:02 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138L4o3B122175;
-        Thu, 8 Apr 2021 17:15:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=+gJwJsERlCfn8dNrTP1UdF6lCsxN+kYYz1wqELB5RuU=;
- b=Qoxz/OgzE0LARYDbGnb1GkZZpU1hpMfo0jgL2bxojnbDF1ZgvVmNB1t4sjvj189Swjii
- 37V+yWA7cKs/zxV1vjvGv5z587t0aujd0lVAtlW6kcDmdWxYkGNzScb2KoR43jx3lT9y
- PJ1SlBJX3xZIy8R6e3/KCZhMuUXr+On9yk6KOyRgo4CkTxsHLq6G6pbQO9xCTw4giG2n
- 9N8QXSmbL1dBCpSJS+YJEY3rPg3o5kM0bboigsmKEwIRyJWzjVNpCXcimZ6/9gnKNUwk
- Y8aQwb2Wkw47rwbHVWtyhB/xYQJg3FaKW/wUMVxH0V9WpIXwGNL8VyoEcdhuZfpz5aJo Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37t8rphek5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 17:15:48 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 138L5VdN131883;
-        Thu, 8 Apr 2021 17:15:48 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37t8rphejh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 17:15:47 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138LBib2007876;
-        Thu, 8 Apr 2021 21:15:46 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma04dal.us.ibm.com with ESMTP id 37rvc4br4h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 21:15:46 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138LFjNc31719804
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Apr 2021 21:15:45 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67DEB7805E;
-        Thu,  8 Apr 2021 21:15:45 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E61DE7805C;
-        Thu,  8 Apr 2021 21:15:42 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.189.52])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Apr 2021 21:15:42 +0000 (GMT)
-Message-ID: <fc32a469ae219763f80ef1fc9f151a62cfe76ed6.camel@linux.ibm.com>
-Subject: Re: [RFC v2] KVM: x86: Support KVM VMs sharing SEV context
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Nathan Tempelman <natet@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        dovmurik@linux.vnet.ibm.com, lersek@redhat.com, frankeh@us.ibm.com
-Date:   Thu, 08 Apr 2021 14:15:41 -0700
-In-Reply-To: <CABayD+cBdOMzy7g6X4W-M8ssMpbpDGxFA5o-Nc5CmWi-aeCArQ@mail.gmail.com>
-References: <20210316014027.3116119-1-natet@google.com>
-         <20210402115813.GB17630@ashkalra_ubuntu_server>
-         <87bdd3a6-f5eb-91e4-9442-97dfef231640@redhat.com>
-         <936fa1e7755687981bdbc3bad9ecf2354c748381.camel@linux.ibm.com>
-         <CABayD+cBdOMzy7g6X4W-M8ssMpbpDGxFA5o-Nc5CmWi-aeCArQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 8 Apr 2021 17:16:54 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ASlvcwKu6vrHd31bb0UzpIfrj7skCn4Aji2hD?=
+ =?us-ascii?q?6mlwRA09T+WxjMqunOsW2FvdlV8qKTQdsPqHP7SNRm6Z0JZz75UYM7vKZniUhE?=
+ =?us-ascii?q?KDKoZ+4Yz+hwDxAiGWzJ8s6Y5Me7VzYeeAcWRSoMr+4Ba1CNoshOSAmZrJuc7z?=
+ =?us-ascii?q?1GxqVhsvVqcI1XYxNi+1CUtzLTM2fKYRNJ3Z3cZfoirlRHJ/VLXLOlAhX/Lf4/?=
+ =?us-ascii?q?XRnpPnfhJuPW9k1CCqjSm0rJ/3FgHw5GZQbxprwa0+tUjJ+jaJqpmLlvGg11v7?=
+ =?us-ascii?q?yWje9P1t6Zjc4/5CHtHJs84ON1zX+0aVTaFgQaDHhiw/uuu16F0n+eO87SsIGs?=
+ =?us-ascii?q?Ro9jfseXuoqgHmwAnq3F8Vmj7f4Hu5pVemnsDjXjI9DKN69PxkWz/U8VApst05?=
+ =?us-ascii?q?8I8j5RPli7NvFh/LkCnw4NLFPisa3jv+nVMYneQej2NSXOIlAdc7x+Fyky0lc+?=
+ =?us-ascii?q?ZjbUaKj/FALMBUAM7R//pQe1+BBkqpxFVH+9C0W2R2IxHueDl7huWu3z9akGsR?=
+ =?us-ascii?q?9TpT+OUkgnwC+JghIqM0k9jsD6IArsA0cuYrd65nQM8OTcyrY1a9Pi7kASa4IU?=
+ =?us-ascii?q?fuE68OUki98KLf0fER4ueyEaZ4u6caqdDmS1NXtWk7fgbVD9GU1pEO0imlehT4?=
+ =?us-ascii?q?YR3djudE55Z4vbX4AIfsWBfjdHke1+26o/seBcXHW/G8fLJuasWTX1fGKMJz0w?=
+ =?us-ascii?q?r3RpVIbUMTS9IYofEyX17mmLOSFqTa8tfWd/7PKKGoKy8tXkn2HmEONQKDfflo?=
+ =?us-ascii?q?3wSRVnjxnRTLH0n1ckjE95RqHMHhjq4u4blIDYFKuhUYkhCC/8mOEyBLr6BeRj?=
+ =?us-ascii?q?o4HJrX1pm2vXW7+mzFhl8ZTCZ1PwJr6LDhXntWpQkMd0jlGIxzzum3SCRs3GCa?=
+ =?us-ascii?q?PFtERcvQFwJTzm4HnJ6fHtiWw2QrENinMn2X5kFj6U63cw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,207,1613430000"; 
+   d="scan'208";a="502294565"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 23:16:41 +0200
+Date:   Thu, 8 Apr 2021 23:16:41 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+cc:     clabbe@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH 1/2] media: zoran: add spaces around
+ '<<'
+In-Reply-To: <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2104082315560.21785@hadrien>
+References: <cover.1617912177.git.mitaliborkar810@gmail.com> <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: EV1dtE_6LgywavOuJOR7eNYuMoAGKwVO
-X-Proofpoint-GUID: Y9cjsZa-Lc66B5wV31u__Ngva2wUTI0l
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-08_07:2021-04-08,2021-04-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- impostorscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
- mlxlogscore=999 bulkscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104080141
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-08 at 12:48 -0700, Steve Rutherford wrote:
-> On Thu, Apr 8, 2021 at 10:43 AM James Bottomley <jejb@linux.ibm.com>
-> wrote:
-> > On Fri, 2021-04-02 at 16:20 +0200, Paolo Bonzini wrote:
-> > > On 02/04/21 13:58, Ashish Kalra wrote:
-> > > > Hi Nathan,
-> > > > 
-> > > > Will you be posting a corresponding Qemu patch for this ?
-> > > 
-> > > Hi Ashish,
-> > > 
-> > > as far as I know IBM is working on QEMU patches for guest-based
-> > > migration helpers.
-> > 
-> > Yes, that's right, we'll take on this part.
-> > 
-> > > However, it would be nice to collaborate on the low-level
-> > > (SEC/PEI) firmware patches to detect whether a CPU is part of the
-> > > primary VM or the mirror.  If Google has any OVMF patches already
-> > > done for that, it would be great to combine it with IBM's SEV
-> > > migration code and merge it into upstream OVMF.
-> > 
-> > We've reached the stage with our prototyping where not having the
-> > OVMF support is blocking us from working on QEMU.  If we're going
-> > to have to reinvent the wheel in OVMF because Google is unwilling
-> > to publish the patches, can you at least give some hints about how
-> > you did it?
-> > 
-> > Thanks,
-> > 
-> > James
-> 
-> Hey James,
-> It's not strictly necessary to modify OVMF to make SEV VMs live
-> migrate. If we were to modify OVMF, we would contribute those changes
-> upstream.
-
-Well, no, we already published an OVMF RFC to this list that does
-migration.  However, the mirror approach requires a different boot
-mechanism for the extra vCPU in the mirror.  I assume you're doing this
-bootstrap through OVMF so the hypervisor can interrogate it to get the
-correct entry point?  That's the code we're asking to see because
-that's what replaces our use of the MP service in the RFC.
-
-James
 
 
+On Fri, 9 Apr 2021, Mitali Borkar wrote:
+
+> Added spaces around '<<' operator to improve readability and meet linux
+> kernel coding style.
+> Reported by checkpatch
+>
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+>  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
+> index 71b651add35a..a2a75fd9f535 100644
+> --- a/drivers/staging/media/zoran/zr36057.h
+> +++ b/drivers/staging/media/zoran/zr36057.h
+> @@ -30,13 +30,13 @@
+>  #define ZR36057_VFESPFR_HOR_DCM          14
+>  #define ZR36057_VFESPFR_VER_DCM          8
+>  #define ZR36057_VFESPFR_DISP_MODE        6
+> -#define ZR36057_VFESPFR_YUV422          (0<<3)
+> -#define ZR36057_VFESPFR_RGB888          (1<<3)
+> -#define ZR36057_VFESPFR_RGB565          (2<<3)
+> -#define ZR36057_VFESPFR_RGB555          (3<<3)
+> -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
+> -#define ZR36057_VFESPFR_PACK24          (1<<1)
+> -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
+> +#define ZR36057_VFESPFR_YUV422          (0 << 3)
+> +#define ZR36057_VFESPFR_RGB888          (1 << 3)
+> +#define ZR36057_VFESPFR_RGB565          (2 << 3)
+> +#define ZR36057_VFESPFR_RGB555          (3 << 3)
+> +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
+> +#define ZR36057_VFESPFR_PACK24          (1 << 1)
+> +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
+
+Are these all aligned in the actual file?
+
+julia
+
+>  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
+>
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810%40gmail.com.
+>
