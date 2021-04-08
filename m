@@ -2,167 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC4A358E48
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4689E358E4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbhDHUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:24:01 -0400
-Received: from mail-eopbgr1400134.outbound.protection.outlook.com ([40.107.140.134]:27983
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231451AbhDHUYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:24:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ru5qF3OEGQ9PnO2VFMz7sTGi6amHmmRGMsGG+wHTbCDqE+n40rKZOfHc+cmyoJJH13/hudT0aJoGNJd34BG+m7jgkR+ZyubhROK37cV+4gqRpq7yKo6t3kjwxBjfx9ERgcr/rf8uEi7B9ExiyS+VF/m0cwInYTcNI8x/6dcENWzaQ03kBCqOrYoYeEMRIR2M+ZxSL3buOFGzrx/HlywycXTiZ59hc9pptfq+ZqQwrikwORgJSQizSv+miT0srYJ72gxGgyESQhjMH7qxO3MOCECfteoocHRDa+KQe/snJ+K/8I4EVqaQkNCN/vwHWHeyPzmNQVpffORlMwS0x3jCvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ScVmpyi59xPi6tgrq+QdS8MkgCYbbJlsDaHO/VfxI1Y=;
- b=h/Hr9zYEG0/mkQvQauhR/65ZPoOcWJu6A34GzawIqkqD+Zw4JSLY9gdtckqTo3qIjA5PLL8R2iXNd6r+PlB1w5k4AVVu6GseVH2+CPfc5Tw1Fa9dv+Is0kIMijvMGWQHqetBd/55MiJzQWdEL31qF5GZ5iBQeoUVDPNKhGh0eMMo6QBK2MSql88WrLNSdn806QfmiMEa4ZHV/A/8GgP3Y1Go6rzsoM7sQjIxBAb8MClErApuzOznE/HRhyFxSlqSr5BIeqbVrn+B8xrJZv12G6375KOvu/H5bEAapm5pK6ziqIN7tNaSleXVQPJOg24xfOFfwSyluOCZoPrLsDm6aA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ScVmpyi59xPi6tgrq+QdS8MkgCYbbJlsDaHO/VfxI1Y=;
- b=J2s5QSOfq8AVFtwjj8GcCKWV3SIdxh70egkeLKIaz4R3T+xDj+KaeJ6UPMz3v6PR4UEHity3AhAteaOReNIcOjk1xEEEqErcYlFEkV4PtsBowjv8EydzLHL5qK4QHRa4EQ2rx9LJ6S+h2ez/RJ4LZWyF4VQAyMSrpAeYlVm/2gY=
-Received: from OSAPR01MB2737.jpnprd01.prod.outlook.com (2603:1096:603:38::21)
- by OS3PR01MB6135.jpnprd01.prod.outlook.com (2603:1096:604:d9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Thu, 8 Apr
- 2021 20:23:45 +0000
-Received: from OSAPR01MB2737.jpnprd01.prod.outlook.com
- ([fe80::4d2d:3155:768e:50e0]) by OSAPR01MB2737.jpnprd01.prod.outlook.com
- ([fe80::4d2d:3155:768e:50e0%7]) with mapi id 15.20.4020.016; Thu, 8 Apr 2021
- 20:23:45 +0000
-From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-CC:     Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: RE: [PATCH v5 2/5] media: dt-bindings: media: renesas,drif: Convert
- to json-schema
-Thread-Topic: [PATCH v5 2/5] media: dt-bindings: media: renesas,drif: Convert
- to json-schema
-Thread-Index: AQHWp7GZa1JNKQqPtk+I2E/mnD2fUaonm7MAgILMIoCAAbKZoA==
-Date:   Thu, 8 Apr 2021 20:23:44 +0000
-Message-ID: <OSAPR01MB2737E11A8935D571A9C96005C2749@OSAPR01MB2737.jpnprd01.prod.outlook.com>
-References: <20201021135332.4928-1-fabrizio.castro.jz@renesas.com>
- <20201021135332.4928-3-fabrizio.castro.jz@renesas.com>
- <CAMuHMdWj_Gm6vwOF9Akz84WakA3KTcNTRHte6ukEF_U5=Q8xFA@mail.gmail.com>
- <CAL_JsqLgSjOxc8uoicSLE8nR=EKGpzK31CyHgdp5xarLtMV=9w@mail.gmail.com>
-In-Reply-To: <CAL_JsqLgSjOxc8uoicSLE8nR=EKGpzK31CyHgdp5xarLtMV=9w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [2.28.163.2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 401cf3f8-9214-44b7-bf47-08d8facc3587
-x-ms-traffictypediagnostic: OS3PR01MB6135:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OS3PR01MB61359D733114EEBC3B01E3CFC2749@OS3PR01MB6135.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MpQnpt7BDZ1r42wuApsGW1nw8Ck65gHSati6j55kY0I0iqlHdjPKpZMoDPW/GY2fWIOdkwB4nwV/mDr/XfAqWHEnUfNaBkrQOe14S9ojLeZVaJtshJysrvg+slz8Hx6hKamnA78Or6Gqt0UMqHZgjuKInRlHKSpS7RjjZS+UVzu9uWIpN9jED8paC3aaQzpU4w4RW8KnZEDGpBmMtAYfhiiTiTa4ji/DaQpMDzB+K4tT/lvRyKC5bdoVUuUtDGpXzyw8tLz2xq+V4E+sSY6CvWjngUOaOWFIqB1XC3TTeXDcTfZuwBB+Th7A2e/opSXjswezZuPRow7M3/6npPxpog/iEbhxq+Mv5lVGhXgDUejf7lZ5ePvVaaYZu/y3ByDSHt84rCaDofnOq0/E4ZeLlYsx4o83ya9Zj1LvQy4Zef9L2b8OlagB8yNIULV/LQ1lejaNPkR9In8niHBzUrWNdxw7upWyHmdD0wmOmkpWR2PABgu+niSSI9Pve1/F65i3hBaTX0DUcqY/OdP1q8NuoNN5ymKuJ0Od+LvAdDcxDqd7XjoyaVBOVAuFeGNfAoaUSSyN9zqU0iDl+SM4GhETxiriVQ9tC0N6NiKf+0xaMW+6sIiwFnvJ+sGjDCGvodLa2/NxNguiNJyZwgxPGNIFlrLOfKlX5q8rS5vPn8/UtKE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB2737.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39850400004)(346002)(376002)(64756008)(71200400001)(76116006)(66946007)(66446008)(33656002)(66476007)(66556008)(8936002)(478600001)(9686003)(4326008)(83380400001)(54906003)(7696005)(6506007)(53546011)(316002)(38100700001)(110136005)(5660300002)(7416002)(52536014)(26005)(2906002)(186003)(55016002)(86362001)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?cndXYXo5S24zUDJBbDUvVVJSdEJ3YnVha1pmd0FZUVkxRXNZc2VaUzFvVkZq?=
- =?utf-8?B?WUNSTjBOSWpabmpic0hldXhqVERHbU5sUWJBYmhra3BXY1BrSXpIU0JuSnFM?=
- =?utf-8?B?cTRPRmdsUTE3bCtIK1d2YXkxa0pPRUdsSGVxR1BVMzFqSGMzZWZDV2ZuQSt4?=
- =?utf-8?B?bmx2WmVqTDEwR1Q5RnRPaVUxcmliemx6czg5aG9mZ3NleHVrSlJWTWZJSjJj?=
- =?utf-8?B?djVGYUhwZkY5NU5hdU14emNidDlCclVsUm1oQ1Iwa0liVk85d0VRM3cwYjAz?=
- =?utf-8?B?SlNkMlhVVFBQdE1RbmZuT1daTkhXR1ZDa2plUkpON2NKVENPUjRmRmZwNkZj?=
- =?utf-8?B?czhjNGJlYzJVbzBkZ002TXNtU3lvRHdwZjgyTTZXRzNTdG0wdTYxYm1GMVZq?=
- =?utf-8?B?dlZMSEpQOGRRWnZZdllIQkRZNXJ0Slk1RkhsNUlpa3N2Mmw1ZkVHcTFXR3lh?=
- =?utf-8?B?NTM1b0tEaWpYaGtVSlNhcDFJbTA2UHJVa3NmZ01qc0c0RGRRRHkwV3FtUlVH?=
- =?utf-8?B?blZrRk43YWhRNFpBODA0UUFvNlhtZlhyRUhaeVI2SmkrVkFFQkVIMEo3Smc1?=
- =?utf-8?B?SDNlNGN1K3NxSFVld1U2OHl0dWxsb3ZYYVo4Y2dQbXE5SW1RckJZN1AvRU5i?=
- =?utf-8?B?Qm5zVm4yaW5yNDVqNjdySUd6cUlPc1AyWmR5cEl4NmhOcWwwOFFXdkVuY1Ny?=
- =?utf-8?B?eXlMT2NWeXpSSTh6TFBDMVpkUldMcVFURnRMSjBGYjl5dEQ0ejkxdTBhRTVK?=
- =?utf-8?B?RmdvNEVXWHhBaFJCUDR6RCtZRmkzbzhnb2ovK0VrL3JmQ1lTcHl3ejJMa1lI?=
- =?utf-8?B?OThxWGhXdnVvait2ZzU0Znh4bEl5V1lua3JhZjdBeUJGMmw3alBuUnA0ZFZt?=
- =?utf-8?B?RERPQUZYcXJTRVhaN3lEcnRPVTJvbG9zK3ZQY1dRS2hKZHl6ZURLTVVrbTRs?=
- =?utf-8?B?dXlKTkpwMlpuWE1lenZpTGZEYmlUT0diS2lqL2JlR0d6YlpVeldtaUhTZFhk?=
- =?utf-8?B?SVpldDV3RXpTSld3eCtXc3F0dEE3WGE1aSt6SzIxYWNZMno4Qm5VUmgvT0ln?=
- =?utf-8?B?b29ieGppRjJHTmJDWmVZOEx6SGd1V1ZRaE9xSERGbXZYYjVQZ1JOS1BNaXBr?=
- =?utf-8?B?S2syd3E0L2lmTFJXc0NlSm9QZGJHSTBKa2NocDc5UFI0ZUVLVFFjcmFEQzdW?=
- =?utf-8?B?M0VkbGlORmNzaHhHYjdUMWpEc2RRLzBBdVJWeFBUcTU2YTVpOXQvem5EaVdn?=
- =?utf-8?B?aVp5aS9ob0xNSWVCNlp5L2k5ampoQjlua1grYjQraEE1a3ZEUDJhM0w3bzBO?=
- =?utf-8?B?OEZYRUJLODB3eWJHcGRRY1A3THRNM1ptdks2Ly9VOUY2S0ZkVmNWMy9SdXo5?=
- =?utf-8?B?aW9yR0l2SlJhNXlkS3hjdUxMckhtM016eWlPa3lSR2M0ZDBxYWxCb2QrSCtu?=
- =?utf-8?B?SExUNzlrT1RQSkNiUHFPMVBuL0p5NXM3WDV3SFJYL1g1enFzTjVIMVVwSXZh?=
- =?utf-8?B?RUdRYjVKSGVGWmgwWlhhWGFJcllicXgzd253WStmb1V3d0xxRm1PNko3UGsx?=
- =?utf-8?B?TTl5WnNLTThtY3ZjcWtCdWJuVHE3SXRUSFBhdFNGVk1rQnpuM3o3eVlJS3kx?=
- =?utf-8?B?Ykx4MHNUTDJ1WC9yeG1SbmhkSTJ1VlIybGI2L0R1eTQ1YXg4Y0I0UFVoUVVX?=
- =?utf-8?B?Nmk1R2syc01mQVUyVXVremVFYlNxU2RTUkhMMTVpREorVkljWkVqM05aVFcv?=
- =?utf-8?Q?015B9+E2fP7rC6eFZY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232041AbhDHUYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:24:17 -0400
+Received: from smtp-32-i2.italiaonline.it ([213.209.12.32]:44625 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232345AbhDHUYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 16:24:16 -0400
+Received: from oxapps-32-144.iol.local ([10.101.8.190])
+        by smtp-32.iol.local with ESMTPA
+        id UbC6lu1MTBc6YUbC6lVgnb; Thu, 08 Apr 2021 22:24:03 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1617913443; bh=S3BIXQfpQo++zDln2EF8ZcTp8LoMYd8zAJ9p8/j1cB8=;
+        h=From;
+        b=xFdHjz4S1+eWsKxVH3uJuNwgtBvw9EcOO20hrm1MIspoCCg3GfBB7N5j8VGtWkCem
+         gJq5hTeePzqgK/U5Ls7MCznyROAF+MNR3K3sbd3XLohYbsw8385TC++JQp0g69Ztmh
+         gkc5WcGuH+28B4mKc0v3FcGuGizjHK3W7+EGXQkB5JEQjxraf6mlyASGI3jX/VRKoL
+         fzBLqK5onoeNusHMyob/frpIem+qh70A4dRX8zW7mXnNDoKI0VNCtYfO0nSGeHAce5
+         skLOcWdSpa3ZmmwiMlvhZUa/SYQatGcPTFY1FnfsC4BomcGKZ9uyuqVCQbZal7B1es
+         oh+cqr19skVcQ==
+X-CNFS-Analysis: v=2.4 cv=B6l8bMhM c=1 sm=1 tr=0 ts=606f6663 cx=a_exe
+ a=+LyvvGPX93CApvOVpnXrdQ==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
+ a=_gZzKa99_6AA:10 a=VwQbUJbxAAAA:8 a=voM4FWlXAAAA:8 a=pGLkceISAAAA:8
+ a=8LTHUb3NTGMUmE2BBAMA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=IC2XNlieTeVoXbcui8wp:22
+Date:   Thu, 8 Apr 2021 22:24:02 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>
+Message-ID: <116337570.107804.1617913442196@mail1.libero.it>
+In-Reply-To: <a197b5d8-621b-6655-e571-2877d007cd4c@kernel.org>
+References: <20210402192054.7934-1-dariobin@libero.it>
+ <CAL_JsqKkpZw_BmcCXUzahF-FkQ=vb7mb_s95Lm2G7pWo0=dqNA@mail.gmail.com>
+ <1727466283.11523.1617746554330@mail1.libero.it>
+ <CAL_JsqLd+BxW9T99Sx9vgEkxdbMFe+tL7X_nZ7ExvRxVd_9GNQ@mail.gmail.com>
+ <1044574275.383115.1617779265390@mail1.libero.it>
+ <CAL_JsqLcus=Y5nOuV1wiAiVb1mTq9N8xqJpGJD6ip+Ec_6YDyw@mail.gmail.com>
+ <a197b5d8-621b-6655-e571-2877d007cd4c@kernel.org>
+Subject: Re: [PATCH 0/2] fdt: translate address if #size-cells = <0>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB2737.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 401cf3f8-9214-44b7-bf47-08d8facc3587
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 20:23:44.6908
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgedTfGE9vs4XHKQ99O58MTNU7YOsXRngGlAZfZnGt6FemksexLkMvYr0exJxHbjrfFsEDFSzc51j8sWC7F5grpmyDkmGxKEYtJeGP/x3Ks=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6135
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 87.20.116.197
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: TFQtKds0nbk74TFIzoCUz9lR1gEridzg
+x-libjamv: fydCTFSi3F8=
+X-CMAE-Envelope: MS4xfClDELyJojz8n+Kd3LDLNRqiGELfp97d0xdF/Xm+4PL05Az1h56U0o7sWpEBqTfnU5tN/T+tmmOeQvfH5TQ42zWNDNcIQ5loYIRzrs/6VZbMnSsyEKXV
+ 0Dj5BY813FOaXezdFBcrW4MXuJMAvulsWEse2THai0cXw2NNaNs15Wir/Pgg/6GW91o28GkUfbHrYXaFUc31qrQxH1fsQMDSD8qdgqfIEu8s9Sau2VV6zeCJ
+ 4g3fp+lZuq8bWFDM0tBLhlDQ9CtK8yJWGBFULcT6YL7y68Wu+0bUWBuFp4iSzo4omxiIRqkdlZ/pvJNEv6llHjbHessKIvU5JcY9Gjq/Ees5mdfye3ngl0z3
+ ilYC7ZNve8Hh9ZhmjrkTN0bB0k4+ovaoKpqlZK783mltfY2r0j4asYRiCEWC/lP/FiV/X+SCvHXtvXMYIRCllH4aJjnFd8KzxMpfoGgFXDOM3M6259Yf/IW/
+ iQs2gTKxaxDwyUvV9J6fF8b4yAAPcR3hmVDUsj6J1Dxi8XwIKQMqx7XVZdy7OwUDcMsoeOlIR3xL/2x7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQp0aGFua3MgZm9yIHlvdXIgZmVlZGJhY2suDQoNCj4gRnJvbTogUm9iIEhlcnJp
-bmcgPHJvYmgrZHRAa2VybmVsLm9yZz4NCj4gU2VudDogMDcgQXByaWwgMjAyMSAxOToyNw0KPiBT
-dWJqZWN0OiBSZTogW1BBVENIIHY1IDIvNV0gbWVkaWE6IGR0LWJpbmRpbmdzOiBtZWRpYTogcmVu
-ZXNhcyxkcmlmOg0KPiBDb252ZXJ0IHRvIGpzb24tc2NoZW1hDQo+IA0KPiBPbiBUaHUsIEphbiAx
-NCwgMjAyMSBhdCA3OjAyIEFNIEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5v
-cmc+DQo+IHdyb3RlOg0KPiA+DQo+ID4gSGkgRmFicml6aW8sIFJvYiwNCj4gPg0KPiA+IE9uIFdl
-ZCwgT2N0IDIxLCAyMDIwIGF0IDM6NTMgUE0gRmFicml6aW8gQ2FzdHJvDQo+ID4gPGZhYnJpemlv
-LmNhc3Ryby5qekByZW5lc2FzLmNvbT4gd3JvdGU6DQo+ID4gPiBDb252ZXJ0IHRoZSBSZW5lc2Fz
-IERSSUYgYmluZGluZ3MgdG8gRFQgc2NoZW1hIGFuZCB1cGRhdGUNCj4gPiA+IE1BSU5UQUlORVJT
-IGFjY29yZGluZ2x5Lg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEZhYnJpemlvIENhc3Ry
-byA8ZmFicml6aW8uY2FzdHJvLmp6QHJlbmVzYXMuY29tPg0KPiA+ID4gUmV2aWV3ZWQtYnk6IExh
-ZCBQcmFiaGFrYXIgPHByYWJoYWthci5tYWhhZGV2LWxhZC5yakBicC5yZW5lc2FzLmNvbT4NCj4g
-PiA+IFJldmlld2VkLWJ5OiBMYXVyZW50IFBpbmNoYXJ0IDxsYXVyZW50LnBpbmNoYXJ0QGlkZWFz
-b25ib2FyZC5jb20+DQo+ID4gPiBSZXZpZXdlZC1ieTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVy
-dCtyZW5lc2FzQGdsaWRlci5iZT4NCj4gPiA+IFJldmlld2VkLWJ5OiBSb2IgSGVycmluZyA8cm9i
-aEBrZXJuZWwub3JnPg0KPiA+DQo+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0KPiA+DQo+ID4g
-PiAtLS0gL2Rldi9udWxsDQo+ID4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbWVkaWEvcmVuZXNhcyxkcmlmLnlhbWwNCj4gPg0KPiA+ID4gKyAgY2xvY2stbmFtZXM6
-DQo+ID4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gPiArICAgIGl0ZW1zOg0KPiA+ID4gKyAgICAg
-IC0gY29uc3Q6IGZjaw0KPiA+DQo+ID4gV2l0aCBsYXRlc3QgZHQtc2NoZW1hLCAibWFrZSBkdF9i
-aW5kaW5nX2NoZWNrIiBjb21wbGFpbnM6DQo+ID4NCj4gPiAgICAgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL21lZGlhL3JlbmVzYXMsZHJpZi55YW1sOg0KPiA+IHByb3BlcnRpZXM6
-Y2xvY2stbmFtZXM6bWF4SXRlbXM6IEZhbHNlIHNjaGVtYSBkb2VzIG5vdCBhbGxvdyAxDQo+ID4g
-ICAgIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9yZW5lc2FzLGRyaWYu
-eWFtbDoNCj4gPiBpZ25vcmluZywgZXJyb3IgaW4gc2NoZW1hOiBwcm9wZXJ0aWVzOiBjbG9jay1u
-YW1lczogbWF4SXRlbXMNCj4gDQo+IFNlZW1zIHRoaXMganVzdCBnb3QgYXBwbGllZCwgYW5kIG5v
-dyB0aGlzIGVycm9yIGlzIGluIGxpbnV4LW5leHQuDQoNCkknbGwgc2VuZCBhIHBhdGNoIHRvIGZp
-eCB0aGUgcHJvYmxlbSBzaG9ydGx5Lg0KDQpUaGFua3MsDQpGYWINCg0KPiANCj4gPg0KPiA+IFVz
-aW5nDQo+ID4NCj4gPiAgICAgICAgY2xvY2stbmFtZXM6DQo+ID4gICAgICAgICAgY29uc3Q6IGZj
-aw0KPiA+DQo+ID4gRml4ZXMgdGhhdC4NCj4gPg0KPiA+IEhvd2V2ZXIsIEknbSB3b25kZXJpbmcg
-d2h5IEkgZG8gbm90IGdldCBhIGNvbXBsYWludCBhYm91dCB0aGUgc2ltaWxhcg0KPiA+IGNsb2Nr
-L2Nsb2NrLW5hbWVzIGluDQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rp
-c3BsYXkvYnJpZGdlL3JlbmVzYXMsbHZkcy55YW1sLg0KPiA+IEJlY2F1c2UgdGhleSdyZSBwYXJ0
-IG9mIGFuIGVsc2UgYnJhbmNoPw0KPiANCj4gUHJvYmFibHkuIGlmL3RoZW4vZWxzZSBzY2hlbWFz
-IGhhdmUgZmV3ZXIgY2hlY2tzIGFzIHRoZXkgY2FuIGJlDQo+IGluY29tcGxldGUgKG9ubHkgYWRk
-aXRpb25hbCBjb25zdHJhaW50cyBvbiB0aGUgdG9wLWxldmVsIHNjaGVtYSkuDQo+IA0KPiBSb2IN
-Cg==
+
+> Il 07/04/2021 15:21 Tero Kristo <kristo@kernel.org> ha scritto:
+> 
+>  
+> On 07/04/2021 15:52, Rob Herring wrote:
+> > On Wed, Apr 7, 2021 at 2:07 AM Dario Binacchi <dariobin@libero.it> wrote:
+> >>
+> >>
+> >>> Il 07/04/2021 03:16 Rob Herring <robh+dt@kernel.org> ha scritto:
+> >>>
+> >>>
+> >>> On Tue, Apr 6, 2021 at 5:02 PM Dario Binacchi <dariobin@libero.it> wrote:
+> >>>>
+> >>>>
+> >>>>> Il 06/04/2021 16:06 Rob Herring <robh+dt@kernel.org> ha scritto:
+> >>>>>
+> >>>>>
+> >>>>> On Fri, Apr 2, 2021 at 2:21 PM Dario Binacchi <dariobin@libero.it> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>> The series comes from my commit in U-boot
+> >>>>>> d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
+> >>>>>> and from the subsequent exchange of emails at the end of which I was
+> >>>>>> suggested to send the patch to the linux kernel
+> >>>>>> (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
+> >>>>>
+> >>>>> It's 'ranges' that determines translatable which is missing from the
+> >>>>> DT. This should have not had a 0 size either though maybe we could
+> >>>>> support that.
+> >>>>
+> >>>> I have replied to the email you sent to the u-boot mailing list
+> >>>>
+> >>>>>
+> >>>>> Does the DT have to be updated anyways for your spread spectrum support?
+> >>>>
+> >>>> The spread spectrum support patch does not need this patch to work. They belong
+> >>>> to two different series.
+> >>>
+> >>> That's not what I asked. Is the spread spectrum support forcing a DT
+> >>> update for users?
+> >>
+> >> Yes, the deltam and modfreq registers must be added to the DPLL clocks.
+> > 
+> > That's a shame given this dts has been mostly untouched since 2013.
+> > 
+> 
+> I think technically it would be possible to map these registers within 
+> the driver also, seeing there are like a handful of the DPLLs for both 
+> am3/am4 which are impacted. Just add a new compatible or something, or 
+> alternatively parse the register addresses and populate the 
+> deltam/modfreq registers based on that.
+
+I have not added new compatibles, but I have added the offset of the delta and modfreq 
+registers to the data structures used by the DPLL drivers and I have set them in the 
+related setup functions.
+https://lore.kernel.org/patchwork/patch/1406590/
+
+> 
+> >>> If the DT has to be changed anyways (not really
+> >>> great policy), then you could fix this in the DT at the same time.
+> >>
+> >> I could put the fix to the device tree in that series, although I wouldn't
+> >> create a single patch to fix and add the SSC registers. First the size-cells = <0>
+> >> fix patch and then the SSC patch.
+> >> Do you agree?
+> > 
+> > By at the same time, I really just meant within 1 release.
+> > 
+> > But I'd like to hear TI maintainers' thoughts on this.
+> 
+> I did post a comment on patch #1 questioning the approach from TI clock 
+> driver perspective, imho I can't see why these two patches would be 
+> needed right now.
+
+Because U-boot maintainers asked me after I sent them my patch on this issue. 
+I believe that the email exchange that took place in the U-boot (https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/)
+and Linux kernel mailing lists showed that:
+- The patch 'fdt: translate address if # size-cells = <0>' is wrong (U-boot has accepted 
+  it, and it will have to be reverted).
+- However, the same patch highlighted that it is wrong to use the size-cells = <0> property 
+  in the prcm_clocks and scm_clocks nodes of device tree.
+- Rob agrees that in the case of the am3xx this is the right choice:
+diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+index 1fb22088caeb..59b0a0cf211e 100644
+--- a/arch/arm/boot/dts/am33xx-l4.dtsi
++++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+@@ -110,7 +110,8 @@
+ 
+                                prcm_clocks: clocks {
+                                        #address-cells = <1>;
+-                                       #size-cells = <0>;
++                                       #size-cells = <1>;
++                                       ranges = <0 0 0x2000>;
+                                };
+ 
+                                prcm_clockdomains: clockdomains {
+@@ -320,7 +321,8 @@
+ 
+                                        scm_clocks: clocks {
+                                                #address-cells = <1>;
+-                                               #size-cells = <0>;
++                                               #size-cells = <1>;
++                                               ranges = <0 0 0x800>;
+                                        };
+                                };
+
+--- a/arch/arm/boot/dts/am33xx-clocks.dtsi
++++ b/arch/arm/boot/dts/am33xx-clocks.dtsi
+@@ -10,7 +10,7 @@
+                compatible = "ti,mux-clock";
+                clocks = <&virt_19200000_ck>, <&virt_24000000_ck>, <&virt_25000000_ck>, <&virt_26000000_ck>;
+                ti,bit-shift = <22>;
+-               reg = <0x0040>;
++               reg = <0x0040 0x4>;
+        };
+ 
+        adc_tsc_fck: adc_tsc_fck {
+@@ -98,7 +98,7 @@
+                compatible = "ti,gate-clock";
+                clocks = <&l4ls_gclk>;
+                ti,bit-shift = <0>;
+-               reg = <0x0664>;
++               reg = <0x0664 0x04>;
+        };
+[...]
+
+- U-boot rightly wants to use the same device tree as the Kernel.
+- IMHO, if I'm not missing something, I think using a #size-cells = <1>; for clocks 
+  it requires only one code change in the ti_clk_get_reg_addr():
+
+--- a/drivers/clk/ti/clk.c
++++ b/drivers/clk/ti/clk.c
+@@ -265,9 +265,27 @@ int __init ti_clk_retry_init(struct device_node *node, void *user,
+ int ti_clk_get_reg_addr(struct device_node *node, int index,
+                        struct clk_omap_reg *reg)
+
+-       if (of_property_read_u32_index(node, "reg", index, &val)) {
++       if (of_property_read_u32_index(node, "reg", index * 2, &val)) {
+
+   The other changes to develop affect device trees of architectures which, like am3, currently
+   use #size-cells = <0>.
+
+IMHO, all this would lead to an improvement of the device trees with minimal impact on the code. 
+It would benefit U-boot, which would not have to develop special platform code and any new 
+architectures that would inherit from these DTs.
+
+If you think it might be worth it, I am available to develop this patch.
+
+Thanks and regards,
+Dario
+
+> 
+> -Tero
