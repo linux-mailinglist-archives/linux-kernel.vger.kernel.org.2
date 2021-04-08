@@ -2,73 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980D93583AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42ACC358400
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhDHMvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:51:41 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16843 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhDHMvk (ORCPT
+        id S231616AbhDHM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231534AbhDHM7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:51:40 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGLgG63ljz9sLf;
-        Thu,  8 Apr 2021 20:49:14 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 20:51:19 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>
-CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Chen Huang <chenhuang5@huawei.com>
-Subject: [PATCH -next] vfio/fsl-mc: Use module_fsl_mc_driver to simplify the code
-Date:   Thu, 8 Apr 2021 12:58:57 +0000
-Message-ID: <20210408125857.1158780-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 8 Apr 2021 08:59:36 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB92C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 05:59:24 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id e14so2851543ejz.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bXaNApsUJBQRijtom4CaAhgB0kqvpHWQ8lB5126OVbU=;
+        b=GqDXqGZU3WOMP1JWd2baxuE3IyzrOvNzhGrIswRLTHGuF9mrtmJwVpIrBpcgr7FlcN
+         WEcSKNIIFX/CsruJLWPGL2QL7ImMGOnkcsp4u/azNm0XV4gUEXVOaiUWAJdALRQxfC/e
+         EBl1xxE1z3cTgnbymFn8WDpltPG/z1561B8cpvBdOK2NrfwBWW86pRBXFqXGMUUZEfsF
+         8NCZsV7VxOUJR/cqDBjxlkxe+o5yjfu0cflXxhoV5dOUDikes/YYz9H0NNJf5yThfhQx
+         9EbztooxPKJYpQmslI9JtPWXV8AMOJpwrD+Aq24gNXE2nQsLfZ2Eoaj5iHTaz1dnA8kC
+         XhxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bXaNApsUJBQRijtom4CaAhgB0kqvpHWQ8lB5126OVbU=;
+        b=q7zBr7NFtq0GzNC0p5JUue4U9l9Cau3uA/1bFlYSyfyBkUJc0wiAYoPPRVgJ7Z/dK3
+         U8k+BSZTHhnxnzroXLcmUQNRzXLl1+q3W1i5SdcWRqGNGvA9wCvnOJTsUv5/1pET/fvG
+         mQ2zIacFDE2FMFWGIhmKTM/6G8NThpi91Y/tD84x+kow5ahOM3x9amW1LYN/5/gPnA5G
+         bwhJJoF9u02nY++m17LblHf6Ohh6nliZBqjdikggtThBvjktgrFkOn/gMDszFIrLGpB1
+         D6djSuDqC4IIHHSaOdgS3Acp8QeRq35JEwlZmHJG+20qdZx4UIlOWhmgM9EEOojNqw7z
+         RpSA==
+X-Gm-Message-State: AOAM533lUvCO/cxtnbKzhmWJM0zWlofE+ooqaPoO60va9pWGz7cNDdt3
+        pnvby/WPLucuJS3FKO+hlrapHfaR91k6tAeMP4khvg==
+X-Google-Smtp-Source: ABdhPJzT52+7fhpzyGdEPpFOaQHm0H5K5N9slJdZWOCE0StJyTV8DY7tAOulhTQU/LlU+EEkYf+hetlLkRsAW1D8TBw=
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr10011936ejc.133.1617886762806;
+ Thu, 08 Apr 2021 05:59:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-CFilter-Loop: Reflected
+References: <CA+G9fYsiRYaE+y44ApDkvPvbDCdiJ+nnCMhiiaPVsg6p8m4+1Q@mail.gmail.com>
+ <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com>
+ <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com> <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 8 Apr 2021 18:29:11 +0530
+Message-ID: <CA+G9fYuYC3QK2Zi8pbud0ebai4d4YgB0A4DXg5XWaE1pLWP5tw@mail.gmail.com>
+Subject: Re: [next] [arm64] [gpio] BUG: key has not been registered! DEBUG_LOCKS_WARN_ON:
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Colin King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-module_fsl_mc_driver() makes the code simpler by eliminating
-boilerplate code.
+On Thu, 8 Apr 2021 at 15:17, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Apr 8, 2021 at 11:33 AM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> > On Thu, 8 Apr 2021 at 04:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Apr 8, 2021 at 12:38 AM Naresh Kamboju
+> > > <naresh.kamboju@linaro.org> wrote:
+> > > >
+> > > > While running kselftest recently added gpio gpio-sim.sh test case the following
+> > > > warning was triggered on Linux next tag 20210330 tag running on arm64 juno
+> > > > and hikey devices.
+> > > >
+> > > > GOOD: next-20210326
+> > > > BAD: next-20210330
+> > > >
+> > > > This is still happening today on Linux next tag 20210407.
+> > >
+> > > Can you add the following
+> > >
+> > >   sysfs_attr_init(attrs[i]);
+> > >
+> > > to the end of the loop in gpio_sim_setup_sysfs()?
+> >
+> > Do you mean like this,
+> >
+> > diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> > index ea17289a869c..5fe67ccf45f7 100644
+> > --- a/drivers/gpio/gpio-sim.c
+> > +++ b/drivers/gpio/gpio-sim.c
+> > @@ -296,6 +296,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+> >                 dev_attr->store = gpio_sim_sysfs_line_store;
+> >
+> >                 attrs[i] = &dev_attr->attr;
+> > +               sysfs_attr_init(attrs[i]);
+> >         }
+> >
+> >         chip->attr_group.name = "line-ctrl";
+>
+> Precisely.
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+As per your suggestions the above line added and build tested
+the reported issue is fixed now.
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index 980e59551301..b2fcc77a037f 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -701,18 +701,7 @@ static struct fsl_mc_driver vfio_fsl_mc_driver = {
- 	},
- };
- 
--static int __init vfio_fsl_mc_driver_init(void)
--{
--	return fsl_mc_driver_register(&vfio_fsl_mc_driver);
--}
--
--static void __exit vfio_fsl_mc_driver_exit(void)
--{
--	fsl_mc_driver_unregister(&vfio_fsl_mc_driver);
--}
--
--module_init(vfio_fsl_mc_driver_init);
--module_exit(vfio_fsl_mc_driver_exit);
-+module_fsl_mc_driver(vfio_fsl_mc_driver);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_DESCRIPTION("VFIO for FSL-MC devices - User Level meta-driver");
--- 
-2.17.1
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+>
+> > > If it fixes an issue I'll send a formal patch.
+> >
+> > I will build and test this and report here.
+
+OTOH,
+LKFT builds kernel and rootfs on host and runs tests on various target
+devices. While doing this process "make install" is not installing required
+test files like gpio-mockup-cdev and gpio-line-name.
+
+# ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
+# ./gpio-sim.sh: line 100: ./gpio-line-name: No such file or directory
+
+Test run log:
+------------------
+# selftests: gpio: gpio-mockup.sh
+# 1.  Module load tests
+# 1.1.  dynamic allocation of gpio
+# ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
+# test failed: line value is 127 when 1 was expected
+# GPIO gpio-mockup test FAIL
+not ok 1 selftests: gpio: gpio-mockup.sh # exit=1
+# selftests: gpio: gpio-sim.sh
+# 1. chip_name and dev_name attributes
+# 1.1. Chip name is communicated to user
+# 1.2. chip_name returns 'none' if the chip is still pending
+# 1.3. Device name is communicated to user
+# 1.4. dev_name returns 'none' if chip is still pending
+# 2. Creating simulated chips
+# 2.1. Default number of lines is 1
+# 2.2. Number of lines can be specified
+# 2.3. Label can be set
+# 2.4. Label can be left empty
+# 2.5. Line names can be configured
+# ./gpio-sim.sh: line 100: ./gpio-line-name: No such file or directory
+# line name is incorrect
+# GPIO gpio-sim test FAIL
+not ok 2 selftests: gpio: gpio-sim.sh # exit=1
+
+- Naresh
