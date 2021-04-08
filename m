@@ -2,96 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6FA35824F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C32235825D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhDHLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:44:15 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41233 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhDHLoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:44:14 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGKD20tJ9z9sVt;
-        Thu,  8 Apr 2021 21:44:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617882242;
-        bh=3K67/Xs0hVIB5nxzMRFFHmBcsK05pXsTDKCQmYp2FVM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JpSz8lYhwCsYZhxmUqDQPHYIGdOqE5iT+Hw/FFD6SFTOtgTiscm4/wsgtk5vAXFtZ
-         DdHoztHLPqPRsNYvVLirZXaf7CCFDO2RjAQRE1ngJuAhp3Jf2qHIUbQhE8tvW6+4Q3
-         btlj3avStmiHr/NJd0VqB8fkrxUrUpNPtZ4+S/3ei3gvIqBaA6PYiQGezJo2l8tyxx
-         yRsmV6rK8Uw1NQ8OTep8Gxl6nP9hudeu+hHbEBbzE2xcZkzMpUehGOpx2VakM5mF/b
-         0nn1k5HYA7gYwTQsthX27/WxXHS9NZyFfWpYbk4yPW281EZn/mUX64l+OuReCdd704
-         xA8xWfSAmbIvw==
-Date:   Thu, 8 Apr 2021 21:44:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Jianyong Wu <jianyong.wu@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kvm-arm tree
-Message-ID: <20210408214400.52632f7d@canb.auug.org.au>
+        id S231482AbhDHLo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhDHLoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:44:22 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0F8C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:44:10 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id x15so1808105wrq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:44:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+bIMHjM8IkWGQ9w2UhAWL6nad3z/nsAAXwfEZIX9lWc=;
+        b=HzLW9PAKd4D2FBBBl8PCr0y3Kw+mUxzAfMkhunUFy5g084vTc3tR3FgCZULEQo0aRJ
+         70RJkyKfjoUXms2whB0E+fWJOI2bfvz4DeQho9AoZyPY+Fi8PJLOMkNvY/vNEMPUQWqq
+         eGGIn6Fb7N4Gn6wTADCQI6woEj7GonRXHLLvE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=+bIMHjM8IkWGQ9w2UhAWL6nad3z/nsAAXwfEZIX9lWc=;
+        b=DxJhsNEQEzKCSI4Z2gu5+msbA5lHGPMXXqYebyHLLEAH3DleDgYbBrOFe1wHmquyV0
+         Fh2H9lT8aFUtvWDNLgGMqljvkzVHh+kWpG+MEOOSolV7/pt2sclltaQYKC1OEDwnLbtS
+         JvnPXFVb+St3A7gzmFXDg4iWrojMgEgxxbnH/5NAnIQaosAAMZ7ZnaC/qs1M2J3c33ZC
+         eqNZvQ/P7UKykkWziow7gDI3+xvZkIjfJt/8Irb834ysnpQsQFKv2MwGRdM7/AZO3u2c
+         4X4uBKP9fN85tc8tRqNiYLjHyuoFvB93SObJ4pKe7XmR2RwlC7NXdnUDde2yU40vtUX4
+         7IRw==
+X-Gm-Message-State: AOAM532cHf0yrBUavlr1dWfBkJZrTwObzB3yaXMimmaO40qhU8oyfXTV
+        dMMClijs6Ixu42xoumWLakACTQ==
+X-Google-Smtp-Source: ABdhPJx7T3RCQlE5ua8yXfZvWLP1S80e0mDHoUGS7ErWGxP0VUT/3ngstw02CFjw7tqjgD8X14d31A==
+X-Received: by 2002:adf:e743:: with SMTP id c3mr7764889wrn.408.1617882248844;
+        Thu, 08 Apr 2021 04:44:08 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f7sm11692950wmq.11.2021.04.08.04.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 04:44:08 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 13:44:06 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        3pvd@google.com, Jann Horn <jannh@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
+Message-ID: <YG7shmP1WdfguDQf@phenom.ffwll.local>
+Mail-Followup-To: Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        3pvd@google.com, Jann Horn <jannh@google.com>,
+        Cornelia Huck <cohuck@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
+ <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
+ <20210329133101.GA1168973@nvidia.com>
+ <YG7VWWkvnv2IPEXt@phenom.ffwll.local>
+ <5f956a46-da38-e72a-edaa-3b746a275f1e@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DLpkkb8k+jjqxff57G9uT_O";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f956a46-da38-e72a-edaa-3b746a275f1e@redhat.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DLpkkb8k+jjqxff57G9uT_O
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 08, 2021 at 01:40:59PM +0200, Paolo Bonzini wrote:
+> On 08/04/21 12:05, Daniel Vetter wrote:
+> > On Mon, Mar 29, 2021 at 10:31:01AM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Mar 16, 2021 at 04:33:03PM +0100, Daniel Vetter wrote:
+> > > > Both kvm (in bd2fae8da794 ("KVM: do not assume PTE is writable after
+> > > > follow_pfn")) and vfio (in 07956b6269d3 ("vfio/type1: Use
+> > > > follow_pte()")) have lost their callsites of follow_pfn(). All the
+> > > > other ones have been switched over to unsafe_follow_pfn because they
+> > > > cannot be fixed without breaking userspace api.
+> > > > 
+> > > > Argueably the vfio code is still racy, but that's kinda a bigger
+> > > 
+> > > vfio and kvm
+> > 
+> > Hm I thought kvm is non-racy due to the mmu notifier catch races?
+> 
+> No, but the plan is indeed to have some struct for each page that uses
+> follow_pfn and update it from the MMU notifiers.
 
-Hi all,
+Thanks for clarifying, I've fixed the commit message to mention both vfio
+and kvm as Jason suggested. I didn't know that the follow_pte usage in kvm
+still has some gaps wrt what's invalidated with mmu notifiers.
 
-After merging the kvm-arm tree, today's linux-next build (htmldocs)
-produced this warning:
+Thanks, Daniel
 
-/home/sfr/next/next/Documentation/virt/kvm/arm/ptp_kvm.rst:19: WARNING: Mal=
-formed table.
-Text in column margin in table line 5.
+> 
+> Paolo
+> 
+> > > 
+> > > > picture. But since it does leak the pte beyond where it drops the pt
+> > > > lock, without anything else like an mmu notifier guaranteeing
+> > > > coherence, the problem is at least clearly visible in the vfio code.
+> > > > So good enough with me.
+> > > > 
+> > > > I've decided to keep the explanation that after dropping the pt lock
+> > > > you must have an mmu notifier if you keep using the pte somehow by
+> > > > adjusting it and moving it into the kerneldoc for the new follow_pte()
+> > > > function.
+> > > > 
+> > > > Cc: 3pvd@google.com
+> > > > Cc: Jann Horn <jannh@google.com>
+> > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > > > Cc: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Cc: Cornelia Huck <cohuck@redhat.com>
+> > > > Cc: Peter Xu <peterx@redhat.com>
+> > > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-arm-kernel@lists.infradead.org
+> > > > Cc: linux-samsung-soc@vger.kernel.org
+> > > > Cc: linux-media@vger.kernel.org
+> > > > Cc: kvm@vger.kernel.org
+> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > ---
+> > > >   include/linux/mm.h |  2 --
+> > > >   mm/memory.c        | 26 +++++---------------------
+> > > >   mm/nommu.c         | 13 +------------
+> > > >   3 files changed, 6 insertions(+), 35 deletions(-)
+> > > 
+> > > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> > 
+> > Thanks for your r-b tags, I'll add them.
+> > -Daniel
+> > 
+> > > 
+> > > Jason
+> > 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Function ID:     (uint32)      0x86000001
-Arguments:       (uint32)      KVM_PTP_VIRT_COUNTER(0)
-                               KVM_PTP_PHYS_COUNTER(1)
-Return Values:   (int32)       NOT_SUPPORTED(-1) on error, or
-                 (uint32)      Upper 32 bits of wall clock time (r0)
-                 (uint32)      Lower 32 bits of wall clock time (r1)
-                 (uint32)      Upper 32 bits of counter (r2)
-                 (uint32)      Lower 32 bits of counter (r3)
-Endianness:                    No Restrictions.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Introduced by commit
-
-  3bf725699bf6 ("KVM: arm64: Add support for the KVM PTP service")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DLpkkb8k+jjqxff57G9uT_O
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBu7IAACgkQAVBC80lX
-0GyHZgf9GoAxnaGsnqlzUY4SEsrd+VIg4nn1C3F5mCg4JK53aQnF7txwegioeWlW
-4dnFSWujG4xBrdy7hNQdBQXLD+EZa+ltbHxjIbXFxk50+BcBTQovOFmaVvyRsBND
-WaunK5iS7okQdgCbdpjxNBWSL3CnFnv2s/qaRIqIeIucVen8Dpqk2GEk4L9+2P2k
-HE+gzyZWSWDZ4rfiDcJRYlj25Mo9FUqpQuiZ8n30OnMbYVGxK4Xg/HVUV6Qtx9k3
-H/dL5ehADFq8xgd9Fec9vF6mmRW2piwDkqtRuX2j2V6nQ0Qpcu9DdUOaj4BA5wl8
-rAx7sMUo/LIL+ygosVllR6cly8Daaw==
-=4ojz
------END PGP SIGNATURE-----
-
---Sig_/DLpkkb8k+jjqxff57G9uT_O--
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
