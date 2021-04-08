@@ -2,85 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06096357CAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AEF357CAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhDHGh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:37:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhDHGhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:37:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5785E610A5;
-        Thu,  8 Apr 2021 06:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617863834;
-        bh=hdn0RucHG6wQm39zVXEr9bkiyYJ1su7yvPXnXwKhJ88=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PHeSY1cXFiZaeAbp1jIO5q2YjnT5HhmrOUKbPC7gM99Oj+kBBZMyZqLmAkaCbqdO+
-         baK5JT4ByT1MLYDY1y2e38tskVEwXDFHpyNtqxSRXQ51/8Pd0TKZvfmI8hbJ96AtEe
-         dvig75abgvOnmYC5rbIVhdmRP9M+KsXW4dQFmmas=
-Date:   Thu, 8 Apr 2021 08:37:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: serial: 8250: deprecate
- aspeed,sirq-polarity-sense
-Message-ID: <YG6kmNBhGhe0JGwA@kroah.com>
-References: <20210402182724.20848-1-zev@bewilderbeest.net>
- <20210402182724.20848-2-zev@bewilderbeest.net>
- <YG3NR4bGRjIGZhgx@kroah.com>
- <YG3kJC+6gLC6RzzQ@hatter.bewilderbeest.net>
- <YG3q9brKTC4pkQbs@kroah.com>
- <YG3yEeIRKgTjnDxz@hatter.bewilderbeest.net>
+        id S230125AbhDHGiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:38:03 -0400
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:46762 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhDHGiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:38:01 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 1386bNU3022923; Thu, 8 Apr 2021 15:37:23 +0900
+X-Iguazu-Qid: 2wHHssSnbVqCDS96L2
+X-Iguazu-QSIG: v=2; s=0; t=1617863843; q=2wHHssSnbVqCDS96L2; m=MK+itwrSUtN910qMWIa57PTH69k5sGpQgX66utEmjMI=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1111) id 1386bMme023272
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 8 Apr 2021 15:37:23 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 580FA1000C8;
+        Thu,  8 Apr 2021 15:37:22 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 1386bLhH021840;
+        Thu, 8 Apr 2021 15:37:22 +0900
+Date:   Thu, 8 Apr 2021 15:37:19 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: pci: Add DT binding for Toshiba
+ Visconti PCIe controller
+X-TSB-HOP: ON
+Message-ID: <20210408063719.jxh27ez375ezx3dc@toshiba.co.jp>
+References: <20210407031839.386088-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210407031839.386088-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <CAL_JsqJew19jBJ-WpGNCK2AD+nUQsQBjJ7-ye9Cgort8AuG8mQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG3yEeIRKgTjnDxz@hatter.bewilderbeest.net>
+In-Reply-To: <CAL_JsqJew19jBJ-WpGNCK2AD+nUQsQBjJ7-ye9Cgort8AuG8mQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:55:29PM -0500, Zev Weiss wrote:
-> On Wed, Apr 07, 2021 at 12:25:09PM CDT, Greg Kroah-Hartman wrote:
-> > On Wed, Apr 07, 2021 at 11:56:04AM -0500, Zev Weiss wrote:
-> > > On Wed, Apr 07, 2021 at 10:18:31AM CDT, Greg Kroah-Hartman wrote:
-> > > > On Fri, Apr 02, 2021 at 01:27:21PM -0500, Zev Weiss wrote:
-> > > > > This property ties SIRQ polarity to SCU register bits that don't
-> > > > > necessarily have any direct relationship to it; the only use of it
-> > > > > was removed in commit c82bf6e133d30e0f9172a20807814fa28aef0f67.
-> > > >
-> > > > Please write that as:
-> > > > 	c82bf6e133d3 ("ARM: aspeed: g5: Do not set sirq polarity")
-> > > >
-> > > 
-> > > Ack, will do.
-> > > 
-> > > > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> > > > > Reviewed-by: Joel Stanley <joel@jms.id.au>
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/serial/8250.yaml | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > What changed from previous versions?  That always goes below the ---
-> > > > line.
-> > > >
-> > > 
-> > > I included an overview of that in the cover letter (https://lore.kernel.org/openbmc/20210402182724.20848-1-zev@bewilderbeest.net/);
-> > > is it desirable to also have that duplicated in the individual patches in
-> > > the series?
-> > 
-> > Any reason why you didn't include all of the relevant people and mailing
-> > lists in that cover letter?  I've never seen it before :)
-> > 
-> 
-> Ah -- is there a good rule of thumb (or git send-email trick) for that?
-> Set-union of get_maintainer.pl over all the patches in the series?
+Hi,
 
-There might be a git send-email trick, but I don't know it :(
+Thanks for your review.
+
+On Wed, Apr 07, 2021 at 08:18:58AM -0500, Rob Herring wrote:
+> On Tue, Apr 6, 2021 at 10:19 PM Nobuhiro Iwamatsu
+> <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
+> >
+> > This commit adds the Device Tree binding documentation that allows
+> > to describe the PCIe controller found in Toshiba Visconti SoCs.
+> >
+> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > ---
+> >  .../bindings/pci/toshiba,visconti-pcie.yaml   | 121 ++++++++++++++++++
+> >  1 file changed, 121 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> > new file mode 100644
+> > index 000000000000..8ab60c235007
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> > @@ -0,0 +1,121 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/toshiba,visconti-pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Toshiba Visconti5 SoC PCIe Host Controller Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > +
+> > +description: |+
+> > +  Toshiba Visconti5 SoC PCIe host controller is based on the Synopsys DesignWare PCIe IP.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: toshiba,visconti-pcie
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: Data Bus Interface (DBI) registers.
+> > +      - description: PCIe configuration space region.
+> > +      - description: Visconti specific additional registers.
+> > +      - description: Visconti specific SMU registers
+> > +      - description: Visconti specific memory protection unit registers (MPU)
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: dbi
+> > +      - const: config
+> > +      - const: ulreg
+> > +      - const: smu
+> > +      - const: mpu
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: PCIe reference clock
+> > +      - description: PCIe system clock
+> > +      - description: Auxiliary clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: pcie_refclk
+> > +      - const: sysclk
+> > +      - const: auxclk
+> > +
+> > +  num-lanes:
+> > +    const: 2
+> > +
+> > +  num-viewport:
+> > +    const: 8
+> 
+> Drop this, we detect this now.
+> 
+
+OK, I will drop this.
+
+> > +
+> > +required:
+> 
+> Drop everything that pci-bus.yaml already requires.
+
+OK, I will check pci-bus.yaml, and update this.
+
+> 
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupts
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +  - "#interrupt-cells"
+> > +  - interrupt-map
+> > +  - interrupt-map-mask
+> > +  - ranges
+> > +  - bus-range
+> 
+> If you support 0-0xff, there's no need for this to be required.
+> 
+
+OK, this device supports 0x0 -0xff, I will drop.
+
+> > +  - device_type
+> > +  - num-lanes
+> > +  - num-viewport
+> > +  - clocks
+> > +  - clock-names
+> > +  - max-link-speed
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    soc {
+> > +        #address-cells = <2>;
+> > +        #size-cells = <2>;
+> > +
+> > +        pcie: pcie@28400000 {
+> > +            compatible = "toshiba,visconti-pcie";
+> > +            reg = <0x0 0x28400000 0x0 0x00400000>,
+> > +                  <0x0 0x70000000 0x0 0x10000000>,
+> > +                  <0x0 0x28050000 0x0 0x00010000>,
+> > +                  <0x0 0x24200000 0x0 0x00002000>,
+> > +                  <0x0 0x24162000 0x0 0x00001000>;
+> > +            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
+> > +            device_type = "pci";
+> > +            bus-range = <0x00 0xff>;
+> > +            num-lanes = <2>;
+> > +            num-viewport = <8>;
+> > +
+> > +            #address-cells = <3>;
+> > +            #size-cells = <2>;
+> > +            #interrupt-cells = <1>;
+> > +            ranges = <0x81000000 0 0x40000000 0 0x40000000 0 0x00010000>,
+> > +                     <0x82000000 0 0x50000000 0 0x50000000 0 0x20000000>;
+> > +            interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+> > +            interrupt-names = "intr";
+> > +            interrupt-map-mask = <0 0 0 7>;
+> > +            interrupt-map =
+> > +                <0 0 0 1 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> > +                 0 0 0 2 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> > +                 0 0 0 3 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> > +                 0 0 0 4 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+> > +            clocks = <&extclk100mhz>, <&clk600mhz>, <&clk25mhz>;
+> > +            clock-names = "pcie_refclk", "sysclk", "auxclk";
+> > +            max-link-speed = <2>;
+> > +
+> > +            status = "disabled";
+> 
+> Don't show status in examples.
+
+OK, I will drop.
+
+> 
+> > +        };
+> > +    };
+> > +...
+> > --
+> > 2.30.0.rc2
+> >
+> 
+
+Best regards,
+  Nobuhiro
+
