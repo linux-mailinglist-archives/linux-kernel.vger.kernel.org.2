@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E43581FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15FA358207
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhDHLei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:34:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59226 "EHLO mx2.suse.de"
+        id S231453AbhDHLe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhDHLeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:34:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617881664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tDIOVgigbNQz2wYXvUtfW44dlC0pAdBtG9TE2EYQHS8=;
-        b=Z75+dZcYRxtLlGt8Qfw12bo1a8OYGbZrI8c+G1NJMtOS1MAQYGzDbj2f4Z+d1r8ssOrtQb
-        37oOad0lWvKW7juG7jK7mMyyqNzfZfokKN5KRCZ5y09v1V8Mf5Lgdl+QC13k+tY7pUWzcm
-        emrh/I3NkpxMy6T1k0qGQAhBsrGMFDw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4DCCB294;
-        Thu,  8 Apr 2021 11:34:24 +0000 (UTC)
-Message-ID: <0049152ce9da85c50fda91c1b77ca233ba0fef3d.camel@suse.com>
-Subject: Re: [PATCH 3/3] USB: cdc-acm: fix TIOCGSERIAL implementation
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 08 Apr 2021 13:34:12 +0200
-In-Reply-To: <YG7RiLoscS6VXG7n@hovoldconsulting.com>
-References: <20210407102845.32720-1-johan@kernel.org>
-         <20210407102845.32720-4-johan@kernel.org>
-         <a1a94db2d373c4c7b8841908d8e6133ab022232e.camel@suse.com>
-         <YG7RiLoscS6VXG7n@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S231448AbhDHLex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C3661107;
+        Thu,  8 Apr 2021 11:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617881681;
+        bh=jyaO0qglGyFdhPEM06gVFnPGc0e+8xQPP2hnY0QpVqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eV0F5TSU2bp/hGiIrSd+oZHtY2de7+gdwSpPzqLCSWbVqhFazCZrzW0mcBwdtJOzT
+         rzZIHeDfuWFKff0fyM6vxueM7Q4kp47WjxOhQxPPd6UKleNDoAk58NEAtLySsj92b5
+         3+6CoL3sMCPAtDIZ4jRS7LhrDGicbvF9FjRBo7d0=
+Date:   Thu, 8 Apr 2021 13:34:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+Cc:     Julia Lawall <julia.lawall@inria.fr>, Larry.Finger@lwfinger.net,
+        florian.c.schilhabel@googlemail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8712: added spaces around
+ '+'
+Message-ID: <YG7qTib76wKhQeoU@kroah.com>
+References: <YG690ZIRdCEcjoM6@kali>
+ <alpine.DEB.2.22.394.2104081027100.3155@hadrien>
+ <YG7oOezBpYsi3Fr8@kali>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG7oOezBpYsi3Fr8@kali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, den 08.04.2021, 11:48 +0200 schrieb Johan Hovold:
-> On Thu, Apr 08, 2021 at 10:36:46AM +0200, Oliver Neukum wrote:
-> > Am Mittwoch, den 07.04.2021, 12:28 +0200 schrieb Johan Hovold:
+On Thu, Apr 08, 2021 at 04:55:45PM +0530, Mitali Borkar wrote:
+> On Thu, Apr 08, 2021 at 10:30:09AM +0200, Julia Lawall wrote:
+> > The subject line should be in the imperative, so "add" instead of "added".
+> > 
+> Ok Ma'am
+> > On Thu, 8 Apr 2021, Mitali Borkar wrote:
+> > 
+> > > Clean up Check:spaces preferred around that '+' (ctx:VxV)
+> > > Reported by checkpatch
+> > 
+> > Please try to rephrase to explain what you did and why.  "Clean up" kind
+> > of states what the goal is, but your opinion about what is a clean up
+> > might be different than someone else's.  It's also not necessary to cite
+> > the checkpatch warning exactly.
+> > 
+> OKay Ma'am, will rewrite the appopriate commit message. May I know while
+> resending this patch, what should I write in subject description, 
+> RESEND PATCH or PATCH v2
 
-> > Well, the devices report it. It is part of the standard.
-> 
-> No, the standard doesn't include anything about a baud-base clock
-> AFAICT.
+"RESEND" is only ok if the patch and changelog text is identical to the
+previous version and something got lost so it needed to be resent.
 
-Unfortunately it does.
-dwDTERate - chapter 6.3.11 - table 17
+I do not think that is the case here.
 
-If we does this wrongly, we should certainly fix it, but just removing
-the reporting doesn't look right to me.
+thanks,
 
-	Regards
-		Oliver
-
-
+greg k-h
