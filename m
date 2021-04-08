@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1251357F8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0FA357F8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhDHJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhDHJoF (ORCPT
+        id S231184AbhDHJoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:44:38 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:37512 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhDHJog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:44:05 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D99C061760;
-        Thu,  8 Apr 2021 02:43:53 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id a85so951240pfa.0;
-        Thu, 08 Apr 2021 02:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hXTlbDK9vvFZbVBVbkmf9cc5XE6+3LtqaiUG7W1XCH0=;
-        b=fl73aGuIHBBPNVLJyOgdAUXimE2pvcqhUPDQNL/9XB+967BEwY8MKnOdaw7mMqglhG
-         YxLRkHllLm381ozVfhckQHKt+l9ydNkiMItjlNPdrsJQTBa/h5fQGbG0XKdjwiS/AiVZ
-         /GGeon7H9NuPr68dbeFCM5TWcNSUfmU7mgTmaRFIU55+JejKeJomz2Z0XYV0zfukZKeO
-         sG1UKLs+FMzw4YfNUeLRl4nLXyAjw9cXthABlIqPBTNbCTyj8SBtL6UCF5OoAF3ZLBXc
-         FoNRMxkfCQIawoVRDnqUnXc8YYCzrt4zmA2urYotttRjIi5dJVTAYkQD+0JMokbTtt5n
-         Yh3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hXTlbDK9vvFZbVBVbkmf9cc5XE6+3LtqaiUG7W1XCH0=;
-        b=bEdTSkPi6gKuOmiVt7Eyo7kt1m2ha6W4wAIEBFw37hNLHCxdd/f3I2OfXqiZxTJs7i
-         SCSj59ZFqRypjBPD+sApt8cdoYZHNoOD0zLMt2ILmKW74kkzow+GJMgxHD2vcJAQmRnM
-         HBJNU5Uh0PuHRUE7eA8k0oMOhOoV/H8JzMVb1v3+gsREXmDZ6PFmJGqjezWh0z0aA0Lp
-         oNjcu37JaZUoWOaM0wc1yG2k5pkaI9p3JeF5Jhlh5ebvP97CtEC7v32g/bUiadSZlKVP
-         sTQctN728iVpIUdipOnLUz6hM8c+drnFu3ztx35wyL25Gcl0PCBa8pZonqHvCd2l4bqn
-         VJlw==
-X-Gm-Message-State: AOAM531TCaJUmNxXjUl7j03ZnH1hzGITMzA7nYNOC154yExnFpuGBtQk
-        9h3EOBO1v5ZU7PBoYo7YpOF15sg0Fzl25xg4/tM=
-X-Google-Smtp-Source: ABdhPJxrCR4TUvws6U/8Cg1u4rxuaLxXimtvZO6SHw/Cy7VELojsStOGMZiibRso26kSuoyWLwbfIeWOMCubwTABQk8=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr7234159pgm.74.1617875033137;
- Thu, 08 Apr 2021 02:43:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
- <1617197790-30627-4-git-send-email-yangyicong@hisilicon.com>
- <f1d50200-93f5-2c35-933a-01a1e7622983@linux.intel.com> <20210407230421.GB860@kunai>
- <5c478c9b-fc2a-2dd7-6191-8f68e265c2f7@hisilicon.com>
-In-Reply-To: <5c478c9b-fc2a-2dd7-6191-8f68e265c2f7@hisilicon.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Apr 2021 12:43:36 +0300
-Message-ID: <CAHp75Vfpg4zdSM2eXe8yFsMAJUea_NSjvMRgxqYOF2nDvZA1wg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/5] i2c: add support for HiSilicon I2C controller
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        prime.zeng@huawei.com, Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 8 Apr 2021 05:44:36 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 4EE47407FC;
+        Thu,  8 Apr 2021 09:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617875066; bh=pafKOMK9KDsNSpcVsj8JwbjjuWIZ6Jo5sqLwThZrBFw=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=R9LdVgLZE11zkB5ok08ADOF0dCgHmqzULIujY8Pls+OXdxmPVvsklk7uiBmLyZsyM
+         c64GcxxMecmgiGH3d4EBTYvIBE9rvOlLBUk5YmQsoVqBnZNSQFOurZB/Ij33LniFUq
+         elavIKNdMpssL6s4QRp5GqsFB7zGfqbt4cZ/+I+wddI3CGDOd+2nBZKyaIC3yUG3dC
+         jvVT5KdiJgLGvrMNNgiwN2ENBBJ3an6svSUJzkC7ozTBcH9z2R4VuSwMAcZkgonzC1
+         h/IOKytHDEQyRmWGki0VSZx2QjeQhUxVOfNY4bIuPU7d9QG1EuIS4UU8gWgTlEPlGJ
+         0NMQF5adzdn6g==
+Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id BE89DA022E;
+        Thu,  8 Apr 2021 09:44:20 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Thu, 08 Apr 2021 13:44:19 +0400
+Date:   Thu, 08 Apr 2021 13:44:19 +0400
+In-Reply-To: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+X-SNPS-Relay: synopsys.com
+From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Subject: [PATCH v3 00/14] usb: dwc2: Fix Partial Power down issues.
+To:     John Youn <John.Youn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mian Yousaf Kaukab <yousaf.kaukab@intel.com>,
+        Gregory Herrero <gregory.herrero@intel.com>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Paul Zimmerman <paulz@synopsys.com>, <stable@vger.kernel.org>,
+        Robert Baldyga <r.baldyga@samsung.com>,
+        Kever Yang <kever.yang@rock-chips.com>
+Message-Id: <20210408094420.BE89DA022E@mailhost.synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 10:17 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
-> On 2021/4/8 7:04, Wolfram Sang wrote:
-> >
-> >> Reason for temp variable is for me it's confusing to see statement like
-> >> "rate_khz = rate_khz / 1000".
-> >
-> > Yes. And with this clearer calculation, we can maybe skip the HZ_PER_KHZ
-> > define completely and just use plain '1000' as a factor/divider because
-> > it then becomes obvious. I still find the define more confusing than
-> > helpful TBH. But I'll leave the final decision to Yicong Yang.
-> >
->
-> HZ_PER_KHZ macro are defined separately in other places of the kernel.
-> Andy suggested to have this defined and used so that one day we can factor
-> this macro out to the public. :)
+This patch set fixes and improves the Partial Power Down mode for
+dwc2 core.
+It adds support for the following cases
+    1. Entering and exiting partial power down when a port is
+       suspended, resumed, port reset is asserted.
+    2. Exiting the partial power down mode before removing driver.
+    3. Exiting partial power down in wakeup detected interrupt handler.
+    4. Exiting from partial power down mode when connector ID.
+       status changes to "connId B
 
-Right, and I'm still for the idea to have a macro defined.
+It updates and fixes the implementation of dwc2 entering and
+exiting partial power down mode when the system (PC) is suspended.
 
+The patch set also improves the implementation of function handlers
+for entering and exiting host or device partial power down.
+
+NOTE: This is the second patch set in the power saving mode fixes
+series.
+This patch set is part of multiple series and is continuation
+of the "usb: dwc2: Fix and improve power saving modes" patch set.
+(Patch set link: https://marc.info/?l=linux-usb&m=160379622403975&w=2).
+The patches that were included in the "usb: dwc2:
+Fix and improve power saving modes" which was submitted
+earlier was too large and needed to be split up into
+smaller patch sets.
+
+Changes since V2:
+No changes in the patches or the source code.
+Assuming that the issue due to which the patches are not reaching to
+vger.kernel.org is a comma in the end of To: or Cc: lists removed
+commas in the end of those lists in each email of patches.
+
+
+Artur Petrosyan (14):
+  usb: dwc2: Add device partial power down functions
+  usb: dwc2: Add host partial power down functions
+  usb: dwc2: Update enter and exit partial power down functions
+  usb: dwc2: Add partial power down exit flow in wakeup intr.
+  usb: dwc2: Update port suspend/resume function definitions.
+  usb: dwc2: Add enter partial power down when port is suspended
+  usb: dwc2: Add exit partial power down when port is resumed
+  usb: dwc2: Add exit partial power down when port reset is asserted
+  usb: dwc2: Add part. power down exit from
+    dwc2_conn_id_status_change().
+  usb: dwc2: Allow exit partial power down in urb enqueue
+  usb: dwc2: Fix session request interrupt handler
+  usb: dwc2: Update partial power down entering by system suspend
+  usb: dwc2: Fix partial power down exiting by system resume
+  usb: dwc2: Add exit partial power down before removing driver
+
+ drivers/usb/dwc2/core.c      | 113 ++-------
+ drivers/usb/dwc2/core.h      |  27 ++-
+ drivers/usb/dwc2/core_intr.c |  46 ++--
+ drivers/usb/dwc2/gadget.c    | 148 ++++++++++-
+ drivers/usb/dwc2/hcd.c       | 458 +++++++++++++++++++++++++----------
+ drivers/usb/dwc2/hw.h        |   1 +
+ drivers/usb/dwc2/platform.c  |  11 +-
+ 7 files changed, 558 insertions(+), 246 deletions(-)
+
+
+base-commit: e9fcb07704fcef6fa6d0333fd2b3a62442eaf45b
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
