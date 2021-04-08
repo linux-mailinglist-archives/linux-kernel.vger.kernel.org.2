@@ -2,148 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ABA35892C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D987358931
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhDHQCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:02:02 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:19590 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231655AbhDHQCA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:02:00 -0400
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138FhYnC004494;
-        Thu, 8 Apr 2021 16:01:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=bHPhz6wN0Wm1q30gUnSgDtJmeUIoENOWsGAzjGlE6/o=;
- b=leq131bmuXl3OtOyu44wgBbJDFbpKK0Hi+6JpZzlIUNxPODZEsGN+tkrYQUVVajrD4Uh
- adHFEJ3rH9bKQyP3uSuwCB7WxCCxtGS+Q4WK7SwnR3dIwfWrlVuAEucWcp/GBTQuu6fZ
- IeY3iT+6yWfWKlszfLXkxXkjOvvnDzO04I/7UlNgn87TubweR9nhsneV/u3B+rnjEsKx
- EqA8JpgsOWTYSsGZ2mgXKhXV0MrCCzHWq5UL95MASVAJliPJ/Tqxu5Ye069KBaJ/6mOf
- fevyJJRnxJ2KeXuxwPRqUwdt1qxdmM1KHk1vESA6xj+iUa2JXs6mzLtEjV2HQ/m/Sxhm kg== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 37t29g9wvn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 16:01:21 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 9FF7672;
-        Thu,  8 Apr 2021 16:01:19 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 0A16E4F;
-        Thu,  8 Apr 2021 16:01:18 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Use x2apic enabled bit as set by BIOS to indicate APIC mode
-Date:   Thu,  8 Apr 2021 11:00:47 -0500
-Message-Id: <20210408160047.1703-1-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
+        id S232116AbhDHQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:03:03 -0400
+Received: from mail-co1nam11on2106.outbound.protection.outlook.com ([40.107.220.106]:64225
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231655AbhDHQC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:02:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g+qrO57pgVmRAA3wYM2OJPJU9QBmTIBLfkI0mV5W96rDLarYT52s9lQOAIAguUHtA35u48KnCef0ZbkV+V8z9ZCSfS2rEz/p7K5LOkiE4GKxEq77aOUnP2fIgOfxSDLPiiyFhfNgo8eJaoRvVsWTSkF4dTKzRQ0c64eJn0S4q+I+2yZYoVv8GV30TuKtZBP9KCQu2R0qqnflUjBu66a3nYgb9GL+EHgWy0m9JHIAqrI4cYFc+nZwGBcz9FHRIJhcudKgpSWqB8d4WawiaKuXfspcrjtByANn6Uvh8zcN73WZXN+vA7VKS+Zk23eTw42LoJ8ex37p7rXtj5cKnEUU8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aAQ8FFD58JBGEfhmj7xyYjmyw0Y7RvdW4FDttHlETMU=;
+ b=DYtdYih95qrIycPNGSt18szWNMyZdO2/l+/5gdtrB4OMBRajNVTGbR+eXs/2ppz3nkfZxnRk9Hy+xseuECxxhAjZKaUC4/+6wDOdVSiNl8hUZmq9V+Mji9wyusmc4binpEMCZvVX8TkoMVAXquBOVLl6FCQGzzlxgEQhDqSSmnUF4s8RHQG6V9SiHgRM77SJt2qvrCthua2iqMUMMDQtJXn3On770ejGk+HgYB5IGOmZE3FfMMBYKin4D7o23xu4gXgAWG+RkQy1+GMAqgkLhTBWd5oBrTMoT79/vkek0oTbNcE+QzNXZOaQbU0wIX1yc69ptL2dSSwjZdJpM8oTdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aAQ8FFD58JBGEfhmj7xyYjmyw0Y7RvdW4FDttHlETMU=;
+ b=VILCmO9eXkmrWxT3C0/coUH90vp1Ch/KouSytx6BhPGvcoAuwktrm+0MBX4LnyZStjDoBsjuRAOu+YpagpgN3XSoVsm4WP2y8+xdAubbgeFl5mQ5SE44U5Z8U/xJR/ZI7XXEIK4UIEJDzyVfiLexL2Tln1I9H92KgzIrgOIaB1I=
+Received: from DS7PR13MB4733.namprd13.prod.outlook.com (2603:10b6:5:3b1::24)
+ by DM6PR13MB3865.namprd13.prod.outlook.com (2603:10b6:5:1::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4042.6; Thu, 8 Apr 2021 16:02:43 +0000
+Received: from DS7PR13MB4733.namprd13.prod.outlook.com
+ ([fe80::f414:a9a:6686:f7e0]) by DS7PR13MB4733.namprd13.prod.outlook.com
+ ([fe80::f414:a9a:6686:f7e0%4]) with mapi id 15.20.4020.021; Thu, 8 Apr 2021
+ 16:02:43 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "aglo@umich.edu" <aglo@umich.edu>
+CC:     "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "dwysocha@redhat.com" <dwysocha@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "pakki001@umn.edu" <pakki001@umn.edu>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Thread-Topic: [PATCH] SUNRPC: Add a check for gss_release_msg
+Thread-Index: AQHXK0NV8TqxghYc4k6II+5Gojms3qqquYoAgAAGi4CAAAqWgA==
+Date:   Thu, 8 Apr 2021 16:02:43 +0000
+Message-ID: <717504ebff4d1c7506897d1fd8e6550d9969d983.camel@hammerspace.com>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+         <c0de0985c0bf09a96efc538da2146f86e6fa7037.camel@hammerspace.com>
+         <CAN-5tyETkDBVfYQrBOm1veAzMdo-9K37bfgL+QZTPW=d2OAP9A@mail.gmail.com>
+In-Reply-To: <CAN-5tyETkDBVfYQrBOm1veAzMdo-9K37bfgL+QZTPW=d2OAP9A@mail.gmail.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: umich.edu; dkim=none (message not signed)
+ header.d=none;umich.edu; dmarc=none action=none header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 88101b1e-c700-4661-9253-08d8faa7be9a
+x-ms-traffictypediagnostic: DM6PR13MB3865:
+x-microsoft-antispam-prvs: <DM6PR13MB3865AFD7C4338D2AA74B6BD4B8749@DM6PR13MB3865.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:341;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /ZOzLx9oMn/I6+HVXipuMl2DlbUTVQXCQy+adTRlDoP0en2e81b0nw9D+soohXy4nUrrpJN0dZnklfUBp+DG7UeJIIw65Q0MVqMg6iOTHI8jHMs1sgc7iTEBZFbGtXBEEm8zbAwVNxtutHgDaXhaGajS1ePgtKhbECfIu2UBgIgRbR6CRFUbk+yWyH05iBzGDGBxzmzdC9Ng2nGQXtVoLa2lCPkxR08Mfr1j5ZTMgzW/P4JCfPOE0rvwkP8L0CAMBxKxhj8UqlUxITDgOn31u57M0Y83bFuWYBHSPauoHucKs1v+OHq98IDRHgWmFvUQgEmDJ6uN6uhn4ex07QA6+j/9xZL01EAK3tr4aI+IyJJoASLmgIwhtar5r+XsExl2GdOXt1H3jiV4tjF4J2bghWL0wtCRrZdZ4Oc17SGqo2SeL9CyQcn6OBIeRqkdV/rhsAjtPrmQlaxzDk59XR6wVuzpVxOK3RBT6Y0AKrmzXHQNGo/a4Z+ew7LvPpM6gxN/184vBZZJBhuD24VVCt1mTFbOL6qjRBAh+tcHvA0xHq5z2ooGwV4frwbJ3B8azNo3pVBO9WeiYbUNK7tAmNDE3Si1dNdBLCWUEZAj31jq6PiPxL4hxU5AVYjDFp0WqInAXVSXOnAPP/HPYxJPCXxUCct86ChjMbjhI74JUcFs4o4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR13MB4733.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39840400004)(346002)(366004)(396003)(8936002)(478600001)(26005)(186003)(76116006)(6512007)(4326008)(66946007)(66476007)(7416002)(66556008)(66446008)(64756008)(8676002)(71200400001)(54906003)(6486002)(2906002)(5660300002)(6506007)(83380400001)(53546011)(38100700001)(2616005)(91956017)(6916009)(316002)(86362001)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Z09KVVBKdHNHQWpNM0JGQWFHUlM5aVpPY3NrRWg2N2Q3R3kvcTFKNkVWU2kz?=
+ =?utf-8?B?TkgvL0tnYWNORDRJRXBBRmh0bVE0L3F1NkpxenB5Nlp4S1lYS25Id3hwR3ov?=
+ =?utf-8?B?Vzdmc25WNy9MV0M1OUR6dXJlMXVKQjRHd2JrRzN4TWswOWc2YjNJa2tBUXFX?=
+ =?utf-8?B?ZUZtK1ljcU90RjViV1duSlllUG5KdTFieGp0MW9lQVIxZVdsVWRkdnYzbk5P?=
+ =?utf-8?B?SzhxaEtBVHR0Smo1Qjkwd2p5Mm9xWE1FTlhXYkYyb2NGTDg1NkVKUVNoMTBX?=
+ =?utf-8?B?MTMwaG1uSE9xVEE4TXFjdytET0ZVSWVrMThMd3JBeTh0WWRubk5FVXJLWlIr?=
+ =?utf-8?B?THVOenpPUWJpT3hvWlRsNkhSUVJJUGU2anhFMithWnpiRHpucTFNN2RwWHpK?=
+ =?utf-8?B?UnNWL3NzeStMV2kvWVhaZktyNHBKVDJjTW1nQU91UDk1WUNGVjlyQmw4c2xn?=
+ =?utf-8?B?c292REwwQnozRXQzdWZMR0VCVzkrMjhwalJPV2c5dW1qd3poczhEZGZFMFRv?=
+ =?utf-8?B?b29WRGFwbmZDekd5V0NTd0xlbC9pRTVrallPaGlRRnRReExOKzhzN1Zaenhx?=
+ =?utf-8?B?YWtoUGx4Nk4wcGtPcGhVYkJidjI5Z01ISUZVREk5YkxldGVxLzBSbmJFWVVJ?=
+ =?utf-8?B?M3pRL3Q2ODlRUWlKSU1NdWRJMTVPcE0zZ3lxazBsaWI2ZTdXTGN6Q0xkUEQ3?=
+ =?utf-8?B?Qy9mR2FMQUZMNmJ3SktQdGl6TUdFem04ZFZlYkpSRkU4WEhWSVNzTmlScUNV?=
+ =?utf-8?B?T05mQzhCcmtKR1p3eko1aTVpMS9SRnNoWGp5THM2RkN6NkV1a0RyT0ZsUUtt?=
+ =?utf-8?B?N1BzdWRhOTg1QnAyZmdRQ0RLY09QOWtQOHM2TmVWZFFzNitQdHpCRVN3bHBZ?=
+ =?utf-8?B?U0RRb1YzSE11czhjSDZOM3hqS2pUeHBEdWZLUXJhZWFtYzVzaVhMR21UYzRt?=
+ =?utf-8?B?RXQvMGdpM2FVd29CTzRrVnpLK2xDa1lrUTRER1VlakIxVzc5aG5rdEJyaHJQ?=
+ =?utf-8?B?dFBMQUtrdGdTTGNGZE1aREVuVW55SnZJaWtMM0ZDMjNqdFhJQ1JjakJhMWp6?=
+ =?utf-8?B?YUlocjJRYWp6a2RZWnBVUkdBbWlPUDAvSHQ2UStET0Y4bGt4VC9qc25Fc2dH?=
+ =?utf-8?B?WTJmSVRHaUZaS1pkUTBjYmk0bk9jNGdCaWZIN3N0ajBtUUYwZ2VjYTkvZVcv?=
+ =?utf-8?B?NVltVGVucjB0S3pHWmtnNDlsL2hVbjBCbVpGcFljL3pvenhVQTlPdVFxV05n?=
+ =?utf-8?B?R2h0RzRpSXFyTmhnWU54U24xN0gxb2dsTkNaaXFYVFh4WkZrbXNqdzNPU0g0?=
+ =?utf-8?B?N3RMUkxSUUpwYldtRzljT3NFODdQVlExK3ZxU2FwNzZkRE45c2x2dURtTjB5?=
+ =?utf-8?B?blc1MlUxYTU3b01uTUs0M3BKZ0tuUjIyZ1htbytzMVRURS9maXNESDVuZHNE?=
+ =?utf-8?B?V1BiWUZaWElBQmN3SFdySHJ0N3o5SThkYzBpcFZ3V0pxR3dPaGlkNTBtYVRI?=
+ =?utf-8?B?VGduMzRzRnY1cVJzMmNjOUdxV1M3dnVwT3NMVzN5bEk0ZElhejJybERTV3JS?=
+ =?utf-8?B?YXlLSnhGS2FpMU5OSkpOQjFDbHBibUo1SENZa0dVUUt1b0MxRmdJdW1UZmpo?=
+ =?utf-8?B?dUhhQWdBT25Nc21TU0V0czNUcDZTS0wrd1pFb0s1MllVUTNZdUJBbkFKbFdQ?=
+ =?utf-8?B?dG1sdmdvUmhtM3lsaXBtc0lVZUhSUWpHaVBia211djc0MVoycXZEdEt6alRW?=
+ =?utf-8?Q?lEFCbqDDsqIQe3nI8gk04JCS/0DuPbbo062JBWQ?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B902FC6312871B41846CE335B54450D3@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: d9nA2zaCNxT9E9iqk_qCnAVfW5RSFMvs
-X-Proofpoint-GUID: d9nA2zaCNxT9E9iqk_qCnAVfW5RSFMvs
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-08_03:2021-04-08,2021-04-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 impostorscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104080106
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR13MB4733.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88101b1e-c700-4661-9253-08d8faa7be9a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 16:02:43.6511
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P2okwDh8B0aeh0LAHOLwI2FHlSLYHA7qyPrapMRsOAoRC87bEKzdHjPGR3rGXEL54qz+JwOS4u+DMU7HvIVXSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB3865
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIOS now sets the x2apic enabled bit (and the ACPI table) for extended
-APIC modes.  Use that bit to indicate if extended mode is set.
-
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 31 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 52bc217ca8c3..2e99605f9a05 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -369,6 +369,15 @@ static int __init early_get_arch_type(void)
- 	return ret;
- }
- 
-+/* UV system found, check which APIC MODE BIOS already selected */
-+static void __init early_set_apic_mode(void)
-+{
-+	if (x2apic_enabled())
-+		uv_system_type = UV_X2APIC;
-+	else
-+		uv_system_type = UV_LEGACY_APIC;
-+}
-+
- static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- {
- 	/* Save OEM_ID passed from ACPI MADT */
-@@ -404,11 +413,13 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- 		else
- 			uv_hubless_system |= 0x8;
- 
--		/* Copy APIC type */
-+		/* Copy OEM Table ID and set APIC Mode */
- 		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
-+		early_set_apic_mode();
- 
- 		pr_info("UV: OEM IDs %s/%s, SystemType %d, HUBLESS ID %x\n",
- 			oem_id, oem_table_id, uv_system_type, uv_hubless_system);
-+
- 		return 0;
- 	}
- 
-@@ -453,6 +464,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- 	early_set_hub_type();
- 
- 	/* Other UV setup functions */
-+	early_set_apic_mode();
- 	early_get_pnodeid();
- 	early_get_apic_socketid_shift();
- 	x86_platform.is_untracked_pat_range = uv_is_untracked_pat_range;
-@@ -472,29 +484,14 @@ static int __init uv_acpi_madt_oem_check(char *_oem_id, char *_oem_table_id)
- 	if (uv_set_system_type(_oem_id, _oem_table_id) == 0)
- 		return 0;
- 
--	/* Save and Decode OEM Table ID */
-+	/* Save for display of the OEM Table ID */
- 	uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
- 
--	/* This is the most common hardware variant, x2apic mode */
--	if (!strcmp(oem_table_id, "UVX"))
--		uv_system_type = UV_X2APIC;
--
--	/* Only used for very small systems, usually 1 chassis, legacy mode  */
--	else if (!strcmp(oem_table_id, "UVL"))
--		uv_system_type = UV_LEGACY_APIC;
--
--	else
--		goto badbios;
--
- 	pr_info("UV: OEM IDs %s/%s, System/UVType %d/0x%x, HUB RevID %d\n",
- 		oem_id, oem_table_id, uv_system_type, is_uv(UV_ANY),
- 		uv_min_hub_revision_id);
- 
- 	return 0;
--
--badbios:
--	pr_err("UV: UVarchtype:%s not supported\n", uv_archtype);
--	BUG();
- }
- 
- enum uv_system_type get_uv_system_type(void)
--- 
-2.21.0
-
+T24gVGh1LCAyMDIxLTA0LTA4IGF0IDExOjI0IC0wNDAwLCBPbGdhIEtvcm5pZXZza2FpYSB3cm90
+ZToNCj4gT24gVGh1LCBBcHIgOCwgMjAyMSBhdCAxMTowMSBBTSBUcm9uZCBNeWtsZWJ1c3QgPA0K
+PiB0cm9uZG15QGhhbW1lcnNwYWNlLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gT24gVHVlLCAyMDIx
+LTA0LTA2IGF0IDE5OjE2IC0wNTAwLCBBZGl0eWEgUGFra2kgd3JvdGU6DQo+ID4gPiBJbiBnc3Nf
+cGlwZV9kZXN0cm95X21zZygpLCBpbiBjYXNlIG9mIGVycm9yIGluIG1zZywNCj4gPiA+IGdzc19y
+ZWxlYXNlX21zZw0KPiA+ID4gZGVsZXRlcyBnc3NfbXNnLiBUaGUgcGF0Y2ggYWRkcyBhIGNoZWNr
+IHRvIGF2b2lkIGEgcG90ZW50aWFsDQo+ID4gPiBkb3VibGUNCj4gPiA+IGZyZWUuDQo+ID4gPiAN
+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IEFkaXR5YSBQYWtraSA8cGFra2kwMDFAdW1uLmVkdT4NCj4g
+PiA+IC0tLQ0KPiA+ID4gwqBuZXQvc3VucnBjL2F1dGhfZ3NzL2F1dGhfZ3NzLmMgfCAzICsrLQ0K
+PiA+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+
+ID4gPiANCj4gPiA+IGRpZmYgLS1naXQgYS9uZXQvc3VucnBjL2F1dGhfZ3NzL2F1dGhfZ3NzLmMN
+Cj4gPiA+IGIvbmV0L3N1bnJwYy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ID4gPiBpbmRleCA1ZjQy
+YWE1ZmM2MTIuLmViNTJlZWJiMzkyMyAxMDA2NDQNCj4gPiA+IC0tLSBhL25ldC9zdW5ycGMvYXV0
+aF9nc3MvYXV0aF9nc3MuYw0KPiA+ID4gKysrIGIvbmV0L3N1bnJwYy9hdXRoX2dzcy9hdXRoX2dz
+cy5jDQo+ID4gPiBAQCAtODQ4LDcgKzg0OCw4IEBAIGdzc19waXBlX2Rlc3Ryb3lfbXNnKHN0cnVj
+dCBycGNfcGlwZV9tc2cNCj4gPiA+ICptc2cpDQo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHdhcm5fZ3NzZCgpOw0KPiA+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGdzc19yZWxlYXNlX21zZyhnc3NfbXNnKTsNCj4gPiA+IMKgwqDC
+oMKgwqDCoMKgIH0NCj4gPiA+IC3CoMKgwqDCoMKgwqAgZ3NzX3JlbGVhc2VfbXNnKGdzc19tc2cp
+Ow0KPiA+ID4gK8KgwqDCoMKgwqDCoCBpZiAoZ3NzX21zZykNCj4gPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGdzc19yZWxlYXNlX21zZyhnc3NfbXNnKTsNCj4gPiA+IMKgfQ0KPiA+
+ID4gDQo+ID4gPiDCoHN0YXRpYyB2b2lkIGdzc19waXBlX2RlbnRyeV9kZXN0cm95KHN0cnVjdCBk
+ZW50cnkgKmRpciwNCj4gPiANCj4gPiANCj4gPiBOQUNLLiBUaGVyZSdzIG5vIGRvdWJsZSBmcmVl
+IHRoZXJlLg0KPiANCj4gSSBkaXNhZ3JlZSB0aGF0IHRoZXJlIGlzIG5vIGRvdWJsZSBmcmVlLCB0
+aGUgd29yZGluZyBvZiB0aGUgY29tbWl0DQo+IGRlc2NyaWJlcyB0aGUgcHJvYmxlbSBpbiB0aGUg
+ZXJyb3IgY2FzZSBpcyB0aGF0IHdlIGNhbGwNCj4gZ3NzX3JlbGVhc2VfbXNnKCkgYW5kIHRoZW4g
+d2UgY2FsbCBpdCBhZ2FpbiBidXQgdGhlIDFzdCBvbmUgcmVsZWFzZWQNCj4gdGhlIGdzc19tc2cu
+IEhvd2V2ZXIsIEkgdGhpbmsgdGhlIGZpeCBzaG91bGQgcHJvYmFibHkgYmUgaW5zdGVhZDoNCj4g
+ZGlmZiAtLWdpdCBhL25ldC9zdW5ycGMvYXV0aF9nc3MvYXV0aF9nc3MuYw0KPiBiL25ldC9zdW5y
+cGMvYXV0aF9nc3MvYXV0aF9nc3MuYw0KPiBpbmRleCA1ZjQyYWE1ZmM2MTIuLmU4YWFlNjE3ZTk4
+MSAxMDA2NDQNCj4gLS0tIGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ICsrKyBi
+L25ldC9zdW5ycGMvYXV0aF9nc3MvYXV0aF9nc3MuYw0KPiBAQCAtODQ2LDcgKzg0Niw3IEBAIGdz
+c19waXBlX2Rlc3Ryb3lfbXNnKHN0cnVjdCBycGNfcGlwZV9tc2cgKm1zZykNCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdzc191bmhhc2hfbXNnKGdzc19tc2cpOw0KPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKG1zZy0+ZXJybm8gPT0gLUVUSU1FRE9VVCkNCj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB3YXJuX2dzc2Qo
+KTsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ3NzX3JlbGVhc2VfbXNnKGdzc19t
+c2cpOw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gZ3NzX3JlbGVhc2Vf
+bXNnKGdzc19tc2cpOw0KPiDCoMKgwqDCoMKgwqDCoCB9DQo+IMKgwqDCoMKgwqDCoMKgIGdzc19y
+ZWxlYXNlX21zZyhnc3NfbXNnKTsNCj4gwqB9DQo+IA0KUGxlYXNlIGxvb2sgb25lIGxpbmUgZnVy
+dGhlciB1cDogdGhlcmUgaXMgYSByZWZjb3VudF9pbmMoKSB0aGF0IG1hdGNoZXMNCnRoYXQgZmly
+c3QgZ3NzX3JlbGVhc2VfbXNnKCkuIFJlbW92aW5nIHRoYXQgY2FsbCByZXN1bHRzIGluIGENCnJl
+aW50cm9kdWN0aW9uIG9mIHRoZSBsZWFrIHRoYXQgTmVpbCBmaXhlZCBpbiBjb21taXQgMWNkZWQ5
+ZDI5NzRmZQ0KKCJTVU5SUEM6IGZpeCByZWZjb3VudGluZyBwcm9ibGVtcyB3aXRoIGF1dGhfZ3Nz
+IG1lc3NhZ2VzLiIpLg0KDQpXZSBtaWdodCwgaG93ZXZlciwgaW5zdGVhZCBvcHQgdG8gcmVtb3Zl
+IGJvdGggdGhlIHJlZmNvdW50X2luYygpIGFuZA0KbWF0Y2hpbmcgZ3NzX3JlbGVhc2VfbXNnKCku
+IFRob3NlIGRvIHNlZW0gdG8gYmUgcmVkdW5kYW50LCBnaXZlbiB0aGF0DQp0aGUgY2FsbGVyIGFs
+c28gaG9sZHMgYSByZWZjb3VudC4NCg0KPiA+IA0KPiA+IC0tDQo+ID4gVHJvbmQgTXlrbGVidXN0
+DQo+ID4gTGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBIYW1tZXJzcGFjZQ0KPiA+IHRyb25k
+Lm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCj4gPiANCj4gPiANCg0KLS0gDQpUcm9uZCBNeWts
+ZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVyc3BhY2UNCnRyb25kLm15
+a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
