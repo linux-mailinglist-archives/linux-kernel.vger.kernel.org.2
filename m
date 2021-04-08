@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966A2358EA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37C5358EA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhDHUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:42:28 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:46820 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhDHUm0 (ORCPT
+        id S232283AbhDHUoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:44:14 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:45922 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231676AbhDHUoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:42:26 -0400
-Received: by mail-ot1-f43.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso1717592otb.13;
-        Thu, 08 Apr 2021 13:42:14 -0700 (PDT)
+        Thu, 8 Apr 2021 16:44:09 -0400
+Received: by mail-ot1-f44.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so3592985oty.12;
+        Thu, 08 Apr 2021 13:43:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ksMNUkynqwh36NE05zFBaJrSirKhcoFilHBF+Zu5wHo=;
-        b=EZcLYfUfAZuHr3Arff5jHb4HWu78jjkM7w3Uiqe6Ekoqk/vcy2W3b5tcMW2RxKDKji
-         UyCx/nfOfqTYJcuOT3caINsBBwQjmEbVF4pN48uBtZeO9hhm7iH1o+sQSdI1VPbToScA
-         gCG7TCfg9QvHJL+Q6qHXL0PO+smQs5tWosWZAlF+DRwlQ2AXGAkjp0cMZnO7K4eDE4KW
-         rsnhm1KgQdu0WMEfup/nyhG17BPBOS/S3dy0dLtFO8GUSQGGQsQCa+KLEGi8UJah0SLa
-         IR/CNSYgamDVUhGmBwKzewsGddrZ60sYB+UemvZ6wCdVa/Ee3HJ/QreLHZGHroi62qzz
-         L/Pw==
-X-Gm-Message-State: AOAM530iE9jZUex0XUXgUqcAmnzOCvyqmKwS0nKqOIbEx6BAk4n5q7aE
-        Jp4zfYmC8j/U7d1a130hDw==
-X-Google-Smtp-Source: ABdhPJypfQrcSFzDkeShPblZvM8C4X4an3XFIiS3xHbUv9F//szZVrktAcA4t9YWKwCXT8r3/RIZZA==
-X-Received: by 2002:a05:6830:2105:: with SMTP id i5mr9189763otc.215.1617914534437;
-        Thu, 08 Apr 2021 13:42:14 -0700 (PDT)
+        bh=XBBWatDedME9VyLo4T5IHFnIvoyrnrBYPGAfSuhqOXk=;
+        b=AvuLvZDdTpRgZxj0Y+NWGBunISj+nuhBQrFbbe+oCLP51mCAFPJM5I9aln7vjTQFAJ
+         08j0RaooP0PGw5jMNwQ+UDhCqLDHaWgt4Zh8xJqCQNm2LuE0p/oSJSOc2e/tlDiF0LGE
+         pahU1Q8lAAnDlIGGETvX8jRs4QYw+iCUV/vuWdQsNTlaDiq205eHxP8gdMl/V9rBZEZv
+         Vr1Kf9IuzRsxuYWh2/caibAecd1ZOMGTf8sRy+wv0k9Mnde7faPVaah6yLzy2VNlgIBK
+         1Mo0FFvWU/GMfcb4Z7ohqjW94ugClRaqY6RSU9z71LIM51uDGIzqKp8ZmoftNbbqFaD9
+         3QWA==
+X-Gm-Message-State: AOAM531sm22DgLnUSfpOkkSWZ1ibdVhxb6q1rfwhdujV0qLH3Bly0UG6
+        V28B0oQaOoDI3YWwPG9s3w==
+X-Google-Smtp-Source: ABdhPJxwQ73CtdR2JuZH2FV4YaDwVXoMQhPH7akp4CbOyMrNAslj3Uw/VM1upErlyrG9GQqMt6FHww==
+X-Received: by 2002:a05:6830:144e:: with SMTP id w14mr9442181otp.0.1617914635873;
+        Thu, 08 Apr 2021 13:43:55 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j18sm103820oou.43.2021.04.08.13.42.13
+        by smtp.gmail.com with ESMTPSA id e20sm104197otl.15.2021.04.08.13.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 13:42:13 -0700 (PDT)
-Received: (nullmailer pid 1925503 invoked by uid 1000);
-        Thu, 08 Apr 2021 20:42:12 -0000
-Date:   Thu, 8 Apr 2021 15:42:12 -0500
+        Thu, 08 Apr 2021 13:43:55 -0700 (PDT)
+Received: (nullmailer pid 1927882 invoked by uid 1000);
+        Thu, 08 Apr 2021 20:43:54 -0000
+Date:   Thu, 8 Apr 2021 15:43:54 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: renesas, rsnd: Clear warning
- 'ports' does not match any of the regexes
-Message-ID: <20210408204212.GA1924190@robh.at.kernel.org>
-References: <20210331091616.2306-1-thunder.leizhen@huawei.com>
- <20210331091616.2306-3-thunder.leizhen@huawei.com>
- <20210401202056.GA947212@robh.at.kernel.org>
- <a1aed23d-a9d2-5e05-b1f5-3b48ac8d17f1@huawei.com>
- <15a406ba-b288-c98c-46f1-36933c11fb11@huawei.com>
+To:     Nina Wu <nina-cm.wu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Jackson-kt.Chang@mediatek.com
+Subject: Re: [PATCH v2 1/6] dt-bindings: devapc: Update bindings
+Message-ID: <20210408204354.GA1926089@robh.at.kernel.org>
+References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15a406ba-b288-c98c-46f1-36933c11fb11@huawei.com>
+In-Reply-To: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:28:08PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/4/7 10:04, Leizhen (ThunderTown) wrote:
-> > 
-> > 
-> > On 2021/4/2 4:20, Rob Herring wrote:
-> >> On Wed, Mar 31, 2021 at 05:16:16PM +0800, Zhen Lei wrote:
-> >>> Currently, if there are more than two ports, or if there is only one port
-> >>> but other properties(such as "#address-cells") is required, these ports
-> >>> are placed under the "ports" node. So add the schema of property "ports".
-> >>
-> >> A given binding should just use 'ports' or 'port' depending on it's 
-> >> need. Supporting both forms is needless complexity.
-> 
-> Hi Rob:
-> I don't think of a good way to avoid "port" and "ports" to be used at the same time.
-> Should I disable the use of "port"? Convert the two usages of "port" into "ports".
-> But usually no one will use both of them in one dts file. And even if it's used at
-> the same time, it's not a big mistake. So I decided not to test it.
+On Thu, Apr 01, 2021 at 02:38:02PM +0800, Nina Wu wrote:
+> From: Nina Wu <Nina-CM.Wu@mediatek.com>
 
-I think the Renesas folks need to comment on this.
+Every change is an 'update'. Perhaps mention mt8192 in the subject.
 
-Rob
+> 
+> To support newer hardware architecture of devapc,
+> update device tree bindings.
+> 
+> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/soc/mediatek/devapc.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> index 31e4d3c..42b284e 100644
+> --- a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> @@ -20,11 +20,17 @@ properties:
+>    compatible:
+>      enum:
+>        - mediatek,mt6779-devapc
+> +      - mediatek,mt8192-devapc
+>  
+>    reg:
+>      description: The base address of devapc register bank
+>      maxItems: 1
+>  
+> +  vio-idx-num:
+
+Needs a vendor prefix.
+
+> +    description: The number of the devices controlled by devapc
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maxItems: 1
+> +
+>    interrupts:
+>      description: A single interrupt specifier
+>      maxItems: 1
+> @@ -40,6 +46,7 @@ properties:
+>  required:
+>    - compatible
+>    - reg
+> +  - vio-idx-num
+>    - interrupts
+>    - clocks
+>    - clock-names
+> @@ -54,6 +61,7 @@ examples:
+>      devapc: devapc@10207000 {
+>        compatible = "mediatek,mt6779-devapc";
+>        reg = <0x10207000 0x1000>;
+> +      vio-idx-num = <511>;
+>        interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_LOW>;
+>        clocks = <&infracfg_ao CLK_INFRA_DEVICE_APC>;
+>        clock-names = "devapc-infra-clock";
+> -- 
+> 2.6.4
+> 
