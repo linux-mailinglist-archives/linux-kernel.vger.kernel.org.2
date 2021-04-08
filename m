@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521DD35898E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2143589C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhDHQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:21:22 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:50054 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232182AbhDHQVS (ORCPT
+        id S232296AbhDHQ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:28:43 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:19501 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231918AbhDHQ2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:21:18 -0400
-Date:   Thu, 08 Apr 2021 16:21:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1617898865;
-        bh=gmq6lQd1NWtTBrDin6uNBMByAAtGgaIcn+myFTSLQ/s=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=OzsyUehO7T00DunatQBQ4rsCMr+sej+mRiMP0VPZVxZr4wNcMilHRWW/se56kkLSE
-         BvIjym1RmGVMUKS6b1SxnDecpHiMABKgCBXViYpRR1iiMhgJxMDdwylME3d2tvtFZw
-         9VNBfkUC3HkamN2NxO8D7QH/n0S2zwJ+EIvq3Pzs=
-To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH v2 1/3] arm64: dts: qcom: sm8150: add other QUP nodes and iommus
-Message-ID: <20210408161953.26298-2-caleb@connolly.tech>
+        Thu, 8 Apr 2021 12:28:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1617899311; x=1649435311;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=nMOUzFDnk5fm+FTvgXSXFX2ZDTXd0y1hb+al8HGRTjE=;
+  b=nF+GNRsNoY/zGPG3j27/0yOIJsyzWr33KkbUq2tG81mo9YxJFJU6jmGO
+   j0Gfs6xf4kK3AQFel4v/LUxfPyOcZgVhQJwFLTbZChkcta8ZeOaGx7Aa7
+   Y73uvtq6uqNng8lxRCWoAFyfbPyMOmNkm59oCo5ZMitBXY7ez7zfzeg4I
+   0=;
+X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
+   d="scan'208";a="100469738"
+Subject: Re: [PATCH 0/4] Add support for XMM fast hypercalls
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 08 Apr 2021 16:21:21 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 1CB9CA1E52;
+        Thu,  8 Apr 2021 16:21:14 +0000 (UTC)
+Received: from u366d62d47e3651.ant.amazon.com (10.43.160.209) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 8 Apr 2021 16:21:07 +0000
+Date:   Thu, 8 Apr 2021 18:21:03 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Wei Liu <wei.liu@kernel.org>
+CC:     Paolo Bonzini <pbonzini@redhat.com>, <kys@microsoft.com>,
+        <haiyangz@microsoft.com>, <sthemmin@microsoft.com>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <seanjc@google.com>,
+        <vkuznets@redhat.com>, <wanpengli@tencent.com>,
+        <jmattson@google.com>, <joro@8bytes.org>, <graf@amazon.com>,
+        <eyakovl@amazon.de>, <linux-hyperv@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>
+Message-ID: <20210408162102.GE32315@u366d62d47e3651.ant.amazon.com>
+References: <20210407212926.3016-1-sidcha@amazon.de>
+ <20210408152817.k4d4hjdqu7hsjllo@liuwe-devbox-debian-v2>
+ <033e7d77-d640-2c12-4918-da6b5b7f4e21@redhat.com>
+ <20210408153813.iu3teoor6c6m6kzb@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210408153813.iu3teoor6c6m6kzb@liuwe-devbox-debian-v2>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.209]
+X-ClientProxiedBy: EX13D49UWB001.ant.amazon.com (10.43.163.72) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the first and third qupv3 nodes used to hook
-up peripherals on some devices, as well as the iommus properties for all
-of them.
+On Thu, Apr 08, 2021 at 03:38:13PM +0000, Wei Liu wrote:
+> On Thu, Apr 08, 2021 at 05:30:26PM +0200, Paolo Bonzini wrote:
+> > On 08/04/21 17:28, Wei Liu wrote:
+> > > > Although the Hyper-v TLFS mentions that a guest cannot use this feature
+> > > > unless the hypervisor advertises support for it, some hypercalls which
+> > > > we plan on upstreaming in future uses them anyway.
+> > >
+> > > No, please don't do this. Check the feature bit(s) before you issue
+> > > hypercalls which rely on the extended interface.
+> >
+> > Perhaps Siddharth should clarify this, but I read it as Hyper-V being buggy
+> > and using XMM arguments unconditionally.
+> >
+> 
+> There is no code in upstream Linux that uses the XMM fast hypercall
+> interface at the moment.
+> 
+> If there is such code, it has bugs in it and should be fixed. :-)
 
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+None of the existing hypercalls are buggy. These are some hypercalls we
+are working on (and planning on upstreaming in the near future). 
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qco=
-m/sm8150.dtsi
-index e5bb17bc2f46..543417d74216 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -577,12 +577,26 @@ gcc: clock-controller@100000 {
- =09=09=09=09 <&sleep_clk>;
- =09=09};
-=20
-+=09=09qupv3_id_0: geniqup@8c0000 {
-+=09=09=09compatible =3D "qcom,geni-se-qup";
-+=09=09=09reg =3D <0x0 0x008c0000 0x0 0x6000>;
-+=09=09=09clock-names =3D "m-ahb", "s-ahb";
-+=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
-+=09=09=09=09 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-+=09=09=09iommus =3D <&apps_smmu 0xc3 0x0>;
-+=09=09=09#address-cells =3D <2>;
-+=09=09=09#size-cells =3D <2>;
-+=09=09=09ranges;
-+=09=09=09status =3D "disabled";
-+=09=09};
-+
- =09=09qupv3_id_1: geniqup@ac0000 {
- =09=09=09compatible =3D "qcom,geni-se-qup";
- =09=09=09reg =3D <0x0 0x00ac0000 0x0 0x6000>;
- =09=09=09clock-names =3D "m-ahb", "s-ahb";
- =09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
- =09=09=09=09 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
-+=09=09=09iommus =3D <&apps_smmu 0x603 0x0>;
- =09=09=09#address-cells =3D <2>;
- =09=09=09#size-cells =3D <2>;
- =09=09=09ranges;
-@@ -598,6 +612,20 @@ uart2: serial@a90000 {
- =09=09=09};
- =09=09};
-=20
-+=09=09qupv3_id_2: geniqup@cc0000 {
-+=09=09=09compatible =3D "qcom,geni-se-qup";
-+=09=09=09reg =3D <0x0 0x00cc0000 0x0 0x6000>;
-+
-+=09=09=09clock-names =3D "m-ahb", "s-ahb";
-+=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
-+=09=09=09=09 <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
-+=09=09=09iommus =3D <&apps_smmu 0x7a3 0x0>;
-+=09=09=09#address-cells =3D <2>;
-+=09=09=09#size-cells =3D <2>;
-+=09=09=09ranges;
-+=09=09=09status =3D "disabled";
-+=09=09};
-+
- =09=09config_noc: interconnect@1500000 {
- =09=09=09compatible =3D "qcom,sm8150-config-noc";
- =09=09=09reg =3D <0 0x01500000 0 0x7400>;
---=20
-2.30.2
+~ Sid.
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
 
 
