@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F19C358A03
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7054D358A05
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhDHQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        id S232378AbhDHQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhDHQqZ (ORCPT
+        with ESMTP id S231843AbhDHQrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:46:25 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4205DC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:46:14 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id y5so2848657qkl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:46:14 -0700 (PDT)
+        Thu, 8 Apr 2021 12:47:00 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A75EC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:46:49 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t22so1021197ply.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=P9Dutpry47e9G1LsI+esYplVO+0VII6tEqAJFfWkRFs=;
-        b=YgqR7clyk2k4fwdMNax1iDXb2sF/XnKNGxf0wo1TO8GFWHr9fn3olwvZRTnhLiG401
-         Mg74Akp1RiWZym/qucXFCGV+PA7tE9GSB1FxRXUa12JWocy5RCT3AKfLOF0rPbKAp8zK
-         QDz77Rezb71XzcRKjk67GImEAzjs/v2nKZ80axmwHu/PYnVK5lGGWeP6MQm0qGM8cjbc
-         CePlxVevLaG+j2FEa/lmwKvJRXnHCFMMOtqfpLtAmxzzonEYQ4xP8e4P3F42nXwP39SP
-         QBVuP3x8MHGGhx7X6YmAx60QXV9mNcADixygvhUrdhGe5SJSv9lS4wXFKSFMCma9xIw7
-         TuxA==
+        bh=rxPCMkndqBYyRhJ/HXHkePVgl2qqmdEp7NRGSyXPBwE=;
+        b=rVRP8FlD02/Kcpzcm2LxEXgFVmkF4P8HSE7/pAEFDtt/RYzWu/LX5Oz0ZX/HHBINFp
+         /DzeMJFV4/tODu1sDSFbmv9UgCEX6iFRrpossXbauH+I2tuJT76mtfoGGeE13qnaUR3t
+         RO5JRvQa8g6Z8f6pW5Pi6njlEF9juZjiJ/nLcYTqpSHYX0lYzRP0X/oFZrKw3fOw4gfH
+         6P9Lb9TSYHBMpMGeOrDPG3elIGZqlXbBoG0zvxrwBq0RV+sALIp8pHzjq+YGmmDV5BSv
+         i1695ulENjUv8FYLMtObZ9sPMFRA2jIeEYG3+pBStLN3b+oCP8k2QDl0OWDee6qOjgz9
+         7+YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=P9Dutpry47e9G1LsI+esYplVO+0VII6tEqAJFfWkRFs=;
-        b=IpzpwxJLWIDZmsin8aIiNpD3DZQEYfIET/uUfKAqeX/VuGXPVoBhb+CvvVIX4CHpmX
-         HyCqneze7OJw8ehme/jo+Z05uZoWHx57j5GBFkTw7/Zf5QV/K1lz6GEUgIb67qow85h/
-         WsS4EdlW35+0Nhd5kPaVHO2pf1+0wX8+lPj1WeMsEzocsrPvfjR4Np9c5R3/LFHmpaNh
-         lZyel24n8SWoMj1YpxgLvBe8rulLx2CPV93O6/tLhjRv7zGdm8cyVWmhEamAQdHWat9m
-         5b27kisBHd9hQA5vJkZtVjY8Hzci+F9lsDGxqiFCWysxoonY7k0zIoCA8C57DOKOntOW
-         Ei/Q==
-X-Gm-Message-State: AOAM530F8bkEFyGaChxTuc/7vt29sSh/lqC3SKqgtOSIJ4a0lCdHr7q7
-        SkMT63uml8xppNRzwfhm+mTd2A==
-X-Google-Smtp-Source: ABdhPJzbDYutSfn+FmJJZIAbAHyE8DAfowirb1kwOsQfAUvjL2fOsMnXGxO5fiM2OyXlWuyJctyzMw==
-X-Received: by 2002:a37:6c01:: with SMTP id h1mr9726497qkc.182.1617900373391;
-        Thu, 08 Apr 2021 09:46:13 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p5sm21412244qkj.35.2021.04.08.09.46.12
+        bh=rxPCMkndqBYyRhJ/HXHkePVgl2qqmdEp7NRGSyXPBwE=;
+        b=KdHcBSP7F27UV8B+34jiNKiNRxDWd2QlzCejOAU53OZjjm6n6/AllmFMRDB5TzTy57
+         8vrBGMoUj6OmsWwMZDfgTyVtJ5OS5GlayCQ7PPGUjkJ0JFmvgIjhf6J0yFXe99F0atNA
+         0eYfgp1xKgC61qE+O+/pGlXbLJl33cUpt4j0zzAFbylAHC0dVsUed2q6deZguOR0PDOr
+         GQuppStPpZCG2dBt2IScy7QIl2OsDxYyJECH4LLJFEmCMRYi+Ep3eGIxcIgaJcgEPJlq
+         Ao+M7hs+1oEA6bpPEmEHahOZSFu8iW+I4Wjqb7FbtMHi0s2ShyBwcgDBrJinlJYXNkwJ
+         Uv6g==
+X-Gm-Message-State: AOAM530hcIezNgpVgOQwlWyKD+RWtGDgFmIxS1UWoKpttCnThNLaQWOy
+        otvYeueS0oflGouw+01Zb62f4RXR2ZXp8g==
+X-Google-Smtp-Source: ABdhPJzzY5/QY+pnZm/cuKyW3EnmO6dE28lDqOhT/RBtDjH4QS8QdeuXpcuFjvksaGy9llMX0aoDww==
+X-Received: by 2002:a17:90a:9413:: with SMTP id r19mr9297821pjo.236.1617900408941;
+        Thu, 08 Apr 2021 09:46:48 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h137sm20628pfe.151.2021.04.08.09.46.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 09:46:12 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lUXnI-002nMT-BD; Thu, 08 Apr 2021 13:46:12 -0300
-Date:   Thu, 8 Apr 2021 13:46:12 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-Message-ID: <20210408164612.GD227011@ziepe.ca>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <YG7rKfJkTDJorqvY@phenom.ffwll.local>
+        Thu, 08 Apr 2021 09:46:48 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 16:46:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
+Subject: Re: [PATCH] KVM: x86: Remove unused function declaration
+Message-ID: <YG8zdKd/RRawGmUR@google.com>
+References: <20210406063504.17552-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG7rKfJkTDJorqvY@phenom.ffwll.local>
+In-Reply-To: <20210406063504.17552-1-zhukeqian1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:38:17PM +0200, Daniel Vetter wrote:
+On Tue, Apr 06, 2021, Keqian Zhu wrote:
+> kvm_mmu_slot_largepage_remove_write_access() is decared but not used,
+> just remove it.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 
-> If you want to change this, we need automatic conflict resolution like apt
-> and other package managers have, with suggestions how to fix the config if
-> you want to enable a driver, but some of its requirements are missing. The
-> current approach of hiding driver symbols complete if any of their
-> dependencies are off is really not great.
-
-+1 to this.. 
-
-Though Kconfig is basically already unusuable unless you have hours to
-carefully craft the kconfig you need to get out.
-
-I'm not sure trying to optimize this by abusing the existing language
-rules is such a good idea.
-
-I gave a very half hearted go at a simple heuristic solution solve for
-kconfig a while ago. It is good enough to sometimes automate a kconfig
-task, but it is not so nice.
-
-I use it to do things like "turn on all RDMA drivers" which is quite
-a hard to do by hand.
-
-It looks liked heursitics need a lot of fine tuning as the
-conditionals are complex enough that it is hard to guess which branch
-is going to yield a success.
-
-Jason
+Reviewed-by: Sean Christopherson <seanjc@google.com>
