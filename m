@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7D835802A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB014358032
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhDHKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:01:51 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:18544 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhDHKBt (ORCPT
+        id S231421AbhDHKEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231409AbhDHKEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:01:49 -0400
+        Thu, 8 Apr 2021 06:04:08 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D123C061760;
+        Thu,  8 Apr 2021 03:03:56 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o18so850435pjs.4;
+        Thu, 08 Apr 2021 03:03:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1617876099; x=1649412099;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=e+1SNlLqo0lJXVL44NKQjDbbLmNS7oOdS2wDnjT8PKM=;
-  b=eKMGzsCmCXGq94JXjky2zOq0GDBRYCEPhOPJfkawexbJKRrs1f38z/lQ
-   k+/NYoZw9QcXwHjGqe4qBC06zRZrvS55J8fR3mDbCbws3J82YPGhC84qZ
-   7GjxUzYlp2PCni7cFm7bx1BSeVwu69XzHNgel9reAYPK85LpM44En9OrG
-   c=;
-X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
-   d="scan'208";a="126067621"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Apr 2021 10:01:31 +0000
-Received: from EX13D01EUB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 9F9A5A21AF;
-        Thu,  8 Apr 2021 10:01:29 +0000 (UTC)
-Received: from [192.168.30.119] (10.43.161.41) by EX13D01EUB001.ant.amazon.com
- (10.43.166.194) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
- 2021 10:01:24 +0000
-Subject: Re: [PATCH -next] thermal: thermal_mmio: remove redundant dev_err
- call in thermal_mmio_probe()
-To:     Ruiqi Gong <gongruiqi1@huawei.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Wang Weiyang <wangweiyang2@huawei.com>, <linux-pm@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ronen Krupnik <ronenk@amazon.com>, <talelshenhar@gmail.com>,
-        <talel@amazon.com>
-References: <20210408100144.7494-1-gongruiqi1@huawei.com>
-From:   "Shenhar, Talel" <talel@amazon.com>
-Message-ID: <60b8e4d4-6baf-4106-b9e1-685652fb2163@amazon.com>
-Date:   Thu, 8 Apr 2021 13:01:20 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9WWuGMK6QWrKXmXCP0SJOggiKZrKlD00bLprLvU14GE=;
+        b=vKW15wE9wpb4Z4bqsxton7Cza20S3Ase+arqh19br/rlVZ9B+NTmAWcP/+0ObMoSAx
+         e+RYD5FJBtrFcBYxKGSGpEPMpL3DKksc9AhdKETk7wRVntx/HSQqHH9hEwK+zCJy9ljU
+         dxwNsWf8HrR+SU4LmPwkdvTrvk6KPHfh3/xZlfobH9ZigGssRGJ0I6Odjmb5XOmP9owD
+         dME7EZYhWdadaFaxjwBOn+kLntcLU4BBJdI9zxAbkn9zHw13OiQ6nPIC6qZuUikqqxod
+         NKMAtuG9+1ztSXoQQ+Eb1IRyDxKR1gBIETthNaFUA2Cz/egzgooEpWP8Mr5Kyu0Unj7q
+         taNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9WWuGMK6QWrKXmXCP0SJOggiKZrKlD00bLprLvU14GE=;
+        b=ZrKCI65D6Ct0H+YJXOXRTLGUZuD0cjmPdsBR5+TewwvtaAABpYqysJGVaJa5/ODjTt
+         rULDLuN6OUdeufIluBcp6shd0LdJE0qvHVstNIQ9yKO8X6hhkyLUk1Gnnp+5dQXfHO9C
+         gX9nyE4H2j6GyVNO7SyrLrWh6W7j8FiimssM6yFXaC/LlYMnXqzALNXM65WuwzcHexic
+         FwjFZB6pE7vvYSCJv7pPxzmg3eIJy5nlkdrgol6jdI7/DW5Yq8oxR7C4RZOZIZx22DD0
+         +sCORr5AE3MoSPrrGCkKb3uhnZr9KrZgmu1IYSBOj8q+GZfNd+dUTsK7TfSwW6y5zMF2
+         EYhw==
+X-Gm-Message-State: AOAM532UvxySx32AtO0iQMyGhUM5Nxnly1LzjpE2QNwviPCroN9ZxQoa
+        mx8EpcWCf9tNHij5saM0cV0=
+X-Google-Smtp-Source: ABdhPJyrsGUH7YD251DR30sQ9sv8dA4OY0qgSuHp5OBcCAb0zLNiP9Q664IMSu6A2jSvqA5CQHSO9w==
+X-Received: by 2002:a17:90a:4309:: with SMTP id q9mr7327135pjg.40.1617876235950;
+        Thu, 08 Apr 2021 03:03:55 -0700 (PDT)
+Received: from localhost.localdomain ([2.58.242.54])
+        by smtp.gmail.com with ESMTPSA id p10sm1555230pfn.109.2021.04.08.03.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 03:03:55 -0700 (PDT)
+From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
+To:     mani@kernel.org, hemantk@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        cchen50@lenovo.com, mpearson@lenovo.com,
+        Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Subject: [PATCH 2/2] bus: mhi: fix typo in comments for struct mhi_channel_config
+Date:   Thu,  8 Apr 2021 03:02:20 -0700
+Message-Id: <20210408100220.3853-1-jarvis.w.jiang@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210408100144.7494-1-gongruiqi1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.43.161.41]
-X-ClientProxiedBy: EX13D02UWC004.ant.amazon.com (10.43.162.236) To
- EX13D01EUB001.ant.amazon.com (10.43.166.194)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The word 'rung' is a typo in below comment, fix it.
+* @event_ring: The event rung index that services this channel
 
-On 4/8/2021 1:01 PM, Ruiqi Gong wrote:
->
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
-> ---
->   drivers/thermal/thermal_mmio.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_mmio.c b/drivers/thermal/thermal_mmio.c
-> index d0bdf1ea3331..ded1dd0d4ef7 100644
-> --- a/drivers/thermal/thermal_mmio.c
-> +++ b/drivers/thermal/thermal_mmio.c
-> @@ -54,11 +54,8 @@ static int thermal_mmio_probe(struct platform_device *pdev)
->
->          resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->          sensor->mmio_base = devm_ioremap_resource(&pdev->dev, resource);
-> -       if (IS_ERR(sensor->mmio_base)) {
-> -               dev_err(&pdev->dev, "failed to ioremap memory (%ld)\n",
-> -                       PTR_ERR(sensor->mmio_base));
-> +       if (IS_ERR(sensor->mmio_base))
->                  return PTR_ERR(sensor->mmio_base);
-> -       }
->
->          sensor_init_func = device_get_match_data(&pdev->dev);
->          if (sensor_init_func) {
-Acked-by: Talel Shenhar <talel@amazon.com>
+Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+---
+ include/linux/mhi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index d095fba37d1e..944aa3aa3035 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -205,7 +205,7 @@ enum mhi_db_brst_mode {
+  * @num: The number assigned to this channel
+  * @num_elements: The number of elements that can be queued to this channel
+  * @local_elements: The local ring length of the channel
+- * @event_ring: The event rung index that services this channel
++ * @event_ring: The event ring index that services this channel
+  * @dir: Direction that data may flow on this channel
+  * @type: Channel type
+  * @ee_mask: Execution Environment mask for this channel
+-- 
+2.25.1
+
