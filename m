@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DE835801E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E22F35801D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhDHJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
+        id S231533AbhDHJ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhDHJ6e (ORCPT
+        with ESMTP id S231205AbhDHJ6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:58:34 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5541BC061764;
-        Thu,  8 Apr 2021 02:58:22 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id g35so1037766pgg.9;
-        Thu, 08 Apr 2021 02:58:22 -0700 (PDT)
+        Thu, 8 Apr 2021 05:58:33 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135B0C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:58:22 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id 2so817865vsh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=szeredi.hu; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ue40ewHAI4uiQ6hRTjLSskTwbkPepkxZffVqOvWwGN4=;
-        b=VX75hB/d+8mMCu+ggSpvi07Uyq0zK9BR4PklvQ7ruLPi36idGsDdUPHfPOlCHA9VQ3
-         JJUJ7hwV81tIZHUOOaxjLJLt/MqaochvcFVikB9Mhtfo3xcRdtoeFJQfmN+HHAL7B7d3
-         X+dZIkmS8SLKm2S93v2ImIp+TLL1FGkxkHZ8jti2WFDQ9ohzdGRGOZmt/mXQZSCC6FBx
-         sZAHf0MJFFMG4tNjYwwvIhQom4WxjwcGEcfbvtWEEKqmJUJ0aGOhx5v/qbyGnn9dVzSy
-         CDlEQWlCu/TQ1EGEbu2XbAY2E5CoLuItZBiDojeuo3SMH+YhE/Ntr7khPCvvC46s/UqZ
-         9zog==
+         :cc:content-transfer-encoding;
+        bh=vqkcfcLmWPSwGQ7DXIyIlAdTx4eIhz1g0fE/uj8Jq5Q=;
+        b=ak4tVPm2ajctg+hnsjp8GHDd5d8rnO+htwb7t/lo2NiatS+hRAXSYXtJ2BFjM6x48U
+         pnA3KNNoIxXJdN3FUU5ajyCgsw02XIyHzdNzHBN+7meSGNIFDBPp1Wn0sT3/G/RLW0Wd
+         MKbnV+cT/6M5eRpLsuP/tywNIa+EUWls2KYUk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ue40ewHAI4uiQ6hRTjLSskTwbkPepkxZffVqOvWwGN4=;
-        b=pZNSL3OmZFUy7QxigNcD4WqPYxK+hMBlQS+D4zxOPw0mCBhj7kdYDriO7n6cS3K+Az
-         Puc2ryYH9Uyub9xUobtj/+pxyg+J/75ZJLijEhe2iouxx5Cr1RFH6NG0c0ZZdmQGnuAY
-         pGXIMvi0WyOFjHW85DCANclMb8qxqKkA0cEwH20INq0XrQRHNUVpUpTl3EB3jIZG4gZ8
-         AiJbUTOUOfChgE0rXbIOyhtAbSxwBxivb7vzCCGlj97HU3m/duEHT8zii4YtbYWJiLy6
-         HUX3Hu2N53+UiXXawigFg7Mt/AR2HMB8ANB/uWTH5e3WGSUwEbBPLgVPsCFx5I7dgqXM
-         CHvQ==
-X-Gm-Message-State: AOAM532nWkTgKCVQZYtGbCdvVTg4KKLSvc0WcugLJ/1+XazkkIlGCTBe
-        gJzKCXZXLQHIwtn30ukGJ3xFj1clSTfdZPkAyZFwkNrB6UKydQ==
-X-Google-Smtp-Source: ABdhPJx9AwLvhwo6wJE4rPBHzpfPbvHAuy9BGwJ0nE8DHgZJjggU7EWcYKPyDPQ3akekICOsHGK5x7y7uGZZ22sP3+Q=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr7279097pgm.74.1617875901727;
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vqkcfcLmWPSwGQ7DXIyIlAdTx4eIhz1g0fE/uj8Jq5Q=;
+        b=pU/KhseWgrT0zMsZ8u5baj+mjndSZwLr0MCoykWK4gj+tU/Xi2lI9z60IoSaw6p0oN
+         Qx8IpbfYuf1Z+Qii8xkAbAbmSPS+BZW43D81pOqLy3OGtNDWKr5jUGGgECH0A0gaUJsn
+         /IUYkLRCtQ/6A2PY0zxg9j/qkx9LxOtKnKuMi6hrO3kAUWK18FA0uHjGezCt0BhZx94d
+         VG2dj8BvtDduwAYXzMPyEdpae1+tJBXHm2UwKOVB1l0sbIvTULEog2rBOm1U4+PrUWiK
+         w53mzdny3x9DeWDzDfCx+abIq+12qVOh1iQFb3AsSzEVDN3YYUmVM5IXCff/f0qDR2ak
+         I96g==
+X-Gm-Message-State: AOAM533dP36aAoRzuKWbJB7bb6AypeGg9OGaiW3LVL1SFZv8dolAe7tY
+        7v72QLndf0FgH2FgB6mLeUxsWL0e21M7ZRmAkeavoQ==
+X-Google-Smtp-Source: ABdhPJyjZoMXzPL6CXTNPSH+BhhMdLuVrO7eLmf1th5EWTHfKQwxBWgSOV4WX90df7ZbQ6ru8A72X72+OSsEU0sNU2I=
+X-Received: by 2002:a67:b005:: with SMTP id z5mr4869666vse.47.1617875901207;
  Thu, 08 Apr 2021 02:58:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
- <0862bbb6813891594f56700808d08160b6635bf4.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VcHeiQgvZ5e+Dz+gpKghCo5RSTQLsyHGGSgdVQbVu2t+g@mail.gmail.com> <23c73081365fddce2950c101a51fc2baaaa37aa5.camel@fi.rohmeurope.com>
-In-Reply-To: <23c73081365fddce2950c101a51fc2baaaa37aa5.camel@fi.rohmeurope.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Apr 2021 12:58:05 +0300
-Message-ID: <CAHp75VdYniyc8jovg9VDgwQ+_VjYOoAubB_QSokEN+REcnKTrw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/8] regulator: IRQ based event/error notification helpers
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        linux-arm-msm@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <20210329164907.2133175-1-mic@digikod.net>
+In-Reply-To: <20210329164907.2133175-1-mic@digikod.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 8 Apr 2021 11:58:10 +0200
+Message-ID: <CAJfpegu=8L7Fd_qYK0cJRQ18NqyVeSvTp-vcC4KmqZEcw28naw@mail.gmail.com>
+Subject: Re: [PATCH v1] ovl: Fix leaked dentry
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        stable <stable@vger.kernel.org>,
+        syzbot <syzkaller@googlegroups.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 11:21 AM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
+On Mon, Mar 29, 2021 at 6:48 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
+wrote:
 >
-> Hello Andy,
+> From: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
 >
-> On Wed, 2021-04-07 at 16:21 +0300, Andy Shevchenko wrote:
-> > On Wed, Apr 7, 2021 at 1:04 PM Matti Vaittinen
-> > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > > Provide helper function for IC's implementing regulator
-> > > notifications
-> > > when an IRQ fires. The helper also works for IRQs which can not be
-> > > acked.
-> > > Helper can be set to disable the IRQ at handler and then re-
-> > > enabling it
-> > > on delayed work later. The helper also adds
-> > > regulator_get_error_flags()
-> > > errors in cache for the duration of IRQ disabling.
-> >
-> > Thanks for an update, my comments below. After addressing them, feel
-> > free to add
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
+> ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
+> metacopy error, which leads to dentry leaks when shutting down the
+> related superblock:
 >
-> I (eventually) disagreed with couple of points here and haven't changed
-> those. Please see list below.
+>   overlayfs: refusing to follow metacopy origin for (/file0)
+>   ...
+>   BUG: Dentry (____ptrval____){i=3D3f33,n=3Dfile3}  still in use (1) [unm=
+ount of overlay overlay]
+>   ...
+>   WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
+>   CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
+>   ...
+>   RIP: 0010:umount_check.cold+0x107/0x14d
+>   ...
+>   Call Trace:
+>    d_walk+0x28c/0x950
+>    ? dentry_lru_isolate+0x2b0/0x2b0
+>    ? __kasan_slab_free+0x12/0x20
+>    do_one_tree+0x33/0x60
+>    shrink_dcache_for_umount+0x78/0x1d0
+>    generic_shutdown_super+0x70/0x440
+>    kill_anon_super+0x3e/0x70
+>    deactivate_locked_super+0xc4/0x160
+>    deactivate_super+0xfa/0x140
+>    cleanup_mnt+0x22e/0x370
+>    __cleanup_mnt+0x1a/0x30
+>    task_work_run+0x139/0x210
+>    do_exit+0xb0c/0x2820
+>    ? __kasan_check_read+0x1d/0x30
+>    ? find_held_lock+0x35/0x160
+>    ? lock_release+0x1b6/0x660
+>    ? mm_update_next_owner+0xa20/0xa20
+>    ? reacquire_held_locks+0x3f0/0x3f0
+>    ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
+>    do_group_exit+0x135/0x380
+>    __do_sys_exit_group.isra.0+0x20/0x20
+>    __x64_sys_exit_group+0x3c/0x50
+>    do_syscall_64+0x45/0x70
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>   ...
+>   VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds. =
+ Have a nice day...
 >
-> I still do think you did a really good job reviewing this - and you
-> should get the recognition from that work. Thus I'd nevertheless would
-> like to add your Reviewed-by to the next version. Please let me know if
-> you think it's ok. (I have the v7 ready but I'll wait until the next
-> Monday before sending it to see if this brings more discussion).
+> This fix has been tested with a syzkaller reproducer.
+>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <stable@vger.kernel.org> # v5.7+
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
 
-Looks OK to me.
-Just rename die_loudly() to rdev_die_loudly() and in any way of
-conditionals with that, please mark it with __noreturn attribute, so
-if (bla bla bla)
-  rdev_die_loudly();
+Thanks, applied.
 
-will be an understandable trap.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Miklos
