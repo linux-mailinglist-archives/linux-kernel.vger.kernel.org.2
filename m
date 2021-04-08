@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CE135814B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB7935814D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhDHLGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhDHLGa (ORCPT
+        id S230501AbhDHLGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:06:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16407 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhDHLGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:06:30 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986ACC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:06:17 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so2687768wmy.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p0vtgOvE8iFrrW+FYLV4+rHA4rgvxJ8gg28Kh71P4qc=;
-        b=kiFArAnZyBqtytpQIkNm5rEsRYCs5r6j4ZfOrS3OLJ7Tsux0s/Q/LgL6AVo3mxzz6o
-         gvYQqRO5G6JmpJS32Uzi3tXm5SY3MDyT8UFiZRd9wuZknp3ajr3sDNUp5RIEsxptUe4M
-         /HV33tb8kvUQXz+gyDd2XWUBnpuryuXCNmjGo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=p0vtgOvE8iFrrW+FYLV4+rHA4rgvxJ8gg28Kh71P4qc=;
-        b=Gv0bMT3fPMAFL/WW//wVxuEAidvmRzfUDrxxTzVQfLud9FpjIsSZEJrQSkH8zfoi7p
-         AggtAVIr0Ot9LjJ8iWuN//tu08KoDFe+RDOk2EL5AR8Ww5HcrNan861ERIInUR1IJYTI
-         VRHd/WAX1eLeSo8CxBIw4rO2SG7Jn4tA+VfqCvCdW3Tj5ypeTW+VO1qoL1wZqcKPZMED
-         Fo0BPW0/6kVXvfyHGtQaT3pDcG0N3da3pJYDFbB6tywYUxYacWnBus4jpjf7AyF1zPKR
-         2+V0oKkRxyq+bmNXuXlsS0t2lmvBx7ODhaUIN3bzY5UVCSoFEe/v3LVhOkD1NuKT9hMj
-         kXTQ==
-X-Gm-Message-State: AOAM530NRXxGEPFEjThSKjtopM7tHiOJfiTLwzFxeHJlk3X2X7QUBvcg
-        I83Ds5HvUK0Y8FzIU3RY9d0x8A==
-X-Google-Smtp-Source: ABdhPJwgyQbYDJJ03aWo7qFX343DdQllaEQEIJhPy+tbRI5+2U3016msP4YmDClhO/2MUePG8sheWg==
-X-Received: by 2002:a1c:7c08:: with SMTP id x8mr7815815wmc.106.1617879976185;
-        Thu, 08 Apr 2021 04:06:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y31sm2907091wmp.46.2021.04.08.04.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 04:06:15 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 13:06:13 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] drm/drm_internal.h: Remove repeated struct declaration
-Message-ID: <YG7jpSjGcCmMdoP7@phenom.ffwll.local>
-Mail-Followup-To: Wan Jiabing <wanjiabing@vivo.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-References: <20210401081704.1000863-1-wanjiabing@vivo.com>
+        Thu, 8 Apr 2021 07:06:52 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGJLr3mpgzkjXg;
+        Thu,  8 Apr 2021 19:04:52 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.149) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 19:06:34 +0800
+From:   Ye Weihua <yeweihua4@huawei.com>
+To:     <linux@rempel-privat.de>, <kernel@pengutronix.de>,
+        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <festevam@gmail.com>, <linux-imx@nxp.com>
+CC:     <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH -next] i2c: imx: Fix PM reference leak in i2c_imx_reg_slave()
+Date:   Thu, 8 Apr 2021 19:06:38 +0800
+Message-ID: <20210408110638.200761-1-yeweihua4@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401081704.1000863-1-wanjiabing@vivo.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 04:17:03PM +0800, Wan Jiabing wrote:
-> struct drm_gem_object is declared twice. One is declared
-> at 40th line. The blew one is not needed. Remove the duplicate.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+The PM reference count is not expected to be incremented on return in
+these functions.
 
-Pushed to drm-misc-next, thanks for your patch.
--Daniel
+However, pm_runtime_get_sync() will increment the PM reference count
+even on failure. forgetting to put the reference again will result in
+a leak.
 
-> ---
->  drivers/gpu/drm/drm_internal.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
-> index fad2249ee67b..1265de2b9d90 100644
-> --- a/drivers/gpu/drm/drm_internal.h
-> +++ b/drivers/gpu/drm/drm_internal.h
-> @@ -170,7 +170,6 @@ void drm_sysfs_connector_remove(struct drm_connector *connector);
->  void drm_sysfs_lease_event(struct drm_device *dev);
->  
->  /* drm_gem.c */
-> -struct drm_gem_object;
->  int drm_gem_init(struct drm_device *dev);
->  int drm_gem_handle_create_tail(struct drm_file *file_priv,
->  			       struct drm_gem_object *obj,
-> -- 
-> 2.25.1
-> 
+Replace it with pm_runtime_resume_and_get() to keep the usage counter
+balanced.
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Weihua <yeweihua4@huawei.com>
+---
+ drivers/i2c/busses/i2c-imx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index b80fdc1f0092..dc5ca71906db 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -801,7 +801,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
+ 	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
+ 
+ 	/* Resume */
+-	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
++	ret = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_imx->adapter.dev, "failed to resume i2c controller");
+ 		return ret;
+@@ -1253,7 +1253,7 @@ static int i2c_imx_xfer(struct i2c_adapter *adapter,
+ 	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(adapter);
+ 	int result;
+ 
+-	result = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
++	result = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
+ 	if (result < 0)
+ 		return result;
+ 
+@@ -1496,7 +1496,7 @@ static int i2c_imx_remove(struct platform_device *pdev)
+ 	struct imx_i2c_struct *i2c_imx = platform_get_drvdata(pdev);
+ 	int irq, ret;
+ 
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
