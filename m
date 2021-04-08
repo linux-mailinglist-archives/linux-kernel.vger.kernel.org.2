@@ -2,229 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727E5359021
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68CE359024
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhDHXFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 19:05:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:31016 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232265AbhDHXFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:05:37 -0400
-IronPort-SDR: oul6KRsOXT/TRcrKWafdGSJgfvDt6wY9nxA5R58EQipzs8hj/TT2Aq19eoPU8l40jn+GYkkG+e
- A4RU2Z5xRWaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193688369"
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="193688369"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 16:05:01 -0700
-IronPort-SDR: +pAyck5dVwR2yRODKaI10GkRGqDRms+g3QUw9a5vf6xpSVgm/BNITqNv0b3klR1qnDnvSuT1fO
- HIopelaxnnTQ==
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="422459011"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.1.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 16:05:00 -0700
-Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
- for NOHZ
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com>
- <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com>
- <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book>
- <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
- <20210324134437.GA17675@vingu-book>
- <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
- <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
- <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com>
- <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com>
-Date:   Thu, 8 Apr 2021 16:05:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S232979AbhDHXFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 19:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232967AbhDHXFm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 19:05:42 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33B5C061761;
+        Thu,  8 Apr 2021 16:05:28 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id z16so2464245pga.1;
+        Thu, 08 Apr 2021 16:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=n86d8I0VVSWF4Xuv5hVTXdKVgAMp4Cd1RqhEoJubX0Y=;
+        b=QhgPRZJuZUrw6Lzc1Yw4KS8Vt59PLm4jF7notnmmmapKWK1ZBf9rR0aL1diuN1t/+7
+         ndtZWza9MAqx9XEMHSMFlLvSffSVGsWIMCaRhcKlxT+EVjaFe7FfddBn5ndsnrbp5B/F
+         0QmkZNKWyJZu2ufVkFQynSL7k2cBT+BqLMGf3HtYSijqWgcoNXXZEBuZRBue20zEYK0E
+         NjoFubxirjFAyw1b4QTXLDMaOduuyZwt7GPPWjCVAZZO/MynFUkTkybt4YAfWXWis5mw
+         CnSYvVL2bxTe+tcrn5KwVgj4Z2dnouXn8yavbhc9KEQQhvltwPDIlDktVAy8xfs+KYgi
+         dIlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=n86d8I0VVSWF4Xuv5hVTXdKVgAMp4Cd1RqhEoJubX0Y=;
+        b=D6qT/Rr/A+RwoY9QXT5cwPnxZTZGd3Vwcd7ISP7K138rWzXhldM+/4k11J+1iDQykL
+         82J50F+/etb30ztKtBXuWiENPu3TRVr3E7FMzK4m4LIHSWUCfIv2+T+LbQBxdCMaQVL6
+         NEilqxRJGFYYH2dV8GYDMDqIOJzx+pjAhtj5CyS930lmI9uXc8MV49nd/JQ+ClmbZd/V
+         I5R+9iRdtsTqGr26vAYluYgpfGxLBLDrqLvbYz2OeWWjTP1vT3KCpvJ18IGDo731TivT
+         d+Q5fWEzXmnXskG2RT6sigWZe5wPA9Zccnd1UUupovp/j7bccKh5a/SzI1MFApPsTFWF
+         woIw==
+X-Gm-Message-State: AOAM530yVBpnNIsMNMTqAZxIh3L14JE1oeVUsubR7dYwJ7RX/5DJrgEl
+        Ghwtm3Z4hjqveI8yYXNv5yg=
+X-Google-Smtp-Source: ABdhPJyPvr1g+T662ZAFkvaFPPWDXEVYlB0QwtSqqlR1cZuOSZE05byi9KcRIyN77YUftw7m+dEPlg==
+X-Received: by 2002:a63:e913:: with SMTP id i19mr9948560pgh.426.1617923128228;
+        Thu, 08 Apr 2021 16:05:28 -0700 (PDT)
+Received: from kali ([152.57.243.224])
+        by smtp.gmail.com with ESMTPSA id f5sm384469pjo.3.2021.04.08.16.05.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 16:05:27 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 04:35:14 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH] staging: media: zoran: add '*' in subsequent line
+Message-ID: <YG+MKk9C/fTd7vj4@kali>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Added '*' in susbsequent lines for block comments to meet linux kernel
+coding style.
 
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/media/zoran/zr36050.c | 34 +++++++++++++--------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
+diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
+index 2826f4e5d37b..663ac2b3434e 100644
+--- a/drivers/staging/media/zoran/zr36050.c
++++ b/drivers/staging/media/zoran/zr36050.c
+@@ -25,7 +25,7 @@
+ #include "videocodec.h"
+ 
+ /* it doesn't make sense to have more than 20 or so,
+-  just to prevent some unwanted loops */
++ * just to prevent some unwanted loops */
+ #define MAX_CODECS 20
+ 
+ /* amount of chips attached via this driver */
+@@ -43,7 +43,7 @@ MODULE_PARM_DESC(debug, "Debug level (0-4)");
+ 	} while (0)
+ 
+ /* =========================================================================
+-   Local hardware I/O functions:
++ *  Local hardware I/O functions:
+ 
+    read/write via codec layer (registers are located in the master device)
+    ========================================================================= */
+@@ -80,7 +80,7 @@ static void zr36050_write(struct zr36050 *ptr, u16 reg, u8 value)
+ }
+ 
+ /* =========================================================================
+-   Local helper function:
++ *  Local helper function:
+ 
+    status read
+    ========================================================================= */
+@@ -95,7 +95,7 @@ static u8 zr36050_read_status1(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   Local helper function:
++ *  Local helper function:
+ 
+    scale factor read
+    ========================================================================= */
+@@ -112,7 +112,7 @@ static u16 zr36050_read_scalefactor(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   Local helper function:
++ *  Local helper function:
+ 
+    wait if codec is ready to proceed (end of processing) or time is over
+    ========================================================================= */
+@@ -133,7 +133,7 @@ static void zr36050_wait_end(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   Local helper function:
++ *  Local helper function:
+ 
+    basic test of "connectivity", writes/reads to/from memory the SOF marker
+    ========================================================================= */
+@@ -174,7 +174,7 @@ static int zr36050_basic_test(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   Local helper function:
++ *  Local helper function:
+ 
+    simple loop for pushing the init datasets
+    ========================================================================= */
+@@ -192,7 +192,7 @@ static int zr36050_pushit(struct zr36050 *ptr, u16 startreg, u16 len, const char
+ }
+ 
+ /* =========================================================================
+-   Basic datasets:
++ *  Basic datasets:
+ 
+    jpeg baseline setup data (you find it on lots places in internet, or just
+    extract it from any regular .jpg image...)
+@@ -294,7 +294,7 @@ static const char zr36050_decimation_h[8] = { 2, 1, 1, 0, 0, 0, 0, 0 };
+ static const char zr36050_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+ 
+ /* =========================================================================
+-   Local helper functions:
++ *  Local helper functions:
+ 
+    calculation and setup of parameter-dependent JPEG baseline segments
+    (needed for compression only)
+@@ -303,7 +303,7 @@ static const char zr36050_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+ /* ------------------------------------------------------------------------- */
+ 
+ /* SOF (start of frame) segment depends on width, height and sampling ratio
+-			 of each color component */
++ *			 of each color component */
+ 
+ static int zr36050_set_sof(struct zr36050 *ptr)
+ {
+@@ -334,7 +334,7 @@ static int zr36050_set_sof(struct zr36050 *ptr)
+ /* ------------------------------------------------------------------------- */
+ 
+ /* SOS (start of scan) segment depends on the used scan components
+-			of each color component */
++ *			of each color component */
+ 
+ static int zr36050_set_sos(struct zr36050 *ptr)
+ {
+@@ -378,7 +378,7 @@ static int zr36050_set_dri(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   Setup function:
++ *  Setup function:
+ 
+    Setup compression/decompression of Zoran's JPEG processor
+    ( see also zoran 36050 manual )
+@@ -531,13 +531,13 @@ static void zr36050_init(struct zr36050 *ptr)
+ }
+ 
+ /* =========================================================================
+-   CODEC API FUNCTIONS
++ *  CODEC API FUNCTIONS
+ 
+    this functions are accessed by the master via the API structure
+    ========================================================================= */
+ 
+ /* set compression/expansion mode and launches codec -
+-   this should be the last call from the master before starting processing */
++ *  this should be the last call from the master before starting processing */
+ static int zr36050_set_mode(struct videocodec *codec, int mode)
+ {
+ 	struct zr36050 *ptr = (struct zr36050 *)codec->data;
+@@ -707,7 +707,7 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
+ }
+ 
+ /* =========================================================================
+-   Exit and unregister function:
++ *  Exit and unregister function:
+ 
+    Deinitializes Zoran's JPEG processor
+    ========================================================================= */
+@@ -732,7 +732,7 @@ static int zr36050_unset(struct videocodec *codec)
+ }
+ 
+ /* =========================================================================
+-   Setup and registry function:
++ *  Setup and registry function:
+ 
+    Initializes Zoran's JPEG processor
+ 
+@@ -813,7 +813,7 @@ static const struct videocodec zr36050_codec = {
+ };
+ 
+ /* =========================================================================
+-   HOOK IN DRIVER AS KERNEL MODULE
++ *  HOOK IN DRIVER AS KERNEL MODULE
+    ========================================================================= */
+ 
+ static int __init zr36050_init_module(void)
+-- 
+2.30.2
 
-On 4/8/21 7:51 AM, Vincent Guittot wrote:
-
->> I was suprised to find the overall cpu% consumption of update_blocked_averages
->> and throughput of the benchmark still didn't change much.  So I took a
->> peek into the profile and found the update_blocked_averages calls shifted to the idle load balancer.
->> The call to update_locked_averages was reduced in newidle_balance so the patch did
->> what we intended.  But the overall rate of calls to
-> 
-> At least , we have removed the useless call to update_blocked_averages
-> in newidle_balance when we will not perform any newly idle load
-> balance
-> 
->> update_blocked_averages remain roughly the same, shifting from
->> newidle_balance to run_rebalance_domains.
->>
->>    100.00%  (ffffffff810cf070)
->>             |
->>             ---update_blocked_averages
->>                |
->>                |--95.47%--run_rebalance_domains
->>                |          __do_softirq
->>                |          |
->>                |          |--94.27%--asm_call_irq_on_stack
->>                |          |          do_softirq_own_stack
-> 
-> The call of  update_blocked_averages mainly comes from SCHED_SOFTIRQ.
-> And as a result, not from the new path
-> do_idle()->nohz_run_idle_balance() which has been added by this patch
-> to defer the call to update_nohz_stats() after newlyidle_balance and
-> before entering idle.
-> 
->>                |          |          |
->>                |          |          |--93.74%--irq_exit_rcu
->>                |          |          |          |
->>                |          |          |          |--88.20%--sysvec_apic_timer_interrupt
->>                |          |          |          |          asm_sysvec_apic_timer_interrupt
->>                |          |          |          |          |
->>                ...
->>                |
->>                |
->>                 --4.53%--newidle_balance
->>                           pick_next_task_fair
->>
->> I was expecting idle load balancer to be rate limited to 60 Hz, which
-> 
-> Why 60Hz ?
-> 
-
-My thinking is we will trigger load balance only after rq->next_balance.
-
-void trigger_load_balance(struct rq *rq)
-{
-        /* Don't need to rebalance while attached to NULL domain */
-        if (unlikely(on_null_domain(rq)))
-                return;
-
-        if (time_after_eq(jiffies, rq->next_balance))
-                raise_softirq(SCHED_SOFTIRQ);
-
-        nohz_balancer_kick(rq);
-}
-
-And it seems like next_balance is set to be 60 Hz
-
-static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
-{
-        int continue_balancing = 1;
-        int cpu = rq->cpu;
-        int busy = idle != CPU_IDLE && !sched_idle_cpu(cpu);
-        unsigned long interval;
-        struct sched_domain *sd;
-        /* Earliest time when we have to do rebalance again */
-        unsigned long next_balance = jiffies + 60*HZ;
-
-
->> should be 15 jiffies apart on the test system with CONFIG_HZ_250.
->> When I did a trace on a single CPU, I see that update_blocked_averages
->> are often called between 1 to 4 jiffies apart, which is at a much higher
->> rate than I expected.  I haven't taken a closer look yet.  But you may
-> 
-> 2 things can trigger a SCHED_SOFTIRQ/run_rebalance_domains:
-> - the need for an update of blocked load which should not happen more
-> than once every 32ms which means a rate of around 30Hz
-> - the need for a load balance of a sched_domain. The min interval for
-> a sched_domain is its weight when the CPU is idle which is usually few
-> jiffies
-> 
-> The only idea that I have for now is that we spend less time in
-> newidle_balance which changes the dynamic of your system.
-> 
-> In your trace, could you check if update_blocked_averages is called
-> during the tick ? and Is the current task idle task ?
-
-Here's a snapshot of the trace. However I didn't have the current task in my trace.
-You can tell the frequency that update_blocked_averages is called on
-cpu 2 by the jiffies value.  They are quite close together (1 to 3 jiffies apart).
-When I have a chance to get on the machine, I'll take another look
-at the current task and whether we got to trigger_load_balance() from scheduler_tick().
-
-
-     3.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb731
-     4.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb732
-     6.484 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb733
-     6.506 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb734
-     9.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb737
-    11.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb739
-    11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
-    11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    11.642 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    11.645 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    11.977 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    12.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    12.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    12.043 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
-    12.567 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73a
-    13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
-    13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.159 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.203 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.223 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.301 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
-    14.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73c
-    14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
-    14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.059 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.083 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.100 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.103 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.150 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.227 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.248 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.311 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
-    15.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73d
-    16.140 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73d
-    16.185 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
-    16.224 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
-    16.340 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
-    16.384 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
-    16.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73e
-    16.993 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73e
-    17.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73f
-    17.630 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73f
-    17.830 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
-    18.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
-    18.031 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
-    18.036 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
-    18.040 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
-    18.502 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb740
-
-Thanks for taking a look.
-
-Tim
