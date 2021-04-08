@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D831C358FB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D22358FBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhDHWOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S232768AbhDHWT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhDHWOv (ORCPT
+        with ESMTP id S232265AbhDHWTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:14:51 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E03C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 15:14:38 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y1so4097473ljm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 15:14:38 -0700 (PDT)
+        Thu, 8 Apr 2021 18:19:54 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A1EC061760;
+        Thu,  8 Apr 2021 15:19:42 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id y16so2875079pfc.5;
+        Thu, 08 Apr 2021 15:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UZYFt0LVceFfcAprXRqy7FjMz5TZMkhneNJXsWawHjA=;
-        b=jh/m8+mpPAxdKJ0faiWMDsB8ThJ/bVJJ9pnV2DdOmRS9/0Oups3cMyWdWzW18R9i8j
-         gbunTrdTzXj61KzAnIHGuLvJ9nkft7x+MraDzr7gFF1yaBGUjtjTTdMiYQ+PunQrg6Mq
-         AHGDRg72C/ydMvv4dEfdxZRPqzyRfYLL/pSvqU735sU8zij4s5RgqNN1PZ4wS+Wdi6Ka
-         AZRfpoyBNCCwQ3y+fFkFyztWzGjIj4Wpf0KA1axvxXHsmaTEVk+z8NE0++4kRHkHMHFm
-         aPIVCbs0pKTV4iffO/p2kmB53EhxBPUETOwOLcv2vlxxWltOmJLjG8b2F2EkOAbgrmI2
-         7blw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=LGRX6ULXaym2QnaLDDeOc3iQ2mdXQmSNVaooLdjGPVM=;
+        b=tH2IxDmBOhLU/kTmr7oFMXuhAZkMQkEVcuC3YB0XMuOIJ8iHkPwBS2FL2XFHazwwha
+         2Hpn9u5JppW9li+KRfcGviHcat0Y/gcgl2nieQNrrDJQFZFHbQjbz0CULc3xnAt5Z8wc
+         kj8IYGrohufRONIPulOK/8LMfEV5VrNNX45l7R+F2R7WERXmYipl4dyUl/IqtpqO8si9
+         yisuU/ubykbl9JanCMEAlYPy73PKf2Rx5KZ8i77gf8AjFJOmidnAOemiay+xU+b63PUn
+         /+1xU3hc7OfuEgYe4glzo1JuUsotL+gSJoxFogWfzMPgLCuEAQ/oY8S7y1qRqRi0ftdo
+         bvyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UZYFt0LVceFfcAprXRqy7FjMz5TZMkhneNJXsWawHjA=;
-        b=Pj6FycWjpghqBFU1SreLhb/Twv7lo2yVuuDN1ywI0eD4seKj6EHgjFDiFTXRlxO4AR
-         WYSGcVrXgaVSyHD443KOFWzalWPFkv4pRn0eDLf8y67XXKhWd9yhnGLF0RKTP7B4piJ+
-         E5sJsotSiN65Nss2Tqp+6yxcRBKC5NgG0nyFJMbLd+fCp9oYE6z1z8RlA1IpsyetSE56
-         qWzMnsRXVQUdhrStK8PfooqyKSjqWRO4AlMP3b7VdkOFXZTb/ull5T8vTbeulHKMI85D
-         Lq0GsWZ/yLAwAwVCozkIFTgGBincHAA6jW3+vpI+/l1QHcTvXVe8HzWCaQbWNBKzj9uc
-         tXew==
-X-Gm-Message-State: AOAM531s6WyYAEEyhXgJtEzcyZd1St7PatNshqIxqCf1SCBzFvijHkno
-        icuPRgLWuWBY9rUz7Ao/+MMOQTd1/G5jod+w/Qva3A==
-X-Google-Smtp-Source: ABdhPJzWty7OkE/zjpcMz5z53ansy9SUNQ01JxDM7F1AxOx5za4NUdfe6x0onlsn7zmcaLaN2CQvWeG2UAY2qDU8U9A=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr7305898ljj.467.1617920077290;
- Thu, 08 Apr 2021 15:14:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=LGRX6ULXaym2QnaLDDeOc3iQ2mdXQmSNVaooLdjGPVM=;
+        b=fT7Qao6F8AdbjgU5QGD5Y+yqEA0e8KI3eWI3YH1iZbUiwG98QqHKiVIlp+QIpznYIC
+         SxkP1bCkWxKiKUB/zhG4K4wJCNBfUGpWQo8P0iS2luqz+q4yqe8GFoz8t5VvYPXYmyaE
+         wUywiTjv87wqRTGd25XLU5Hb30Yk/TC/hqQYCiPdg7iYEze2waJI8B42sJDrkKa+675v
+         nrJuatnxfgO3g5vz3Z4TKTNxmK3nLjfuIDyV1K2GYg908ONokcTFeB6/dlSO49J+6PX5
+         7uUM27DCGNUr+7g3doKxI7Z6DMthWn7ND1ec6t5Q4su4wEbEgjQJxd/cUxDxiSWVoRs8
+         +p+Q==
+X-Gm-Message-State: AOAM532abONYwGs1kqAj1o+TFIyd8HouDcBuVQ2eK6NUx1zIlHhisysJ
+        xDJEunEZ+ua6GPQRP5mp+N4=
+X-Google-Smtp-Source: ABdhPJxt23GS2GdDmzrrWB7E7KVTxxcmtikT7y6/YJa/OMyrw8mrw4n/DoxlNqLKb5idus8d/xGr/A==
+X-Received: by 2002:a63:cc:: with SMTP id 195mr9911498pga.282.1617920381578;
+        Thu, 08 Apr 2021 15:19:41 -0700 (PDT)
+Received: from kali ([152.57.243.224])
+        by smtp.gmail.com with ESMTPSA id w127sm387203pfc.51.2021.04.08.15.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 15:19:41 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 03:49:30 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     narmstrong@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH] staging: media: meson: vdec: matched alignment with
+ parenthesis
+Message-ID: <YG+Bcqxetfj98l6V@kali>
 MIME-Version: 1.0
-References: <bdb18e9f-fcd7-1e31-2224-19c0e5090706@marcan.st>
-In-Reply-To: <bdb18e9f-fcd7-1e31-2224-19c0e5090706@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 9 Apr 2021 00:14:26 +0200
-Message-ID: <CACRpkdaijbDoV2rSQsgO3XKnj_Hde8CU9JQ+V9gGePYjvCWJhA@mail.gmail.com>
-Subject: Re: [GIT PULL] Apple M1 SoC platform bring-up for 5.13
-To:     Hector Martin <marcan@marcan.st>
-Cc:     SoC Team <soc@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 5:55 PM Hector Martin <marcan@marcan.st> wrote:
+Matched alignment with open parenthesis to meet linux kernel coding
+style.
+Reported by checkpatch
 
-> Hi Arnd and all,
->
-> Here's the final version of the M1 SoC bring-up series, based on
-> v4 which was reviewed here:
->
-> https://lore.kernel.org/linux-arm-kernel/20210402090542.131194-1-marcan@marcan.st/T/#u
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/media/meson/vdec/codec_mpeg12.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Excellent work on this series Hector, thanks for working so hard on this!
+diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+index 48869cc3d973..21e93a13356c 100644
+--- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
++++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+@@ -81,7 +81,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+ 	}
+ 
+ 	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
+-					(u32[]){ 8, 0 });
++				  (u32[]){ 8, 0 });
+ 	if (ret)
+ 		goto free_workspace;
+ 
+-- 
+2.30.2
 
-Yours,
-Linus Walleij
