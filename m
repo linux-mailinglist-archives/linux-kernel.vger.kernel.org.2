@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C90A358AB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D705B358AB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhDHREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230522AbhDHREK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:04:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13FD2608FC;
-        Thu,  8 Apr 2021 17:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617901439;
-        bh=hnG61I8MApYNUUSFh/GpmupU2Ke6cKDab8yjo+IYME8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WS0PzOmeqqSFDSK5j3d4hFKlmKlOXxieqq/M/mDx0d3bYwtDKJyj6PXNnH3H0Xa2i
-         D0nPT1Ioy4+nMNvRn0x8iY9GkGApIlrMIVVr+W4mXibIUZL9//Lkl9Zi1AFdNBv85m
-         TwNyPzitrhCRE+vbXw+Ii7p+h9GDObmNHRgh/gHzrcU4tSxujw2/c981BFBbgyj54X
-         L8C/vMabewVDuF9TRC3cXXOrdYVGs5zYl0nfpQtv9p+CY9ztrvMMKU/6xuNoRt1qD6
-         dApImahBT1PDWyTH3ZZTLb5VidrAq+DENKq1zEEgW0zzxpLbj9cls3ofO5cZADVz4b
-         Mq4F6YV7gb5jQ==
-Date:   Thu, 8 Apr 2021 18:03:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH] arm64: mte: Move MTE TCF0 check in entry-common
-Message-ID: <20210408170354.GB18321@willie-the-truck>
-References: <20210408143723.13024-1-vincenzo.frascino@arm.com>
- <20210408145604.GB18211@willie-the-truck>
- <20210408150612.GA37165@C02TD0UTHF1T.local>
+        id S232364AbhDHRFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231480AbhDHRFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:05:21 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80B4C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:05:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d8so1366670plh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 10:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KvaRWGUBzKg18vrLhcly5xbw1iyhjHp6E8Khnfq8sP0=;
+        b=EbqThoFeWox3gBcN8qq4bYfqi0/WfCo/dBfSVkP0YKDt5l6DvOHtwwuPTNjX7P4gk+
+         pVJuPaPtH3ewyonD+6NW8v0y540eqldJbmGp5ES3TpYFpjiTeGHb5ie+qc93Woy6U6oa
+         c75LlVzVQ51Vmd2pJWAuBCTsJ+oCvbhhH2pK3gE2tYMGFYOALzlgw8uSftHuCuSX5772
+         7CyppoTUcsG/Z1KILPxEdX4ZYyoRTFkPQDwreKFpVplIE9U+J5bN9Xhfz65LGK4UA7Om
+         FkAYEcgAMXxvI4a3hEei+pjGg5Y1iaSDjPIo7LSbZzXExKTSOencK8J6bHjZC4O0XXQ+
+         xSBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KvaRWGUBzKg18vrLhcly5xbw1iyhjHp6E8Khnfq8sP0=;
+        b=Fqzt0NJJxtmUOLhA43U6DNU1Syd3MtE3ZF9ZOeaLeTVHItzlLYvrkv6JYwGEGZ5BvQ
+         mpXmspPT0vVb1h173VnSrKoytn6scGSE0v9O5VUSB9z3qkso/QLpnb29vYOTKUPXfiKq
+         tXBfAs2Sn9tjMzWOD0QkWfBCNOtciMKSjo79hfBeFWVQaNMTWpF0FAX0rwg1kiBWxhu7
+         zBcAc9hSQg89cBGd0l/LLoQHYlER9TCqL00J/K1S3aS48Tc72nxaGKgNAqpSQ4tItSRc
+         0fkJWGaencf+zEa17IZOPzHyuSxiCk1bJ/jSPCT5amy1kXEu4euPxKa3XukniSK3L+WA
+         hT7Q==
+X-Gm-Message-State: AOAM532RWqbq+/W7Lt4tFVhMsXKlo8MnyzPc8Vlwekg6ASdVgD8xzr2u
+        uHmmUd0bu19Zi/fgcihn3bbx
+X-Google-Smtp-Source: ABdhPJz8q2PMPk8U2f0CDsxOHAUaSqrUKnXrYXnL3AF64LHpnOZtHGn+nN2OjD7QgJA92ATtu6OR5A==
+X-Received: by 2002:a17:90b:784:: with SMTP id l4mr9575865pjz.90.1617901509466;
+        Thu, 08 Apr 2021 10:05:09 -0700 (PDT)
+Received: from localhost.localdomain ([103.77.37.191])
+        by smtp.gmail.com with ESMTPSA id y194sm65183pfb.21.2021.04.08.10.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 10:05:09 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 00/15] SDX55 devicetree updates
+Date:   Thu,  8 Apr 2021 22:34:42 +0530
+Message-Id: <20210408170457.91409-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408150612.GA37165@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 04:06:23PM +0100, Mark Rutland wrote:
-> On Thu, Apr 08, 2021 at 03:56:04PM +0100, Will Deacon wrote:
-> > On Thu, Apr 08, 2021 at 03:37:23PM +0100, Vincenzo Frascino wrote:
-> > > diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> > > index 9d3588450473..837d3624a1d5 100644
-> > > --- a/arch/arm64/kernel/entry-common.c
-> > > +++ b/arch/arm64/kernel/entry-common.c
-> > > @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
-> > >  	CT_WARN_ON(ct_state() != CONTEXT_USER);
-> > >  	user_exit_irqoff();
-> > >  	trace_hardirqs_off_finish();
-> > > +
-> > > +	/* Check for asynchronous tag check faults in user space */
-> > > +	check_mte_async_tcf0();
-> > >  }
-> > 
-> > Is enter_from_user_mode() always called when we enter the kernel from EL0?
-> > afaict, some paths (e.g. el0_irq()) only end up calling it if
-> > CONTEXT_TRACKING or TRACE_IRQFLAGS are enabled.
-> 
-> Currently everything that's in {enter,exit}_from_user_mode() only
-> matters when either CONTEXT_TRACKING or TRACE_IRQFLAGS is selected (and
-> expands to an empty stub otherwise).
-> 
-> We could drop the ifdeffery in user_{enter,exit}_irqoff() to have them
-> called regardless, or add CONFIG_MTE to the list.
+Hi Bjorn,
 
-I'm always in favour of dropping ifdeffery if it's getting in the way.
+This series updates the SDX55 devicetree by adding below features:
 
-> > >  asmlinkage void noinstr exit_to_user_mode(void)
-> > >  {
-> > > +	/* Ignore asynchronous tag check faults in the uaccess routines */
-> > > +	clear_mte_async_tcf0();
-> > > +
-> > 
-> > and this one seems to be called even less often.
-> 
-> This is always done in ret_to_user, so (modulo ifdeferry above) all
-> returns to EL0 call this.
+- A7 PLL
+- APCS mailbox
+- CPUFreq using clk and regulator
+- SMP2P
+- IMEM, PIL
+- SCM
+- Interconnect
+- Telit FN980 TLB board
+- Thundercomm T55 dev board
+- Modem remoteproc
 
-Right, I was just saying that if you disabled those CONFIG options then this
-isn't called _at all_ whereas I think enter_from_user_mode() still is on
-some paths.
+Except remoteproc, all of the driver patches already merged. Remoteproc
+patch will be submitted separately.
 
-Will
+Thanks,
+Mani
+
+Manivannan Sadhasivam (15):
+  ARM: dts: qcom: sdx55: Add support for A7 PLL clock
+  ARM: dts: qcom: sdx55: Add support for APCS block
+  ARM: dts: qcom: sdx55: Add CPUFreq support
+  ARM: dts: qcom: sdx55: Add modem SMP2P node
+  ARM: dts: qcom: sdx55: Add IMEM and PIL info region
+  dt-bindings: firmware: scm: Add compatible for SDX55
+  ARM: dts: qcom: sdx55: Add SCM node
+  ARM: dts: qcom: sdx55: Add interconnect nodes
+  ARM: dts: qcom: Fix node name for NAND controller node
+  dt-bindings: arm: qcom: Add binding for Telit FN980 TLB board
+  ARM: dts: qcom: sdx55: Add basic devicetree support for Telit FN980
+    TLB
+  dt-bindings: arm: qcom: Add binding for Thundercomm T55 kit
+  ARM: dts: qcom: sdx55: Add basic devicetree support for Thundercomm
+    T55
+  dt-bindings: remoteproc: qcom: pas: Add binding for SDX55
+  ARM: dts: qcom: sdx55: Add Modem remoteproc node
+
+ .../devicetree/bindings/arm/qcom.yaml         |   2 +
+ .../devicetree/bindings/firmware/qcom,scm.txt |   1 +
+ .../bindings/remoteproc/qcom,adsp.txt         |   4 +
+ arch/arm/boot/dts/Makefile                    |   4 +-
+ arch/arm/boot/dts/qcom-ipq4019.dtsi           |   2 +-
+ arch/arm/boot/dts/qcom-sdx55-t55.dts          | 281 +++++++++++++++++
+ .../boot/dts/qcom-sdx55-telit-fn980-tlb.dts   | 282 ++++++++++++++++++
+ arch/arm/boot/dts/qcom-sdx55.dtsi             | 166 ++++++++++-
+ 8 files changed, 739 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55-t55.dts
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts
+
+-- 
+2.25.1
+
