@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778E7357E84
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EDB357E65
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhDHI4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhDHI4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:56:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E798610CF;
-        Thu,  8 Apr 2021 08:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617872156;
-        bh=/gCV8q264AbYItnyZblsnp9HILxQ2LYQ2c+GJrkxghA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EWoY/XxwMP+/96DP+j6tHTYDnIJE+TR2kRqp689xLMoUvkE6itIthdYry6s40o+8m
-         GQBKK8NtxNcTs78VQpv4qZnDZXV0b4iGUKprrEn6+cGmf++pjdH8zJLaoDw1CIPwDJ
-         FBF4mI6MVTfNnvdPZ9jkDAKDyoQ5F0EJhKHgYPAI=
-Date:   Thu, 8 Apr 2021 10:55:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YG7FGRNhIfDTqgUz@kroah.com>
-References: <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <87blap4kum.ffs@nanos.tec.linutronix.de>
- <YG6fpgmYSg/PwOrU@kroah.com>
- <nycvar.YFH.7.76.2104080957580.18270@cbobk.fhfr.pm>
- <YG66OWzum5DGcSTn@kroah.com>
- <nycvar.YFH.7.76.2104081015340.18270@cbobk.fhfr.pm>
+        id S229566AbhDHIsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhDHIsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:48:13 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F42C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:48:01 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id w10so929032pgh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 01:48:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/PMASeFAUbBI5JwV4L0k1lOX7888tIM9XHNKvH1RoPM=;
+        b=DGNyFvJNtCpXW5Bjt2K1X1fr0tN3IHOLkCmGwmhQl5vLaqgacthwvenRB6aGv/AAeQ
+         dUwql030rW4wIcVziIulvYiKbW40KunNuP3H5KxX0okrqVpKvITCe7SXjDaDAkjOEnXy
+         BEmVDDDTn5S+YlBPZIjx9agDX1FUYGV0AVbS3lejwSFGBq2vL5EpfmP34A9nrF8xsu/K
+         Dr1bTO1Zf/YLL8ACA1Y5V3eptwi/X0gocInmLAEjijbe6WWBn8Qvm/q4bcEdfCfc7mMA
+         KjmgyGfXyZco6XZUC26jFDkRRHBjNTxelYFZ1Oez0RWaQLP6kiMzr/LbemQ88jCbYRqG
+         nAng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/PMASeFAUbBI5JwV4L0k1lOX7888tIM9XHNKvH1RoPM=;
+        b=TBSLeVBhvzXFMdtmBJX9EEXX4LehoQVTWjiWYp04PIjKX5zWCLi4BCstncyqjB1BYV
+         2gnc4NvswUYEHB4EF3LlRnD3tNoLG/V9psxIZUA3vXTa+4I9NILpzpnq2CtTzcSZt9s7
+         3OMkC3iwl3w2CKxT2RUUbIarWTi+1iqENoQbWvboISQ+/o85uXea+6NRtnACF/rUXS5T
+         Ts3I4b+zhqv/XKTKVDCyWvhvu6b5kMhjpGzInD1lja2Xli6htuFpGH+8U7a6iLjTeOAX
+         QU3LHPEDDvqtKEm3p9oAUCHPE24TugBWLY+ES0jGrhyui6BNU7bRybJXVIiMqxuugZ5D
+         Ye+Q==
+X-Gm-Message-State: AOAM532p8W7qlovKzj54R1Y1P8+VxS9t81CKGg+j3m15Tfi0fW4VBMRp
+        QT6jhkC9ACV+q8/xj/RtsPdX1GUprFQPfiDmkf88Jg==
+X-Google-Smtp-Source: ABdhPJxiutvnYlEKjdNdSYTwUE01MVBkq0+GFUlPeMifn5KRIHOroysMx2hSbJbYXz3P2FVZwY3uIsC8Pl5tKTZj1d4=
+X-Received: by 2002:a63:f903:: with SMTP id h3mr6882846pgi.443.1617871681332;
+ Thu, 08 Apr 2021 01:48:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2104081015340.18270@cbobk.fhfr.pm>
+References: <1617616369-27305-1-git-send-email-loic.poulain@linaro.org> <ddc8cd0fd3212ccbba399b03a059bcf40abbc117.camel@redhat.com>
+In-Reply-To: <ddc8cd0fd3212ccbba399b03a059bcf40abbc117.camel@redhat.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 8 Apr 2021 10:56:11 +0200
+Message-ID: <CAMZdPi_6hCYpiyf4=x1FdA2KHnVg6LFWnfEhCd8PMQP_yFXqCw@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 1/2] net: Add a WWAN subsystem
+To:     Dan Williams <dcbw@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        open list <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 10:35:17AM +0200, Jiri Kosina wrote:
-> On Thu, 8 Apr 2021, Greg KH wrote:
-> 
-> > > If there is a driver/subsystem code that can't handle the reverse 
-> > > operation to modprobe, it clearly can't handle error handling during 
-> > > modprobe (which, one would hope, is supported), and should be fixed.
-> > 
-> > Huh?  No, that's not the issue here, it's the issue of different
-> > userspace code paths into the module at the same time that it is trying
-> > to be unloaded.  That has nothing to do with loading the module the
-> > first time as userspace is not touching those apis yet.
-> 
-> So do you claim that once the first (out of possibly many) 
-> userspace-visible sysfs entry has been created during module insertion and 
-> made available to userspace, there is never going to be rollback happening 
-> that'd be removing that first sysfs entry again?
+Hi Dan,
 
-{sigh}
+On Wed, 7 Apr 2021 at 16:32, Dan Williams <dcbw@redhat.com> wrote:
+>
+> On Mon, 2021-04-05 at 11:52 +0200, Loic Poulain wrote:
+> > This change introduces initial support for a WWAN framework. Given
+> > the
+> > complexity and heterogeneity of existing WWAN hardwares and
+> > interfaces,
+> > there is no strict definition of what a WWAN device is and how it
+> > should
+> > be represented. It's often a collection of multiple devices that
+> > perform
+> > the global WWAN feature (netdev, tty, chardev, etc).
+>
+> Great to see the continued work on this.
+>
+> Were you intending to follow-up with functionality to group netdevs
+> with the control ports?  From my quick look at v9 here it only deals
+> with MHI control ports (diag, QMI, AT, etc) which is great, but not the
+> full story.
+>
+> I think that was a big part of the discussion around Johannes' earlier
+> series since it's often protocol-specific to tie a particular netdev
+> with a given control port, but that's something that's really necessary
+> for a good abstract userspace.
+>
+> Thoughts here? I'd love to see that functionality too.
 
-I'm not trying to argue that, no.
+Yes, though it's not in the scope for this initial series*, I plan to add that.
 
-What I am arguing is that the complexity that the original patch was
-not worth the low probablity of this actually being an issue hit in
-real-life operations.
+I was thinking about introducing a wwan_register_ndev or
+wwan_attach_ndev. Most of the time, netdev does not have reference to
+related existing (or future) control ports (they are different
+drivers), so we may need something like a 'context_id' for both ndev
+and control ports that can be used for linking them when necessary.
+Then, this relation could be represented as e.g a sysfs link to ndev
+device(s)... That's just a possible approach, I'll be happy to discuss
+this further.
 
-That's all, messing around with sysfs entries and module reference
-counts is tricky and complex and a total mess.  We have a separation
-between normal sysfs files and devices being removed that should handle
-the normal operations but there are still some crazy corner cases, of
-which this seems to be one.
+* Note: Userspace tools like ModemManager are able to link control
+ports and netdev by looking at the sysfs hierarchy, it's fine for
+simple connection management, but probably not enough for 'multi PDN'
+support for which devices may have multiple netdev and ports
+targetting different 'PDN contexts'...
 
-Module removal is not a "normal" operation that can be triggered by a
-system automatically without a user asking for it.  As someone reminded
-me on IRC, we used to do this "automatically" for many problematic
-drivers years ago for suspend/resume, that should all now be long fixed
-up.
-
-So to add crazy complexity to the kernel, for an operation that can only
-be triggered manually by a root user, is not worth it in my opinion, as
-the maintainer of that code the complexity was asked to be made to.
-
-My throw-away comment of "module unloading is not supported" was an
-attempt to summarize all of the above into one single sentence that
-seems to have struck a nerve with a lot of people, and I appologize for
-that :(
-
-thanks,
-
-greg k-h
+Regards,
+Loic
