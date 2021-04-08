@@ -2,116 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF673585C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC073585CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhDHOFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:05:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231887AbhDHOFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:05:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617890724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wJTWsok/SqAEDjDYfE9ZBtK+085x6ZzfcdZ93ZJqu30=;
-        b=b+X1sc67LoXoy7dUsU6QI4SPKqp0uj6GohBN0wPrdK7Nii6kL6BgJkuP9QNioVKZ8KwtCs
-        LqYPGlS0ytAV4uwxB3RLpNaXLTMIB1LzNCfe11fRA+XnYtaJZHGYwH8mhnSk5/zZnRMdS7
-        M/UjdDzIdX2/3/YoKiFQI30njHWQ+ss=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-760Lky5pPISgGhXUdCWx1g-1; Thu, 08 Apr 2021 10:05:22 -0400
-X-MC-Unique: 760Lky5pPISgGhXUdCWx1g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB2ED107ACE4;
-        Thu,  8 Apr 2021 14:05:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E042B6E401;
-        Thu,  8 Apr 2021 14:05:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v6 06/30] netfs: Make a netfs helper module
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        dhowells@redhat.com,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Thu, 08 Apr 2021 15:05:12 +0100
-Message-ID: <161789071202.6155.16519256513958534906.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-References: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S231910AbhDHOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:05:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231901AbhDHOFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D048461130;
+        Thu,  8 Apr 2021 14:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617890741;
+        bh=c/qgNDwkcocIuy/eJhJGCaujFtddkd4baMyo7n1aums=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ns7+gXE2w1OZn9jYpdIJWjit9ZZNsYeSuJW0uCfDubH9WxaFHMVJu/sURWi8vPrIG
+         4TmLX//CxkxFWmTGiaWRe+PTju1ZXj9KhlpJVqWCB9UaivlPp4ogyv9yxzz8shn5kv
+         uPSEu6a5H0bmsZYK/MDxQS5qQvVtqifBt7W3JuRcpRbmF7ASA2cNA+zcwryyTThAZ+
+         nnxOtJUw/XW6Fy0WR55AURmpMMhkRNSEatsiwIwul4BexTwPkgzswndY6HWic5sGoM
+         6TuIfWoUs8RSsmFf6/7goM9nJ/HxPYdfoDBKjQcljR5sR4Tbos9NzVsNWTilzPEBJe
+         T1R/fLC3ktdPQ==
+Date:   Thu, 8 Apr 2021 15:05:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: imx: add a check for speed_hz before calculating
+ the clock
+Message-ID: <20210408140523.GH4516@sirena.org.uk>
+References: <20210408103347.244313-1-xiaoning.wang@nxp.com>
+ <20210408103347.244313-2-xiaoning.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
+Content-Disposition: inline
+In-Reply-To: <20210408103347.244313-2-xiaoning.wang@nxp.com>
+X-Cookie: Editing is a rewording activity.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make a netfs helper module to manage read request segmentation, caching
-support and transparent huge page support on behalf of a network
-filesystem.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588496284.3465195.10102643717770106661.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118135638.1232039.1622182202673126285.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161031028.2537118.1213974428943508753.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340391427.1303470.14884950716721956560.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539531569.286939.18317119181653706665.stgit@warthog.procyon.org.uk/ # v4
-Link: https://lore.kernel.org/r/161653790328.2770958.6710423217716151549.stgit@warthog.procyon.org.uk/ # v5
----
+--dMyqICaxQaaUjrCL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- fs/netfs/Kconfig |    8 ++++++++
- 1 file changed, 8 insertions(+)
- create mode 100644 fs/netfs/Kconfig
+On Thu, Apr 08, 2021 at 06:33:47PM +0800, Clark Wang wrote:
+> When some drivers use spi to send data, spi_transfer->speed_hz is
+> not assigned. If spidev->max_speed_hz is not assigned as well, it
+> will cause an error in configuring the clock.
 
-diff --git a/fs/netfs/Kconfig b/fs/netfs/Kconfig
-new file mode 100644
-index 000000000000..2ebf90e6ca95
---- /dev/null
-+++ b/fs/netfs/Kconfig
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+config NETFS_SUPPORT
-+	tristate "Support for network filesystem high-level I/O"
-+	help
-+	  This option enables support for network filesystems, including
-+	  helpers for high-level buffered I/O, abstracting out read
-+	  segmentation, local caching and transparent huge page support.
+Please don't send new patches in reply to other threads, this makes it
+harder to follow what current versions of things are and causes problems
+for tools.
 
+--dMyqICaxQaaUjrCL
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBvDaIACgkQJNaLcl1U
+h9DpFwgAhu6kubADli5uS9eG0/RYPI4U2CNpsUZ+kwYdfdoNvEecSr9Qi16J+BG3
+/UB7gUUx0vszDmJoECWgeuJjRw05iAJJgyZmmo6V3V+0AwcdhDTaNxAZOJy3eYUF
+Lt/R/Prz3KFS8PReOGJ6tlZWjZ3FdSF7nzyQBcqkHqGAyLEBgE6j/r/2oeY6KSps
+L7BXJrOHrzZL6K8ahmtD5cm69uIg3M74f21Un+ndGVoZf8m0XpZR16ivf0G1zfLg
+Ci+301tdOHk/UjbBQkhlVO80WQyr9U+e8daNV2WwxPLUdR4tY9ZvQxqWKM2/uNQa
+zTOJu2uF2otRJ8SDqrXs6MIlIDhJMA==
+=58bV
+-----END PGP SIGNATURE-----
+
+--dMyqICaxQaaUjrCL--
