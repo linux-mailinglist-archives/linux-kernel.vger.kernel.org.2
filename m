@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C94358DE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0128358DEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhDHT53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
+        id S232594AbhDHT5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbhDHT5W (ORCPT
+        with ESMTP id S232218AbhDHT5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:57:22 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1225C061763
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 12:57:10 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t22so1275681ply.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 12:57:10 -0700 (PDT)
+        Thu, 8 Apr 2021 15:57:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6B5C061760;
+        Thu,  8 Apr 2021 12:57:27 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so1825608wmi.3;
+        Thu, 08 Apr 2021 12:57:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=SFjnCjujGEgtSC+ABQLNrqugqZ/9XaANTg42WzyEM+c=;
-        b=Wgh/cbKnfaPzqZefmKDOLkn79wXmeeaUQXbhkscPI2a05rTC9L4oeuVVAGS8tXOPS4
-         Rcl9YephQY6h/zRkFgEtL+sdoR35e/eQA0oabkjl/jrOSeLMjUra4EVzqL9fReZUB9mN
-         9MkSfuFoUKIjiC9NPna5S6xg85iI+u9tNn3o0=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=pHid7b1osF0SpTWtp0Ym0Sv/8aucsroZP/wDvU5qRUY=;
+        b=SDD77RRxaFIx6pnvEz8lN7D1kL7Sn5GoTa3dNZUubUCb93BqP4nTqhhci6lRfoEsII
+         SxRKvuOgtDblZRWYQfC0QN/y+W+HLEVGTceTdV51m+4D4jo96HRbsA9TsMnOBwC4w4LG
+         XVTDxyKDLhfJTf9jHbjTCm0BVq1Vz0pEedbrCWuqThKbw7HAftXTYa26QHkwsp5ab4JA
+         gwsxSali9y8hG7caeSHE4ObRAsIuISWdLglO2MFIgik5JdIsRhYY9TrZQ7qbPM/BX4kH
+         YXvYd9Xxf1lj3aL57hC35j7aasE1eb2L6ltfO2Ecwk9Nyd7afkvx0AONrJvTNGF+bSLs
+         wJYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=SFjnCjujGEgtSC+ABQLNrqugqZ/9XaANTg42WzyEM+c=;
-        b=jRdj9sMaKWnDquk2I7aJZxqoOERIeq8uOdHijPfcao1k/AHVX/e/8d+lo5Nr8m9KmQ
-         ULES6gqI6e6gCQXB6Ixwims9oW/ZcnX386z07hBXwzI9j6l2P1szOFd6cdJTxax3Q7pe
-         3HyToL4HzSFxU6MAgYdes07x170f60kd2qGsWUJmcTbFI+GeOv4wATsR3oEAj7EdZbr6
-         mQtDbq5EK5bWOd266Mp24butwTcDlrgLaMPmlDmk+kJqC9EnUBYeLvvevFpdLqWM4s/n
-         InR9Y+QmJHJctUvpqWOYmBY0JCq/RfJt+Sf4/BTmddFmEYy3rhl2x/wjKoZ4E8jp/6AO
-         QFvg==
-X-Gm-Message-State: AOAM533ZjgbOnj3HWU+h/IpprsdL4ROKn/0+26SdvIECs6e90FGy7tPP
-        BQQgzoQWNxOYPKK4U4gFMYJQng==
-X-Google-Smtp-Source: ABdhPJza2HPcGn1bIxKNzHBGVf3omGhgZFg1zXshKLaBZaSsZcgPE8LCZTfrGp300dJ+o9tqAAc2kg==
-X-Received: by 2002:a17:902:d78a:b029:e6:e1f:f695 with SMTP id z10-20020a170902d78ab02900e60e1ff695mr9289653ply.82.1617911830394;
-        Thu, 08 Apr 2021 12:57:10 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:44c3:3248:e7f5:1bbd])
-        by smtp.gmail.com with ESMTPSA id c2sm246727pfb.121.2021.04.08.12.57.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=pHid7b1osF0SpTWtp0Ym0Sv/8aucsroZP/wDvU5qRUY=;
+        b=QLW7tLSIluQ+iQhG/BTnZb1ClRMOFU1MCF/GLvqHUrvLSLZDomXhqNLiLj3x9JSVIa
+         V5LwieypOxJDF+/aJdKaXMpGHd/nsgvZqLDXHIKFjyZ6TP1Ph6zFG3AQ9IYWwtKCvlPz
+         Fi1qGGjfyc8GgfNtDEEP0LaV53tMpYWueuE171IR4MoHjq2NDGXW2VD8N1nwDJac91+V
+         LoGC8JNy3NsUJMScsjzpiAWfFjKhW6Sun67ue3eFoCemwBajIuJzZV1u1N38SaRtvYVd
+         PhT8F5Yfx0ISqRDScf4FZ3FXoPkDXaJNKGalLMYvYJbh0YbOp2+FQedWGq/Yyjipszch
+         moUw==
+X-Gm-Message-State: AOAM531Tg6klLCxM6yXe6IQkVkInod+3e4CC4dJpkbCueaRaAZb0PxDO
+        nEWcCS7TI1vMQ9Z452Lqw3Y=
+X-Google-Smtp-Source: ABdhPJwumd9NyP++HS8c5TOLkkrMEBeTlEaV4aIyq1qCaTKCVHgdihqEgAPi3I5S0vnHubKWaorvIQ==
+X-Received: by 2002:a1c:7409:: with SMTP id p9mr9787834wmc.153.1617911846245;
+        Thu, 08 Apr 2021 12:57:26 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id j30sm480579wrj.62.2021.04.08.12.57.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 12:57:09 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 08 Apr 2021 12:57:25 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 00:57:18 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Tian Tao <tiantao6@hisilicon.com>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com
+Subject: [PATCH] spi: orion: set devdata properly as it is being used later
+Message-ID: <20210408195718.GA3075166@LEGION>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YG8NwgD3y/ydzVXI@smile.fi.intel.com>
-References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-5-swboyd@chromium.org> <YG8I2dQWkOIkypqO@gunter> <YG8NwgD3y/ydzVXI@smile.fi.intel.com>
-Subject: Re: [PATCH v3 04/12] module: Add printk format to add module build ID to stacktraces
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jessica Yu <jeyu@kernel.org>
-Date:   Thu, 08 Apr 2021 12:57:08 -0700
-Message-ID: <161791182832.3790633.9176764008911708133@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andy Shevchenko (2021-04-08 07:05:54)
-> On Thu, Apr 08, 2021 at 03:44:57PM +0200, Jessica Yu wrote:
-> > +++ Stephen Boyd [30/03/21 20:05 -0700]:
->=20
-> ...
->=20
-> > > +static void init_build_id(struct module *mod, const struct load_info=
- *info)
-> > > +{
-> > > +   const Elf_Shdr *sechdr;
-> > > +   unsigned int i;
-> > > +
-> > > +   for (i =3D 0; i < info->hdr->e_shnum; i++) {
-> > > +           sechdr =3D &info->sechdrs[i];
-> > > +           if (!sect_empty(sechdr) && sechdr->sh_type =3D=3D SHT_NOT=
-E &&
-> > > +               !build_id_parse_buf((void *)sechdr->sh_addr, mod->bui=
-ld_id,
-> > > +                                   sechdr->sh_size))
-> > > +                   break;
-> > > +   }
-> > > +}
-> >=20
-> > Why not just look for the .note.gnu.build-id section instead of trying
-> > to parse each note section? Doesn't it always contain the build id? At
-> > least the ld man page seems to suggest this section name should be
-> > consistent.
+If device_get_match_data returns NULL, devdata isn't being updated
+properly. It is being used later in the function. Both devdata and
+spi->devdata should be updated to avoid NULL pointer dereference.
 
-That's basically what this code is doing. We're looking through all the
-section headers and finding the ones that are notes and then
-build_id_parse_buf() is checking to see if that note is a GNU type note
-(name =3D=3D "GNU") and is of the type NT_GNU_BUILD_ID (type =3D=3D 3). We =
-don't
-need to check for a section name of ".note.gnu.build-id", we can use the
-existing code in build_id_parse_buf() that looks for the name and type.
+Addresses-Coverity: ("NULL pointer dereference")
+Fixes: 0e6521f13c2 ("spi: orion: Use device_get_match_data() helper")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/spi/spi-orion.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->=20
-> Interesting idea (in positive way!), I'm wondering what Clang does in such
-> case.
->=20
+diff --git a/drivers/spi/spi-orion.c b/drivers/spi/spi-orion.c
+index d02c5c9def20..34b31aba3981 100644
+--- a/drivers/spi/spi-orion.c
++++ b/drivers/spi/spi-orion.c
+@@ -676,7 +676,8 @@ static int orion_spi_probe(struct platform_device *pdev)
+ 	spi->dev = &pdev->dev;
+ 
+ 	devdata = device_get_match_data(&pdev->dev);
+-	spi->devdata = devdata ? devdata : &orion_spi_dev_data;
++	devdata = devdata ? devdata : &orion_spi_dev_data;
++	spi->devdata = devdata;
+ 
+ 	spi->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(spi->clk)) {
+-- 
+2.25.1
 
-Clang also inserts a GNU build ID and it works with these patches.
