@@ -2,192 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5E03582E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540AF3582E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhDHMJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:09:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229921AbhDHMJ0 (ORCPT
+        id S231362AbhDHMJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhDHMJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:09:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rdpdfQzM446muxH6P5CozRuSvNifAeX4ooK3/0ZCJss=;
-        b=VqbPv+PEuMVu47frx+3xVkyrCLP91Nv23NVvxtbGrFmzQsmiacFmQLrtREAnjQsjAAyiK1
-        ITGqu7ON2+k3k4JkxWqYaTYV+qJAfWZnqUAfji3frNWXXk6qyPBAW7BtRszFUmx81m3p1w
-        315T1n4hM843df/Kh5Xh5wN+DPAzp/w=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-mTCrQS6gOcmkLPDDheRclA-1; Thu, 08 Apr 2021 08:09:12 -0400
-X-MC-Unique: mTCrQS6gOcmkLPDDheRclA-1
-Received: by mail-ej1-f69.google.com with SMTP id pj13so747139ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:09:12 -0700 (PDT)
+        Thu, 8 Apr 2021 08:09:44 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F327DC061760;
+        Thu,  8 Apr 2021 05:09:32 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id r9so2635864ejj.3;
+        Thu, 08 Apr 2021 05:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=8ZtYAi9FD6ywNvbsUUiDVD+PFNAmOjD53yMF0tYBZu4=;
+        b=mzL/BAgawHqdfoadRdvf17seAPRRIB95QbrSL2ZRyxn54+oyrqdw78IyMvTVGP4woy
+         CPBnj4m4Iceo9Rry6RPUpFcim8p2DBDE/oowiJbwYwGROuFGzDLGstN+QqN4IeCQPWz0
+         B6NsAWlTglDo5GeA85HpPRWRd8gzkLnqBP+g66EgsvbJMM0UeIcYU/3venfanDiQq+iq
+         gVtOUt99ubWvi8AWK8P4Jrun3TKAJSZ0uUZdpgVHeSEPV+w53W2MPQ6Z0J+RnS1qUa2s
+         ij5AbPgXu1sUsNXJapgdntyLqD0IsXyBwZvxwnPh4Gjlj3w7VtpVRZvUf0Z4rma95QVO
+         9xww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rdpdfQzM446muxH6P5CozRuSvNifAeX4ooK3/0ZCJss=;
-        b=DjI/jADzH0tHj7iWszKeiJGUF+yRIGx56JBTfjL/38p9rMvr6ENzg+MTIMiFLH+H3p
-         Fjp3rkaoH72LLiAfA0rqyBAaCTnpm80epfDJ5NTMkxGnMivc41KTG3WaSGuV2RwWxz0o
-         b9b/Y+8aEseP+mtwBPxj9dL/65i7kxM6+LLI1GKxOKs905yeyrrZsrqENubE60aQKmg2
-         huf22eSVvEdGrrx5vrNFV2POCmCprOtXuqVP28aL1RHSnyp0iggQoMnYXWx2bK1dSP8e
-         iJixoIVA2yKrBgHGbtVeIC5rxJnjit1Mfz+Ir+ZvsnmYMhz3EJ14Tt5eZFtpo1vo9Ema
-         vmNA==
-X-Gm-Message-State: AOAM530S6EZYNnT+Lh4iyil3cnbmIB6XmUwRFGaMAypmtT/LhuZjyXbd
-        Z8MHqkFCL8YaDvWs4gyPKPuOGSfIU7V9U0CrlXFs7o4dNfKoUZ7+ixVcWvYLDJC9niq2sS4CBSV
-        s150HtYtbDPH0KlHm0dbCoV3c
-X-Received: by 2002:a17:906:958f:: with SMTP id r15mr9954077ejx.450.1617883751554;
-        Thu, 08 Apr 2021 05:09:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwE1OEbopDmkYK5v4FDEcViOLJemUWoKVpGTwpGGwnEEY68wRznkBYOfU9GHvneFj/l7+bdow==
-X-Received: by 2002:a17:906:958f:: with SMTP id r15mr9954052ejx.450.1617883751407;
-        Thu, 08 Apr 2021 05:09:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o26sm7272353ejx.90.2021.04.08.05.09.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 05:09:10 -0700 (PDT)
-Subject: Re: [PATCH v2 07/17] KVM: x86/mmu: Check PDPTRs before allocating PAE
- roots
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20210305011101.3597423-1-seanjc@google.com>
- <20210305011101.3597423-8-seanjc@google.com>
- <CANRm+CzUAzR+D3BtkYpe71sHf_nmtm_Qmh4neqc=US2ETauqyQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f6ae3dbb-cfa5-4d8b-26bf-92db6fc9eab1@redhat.com>
-Date:   Thu, 8 Apr 2021 14:09:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8ZtYAi9FD6ywNvbsUUiDVD+PFNAmOjD53yMF0tYBZu4=;
+        b=lueOKT9zxnZG8j11FQnQds+30UQs8VSj8BxcjIRg0t8MFK0E13D8T3PWopJ5T0sUQi
+         Ptepp7Xkg7kFZvcQhLIRpLcjZPICIkyZRSsgFO0DItrxBB9Xzxh27326fDT6ly9j3flq
+         bdgJyb1FGQ3mkeXIjmr/ZxFDaXaBB6t8yLfFBYahJnAMsxuokLmVCCmwCB+zqMLX1SwC
+         fHlqgzszLpaOleP+JF6VKd8xgKWrO8NqjDfJJ1cohsOu3FGrI8i7Nbn7qfkaIJ4vZZf9
+         N9Ms7zP34SAUQyex1RRMGpAFlaamuD0mfc9U2Co+7/taR+PC6gonKS29HVumGulOectw
+         ELwA==
+X-Gm-Message-State: AOAM531mDXURc+sajRzJUbNvrVVz7fhYQvwNgY2EI6Up9pYI1xa/WNn7
+        4dilmwFSaqKKWLkP+MM2w18=
+X-Google-Smtp-Source: ABdhPJxKRKK4zNATm5BLnmA+LjKN/dkZARAozw/DoelagCQevUZOwMSLk4P+F00BDJnTZh+CYNxerA==
+X-Received: by 2002:a17:906:9381:: with SMTP id l1mr9906077ejx.129.1617883771739;
+        Thu, 08 Apr 2021 05:09:31 -0700 (PDT)
+Received: from test-VirtualBox ([87.116.165.76])
+        by smtp.gmail.com with ESMTPSA id w13sm10970111edc.81.2021.04.08.05.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 05:09:31 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 14:09:29 +0200
+From:   Sergei Krainov <sergei.krainov.lkd@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] staging: rtl8712: remove unused variable from
+ rtl871x_mlme.c
+Message-ID: <20210408120929.GA4346@test-VirtualBox>
 MIME-Version: 1.0
-In-Reply-To: <CANRm+CzUAzR+D3BtkYpe71sHf_nmtm_Qmh4neqc=US2ETauqyQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/21 13:15, Wanpeng Li wrote:
-> I saw this splatting:
-> 
->   BUG: sleeping function called from invalid context at
-> arch/x86/kvm/kvm_cache_regs.h:115
->    kvm_pdptr_read+0x20/0x60 [kvm]
->    kvm_mmu_load+0x3bd/0x540 [kvm]
-> 
-> There is a might_sleep() in kvm_pdptr_read(), however, the original
-> commit didn't explain more. I can send a formal one if the below fix
-> is acceptable.
+Remove unused variable from rtl871x_mlme.c.
 
-I think we can just push make_mmu_pages_available down into
-kvm_mmu_load's callees.  This way it's not necessary to hold the lock
-until after the PDPTR check:
+No side effects can be seen locally or in r8712_find_network()
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0d92a269c5fa..f92c3695bfeb 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3244,6 +3244,12 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
-  	u8 shadow_root_level = mmu->shadow_root_level;
-  	hpa_t root;
-  	unsigned i;
-+	int r;
-+
-+	write_lock(&vcpu->kvm->mmu_lock);
-+	r = make_mmu_pages_available(vcpu);
-+	if (r < 0)
-+		goto out_unlock;
-  
-  	if (is_tdp_mmu_enabled(vcpu->kvm)) {
-  		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
-@@ -3266,13 +3272,16 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
-  		mmu->root_hpa = __pa(mmu->pae_root);
-  	} else {
-  		WARN_ONCE(1, "Bad TDP root level = %d\n", shadow_root_level);
--		return -EIO;
-+		r = -EIO;
-  	}
-  
-+out_unlock:
-+	write_unlock(&vcpu->kvm->mmu_lock);
-+
-  	/* root_pgd is ignored for direct MMUs. */
-  	mmu->root_pgd = 0;
-  
--	return 0;
-+	return r;
-  }
-  
-  static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
-@@ -3282,6 +3291,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
-  	gfn_t root_gfn, root_pgd;
-  	hpa_t root;
-  	int i;
-+	int r;
-  
-  	root_pgd = mmu->get_guest_pgd(vcpu);
-  	root_gfn = root_pgd >> PAGE_SHIFT;
-@@ -3300,6 +3310,11 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
-  		}
-  	}
-  
-+	write_lock(&vcpu->kvm->mmu_lock);
-+	r = make_mmu_pages_available(vcpu);
-+	if (r < 0)
-+		goto out_unlock;
-+
-  	/*
-  	 * Do we shadow a long mode page table? If so we need to
-  	 * write-protect the guests page table root.
-@@ -3308,7 +3323,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
-  		root = mmu_alloc_root(vcpu, root_gfn, 0,
-  				      mmu->shadow_root_level, false);
-  		mmu->root_hpa = root;
--		goto set_root_pgd;
-+		goto out_unlock;
-  	}
-  
-  	if (WARN_ON_ONCE(!mmu->pae_root))
-@@ -3350,7 +3365,8 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
-  	else
-  		mmu->root_hpa = __pa(mmu->pae_root);
-  
--set_root_pgd:
-+out_unlock:
-+	write_unlock(&vcpu->kvm->mmu_lock);
-  	mmu->root_pgd = root_pgd;
-  
-  	return 0;
-@@ -4852,14 +4868,10 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
-  	r = mmu_alloc_special_roots(vcpu);
-  	if (r)
-  		goto out;
--	write_lock(&vcpu->kvm->mmu_lock);
--	if (make_mmu_pages_available(vcpu))
--		r = -ENOSPC;
--	else if (vcpu->arch.mmu->direct_map)
-+	if (vcpu->arch.mmu->direct_map)
-  		r = mmu_alloc_direct_roots(vcpu);
-  	else
-  		r = mmu_alloc_shadow_roots(vcpu);
--	write_unlock(&vcpu->kvm->mmu_lock);
-  	if (r)
-  		goto out;
-  
+Signed-off-by: Sergei Krainov <sergei.krainov.lkd@gmail.com>
+---
+Changes from v1: Rechecked if deleted code doesn't have any
+side effects and added description that no observable
+side effects were found
+ drivers/staging/rtl8712/rtl871x_mlme.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-Paolo
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index 8a97307fbbd6..4f41e321ea63 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -656,7 +656,7 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 	struct sta_priv	*pstapriv = &adapter->stapriv;
+ 	struct mlme_priv	*pmlmepriv = &adapter->mlmepriv;
+ 	struct wlan_network	*cur_network = &pmlmepriv->cur_network;
+-	struct wlan_network	*pcur_wlan = NULL, *ptarget_wlan = NULL;
++	struct wlan_network	*ptarget_wlan = NULL;
+ 	unsigned int		the_same_macaddr = false;
+ 	struct wlan_network *pnetwork;
+ 
+@@ -721,13 +721,6 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 					    scanned_queue,
+ 					    cur_network->network.MacAddress);
+ 				} else {
+-					pcur_wlan =
+-					     r8712_find_network(&pmlmepriv->
+-					     scanned_queue,
+-					     cur_network->network.MacAddress);
+-					if (pcur_wlan)
+-						pcur_wlan->fixed = false;
+-
+ 					pcur_sta = r8712_get_stainfo(pstapriv,
+ 					     cur_network->network.MacAddress);
+ 					spin_lock_irqsave(&pstapriv->
+-- 
+2.25.1
 
