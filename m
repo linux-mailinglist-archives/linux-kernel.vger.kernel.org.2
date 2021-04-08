@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9928358ED6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F84358EE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhDHU5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhDHU5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:57:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1E806113C;
-        Thu,  8 Apr 2021 20:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617915423;
-        bh=Grq6Y9MFG8kVBMy6GU/tIw8EwcjcXAza1EvJmSR9xNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1bxWkAgUJC/tP0r2tMDhQ39UofnJzPefAAvsI7wCvsanPAoNkINyF2MpcCV0mzq7
-         EX7OT6llUUBWW+fSZ2DWb6TW990BD/UOWn2mbOp7kkq94urVexg9L4Al51WElz4YzU
-         pXFMpTcycnZ0I6GeMgcQDlsHaTiezohmWBbbIILIHstwHjqZf1Df+AYov+VzYEt6Nr
-         8qi+PnarS4rlNTEpwmqENUuqQ6ihWWbqBMREUdnaLhf+jneglzetPhVvMZmFiguqBW
-         CmlYC4L+toEaqvqlVk0pslt1c9DhxW9wC67E7P/1wRoHju7pdHxmH/d2ODCWoR0V33
-         AcnpV4c/+oTwg==
-Date:   Thu, 8 Apr 2021 22:57:00 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
-        digetx@gmail.com, treding@nvidia.com,
-        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v7 4/5] MAINTAINERS: Add maintainer for HiSilicon I2C
- driver
-Message-ID: <20210408205700.GE1900@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
-        digetx@gmail.com, treding@nvidia.com, jarkko.nikula@linux.intel.com,
-        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
-        john.garry@huawei.com, mika.westerberg@linux.intel.com,
-        prime.zeng@huawei.com, linuxarm@huawei.com
-References: <1617880641-664-1-git-send-email-yangyicong@hisilicon.com>
- <1617880641-664-5-git-send-email-yangyicong@hisilicon.com>
+        id S232500AbhDHVAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:00:10 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:46605 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232416AbhDHVAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:00:08 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 138Kx46x002644;
+        Fri, 9 Apr 2021 05:59:04 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 138Kx46x002644
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617915545;
+        bh=CMNsK6z9omY3K2WcWrv+g7O+FAyKXeHXo7JaGbnAshQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mCAELu1K9iNcHwzxPpkt2QeYzsGvXO3xtV9FO7Le8ftDrt50ftucQPKlGRH7qugRy
+         Ya3grKSZw2YFqHeSRjzjleVybuCxC+F+LDqxW2ODDfZDizTzeFFEkS6xgklZ8DNySf
+         sgjxmlZOGgylBtk14MT/msL3h5+0RgNqd1KhWiFHvZojROpII/2xzBmIKYk5FrMILE
+         JH+ze/FBtu+Utc1Sh1V3UapkGiwD83/r25JpRXNpVeB6q8+2OIyrktRiLXSQ5RNZ6Y
+         WT1cfD2EQCAGNfK7s+unVooFzVx+HATnyUBAB+3r8X2pMEEL5HCT32AGFF6izs7hFa
+         M6AzFOhU0pc5Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH 0/2] linux/kconfig.h: move IF_ENABLED() out of <linux/kconfig.h>
+Date:   Fri,  9 Apr 2021 05:58:56 +0900
+Message-Id: <20210408205858.51751-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q8BnQc91gJZX4vDc"
-Content-Disposition: inline
-In-Reply-To: <1617880641-664-5-git-send-email-yangyicong@hisilicon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Q8BnQc91gJZX4vDc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I insist on <linux/kconfig.h> having only minimal set of macros
+that are needed to evaluate CONFIG options.
 
-On Thu, Apr 08, 2021 at 07:17:20PM +0800, Yicong Yang wrote:
-> Add maintainer for HiSilicon I2C driver.
+Everytime somebody added an alien to <linux/kconfig.h>, I needed to
+kick it out.
 
-Only if you need to resend, then you can squash this into the previous
-patch. If not, I can do it when applying.
+I did not notice 1b399bb04837183cecdc1b32ef1cfc7fcfa75d32 because
+I was not addressed by [1].
+
+[1]: https://lore.kernel.org/lkml/?q=kconfig.h%3A+Add+IF_ENABLED%28%29+macro
+
+I like Paul's idea, but if I had noticed the patch in time, I would
+have tried my best to persuade to implement it outside of <linux/kconfig.h>
+(Paul's initial patch was adding it to a new header instead of <linux/kconfig.h>)
+
+Before it is widely used, I want to fix it.
+
+In 2/2, I converted pm.h to allow driver cleanups.
 
 
---Q8BnQc91gJZX4vDc
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Masahiro Yamada (2):
+  linux/kconfig.h: replace IF_ENABLED() with PTR_IF() in
+    <linux/kernel.h>
+  pm: allow drivers to drop #ifdef and __maybe_unused from pm callbacks
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBvbhwACgkQFA3kzBSg
-KbY7FhAAsOoIwl4uxCZCL8cun/DjFNuMm/pe4k9rjr2ecX1SampE3Ku25c9cdSLs
-LSviBlf5j4zw2YNPltD0+pLKH15eqGKNrXGJC06BZwMNqJOc0LqC0qD7MK/KVy9k
-paTpvYoA3Wy9QR4Q2ESExnTo/FyVibsFqt+xvrneGoQawbwhYZIVQ+4PEE9k/IEI
-RsH0Sohrw0QD1hc1WsUA91vgDos8YvsfJclcJy+giT0zaTOHKIMJGYRbIzu78b52
-m7JGRc4q+ktdsKS01LAwhsJPpvKj2eUY5Vw85MNWT3PLIYOUL7BHVK11r7bti6cJ
-Vb2jY0w0+A30U8K7VyfFRoXvm8fp7uM6QKEIttjYfdK+H4OQ3edlVeLefox0yFe+
-hkpG6LBWtE69/KIDhR9GT+vp+uW8jdIDCDoy1ozrMBGGp7zo38Jy5xcW1k+dlLkL
-J86mzLTLkTXZ4BHfNJ0unQ7GOC8Ik9pgUMmjz2v1oWisCEtSSqtIAvjR2PKETXQo
-4dNI/9up7x3okOqFK9ZmIkU0YZPajizWwvUg4Od+4sX2kZaMwh4MbSXg1NH819CI
-k47NImvmSsop0U1nCq6PtLNaLiD6e2bZ8z4Avllf3LobF5FXnr/KUdRpyvGMq/4b
-0Zp5E20azctQPwMWtRit/vOOZOVvz3ZC12YeXW2UWFKPaQ6mkEo=
-=1HHz
------END PGP SIGNATURE-----
+ drivers/pinctrl/pinctrl-ingenic.c | 20 ++++-----
+ include/linux/kconfig.h           |  6 ---
+ include/linux/kernel.h            |  2 +
+ include/linux/pm.h                | 67 +++++++++++--------------------
+ 4 files changed, 36 insertions(+), 59 deletions(-)
 
---Q8BnQc91gJZX4vDc--
+-- 
+2.27.0
+
