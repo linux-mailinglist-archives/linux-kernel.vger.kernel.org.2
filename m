@@ -2,140 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D12358BC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB31F358BC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232671AbhDHRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:55:25 -0400
-Received: from mail-dm6nam08on2066.outbound.protection.outlook.com ([40.107.102.66]:4096
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232617AbhDHRzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:55:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WTL1eZ/PAA0zI7hF5NDjkUElSCQMtmxo0JcHCVUy6fygDgZigOU/XZrdQA0i8MLyIgZBvNk+/sgpKAR6DUKrm2aOKyBwkw7y+Uj85xw0Rx0zZS1ebpsKwAhr8CVVW0HXkCzri+YNnmjj9UvhhanbYywZXUMTnVwFeZK1O21WLjyVAqYg7QEdKCzgE2+X7RLsorWvC3pyoRIGCh8Y9Wo47GDUZSn32fbngNzKlHZT/5qhyGhfbfP9TBR8Xo/p2ylYOFnB9u10Iu9y3EMdCjpECh8IN7PAdUxYNgJeXD8tLM3T2Wg/p3R/YMdhUBCW5OJf9g30MhLSS8OgUjEz0ZzAgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5BQWPUZ7GBSzUV1wg/QTKwT4E5dhO4twiw5+yNB2RA=;
- b=MnQ8ks8iE1FE0iSfbSOxbJe8zRA8snl7gNcUFirYBgzdJF2XWsFKrgfo7tOnuyrUo4IxF2AqNcKVWuBeHAHrqRTOWtAqftSBQakfhXyxpzXDshOLKK+K3Rl9VqN7zTrmBl/e1+RGF3vueHTsVQLyVNj00ey9yKyXk8IxospDvahoFmAtkqrecwUXeWPHfTy6rGPaeK+eJ7CAqIp2R9NSLDd89xdnA3rnL2nDiD2zrvAQT4tq2EiSF/1HTJ7kQuayn2lWbCPm0ObzpZEO8/dldP7mACC1jLjoe54NSgXny2/HcGgAu28bf5W7SX0RFjLkfi1Z0beLTSG2w6QRWVCwFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5BQWPUZ7GBSzUV1wg/QTKwT4E5dhO4twiw5+yNB2RA=;
- b=jOxpl9Eos0J1eeFre9fa7f75fHSki360sW6Q7CGApXOYzbTEfDj8peXbKq201+paNR20IwnEelNdqxq4qfIJr2rFOHPfawRav8Krf1/LIWzR6lkHxCAsJ0FfVZJsN82JKmKcEIqXNAv3kOT0pWMVW6koZRLdRb6O0gr3igrEdZo=
-Received: from SN2PR01CA0033.prod.exchangelabs.com (2603:10b6:804:2::43) by
- CH2PR02MB6837.namprd02.prod.outlook.com (2603:10b6:610:ae::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.17; Thu, 8 Apr 2021 17:55:09 +0000
-Received: from SN1NAM02FT050.eop-nam02.prod.protection.outlook.com
- (2603:10b6:804:2:cafe::17) by SN2PR01CA0033.outlook.office365.com
- (2603:10b6:804:2::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
- Transport; Thu, 8 Apr 2021 17:55:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT050.mail.protection.outlook.com (10.152.72.128) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 17:55:09 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 8 Apr 2021 10:54:47 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Thu, 8 Apr 2021 10:54:47 -0700
-Envelope-to: git@xilinx.com,
- balbi@kernel.org,
- gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org
-Received: from [172.23.64.106] (port=38719 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1lUYre-0002jP-65; Thu, 08 Apr 2021 10:54:46 -0700
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id 5426912155A; Thu,  8 Apr 2021 23:24:23 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <gregkh@linuxfoundation.org>, <michal.simek@xilinx.com>,
-        <balbi@kernel.org>
-CC:     <git@xilinx.com>, <linux-usb@vger.kernel.org>,
+        id S232723AbhDHRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:55:54 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:36360 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232374AbhDHRzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:55:52 -0400
+Received: by mail-ot1-f50.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso3152015otq.3;
+        Thu, 08 Apr 2021 10:55:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3TOQkf6y0+tFgPWi7wzwRS6LltZgb6boVG0kZSOaui4=;
+        b=X0Zx5yK67Zf0G1bruCrpGs5h+aMSCC0yh9asIQIiUKgFhsFTUQqaWD/mXbGi5yl7pg
+         bmdRaNrcLtmFMZ1MviNAi4aP0TuGcnjuHi9AwBqCDOYJSd0pSY256JjAnpPcA31Y4ur2
+         aOCDwFLcfpdxWBmNHkVXd3Z/Hvy1hFb6MPaR7IZG7y1aCguB0Sng7rhyEPbBcwYq0oF9
+         jdvQSerGRMmSbZqCOnMNvrwvnUk2kWFHzBiIdRenRg/+wewxoY13b3rhCjGvg82AhQVT
+         TxPKOR1Z0/gsT+K2bccVwX1Nr8wygovYgR0JZoZUdHd0TNK+ZRkbccik3lsgkWcqPOOI
+         8Tww==
+X-Gm-Message-State: AOAM5335tbM2+6vM7Ms3r0Y95ijc2+evGE+7e5GtDp2RFHkhS6cPifZ8
+        4GRdWsKe7uGWSFeUgg8Qfg==
+X-Google-Smtp-Source: ABdhPJyTErOlUI7ErNldOV1VbI5u50JYPHqEBsBBiIsIzHTTwtqaeKL04S8AQSgLdnIEjy+UfHL9fg==
+X-Received: by 2002:a9d:3423:: with SMTP id v32mr8860415otb.168.1617904539749;
+        Thu, 08 Apr 2021 10:55:39 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j10sm29616oos.27.2021.04.08.10.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 10:55:39 -0700 (PDT)
+Received: (nullmailer pid 1706321 invoked by uid 1000);
+        Thu, 08 Apr 2021 17:55:38 -0000
+Date:   Thu, 8 Apr 2021 12:55:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: [PATCH 2/2] usb: dwc3: xilinx: Remove the extra freeing of clocks
-Date:   Thu, 8 Apr 2021 23:24:08 +0530
-Message-ID: <1617904448-74611-3-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1617904448-74611-1-git-send-email-manish.narani@xilinx.com>
-References: <1617904448-74611-1-git-send-email-manish.narani@xilinx.com>
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/6] dt-bindings: PCI: Add bindings for Brcmstb
+ endpoint device voltage regulators
+Message-ID: <20210408175538.GA1688320@robh.at.kernel.org>
+References: <20210401212148.47033-1-jim2101024@gmail.com>
+ <20210401212148.47033-3-jim2101024@gmail.com>
+ <20210406164708.GM6443@sirena.org.uk>
+ <CANCKTBsiujTkOdh60etBqF_hE8exg6m9TDxkGHVVAGVS2SFCcQ@mail.gmail.com>
+ <20210406173211.GP6443@sirena.org.uk>
+ <CANCKTBv63b4bGepZbDp1wmFrOeddiDikoXbheMjHhbguAbR2sA@mail.gmail.com>
+ <20210408162016.GA1556444@robh.at.kernel.org>
+ <CANCKTBv_g9FPcBCOi-JxEDrrQWFhNcdsfDATFBydwnLiebj-HA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 844a859d-9b1e-418f-def8-08d8fab7736d
-X-MS-TrafficTypeDiagnostic: CH2PR02MB6837:
-X-Microsoft-Antispam-PRVS: <CH2PR02MB68371508483DAF21B4930500C1749@CH2PR02MB6837.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: irTnSky9qVGQ1ioXYLkKr39KCpdMXYBf/sye9aH/+V2V53FvC6fkHFlI1T0jEfJFo8xvZN82WzROQIo6qGccAQF3rwYfsxxF5VAlQGiyTiAemVqotzXlGgk/POCqFVMpYxNKEJrzldCc8zoGwXDX8OkNc8EdyTOrbftqQrp/qN9xldcbK24OdiussUaBeReuQGebbqgVi3AsJouNGWw/8bDyULorjBfzxZRtVeSU/mhQLPlP6SxVMgTxcd6KGKd3iqWcPYDkYQtmaRa5qdLvQEYOW9rtjGa+GC7InxyGJxtZtwrgfCWEWmHuUAkdZEB7YdMhguMrCWHACD0WcFTmViro4wT1+Mt58pzpuSQ3ZrJvmfRYX7NImcWeCVS5peqWauG4dEKkaTdOxhfnnfLojvFSr3rQxz2TMGbphs1/KmMds1jdhNWEx4d8S8iMH9KyVwMz3e8IrERbchSXMc4CJQwUGxk3B5vw7EoxxXvrI2h3iISEsWBPPy2ozlseOFZdqNLOH0JIqrlh4RNhyC5zG5d22g18DJWI9/16v0slfxvS71vD28BnSIK2wOdPjIyxsykUpogTKXPas/fjFfHjbqkiISNrEAFuF9Aht8x8dgrS+f/rJlflL8cX34D55IOK+X+Qgtgy45Pnb1WGlaWN/ff0ylktym+h7fgNJuUL4BLXFJxcJnWzZuuQorvro9a7
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(36840700001)(46966006)(8676002)(36860700001)(83380400001)(70206006)(70586007)(2906002)(6666004)(107886003)(6266002)(36906005)(47076005)(26005)(54906003)(2616005)(426003)(4326008)(82310400003)(316002)(44832011)(36756003)(42186006)(356005)(110136005)(8936002)(478600001)(82740400003)(7636003)(5660300002)(336012)(186003)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 17:55:09.4665
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 844a859d-9b1e-418f-def8-08d8fab7736d
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT050.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6837
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANCKTBv_g9FPcBCOi-JxEDrrQWFhNcdsfDATFBydwnLiebj-HA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clocks are configured by devm_clk_bulk_get_all() in this driver. In
-case of any error the clocks freeing will be handled automatically.
-There is no need to explicitly free the clocks. Fix the same.
+On Thu, Apr 08, 2021 at 12:58:05PM -0400, Jim Quinlan wrote:
+> On Thu, Apr 8, 2021 at 12:20 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Apr 06, 2021 at 02:25:49PM -0400, Jim Quinlan wrote:
+> > > On Tue, Apr 6, 2021 at 1:32 PM Mark Brown <broonie@kernel.org> wrote:
+> > > >
+> > > > On Tue, Apr 06, 2021 at 01:26:51PM -0400, Jim Quinlan wrote:
+> > > > > On Tue, Apr 6, 2021 at 12:47 PM Mark Brown <broonie@kernel.org> wrote:
+> > > >
+> > > > > > No great problem with having these in the controller node (assming it
+> > > > > > accurately describes the hardware) but I do think we ought to also be
+> > > > > > able to describe these per slot.
+> >
+> > PCIe is effectively point to point, so there's only 1 slot unless
+> > there's a PCIe switch in the middle. If that's the case, then it's all
+> > more complicated.
+> >
+> > > > > Can you explain what you think that would look like in the DT?
+> > > >
+> > > > I *think* that's just some properties on the nodes for the endpoints,
+> > > > note that the driver could just ignore them for now.  Not sure where or
+> > > > if we document any extensions but child nodes are in section 4 of the
+> > > > v2.1 PCI bus binding.
+> > >
+> > > Hi Mark,
+> > >
+> > > I'm a little confused -- here is how I remember the chronology of the
+> > > "DT bindings" commit reviews, please correct me if I'm wrong:
+> > >
+> > > o JimQ submitted a pullreq for using voltage regulators in the same
+> > > style as the existing "rockport" PCIe driver.
+> > > o After some deliberation, RobH preferred that the voltage regulators
+> > > should go into the PCIe subnode device's DT node.
+> >
+> > IIRC, that's because you said there isn't a standard slot.
+> Admittedly, I'm not exactly sure what you mean by a "standard slot".
+> Our PCIIe HW does not support  hotplug or have a presence bit or
+> anything like that.  Our root complex has one port; it can only
+> directly connect to a single switch or endpoint. This connection shows
+> up as slot0.  The voltage regulator(s) involved depend on a GPIO that
+> turns the power  on/off for the connected device/chip.  The gpio pin
+> can vary from board to board but this is easily handled in our DT.
+> Some boards have regulators that are always on and not associated with
+> a GPIO pin -- these have no representation in our DT.
 
-Fixes: 84770f028fab ("usb: dwc3: Add driver for Xilinx platforms")
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/usb/dwc3/dwc3-xilinx.c | 2 --
- 1 file changed, 2 deletions(-)
+By standard slot, I mean you have standard voltage rails 12V and 3.3V 
+(or 1.5 and 3.3 for mini PCIe) and PERST# signal, no other extra 
+things to make a device discoverable, and the timing for 
+those rails and PERST# follow what the spec defines.
 
-diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-xilinx.c
-index f42f4cb..9cc3ad7 100644
---- a/drivers/usb/dwc3/dwc3-xilinx.c
-+++ b/drivers/usb/dwc3/dwc3-xilinx.c
-@@ -271,7 +271,6 @@ static int dwc3_xlnx_probe(struct platform_device *pdev)
- 
- err_clk_put:
- 	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
--	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
- 
- 	return ret;
- }
-@@ -284,7 +283,6 @@ static int dwc3_xlnx_remove(struct platform_device *pdev)
- 	of_platform_depopulate(dev);
- 
- 	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
--	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
- 	priv_data->num_clocks = 0;
- 
- 	pm_runtime_disable(dev);
--- 
-2.1.1
+There's also CLKREQ, WAKE, and hotplug detect signals, but I think those 
+are all optional and could be tied off. I think most PCI h/w is not 
+hotplug capable.
 
+Rob
