@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D67E358F3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31B0358F40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhDHVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:34:50 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12619 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232236AbhDHVet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:34:49 -0400
-IronPort-SDR: LTQKux3mraW19BxQUdgEWMeRa2mJiz+yHK9DLVnZyimBHNjZnc/ekb9CYamHKHkK1Hu1CNXxK3
- lA8xrfCo7HjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193751288"
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="193751288"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:34:31 -0700
-IronPort-SDR: RQ8llsF18AjTDJ3fMupU3UimpX8MtU7KzcNM3kgcLAeXBSbVi/sKYReRdS9qrbxHfnRTaz09Wb
- 4h/AWY5K2guA==
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="422427802"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.1.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:34:30 -0700
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, mhocko@suse.com, iamjoonsoo.kim@lge.com,
-        vbabka@suse.cz, alex.shi@linux.alibaba.com, willy@infradead.org,
-        minchan@kernel.org, richard.weiyang@gmail.com,
-        ying.huang@intel.com, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-3-linmiaohe@huawei.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
-Date:   Thu, 8 Apr 2021 14:34:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210408130820.48233-3-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S232681AbhDHVfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:35:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40432 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232158AbhDHVfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:35:22 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138LWk2v127518;
+        Thu, 8 Apr 2021 17:35:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=NlTWlP7JzJrLFbMqZA78IcCmymtDtKnIvdZilXk8Ryc=;
+ b=XnqvZB35vbJ6qe2sJEpPmBKs+1vmRy43bphUFWgbsFo1gXfu1DSCPlMZat4/1PU9IIlz
+ YDSYI2oJvnf22ywilcWK4rplP1NGwy09yTKXWBsjamjEr8ZHZ/j2JVYHQ8CEFQ2Gfizw
+ PM5P5362bWB4MmHkRvPw9+l5RwRx7RCvu+SQIYYKSWvJFYugAHWHdCigEWK1p7H3t4WL
+ HBSuBA6EP68hxAducyyrzbY6PtJ4pEUlBbHIYIFyQ5u2e8FtW+8mAhW9WBjEka5Hr8ku
+ +n4lCTlZRdY/fIXmI16imXlV+0j7jMnYuBZlyY9Q4wI8TUEeev/Qq1rHBvcBboBnam42 Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvy8jawm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 17:35:04 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 138LWpEP128048;
+        Thu, 8 Apr 2021 17:35:03 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvy8jav5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 17:35:03 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138LXUus001983;
+        Thu, 8 Apr 2021 21:34:59 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 37rvbw9wu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 21:34:59 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138LYunM43319658
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Apr 2021 21:34:56 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AED2352050;
+        Thu,  8 Apr 2021 21:34:56 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.65.12])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7F10D52052;
+        Thu,  8 Apr 2021 21:34:54 +0000 (GMT)
+Message-ID: <ff1e9e427e1011976fcf122fa93c2b35d314f89b.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] certs: Trigger creation of RSA module signing
+ key if it's not an RSA key
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stefan Berger <stefanb@linux.ibm.com>, keyrings@vger.kernel.org,
+        dhowells@redhat.com, jarkko@kernel.org,
+        Herbert Xu <herbert@gondor.hengli.com.au>
+Cc:     nayna@linux.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 08 Apr 2021 17:34:53 -0400
+In-Reply-To: <b04939a3-c9e5-faf2-ec7b-27127b2ab41d@linux.ibm.com>
+References: <20210408152403.1189121-1-stefanb@linux.ibm.com>
+         <20210408152403.1189121-2-stefanb@linux.ibm.com>
+         <a5f7f2b44e7d4de94b761324139024a31a1cf209.camel@linux.ibm.com>
+         <b04939a3-c9e5-faf2-ec7b-27127b2ab41d@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tKkizb_yLtcjx-4zjhtc7aA3znySB9i7
+X-Proofpoint-ORIG-GUID: s9QxXQQjKkxuJJdVB2nsSqIQsbBgVqJd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_07:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 clxscore=1011 adultscore=0 phishscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104080143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/8/21 6:08 AM, Miaohe Lin wrote:
-> When I was investigating the swap code, I found the below possible race
-> window:
+On Thu, 2021-04-08 at 15:19 -0400, Stefan Berger wrote:
+> On 4/8/21 1:15 PM, Mimi Zohar wrote:
+> > On Thu, 2021-04-08 at 11:24 -0400, Stefan Berger wrote:
+> >> Address a kbuild issue where a developer created an ECDSA key for signing
+> >> kernel modules and then builds an older version of the kernel, when bi-
+> >> secting the kernel for example, that does not support ECDSA keys.
+> >>
+> >> Trigger the creation of an RSA module signing key if it is not an RSA key.
+> >>
+> >> Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
+> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Thanks, Stefan.
+> >
+> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> >
 > 
-> CPU 1					CPU 2
-> -----					-----
-> do_swap_page
->   synchronous swap_readpage
->     alloc_page_vma
-> 					swapoff
-> 					  release swap_file, bdev, or ...
+> Via which tree will this go upstream? keyrings?
 
-Perhaps I'm missing something.  The release of swap_file, bdev etc
-happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
-if I read the swapoff code correctly.
- 
+This patch set originally had a dependency on Nayna's v1 & v2 "ima:
+kernel build support for loading the kernel module signing key" patch
+set and on Herbert's "ecc" branch.  With v3, the dependency on Nayna's
+patch set is gone.
 
->       swap_readpage
-> 	check sis->flags is ok
-> 	  access swap_file, bdev...[oops!]
-> 					    si->flags = 0
+Jarkko, David, Herbert did you want to pick up this patch set or would
+you prefer that I did?  Either way is fine.
 
-This happens after we clear the si->flags
-					synchronize_rcu()
-					release swap_file, bdev, in destroy_swap_extents()
+thanks,
 
-So I think if we have get_swap_device/put_swap_device in do_swap_page,
-it should fix the race you've pointed out here.  
-Then synchronize_rcu() will wait till we have completed do_swap_page and
-call put_swap_device.
-					
-> 
-> Using current get/put_swap_device() to guard against concurrent swapoff for
-> swap_readpage() looks terrible because swap_readpage() may take really long
-> time. And this race may not be really pernicious because swapoff is usually
-> done when system shutdown only. To reduce the performance overhead on the
-> hot-path as much as possible, it appears we can use the percpu_ref to close
-> this race window(as suggested by Huang, Ying).
-
-I think it is better to break this patch into two.
-
-One patch is to fix the race in do_swap_page and swapoff
-by adding get_swap_device/put_swap_device in do_swap_page.
-
-The second patch is to modify get_swap_device and put_swap_device
-with percpu_ref. But swapoff is a relatively rare events.  
-
-I am not sure making percpu_ref change for performance is really beneficial.
-Did you encounter a real use case where you see a problem with swapoff?
-The delay in swapoff is primarily in try_to_unuse to bring all
-the swapped off pages back into memory.  Synchronizing with other
-CPU for paging in probably is a small component in overall scheme
-of things.
-
-Thanks.
-
-Tim
+Mimi
 
