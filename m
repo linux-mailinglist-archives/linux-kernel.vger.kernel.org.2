@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B1C358850
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E97358855
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhDHP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:26:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhDHP0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:26:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19BA861103;
-        Thu,  8 Apr 2021 15:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617895557;
-        bh=BsPq63IUE5jWhjlxvaXJnOCOfTCS2YyV8dn/2ZoA/lo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eRDFNz9LLPJlb7/BO6iRuz8b20it6l/spqCku3w8cbhaSpg/uE6wm3qFl2VgumX+J
-         QGl8TcngavSZ94kjkK+MfyRPumJaImgi+zhrvAdWTUUIyNYstatpSWj9NYi58erxTZ
-         5v9E9NY7ZXetBWUcDuzu0Pnrz2le9TKBGNjXLCLfFGJ8NyCUyJrtLHCQCVH5j1D1j3
-         5M2euKQTUg5rF2AhXOefkgpw1/xl2QFW0A7nsSG/7cub4Z8UI5jjFr9vl2KCUP8AcA
-         8xLwFVczImw0H9sfcx/mqXDSRojENwVBX1wAc0ibb/LNz9Nc8fIuDRnqXI512nz71n
-         7LhpciDYlH++Q==
-Date:   Thu, 8 Apr 2021 10:25:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linfeilong <linfeilong@huawei.com>
-Subject: Re: [PATCH v2] ACPI / hotplug / PCI: fix memory leak in enable_slot()
-Message-ID: <20210408152555.GA1928260@bjorn-Precision-5520>
+        id S232013AbhDHP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231940AbhDHP0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:26:16 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E28C061761;
+        Thu,  8 Apr 2021 08:26:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id a6so2568944wrw.8;
+        Thu, 08 Apr 2021 08:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ro0Cl2ZMCuXrJ9b0fwLjjBLrLgPpPx9T1CglyBY8Flg=;
+        b=P85wMwKSOkDlLreR0HNgYwJ1GmjO4jq9t5vfV7E89O+QZXOoYFAkX6SjMlB+uxsw+p
+         BoeunuwoUC81jaKLFHWHpr9SdclpMnmlDPI/LODZugl2ZakbfcBqoWogM0gIB4B5OY//
+         rYLHvt62VJheycqLfTRe+eZoL93Zl418mvZDWWrYt9R4q7VUzu1HSyR5KdK1YoSNNVOX
+         PisULAy8S8r3a3UdVT5MB82WlwWeSRb9/atdSk+V4fAYqOhCnGLbarrRh/W3lORYstW/
+         QjPJJZm26UY5xmh2S2rQlFnmrOjI4vbIGhZYMiK5rA5LqWLci+uCfcxEJufHEEO8mIzq
+         oTQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ro0Cl2ZMCuXrJ9b0fwLjjBLrLgPpPx9T1CglyBY8Flg=;
+        b=Zq8WJZdfsv6S0FAjPJf5Ylmv1feYHxn75aH+MGkX0QPej0Q8QDxAvSIVKib4UfKZ8j
+         Lzsam2fYufXvZv8/6jRZBJva/zJx8M/YM7sTG64BqnORvxxp0y5bAUPiCAK4htqs6HYA
+         q7XWn5s8KffQqvlhL/eg2Nf1gyZdKn8raJex6k3eWgTlPajupcT3jy1vrq3cYQZ0Gmfn
+         RaCuA1T+ye0Wm+IWQ4gdUtOzOEIFQosrQcmeUS4mf0CgqeZ9KqxgpwhRquUTH0cAFcgy
+         S57PwSjpGyyHoZL4kHetEE5inclPP6TDNVeuiLIemUI/oNlRWsWaYEHt9tTz9okLbkpZ
+         l2/Q==
+X-Gm-Message-State: AOAM5327z1tk5c9/lPtpyAA2yivPB5TWc7fLcxuqnCjPChKeL/ftvZl6
+        j1l6gS2X5kvnNXgoNDpcWnYWVmHvUVo=
+X-Google-Smtp-Source: ABdhPJzQTZpDMTEJAtpbeLvim8ocsgXHIy0vNqV+oCBbYFFS74wHPGylxgWdlTuc2AJXqKjZBhxbvQ==
+X-Received: by 2002:a5d:564a:: with SMTP id j10mr12047785wrw.120.1617895562259;
+        Thu, 08 Apr 2021 08:26:02 -0700 (PDT)
+Received: from [192.168.1.101] ([37.165.75.160])
+        by smtp.gmail.com with ESMTPSA id 91sm51459253wrl.20.2021.04.08.08.26.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 08:26:01 -0700 (PDT)
+Subject: Re: [PATCH] net: sched: sch_teql: fix null-pointer dereference
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <0c385039-3780-b5d0-ba36-c1c51da9bc08@gmail.com>
+Date:   Thu, 8 Apr 2021 17:26:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j2a803ye6KYzM9dZ_inCTqiwmN7UvAdYeynk+A9F97Fg@mail.gmail.com>
+In-Reply-To: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 05:18:46PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Mar 25, 2021 at 8:27 AM Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
-> >
-> > From: Feilong Lin <linfeilong@huawei.com>
-> >
-> > In enable_slot() in drivers/pci/hotplug/acpiphp_glue.c, if pci_get_slot()
-> > will return NULL, we will do not set SLOT_ENABLED flag of slot. if one
-> > device is found by calling pci_get_slot(), its reference count will be
-> > increased. In this case, we did not call pci_dev_put() to decrement the
-> > its reference count, the memory of the device (struct pci_dev type) will
-> > leak.
-> >
-> > Fix it by calling pci_dev_put() to decrement its reference count after that
-> > pci_get_slot() returns a PCI device.
-> >
-> > Signed-off-by: Feilong Lin <linfeilong@huawei.com>
-> > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > --
-> > v2: rewrite subject and commit log as suggested by Bjorn Helgaas.
-> 
-> The fix is correct AFAICS, so
-> 
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Bjorn, has this been applied already?  If not, do you want me to take
-> it or are you going to queue it up yourself?
 
-I'll pick it up; thanks for the review and the reminder!
 
-> > ---
-> >  drivers/pci/hotplug/acpiphp_glue.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> > index 3365c93abf0e..f031302ad401 100644
-> > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > @@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
-> >                         slot->flags &= ~SLOT_ENABLED;
-> >                         continue;
-> >                 }
-> > +               pci_dev_put(dev);
-> >         }
-> >  }
-> >
-> > --
-> > 2.19.1
-> >
+On 4/8/21 5:14 PM, Pavel Tikhomirov wrote:
+> Reproduce:
+> 
+>   modprobe sch_teql
+>   tc qdisc add dev teql0 root teql0
+> 
+> This leads to (for instance in Centos 7 VM) OOPS:
+> 
+>
+> 
+> Null pointer dereference happens on master->slaves dereference in
+> teql_destroy() as master is null-pointer.
+> 
+> When qdisc_create() calls teql_qdisc_init() it imediately fails after
+> check "if (m->dev == dev)" because both devices are teql0, and it does
+> not set qdisc_priv(sch)->m leaving it zero on error path, then
+> qdisc_create() imediately calls teql_destroy() which does not expect
+> zero master pointer and we get OOPS.
+> 
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> ---
+
+This makes sense, thanks !
+
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+I would think bug origin is 
+
+Fixes: 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
+
+Can you confirm you have this backported to 3.10.0-1062.7.1.el7.x86_64 ?
+
+
