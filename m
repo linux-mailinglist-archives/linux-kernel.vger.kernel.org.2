@@ -2,161 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94A358257
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6FA35824F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhDHLoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:44:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231381AbhDHLoR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:44:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617882246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ojI36GqCcSZZKDE7ZJzPVmk370WGjalSRm35dXXJjG4=;
-        b=cP/38F0Ig561h9crlZ7dPXsSrvSLlzzPpn996I9h/JgowVF3rGQaroA1//Dka/XISWeE4p
-        1/p1Y4M8Wgj+FQc3BTlwCjpJ+53/QO1KVR02ziTofeXFV4qo0GntDr/L3YDBNbsh3er0ax
-        PtgJZjaDhhI5EwDNDCcn7OiabWIobF4=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-DCbWhX_ENIm8IPgZKFEe5w-1; Thu, 08 Apr 2021 07:44:04 -0400
-X-MC-Unique: DCbWhX_ENIm8IPgZKFEe5w-1
-Received: by mail-pg1-f198.google.com with SMTP id p64so1225410pga.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:44:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ojI36GqCcSZZKDE7ZJzPVmk370WGjalSRm35dXXJjG4=;
-        b=lvFGkaWloL34GSai9DBKTwRlBXHL3h3nLkJq2YdyrIRsiali6nW8C7jMzShpFda26j
-         MU6ruWhTC58vnfABMX5ibwxsjB9yasyZEvWVYPufNrGROldkKRBwChZlQk8cEWOKpPTu
-         Bi37ZCxWA4+XSjAlx9/HYpQYGiUpDD2t3nyj02mLuN/awNVk+0OiKZRYHzdeYsk2YGLW
-         zkE1iHF8zmYjCOfAYFCVKK2hhzYEtSd6Say9zWGpvfiDdYTmHUvtNi/CbuNClKAVWZY6
-         RyUORajUfvwIgebsvSZKw2B6Ia+i4DQoM6MACksZcDjmx3lJq8erzLWSzekT/ZaHqrCT
-         yNlw==
-X-Gm-Message-State: AOAM531LcO+wBRflRw0qOjVVo9++DUWzp5xBQarvCJAuv++PvyHQlisl
-        JI4itJ7jYCiiWB/M8i9C7D783aKV5y4VC/BRA8mdUnOYVu/0ON1+n2Sp3vo7eaXt2Va42TFkJ2p
-        SqGCOIwh2N8uW8G+OnOnyh5HqquiRIKSTczktfdup
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr8097129pjr.234.1617882243164;
-        Thu, 08 Apr 2021 04:44:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxXWoD4uZFLjX3W//O+WsdPii+AkkUpUkXJnA0RNfYAyKcsVoeyvydz2BlU3advUFqA9gChFbY15nQwPpfmGv8=
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr8097093pjr.234.1617882242926;
- Thu, 08 Apr 2021 04:44:02 -0700 (PDT)
+        id S231266AbhDHLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:44:15 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41233 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhDHLoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:44:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGKD20tJ9z9sVt;
+        Thu,  8 Apr 2021 21:44:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617882242;
+        bh=3K67/Xs0hVIB5nxzMRFFHmBcsK05pXsTDKCQmYp2FVM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JpSz8lYhwCsYZhxmUqDQPHYIGdOqE5iT+Hw/FFD6SFTOtgTiscm4/wsgtk5vAXFtZ
+         DdHoztHLPqPRsNYvVLirZXaf7CCFDO2RjAQRE1ngJuAhp3Jf2qHIUbQhE8tvW6+4Q3
+         btlj3avStmiHr/NJd0VqB8fkrxUrUpNPtZ4+S/3ei3gvIqBaA6PYiQGezJo2l8tyxx
+         yRsmV6rK8Uw1NQ8OTep8Gxl6nP9hudeu+hHbEBbzE2xcZkzMpUehGOpx2VakM5mF/b
+         0nn1k5HYA7gYwTQsthX27/WxXHS9NZyFfWpYbk4yPW281EZn/mUX64l+OuReCdd704
+         xA8xWfSAmbIvw==
+Date:   Thu, 8 Apr 2021 21:44:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoffer Dall <cdall@cs.columbia.edu>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Jianyong Wu <jianyong.wu@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the kvm-arm tree
+Message-ID: <20210408214400.52632f7d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210326143458.508959-1-lee.jones@linaro.org> <20210406085605.GS2916463@dell>
- <CAO-hwJ+5Vd6jC2+0pfHLOw3opdXzKoc9pUWzxmBVhSvQvNWMsQ@mail.gmail.com> <20210408070605.GC2961413@dell>
-In-Reply-To: <20210408070605.GC2961413@dell>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 8 Apr 2021 13:43:52 +0200
-Message-ID: <CAO-hwJJrn4mzPwzYvusGNa6KhLZ+kCn=svzgGJD=6q+Urz=YsA@mail.gmail.com>
-Subject: Re: [RESEND 00/25] Rid W=1 warnings from HID
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Anssi Hannula <anssi.hannula@gmail.com>,
-        =?UTF-8?Q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Drubin <daniel.drubin@intel.com>,
-        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        linaro-mm-sig@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        Lopez Casado <nlopezcasad@logitech.com>,
-        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
-        Masaki Ota <masaki.ota@jp.alps.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        message to <vojtech@ucw.cz>,
-        Michael Haboustak <mike-@cinci.rr.com>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Zhang Lixu <lixu.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/DLpkkb8k+jjqxff57G9uT_O";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 9:06 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Wed, 07 Apr 2021, Benjamin Tissoires wrote:
->
-> > On Tue, Apr 6, 2021 at 10:56 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Fri, 26 Mar 2021, Lee Jones wrote:
-> > >
-> > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > niggly little warnings.
-> > > >
-> > > > Lee Jones (25):
-> > > >   HID: intel-ish-hid: Remove unused variable 'err'
-> > > >   HID: ishtp-hid-client: Move variable to where it's actually used
-> > > >   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
-> > > >   HID: intel-ish: Supply some missing param descriptions
-> > > >   HID: intel-ish: Fix a naming disparity and a formatting error
-> > > >   HID: usbhid: Repair a formatting issue in a struct description
-> > > >   HID: intel-ish-hid: Fix a little doc-rot
-> > > >   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
-> > > >   HID: hid-alps: Correct struct misnaming
-> > > >   HID: intel-ish-hid: Fix potential copy/paste error
-> > > >   HID: hid-core: Fix incorrect function name in header
-> > > >   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
-> > > >     header
-> > > >   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
-> > > >   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
-> > > >   HID: hid-picolcd_core: Remove unused variable 'ret'
-> > > >   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
-> > > >     abuses
-> > > >   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
-> > > >   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
-> > > >   HID: hid-uclogic-params: Ensure function names are present and correct
-> > > >     in kernel-doc headers
-> > > >   HID: hid-sensor-custom: Remove unused variable 'ret'
-> > > >   HID: wacom_sys: Demote kernel-doc abuse
-> > > >   HID: hid-sensor-hub: Remove unused struct member 'quirks'
-> > > >   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
-> > > >     definition
-> > > >   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
-> > > >   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
-> > >
-> > > These have been on the list for a couple of weeks now.
-> > >
-> > > Is there anything I can do to help expedite their merge?
-> > >
-> > > I'm concerned since -rc6 has just been released.
-> >
-> > Sorry for the delay.
-> >
-> > I am currently queuing them locally and running a few tests on them. I
-> > don't expect anything to happen, but better be safe than anything.
-> >
-> > FWIW, I am splitting the series in 3:
-> > - 11 patches for intel ish are going to be queued in for-5.13/intel-ish
-> > - the thrustmaster one in for-5.13/thrustmaster
-> > - the rest (13 patches) will be sent in for-5.13/warnings.
->
-> Sounds good to me.  Thanks Benjamin.
->
-After a few attempts at fixing my CI, I have now pushed this series as
-mentioned previously.
+--Sig_/DLpkkb8k+jjqxff57G9uT_O
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+After merging the kvm-arm tree, today's linux-next build (htmldocs)
+produced this warning:
+
+/home/sfr/next/next/Documentation/virt/kvm/arm/ptp_kvm.rst:19: WARNING: Mal=
+formed table.
+Text in column margin in table line 5.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Function ID:     (uint32)      0x86000001
+Arguments:       (uint32)      KVM_PTP_VIRT_COUNTER(0)
+                               KVM_PTP_PHYS_COUNTER(1)
+Return Values:   (int32)       NOT_SUPPORTED(-1) on error, or
+                 (uint32)      Upper 32 bits of wall clock time (r0)
+                 (uint32)      Lower 32 bits of wall clock time (r1)
+                 (uint32)      Upper 32 bits of counter (r2)
+                 (uint32)      Lower 32 bits of counter (r3)
+Endianness:                    No Restrictions.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Introduced by commit
+
+  3bf725699bf6 ("KVM: arm64: Add support for the KVM PTP service")
+
+--=20
 Cheers,
-Benjamin
+Stephen Rothwell
 
+--Sig_/DLpkkb8k+jjqxff57G9uT_O
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBu7IAACgkQAVBC80lX
+0GyHZgf9GoAxnaGsnqlzUY4SEsrd+VIg4nn1C3F5mCg4JK53aQnF7txwegioeWlW
+4dnFSWujG4xBrdy7hNQdBQXLD+EZa+ltbHxjIbXFxk50+BcBTQovOFmaVvyRsBND
+WaunK5iS7okQdgCbdpjxNBWSL3CnFnv2s/qaRIqIeIucVen8Dpqk2GEk4L9+2P2k
+HE+gzyZWSWDZ4rfiDcJRYlj25Mo9FUqpQuiZ8n30OnMbYVGxK4Xg/HVUV6Qtx9k3
+H/dL5ehADFq8xgd9Fec9vF6mmRW2piwDkqtRuX2j2V6nQ0Qpcu9DdUOaj4BA5wl8
+rAx7sMUo/LIL+ygosVllR6cly8Daaw==
+=4ojz
+-----END PGP SIGNATURE-----
+
+--Sig_/DLpkkb8k+jjqxff57G9uT_O--
