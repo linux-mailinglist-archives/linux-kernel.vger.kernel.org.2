@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6748935894B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DFB35894E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhDHQJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:09:11 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:47135 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231655AbhDHQJH (ORCPT
+        id S232147AbhDHQJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhDHQJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:09:07 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id A7F145C00DF;
-        Thu,  8 Apr 2021 12:08:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 08 Apr 2021 12:08:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=mC9lT507J6RIj+U5nS4hMawdjll
-        gWQu3AF4sHZo0txk=; b=ftKoFL1DidJZ8AA4UiXRBaU5Tu/vdy4sOfZHQQmhepU
-        HFTbJRcZk4OJYHb7DXNl1OHOgfJGsD0r8tiXXEeY730VTP+oE0SnZy8Y1GVsNKXw
-        bLI4yQ8/J2guhtUHQIUQYA3dKLYMe+7xf9I4FGT1eVdicvUi05vrxgSzIH4HIMdV
-        +4KJ+4o6qNs4r/AAmuWFKgdyTGY5ltllEXKqhmP/FzQOY2YCIw2GguWbUAkqhS3t
-        mxlWlEa/p/Efv/FKnhlcqtbnEVEKepAyYZL+GXFx7r+pFIH+J+8tlk8pEd8Mm/TL
-        RBiv9VPfKNNj2SrCDhrrbjjz9sHMFJz4Blvr+seB0Vw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=mC9lT5
-        07J6RIj+U5nS4hMawdjllgWQu3AF4sHZo0txk=; b=QuGYtViLn86Ts9x5v5g3bd
-        MVi95Jp1JOot0EuVp4/oK46YOgRBpnkpsxCK05+VilcbR8CjelhsaBupaZBiRqD8
-        36+6xejpOF86GaFL9DZuhdR8GnQQFT5peUrpzpelRPcS+LLYFBtu7oaB699rpKmE
-        7+Uh9cL5tIZfJQNmxEFuTLdprT8MUmC9RKgt9d+vY0LmiaePWIwrPwGzoTS203cl
-        Y1o8ujJmjsrczLBw+KMiHiLNsAS93ogs+fciMCd80KEdPYJXq/NYdo6A8dcnMUKk
-        naDGagrYNcCUX/44wxC3Ri2u59NRTLRQxY58nNlL+6Ka80F/GNZLHrWIRm0/KUvg
-        ==
-X-ME-Sender: <xms:lipvYF7SfN6hNym_9V4OYOWn5Okx7dgtJvSqli_dhA_3bMhvaYuzpQ>
-    <xme:lipvYC4ixJoGnA6Q4ZMtsIzXcY2Mz-WPG0Y-5hO75A8cWwkXfE0aCUr0oCdUT4MOA
-    6RtxjdXZuaZgzdGlQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
-    ggtffrrghtthgvrhhnpeeuuddvjeefffelgfeuveehfeegfeetfeetueduudfhudfhheev
-    leetveduleehjeenucfkphepudeifedruddugedrudefvddrheenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:lipvYMc5AHrO0bJ0YYtZHVOA4DkPwEazneQcBEkIV7VVW6bNzgcuBw>
-    <xmx:lipvYOLPWECCm__gGzjEHGj6wLfKS4p75juNqctycEiUFlqiOzHtJg>
-    <xmx:lipvYJJTMQ19BjHxkt47O7443iOtPuOcbWY1ImfKIH5cnKE5lMQlvA>
-    <xmx:lypvYB-LW7W04XNfwu0IrGh4H4juFXqHfL4louBnMaazNjISkn_FOg>
-Received: from dlxu-fedora-R90QNFJV (unknown [163.114.132.5])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9C2731080054;
-        Thu,  8 Apr 2021 12:08:53 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 09:08:37 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: Re: [RFC bpf-next 0/1] bpf: Add page cache iterator
-Message-ID: <20210408160837.kbqxe3ls6ogjvayc@dlxu-fedora-R90QNFJV>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <20210408075117.oqoqspilk3c3xsaa@wittgenstein>
+        Thu, 8 Apr 2021 12:09:49 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE6BC061760;
+        Thu,  8 Apr 2021 09:09:37 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b14so4922679lfv.8;
+        Thu, 08 Apr 2021 09:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q2y70uZn9bzb33FU99dlR3SYEgVlIDBNcQtt2y1+RFM=;
+        b=VB7uXpQBDBw9TAc+0C1va246dBbHcAG3IlxYYEK+346bf2T/yNBVAQYqcOjJvI/Rz5
+         ucCMkthqLQTOn/xJ6m+0gR3X6lvtNxM7IyC6NlDvKbAy1GGM+PCdkU5gzlI9DMRX2ikl
+         AP+soFJqGU/fjXI5bon39W/+vbldAvEWWMHWSjsHM6xHTMJupu0mPP7tUHy9BZxlopMo
+         9cPRd6maw99ks3eeg905nKJzIn6MfQi2W8MJCx4FYIYomHxoKsmrF71I9fn9rmLFCjVx
+         wvqZaZyn2MEMtvZMqWeUjfZRfRQvXlwXIYvHjvInlXksHW5kYnMgmt2FNFE3cHAoqFQP
+         iCRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q2y70uZn9bzb33FU99dlR3SYEgVlIDBNcQtt2y1+RFM=;
+        b=VxYugw40y7NTEw6U9wMi/JAmBzRLOkXcodVbyEIfzRrwVOa7hUZmbMrbGrFtR5/kpk
+         mtqc+CljTH0umJ0YuvXUcZ7Ze28XfHcyup79elAprqxxbi+4hoEr2lmSoyOwQT/LEIzi
+         l9Z5+ITJoq4OOQGicjOHv1dLtBnf3w/ApdgOOcKZ+k9YiqFCYRkwJM/KdN4e4cRILyVW
+         9ymMTDz+dZ8rH6tUwF46/EboJVwmqM1r86pLBtXEmINI1cALg51B8fLvzj7X+xCE/+/+
+         zKeoT2Xkvsu5PzAkG0Ulxj1Br0b2if4lf9do2+WwezcFr9HWHqDR05TINkr3BpYNd+z8
+         51Ow==
+X-Gm-Message-State: AOAM533u/SLQLTmsyorr8ESdE2QwHBmUWOtf9uoHxVNdlIHJVHE1B6dM
+        w11KpJ3ydkGMJt+lm+U1cW68Y3ZfSpzwp7VGeoiJ6Ebc2MA=
+X-Google-Smtp-Source: ABdhPJyJbS8fyp2YGyi1GVee1muNET1yBazDtu+lJk2Bae/jYuLjtSv5T7EoJj+9xUv1TE6EmD2SqO4knQdYzZYddgo=
+X-Received: by 2002:a19:7515:: with SMTP id y21mr7155456lfe.282.1617898174959;
+ Thu, 08 Apr 2021 09:09:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408075117.oqoqspilk3c3xsaa@wittgenstein>
+References: <20210408220711.5a39d4a0@canb.auug.org.au>
+In-Reply-To: <20210408220711.5a39d4a0@canb.auug.org.au>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 8 Apr 2021 11:09:23 -0500
+Message-ID: <CAH2r5mts7HLToeuUgPSp5kpurYw9VYt8L26ruudiZ0vHv3BvUA@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian, thanks for taking a look.
+fixed - (a tmp branch was accidentally pushed)
 
-On Thu, Apr 08, 2021 at 09:51:17AM +0200, Christian Brauner wrote:
-> On Wed, Apr 07, 2021 at 02:46:10PM -0700, Daniel Xu wrote:
-> > There currently does not exist a way to answer the question: "What is in
-> > the page cache?". There are various heuristics and counters but nothing
-> > that can tell you anything like:
-> > 
-> >   * 3M from /home/dxu/foo.txt
-> >   * 5K from ...
-> >   * etc.
-> > 
-> > The answer to the question is particularly useful in the stacked
-> > container world. Stacked containers implies multiple containers are run
-> > on the same physical host. Memory is precious resource on some (if not
-> 
-> Just to clarify: what are "stacked containers"? Do you mean nested
-> containers, i.e. containers running within containers?
+On Thu, Apr 8, 2021 at 7:07 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commit
+>
+>   e67fcb31fb0e ("stuff")
+>
+> is missing a Signed-off-by from its author and comitter.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-I mean multiple containers running side by side on the same host.
 
+
+-- 
 Thanks,
-Daniel
+
+Steve
