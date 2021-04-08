@@ -2,191 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F359A3588B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D8E3588BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhDHPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:44:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:52116 "EHLO foss.arm.com"
+        id S231977AbhDHPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:44:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:52128 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhDHPoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:44:11 -0400
+        id S231659AbhDHPoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:44:12 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF055D6E;
-        Thu,  8 Apr 2021 08:43:59 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E49E211B3;
+        Thu,  8 Apr 2021 08:44:00 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ADE243F694;
-        Thu,  8 Apr 2021 08:43:58 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E3A803F694;
+        Thu,  8 Apr 2021 08:43:59 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: [RFC PATCH 00/10] irqchip/irq-gic: Optimize masking by leveraging EOImode=1
-Date:   Thu,  8 Apr 2021 16:43:16 +0100
-Message-Id: <20210408154326.3988781-1-valentin.schneider@arm.com>
+Subject: [RFC PATCH 01/10] genirq: Add chip flag to denote automatic IRQ (un)masking
+Date:   Thu,  8 Apr 2021 16:43:17 +0100
+Message-Id: <20210408154326.3988781-2-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210408154326.3988781-1-valentin.schneider@arm.com>
+References: <20210408154326.3988781-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks!
+Some IRQ chips such as the Arm GICs automagically mask / unmask an
+IRQ during the handling of said IRQ. This renders further mask / unmask
+operations within the flow handlers redundant, which we do want to leverage
+as masking by itself is not cheap (Distributor access via MMIO for GICs).
 
-This is the spiritual successor to [1], which was over 6 years ago (!).
+This is different from having a chip->irq_mask_ack() callback as this
+masking is:
+- inherent to the chip->irq_ack() and *cannot* be omitted
+- a *different* masking state than chip->irq_mask() (chip->irq_mask() is
+  idempotent, chip->irq_ack() really isn't)
 
-Background
-==========
+Add a chip flag, IRQCHIP_AUTOMASKS_FLOW, to denote chips with such
+behaviour. Add a new IRQ data flag, IRQD_IRQ_FLOW_MASKED, to keep this
+flow-induced mask state separate from regular mask / unmask operations
+(IRQD_IRQ_MASKED).
 
-GIC mechanics
-+++++++++++++
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ include/linux/irq.h    | 10 ++++++++++
+ kernel/irq/chip.c      |  5 +++++
+ kernel/irq/debugfs.c   |  2 ++
+ kernel/irq/internals.h |  5 +++++
+ 4 files changed, 22 insertions(+)
 
-There are three IRQ operations:
-o Acknowledge. This gives us the IRQ number that interrupted us, and also
-  - raises the running priority of the CPU interface to that of the IRQ
-  - sets the active bit of the IRQ
-o Priority Drop. This "clears" the running priority.
-o Deactivate. This clears the active bit of the IRQ.
-
-o The CPU interface has a running priority value. No interrupt of lower or
-  equal priority will be signaled to the CPU attached to that interface. On
-  Linux, we only have two priority values: pNMIs at highest priority, and
-  everything else at the other priority.
-o Most GIC interrupts have an "active" bit. This bit is set on Acknowledge
-  and cleared on Deactivate. A given interrupt cannot be re-signaled to a
-  CPU if it has its active bit set (i.e. if it "fires" again while it's
-  being handled).
-
-EOImode fun
-+++++++++++
-
-In EOImode=0, Priority Drop and Deactivate are undissociable. The
-(simplified) interrupt handling flow is as follows: 
-
-  <~IRQ>
-    Acknowledge
-    Priority Drop + Deactivate
-    <interrupts can once again be signaled, once interrupts are re-enabled>
-
-With EOImode=1, we can invoke each operation individually. This gives us:
-
-  <~IRQ>
-    Acknowledge
-    Priority Drop
-    <*other* interrupts can be signaled from here, once interrupts are re-enabled>
-    Deactivate
-    <*this* interrupt can be signaled again>
-
-What this means is that with EOImode=1, any interrupt is kept "masked" by
-its active bit between Priority Drop and Deactivate.
-
-Threaded IRQs and ONESHOT
-=========================
-
-ONESHOT threaded IRQs must remain masked between the main handler and the
-threaded handler. Right now we do this using the conventional irq_mask()
-operations, which looks like this: 
-
- <irq handler>
-   Acknowledge
-   Priority Drop   
-   irq_mask()
-   Deactivate
-
- <threaded handler>
-   irq_unmask()
-
-However, masking for the GICs means poking the distributor, and there's no
-sysreg for that - it's an MMIO access. We've seen above that our IRQ
-handling can give us masking "for free", and this is what this patch set is
-all about. It turns the above handling into:
-
-  <irq handler>
-    Acknowledge
-    Priority Drop
-
-  <threaded handler>
-    Deactivate
-
-No irq_mask() => fewer MMIO accesses => happier users (or so I've been
-told). This is especially relevant to PREEMPT_RT which forces threaded
-IRQs.
-    
-Testing
-=======
-
-GICv2
-+++++
-
-I've tested this on my Juno with forced irqthreads. This makes the pl011
-IRQ into a threaded ONESHOT IRQ, so I spammed my keyboard into the console
-and verified via ftrace that there were no irq_mask() / irq_unmask()
-involved.
-
-GICv3
-+++++
-
-I've tested this on my Ampere eMAG, which uncovered "fun" interactions with
-the MSI domains. Did the same trick as the Juno with the pl011.
-
-pNMIs cause said eMAG to freeze, but that's true even without my patches. I
-did try them out under QEMU+KVM and that looked fine, although that means I
-only got to test EOImode=0. I'll try to dig into this when I get some more
-cycles.
-
-TODOs
-=====
-
-MSI hierarchy story
-+++++++++++++++++++
-
-I 'hate' patch 8/10 because it's so very easy to break. See changelog for
-my thoughts on the thing.
-
-Performance numbers
-+++++++++++++++++++
-
-The whole point of this was to shave off some time spent issuing requests
-to the distributor. On my Juno the IRQ for eth0 gets forcefully threaded
-and thus becomes a ONESHOT threaded IRQ - I've tried to test this with
-netperf, but the delta is lost in the noise (and there is quite a lot of
-noise, unfortunately).
-
-I'm still looking for something I can benchmark on the eMAG to get some
-GICv3 results.
-
-Links
-=====
-
-[1]: https://lore.kernel.org/lkml/1414235215-10468-1-git-send-email-marc.zyngier@arm.com/
-
-Valentin Schneider (10):
-  genirq: Add chip flag to denote automatic IRQ (un)masking
-  genirq: Define irq_ack() and irq_eoi() helpers
-  genirq: Employ ack_irq() and eoi_irq() where relevant
-  genirq: Add handle_strict_flow_irq() flow handler
-  genirq: Let purely flow-masked ONESHOT irqs through
-    unmask_threaded_irq()
-  genirq: Don't mask IRQ within flow handler if IRQ is flow-masked
-  genirq, irq-gic-v3: Make NMI flow handlers use ->irq_ack() if
-    available
-  irqchip/gic-v3-its: Use irq_chip_ack_parent()
-  irqchip/gic: Convert to handle_strict_flow_irq()
-  irqchip/gic-v3: Convert to handle_strict_flow_irq()
-
- drivers/irqchip/irq-gic-v3-its-pci-msi.c |   1 +
- drivers/irqchip/irq-gic-v3-its.c         |   1 +
- drivers/irqchip/irq-gic-v3.c             |  27 ++++--
- drivers/irqchip/irq-gic.c                |  14 ++-
- include/linux/irq.h                      |  15 ++-
- kernel/irq/chip.c                        | 117 +++++++++++++++++++----
- kernel/irq/debugfs.c                     |   2 +
- kernel/irq/internals.h                   |   7 ++
- kernel/irq/manage.c                      |   2 +-
- 9 files changed, 154 insertions(+), 32 deletions(-)
-
---
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index bee82809107c..580b1b6b1799 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -219,6 +219,8 @@ struct irq_data {
+  *				  irq_chip::irq_set_affinity() when deactivated.
+  * IRQD_IRQ_ENABLED_ON_SUSPEND	- Interrupt is enabled on suspend by irq pm if
+  *				  irqchip have flag IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND set.
++ * IRQD_IRQ_FLOW_MASKED         - Interrupt is masked by ACK. Only EOI can
++ *                                clear this.
+  */
+ enum {
+ 	IRQD_TRIGGER_MASK		= 0xf,
+@@ -245,6 +247,7 @@ enum {
+ 	IRQD_HANDLE_ENFORCE_IRQCTX	= (1 << 28),
+ 	IRQD_AFFINITY_ON_ACTIVATE	= (1 << 29),
+ 	IRQD_IRQ_ENABLED_ON_SUSPEND	= (1 << 30),
++	IRQD_IRQ_FLOW_MASKED            = (1 << 31),
+ };
+ 
+ #define __irqd_to_state(d) ACCESS_PRIVATE((d)->common, state_use_accessors)
+@@ -349,6 +352,11 @@ static inline bool irqd_irq_masked(struct irq_data *d)
+ 	return __irqd_to_state(d) & IRQD_IRQ_MASKED;
+ }
+ 
++static inline bool irqd_irq_flow_masked(struct irq_data *d)
++{
++	return __irqd_to_state(d) & IRQD_IRQ_FLOW_MASKED;
++}
++
+ static inline bool irqd_irq_inprogress(struct irq_data *d)
+ {
+ 	return __irqd_to_state(d) & IRQD_IRQ_INPROGRESS;
+@@ -567,6 +575,7 @@ struct irq_chip {
+  * IRQCHIP_SUPPORTS_NMI:              Chip can deliver NMIs, only for root irqchips
+  * IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND:  Invokes __enable_irq()/__disable_irq() for wake irqs
+  *                                    in the suspend path if they are in disabled state
++ * IRQCHIP_AUTOMASKS_FLOW:            chip->ack() masks and chip->eoi() unmasks
+  */
+ enum {
+ 	IRQCHIP_SET_TYPE_MASKED			= (1 <<  0),
+@@ -579,6 +588,7 @@ enum {
+ 	IRQCHIP_SUPPORTS_LEVEL_MSI		= (1 <<  7),
+ 	IRQCHIP_SUPPORTS_NMI			= (1 <<  8),
+ 	IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND	= (1 <<  9),
++	IRQCHIP_AUTOMASKS_FLOW                  = (1 <<  10),
+ };
+ 
+ #include <linux/irqdesc.h>
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index 8cc8e5713287..18c3b0e1568a 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -173,6 +173,11 @@ static void irq_state_clr_masked(struct irq_desc *desc)
+ 	irqd_clear(&desc->irq_data, IRQD_IRQ_MASKED);
+ }
+ 
++static void irq_state_clr_flow_masked(struct irq_desc *desc)
++{
++	irqd_clear(&desc->irq_data, IRQD_IRQ_FLOW_MASKED);
++}
++
+ static void irq_state_clr_started(struct irq_desc *desc)
+ {
+ 	irqd_clear(&desc->irq_data, IRQD_IRQ_STARTED);
+diff --git a/kernel/irq/debugfs.c b/kernel/irq/debugfs.c
+index e4cff358b437..3ae83622d701 100644
+--- a/kernel/irq/debugfs.c
++++ b/kernel/irq/debugfs.c
+@@ -58,6 +58,7 @@ static const struct irq_bit_descr irqchip_flags[] = {
+ 	BIT_MASK_DESCR(IRQCHIP_SUPPORTS_LEVEL_MSI),
+ 	BIT_MASK_DESCR(IRQCHIP_SUPPORTS_NMI),
+ 	BIT_MASK_DESCR(IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND),
++	BIT_MASK_DESCR(IRQCHIP_AUTOMASKS_FLOW),
+ };
+ 
+ static void
+@@ -103,6 +104,7 @@ static const struct irq_bit_descr irqdata_states[] = {
+ 	BIT_MASK_DESCR(IRQD_IRQ_STARTED),
+ 	BIT_MASK_DESCR(IRQD_IRQ_DISABLED),
+ 	BIT_MASK_DESCR(IRQD_IRQ_MASKED),
++	BIT_MASK_DESCR(IRQD_IRQ_FLOW_MASKED),
+ 	BIT_MASK_DESCR(IRQD_IRQ_INPROGRESS),
+ 
+ 	BIT_MASK_DESCR(IRQD_PER_CPU),
+diff --git a/kernel/irq/internals.h b/kernel/irq/internals.h
+index 54363527feea..b6c1cceddec0 100644
+--- a/kernel/irq/internals.h
++++ b/kernel/irq/internals.h
+@@ -245,6 +245,11 @@ static inline void irq_state_set_masked(struct irq_desc *desc)
+ 	irqd_set(&desc->irq_data, IRQD_IRQ_MASKED);
+ }
+ 
++static inline void irq_state_set_flow_masked(struct irq_desc *desc)
++{
++	irqd_set(&desc->irq_data, IRQD_IRQ_FLOW_MASKED);
++}
++
+ #undef __irqd_to_state
+ 
+ static inline void __kstat_incr_irqs_this_cpu(struct irq_desc *desc)
+-- 
 2.25.1
 
