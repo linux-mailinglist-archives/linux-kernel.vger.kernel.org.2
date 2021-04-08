@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E443357D46
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42445357D47
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhDHHY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:24:29 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:26720 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229506AbhDHHY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:24:28 -0400
-Received: from localhost.localdomain (unknown [10.192.24.118])
-        by mail-app2 (Coremail) with SMTP id by_KCgC3v2+Sr25gmiHdAA--.48607S4;
-        Thu, 08 Apr 2021 15:24:06 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: rcar: Fix runtime PM imbalance in rcar_pcie_ep_probe
-Date:   Thu,  8 Apr 2021 15:24:02 +0800
-Message-Id: <20210408072402.15069-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgC3v2+Sr25gmiHdAA--.48607S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3JFykZrWrWr4fZrykAFb_yoWDuFc_u3
-        45ZFnrCr45WFy7Kry7t3W5Zr9Y9342qw1UGa1rt3W3AFySyrn8XrWkXFWDZr4fWa15Cr1j
-        yr909FWxCa4DujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
-        AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbE_M3UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOgAKsm
+        id S229605AbhDHH0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhDHH0S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:26:18 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB06DC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:26:06 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a7so1326939eju.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 00:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Uc0+K23/mnmrGZb/moKeuXxpkliqVKEbLbv9zEjV7os=;
+        b=WVtRSvInqHDhiAmJeygIIMY+NJgA2MQHivyD8pFQCNfi/he+Rp+bV8D4ztue5ZCkgF
+         IwjMOIGhfK6srRlLWZwxEgt3XNyaf1OOpB1y2jmLXRtAhYXGE8PA8RN8PwawUwvLk2PY
+         +ILTFGtpX57kx5edzbJKqLYnT9pc7aw7Si25venr17LUGq2cxmCmsEosT4gDA3n7xdL5
+         r1MzkJgbC5A1aMktVmk8FKKrfdb664L8rXkakkJCJTjYjrwEbSSMIOEaSLRKqeYJ4Nqg
+         BEVhWqDWJrH0vGqrnP1GdcOL5akSN+kuks/QGVDXdq7MUJ7WbayEcmXSOesJG67D9l1G
+         0V5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Uc0+K23/mnmrGZb/moKeuXxpkliqVKEbLbv9zEjV7os=;
+        b=AcOmtH/yGDr9LDhA1xJAn0OfF0UGCE78zonay5zTMF5MGcO6X6PbHs9GduDNRhKW1U
+         8K57ztCsOspe719QSczdHQq1wM8ypAl3rSvKTb7+BddQE6eRPzCWGAb46pWpHs3RONli
+         WHXdwj++vDBrKSPTYiSvdtRFsAslwItgdP5r8XgqKGWfOjTfhogtdlSFl55dedXchzFe
+         NCtLn+ojYiKxQ/2+9xCuqL0GMVJP/NJB+NV3Zp7mDWOYhhfO12T4vtaP5XNxzkPJiy+x
+         pEtAadVr0XP/sm3j7yHzgs5xx7qDCdK/VW0N0zRsXFPMg9A/Wrug5eYqJHBO5LVvgrnn
+         y1kQ==
+X-Gm-Message-State: AOAM531/khCOW3oZuIM0MWxvuW+1wa0dpTNrcE53atb/E4V/tM3upJD5
+        R9CNbnXSqM59hsMXlRe6+EcOk4fsLmLxHsC+3zeAaQ==
+X-Google-Smtp-Source: ABdhPJw18kBoh+onA4dUbdWI428NmdwenjK1YYrGNeQCvI6EOUl6BbOpSnvCgr02MnejMCe6GDfg9mCc4mrUS49SMds=
+X-Received: by 2002:a17:906:32da:: with SMTP id k26mr8407259ejk.483.1617866765729;
+ Thu, 08 Apr 2021 00:26:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210407061456.5914-1-gi-oh.kim@ionos.com> <CAKwvOdnaLT8sn4e3PQoASjKaNP4gUKQikhxtJM5G94-7CMUKTw@mail.gmail.com>
+In-Reply-To: <CAKwvOdnaLT8sn4e3PQoASjKaNP4gUKQikhxtJM5G94-7CMUKTw@mail.gmail.com>
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+Date:   Thu, 8 Apr 2021 09:25:29 +0200
+Message-ID: <CAJX1YtaiPSVfUn6bVCGo+9S77LGN4TAf5PyxeOGxJYZuxgvUSQ@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Introduce sysfs_streqcase
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        laniel_francis@privacyrequired.com,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Axtens <dja@axtens.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() will increase the runtime PM counter
-even it returns an error. Thus a pairing decrement is needed
-to prevent refcount leak. Fix this by replacing this API with
-pm_runtime_resume_and_get(), which will not change the runtime
-PM counter on error.
+On Wed, Apr 7, 2021 at 10:07 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Apr 6, 2021 at 11:15 PM Gioh Kim <gi-oh.kim@ionos.com> wrote:
+> >
+> > As the name shows, it checks if strings are equal in case insensitive
+> > manner.
+> >
+> > For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
+> > strncasecmp to check that the input via sysfs is "mi". But it would
+> > work even-if the input is "min-wrongcommand".
+> >
+> > I found some more cases using strncasecmp to check the entire string
+> > such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
+> > "disable" command with strncasecmp but it would also work if the
+> > command is "disable-wrong".
+>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> I do wonder if these (sysfs_streqcase and sysfs_streq) could or should
+> be conditionally available on CONFIG_SYSFS=3Dy; don't pay for what you
+> don't use (without needing CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy)?
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/pci/controller/pcie-rcar-ep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Good idea.
+Thank you.
 
-diff --git a/drivers/pci/controller/pcie-rcar-ep.c b/drivers/pci/controller/pcie-rcar-ep.c
-index b4a288e24aaf..c91d85b15129 100644
---- a/drivers/pci/controller/pcie-rcar-ep.c
-+++ b/drivers/pci/controller/pcie-rcar-ep.c
-@@ -492,9 +492,9 @@ static int rcar_pcie_ep_probe(struct platform_device *pdev)
- 	pcie->dev = dev;
- 
- 	pm_runtime_enable(dev);
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
--		dev_err(dev, "pm_runtime_get_sync failed\n");
-+		dev_err(dev, "pm_runtime_resume_and_get failed\n");
- 		goto err_pm_disable;
- 	}
- 
--- 
-2.17.1
+>
+> Also, it might be nice to share the second half of the function with
+> sysfs_streq via a new static function.  Though it will just get
+> inlined in both for CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=3Dy, it might
+> help the compiler if CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy was instead chosen
+> if the compiler cannot outline/deduplicate the shared code.  At the
+> least, there's less duplication between two very similar functions; if
+> one changes then authors may need to be careful to update both.
 
+Yes, they are exactly the same.
+I will make an inline function for the common code.
+
+>
+> Are either of those concerns worth a v3? =C2=AF\_(=E3=83=84)_/=C2=AF
+
+Sure, I will not forget to add 'V2'.
+
+Thank you for kind review.
