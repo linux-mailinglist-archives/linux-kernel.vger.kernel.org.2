@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB200358910
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2480A358916
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhDHP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:58:17 -0400
-Received: from ms.lwn.net ([45.79.88.28]:54470 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231866AbhDHP6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:58:16 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A24425ECF;
-        Thu,  8 Apr 2021 15:58:04 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A24425ECF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1617897484; bh=9cJkoMOLSQtZN4qcQxmfnd8lPSGU32bj2b9RIrnsh50=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=admfcPA7smtr4j5sImuuExI+C3qfQpIbQzVsHJ7AGEZsmos64LcmUgk9IV2YN24V2
-         XXic6EStNCDO397MzMwf/LcfJMddhPNub1urpF1pQSU2wQAQpj55chzmdb4yEQ8hoR
-         itF9Il/N00+AcTfmPlzFMnhOooa3kwjvGFlSDvSphAZ5Ty64qk/dsf2Hrp0i6wvFlo
-         /4FfwN1Gt+gpGesVgjyQBKIq/549VV32MPpP+cUUA1r96BevIye079VRP+gFzGp6Du
-         m2l628mP3KFmSLMhNZD05wMrZIZilbV/Q9RdkdfaHPQHJ+Uw+YYAeXSUVI5Pj7LOWG
-         b3icIsY/QGvOw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Cc:     bristot@redhat.com, kcarcia@redhat.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 5/5] tracing: Add the osnoise tracer
-In-Reply-To: <3a69303b27bfc5d2274ab893b2cfbd0a8dbe31f7.1617889883.git.bristot@redhat.com>
-References: <cover.1617889883.git.bristot@redhat.com>
- <3a69303b27bfc5d2274ab893b2cfbd0a8dbe31f7.1617889883.git.bristot@redhat.com>
-Date:   Thu, 08 Apr 2021 09:58:04 -0600
-Message-ID: <87pmz422gj.fsf@meer.lwn.net>
+        id S232215AbhDHP6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:58:43 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:47025 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhDHP6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:58:37 -0400
+Received: by mail-oo1-f43.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so609941oof.13;
+        Thu, 08 Apr 2021 08:58:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6J4L/TsHJ2gKS1KfT1jfs3S232wn3ZqOeaVbpNbMR50=;
+        b=id9jjnFVw46xw1IVJ/y2KAuq04WVqFVHzq/7zXR+wA4/d9W2YmVKBs5s0k0zuZnaP5
+         4vq0Eq3skVZsoOmPiP2cZJ9+qZp8YtuforU4e0yYLaw/8x4QcNWOyeFvoIkAQgRBVNxy
+         Nn8RzHg+cJMfEfeofahCJvLMFCyEdoQ5t3v7POqbqe3PaPQfBHGeRymWjOtaRtLlp6U4
+         3GNxX5ia9OyaBLdZ7k/WGA6f1o5vm0H3+yW4/aGgkZxVIwP1un3mtgERDnjgI4CwO3xl
+         Zqmc2PIuN9iT+QuqOhM0ZrqiiAtYBZUROx+Z6jW0eCBoEbvhuKDznOpPVdiSNoZAxolU
+         YxiA==
+X-Gm-Message-State: AOAM530UYkbthlNL3ewOxOGDAw2y3gWNAA1gAnP0qoIqF+HfkH3tREz+
+        IuEZLn+arzuIV/5uMVns+Q==
+X-Google-Smtp-Source: ABdhPJwe1NgTXpk1jXSjJcDpXkDclx6OHy852pAAAlbNj1hDALIwQ1pjKNO6ghh860jhdWIrEsJCQQ==
+X-Received: by 2002:a4a:bd1a:: with SMTP id n26mr7989991oop.45.1617897505861;
+        Thu, 08 Apr 2021 08:58:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 10sm6179615otq.10.2021.04.08.08.58.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 08:58:25 -0700 (PDT)
+Received: (nullmailer pid 1552624 invoked by uid 1000);
+        Thu, 08 Apr 2021 15:58:23 -0000
+Date:   Thu, 8 Apr 2021 10:58:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     lorenzo.pieralisi@arm.com, hes@sifive.com, zong.li@sifive.com,
+        jh80.chung@samsung.com, aou@eecs.berkeley.edu, robh+dt@kernel.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        paul.walmsley@sifive.com, linux-clk@vger.kernel.org,
+        alex.dewar90@gmail.com, p.zabel@pengutronix.de,
+        erik.danie@sifive.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, mturquette@baylibre.com,
+        vidyas@nvidia.com, sboyd@kernel.org, bhelgaas@google.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host
+ controller
+Message-ID: <20210408155823.GA1520096@robh.at.kernel.org>
+References: <20210406092634.50465-1-greentime.hu@sifive.com>
+ <20210406092634.50465-5-greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406092634.50465-5-greentime.hu@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Bristot de Oliveira <bristot@redhat.com> writes:
+On Tue, 06 Apr 2021 17:26:32 +0800, Greentime Hu wrote:
+> Add PCIe host controller DT bindings of SiFive FU740.
+> 
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 ++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+> 
 
-A quick nit:
-
->  Documentation/trace/osnoise_tracer.rst |  149 ++
->  include/linux/ftrace_irq.h             |   16 +
->  include/trace/events/osnoise.h         |  141 ++
->  kernel/trace/Kconfig                   |   34 +
->  kernel/trace/Makefile                  |    1 +
->  kernel/trace/trace.h                   |    9 +-
->  kernel/trace/trace_entries.h           |   27 +
->  kernel/trace/trace_osnoise.c           | 1714 ++++++++++++++++++++++++
->  kernel/trace/trace_output.c            |   72 +-
->  9 files changed, 2159 insertions(+), 4 deletions(-)
->  create mode 100644 Documentation/trace/osnoise_tracer.rst
->  create mode 100644 include/trace/events/osnoise.h
->  create mode 100644 kernel/trace/trace_osnoise.c
-
-When you create a new RST file, you need to add it to an index.rst (or
-similar) file so that it gets incorporated into the docs build.
-
-The document itself looks good on a quick read.  If you're making
-another pass over it, you might consider reducing the ``markup noise`` a
-bit; we try to keep that to a minimum in the kernel docs.  But otherwise
-thanks for writing it!
-
-jon
+Reviewed-by: Rob Herring <robh@kernel.org>
