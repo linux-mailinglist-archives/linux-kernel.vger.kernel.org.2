@@ -2,88 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E2835908E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60EB359091
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhDHXpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 19:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        id S232908AbhDHXqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 19:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDHXpn (ORCPT
+        with ESMTP id S232426AbhDHXqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:45:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79974C061760;
-        Thu,  8 Apr 2021 16:45:31 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a7so5831658eju.1;
-        Thu, 08 Apr 2021 16:45:31 -0700 (PDT)
+        Thu, 8 Apr 2021 19:46:13 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAD1C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 16:46:01 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id l1so1834247plg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 16:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=QhXqjewBtncdOCVUU5t44rbala3/r6RlbCvxFUCu3+M=;
-        b=uA8WrQ0N22+iR9oeA1h8gASKkARO7xU5WR15k/IhN6w0VmVzJ/ctMncOyRSvrlawmZ
-         9Y9hl3rY+3Jt7KcxhL3ZSceFm8fBZHSj8K65ahVdhaTobmUIOZHZOitOwaJsW+yIMGAG
-         2sz1T44y5XyRbs3PPbMLJE0Ceo76TWUxE4/yueSRUHbhfg666K4d3NpEYsJS0LhQa0nK
-         YEGTocAOSadgCqAfQReKpwIcs11SRclfg+DEbr3MHlsVCZDIXPTJmPYVuogeoft0TvOk
-         od6I0utFQKakFwmn7R7i0teJ7kP9q37qU6++zTPpnV4pjJGxqkUPIKwIcDg58lQbWSgP
-         VXnw==
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=DxyRoQ5Ujuq/qKST3/Nby+CZta3m7oASwyoeouT8epU=;
+        b=vTyV9E9tVWKxSxw1bstzwnnTK0MZL0NLEwkLxmTFK9+szP/aovP5toYLxSluisEnxb
+         KuYkKZc2Rmh3JMGpeACXvA/TzvhF7Uf/wTj6cg0N9UcFHrAL0PMkzqfuwAuX3mcK8W73
+         d7zZQFQCPijid/mS1Y/XS2+aeQ5mb56zCa5O6/lHY2Nhnx8JFX5dQPxPpvbaR4CFcCL0
+         KRRBJ1rKr8x6BbwgMFfozRRx0lEnFHcddlciu6b9AS2VpWb3IGttrvfUvdtSi9zBXOj7
+         1+46CrxgDIKaQJUIWNTdrvLG5v98eVOWhw/Voj6Od3K7Gh4YQBuXKpzSP4pFn1UB2nAV
+         YEYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=QhXqjewBtncdOCVUU5t44rbala3/r6RlbCvxFUCu3+M=;
-        b=t/PqoKvetZoZCYlzJilgk52sxd8n7IeoMyRZgeagBDpr9ggzYJ6gWPyb68NJ95d5c3
-         xvrpoy+FNS+cy/SoB77P3ecUJxoUiBSAs46xqIAI8PwhsOkQZko6JB5iURrWWDg0HxNz
-         YFmHLrIjfZoiI1AGsLjcWJzMZB1RKjmaOzs+fIS82qEuBgI4biZyFGcZOiNd6y4GX1w8
-         h/zEcuevWcXkznyiHCbLsOaqj90rLfFBTYVWm4T+9KV7/mXTBtoe4X8owJ62Jif753al
-         nUoPD2E6eE8sFXg9JUY9dGNSN+EO21MqNIjVKtF1dIs5OybMHHUlfwm5q4W0yHY9Li9N
-         UiSA==
-X-Gm-Message-State: AOAM532lz8xvExQF5Plno9pkexRPL06oEJljxB+ys1ZXBSGM5Ymt2mCl
-        hEpK2siNkYY+3GjqGutO5y0=
-X-Google-Smtp-Source: ABdhPJxlmqZFXITOX8f8zYmoxVtOp+YhPyDdDgCXRVxxqPyk51MqeXJsMlFlQJT7QmBqwpsecshSwQ==
-X-Received: by 2002:a17:906:3a94:: with SMTP id y20mr13368380ejd.35.1617925530313;
-        Thu, 08 Apr 2021 16:45:30 -0700 (PDT)
-Received: from test-VirtualBox ([87.116.181.227])
-        by smtp.gmail.com with ESMTPSA id h25sm383175ejx.105.2021.04.08.16.45.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DxyRoQ5Ujuq/qKST3/Nby+CZta3m7oASwyoeouT8epU=;
+        b=De/d39TizEA/BY9DDiuE51FGQLTlUdWnuXU64gPFv3T81irpDuHJuYMbuw8yOS/Sa2
+         vrvNElmYITImMhuA6aGAqKBgvn4EI5yGDqhEzlysqZqHrkTZbzirG64ktZbVCZJQBPoZ
+         YME6iheuksCS0wPB41bM3W3GYxfYDN9sOfy+HYI6YtaaNTWYjN7aeH8s3n8K+xjuRSoi
+         9bjFtJ4pxmqxkaYCLhJ2eePBNppiw8ZhMyFkgmrxdDB0kmo6arYrjooCj/kg5epSP1eM
+         bU/tcRe9Cv41qu4rAauuHM/31Ygul4OII7QjDBX17fAbAke6AcMZoKayi7k2D+McoNr0
+         J5GQ==
+X-Gm-Message-State: AOAM532AiGhw51DWUGH3wnr9DZFbz9/Jodr9bBbWvsifGtj0erHLwiAa
+        C6l6n6nR24x4sq0hJYfxhevWuQ==
+X-Google-Smtp-Source: ABdhPJxycwIE2oGL8bTeh9yzauKUg9824duZ1hP9pYlvxkfBk0D2u15yhvPB+K+XJk24OtWfUP7uIw==
+X-Received: by 2002:a17:90a:d3d8:: with SMTP id d24mr10530147pjw.166.1617925561416;
+        Thu, 08 Apr 2021 16:46:01 -0700 (PDT)
+Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
+        by smtp.gmail.com with ESMTPSA id l1sm410489pgt.29.2021.04.08.16.46.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 16:45:30 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 01:45:27 +0200
-From:   Sergei Krainov <sergei.krainov.lkd@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] staging: rtl8712: fix wrong function output
-Message-ID: <20210408234527.GA6893@test-VirtualBox>
+        Thu, 08 Apr 2021 16:46:01 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 16:45:52 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        liuwe@microsoft.com, netdev@vger.kernel.org, leon@kernel.org,
+        andrew@lunn.ch, bernd@petrovitsch.priv.at, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210408164552.2d67f7b1@hermes.local>
+In-Reply-To: <20210408225840.26304-1-decui@microsoft.com>
+References: <20210408225840.26304-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function r8712_find_network() were returning wlan_network even if it
-didn't match required address. This happened due to not checking if
-list end was reached and returning last processed wlan_network.
+On Thu,  8 Apr 2021 15:58:40 -0700
+Dexuan Cui <decui@microsoft.com> wrote:
 
-Signed-off-by: Sergei Krainov <sergei.krainov.lkd@gmail.com>
----
- drivers/staging/rtl8712/rtl871x_mlme.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Add a VF driver for Microsoft Azure Network Adapter (MANA) that will be
+> available in the future.
+> 
+> Co-developed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> ---
+>  MAINTAINERS                                   |    4 +-
+>  drivers/net/ethernet/Kconfig                  |    1 +
+>  drivers/net/ethernet/Makefile                 |    1 +
+>  drivers/net/ethernet/microsoft/Kconfig        |   29 +
+>  drivers/net/ethernet/microsoft/Makefile       |    5 +
+>  drivers/net/ethernet/microsoft/mana/Makefile  |    6 +
+>  drivers/net/ethernet/microsoft/mana/gdma.h    |  728 +++++++
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 1515 ++++++++++++++
+>  .../net/ethernet/microsoft/mana/hw_channel.c  |  859 ++++++++
+>  .../net/ethernet/microsoft/mana/hw_channel.h  |  186 ++
+>  drivers/net/ethernet/microsoft/mana/mana.h    |  531 +++++
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 1827 +++++++++++++++++
+>  .../ethernet/microsoft/mana/mana_ethtool.c    |  278 +++
+>  .../net/ethernet/microsoft/mana/shm_channel.c |  292 +++
+>  .../net/ethernet/microsoft/mana/shm_channel.h |   21 +
+>  15 files changed, 6282 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/net/ethernet/microsoft/Kconfig
+>  create mode 100644 drivers/net/ethernet/microsoft/Makefile
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/Makefile
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/gdma.h
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/gdma_main.c
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/hw_channel.c
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/hw_channel.h
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/mana.h
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/mana_en.c
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/shm_channel.c
+>  create mode 100644 drivers/net/ethernet/microsoft/mana/shm_channel.h
 
-diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
-index 8a97307fbbd6..c38161114b80 100644
---- a/drivers/staging/rtl8712/rtl871x_mlme.c
-+++ b/drivers/staging/rtl8712/rtl871x_mlme.c
-@@ -146,6 +146,8 @@ static struct wlan_network *r8712_find_network(struct  __queue *scanned_queue,
- 		if (!memcmp(addr, pnetwork->network.MacAddress, ETH_ALEN))
- 			break;
- 	}
-+	if (plist == phead)
-+		pnetwork = NULL;
- 	spin_unlock_irqrestore(&scanned_queue->lock, irqL);
- 	return pnetwork;
- }
--- 
-2.25.1
+Linux kernel doesn't do namespaces in the code, so every new driver needs
+to worry about global symbols clashing
+
+Please make sure there are not name conflicts with other drivers around variable or
+functions name "gdma_". Noticed there is one driver in staging using similar
+names (drivers/staging/ralink-gdma/ralink-gdma.c). Granted that is in the staging
+doghouse so probably not important but might show up as a name conflict
+with something like the randconfig testing.
 
