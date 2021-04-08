@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2066B358F92
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B086E358F96
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhDHWBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:01:12 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58221 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232158AbhDHWBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:01:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGZvr2TtVz9sRf;
-        Fri,  9 Apr 2021 08:00:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617919257;
-        bh=EtYgTBFn6oyfFMVZx45lg6/+BpeGzMT1feBky1SqNKI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aTEpUnuNexg9e7j0npNbZXXW5HoEniqFF8IM1EgOSc3dHz68Dd3NTIs6GDHqcntCU
-         6WxUqOcv37a0J/qLw4P+rQmMbfc+KFUAJjV0iILtlyrbRnXNHBfaIbDySlShqb4fyN
-         qiGViNcALTZ2muJWco8lHjVwOclBiJal+Zes1p3UiccHMGRkjca0gMEjyZSNtWSkX3
-         pi7fVzEJnG1TLYAxPEyzvq4l4R/2Z8Ulo3OkrEhPlFHn3G+a/i02vPoBv4N43NOdGI
-         KYalrcB6NA20zfzv6yh1MX06Q41Pu5O6EZg+clOW9B3MPLjbpUDCMqHAoowHaPRt0h
-         w/nFx4khglBgg==
-Date:   Fri, 9 Apr 2021 08:00:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the rdma tree
-Message-ID: <20210409080055.421f0dee@canb.auug.org.au>
+        id S232719AbhDHWBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhDHWBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:01:49 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F33C061761;
+        Thu,  8 Apr 2021 15:01:37 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id a76so1928593wme.0;
+        Thu, 08 Apr 2021 15:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=1k2oFebJMetFk2MF03n3BhfJ/Z6puGCIo7fh0K3MdcY=;
+        b=PRkaV10clS+sLFEZRt0+mqBC/zm4SqmmBE9Gqa81Fz0xckmRM+MJuOI2M525VQlPg1
+         D5ThmRBHKWpYoIIiGkgzco8KJcvyMvcQhWi8lgTawXnBb9X4vbWGi+Y9vf8atwhaj5Ce
+         oFAcr1MFJG5lO0AX4iRggn7HIDdTiy8mGxoDh05Fc4HUGzghplJf7iXLMSwakD6v8iUk
+         B9EVN7msrL3jru4b556NUvx41K9Xfo0LdNBQiwJ9avVKkMZyfu4+jAQHMS+EOWDLKzKu
+         I4Oiud+uTZ6fvFUCUzU5NhlcOcMRebMxa6lIohFsp8fzpu80DzrK6aSyMO1SHYKujZY1
+         6DUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=1k2oFebJMetFk2MF03n3BhfJ/Z6puGCIo7fh0K3MdcY=;
+        b=ox0DLYGIulOlNlVs3qBUO4xkNyO+l+LckU3+jFFFV2nRF8w0zCYekGLkZA0f9KfTIy
+         yizGVZQWzd8ZRJqYNmoU2XF90D97b6lRi0SDX51uwJ+Wfb4Gud3PY1vkfi1QojbJzIji
+         X1+lU/s/POy8zsBKXYbLp3L+8x0en5rMrYMQY6Bu5+GtWtbx9wPxYvWhiIrcPxVKhpiZ
+         NMvQ4JX6RgQIelw3WlFRVk7I7n5xseb1lldg63wVkAdgdgg+auTLM/04IllZvJb8va4s
+         nO31ZmQNmr/Y/sS/hDEOZtkGjfVFSFPHp1k9mZUql9QAdBW5WDh/5gjLbthP9u/mWS0J
+         k5lw==
+X-Gm-Message-State: AOAM530IGM9gC3WYkeaykLvERzyoSUrvxwVQ+EcojL74Qnk47y7CZPmw
+        EClZvTUsC+DJAn5VcNaDt0E=
+X-Google-Smtp-Source: ABdhPJxf8t72/YsLezTsQMLohaoXiiyiWCTcZkEGUe9xPH/SLdEmI4+zc7XajgVWPcBaL1ImutIVrQ==
+X-Received: by 2002:a1c:4c0c:: with SMTP id z12mr10800685wmf.38.1617919295698;
+        Thu, 08 Apr 2021 15:01:35 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id o7sm1041687wrs.16.2021.04.08.15.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 15:01:35 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 03:01:29 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING [IPv4/IPv6]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com,
+        stable@vger.kernel.org
+Subject: [PATCH] net: ipv6: check for validity before dereferencing
+ cfg->fc_nlinfo.nlh
+Message-ID: <20210408220129.GA3111136@LEGION>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/b7u5QSKny2/3lgjmqbFNbC=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/b7u5QSKny2/3lgjmqbFNbC=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+nlh is being checked for validtity two times when it is dereferenced in
+this function. Check for validity again when updating the flags through
+nlh pointer to make the dereferencing safe.
 
-Hi all,
+CC: <stable@vger.kernel.org>
+Addresses-Coverity: ("NULL pointer dereference")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ net/ipv6/route.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Commit
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 28801ae80548..a22822bdbf39 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -5206,9 +5206,11 @@ static int ip6_route_multipath_add(struct fib6_config *cfg,
+ 		 * nexthops have been replaced by first new, the rest should
+ 		 * be added to it.
+ 		 */
+-		cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
+-						     NLM_F_REPLACE);
+-		cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		if (cfg->fc_nlinfo.nlh) {
++			cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
++							     NLM_F_REPLACE);
++			cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		}
+ 		nhn++;
+ 	}
+ 
+-- 
+2.25.1
 
-  042a00f93aad ("IB/{ipoib,hfi1}: Add a timeout handler for rdma_netdev")
-
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/b7u5QSKny2/3lgjmqbFNbC=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBvfRcACgkQAVBC80lX
-0GzEowf9G+KK1iYJJN16asbvV0hLVhE1T1zbPt+L13tOxvpFxE5Q25ZFarAr4ulZ
-FRxKsOt9IdjToumHIXImsG4E1hss3tcQsV4cmlqobSJhrnhMdudHX0gVaF5e9q2/
-Zi4P8iLrN/ERJkdiiDN0pnpChllLvtkGOARz1kenl4ZdawOyctyGm5aDK4OMMcb2
-EBN3iyszPMyJKvrutSxtq4MgSGatLjoleUgr/uXZk0/DLchy6gO6tl+i0JzZyfu0
-y6ii2WTAvri3WBb36f8M+rlDGtgT96m8y1c+HLmuVoP1R6VHtqkotRu+wELRVvQ6
-GCJNBD3DdTtPJa/nw6T8PwRUfLSqQg==
-=sksM
------END PGP SIGNATURE-----
-
---Sig_/b7u5QSKny2/3lgjmqbFNbC=--
