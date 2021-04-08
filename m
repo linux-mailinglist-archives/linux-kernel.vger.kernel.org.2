@@ -2,89 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21747358BA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0760A358BA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhDHRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbhDHRqO (ORCPT
+        id S232481AbhDHRrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:47:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232202AbhDHRrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:46:14 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED69C061760;
-        Thu,  8 Apr 2021 10:46:03 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id y124-20020a1c32820000b029010c93864955so3363411wmy.5;
-        Thu, 08 Apr 2021 10:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lCKkqJ3NXKH56GSbHHisuie/Wy5x1/t4fNfwvCfwRS0=;
-        b=tKdFqMXTz/ZUAylhcf0dX7Pd99h2N0h825fUOAXTdmTBgyq9zQaJMOiW5ZjEftllPn
-         nCg8TKa0ArEFhK0lrR5BkPtD4rLYfKvtBoZ9MsHQ+bk1TfktmiGzqo+9PgK1NHi7NmZN
-         G+ivzRd8xEKGHZjiYOfmorYT8XvXjRNUgP6ubU63330VT2M38wAzdEikpqZW/ehtMu/0
-         9cnfjUesi+rFbHG8jqyn7O4sAcpmmseVEWs3IzVUWF7a7Z6ma8F9HfOUMiN9qsCFr+lT
-         /J5sP0zdHIQl9ZFlCFhPYtGznp0yYdRliZYEN58amVsvZ++q4Vwi0iH9KAd68lsYLXJ8
-         jsvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lCKkqJ3NXKH56GSbHHisuie/Wy5x1/t4fNfwvCfwRS0=;
-        b=CQSFmKI4VDPzD2pWjSFQ4O1djwoj6GXss6yGSPpHJEU7VZBZaRegohOzbFRh9w5vvZ
-         FC0wOSB/k0B6hwQwbiVl0Q4/U4T2uz3/SUCNPXcRyJhY34ri9VJL4LA19c7bgycYN2V/
-         xbV07P0e2xF7kmXUKYpNdK9Xgt2oYplNdGDGSxHtfL51l6dFo0d0+iVdg46iSyFBcOW4
-         GLpI3Wmr5XCRddlglWF98hJ/nhG5aQTEsi5X25RWcrG/vOdwLhjh/PeCu3MOupRzefI9
-         UD4QwbsGot9BKS5wJljyRA2CtVwbYbVJPpzO0KedSceoXa1oGF+/lrEyKJfLNQi6VurW
-         BNlQ==
-X-Gm-Message-State: AOAM530nrw1Cq+NqOF1UceZjrn8XR1mD94ryW/GFiAdzU1FoBbcArGaC
-        wwqXx60HuOxHg6/yxoOocak7CpGwD9/MbVLHNk0=
-X-Google-Smtp-Source: ABdhPJxt3RfEZyGirw0ccTfdkUoOCkzCIp1zP8H80nQNbWIftSkhcWXsjOeEaug+viJNJAHmjXxTH6TEzHXPHnICnbE=
-X-Received: by 2002:a05:600c:230e:: with SMTP id 14mr10077693wmo.150.1617903961136;
- Thu, 08 Apr 2021 10:46:01 -0700 (PDT)
+        Thu, 8 Apr 2021 13:47:10 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138HYDOF067773;
+        Thu, 8 Apr 2021 13:46:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=meKz8RWXyTqkUGvEWHnyHHb2dq7BOg1IXldYaEAy0q8=;
+ b=LYsd7Mtm4r23hDy+8mdLp/SNLGADdBJc7Z3gGuh9ZlN2x7QXJGmWK/jW2olZxgv2kvs2
+ gcRJvvDxQ/VLIslK4kuh3uekGAzDiU2CfWchLBkJe1wz99hf8nluwHD5uVcNZoZtcwsb
+ 0etF9kXobjdhhSbOtSQJeBOs2QsTHbJZQy1BJJqCI55Kw7/jgfZOjpTALryzu2Ezjt5v
+ RZkIk364cNi2vVUNmlcZA0IZLDDSz3ARVLTFpHtlZNeO6AqsU+WHSp60v3+ZKcaY8/Ps
+ 7jr2m364JsNeO2Thqj1rXsycNlWlTkcJJZKN03a+0Wn/vHjvw46y3iC3vMuCTlChBUJk FQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvup0xr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 13:46:57 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138Hh5s1019871;
+        Thu, 8 Apr 2021 17:46:55 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 37rvmq8y33-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 17:46:55 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138HkqTT33685966
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Apr 2021 17:46:52 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7B6C552075;
+        Thu,  8 Apr 2021 17:46:52 +0000 (GMT)
+Received: from osiris (unknown [9.171.26.226])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 3E4B552067;
+        Thu,  8 Apr 2021 17:46:52 +0000 (GMT)
+Date:   Thu, 8 Apr 2021 19:46:51 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.12-rc7
+Message-ID: <YG9Bi8VS59wzWYXV@osiris>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: r6ioRla1s3JwVJUaEtGsMf1JsyvQsxrr
+X-Proofpoint-ORIG-GUID: r6ioRla1s3JwVJUaEtGsMf1JsyvQsxrr
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210408172353.21143-1-TheSven73@gmail.com> <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
-In-Reply-To: <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 8 Apr 2021 13:45:50 -0400
-Message-ID: <CAGngYiVg+XXScqTyUQP-H=dvLq84y31uATy4DDzzBvF1OWxm5g@mail.gmail.com>
-Subject: Re: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
- just 2"
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_04:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=941 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104080117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
+Hi Linus,
 
-On Thu, Apr 8, 2021 at 1:36 PM George McCollister
-<george.mccollister@gmail.com> wrote:
->
-> Can you explain the difference in behavior with what I was observing
-> on the LAN7431?
+please pull a couple of s390 fixes for 5.12-rc7.
 
-I'm not using DSA in my application, so I cannot test or replicate
-what you were observing. It would be great if we could work together
-and settle on a solution that is acceptable to both of us.
+Thank you,
+Heiko
 
-> I'll retest but if this is reverted I'm going to start
-> seeing 2 extra bytes on the end of frames and it's going to break DSA
-> with the LAN7431 again.
->
+The following changes since commit 84d572e634e28827d105746c922d8ada425e2d8b:
 
-Seen from my point of view, your patch is a regression. But perhaps my
-patch set is a regression for you? Catch 22...
+  MAINTAINERS: add backups for s390 vfio drivers (2021-03-28 20:20:33 +0200)
 
-Would you be able to identify which patch broke your DSA behaviour?
-Was it one of mine? Perhaps we can start from there.
+are available in the Git repository at:
 
-Sven
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-6
+
+for you to fetch changes up to ad31a8c05196a3dc5283b193e9c74a72022d3c65:
+
+  s390/setup: use memblock_free_late() to free old stack (2021-04-07 14:37:28 +0200)
+
+----------------------------------------------------------------
+s390 updates for 5.12-rc7
+
+- fix incorrect dereference of the ext_params2 external interrupt parameter,
+  which leads to an instant kernel crash if a pfault interrupt occurs.
+
+- add forgotten stack unwinder support, and fix memory leak for the new
+  machine check handler stack.
+
+- fix inline assembly register clobbering due to KASAN code instrumentation.
+
+----------------------------------------------------------------
+Alexander Gordeev (1):
+      s390/cpcmd: fix inline assembly register clobbering
+
+Heiko Carstens (2):
+      s390/irq: fix reading of ext_params2 field from lowcore
+      s390/setup: use memblock_free_late() to free old stack
+
+Vasily Gorbik (1):
+      s390/unwind: add machine check handler stack
+
+ arch/s390/include/asm/stacktrace.h |  1 +
+ arch/s390/kernel/cpcmd.c           |  6 ++++--
+ arch/s390/kernel/dumpstack.c       | 12 +++++++++++-
+ arch/s390/kernel/irq.c             |  2 +-
+ arch/s390/kernel/setup.c           |  2 +-
+ 5 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
+index ee056f4a4fa3..2b543163d90a 100644
+--- a/arch/s390/include/asm/stacktrace.h
++++ b/arch/s390/include/asm/stacktrace.h
+@@ -12,6 +12,7 @@ enum stack_type {
+ 	STACK_TYPE_IRQ,
+ 	STACK_TYPE_NODAT,
+ 	STACK_TYPE_RESTART,
++	STACK_TYPE_MCCK,
+ };
+ 
+ struct stack_info {
+diff --git a/arch/s390/kernel/cpcmd.c b/arch/s390/kernel/cpcmd.c
+index af013b4244d3..2da027359798 100644
+--- a/arch/s390/kernel/cpcmd.c
++++ b/arch/s390/kernel/cpcmd.c
+@@ -37,10 +37,12 @@ static int diag8_noresponse(int cmdlen)
+ 
+ static int diag8_response(int cmdlen, char *response, int *rlen)
+ {
++	unsigned long _cmdlen = cmdlen | 0x40000000L;
++	unsigned long _rlen = *rlen;
+ 	register unsigned long reg2 asm ("2") = (addr_t) cpcmd_buf;
+ 	register unsigned long reg3 asm ("3") = (addr_t) response;
+-	register unsigned long reg4 asm ("4") = cmdlen | 0x40000000L;
+-	register unsigned long reg5 asm ("5") = *rlen;
++	register unsigned long reg4 asm ("4") = _cmdlen;
++	register unsigned long reg5 asm ("5") = _rlen;
+ 
+ 	asm volatile(
+ 		"	diag	%2,%0,0x8\n"
+diff --git a/arch/s390/kernel/dumpstack.c b/arch/s390/kernel/dumpstack.c
+index 0dc4b258b98d..db1bc00229ca 100644
+--- a/arch/s390/kernel/dumpstack.c
++++ b/arch/s390/kernel/dumpstack.c
+@@ -79,6 +79,15 @@ static bool in_nodat_stack(unsigned long sp, struct stack_info *info)
+ 	return in_stack(sp, info, STACK_TYPE_NODAT, top - THREAD_SIZE, top);
+ }
+ 
++static bool in_mcck_stack(unsigned long sp, struct stack_info *info)
++{
++	unsigned long frame_size, top;
++
++	frame_size = STACK_FRAME_OVERHEAD + sizeof(struct pt_regs);
++	top = S390_lowcore.mcck_stack + frame_size;
++	return in_stack(sp, info, STACK_TYPE_MCCK, top - THREAD_SIZE, top);
++}
++
+ static bool in_restart_stack(unsigned long sp, struct stack_info *info)
+ {
+ 	unsigned long frame_size, top;
+@@ -108,7 +117,8 @@ int get_stack_info(unsigned long sp, struct task_struct *task,
+ 	/* Check per-cpu stacks */
+ 	if (!in_irq_stack(sp, info) &&
+ 	    !in_nodat_stack(sp, info) &&
+-	    !in_restart_stack(sp, info))
++	    !in_restart_stack(sp, info) &&
++	    !in_mcck_stack(sp, info))
+ 		goto unknown;
+ 
+ recursion_check:
+diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
+index 601c21791338..714269e10eec 100644
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -174,7 +174,7 @@ void noinstr do_ext_irq(struct pt_regs *regs)
+ 
+ 	memcpy(&regs->int_code, &S390_lowcore.ext_cpu_addr, 4);
+ 	regs->int_parm = S390_lowcore.ext_params;
+-	regs->int_parm_long = *(unsigned long *)S390_lowcore.ext_params2;
++	regs->int_parm_long = S390_lowcore.ext_params2;
+ 
+ 	from_idle = !user_mode(regs) && regs->psw.addr == (unsigned long)psw_idle_exit;
+ 	if (from_idle)
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 60da976eee6f..72134f9f6ff5 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -354,7 +354,7 @@ static int __init stack_realloc(void)
+ 	if (!new)
+ 		panic("Couldn't allocate machine check stack");
+ 	WRITE_ONCE(S390_lowcore.mcck_stack, new + STACK_INIT_OFFSET);
+-	memblock_free(old, THREAD_SIZE);
++	memblock_free_late(old, THREAD_SIZE);
+ 	return 0;
+ }
+ early_initcall(stack_realloc);
