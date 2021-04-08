@@ -2,293 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D60358E3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBB3358E3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhDHUVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhDHUVE (ORCPT
+        id S232306AbhDHUVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:21:52 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:36814 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhDHUVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:21:04 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B603C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 13:20:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id nh5so1751523pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 13:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+BwzOFL5lZJ1FGuP98rvsXchG4WlBQd3WIhBk1RPIJY=;
-        b=jBf+bdFmPAMz3XOJmPdTufROyDbFmZzNEKzk2zFfrcqCY3uaCcefQkfb7RgORtjKh0
-         Ddp6Cqfw8iqFcVVoO+6KFVP+Je3ktAsUd8yNj1wMoXx2BNTbvpZZ/3X/H+7J0V/R7+gS
-         nCFlMaSPpcKuDIFgcDDFsSZE3W+4oVq+dwV3c4L+OV96P5j6nUU+rslRiWoRpY/ItA0f
-         9SpI1ai2VAJBXQVbHtNMWeZZX4ppnRLBN85uFDOjPiTyFpMIeMZkJ/cGHqFW6k1yGSmE
-         HQyfq3hwMVl6frZA4XKqRB929IDxpP2vR32l1pnLRHmyFHfgCrbR36b+WJ5ySQkvHQ6s
-         4N0g==
+        Thu, 8 Apr 2021 16:21:51 -0400
+Received: by mail-ot1-f46.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso3586851otq.3;
+        Thu, 08 Apr 2021 13:21:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+BwzOFL5lZJ1FGuP98rvsXchG4WlBQd3WIhBk1RPIJY=;
-        b=X/80dL+fw+TCoJWjAD9hEAjK/WxCDCc4jkq9x3Adp1KGH3TiWlUPjZAPnvEOZORIUD
-         RIG+Iu+D8clCGYp/34Joj/GXZmFFbNldf4tvP4sxFOVNa69xAGmqU93b4cm22RNN+8zm
-         y9yd6mb+Eref0zfKAulycvUA7h4yGPnJPQ5b8R8qfNYJY72Zl7ekmoyyTwGmee28khn5
-         hDN9M4GG8z0KC2aMfJ0szqDgjgpKweIjdKFn2a6W099WYhNOPgaMoF3LrYb5ZiKwDlBT
-         hSA7BCbFg8pxWQUgN0Ga6urpBoJo5ABoKfV0iuSOZNahPZ/85+PuVU9iCLazLGBkGMOn
-         OQBw==
-X-Gm-Message-State: AOAM530Dsmyx7eOFrzVEI/oNKsSR1mqhNdZdeX3tZTkIsO9eHCXPqcVJ
-        z+tK9p/UiwyInG6vB97oA54jsA==
-X-Google-Smtp-Source: ABdhPJxpU/pGaF/l4m40fY2EKYujQFWKD6Onhd8hB7Wc3FV/r18qSkghUk0WhjEKjiPMsDWqKNk5RQ==
-X-Received: by 2002:a17:902:aa87:b029:e9:8d9e:6808 with SMTP id d7-20020a170902aa87b02900e98d9e6808mr4910982plr.34.1617913251965;
-        Thu, 08 Apr 2021 13:20:51 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id fu11sm232272pjb.35.2021.04.08.13.20.51
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NZK03VGL3VDmR5gE9NkY9ogiVrwv9YJIwF5/GzsBsPo=;
+        b=iUzlsAYb/3XTZ/6cYljqPwq3VkDm3X6LSSfCcJSTpmIA7XTJTa8X4HGa60ndv5f5Yp
+         6aVeVy7K7Xii6k4SxMazIyPK+p71UYtP2TjM3SzT76PrnpWAvpdc7FQT9ro1/ZNGxHJh
+         Int9Sf/swV/L3ofO72StUOHXMMdr84TP1W/QxNj8vKtUbQLewKndAI+TdnrqIRBC6KoG
+         fyduvI/MfnsHtZBdJuke1wJ2GYuM6T+HzSo2ktNTo/VaFxaGqrPWl6x0Li3TMwDcCcAG
+         P/bExWhFrpsCXl6bBJ1mZ5uUMrJVNJJBrj2BWBhdAc8Pzvs8T6uzurmJs26nxIlgbONp
+         KKvA==
+X-Gm-Message-State: AOAM531z3sZF3lDUxtILpO9W/br6WWSF/PfDWJJqu1H7dxfuhAqyaNyJ
+        LvP07WuWkp3JrcbKrbr2KQ==
+X-Google-Smtp-Source: ABdhPJx1Ce8UviwE+BYESAWpewySwAqhw1vUls2A7geYvtKK44fsPnS0fzSbyjCwNCgQJdj7By+cjA==
+X-Received: by 2002:a05:6830:908:: with SMTP id v8mr9621186ott.217.1617913299103;
+        Thu, 08 Apr 2021 13:21:39 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y11sm99647ots.80.2021.04.08.13.21.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 13:20:51 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:20:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] x86/kvm: Don't alloc __pv_cpu_mask when !CONFIG_SMP
-Message-ID: <YG9ln4d0tm4acVdG@google.com>
-References: <1617785588-18722-1-git-send-email-wanpengli@tencent.com>
+        Thu, 08 Apr 2021 13:21:38 -0700 (PDT)
+Received: (nullmailer pid 1897309 invoked by uid 1000);
+        Thu, 08 Apr 2021 20:21:37 -0000
+Date:   Thu, 8 Apr 2021 15:21:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+Message-ID: <20210408202137.GA1890401@robh.at.kernel.org>
+References: <YGxkB6icZSJfx/VB@latitude>
+ <20210407174909.1475150-1-giulio.benetti@benettiengineering.com>
+ <20210407174909.1475150-3-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1617785588-18722-1-git-send-email-wanpengli@tencent.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210407174909.1475150-3-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
+On Wed, Apr 07, 2021 at 07:49:08PM +0200, Giulio Benetti wrote:
+> This adds device tree bindings for the Hycon HY46XX touchscreen series.
 > 
-> Enable PV TLB shootdown when !CONFIG_SMP doesn't make sense. Let's move 
-> it inside CONFIG_SMP. In addition, we can avoid alloc __pv_cpu_mask when 
-> !CONFIG_SMP and get rid of 'alloc' variable in kvm_alloc_cpumask.
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+> V1->V2:
+> As suggested by Rob Herring:
+> * fixed $id: address
+> * added "hycon," in front of every custom property
+> * changed all possible property to boolean type
+> * removed proximity-sensor-switch property since it's not handled in driver
+> V2->V3:
+> As suggested by Jonathan Neuschäfer:
+> * fixed some typo
+> * fixed description indentation
+> * improved boolean properties descriptions
+> * improved hycon,report-speed description
+> V3->V4:
+> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
+> ---
+>  .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 126 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> new file mode 100644
+> index 000000000000..8860613a12ad
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> @@ -0,0 +1,120 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/hycon,hy46xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hycon HY46XX series touchscreen controller bindings
+> +
+> +description: |
+> +  There are 6 variants of the chip for various touch panel sizes and cover lens material
+> +   Glass: 0.3mm--4.0mm
+> +    PET/PMMA: 0.2mm--2.0mm
+> +    HY4613(B)-N048  < 6"
+> +    HY4614(B)-N068  7" .. 10.1"
+> +    HY4621-NS32  < 5"
+> +    HY4623-NS48  5.1" .. 7"
+> +   Glass: 0.3mm--8.0mm
+> +    PET/PMMA: 0.2mm--4.0mm
+> +    HY4633(B)-N048  < 6"
+> +    HY4635(B)-N048  < 7" .. 10.1"
+> +
+> +maintainers:
+> +  - Giulio Benetti <giulio.benetti@benettiengineering.com>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - hycon,hycon-hy4613
+> +      - hycon,hycon-hy4614
+> +      - hycon,hycon-hy4621
+> +      - hycon,hycon-hy4623
+> +      - hycon,hycon-hy4633
+> +      - hycon,hycon-hy4635
 
-...
+As suggested earlier, drop the 2nd 'hycon'.
 
-> +static bool pv_tlb_flush_supported(void) { return false; }
-> +static bool pv_ipi_supported(void) { return false; }
-> +static void kvm_flush_tlb_others(const struct cpumask *cpumask,
-> +			const struct flush_tlb_info *info) { }
-> +static void kvm_setup_pv_ipi(void) { }
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  vcc-supply: true
+> +
+> +  hycon,threshold:
+> +    description: Allows setting the sensitivity in the range from 0 to 255.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 255
+> +
+> +  hycon,glove-enable:
+> +    type: boolean
+> +    description: Allows enabling glove setting.
+> +
+> +  hycon,report-speed:
+> +    description: Allows setting the report speed in Hertz.
 
-If you shuffle things around a bit more, you can avoid these stubs, and hide the
-definition of __pv_cpu_mask behind CONFIG_SMP, too.
+If in Hertz, use standard unit suffix.
 
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 5e78e01ca3b4..13c6b1c7c01b 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -451,6 +451,8 @@ static void __init sev_map_percpu_data(void)
-        }
- }
+And then you can drop this.
 
-+#ifdef CONFIG_SMP
-+
- static bool pv_tlb_flush_supported(void)
- {
-        return (kvm_para_has_feature(KVM_FEATURE_PV_TLB_FLUSH) &&
-@@ -460,8 +462,6 @@ static bool pv_tlb_flush_supported(void)
+> +    minimum: 0
 
- static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
+0Hz doesn't seem to useful?
 
--#ifdef CONFIG_SMP
--
- static bool pv_ipi_supported(void)
- {
-        return kvm_para_has_feature(KVM_FEATURE_PV_SEND_IPI);
-@@ -574,45 +574,6 @@ static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
-        }
- }
+> +    maximum: 255
+> +
+> +  hycon,power-noise-enable:
 
--static void __init kvm_smp_prepare_boot_cpu(void)
--{
--       /*
--        * Map the per-cpu variables as decrypted before kvm_guest_cpu_init()
--        * shares the guest physical address with the hypervisor.
--        */
--       sev_map_percpu_data();
--
--       kvm_guest_cpu_init();
--       native_smp_prepare_boot_cpu();
--       kvm_spinlock_init();
--}
--
--static void kvm_guest_cpu_offline(void)
--{
--       kvm_disable_steal_time();
--       if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
--               wrmsrl(MSR_KVM_PV_EOI_EN, 0);
--       kvm_pv_disable_apf();
--       apf_task_wake_all();
--}
--
--static int kvm_cpu_online(unsigned int cpu)
--{
--       local_irq_disable();
--       kvm_guest_cpu_init();
--       local_irq_enable();
--       return 0;
--}
--
--static int kvm_cpu_down_prepare(unsigned int cpu)
--{
--       local_irq_disable();
--       kvm_guest_cpu_offline();
--       local_irq_enable();
--       return 0;
--}
--#endif
--
- static void kvm_flush_tlb_others(const struct cpumask *cpumask,
-                        const struct flush_tlb_info *info)
- {
-@@ -639,6 +600,63 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
-        native_flush_tlb_others(flushmask, info);
- }
+hycon,noise-filter-enable
 
-+static void __init kvm_smp_prepare_boot_cpu(void)
-+{
-+       /*
-+        * Map the per-cpu variables as decrypted before kvm_guest_cpu_init()
-+        * shares the guest physical address with the hypervisor.
-+        */
-+       sev_map_percpu_data();
-+
-+       kvm_guest_cpu_init();
-+       native_smp_prepare_boot_cpu();
-+       kvm_spinlock_init();
-+}
-+
-+static void kvm_guest_cpu_offline(void)
-+{
-+       kvm_disable_steal_time();
-+       if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
-+               wrmsrl(MSR_KVM_PV_EOI_EN, 0);
-+       kvm_pv_disable_apf();
-+       apf_task_wake_all();
-+}
-+
-+static int kvm_cpu_online(unsigned int cpu)
-+{
-+       local_irq_disable();
-+       kvm_guest_cpu_init();
-+       local_irq_enable();
-+       return 0;
-+}
-+
-+static int kvm_cpu_down_prepare(unsigned int cpu)
-+{
-+       local_irq_disable();
-+       kvm_guest_cpu_offline();
-+       local_irq_enable();
-+       return 0;
-+}
-+
-+static __init int kvm_alloc_cpumask(void)
-+{
-+       int cpu;
-+
-+       if (!kvm_para_available() || nopv)
-+               return 0;
-+
-+       if (pv_tlb_flush_supported() || pv_ipi_supported())
-+               for_each_possible_cpu(cpu) {
-+                       zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
-+                               GFP_KERNEL, cpu_to_node(cpu));
-+               }
-+
-+       return 0;
-+}
-+arch_initcall(kvm_alloc_cpumask);
-+
-+#endif
-+
- static void __init kvm_guest_init(void)
- {
-        int i;
-@@ -653,21 +671,21 @@ static void __init kvm_guest_init(void)
-                pv_ops.time.steal_clock = kvm_steal_clock;
-        }
+No one wants to enable power noise. :)
 
-+       if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
-+               apic_set_eoi_write(kvm_guest_apic_eoi_write);
-+
-+       if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) {
-+               static_branch_enable(&kvm_async_pf_enabled);
-+               alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_kvm_asyncpf_interrupt);
-+       }
-+
-+#ifdef CONFIG_SMP
-        if (pv_tlb_flush_supported()) {
-                pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
-                pv_ops.mmu.tlb_remove_table = tlb_remove_table;
-                pr_info("KVM setup pv remote TLB flush\n");
-        }
+> +    type: boolean
+> +    description: Allows enabling power noise filter.
+> +
+> +  hycon,filter-data:
+> +    description: Allows setting the filtering data before reporting touch
+> +                 in the range from 0 to 5.
 
--       if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
--               apic_set_eoi_write(kvm_guest_apic_eoi_write);
--
--       if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) {
--               static_branch_enable(&kvm_async_pf_enabled);
--               alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_kvm_asyncpf_interrupt);
--       }
--
--#ifdef CONFIG_SMP
-        smp_ops.smp_prepare_boot_cpu = kvm_smp_prepare_boot_cpu;
-        if (pv_sched_yield_supported()) {
-                smp_ops.send_call_func_ipi = kvm_smp_send_call_func_ipi;
-@@ -734,7 +752,7 @@ static uint32_t __init kvm_detect(void)
+This is averaging samples? Sounds like something common perhaps.
 
- static void __init kvm_apic_init(void)
- {
--#if defined(CONFIG_SMP)
-+#ifdef CONFIG_SMP
-        if (pv_ipi_supported())
-                kvm_setup_pv_ipi();
- #endif
-@@ -794,31 +812,6 @@ static __init int activate_jump_labels(void)
- }
- arch_initcall(activate_jump_labels);
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 5
+> +
+> +  hycon,gain:
+> +    description: Allows setting the sensitivity distance in the range from 0 to 5.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 5
+> +
+> +  hycon,edge-offset:
+> +    description: Allows setting the edge compensation in the range from 0 to 16.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 16
+> +
+> +  touchscreen-size-x: true
+> +  touchscreen-size-y: true
+> +  touchscreen-fuzz-x: true
+> +  touchscreen-fuzz-y: true
+> +  touchscreen-inverted-x: true
+> +  touchscreen-inverted-y: true
+> +  touchscreen-swapped-x-y: true
+> +  interrupt-controller: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      hycon-hy4633@1c {
 
--static __init int kvm_alloc_cpumask(void)
--{
--       int cpu;
--       bool alloc = false;
--
--       if (!kvm_para_available() || nopv)
--               return 0;
--
--       if (pv_tlb_flush_supported())
--               alloc = true;
--
--#if defined(CONFIG_SMP)
--       if (pv_ipi_supported())
--               alloc = true;
--#endif
--
--       if (alloc)
--               for_each_possible_cpu(cpu) {
--                       zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
--                               GFP_KERNEL, cpu_to_node(cpu));
--               }
--
--       return 0;
--}
--arch_initcall(kvm_alloc_cpumask);
+touchscreen@1c
 
- #ifdef CONFIG_PARAVIRT_SPINLOCKS
-
-
+> +        compatible = "hycon,hycon-hy4633";
+> +        reg = <0x1c>;
+> +        interrupt-parent = <&gpio2>;
+> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+> +      };
+> +    };
+> +
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c80ad735b384..d022ff09e609 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8243,6 +8243,12 @@ S:	Maintained
+>  F:	mm/hwpoison-inject.c
+>  F:	mm/memory-failure.c
+>  
+> +HYCON HY46XX TOUCHSCREEN SUPPORT
+> +M:	Giulio Benetti <giulio.benetti@benettiengineering.com>
+> +L:	linux-input@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> +
+>  HYGON PROCESSOR SUPPORT
+>  M:	Pu Wen <puwen@hygon.cn>
+>  L:	linux-kernel@vger.kernel.org
+> -- 
+> 2.25.1
+> 
