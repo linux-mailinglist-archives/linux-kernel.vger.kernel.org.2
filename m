@@ -2,265 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635113587D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7619A3587D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhDHPHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:07:47 -0400
-Received: from mail-dm6nam10on2119.outbound.protection.outlook.com ([40.107.93.119]:40768
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232058AbhDHPHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:07:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HuoOFtFX4KptUIIZT1a7zpe6E2UcLUzzOcy8CYcJqn64IiNy1HngNr9zdrw9L85F1yCrsF0/eq0GqdnlnNO1donONoaswZ0YZJ0SsvCggWQASLiH5dHbEogAOT2D6+WP91KOaMGzpDAlr5BIp165JsuO86l80jqQukeacCHXRfhFvycpFfkJKSW1bM2kY8ozJSZjOfe+DX4z8TYrcJj8n1wqYCp+ARK04ymsnuyPlz6dEavsFkqwE97IZTDoiKFQF07Ul9WXy2cirOdvPX59AtGM/kgcpE4i9PJx8wxQPl2iDF1lEnVdCCC6+O38psJ2IzjiT7jEqRJHlUlgoeUQxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bn0XeTSMn5qM8GcwhOj0nrMCgm/pb2+eedUOdjLVb0s=;
- b=DBHrKFEPM8v35eYtAW4NI7vWDmmqAKacz1fIKQmxOOcixrQr94uNqyYU+LFL+PIA3sFT9oX64bCFRNcfYr2cZvVkNLApzt7w1d6cERBOWBSvFgua3m3WhfIidzjuO9jPEEuNWWILYFmbkBc9fWuiE+K113hFE/XXRidww5XvucqmY1NgNKQf9LdHLXoIf8eUryWltnv2i37ZVVm5p8Jd6WA0K4MlUp1ACRs5+LnEj03GWb8j+/K5vw3Cs3wZ5VhiF2Om8DvSyegXJBNwmJkAYoOsBmTn23ihVsajRGU7OQ29MEq66gs7yBR7fMPeQ3jUUbeOzBYpXEnIyTeI/2ngxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fortanix.com; dmarc=pass action=none header.from=fortanix.com;
- dkim=pass header.d=fortanix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fortanix.onmicrosoft.com; s=selector2-fortanix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bn0XeTSMn5qM8GcwhOj0nrMCgm/pb2+eedUOdjLVb0s=;
- b=JlBJ0gTqTqGLdYLrXmWhmvSTPwdx8/Gf6RBJq5ODOkGoV18QN132XyOzc2CgJgqPXQXZM3Q3meouMGlXbQfYcqweTk1S7Mq8BBD4+EXUW0Pdn4zdvSEz59x/Vg3Iw/SlygRpmkEwfpZ3ubEGBC206hHD6YdesZ9bZJGxkRXJuvw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=fortanix.com;
-Received: from BY5PR11MB4260.namprd11.prod.outlook.com (2603:10b6:a03:1ba::30)
- by BY5PR11MB4008.namprd11.prod.outlook.com (2603:10b6:a03:186::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Thu, 8 Apr
- 2021 15:07:25 +0000
-Received: from BY5PR11MB4260.namprd11.prod.outlook.com
- ([fe80::3ca5:41b6:52e:edc0]) by BY5PR11MB4260.namprd11.prod.outlook.com
- ([fe80::3ca5:41b6:52e:edc0%4]) with mapi id 15.20.4020.017; Thu, 8 Apr 2021
- 15:07:25 +0000
-Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Raoul Strackx <raoul.strackx@fortanix.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
- <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
- <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
- <0498080e-6fdc-ed6d-8efa-d9c3265fe7e5@intel.com>
- <9d15aae0-078a-ed72-6c14-155cd1bf27c5@fortanix.com>
- <247ffbee-0ef6-1b6f-75aa-2dc06df42d5d@intel.com>
- <f94e05f7-e6d0-9253-d74c-09cd200702af@fortanix.com>
- <4a122198-054f-609e-e96c-b69ff941c8a7@intel.com>
- <9a841584-65e8-31e9-6bd4-0140b33434e8@fortanix.com>
- <YGnjgkAQjiS8QcS7@kernel.org>
-From:   Jethro Beekman <jethro@fortanix.com>
-Message-ID: <7c93136a-3906-e225-3007-ebf13569ab52@fortanix.com>
-Date:   Thu, 8 Apr 2021 17:07:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YGnjgkAQjiS8QcS7@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070205080703040205080807"
-X-Originating-IP: [213.127.124.30]
-X-ClientProxiedBy: AM3PR07CA0116.eurprd07.prod.outlook.com
- (2603:10a6:207:7::26) To BY5PR11MB4260.namprd11.prod.outlook.com
- (2603:10b6:a03:1ba::30)
+        id S232088AbhDHPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:07:45 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:38666 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231866AbhDHPHf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:07:35 -0400
+Received: by mail-ot1-f44.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so2596853otk.5;
+        Thu, 08 Apr 2021 08:07:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G3U2SbtiYaAheMlUlClApXmCYS1Yjxtn4KGjfZLQ0TU=;
+        b=sr4DdE65ZBObtSUlTSbebwA43lPzSu+wMG6ku1rQOtK1b89oMQn8WghRPsZYMgUA90
+         q4eyI1oPG2sLVU31sY1aojaOhK8V3XWeuQXhQUh+WZ0FIE8e5ibOl7Ua+BTYrXabo5wq
+         L5bdhDdrz6swf+W2RZncJO0Z5FFVAmaly2epH8mCOgUy/qhPnG+hIK1CevVMFSxsNDH8
+         DEBhZO77xW7RJc9XPK4rcCnofO5dzIY74CWLdwq0l0rsc1AF+c4zcIcqFWukM++kYIXA
+         M9ICusQ++bUTi8GC1RyEWF3vcvNYMLvMK3jwVMrPY/HSf7UgGZQvIfTR/2mLxnhZqIT4
+         qHpQ==
+X-Gm-Message-State: AOAM531XXhpyRsWRUVM03Fcs+4FH5AHE2Lqv3KSMkHJiRO8QfpczCPj0
+        DzBe3kV9aMLBhknl2ImKNg==
+X-Google-Smtp-Source: ABdhPJzOI9cXLjKmxK5bZcjTJl8izeGCaCFA2UFBIO3kY2hsg5UWd4/Se3hmqNmzH2UGEo7L2ZT3yQ==
+X-Received: by 2002:a05:6830:908:: with SMTP id v8mr8287889ott.217.1617894443118;
+        Thu, 08 Apr 2021 08:07:23 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y11sm6431032ots.80.2021.04.08.08.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 08:07:22 -0700 (PDT)
+Received: (nullmailer pid 1488595 invoked by uid 1000);
+        Thu, 08 Apr 2021 15:07:20 -0000
+Date:   Thu, 8 Apr 2021 10:07:20 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, swboyd@chromium.org,
+        bjorn.andersson@linaro.org, vinod.koul@linaro.org,
+        dianders@chromium.org, khsieh@codeaurora.org, sean@poorly.run,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>
+Subject: Re: [PATCH v15 4/4] dt-bindings: msm/dp: Add bindings of MSM
+ DisplayPort controller
+Message-ID: <20210408150720.GA1486270@robh.at.kernel.org>
+References: <1617620770-26202-1-git-send-email-mkrishn@codeaurora.org>
+ <1617620770-26202-4-git-send-email-mkrishn@codeaurora.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.4.219] (213.127.124.30) by AM3PR07CA0116.eurprd07.prod.outlook.com (2603:10a6:207:7::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Thu, 8 Apr 2021 15:07:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2b518881-aa91-4764-0678-08d8faa00453
-X-MS-TrafficTypeDiagnostic: BY5PR11MB4008:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR11MB4008614E99111A0697831B52AA749@BY5PR11MB4008.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +E2ymadZHq4vMg8XmU6N/UH2hqkd9/8ONNxldHfzeua8EBrz3lvMkBvEFjK92RZn4ttMlCTm6a1pKQbbfGrrqO5bs9DErZg8Qp2uRG6VfzCq/Uxplxfw+uDFmG2wqRCfyEcBdDDvu8clOD4dfww4onjK/HMvwAvLsOp45cJg9nFGSCVP9ibQ6i+PDLBlwJJprorSjsC4rx9Usu5SYgdfk/WMNsJXd4Y2oDSLkYOW47x0es6tifOtbJq3dUWtS6Fm9jLhf/Qn8abDLNZxH7WWUdgqYhJfl3pg7+i9lP+yd9CSVSCEC/a5M91EbkbMwGJfWOHE9J6PYhn+wPtGwRJHA2l2BK2jW+DCYMDlw6RBQYUupAvEyuU6SCnwCojzN45PdBx2HrbiQk9SdUBYLBNL5WzR6uBZaFrqCkMTCxUcyt8LVBSeZj4pFOyqBdthowSxBb9XIdELvPEMHlpI8dE1N5kaq50q/O0EEPTVuRJSkJinw3hSrVaj6MZ25F8vKykdlB/QIsrmBCw79wQFRCDYGNcc0agoP8/AbjrWc772aaU5CuW8igIRjiKxS0vwXhF/WbFjV+Nd1J5GlP/HgLFCFOFUDaUr7pnuTJm7Em/FXvDjuZ8H8GkkJwE9cHjiPfYy/y00WypEvFnF1W6kOv3QjiS9fXBIZbwj4Pa0KuieFWqJoE2GbOBOey+jVraSUMV7/677r/vJsfGtVpESGklRgfi2FSiO/tm4hZdjz+lumxKY7QYFVq5uyBMuf+x5klnQ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4260.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39840400004)(136003)(396003)(346002)(376002)(235185007)(6666004)(38350700001)(5660300002)(83380400001)(38100700001)(6916009)(86362001)(478600001)(8936002)(66476007)(6486002)(66946007)(66556008)(53546011)(4326008)(7416002)(33964004)(2906002)(26005)(316002)(36756003)(31686004)(54906003)(186003)(16576012)(8676002)(956004)(2616005)(31696002)(52116002)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?REs2Qmhwa0dyMzd2L0s3SG5PWFBzenF2b2RETE4wVVU0VDhQcmoyMjAvNnM4?=
- =?utf-8?B?N0VFNUJjajQ4cmZCUXFWWS9MV2t1MUdvTEhCTVdDUmdLdVlvZmNiRzJOSmRG?=
- =?utf-8?B?alVScnIyaDZBT1RreVhlRjMrWjRMVkU3bXRLeEZaVUkzMUUxWFNSdkhoTnF1?=
- =?utf-8?B?YVhWcityWkhvNS9IdE9abFI4aXg3dmIvUUJaWDl0L04rM2M4bkI2MUthSklQ?=
- =?utf-8?B?TE1rU2wrb1pkWWxNUENDVUtDYk1FeDc1Mjl3a29leTZmb2FKcEhocldmcnht?=
- =?utf-8?B?MUhDSitra1IxMDNWNDgzTEU3dzQrZlRnNnAwWHkwWVhObk9JK3ZVcitjM0tq?=
- =?utf-8?B?N3g1dlVnV2Fqei9JOVdIblZpY2xJallvZ3ZOMWNJK2xGSDZDbEZZY2UxSWlS?=
- =?utf-8?B?WU9jbmEyRlhQVG9Cak9GYk5LcUJBbjU4azZ2SDd0RVdrQ2Zoa1hvTDVUdHNH?=
- =?utf-8?B?bnF1V2tFM0c4bkpIeHE5djh5T1QwUk1GWVhiWUVJRzFvWGZnZEN1TzIyTUxS?=
- =?utf-8?B?RHBDck9RdXBjYnNUTE9VNzZGNS91UjRuQnV6QjJDZ0tZWkF0ZExyYWpVQVJP?=
- =?utf-8?B?VDFaOGtrSEdBUm9MeGlvRUFYUnZySm5JR2tXT3RjZ1JnR1FPYlduZDdnVUsv?=
- =?utf-8?B?Y0hHRGVaS0tLWmRvSXNtTHMxUzVIQTF3UlZjL2svN280Q01SakNJMUd6d1VL?=
- =?utf-8?B?VVhSbGRvdVpDYlBuU3pmZ25TV1gzd2xjcWw3MWlQYXNFWGoxWkx5VDN1aEVk?=
- =?utf-8?B?d3VtYk9BU3VjU2dnNjc2OXRIYzNsazE3NVpwbllObWNIZXM2SlFkeDM4MDRo?=
- =?utf-8?B?Qk8xQ3VBY0pYWkQ2RFZSZjNDWThLRkdYNG5WUlhOUjBaamlXc3EwVTdKRDhT?=
- =?utf-8?B?WVlNUDZYS0VYZWNaemFVL0VGcW5UOGdlU1pra1NJMFg5T1haUWZlb2NieVpE?=
- =?utf-8?B?eWxHRThOenZxOWM2d2hZOWdzMzI4MlBKYzNiRzlFL0NHNmlKQS9nUGZ2c2dk?=
- =?utf-8?B?cmM0d0p3aVMvQXpueGVTSHdlamJaRDJrTXJiajVMVTZ0TGtuanZvWUhvVk9a?=
- =?utf-8?B?MzdDN3B6d2ZDRzdXMDJtaHVoTXU0ZjhhSU5EZzdsSEhXWDY3ay9uQ2N6bDJu?=
- =?utf-8?B?MklPZ09kTlVNRXJFb0VzS3dINkdVTzlja2hOb0NDeVJYUllEaURVbFl6dmx3?=
- =?utf-8?B?UHBGcUxYWUJpMWdpT0ducVFRanU2ZWs5eUZIby9UMHZXOHFUUE9TVHBPRVlx?=
- =?utf-8?B?amhoNTBPcFJRM3MrNVV5YXZLQVl1bm90N0U0STF5cnBCVUQ5ZGo4OUdGeERR?=
- =?utf-8?B?NXdaRkthczlVK3RFbUt5WTlUeFEyS2xGUmsreWxTS3cwVzE3ZnJvanZpQXBG?=
- =?utf-8?B?WEIwQWoraitmQUdwM0VBY2xOSFF6U2g1b0p3VDhtMklCS2ZsbEEwYXZqdDVV?=
- =?utf-8?B?dzBkTUh4Wm5VVjlUdDdlUHozSjZZQXhjbGZLZUlJM21hSXlVQnphQ2RqWDU0?=
- =?utf-8?B?MjN4Q1g3d3I5T0V0YVNlZVhBYktRSU54d2U5aFdIVHVHNnBiemt6VzE4WG8y?=
- =?utf-8?B?Mk9XNXpxRkNMS1gvTzROSStaY2YwY3FmZWs4Um9Lb0xveVpDVC9acmVWQXl6?=
- =?utf-8?B?OTJtb0U5MzRDaExMbDBqZE5MY2hadW4zTG9kOVg3STRmZi9uMkRtY1JCK0x3?=
- =?utf-8?B?ZmRtQnBXdE8raFdraTdGK0xTRDBzbVZLNlhjUlU1QTZCMDZ0SUxxbERuYWwr?=
- =?utf-8?Q?8IjEbBPZi+Cq7TuTVdKL7GAw9giUBMGWCK3X+am?=
-X-OriginatorOrg: fortanix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b518881-aa91-4764-0678-08d8faa00453
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4260.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 15:07:25.0354
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: de7becae-4883-43e8-82c7-7dbdbb988ae6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TWL5pOGrV3na9IqR53lESF6kpLZelbwa7CLH6t3MGKHq/NF6FCHcTKG0LemVpEMZQjLngAXMlUwGxfBGQJK8rA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4008
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617620770-26202-4-git-send-email-mkrishn@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------ms070205080703040205080807
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 05, 2021 at 04:36:10PM +0530, Krishna Manikandan wrote:
+> Add bindings for Snapdragon DisplayPort controller driver.
+> 
+> Signed-off-by: Chandan Uddaraju <chandanu@codeaurora.org>
+> Signed-off-by: Vara Reddy <varar@codeaurora.org>
+> Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> 
+> Changes in V2:
+> -Provide details about sel-gpio
+> 
+> Changes in V4:
+> -Provide details about max dp lanes
+> -Change the commit text
+> 
+> Changes in V5:
+> -moved dp.txt to yaml file
+> 
+> Changes in v6:
+> - Squash all AUX LUT properties into one pattern Property
+> - Make aux-cfg[0-9]-settings properties optional
+> - Remove PLL/PHY bindings from DP controller dts
+> - Add DP clocks description
+> - Remove _clk suffix from clock names
+> - Rename pixel clock to stream_pixel
+> - Remove redundant bindings (GPIO, PHY, HDCP clock, etc..)
+> - Fix indentation
+> - Add Display Port as interface of DPU in DPU bindings
+>   and add port mapping accordingly.
+> 
+> Chages in v7:
+> - Add dp-controller.yaml file common between multiple SOC
+> - Rename dp-sc7180.yaml to dp-controller-sc7180.yaml
+> - change compatible string and add SOC name to it.
+> - Remove Root clock generator for pixel clock
+> - Add assigned-clocks and assigned-clock-parents bindings
+> - Remove redundant properties, descriptions and blank lines
+> - Add DP port in DPU bindings
+> - Update depends-on tag in commit message and rebase change accordingly
+> 
+> Changes in v8:
+> - Add MDSS AHB clock in bindings
+> 
+> Changes in v9:
+> - Remove redundant reg-name property
+> - Change assigned-clocks and assigned-clocks-parents counts to 2
+> - Use IRQ flags in example dts
+> 
+> Changes in v10:
+> - Change title of this patch as it does not contain PLL bindings anymore
+> - Remove redundant properties
+> - Remove use of IRQ flag
+> - Fix ports property
+> 
+> Changes in v11:
+> - add ports required of both #address-cells and  #size-cells
+> - add required operating-points-v2
+> - add required #sound-dai-cells
+> - add required power-domains
+> - update maintainer list
+> 
+> Changes in v12:
+> - remove soc node from examples (Stephen Boyd)
+> - split dpu-sc7180.yaml changes to separate patch (Stephen Boyd)
+> 
+> Changes in v13:
+> - add assigned-clocks
+> - add assigned-clock-parents
+> ---
+>  .../bindings/display/msm/dp-controller.yaml        | 162 +++++++++++++++++++++
+>  1 file changed, 162 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> new file mode 100644
+> index 0000000..3a02c6c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> @@ -0,0 +1,162 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dp-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MSM Display Port Controller
+> +
+> +maintainers:
+> +  - Kuogee Hsieh <khsieh@codeaurora.org>
+> +
+> +description: |
+> +  Device tree bindings for DisplayPort host controller for MSM targets
+> +  that are compatible with VESA DisplayPort interface specification.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sc7180-dp
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: AHB clock to enable register access
+> +      - description: Display Port AUX clock
+> +      - description: Display Port Link clock
+> +      - description: Link interface clock between DP and PHY
+> +      - description: Display Port Pixel clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core_iface
+> +      - const: core_aux
+> +      - const: ctrl_link
+> +      - const: ctrl_link_iface
+> +      - const: stream_pixel
+> +
+> +  assigned-clocks:
+> +    items:
+> +      - description: link clock source
+> +      - description: pixel clock source
+> +
+> +  assigned-clock-parents:
+> +    items:
+> +      - description: phy 0 parent
+> +      - description: phy 1 parent
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    items:
+> +      - const: dp
+> +
+> +  operating-points-v2:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +  ports:
+> +    type: object
 
-On 2021-04-04 18:04, Jarkko Sakkinen wrote:
-> On Fri, Apr 02, 2021 at 08:31:19PM +0200, Jethro Beekman wrote:
->> On 2021-04-02 17:53, Dave Hansen wrote:
->>> On 4/2/21 1:38 AM, Jethro Beekman wrote:
->>>>> So, we're talking here about pages that have been EEADDED, but for
->>>>> which we do not want to include the entire contents of the page?
->>>>> Do these contents always include the beginning of the page, or can
->>>>> the holes be anywhere?
->>>> Holes can be anywhere, and EEXTEND calls need not be sequential in
->>>> memory address or even relate to the most recently EADDed page.
->>>
->>> I think you're referring to the SGX architecture itself here.  The
->>> architecture permits this, right?
->>
->> Yes.
->>
->>> But, why would an enclave loader application ever do this?=20
->>
->> e.g. to save space
->>
->>> Is this something we want to support in Linux?
->>
->> Why not? Is there a good reason to not fully support this part of the =
-CPU architecture?
->=20
-> Yes, in generic sense :-)
->=20
-> If one would disagree, that would be same as saying that everything sho=
-uld
-> execute in ring-0 because that only gives "full support".
+graph.yaml reference...
 
-How is that the same? Please make an effort to reasonably interpret what =
-I'm saying.
+> +    description: |
+> +      A ports node with endpoint definitions as defined in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt.
 
---
-Jethro Beekman | Fortanix
+Please read what video-interfaces.txt says now.
 
-
-
-
---------------ms070205080703040205080807
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-JTNkQWN0YWxpcyUyMFMucC5BLiUyZjAzMzU4NTIwOTY3LGMlM2RJVD9jZXJ0aWZpY2F0ZVJl
-dm9jYXRpb25MaXN0O2JpbmFyeTA9oDugOYY3aHR0cDovL2NybDA1LmFjdGFsaXMuaXQvUmVw
-b3NpdG9yeS9BVVRILVJPT1QvZ2V0TGFzdENSTDAdBgNVHQ4EFgQUvpepqoS/gL8QU30JMvnh
-LjIbz3cwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4ICAQAmm+cbWQ10sxID6edV
-94SAhc1CwzthHFfHpuYS30gisWUfWpgp43Dg1XzG2in3VGV7XrzCCGZh4JM/XQWp+4oxmyV4
-2Qjz9vc8GRksgo6X2nYObPYZzQjda9wxsCB38i4G3H33w8lf9sFvl0xm4ZXZ2s2bF/PdqvrK
-0ZgvF51+MoIPnli/wJBw3p72xbk5Sb1MneSO3tZ293WFzDmz7tuGU0PfytYUkG7O6annGqbU
-1I6CA6QVKUqeFLPodSODAFqJ3pimKD0vX9MuuSa0QinH7CkiPtZMD0mpwwzIsnSs3qOOl60t
-IZQOTc0I6lCe1LLhrz7Q75J6nNL9N5zVwZ1I3o2Lb8Dt7BA13VFuZvZIzapUGV83R7pmSVaj
-1Bik1nJ/R393e6mwppsT140KDVLh4Oenywmp2VpBDuEj9RgICAO0sibv8n379LbO7ARa0kw9
-y9pggFzN2PAX25b7w0n9m78kpv3z3vW65rs6wl7E8VEHNfv8+cnb81dxN3C51KElz+l31zch
-FTurD5HFEpyEhzO/fMS5AkweRJIzwozxNs7OL/S/SVTpJLJL1ukZ1lnHHX0d3xCzRy/5HqfK
-3uiG22LPB5+RjNDobPAjAz2BKMfkF/+v0pzn8mqqkopQaJzEAbLbMpgQYHRCjvrUxxwjJyUF
-b2Z+40UNtMF4MTK7zTGCA/MwggPvAgEBMIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwH
-QmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBT
-LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBu
-kmvE8GLB9+EYd88699DiMA0GCWCGSAFlAwQCAQUAoIICLTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA0MDgxNTA3MTdaMC8GCSqGSIb3DQEJBDEiBCBo
-vXprtUnVvsrgTNdeAo/d/VoSDohygd1gFfcm/ejiyDBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCG
-SAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
-SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGnBgkrBgEEAYI3EAQxgZkwgZYw
-gYExCzAJBgNVBAYTAklUMRAwDgYDVQQIDAdCZXJnYW1vMRkwFwYDVQQHDBBQb250ZSBTYW4g
-UGlldHJvMRcwFQYDVQQKDA5BY3RhbGlzIFMucC5BLjEsMCoGA1UEAwwjQWN0YWxpcyBDbGll
-bnQgQXV0aGVudGljYXRpb24gQ0EgRzMCEG6Sa8TwYsH34Rh3zzr30OIwgakGCyqGSIb3DQEJ
-EAILMYGZoIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQ
-UG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0Fj
-dGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBukmvE8GLB9+EYd88699DiMA0G
-CSqGSIb3DQEBAQUABIIBAEzxHNQcQUpXiegdbNVxNmg4MOGLaXUsNUn6bPeuTPELuZhit6Kz
-wHadqHadZgPpB2FASZYQsLVlUVuIp3DG974eC22i48RIF7LTWTOSTHDp/+77JDp0LvN+aKQI
-uexGuN1QIJhuL0jl92WI4ni65VYBigRzjvLDwzJYP2TgINLRvrkBtIhBA8IW0sKiQaMowFcI
-nypOoc7+stmdm3rt6kYxZpSfzv//qY7VFYdC4gUlh0rFi1gPfFk4oURoRz/CS8ozSgWRDXsm
-Fa0p7Z+IoyNdxmqyH1mlzYT57Wg3oJTcr16g3bUbUSs/8B3tkPNYHODV3egtsZrMKSLVUas3
-crgAAAAAAAA=
-
---------------ms070205080703040205080807--
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +      port@0:
+> +        type: object
+> +        description: Input endpoint of the controller
+> +
+> +      port@1:
+> +        type: object
+> +        description: Output endpoint of the controller
+> +
+> +    required:
+> +      - "#address-cells"
+> +      - "#size-cells"
+> +
+> +    additionalProperties: false
+> +
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - phy-names
+> +  - "#sound-dai-cells"
+> +  - power-domains
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+> +    #include <dt-bindings/power/qcom-aoss-qmp.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +    displayport-controller@ae90000 {
+> +        compatible = "qcom,sc7180-dp";
+> +        reg = <0xae90000 0x1400>;
+> +        interrupt-parent = <&mdss>;
+> +        interrupts = <12>;
+> +        clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
+> +                 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
+> +                 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
+> +                 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
+> +        clock-names = "core_iface", "core_aux",
+> +                      "ctrl_link",
+> +                      "ctrl_link_iface", "stream_pixel";
+> +
+> +        assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
+> +                          <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
+> +
+> +        assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
+> +
+> +        phys = <&dp_phy>;
+> +        phy-names = "dp";
+> +
+> +        #sound-dai-cells = <0>;
+> +
+> +        power-domains = <&rpmhpd SC7180_CX>;
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            port@0 {
+> +                reg = <0>;
+> +                endpoint {
+> +                    remote-endpoint = <&dpu_intf0_out>;
+> +                };
+> +            };
+> +
+> +            port@1 {
+> +                reg = <1>;
+> +                endpoint {
+> +                    remote-endpoint = <&typec>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.7.4
+> 
