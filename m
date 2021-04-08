@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65019357F3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1198A357F3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhDHJd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:33:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:42142 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhDHJdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:33:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 127F5D6E;
-        Thu,  8 Apr 2021 02:33:42 -0700 (PDT)
-Received: from [10.57.43.11] (unknown [10.57.43.11])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 66BEA3F694;
-        Thu,  8 Apr 2021 02:33:39 -0700 (PDT)
-From:   Pierre <pierre.gondois@arm.com>
-Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in
- eas
-To:     Xuewen Yan <xuewen.yan94@gmail.com>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
-References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
- <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
- <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com>
- <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
- <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
-Message-ID: <d85a1db9-4680-1d31-d3e7-6a081f652c5e@arm.com>
-Date:   Thu, 8 Apr 2021 10:33:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231191AbhDHJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230470AbhDHJeP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:34:15 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C6BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:34:04 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id v6so635781ejo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aWS3czF7Gor+EpZRRL7CevuQ+anxu+m9nrECxKec31U=;
+        b=YDGNKInjVacC9HJBhcRPf3I13TWtPELrMQbE0up5+hi49kFnuhL5xCyJsSbgkV5vQC
+         nlUVVPvhz69jpJDkeIlMt6TOPX0YQQPOQFSGASgxY0SQCMEB8cKTV8p37Ajk2ovfHstu
+         Gs5BQF2WRCDprMwb9meRC+zAQf30+BpzNCgW4vsi0M0XZCA2lyhV7N/3RxSOUa9f6k6t
+         pNZkO/spLsD/LNSZ2Euyxe8WRcZwsH+Mt12imOUXChbWV+VLRaRvhNc1SDCr66nEMhXX
+         nBnbBR+kYX54PW0ZC35wp3/Q7GL550FAN/n8OL/RC4ueGz7SShaTcnJKd8+wh0hwK/+W
+         SZ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aWS3czF7Gor+EpZRRL7CevuQ+anxu+m9nrECxKec31U=;
+        b=cb28g9CTvSL1VkkUdN37RSimNmC2EQqyTzCycqfVxpqf42BlCURZH6ZuuxJbAf2QrV
+         STyEmQIjMp9n+Lvhqg9Mq151sUVlQnAUH7C/ZkuUtHeRw3RBq7Vkv6nGf2NkMZNOKlPY
+         o126xfphd3aiETS4PzkYepG0tsn0mIa8q/qAaF4bfko+LMOO35U+8tvRDIIwLxPSRdcb
+         wft2n2tiNVDbnuXRGrQUizYF88FJo2sTZTx+X3AFpdygF5P3sT5K51MrW107Gtt/s+WG
+         a+LQT4tMu1YrNEl7fO9saNCRExWrCpdt/h8b/1GEQ95ug8sGOl4AF+emwhX/oGPeHyd/
+         qkgQ==
+X-Gm-Message-State: AOAM533sDicqIaEgbTugVgXh/4m4kDfurGGGqUR4SxVysuOuHYTv/RlN
+        I+OglvgW/ZwwD8gVyNXPplq6Ch6bao+rLQ==
+X-Google-Smtp-Source: ABdhPJwZeEk1ND2pbYdzL68IJzqIz3+F+G3jjjwTWzaplLXV+4d1VPnYAtSQB/wZBAv8jiRlpGvFAA==
+X-Received: by 2002:a17:906:af91:: with SMTP id mj17mr8789955ejb.228.1617874443394;
+        Thu, 08 Apr 2021 02:34:03 -0700 (PDT)
+Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
+        by smtp.googlemail.com with ESMTPSA id u24sm13890887ejn.5.2021.04.08.02.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 02:34:03 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ndesaulniers@google.com, dan.j.williams@intel.com,
+        laniel_francis@privacyrequired.com, keescook@chromium.org,
+        dja@axtens.net, akpm@linux-foundation.org, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com, Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH v3] lib/string: Introduce sysfs_streqcase
+Date:   Thu,  8 Apr 2021 11:33:54 +0200
+Message-Id: <20210408093354.509810-1-gi-oh.kim@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-> Hi
->
-> On Wed, Apr 7, 2021 at 10:11 PM Pierre <pierre.gondois@arm.com> wrote:
-> >
-> > Hi,
-> > > I test the patch, but the overflow still exists.
-> > > In the "sched/fair: Use pd_cache to speed up 
-> find_energy_efficient_cpu()"
-> > > I wonder why recompute the cpu util when cpu==dst_cpu in 
-> compute_energy(),
-> > > when the dst_cpu's util change, it also would cause the overflow.
-> >
-> > The patches aim to cache the energy values for the CPUs whose
-> > utilization is not modified (so we don't have to compute it multiple
-> > times). The values cached are the 'base values' of the CPUs, i.e. when
-> > the task is not placed on the CPU. When (cpu==dst_cpu) in
-> > compute_energy(), it means the energy values need to be updated instead
-> > of using the cached ones.
-> >
-> well, is it better to use the task_util(p) + cache values ? but in
-> this case, the cache
-> values may need more parameters.
+As the name shows, it checks if strings are equal in case insensitive
+manner.
 
-This patch-set is not significantly improving the execution time of 
-feec(). The results we have so far are an improvement of 5-10% in 
-execution time, with feec() being executed in < 10us. So the gain is not 
-spectacular.
+For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
+strncasecmp to check that the input via sysfs is "mi". But it would
+work even-if the input is "min-wrongcommand".
 
->
-> > You are right, there is still a possibility to have a negative delta
-> > with the patches at:
-> > 
-> https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129 
-> <https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129>
-> > Adding a check before subtracting the values, and bailing out in such
-> > case would avoid this, such as at:
-> > https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/ 
-> <https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/>
-> >
-> In your patch, you bail out the case by "go to fail", that means you
-> don't use eas in such
-> case. However, in the actual scene, the case often occurr when select
-> cpu for small task.
-> As a result, the small task would not select cpu according to the eas,
-> it may affect
-> power consumption?
-With this patch (bailing out), the percentage of feec() returning due to 
-a negative delta I get are:
-on a Juno-r2, with 2 big CPUs and 4 CPUs (capacity of 383), with a 
-workload running during 5s with task having a period of 16 ms and:
-  - 50 tasks at 1%:   0.14%
-  - 30 tasks at 1%:   0.54%
-  - 10 tasks at 1%: < 0.1%
-  - 30 tasks at 5%: < 0.1%
-  - 10 tasks at 5%: < 0.1%
-It doesn't happen so often to me.If we bail out of feec(), the task will 
-still have another opportunity in the next call. However I agree this 
-can lead to a bad placement when this happens.
->
-> > I think a similar modification should be done in your patch. Even though
-> > this is a good idea to group the calls to compute_energy() to reduce the
-> > chances of having updates of utilization values in between the
-> > compute_energy() calls,
-> > there is still a chance to have updates. I think it happened when I
-> > applied your patch.
-> >
-> > About changing the delta(s) from 'unsigned long' to 'long', I am not
-> > sure of the meaning of having a negative delta. I thing it would be
-> > better to check and fail before it happens instead.
-> >
-> > Regards
-> >
+I found some more cases using strncasecmp to check the entire string
+such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
+"disable" command with strncasecmp but it would also work if the
+command is "disable-wrong".
 
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+---
+ include/linux/string.h |  1 +
+ lib/string.c           | 38 ++++++++++++++++++++++++++++++--------
+ 2 files changed, 31 insertions(+), 8 deletions(-)
 
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 4fcfb56abcf5..36d00ff8013e 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
+ extern void argv_free(char **argv);
+ 
+ extern bool sysfs_streq(const char *s1, const char *s2);
++extern bool sysfs_streqcase(const char *s1, const char *s2);
+ extern int kstrtobool(const char *s, bool *res);
+ static inline int strtobool(const char *s, bool *res)
+ {
+diff --git a/lib/string.c b/lib/string.c
+index 7548eb715ddb..cb53845cc4ac 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -687,6 +687,18 @@ char *strsep(char **s, const char *ct)
+ EXPORT_SYMBOL(strsep);
+ #endif
+ 
++#ifdef CONFIG_SYSFS
++static inline bool __streq_terminal(const char *s1, const char *s2)
++{
++	if (*s1 == *s2)
++		return true;
++	if (!*s1 && *s2 == '\n' && !s2[1])
++		return true;
++	if (*s1 == '\n' && !s1[1] && !*s2)
++		return true;
++	return false;
++}
++
+ /**
+  * sysfs_streq - return true if strings are equal, modulo trailing newline
+  * @s1: one string
+@@ -703,17 +715,27 @@ bool sysfs_streq(const char *s1, const char *s2)
+ 		s1++;
+ 		s2++;
+ 	}
+-
+-	if (*s1 == *s2)
+-		return true;
+-	if (!*s1 && *s2 == '\n' && !s2[1])
+-		return true;
+-	if (*s1 == '\n' && !s1[1] && !*s2)
+-		return true;
+-	return false;
++	return __streq_terminal(s1, s2);
+ }
+ EXPORT_SYMBOL(sysfs_streq);
+ 
++/**
++ * sysfs_streqcase - same to sysfs_streq and case insensitive
++ * @s1: one string
++ * @s2: another string
++ *
++ */
++bool sysfs_streqcase(const char *s1, const char *s2)
++{
++	while (*s1 && tolower(*s1) == tolower(*s2)) {
++		s1++;
++		s2++;
++	}
++	return __streq_terminal(s1, s2);
++}
++EXPORT_SYMBOL(sysfs_streqcase);
++#endif
++
+ /**
+  * match_string - matches given string in an array
+  * @array:	array of strings
+-- 
+2.25.1
 
