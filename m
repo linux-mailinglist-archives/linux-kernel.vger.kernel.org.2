@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B086E358F96
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DBA358F9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbhDHWBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        id S232750AbhDHWDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhDHWBt (ORCPT
+        with ESMTP id S232158AbhDHWDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:01:49 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F33C061761;
-        Thu,  8 Apr 2021 15:01:37 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id a76so1928593wme.0;
-        Thu, 08 Apr 2021 15:01:37 -0700 (PDT)
+        Thu, 8 Apr 2021 18:03:05 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924FAC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 15:02:53 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id g35so2351531pgg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 15:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=1k2oFebJMetFk2MF03n3BhfJ/Z6puGCIo7fh0K3MdcY=;
-        b=PRkaV10clS+sLFEZRt0+mqBC/zm4SqmmBE9Gqa81Fz0xckmRM+MJuOI2M525VQlPg1
-         D5ThmRBHKWpYoIIiGkgzco8KJcvyMvcQhWi8lgTawXnBb9X4vbWGi+Y9vf8atwhaj5Ce
-         oFAcr1MFJG5lO0AX4iRggn7HIDdTiy8mGxoDh05Fc4HUGzghplJf7iXLMSwakD6v8iUk
-         B9EVN7msrL3jru4b556NUvx41K9Xfo0LdNBQiwJ9avVKkMZyfu4+jAQHMS+EOWDLKzKu
-         I4Oiud+uTZ6fvFUCUzU5NhlcOcMRebMxa6lIohFsp8fzpu80DzrK6aSyMO1SHYKujZY1
-         6DUg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z78DXVE9WBm7/7q42/7ISkvRmbVqJnFckYhnNs8iZ0k=;
+        b=hfODF5w2VKgIycyUnbATTLWtyJ6DfcsoXmU1GfHp77ZKjL/Di/Dccm9fqQhLM7NLjG
+         EgvT5d4OBVGlbCLGYHcqh5YLg0FMgmwCcnXm4+KMOvIs00ZpKHhBr/CpvXib1yO8bJ2N
+         PBce4FC3AF5R5Mr+TPuTSen7T5EpfgviaUWHgz01LpE2ou99PskAgQjfhhWwd49X2Vv8
+         kBCOhMXtSe6or2qeWzjFnsEPZD24PRVoEVcKmQ3nzcPQMKdNOsoQ7fJoBVkkkH32ZvYi
+         pJtCiRE0aEAwmEJpLVfzfkgsIAB8ksI+Idzr8eXj+gFt7Rwi7Swlqik4XnxiHOSXeRE8
+         latQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1k2oFebJMetFk2MF03n3BhfJ/Z6puGCIo7fh0K3MdcY=;
-        b=ox0DLYGIulOlNlVs3qBUO4xkNyO+l+LckU3+jFFFV2nRF8w0zCYekGLkZA0f9KfTIy
-         yizGVZQWzd8ZRJqYNmoU2XF90D97b6lRi0SDX51uwJ+Wfb4Gud3PY1vkfi1QojbJzIji
-         X1+lU/s/POy8zsBKXYbLp3L+8x0en5rMrYMQY6Bu5+GtWtbx9wPxYvWhiIrcPxVKhpiZ
-         NMvQ4JX6RgQIelw3WlFRVk7I7n5xseb1lldg63wVkAdgdgg+auTLM/04IllZvJb8va4s
-         nO31ZmQNmr/Y/sS/hDEOZtkGjfVFSFPHp1k9mZUql9QAdBW5WDh/5gjLbthP9u/mWS0J
-         k5lw==
-X-Gm-Message-State: AOAM530IGM9gC3WYkeaykLvERzyoSUrvxwVQ+EcojL74Qnk47y7CZPmw
-        EClZvTUsC+DJAn5VcNaDt0E=
-X-Google-Smtp-Source: ABdhPJxf8t72/YsLezTsQMLohaoXiiyiWCTcZkEGUe9xPH/SLdEmI4+zc7XajgVWPcBaL1ImutIVrQ==
-X-Received: by 2002:a1c:4c0c:: with SMTP id z12mr10800685wmf.38.1617919295698;
-        Thu, 08 Apr 2021 15:01:35 -0700 (PDT)
-Received: from LEGION ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id o7sm1041687wrs.16.2021.04.08.15.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 15:01:35 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 03:01:29 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING [IPv4/IPv6]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com,
-        stable@vger.kernel.org
-Subject: [PATCH] net: ipv6: check for validity before dereferencing
- cfg->fc_nlinfo.nlh
-Message-ID: <20210408220129.GA3111136@LEGION>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z78DXVE9WBm7/7q42/7ISkvRmbVqJnFckYhnNs8iZ0k=;
+        b=bF8eU8XjktYK7iLBnTxf7Oq+HQe/keiwnmXsPn6AbvMFH0daC/6b7BSHcAERQl1PPm
+         XW657KoDqb62KO7VrX0jTMs5g4vRmZE4Ps8TwILovO38jtiEe3MsOX8jEj3N/17Q4WCe
+         kmPg/AyY/qlP0QzFZhbqbZeZz+OGqsiBrPBPx2EDaZagGPWAGmAqAeStZ1zoGc7k9uT4
+         p3MX4Ns1VQeGdtGZYmH8kwysyKU2iaWcqM26OyKDuqhUUmyhd+iUTeHjl6OOSKRr6j0G
+         c7x8BcR8LRxSoeAtT9OK1MtUrSYWpVGiO5qa9tHGMDh9tSJ112W3cVkCdhHpypfNtaNR
+         2leA==
+X-Gm-Message-State: AOAM532+XRipqUPMRErMNKqTJMlmKL19yck3FFz+1/NaFYzKgTQQ/6AV
+        N7QHlOosQllhq86xG7t0I5CC6EKh+PpIfOBXoQD+BQ==
+X-Google-Smtp-Source: ABdhPJwszTQSkOpz5PK9ddcCStGZo+U+nBugeFCsoraaCvy7lt6KHB1hYHWLeIX+8KssFZMVJLBYtUXljP2LRBxG8pk=
+X-Received: by 2002:a63:dc56:: with SMTP id f22mr9986289pgj.287.1617919372905;
+ Thu, 08 Apr 2021 15:02:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210402014438.1721086-1-srutherford@google.com>
+In-Reply-To: <20210402014438.1721086-1-srutherford@google.com>
+From:   Nathan Tempelman <natet@google.com>
+Date:   Thu, 8 Apr 2021 15:02:41 -0700
+Message-ID: <CAKiEG5pRD4+1dJW=pkpuUKudmPqeTfsVttUG22zo_8FC5_SjfA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SVM: Add support for KVM_SEV_SEND_CANCEL command
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     kvm <kvm@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Ashish Kalra <Ashish.Kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nlh is being checked for validtity two times when it is dereferenced in
-this function. Check for validity again when updating the flags through
-nlh pointer to make the dereferencing safe.
+On Thu, Apr 1, 2021 at 6:45 PM Steve Rutherford <srutherford@google.com> wrote:
+>
+> After completion of SEND_START, but before SEND_FINISH, the source VMM can
+> issue the SEND_CANCEL command to stop a migration. This is necessary so
+> that a cancelled migration can restart with a new target later.
+>
+> Signed-off-by: Steve Rutherford <srutherford@google.com>
+> ---
+>  .../virt/kvm/amd-memory-encryption.rst        |  9 +++++++
+>  arch/x86/kvm/svm/sev.c                        | 24 +++++++++++++++++++
+>  include/linux/psp-sev.h                       | 10 ++++++++
+>  include/uapi/linux/kvm.h                      |  2 ++
+>  4 files changed, 45 insertions(+)
+>
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 469a6308765b1..9e018a3eec03b 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -284,6 +284,15 @@ Returns: 0 on success, -negative on error
+>                  __u32 len;
+>          };
+>
+> +16. KVM_SEV_SEND_CANCEL
+> +------------------------
+> +
+> +After completion of SEND_START, but before SEND_FINISH, the source VMM can issue the
+> +SEND_CANCEL command to stop a migration. This is necessary so that a cancelled
+> +migration can restart with a new target later.
+> +
+> +Returns: 0 on success, -negative on error
+> +
+>  References
+>  ==========
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 83e00e5245136..88e72102cb900 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1110,6 +1110,27 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         return ret;
+>  }
+>
+> +static int sev_send_cancel(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +       struct sev_data_send_cancel *data;
+> +       int ret;
+> +
+> +       if (!sev_guest(kvm))
+> +               return -ENOTTY;
+> +
+> +       data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +       if (!data)
+> +               return -ENOMEM;
+> +
+> +       data->handle = sev->handle;
+> +       ret = sev_issue_cmd(kvm, SEV_CMD_SEND_CANCEL, data, &argp->error);
+> +
+> +       kfree(data);
+> +       return ret;
+> +}
+> +
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>         struct kvm_sev_cmd sev_cmd;
+> @@ -1163,6 +1184,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         case KVM_SEV_GET_ATTESTATION_REPORT:
+>                 r = sev_get_attestation_report(kvm, &sev_cmd);
+>                 break;
+> +       case KVM_SEV_SEND_CANCEL:
+> +               r = sev_send_cancel(kvm, &sev_cmd);
+> +               break;
+>         default:
+>                 r = -EINVAL;
+>                 goto out;
+> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> index b801ead1e2bb5..74f2babffc574 100644
+> --- a/include/linux/psp-sev.h
+> +++ b/include/linux/psp-sev.h
+> @@ -73,6 +73,7 @@ enum sev_cmd {
+>         SEV_CMD_SEND_UPDATE_DATA        = 0x041,
+>         SEV_CMD_SEND_UPDATE_VMSA        = 0x042,
+>         SEV_CMD_SEND_FINISH             = 0x043,
+> +       SEV_CMD_SEND_CANCEL             = 0x044,
+>
+>         /* Guest migration commands (incoming) */
+>         SEV_CMD_RECEIVE_START           = 0x050,
+> @@ -392,6 +393,15 @@ struct sev_data_send_finish {
+>         u32 handle;                             /* In */
+>  } __packed;
+>
+> +/**
+> + * struct sev_data_send_cancel - SEND_CANCEL command parameters
+> + *
+> + * @handle: handle of the VM to process
+> + */
+> +struct sev_data_send_cancel {
+> +       u32 handle;                             /* In */
+> +} __packed;
+> +
+>  /**
+>   * struct sev_data_receive_start - RECEIVE_START command parameters
+>   *
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index f6afee209620d..707469b6b7072 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1671,6 +1671,8 @@ enum sev_cmd_id {
+>         KVM_SEV_CERT_EXPORT,
+>         /* Attestation report */
+>         KVM_SEV_GET_ATTESTATION_REPORT,
+> +       /* Guest Migration Extension */
+> +       KVM_SEV_SEND_CANCEL,
+>
+>         KVM_SEV_NR_MAX,
+>  };
+> --
+> 2.31.0.208.g409f899ff0-goog
+>
 
-CC: <stable@vger.kernel.org>
-Addresses-Coverity: ("NULL pointer dereference")
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- net/ipv6/route.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 28801ae80548..a22822bdbf39 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -5206,9 +5206,11 @@ static int ip6_route_multipath_add(struct fib6_config *cfg,
- 		 * nexthops have been replaced by first new, the rest should
- 		 * be added to it.
- 		 */
--		cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
--						     NLM_F_REPLACE);
--		cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
-+		if (cfg->fc_nlinfo.nlh) {
-+			cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
-+							     NLM_F_REPLACE);
-+			cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
-+		}
- 		nhn++;
- 	}
- 
--- 
-2.25.1
-
+Reviewed-by: Nathan Tempelman <natet@google.com>
