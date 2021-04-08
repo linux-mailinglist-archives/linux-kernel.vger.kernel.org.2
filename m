@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EDB357E65
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5200357E85
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbhDHIsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhDHIsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:48:13 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F42C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:48:01 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id w10so929032pgh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 01:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/PMASeFAUbBI5JwV4L0k1lOX7888tIM9XHNKvH1RoPM=;
-        b=DGNyFvJNtCpXW5Bjt2K1X1fr0tN3IHOLkCmGwmhQl5vLaqgacthwvenRB6aGv/AAeQ
-         dUwql030rW4wIcVziIulvYiKbW40KunNuP3H5KxX0okrqVpKvITCe7SXjDaDAkjOEnXy
-         BEmVDDDTn5S+YlBPZIjx9agDX1FUYGV0AVbS3lejwSFGBq2vL5EpfmP34A9nrF8xsu/K
-         Dr1bTO1Zf/YLL8ACA1Y5V3eptwi/X0gocInmLAEjijbe6WWBn8Qvm/q4bcEdfCfc7mMA
-         KjmgyGfXyZco6XZUC26jFDkRRHBjNTxelYFZ1Oez0RWaQLP6kiMzr/LbemQ88jCbYRqG
-         nAng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/PMASeFAUbBI5JwV4L0k1lOX7888tIM9XHNKvH1RoPM=;
-        b=TBSLeVBhvzXFMdtmBJX9EEXX4LehoQVTWjiWYp04PIjKX5zWCLi4BCstncyqjB1BYV
-         2gnc4NvswUYEHB4EF3LlRnD3tNoLG/V9psxIZUA3vXTa+4I9NILpzpnq2CtTzcSZt9s7
-         3OMkC3iwl3w2CKxT2RUUbIarWTi+1iqENoQbWvboISQ+/o85uXea+6NRtnACF/rUXS5T
-         Ts3I4b+zhqv/XKTKVDCyWvhvu6b5kMhjpGzInD1lja2Xli6htuFpGH+8U7a6iLjTeOAX
-         QU3LHPEDDvqtKEm3p9oAUCHPE24TugBWLY+ES0jGrhyui6BNU7bRybJXVIiMqxuugZ5D
-         Ye+Q==
-X-Gm-Message-State: AOAM532p8W7qlovKzj54R1Y1P8+VxS9t81CKGg+j3m15Tfi0fW4VBMRp
-        QT6jhkC9ACV+q8/xj/RtsPdX1GUprFQPfiDmkf88Jg==
-X-Google-Smtp-Source: ABdhPJxiutvnYlEKjdNdSYTwUE01MVBkq0+GFUlPeMifn5KRIHOroysMx2hSbJbYXz3P2FVZwY3uIsC8Pl5tKTZj1d4=
-X-Received: by 2002:a63:f903:: with SMTP id h3mr6882846pgi.443.1617871681332;
- Thu, 08 Apr 2021 01:48:01 -0700 (PDT)
+        id S230093AbhDHI4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:56:50 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51328 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229588AbhDHI4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:56:48 -0400
+Received: from zn.tnic (p200300ec2f095000c11580856fe05acf.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:c115:8085:6fe0:5acf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 367371EC0345;
+        Thu,  8 Apr 2021 10:56:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617872196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=bR6sO7aZv70NKvrw7GL6QC8xUDg7+C/2quZgMqO/UOo=;
+        b=ZRcO1vNpAdHwoHc+jTo8ih5ghRCzcYm+Kfxu4D5Xu0x6wGAuK1LPEf12Ie9BSL9cbM7cXH
+        cGuwVLB6FQ61HmMatoBm2KLIi0UCTgzXlvaTSRvB++cDkA5LdRPJDlAgSKVLCdPNa5uUkF
+        8yjPt8FaUYl5EHFv+DnrF+GCOEXONNg=
+Date:   Thu, 8 Apr 2021 10:56:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] x86/sgx: Do not update sgx_nr_free_pages in
+ sgx_setup_epc_section()
+Message-ID: <20210408085640.GD10192@zn.tnic>
+References: <20210405232653.33680-1-jarkko@kernel.org>
+ <20210407154934.GF25319@zn.tnic>
+ <YG3X454GI4U2BZVU@kernel.org>
+ <20210407161811.GK25319@zn.tnic>
+ <YG7DbunDoPocsEzZ@kernel.org>
 MIME-Version: 1.0
-References: <1617616369-27305-1-git-send-email-loic.poulain@linaro.org> <ddc8cd0fd3212ccbba399b03a059bcf40abbc117.camel@redhat.com>
-In-Reply-To: <ddc8cd0fd3212ccbba399b03a059bcf40abbc117.camel@redhat.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 8 Apr 2021 10:56:11 +0200
-Message-ID: <CAMZdPi_6hCYpiyf4=x1FdA2KHnVg6LFWnfEhCd8PMQP_yFXqCw@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 1/2] net: Add a WWAN subsystem
-To:     Dan Williams <dcbw@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YG7DbunDoPocsEzZ@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On Thu, Apr 08, 2021 at 11:48:46AM +0300, Jarkko Sakkinen wrote:
+> The regression is that the sgx_nr_free_pages is also incremented by
+> sgx_free_epc_pages(), and thus it ends up having double the number of
+> pages available.
 
-On Wed, 7 Apr 2021 at 16:32, Dan Williams <dcbw@redhat.com> wrote:
->
-> On Mon, 2021-04-05 at 11:52 +0200, Loic Poulain wrote:
-> > This change introduces initial support for a WWAN framework. Given
-> > the
-> > complexity and heterogeneity of existing WWAN hardwares and
-> > interfaces,
-> > there is no strict definition of what a WWAN device is and how it
-> > should
-> > be represented. It's often a collection of multiple devices that
-> > perform
-> > the global WWAN feature (netdev, tty, chardev, etc).
->
-> Great to see the continued work on this.
->
-> Were you intending to follow-up with functionality to group netdevs
-> with the control ports?  From my quick look at v9 here it only deals
-> with MHI control ports (diag, QMI, AT, etc) which is great, but not the
-> full story.
->
-> I think that was a big part of the discussion around Johannes' earlier
-> series since it's often protocol-specific to tie a particular netdev
-> with a given control port, but that's something that's really necessary
-> for a good abstract userspace.
->
-> Thoughts here? I'd love to see that functionality too.
+So when you add a new EPC section with sgx_setup_epc_section(), those
+new pages in "nr_pages" are initially not going to be accounted
+anywhere? Or is that sgx_nr_all_pages? And you do that in your second
+patch...
 
-Yes, though it's not in the scope for this initial series*, I plan to add that.
+But those new pages coming in *are* free pages so they should be in the
+free pages count too, IMHO.
 
-I was thinking about introducing a wwan_register_ndev or
-wwan_attach_ndev. Most of the time, netdev does not have reference to
-related existing (or future) control ports (they are different
-drivers), so we may need something like a 'context_id' for both ndev
-and control ports that can be used for linking them when necessary.
-Then, this relation could be represented as e.g a sysfs link to ndev
-device(s)... That's just a possible approach, I'll be happy to discuss
-this further.
+-- 
+Regards/Gruss,
+    Boris.
 
-* Note: Userspace tools like ModemManager are able to link control
-ports and netdev by looking at the sysfs hierarchy, it's fine for
-simple connection management, but probably not enough for 'multi PDN'
-support for which devices may have multiple netdev and ports
-targetting different 'PDN contexts'...
-
-Regards,
-Loic
+https://people.kernel.org/tglx/notes-about-netiquette
