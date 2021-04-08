@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A0D3578B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 02:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD783578B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 02:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbhDHAMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 20:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
+        id S229820AbhDHAMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 20:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhDHAMU (ORCPT
+        with ESMTP id S229480AbhDHAMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 20:12:20 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB85C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 17:12:09 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id b17so76850pgh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 17:12:09 -0700 (PDT)
+        Wed, 7 Apr 2021 20:12:52 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB15AC061760;
+        Wed,  7 Apr 2021 17:12:41 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u13so47451lje.0;
+        Wed, 07 Apr 2021 17:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=8D8XPaeKV95AOIsyqrG+mdWfzRj4cAHDWOaASJt1zGs=;
-        b=j8MKc3Ye8ykdNgICWke14Eow75lnPz8CIGBLwfuCCDNAPOo3QXW6qXxQWDIej5zrxj
-         O5IhvceaIVGevBUYFe2XxJSC+PAjLnuLgayHghAo/eHwgh17HNXB1PnM+1fdHj/K/U/B
-         eFLO+CcFZ/nQrB/Y4z8GJ6bwsgpiYLpDVgIDg=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KAcjHGLsto88UrTpLpRBFeL9IPEKet+SfI2XYWyvT40=;
+        b=EA33CSNEuu2VwzHlbwqxrx43n/de42qxIh5TZXQTQ08PM5Qqk1oZGWp4lwjZwb+Mrg
+         PoQi1Gh421CpJLtRAzMNsYCT5Q1LZgugsdjhImwvdTLW4kTZxq1qLH4+6q8j1VPPZdfZ
+         tyROBEOPK5+C32uMqS1Y6/0ORWM5dBh+Qe4UDl/0xBPfu6POf6WtC9CHfrJYbcv0iA+o
+         9791ki7LqZegr/Cos0cet0sIm2CA6/cc6C973hSrBl1Y4uKM8lYtfHFWRA2XbenNG5NN
+         UCqQTR+Gy1B1D3k1FDBBONSjsc7aup/hfZsFKGTJDly1wraZtIaIIeq01ifyXi64lBUh
+         0DZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=8D8XPaeKV95AOIsyqrG+mdWfzRj4cAHDWOaASJt1zGs=;
-        b=OObFn/n6UC6IE1oLBZmpERmDw+3Bh4Sjvjy+3rN0b/HKcbRMl8HTzo9msHUxMu/p7A
-         75PeWE6glwIbq6cjOMMlCHwv4hbH3s+09dE5AI4Iybk/ryduPIuOO1YMxmp3IRXPa0Xp
-         WHtSYnDd+fLxKrRi52q0w7UJmBY4VV+Qwt2pHJlcTtepqJzIFexkyrmnxTOJbbBhjqNs
-         Z32nKD/xNIb5H9WvVAONrAf1HLEHUAUBsHhmXDWkP0B+SMtQ7Ca4Tj7qKIkLuDe2UfXw
-         sNxwrWIBQdR+bF2E5DNr8tmDdAUpftw80OAPaIhqmYUF2EU+aBrCu5DwuVtx4Ro8WaX5
-         mrBg==
-X-Gm-Message-State: AOAM531myL1S9rMW6c51c3n6uWhY9Egn0MsROQ/Cuy6bKraNBUOKj9wJ
-        SzEjYq24sn9JdgjPacAySie4LWwwhVVriA==
-X-Google-Smtp-Source: ABdhPJwAUn7FrW1GX1I48MVJmCa8zhddbH7Hg8ce/tqoANhiRraj9xfQj0WuF4bhoMT3IzKriAN3Mg==
-X-Received: by 2002:a65:5b06:: with SMTP id y6mr5542633pgq.58.1617840729223;
-        Wed, 07 Apr 2021 17:12:09 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:e193:83c5:6e95:43de])
-        by smtp.gmail.com with ESMTPSA id n7sm6283577pjk.23.2021.04.07.17.12.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 17:12:08 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KAcjHGLsto88UrTpLpRBFeL9IPEKet+SfI2XYWyvT40=;
+        b=i9PjaY1v6Gbo/ucwoypq+xFuDtCdsHdwgktPuI143hzQ0fB6WgbjAp9tuu4vy9fB7w
+         dXdjixfzJtBxMIaKTAkIzaujZbB1PRZLOHpKH3PluuV00dMAlryqyYbmGFQ+QJU0UYEN
+         3IgI7VdvjyFCoGZS9rjdUJtC3+w+279whHPbdKcCexqdZOI6n3HWQAPM3cNUgEKzN6JX
+         jdJmBHk7jzEIo/nXrsn/j+YCG8w/5XXsOhp6WXBRCQhuxOAat9d4HTwdPNCDlK3AKRdt
+         HolffigQ6s8X96YNLmLysIBCMefaqTp/uNGDqQLVMsq0lrzHM0N/N2DpqnYfzugHeLg/
+         LjSw==
+X-Gm-Message-State: AOAM533bxsSDdMeYDU/v+BGCv8ffwwfBF3a2If3n64degoNeQHmFupeV
+        Saqhxs9LoKSrHjBMYxWWE7etChIzP2339SrRChH6tUW/EIM=
+X-Google-Smtp-Source: ABdhPJxtkGTsJJQmX94lOzH+9Ybh47fLsGatv9S5ZYl//O1mKwSdqZOQMN0G1QkEnl0DTA8kGSVGMKbA0vICUeW/AJk=
+X-Received: by 2002:a2e:921a:: with SMTP id k26mr3837432ljg.149.1617840760304;
+ Wed, 07 Apr 2021 17:12:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YGsHkoNEaIvCRdpx@gerhold.net>
-References: <20210323224336.1311783-1-swboyd@chromium.org> <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org> <161734672825.2260335.8472441215895199196@swboyd.mtv.corp.google.com> <YGbvXFrMg6X7q3qL@gerhold.net> <161738411853.2260335.5107124874054215375@swboyd.mtv.corp.google.com> <YGsHkoNEaIvCRdpx@gerhold.net>
-Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Date:   Wed, 07 Apr 2021 17:12:06 -0700
-Message-ID: <161784072681.3790633.7665111601750934002@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <16ceff73-1257-fc3d-aade-43656c7216e7@molgen.mpg.de>
+ <12e8f7f1-6655-9f0b-72b1-0908f229dcac@molgen.mpg.de> <b5eb567d-9866-8f0f-ea61-83ae97d4d21f@molgen.mpg.de>
+ <CAAMCDedmGUcWY=9Nb36gXoo0+F82rhq=-6yKZ1xPf74Gj0mq7Q@mail.gmail.com> <e5d4dd39-7d75-77c6-abc8-8c701b9066fd@molgen.mpg.de>
+In-Reply-To: <e5d4dd39-7d75-77c6-abc8-8c701b9066fd@molgen.mpg.de>
+From:   Roger Heflin <rogerheflin@gmail.com>
+Date:   Wed, 7 Apr 2021 19:12:29 -0500
+Message-ID: <CAAMCDecxjX5d20Ra7PVgsSM6xg3f2D5q=-x3eeFosfFfnbJxbg@mail.gmail.com>
+Subject: Re: OT: Processor recommendation for RAID6
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Linux RAID <linux-raid@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, it+linux-raid@molgen.mpg.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephan Gerhold (2021-04-05 05:50:26)
-> On Fri, Apr 02, 2021 at 10:21:58AM -0700, Stephen Boyd wrote:
-> >=20
-> > Ah right, the whole secure world running in 32-bit mode thing. Is
-> > msm8916 the only SoC that's using that? Or are there more? If only
-> > msm8916 is affected then we could use a combination of CONFIG_ARM64 and
-> > the compatible string to differentiate and then if more SoCs use 32-bit
-> > secure world then we could have a new compatible string like qcom,scm-32
-> > that tells us this fact. Maybe this was all discussed before and I
-> > missed it. Either way, I'm trying to get rid of this boot call so that
-> > we don't have to bounce to the firmware an extra time to figure out
-> > something we can figure out from the kernel arch and scm compatible
-> > string.
->=20
-> At least MSM8994 also uses SMC32 from what I heard. Overall it's
-> probably quite hard to get that right now since all boards were tested
-> with the dynamic detection so far. I suppose you could do the opposite,
-> add an optional qcom,scm-64 to skip the detection step and force SMC64.
+I ran some tests on a 4 intel socket box with files in tmpfs (gold
+6152 I think) and with the files interleaved 4way (I think) got the
+same speeds you got on your intels (roughly) with defaults.
 
-Isn't SMC64 going to be the overall majority going forward? Legacy
-convention is for sure limited to CONFIG_ARM so I'll send another
-follow-up patch to add a warning if we find legacy on CONFIG_ARM64.
-SMC32 is hopefully no longer being produced given that it was introduced
-at the time that the bootloader team wasn't supporting PSCI and didn't
-want to support it. So we're making all new boards/SoCs/firmwares do
-this calling convention probing to figure out something they already
-know?
+I also tested on my 6 core/4500u ryzen and got almost the same
+speed(slightly slower) as on your large ryzen boxes with many numa
+nodes, so it has to be effectively only using a single numa node and a
+single cpu.
 
-Maybe we should probe the calling convention on msm8994/msm8916 and
-otherwise assume SMC64 on CONFIG_ARM64 kernels. I'd expect the exception
-list to be smaller that way.
+I did test my 4500u ryzen machine with fewer cores enabled,  1 core
+got 18M, 2 cores got 23M, and 3 got 32M so it did not appear scale
+past 3 cores.
 
->=20
-> Also note that this could even be firmware-specific, not necessarily
-> SoC-specific. There are some ancient MSM8916 firmwares that have legacy
-> instead of SMC32. I could also imagine that there is also some SoC where
-> there are different firmware versions with SMC32 or SMC64.
+I also testing on an ancient a8-5600k and was almost the same speed as
+the ryzen.
 
-Sure but in theory the firmware would update the DT to indicate what
-sort of firmware is there.
-
->=20
-> Plus, IMO the overhead for this detection is negligible. At least it
-> ensures that we always use the right calling convention. The PSCI code
-> probably does much more firmware calls to figure out all supported
-> features.
->=20
-
-Heh, it tried to ensure we use the right calling convention but broke
-things in the process, because the way of detecting the convention isn't
-always there. I wouldn't be surprised if this comes up again for other
-boards that use TF-A.
+From the calls there must be a lot of reading memory.   And I got the
+same speed using shm, using tmpfs, using tmpfs+hugepages and using
+files on a disk that should have been in file cache.
