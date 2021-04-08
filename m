@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5D2358A07
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B6A358A09
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhDHQrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S232396AbhDHQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbhDHQrH (ORCPT
+        with ESMTP id S232281AbhDHQrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:47:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7658C061760;
-        Thu,  8 Apr 2021 09:46:55 -0700 (PDT)
+        Thu, 8 Apr 2021 12:47:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95854C061760;
+        Thu,  8 Apr 2021 09:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
         Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=Gq/rdyGTyQ0u+Ooonn/Pvwu5OLrn0QqmtopJqPVCiv8=; b=d9fxvosm0WowzxDsYdm1j+w9zp
-        i44NxxJXj+1FRM2OhLp3rHqJbY67o1Z5V3di2LW19ZEgvJfzCYYdVMbzNgqNkwPs/QLzC3N4FGJNz
-        PM/YDLES2vs3oIto0SSdfvvDdB/r5gfmS9qqCERY7BATxqVDegCPGr0AkzmsUuSem4JdWeOwIBCI+
-        DB1b9VHqLQCwzdD3Oy7JAUdjLD7jcps48ZUdv/t2515ENxgdE87WHDWyv0jz2U7A+XkCbd+DTzQXr
-        WzLLuxF7H1+oQYhtMTxbw++Ycs3PtTCenYa10Sbudx4Faq3gAEAB2oMFO8Wa3E2j5WGrn+/N6YxaN
-        iFgw0xtw==;
+        bh=VAaxG7DlA7LeEZLGQT4kdCo/q34NW8YrEoeuVr25p5M=; b=Gyj3FrmnULP7lQRybm7S3yj4qD
+        B/GaTufZN+kEXewgtAMcVD5ukz5ql3LJH2LRk8yQJtH/tcLW92dQgcS2BUQPZ5qwsXD84ZcRymulN
+        QV3ZUjwut8tGZcEVwBo7hUIADrNyFsQ9UmZV1wsW3dGPbw3XkhGuhl/o4WQzVF9MbN6BrL4/AwtLW
+        2Dq977YtYltmFn8usn+2hTEsfBY44EfX4YDOerl9gFwppM48r8Hdzten93iYQL4jrygYCWApr6grV
+        /ffjNwN3TR+348ifDNwvnDT3RVy/1TbR8qfx/0blAISMoYwaQRc/8SkmcRExUKV86tWvWlEBIeWNn
+        Zd0rQBLA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUXnx-008g4r-2r; Thu, 08 Apr 2021 16:46:53 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUXna-00GXc3-SG; Thu, 08 Apr 2021 16:46:43 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C22E3001D0;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CD4A3001CD;
         Thu,  8 Apr 2021 18:46:30 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2624C2BE57BB8; Thu,  8 Apr 2021 11:44:50 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 11:44:50 +0200
+        id E90432BE57BBA; Thu,  8 Apr 2021 11:46:12 +0200 (CEST)
+Date:   Thu, 8 Apr 2021 11:46:12 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] io-wq: Fix io_wq_worker_affinity()
-Message-ID: <YG7QkiUzlEbW85TU@hirez.programming.kicks-ass.net>
+To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] block: Fix sys_ioprio_set(.which=IOPRIO_WHO_PGRP) task
+ iteration
+Message-ID: <YG7Q5C4Rb5dx5GFx@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -51,44 +51,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Do not include private headers and do not frob in internals.
-
-On top of that, while the previous code restores the affinity, it
-doesn't ensure the task actually moves there if it was running,
-leading to the fun situation that it can be observed running outside
-of its allowed mask for potentially significant time.
-
-Use the proper API instead.
+do_each_pid_thread() { } while_each_pid_thread() is a double loop and
+thus break doesn't work as expected. Also, it should be used under
+tasklist_lock because otherwise we can race against change_pid() for
+PGID/SID.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- fs/io-wq.c |   11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ block/ioprio.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -17,7 +17,6 @@
- #include <linux/cpu.h>
- #include <linux/tracehook.h>
- 
--#include "../kernel/sched/sched.h"
- #include "io-wq.h"
- 
- #define WORKER_IDLE_TIMEOUT	(5 * HZ)
-@@ -1098,14 +1097,8 @@ void io_wq_put_and_exit(struct io_wq *wq
- 
- static bool io_wq_worker_affinity(struct io_worker *worker, void *data)
- {
--	struct task_struct *task = worker->task;
--	struct rq_flags rf;
--	struct rq *rq;
--
--	rq = task_rq_lock(task, &rf);
--	do_set_cpus_allowed(task, cpumask_of_node(worker->wqe->node));
--	task->flags |= PF_NO_SETAFFINITY;
--	task_rq_unlock(rq, task, &rf);
-+	set_cpus_allowed_ptr(worker->task, cpumask_of_node(worker->wqe->node));
+--- a/block/ioprio.c
++++ b/block/ioprio.c
+@@ -119,11 +119,17 @@ SYSCALL_DEFINE3(ioprio_set, int, which,
+ 				pgrp = task_pgrp(current);
+ 			else
+ 				pgrp = find_vpid(who);
 +
- 	return false;
- }
++			read_lock(&tasklist_lock);
+ 			do_each_pid_thread(pgrp, PIDTYPE_PGID, p) {
+ 				ret = set_task_ioprio(p, ioprio);
+-				if (ret)
+-					break;
++				if (ret) {
++					read_unlock(&tasklist_lock);
++					goto out;
++				}
+ 			} while_each_pid_thread(pgrp, PIDTYPE_PGID, p);
++			read_unlock(&tasklist_lock);
++
+ 			break;
+ 		case IOPRIO_WHO_USER:
+ 			uid = make_kuid(current_user_ns(), who);
+@@ -153,6 +159,7 @@ SYSCALL_DEFINE3(ioprio_set, int, which,
+ 			ret = -EINVAL;
+ 	}
  
++out:
+ 	rcu_read_unlock();
+ 	return ret;
+ }
