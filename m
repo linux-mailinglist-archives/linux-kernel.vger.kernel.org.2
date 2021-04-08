@@ -2,253 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDE1358B34
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C1358B33
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhDHRTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbhDHRTb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:19:31 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BBBC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:19:20 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id w2so2416663ilj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 10:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AGKJ5TMDA3zjXOa+bUjOOsMpKwnvT3r5d1vND1DMuTk=;
-        b=KtD3y5Jd/oXd9jMLZ7G5Zg920b800bH/ytyAWmiEWwV1pzM2KDnyDAoUtg6U2YKAAu
-         HhzgtAMNgiuFl0SxM5Z425vSBji2Cn6V77jZxAsYlYFm3GPilHcU45nggH5hQPo5mUCN
-         YQqUK221JeyVfrFVRswiNQy48LzX2kMy1O6tpf8975lGRiHM73EqL8s1Obu/zuIfr5QW
-         d8x1LVcqUIynDQI8Cm1XIlQPTCU8kIq4jZitcFkkXxpHjQVYop54OxjQ27aAShHJK8Wm
-         1NJSb802htKeAtrkLHFCVwm6w6zX5Hg2eQp1NLJlG0ZtHaEpiS+8YMyDjp+8eXfhCXtu
-         4kZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AGKJ5TMDA3zjXOa+bUjOOsMpKwnvT3r5d1vND1DMuTk=;
-        b=IZGjbHTAmZ2zawkkE9MIqg1Su4jft++w26ikYRePjqeyCDpvXeO563v2cltX7H8hOf
-         g7NnH4QCkudBSFtQKqyOs/CcoyNZJDRdA1CbxtajDVfLFO2PSjVENYZYfsxCxqSU3H1e
-         8HvCJmj/5xMgxPQjYS4j9NRfMn85/rb49EKtvQDKHRMnhcKn0CLIFu0EYE5tgGiIx53M
-         /76psa5DpX88D4yzf5zXB6bFPmR9kstMfRExRf3PnDll12WPxhU0zjIQ9pc+VxYoE8eB
-         HDSvLrr0kSOI59W76wSXBdEmDuuJjxqJmwtAd7YZNorbLTyFStTjgzhtbYOGk6eZhdTy
-         bgiw==
-X-Gm-Message-State: AOAM532xNERxSQEZjN3n4WOwn76u/wVc+XBcu/tKiMQ8E1GtcFCNrSzm
-        BGR+armEIg92dT6KzS5iE8TRncFWiDAJUpCZQLWyMg==
-X-Google-Smtp-Source: ABdhPJzSCjdxgqM8te41Rsd1ZSR5QozA3z5PoDP/NIRSSZfzEVUFdfCs65VS+pYV5h6ZsRYxM7nJYBuTGIH8n1w3a+E=
-X-Received: by 2002:a92:d48c:: with SMTP id p12mr7964592ilg.136.1617902359306;
- Thu, 08 Apr 2021 10:19:19 -0700 (PDT)
+        id S232521AbhDHRTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:19:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231954AbhDHRTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:19:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10CE0610CC;
+        Thu,  8 Apr 2021 17:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617902353;
+        bh=jcoRLST2y1NNwVKvgKUD566PzN4T/RBHYS0NIBD9fvk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uu5l3yTDoHC0eyk5yRITr2M72p5957mkwPn/+isK9s+uMQ5luFwDPYR+/JAdcbf4a
+         c1dUYoL74UtAxWossA8L8mXrAM23gFw5pMRLhIyOWRl2tOMuyMV9FSNilOoQbbd4N/
+         jJYKdPl4sTeCwXNRMAiNH5HW+/Pt5B2636vYcO103zn/EDSR44mGT5Xk59eDfINIqy
+         H5DgL3Ri0zA40CZKUYH79Locpzebfd6YAkmmlm0Wi7p9EOhGQCl6bIovdjSTcn+FEY
+         /plfpyzDt3foiRrHJT36hnkJEIxlHMyzW3IYObsb+el/NJOGoufA26LXCD2n7imF4s
+         RMRcb1AUKHH8A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A9C8140647; Thu,  8 Apr 2021 14:19:09 -0300 (-03)
+Date:   Thu, 8 Apr 2021 14:19:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Song Liu <song@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v2 3/3] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YG87DRfcyMTz/VwL@kernel.org>
+References: <20210407003601.619158-1-song@kernel.org>
+ <20210407003601.619158-4-song@kernel.org>
+ <YG7tU/mVxQZLNCYL@krava>
+ <FA667178-09F3-48C5-891C-9E44744276C0@fb.com>
 MIME-Version: 1.0
-References: <20210331085156.5028-1-glittao@gmail.com> <YGWPdFywfNUl4d3S@elver.google.com>
- <CAGS_qxpWtNLJ7_i5pDYhiGq_Jy+oPPc+HpWjNTJKAPyvQf+gsQ@mail.gmail.com>
- <CANpmjNPhWUsQrG62Z2jchdqzgSOfVYOsD1QDJpRghJwzwRZcQA@mail.gmail.com>
- <11886d4f-8826-0cd6-b5fd-defc65470ed5@suse.cz> <CANpmjNMzB=Cn1so-VU_NwJHX_fqfWatK90npL8EvSNQNGpqc7A@mail.gmail.com>
-In-Reply-To: <CANpmjNMzB=Cn1so-VU_NwJHX_fqfWatK90npL8EvSNQNGpqc7A@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 8 Apr 2021 10:19:08 -0700
-Message-ID: <CAGS_qxqY-Jb5DMkcFkDb1c2o+MkdpHSsnoVtPDmAy-wbNPq1tg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] kunit: add a KUnit test for SLUB debugging functionality
-To:     Marco Elver <elver@google.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, glittao@gmail.com,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <FA667178-09F3-48C5-891C-9E44744276C0@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 3:30 AM Marco Elver <elver@google.com> wrote:
->
-> On Tue, 6 Apr 2021 at 12:57, Vlastimil Babka <vbabka@suse.cz> wrote:
-> >
-> >
-> > On 4/1/21 11:24 PM, Marco Elver wrote:
-> > > On Thu, 1 Apr 2021 at 21:04, Daniel Latypov <dlatypov@google.com> wrote:
-> > >> >         }
-> > >> >         #else
-> > >> >         static inline bool slab_add_kunit_errors(void) { return false; }
-> > >> >         #endif
-> > >> >
-> > >> > And anywhere you want to increase the error count, you'd call
-> > >> > slab_add_kunit_errors().
-> > >> >
-> > >> > Another benefit of this approach is that if KUnit is disabled, there is
-> > >> > zero overhead and no additional code generated (vs. the current
-> > >> > approach).
-> > >>
-> > >> The resource approach looks really good, but...
-> > >> You'd be picking up a dependency on
-> > >> https://lore.kernel.org/linux-kselftest/20210311152314.3814916-2-dlatypov@google.com/
-> > >> current->kunit_test will always be NULL unless CONFIG_KASAN=y &&
-> > >> CONFIG_KUNIT=y at the moment.
-> > >> My patch drops the CONFIG_KASAN requirement and opens it up to all tests.
-> > >
-> > > Oh, that's a shame, but hopefully it'll be in -next soon.
-> > >
-> > >> At the moment, it's just waiting another look over from Brendan or David.
-> > >> Any ETA on that, folks? :)
-> > >>
-> > >> So if you don't want to get blocked on that for now, I think it's fine to add:
-> > >>   #ifdef CONFIG_SLUB_KUNIT_TEST
-> > >>   int errors;
-> > >>   #endif
-> > >
-> > > Until kunit fixes setting current->kunit_test, a cleaner workaround
-> > > that would allow to do the patch with kunit_resource, is to just have
-> > > an .init/.exit function that sets it ("current->kunit_test = test;").
-> > > And then perhaps add a note ("FIXME: ...") to remove it once the above
-> > > patch has landed.
-> > >
-> > > At least that way we get the least intrusive change for mm/slub.c, and
-> > > the test is the only thing that needs a 2-line patch to clean up
-> > > later.
-> >
-> > So when testing internally Oliver's new version with your suggestions (thanks
-> > again for those), I got lockdep splats because slab_add_kunit_errors is called
-> > also from irq disabled contexts, and kunit_find_named_resource will call
-> > spin_lock(&test->lock) that's not irq safe. Can we make the lock irq safe? I
-> > tried the change below and it makde the problem go away. If you agree, the
-> > question is how to proceed - make it part of Oliver's patch series and let
-> > Andrew pick it all with eventually kunit team's acks on this patch, or whatnot.
->
-> From what I can tell it should be fine to make it irq safe (ack for
-> your patch below). Regarding patch logistics, I'd probably add it to
-> the series. If that ends up not working, we'll find out sooner or
-> later.
->
-> (FYI, the prerequisite patch for current->kunit_test is in -next now.)
+Em Thu, Apr 08, 2021 at 04:39:33PM +0000, Song Liu escreveu:
+> > On Apr 8, 2021, at 4:47 AM, Jiri Olsa <jolsa@redhat.com> wrote:
+> > On Tue, Apr 06, 2021 at 05:36:01PM -0700, Song Liu wrote:
+> >> Currently, to use BPF to aggregate perf event counters, the user uses
+> >> --bpf-counters option. Enable "use bpf by default" events with a config
+> >> option, stat.bpf-counter-events. This is limited to hardware events in
+> >> evsel__hw_names.
+> >> 
+> >> This also enables mixed BPF event and regular event in the same sesssion.
+> >> For example:
+> >> 
+> >>   perf config stat.bpf-counter-events=instructions
+> >>   perf stat -e instructions,cs
+> >> 
+> > 
+> > so if we are mixing events now, how about uing modifier for bpf counters,
+> > instead of configuring .perfconfig list we could use:
+> > 
+> >  perf stat -e instructions:b,cs
+> > 
+> > thoughts?
+> > 
+> > the change below adds 'b' modifier and sets 'evsel::bpf_counter',
+> > feel free to use it
+> 
+> I think we will need both 'b' modifier and .perfconfig configuration. 
 
-Yep.
-There's also two follow-up patches in
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=kunit
+Agreed, maximum flexibility.
 
->
-> KUnit maintainers, do you have any preferences?
+> For systems with BPF-managed perf events running in the background, 
+> .perfconfig makes sure perf-stat sessions will share PMCs with these 
+> background monitoring tools. 'b' modifier, on the other hand, is useful
+> when the user knows there is opportunity to share the PMCs. 
+> 
+> Does this make sense? 
 
-Poked offline and Brendan and David seemed fine either way.
-So probably just include it in this patch series for convenience.
+I think so.
 
-Brendan also mentioned KUnit used to use spin_lock_irqsave/restore()
-but had been told to not use it until necessary.
-See https://lore.kernel.org/linux-kselftest/20181016235120.138227-3-brendanhiggins@google.com/
-So I think there's no objections to the patch itself either.
+- Arnaldo
+ 
+> Thanks,
+> Song
+> 
+> > 
+> > jirka
+> > 
+> > 
+> > ---
+> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > index ca52581f1b17..c55e4e58d1dc 100644
+> > --- a/tools/perf/util/evsel.h
+> > +++ b/tools/perf/util/evsel.h
+> > @@ -82,6 +82,7 @@ struct evsel {
+> > 		bool			auto_merge_stats;
+> > 		bool			collect_stat;
+> > 		bool			weak_group;
+> > +		bool			bpf_counter;
+> > 		int			bpf_fd;
+> > 		struct bpf_object	*bpf_obj;
+> > 	};
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index 9ecb45bea948..b5850f1ea90b 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -1801,6 +1801,7 @@ struct event_modifier {
+> > 	int pinned;
+> > 	int weak;
+> > 	int exclusive;
+> > +	int bpf_counter;
+> > };
+> > 
+> > static int get_event_modifier(struct event_modifier *mod, char *str,
+> > @@ -1821,6 +1822,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> > 	int exclude = eu | ek | eh;
+> > 	int exclude_GH = evsel ? evsel->exclude_GH : 0;
+> > 	int weak = 0;
+> > +	int bpf_counter = 0;
+> > 
+> > 	memset(mod, 0, sizeof(*mod));
+> > 
+> > @@ -1864,6 +1866,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> > 			exclusive = 1;
+> > 		} else if (*str == 'W') {
+> > 			weak = 1;
+> > +		} else if (*str == 'b') {
+> > +			bpf_counter = 1;
+> > 		} else
+> > 			break;
+> > 
+> > @@ -1895,6 +1899,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> > 	mod->sample_read = sample_read;
+> > 	mod->pinned = pinned;
+> > 	mod->weak = weak;
+> > +	mod->bpf_counter = bpf_counter;
+> > 	mod->exclusive = exclusive;
+> > 
+> > 	return 0;
+> > @@ -1909,7 +1914,7 @@ static int check_modifier(char *str)
+> > 	char *p = str;
+> > 
+> > 	/* The sizeof includes 0 byte as well. */
+> > -	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
+> > +	if (strlen(str) > (sizeof("ukhGHpppPSDIWeb") - 1))
+> > 		return -1;
+> > 
+> > 	while (*p) {
+> > @@ -1950,6 +1955,7 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
+> > 		evsel->sample_read         = mod.sample_read;
+> > 		evsel->precise_max         = mod.precise_max;
+> > 		evsel->weak_group	   = mod.weak;
+> > +		evsel->bpf_counter         = mod.bpf_counter;
+> > 
+> > 		if (evsel__is_group_leader(evsel)) {
+> > 			evsel->core.attr.pinned = mod.pinned;
+> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> > index 0b36285a9435..fb8646cc3e83 100644
+> > --- a/tools/perf/util/parse-events.l
+> > +++ b/tools/perf/util/parse-events.l
+> > @@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+> > name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+> > drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+> > /* If you add a modifier you need to update check_modifier() */
+> > -modifier_event	[ukhpPGHSDIWe]+
+> > +modifier_event	[ukhpPGHSDIWeb]+
+> > modifier_bp	[rwx]{1,3}
+> > 
+> > %%
+> > 
+> 
 
-But I'd wait for Brendan to chime in to confirm.
+-- 
 
-
-
->
-> > ----8<----
-> >
-> > commit ab28505477892e9824c57ac338c88aec2ec0abce
-> > Author: Vlastimil Babka <vbabka@suse.cz>
-> > Date:   Tue Apr 6 12:28:07 2021 +0200
-> >
-> >     kunit: make test->lock irq safe
-> >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index 49601c4b98b8..524d4789af22 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -515,8 +515,9 @@ kunit_find_resource(struct kunit *test,
-> >                     void *match_data)
-> >  {
-> >         struct kunit_resource *res, *found = NULL;
-> > +       unsigned long flags;
-> >
-> > -       spin_lock(&test->lock);
-> > +       spin_lock_irqsave(&test->lock, flags);
-> >
-> >         list_for_each_entry_reverse(res, &test->resources, node) {
-> >                 if (match(test, res, (void *)match_data)) {
-> > @@ -526,7 +527,7 @@ kunit_find_resource(struct kunit *test,
-> >                 }
-> >         }
-> >
-> > -       spin_unlock(&test->lock);
-> > +       spin_unlock_irqrestore(&test->lock, flags);
-> >
-> >         return found;
-> >  }
-> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > index ec9494e914ef..2c62eeb45b82 100644
-> > --- a/lib/kunit/test.c
-> > +++ b/lib/kunit/test.c
-> > @@ -442,6 +442,7 @@ int kunit_add_resource(struct kunit *test,
-> >                        void *data)
-> >  {
-> >         int ret = 0;
-> > +       unsigned long flags;
-> >
-> >         res->free = free;
-> >         kref_init(&res->refcount);
-> > @@ -454,10 +455,10 @@ int kunit_add_resource(struct kunit *test,
-> >                 res->data = data;
-> >         }
-> >
-> > -       spin_lock(&test->lock);
-> > +       spin_lock_irqsave(&test->lock, flags);
-> >         list_add_tail(&res->node, &test->resources);
-> >         /* refcount for list is established by kref_init() */
-> > -       spin_unlock(&test->lock);
-> > +       spin_unlock_irqrestore(&test->lock, flags);
-> >
-> >         return ret;
-> >  }
-> > @@ -515,9 +516,11 @@ EXPORT_SYMBOL_GPL(kunit_alloc_and_get_resource);
-> >
-> >  void kunit_remove_resource(struct kunit *test, struct kunit_resource *res)
-> >  {
-> > -       spin_lock(&test->lock);
-> > +       unsigned long flags;
-> > +
-> > +       spin_lock_irqsave(&test->lock, flags);
-> >         list_del(&res->node);
-> > -       spin_unlock(&test->lock);
-> > +       spin_unlock_irqrestore(&test->lock, flags);
-> >         kunit_put_resource(res);
-> >  }
-> >  EXPORT_SYMBOL_GPL(kunit_remove_resource);
-> > @@ -597,6 +600,7 @@ EXPORT_SYMBOL_GPL(kunit_kfree);
-> >  void kunit_cleanup(struct kunit *test)
-> >  {
-> >         struct kunit_resource *res;
-> > +       unsigned long flags;
-> >
-> >         /*
-> >          * test->resources is a stack - each allocation must be freed in the
-> > @@ -608,9 +612,9 @@ void kunit_cleanup(struct kunit *test)
-> >          * protect against the current node being deleted, not the next.
-> >          */
-> >         while (true) {
-> > -               spin_lock(&test->lock);
-> > +               spin_lock_irqsave(&test->lock, flags);
-> >                 if (list_empty(&test->resources)) {
-> > -                       spin_unlock(&test->lock);
-> > +                       spin_unlock_irqrestore(&test->lock, flags);
-> >                         break;
-> >                 }
-> >                 res = list_last_entry(&test->resources,
-> > @@ -621,7 +625,7 @@ void kunit_cleanup(struct kunit *test)
-> >                  * resource, and this can't happen if the test->lock
-> >                  * is held.
-> >                  */
-> > -               spin_unlock(&test->lock);
-> > +               spin_unlock_irqrestore(&test->lock, flags);
-> >                 kunit_remove_resource(test, res);
-> >         }
-> >  #if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+- Arnaldo
