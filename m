@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5966B358DEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F448358DF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhDHT6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S232491AbhDHT6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbhDHT6V (ORCPT
+        with ESMTP id S232377AbhDHT6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:58:21 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2BDC061760;
-        Thu,  8 Apr 2021 12:58:09 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id d12so5969932lfv.11;
-        Thu, 08 Apr 2021 12:58:09 -0700 (PDT)
+        Thu, 8 Apr 2021 15:58:38 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6984C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 12:58:26 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id g35so2150217pgg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 12:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c0I+5ABydgeUMYGikWNT2jbIpevXFH6iMkyWNZ96ZK0=;
-        b=ai7/jrDvUdF4dSn5CVBuVxTXAKkrGqJ88wy23hzx41TKa7hZzyNFeQOpvVRsn70DDe
-         5bA0UT7yaL6s1B86Il8NffinLFzrxXSi0iZCaq1nC0VePrrEE0OhhL9urHECOfziKOvu
-         ZXSf10Gp9fp+byDY9ziKnjR5T25vYOhQkRL8yAtljvevw3mlIbz9PTjw70+q4eFNIYcm
-         NNR9/auR2uD9zy3sdZEvlg78N10zMnkn/YI5kv4qTVqetDHzMDRMaUxzN057bqO3fx0I
-         5aEnozkRINRrch2jmL50gWds+YjV/IdKwzmcS6ZwBdikG3P+4wzSxIHP/czoV4oQNZ9N
-         WE0w==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=4N1kjjTn55rRbrrq/+KkyyeUWallp6st2fMntbajpqU=;
+        b=BCvpnIT9aDF246OVUAgc5nq8a6442rj3yQakx88oV2SsypMLWEG7w9vVgsHnCDFkJR
+         9cmz2xx8A9nSY/b4gwVsKPc+ZUFVKj8Y/KDwkwlec/2WMpwDX/rpqdPzjxpYAkjY5K3l
+         rZ3Tj9oMJft8ZtX+7QYPTcu6Hgt6sZKodgflw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c0I+5ABydgeUMYGikWNT2jbIpevXFH6iMkyWNZ96ZK0=;
-        b=G0cKVd259uNu+Bxpp3YdFqGsswdKknnfqSAJyrxLbyqsYpthAOcKGTRh1ohwxcLXaf
-         J28yFeju2k3ASiqZh7hfu8M2bZTj0HEiK5xYXtgycsj6gzLoZyiq6kgsdnjKOgLTPvNm
-         Fc+IwCIgsCzFKLOnu2EUwnlIbiDxRGVX5PlIUREmZR8rHRiKu4sN6vi5cw9x/Fe1jxv4
-         yP7So11zPn7xxago1AZMgOA3QuhhBzJuFDXcDesdirLUH4+ACxCQPGDH4dFW5P8AtkT7
-         ni6VaoQL/RViY+ZvLUV2QNWNdH1AS1seDPWLnirSKJVNRDebW0ccLX5bKtcmBvBc3ykU
-         8Jzg==
-X-Gm-Message-State: AOAM532jrw6S3LUn1QsBqPSwLLM9z/AeHqLsRsxQUxFtiyYfJBW2uqUE
-        j9FNbWE0JAt9BeIx/slGIsp1pBGAM5U=
-X-Google-Smtp-Source: ABdhPJw8dBGctQy6gvBJlnwgfYIsNWw4lfW+wh8LlOesfZpw+YSquKgA8n3T/rVzlkaJVcZtaJqNLg==
-X-Received: by 2002:a19:8682:: with SMTP id i124mr7872861lfd.406.1617911887666;
-        Thu, 08 Apr 2021 12:58:07 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id w5sm29406ljo.11.2021.04.08.12.58.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 12:58:07 -0700 (PDT)
-Subject: Re: [PATCH v1] ata: ahci_tegra: call tegra_powergate_power_off only
- when PM domain is not present
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
-        thierry.reding@gmail.com
-Cc:     jonathanh@nvidia.com, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1617900043-10506-1-git-send-email-skomatineni@nvidia.com>
- <1617900043-10506-2-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <32ff84ba-60a7-e498-d656-bcd29d23fb02@gmail.com>
-Date:   Thu, 8 Apr 2021 22:58:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=4N1kjjTn55rRbrrq/+KkyyeUWallp6st2fMntbajpqU=;
+        b=ln0h4xh6xy9Tz3iw8J5MaXoEoYZeh0x3DuyYVPLCb35QKX1lwBlR1YDissI1j8hzx3
+         IGWXS7OzmFwqApSNDteaOhdfGK8k/mKPWAfdGqxvgO9nZ5zAo6SQgA9oG0u5m6CWIvtM
+         iFiIk/QQAACWMnfEZLwSYwbJ3l3GJ7nlDPis/Ts93lbcWild4mHu8y7A1k/r0tnPKYa3
+         0n8SUnDXXP31h+ASDoU+13gA29YDMnId/2u3/Sm6ZDfJcDFBwSMqWZWwQivWrx+dkHn3
+         CeDwLjpFIxEtoMCUzdXvDsmryj/p517VY795FOyaFXJEx7gqke0Q27JtfkKT/80KP2Hu
+         DjCQ==
+X-Gm-Message-State: AOAM530pU8qv/DkbsUAFMM/iXFsAzt8gn9CJPFNNrEJ5Ol58G0thOrbh
+        i0b3IUhCGns4xqnXC+zEyUz2AA==
+X-Google-Smtp-Source: ABdhPJwqiFpgOMZvV25vaiurpiKlJiF7EbI5S8Ah7GbKPuDSnbspWHIUElJlAEgYwYHaOiDyJci5HA==
+X-Received: by 2002:a63:78cc:: with SMTP id t195mr9367700pgc.196.1617911906233;
+        Thu, 08 Apr 2021 12:58:26 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:44c3:3248:e7f5:1bbd])
+        by smtp.gmail.com with ESMTPSA id f187sm252780pfa.104.2021.04.08.12.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 12:58:25 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <1617900043-10506-2-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210408101743.GB22237@MiWiFi-R3L-srv>
+References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-13-swboyd@chromium.org> <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz> <20210408101743.GB22237@MiWiFi-R3L-srv>
+Subject: Re: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+To:     Baoquan He <bhe@redhat.com>, Petr Mladek <pmladek@suse.com>
+Date:   Thu, 08 Apr 2021 12:58:24 -0700
+Message-ID: <161791190437.3790633.11239676305383366588@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.04.2021 19:40, Sowjanya Komatineni пишет:
-> This patch adds a check on present of PM domain and calls legacy power
-> domain API tegra_powergate_power_off() only when PM domain is not present.
-> 
-> This is a follow-up patch to Tegra186 AHCI support patch series
-> https://lore.kernel.org/patchwork/cover/1408752/
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> 
-> ---
->  drivers/ata/ahci_tegra.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-> index 56612af..bd484dd 100644
-> --- a/drivers/ata/ahci_tegra.c
-> +++ b/drivers/ata/ahci_tegra.c
-> @@ -287,7 +287,8 @@ static void tegra_ahci_power_off(struct ahci_host_priv *hpriv)
->  	reset_control_assert(tegra->sata_cold_rst);
->  
->  	clk_disable_unprepare(tegra->sata_clk);
-> -	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
-> +	if (!tegra->pdev->dev.pm_domain)
-> +		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
->  
->  	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
->  }
-> 
+Quoting Baoquan He (2021-04-08 03:17:43)
+> On 04/07/21 at 07:03pm, Petr Mladek wrote:
+> > On Tue 2021-03-30 20:05:20, Stephen Boyd wrote:
+> > > We can use the vmlinux_build_id array here now instead of open coding
+> > > it. This mostly consolidates code.
+> > >=20
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Jessica Yu <jeyu@kernel.org>
+> > > Cc: Evan Green <evgreen@chromium.org>
+> > > Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> > > Cc: Dave Young <dyoung@redhat.com>
+> > > Cc: Baoquan He <bhe@redhat.com>
+> > > Cc: Vivek Goyal <vgoyal@redhat.com>
+> > > Cc: <kexec@lists.infradead.org>
+> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > ---
+> > >  include/linux/crash_core.h |  6 +-----
+> > >  kernel/crash_core.c        | 41 ++----------------------------------=
+--
+> > >  2 files changed, 3 insertions(+), 44 deletions(-)
+> > >=20
+> > > diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> > > index 206bde8308b2..fb8ab99bb2ee 100644
+> > > --- a/include/linux/crash_core.h
+> > > +++ b/include/linux/crash_core.h
+> > > @@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
+> > >  #define VMCOREINFO_OSRELEASE(value) \
+> > >     vmcoreinfo_append_str("OSRELEASE=3D%s\n", value)
+> > >  #define VMCOREINFO_BUILD_ID(value) \
+> > > -   vmcoreinfo_append_str("BUILD-ID=3D%s\n", value)
+> > > +   vmcoreinfo_append_str("BUILD-ID=3D%20phN\n", value)
+>=20
+> I may miss something, wondering why we need add '20' here.
 
-There are two instances of tegra_powergate_power_off() in the driver.
+The build ID is an array of 20 bytes and this format is to print 20
+bytes in hex.
