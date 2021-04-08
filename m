@@ -2,213 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B105357D69
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B596357D6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhDHHdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:33:47 -0400
-Received: from mga02.intel.com ([134.134.136.20]:7693 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhDHHdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:33:45 -0400
-IronPort-SDR: 4ny5d8iQbijkWBBwY3SyFzIEwNDXiMZB4O4KJNAVCOo9CtKebkwFFMedwJRmS9k96XFCvHIaTc
- dTmwwJfeEb3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="180612784"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="180612784"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 00:33:34 -0700
-IronPort-SDR: hIwAG84niNW+mOQPyjXxmOMzGikvopSpOS9sS+m6y6iHilwvRGY520IPYcGI3MWCMIDvBi0Ul8
- CrtsTC1b4VlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="530508991"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 08 Apr 2021 00:33:32 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lUPAS-000ESK-3b; Thu, 08 Apr 2021 07:33:32 +0000
-Date:   Thu, 08 Apr 2021 15:32:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- dda451f391eee5d68db3ca87fd8b2a42c8c2b507
-Message-ID: <606eb195.aFzq+FpYIFK6cssx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229974AbhDHHfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:35:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16040 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhDHHf2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:35:28 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGCdn2FVyzPnrx;
+        Thu,  8 Apr 2021 15:32:29 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 15:35:05 +0800
+Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
+To:     Ben Gardon <bgardon@google.com>
+References: <20200828081157.15748-1-zhukeqian1@huawei.com>
+ <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
+ <YGzxzsRlqouaJv6a@google.com>
+CC:     Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        <wanghaibin.wang@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <4fb6a85b-d318-256f-b401-89c35086885c@huawei.com>
+Date:   Thu, 8 Apr 2021 15:35:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <YGzxzsRlqouaJv6a@google.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: dda451f391eee5d68db3ca87fd8b2a42c8c2b507  x86/cacheinfo: Remove unneeded dead-store initialization
+Hi Ben,
 
-elapsed time: 723m
+Do you have any similar idea that can share with us?
 
-configs tested: 151
-configs skipped: 62
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks
+Keqian
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                         hackkit_defconfig
-arm                           u8500_defconfig
-mips                       bmips_be_defconfig
-arm                           h5000_defconfig
-mips                      loongson3_defconfig
-powerpc                    amigaone_defconfig
-arc                      axs103_smp_defconfig
-mips                        bcm47xx_defconfig
-arc                          axs101_defconfig
-powerpc                      chrp32_defconfig
-arm                        keystone_defconfig
-alpha                            allyesconfig
-sh                            shmin_defconfig
-mips                           ci20_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                      ppc44x_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                         socfpga_defconfig
-mips                      malta_kvm_defconfig
-i386                                defconfig
-mips                             allyesconfig
-s390                       zfcpdump_defconfig
-nios2                         3c120_defconfig
-m68k                        m5407c3_defconfig
-powerpc                    klondike_defconfig
-arm                     eseries_pxa_defconfig
-arm                           sama5_defconfig
-xtensa                           alldefconfig
-m68k                        stmark2_defconfig
-arm                        spear3xx_defconfig
-arm                            zeus_defconfig
-openrisc                  or1klitex_defconfig
-arm                         at91_dt_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                          kfr2r09_defconfig
-arm                      footbridge_defconfig
-arm                          iop32x_defconfig
-powerpc                       maple_defconfig
-arc                                 defconfig
-arm                        shmobile_defconfig
-mips                        maltaup_defconfig
-riscv             nommu_k210_sdcard_defconfig
-m68k                            q40_defconfig
-sparc                       sparc32_defconfig
-mips                        nlm_xlr_defconfig
-sh                          rsk7201_defconfig
-arm                         cm_x300_defconfig
-sh                          urquell_defconfig
-arm                         bcm2835_defconfig
-alpha                            alldefconfig
-m68k                        m5307c3_defconfig
-arm                      tct_hammer_defconfig
-mips                           gcw0_defconfig
-sh                               alldefconfig
-m68k                       m5249evb_defconfig
-sh                        sh7763rdp_defconfig
-h8300                               defconfig
-powerpc                         ps3_defconfig
-x86_64                           alldefconfig
-arm                            xcep_defconfig
-arm                     davinci_all_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                         wii_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                     tqm8541_defconfig
-mips                            ar7_defconfig
-powerpc                        fsp2_defconfig
-um                               allyesconfig
-arm                       omap2plus_defconfig
-powerpc                      ppc40x_defconfig
-sh                         ap325rxa_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                      bamboo_defconfig
-mips                      pistachio_defconfig
-arm                        trizeps4_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210407
-i386                 randconfig-a003-20210407
-i386                 randconfig-a001-20210407
-i386                 randconfig-a004-20210407
-i386                 randconfig-a002-20210407
-i386                 randconfig-a005-20210407
-x86_64               randconfig-a014-20210407
-x86_64               randconfig-a015-20210407
-x86_64               randconfig-a013-20210407
-x86_64               randconfig-a011-20210407
-x86_64               randconfig-a012-20210407
-x86_64               randconfig-a016-20210407
-i386                 randconfig-a014-20210407
-i386                 randconfig-a011-20210407
-i386                 randconfig-a016-20210407
-i386                 randconfig-a012-20210407
-i386                 randconfig-a015-20210407
-i386                 randconfig-a013-20210407
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210407
-x86_64               randconfig-a003-20210407
-x86_64               randconfig-a005-20210407
-x86_64               randconfig-a001-20210407
-x86_64               randconfig-a002-20210407
-x86_64               randconfig-a006-20210407
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 2021/4/7 7:42, Sean Christopherson wrote:
+> +Ben
+> 
+> On Tue, Apr 06, 2021, Keqian Zhu wrote:
+>> Hi Paolo,
+>>
+>> I plan to rework this patch and do full test. What do you think about this idea
+>> (enable dirty logging for huge pages lazily)?
+> 
+> Ben, don't you also have something similar (or maybe the exact opposite?) in the
+> hopper?  This sounds very familiar, but I can't quite connect the dots that are
+> floating around my head...
+>  
+>> PS: As dirty log of TDP MMU has been supported, I should add more code.
+>>
+>> On 2020/8/28 16:11, Keqian Zhu wrote:
+>>> Currently during enable dirty logging, if we're with init-all-set,
+>>> we just write protect huge pages and leave normal pages untouched,
+>>> for that we can enable dirty logging for these pages lazily.
+>>>
+>>> It seems that enable dirty logging lazily for huge pages is feasible
+>>> too, which not only reduces the time of start dirty logging, also
+>>> greatly reduces side-effect on guest when there is high dirty rate.
+>>>
+>>> (These codes are not tested, for RFC purpose :-) ).
+>>>
+>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>> ---
+>>>  arch/x86/include/asm/kvm_host.h |  3 +-
+>>>  arch/x86/kvm/mmu/mmu.c          | 65 ++++++++++++++++++++++++++-------
+>>>  arch/x86/kvm/vmx/vmx.c          |  3 +-
+>>>  arch/x86/kvm/x86.c              | 22 +++++------
+>>>  4 files changed, 62 insertions(+), 31 deletions(-)
+>>>
+>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>>> index 5303dbc5c9bc..201a068cf43d 100644
+>>> --- a/arch/x86/include/asm/kvm_host.h
+>>> +++ b/arch/x86/include/asm/kvm_host.h
+>>> @@ -1296,8 +1296,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
+>>>  
+>>>  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
+>>>  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+>>> -				      struct kvm_memory_slot *memslot,
+>>> -				      int start_level);
+>>> +				      struct kvm_memory_slot *memslot);
+>>>  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>>>  				   const struct kvm_memory_slot *memslot);
+>>>  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+>>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+>>> index 43fdb0c12a5d..4b7d577de6cd 100644
+>>> --- a/arch/x86/kvm/mmu/mmu.c
+>>> +++ b/arch/x86/kvm/mmu/mmu.c
+>>> @@ -1625,14 +1625,45 @@ static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
+>>>  }
+>>>  
+>>>  /**
+>>> - * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+>>> + * kvm_mmu_write_protect_largepage_masked - write protect selected largepages
+>>>   * @kvm: kvm instance
+>>>   * @slot: slot to protect
+>>>   * @gfn_offset: start of the BITS_PER_LONG pages we care about
+>>>   * @mask: indicates which pages we should protect
+>>>   *
+>>> - * Used when we do not need to care about huge page mappings: e.g. during dirty
+>>> - * logging we do not have any such mappings.
+>>> + * @ret: true if all pages are write protected
+>>> + */
+>>> +static bool kvm_mmu_write_protect_largepage_masked(struct kvm *kvm,
+>>> +				    struct kvm_memory_slot *slot,
+>>> +				    gfn_t gfn_offset, unsigned long mask)
+>>> +{
+>>> +	struct kvm_rmap_head *rmap_head;
+>>> +	bool protected, all_protected;
+>>> +	gfn_t start_gfn = slot->base_gfn + gfn_offset;
+>>> +	int i;
+>>> +
+>>> +	all_protected = true;
+>>> +	while (mask) {
+>>> +		protected = false;
+>>> +		for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+>>> +			rmap_head = __gfn_to_rmap(start_gfn + __ffs(mask), i, slot);
+>>> +			protectd |= __rmap_write_protect(kvm, rmap_head, false);
+>>> +		}
+>>> +
+>>> +		all_protected &= protectd;
+>>> +		/* clear the first set bit */
+>>> +		mask &= mask - 1;
+>>> +	}
+>>> +
+>>> +	return all_protected;
+>>> +}
+>>> +
+>>> +/**
+>>> + * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
+>>> + * @kvm: kvm instance
+>>> + * @slot: slot to protect
+>>> + * @gfn_offset: start of the BITS_PER_LONG pages we care about
+>>> + * @mask: indicates which pages we should protect
+>>>   */
+>>>  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
+>>>  				     struct kvm_memory_slot *slot,
+>>> @@ -1679,18 +1710,25 @@ EXPORT_SYMBOL_GPL(kvm_mmu_clear_dirty_pt_masked);
+>>>  
+>>>  /**
+>>>   * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
+>>> - * PT level pages.
+>>> - *
+>>> - * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
+>>> - * enable dirty logging for them.
+>>> - *
+>>> - * Used when we do not need to care about huge page mappings: e.g. during dirty
+>>> - * logging we do not have any such mappings.
+>>> + * dirty pages.
+>>>   */
+>>>  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
+>>>  				struct kvm_memory_slot *slot,
+>>>  				gfn_t gfn_offset, unsigned long mask)
+>>>  {
+>>> +	/*
+>>> +	 * If we're with initial-all-set, huge pages are NOT
+>>> +	 * write protected when we start dirty log, so we must
+>>> +	 * write protect them here.
+>>> +	 */
+>>> +	if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+>>> +		if (kvm_mmu_write_protect_largepage_masked(kvm, slot,
+>>> +					gfn_offset, mask))
+>>> +			return;
+>>> +	}
+>>> +
+>>> +	/* Then we can handle the 4K level pages */
+>>> +
+>>>  	if (kvm_x86_ops.enable_log_dirty_pt_masked)
+>>>  		kvm_x86_ops.enable_log_dirty_pt_masked(kvm, slot, gfn_offset,
+>>>  				mask);
+>>> @@ -5906,14 +5944,13 @@ static bool slot_rmap_write_protect(struct kvm *kvm,
+>>>  }
+>>>  
+>>>  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+>>> -				      struct kvm_memory_slot *memslot,
+>>> -				      int start_level)
+>>> +				      struct kvm_memory_slot *memslot)
+>>>  {
+>>>  	bool flush;
+>>>  
+>>>  	spin_lock(&kvm->mmu_lock);
+>>> -	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
+>>> -				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
+>>> +	flush = slot_handle_all_level(kvm, memslot, slot_rmap_write_protect,
+>>> +				      false);
+>>>  	spin_unlock(&kvm->mmu_lock);
+>>>  
+>>>  	/*
+>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>>> index 819c185adf09..ba871c52ef8b 100644
+>>> --- a/arch/x86/kvm/vmx/vmx.c
+>>> +++ b/arch/x86/kvm/vmx/vmx.c
+>>> @@ -7538,8 +7538,7 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int cpu)
+>>>  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
+>>>  				     struct kvm_memory_slot *slot)
+>>>  {
+>>> -	if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
+>>> -		kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+>>> +	kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+>>>  	kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
+>>>  }
+>>>  
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index d39d6cf1d473..c31c32f1424b 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -10225,22 +10225,18 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
+>>>  	 * is enabled the D-bit or the W-bit will be cleared.
+>>>  	 */
+>>>  	if (new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>>> +		/*
+>>> +		 * If we're with initial-all-set, we don't need
+>>> +		 * to write protect any page because they're
+>>> +		 * reported as dirty already.
+>>> +		 */
+>>> +		if (kvm_dirty_log_manual_protect_and_init_set(kvm))
+>>> +			return;
+>>> +
+>>>  		if (kvm_x86_ops.slot_enable_log_dirty) {
+>>>  			kvm_x86_ops.slot_enable_log_dirty(kvm, new);
+>>>  		} else {
+>>> -			int level =
+>>> -				kvm_dirty_log_manual_protect_and_init_set(kvm) ?
+>>> -				PG_LEVEL_2M : PG_LEVEL_4K;
+>>> -
+>>> -			/*
+>>> -			 * If we're with initial-all-set, we don't need
+>>> -			 * to write protect any small page because
+>>> -			 * they're reported as dirty already.  However
+>>> -			 * we still need to write-protect huge pages
+>>> -			 * so that the page split can happen lazily on
+>>> -			 * the first write to the huge page.
+>>> -			 */
+>>> -			kvm_mmu_slot_remove_write_access(kvm, new, level);
+>>> +			kvm_mmu_slot_remove_write_access(kvm, new);
+>>>  		}
+>>>  	} else {
+>>>  		if (kvm_x86_ops.slot_disable_log_dirty)
+>>>
+> .
+> 
