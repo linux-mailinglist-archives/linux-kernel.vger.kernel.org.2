@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201073589AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832D23589B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhDHQZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhDHQZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:25:10 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BCDC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:24:58 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g8so4978136lfv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OhP7GymXFSKtZlfnt0/yi6SF4MHiLfNobLLfZttkPNg=;
-        b=pNP3+nw0beqqrktG7Qie1dyDV4VmIMTq0UwmxM/5Sy5GbRLRfwgh+YWj0pIv0+jMw9
-         9WCqIIzsivso6CM/3M1eM/MyxDQaZtoRm3iZj8GpXZGLq6USw578MYrsIwfXNlFIulIW
-         +n/4hMXYlP5tphCL1r7xo3d4yFIedzoQ0a+4oFS8tmLcnsC0sIEBa1ZY7vW5CXPGFLzJ
-         XiT4U5W3LAeXk/7KXilNkSqdc/gXcnKNG6GNEyGR/lbZJB1QcGjyTjAad7FcLS7ZJMWB
-         4RMNOqfrgOqnCQ/w7oNhEe3XoBeJqmHp2rYfhs3bNxY8mlIWL6O4nxCOB7PN7PhBZgbM
-         XaBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OhP7GymXFSKtZlfnt0/yi6SF4MHiLfNobLLfZttkPNg=;
-        b=UADFNqD7NFm65luO5TI+SYLVLLGBSGGgndf5snTEQjlcyFesqPNoVmYLozRDFUsj3A
-         1o3C6WtFMlfPZYuOvlzcg76o1EabuoV4Kpt2lfaq+r4s2BFEMtANPQLUCSFWJkVFBTfx
-         0yNpPsH122cfPXL2QhHBwosHwWhPevyq3d93P9O18nJcKNLfvIdsNYiNRvaJDBmHaqFO
-         ssnqLj5JDtjqsz24tLqA6VH6/Mdg3ouKBbv2U4pSPxZ8LvnOOCNBPzZCEYo2ytpF12lP
-         9gd1ety9eCyOO0+/vZjgFzbrUjD8omrfLOgkYK+UO/YRobCtk12HTknQw5Jvb0hEpYP5
-         +XnQ==
-X-Gm-Message-State: AOAM5304EWZCMrG9uqnGSplV1ginmoGvlLV83lflnTqscz7s20DYg52y
-        ZFJk1QOmEj2fElxGqdOwm0czGu1gEpbAphP+GJ6zxQ==
-X-Google-Smtp-Source: ABdhPJxsgbICoUQRcb1rmHa4XodJWpA+CFTgt6poDqrvLhhm+JBXzDn91yCcJEWT8t2q20D9XXM4smuQa4urJhCK5mA=
-X-Received: by 2002:a05:6512:34c7:: with SMTP id w7mr6855594lfr.83.1617899096362;
- Thu, 08 Apr 2021 09:24:56 -0700 (PDT)
+        id S232228AbhDHQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:26:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:53540 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231655AbhDHQ0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:26:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57886D6E;
+        Thu,  8 Apr 2021 09:25:49 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFD6C3F73D;
+        Thu,  8 Apr 2021 09:25:46 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 17:25:39 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
+        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
+        p.zabel@pengutronix.de, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, helgaas@kernel.org
+Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver
+ support
+Message-ID: <20210408162539.GA32036@lpieralisi>
+References: <20210406092634.50465-1-greentime.hu@sifive.com>
 MIME-Version: 1.0
-References: <20210408143155.2679744-1-hannes@cmpxchg.org>
-In-Reply-To: <20210408143155.2679744-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 8 Apr 2021 09:24:45 -0700
-Message-ID: <CALvZod4W+7_EZUmUQLoz-9-C2LeMtqbdvFxK31m4qV6qHOrejQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: page_counter: mitigate consequences of a page_counter underflow
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406092634.50465-1-greentime.hu@sifive.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 7:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> When the unsigned page_counter underflows, even just by a few pages, a
-> cgroup will not be able to run anything afterwards and trigger the OOM
-> killer in a loop.
->
-> Underflows shouldn't happen, but when they do in practice, we may just
-> be off by a small amount that doesn't interfere with the normal
-> operation - consequences don't need to be that dire.
->
-> Reset the page_counter to 0 upon underflow. We'll issue a warning that
-> the accounting will be off and then try to keep limping along.
->
-> [ We used to do this with the original res_counter, where it was a
->   more straight-forward correction inside the spinlock section. I
->   didn't carry it forward into the lockless page counters for
->   simplicity, but it turns out this is quite useful in practice. ]
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
+> This patchset includes SiFive FU740 PCIe host controller driver. We also
+> add pcie_aux clock and pcie_power_on_reset controller to prci driver for
+> PCIe driver to use it.
+> 
+> This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
+> 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
+> v5.11 Linux kernel.
+> 
+> Changes in v5:
+>  - Fix typo in comments
+>  - Keep comments style consistent
+>  - Refine some error handling codes
+>  - Remove unneeded header file including
+>  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_link
+> 
+> Changes in v4:
+>  - Fix Wunused-but-set-variable warning in prci driver
+> 
+> Changes in v3:
+>  - Remove items that has been defined
+>  - Refine format of sifive,fu740-pcie.yaml
+>  - Replace perstn-gpios with the common one
+>  - Change DBI mapping space to 2GB from 4GB
+>  - Refine drivers/reset/Kconfig
+> 
+> Changes in v2:
+>  - Refine codes based on reviewers' feedback
+>  - Remove define and use the common one
+>  - Replace __raw_writel with writel_relaxed
+>  - Split fu740_phyregreadwrite to write function
+>  - Use readl_poll_timeout in stead of while loop checking
+>  - Use dwc common codes
+>  - Use gpio descriptors and the gpiod_* api.
+>  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_byname
+>  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
+>  - Add more comments for delay and sleep
+>  - Remove "phy ? x : y" expressions
+>  - Refine code logic to remove possible infinite loop
+>  - Replace magic number with meaningful define
+>  - Remove fu740_pcie_pm_ops
+>  - Use builtin_platform_driver
+> 
+> Greentime Hu (5):
+>   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+>   clk: sifive: Use reset-simple in prci driver for PCIe driver
+>   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+>   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+>   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
+> 
+> Paul Walmsley (1):
+>   PCI: fu740: Add SiFive FU740 PCIe host controller driver
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+I can pull the patches above into the PCI tree (but will drop patch 6 -
+dts changes), is it OK for you ? Please let me know how you would like
+to upstream it.
+
+Lorenzo
+
+>  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 +++++++
+>  MAINTAINERS                                   |   8 +
+>  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
+>  drivers/clk/sifive/Kconfig                    |   2 +
+>  drivers/clk/sifive/fu740-prci.c               |  11 +
+>  drivers/clk/sifive/fu740-prci.h               |   2 +-
+>  drivers/clk/sifive/sifive-prci.c              |  54 +++
+>  drivers/clk/sifive/sifive-prci.h              |  13 +
+>  drivers/pci/controller/dwc/Kconfig            |   9 +
+>  drivers/pci/controller/dwc/Makefile           |   1 +
+>  drivers/pci/controller/dwc/pcie-fu740.c       | 308 ++++++++++++++++++
+>  drivers/reset/Kconfig                         |   1 +
+>  include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
+>  13 files changed, 555 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+>  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
+> 
+> -- 
+> 2.30.2
+> 
