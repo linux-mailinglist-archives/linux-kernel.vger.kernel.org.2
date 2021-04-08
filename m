@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4F5358396
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D3C3583F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhDHMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:47:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16049 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhDHMrn (ORCPT
+        id S231607AbhDHM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:57:44 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2807 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhDHM5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:47:43 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGLZ31d7zzNttM;
-        Thu,  8 Apr 2021 20:44:43 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 20:47:19 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>,
-        Chen Huang <chenhuang5@huawei.com>
-Subject: [PATCH -next] ALSA: virtio: use module_virtio_driver() to simplify the code
-Date:   Thu, 8 Apr 2021 12:54:29 +0000
-Message-ID: <20210408125429.1158703-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 8 Apr 2021 08:57:43 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FGLhh6ZXVz67vP6;
+        Thu,  8 Apr 2021 20:50:28 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 14:57:31 +0200
+Received: from [10.47.1.29] (10.47.1.29) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 8 Apr 2021
+ 13:57:30 +0100
+Subject: Re: [PATCH 1/2] drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Will Deacon <will@kernel.org>
+CC:     "liuqi (BA)" <liuqi115@huawei.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        Zhangshaokun <zhangshaokun@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1617788943-52722-1-git-send-email-liuqi115@huawei.com>
+ <1617788943-52722-2-git-send-email-liuqi115@huawei.com>
+ <20210407204004.GB16011@willie-the-truck>
+ <20210408100157.000062f0@Huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <16a7a3f8-82b5-a113-57c0-a9d575c649bd@huawei.com>
+Date:   Thu, 8 Apr 2021 13:55:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
+In-Reply-To: <20210408100157.000062f0@Huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.29]
+X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-module_virtio_driver() makes the code simpler by eliminating
-boilerplate code.
+On 08/04/2021 10:01, Jonathan Cameron wrote:
+> On Wed, 7 Apr 2021 21:40:05 +0100
+> Will Deacon <will@kernel.org> wrote:
+> 
+>> On Wed, Apr 07, 2021 at 05:49:02PM +0800, Qi Liu wrote:
+>>> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+>>> to sample bandwidth, latency, buffer occupation etc.
+>>>
+>>> Each PMU RCiEP device monitors multiple root ports, and each RCiEP is
+>>> registered as a pmu in /sys/bus/event_source/devices, so users can
+>>> select target PMU, and use filter to do further sets.
+>>>
+>>> Filtering options contains:
+>>> event        - select the event.
+>>> subevent     - select the subevent.
+>>> port         - select target root ports. Information of root ports
+>>>                 are shown under sysfs.
+>>> bdf           - select requester_id of target EP device.
+>>> trig_len     - set trigger condition for starting event statistics.
+>>> trigger_mode - set trigger mode. 0 means starting to statistic when
+>>>                 bigger than trigger condition, and 1 means smaller.
+>>> thr_len      - set threshold for statistics.
+>>> thr_mode     - set threshold mode. 0 means count when bigger than
+>>>                 threshold, and 1 means smaller.
+>>>
+>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>
+>> Do you have a link to this review, please?
+> 
+> Internal review, so drop the tag.
+> 
+> Jonathan
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- sound/virtio/virtio_card.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+Hi Will,
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index ae9128063917..150ab3e37013 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -432,17 +432,7 @@ static struct virtio_driver virtsnd_driver = {
- #endif
- };
- 
--static int __init init(void)
--{
--	return register_virtio_driver(&virtsnd_driver);
--}
--module_init(init);
--
--static void __exit fini(void)
--{
--	unregister_virtio_driver(&virtsnd_driver);
--}
--module_exit(fini);
-+module_virtio_driver(virtsnd_driver);
- 
- MODULE_DEVICE_TABLE(virtio, id_table);
- MODULE_DESCRIPTION("Virtio sound card driver");
--- 
-2.17.1
+Are you implying that you would rather that any review for these drivers 
+is done in public on the lists?
 
+Cheers,
+John
