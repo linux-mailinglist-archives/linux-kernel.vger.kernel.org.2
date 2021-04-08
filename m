@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C60B357F15
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD93D357F17
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhDHJ0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:26:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:59134 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhDHJ0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:26:01 -0400
-IronPort-SDR: 2FmBwaNonASUGSPlk5c1LrldDNcbqEVebWZyR/VdIg8PgEBcaQr0zblgHqOztxrtTvKqyGMjlR
- P3ip/ekOUd6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="278769636"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="278769636"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 02:25:50 -0700
-IronPort-SDR: tDJZXqF5IHHMgCoJtA0Qj7X1TGJqBh7/6uaeZNO//dZgoWRkOHvuYtWkeITznzI/TyQaKeWlhO
- Ub8stqs13zAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="519781454"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Apr 2021 02:25:48 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Apr 2021 12:25:47 +0300
-Date:   Thu, 8 Apr 2021 12:25:47 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] usb: typec: tcpm: remove unused static variable
- 'tcpm_altmode_ops'
-Message-ID: <YG7MG2yZbRlSJg9E@kuha.fi.intel.com>
-References: <20210407091540.2815-1-thunder.leizhen@huawei.com>
- <7e2797f7-0ba7-0362-ae34-a1d4fb265cd7@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e2797f7-0ba7-0362-ae34-a1d4fb265cd7@redhat.com>
+        id S230508AbhDHJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:26:26 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:45120 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229618AbhDHJ0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:26:24 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app2 (Coremail) with SMTP id by_KCgAXEPgnzG5g5vTdAA--.47586S4;
+        Thu, 08 Apr 2021 17:26:03 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe
+Date:   Thu,  8 Apr 2021 17:25:59 +0800
+Message-Id: <20210408092559.3824-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAXEPgnzG5g5vTdAA--.47586S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFWkGw1ftF1xGr17Cr18uFg_yoW3Zrc_Cw
+        4DWrn3GFsY9wnrJ3WkKr98ZF9F9rZ8Xr4DXr4vqayavrWDArsxCay8AF1DCr47Z3yxCr4k
+        CrWqga97Ar13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
+        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
+        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
+        McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
+        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU5sjjDUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOgASs+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:10:38AM +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 4/7/21 11:15 AM, Zhen Lei wrote:
-> > Fixes the following W=1 kernel build warning:
-> > 
-> > drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
-> > 
-> > The reference to the variable 'tcpm_altmode_ops' is deleted by the
-> > commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration
-> > mechanism").
-> > 
-> > By the way, the static functions referenced only by the variable
-> > 'tcpm_altmode_ops' are deleted accordingly.
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> I have a patch pending:
-> 
-> https://www.spinics.net/lists/linux-usb/msg197684.html
-> 
-> Which actually uses this. I really need to (and plan to) brush the dust of
-> this one soon and submit a new version.
-> 
-> As such I would prefer for these ops to not get removed. But I guess I
-> can always include a patch in my series reverting the removal...
+When platform_get_irq() fails, a pairing PM usage counter
+increment is needed to keep the counter balanced. It's the
+same for the following error paths.
 
-Well, can we then just leave the ops there? If we're going to
-re-introduce them back soon in any case, then why drop them in the
-first place.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/spi/spi-zynqmp-gqspi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
-
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index c8fa6ee18ae7..95963a2de64a 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -1197,6 +1197,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ clk_dis_all:
++	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_suspended(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	clk_disable_unprepare(xqspi->refclk);
 -- 
-heikki
+2.17.1
+
