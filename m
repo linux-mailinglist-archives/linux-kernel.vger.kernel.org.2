@@ -2,129 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74DF357C69
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E92357C6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhDHGTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:19:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15962 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhDHGT3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:19:29 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FG9yp52Z9zyNZ9;
-        Thu,  8 Apr 2021 14:17:06 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 14:19:08 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "MPT-FusionLinux . pdl" <MPT-FusionLinux.pdl@broadcom.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 3/3] scsi: mptfusion: Fix error return code of mptctl_hp_hostinfo()
-Date:   Thu, 8 Apr 2021 14:18:51 +0800
-Message-ID: <20210408061851.3089-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210408061851.3089-1-thunder.leizhen@huawei.com>
-References: <20210408061851.3089-1-thunder.leizhen@huawei.com>
+        id S231142AbhDHGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:19:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhDHGTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:19:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C98026113E;
+        Thu,  8 Apr 2021 06:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617862776;
+        bh=iqSCp7HTQcNYcIH9yAGkaZpmwBCAxBBfN48dZyIRzbo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FwGee+n+6Mn9jwCGSymw8awX1e/sDKzbNlpfMomrFqMNMvzqPNgf0OrxNZ3gez8hi
+         h6rGetOpMR5k9cUxtRKJ1QKYeDs+Q0wfyIlAZlSfxiGb70hFMz5M8eIbNI7oAHnDI7
+         sB2Y2u1JLCAaCUF2I+4YeOb5DW9ri2MKXE+ZY8GI=
+Date:   Thu, 8 Apr 2021 08:19:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Message-ID: <YG6gdRiEkiYxKKm9@kroah.com>
+References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
+ <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
+ <YG3vu9XQ94w5dlbp@kroah.com>
+ <OSBPR01MB47733C009A6B6F2F697E12ACBA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OSBPR01MB47733C009A6B6F2F697E12ACBA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that all "goto out" error branches return correct error codes.
-Currently, always returns 0.
+On Wed, Apr 07, 2021 at 07:43:44PM +0000, Min Li wrote:
+> > 
+> > Why do you need 4 files here?  Can't you do this all in one?  There's no need
+> > for such a small driver to be split up, that just causes added complexity and
+> > makes things harder to review and understand.
+> > 
+> 
+> We will add more functions and boards down the road. So the abstraction here is for future consideration  
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/message/fusion/mptctl.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+Do not add additional complexity today for stuff that you do not need
+today.  Add it when you need it.
 
-diff --git a/drivers/message/fusion/mptctl.c b/drivers/message/fusion/mptctl.c
-index 72025996cd70..57bf511245b6 100644
---- a/drivers/message/fusion/mptctl.c
-+++ b/drivers/message/fusion/mptctl.c
-@@ -2326,7 +2326,7 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 	ToolboxIstwiReadWriteRequest_t	*IstwiRWRequest;
- 	MPT_FRAME_HDR		*mf = NULL;
- 	unsigned long		timeleft;
--	int			retval;
-+	int			retval = 0;
- 	u32			msgcontext;
- 
- 	/* Reset long to int. Should affect IA64 and SPARC only
-@@ -2453,6 +2453,7 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 	if ((mf = mpt_get_msg_frame(mptctl_id, ioc)) == NULL) {
- 		dfailprintk(ioc, printk(MYIOC_s_WARN_FMT
- 			"%s, no msg frames!!\n", ioc->name, __func__));
-+		retval = -EFAULT;
- 		goto out;
- 	}
- 
-@@ -2471,12 +2472,13 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 		IstwiRWRequest->DeviceAddr = 0xB0;
- 
- 	pbuf = pci_alloc_consistent(ioc->pcidev, 4, &buf_dma);
--	if (!pbuf)
-+	if (!pbuf) {
-+		retval = -ENOMEM;
- 		goto out;
-+	}
- 	ioc->add_sge((char *)&IstwiRWRequest->SGL,
- 	    (MPT_SGE_FLAGS_SSIMPLE_READ|4), buf_dma);
- 
--	retval = 0;
- 	SET_MGMT_MSG_CONTEXT(ioc->ioctl_cmds.msg_context,
- 				IstwiRWRequest->MsgContext);
- 	INITIALIZE_MGMT_STATUS(ioc->ioctl_cmds.status)
-@@ -2486,10 +2488,10 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 	timeleft = wait_for_completion_timeout(&ioc->ioctl_cmds.done,
- 			HZ*MPT_IOCTL_DEFAULT_TIMEOUT);
- 	if (!(ioc->ioctl_cmds.status & MPT_MGMT_STATUS_COMMAND_GOOD)) {
--		retval = -ETIME;
- 		printk(MYIOC_s_WARN_FMT "%s: failed\n", ioc->name, __func__);
- 		if (ioc->ioctl_cmds.status & MPT_MGMT_STATUS_DID_IOCRESET) {
- 			mpt_free_msg_frame(ioc, mf);
-+			retval = -ETIME;
- 			goto out;
- 		}
- 		if (!timeleft) {
-@@ -2497,9 +2499,11 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 			       "HOST INFO command timeout, doorbell=0x%08x\n",
- 			       ioc->name, mpt_GetIocState(ioc, 0));
- 			mptctl_timeout_expired(ioc, mf);
--		} else
--			goto retry_wait;
--		goto out;
-+			retval = -ETIME;
-+			goto out;
-+		}
-+
-+		goto retry_wait;
- 	}
- 
- 	/*
-@@ -2530,7 +2534,7 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 		return -EFAULT;
- 	}
- 
--	return 0;
-+	return retval;
- 
- }
- 
--- 
-2.21.1
+> > >  include/uapi/linux/rsmu.h |  64 +++++++++++
+> > 
+> > Where are you documenting these new custom ioctls?  And why do you even
+> > need them?
+> > 
+> 
+> Other than comments in the header itself, no additional documenting. Do you know if Linux has specific place to document custom ioctls? 
+> Renesas software needs to access these ioctls to provide GNSS assisted partial timing support. More specifically, RSMU_GET_STATE would tell us if a specific DPLL
+> is locked to GNSS and RSMU_GET_FFO would tell us how much of frequency offset for the DPLL to lock to the GNSS.
 
+Please provide some sort of documentation and at the least, a pointer to
+the software that uses this so that we can see how it all ties together.
 
+thanks,
+
+greg k-h
