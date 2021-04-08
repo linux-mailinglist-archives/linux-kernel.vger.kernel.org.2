@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F4B3579E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F643579E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhDHBud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 21:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S230467AbhDHBux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 21:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhDHBu1 (ORCPT
+        with ESMTP id S229505AbhDHBuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 21:50:27 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C921C061760;
-        Wed,  7 Apr 2021 18:50:17 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id y5so683447qkl.9;
-        Wed, 07 Apr 2021 18:50:17 -0700 (PDT)
+        Wed, 7 Apr 2021 21:50:51 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560A7C061760;
+        Wed,  7 Apr 2021 18:50:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id qo10so278637ejb.6;
+        Wed, 07 Apr 2021 18:50:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=mMhxbB0zqHG5YU1pZTAAX3hVmpGb5cQ4fHjP3KzZthQ=;
-        b=QPrEzU8sAygM5cwmENm34A2L3XVE53Ze6nVd2eYnd6KIGKg8AWz3k5PNnFtrilVEXX
-         wgaqkxVTcH9p93o8O3lgyeOHeXQB8XPorZExdV9H4PzqjLEO/ysOcYmu7n2xtyoiZ7Hn
-         lP0E80tx91xON/MH9M+z1km/Sbd722K9SGERcL2hlznvp3GmUYLdKZUWUwTLISZukgFQ
-         VwhtYf9v+BzW0dBQyQ0BtEP9MXIHFS+PWflFbyZDM5KuiJZcnsCllHuQ48o/sTA4UnOu
-         WcuwWi9VQJafhdaRjujIFxA38cvqA+RKvzBBuYpaSUrHcG+cBbD9GeA0kOUE+GwhMB+t
-         bMWg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfNXSKFyjceSAEqC8oEmZ0wGLBVqNXq7b/vbrEhASFc=;
+        b=n6mQ+GWoZCM+oZCPmcTbueUyvzME9DKmSrLLY7QBLV1UxFtFpFXAIw0xp/ueOFemRQ
+         4ReTj/QmN4dA72qjBEi4B4YG7YyEBlCNKAbT8Pqsqu6duXfXXt+HfSLdfOjrQUvvUYg6
+         n3fLRlyIvJhpmbM9c/kqFIvW5kbmnRyg3z0WBEWZfw/AepdMUEpjTVgz0B2Z0DV1ClzZ
+         wz/ImFfEszhh9hpq/khr03FTkW/OB/HmCJMl70dyEToWmTobDbKbisAgCu7nw5TsjQjj
+         4pzVwlckJEbtOC52bWeyPOxNOeEU5rxGRdVmGe2AxbqUI3vZ2UiU2oeBDbkqi4umhW5i
+         Xdjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=mMhxbB0zqHG5YU1pZTAAX3hVmpGb5cQ4fHjP3KzZthQ=;
-        b=evUx6xecgoStHU0vMMBUkbLqNBQzmF3//c0Y2vY0jU7IUZxMKLCAVY+VQxf3R6coAR
-         s+eZA5TMilekz/At4Vt8sqJ1nM7hcPLYalVgMkd/duDbDLgS4F0BlhL5AMlH3FDkRcN0
-         sy7BOZRP3MU7++00apykB3QH+zgIhj09O2A16MJ7QXPeg7wS9A1bGoneRzIaaiGrWUT2
-         xWB5T61vgqYY/8VNnY6v6H+ofSCLurpfSYasRbvp+FwK06TRTpxri74VckoH+6DIR2kT
-         6itqfKjR5ilDf/GjogvjEda3szJJ3HWw9wAS0y1iawzdf7Uz4mAmKx8frSXmNcQUrUGN
-         sOTQ==
-X-Gm-Message-State: AOAM533QG9adUMWNlzGoOQND5uRnFPrBDmfb1uq1v/n3BZfpOQq7K1bs
-        hUR8Q7SVhh9ieSPvKro6ZSm1/ktADHZyPBMh
-X-Google-Smtp-Source: ABdhPJwTVQg1PoTmTSngwfPxVba1R0vKewmtNNIIFfa3tXDiD7qXpPv49hyGOpBl7FLd8+UfUW4YXg==
-X-Received: by 2002:a37:d82:: with SMTP id 124mr6094473qkn.311.1617846616630;
-        Wed, 07 Apr 2021 18:50:16 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id m16sm19473506qkm.100.2021.04.07.18.50.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 18:50:16 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 07 Apr 2021 21:50:15 -0400
-Message-Id: <CAHYREM5SP01.DM67S1LUC3NY@shaak>
-Cc:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
-        <kbuild-all@lists.01.org>
-Subject: Re: [PATCH] clk: fix for_each_child.cocci warnings
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Stephen Boyd" <sboyd@kernel.org>,
-        "Julia Lawall" <julia.lawall@inria.fr>, <mturquette@baylibre.com>
-References: <alpine.DEB.2.22.394.2104072100410.11549@hadrien>
- <161784187378.3790633.2593540922159647609@swboyd.mtv.corp.google.com>
-In-Reply-To: <161784187378.3790633.2593540922159647609@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfNXSKFyjceSAEqC8oEmZ0wGLBVqNXq7b/vbrEhASFc=;
+        b=tRgHuRTCGMUkzKeRwWnO/DNlQHee+puFOFaHTb0qVPgTGxOoAq8RRsDBqEeofb5hBl
+         7XsRoPNxSx45HfJcJQSo6XrKs6sd5sbJYwzCSIvunxz1s4woIboBwb0MoooW0BMcjZ73
+         P9WXsVY4vrjw4hlDZiHMM8dOR9rgwPbm/LS9SRdXqOADpcNGQD+TnBjs2VAmr7ziG4Sm
+         xPwzBWk2ASJzMpFjcBiHp45OZO+P+9XKu1sBgP4CcZn81XwyR4jUUw/j6qLj8v3dbvzg
+         sC+ksFJNSzKQDH7fXayWCpQnqQ70hfmvIG9mUn6W8g35+KMT28o4tjpUY7ASoe+/rbIT
+         x3bQ==
+X-Gm-Message-State: AOAM531mu7i6+vySKhkfYoPO8+rjV3lrgUHyMyREFc067ylwVMUFMAax
+        ltY9lsoC6iou1gXjmUMj/VP8XS7NqnUFIyUZNw==
+X-Google-Smtp-Source: ABdhPJyz2BJf7lhhvxFs360g+764VnCeACMHQ+kYL5+HxXePD3cQR/MxqJB8SMFWoknn3YlQxih/qJb5Xkd7e2XHX1c=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr7289158ejw.341.1617846638076;
+ Wed, 07 Apr 2021 18:50:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210407212522.6cd49dc0@canb.auug.org.au> <MN2PR13MB283296F15263550CD8767079E1759@MN2PR13MB2832.namprd13.prod.outlook.com>
+In-Reply-To: <MN2PR13MB283296F15263550CD8767079E1759@MN2PR13MB2832.namprd13.prod.outlook.com>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Wed, 7 Apr 2021 20:50:26 -0500
+Message-ID: <CAL_JsqLC7_NyxZGT6b70mBtxkdPej3h4oZSFt6ghi1gtD185XQ@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the devicetree-fixes tree
+To:     Frank Rowand <Frank.Rowand@sony.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Wed Apr 7, 2021 at 8:31 PM EDT, Stephen Boyd wrote:
-> Quoting Julia Lawall (2021-04-07 12:02:32)
-> > From: kernel test robot <lkp@intel.com>
-> >=20
-> > For_each_child_of_node should have of_node_put() before goto.
-> >=20
-> > Generated by: scripts/coccinelle/iterators/for_each_child.cocci
-> >=20
-> > CC: Liam Beguin <lvb@xiphos.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> > ---
+On Wed, Apr 7, 2021 at 6:24 PM <Frank.Rowand@sony.com> wrote:
 >
-> Is this a fix for a patch on the list?
->
-
-This is a fix for a patch[1] I sent yesterday.
-I'll apply and resend.
-
-Thanks,
-Liam
-
-[1] https://patchwork.kernel.org/project/linux-clk/patch/20210407005330.289=
-0430-2-liambeguin@gmail.com/
-
-> >=20
-> > url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-suppor=
-t-for-the-lmk04832/20210407-085408
-> > base:   f40ddce88593482919761f74910f42f4b84c004b
-> > :::::: branch date: 9 hours ago
-> > :::::: commit date: 9 hours ago
-> >=20
-> >  clk-lmk04832.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > --- a/drivers/clk/clk-lmk04832.c
-> > +++ b/drivers/clk/clk-lmk04832.c
-> > @@ -1159,6 +1159,7 @@ static int lmk04832_probe(struct spi_dev
-> >                 if (ret) {
-> >                         dev_err(lmk->dev, "missing reg property in chil=
-d: %s\n",
-> >                                 child->full_name);
-> > +                       of_node_put(child);
-> >                         goto err_disable_oscin;
-> >                 }
+> > -----Original Message-----
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Sent: Wednesday, April 7, 2021 6:28 AM
 > >
+> > Hi all,
+> >
+> > In commit
+> >
+> >   f2ce9e97cf07 ("of: properly check for error returned by fdt_get_name()")
+> >
+> > Fixes tag
+> >
+> >   Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+> >
+> > has these problem(s):
+> >
+> >   - leading word 'commit' unexpected
+>
+> Sorry about that, checkpatch wanted "commit" in some other context and
+> I got carried away and also added it to the Fixes tag.
 
+I've fixed it up.
+
+Rob
