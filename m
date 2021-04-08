@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C32235825D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBCB358268
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhDHLo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhDHLoW (ORCPT
+        id S231528AbhDHLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:44:53 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:45501 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231239AbhDHLow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:44:22 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0F8C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:44:10 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id x15so1808105wrq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+bIMHjM8IkWGQ9w2UhAWL6nad3z/nsAAXwfEZIX9lWc=;
-        b=HzLW9PAKd4D2FBBBl8PCr0y3Kw+mUxzAfMkhunUFy5g084vTc3tR3FgCZULEQo0aRJ
-         70RJkyKfjoUXms2whB0E+fWJOI2bfvz4DeQho9AoZyPY+Fi8PJLOMkNvY/vNEMPUQWqq
-         eGGIn6Fb7N4Gn6wTADCQI6woEj7GonRXHLLvE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=+bIMHjM8IkWGQ9w2UhAWL6nad3z/nsAAXwfEZIX9lWc=;
-        b=DxJhsNEQEzKCSI4Z2gu5+msbA5lHGPMXXqYebyHLLEAH3DleDgYbBrOFe1wHmquyV0
-         Fh2H9lT8aFUtvWDNLgGMqljvkzVHh+kWpG+MEOOSolV7/pt2sclltaQYKC1OEDwnLbtS
-         JvnPXFVb+St3A7gzmFXDg4iWrojMgEgxxbnH/5NAnIQaosAAMZ7ZnaC/qs1M2J3c33ZC
-         eqNZvQ/P7UKykkWziow7gDI3+xvZkIjfJt/8Irb834ysnpQsQFKv2MwGRdM7/AZO3u2c
-         4X4uBKP9fN85tc8tRqNiYLjHyuoFvB93SObJ4pKe7XmR2RwlC7NXdnUDde2yU40vtUX4
-         7IRw==
-X-Gm-Message-State: AOAM532cHf0yrBUavlr1dWfBkJZrTwObzB3yaXMimmaO40qhU8oyfXTV
-        dMMClijs6Ixu42xoumWLakACTQ==
-X-Google-Smtp-Source: ABdhPJx7T3RCQlE5ua8yXfZvWLP1S80e0mDHoUGS7ErWGxP0VUT/3ngstw02CFjw7tqjgD8X14d31A==
-X-Received: by 2002:adf:e743:: with SMTP id c3mr7764889wrn.408.1617882248844;
-        Thu, 08 Apr 2021 04:44:08 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f7sm11692950wmq.11.2021.04.08.04.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 04:44:08 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 13:44:06 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
-Message-ID: <YG7shmP1WdfguDQf@phenom.ffwll.local>
-Mail-Followup-To: Paolo Bonzini <pbonzini@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Cornelia Huck <cohuck@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
- <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
- <20210329133101.GA1168973@nvidia.com>
- <YG7VWWkvnv2IPEXt@phenom.ffwll.local>
- <5f956a46-da38-e72a-edaa-3b746a275f1e@redhat.com>
+        Thu, 8 Apr 2021 07:44:52 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MCGag-1lL5Px2EnS-009Q4d; Thu, 08 Apr 2021 13:44:39 +0200
+Received: by mail-ot1-f43.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso1968094otq.3;
+        Thu, 08 Apr 2021 04:44:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532PVEKJCOydP4oD3gqf9/0QX1PB2iJN/lLZDhCWmvSDhFf2USKR
+        23FoZiclzWNxirnXf9rgmHD7DHhhWBIGFKt2xM4=
+X-Google-Smtp-Source: ABdhPJw/Kt6oueYEiXqyZYSL7pDJ4LuFJYHMs1Y8FL1ZmuGq8xfxN7KNWR6IE58DyzqBWI3T+US+8jsx0JeptqGIBk4=
+X-Received: by 2002:a9d:316:: with SMTP id 22mr7135730otv.210.1617882278035;
+ Thu, 08 Apr 2021 04:44:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f956a46-da38-e72a-edaa-3b746a275f1e@redhat.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <20210408092011.52763-1-david@redhat.com> <20210408092011.52763-3-david@redhat.com>
+ <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
+ <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com> <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
+ <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
+In-Reply-To: <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 8 Apr 2021 13:44:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
+Message-ID: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
+ aspeed or etnaviv
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:MOWjxzUM/juLxZVwoDmvgjbj1GMzi9SdTRgf5tDlGz7krnsVOLt
+ 1Z1WcCI0BOKgmu8eCsvSTCIrLBZx4t6agx3x7VgJYOwAI+NPAtBeNtbFDAcNI4/v6FE9IUx
+ JBK+ZGNcu7sCreU+ajo+q/7DPpDgLGbkZk4GCnWY7pLJ+vyjpbthaXuHbugcAzoS5PT3HOi
+ fXBQOrWGH6a6gIZ7wXh2A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FUKfpKU5/WU=:zOKSjAjtGSgC+Yja8Db356
+ D2PuQypz6UegVxYfSX0xarOyj8i+7QYIwzi0uJN47jjvsA3EQ81m2WosCxvpKJ+JTKSUofmua
+ F4/F2CVlZfravPwCG8j8tTSaGaO5Cjx1ni6EO88x7PCus0pceDuDUEAyjRZ+DwyuAHsqUoCoR
+ UM/Pn3wx6Mf6DvmD49eHPYoespAgksSJFg/yjA7ETOAqXZGYmzOKCdh4/r1e98c5RzNuY+Ice
+ mdc0U9faKK8XJtN3MyeeCIrOdaloHSIhbnVAjgFnifQKPZTQEniVfwA/twuDQRBRl0qs03LRH
+ 9dRvohVo3W0SFioMhxysfSg0NsZgeKAtjxRR+11FBMEtYqyiveuLAcEvYmdk1/kNXujnhLbLo
+ mDS7WJNFHrXqeXlxP9thl567kk2C3zGX2Pwiwh6qYhUhZv8bKwjwxLc3tqBU7pXYoIc/1yUJ/
+ 6IxyfxPPaHOopn19js2zdVjuBd17CUDe8ht5DjG5Yms9Xjt2Yh5XcIB8aL0PgbpsAWfBz9xQy
+ LGQPkJSSYyMS2MvKINwxb6qq+tl/qzA/A3av/v7S/gyR/z290ceF4HVMNoHQbDXAYHVKwN4Py
+ XL7Bube7z68KzL5aGT4lihP+MZMFX3p5LV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:40:59PM +0200, Paolo Bonzini wrote:
-> On 08/04/21 12:05, Daniel Vetter wrote:
-> > On Mon, Mar 29, 2021 at 10:31:01AM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Mar 16, 2021 at 04:33:03PM +0100, Daniel Vetter wrote:
-> > > > Both kvm (in bd2fae8da794 ("KVM: do not assume PTE is writable after
-> > > > follow_pfn")) and vfio (in 07956b6269d3 ("vfio/type1: Use
-> > > > follow_pte()")) have lost their callsites of follow_pfn(). All the
-> > > > other ones have been switched over to unsafe_follow_pfn because they
-> > > > cannot be fixed without breaking userspace api.
-> > > > 
-> > > > Argueably the vfio code is still racy, but that's kinda a bigger
-> > > 
-> > > vfio and kvm
-> > 
-> > Hm I thought kvm is non-racy due to the mmu notifier catch races?
-> 
-> No, but the plan is indeed to have some struct for each page that uses
-> follow_pfn and update it from the MMU notifiers.
+On Thu, Apr 8, 2021 at 1:00 PM David Hildenbrand <david@redhat.com> wrote:
+> >
+> > It is a somewhat awkward way to say "prevent this symbol from
+> > being =y if the dependency is =m".
+>
+> What would be the right thing to do in the case here then to achieve the
+> "if DRMA_ASPEED_GFX is enabled, also enable DMA_CMA id possible"?
+>
+> One approach could be to have for DMA_CMA
+>
+> default y if DRMA_ASPEED_GFX
+>
+> but it feels like the wrong way to tackle this.
 
-Thanks for clarifying, I've fixed the commit message to mention both vfio
-and kvm as Jason suggested. I didn't know that the follow_pte usage in kvm
-still has some gaps wrt what's invalidated with mmu notifiers.
+I'm still not sure what you are trying to achieve. Is the idea only to provide
+a useful default for DMA_CMA depending on which drivers are enabled?
 
-Thanks, Daniel
+This is something you could do using a hidden helper symbol like
 
-> 
-> Paolo
-> 
-> > > 
-> > > > picture. But since it does leak the pte beyond where it drops the pt
-> > > > lock, without anything else like an mmu notifier guaranteeing
-> > > > coherence, the problem is at least clearly visible in the vfio code.
-> > > > So good enough with me.
-> > > > 
-> > > > I've decided to keep the explanation that after dropping the pt lock
-> > > > you must have an mmu notifier if you keep using the pte somehow by
-> > > > adjusting it and moving it into the kerneldoc for the new follow_pte()
-> > > > function.
-> > > > 
-> > > > Cc: 3pvd@google.com
-> > > > Cc: Jann Horn <jannh@google.com>
-> > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > > Cc: Jason Gunthorpe <jgg@nvidia.com>
-> > > > Cc: Cornelia Huck <cohuck@redhat.com>
-> > > > Cc: Peter Xu <peterx@redhat.com>
-> > > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > Cc: linux-samsung-soc@vger.kernel.org
-> > > > Cc: linux-media@vger.kernel.org
-> > > > Cc: kvm@vger.kernel.org
-> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > > ---
-> > > >   include/linux/mm.h |  2 --
-> > > >   mm/memory.c        | 26 +++++---------------------
-> > > >   mm/nommu.c         | 13 +------------
-> > > >   3 files changed, 6 insertions(+), 35 deletions(-)
-> > > 
-> > > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> > 
-> > Thanks for your r-b tags, I'll add them.
-> > -Daniel
-> > 
-> > > 
-> > > Jason
-> > 
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+config DRMA_ASPEED_GFX
+       bool "Aspeed display driver"
+       select DRM_WANT_CMA
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+config DRM_WANT_CMA
+       bool
+       help
+          Select this from any driver that benefits from CMA being enabled
+
+config DMA_CMA
+       bool "Use CMA helpers for DRM"
+       default DRM_WANT_CMA
+
+         Arnd
