@@ -2,288 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B851E357F32
+	by mail.lfdr.de (Postfix) with ESMTP id 6904A357F31
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhDHJbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:31:40 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:42512 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhDHJbj (ORCPT
+        id S229849AbhDHJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:31:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3080 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhDHJbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:31:39 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1389KqOq082189;
-        Thu, 8 Apr 2021 17:20:52 +0800 (GMT-8)
-        (envelope-from kuohsiang_chou@aspeedtech.com)
-Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
- 2021 17:30:58 +0800
-From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        Thu, 8 Apr 2021 05:31:34 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FGGBt1gFkzWVRR;
+        Thu,  8 Apr 2021 17:27:50 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 8 Apr 2021 17:31:19 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 17:31:18 +0800
+Subject: Re: [RFC PATCH v3 2/2] KVM: arm64: Distinguish cases of memcache
+ allocations completely
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
-        <arc_sung@aspeedtech.com>
-Subject: [PATCH v4] drm/ast: Fixed CVE for DP501
-Date:   Thu, 8 Apr 2021 17:30:52 +0800
-Message-ID: <20210408093052.59782-1-kuohsiang_chou@aspeedtech.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
-References: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
+        <yuzenghui@huawei.com>
+References: <20210326031654.3716-1-wangyanan55@huawei.com>
+ <20210326031654.3716-3-wangyanan55@huawei.com>
+ <4348b555-2a38-6f00-8ef0-0d5fd801d753@arm.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <2f7872af-b5dc-9e81-574d-928849ad473c@huawei.com>
+Date:   Thu, 8 Apr 2021 17:31:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.206]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1389KqOq082189
+In-Reply-To: <4348b555-2a38-6f00-8ef0-0d5fd801d753@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Bug][DP501]
-If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
-CVE_2019_6260 item3, and then the monitor's EDID is unable read through
-Parade DP501.
-The reason is the DP501's FW is mapped to BMC addressing space rather
-than Host addressing space.
-The resolution is that using "pci_iomap_range()" maps to DP501's FW that
-stored on the end of FB (Frame Buffer).
-In this case, FrameBuffer reserves the last 2MB used for the image of
-DP501.
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++---------
- drivers/gpu/drm/ast/ast_drv.h   |  12 +++
- drivers/gpu/drm/ast/ast_main.c  |   8 ++
- 3 files changed, 123 insertions(+), 36 deletions(-)
+On 2021/4/7 23:35, Alexandru Elisei wrote:
+> Hi Yanan,
+>
+> On 3/26/21 3:16 AM, Yanan Wang wrote:
+>> With a guest translation fault, the memcache pages are not needed if KVM
+>> is only about to install a new leaf entry into the existing page table.
+>> And with a guest permission fault, the memcache pages are also not needed
+>> for a write_fault in dirty-logging time if KVM is only about to update
+>> the existing leaf entry instead of collapsing a block entry into a table.
+>>
+>> By comparing fault_granule and vma_pagesize, cases that require allocations
+>> from memcache and cases that don't can be distinguished completely.
+>>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
+>>   1 file changed, 12 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index 1eec9f63bc6f..05af40dc60c1 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -810,19 +810,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>   	gfn = fault_ipa >> PAGE_SHIFT;
+>>   	mmap_read_unlock(current->mm);
+>>   
+>> -	/*
+>> -	 * Permission faults just need to update the existing leaf entry,
+>> -	 * and so normally don't require allocations from the memcache. The
+>> -	 * only exception to this is when dirty logging is enabled at runtime
+>> -	 * and a write fault needs to collapse a block entry into a table.
+>> -	 */
+>> -	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
+>> -		ret = kvm_mmu_topup_memory_cache(memcache,
+>> -						 kvm_mmu_cache_min_pages(kvm));
+>> -		if (ret)
+>> -			return ret;
+>> -	}
+>> -
+>>   	mmu_seq = vcpu->kvm->mmu_notifier_seq;
+>>   	/*
+>>   	 * Ensure the read of mmu_notifier_seq happens before we call
+>> @@ -880,6 +867,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>   	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
+>>   		prot |= KVM_PGTABLE_PROT_X;
+>>   
+>> +	/*
+>> +	 * Allocations from the memcache are required only when granule of the
+>> +	 * lookup level where the guest fault happened exceeds vma_pagesize,
+>> +	 * which means new page tables will be created in the fault handlers.
+>> +	 */
+>> +	if (fault_granule > vma_pagesize) {
+>> +		ret = kvm_mmu_topup_memory_cache(memcache,
+>> +						 kvm_mmu_cache_min_pages(kvm));
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+> As I explained in v1 [1], this looks correct to me. I still think that someone
+> else should have a look, but if Marc decides to pick up this patch as-is, he can
+> add my Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>.
+Thanks again for this, Alex!
 
-diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
-index 88121c0e0..cd93c44f2 100644
---- a/drivers/gpu/drm/ast/ast_dp501.c
-+++ b/drivers/gpu/drm/ast/ast_dp501.c
-@@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size)
- 	u32 i, data;
- 	u32 boot_address;
+Hi Marc, Will,
+Any thoughts about this patch?
 
-+	if (ast->config_mode != ast_use_p2a)
-+		return false;
-+
- 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
- 	if (data) {
- 		boot_address = get_fw_base(ast);
-@@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)
- 	u8 *fw_addr = NULL;
- 	u8 jreg;
-
-+	if (ast->config_mode != ast_use_p2a)
-+		return false;
-+
- 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
- 	if (!data) {
-
-@@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
- 	struct ast_private *ast = to_ast_private(dev);
- 	u32 boot_address, offset, data;
- 	u8 linkcap[4], linkrate, linklanes, maxclk = 0xff;
-+	u32 *plinkcap;
-
--	boot_address = get_fw_base(ast);
--
--	/* validate FW version */
--	offset = 0xf000;
--	data = ast_mindwm(ast, boot_address + offset);
--	if ((data & 0xf0) != 0x10) /* version: 1x */
--		return maxclk;
--
--	/* Read Link Capability */
--	offset  = 0xf014;
--	*(u32 *)linkcap = ast_mindwm(ast, boot_address + offset);
--	if (linkcap[2] == 0) {
--		linkrate = linkcap[0];
--		linklanes = linkcap[1];
--		data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
--		if (data > 0xff)
--			data = 0xff;
--		maxclk = (u8)data;
-+	if (ast->config_mode == ast_use_p2a) {
-+		boot_address = get_fw_base(ast);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
-+			return maxclk;
-+
-+		/* Read Link Capability */
-+		offset  = AST_DP501_LINKRATE;
-+		plinkcap = (u32 *)linkcap;
-+		*plinkcap  = ast_mindwm(ast, boot_address + offset);
-+		if (linkcap[2] == 0) {
-+			linkrate = linkcap[0];
-+			linklanes = linkcap[1];
-+			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
-+			if (data > 0xff)
-+				data = 0xff;
-+			maxclk = (u8)data;
-+		}
-+	} else {
-+		if (!ast->dp501_fw_buf)
-+			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
-+
-+		/* dummy read */
-+		offset = 0x0000;
-+		data = readl(ast->dp501_fw_buf + offset);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
-+			return maxclk;
-+
-+		/* Read Link Capability */
-+		offset = AST_DP501_LINKRATE;
-+		plinkcap = (u32 *)linkcap;
-+		*plinkcap = readl(ast->dp501_fw_buf + offset);
-+		if (linkcap[2] == 0) {
-+			linkrate = linkcap[0];
-+			linklanes = linkcap[1];
-+			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
-+			if (data > 0xff)
-+				data = 0xff;
-+			maxclk = (u8)data;
-+		}
- 	}
- 	return maxclk;
- }
-@@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, u8 *ediddata)
- {
- 	struct ast_private *ast = to_ast_private(dev);
- 	u32 i, boot_address, offset, data;
-+	u32 *pEDIDidx;
-
--	boot_address = get_fw_base(ast);
--
--	/* validate FW version */
--	offset = 0xf000;
--	data = ast_mindwm(ast, boot_address + offset);
--	if ((data & 0xf0) != 0x10)
--		return false;
--
--	/* validate PnP Monitor */
--	offset = 0xf010;
--	data = ast_mindwm(ast, boot_address + offset);
--	if (!(data & 0x01))
--		return false;
-+	if (ast->config_mode == ast_use_p2a) {
-+		boot_address = get_fw_base(ast);
-
--	/* Read EDID */
--	offset = 0xf020;
--	for (i = 0; i < 128; i += 4) {
--		data = ast_mindwm(ast, boot_address + offset + i);
--		*(u32 *)(ediddata + i) = data;
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
-+			return false;
-+
-+		/* validate PnP Monitor */
-+		offset = AST_DP501_PNPMONITOR;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if (!(data & AST_DP501_PNP_CONNECTED))
-+			return false;
-+
-+		/* Read EDID */
-+		offset = AST_DP501_EDID_DATA;
-+		for (i = 0; i < 128; i += 4) {
-+			data = ast_mindwm(ast, boot_address + offset + i);
-+			pEDIDidx = (u32 *)(ediddata + i);
-+			*pEDIDidx = data;
-+		}
-+	} else {
-+		if (!ast->dp501_fw_buf)
-+			return false;
-+
-+		/* dummy read */
-+		offset = 0x0000;
-+		data = readl(ast->dp501_fw_buf + offset);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
-+			return false;
-+
-+		/* validate PnP Monitor */
-+		offset = AST_DP501_PNPMONITOR;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if (!(data & AST_DP501_PNP_CONNECTED))
-+			return false;
-+
-+		/* Read EDID */
-+		offset = AST_DP501_EDID_DATA;
-+		for (i = 0; i < 128; i += 4) {
-+			data = readl(ast->dp501_fw_buf + offset + i);
-+			pEDIDidx = (u32 *)(ediddata + i);
-+			*pEDIDidx = data;
-+		}
- 	}
-
- 	return true;
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
-index e82ab8628..911f9f414 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -150,6 +150,7 @@ struct ast_private {
-
- 	void __iomem *regs;
- 	void __iomem *ioregs;
-+	void __iomem *dp501_fw_buf;
-
- 	enum ast_chip chip;
- 	bool vga2_clone;
-@@ -325,6 +326,17 @@ int ast_mode_config_init(struct ast_private *ast);
- #define AST_MM_ALIGN_SHIFT 4
- #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
-
-+#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
-+#define AST_DP501_FW_VERSION_1		BIT(4)
-+#define AST_DP501_PNP_CONNECTED		BIT(1)
-+
-+#define AST_DP501_DEFAULT_DCLK	65
-+
-+#define AST_DP501_GBL_VERSION	0xf000
-+#define AST_DP501_PNPMONITOR	0xf010
-+#define AST_DP501_LINKRATE	0xf014
-+#define AST_DP501_EDID_DATA	0xf020
-+
- int ast_mm_init(struct ast_private *ast);
-
- /* ast post */
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index 0ac3c2039..dbf5224ab 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -450,6 +450,14 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
- 	if (ret)
- 		return ERR_PTR(ret);
-
-+	/* map reserved buffer */
-+	ast->dp501_fw_buf = NULL;
-+	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
-+		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
-+		if (!ast->dp501_fw_buf)
-+			drm_info(dev, "failed to map reserved buffer!\n");
-+	}
-+
- 	ret = ast_mode_config_init(ast);
- 	if (ret)
- 		return ERR_PTR(ret);
---
-2.18.4
-
+Thanks,
+Yanan
+> [1] https://lore.kernel.org/lkml/2c65bff2-be7f-b20c-9265-939bc73185b6@arm.com/
+>
+> Thanks,
+>
+> Alex
+>
+>> +
+>>   	/*
+>>   	 * Under the premise of getting a FSC_PERM fault, we just need to relax
+>>   	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+> .
