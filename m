@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FB9357DAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D717357DAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhDHHzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhDHHy7 (ORCPT
+        id S230420AbhDHHyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:54:33 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:56347 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhDHHyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:54:59 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A26C061760;
-        Thu,  8 Apr 2021 00:54:49 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y16so1208531pfc.5;
-        Thu, 08 Apr 2021 00:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CoS1npLzHqbBGhM1kld5Nqvh9c2M3eNx2lB/qJCxtRg=;
-        b=g8mMLsKHXqOfy+etT+ceR1zg7Uac4PbVYYHN0IyHbTXJGvNOgMR60Fszav5yaXR+9N
-         QOp6nvRugEqzMhpUlJaqkjQqYIAqpTUpuZ7VSyjL79Y/sxO55LTYbndhu4neak44/TZw
-         GOFB5Iyi9hCijyOWHc/WT/OoD+zg37e/+Q6gds6Mj9wGZ/BK5M2z8zMDQdcy0YVf+rla
-         oaLwZVsxnp7fpxOTDMYkQD9jjugR0B93O6D1Eajg7wUZRggu+NFrHht0Arj9b48SMXnI
-         59Ed2cscQrrqZPVlfcfVdATvvObQfmN8+GcV/KfLIrU5XfGHClbcja0us+G1IH4Y8zAu
-         jAdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CoS1npLzHqbBGhM1kld5Nqvh9c2M3eNx2lB/qJCxtRg=;
-        b=ZJdyL5WLVEDuDrIugIZpahlG07jW+EIa7dM2xhLEmdyZ9Ow0K/pB/pjZzDhpjwg185
-         JXBDTjvppRJ0sD8tskHf5nd6D30cdX/y85J8cQho2Oa/sgahGsaPNGtk2ZsJBUWt70wm
-         n+Huh14D+AMW0zh3Wru46pHiVjMjok5aKTQpc45J0Cr3UK9ypUVLu2zME0Zgm+EG8vdz
-         YVO4O0Yu3f6GAEPLeWT+lYgDhDoaMUz9RzTPsRqGTyo1g2t9qhh+CSrmvIYUk9Veewme
-         5DByOBfWTOa5n+4PrfzIi/SrerGpRXCQslYCQcNdjBNLqw8AmtBIftFoGyiMF12b1uui
-         kvpw==
-X-Gm-Message-State: AOAM532EZiU3114kXtZaCOmWDLKA0cZhfSUm45hw+nf1QG0hZXS3wzGM
-        oLX1Vb/5ObGQsXK0P7MKdcVG/7Y2sg==
-X-Google-Smtp-Source: ABdhPJyL9NiJ1vzRx75BEIMSlr75VDg4PHTVbX/6J1Esa6o3xxp9dTbKUmXRTm5vHVkjXOa/SSTlzg==
-X-Received: by 2002:a65:6844:: with SMTP id q4mr7051917pgt.48.1617868488196;
-        Thu, 08 Apr 2021 00:54:48 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id x125sm22912637pfd.124.2021.04.08.00.54.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Apr 2021 00:54:47 -0700 (PDT)
-From:   lihaiwei.kernel@gmail.com
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH] KVM: vmx: add mismatched size in vmcs_check32
-Date:   Thu,  8 Apr 2021 15:54:36 +0800
-Message-Id: <20210408075436.13829-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 8 Apr 2021 03:54:32 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 923ADC0004;
+        Thu,  8 Apr 2021 07:54:18 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 09:54:55 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 2/3] media: rdacm21: describe better a truncation
+Message-ID: <20210408075455.42ym6cd2sdpfziqk@uno.localdomain>
+References: <b6f139947e93fec1ade5faf3517dfb2b3b9bcd41.1617867599.git.mchehab+huawei@kernel.org>
+ <b64509683e6d3e24c32795f3cad9b3046de6e2a0.1617867599.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b64509683e6d3e24c32795f3cad9b3046de6e2a0.1617867599.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+Hi Mauro
 
-vmcs_check32 misses the check for 64-bit and 64-bit high.
+On Thu, Apr 08, 2021 at 09:40:03AM +0200, Mauro Carvalho Chehab wrote:
+> As warned by sparse:
+>
+> 	drivers/media/i2c/rdacm21.c:348:62: warning: cast truncates bits from constant value (300a becomes a)
+>
+> the intention of the code is to get just the lowest 8 bits.
+> So, instead of using a typecast, use a bit and logic.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
----
- arch/x86/kvm/vmx/vmx_ops.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Please see
+https://patchwork.linuxtv.org/project/linux-media/patch/20210319164148.199192-11-jacopo+renesas@jmondi.org/
 
-diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-index 692b0c3..164b64f 100644
---- a/arch/x86/kvm/vmx/vmx_ops.h
-+++ b/arch/x86/kvm/vmx/vmx_ops.h
-@@ -37,6 +37,10 @@ static __always_inline void vmcs_check32(unsigned long field)
- {
- 	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0,
- 			 "32-bit accessor invalid for 16-bit field");
-+	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2000,
-+			 "32-bit accessor invalid for 64-bit field");
-+	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2001,
-+			 "32-bit accessor invalid for 64-bit high field");
- 	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0x6000,
- 			 "32-bit accessor invalid for natural width field");
- }
--- 
-1.8.3.1
+Whatever gets in first it's fine, so you can add my
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+to this one too
 
+Thanks
+  j
+
+> ---
+>  drivers/media/i2c/rdacm21.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index dcc21515e5a4..179d107f494c 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -345,7 +345,7 @@ static int ov10640_initialize(struct rdacm21_device *dev)
+>  	/* Read OV10640 ID to test communications. */
+>  	ov490_write_reg(dev, OV490_SCCB_SLAVE0_DIR, OV490_SCCB_SLAVE_READ);
+>  	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_HIGH, OV10640_CHIP_ID >> 8);
+> -	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, (u8)OV10640_CHIP_ID);
+> +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, OV10640_CHIP_ID & 0xff);
+>
+>  	/* Trigger SCCB slave transaction and give it some time to complete. */
+>  	ov490_write_reg(dev, OV490_HOST_CMD, OV490_HOST_CMD_TRIGGER);
+> --
+> 2.30.2
+>
