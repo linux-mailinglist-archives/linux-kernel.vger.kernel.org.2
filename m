@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B63358F24
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A46358F29
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhDHVaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbhDHVaM (ORCPT
+        id S232624AbhDHVaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:30:18 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:33739 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhDHVaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:30:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B53C061760;
-        Thu,  8 Apr 2021 14:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FMwsbzIx2vhE3AUqGng1fDydGgdG4KsD5JUXQdwoJ+w=; b=ZxjfWMBPLVX108xUoD3fxC9LtV
-        GXYGhxpBrxOZBsUh44HUWr/CHWB9mc+dHoAoJXCPYBBcg6r9FWxoWze7gYmBh/InxbGY+oZiib2/e
-        uSiPXADkWIuCB7BPPYc8jAI8K5299K4EmEGVIsMuhq6WN6HzH44P5V6ehuhmAYrlbvRIpvlkZj3QB
-        vMAlYFJ0RSwGbaABVxZ55vWznbJtOhiytyUr8lsGvOGsVUjuqNqgv3OmXc6nD2marT8BrKu+l3du0
-        2Ll4ZUu8wtjpPHQ15i/yRYnEFgA52ZX9NSdHi71qA4xU4ABcomSEwgISzH37BDAugOThzCej9KTH4
-        ou83SQiw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUcDP-00Gtps-RP; Thu, 08 Apr 2021 21:29:33 +0000
-Date:   Thu, 8 Apr 2021 22:29:27 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Message-ID: <20210408212927.GQ2531743@casper.infradead.org>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
- <20210408061401.GI2531743@casper.infradead.org>
- <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
+        Thu, 8 Apr 2021 17:30:16 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mdvua-1m2IY91N0o-00aztr; Thu, 08 Apr 2021 23:30:03 +0200
+Received: by mail-oi1-f171.google.com with SMTP id 25so2208171oiy.5;
+        Thu, 08 Apr 2021 14:30:02 -0700 (PDT)
+X-Gm-Message-State: AOAM533YXAP+6RI8auigr7sjDj79+QpWQizW2MzwVNhTcD/2iBI6x6aY
+        QG1skkgj09cpcgUgwRmS9EA9s9WdGg/jPZZMhXE=
+X-Google-Smtp-Source: ABdhPJy0iWrhNPTZiYV5V76eutOZ5yur0zzh+RpJdmWXk6BV1PCspWe/8HGv1qdBtvUvk7EkkRQbIYcXbgnILzx2lHg=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr7492382oie.67.1617917401802;
+ Thu, 08 Apr 2021 14:30:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
+References: <20210408205858.51751-1-masahiroy@kernel.org> <20210408205858.51751-3-masahiroy@kernel.org>
+In-Reply-To: <20210408205858.51751-3-masahiroy@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 8 Apr 2021 23:29:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3gzfZhNdp-_=HCxoMw385nGQeNOhhH8X+uyN=AMvHJ8Q@mail.gmail.com>
+Message-ID: <CAK8P3a3gzfZhNdp-_=HCxoMw385nGQeNOhhH8X+uyN=AMvHJ8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pm: allow drivers to drop #ifdef and __maybe_unused
+ from pm callbacks
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jBCef5MBplAyhl76VQF9Oz/gsjkGI646Ek39SGM6gF/9FUydqP3
+ RKHFm6nBVAILMMau+SlIBizvt+Uf9D8nj4jJp33wo6W7MfUlWzCZK286b9ZAlhsRVK7vOTR
+ U7Zsyy71yKPhIXd5BQnuUc4B+neTcrY4EjxxjS+qLg6gzp/K/KXofiXLaVHfZBEdiRyyLY2
+ WBg+6e8lH5pKKbO85xIcA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yD+w5GzQUF8=:65dIGNT0YpnNeLFMR/yjE3
+ tiuRIXRgv3lLwhO9WqBhDuGerF4/u5KyJsgKJuQFBqpliwXtuRq4SYL82x8kcSesnus9yX1sB
+ Jdw6lR3JevWjGdCJMwmfieS5K5KgRFD4rpTJ2ec9RQN2po7S4qoYVLgU8Q0VKLtS3ytfyWcu8
+ 6x+MEBAG3XxaC/yaOovdpsDmHG4N0lAX+HRla7hW3lGBHnnWCgG635ObrDZSgVaxJrXs5uaa2
+ F91TK+J8x0EfjHlVX5S6zdvspXa+QyjPHw28hncPWb4IuGLjtxwKYRoUKyHXno+7q91YyXOrO
+ vqdbigPo0y1nHeWzzZOo9uIlg3J1bpoktX197AZyMK/nFSQb55N3np17RXtOmth3IK1Btzn/P
+ IILhDErrxS4zg6LedNHqAnT5e+1/qxg8Y1umMG4L/QA7E+8dTd5gFdH7QzXs0s1sewfXYFV2u
+ WvQapsBUWn3ZG781mT/zCl1DR0rxYao=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 12:48:49PM -0700, Daniel Xu wrote:
-> No reason other than I didn't know about the latter. Thanks for the
-> hint. find_get_entries() seems to return a pagevec of entries which
-> would complicate the iteration (a 4th layer of things to iterate over).
-> 
-> But I did find find_get_pages_range() which I think can be used to find
-> 1 page at a time. I'll look into it further.
+On Thu, Apr 8, 2021 at 11:00 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Drivers typically surround suspend and resume callbacks with #ifdef
+> CONFIG_PM(_SLEEP) or mark them as __maybe_unused in order to avoid
+> -Wunused-const-variable warnings.
+>
+> With this commit, drivers will be able to remove #ifdef CONFIG_PM(_SLEEP)
+> and __maybe_unsed because unused functions are dropped by the compiler
+> instead of the preprocessor.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Please don't, that's going to be a pagevec too.
+I tried this before and could not get it to work right.
 
-> > I'm not really keen on the idea of random BPF programs being able to poke
-> > at pages in the page cache like this.  From your initial description,
-> > it sounded like all you needed was a list of which pages are present.
-> 
-> Could you elaborate on what "list of which pages are present" implies?
-> The overall goal with this patch is to detect duplicate content in the
-> page cache. So anything that helps achieve that goal I would (in theory)
-> be OK with.
-> 
-> My understanding is the user would need to hash the contents
-> of each page in the page cache. And BPF provides the flexibility such
-> that this work could be reused for currently unanticipated use cases.
+>
+> -#ifdef CONFIG_PM_SLEEP
+> +#define pm_ptr(_ptr)           PTR_IF(IS_ENABLED(CONFIG_PM), _ptr)
+> +#define pm_sleep_ptr(_ptr)     PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP), _ptr)
+> +
+>  #define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+> -       .suspend = suspend_fn, \
+> -       .resume = resume_fn, \
+> -       .freeze = suspend_fn, \
+> -       .thaw = resume_fn, \
+> -       .poweroff = suspend_fn, \
+> -       .restore = resume_fn,
+> -#else
+> -#define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
+> -#endif
+> +       .suspend  = pm_sleep_ptr(suspend_fn), \
+> +       .resume   = pm_sleep_ptr(resume_fn), \
+> +       .freeze   = pm_sleep_ptr(suspend_fn), \
+> +       .thaw     = pm_sleep_ptr(resume_fn), \
+> +       .poweroff = pm_sleep_ptr(suspend_fn), \
+> +       .restore  = pm_sleep_ptr(resume_fn),
 
-But if you need the contents, then you'll need to kmap() the pages.
-I don't see people being keen on exposing kmap() to bpf either.  I think
-you're much better off providing an interface that returns a hash of
-each page to the BPF program.
+The problem that I think you inevitably hit is that you run into a missing
+declaration for any driver that still uses an #ifdef around a static
+function.
 
-> Furthermore, bpf programs could already look at all the pages in the
-> page cache by hooking into tracepoint:filemap:mm_filemap_add_to_page_cache,
-> albeit at a much slower rate. I figure the downside of adding this
-> page cache iterator is we're explicitly condoning the behavior.
+The only way I can see us doing this is to create a new set of
+macros that behave like the version you propose here but leave
+the old macros in place until the last such #ifdef has been removed.
 
-That should never have been exposed.  It's only supposed to be for error
-injection.  If people have started actually using it for something,
-then it's time we delete that tracepoint.
-
-> The idea behind the radix tree was to deduplicate the mounts by
-> superblock. Because a single filesystem may be mounted in different
-> locations. I didn't find a set data structure I could reuse so I
-> figured radix tree / xarray would work too.
-> 
-> Happy to take any better ideas too.
-> 
-> > If you don't understand why this is so bad, call xa_dump() on it after
-> > constructing it.  I'll wait.
-> 
-> I did a dump and got the following results: http://ix.io/2VpY .
-> 
-> I receieved a hint that you may be referring to how the xarray/radix
-> tree would be as large as the largest pointer. To my uneducated eye it
-> doesn't look like that's the case in this dump. Could you please
-> clarify?
-
-We get seven nodes per 4kB page.
-
-$ grep -c 'value 0' 2VpY 
-15
-$ grep -c node 2VpY 
-43
-
-so we use 6+1/7 pages in order to store 15 values.  That's 387 cache
-lines, for the amount of data that could fit in two.
-
-Liam and I are working on a data structure that would support doing
-something along these lines in an efficient manner, but it's not
-ready yet.
+       Arnd
