@@ -2,159 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAAF35886D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3109A35886E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhDHPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:30:34 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:56174 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhDHPa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:30:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617895817; x=1649431817;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=TT4D5obQiTEQmvL2iO1zE2BCc0Dx26vSve2ZLmK6gD4=;
-  b=1nEKCHyAD+6W/fXrNOFWkqYELvGDIhQgHQRlJeKQO/XlcFoPHucUf57L
-   ePwRdwnsvYyr4uewlUNSCm7kBW2joAxnHxpRKGLQnK14nATXS93Fw1ior
-   p6lUI7K6MjPGUcN4hqm6wjqulOEM9qksIEF22VoApxJexoHx71IocPxDc
-   6CzUs3LWxtksUmRokwKhLMWgHeYi5K8uTlILMBM9chsrIy1TlDX+mg1fZ
-   knrYu95xiN+rRMp0BAivV1nwIHTiA9yDsvjvs5DqU3REOtGTUAsbf4MMX
-   gXmsPvwElB7eKF4WAeH4GmzJoKoP06BqXoLh7tDtK0Sfyv2qx4pFk2tBN
-   g==;
-IronPort-SDR: IcSpApEGl6sfLKIm5uVk8URGJFWf3py7vxtdcAzIFqYgmHx1aJgQrGm2bXCpVfT8kir+tJaMtz
- 4GgSED6ckLC6VYysnX2piTJgiYeJG66n5V76Cf8BEXd2E2+7Jerg0qpEfpx3B7SlPdEdcrdWxQ
- 0SBqu0QBOsymJmvf3uEZo8pIaCSu0KW+TBzfLyElBWyZNrXQUc0O7T8Z3WWhXg/D5itqFBW1TA
- /cBmnror+SzfnQ70SmmlKdfmplZONXzpmy0GjxW3fgZl7i8r+hkQrYgz9F+e1pvvBzeWdEyVjB
- Ys8=
-X-IronPort-AV: E=Sophos;i="5.82,206,1613458800"; 
-   d="scan'208";a="112913761"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Apr 2021 08:30:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 8 Apr 2021 08:30:16 -0700
-Received: from [10.12.88.246] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 8 Apr 2021 08:30:14 -0700
-Subject: Re: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <robh+dt@kernel.org>, <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
- <20210331105908.23027-23-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <3d39d952-03f2-0952-72ee-b639fd4339f2@microchip.com>
-Date:   Thu, 8 Apr 2021 17:30:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210331105908.23027-23-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232006AbhDHPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:30:52 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:10309 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231480AbhDHPai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:30:38 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FGQFD3Wrwz9txf3;
+        Thu,  8 Apr 2021 17:30:24 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id oIT1fmuhsLP7; Thu,  8 Apr 2021 17:30:24 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGQFD1Xmxz9txf2;
+        Thu,  8 Apr 2021 17:30:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C51D38B7D1;
+        Thu,  8 Apr 2021 17:30:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id DiUpoiiZRlMH; Thu,  8 Apr 2021 17:30:25 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 41CBF8B7D4;
+        Thu,  8 Apr 2021 17:30:25 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0151E679BA; Thu,  8 Apr 2021 15:30:24 +0000 (UTC)
+Message-Id: <7bf6f1600acad146e541a4e220940062f2e5b03d.1617895813.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/9] powerpc/mem: Move cache flushing functions into
+ mm/cacheflush.c
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  8 Apr 2021 15:30:24 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Cache flushing functions are in the middle of completely
+unrelated stuff in mm/mem.c
 
-On 31/03/2021 at 12:59, Claudiu Beznea wrote:
-> From: Eugen Hristev <eugen.hristev@microchip.com>
-> 
-> Introduce new family of SoCs, sama7, and first SoC, sama7g5.
-> 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->   arch/arm/mach-at91/Makefile |  1 +
->   arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
->   2 files changed, 49 insertions(+)
->   create mode 100644 arch/arm/mach-at91/sama7.c
-> 
-> diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-> index f565490f1b70..6cc6624cddac 100644
-> --- a/arch/arm/mach-at91/Makefile
-> +++ b/arch/arm/mach-at91/Makefile
-> @@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
->   obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
->   obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
->   obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-> +obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
+Create a dedicated mm/cacheflush.c for those functions.
 
-Nit: alphabetic order tells that it should be before samv7
+Also cleanup the list of included headers.
 
->   
->   # Power Management
->   obj-$(CONFIG_ATMEL_PM)		+= pm.o pm_suspend.o
-> diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
-> new file mode 100644
-> index 000000000000..e04cadb569ad
-> --- /dev/null
-> +++ b/arch/arm/mach-at91/sama7.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Setup code for SAMA7
-> + *
-> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-> + *
-> + */
-> +
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +
-> +#include <asm/mach/arch.h>
-> +#include <asm/system_misc.h>
-> +
-> +#include "generic.h"
-> +
-> +static void __init sama7_common_init(void)
-> +{
-> +	of_platform_default_populate(NULL, NULL, NULL);
-> +}
-> +
-> +static void __init sama7_dt_device_init(void)
-> +{
-> +	sama7_common_init();
-> +}
-> +
-> +static const char *const sama7_dt_board_compat[] __initconst = {
-> +	"microchip,sama7",
-> +	NULL
-> +};
-> +
-> +DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
-> +	/* Maintainer: Microchip */
-> +	.init_machine	= sama7_dt_device_init,
-> +	.dt_compat	= sama7_dt_board_compat,
-> +MACHINE_END
-> +
-> +static const char *const sama7g5_dt_board_compat[] __initconst = {
-> +	"microchip,sama7g5",
-> +	NULL
-> +};
-> +
-> +DT_MACHINE_START(sama7g5_dt, "Microchip SAMA7G5")
-> +	/* Maintainer: Microchip */
-> +	.init_machine	= sama7_dt_device_init,
-> +	.dt_compat	= sama7g5_dt_board_compat,
-> +MACHINE_END
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/Makefile     |   3 +-
+ arch/powerpc/mm/cacheflush.c | 255 +++++++++++++++++++++++++++++++
+ arch/powerpc/mm/mem.c        | 281 -----------------------------------
+ 3 files changed, 257 insertions(+), 282 deletions(-)
+ create mode 100644 arch/powerpc/mm/cacheflush.c
 
-I'm not sure we need two DT_MACHINE_START() entries and associated 
-functions right now. Probably the most generic one is sufficient.
-We can add such distinction in the future if the need arises.
-
-Regards,
-   Nicolas
-
+diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
+index 3b4e9e4e25ea..c3df3a8501d4 100644
+--- a/arch/powerpc/mm/Makefile
++++ b/arch/powerpc/mm/Makefile
+@@ -8,7 +8,8 @@ ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
+ obj-y				:= fault.o mem.o pgtable.o mmap.o maccess.o \
+ 				   init_$(BITS).o pgtable_$(BITS).o \
+ 				   pgtable-frag.o ioremap.o ioremap_$(BITS).o \
+-				   init-common.o mmu_context.o drmem.o
++				   init-common.o mmu_context.o drmem.o \
++				   cacheflush.o
+ obj-$(CONFIG_PPC_MMU_NOHASH)	+= nohash/
+ obj-$(CONFIG_PPC_BOOK3S_32)	+= book3s32/
+ obj-$(CONFIG_PPC_BOOK3S_64)	+= book3s64/
+diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
+new file mode 100644
+index 000000000000..40613d2fda37
+--- /dev/null
++++ b/arch/powerpc/mm/cacheflush.c
+@@ -0,0 +1,255 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <linux/highmem.h>
++#include <linux/kprobes.h>
++
++/**
++ * flush_coherent_icache() - if a CPU has a coherent icache, flush it
++ * @addr: The base address to use (can be any valid address, the whole cache will be flushed)
++ * Return true if the cache was flushed, false otherwise
++ */
++static inline bool flush_coherent_icache(unsigned long addr)
++{
++	/*
++	 * For a snooping icache, we still need a dummy icbi to purge all the
++	 * prefetched instructions from the ifetch buffers. We also need a sync
++	 * before the icbi to order the the actual stores to memory that might
++	 * have modified instructions with the icbi.
++	 */
++	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
++		mb(); /* sync */
++		allow_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
++		icbi((void *)addr);
++		prevent_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
++		mb(); /* sync */
++		isync();
++		return true;
++	}
++
++	return false;
++}
++
++/**
++ * invalidate_icache_range() - Flush the icache by issuing icbi across an address range
++ * @start: the start address
++ * @stop: the stop address (exclusive)
++ */
++static void invalidate_icache_range(unsigned long start, unsigned long stop)
++{
++	unsigned long shift = l1_icache_shift();
++	unsigned long bytes = l1_icache_bytes();
++	char *addr = (char *)(start & ~(bytes - 1));
++	unsigned long size = stop - (unsigned long)addr + (bytes - 1);
++	unsigned long i;
++
++	for (i = 0; i < size >> shift; i++, addr += bytes)
++		icbi(addr);
++
++	mb(); /* sync */
++	isync();
++}
++
++/**
++ * flush_icache_range: Write any modified data cache blocks out to memory
++ * and invalidate the corresponding blocks in the instruction cache
++ *
++ * Generic code will call this after writing memory, before executing from it.
++ *
++ * @start: the start address
++ * @stop: the stop address (exclusive)
++ */
++void flush_icache_range(unsigned long start, unsigned long stop)
++{
++	if (flush_coherent_icache(start))
++		return;
++
++	clean_dcache_range(start, stop);
++
++	if (IS_ENABLED(CONFIG_44x)) {
++		/*
++		 * Flash invalidate on 44x because we are passed kmapped
++		 * addresses and this doesn't work for userspace pages due to
++		 * the virtually tagged icache.
++		 */
++		iccci((void *)start);
++		mb(); /* sync */
++		isync();
++	} else
++		invalidate_icache_range(start, stop);
++}
++EXPORT_SYMBOL(flush_icache_range);
++
++#if !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC64)
++/**
++ * flush_dcache_icache_phys() - Flush a page by it's physical address
++ * @physaddr: the physical address of the page
++ */
++static void flush_dcache_icache_phys(unsigned long physaddr)
++{
++	unsigned long bytes = l1_dcache_bytes();
++	unsigned long nb = PAGE_SIZE / bytes;
++	unsigned long addr = physaddr & PAGE_MASK;
++	unsigned long msr, msr0;
++	unsigned long loop1 = addr, loop2 = addr;
++
++	msr0 = mfmsr();
++	msr = msr0 & ~MSR_DR;
++	/*
++	 * This must remain as ASM to prevent potential memory accesses
++	 * while the data MMU is disabled
++	 */
++	asm volatile(
++		"   mtctr %2;\n"
++		"   mtmsr %3;\n"
++		"   isync;\n"
++		"0: dcbst   0, %0;\n"
++		"   addi    %0, %0, %4;\n"
++		"   bdnz    0b;\n"
++		"   sync;\n"
++		"   mtctr %2;\n"
++		"1: icbi    0, %1;\n"
++		"   addi    %1, %1, %4;\n"
++		"   bdnz    1b;\n"
++		"   sync;\n"
++		"   mtmsr %5;\n"
++		"   isync;\n"
++		: "+&r" (loop1), "+&r" (loop2)
++		: "r" (nb), "r" (msr), "i" (bytes), "r" (msr0)
++		: "ctr", "memory");
++}
++NOKPROBE_SYMBOL(flush_dcache_icache_phys)
++#endif // !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC64)
++
++/*
++ * This is called when a page has been modified by the kernel.
++ * It just marks the page as not i-cache clean.  We do the i-cache
++ * flush later when the page is given to a user process, if necessary.
++ */
++void flush_dcache_page(struct page *page)
++{
++	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE))
++		return;
++	/* avoid an atomic op if possible */
++	if (test_bit(PG_dcache_clean, &page->flags))
++		clear_bit(PG_dcache_clean, &page->flags);
++}
++EXPORT_SYMBOL(flush_dcache_page);
++
++static void flush_dcache_icache_hugepage(struct page *page)
++{
++	int i;
++	void *start;
++
++	BUG_ON(!PageCompound(page));
++
++	for (i = 0; i < compound_nr(page); i++) {
++		if (!PageHighMem(page)) {
++			__flush_dcache_icache(page_address(page+i));
++		} else {
++			start = kmap_atomic(page+i);
++			__flush_dcache_icache(start);
++			kunmap_atomic(start);
++		}
++	}
++}
++
++void flush_dcache_icache_page(struct page *page)
++{
++
++	if (PageCompound(page))
++		return flush_dcache_icache_hugepage(page);
++
++#if defined(CONFIG_PPC_8xx) || defined(CONFIG_PPC64)
++	/* On 8xx there is no need to kmap since highmem is not supported */
++	__flush_dcache_icache(page_address(page));
++#else
++	if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
++		void *start = kmap_atomic(page);
++		__flush_dcache_icache(start);
++		kunmap_atomic(start);
++	} else {
++		unsigned long addr = page_to_pfn(page) << PAGE_SHIFT;
++
++		if (flush_coherent_icache(addr))
++			return;
++		flush_dcache_icache_phys(addr);
++	}
++#endif
++}
++EXPORT_SYMBOL(flush_dcache_icache_page);
++
++/**
++ * __flush_dcache_icache(): Flush a particular page from the data cache to RAM.
++ * Note: this is necessary because the instruction cache does *not*
++ * snoop from the data cache.
++ *
++ * @page: the address of the page to flush
++ */
++void __flush_dcache_icache(void *p)
++{
++	unsigned long addr = (unsigned long)p;
++
++	if (flush_coherent_icache(addr))
++		return;
++
++	clean_dcache_range(addr, addr + PAGE_SIZE);
++
++	/*
++	 * We don't flush the icache on 44x. Those have a virtual icache and we
++	 * don't have access to the virtual address here (it's not the page
++	 * vaddr but where it's mapped in user space). The flushing of the
++	 * icache on these is handled elsewhere, when a change in the address
++	 * space occurs, before returning to user space.
++	 */
++
++	if (mmu_has_feature(MMU_FTR_TYPE_44x))
++		return;
++
++	invalidate_icache_range(addr, addr + PAGE_SIZE);
++}
++
++void clear_user_page(void *page, unsigned long vaddr, struct page *pg)
++{
++	clear_page(page);
++
++	/*
++	 * We shouldn't have to do this, but some versions of glibc
++	 * require it (ld.so assumes zero filled pages are icache clean)
++	 * - Anton
++	 */
++	flush_dcache_page(pg);
++}
++EXPORT_SYMBOL(clear_user_page);
++
++void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
++		    struct page *pg)
++{
++	copy_page(vto, vfrom);
++
++	/*
++	 * We should be able to use the following optimisation, however
++	 * there are two problems.
++	 * Firstly a bug in some versions of binutils meant PLT sections
++	 * were not marked executable.
++	 * Secondly the first word in the GOT section is blrl, used
++	 * to establish the GOT address. Until recently the GOT was
++	 * not marked executable.
++	 * - Anton
++	 */
++#if 0
++	if (!vma->vm_file && ((vma->vm_flags & VM_EXEC) == 0))
++		return;
++#endif
++
++	flush_dcache_page(pg);
++}
++
++void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
++			     unsigned long addr, int len)
++{
++	unsigned long maddr;
++
++	maddr = (unsigned long) kmap(page) + (addr & ~PAGE_MASK);
++	flush_icache_range(maddr, maddr + len);
++	kunmap(page);
++}
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 7a59a5c9aa5d..6564b4d81324 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -12,45 +12,15 @@
+  *    Copyright (C) 1991, 1992, 1993, 1994  Linus Torvalds
+  */
+ 
+-#include <linux/export.h>
+-#include <linux/sched.h>
+-#include <linux/kernel.h>
+-#include <linux/errno.h>
+-#include <linux/string.h>
+-#include <linux/gfp.h>
+-#include <linux/types.h>
+-#include <linux/mm.h>
+-#include <linux/stddef.h>
+-#include <linux/init.h>
+ #include <linux/memblock.h>
+ #include <linux/highmem.h>
+-#include <linux/initrd.h>
+-#include <linux/pagemap.h>
+ #include <linux/suspend.h>
+-#include <linux/hugetlb.h>
+-#include <linux/slab.h>
+-#include <linux/vmalloc.h>
+-#include <linux/memremap.h>
+ #include <linux/dma-direct.h>
+-#include <linux/kprobes.h>
+ 
+-#include <asm/prom.h>
+-#include <asm/io.h>
+-#include <asm/mmu_context.h>
+-#include <asm/mmu.h>
+-#include <asm/smp.h>
+ #include <asm/machdep.h>
+-#include <asm/btext.h>
+-#include <asm/tlb.h>
+-#include <asm/sections.h>
+-#include <asm/sparsemem.h>
+-#include <asm/vdso.h>
+-#include <asm/fixmap.h>
+-#include <asm/swiotlb.h>
+ #include <asm/rtas.h>
+ #include <asm/kasan.h>
+ #include <asm/svm.h>
+-#include <asm/mmzone.h>
+ 
+ #include <mm/mmu_decl.h>
+ 
+@@ -340,257 +310,6 @@ void free_initmem(void)
+ 	free_initmem_default(POISON_FREE_INITMEM);
+ }
+ 
+-/**
+- * flush_coherent_icache() - if a CPU has a coherent icache, flush it
+- * @addr: The base address to use (can be any valid address, the whole cache will be flushed)
+- * Return true if the cache was flushed, false otherwise
+- */
+-static inline bool flush_coherent_icache(unsigned long addr)
+-{
+-	/*
+-	 * For a snooping icache, we still need a dummy icbi to purge all the
+-	 * prefetched instructions from the ifetch buffers. We also need a sync
+-	 * before the icbi to order the the actual stores to memory that might
+-	 * have modified instructions with the icbi.
+-	 */
+-	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
+-		mb(); /* sync */
+-		allow_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
+-		icbi((void *)addr);
+-		prevent_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
+-		mb(); /* sync */
+-		isync();
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+-/**
+- * invalidate_icache_range() - Flush the icache by issuing icbi across an address range
+- * @start: the start address
+- * @stop: the stop address (exclusive)
+- */
+-static void invalidate_icache_range(unsigned long start, unsigned long stop)
+-{
+-	unsigned long shift = l1_icache_shift();
+-	unsigned long bytes = l1_icache_bytes();
+-	char *addr = (char *)(start & ~(bytes - 1));
+-	unsigned long size = stop - (unsigned long)addr + (bytes - 1);
+-	unsigned long i;
+-
+-	for (i = 0; i < size >> shift; i++, addr += bytes)
+-		icbi(addr);
+-
+-	mb(); /* sync */
+-	isync();
+-}
+-
+-/**
+- * flush_icache_range: Write any modified data cache blocks out to memory
+- * and invalidate the corresponding blocks in the instruction cache
+- *
+- * Generic code will call this after writing memory, before executing from it.
+- *
+- * @start: the start address
+- * @stop: the stop address (exclusive)
+- */
+-void flush_icache_range(unsigned long start, unsigned long stop)
+-{
+-	if (flush_coherent_icache(start))
+-		return;
+-
+-	clean_dcache_range(start, stop);
+-
+-	if (IS_ENABLED(CONFIG_44x)) {
+-		/*
+-		 * Flash invalidate on 44x because we are passed kmapped
+-		 * addresses and this doesn't work for userspace pages due to
+-		 * the virtually tagged icache.
+-		 */
+-		iccci((void *)start);
+-		mb(); /* sync */
+-		isync();
+-	} else
+-		invalidate_icache_range(start, stop);
+-}
+-EXPORT_SYMBOL(flush_icache_range);
+-
+-#if !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC64)
+-/**
+- * flush_dcache_icache_phys() - Flush a page by it's physical address
+- * @physaddr: the physical address of the page
+- */
+-static void flush_dcache_icache_phys(unsigned long physaddr)
+-{
+-	unsigned long bytes = l1_dcache_bytes();
+-	unsigned long nb = PAGE_SIZE / bytes;
+-	unsigned long addr = physaddr & PAGE_MASK;
+-	unsigned long msr, msr0;
+-	unsigned long loop1 = addr, loop2 = addr;
+-
+-	msr0 = mfmsr();
+-	msr = msr0 & ~MSR_DR;
+-	/*
+-	 * This must remain as ASM to prevent potential memory accesses
+-	 * while the data MMU is disabled
+-	 */
+-	asm volatile(
+-		"   mtctr %2;\n"
+-		"   mtmsr %3;\n"
+-		"   isync;\n"
+-		"0: dcbst   0, %0;\n"
+-		"   addi    %0, %0, %4;\n"
+-		"   bdnz    0b;\n"
+-		"   sync;\n"
+-		"   mtctr %2;\n"
+-		"1: icbi    0, %1;\n"
+-		"   addi    %1, %1, %4;\n"
+-		"   bdnz    1b;\n"
+-		"   sync;\n"
+-		"   mtmsr %5;\n"
+-		"   isync;\n"
+-		: "+&r" (loop1), "+&r" (loop2)
+-		: "r" (nb), "r" (msr), "i" (bytes), "r" (msr0)
+-		: "ctr", "memory");
+-}
+-NOKPROBE_SYMBOL(flush_dcache_icache_phys)
+-#endif // !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC64)
+-
+-/*
+- * This is called when a page has been modified by the kernel.
+- * It just marks the page as not i-cache clean.  We do the i-cache
+- * flush later when the page is given to a user process, if necessary.
+- */
+-void flush_dcache_page(struct page *page)
+-{
+-	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE))
+-		return;
+-	/* avoid an atomic op if possible */
+-	if (test_bit(PG_dcache_clean, &page->flags))
+-		clear_bit(PG_dcache_clean, &page->flags);
+-}
+-EXPORT_SYMBOL(flush_dcache_page);
+-
+-static void flush_dcache_icache_hugepage(struct page *page)
+-{
+-	int i;
+-	void *start;
+-
+-	BUG_ON(!PageCompound(page));
+-
+-	for (i = 0; i < compound_nr(page); i++) {
+-		if (!PageHighMem(page)) {
+-			__flush_dcache_icache(page_address(page+i));
+-		} else {
+-			start = kmap_atomic(page+i);
+-			__flush_dcache_icache(start);
+-			kunmap_atomic(start);
+-		}
+-	}
+-}
+-
+-void flush_dcache_icache_page(struct page *page)
+-{
+-
+-	if (PageCompound(page))
+-		return flush_dcache_icache_hugepage(page);
+-
+-#if defined(CONFIG_PPC_8xx) || defined(CONFIG_PPC64)
+-	/* On 8xx there is no need to kmap since highmem is not supported */
+-	__flush_dcache_icache(page_address(page));
+-#else
+-	if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
+-		void *start = kmap_atomic(page);
+-		__flush_dcache_icache(start);
+-		kunmap_atomic(start);
+-	} else {
+-		unsigned long addr = page_to_pfn(page) << PAGE_SHIFT;
+-
+-		if (flush_coherent_icache(addr))
+-			return;
+-		flush_dcache_icache_phys(addr);
+-	}
+-#endif
+-}
+-EXPORT_SYMBOL(flush_dcache_icache_page);
+-
+-/**
+- * __flush_dcache_icache(): Flush a particular page from the data cache to RAM.
+- * Note: this is necessary because the instruction cache does *not*
+- * snoop from the data cache.
+- *
+- * @page: the address of the page to flush
+- */
+-void __flush_dcache_icache(void *p)
+-{
+-	unsigned long addr = (unsigned long)p;
+-
+-	if (flush_coherent_icache(addr))
+-		return;
+-
+-	clean_dcache_range(addr, addr + PAGE_SIZE);
+-
+-	/*
+-	 * We don't flush the icache on 44x. Those have a virtual icache and we
+-	 * don't have access to the virtual address here (it's not the page
+-	 * vaddr but where it's mapped in user space). The flushing of the
+-	 * icache on these is handled elsewhere, when a change in the address
+-	 * space occurs, before returning to user space.
+-	 */
+-
+-	if (mmu_has_feature(MMU_FTR_TYPE_44x))
+-		return;
+-
+-	invalidate_icache_range(addr, addr + PAGE_SIZE);
+-}
+-
+-void clear_user_page(void *page, unsigned long vaddr, struct page *pg)
+-{
+-	clear_page(page);
+-
+-	/*
+-	 * We shouldn't have to do this, but some versions of glibc
+-	 * require it (ld.so assumes zero filled pages are icache clean)
+-	 * - Anton
+-	 */
+-	flush_dcache_page(pg);
+-}
+-EXPORT_SYMBOL(clear_user_page);
+-
+-void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
+-		    struct page *pg)
+-{
+-	copy_page(vto, vfrom);
+-
+-	/*
+-	 * We should be able to use the following optimisation, however
+-	 * there are two problems.
+-	 * Firstly a bug in some versions of binutils meant PLT sections
+-	 * were not marked executable.
+-	 * Secondly the first word in the GOT section is blrl, used
+-	 * to establish the GOT address. Until recently the GOT was
+-	 * not marked executable.
+-	 * - Anton
+-	 */
+-#if 0
+-	if (!vma->vm_file && ((vma->vm_flags & VM_EXEC) == 0))
+-		return;
+-#endif
+-
+-	flush_dcache_page(pg);
+-}
+-
+-void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+-			     unsigned long addr, int len)
+-{
+-	unsigned long maddr;
+-
+-	maddr = (unsigned long) kmap(page) + (addr & ~PAGE_MASK);
+-	flush_icache_range(maddr, maddr + len);
+-	kunmap(page);
+-}
+-
+ /*
+  * System memory should not be in /proc/iomem but various tools expect it
+  * (eg kdump).
 -- 
-Nicolas Ferre
+2.25.0
+
