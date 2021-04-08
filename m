@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983843584D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112083584D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhDHNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:36:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16846 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhDHNgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:36:48 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGMgL5xYXz9wbq;
-        Thu,  8 Apr 2021 21:34:22 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.175) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 21:36:26 +0800
-From:   Lu Jialin <lujialin4@huawei.com>
-To:     <lujialin4@huawei.com>, Jernej Skrabec <jernej.skrabec@siol.net>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] media: sun8i: Fix PM reference leak in deinterlace_start_streaming()
-Date:   Thu, 8 Apr 2021 21:36:30 +0800
-Message-ID: <20210408133630.56299-1-lujialin4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231664AbhDHNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:36:45 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53928 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231255AbhDHNgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:36:45 -0400
+Received: from zn.tnic (p200300ec2f095000f2588bda42a4deac.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:f258:8bda:42a4:deac])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DB7111EC027D;
+        Thu,  8 Apr 2021 15:36:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617888993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rcbTJeL0qCfNlPnpFLbjPA0s8qIHLH+BaXYJGvFUr2g=;
+        b=PDCV24O1Z649Q88tnfXsownQZeUZXSFWR4FeNJSNsjta/DvUSRpxK6tGwEy/LLEsimBc3D
+        vqG2xQAf0LQ8xFqh3OAbTmynPGnaGgadjobeZppnuKJvD65My0JpcpEe67bjZqYLSBmx7i
+        Lz7rgxBlHvmE7q2v5J6kjVbFNDzX438=
+Date:   Thu, 8 Apr 2021 15:36:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEoIOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+Subject: Re: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210408133631.GJ10192@zn.tnic>
+References: <20210326000235.370514-1-tony.luck@intel.com>
+ <20210326000235.370514-5-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.174.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326000235.370514-5-tony.luck@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 05:02:35PM -0700, Tony Luck wrote:
+...
+> Expected worst case is two machine checks before moving on (e.g. one user
+> access with page faults disabled, then a repeat to the same addrsss with
+> page faults enabled). Just in case there is some code that loops forever
+> enforce a limit of 10.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/kernel/cpu/mce/core.c | 40 ++++++++++++++++++++++++++--------
+>  include/linux/sched.h          |  1 +
+>  2 files changed, 32 insertions(+), 9 deletions(-)
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+What I'm still unclear on, does this new version address that
+"mysterious" hang or panic which the validation team triggered or you
+haven't checked yet?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Jialin <lujialin4@huawei.com>
----
- drivers/media/platform/sunxi/sun8i-di/sun8i-di.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thx.
 
-diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index ed863bf5ea80..671e4a928993 100644
---- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-+++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -589,7 +589,7 @@ static int deinterlace_start_streaming(struct vb2_queue *vq, unsigned int count)
- 	int ret;
- 
- 	if (V4L2_TYPE_IS_OUTPUT(vq->type)) {
--		ret = pm_runtime_get_sync(dev);
-+		ret = pm_runtime_resume_and_get(dev);
- 		if (ret < 0) {
- 			dev_err(dev, "Failed to enable module\n");
- 
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
