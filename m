@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBCB358268
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00E535826F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhDHLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:44:53 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:45501 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhDHLow (ORCPT
+        id S230411AbhDHLrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:47:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhDHLru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:44:52 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MCGag-1lL5Px2EnS-009Q4d; Thu, 08 Apr 2021 13:44:39 +0200
-Received: by mail-ot1-f43.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso1968094otq.3;
-        Thu, 08 Apr 2021 04:44:39 -0700 (PDT)
-X-Gm-Message-State: AOAM532PVEKJCOydP4oD3gqf9/0QX1PB2iJN/lLZDhCWmvSDhFf2USKR
-        23FoZiclzWNxirnXf9rgmHD7DHhhWBIGFKt2xM4=
-X-Google-Smtp-Source: ABdhPJw/Kt6oueYEiXqyZYSL7pDJ4LuFJYHMs1Y8FL1ZmuGq8xfxN7KNWR6IE58DyzqBWI3T+US+8jsx0JeptqGIBk4=
-X-Received: by 2002:a9d:316:: with SMTP id 22mr7135730otv.210.1617882278035;
- Thu, 08 Apr 2021 04:44:38 -0700 (PDT)
+        Thu, 8 Apr 2021 07:47:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617882459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IU7HxOgQxmIHcfsaSQ1rVC0Q+7uDBaSJdYZdiaRrPmU=;
+        b=LSIeiwQp441ygAZ7ILbhiyMr7EejcLF1uubQy7I9SL5eTqbFdtpvLNndhYdEtC5pO3PHm6
+        SEhsACKEh6qo2gwmZ4PEAMr99nzmC0tyJMrMuUkCLH58Ux/1YW3cG+xoMEP2wXAG3Op5+S
+        I8HrXrAqrDz7JENOSG7T85hyZ94VIZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-DGPnVRFEOCm-1gbxg2nVHg-1; Thu, 08 Apr 2021 07:47:35 -0400
+X-MC-Unique: DGPnVRFEOCm-1gbxg2nVHg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D667C1FA3;
+        Thu,  8 Apr 2021 11:47:33 +0000 (UTC)
+Received: from krava (unknown [10.40.195.201])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 30FF360BF1;
+        Thu,  8 Apr 2021 11:47:32 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 13:47:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
+        acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        songliubraving@fb.com
+Subject: Re: [PATCH v2 3/3] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YG7tU/mVxQZLNCYL@krava>
+References: <20210407003601.619158-1-song@kernel.org>
+ <20210407003601.619158-4-song@kernel.org>
 MIME-Version: 1.0
-References: <20210408092011.52763-1-david@redhat.com> <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com> <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
- <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
-In-Reply-To: <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 8 Apr 2021 13:44:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
-Message-ID: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:MOWjxzUM/juLxZVwoDmvgjbj1GMzi9SdTRgf5tDlGz7krnsVOLt
- 1Z1WcCI0BOKgmu8eCsvSTCIrLBZx4t6agx3x7VgJYOwAI+NPAtBeNtbFDAcNI4/v6FE9IUx
- JBK+ZGNcu7sCreU+ajo+q/7DPpDgLGbkZk4GCnWY7pLJ+vyjpbthaXuHbugcAzoS5PT3HOi
- fXBQOrWGH6a6gIZ7wXh2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FUKfpKU5/WU=:zOKSjAjtGSgC+Yja8Db356
- D2PuQypz6UegVxYfSX0xarOyj8i+7QYIwzi0uJN47jjvsA3EQ81m2WosCxvpKJ+JTKSUofmua
- F4/F2CVlZfravPwCG8j8tTSaGaO5Cjx1ni6EO88x7PCus0pceDuDUEAyjRZ+DwyuAHsqUoCoR
- UM/Pn3wx6Mf6DvmD49eHPYoespAgksSJFg/yjA7ETOAqXZGYmzOKCdh4/r1e98c5RzNuY+Ice
- mdc0U9faKK8XJtN3MyeeCIrOdaloHSIhbnVAjgFnifQKPZTQEniVfwA/twuDQRBRl0qs03LRH
- 9dRvohVo3W0SFioMhxysfSg0NsZgeKAtjxRR+11FBMEtYqyiveuLAcEvYmdk1/kNXujnhLbLo
- mDS7WJNFHrXqeXlxP9thl567kk2C3zGX2Pwiwh6qYhUhZv8bKwjwxLc3tqBU7pXYoIc/1yUJ/
- 6IxyfxPPaHOopn19js2zdVjuBd17CUDe8ht5DjG5Yms9Xjt2Yh5XcIB8aL0PgbpsAWfBz9xQy
- LGQPkJSSYyMS2MvKINwxb6qq+tl/qzA/A3av/v7S/gyR/z290ceF4HVMNoHQbDXAYHVKwN4Py
- XL7Bube7z68KzL5aGT4lihP+MZMFX3p5LV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407003601.619158-4-song@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 1:00 PM David Hildenbrand <david@redhat.com> wrote:
-> >
-> > It is a somewhat awkward way to say "prevent this symbol from
-> > being =y if the dependency is =m".
->
-> What would be the right thing to do in the case here then to achieve the
-> "if DRMA_ASPEED_GFX is enabled, also enable DMA_CMA id possible"?
->
-> One approach could be to have for DMA_CMA
->
-> default y if DRMA_ASPEED_GFX
->
-> but it feels like the wrong way to tackle this.
+On Tue, Apr 06, 2021 at 05:36:01PM -0700, Song Liu wrote:
+> Currently, to use BPF to aggregate perf event counters, the user uses
+> --bpf-counters option. Enable "use bpf by default" events with a config
+> option, stat.bpf-counter-events. This is limited to hardware events in
+> evsel__hw_names.
+> 
+> This also enables mixed BPF event and regular event in the same sesssion.
+> For example:
+> 
+>    perf config stat.bpf-counter-events=instructions
+>    perf stat -e instructions,cs
+> 
 
-I'm still not sure what you are trying to achieve. Is the idea only to provide
-a useful default for DMA_CMA depending on which drivers are enabled?
+so if we are mixing events now, how about uing modifier for bpf counters,
+instead of configuring .perfconfig list we could use:
 
-This is something you could do using a hidden helper symbol like
+  perf stat -e instructions:b,cs
 
-config DRMA_ASPEED_GFX
-       bool "Aspeed display driver"
-       select DRM_WANT_CMA
+thoughts?
 
-config DRM_WANT_CMA
-       bool
-       help
-          Select this from any driver that benefits from CMA being enabled
+the change below adds 'b' modifier and sets 'evsel::bpf_counter',
+feel free to use it
 
-config DMA_CMA
-       bool "Use CMA helpers for DRM"
-       default DRM_WANT_CMA
+jirka
 
-         Arnd
+
+---
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index ca52581f1b17..c55e4e58d1dc 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -82,6 +82,7 @@ struct evsel {
+ 		bool			auto_merge_stats;
+ 		bool			collect_stat;
+ 		bool			weak_group;
++		bool			bpf_counter;
+ 		int			bpf_fd;
+ 		struct bpf_object	*bpf_obj;
+ 	};
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 9ecb45bea948..b5850f1ea90b 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1801,6 +1801,7 @@ struct event_modifier {
+ 	int pinned;
+ 	int weak;
+ 	int exclusive;
++	int bpf_counter;
+ };
+ 
+ static int get_event_modifier(struct event_modifier *mod, char *str,
+@@ -1821,6 +1822,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 	int exclude = eu | ek | eh;
+ 	int exclude_GH = evsel ? evsel->exclude_GH : 0;
+ 	int weak = 0;
++	int bpf_counter = 0;
+ 
+ 	memset(mod, 0, sizeof(*mod));
+ 
+@@ -1864,6 +1866,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 			exclusive = 1;
+ 		} else if (*str == 'W') {
+ 			weak = 1;
++		} else if (*str == 'b') {
++			bpf_counter = 1;
+ 		} else
+ 			break;
+ 
+@@ -1895,6 +1899,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 	mod->sample_read = sample_read;
+ 	mod->pinned = pinned;
+ 	mod->weak = weak;
++	mod->bpf_counter = bpf_counter;
+ 	mod->exclusive = exclusive;
+ 
+ 	return 0;
+@@ -1909,7 +1914,7 @@ static int check_modifier(char *str)
+ 	char *p = str;
+ 
+ 	/* The sizeof includes 0 byte as well. */
+-	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
++	if (strlen(str) > (sizeof("ukhGHpppPSDIWeb") - 1))
+ 		return -1;
+ 
+ 	while (*p) {
+@@ -1950,6 +1955,7 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
+ 		evsel->sample_read         = mod.sample_read;
+ 		evsel->precise_max         = mod.precise_max;
+ 		evsel->weak_group	   = mod.weak;
++		evsel->bpf_counter         = mod.bpf_counter;
+ 
+ 		if (evsel__is_group_leader(evsel)) {
+ 			evsel->core.attr.pinned = mod.pinned;
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 0b36285a9435..fb8646cc3e83 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+ name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+ drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+ /* If you add a modifier you need to update check_modifier() */
+-modifier_event	[ukhpPGHSDIWe]+
++modifier_event	[ukhpPGHSDIWeb]+
+ modifier_bp	[rwx]{1,3}
+ 
+ %%
+
