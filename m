@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CABC358886
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D33D358889
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhDHPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:32:19 -0400
+        id S231965AbhDHPc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:32:28 -0400
 Received: from mga04.intel.com ([192.55.52.120]:22953 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232076AbhDHPcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:32:18 -0400
-IronPort-SDR: c+xMjjox4aJEIFEv8SUxaKjq865tKKNAcemf/xoEiJv6eTCjIrOsRlS8Ok5AFSth0awBW9s0PW
- CxaykZofgEdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="191412377"
+        id S232200AbhDHPcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:32:22 -0400
+IronPort-SDR: /jGr9UpEUiZXT16CZurb2c+fU2XsWT2mu8SEHcQwDJ5Sb+/dch6JDr00FEoVCwoJR540EXRwMT
+ OfEftTBwDFYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="191412401"
 X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="191412377"
+   d="scan'208";a="191412401"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:32:06 -0700
-IronPort-SDR: 7bGg8xsEMCw6+7w7GiwnDYc8yCvI741S4oX4Cg4wcDYrwR6k/SxayRZfvm6Ae4y/uskF/Zapz4
- FpB0zNw5C87Q==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:32:11 -0700
+IronPort-SDR: HrgZ+UPlK0iS9+SpWhX+He/x97IHaPsta2J1B7FNpOVoj5TDB8QDD6Z0B4yHvwror4GcJil6/3
+ Hjh+TJ7+cZoA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="415820729"
+   d="scan'208";a="415820756"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Apr 2021 08:32:04 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 08 Apr 2021 08:32:08 -0700
 From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
 To:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
@@ -33,9 +33,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
         Jiri Olsa <jolsa@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: [PATCH 1/2] perf: Cap allocation order at aux_watermark
-Date:   Thu,  8 Apr 2021 18:31:58 +0300
-Message-Id: <20210408153159.81880-2-alexander.shishkin@linux.intel.com>
+Subject: [PATCH 2/2] perf intel-pt: Use aux_watermark
+Date:   Thu,  8 Apr 2021 18:31:59 +0300
+Message-Id: <20210408153159.81880-3-alexander.shishkin@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210408153159.81880-1-alexander.shishkin@linux.intel.com>
 References: <20210408153159.81880-1-alexander.shishkin@linux.intel.com>
@@ -45,75 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we start allocating AUX pages half the size of the total
-requested AUX buffer size, ignoring the attr.aux_watermark setting. This,
-in turn, makes intel_pt driver disregard the watermark also, as it uses
-page order for its SG (ToPA) configuration.
+Turns out, the default setting of attr.aux_watermark to half of the total
+buffer size is not very useful, especially with smaller buffers. The
+problem is that, after half of the buffer is filled up, the kernel updates
+->aux_head and sets up the next "transaction", while observing that
+->aux_tail is still zero (as userspace haven't had the chance to update
+it), meaning that the trace will have to stop at the end of this second
+"transaction". This means, for example, that the second PERF_RECORD_AUX in
+every trace comes with TRUNCATED flag set.
 
-Now, this can be fixed in the intel_pt PMU driver, but seeing as it's the
-only one currently making use of high order allocations, there is no
-reason not to fix the allocator instead. This way, any other driver
-wishing to add this support would not have to worry about this.
+Setting attr.aux_watermark to quarter of the buffer gives enough space for
+the ->aux_tail update to be observed and prevents the data loss.
+
+The obligatory before/after showcase:
+
+> # perf_before record -e intel_pt//u -m,8 uname
+> Linux
+> [ perf record: Woken up 6 times to write data ]
+> Warning:
+> AUX data lost 4 times out of 10!
+>
+> [ perf record: Captured and wrote 0.099 MB perf.data ]
+> # perf record -e intel_pt//u -m,8 uname
+> Linux
+> [ perf record: Woken up 4 times to write data ]
+> [ perf record: Captured and wrote 0.039 MB perf.data ]
+
+The effect is still visible with large workloads and large buffers,
+although less pronounced.
 
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 ---
- kernel/events/ring_buffer.c | 34 ++++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
+ tools/perf/arch/x86/util/intel-pt.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index bd55ccc91373..bd94b91bd4be 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -674,21 +674,26 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 	if (!has_aux(event))
- 		return -EOPNOTSUPP;
- 
--	/*
--	 * We need to start with the max_order that fits in nr_pages,
--	 * not the other way around, hence ilog2() and not get_order.
--	 */
--	max_order = ilog2(nr_pages);
--
--	/*
--	 * PMU requests more than one contiguous chunks of memory
--	 * for SW double buffering
--	 */
- 	if (!overwrite) {
--		if (!max_order)
--			return -EINVAL;
-+		/*
-+		 * Watermark defaults to half the buffer, and so does the
-+		 * max_order, to aid PMU drivers in double buffering.
-+		 */
-+		if (!watermark)
-+			watermark = nr_pages << (PAGE_SHIFT - 1);
- 
--		max_order--;
-+		/*
-+		 * Use aux_watermark as the basis for chunking to
-+		 * help PMU drivers honor the watermark.
-+		 */
-+		max_order = get_order(watermark);
-+	} else {
-+		/*
-+		* We need to start with the max_order that fits in nr_pages,
-+		* not the other way around, hence ilog2() and not get_order.
-+		*/
-+		max_order = ilog2(nr_pages);
-+		watermark = 0;
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index a6420c647959..d00707faf547 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -776,6 +776,10 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 		}
  	}
  
- 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
-@@ -743,9 +748,6 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 	rb->aux_overwrite = overwrite;
- 	rb->aux_watermark = watermark;
++	if (opts->full_auxtrace)
++		intel_pt_evsel->core.attr.aux_watermark =
++		       opts->auxtrace_mmap_pages / 4 * page_size;
++
+ 	intel_pt_parse_terms(intel_pt_pmu->name, &intel_pt_pmu->format,
+ 			     "tsc", &tsc_bit);
  
--	if (!rb->aux_watermark && !rb->aux_overwrite)
--		rb->aux_watermark = nr_pages << (PAGE_SHIFT - 1);
--
- out:
- 	if (!ret)
- 		rb->aux_pgoff = pgoff;
 -- 
 2.30.2
 
