@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB73357D3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5A3357D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhDHHUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:20:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15966 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhDHHUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:20:37 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGCKK3QS6zyNNs;
-        Thu,  8 Apr 2021 15:18:13 +0800 (CST)
-Received: from [10.67.108.130] (10.67.108.130) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 15:20:16 +0800
-Subject: Re: [PATCH-next] powerpc/interrupt: Remove duplicate header file
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <npiggin@gmail.com>,
-        <aneesh.kumar@linux.ibm.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <yuehaibing@huawei.com>, <heying24@huawei.com>
-References: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
- <c42ebf38-c7ea-68bc-01ca-8352581bc33d@csgroup.eu>
-From:   "Chenyi (Johnny)" <johnny.chenyi@huawei.com>
-Message-ID: <96c6a5b6-ec8f-c9cc-159b-38ca21eea98a@huawei.com>
-Date:   Thu, 8 Apr 2021 15:20:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <c42ebf38-c7ea-68bc-01ca-8352581bc33d@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.108.130]
-X-CFilter-Loop: Reflected
+        id S230243AbhDHHUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:20:50 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:26068 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229586AbhDHHUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:20:48 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app2 (Coremail) with SMTP id by_KCgAHz2y2rm5gERzdAA--.25903S4;
+        Thu, 08 Apr 2021 15:20:26 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] slimbus: qcom-ngd-ctrl: Fix runtime PM imbalance in qcom_slim_ngd_enable
+Date:   Thu,  8 Apr 2021 15:20:22 +0800
+Message-Id: <20210408072022.14180-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAHz2y2rm5gERzdAA--.25903S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrWfKF4rur18Zry5Ar1UJrb_yoW3WwbEk3
+        yFqF92v3ZxurnrZrnFgF4DX3ySvF1rW3W0gw1FvFy3KayxZF1DWrsavFZ8ur4UAw47tF1U
+        Gas0grZ5Arn7CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
+        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
+        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17
+        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
+        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUp6wZUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOgAIsk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When slim_register_controller() fails, a pairing PM usage counter
+increment is needed to keep the counter balanced.
 
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-在 2021/4/8 12:57, Christophe Leroy 写道:
-> 
-> 
-> Le 08/04/2021 à 05:56, johnny.chenyi@huawei.com a écrit :
->> From: Chen Yi <johnny.chenyi@huawei.com>
->>
->> Delete one of the header files <asm/interrupt.h> that are included
->> twice.
-> 
-> Guys, we have been flooded with such tiny patches over the last weeks, 
-> some changes being sent several times by different people.
-> 
-> That one is included in 
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210323062916.295346-1-wanjiabing@vivo.com/ 
-> 
-> 
-> And was already submitted a few hours earlier by someone else: 
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1616464656-59372-1-git-send-email-zhouchuangao@vivo.com/ 
-> 
-> 
-> Could you work all together and cook an overall patch including all 
-> duplicate removal from arch/powerpc/ files ?
-> 
-> Best way would be I think to file an issue at 
-> https://github.com/linuxppc/issues/issues , then you do a complete 
-> analysis and list in the issue all places to be modified, then once the 
-> analysis is complete you send a full single patch.
-> 
-> Thanks
-> Christophe
->
-Dear Christophe,
-	Thanks for your reply, I have checked that thers is no header files 
-which has been included twice by mistake in arch/powerpc/.I would file 
-an issue next time.
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index c054e83ab636..99cf2ab3d862 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1268,6 +1268,7 @@ static int qcom_slim_ngd_enable(struct qcom_slim_ngd_ctrl *ctrl, bool enable)
+ 		ret = slim_register_controller(&ctrl->ctrl);
+ 		if (ret) {
+ 			dev_err(ctrl->dev, "error adding slim controller\n");
++			pm_runtime_get_noresume(ctrl->dev);
+ 			return ret;
+ 		}
+ 
+-- 
+2.17.1
 
-Best regards,
-Chen Yi
-
-
->>
->> Signed-off-by: Chen Yi <johnny.chenyi@huawei.com>
->> ---
->>   arch/powerpc/kernel/interrupt.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/arch/powerpc/kernel/interrupt.c 
->> b/arch/powerpc/kernel/interrupt.c
->> index c4dd4b8f9cfa..f64ace0208b7 100644
->> --- a/arch/powerpc/kernel/interrupt.c
->> +++ b/arch/powerpc/kernel/interrupt.c
->> @@ -7,7 +7,6 @@
->>   #include <asm/asm-prototypes.h>
->>   #include <asm/kup.h>
->>   #include <asm/cputime.h>
->> -#include <asm/interrupt.h>
->>   #include <asm/hw_irq.h>
->>   #include <asm/interrupt.h>
->>   #include <asm/kprobes.h>
->>
-> .
