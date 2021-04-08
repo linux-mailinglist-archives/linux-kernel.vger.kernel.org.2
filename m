@@ -2,155 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F36358426
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE6D358423
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhDHNGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
+        id S231549AbhDHNF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhDHNGV (ORCPT
+        with ESMTP id S229741AbhDHNFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:06:21 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12669C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:06:10 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h10so2297460edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:06:09 -0700 (PDT)
+        Thu, 8 Apr 2021 09:05:53 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599B9C061760;
+        Thu,  8 Apr 2021 06:05:41 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id v6so1666595ejo.6;
+        Thu, 08 Apr 2021 06:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BW3yBesOwsPa0fb75giaiBu35Xqpu5oneSt6pOx7rnw=;
-        b=fAxTUJQxaGb4BxQMvo4fvcM2em8z4M7o4Cz/4IJPAEkClnU9fNnHBQoQHoWfjEj5RV
-         UVjCdn8o44c3SJlSE2/2dGW2+YjHDnNhINo0wxCfU1l/ZWwM1GzblwxAZ+uqHUKLawRw
-         8UrY1PtRETDp0fi7jUhOXZWOSmqIN3Swut754LGvGAcOOYHwR5c98s9BKncfaMqI0YKq
-         AhT/6J1NXlQ0XTYDQFSICb6/KpdpHBH7Zie1Afot2thzOFZ6yKCjVbDGrgg3S+nGfF1X
-         H3HAT49+TBwaL6lLmYH8aLQSDAkGRUmpRyRE5CVtyvjLVLdtCB97FkeHx3Hb6I7VEq5N
-         ecvQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HZmtC6Rmr7madlGC7eFgIOwR9CPFzJsFk7LRy9mqEPo=;
+        b=AfBnmCh6WrhyMdLuhcMN+Ue+1u09BK+hyny0dqjsmyZ0wQze0EMP+mex3hznJBGwnD
+         Q8NXF7NvFDXS05atzZstPnwi5OA9UumubIS5LFgDCB90y2I9Xr23xleN2B+8hiRAmFXl
+         p2nO6TGb+8MQrd9M3jBFhpIwxTiXZTXqlY2q0RyO3JOm6tI0NIx806JsGzR3f5UDwkDT
+         kOPgT6cOA2OInBrlzFhaWIrQ9LuC2APc+MuzeyTPzWv1eRhzd5RiWmdBzjWWDfY9y24+
+         VnaD+Kgr5gWmK5Nlf8vi+8/c+6H6CSOP+9qG7TQ4OtljYw2wUW3u4rD9s8GHMX8TL4l0
+         S4ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BW3yBesOwsPa0fb75giaiBu35Xqpu5oneSt6pOx7rnw=;
-        b=EyfY224v+wfYND5sOEYv2kxPUwkcyxvU4PbDuZ9zT2EU9yNjAX9fU/LYd/GIY9GxWY
-         Qa25lUmWD7hOJEs+AyzAQLrU7rw6qRhgYFFz9HP/I1G0hgM0YhNByqaKwjQkiMs1x1GM
-         Fkqd/8VTIdzSJH753hFcmT3RcFvHeeyP2Vdrzp+6cdo2MM4BP1tvNvcdXK7LdfIvlWVr
-         Br9fKSEDxxzOxk74Mca9rlyBBBteidhu2ahjtkUqnIvGI6OcuTFEVOunnosc/nLc0fJr
-         n87cfl6laBL4gMgB8btcf47y7CbMw5wMLfNmX/v5ex/nDeuFSUSGe04xBnu+eEBeiL5b
-         OeIw==
-X-Gm-Message-State: AOAM530G4abphMB+LSVOhk94v8FbBVDaQ4a2+KxTryyvE5JbS6E8cyvt
-        od0kO3mLDvR91wpPkjjaOGELZVrWBDDlBg==
-X-Google-Smtp-Source: ABdhPJy2xUMZOZ6LNfgmc/xLNImWAZaHPP8Xk0T4GzM9OiQ4ed7qGcBJ2d/j6MlD3Y/v23YcMVcZzw==
-X-Received: by 2002:a50:eb8f:: with SMTP id y15mr11402277edr.115.1617887168668;
-        Thu, 08 Apr 2021 06:06:08 -0700 (PDT)
-Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id y2sm14229010ejf.30.2021.04.08.06.06.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HZmtC6Rmr7madlGC7eFgIOwR9CPFzJsFk7LRy9mqEPo=;
+        b=JS0T3lg9IE4M49ry+y6HLW0sknHDhnbprCx/8dzySfEwxec15TMhiZh9Oam4PodQQg
+         3E3ow3XsLL9dkhVQtCbnOVMaPV0axSTqAgpYYggcQ7ek8e/6X43K+hgYl9SxDdPFLZRV
+         myQwDbSS+Wcj+IzVuLTmoFxIURNeCz0CgEyyNCNjC2OcYEYr6URCmyQRyZv2rxmutQl8
+         SrRw5XKl2vfi7yqAZEkO1iWs0vHVxQaqabIdELJbdigsEZytOGPFFDxNWHchQLfaCbsE
+         QJCFdNWmsJI3DcvZdqMhB5QoGKzbGsjNFSy9tbqa6kkLV9DWCdq5f3mfBV0THQJC+Rky
+         839w==
+X-Gm-Message-State: AOAM533YI2rVTlzbAHcPD+IPB0KQ4/KF8aIroiKP4gloBjkvZzYJ33rw
+        NeHNapU48UrplSJ0/rp74GvHRmictO8=
+X-Google-Smtp-Source: ABdhPJw9dCJJ6hkJC05NvNrFvPddtvcMj/iiwniR/S7Ju9XwBtcQ5KWxBIM3e+dCMogyojBUzDcW+w==
+X-Received: by 2002:a17:906:2307:: with SMTP id l7mr10450940eja.27.1617887140042;
+        Thu, 08 Apr 2021 06:05:40 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id w6sm14019831eje.107.2021.04.08.06.05.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 06:06:08 -0700 (PDT)
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ndesaulniers@google.com, dan.j.williams@intel.com,
-        laniel_francis@privacyrequired.com, keescook@chromium.org,
-        dja@axtens.net, akpm@linux-foundation.org, haris.iqbal@ionos.com,
-        jinpu.wang@ionos.com, Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH v4] lib/string: Introduce sysfs_streqcase
-Date:   Thu,  8 Apr 2021 15:06:05 +0200
-Message-Id: <20210408130605.541796-1-gi-oh.kim@ionos.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 08 Apr 2021 06:05:37 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 15:06:12 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
+        jonathanh@nvidia.com, robh+dt@kernel.org, pchandru@nvidia.com,
+        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
+Message-ID: <YG7/xPVoA4gPrMBf@orome.fritz.box>
+References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
+ <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
+ <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
+ <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
+ <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
+ <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dUTOrUhVWpEd1PiU"
+Content-Disposition: inline
+In-Reply-To: <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the name shows, it checks if strings are equal in case insensitive
-manner.
 
-For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-strncasecmp to check that the input via sysfs is "mi". But it would
-work even-if the input is "min-wrongcommand".
+--dUTOrUhVWpEd1PiU
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I found some more cases using strncasecmp to check the entire string
-such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
-"disable" command with strncasecmp but it would also work if the
-command is "disable-wrong".
+On Thu, Apr 08, 2021 at 02:25:19AM +0300, Dmitry Osipenko wrote:
+> 08.04.2021 02:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >=20
+> > On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
+> >>
+> >> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
+> >>> 07.04.2021 04:25, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>> +=C2=A0=C2=A0=C2=A0 if (!tegra->pdev->dev.pm_domain) {
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D tegra_powergate_=
+sequence_power_up(TEGRA_POWERGATE_SATA,
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tegra->sata_clk,
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tegra->sata_rst);
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+goto disable_regulators;
+> >>>> +=C2=A0=C2=A0=C2=A0 }
+> >>> Hi,
+> >>>
+> >>> Why you haven't added condition for tegra_powergate_power_off()? I th=
+ink
+> >>> it should break GENPD and legacy PD API isn't not supported by T186
+> >>> at all.
+> >>>
+> >>> I'm also not sure whether the power up/down sequence is correct using
+> >>> GENPD.
+> >>>
+> >>> Moreover the driver doesn't support runtime PM, so GENPD should be
+> >>> always off?
+> >>
+> >> This driver already using legacy PD API's so thought its supported and
+> >> added power domain device check during powergate_sequence_power_up and
+> >> yes same should apply for powergate_power_off as well. But if legacy
+> >> PD is not supported by T186 then not sure why original driver even
+> >> using these API's.
+> >>
+> >>
+> > Sorry just took a look and driver supports T210 and prior tegra as well.
+> > T210 and prior supports legacy PD and this check is applicable for
+> > those. So we should add power domain device check for power off as well.
+>=20
+> You could fix it with a follow up patch. Please try to test that
+> power-off works properly, at least try to unload the driver module and
+> re-load it.
 
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
----
- include/linux/string.h |  1 +
- lib/string.c           | 36 ++++++++++++++++++++++++++++--------
- 2 files changed, 29 insertions(+), 8 deletions(-)
+Agreed, this should have the same check as above for
+tegra_powergate_power_off(). It currently works fine because on Tegra186
+tegra_powergate_power_off() (and all the other legacy APIs for that
+matter) will abort early since no power gates are implemented. The AHCI
+driver doesn't check for errors, so this will just fail silently. It's
+better to be symmetric, though, and add the check in both paths.
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 4fcfb56abcf5..36d00ff8013e 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
- extern void argv_free(char **argv);
- 
- extern bool sysfs_streq(const char *s1, const char *s2);
-+extern bool sysfs_streqcase(const char *s1, const char *s2);
- extern int kstrtobool(const char *s, bool *res);
- static inline int strtobool(const char *s, bool *res)
- {
-diff --git a/lib/string.c b/lib/string.c
-index 7548eb715ddb..d0fb02efd5da 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -687,6 +687,17 @@ char *strsep(char **s, const char *ct)
- EXPORT_SYMBOL(strsep);
- #endif
- 
-+static inline bool __streq_terminal(const char *s1, const char *s2)
-+{
-+	if (*s1 == *s2)
-+		return true;
-+	if (!*s1 && *s2 == '\n' && !s2[1])
-+		return true;
-+	if (*s1 == '\n' && !s1[1] && !*s2)
-+		return true;
-+	return false;
-+}
-+
- /**
-  * sysfs_streq - return true if strings are equal, modulo trailing newline
-  * @s1: one string
-@@ -703,17 +714,26 @@ bool sysfs_streq(const char *s1, const char *s2)
- 		s1++;
- 		s2++;
- 	}
--
--	if (*s1 == *s2)
--		return true;
--	if (!*s1 && *s2 == '\n' && !s2[1])
--		return true;
--	if (*s1 == '\n' && !s1[1] && !*s2)
--		return true;
--	return false;
-+	return __streq_terminal(s1, s2);
- }
- EXPORT_SYMBOL(sysfs_streq);
- 
-+/**
-+ * sysfs_streqcase - same to sysfs_streq and case insensitive
-+ * @s1: one string
-+ * @s2: another string
-+ *
-+ */
-+bool sysfs_streqcase(const char *s1, const char *s2)
-+{
-+	while (*s1 && tolower(*s1) == tolower(*s2)) {
-+		s1++;
-+		s2++;
-+	}
-+	return __streq_terminal(s1, s2);
-+}
-+EXPORT_SYMBOL(sysfs_streqcase);
-+
- /**
-  * match_string - matches given string in an array
-  * @array:	array of strings
--- 
-2.25.1
+> > But for T186, we should have GENPD working once we add runtime PM
+> > support to driver.
+> >=20
+> > Preetham/Thierry, Can you confirm where SATA is un powergated prior to
+> > kernel?
+> >=20
+> >=20
+> >> But as RPM is not implemented yet for this driver, GENPD will be OFF
+> >> but SATA is not in power-gate by the time kernel starts and
+> >> functionally works.
+> >>
+> >> But with RPM implementation, I guess we can do proper power gate on/of=
+f.
+> >>
+>=20
+> I now recalled that GENPD turns ON all domains by default and then turns
+> them OFF only when driver entered into the RPM-suspended state. This
+> means that AHCI GENPD should be always-ON for T186, which should be okay
+> if this doesn't break power sequences.
 
+Yeah, the generic PM domain will just stay enabled after probe and until
+remove. This does not impact the power sequences because they have to be
+completely implemented in the power domains code anyway. With the legacy
+API we used to need more rigorous sequences in the individual drivers,
+but with generic PM domains none of that should be necessary, though it
+also doesn't hurt, so some of the unnecessary clock enablement code is
+kept for simplicity.
+
+To be honest, I'm not sure if it's worth adding runtime PM support for
+this driver. If this top-level layer has a way of getting notification
+when no device was detected, then it might make some sense to turn off
+the power domain and the regulators again, but I'm not sure if that's
+the case. tegra_ahci_host_stop() seems like it might be usable for that
+so yeah, that might work. We currently do turn off the powergate in that
+case, so extending that power optimization to Tegra186 using runtime PM
+makes sense.
+
+Thierry
+
+--dUTOrUhVWpEd1PiU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBu/8IACgkQ3SOs138+
+s6FRzw/+Ilb7WlyutjGr1ASDrEiyNdCvPf3vGY36hyI1cOMw8eexfUupqxrVVA/w
+AMIG58I9Wa2kku7uCr2Kji8JpWMLsggUTuE0RDaDAZmEzpEoKUSo7hVxvu9SQAk+
+FR0RXQfBICotlh/0LfA9osXVfStqS6U2W72F5ipqiUSv1xnAy3fMmvUpay5rt6Gq
+Izk5b3SHXglsC0kJr0jeE6+AqJmcofI7EJgoAR0EgCJqxvTjyDKXYlpkqaFefERX
+1RTdH2+dyvEWN79m9ug4C+qOw/w8VKFVfuaRuX/YoKONl+iVN8uxgcc95Bjlz62x
+wTiP+S5pS2fVks0aOsw0dpsYAPbUvLuG9MPmcu4yaXl7nbx1zL41Jk8P0cwPXpfQ
+xvERn+FXU4jqOG72Rw7h8Dhb1Ul4P5rBahMQDDozHNuPLRIZePY9E8caL5WBxDif
+6nVAiiVway7m+SacUxOtEYi2WBkrPSn/dxKtPUdkQzgSi5KkEJZczVSHNWtYMXRJ
+3VxxVz3NYgaIcQfw1kN1HNnZ1gI7kzfV0K/LviUAEotI4Eh7Vz/3d0kbqKvcn+nn
+Tt6gPgHd43UXKTKPfbJ4zwLK9v4lF+kS7o26zVn75WHND9YFLRKrPwx4bdPCZwGi
+/Xtcy4h0t3iOAaaq2EpxYlZ4yPiHVmVtZBMMNSX/FOKmrJee9hA=
+=OKXJ
+-----END PGP SIGNATURE-----
+
+--dUTOrUhVWpEd1PiU--
