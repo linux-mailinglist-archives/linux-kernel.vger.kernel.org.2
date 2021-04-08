@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0086E357E61
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4BD357E66
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhDHIqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:46:50 -0400
-Received: from m12-17.163.com ([220.181.12.17]:42274 "EHLO m12-17.163.com"
+        id S230196AbhDHItD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:49:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhDHIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:46:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hAJCn
-        0+oHfyjAm5HefGdXbPdmgpU4l0aRalPUPuht8E=; b=hr/S8pJ0mAmvkY/74DCEi
-        +nCy2/Lx9qeRlIu7PataY0bkEY+Zkr/KI6Lw4aY8FNfmNOh51FBG4+qbbx68PQUa
-        Ky9MdTMu1NpIZT9MBBClKaZSn3soPLVcKCkWb7AN/2M8yAO1H2laSQTuj7LWXy+D
-        xqKBHIhNkx+UCPI2kpcIBs=
-Received: from localhost.localdomain (unknown [119.137.53.45])
-        by smtp13 (Coremail) with SMTP id EcCowABXWpLMwm5gR4EIuQ--.56324S2;
-        Thu, 08 Apr 2021 16:46:05 +0800 (CST)
-From:   Carlis <llyz108@163.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Xuezhi Zhang <zhangxuezhi1@yulong.com>
-Subject: [PATCH] drm/panel: panel-dsi-cm: convert sysfs snprint to sysfs_emit
-Date:   Thu,  8 Apr 2021 08:46:03 +0000
-Message-Id: <20210408084603.2112-1-llyz108@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229588AbhDHItA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:49:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3F27610CF;
+        Thu,  8 Apr 2021 08:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617871729;
+        bh=P19ARu+VzLED5pOwAOMynXeUE5WCD1NGG6yt2KArmgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jCeBV5SLTxof87P9PyTbveiHBTCRyqv22JLar956SDI81PsqG2uHXTiCRqlcjZTZ7
+         U3aAxEDwWCRRnFeLpvCnSsLz3bpLrSWgSfkqgHvBSJYivJ99Q0b9asFFV2fHx270Hk
+         zFucLLf/zgqzwZSwkp6If1ejFudDWpodIAvfsOKwvW4NlUXu3dckWhLz5cPmpeSSHJ
+         CizYHlPbifWNQgoiJf3HUxJ0ceOTSI7jUvqZmjyqCeqZpqaZe1boRXb/S/aZXN/X7S
+         DFys/3xYPMHkvQwWyMcEJwep/AjAjDNg8OKASrN8xZBjBlD9vfv/rpp5u95laNTDMU
+         3K3K14u3ABtWw==
+Date:   Thu, 8 Apr 2021 11:48:46 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] x86/sgx: Do not update sgx_nr_free_pages in
+ sgx_setup_epc_section()
+Message-ID: <YG7DbunDoPocsEzZ@kernel.org>
+References: <20210405232653.33680-1-jarkko@kernel.org>
+ <20210407154934.GF25319@zn.tnic>
+ <YG3X454GI4U2BZVU@kernel.org>
+ <20210407161811.GK25319@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowABXWpLMwm5gR4EIuQ--.56324S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7GrW3Xry3Gw1xCF47Zry3CFg_yoW8Jr4rpF
-        47G347ZrW8JFyqyFWrCFZ2vFyrZ3WIqFWxKa4kGanxuF4UAF48AF9rAFW7Kr15Jr1xG34a
-        gF4DKrW5uay8Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j6SoJUUUUU=
-X-Originating-IP: [119.137.53.45]
-X-CM-SenderInfo: xoo16iiqy6il2tof0z/1tbiPg1uhVxBmQhfnQAAsW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407161811.GK25319@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-
-Fix the following coccicheck warning:
-drivers/gpu/drm//panel/panel-dsi-cm.c:271:8-16: 
-WARNING: use scnprintf or sprintf
-drivers/gpu/drm//panel/panel-dsi-cm.c:251:8-16: 
-WARNING: use scnprintf or sprintf
-
-Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
----
- drivers/gpu/drm/panel/panel-dsi-cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
-index 5fbfb71ca3d9..a8efb06cca64 100644
---- a/drivers/gpu/drm/panel/panel-dsi-cm.c
-+++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
-@@ -248,7 +248,7 @@ static ssize_t num_dsi_errors_show(struct device *dev,
- 	if (r)
- 		return r;
+On Wed, Apr 07, 2021 at 06:18:11PM +0200, Borislav Petkov wrote:
+> On Wed, Apr 07, 2021 at 07:03:47PM +0300, Jarkko Sakkinen wrote:
+> > > Which leads to my question: what is sgx_nr_free_pages supposed to denote?
+> > > 
+> > > Because I understand the callpath
+> > > 
+> > > sgx_page_cache_init
+> > > ...
+> > > for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+> > > 	...
+> > > 	sgx_setup_epc_section
+> > > 	...
+> > > 		sgx_nr_free_pages += nr_pages;
+> > > 
+> > > as adding the number of pages of each new EPC section to the total
+> > > number of the free pages. Unless that variable accounts something else.
+> > > 
+> > > So what does this variable actually mean?
+> > 
+> > It's used for only to trigger watermark for reclaiming. I.e. causes
+> > ksgxd to trigger. And it gives the number of total free EPC pages in
+> > all NUMA nodes.
+> 
+> So the callpath I laid out above is adding the number of pages of each
+> section to the total free EPC pages number.
+> 
+> Why is that wrong and why is your patch needed?
  
--	return snprintf(buf, PAGE_SIZE, "%d\n", errors);
-+	return sysfs_emit(buf, "%d\n", errors);
- }
- 
- static ssize_t hw_revision_show(struct device *dev,
-@@ -268,7 +268,7 @@ static ssize_t hw_revision_show(struct device *dev,
- 	if (r)
- 		return r;
- 
--	return snprintf(buf, PAGE_SIZE, "%02x.%02x.%02x\n", id1, id2, id3);
-+	return sysfs_emit(buf, "%02x.%02x.%02x\n", id1, id2, id3);
- }
- 
- static DEVICE_ATTR_RO(num_dsi_errors);
--- 
-2.25.1
+As part of "x86/sgx: Replace section->init_laundry_list with sgx_dirty_page_list"
+pages are processed from a global list by ksgxd.
 
+This in turn introduces change to sanitization:
 
+-		if (!ret)
+-			list_move(&page->list, &section->page_list);
+-		else
++		if (!ret) {
++			/*
++			 * page is now sanitized.  Make it available via the SGX
++			 * page allocator:
++			 */
++			list_del(&page->list);
++			sgx_free_epc_page(page);
++		} else {
++			/* The page is not yet clean - move to the dirty list. */
+ 			list_move_tail(&page->list, &dirty);
+-
+-		spin_unlock(&section->lock);
++		}
+
+This is done for the reason that it is best to keep the logic to assign
+available-for-use EPC pages to correct NUMA lists in a single location.
+
+The regression is that the sgx_nr_free_pages is also incremented by
+sgx_free_epc_pages(), and thus it ends up having double the number of
+pages available.
+
+/Jarkko
