@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7F235887F
+	by mail.lfdr.de (Postfix) with ESMTP id 86E95358880
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhDHPb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:31:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38274 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231940AbhDHPax (ORCPT
+        id S232238AbhDHPba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232009AbhDHPa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:30:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617895840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f7y+qV1QX6itWVJvsPTpvv4qB/DYjHt3u6N1WcKj9Bg=;
-        b=Hwi1BbFkEH57idIeebcQ49yiIgQ/CCCMBV3ZMrvOO2ANg531mL3S6qpTgmNSfHqmu6OAeu
-        B9J3QNS5M0Egd5ipeaa+iFFNWtgZ3F1OfjZDdWWib7gcM4i7xCTs6jGHhRgiK64PKjjkPe
-        UZCRif6YQjlHCev0rOmnkKmrPacNEVw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-iti5jVB7PPW0XPPAN_V_HA-1; Thu, 08 Apr 2021 11:30:38 -0400
-X-MC-Unique: iti5jVB7PPW0XPPAN_V_HA-1
-Received: by mail-ed1-f71.google.com with SMTP id c6so1221138edf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 08:30:38 -0700 (PDT)
+        Thu, 8 Apr 2021 11:30:56 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A645FC061760;
+        Thu,  8 Apr 2021 08:30:43 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id f29so1648385pgm.8;
+        Thu, 08 Apr 2021 08:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oO/23sQ10zNdJXUePDBr15zWZE3PAPzpbovMLWW7jBo=;
+        b=tjirxve3e4NPqRl/bXEIjEtydWWwLPJiYhUXPb8No26jWfVlABkQsz8ngfXTZSy2eU
+         ROqo0D0+xiP5QpYEIp1Fzrv3icGGF2joJqM/dezoe4Kos+SxF4GwUhmSgGT7wm9AV28I
+         xRnrgRw4AbD6WmrvlPG2R+zDn4dm7FBxXdCz/g7bCq7+KG2nYJHAHq1kZuXuJw+/7cwP
+         yet1G/dTl6q4jbTGTvLt7hZhyCuw61YGP6TVFsuhWOBm6qEj8dL4ZXFV8LAMW4gnN1HO
+         UjD1pvr4Q3cpOQBz5GSclww3QxJuHBsxKQDkRaFddau3Qd1E8hr6M1Mplcqzo0EOAd9R
+         mtZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f7y+qV1QX6itWVJvsPTpvv4qB/DYjHt3u6N1WcKj9Bg=;
-        b=E3rKGuzjBW5j8aswushsWmaeAYvoaINBmaVLMdKdY0uwimLzbKmECOddmpL7HxIobA
-         Kh44ZFqtoCX70TltYMpASke597zVk0PWZCzrjSt6wZZy+ywLMNK5aFTnlW+O07Xf5Rij
-         cLA96OyXaOByR/9E+7oGfb0zBUHnj3oiWJm5rbo4vS69JyYWIQ8SmHg4U/6uMN9cxmyi
-         RICd+YMWOrgIbHmxCoeZFRfezru6xZ4s3Gml4PMajxGhJfSHoPfKJjVGdGaOf4rZQsOp
-         eGsZmobTCciIX4JcYSMArw/qEyckr0nDWbU6V76vFJ1QBKeICcMpz1aOkcwSSQYa3L0E
-         PeMg==
-X-Gm-Message-State: AOAM533iAh8FuG6+OUCSw77ZiU1QJwEZHmv66GRfCKLOnUSkOQa+wDlp
-        VtOYY0uS9EEp7gxIs8GKuZK/PZEBlA2dAmZ8N7oIRTpw7nJoE0sC9vewzCjdBZ+cWuaclzMT3Mf
-        BrOjZSDsrpRQHaL/3CwO+ezLN
-X-Received: by 2002:a17:906:f2c4:: with SMTP id gz4mr11221036ejb.369.1617895835600;
-        Thu, 08 Apr 2021 08:30:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0Y3dI6nxcGhLpQ0Wo61Aeoqztdw5kKwf3X3+bdymlXu5DaOTJRHYyc2lp0yIFxYtWUBsSww==
-X-Received: by 2002:a17:906:f2c4:: with SMTP id gz4mr11220328ejb.369.1617895829796;
-        Thu, 08 Apr 2021 08:30:29 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id h23sm6317924ejd.103.2021.04.08.08.30.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 08:30:28 -0700 (PDT)
-Subject: Re: [PATCH 0/4] Add support for XMM fast hypercalls
-To:     Wei Liu <wei.liu@kernel.org>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        graf@amazon.com, eyakovl@amazon.de, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210407212926.3016-1-sidcha@amazon.de>
- <20210408152817.k4d4hjdqu7hsjllo@liuwe-devbox-debian-v2>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <033e7d77-d640-2c12-4918-da6b5b7f4e21@redhat.com>
-Date:   Thu, 8 Apr 2021 17:30:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oO/23sQ10zNdJXUePDBr15zWZE3PAPzpbovMLWW7jBo=;
+        b=cthJOZPeKK/WNMzg/oJ9QsvABpj/QxiAy6VG/YN1tN1Q+FAVxX63JL5pDrgrrjPosV
+         X5UNP3LwP/RDDA4h1pkaiPkA++RR2dWZ4EkKbKkZQLhw+qz0xLS8qO5RecixeV7Ys0It
+         KNDSGGKu5dKjXQE8/n0fPeCzHNME4jJel5+1v4N/Ko/6fcP5O6mAwqdOUA5t0UYZwkXB
+         P9neiBiEhOFtelPKzx2TfldEMM4HhC3TuILeoRomdLEzB0vtmwDx+Y3xzOaCn2S4bIEV
+         BJQOSKz2OFYeM4q3OQBO7lo5fvYHPSCqHqAj6rRqHhl1EvcdKfIkjCKtcGTMTJD6cPDw
+         42nw==
+X-Gm-Message-State: AOAM533wfaiLl6BOjRAmEQuTWGrIeLaA7sBLNQLHoO99J5qTqS63JrJo
+        OdzhE/E4CuE8Ps8kODpNV60FZ3ThJRxtSYZ4aqc=
+X-Google-Smtp-Source: ABdhPJx3vRd/dP/5NBJB97jSnzkg4mtFwN9apjja9l0XgzUhFHKu5r6RtZf/NZFLldFSKwcOQ66ckVzaBmmlqGlkSkE=
+X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
+ x64-20020a627c430000b02901ef20ceba36mr8145230pfc.40.1617895843021; Thu, 08
+ Apr 2021 08:30:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210408152817.k4d4hjdqu7hsjllo@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYsiRYaE+y44ApDkvPvbDCdiJ+nnCMhiiaPVsg6p8m4+1Q@mail.gmail.com>
+ <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com>
+ <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com>
+ <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com> <CA+G9fYuYC3QK2Zi8pbud0ebai4d4YgB0A4DXg5XWaE1pLWP5tw@mail.gmail.com>
+In-Reply-To: <CA+G9fYuYC3QK2Zi8pbud0ebai4d4YgB0A4DXg5XWaE1pLWP5tw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 8 Apr 2021 18:30:26 +0300
+Message-ID: <CAHp75VcFo7SxMaKggyx1TM22tfKk7+_ZT4m5N1bXryABjqVeoA@mail.gmail.com>
+Subject: Re: [next] [arm64] [gpio] BUG: key has not been registered! DEBUG_LOCKS_WARN_ON:
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Colin King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/21 17:28, Wei Liu wrote:
->> Although the Hyper-v TLFS mentions that a guest cannot use this feature
->> unless the hypervisor advertises support for it, some hypercalls which
->> we plan on upstreaming in future uses them anyway.
+On Thu, Apr 8, 2021 at 3:59 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> On Thu, 8 Apr 2021 at 15:17, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Apr 8, 2021 at 11:33 AM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> > > On Thu, 8 Apr 2021 at 04:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > On Thu, Apr 8, 2021 at 12:38 AM Naresh Kamboju
+> > > > <naresh.kamboju@linaro.org> wrote:
+> > > > >
+> > > > > While running kselftest recently added gpio gpio-sim.sh test case the following
+> > > > > warning was triggered on Linux next tag 20210330 tag running on arm64 juno
+> > > > > and hikey devices.
+> > > > >
+> > > > > GOOD: next-20210326
+> > > > > BAD: next-20210330
+> > > > >
+> > > > > This is still happening today on Linux next tag 20210407.
+> > > >
+> > > > Can you add the following
+> > > >
+> > > >   sysfs_attr_init(attrs[i]);
+> > > >
+> > > > to the end of the loop in gpio_sim_setup_sysfs()?
+> > >
+> > > Do you mean like this,
+> > >
+> > > diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> > > index ea17289a869c..5fe67ccf45f7 100644
+> > > --- a/drivers/gpio/gpio-sim.c
+> > > +++ b/drivers/gpio/gpio-sim.c
+> > > @@ -296,6 +296,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+> > >                 dev_attr->store = gpio_sim_sysfs_line_store;
+> > >
+> > >                 attrs[i] = &dev_attr->attr;
+> > > +               sysfs_attr_init(attrs[i]);
+> > >         }
+> > >
+> > >         chip->attr_group.name = "line-ctrl";
+> >
+> > Precisely.
 >
-> No, please don't do this. Check the feature bit(s) before you issue
-> hypercalls which rely on the extended interface.
+> As per your suggestions the above line added and build tested
+> the reported issue is fixed now.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Perhaps Siddharth should clarify this, but I read it as Hyper-V being 
-buggy and using XMM arguments unconditionally.
+Thanks, I'll send a formal patch.
 
-Paolo
+The rest I leave for Bart to figure out what to do.
 
+
+-- 
+With Best Regards,
+Andy Shevchenko
