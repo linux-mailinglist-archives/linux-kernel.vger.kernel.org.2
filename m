@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF866358502
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B738358507
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhDHNnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:43:19 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:14517 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhDHNnS (ORCPT
+        id S231738AbhDHNoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhDHNoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:43:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UUu0lrj_1617889378;
-Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0UUu0lrj_1617889378)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Apr 2021 21:43:06 +0800
-From:   Hui Zhu <teawater@gmail.com>
-To:     wufengguang@huawei.com, linux-kernel@vger.kernel.org
-Cc:     Hui Zhu <teawater@gmail.com>
-Subject: [PATCH for vm-scalability] usemem: Add code for touch-alloc
-Date:   Thu,  8 Apr 2021 21:42:55 +0800
-Message-Id: <20210408134255.12330-1-teawater@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 09:44:03 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2B0C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:43:49 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d13so4107460lfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nd4MS/2X/IdRu/IPJEY7GmmOKW9PjkQK5am7Q8bLstI=;
+        b=hD8KAQHdn5unol9mIEukltB0Fz0T3qQQS2GZ1hEXbDV+LUdIomndFB8jDC+/8r5lsf
+         Zuap4QsWc1i4BK0nV76woFFpjpqd78ay7JVuJE7lRA5+35oX3JTgPwkEsw52eqNDq+Js
+         5/H5iVyHA5mFpNATM0UjymDtqiGtC0PoWZcHa3SZblgizwLkDZi80MQVS+U5ITAfwY/I
+         RxrQHVfGoTFjaWzb+27JUUk9VYyRvsXYcDeuMUUWeKDbqNwM9M1Wo1dWew9qOvQb6Ww+
+         zQrZDd9dGfAdGdRTD0k2W6XIjAC/I2SvGAVsnkPq0/YgTNviQ6MVih9Lzi1pAalLAwQf
+         a5BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nd4MS/2X/IdRu/IPJEY7GmmOKW9PjkQK5am7Q8bLstI=;
+        b=OuYkbM9iVXgaxUr+xPeynJDT/yVSmu8zTnQYYQZbb9o4mnaOhIQKQD4wsKnY3fDOiL
+         KsS/2gy2arItUsmMvyNxhwZIxUebJSfLaoW0CG+UoY/pMzmx7Tt4xTz237pA3bbg1XGW
+         iYGD2o3ZKINDha+DaLn3jN+LyPmjkwxYUkP9JIaPRwBrM9/BGc/8qsqSa+6/EN6li3Ib
+         /x0V5BMNFaMY+5tF3xfIxHEf9uMxMaAs4EY77AWBvAA4534YywPWnUjkD+XyFrMbd5xs
+         weiYE+0rJ33YcHv4Ug3OD+2WS+msI+MaZyb4WpmVmBCzqJxBK7SHMvmvtkAgoEhJ7Bth
+         NInQ==
+X-Gm-Message-State: AOAM531c2LOSAXS+XZ1K3n6HKwVOqLNUFYJMnFDzfoJ2/CJN3DUTpEsl
+        46qSDU5eCuJbakZ40vMMdIMpQXNMUgaALZnfBLS20w==
+X-Google-Smtp-Source: ABdhPJymnbt4FfiI9iPC+BINQwSJEhxevKghWv8S1VlDu3pJBTF5MsChnMg8U1zsHNd7he3i/ZkOw0THQ/rxhuG91CA=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr6715385lfe.29.1617889427809;
+ Thu, 08 Apr 2021 06:43:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210322104310.863029-1-jay.xu@rock-chips.com>
+In-Reply-To: <20210322104310.863029-1-jay.xu@rock-chips.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 8 Apr 2021 15:43:36 +0200
+Message-ID: <CACRpkdZWH9Mitp8+SMSCW7kGy5Uz=govbh6=c8gqzL2u6FR-Ew@mail.gmail.com>
+Subject: Re: [PATCH 0/3] gpio-rockchip driver
+To:     Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     Tao Huang <huangtao@rock-chips.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add code for touch-alloc.
-And Change read memory to write memory to avoid use the zero-page for
-reads in do_anonymous_page.
+On Mon, Mar 22, 2021 at 11:43 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
 
-Signed-off-by: Hui Zhu <teawater@gmail.com>
----
- usemem.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+> Separate gpio driver from pinctrl driver.
 
-diff --git a/usemem.c b/usemem.c
-index e2c46ec..5b90aae 100644
---- a/usemem.c
-+++ b/usemem.c
-@@ -329,6 +329,18 @@ void detach(void)
- 	}
- }
- 
-+unsigned long do_access(unsigned long *p, unsigned long idx, int read)
-+{
-+	volatile unsigned long *vp = p;
-+
-+	if (read)
-+		return vp[idx];	/* read data */
-+	else {
-+		vp[idx] = idx;	/* write data */
-+		return 0;
-+	}
-+}
-+
- unsigned long * allocate(unsigned long bytes)
- {
- 	unsigned long *p;
-@@ -355,6 +367,14 @@ unsigned long * allocate(unsigned long bytes)
- 		p = (unsigned long *)ALIGN((unsigned long)p, pagesize - 1);
- 	}
- 
-+	if (opt_touch_alloc) {
-+		unsigned long i;
-+		unsigned long m = bytes / sizeof(*p);
-+
-+		for (i = 0; i < m; i += 1)
-+			do_access(p, i, 0);
-+	}
-+
- 	return p;
- }
- 
-@@ -436,18 +456,6 @@ void shm_unlock(int seg_id)
- 	shmctl(seg_id, SHM_UNLOCK, NULL);
- }
- 
--unsigned long do_access(unsigned long *p, unsigned long idx, int read)
--{
--	volatile unsigned long *vp = p;
--
--	if (read)
--		return vp[idx];	/* read data */
--	else {
--		vp[idx] = idx;	/* write data */
--		return 0;
--	}
--}
--
- #define NSEC_PER_SEC  (1UL * 1000 * 1000 * 1000)
- 
- long nsec_sub(long nsec1, long nsec2)
-@@ -953,6 +961,8 @@ int main(int argc, char *argv[])
- 				opt_punch_holes = 1;
- 			} else if (strcmp(opts[opt_index].name, "init-time") == 0) {
- 				opt_init_time = 1;
-+			} else if (strcmp(opts[opt_index].name, "touch-alloc") == 0) {
-+				opt_touch_alloc = 1;
- 			} else
- 				usage(1);
- 			break;
--- 
-2.17.1
+I tried to apply this too, but it fails, can you rebase on the pinctrl "devel"
+branch (I suppose the RK3568 driver got in the way).
 
+Yours,
+Linus Walleij
