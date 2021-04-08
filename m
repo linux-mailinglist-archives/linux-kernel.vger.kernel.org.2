@@ -2,100 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A462358BFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74ED358BFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhDHSOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhDHSOX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:14:23 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6EEC061760;
-        Thu,  8 Apr 2021 11:14:11 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id A092AC725C7;
-        Thu,  8 Apr 2021 20:14:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617905649;
-        bh=bqq+6Ua6gjCE1d4qctGpoLs9LGXr1awDHysmE+XtkwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1G+vlnAkRYmKGPKs3Spm9nAkUs7fBssKaYLh8Lr2hfgtHkh0iz9LB3aKBtsWtkbMO
-         IKbZg4JguOYSnDK0xR8FDTqEBfA25zTaghX0Sr9AVqtJ3ao5bolI905JBKp9IxNXQx
-         XCClDPIAgXdKSoZ1qbB4Y8aZ1dV56c4Bm4j/it80=
-Date:   Thu, 8 Apr 2021 20:14:08 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <YG9H8D5YW0KEtaoG@workstation.tuxnet>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
- <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
- <YG4UNoBCQJkEEfwi@workstation.tuxnet>
- <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
- <YG78IHIMGtl8Pokp@orome.fritz.box>
- <YG8miEOZXsH0NTcA@workstation.tuxnet>
- <20210408173637.w26njwystfuyrgan@pengutronix.de>
+        id S232773AbhDHSO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:14:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37066 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232267AbhDHSO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:14:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E0B44B17A;
+        Thu,  8 Apr 2021 18:14:42 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     hch@lst.de
+Subject: [PATCH] MIPS: uaccess: Reduce number of nested macros
+Date:   Thu,  8 Apr 2021 20:14:37 +0200
+Message-Id: <20210408181437.19570-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210408173637.w26njwystfuyrgan@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 07:36:37PM +0200, Uwe Kleine-König wrote:
-> On Thu, Apr 08, 2021 at 05:51:36PM +0200, Clemens Gruber wrote:
-> > On Thu, Apr 08, 2021 at 02:50:40PM +0200, Thierry Reding wrote:
-> > > Yes, I think that's basically what this is saying. I think we're perhaps
-> > > getting hung up on the terminology here. PWM_STAGGERING_ALLOWED gives
-> > > the impression that we're dealing with some provider-specific feature,
-> > > whereas what we really want to express is that the PWM doesn't care
-> > > exactly when the active cycle starts and based on that a provider that
-> > > can support it may optimize the EMI behavior.
-> > > 
-> > > Maybe we can find a better name for this? Ultimately what this means is
-> > > that the consumer is primarily interested in the power output of the PWM
-> > > rather than the exact shape of the signal. So perhaps something like
-> > > PWM_USAGE_POWER would be more appropriate.
-> > 
-> > Yes, although it would then no longer be obvious that this feature leads
-> > to improved EMI behavior, as long as we mention that in the docs, I
-> > think it's a good idea
-> > 
-> > Maybe document it as follows?
-> > PWM_USAGE_POWER - Allow the driver to delay the start of the cycle
-> > for EMI improvements, as long as the power output stays the same
-> 
-> I don't like both names, because for someone who is only halfway into
-> PWM stuff it is not understandable. Maybe ALLOW_PHASE_SHIFT?
+Clean up macros even further after removal get_fs/set_fs.
 
-Sounds good to me.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/include/asm/uaccess.h | 157 +++++++++++++++-----------------
+ 1 file changed, 71 insertions(+), 86 deletions(-)
 
-> When a consumer is only interested in the power output than
-> 
-> 	.period = 20
-> 	.duty_cycle = 5
-> 
-> would also be an allowed response for the request
-> 
-> 	.period = 200
-> 	.duty_cycle = 50
-> 
-> and this is not what is in the focus here.
+diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+index 91bc7fb7dca1..e0dedd47e4e6 100644
+--- a/arch/mips/include/asm/uaccess.h
++++ b/arch/mips/include/asm/uaccess.h
+@@ -102,8 +102,15 @@ static inline int __access_ok(const void __user *p, unsigned long size)
+  *
+  * Returns zero on success, or -EFAULT on error.
+  */
+-#define put_user(x,ptr) \
+-	__put_user_check((x), (ptr), sizeof(*(ptr)))
++#define put_user(x, ptr)						\
++({									\
++	__typeof__(*(ptr)) __user *__p = (ptr);				\
++									\
++	might_fault();							\
++	access_ok(__p, sizeof(*__p)) ?					\
++		__put_user((x), __p) :					\
++		-EFAULT;						\
++})
+ 
+ /*
+  * get_user: - Get a simple variable from user space.
+@@ -123,8 +130,15 @@ static inline int __access_ok(const void __user *p, unsigned long size)
+  * Returns zero on success, or -EFAULT on error.
+  * On error, the variable @x is set to zero.
+  */
+-#define get_user(x,ptr) \
+-	__get_user_check((x), (ptr), sizeof(*(ptr)))
++#define get_user(x, ptr)						\
++({									\
++	const __typeof__(*(ptr)) __user *__p = (ptr);			\
++									\
++	might_fault();							\
++	access_ok(__p, sizeof(*__p)) ?					\
++		__get_user((x), __p) :					\
++		((x) = 0, -EFAULT);					\
++})
+ 
+ /*
+  * __put_user: - Write a simple value into user space, with less checking.
+@@ -146,8 +160,32 @@ static inline int __access_ok(const void __user *p, unsigned long size)
+  *
+  * Returns zero on success, or -EFAULT on error.
+  */
+-#define __put_user(x,ptr) \
+-	__put_user_nocheck((x), (ptr), sizeof(*(ptr)))
++#define __put_user(x, ptr)						\
++({									\
++	__typeof__(*(ptr)) __user *__pu_ptr = (ptr);			\
++	__typeof__(*(ptr)) __pu_val = (x);				\
++	int __pu_err = 0;						\
++									\
++	__chk_user_ptr(__pu_ptr);					\
++	switch (sizeof(*__pu_ptr)) {					\
++	case 1:								\
++		__put_data_asm(user_sb, __pu_ptr);			\
++		break;							\
++	case 2:								\
++		__put_data_asm(user_sh, __pu_ptr);			\
++		break;							\
++	case 4:								\
++		__put_data_asm(user_sw, __pu_ptr);			\
++		break;							\
++	case 8:								\
++		__PUT_DW(user_sd, __pu_ptr);				\
++		break;							\
++	default:							\
++		BUILD_BUG();						\
++	}								\
++									\
++	__pu_err;							\
++})
+ 
+ /*
+  * __get_user: - Get a simple variable from user space, with less checking.
+@@ -170,8 +208,31 @@ static inline int __access_ok(const void __user *p, unsigned long size)
+  * Returns zero on success, or -EFAULT on error.
+  * On error, the variable @x is set to zero.
+  */
+-#define __get_user(x,ptr) \
+-	__get_user_nocheck((x), (ptr), sizeof(*(ptr)))
++#define __get_user(x, ptr)						\
++({									\
++	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
++	int __gu_err = 0;						\
++									\
++	__chk_user_ptr(__gu_ptr);					\
++	switch (sizeof(*__gu_ptr)) {					\
++	case 1:								\
++		__get_data_asm((x), user_lb, __gu_ptr);			\
++		break;							\
++	case 2:								\
++		__get_data_asm((x), user_lh, __gu_ptr);			\
++		break;							\
++	case 4:								\
++		__get_data_asm((x), user_lw, __gu_ptr);			\
++		break;							\
++	case 8:								\
++		__GET_DW((x), user_ld, __gu_ptr);			\
++		break;							\
++	default:							\
++		BUILD_BUG();						\
++	}								\
++									\
++	__gu_err;							\
++})
+ 
+ struct __large_struct { unsigned long buf[100]; };
+ #define __m(x) (*(struct __large_struct __user *)(x))
+@@ -183,43 +244,6 @@ struct __large_struct { unsigned long buf[100]; };
+ #define __GET_DW(val, insn, ptr) __get_data_asm(val, insn, ptr)
+ #endif
+ 
+-extern void __get_user_unknown(void);
+-
+-#define __get_user_common(val, size, ptr)				\
+-do {									\
+-	switch (size) {							\
+-	case 1: __get_data_asm(val, user_lb, ptr); break;		\
+-	case 2: __get_data_asm(val, user_lh, ptr); break;		\
+-	case 4: __get_data_asm(val, user_lw, ptr); break;		\
+-	case 8: __GET_DW(val, user_ld, ptr); break;			\
+-	default: __get_user_unknown(); break;				\
+-	}								\
+-} while (0)
+-
+-#define __get_user_nocheck(x, ptr, size)				\
+-({									\
+-	int __gu_err;							\
+-									\
+-	__chk_user_ptr(ptr);						\
+-	__get_user_common((x), size, ptr);				\
+-									\
+-	__gu_err;							\
+-})
+-
+-#define __get_user_check(x, ptr, size)					\
+-({									\
+-	int __gu_err = -EFAULT;						\
+-	const __typeof__(*(ptr)) __user * __gu_ptr = (ptr);		\
+-									\
+-	might_fault();							\
+-	if (likely(access_ok(__gu_ptr, size))) {			\
+-		__get_user_common((x), size, __gu_ptr);			\
+-	} else								\
+-		(x) = 0;						\
+-									\
+-	__gu_err;							\
+-})
+-
+ #define __get_data_asm(val, insn, addr)					\
+ {									\
+ 	long __gu_tmp;							\
+@@ -297,7 +321,7 @@ do {									\
+ 			 (__force type *)(src));			\
+ 		break;							\
+ 	default:							\
+-		__get_user_unknown();					\
++		BUILD_BUG();						\
+ 		break;							\
+ 	}								\
+ 	if (unlikely(__gu_err))						\
+@@ -315,43 +339,6 @@ do {									\
+ #define __PUT_DW(insn, ptr) __put_data_asm(insn, ptr)
+ #endif
+ 
+-#define __put_user_common(ptr, size)					\
+-do {									\
+-	switch (size) {							\
+-	case 1: __put_data_asm(user_sb, ptr); break;			\
+-	case 2: __put_data_asm(user_sh, ptr); break;			\
+-	case 4: __put_data_asm(user_sw, ptr); break;			\
+-	case 8: __PUT_DW(user_sd, ptr); break;				\
+-	default: __put_user_unknown(); break;				\
+-	}								\
+-} while (0)
+-
+-#define __put_user_nocheck(x, ptr, size)				\
+-({									\
+-	__typeof__(*(ptr)) __pu_val;					\
+-	int __pu_err = 0;						\
+-									\
+-	__pu_val = (x);							\
+-	__chk_user_ptr(ptr);						\
+-	__put_user_common(ptr, size);					\
+-									\
+-	__pu_err;							\
+-})
+-
+-#define __put_user_check(x, ptr, size)					\
+-({									\
+-	__typeof__(*(ptr)) __user *__pu_addr = (ptr);			\
+-	__typeof__(*(ptr)) __pu_val = (x);				\
+-	int __pu_err = -EFAULT;						\
+-									\
+-	might_fault();							\
+-	if (likely(access_ok(__pu_addr, size))) {			\
+-		__put_user_common(__pu_addr, size);			\
+-	}								\
+-									\
+-	__pu_err;							\
+-})
+-
+ #define __put_data_asm(insn, ptr)					\
+ {									\
+ 	__asm__ __volatile__(						\
+@@ -390,8 +377,6 @@ do {									\
+ 	  "i" (-EFAULT));						\
+ }
+ 
+-extern void __put_user_unknown(void);
+-
+ #define __put_kernel_nofault(dst, src, type, err_label)			\
+ do {									\
+ 	type __pu_val;					\
+@@ -412,7 +397,7 @@ do {									\
+ 		__PUT_DW(kernel_sd, (type *)(dst));			\
+ 		break;							\
+ 	default:							\
+-		__put_user_unknown();					\
++		BUILD_BUG();						\
+ 		break;							\
+ 	}								\
+ 	if (unlikely(__pu_err))						\
+-- 
+2.29.2
 
-Right.
-
-If Thierry agrees, I can spin up a new revision.
-
-Maybe we can get it into 5.13 after all.
-
-Thanks,
-Clemens
