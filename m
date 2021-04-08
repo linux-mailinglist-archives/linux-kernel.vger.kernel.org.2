@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CD5357CA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCF7357CA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhDHGft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S229958AbhDHGf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhDHGfq (ORCPT
+        with ESMTP id S229512AbhDHGf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:35:46 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF913C061760;
-        Wed,  7 Apr 2021 23:35:32 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGBN117Wpz9sTD;
-        Thu,  8 Apr 2021 16:35:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617863729;
-        bh=sd4NiQdmVyyEmcQXDZzxR48wvz6eM9ue6+EtR9W+nwk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MD5wQeK7A9RmsEXXaM8OFOFKCajEP2ZclSxZPajBl1mQH7lCz8+snn2FQ+DE6epXi
-         QPn6SIldqV6zbKzBtJ8Hp+bse3Sp4oj8RfRrDmHOQfbl2PWPH6Xgl7DKIaWQ6D8WV0
-         XM7IcgLR9xLk91qPrVbAHMbh9g9axqruMdOKyQak4EfErDjfn/VXvu11fy8wB13c9O
-         UDjGest9zET8zyZZEkQKu+7pUY3f/A+4rdvCPr170ko2KQYsdxHrJnfRfvQVHEsQ+M
-         aH9XFR87+oxpeSM750PHf5mcvK/36nSE5T8Aha6Eh2FNcCZThNUXMEsXDQuoXBeWhD
-         QrrsRAH3xmmog==
-Date:   Thu, 8 Apr 2021 16:35:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the irqchip tree
-Message-ID: <20210408163528.180240af@canb.auug.org.au>
+        Thu, 8 Apr 2021 02:35:57 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA90C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 23:35:46 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id i9so190217qvo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 23:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=jPyP0x12pCFmur4fSxPFpC42drbEe8/klrnOBPcUQ9Y=;
+        b=TonDbdLoGuzCQYW6VZPTUp4OKlzW+XMz9OnV2DBOK+ri1XyokkDFLmSh+3JEmfT9Lo
+         Y4JXAY9xGjvG3szjF+VAdPnPIfCkB4hSq4t2BVi7Dhhy0M7WpOAhdwHqQOr168kDWfAd
+         ZehzAz+3nsryGNXn1RulD2P4cXZZbyjF5S90bR8YSS5DaZVOjpS47bywfDHS3Lu+gt3h
+         7r05v2hL8vtk08TZCBCfzPkSloSd/cCwI0WmCkX+961kNewZw6McDCSgHazQDA1o3tMj
+         j/8tjM580Wl8atMCytj61fTcNYRGYb+fUMaUdE7QN+/XZ0Bdoc9yqqeuuT5n+vNZPNnc
+         2jIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=jPyP0x12pCFmur4fSxPFpC42drbEe8/klrnOBPcUQ9Y=;
+        b=iKyizQLMVIuPZNfdUs7zaEoRuBhE9ePITM3Xh/1tYksTWx0lN0NBWXo7WsSlW101A5
+         rr4HRbYm1kltBr7DduKbEDx8xxTFkA3cQn99VUrr4nMTRHLr1jNl+aTzVXPbcvgK6E73
+         TE5gsnSZEAgV/9lNUkoaNAXOMiL9DTGQhSEKDCunj+mvZ6dzKjubWAdigwAWsN5zTLUN
+         yfs0OL8VKBdz3XQlfJwVX4XumOs4fvhv1oPQmW5OHUAiuPKFaM5khnzpmBfQHhHbf7Vt
+         8qHbEM7y+appgqIRz6LKKSnBQ+satApdy9MoZnT3cMzwU0hJWzPlmoK4cPN058rekM/T
+         Tphw==
+X-Gm-Message-State: AOAM530bWygsZlV8SnbrpFxZIkN9JnAMTyauu5sRqhYeDIWtf9q7Ccit
+        9WRJqw/0kqs28/jViD6ZzQA=
+X-Google-Smtp-Source: ABdhPJyC3Sl6smpCYyyOsTthueVG+CAPYVjsM+e2Fz7WoIrMzYOS7cF9nwkCpaxn/6a2UgiGCT8zgw==
+X-Received: by 2002:a0c:a9c5:: with SMTP id c5mr7391386qvb.6.1617863746094;
+        Wed, 07 Apr 2021 23:35:46 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1000])
+        by smtp.gmail.com with ESMTPSA id 14sm292213qkf.119.2021.04.07.23.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 23:35:45 -0700 (PDT)
+Message-ID: <eed000bfa26686f616b91a7ac5a54ff8e3f2cbd0.camel@gmail.com>
+Subject: Re: [PATCH v2 1/1] powerpc/iommu: Enable remaining IOMMU Pagesizes
+ present in LoPAR
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, brking@linux.vnet.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Thu, 08 Apr 2021 03:35:41 -0300
+In-Reply-To: <942acb9b23d87594d0b758cc0daf713be836f8e6.camel@gmail.com>
+References: <20210407195613.131140-1-leobras.c@gmail.com>
+         <87im4xe3pk.fsf@mpe.ellerman.id.au>
+         <942acb9b23d87594d0b758cc0daf713be836f8e6.camel@gmail.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W_Bat7xdPOBP3AX6mzNARoo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/W_Bat7xdPOBP3AX6mzNARoo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2021-04-08 at 03:20 -0300, Leonardo Bras wrote:
+> > > +#define QUERY_DDW_PGSIZE_4K	0x01
+> > > +#define QUERY_DDW_PGSIZE_64K	0x02
+> > > +#define QUERY_DDW_PGSIZE_16M	0x04
+> > > +#define QUERY_DDW_PGSIZE_32M	0x08
+> > > +#define QUERY_DDW_PGSIZE_64M	0x10
+> > > +#define QUERY_DDW_PGSIZE_128M	0x20
+> > > +#define QUERY_DDW_PGSIZE_256M	0x40
+> > > +#define QUERY_DDW_PGSIZE_16G	0x80
+> > 
+> > I'm not sure the #defines really gain us much vs just putting the
+> > literal values in the array below?
+> 
+> My v1 did not use the define approach, what do you think of that?
+> http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210322190943.715368-1-leobras.c@gmail.com/
+> 
+> 
+(of course, it would be that without the pageshift defines also, using
+the __builtin_ctz() approach suggested by Alexey.)
 
-Hi all,
-
-After merging the irqchip tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/irqchip/irq-wpcm450-aic.c:9:10: fatal error: asm/exception.h: No su=
-ch file or directory
-    9 | #include <asm/exception.h>
-      |          ^~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  fead4dd49663 ("irqchip: Add driver for WPCM450 interrupt controller")
-
-I have used the irqchip tree from next-20210407 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/W_Bat7xdPOBP3AX6mzNARoo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBupDAACgkQAVBC80lX
-0Gy3MQf+NLlJBrp8ewz7Ud9FnuqFaDhF/fhVNPdhRtxCwmscdX7JexuD5btrsQ2K
-4aEpoEpsQZBm09f/BLQRH1kQYV6dFOozmw46cCgLDcRJnvZWy8E7U/gI9LqnCja9
-vjjEfg9nC8nrmtHbeETVxc0PEhB4/ba7B8yInLixbNSPLVnY6VOoPzQqjJ+IRMkk
-VEnFLW8VUWiEb1W1THwwE02pMIs7B/Q+sbxGeZBLwfxBWmxUUAJL6jqi8NARE//3
-/+JAOerzTJ3204pEcms8bb/UNlZJnuvD00HdX26yjUfl3SOw91FtKxHyAl28B/XJ
-6k1abugOnH3hyr6T3kcSaatpfWkC9A==
-=ovGO
------END PGP SIGNATURE-----
-
---Sig_/W_Bat7xdPOBP3AX6mzNARoo--
