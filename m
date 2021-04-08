@@ -2,103 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7346C3588E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB453588EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbhDHPwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:52:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231969AbhDHPws (ORCPT
+        id S232056AbhDHPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232021AbhDHPy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617897156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9B/sUEO2VShQhd7eWwiUIrKIfr8RV9G7LyCRIKLZBbE=;
-        b=XtHQmo+aH7kSKTJt/a8lVWUfaimON/VFEZ6GgejTB5d64H/Rz6k+AdZkjMbhd1Wc80lXCo
-        L/vbIg0/+TZ8lEbVlFXMjWVlsCrwcmNLJhq+CW2wkliPrh+4dEHHEf3S0PzH+kV+NwUefA
-        KRWjO3mDCdwq0pc+rYMNyhL9KgmDAhU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-X4izMfM0PQeWXMyFdM51gw-1; Thu, 08 Apr 2021 11:52:35 -0400
-X-MC-Unique: X4izMfM0PQeWXMyFdM51gw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34065189C440;
-        Thu,  8 Apr 2021 15:52:33 +0000 (UTC)
-Received: from ovpn-113-96.phx2.redhat.com (ovpn-113-96.phx2.redhat.com [10.3.113.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6748C60864;
-        Thu,  8 Apr 2021 15:52:32 +0000 (UTC)
-Message-ID: <2a4303680e20e8eac115880c1ac86f39076f0fd7.camel@redhat.com>
-Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-From:   Simo Sorce <simo@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Chris von Recklinghausen <crecklin@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 08 Apr 2021 11:52:31 -0400
-In-Reply-To: <YG8gqZoZGutPmROz@sol.localdomain>
-References: <20210408131506.17941-1-crecklin@redhat.com>
-         <CAJZ5v0ib+jmbsD9taGW0RujY5c9BCK8yLHv065u44mb0AwO9vQ@mail.gmail.com>
-         <YG8gqZoZGutPmROz@sol.localdomain>
-Organization: Red Hat, Inc.
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Thu, 8 Apr 2021 11:54:26 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D707C061760;
+        Thu,  8 Apr 2021 08:54:14 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id e186so2738736iof.7;
+        Thu, 08 Apr 2021 08:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rIN8pFCeaL2LoZFYDNHo3e85mHPCiEYXPwyKOYGtHaE=;
+        b=KrZZDITGFhojERnsGR8KbTUSZbtk2xO0nBn8F+jYUkCPdGr4cnqz69qOZdOmX0nkFP
+         QU6GYIOaFOftunS3/+RuVzO1J+pZHV3B6VNxImBVphRXlyGV7gSRE1FjJ7k8P7m0y8eU
+         Ps8STwkDR51xbMxXqQHEzOi/YlK6y/mYO8Ha0IBaOzQT0j6RpQLusQyeZQ7H6LAS0rDv
+         F66pThJEIoDdYsiVHABaQgz+uTlHxGMuA+whU0ZMvFQgj2Z3TWYhHlnfJtt2vp4IB/ds
+         Yl9aK0x4DrZ6el0HxLIgC6mcdBp0Sid0siS+OfEQq+uqDjLcZF/egqz8A+zeidCFWqfN
+         4mmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rIN8pFCeaL2LoZFYDNHo3e85mHPCiEYXPwyKOYGtHaE=;
+        b=fl4Yz1JA+L/TZ6n97OwijYjnBIBfMp7of1yrUhXo+YzWfpyAmMwOT4yvmy9Lphm7Vq
+         GnFPh2/8F85m+crN5PMuKxEjC/0nPDVYoliQuWHmPLVD5MykjFMGHQCpRu/MjxouMdKJ
+         EyfDml+m1cO9aB/J5zp6DNYydZARw6+OlMnkW89aqwmGEjmgShzl6mFWkG/ZjW+f81oj
+         fjiBK4I7OWhnvp4vS5RiszyeEFAj0qPuWuF5R/wAK8iEjpIeIHiomcKiOW3CXKNUHtAR
+         1i1RWYgBUXqjVWMb48UBEoCb9J54dtNN9Rqxs2dFNIu2rRvLPG1WoZHgZAlEoqSZaDqI
+         sJow==
+X-Gm-Message-State: AOAM531Qh6/V2nMzbyW4bpknJ/UHN0d6OIW63ZbI2kSriDKmKHnkkIth
+        AO7+XgXXhTlIMkpO0Pj6hrZ5tjs34cjSM5q8
+X-Google-Smtp-Source: ABdhPJxYKEFHrqjRpiXMINjjaX8WFGq5kHiicHt+ZbEM9GII5uK4VSe0JbWh5S5Jly5JeK1j3nlR5A==
+X-Received: by 2002:a05:6638:371e:: with SMTP id k30mr9555521jav.4.1617897253918;
+        Thu, 08 Apr 2021 08:54:13 -0700 (PDT)
+Received: from Ubu (97-116-48-27.mpls.qwest.net. [97.116.48.27])
+        by smtp.gmail.com with ESMTPSA id z12sm15962435ilb.18.2021.04.08.08.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 08:54:13 -0700 (PDT)
+From:   Barney Goette <barneygoette@gmail.com>
+To:     vilhelm.gray@gmail.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Barney Goette <barneygoette@gmail.com>
+Subject: [PATCH v2] gpio: gpio-104-dio-48e: Fixed coding style issues (revised)
+Date:   Thu,  8 Apr 2021 10:53:34 -0500
+Message-Id: <20210408155334.12919-1-barneygoette@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-08 at 08:26 -0700, Eric Biggers wrote:
-> On Thu, Apr 08, 2021 at 03:32:38PM +0200, Rafael J. Wysocki wrote:
-> > On Thu, Apr 8, 2021 at 3:15 PM Chris von Recklinghausen
-> > <crecklin@redhat.com> wrote:
-> > > Suspend fails on a system in fips mode because md5 is used for the e820
-> > > integrity check and is not available. Use crc32 instead.
-> > > 
-> > > This patch changes the integrity check algorithm from md5 to
-> > > crc32. This integrity check is used only to verify accidental
-> > > corruption of the hybernation data
-> > 
-> > It isn't used for that.
-> > 
-> > In fact, it is used to detect differences between the memory map used
-> > before hibernation and the one made available by the BIOS during the
-> > subsequent resume.  And the check is there, because it is generally
-> > unsafe to load the hibernation image into memory if the current memory
-> > map doesn't match the one used when the image was created.
-> 
-> So what types of "differences" are you trying to detect?  If you need to detect
-> differences caused by someone who maliciously made changes ("malicious" implies
-> they may try to avoid detection), then you need to use a cryptographic hash
-> function (or a cryptographic MAC if the hash value isn't stored separately).  If
-> you only need to detect non-malicious changes (normally these would be called
-> "accidental" changes, but sure, it could be changes that are "intentionally"
-> made provided that the other side can be trusted to not try to avoid
-> detection...), then a non-cryptographic checksum would be sufficient.
+Fixed multiple bare uses of 'unsigned' without 'int'.
+Fixed space around "*" operator.
+Fixed function parameter alignment to opening parenthesis.
+Reported by checkpatch.
 
-Wouldn't you also need a signature with a TPM key in that case?
-An attacker that can change memory maps can also change the hash on
-disk ? Unless the hash is in an encrypted partition I guess...
+Signed-off-by: Barney Goette <barneygoette@gmail.com>
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+---
+ drivers/gpio/gpio-104-dio-48e.c | 50 ++++++++++++++++-----------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
-Simo.
-
+diff --git a/drivers/gpio/gpio-104-dio-48e.c b/drivers/gpio/gpio-104-dio-48e.c
+index 7a9021c4fa48..71c0bea34d7b 100644
+--- a/drivers/gpio/gpio-104-dio-48e.c
++++ b/drivers/gpio/gpio-104-dio-48e.c
+@@ -49,15 +49,15 @@ struct dio48e_gpio {
+ 	unsigned char out_state[6];
+ 	unsigned char control[2];
+ 	raw_spinlock_t lock;
+-	unsigned base;
++	unsigned int base;
+ 	unsigned char irq_mask;
+ };
+ 
+-static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
++static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
+-	const unsigned port = offset / 8;
+-	const unsigned mask = BIT(offset % 8);
++	const unsigned int port = offset / 8;
++	const unsigned int mask = BIT(offset % 8);
+ 
+ 	if (dio48egpio->io_state[port] & mask)
+ 		return  GPIO_LINE_DIRECTION_IN;
+@@ -65,14 +65,14 @@ static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+ 	return GPIO_LINE_DIRECTION_OUT;
+ }
+ 
+-static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
++static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
+-	const unsigned io_port = offset / 8;
++	const unsigned int io_port = offset / 8;
+ 	const unsigned int control_port = io_port / 3;
+-	const unsigned control_addr = dio48egpio->base + 3 + control_port*4;
++	const unsigned int control_addr = dio48egpio->base + 3 + control_port * 4;
+ 	unsigned long flags;
+-	unsigned control;
++	unsigned int control;
+ 
+ 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
+ 
+@@ -104,17 +104,17 @@ static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+ 	return 0;
+ }
+ 
+-static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+-	int value)
++static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned int offset,
++					int value)
+ {
+ 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
+-	const unsigned io_port = offset / 8;
++	const unsigned int io_port = offset / 8;
+ 	const unsigned int control_port = io_port / 3;
+-	const unsigned mask = BIT(offset % 8);
+-	const unsigned control_addr = dio48egpio->base + 3 + control_port*4;
+-	const unsigned out_port = (io_port > 2) ? io_port + 1 : io_port;
++	const unsigned int mask = BIT(offset % 8);
++	const unsigned int control_addr = dio48egpio->base + 3 + control_port * 4;
++	const unsigned int out_port = (io_port > 2) ? io_port + 1 : io_port;
+ 	unsigned long flags;
+-	unsigned control;
++	unsigned int control;
+ 
+ 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
+ 
+@@ -154,14 +154,14 @@ static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+ 	return 0;
+ }
+ 
+-static int dio48e_gpio_get(struct gpio_chip *chip, unsigned offset)
++static int dio48e_gpio_get(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
+-	const unsigned port = offset / 8;
+-	const unsigned mask = BIT(offset % 8);
+-	const unsigned in_port = (port > 2) ? port + 1 : port;
++	const unsigned int port = offset / 8;
++	const unsigned int mask = BIT(offset % 8);
++	const unsigned int in_port = (port > 2) ? port + 1 : port;
+ 	unsigned long flags;
+-	unsigned port_state;
++	unsigned int port_state;
+ 
+ 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
+ 
+@@ -202,12 +202,12 @@ static int dio48e_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
+ 	return 0;
+ }
+ 
+-static void dio48e_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
++static void dio48e_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
+ {
+ 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
+-	const unsigned port = offset / 8;
+-	const unsigned mask = BIT(offset % 8);
+-	const unsigned out_port = (port > 2) ? port + 1 : port;
++	const unsigned int port = offset / 8;
++	const unsigned int mask = BIT(offset % 8);
++	const unsigned int out_port = (port > 2) ? port + 1 : port;
+ 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
+@@ -306,7 +306,7 @@ static void dio48e_irq_unmask(struct irq_data *data)
+ 	raw_spin_unlock_irqrestore(&dio48egpio->lock, flags);
+ }
+ 
+-static int dio48e_irq_set_type(struct irq_data *data, unsigned flow_type)
++static int dio48e_irq_set_type(struct irq_data *data, unsigned int flow_type)
+ {
+ 	const unsigned long offset = irqd_to_hwirq(data);
+ 
 -- 
-Simo Sorce
-RHEL Crypto Team
-Red Hat, Inc
-
-
-
+2.25.1
 
