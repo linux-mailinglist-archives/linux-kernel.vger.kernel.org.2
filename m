@@ -2,210 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E10358D03
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8678E358D20
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhDHS4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHS4e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:56:34 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B023C061760;
-        Thu,  8 Apr 2021 11:56:23 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso1911149pjb.3;
-        Thu, 08 Apr 2021 11:56:23 -0700 (PDT)
+        id S232950AbhDHS7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:59:34 -0400
+Received: from mail-eopbgr1400120.outbound.protection.outlook.com ([40.107.140.120]:9184
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232804AbhDHS7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:59:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M7qNP5YOA1MxMwRhqee0ut2Gr6kNTGxsGLDRuTYforX4C6D2SQkqaOjDcoepWWvSKx+YuzDt6422p/o3Phw5PUAs+WN86Qrw4dvks6mx5lXvDvnm0lqaP+B/GebidN/72psltxrm6N/2qkzL/QbINOvGfaeoEkSWT0JaT6xCT9ABpb/85KC7rs1Q5vy7jD6f8wtlorRnCuazabw4tH00+df7dn81X+kxtLh/5DvugaLwEYbwJTiSI5JAgIkrLt02JWX85XrJ8K1ffpJyBc6jHKY2hLziSPwg2zDa8znGdyexlso4JWfIgOXmCftEbhrT1+UondZ9RpPy9mIOUM7E8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QY2QG5NeYcSh+SvrLvM/FZKRehXisAF4WEDv4CbSjLw=;
+ b=ATS5fIXNYEmuVyU1hwl/ABoQzAWd7q7kGD+YclVnVaE0XwWyI+vpA4C+IAoEr95fk+8DABteIU7y9FizX+hwaQPT/jKmOaC6pi+PGuGMZrYli75s4+A2kgRd2SSkFX+l2fBZugkBnQoq9rNKTw6dARjbODC5TNAR39Bt6P+PrFmLXVUobqcGY9DUy6MbdrauqVPkgiHOByU+5HMis+k8ZvZrxRrl6aEo7azoBW1hsKQuLRfxcDNstOSHEIry7u88e3So4p/7WYnZjRRFeMVVSzf31ZAVYhL/nExe9T5/bX5p7gC9fVpz5rJQ8uwAnLlRocxp6l7v6VNcXPvFffEKQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IexjwBFUHeHNYiYxUhNPM2AzfjEbH0Hum3i/l7HbIAo=;
-        b=mPhDzdxKQHYvRyEAUvmiPOfCp+vgeyoP4BgErKeoyQAd46sX2YgRNheIVRe3Z8J6wh
-         mqW72o2DVBXNptZZ2O6nZ58ypaSFxVxxFFfNPz4xfeN6pqRdndidLPpflBMgNp4BEwb6
-         e06/LxILWaBHoUwfHDwTG/pSte0AelCRm3AhUI1DqHutreRor8VLCkBUDRvMkyw7Apm6
-         8q3BQGDfUd89BLOK6R4OHHrBZiRsT9ma9FL6xHAHOlLMp4yoGZckgm5OmtuxKExY6b1S
-         h2i50oa3AeLzeO3u+Gj0QUZbPQXMPvDb0pLChuWIBeDJosvFYCZ/rNnicsMzvzcUL0FS
-         QoRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IexjwBFUHeHNYiYxUhNPM2AzfjEbH0Hum3i/l7HbIAo=;
-        b=XNIsTbEFhZqh2S/D88vXxQlIuwLPoCme3mUCLalH8fGpltPSN5Q6X531wY+x451fod
-         R8nx+Ppo0ask5OnPFRaPsMcT9ltKMsLilNiGu0HUnAWFrjoByCwPHIEJGndyC0i7+sHI
-         DW0W8I17PHJnW/fKRwy9UkxC8Ku00Yg1MSwwo8B0fMKgrPERjAKZR1cNckG7s1Cd/eYu
-         V7kjVvabcSYLwNeQrrpEft052BPAsLTdF2RI+Ng4XiA9j8mQTUcv+TDjLTI+7bt924Bk
-         uLzO4Dw00iF3ETz/CF1APgMYPGy/7ZYnl/bZs8U95n0fIllFNygxrX44DXuooZB13I1e
-         3ZYA==
-X-Gm-Message-State: AOAM533KwsxtfCmF9U04Cbx/QAIO89dKIdWD1dZ5VHzK3QSQO2/PouE/
-        Z0GJfo6OSqGqvW+h1kDrC60=
-X-Google-Smtp-Source: ABdhPJyb53zIKdPFu1C1EK8w0rYzGNzJsdT+WLA7sk56quBiVuqrDeAGUW/Z9x4iWhVXTKB1kY5Ujw==
-X-Received: by 2002:a17:90b:4a8a:: with SMTP id lp10mr9061898pjb.27.1617908182755;
-        Thu, 08 Apr 2021 11:56:22 -0700 (PDT)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id 7sm195496pfv.97.2021.04.08.11.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 11:56:22 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 11:56:15 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: memory leak in bpf
-Message-ID: <YG9Rz4R5bx+FnkaF@nuc10>
-References: <000000000000911d3905b459824c@google.com>
- <000000000000e56a2605b616b2d9@google.com>
- <YD0UjWjQmYgY4Qgh@nuc10>
- <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
- <YD1RE3O4FBkKK32l@nuc10>
- <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
- <YG4/PEhZ9CnKo1K3@nuc10>
- <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QY2QG5NeYcSh+SvrLvM/FZKRehXisAF4WEDv4CbSjLw=;
+ b=ACVROPsShmk8Ky71CfdZ4RauTNyUeI9QI5pmfBVuJaDj+6EU0oPQkpIOKfYNzDKeuqkRHO+BdPog6whgvMnk+poy00U7w3beKtgk3qMNO0qB7RYZmy/JJ4FG2osbm+503r2bwYy43D3Jk37cfG5T7KbYTBwVGz2nQmNPDC9MUmI=
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
+ by OSBPR01MB3093.jpnprd01.prod.outlook.com (2603:1096:604:17::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Thu, 8 Apr
+ 2021 18:59:20 +0000
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433%7]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
+ 18:59:19 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Topic: [PATCH net-next v3 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Index: AQHXLBphHjneZXXdB0ur+8N3VlMUXaqqJv4AgAC3vHCAAAllAIAAAJzwgAAD8ICAAAu6UA==
+Date:   Thu, 8 Apr 2021 18:59:19 +0000
+Message-ID: <OSBPR01MB47730D5F401A895C84849CCDBA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <1617846650-10058-1-git-send-email-min.li.xe@renesas.com>
+ <1617846650-10058-2-git-send-email-min.li.xe@renesas.com>
+ <YG6hOuOO5EL9xTwH@kroah.com>
+ <OSBPR01MB4773182AF8FD263D65D52949BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YG9DPEyOIXqS2Vss@kroah.com>
+ <OSBPR01MB47730AA300DB8DBE08E74FEEBA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YG9HDbMu3EbS3ekW@kroah.com>
+In-Reply-To: <YG9HDbMu3EbS3ekW@kroah.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 914c7bb7-aeb9-4ea9-be30-08d8fac06a77
+x-ms-traffictypediagnostic: OSBPR01MB3093:
+x-microsoft-antispam-prvs: <OSBPR01MB3093F77DCC9517845AD77182BA749@OSBPR01MB3093.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GYFS3is0eIp59q4uWmx0tcclq0qzwV3Ugm9Uf0o+wtUikzki5S1ZTRw9j4XUHr0lnmx9l+IGVsbB7wJe/JIyyGfC7s9DkvBa9j1j7G/OxQ0K/O/psgxNcv5PBBNSsh0vSsckkH4mII5HF1yF7sBAHe2S9pKD/WzPD/+YO9D+pLGA+8t3X3h++NNK1N1qNVgKjpyKbQJVqyCnwC7B+2HhdsVKbshDCfovZu9qRAngisimKza3gSczEyGCSIdRPcdC8xRBRUFZ1w7aAsOkD5G9IFKKCKy6FVZkuE6QxCc95jHuw6PKV5yvMsbRQZWVUAAWe5Y+m8sSQiX/DdFT5w3d9Eeb5nthnalWEdzbIIskECeleArBj+dy+f+IZii5gQoguM8z+NL/9hV4Ia2E/5+wR5hJkwH3xYqUrIGa45PBPw3jE8xjCFbF28/ZxVQyxGviJYHIFbB1DV8tBNy7s9hroHQ6lbu+WIrqmrYK819DHec0EznfZfHLL1IDBgnqN+CGWHD9YclziQkRnQACAOW2v/FjGKYzMtAPniNXHSlzNUiwRUq47ATkiN4fm+2HZBD3F83ZbbaxojW/kJy1ZXmspmuwRWnAQ/o6JOeA1HBSjROdsLdhSqUQ/LNRRqmCJUNVXCu2i7aqHSAD0J312YCbANUvPMMuOJhJAFvWzUjDwEc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39850400004)(136003)(346002)(9686003)(33656002)(8936002)(2906002)(38100700001)(86362001)(55016002)(83380400001)(4744005)(6506007)(8676002)(478600001)(71200400001)(66476007)(316002)(66556008)(66446008)(64756008)(4326008)(5660300002)(76116006)(54906003)(66946007)(52536014)(7696005)(6916009)(186003)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5PAzubFT6FkMxV4JMM7CjgXNnzCm1Hr152zcCAsK0XGV3Opbk33vxBZTI49F?=
+ =?us-ascii?Q?SdJQIy51VhQ3FyHU4rH6R/e+Mw+13lhhOMv7/ECpL8Qdeg7CIhWLSnZK92xd?=
+ =?us-ascii?Q?RfOe+gIShOgxbSA1GdwOvvod2XsDH5DbJKPgK4a01rkyiVlyKizpCudeR5xx?=
+ =?us-ascii?Q?EPeHV0aXE+s/wYWIrDcgHrhmeRTdz5ML89PuDeJVAaTmtIqnlZ+/4a12F/sK?=
+ =?us-ascii?Q?1zARdWwYyjwRtip7wV3ODG02zdJQEm8Uol6eJZA5S/iO7zcHR+yN5kglJwtI?=
+ =?us-ascii?Q?H0EUDADBTa7ki4+5TAe1M2s1A7lU7cSC3WqXQHyWrIC8KRG6rkGa9rhioso6?=
+ =?us-ascii?Q?esk4c3xiOqp81d9XFy2rStua+lTeGpiOpQymKJx+A8tUxbkUSAlyOdylVbAg?=
+ =?us-ascii?Q?VFSvVuwwcTEGo8ckFftC7Zay8m09UIxW6Lr+kSJNhwaqVCBObBzCIfuil+9F?=
+ =?us-ascii?Q?Yuwt/d+GPV9/nxrBC4w4IMMpoJIY8BQ8fw8ipW//l3otAXzWOxL1mFx0n3bp?=
+ =?us-ascii?Q?ARkVny+cquNTPNzhw2UsIKxO3KpnWqmFw6Pod08RtCOLReXlinrc8Jb6Hrgi?=
+ =?us-ascii?Q?BhNtYk9ZTxtcfbk86mYTH+aJFhzI3rchK0mRJLSHK3ie0Xx9su0pycsEYwy5?=
+ =?us-ascii?Q?8P4KO5aJdM8gm8OvcRsYSKd9piJhBjm5UFhXT9KWDrAPqfAmmvky5DQN1N71?=
+ =?us-ascii?Q?Dk4kC0myZsM+wdz+AjSqcPYp5je6v9Ya1rJpAvlj8+hH9VN+YzpXXy8c5TNu?=
+ =?us-ascii?Q?LF0eHWsVvMOqpznjHQvZi0JtPz4QygavWLksI8O+FKKd9/mB53WKeKC92yux?=
+ =?us-ascii?Q?UwoauhNvVICSTvOo4I13bMKQXEultwU69oB32k9AgFUkeaKvR6eXCcpwPvNj?=
+ =?us-ascii?Q?xctlutoY8OEhBAHp8hFrwvfia36JW/4o8XJXaJ8pkt84pzb71qgPGm/xeTYk?=
+ =?us-ascii?Q?9cqH9YAErKrqoIZgctLLtLdvyxIgucLWHkpm5hSnZA5iTFCEA/IApu5FwgrM?=
+ =?us-ascii?Q?zYpmKqlMAathHAL/7CvByqbFoTaCEsfllBBOlAZnMxpwN9+Gye2WeJ0Ujgcv?=
+ =?us-ascii?Q?uU6ZO00MgWejUI4CHkk0nutY+ANKTgVff+Txc1TOKzLMhtXnCYF7jgGO274d?=
+ =?us-ascii?Q?8TY1CQ70BIp8WJ7ae/73di/6X7L/ez7SQJER+5rR4ThWVVTvE5J1Dk1y4S7i?=
+ =?us-ascii?Q?FlWrWlKBqfDe+7gdJ9Kpf+rvmOxN0DkMX3S4UB3JvLgZRDkVqrlfnKV27FwX?=
+ =?us-ascii?Q?lKxnCv2vfrWKue15CDGiYHuL+EmxUyzIsa08p1w0jELzRaWsW12OICzJWV9w?=
+ =?us-ascii?Q?dpS0EcHzcnftspFbVqTV2PDZ?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 914c7bb7-aeb9-4ea9-be30-08d8fac06a77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 18:59:19.8303
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RSfaNp12o0dqagzUOWr3NH0eG8GT4Ykii0xXxl86o14j5F4XwJdIeqGm1J8AbIi0VMovcmoSW8aPwmZqwgxbfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB3093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:35:34PM -0700, Andrii Nakryiko wrote:
-> On Wed, Apr 7, 2021 at 4:24 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> >
-> > On Mon, Mar 01, 2021 at 09:43:00PM +0100, Dmitry Vyukov wrote:
-> > > On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > >
-> > > > On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
-> > > > > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
-> > > > > > > syzbot has found a reproducer for the following issue on:
-> > > > > > >
-> > > > > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-> > > > > > > git tree:       upstream
-> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
-> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
-> > > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
-> > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
-> > > > > > >
-> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
-> > > > > > >
-> > > > > > > Debian GNU/Linux 9 syzkaller ttyS0
-> > > > > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
-> > > > > > > executing program
-> > > > > > > executing program
-> > > > > > > executing program
-> > > > > > > BUG: memory leak
-> > > > > > > unreferenced object 0xffff88810efccc80 (size 64):
-> > > > > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
-> > > > > > >   hex dump (first 32 bytes):
-> > > > > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
-> > > > > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
-> > > > > > >   backtrace:
-> > > > > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
-> > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
-> > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
-> > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
-> > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
-> > > > > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
-> > > > > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
-> > > > > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
-> > > > > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > > > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > > > >
-> > > > > > >
-> > > > > >
-> > > > > > i am pretty sure that this one is a false positive
-> > > > > > the problem with reproducer is that it does not terminate all of the
-> > > > > > child processes that it spawns
-> > > > > >
-> > > > > > i confirmed that it is a false positive by tracing __fput() and
-> > > > > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
-> > > > > > manually killed those running leftover processes from reproducer and
-> > > > > > then both functions were executed and memory was freed
-> > > > > >
-> > > > > > i am marking this one as:
-> > > > > > #syz invalid
-> > > > >
-> > > > > Hi Rustam,
-> > > > >
-> > > > > Thanks for looking into this.
-> > > > >
-> > > > > I wonder how/where are these objects referenced? If they are not
-> > > > > leaked and referenced somewhere, KMEMLEAK should not report them as
-> > > > > leaks.
-> > > > > So even if this is a false positive for BPF, this is a true positive
-> > > > > bug and something to fix for KMEMLEAK ;)
-> > > > > And syzbot will probably re-create this bug report soon as this still
-> > > > > happens and is not a one-off thing.
-> > > >
-> > > > hi Dmitry, i haven't thought of it this way, but i guess you are right,
-> > > > it is a kmemleak bug, ideally kmemleak should be aware that there are
-> > > > still running processes holding references to bpf fd/anonymous inodes
-> > > > which in their turn hold references to allocated bpf maps
-> > >
-> > > KMEMLEAK scans whole memory, so if there are pointers to the object
-> > > anywhere in memory, KMEMLEAK should not report them as leaked. Running
-> > > processes have no direct effect on KMEMLEAK logic.
-> > > So the question is: where are these pointers to these objects? If we
-> > > answer this, we can check how/why KMEMLEAK misses them. Are they
-> > > mangled in some way?
-> > thank you for your comments, they make sense, and indeed, the pointer
-> > gets vmaped.
-> > i should have looked into this sooner, becaused syzbot did trigger the
-> > issue again, and Andrii had to look into the same bug, sorry about that.
-> 
-> No worries! I actually forgot about this thread :) Let's leave the
-> link to my today's investigation ([0]) just for completeness.
-> 
->   [0] https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com/
-> 
-> > if i am understanding this correctly here is what the fix should be:
-> > ---
-> >  kernel/bpf/ringbuf.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> > index f25b719ac786..30400e74abe2 100644
-> > --- a/kernel/bpf/ringbuf.c
-> > +++ b/kernel/bpf/ringbuf.c
-> > @@ -8,6 +8,7 @@
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/wait.h>
-> >  #include <linux/poll.h>
-> > +#include <linux/kmemleak.h>
-> >  #include <uapi/linux/btf.h>
-> >
-> >  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-> > @@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
-> >         rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
-> >                   VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
-> >         if (rb) {
-> > +               kmemleak_not_leak((void *) pages);
-> 
-> If that makes kmemleak happy, I have no problems with this. But maybe
-> leave some comment explaining why this is needed at all?
-> 
-> And for my understanding, how vmap changes anything? Those pages are
-> still referenced from rb, which is referenced from some struct file in
-> the system. Sorry if that's a naive question.
-> 
-valid question, it does look like kmemleak should be scanning
-vmalloc()/vmap() memory, i will research this further
+>=20
+> But what does that have to do with the misc device?
+>=20
+
+Hi Greg, MFD driver is the start of everything. Once MFD driver is loading,=
+ it will spawn 2 devices, =20
+one is for phc driver, which is under /driver/ptp and the other one is for =
+this misc driver. =20
+Both PHC and misc drivers are operating on the same device.=20
+They are both calling exported functions from mfd drivers to access the dev=
+ice through i2c/spi=20
+and the register definitions are located in include/Linux/mfd/idt8a340_reg.=
+h or idt82p33_reg.h
+depending on which device was found by mfd driver through device tree node.
