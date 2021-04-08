@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB73358EE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C5F358EF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhDHVAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:00:09 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:46606 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbhDHVAI (ORCPT
+        id S232511AbhDHVEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232091AbhDHVEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:00:08 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 138Kx471002644;
-        Fri, 9 Apr 2021 05:59:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 138Kx471002644
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617915546;
-        bh=piA+8z078kwb/KfPJ/8L0g75CBWXThZTe0VPYso6g/U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E65GbUOUKULlL/mKzA0AVQ65w88zN1o5uif53wxAmxGkhdZqItC49y4rWkJOjItNJ
-         tLVX6tAyd6DCAdOQi4Q9iODqSvyhaZpq1G3MGyCAqWx9BS7IxNeVuPI52RwF/I1mKM
-         +0V0UVCeASxlppgX6piANkaMLhn4EPqvs4OyKv+2eE8tUq2MLgR84FxMdKuVYsh+fS
-         OocOwD5+NGyVq5Oz29d3cGRt56StEw9e0mB4RldDJE5kU0GuJmHDbWYmjsMzuVJPyR
-         WcNIsANqTZ2NaqQ7xrAM3Z36qfPcbMNMYisubExgEllrLizap3fossetR+MCScZVMA
-         MLPM5V2rgSV5g==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH 2/2] pm: allow drivers to drop #ifdef and __maybe_unused from pm callbacks
-Date:   Fri,  9 Apr 2021 05:58:58 +0900
-Message-Id: <20210408205858.51751-3-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210408205858.51751-1-masahiroy@kernel.org>
-References: <20210408205858.51751-1-masahiroy@kernel.org>
+        Thu, 8 Apr 2021 17:04:45 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8E9C061760;
+        Thu,  8 Apr 2021 14:04:32 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUbpG-003ny6-VI; Thu, 08 Apr 2021 21:04:31 +0000
+Date:   Thu, 8 Apr 2021 21:04:30 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com
+Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
+Message-ID: <YG9v3lRiu17cvF2M@zeniv-ca.linux.org.uk>
+References: <cover.1617831474.git.dxu@dxuuu.xyz>
+ <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+ <YG8zMV59hSzpCHSn@zeniv-ca.linux.org.uk>
+ <20210408204935.4itnxm4ekdv7zlrw@dlxu-fedora-R90QNFJV>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408204935.4itnxm4ekdv7zlrw@dlxu-fedora-R90QNFJV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers typically surround suspend and resume callbacks with #ifdef
-CONFIG_PM(_SLEEP) or mark them as __maybe_unused in order to avoid
--Wunused-const-variable warnings.
+On Thu, Apr 08, 2021 at 01:49:35PM -0700, Daniel Xu wrote:
 
-With this commit, drivers will be able to remove #ifdef CONFIG_PM(_SLEEP)
-and __maybe_unsed because unused functions are dropped by the compiler
-instead of the preprocessor.
+> Ah right, sorry. Nobody will clean up the super_block.
+> 
+> > IOW, NAK.  The objects you are playing with have non-trivial lifecycle
+> > and poking into the guts of data structures without bothering to
+> > understand it is not a good idea.
+> > 
+> > Rule of the thumb: if your code ends up using fields that are otherwise
+> > handled by a small part of codebase, the odds are that you need to be
+> > bloody careful.  In particular, ->ns_lock has 3 users - all in
+> > fs/namespace.c.  ->list/->mnt_list: all users in fs/namespace.c and
+> > fs/pnode.c.  ->s_active: majority in fs/super.c, with several outliers
+> > in filesystems and safety of those is not trivial.
+> > 
+> > Any time you see that kind of pattern, you are risking to reprise
+> > a scene from The Modern Times - the one with Charlie taking a trip
+> > through the guts of machinery.
+> 
+> I'll take a closer look at the lifetime semantics.
+> 
+> Hopefully the overall goal of the patch is ok. Happy to iterate on the
+> implementation details until it's correct.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+That depends.  Note that bumping ->s_active means that umount of that
+sucker will *NOT* shut it down - that would happen only on the thread
+doing the final deactivation.  What's more, having e.g. a USB stick
+mounted, doing umount(1), having it complete successfully, pulling the
+damn thing out and getting writes lost would make for a nasty surprise
+for users.
 
- include/linux/pm.h | 67 +++++++++++++++++-----------------------------
- 1 file changed, 24 insertions(+), 43 deletions(-)
-
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index 482313a8ccfc..ca764566692a 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -301,50 +301,37 @@ struct dev_pm_ops {
- 	int (*runtime_idle)(struct device *dev);
- };
- 
--#ifdef CONFIG_PM_SLEEP
-+#define pm_ptr(_ptr)		PTR_IF(IS_ENABLED(CONFIG_PM), _ptr)
-+#define pm_sleep_ptr(_ptr)	PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP), _ptr)
-+
- #define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
--	.suspend = suspend_fn, \
--	.resume = resume_fn, \
--	.freeze = suspend_fn, \
--	.thaw = resume_fn, \
--	.poweroff = suspend_fn, \
--	.restore = resume_fn,
--#else
--#define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
--#endif
-+	.suspend  = pm_sleep_ptr(suspend_fn), \
-+	.resume   = pm_sleep_ptr(resume_fn), \
-+	.freeze   = pm_sleep_ptr(suspend_fn), \
-+	.thaw     = pm_sleep_ptr(resume_fn), \
-+	.poweroff = pm_sleep_ptr(suspend_fn), \
-+	.restore  = pm_sleep_ptr(resume_fn),
- 
--#ifdef CONFIG_PM_SLEEP
- #define SET_LATE_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
--	.suspend_late = suspend_fn, \
--	.resume_early = resume_fn, \
--	.freeze_late = suspend_fn, \
--	.thaw_early = resume_fn, \
--	.poweroff_late = suspend_fn, \
--	.restore_early = resume_fn,
--#else
--#define SET_LATE_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
--#endif
-+	.suspend_late  = pm_sleep_ptr(suspend_fn), \
-+	.resume_early  = pm_sleep_ptr(resume_fn), \
-+	.freeze_late   = pm_sleep_ptr(suspend_fn), \
-+	.thaw_early    = pm_sleep_ptr(resume_fn), \
-+	.poweroff_late = pm_sleep_ptr(suspend_fn), \
-+	.restore_early = pm_sleep_ptr(resume_fn),
- 
--#ifdef CONFIG_PM_SLEEP
- #define SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
--	.suspend_noirq = suspend_fn, \
--	.resume_noirq = resume_fn, \
--	.freeze_noirq = suspend_fn, \
--	.thaw_noirq = resume_fn, \
--	.poweroff_noirq = suspend_fn, \
--	.restore_noirq = resume_fn,
--#else
--#define SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
--#endif
-+	.suspend_noirq  = pm_sleep_ptr(suspend_fn), \
-+	.resume_noirq   = pm_sleep_ptr(resume_fn), \
-+	.freeze_noirq   = pm_sleep_ptr(suspend_fn), \
-+	.thaw_noirq     = pm_sleep_ptr(resume_fn), \
-+	.poweroff_noirq = pm_sleep_ptr(suspend_fn), \
-+	.restore_noirq  = pm_sleep_ptr(resume_fn),
- 
--#ifdef CONFIG_PM
- #define SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
--	.runtime_suspend = suspend_fn, \
--	.runtime_resume = resume_fn, \
--	.runtime_idle = idle_fn,
--#else
--#define SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn)
--#endif
-+	.runtime_suspend = pm_ptr(suspend_fn), \
-+	.runtime_resume  = pm_ptr(resume_fn), \
-+	.runtime_idle    = pm_ptr(idle_fn),
- 
- /*
-  * Use this if you want to use the same suspend and resume callbacks for suspend
-@@ -374,12 +361,6 @@ const struct dev_pm_ops __maybe_unused name = { \
- 	SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
- }
- 
--#ifdef CONFIG_PM
--#define pm_ptr(_ptr) (_ptr)
--#else
--#define pm_ptr(_ptr) NULL
--#endif
--
- /*
-  * PM_EVENT_ messages
-  *
--- 
-2.27.0
-
+With your approach it seems to be inevitable.  Holding namespace_sem
+through the entire thing would prevent that, but's it's a non-starter
+for other reasons (starting with "it's a system-wide lock, so that'd
+be highly antisocial").  Are there any limits on what could be done
+to the pages, anyway?  Because if it's "anything user wanted to do",
+it's *really* not feasible.
