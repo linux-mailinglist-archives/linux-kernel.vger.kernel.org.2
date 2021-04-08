@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E23E358F3C
+	by mail.lfdr.de (Postfix) with ESMTP id 1D67E358F3A
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbhDHVew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhDHVev (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:34:51 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BA8C061760;
-        Thu,  8 Apr 2021 14:34:38 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id g15so2825786pfq.3;
-        Thu, 08 Apr 2021 14:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y+PxuwGIyeW4oHOMlrWipwVHOGtXMFa2LYI1MnFtX9o=;
-        b=WxuXKRi4dHO7pKQVkIYyAvEfHjXzr3pp4HATc7/w4DeUuWLqUdWBZKKgMkw5Vm0pcg
-         28HhB7Bf6c7hL5ZAP+l1ZW05K04AihtUvwEL/6n0EpVEvJwz1E3DKK0bpgutRpGmA5BY
-         wXlegv2YFKRRbD9Nia67d+OIsxlRxuQGOc6mBhZ5Z13dCcj39XoeDleJYegPNyJs+lnM
-         tySi6K/HWk2bTQRGU0zbJ/GY8A460fD0ItohJJuAgWViQ7CCGXIL8WgJxD8lYRMpwiLj
-         KaGFUxyiU6lFMr0C7AAxHyK8PaoUSqdiGbjYcnMOIpSj3QpTgWRv6n/rJCpJTL9Ps4Ot
-         57yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y+PxuwGIyeW4oHOMlrWipwVHOGtXMFa2LYI1MnFtX9o=;
-        b=L0Fs6WNtOY/TIiL7sNvf+IvmaXftyld8uHwzpIRursS+UnnNkuKUN2m78hpgfID48+
-         6OdPn+ezCp2rrHjWXE/MgZ/1UmnTFsdcVOu+CskxOfwF+BQiUzYrwNItcSBu3aroHBkB
-         CcyOvHQlAd7X3Fq7PdjAqCEOFz0I8Q2izTzYpbS+QSc41z2ETLO1PL91UsaUlEoHVGO/
-         LkE+Q9r/GijcS6wY7ZJ1TeLqCSOE/USTKphGIO5mP6epFxBNf/btAnCReg1yKFPfo1K9
-         y9LU/IgiQ7Eq3OA0rjFcssZchAPVBtrH7z6cIaU/Dhp6+D61VXGiKIf57QEQZdabLu3j
-         ev+Q==
-X-Gm-Message-State: AOAM532dMCRTs+C9oddRMZAkaEwEBRFblIYYI+9DGO5dPqiop34J5uwO
-        MYm3/RiYDlADVDa0Z8EfnVs=
-X-Google-Smtp-Source: ABdhPJwTOn0uwIGyTr2hiRJaUCVTKq9GHe/PDtVbG9trLtvquHldDi6409zVui1dxSvQ8GPr7Xo2zQ==
-X-Received: by 2002:a63:c446:: with SMTP id m6mr9586932pgg.71.1617917678281;
-        Thu, 08 Apr 2021 14:34:38 -0700 (PDT)
-Received: from kali ([152.57.243.224])
-        by smtp.gmail.com with ESMTPSA id s2sm305833pjs.49.2021.04.08.14.34.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 14:34:37 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 03:04:27 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH 1/2] media: zoran: add spaces around
- '<<'
-Message-ID: <YG9242K4F5xjaOq8@kali>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com>
- <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
- <alpine.DEB.2.22.394.2104082315560.21785@hadrien>
+        id S232599AbhDHVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:34:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:12619 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232236AbhDHVet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:34:49 -0400
+IronPort-SDR: LTQKux3mraW19BxQUdgEWMeRa2mJiz+yHK9DLVnZyimBHNjZnc/ekb9CYamHKHkK1Hu1CNXxK3
+ lA8xrfCo7HjA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193751288"
+X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
+   d="scan'208";a="193751288"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:34:31 -0700
+IronPort-SDR: RQ8llsF18AjTDJ3fMupU3UimpX8MtU7KzcNM3kgcLAeXBSbVi/sKYReRdS9qrbxHfnRTaz09Wb
+ 4h/AWY5K2guA==
+X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
+   d="scan'208";a="422427802"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.1.104])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 14:34:30 -0700
+Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, mhocko@suse.com, iamjoonsoo.kim@lge.com,
+        vbabka@suse.cz, alex.shi@linux.alibaba.com, willy@infradead.org,
+        minchan@kernel.org, richard.weiyang@gmail.com,
+        ying.huang@intel.com, hughd@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-3-linmiaohe@huawei.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
+Date:   Thu, 8 Apr 2021 14:34:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104082315560.21785@hadrien>
+In-Reply-To: <20210408130820.48233-3-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:16:41PM +0200, Julia Lawall wrote:
-> 
-> 
-> On Fri, 9 Apr 2021, Mitali Borkar wrote:
-> 
-> > Added spaces around '<<' operator to improve readability and meet linux
-> > kernel coding style.
-> > Reported by checkpatch
-> >
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > ---
-> >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > index 71b651add35a..a2a75fd9f535 100644
-> > --- a/drivers/staging/media/zoran/zr36057.h
-> > +++ b/drivers/staging/media/zoran/zr36057.h
-> > @@ -30,13 +30,13 @@
-> >  #define ZR36057_VFESPFR_HOR_DCM          14
-> >  #define ZR36057_VFESPFR_VER_DCM          8
-> >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> > -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> > -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> > -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> > -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> 
-> Are these all aligned in the actual file?
->
-No Ma'am, they were not aligned in the actual file.
 
-> julia
+
+On 4/8/21 6:08 AM, Miaohe Lin wrote:
+> When I was investigating the swap code, I found the below possible race
+> window:
 > 
-> >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> >
-> > --
-> > 2.30.2
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810%40gmail.com.
-> >
+> CPU 1					CPU 2
+> -----					-----
+> do_swap_page
+>   synchronous swap_readpage
+>     alloc_page_vma
+> 					swapoff
+> 					  release swap_file, bdev, or ...
+
+Perhaps I'm missing something.  The release of swap_file, bdev etc
+happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
+if I read the swapoff code correctly.
+ 
+
+>       swap_readpage
+> 	check sis->flags is ok
+> 	  access swap_file, bdev...[oops!]
+> 					    si->flags = 0
+
+This happens after we clear the si->flags
+					synchronize_rcu()
+					release swap_file, bdev, in destroy_swap_extents()
+
+So I think if we have get_swap_device/put_swap_device in do_swap_page,
+it should fix the race you've pointed out here.  
+Then synchronize_rcu() will wait till we have completed do_swap_page and
+call put_swap_device.
+					
+> 
+> Using current get/put_swap_device() to guard against concurrent swapoff for
+> swap_readpage() looks terrible because swap_readpage() may take really long
+> time. And this race may not be really pernicious because swapoff is usually
+> done when system shutdown only. To reduce the performance overhead on the
+> hot-path as much as possible, it appears we can use the percpu_ref to close
+> this race window(as suggested by Huang, Ying).
+
+I think it is better to break this patch into two.
+
+One patch is to fix the race in do_swap_page and swapoff
+by adding get_swap_device/put_swap_device in do_swap_page.
+
+The second patch is to modify get_swap_device and put_swap_device
+with percpu_ref. But swapoff is a relatively rare events.  
+
+I am not sure making percpu_ref change for performance is really beneficial.
+Did you encounter a real use case where you see a problem with swapoff?
+The delay in swapoff is primarily in try_to_unuse to bring all
+the swapped off pages back into memory.  Synchronizing with other
+CPU for paging in probably is a small component in overall scheme
+of things.
+
+Thanks.
+
+Tim
+
