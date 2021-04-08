@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C78E358F11
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F26358F14
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhDHVQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:16:56 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:63589 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232397AbhDHVQy (ORCPT
+        id S232482AbhDHVSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhDHVSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:16:54 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ASlvcwKu6vrHd31bb0UzpIfrj7skCn4Aji2hD?=
- =?us-ascii?q?6mlwRA09T+WxjMqunOsW2FvdlV8qKTQdsPqHP7SNRm6Z0JZz75UYM7vKZniUhE?=
- =?us-ascii?q?KDKoZ+4Yz+hwDxAiGWzJ8s6Y5Me7VzYeeAcWRSoMr+4Ba1CNoshOSAmZrJuc7z?=
- =?us-ascii?q?1GxqVhsvVqcI1XYxNi+1CUtzLTM2fKYRNJ3Z3cZfoirlRHJ/VLXLOlAhX/Lf4/?=
- =?us-ascii?q?XRnpPnfhJuPW9k1CCqjSm0rJ/3FgHw5GZQbxprwa0+tUjJ+jaJqpmLlvGg11v7?=
- =?us-ascii?q?yWje9P1t6Zjc4/5CHtHJs84ON1zX+0aVTaFgQaDHhiw/uuu16F0n+eO87SsIGs?=
- =?us-ascii?q?Ro9jfseXuoqgHmwAnq3F8Vmj7f4Hu5pVemnsDjXjI9DKN69PxkWz/U8VApst05?=
- =?us-ascii?q?8I8j5RPli7NvFh/LkCnw4NLFPisa3jv+nVMYneQej2NSXOIlAdc7x+Fyky0lc+?=
- =?us-ascii?q?ZjbUaKj/FALMBUAM7R//pQe1+BBkqpxFVH+9C0W2R2IxHueDl7huWu3z9akGsR?=
- =?us-ascii?q?9TpT+OUkgnwC+JghIqM0k9jsD6IArsA0cuYrd65nQM8OTcyrY1a9Pi7kASa4IU?=
- =?us-ascii?q?fuE68OUki98KLf0fER4ueyEaZ4u6caqdDmS1NXtWk7fgbVD9GU1pEO0imlehT4?=
- =?us-ascii?q?YR3djudE55Z4vbX4AIfsWBfjdHke1+26o/seBcXHW/G8fLJuasWTX1fGKMJz0w?=
- =?us-ascii?q?r3RpVIbUMTS9IYofEyX17mmLOSFqTa8tfWd/7PKKGoKy8tXkn2HmEONQKDfflo?=
- =?us-ascii?q?3wSRVnjxnRTLH0n1ckjE95RqHMHhjq4u4blIDYFKuhUYkhCC/8mOEyBLr6BeRj?=
- =?us-ascii?q?o4HJrX1pm2vXW7+mzFhl8ZTCZ1PwJr6LDhXntWpQkMd0jlGIxzzum3SCRs3GCa?=
- =?us-ascii?q?PFtERcvQFwJTzm4HnJ6fHtiWw2QrENinMn2X5kFj6U63cw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,207,1613430000"; 
-   d="scan'208";a="502294565"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 23:16:41 +0200
-Date:   Thu, 8 Apr 2021 23:16:41 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH 1/2] media: zoran: add spaces around
- '<<'
-In-Reply-To: <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104082315560.21785@hadrien>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com> <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 8 Apr 2021 17:18:39 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2223C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 14:18:27 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id k8so2296829pgf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 14:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=eMJqD/fqXJ5uLABupYwuAFtb+eXg8FbLVYjFY1l+JZE=;
+        b=WXrRoVzuMf9BD4yUg+IpXzC2x3gX/wbaMSa6eADIuq8tW2NcrsTP8iBbT0ZE+BBspY
+         UdjqkArP2IGzTenHhET/UYo7gZvZSBSoDn+GrXCgbPMMTAPdkUJxEi6hN2K7Ds8w9Orh
+         GQgnI7o1QA3fn+jTBiFwoLOPpElxYm+J6VCqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=eMJqD/fqXJ5uLABupYwuAFtb+eXg8FbLVYjFY1l+JZE=;
+        b=RPC9eXuIq9JNgyQDywgRIhVw2YFJv7s15N/4F9so79j/ffcnCY2Bf7jb5sfLkwM4zJ
+         hllRqolOS4sXz8gt8NsC3Sj+qiUJQbvRNu6fTK294OKb9fNXBTInQA1G2qJ038AzCDdP
+         Rrn/Rey/ZMkonj934ldsqdSH1sBXWDkuib1R+t3jBaNpufaNupj1O7lu3KpbdCHhdn24
+         S07tKEscuA9tUuDIJjR9hvbbi0iMSnVPcZtueIWc+5R87ZES3m+ByapFCIDcmX09bCUE
+         p/nOqb8LV++6gMTckqqp35amVs8Ey1rgUotK4BSc2BIAEsU3zJChZXiV1MsE6hRrnkvW
+         978Q==
+X-Gm-Message-State: AOAM532Berh7c2+IguvCosdVkv1qhSFECEZtl41nwjqLvLT02dHccXM5
+        HRwJiqCDN+itLKt7VhYDR/BZ+w==
+X-Google-Smtp-Source: ABdhPJzqcrjJVjp7Jz1iRbl6acGeE5u8fk0+tkP162pfieOXXOIbCvRvJBqRdizl0jmycyffZ7/RVw==
+X-Received: by 2002:a05:6a00:1595:b029:217:49e9:2429 with SMTP id u21-20020a056a001595b029021749e92429mr9440770pfk.80.1617916707523;
+        Thu, 08 Apr 2021 14:18:27 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:44c3:3248:e7f5:1bbd])
+        by smtp.gmail.com with ESMTPSA id z20sm243105pfk.21.2021.04.08.14.18.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 14:18:26 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YG6ukFxSMAZ7biYh@gerhold.net>
+References: <20210323224336.1311783-1-swboyd@chromium.org> <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org> <161734672825.2260335.8472441215895199196@swboyd.mtv.corp.google.com> <YGbvXFrMg6X7q3qL@gerhold.net> <161738411853.2260335.5107124874054215375@swboyd.mtv.corp.google.com> <YGsHkoNEaIvCRdpx@gerhold.net> <161784072681.3790633.7665111601750934002@swboyd.mtv.corp.google.com> <YG6ukFxSMAZ7biYh@gerhold.net>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Date:   Thu, 08 Apr 2021 14:18:25 -0700
+Message-ID: <161791670545.3790633.14772376161713976241@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Stephan Gerhold (2021-04-08 00:19:44)
+> Personally, I think it would be best to introduce a new, SMC64 only
+> compatible (e.g. "qcom,scm-64" like I mentioned). Then you can skip the
+> detection check for the boards that opt-in by adding the compatible.
+> You can then use it on all newer boards/SoCs/firmwares where you know
+> exactly that there is SMC64.
+>=20
+> I would just like to avoid breaking any existing boards where we don't
+> know exactly if they have SMC32 or SMC64.
 
+Ok that's fair.
 
-On Fri, 9 Apr 2021, Mitali Borkar wrote:
+> >=20
+> > Heh, it tried to ensure we use the right calling convention but broke
+> > things in the process, because the way of detecting the convention isn't
+> > always there. I wouldn't be surprised if this comes up again for other
+> > boards that use TF-A.
+>=20
+> Ah okay, this sounds like a better reason than just trying to avoid the
+> "overhead" of the detection step. :) I still think it should work if you
+> just start marking all newer boards/SoCs/... as "qcom,scm-64" or
+> something like that, right?
 
-> Added spaces around '<<' operator to improve readability and meet linux
-> kernel coding style.
-> Reported by checkpatch
->
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
->  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> index 71b651add35a..a2a75fd9f535 100644
-> --- a/drivers/staging/media/zoran/zr36057.h
-> +++ b/drivers/staging/media/zoran/zr36057.h
-> @@ -30,13 +30,13 @@
->  #define ZR36057_VFESPFR_HOR_DCM          14
->  #define ZR36057_VFESPFR_VER_DCM          8
->  #define ZR36057_VFESPFR_DISP_MODE        6
-> -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-
-Are these all aligned in the actual file?
-
-julia
-
->  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
->
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810%40gmail.com.
->
+Sure. I can cook up a set of patches for this.
