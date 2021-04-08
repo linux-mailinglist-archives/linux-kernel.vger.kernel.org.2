@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACF6358F6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72081358F6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhDHVpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        id S232628AbhDHVqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDHVps (ORCPT
+        with ESMTP id S232236AbhDHVqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:45:48 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DFEC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 14:45:36 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id h19so6401393lfu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 14:45:35 -0700 (PDT)
+        Thu, 8 Apr 2021 17:46:21 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C83C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 14:46:10 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m11so2816556pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 14:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8MVBTVTbGflc/UsLhIwl2nRzF2EsRH8eZ0QlPXqs5ps=;
-        b=Zk2v3nSMdaCm5adH4aHswvLKgEBKklbkCPH2zPgIVKp64w70n2axR/qGDplIQ0OZ0n
-         HLegwMCSSCAxIt8LPsDPeA7J+lV2LnPtLiSNhLWjp/m3yDKXUPRvs0hxnHugTRrpsB6U
-         uiiThswQsEAPRovlktmLYn49OPrRupsH66VDSzbKlxFr/Wn44w766AsgYLN7vrCHZLyR
-         Uur3yAtqGAhF8O/MxSPYa1P5Yxp+6YntEF7We62ytpY0VEX1MNQUtmH/O+iMLbWa2H+y
-         yeUIQCjgCMD2v6FVfHm061JaiZ7pmmjnI2REqJ3G0vMQF8z8vVWj0AbKZlNKPI0hg/VG
-         eF2A==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zdYrRG+l2GoEvS5VtKq2sFMzwk0/c7v4k7SjxU8/nlI=;
+        b=pGvoxtmiv0oLqbjD93870KWrjw47K88SjDBibeVYxxIXuawIzHhxFYP1zA278oET1S
+         PODbKJTQCZx3gHNcDk/vOIHnsYSuTreJ2iEZHTo7INLdqHp/H+NBM9qOJrRGxACNDnaC
+         kw42jgirCc9Npswcxhyr9BAw9H/tK6cGNxHvrsFD36m6I1HSwnTMx2re17qp+6h9c3BA
+         ifknR1qtAehdZd9qhLxbuMVmHK6IjfD00k2jMAdkZp5YP/JDiPdTAKFmyyWuq2X0szKJ
+         vlWqFVo2ArCOi71EQUDQfIFeop0BXYivPzrK/MPvFykk/i8/mnUCUA6rxKF5lRlX3OYa
+         y0Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8MVBTVTbGflc/UsLhIwl2nRzF2EsRH8eZ0QlPXqs5ps=;
-        b=GfEK+sjUSyItn6kv2kSKn+NCh24fWg2cNo0JtSsyzk52WL9O4YvZ95YMyxjm6hwMpc
-         GBw5AmIT+pB5SOCi/sy7wpJrG6jsVZ0YWKeA/IDxy87397hOboySVqbfSWMCZ+TLqVwE
-         ZBcygH25kP4ipLGaYChJsFIsTfdTbrcS1t1sd/HXfQnB4g8tU/YMDCo/OrVegmHu9OzW
-         foMrUAreVJRAkql4Rzo2eL/bv/J3WMrZfnS6NFCQyB01D/obbSECYAwhUz2N9l3OEFTm
-         HTi4pana6/DDAZfqMidFvlgOLinjC8wyJF1v3hMdGqSYs1i7TupPaQTu7kUFgM/naQ9c
-         2Row==
-X-Gm-Message-State: AOAM533TODQU4oiyajgrsuUmWzLkKojOriB66X73Lycm5tvwephA0vqX
-        Gn6UNLoutwG2Acxlsk+KSA2svvfMllD1tii8evLcF8mDdsjcUA==
-X-Google-Smtp-Source: ABdhPJwOR1qaBP0hkaYoeDA9UZM861Q2LgMU2bP4wenXDG9wfbiuruw1rThn3wnUQVO3cDtDB82sQHZzPUH6KOtdfMo=
-X-Received: by 2002:a19:ef18:: with SMTP id n24mr8062945lfh.291.1617918334556;
- Thu, 08 Apr 2021 14:45:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zdYrRG+l2GoEvS5VtKq2sFMzwk0/c7v4k7SjxU8/nlI=;
+        b=WDsoFQy94qQmehuLUeYa4Y2FQ3+BeOfmOW9vVyMb5LqO7KqxyPnc/UU5SnkFpOsde3
+         zJAp7nPhHOIHdcgEkRLDbgPNUR7hL2hismWRbMj6R0URTMqEK0BRPKcgF2NpZTAAe2Lr
+         v+yyQ/ulNvvMF2L7TuuaJrUBr221KPLwovVQPAl+Q8bnHC8E2WhvmB9d+KVxkpdsVAAm
+         RvOeqwNnIbHHe6KJrPxlssG8mtmtamS/egCvjzcHwnRy5VTrOaq6RPd+VxaHGHOQE3+X
+         mXva8fwiiG1tH869cWdsq9u8IbSo6FxqfP7QHv2X4z9DIWyJKVPlpplddQishCItPuFR
+         MD7w==
+X-Gm-Message-State: AOAM530bIG1YRxfsDWOelO78yvbGCkarzNOlAUPqZ2KNfN6ypeX6TSc2
+        RCi3BPTNN4VoNKj7/BzvKDDnU9eQR4KvqzaD
+X-Google-Smtp-Source: ABdhPJxsxvaEVHM/nKZAefWElpdkYy/pEMZeN8rPJZDReAXKIQ+J5RCpE0/w6ueGlPBN9u6RXku8xg==
+X-Received: by 2002:a62:2b03:0:b029:241:d147:2a79 with SMTP id r3-20020a622b030000b0290241d1472a79mr9301490pfr.53.1617918369651;
+        Thu, 08 Apr 2021 14:46:09 -0700 (PDT)
+Received: from kali ([152.57.243.224])
+        by smtp.gmail.com with ESMTPSA id t24sm290089pgi.30.2021.04.08.14.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 14:46:09 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 03:15:59 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     clabbe@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH 2/2] media: zoran: replace bit shifts
+ by BIT() macro
+Message-ID: <YG95l9b++d+RFrDa@kali>
+References: <cover.1617912177.git.mitaliborkar810@gmail.com>
+ <ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810@gmail.com>
+ <alpine.DEB.2.22.394.2104082314090.21785@hadrien>
 MIME-Version: 1.0
-References: <20210408092011.52763-1-david@redhat.com> <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com> <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
- <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com> <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
- <3a2d64a7-8425-8daf-17ee-95b9f0c635f9@redhat.com> <CACRpkdYizKGhtYzE+22oZAduLNCOGP9Vbp=LQbXG1C-a+MyMcg@mail.gmail.com>
- <2ef3b65c-c0ef-7bbe-0e05-39ee8f2bae48@redhat.com>
-In-Reply-To: <2ef3b65c-c0ef-7bbe-0e05-39ee8f2bae48@redhat.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 8 Apr 2021 23:45:23 +0200
-Message-ID: <CACRpkdbMLBzG_Q=-XzjsWvpofHyRv7sdB697mHLaRu4F=+GC-g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2104082314090.21785@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 6:44 PM David Hildenbrand <david@redhat.com> wrote:
-
-> > drivers/gpu/drm/mcde/Kconfig
-> > drivers/gpu/drm/pl111/Kconfig
-> > drivers/gpu/drm/tve200/Kconfig
+On Thu, Apr 08, 2021 at 11:15:07PM +0200, Julia Lawall wrote:
+> 
+> 
+> On Fri, 9 Apr 2021, Mitali Borkar wrote:
+> 
+> > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
+> > This BIT() macro from linux/bitops.h is used to define ZR36057_VFESPFR_* bitmasks.
+> > Use of macro is better and neater. It maintains consistency.
+> > Reported by checkpatch.
+> >
+> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > ---
+> >  drivers/staging/media/zoran/zr36057.h | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
+> > index a2a75fd9f535..93075459f910 100644
+> > --- a/drivers/staging/media/zoran/zr36057.h
+> > +++ b/drivers/staging/media/zoran/zr36057.h
+> > @@ -8,6 +8,8 @@
+> >  #ifndef _ZR36057_H_
+> >  #define _ZR36057_H_
+> >
+> > +#include <linux/bitops.h>
+> > +
+> >  /* Zoran ZR36057 registers */
+> >
+> >  #define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
+> > @@ -31,12 +33,12 @@
+> >  #define ZR36057_VFESPFR_VER_DCM          8
+> >  #define ZR36057_VFESPFR_DISP_MODE        6
+> >  #define ZR36057_VFESPFR_YUV422          (0 << 3)
+> > -#define ZR36057_VFESPFR_RGB888          (1 << 3)
+> > +#define ZR36057_VFESPFR_RGB888          BIT(3)
+> 
+> Uniformity is generally considered to be more important than using BIT.
+> Having only a few constants defined using BIT is a bit strange.
 >
-> I was assuming these are "real" dependencies. Will it also work without
-> DMA_CMA?
+Okay Ma'am. Can you please tell me on how to proceed now? I am not sure
+how to proceed.
 
-It will mostly work but that is only because the reservations are
-mostly contiguous anyway because they are done early and
-are small. The hardware requires contiguous buffers in all
-three cases. I'm not sure I always got it right.
-
-> > certainly needs this as well, and pretty much anything that is
-> > selecting DRM_KMS_CMA_HELPER or
-> > DRM_GEM_CMA_HELPER "wants" DMA_CMA.
->
-> "wants" as in "desires to use but can life without" or "wants" as in
-> "really needs it". ?
-
-I don't know the exact semantics of using DRM_KMS_CMA*
-without actually using DMA_CMA. I suspect small allocations
-will be contiguous and big allocations will start to fragment?
-but it's just my guess. I guess "really need it"?
-
-Yours,
-Linus Walleij
+> julia
+> 
+> >  #define ZR36057_VFESPFR_RGB565          (2 << 3)
+> >  #define ZR36057_VFESPFR_RGB555          (3 << 3)
+> > -#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
+> > -#define ZR36057_VFESPFR_PACK24          (1 << 1)
+> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
+> > +#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
+> > +#define ZR36057_VFESPFR_PACK24          BIT(1)
+> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
+> >
+> >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
+> >
+> > --
+> > 2.30.2
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810%40gmail.com.
+> >
