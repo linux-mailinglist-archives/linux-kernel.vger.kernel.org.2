@@ -2,219 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA82357F93
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D939357F87
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhDHJou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        id S231230AbhDHJnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhDHJot (ORCPT
+        with ESMTP id S230506AbhDHJnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:44:49 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C70CC061760;
-        Thu,  8 Apr 2021 02:44:38 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so2832957pji.5;
-        Thu, 08 Apr 2021 02:44:38 -0700 (PDT)
+        Thu, 8 Apr 2021 05:43:00 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B83C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:42:49 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id y32so1008860pga.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=w0yqOdK8TBIxTW5Ne7zhHMEvG5YRSgyD3ci2CbuX1Ko=;
-        b=pHOLGF3r/chGXK0P6mFv3kNaPTdxQbCMF1E4ZKSOPtLEIAP7yDW7n1MZsex/JMuAsA
-         sW84iwhTNe023cGfCYgknO68RlmliNDx1GtLrBJ0TjDJsd9f4aFOHnqDvKELaMSZd6mZ
-         Bsj3LYpvL/EJk9c7eUIgYNC5Urk16VI+jb8XgaFwiOw2zodMCGcia+kSm5eA5Bu4w2+d
-         lzZ2sc/jfJ24ccdSucWLBtd9NNAkRbNA3yMvWKEEy8X23G+8FVl9Xn551rmMO8uKBnaX
-         e5kb9MChPY29OHIhd33YHpkKwPU4k7PwJHsot1vrkz4gTHrBKySEUKNtZVcPCjORZreH
-         zokg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ALUujV6o8uZUngq4GI/5055uPf7G+D6LO8BfQLkVhv8=;
+        b=GdvR0V0FiYIar4gyw7gyYI9kOGza4ogHCCNiZaajELJ+V5eJa5YWbVmzNvJqJ8oJ8v
+         NWzJFxNR4tdSmsFasipzjdoWW08Ga++XtIp1aQAz+EzMWa5cMKlOtMD/4RGoCiHhx9YR
+         K5zA8olmdgFv2/FO2icy4GMqLLZPIfxLp0/a8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=w0yqOdK8TBIxTW5Ne7zhHMEvG5YRSgyD3ci2CbuX1Ko=;
-        b=swIF80RSesPlcsXn+JD+IPyC//6dC/3Af+u5x4/1/p/ywzeApC+y/mlJKu0n3yYfDq
-         si+/UW+aRIL3whMkYVTzCJVL0kH2oITGLmTFupLUCQhQDjO7z+0ZLT5yoWG4gw5TTIrB
-         0SFhTwMDcXZBvDsIodIHV+2W2Ld8vEcR3mRJYhh/SxQUqdFSegATzVeYkYIAHu7shdla
-         CIzDiZ6KygoTqpp5GPx6XhvEe0o4QYDuYeTIoE2oq3bND+H6ZAe58kg7DibP3FWJXSb1
-         FBD3faGvdmHbLXzCTJljynzOPlqLZBljwL5k8CLNyvPwUGESMg3UnB2xIEG/q4YSEZRd
-         nz4A==
-X-Gm-Message-State: AOAM530oFIQ8zGmI47MFVm4v6f9zPOEyezcojFa3PkBfKE6NCyDTwDac
-        HjVnfT4LMftaaY0DHqcg29CK4lBjG9Y8Rg==
-X-Google-Smtp-Source: ABdhPJyThhKs3YsHYUCK2VFV5t62Dyf3WEmdRWyX2YlXwLsJGlE7MZkHGU/FUqEkoU00wPLzrjBP7g==
-X-Received: by 2002:a17:90a:8813:: with SMTP id s19mr7340659pjn.94.1617875077668;
-        Thu, 08 Apr 2021 02:44:37 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id q2sm4269469pfh.65.2021.04.08.02.44.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 08 Apr 2021 02:44:37 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 02:42:42 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] iommu/tegra-smmu: Defer attachment of display
- clients
-Message-ID: <20210408094241.GA31714@Asurada-Nvidia>
-References: <20210328233256.20494-1-digetx@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ALUujV6o8uZUngq4GI/5055uPf7G+D6LO8BfQLkVhv8=;
+        b=EqFa44xZLRfw9qGddLtsx1h+luzdx1lueNl2K9tRJIiJLScwZgi+dy00OH5sMeZt/O
+         spXDD8JyfgLuHWNY0AhI31GQXg6SqfpFS1vJ125yFQiU2TrG5D1pOooEEHuK69D/dNrU
+         vD4aMZPlrv/oIHYDWxzdm1F2NuCOh3eMu3RvadyQR37q30BjJBWtpe/VccC6AASA11vu
+         55YnzIFln2Fc9K2CbCsuT2EV3yZDPPOYfJM7js1herU/+m6xmXPpOryBzXQM2b8uDgfL
+         moNoDfBVbbwuuOxMvU5R6BcqS4d7G++XFpgTOxfZp8qNHAbZfuWbUHrvx4w1qcY4QKDM
+         108g==
+X-Gm-Message-State: AOAM531OBFw61uqPe9GyQNjbQmGBhb5Rx6tE0yQWDXXzLvNkxY1bGl7O
+        u5oua4j3R9bxccto8huRGEsI4A==
+X-Google-Smtp-Source: ABdhPJy0S66jOMuDB9s93i4bwlleUxkBNZU7/7/Oxrd1NkSSq8mHh6D4dsnigRZ/rQYKXWAcB8aWHA==
+X-Received: by 2002:a05:6a00:1651:b029:241:afa4:92b1 with SMTP id m17-20020a056a001651b0290241afa492b1mr6756345pfc.12.1617874969534;
+        Thu, 08 Apr 2021 02:42:49 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:25d8:8458:73e8:75ac])
+        by smtp.gmail.com with UTF8SMTPSA id f14sm25010791pfk.92.2021.04.08.02.42.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 02:42:49 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH v2] drm/syncobj: use newly allocated stub fences
+Date:   Thu,  8 Apr 2021 18:42:43 +0900
+Message-Id: <20210408094243.3902013-1-stevensd@google.com>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="OgqxwSJOaUobr8KG"
-Content-Disposition: inline
-In-Reply-To: <20210328233256.20494-1-digetx@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: David Stevens <stevensd@chromium.org>
 
---OgqxwSJOaUobr8KG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Allocate a new private stub fence in drm_syncobj_assign_null_handle,
+instead of using a static stub fence.
 
-On Mon, Mar 29, 2021 at 02:32:55AM +0300, Dmitry Osipenko wrote:
-> All consumer-grade Android and Chromebook devices show a splash screen
-> on boot and then display is left enabled when kernel is booted. This
-> behaviour is unacceptable in a case of implicit IOMMU domains to which
-> devices are attached during kernel boot since devices, like display
-> controller, may perform DMA at that time. We can work around this problem
-> by deferring the enable of SMMU translation for a specific devices,
-> like a display controller, until the first IOMMU mapping is created,
-> which works good enough in practice because by that time h/w is already
-> stopped.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+When userspace creates a fence with DRM_SYNCOBJ_CREATE_SIGNALED or when
+userspace signals a fence via DRM_IOCTL_SYNCOBJ_SIGNAL, the timestamp
+obtained when the fence is exported and queried with SYNC_IOC_FILE_INFO
+should match when the fence's status was changed from the perspective of
+userspace, which is during the respective ioctl.
 
-For both patches:
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Nicolin Chen <nicoleotsuka@gmail.com>
+When a static stub fence started being used in by these ioctls, this
+behavior changed. Instead, the timestamp returned by SYNC_IOC_FILE_INFO
+became the first time anything used the static stub fence, which has no
+meaning to userspace.
 
-The WAR looks good to me. Perhaps Thierry would give some input.
-
-Another topic:
-I think this may help work around the mc-errors, which we have
-been facing on Tegra210 also when we enable IOMMU_DOMAIN_DMA.
-(attached a test patch rebasing on these two)
-
-However, GPU would also report errors using DMA domain:
-
- nouveau 57000000.gpu: acr: firmware unavailable
- nouveau 57000000.gpu: pmu: firmware unavailable
- nouveau 57000000.gpu: gr: firmware unavailable
- tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffbe200: Security violation (TrustZone violation)
- nouveau 57000000.gpu: DRM: failed to create kernel channel, -22
- tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffad000: Security violation (TrustZone violation)
- nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
- nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
-
-Looking at the address, seems that GPU allocated memory in 32-bit
-physical address space behind SMMU, so a violation happened after
-turning on DMA domain I guess... 
-
---OgqxwSJOaUobr8KG
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="dma_domain.patch"
-
-From 20b58a74fee0c7b961b92f9118ad69a12199e6a5 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicolinc@nvidia.com>
-Date: Thu, 12 Dec 2019 17:46:50 -0800
-Subject: [PATCH 6/7] iommu/tegra-smmu: Add IOMMU_DOMAIN_DMA
-
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+Signed-off-by: David Stevens <stevensd@chromium.org>
 ---
- drivers/iommu/tegra-smmu.c | 39 ++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 16 deletions(-)
+v1 -> v2:
+ - checkpatch style fixes
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 8104f001e679..eff10d1ec568 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/dma-mapping.h>
-+#include <linux/dma-iommu.h>
+ drivers/dma-buf/dma-fence.c   | 33 ++++++++++++++++++++++++++++++++-
+ drivers/gpu/drm/drm_syncobj.c | 25 +++++++++++++++++++------
+ include/linux/dma-fence.h     |  1 +
+ 3 files changed, 52 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+index d64fc03929be..6081eb962490 100644
+--- a/drivers/dma-buf/dma-fence.c
++++ b/drivers/dma-buf/dma-fence.c
+@@ -26,6 +26,11 @@ EXPORT_TRACEPOINT_SYMBOL(dma_fence_signaled);
+ static DEFINE_SPINLOCK(dma_fence_stub_lock);
+ static struct dma_fence dma_fence_stub;
  
- #include <soc/tegra/ahb.h>
- #include <soc/tegra/mc.h>
-@@ -297,35 +298,29 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
++struct drm_fence_private_stub {
++	struct dma_fence base;
++	spinlock_t lock;
++};
++
+ /*
+  * fence context counter: each execution context should have its own
+  * fence context, this allows checking if fences belong to the same
+@@ -123,7 +128,9 @@ static const struct dma_fence_ops dma_fence_stub_ops = {
+ /**
+  * dma_fence_get_stub - return a signaled fence
+  *
+- * Return a stub fence which is already signaled.
++ * Return a stub fence which is already signaled. The fence's
++ * timestamp corresponds to the first time after boot this
++ * function is called.
+  */
+ struct dma_fence *dma_fence_get_stub(void)
  {
- 	struct tegra_smmu_as *as;
+@@ -141,6 +148,30 @@ struct dma_fence *dma_fence_get_stub(void)
+ }
+ EXPORT_SYMBOL(dma_fence_get_stub);
  
--	if (type != IOMMU_DOMAIN_UNMANAGED)
-+	if (type != IOMMU_DOMAIN_UNMANAGED && type != IOMMU_DOMAIN_DMA)
- 		return NULL;
- 
- 	as = kzalloc(sizeof(*as), GFP_KERNEL);
- 	if (!as)
- 		return NULL;
- 
-+	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(&as->domain))
-+		goto free_as;
++/**
++ * dma_fence_allocate_private_stub - return a private, signaled fence
++ *
++ * Return a newly allocated and signaled stub fence.
++ */
++struct dma_fence *dma_fence_allocate_private_stub(void)
++{
++	struct drm_fence_private_stub *fence;
 +
- 	as->attr = SMMU_PD_READABLE | SMMU_PD_WRITABLE | SMMU_PD_NONSECURE;
- 
- 	as->pd = alloc_page(GFP_KERNEL | __GFP_DMA | __GFP_ZERO);
--	if (!as->pd) {
--		kfree(as);
--		return NULL;
--	}
-+	if (!as->pd)
-+		goto put_dma_cookie;
- 
- 	as->count = kcalloc(SMMU_NUM_PDE, sizeof(u32), GFP_KERNEL);
--	if (!as->count) {
--		__free_page(as->pd);
--		kfree(as);
--		return NULL;
--	}
-+	if (!as->count)
-+		goto free_pd_range;
- 
- 	as->pts = kcalloc(SMMU_NUM_PDE, sizeof(*as->pts), GFP_KERNEL);
--	if (!as->pts) {
--		kfree(as->count);
--		__free_page(as->pd);
--		kfree(as);
--		return NULL;
--	}
-+	if (!as->pts)
-+		goto free_pts;
- 
- 	spin_lock_init(&as->lock);
- 
-@@ -335,6 +330,17 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
- 	as->attached_devices_need_sync = true;
- 
- 	return &as->domain;
++	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
++	if (fence == NULL)
++		return ERR_PTR(-ENOMEM);
 +
-+free_pts:
-+	kfree(as->pts);
-+free_pd_range:
-+	__free_page(as->pd);
-+put_dma_cookie:
-+	iommu_put_dma_cookie(&as->domain);
-+free_as:
-+	kfree(as);
++	spin_lock_init(&fence->lock);
++	dma_fence_init(&fence->base,
++		       &dma_fence_stub_ops,
++		       &fence->lock,
++		       0, 0);
++	dma_fence_signal(&fence->base);
 +
-+	return NULL;
++	return &fence->base;
++}
++EXPORT_SYMBOL(dma_fence_allocate_private_stub);
++
+ /**
+  * dma_fence_context_alloc - allocate an array of fence contexts
+  * @num: amount of contexts to allocate
+diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+index 349146049849..a54aa850d143 100644
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -350,12 +350,16 @@ EXPORT_SYMBOL(drm_syncobj_replace_fence);
+  *
+  * Assign a already signaled stub fence to the sync object.
+  */
+-static void drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
++static int drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
+ {
+-	struct dma_fence *fence = dma_fence_get_stub();
++	struct dma_fence *fence = dma_fence_allocate_private_stub();
++
++	if (IS_ERR(fence))
++		return PTR_ERR(fence);
+ 
+ 	drm_syncobj_replace_fence(syncobj, fence);
+ 	dma_fence_put(fence);
++	return 0;
  }
  
- static void tegra_smmu_domain_free(struct iommu_domain *domain)
-@@ -346,6 +352,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
- 	WARN_ON_ONCE(as->use_count);
- 	kfree(as->count);
- 	kfree(as->pts);
-+	iommu_put_dma_cookie(domain);
- 	kfree(as);
+ /* 5s default for wait submission */
+@@ -469,6 +473,7 @@ EXPORT_SYMBOL(drm_syncobj_free);
+ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 		       struct dma_fence *fence)
+ {
++	int ret;
+ 	struct drm_syncobj *syncobj;
+ 
+ 	syncobj = kzalloc(sizeof(struct drm_syncobj), GFP_KERNEL);
+@@ -479,8 +484,13 @@ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 	INIT_LIST_HEAD(&syncobj->cb_list);
+ 	spin_lock_init(&syncobj->lock);
+ 
+-	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED)
+-		drm_syncobj_assign_null_handle(syncobj);
++	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED) {
++		ret = drm_syncobj_assign_null_handle(syncobj);
++		if (ret < 0) {
++			drm_syncobj_put(syncobj);
++			return ret;
++		}
++	}
+ 
+ 	if (fence)
+ 		drm_syncobj_replace_fence(syncobj, fence);
+@@ -1322,8 +1332,11 @@ drm_syncobj_signal_ioctl(struct drm_device *dev, void *data,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < args->count_handles; i++)
+-		drm_syncobj_assign_null_handle(syncobjs[i]);
++	for (i = 0; i < args->count_handles; i++) {
++		ret = drm_syncobj_assign_null_handle(syncobjs[i]);
++		if (ret < 0)
++			break;
++	}
+ 
+ 	drm_syncobj_array_free(syncobjs, args->count_handles);
+ 
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 9f12efaaa93a..6ffb4b2c6371 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -587,6 +587,7 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
  }
  
+ struct dma_fence *dma_fence_get_stub(void);
++struct dma_fence *dma_fence_allocate_private_stub(void);
+ u64 dma_fence_context_alloc(unsigned num);
+ 
+ #define DMA_FENCE_TRACE(f, fmt, args...) \
 -- 
-2.17.1
+2.31.0.208.g409f899ff0-goog
 
-
---OgqxwSJOaUobr8KG--
