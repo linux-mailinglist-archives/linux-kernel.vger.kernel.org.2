@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F753587A2
+	by mail.lfdr.de (Postfix) with ESMTP id E02293587A3
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhDHO4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:56:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31802 "EHLO mga05.intel.com"
+        id S232037AbhDHO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:56:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231975AbhDHO4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:56:07 -0400
-IronPort-SDR: W0sc57qQeO0RSCXTYjmmQj8c6UiyL/zO4tl5o0pZAbfyIEa0+CatHKqn8ULlJmL6/H1t1BrYHX
- TTcCFBN2ZcuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="278832346"
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="278832346"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 07:55:55 -0700
-IronPort-SDR: Rukh+CthRp+DiW2Y3EEQRTplqQgfqFUKtmgr9AltKMll3WKloKL2Jkwu96Y1O/IVf3LE2HHdJL
- x/ro+J+BOZ2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="419172789"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 08 Apr 2021 07:55:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 333CE619; Thu,  8 Apr 2021 17:56:05 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        vilhelm.gray@gmail.com
-Subject: [PATCH v1 5/5] gpio: xilinx: No need to disable IRQs in the handler
-Date:   Thu,  8 Apr 2021 17:56:01 +0300
-Message-Id: <20210408145601.68651-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
-References: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
+        id S232009AbhDHO4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:56:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92784610F9;
+        Thu,  8 Apr 2021 14:56:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617893768;
+        bh=dRsg/D7XwR/Opxe8txb8yjZZERiYX9xCaPVknGOYM/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tl0OUXv79OcKikGGlNJj2e8yH3bMvRkH0zAVA5oaugYzD0d5iht0PzMb6yUGqwPKO
+         DGb2+LJp9YQ0vSwttlDrL96mvidHI4XikDZfJLQ9yAggFwGsVoYGM/oAq8B48v1Uxp
+         Xeu8SSezDPyc0m6z+m9ILzR1RHpAcXwYVhWynJeQKr+V1Q96qsO/Dp4W8jN7K4ae+z
+         0qOzWEGKIcCn3FUk17iE4XupAf+PMZFR7vnFBiTfvPguisBBjmCahSWKq1pC3LtTVN
+         KyI1uUcMOMaGNNvjCVQq5wsPRV7cN9XzDIkMNvpEuhyKoW+eFIWIkKWh8ISAXToJJ9
+         Gixm1cMRz+72g==
+Date:   Thu, 8 Apr 2021 15:56:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH] arm64: mte: Move MTE TCF0 check in entry-common
+Message-ID: <20210408145604.GB18211@willie-the-truck>
+References: <20210408143723.13024-1-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408143723.13024-1-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In IRQ handler interrupts are already disabled, hence no need
-to repeat it. Even in the threaded case, it is not a problem
-because IRQ framework keeps interrupt disabled there as well.
-Remove disabling IRQ part in the handler.
+On Thu, Apr 08, 2021 at 03:37:23PM +0100, Vincenzo Frascino wrote:
+> The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+> race with another CPU doing a set_tsk_thread_flag() and the flag can be
+> lost in the process.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpio-xilinx.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Actually, it's all the *other* flags that get lost!
 
-diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-index 98d90b4c4d2b..d5a08dcdd677 100644
---- a/drivers/gpio/gpio-xilinx.c
-+++ b/drivers/gpio/gpio-xilinx.c
-@@ -503,14 +503,13 @@ static void xgpio_irqhandler(struct irq_desc *desc)
- 	DECLARE_BITMAP(all, 64);
- 	u32 status;
- 	u32 bit;
--	unsigned long flags;
- 
- 	status = xgpio_readreg(chip->regs + XGPIO_IPISR_OFFSET);
- 	xgpio_writereg(chip->regs + XGPIO_IPISR_OFFSET, status);
- 
- 	chained_irq_enter(irqchip, desc);
- 
--	spin_lock_irqsave(&chip->gpio_lock, flags);
-+	spin_lock(&chip->gpio_lock);
- 
- 	xgpio_read_ch_all(chip, XGPIO_DATA_OFFSET, all);
- 
-@@ -527,7 +526,7 @@ static void xgpio_irqhandler(struct irq_desc *desc)
- 	bitmap_copy(chip->last_irq_read, all, 64);
- 	bitmap_or(all, rising, falling, 64);
- 
--	spin_unlock_irqrestore(&chip->gpio_lock, flags);
-+	spin_unlock(&chip->gpio_lock);
- 
- 	dev_dbg(gc->parent, "IRQ rising %*pb falling %*pb\n", 64, rising, 64, falling);
- 
--- 
-2.30.2
+> Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+> exit_to_user_mode() to address the problem.
+> 
+> Note: Moving the check in entry-common allows to use set_thread_flag()
+> which is safe.
+> 
+> Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous
+> tag check faults")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Reported-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/include/asm/mte.h     |  8 ++++++++
+>  arch/arm64/kernel/entry-common.c |  6 ++++++
+>  arch/arm64/kernel/entry.S        | 30 ------------------------------
+>  arch/arm64/kernel/mte.c          | 25 +++++++++++++++++++++++--
+>  4 files changed, 37 insertions(+), 32 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 9b557a457f24..188f778c6f7b 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -31,6 +31,8 @@ void mte_invalidate_tags(int type, pgoff_t offset);
+>  void mte_invalidate_tags_area(int type);
+>  void *mte_allocate_tag_storage(void);
+>  void mte_free_tag_storage(char *storage);
+> +void check_mte_async_tcf0(void);
+> +void clear_mte_async_tcf0(void);
+>  
+>  #ifdef CONFIG_ARM64_MTE
+>  
+> @@ -83,6 +85,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+>  {
+>  	return -EIO;
+>  }
+> +void check_mte_async_tcf0(void)
+> +{
+> +}
+> +void clear_mte_async_tcf0(void)
+> +{
+> +}
+>  
+>  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>  {
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 9d3588450473..837d3624a1d5 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+>  	user_exit_irqoff();
+>  	trace_hardirqs_off_finish();
+> +
+> +	/* Check for asynchronous tag check faults in user space */
+> +	check_mte_async_tcf0();
+>  }
 
+Is enter_from_user_mode() always called when we enter the kernel from EL0?
+afaict, some paths (e.g. el0_irq()) only end up calling it if
+CONTEXT_TRACKING or TRACE_IRQFLAGS are enabled.
+
+>  
+>  asmlinkage void noinstr exit_to_user_mode(void)
+>  {
+> +	/* Ignore asynchronous tag check faults in the uaccess routines */
+> +	clear_mte_async_tcf0();
+> +
+
+and this one seems to be called even less often.
+
+Will
