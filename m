@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98896358B12
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034EA358B61
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhDHROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:14:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56924 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231566AbhDHROU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:14:20 -0400
-IronPort-SDR: GGbkQiufq2Il8/32tFbMT5PVmILhUVlJDdx2so19Mr63PhxyHK51yugtalq3s7LARVTEdpthWN
- a5nLpDm+pS/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193708227"
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="193708227"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 10:14:00 -0700
-IronPort-SDR: QwcQ28lex8C4B12mkQB0286gZDGWd4P1+RXYYFU4NfQq5Y1iuWdKVNtq3C78NYp4cDj80j4VEr
- zdTyjphw2zGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="530676878"
-Received: from maru.jf.intel.com ([10.54.51.77])
-  by orsmga004.jf.intel.com with ESMTP; 08 Apr 2021 10:13:59 -0700
-From:   Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Subject: [RESEND PATCH] Revert "i3c master: fix missing destroy_workqueue() on error in i3c_master_register"
-Date:   Thu,  8 Apr 2021 10:28:03 -0700
-Message-Id: <20210408172803.24599-1-jae.hyun.yoo@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232398AbhDHR3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:29:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2813 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231676AbhDHR3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:29:46 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FGSkZ6Qhrz686KW;
+        Fri,  9 Apr 2021 01:22:30 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 19:29:33 +0200
+Received: from localhost (10.47.93.239) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 8 Apr 2021
+ 18:29:32 +0100
+Date:   Thu, 8 Apr 2021 18:28:08 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>, <ira.weiny@intel.com>,
+        <vishal.l.verma@intel.com>, <alison.schofield@intel.com>,
+        <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/7] cxl/mem: Move device register setup
+Message-ID: <20210408182808.00007f69@Huawei.com>
+In-Reply-To: <20210407222625.320177-6-ben.widawsky@intel.com>
+References: <20210407222625.320177-1-ben.widawsky@intel.com>
+        <20210407222625.320177-6-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.93.239]
+X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding the destroy_workqueue call in i3c_master_register introduced below
-kernel warning because it makes duplicate destroy_workqueue calls when
-i3c_master_register fails after allocating the workqueue. The workqueue will
-be destroyed by i3c_masterdev_release which is called by put_device at the
-end of the i3c_master_register function eventually in failure cases so the
-workqueue doesn't need to be destroyed in i3c_master_register.
+On Wed, 7 Apr 2021 15:26:23 -0700
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-[    6.972952] WARNING: CPU: 1 PID: 1 at lib/list_debug.c:48 __list_del_entry_valid+0x9c/0xf4
-[    6.982205] list_del corruption, 8fe03c08->prev is LIST_POISON2 (00000122)
-[    6.989910] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         5.10.23-c12838a-dirty-31dc772 #1
-[    7.000295] Hardware name: Generic DT based system
-[    7.005638] Backtrace:
-[    7.008369] [<809133f0>] (dump_backtrace) from [<80913644>] (show_stack+0x20/0x24)
-[    7.016819]  r7:00000030 r6:60000013 r5:00000000 r4:813b5d40
-[    7.023137] [<80913624>] (show_stack) from [<8091e1a0>] (dump_stack+0x9c/0xb0)
-[    7.031201] [<8091e104>] (dump_stack) from [<8011fa30>] (__warn+0xf8/0x154)
-[    7.038972]  r7:00000030 r6:00000009 r5:804fa1c8 r4:80b6eca4
-[    7.045289] [<8011f938>] (__warn) from [<80913d14>] (warn_slowpath_fmt+0x8c/0xc0)
-[    7.053641]  r7:00000030 r6:80b6eca4 r5:80b6ed74 r4:818cc000
-[    7.059960] [<80913c8c>] (warn_slowpath_fmt) from [<804fa1c8>] (__list_del_entry_valid+0x9c/0xf4)
-[    7.069866]  r9:96becf8c r8:818cc000 r7:8fe03c10 r6:8fe03c00 r5:8fe03ba0 r4:ff7ead4c
-[    7.078513] [<804fa12c>] (__list_del_entry_valid) from [<8013f0b4>] (destroy_workqueue+0x1c4/0x23c)
-[    7.088615] [<8013eef0>] (destroy_workqueue) from [<806aa124>] (i3c_masterdev_release+0x40/0xb0)
-[    7.098421]  r7:00000000 r6:81a43b80 r5:8fe65360 r4:8fe65048
-[    7.104740] [<806aa0e4>] (i3c_masterdev_release) from [<805f3f04>] (device_release+0x40/0xb0)
-[    7.114254]  r5:00000000 r4:8fe65048
-[    7.118245] [<805f3ec4>] (device_release) from [<808fe754>] (kobject_put+0xc8/0x204)
-[    7.126885]  r5:813978dc r4:8fe65048
-[    7.130877] [<808fe68c>] (kobject_put) from [<805f5fbc>] (put_device+0x20/0x24)
-[    7.139037]  r7:8fe65358 r6:8fe65368 r5:8fe65358 r4:8fe65048
-[    7.145355] [<805f5f9c>] (put_device) from [<806abac4>] (i3c_master_register+0x338/0xb00)
-[    7.154487] [<806ab78c>] (i3c_master_register) from [<806ae084>] (dw_i3c_probe+0x224/0x24c)
-[    7.163811]  r10:00000000 r9:8fe7a100 r8:00000032 r7:819fa810 r6:819fa800 r5:8fe65040
-[    7.172547]  r4:00000000
-[    7.175376] [<806ade60>] (dw_i3c_probe) from [<805fdc14>] (platform_drv_probe+0x44/0x80)
-[    7.184409]  r9:813a25c0 r8:00000000 r7:815ec114 r6:00000000 r5:813a25c0 r4:819fa810
-[    7.193053] [<805fdbd0>] (platform_drv_probe) from [<805fb83c>] (really_probe+0x108/0x50c)
-[    7.202275]  r5:815ec004 r4:819fa810
-[    7.206265] [<805fb734>] (really_probe) from [<805fc180>] (driver_probe_device+0xb4/0x190)
-[    7.215492]  r10:813dc000 r9:80c4385c r8:000000d9 r7:813a25c0 r6:819fa810 r5:00000000
-[    7.224228]  r4:813a25c0
-[    7.227055] [<805fc0cc>] (driver_probe_device) from [<805fc5cc>] (device_driver_attach+0xb8/0xc0)
-[    7.236959]  r9:80c4385c r8:000000d9 r7:813a25c0 r6:819fa854 r4:819fa810
-[    7.244439] [<805fc514>] (device_driver_attach) from [<805fc65c>] (__driver_attach+0x88/0x16c)
-[    7.254051]  r7:00000000 r6:819fa810 r5:00000000 r4:813a25c0
-[    7.260369] [<805fc5d4>] (__driver_attach) from [<805f954c>] (bus_for_each_dev+0x88/0xc8)
-[    7.269489]  r7:00000000 r6:818cc000 r5:805fc5d4 r4:813a25c0
-[    7.275806] [<805f94c4>] (bus_for_each_dev) from [<805fc76c>] (driver_attach+0x2c/0x30)
-[    7.284739]  r7:81397c98 r6:00000000 r5:8fe7db80 r4:813a25c0
-[    7.291057] [<805fc740>] (driver_attach) from [<805f9eec>] (bus_add_driver+0x120/0x200)
-[    7.299984] [<805f9dcc>] (bus_add_driver) from [<805fce44>] (driver_register+0x98/0x128)
-[    7.309005]  r7:80c4383c r6:00000000 r5:00000000 r4:813a25c0
-[    7.315323] [<805fcdac>] (driver_register) from [<805fedb4>] (__platform_driver_register+0x50/0x58)
-[    7.325410]  r5:818cc000 r4:81397c98
-[    7.329404] [<805fed64>] (__platform_driver_register) from [<80c23398>] (dw_i3c_driver_init+0x24/0x28)
-[    7.339790]  r5:818cc000 r4:80c23374
-[    7.343784] [<80c23374>] (dw_i3c_driver_init) from [<80c01300>] (do_one_initcall+0xac/0x1d0)
-[    7.353206] [<80c01254>] (do_one_initcall) from [<80c01630>] (kernel_init_freeable+0x1a8/0x204)
-[    7.362916]  r8:000000d9 r7:80c4383c r6:00000007 r5:819ca2c0 r4:80c67680
-[    7.370398] [<80c01488>] (kernel_init_freeable) from [<8091eb18>] (kernel_init+0x18/0x12c)
-[    7.379616]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:8091eb00
-[    7.388343]  r4:00000000
-[    7.391170] [<8091eb00>] (kernel_init) from [<80100148>] (ret_from_fork+0x14/0x2c)
-[    7.399607] Exception stack(0x818cdfb0 to 0x818cdff8)
-[    7.405243] dfa0:                                     00000000 00000000 00000000 00000000
-[    7.414371] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    7.423499] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    7.430879]  r5:8091eb00 r4:00000000
+> Support expansion of register block types that the driver will attempt
+> to recognize by pulling the code up into the register block scanning
+> loop. Subsequent code can easily add in new register block types with
+> this.
+> 
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 
-This reverts commit 59165d16c699182b86b5c65181013f1fd88feb62.
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>>
 
-Fixes: 59165d16c699 ("i3c master: fix missing destroy_workqueue() on error in i3c_master_register")
-Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
----
- drivers/i3c/master.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index f8e9b7305c13..e2e12a5585e5 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -2535,7 +2535,7 @@ int i3c_master_register(struct i3c_master_controller *master,
- 
- 	ret = i3c_master_bus_init(master);
- 	if (ret)
--		goto err_destroy_wq;
-+		goto err_put_dev;
- 
- 	ret = device_add(&master->dev);
- 	if (ret)
-@@ -2566,9 +2566,6 @@ int i3c_master_register(struct i3c_master_controller *master,
- err_cleanup_bus:
- 	i3c_master_bus_cleanup(master);
- 
--err_destroy_wq:
--	destroy_workqueue(master->wq);
--
- err_put_dev:
- 	put_device(&master->dev);
- 
--- 
-2.17.1
+> ---
+>  drivers/cxl/mem.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 60b95c524c3e..49f651694cb0 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -1020,6 +1020,15 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  			base = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
+>  			if (IS_ERR(base))
+>  				return PTR_ERR(base);
+> +
+> +			cxl_setup_device_regs(dev, base, &regs->device_regs);
+> +			if (!regs->status || !regs->mbox || !regs->memdev) {
+> +				dev_err(dev, "registers not found: %s%s%s\n",
+> +						!regs->status ? "status " : "",
+> +						!regs->mbox ? "mbox " : "",
+> +						!regs->memdev ? "memdev" : "");
+> +				return -ENXIO;
+> +			}
+>  			break;
+>  		}
+>  	}
+> @@ -1029,16 +1038,6 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  		return -ENXIO;
+>  	}
+>  
+> -	cxl_setup_device_regs(dev, base, &regs->device_regs);
+> -
+> -	if (!regs->status || !regs->mbox || !regs->memdev) {
+> -		dev_err(dev, "registers not found: %s%s%s\n",
+> -			!regs->status ? "status " : "",
+> -			!regs->mbox ? "mbox " : "",
+> -			!regs->memdev ? "memdev" : "");
+> -		return -ENXIO;
+> -	}
+> -
+>  	return 0;
+>  }
+>  
 
