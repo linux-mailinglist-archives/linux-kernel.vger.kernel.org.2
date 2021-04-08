@@ -2,158 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D783588E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34433588E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhDHPw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:52:58 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:1942 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhDHPwz (ORCPT
+        id S231659AbhDHPwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:52:46 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:60936 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhDHPwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:52:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1617897164; x=1649433164;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=tCoTjc3fhRikP8oSBfxo2xNjB8YHkIgzZXaAXT2NF00=;
-  b=AQLNSHXhfCRU1ALKWiVJVNdDba1G80EOQoCsivjh8vYhzbCkQQK+HEyn
-   5lWY/RwvUqWrfMFDY9rybDqgfiKPMmSakZxdh6H9M6QdyTI1qkV4o6oZY
-   JVm91AcZi+xneDOuv/gaQjrFln8ehK0REJLc0E2mgRLWvoQFlhMoiWKlY
-   8=;
-X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
-   d="scan'208";a="101983967"
-Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM hypercalls
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Apr 2021 15:52:35 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 2C79BA1B50;
-        Thu,  8 Apr 2021 15:52:33 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.161.29) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 8 Apr 2021 15:52:25 +0000
-Date:   Thu, 8 Apr 2021 17:52:21 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-CC:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>
-Message-ID: <20210408155220.GB32315@u366d62d47e3651.ant.amazon.com>
-References: <20210407211954.32755-1-sidcha@amazon.de>
- <20210407211954.32755-5-sidcha@amazon.de>
- <87blap7zha.fsf@vitty.brq.redhat.com>
- <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
- <8735w096pk.fsf@vitty.brq.redhat.com>
+        Thu, 8 Apr 2021 11:52:43 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lUWxD-00079r-2v; Thu, 08 Apr 2021 11:52:23 -0400
+Message-ID: <f11b6fe58424edc8a72464b5ffa7842a5aa214f4.camel@surriel.com>
+Subject: Re: [PATCH v3] sched/fair: bring back select_idle_smt, but
+ differently
+From:   Rik van Riel <riel@surriel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Date:   Thu, 08 Apr 2021 11:52:22 -0400
+In-Reply-To: <YG2HPUfrb0YyB1SG@hirez.programming.kicks-ass.net>
+References: <20210321150358.71ef52b1@imladris.surriel.com>
+         <20210322110306.GE3697@techsingularity.net>
+         <20210326151932.2c187840@imladris.surriel.com>
+         <CAKfTPtBvy3Wv=-d5tjrirO3ukBgqV5vM709+_ee+H8LWJsnoLw@mail.gmail.com>
+         <1e21aa6ea7de3eae32b29559926d4f0ba5fea130.camel@surriel.com>
+         <YG1cfgTH2gj9hxAx@hirez.programming.kicks-ass.net>
+         <20210407094217.GA2926@vingu-book>
+         <YG2BXRm60IhpumD8@hirez.programming.kicks-ass.net>
+         <YG2HPUfrb0YyB1SG@hirez.programming.kicks-ass.net>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-9wDzU0QRkGGAPp3JncBt"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8735w096pk.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.29]
-X-ClientProxiedBy: EX13D01UWA001.ant.amazon.com (10.43.160.60) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 04:44:23PM +0200, Vitaly Kuznetsov wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
->
-> > On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
-> >> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-> >>
-> >> > Now that all extant hypercalls that can use XMM registers (based on
-> >> > spec) for input/outputs are patched to support them, we can start
-> >> > advertising this feature to guests.
-> >> >
-> >> > Cc: Alexander Graf <graf@amazon.com>
-> >> > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
-> >> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> >> > ---
-> >> >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
-> >> >  arch/x86/kvm/hyperv.c              | 1 +
-> >> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> >> >
-> >> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> >> > index e6cd3fee562b..1f160ef60509 100644
-> >> > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> >> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> >> > @@ -49,10 +49,10 @@
-> >> >  /* Support for physical CPU dynamic partitioning events is available*/
-> >> >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
-> >> >  /*
-> >> > - * Support for passing hypercall input parameter block via XMM
-> >> > + * Support for passing hypercall input and output parameter block via XMM
-> >> >   * registers is available
-> >> >   */
-> >> > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
-> >> > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
-> >>
-> >> TLFS 6.0b states that there are two distinct bits for input and output:
-> >>
-> >> CPUID Leaf 0x40000003.EDX:
-> >> Bit 4: support for passing hypercall input via XMM registers is available.
-> >> Bit 15: support for returning hypercall output via XMM registers is available.
-> >>
-> >> and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
-> >> anywhere, I'd suggest we just rename
-> >>
-> >> HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
-> >> and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
-> >
-> > That is how I had it initially; but then noticed that we would never
-> > need to use either of them separately. So it seemed like a reasonable
-> > abstraction to put them together.
-> >
->
-> Actually, we may. In theory, KVM userspace may decide to expose just
-> one of these two to the guest as it is not obliged to copy everything
-> from KVM_GET_SUPPORTED_HV_CPUID so we will need separate
-> guest_cpuid_has() checks.
 
-Makes sense. I'll split them and add the checks.
+--=-9wDzU0QRkGGAPp3JncBt
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> (This reminds me of something I didn't see in your series:
-> we need to check that XMM hypercall parameters support was actually
-> exposed to the guest as it is illegal for a guest to use it otherwise --
-> and we will likely need two checks, for input and output).
+On Wed, 2021-04-07 at 12:19 +0200, Peter Zijlstra wrote:
+> On Wed, Apr 07, 2021 at 11:54:37AM +0200, Peter Zijlstra wrote:
+>=20
+> > Let me have another poke at it.
+>=20
+> Pretty much what you did, except I also did s/smt/has_idle_core/ and
+> fixed that @sd thing.
+>=20
+> Like so then?
 
-We observed that Windows expects Hyper-V to support XMM params even if
-we don't advertise this feature but if userspace wants to hide this
-feature and the guest does it anyway, then it makes sense to treat it as
-an illegal OP.
+Looks good to me. Thank you.
 
-> Also, (and that's what triggered my comment) all other HV_ACCESS_* in
-> kvm_get_hv_cpuid() are single bits so my first impression was that you
-> forgot one bit, but then I saw that you combined them together.
+--=20
+All Rights Reversed.
 
-~ Sid.
+--=-9wDzU0QRkGGAPp3JncBt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmBvJrYACgkQznnekoTE
+3oP9xAf+JvfHGl8oTlAgGnS+XPW0xHA+DOC9OLgtarfgf8leZH3SOgIPxL3jotDN
+baw+ICV8L1Z1fTr2gSyt7aybpiOTE48o9+MPBFs0ZcQjFG0SXhn7YVhWWn/otPC4
+aXvesK/QsyTHVCMiTyheBhfQ/OkwUC0nINseaNag3nxzlfC+JM+Z3jLsCVoHyW7E
+EpJNBBikhDNRoF/8xAQUuPK0+FrfJnVyp2TLV+4NM2Do4E6Wb5/Ne5WTvYXjwzMH
+p5JOx4OIfIWsJR6XM5Samn6aTu8fFRJ7CpY9LpYsYf9BPgzQbjtl3puQBWTJ99Q3
+t8S+upU8L+80SPnwHkfmE9H/R4vTpw==
+=98tH
+-----END PGP SIGNATURE-----
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+--=-9wDzU0QRkGGAPp3JncBt--
 
