@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60630357C80
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0E5357C83
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhDHGWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:22:20 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:38714 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhDHGWR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:22:17 -0400
-Received: by mail-lf1-f51.google.com with SMTP id j18so2040871lfg.5;
-        Wed, 07 Apr 2021 23:22:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZWPFU3Bu5VUh+Nh5BTbIhbmq1hKiLogKUeJyuTQRjIg=;
-        b=Wx19294Cv5HKQqVeKLgphkMIMS96TY0LVESgOUK3qyBEs/hX9EQC1RAVlI8v2rgS+T
-         bRhyYe9CbAL/CyCNOKs7y7Xs5p70O3irEr8ZQ6xRSjSmWhfsRw4lja28eJ04CifWUZ/h
-         szUTeShKcsbYoNCcn9AaH1lPeGl8AO+tzyaXR5XFg7MLA96QC6fkhYwqT+WEfhwtIrAB
-         vmAOrG+sPFb0/UuDD6DoCBpNrIb8+hlvY5hOHVKZDwMNPeK+aDpUeas0N09oyU8gyhSS
-         iwjgcgPOXZOX3Q4Mjjs5xr/W1YehdBEM4zfOVRt+ph+g5K8Ah4MSP4OpKH7EiUo04W5V
-         AFeg==
-X-Gm-Message-State: AOAM533+XNDt1mwSeI4XkjM5Ac+kO6OqDikXI89bpR5kYuezq1tqKZGH
-        kRVnLyy2QtHllHF8/nlLxRY=
-X-Google-Smtp-Source: ABdhPJyg9d+lxMZ/XM8In34VrK6USVTKp02AHW8+9f0c29jLKh3SeMW1ICdK8DG2XAMpYxtKBpXdOw==
-X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr4983244lfe.106.1617862924211;
-        Wed, 07 Apr 2021 23:22:04 -0700 (PDT)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id p8sm226890lfu.125.2021.04.07.23.22.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 23:22:03 -0700 (PDT)
-Subject: Re: [PATCH] inotify: fix minmax.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>, Jan Kara <jack@suse.cz>
-Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-References: <alpine.DEB.2.22.394.2104062246500.19097@hadrien>
- <20210407160546.GA3271@quack2.suse.cz>
- <alpine.DEB.2.22.394.2104071901260.11549@hadrien>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <bd17554f-a8d8-3fd8-b3b6-e3c2d86d7f99@linux.com>
-Date:   Thu, 8 Apr 2021 09:22:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229742AbhDHGXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhDHGXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:23:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D5A610E6;
+        Thu,  8 Apr 2021 06:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617862972;
+        bh=s5DxdPa0qBalZxAPxqbzIOTmBMgmX1U5/r1n4i6Ua5Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BcjME3upWbPai6OutoM0QAemT1KHipC3zuOYRTKFj60DnSLFyCMSunJpNDnZG+njE
+         sbCaJB0PBZas/w/Z8xs/mK8utjGnMjdwkH664R/hXYevdG0wosxcoWQuL4K/wpBB3k
+         8rIyyjnPWQKUGPVna/IeSaSre5TOt58TXP0odvEU=
+Date:   Thu, 8 Apr 2021 08:22:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     min.li.xe@renesas.com
+Cc:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Message-ID: <YG6hOuOO5EL9xTwH@kroah.com>
+References: <1617846650-10058-1-git-send-email-min.li.xe@renesas.com>
+ <1617846650-10058-2-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2104071901260.11549@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617846650-10058-2-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 09:50:50PM -0400, min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
+> of timing and synchronization devices.It will be used by Renesas PTP Clock
+> Manager for Linux (pcm4l) software to provide support to GNSS assisted
+> partial timing support (APTS) and other networking timing functions.
+> 
+> Current version provides kernel API's to support the following functions
+> -set combomode to enable SYNCE clock support
+> -read dpll's state to determine if the dpll is locked to the GNSS channel
+> -read dpll's ffo (fractional frequency offset) in ppqt
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> ---
+> Change log
+> -rebase change to linux-next tree
+> -remove uncessary condition checks suggested by Greg
+> -fix compile error for x86_64
+> -register device through misc_register suggested by Greg
+> -change to use module_platform_device to register driver
+> -remove empty open and release functions
+> -more informational comment for struct rsmu_cdev
+> 
+>  drivers/misc/Kconfig      |   9 ++
+>  drivers/misc/Makefile     |   2 +
+>  drivers/misc/rsmu_cdev.c  | 231 ++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/misc/rsmu_cdev.h  |  74 +++++++++++++++
+>  drivers/misc/rsmu_cm.c    | 166 +++++++++++++++++++++++++++++++++
+>  drivers/misc/rsmu_sabre.c | 133 ++++++++++++++++++++++++++
 
+Again, please make this only one file.
 
-On 4/7/21 8:02 PM, Julia Lawall wrote:
-> 
-> 
-> On Wed, 7 Apr 2021, Jan Kara wrote:
-> 
->> On Tue 06-04-21 22:49:26, Julia Lawall wrote:
->>> From: kernel test robot <lkp@intel.com>
->>>
->>> Opportunity for min().
->>>
->>> Generated by: scripts/coccinelle/misc/minmax.cocci
->>>
->>> Fixes: 8636e3295ce3 ("coccinelle: misc: add minmax script")
->>> CC: Denis Efremov <efremov@linux.com>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Signed-off-by: kernel test robot <lkp@intel.com>
->>> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
->> ...
->>> --- a/fs/notify/inotify/inotify_user.c
->>> +++ b/fs/notify/inotify/inotify_user.c
->>> @@ -382,7 +382,7 @@ static int inotify_add_to_idr(struct idr
->>>
->>>  	spin_unlock(idr_lock);
->>>  	idr_preload_end();
->>> -	return ret < 0 ? ret : 0;
->>> +	return min(ret, 0);
->>>  }
->>
->> Honestly, while previous expression is a standard idiom for "if 'ret' holds
->> an error, return it", the new expression is harder to understand for me. So
->> I prefer to keep things as they are in this particular case...
-> 
-> OK, I had doubts about it as well, but I forwarded it because I found them
-> equally obscure...
-> 
-> Denis, maybe the semantic patch should be updated to avoid this case.
+thanks,
 
-No problem, I'll send an update.
-
-Thanks,
-Denis
+greg k-h
