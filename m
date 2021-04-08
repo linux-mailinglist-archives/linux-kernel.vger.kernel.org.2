@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF36357F9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DA5357FA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhDHJpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:45:18 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:37546 "EHLO
+        id S231434AbhDHJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:45:23 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:36578 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231358AbhDHJpJ (ORCPT
+        by vger.kernel.org with ESMTP id S231341AbhDHJpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:45:09 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        Thu, 8 Apr 2021 05:45:16 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 3D02540829;
-        Thu,  8 Apr 2021 09:44:57 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 5FF00C09B1;
+        Thu,  8 Apr 2021 09:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1617875097; bh=Gd6RpJYfHcJtTprhTBHDNtSWQfOmDM4ekWqCTpUJyiw=;
+        t=1617875105; bh=E+igUESaPhpjVDVosLwHHiXN8svhMPcuxQoNubRH1OU=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=MVI+lX+aeluFNiHFgHK+ZIfFPaUReoDY9IO//B7JPIcG4o7awS7DNmWuB4g4rp38a
-         b5t2zjxex9k1fy3GPFGADwZCMB5CBDGBEME8Mh/pFHVh40VUZywCon0xtyiNdAHKMd
-         okYyY6u0u6+lAX8FPzwGAnHQjplYH3oq9/dOEQBWwKBI4p2Nly0W1K0Q32F5Rgedwb
-         XwcZrCTOJSpLuv9noTRkyKF0+yUTzOz+nX2ygoD7gY8c+o8CQ6hph4xYn3teq9EjfD
-         ++q4vssFHh8Lq7MmEGJVPuD4yyMhVOGkMoQ34wWYdli5Z0J1m5IFvfyPlQwCqZ7dr8
-         GE/OocWAvHAeQ==
+        b=dp7VQazFb1G5qk8dvpvKujIjq90JhZNaRG8t6/mnQRQWwd/Ki5ZpRRmh6CQH1Ed4t
+         xIxOJjjpTh0qOM8cyCThQvoXqGcocxKnq8xxjAbOT67L7IPedyE7Kz7hpf3Dvzx2bA
+         emyEOi5NSDsDNOaeMlaY/GesUYwuh5aLFcSKb+CLY4yta+0GBBCcH3UANDjl0qo7b1
+         11IgA8iaWRWthUVtdHkYnCk+wqDmKew3ziT9F/Ixi3JqxmrhmxVHR+MiP6N+SoiKmI
+         JYEaPqwT0xl+D6wICQMpr3SzaIDjIcr/f3UhhjVg6hkv3l9aBumglyYJ6u8s3VjCLZ
+         /gzsZHqnrxZwA==
 Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 5BBCBA0094;
-        Thu,  8 Apr 2021 09:44:54 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Thu, 08 Apr 2021 13:44:53 +0400
-Date:   Thu, 08 Apr 2021 13:44:53 +0400
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 61D18A0232;
+        Thu,  8 Apr 2021 09:45:02 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Thu, 08 Apr 2021 13:45:01 +0400
+Date:   Thu, 08 Apr 2021 13:45:01 +0400
 In-Reply-To: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
 References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
 X-SNPS-Relay: synopsys.com
 From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH v3 04/14] usb: dwc2: Add partial power down exit flow in wakeup intr.
+Subject: [PATCH v3 05/14] usb: dwc2: Update port suspend/resume function definitions.
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     John Youn <John.Youn@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Message-Id: <20210408094454.5BBCBA0094@mailhost.synopsys.com>
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Message-Id: <20210408094502.61D18A0232@mailhost.synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to programming guide added host partial power
-down exit flow in wakeup detected interrupt handler.
+Earlier "dwc2_port_suspend()" and "dwc2_port_resume()" functions
+were implemented without proper description and host or device mode
+difference.
+
+- Added "dwc2_port_suspend" and "dwc2_port_resume" functions to
+  "core.h" header file.
+
+- Updated function description in documentation.
 
 Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 ---
- drivers/usb/dwc2/core_intr.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ Changes in v3:
+ - None
+ Changes in v2:
+ - None
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index 1fb957ce6c25..0a7f9330907f 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -423,15 +423,14 @@ static void dwc2_handle_wakeup_detected_intr(struct dwc2_hsotg *hsotg)
- 			hsotg->lx_state = DWC2_L0;
- 		}
- 	} else {
--		if (hsotg->params.power_down)
--			return;
--
--		if (hsotg->lx_state != DWC2_L1) {
--			u32 pcgcctl = dwc2_readl(hsotg, PCGCTL);
--
--			/* Restart the Phy Clock */
--			pcgcctl &= ~PCGCTL_STOPPCLK;
--			dwc2_writel(hsotg, pcgcctl, PCGCTL);
-+		if (hsotg->lx_state == DWC2_L2) {
-+			if (hsotg->in_ppd) {
-+				ret = dwc2_exit_partial_power_down(hsotg, 1,
-+								   true);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit partial_power_down failed\n");
-+			}
+ drivers/usb/dwc2/core.h |  4 ++++
+ drivers/usb/dwc2/hcd.c  | 25 +++++++++++++++++++------
+ 2 files changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 39037709a2ad..b7d99cf9e84c 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -1470,6 +1470,8 @@ void dwc2_hcd_connect(struct dwc2_hsotg *hsotg);
+ void dwc2_hcd_disconnect(struct dwc2_hsotg *hsotg, bool force);
+ void dwc2_hcd_start(struct dwc2_hsotg *hsotg);
+ int dwc2_core_init(struct dwc2_hsotg *hsotg, bool initial_setup);
++void dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex);
++void dwc2_port_resume(struct dwc2_hsotg *hsotg);
+ int dwc2_backup_host_registers(struct dwc2_hsotg *hsotg);
+ int dwc2_restore_host_registers(struct dwc2_hsotg *hsotg);
+ int dwc2_host_enter_hibernation(struct dwc2_hsotg *hsotg);
+@@ -1493,6 +1495,8 @@ static inline void dwc2_hcd_start(struct dwc2_hsotg *hsotg) {}
+ static inline void dwc2_hcd_remove(struct dwc2_hsotg *hsotg) {}
+ static inline int dwc2_core_init(struct dwc2_hsotg *hsotg, bool initial_setup)
+ { return 0; }
++static inline void dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex) {}
++static inline void dwc2_port_resume(struct dwc2_hsotg *hsotg) {}
+ static inline int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
+ { return 0; }
+ static inline int dwc2_backup_host_registers(struct dwc2_hsotg *hsotg)
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index dd0362e07444..f4247a66c2b2 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -56,8 +56,6 @@
+ #include "core.h"
+ #include "hcd.h"
  
- 			/*
- 			 * If we've got this quirk then the PHY is stuck upon
+-static void dwc2_port_resume(struct dwc2_hsotg *hsotg);
+-
+ /*
+  * =========================================================================
+  *  Host Core Layer Functions
+@@ -3277,8 +3275,16 @@ static int dwc2_host_is_b_hnp_enabled(struct dwc2_hsotg *hsotg)
+ 	return hcd->self.b_hnp_enable;
+ }
+ 
+-/* Must NOT be called with interrupt disabled or spinlock held */
+-static void dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
++/**
++ * dwc2_port_suspend() - Put controller in suspend mode for host.
++ *
++ * @hsotg: Programming view of the DWC_otg controller
++ * @windex: The control request wIndex field
++ *
++ * This function is for entering Host mode suspend.
++ * Must NOT be called with interrupt disabled or spinlock held.
++ */
++void dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
+ {
+ 	unsigned long flags;
+ 	u32 hprt0;
+@@ -3328,8 +3334,15 @@ static void dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
+ 	}
+ }
+ 
+-/* Must NOT be called with interrupt disabled or spinlock held */
+-static void dwc2_port_resume(struct dwc2_hsotg *hsotg)
++/**
++ * dwc2_port_resume() - Exit controller from suspend mode for host.
++ *
++ * @hsotg: Programming view of the DWC_otg controller
++ *
++ * This function is for exiting Host mode suspend.
++ * Must NOT be called with interrupt disabled or spinlock held.
++ */
++void dwc2_port_resume(struct dwc2_hsotg *hsotg)
+ {
+ 	unsigned long flags;
+ 	u32 hprt0;
 -- 
 2.25.1
 
