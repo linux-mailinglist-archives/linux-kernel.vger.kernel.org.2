@@ -2,207 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D26357B6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C0357B68
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhDHElv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 00:41:51 -0400
-Received: from mga09.intel.com ([134.134.136.24]:61665 "EHLO mga09.intel.com"
+        id S229584AbhDHEjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 00:39:17 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22551 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhDHElt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 00:41:49 -0400
-IronPort-SDR: 3VL4maFV30pzj2eUvSx2iU9YkSTKjBr5Y3TGrqoaHunoGY8OU7vwgQcdTkYRPOeMTVjr6clkc+
- +rDkcLR3vb7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193571820"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="193571820"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:41:37 -0700
-IronPort-SDR: QgPTai8qsRYIxJB9cbtKU0LEEXQs+NQgzGRSdiEGaXLNexM8ZyQelHMsG8jBf96vTyWuqDDSEN
- wLeSpg7g+6LA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="441590560"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Apr 2021 21:41:34 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210401071834.1639-1-longpeng2@huawei.com>
- <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
- <611cb5849c9a497b8289004dddb71150@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <808394ea-9ff0-7a6d-72e7-f037e5cd3110@linux.intel.com>
-Date:   Thu, 8 Apr 2021 12:32:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229534AbhDHEjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 00:39:16 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FG7nf67X2z9vBnX;
+        Thu,  8 Apr 2021 06:39:02 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 7Ulh6JSdMufP; Thu,  8 Apr 2021 06:39:02 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FG7nf4Vgwz9vBnS;
+        Thu,  8 Apr 2021 06:39:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6568E8B7BE;
+        Thu,  8 Apr 2021 06:39:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3uhCu6FeRQ6b; Thu,  8 Apr 2021 06:39:03 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E9BFB8B75F;
+        Thu,  8 Apr 2021 06:39:02 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: remove old workaround for GCC < 4.9
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210408030534.196347-1-masahiroy@kernel.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <c1252dda-42e8-d920-c46f-1fd8250870ab@csgroup.eu>
+Date:   Thu, 8 Apr 2021 06:39:00 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <611cb5849c9a497b8289004dddb71150@huawei.com>
+In-Reply-To: <20210408030534.196347-1-masahiroy@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Longpeng,
 
-On 4/7/21 2:35 PM, Longpeng (Mike, Cloud Infrastructure Service Product 
-Dept.) wrote:
-> Hi Baolu,
+
+Le 08/04/2021 à 05:05, Masahiro Yamada a écrit :
+> According to Documentation/process/changes.rst, the minimum supported
+> GCC version is 4.9.
 > 
->> -----Original Message-----
->> From: Lu Baolu [mailto:baolu.lu@linux.intel.com]
->> Sent: Friday, April 2, 2021 12:44 PM
->> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
->> <longpeng2@huawei.com>; iommu@lists.linux-foundation.org;
->> linux-kernel@vger.kernel.org
->> Cc: baolu.lu@linux.intel.com; David Woodhouse <dwmw2@infradead.org>; Nadav
->> Amit <nadav.amit@gmail.com>; Alex Williamson <alex.williamson@redhat.com>;
->> Kevin Tian <kevin.tian@intel.com>; Gonglei (Arei) <arei.gonglei@huawei.com>;
->> stable@vger.kernel.org
->> Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating superpage
->>
->> Hi Longpeng,
->>
->> On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
->>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->>> index ee09323..cbcb434 100644
->>> --- a/drivers/iommu/intel/iommu.c
->>> +++ b/drivers/iommu/intel/iommu.c
->>> @@ -2342,9 +2342,20 @@ static inline int hardware_largepage_caps(struct
->> dmar_domain *domain,
->>>    				 * removed to make room for superpage(s).
->>>    				 * We're adding new large pages, so make sure
->>>    				 * we don't remove their parent tables.
->>> +				 *
->>> +				 * We also need to flush the iotlb before creating
->>> +				 * superpage to ensure it does not perserves any
->>> +				 * obsolete info.
->>>    				 */
->>> -				dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>> -						       largepage_lvl + 1);
->>> +				if (dma_pte_present(pte)) {
->>
->> The dma_pte_free_pagetable() clears a batch of PTEs. So checking current PTE is
->> insufficient. How about removing this check and always performing cache
->> invalidation?
->>
-> 
-> Um...the PTE here may be present( e.g. 4K mapping --> superpage mapping ) orNOT-present ( e.g. create a totally new superpage mapping ), but we only need to call free_pagetable and flush_iotlb in the former case, right ?
+> This workaround is dead code.
 
-But this code covers multiple PTEs and perhaps crosses the page
-boundary.
+This workaround is already on the way out, see 
+https://github.com/linuxppc/linux/commit/802b5560393423166e436c7914b565f3cda9e6b9
 
-How about moving this code into a separated function and check PTE
-presence there. A sample code could look like below: [compiled but not
-tested!]
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d334f5b4e382..0e04d450c38a 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2300,6 +2300,41 @@ static inline int hardware_largepage_caps(struct 
-dmar_domain *domain,
-         return level;
-  }
-
-+/*
-+ * Ensure that old small page tables are removed to make room for 
-superpage(s).
-+ * We're going to add new large pages, so make sure we don't remove 
-their parent
-+ * tables. The IOTLB/devTLBs should be flushed if any PDE/PTEs are cleared.
-+ */
-+static void switch_to_super_page(struct dmar_domain *domain,
-+                                unsigned long start_pfn,
-+                                unsigned long end_pfn, int level)
-+{
-+       unsigned long lvl_pages = lvl_to_nr_pages(level);
-+       struct dma_pte *pte = NULL;
-+       int i;
-+
-+       while (start_pfn <= end_pfn) {
-+               if (!pte)
-+                       pte = pfn_to_dma_pte(domain, start_pfn, &level);
-+
-+               if (dma_pte_present(pte)) {
-+                       dma_pte_free_pagetable(domain, start_pfn,
-+                                              start_pfn + lvl_pages - 1,
-+                                              level + 1);
-+
-+                       for_each_domain_iommu(i, domain)
-+                               iommu_flush_iotlb_psi(g_iommus[i], domain,
-+                                                     start_pfn, lvl_pages,
-+                                                     0, 0);
-+               }
-+
-+               pte++;
-+               start_pfn += lvl_pages;
-+               if (first_pte_in_page(pte))
-+                       pte = NULL;
-+       }
-+}
-+
-  static int
-  __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
-                  unsigned long phys_pfn, unsigned long nr_pages, int prot)
-@@ -2341,22 +2376,11 @@ __domain_mapping(struct dmar_domain *domain, 
-unsigned long iov_pfn,
-                                 return -ENOMEM;
-                         /* It is large page*/
-                         if (largepage_lvl > 1) {
--                               unsigned long nr_superpages, end_pfn;
-+                               unsigned long end_pfn;
-
-                                 pteval |= DMA_PTE_LARGE_PAGE;
--                               lvl_pages = lvl_to_nr_pages(largepage_lvl);
--
--                               nr_superpages = nr_pages / lvl_pages;
--                               end_pfn = iov_pfn + nr_superpages * 
-lvl_pages - 1;
--
--                               /*
--                                * Ensure that old small page tables are
--                                * removed to make room for superpage(s).
--                                * We're adding new large pages, so make 
-sure
--                                * we don't remove their parent tables.
--                                */
--                               dma_pte_free_pagetable(domain, iov_pfn, 
-end_pfn,
--                                                      largepage_lvl + 1);
-+                               end_pfn = ((iov_pfn + nr_pages) & 
-level_mask(largepage_lvl)) - 1;
-+                               switch_to_super_page(domain, iov_pfn, 
-end_pfn, largepage_lvl);
-                         } else {
-                                 pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
-                         }
-
-I will send you the diff patch off list. Any thoughts?
-
-Best regards,
-baolu
 
 > 
->>> +					int i;
->>> +
->>> +					dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>> +							       largepage_lvl + 1);
->>> +					for_each_domain_iommu(i, domain)
->>> +						iommu_flush_iotlb_psi(g_iommus[i], domain,
->>> +								      iov_pfn, nr_pages, 0, 0);
->>> +
->>
->> Best regards,
->> baolu
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>   arch/powerpc/Makefile | 6 ------
+>   1 file changed, 6 deletions(-)
+> 
+> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+> index 5f8544cf724a..32dd693b4e42 100644
+> --- a/arch/powerpc/Makefile
+> +++ b/arch/powerpc/Makefile
+> @@ -181,12 +181,6 @@ CC_FLAGS_FTRACE := -pg
+>   ifdef CONFIG_MPROFILE_KERNEL
+>   CC_FLAGS_FTRACE += -mprofile-kernel
+>   endif
+> -# Work around gcc code-gen bugs with -pg / -fno-omit-frame-pointer in gcc <= 4.8
+> -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=44199
+> -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52828
+> -ifndef CONFIG_CC_IS_CLANG
+> -CC_FLAGS_FTRACE	+= $(call cc-ifversion, -lt, 0409, -mno-sched-epilog)
+> -endif
+>   endif
+>   
+>   CFLAGS-$(CONFIG_TARGET_CPU_BOOL) += $(call cc-option,-mcpu=$(CONFIG_TARGET_CPU))
+> 
