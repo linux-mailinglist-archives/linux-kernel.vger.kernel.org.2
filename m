@@ -2,67 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF343359094
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A24359097
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhDHXqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 19:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbhDHXqg (ORCPT
+        id S233039AbhDHXrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 19:47:13 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35623 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232793AbhDHXrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:46:36 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98B2C061760;
-        Thu,  8 Apr 2021 16:46:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id D2E474D24927D;
-        Thu,  8 Apr 2021 16:46:22 -0700 (PDT)
-Date:   Thu, 08 Apr 2021 16:46:18 -0700 (PDT)
-Message-Id: <20210408.164618.597563844564989065.davem@davemloft.net>
-To:     decui@microsoft.com
-Cc:     kuba@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
-        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
-        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v3 net-next] net: mana: Add a driver for Microsoft
- Azure Network Adapter (MANA)
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210408225840.26304-1-decui@microsoft.com>
-References: <20210408225840.26304-1-decui@microsoft.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
+        Thu, 8 Apr 2021 19:47:11 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id EFA965805A7;
+        Thu,  8 Apr 2021 19:46:58 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 08 Apr 2021 19:46:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=3gGVX3JOaG38XWZoaFoORuXmUHcSVYu
+        PdREEhXwr2lM=; b=lnFwOf4EL+ECFKXoXPRXOpXUUPG3taJf/ImmKVTwL97B24g
+        h3RlixiPG8WqIkzLfvmPG+Mx4WzW2qh6u5HeMchAMSAWlzEPoVz3SAK/CmmBQQZV
+        vsj61ImqTPyR7bOcv1bQ1yuCWHcF7bRAxrN2t5wcU/59H/zB+N/T1Q04/RnWfd0C
+        5Yzlti2tdXPwwzC6PJHIm6sZ/Nv+hM465zdUlYFZqkMghOHT+pMB8dciT9pRp9Yi
+        mv/AenehPCuMMsGZZ28yWFpQrL0jUgHc5T9MAM8w6WjTlgWItQzVfcjVonDPGRWR
+        QazXSY4nX+z6D9VvhCNXnr5iw23frCDAtbR+4mA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3gGVX3
+        JOaG38XWZoaFoORuXmUHcSVYuPdREEhXwr2lM=; b=RR2UR/DwyT+tnS+oLi2+WZ
+        aQEgXV5QaBt1NMMLPdUYLwmkmBqu+2bIF4jUJaut/3y/XXXJDwfZDlufZYgaKC4o
+        5KQLGZL2lklUG29GHw67B6NJdHmM6njYa2b60RhYGvu7uKzMMIJ44dGK0c+j8wnC
+        D5Bf1eSisDklyZJGnLt53hHdgTC24xKDfW992Wn9NHJzmFWfe/j68kN7cgwz4Fjz
+        3BX6g2FgXvzL+VrshhbpPJKgobivz7PWCRiAZFKYkNH0SgIukzx8kfUpWE3DOpEa
+        AhO6EO0O9uVejDI5fqEw3RDFSLHoFc4yW0mmYYMcpmLfRxA8LmMfvP6p8j1u2bjw
+        ==
+X-ME-Sender: <xms:8JVvYABtmjmz89n_8bZqwN9g7QVpCROxcRhe_fSokdaZT0Nnn-t51g>
+    <xme:8JVvYCiFpAgwel-c5LdaV26DGsgnRFSxeJTDxXHjp0dK1rK6s7eaAPCh63xl-HDB9
+    aP9Tl5FFLr1hMcnDg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudektddgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudfftddvveekfffgteffffeuveegjeelgefhffejtdehtdfhlefgkeef
+    hfefkeeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:8JVvYDn67uV7od1rXZlxzL1plYYBwn1U3mvdS68-YbwWghNzfOqeQg>
+    <xmx:8JVvYGws__rMbJbzdKLbdoLGeHiIt4qm3oQw5kAVhzg0vpYLKoAChw>
+    <xmx:8JVvYFS2YvgQnpwAhLXLYIOo0xo_tk6iSGVaP5LXEuBbg__VYzlJdw>
+    <xmx:8pVvYGBMihZ7Bk4d8V6f4pvUUsJr3-DP9xfNGRT8Q922NanT-sa7bg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 91F22A0007C; Thu,  8 Apr 2021 19:46:56 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 08 Apr 2021 16:46:23 -0700 (PDT)
+Message-Id: <6ff29d26-543a-4790-abb4-ebaa3f8d0265@www.fastmail.com>
+In-Reply-To: <20210408121441.GG7166@minyard.net>
+References: <20210319061952.145040-1-andrew@aj.id.au>
+ <2db77e16-3f44-4c02-a7ba-a4fac8141ae3@www.fastmail.com>
+ <20210408121441.GG7166@minyard.net>
+Date:   Fri, 09 Apr 2021 09:16:35 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Corey Minyard" <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>, devicetree@vger.kernel.org,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Benjamin Fair" <benjaminfair@google.com>
+Subject: Re: [PATCH v2 00/21] ipmi: Allow raw access to KCS devices
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
-Date: Thu,  8 Apr 2021 15:58:40 -0700
 
-> +struct gdma_msg_hdr {
-> +	u32 hdr_type;
-> +	u32 msg_type;
-> +	u16 msg_version;
-> +	u16 hwc_msg_id;
-> +	u32 msg_size;
-> +} __packed;
-> +
-> +struct gdma_dev_id {
-> +	union {
-> +		struct {
-> +			u16 type;
-> +			u16 instance;
-> +		};
-> +
-> +		u32 as_uint32;
-> +	};
-> +} __packed;
 
-Please don't  use __packed unless absolutely necessary.  It generates suboptimal code (byte at a time
-accesses etc.) and for many of these you don't even need it.
+On Thu, 8 Apr 2021, at 21:44, Corey Minyard wrote:
+> On Thu, Apr 08, 2021 at 10:27:46AM +0930, Andrew Jeffery wrote:
+> > Hi Corey,
+> > 
+> > On Fri, 19 Mar 2021, at 16:49, Andrew Jeffery wrote:
+> > > Hello,
+> > > 
+> > > This series is a bit of a mix of things, but its primary purpose is to
+> > > expose BMC KCS IPMI devices to userspace in a way that enables userspace
+> > > to talk to host firmware using protocols that are not IPMI.
+> > > 
+> > > v1 can be found here:
+> > > 
+> > > https://lore.kernel.org/openbmc/20210219142523.3464540-1-andrew@aj.id.au/
+> > > 
+> > > Changes in v2 include:
+> > > 
+> > > * A rebase onto v5.12-rc2
+> > > * Incorporation of off-list feedback on SerIRQ configuration from
+> > >   Chiawei
+> > > * Further validation on hardware for ASPEED KCS devices 2, 3 and 4
+> > > * Lifting the existing single-open constraint of the IPMI chardev
+> > > * Fixes addressing Rob's feedback on the conversion of the ASPEED KCS
+> > >   binding to dt-schema
+> > > * Fixes addressing Rob's feedback on the new aspeed,lpc-interrupts
+> > >   property definition for the ASPEED KCS binding
+> > > 
+> > > A new chardev device is added whose implementation exposes the Input
+> > > Data Register (IDR), Output Data Register (ODR) and Status Register
+> > > (STR) via read() and write(), and implements poll() for event
+> > > monitoring.
+> > > 
+> > > The existing /dev/ipmi-kcs* chardev interface exposes the KCS devices in
+> > > a way which encoded the IPMI protocol in its behaviour. However, as
+> > > LPC[0] KCS devices give us bi-directional interrupts between the host
+> > > and a BMC with both a data and status byte, they are useful for purposes
+> > > beyond IPMI.
+> > > 
+> > > As a concrete example, libmctp[1] implements a vendor-defined MCTP[2]
+> > > binding using a combination of LPC Firmware cycles for bulk data
+> > > transfer and a KCS device via LPC IO cycles for out-of-band protocol
+> > > control messages[3]. This gives a throughput improvement over the
+> > > standard KCS binding[4] while continuing to exploit the ease of setup of
+> > > the LPC bus for early boot firmware on the host processor.
+> > > 
+> > > The series takes a bit of a winding path to achieve its aim:
+> > > 
+> > > 1. It begins with patches 1-5 put together by Chia-Wei, which I've
+> > > rebased on v5.12-rc2. These fix the ASPEED LPC bindings and other
+> > > non-KCS LPC-related ASPEED device drivers in a way that enables the
+> > > SerIRQ patches at the end of the series. With Joel's review I'm hoping
+> > > these 5 can go through the aspeed tree, and that the rest can go through
+> > > the IPMI tree.
+> > > 
+> > > 2. Next, patches 6-13 fairly heavily refactor the KCS support in the
+> > > IPMI part of the tree, re-architecting things such that it's possible to
+> > > support multiple chardev implementations sitting on top of the ASPEED
+> > > and Nuvoton device drivers. However, the KCS code didn't really have
+> > > great separation of concerns as it stood, so even if we disregard the
+> > > multiple-chardev support I think the cleanups are worthwhile.
+> > > 
+> > > 3. Patch 14 adds some interrupt management capabilities to the KCS
+> > > device drivers in preparation for patch 16, which introduces the new
+> > > "raw" KCS device interface. I'm not stoked about the device name/path,
+> > > so if people are looking to bikeshed something then feel free to lay
+> > > into that.
+> > > 
+> > > 4. The remaining patches switch the ASPEED KCS devicetree binding to
+> > > dt-schema, add a new interrupt property to describe the SerIRQ behaviour
+> > > of the device and finally clean up Serial IRQ support in the ASPEED KCS
+> > > driver.
+> > > 
+> > > Rob: The dt-binding patches still come before the relevant driver
+> > > changes, I tried to keep the two close together in the series, hence the
+> > > bindings changes not being patches 1 and 2.
+> > > 
+> > > I've exercised the series under qemu with the rainier-bmc machine plus
+> > > additional patches for KCS support[5]. I've also substituted this series in
+> > > place of a hacky out-of-tree driver that we've been using for the
+> > > libmctp stack and successfully booted the host processor under our
+> > > internal full-platform simulation tools for a Rainier system.
+> > > 
+> > > Note that this work touches the Nuvoton driver as well as ASPEED's, but
+> > > I don't have the capability to test those changes or the IPMI chardev
+> > > path. Tested-by tags would be much appreciated if you can exercise one
+> > > or both.
+> > > 
+> > > Please review!
+> > 
+> > Unfortunately the cover letter got detached from the rest of the series.
+> > 
+> > Any chance you can take a look at the patches?
+> 
+> There were some minor concerns that were unanswered, and there really
+> was no review by others for many of the patches.
 
-Thank you.
+Right; I was planning to clean up the minor concerns once I'd received 
+some more feedback. I could have done a better job of communicating 
+that :)
+
+> 
+> I would like this patch set, it makes some good cleanups.  But I would
+> like some more review and testing by others, if possible. 
+
+No worries. I'm trying to rope some others in to take a look.
+
+Thanks for the response.
+
+Andrew
