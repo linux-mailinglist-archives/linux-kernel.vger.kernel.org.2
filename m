@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314D7357D49
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BE7357D4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhDHH0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:26:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhDHH0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:26:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B96261057;
-        Thu,  8 Apr 2021 07:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617866771;
-        bh=FkccS7u81T140XGv+zsj6P+7Au5FReyCyBe+7GemLP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w8zLkNgt8/LePucgzTgO+trAK1xmPwAdW7zk1MERcwHvBcYZ/23XdZPlPVakVae+v
-         LVc1UKuyWTuQtbSdzpaGRFR33e3SWWRyzEIou+oqj52XGepkAuNdSt2K8wm+LO/tB4
-         olKy5n6gmyTyJ9b/t6lv2itVLJ/OKl1qT4CEkDyM=
-Date:   Thu, 8 Apr 2021 09:26:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        id S230019AbhDHH11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:27:27 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:27138 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229510AbhDHH1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:27:25 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app2 (Coremail) with SMTP id by_KCgAXEPhEsG5gRSbdAA--.46582S4;
+        Thu, 08 Apr 2021 15:27:03 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/10] staging: rtl8188eu: remove unused macros
-Message-ID: <YG6wEDs2ZVPAOeUZ@kroah.com>
-References: <20210407170531.29356-1-martin@kaiser.cx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407170531.29356-1-martin@kaiser.cx>
+Subject: [PATCH] PCI: tegra: Fix runtime PM imbalance in pex_ep_event_pex_rst_deassert
+Date:   Thu,  8 Apr 2021 15:26:58 +0800
+Message-Id: <20210408072700.15791-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAXEPhEsG5gRSbdAA--.46582S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3JFykZrWrWr4fZrykAFb_yoWDCFXE9r
+        1DWFs7Ar45uFZxtFy2y3WfZr92va13Xw18Ka9YyanxAFyS9rn8trWkWF95A3ZxWw15JF1D
+        trnIyFyxCF1DZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+        AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbE_M3UUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOgAMsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:05:22PM +0200, Martin Kaiser wrote:
-> usb_ops_linux.h contains a couple of macros to make functions usable as
-> urb completion callbacks. Most of them are unused and can be removed.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/rtl8188eu/include/usb_ops_linux.h | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/include/usb_ops_linux.h b/drivers/staging/rtl8188eu/include/usb_ops_linux.h
-> index 4e0e48cb5c8e..1a0b38de5027 100644
-> --- a/drivers/staging/rtl8188eu/include/usb_ops_linux.h
-> +++ b/drivers/staging/rtl8188eu/include/usb_ops_linux.h
-> @@ -23,18 +23,10 @@
->  #define USB_HIGH_SPEED_BULK_SIZE	512
->  #define USB_FULL_SPEED_BULK_SIZE	64
->  
-> -#define _usbctrl_vendorreq_async_callback(urb, regs)	\
-> -	_usbctrl_vendorreq_async_callback(urb)
-> -#define usb_bulkout_zero_complete(purb, regs)		\
-> -	usb_bulkout_zero_complete(purb)
-> -#define usb_write_mem_complete(purb, regs)		\
-> -	usb_write_mem_complete(purb)
->  #define usb_write_port_complete(purb, regs)		\
->  	usb_write_port_complete(purb)
->  #define usb_read_port_complete(purb, regs)		\
->  	usb_read_port_complete(purb)
-> -#define usb_read_interrupt_complete(purb, regs)		\
-> -	usb_read_interrupt_complete(purb)
+pm_runtime_get_sync() will increase the runtime PM counter
+even it returns an error. Thus a pairing decrement is needed
+to prevent refcount leak. Fix this by replacing this API with
+pm_runtime_resume_and_get(), which will not change the runtime
+PM counter on error.
 
-Wow, that's there for a really old kernel version and should not be
-needed anymore at all.  I'll take this, but please remove the other ones
-here, they are not necessary.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/pci/controller/dwc/pcie-tegra194.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 6fa216e52d14..0e94190ca4e8 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -1645,7 +1645,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+ 	if (pcie->ep_state == EP_STATE_ENABLED)
+ 		return;
+ 
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Failed to get runtime sync for PCIe dev: %d\n",
+ 			ret);
+-- 
+2.17.1
 
-greg k-h
