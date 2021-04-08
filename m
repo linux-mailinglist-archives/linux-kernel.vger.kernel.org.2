@@ -2,137 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E146F3582A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4675E35829F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhDHMBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:01:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47462 "EHLO
+        id S231358AbhDHMBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:01:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59075 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231372AbhDHMBg (ORCPT
+        by vger.kernel.org with ESMTP id S229964AbhDHMB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:01:36 -0400
+        Thu, 8 Apr 2021 08:01:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883285;
+        s=mimecast20190719; t=1617883277;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9w9YC3zCV/phM+v6dbwLtZQB2bWMLSUUDF9CJsBj118=;
-        b=SYQQ6b5Ab1oPrYJTG3R7VJEj2KMCrIS76KAJEADW5MVN4rQANjVmXdhErcGbG4z7iEFgwy
-        IdXnoZXf0qnVtMFmPX7uBTjK+PrISvbsFIkXt89lQcdsD2ywGB8u7RiQa7fUPhur6gL8jb
-        FduycXLXb0kAI1NJbqeqIAD5dl97UWs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-ipUMHffwO8qCjSquithB5A-1; Thu, 08 Apr 2021 08:01:20 -0400
-X-MC-Unique: ipUMHffwO8qCjSquithB5A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E741F8710FD;
-        Thu,  8 Apr 2021 12:00:54 +0000 (UTC)
-Received: from [10.36.112.70] (ovpn-112-70.ams2.redhat.com [10.36.112.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4480460853;
-        Thu,  8 Apr 2021 12:00:49 +0000 (UTC)
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
- <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
- <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
- <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3a2d64a7-8425-8daf-17ee-95b9f0c635f9@redhat.com>
-Date:   Thu, 8 Apr 2021 14:00:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=vNug/8lWcscFDRAAJ94dUdldY7ZTZuugHf7cy9Hmh9U=;
+        b=H/qFze13tfRK6BS22oD1bHTNZa2Zu8d42LsEu9uQQOZZcLWQrKAzWgr53TbMDFA9GodEL6
+        0WQpdVVv05jZUhSFg43xOicAMYGwOc8lmtrqI2duy2UKVdkRTHgb4Glx0JHwyMmj7JcXAo
+        1dsFpiGL4mG7UHbSLliShqEEF6CD3Lw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-zhhDH4vsNM60RBzRZS7CJg-1; Thu, 08 Apr 2021 08:01:15 -0400
+X-MC-Unique: zhhDH4vsNM60RBzRZS7CJg-1
+Received: by mail-ej1-f72.google.com with SMTP id o11so735041ejx.23
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:01:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vNug/8lWcscFDRAAJ94dUdldY7ZTZuugHf7cy9Hmh9U=;
+        b=a0jxdE/gbomVxwKl+ACBRnovwncgFrn4Kps1Kby+IHPr9T7HNUoHNopW5c/GpvPetT
+         bCSvv9OAoe1S9xONIfmY6u43qXuZXRVQqP1sB11Q3IrKsqvoF7bqlNV98f4DbIqtAJ8V
+         ehy1Adsg6nmuDmXMW9HNwGwgvGPp66V89K8gYNFHb4SFfvkySEi+5OgC1DSIlaU3NXWy
+         iFsH0yfoaP2+DrQcls+galPU6twPPxrLmuPXpQ/jI2gqMAzGgEFeblHlkCaF9jcK3/yI
+         VU1pkKqXHkK/9AF3tfP1TXabKuPEY97zHi14Ubp/oodvj2+R0ej0UxFDFgtVC2kQT+df
+         JNgg==
+X-Gm-Message-State: AOAM5315ZrrvJ/dTLp3DiYOsZbExQ5E4CKum0nOt2BGWrcHMsdvvlj1V
+        lO71Jb52Oy7hn8spyzKAjalFh/c52vBYpxE6IaKJv/bSPIw6FSeRzXR9bZ9KGOqYQmthlTQN7kB
+        gxOl5sVczo4EnajOmqKpnh+er
+X-Received: by 2002:a17:906:4801:: with SMTP id w1mr9843107ejq.475.1617883273716;
+        Thu, 08 Apr 2021 05:01:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWBV0cx0oQORGYlfHwfHdhgtZ4L23OeOn1kqkC0HGevjPr3VLXckKBOFbYZnZi7smfIP9c/Q==
+X-Received: by 2002:a17:906:4801:: with SMTP id w1mr9843088ejq.475.1617883273512;
+        Thu, 08 Apr 2021 05:01:13 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t12sm8963436ejb.76.2021.04.08.05.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 05:01:12 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 3/4] KVM: x86: kvm_hv_flush_tlb use inputs from XMM
+ registers
+In-Reply-To: <20210407211954.32755-4-sidcha@amazon.de>
+References: <20210407211954.32755-1-sidcha@amazon.de>
+ <20210407211954.32755-4-sidcha@amazon.de>
+Date:   Thu, 08 Apr 2021 14:01:11 +0200
+Message-ID: <87eefl7zp4.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.21 13:44, Arnd Bergmann wrote:
-> On Thu, Apr 8, 2021 at 1:00 PM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> It is a somewhat awkward way to say "prevent this symbol from
->>> being =y if the dependency is =m".
->>
->> What would be the right thing to do in the case here then to achieve the
->> "if DRMA_ASPEED_GFX is enabled, also enable DMA_CMA id possible"?
->>
->> One approach could be to have for DMA_CMA
->>
->> default y if DRMA_ASPEED_GFX
->>
->> but it feels like the wrong way to tackle this.
-> 
-> I'm still not sure what you are trying to achieve. Is the idea only to provide
-> a useful default for DMA_CMA depending on which drivers are enabled?
+Siddharth Chandrasekaran <sidcha@amazon.de> writes:
 
-"Random drivers should not override a user configuration of core knobs
-(e.g., CONFIG_DMA_CMA=n)."
+> Hyper-V supports the use of XMM registers to perform fast hypercalls.
+> This allows guests to take advantage of the improved performance of the
+> fast hypercall interface even though a hypercall may require more than
+> (the current maximum of) two input registers.
+>
+> The XMM fast hypercall interface uses six additional XMM registers (XMM0
+> to XMM5) to allow the guest to pass an input parameter block of up to
+> 112 bytes. Hyper-V can also return data back to the guest in the
+> remaining XMM registers that are not used by the current hypercall.
+>
+> Add framework to read/write to XMM registers in kvm_hv_hypercall() and
+> use the additional hypercall inputs from XMM registers in
+> kvm_hv_flush_tlb() when possible.
+>
+> Cc: Alexander Graf <graf@amazon.com>
+> Co-developed-by: Evgeny Iakovlev <eyakovl@amazon.de>
+> Signed-off-by: Evgeny Iakovlev <eyakovl@amazon.de>
+> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> ---
+>  arch/x86/kvm/hyperv.c | 109 ++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 90 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 8f6babd1ea0d..bf2f86f263f1 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -36,6 +36,7 @@
+>  
+>  #include "trace.h"
+>  #include "irq.h"
+> +#include "fpu.h"
+>  
+>  /* "Hv#1" signature */
+>  #define HYPERV_CPUID_SIGNATURE_EAX 0x31237648
+> @@ -1623,6 +1624,8 @@ static __always_inline unsigned long *sparse_set_to_vcpu_mask(
+>  	return vcpu_bitmap;
+>  }
+>  
+> +#define KVM_HV_HYPERCALL_MAX_XMM_REGISTERS  6
+> +
+>  struct kvm_hv_hcall {
+>  	u64 param;
+>  	u64 ingpa;
+> @@ -1632,10 +1635,14 @@ struct kvm_hv_hcall {
+>  	u16 rep_idx;
+>  	bool fast;
+>  	bool rep;
+> +	sse128_t xmm[KVM_HV_HYPERCALL_MAX_XMM_REGISTERS];
+> +	bool xmm_dirty;
+>  };
+>  
+>  static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
+>  {
+> +	int i, j;
+> +	gpa_t gpa;
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+>  	struct hv_tlb_flush_ex flush_ex;
+> @@ -1649,8 +1656,15 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  	bool all_cpus;
+>  
+>  	if (!ex) {
+> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush, sizeof(flush))))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (hc->fast) {
+> +			flush.address_space = hc->ingpa;
+> +			flush.flags = hc->outgpa;
+> +			flush.processor_mask = sse128_lo(hc->xmm[0]);
+> +		} else {
+> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa,
+> +						    &flush, sizeof(flush))))
+> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		}
+>  
+>  		trace_kvm_hv_flush_tlb(flush.processor_mask,
+>  				       flush.address_space, flush.flags);
+> @@ -1668,9 +1682,16 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		all_cpus = (flush.flags & HV_FLUSH_ALL_PROCESSORS) ||
+>  			flush.processor_mask == 0;
+>  	} else {
+> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
+> -					    sizeof(flush_ex))))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (hc->fast) {
+> +			flush_ex.address_space = hc->ingpa;
+> +			flush_ex.flags = hc->outgpa;
+> +			memcpy(&flush_ex.hv_vp_set,
+> +			       &hc->xmm[0], sizeof(hc->xmm[0]));
+> +		} else {
+> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
+> +						    sizeof(flush_ex))))
+> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		}
+>  
+>  		trace_kvm_hv_flush_tlb_ex(flush_ex.hv_vp_set.valid_bank_mask,
+>  					  flush_ex.hv_vp_set.format,
+> @@ -1681,20 +1702,29 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		all_cpus = flush_ex.hv_vp_set.format !=
+>  			HV_GENERIC_SET_SPARSE_4K;
+>  
+> -		sparse_banks_len =
+> -			bitmap_weight((unsigned long *)&valid_bank_mask, 64) *
+> -			sizeof(sparse_banks[0]);
+> +		sparse_banks_len = bitmap_weight((unsigned long *)&valid_bank_mask, 64);
+>  
+>  		if (!sparse_banks_len && !all_cpus)
+>  			goto ret_success;
+>  
+> -		if (!all_cpus &&
+> -		    kvm_read_guest(kvm,
+> -				   hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+> -							hv_vp_set.bank_contents),
+> -				   sparse_banks,
+> -				   sparse_banks_len))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (!all_cpus) {
+> +			if (hc->fast) {
+> +				if (sparse_banks_len > KVM_HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
+> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +				for (i = 0, j = 1; i < sparse_banks_len; i += 2, j++) {
+> +					sparse_banks[i + 0] = sse128_lo(hc->xmm[j]);
+> +					sparse_banks[i + 1] = sse128_hi(hc->xmm[j]);
+> +				}
+> +			} else {
+> +				gpa = hc->ingpa;
+> +				gpa += offsetof(struct hv_tlb_flush_ex,
+> +						hv_vp_set.bank_contents);
+> +				if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
+> +							    sparse_banks_len *
+> +							    sizeof(sparse_banks[0]))))
+> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +			}
+> +		}
+>  	}
+>  
+>  	cpumask_clear(&hv_vcpu->tlb_flush);
+> @@ -1890,6 +1920,41 @@ static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *h
+>  	return HV_STATUS_SUCCESS;
+>  }
+>  
+> +static bool is_xmm_fast_hypercall(struct kvm_hv_hcall *hc)
+> +{
+> +	switch (hc->code) {
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static inline void kvm_hv_hypercall_read_xmm(struct kvm_hv_hcall *hc)
+> +{
+> +	int reg;
+> +
+> +	kvm_fpu_get();
+> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
+> +		_kvm_read_sse_reg(reg, &hc->xmm[reg]);
+> +	kvm_fpu_put();
+> +	hc->xmm_dirty = false;
+> +}
+> +
+> +static inline void kvm_hv_hypercall_write_xmm(struct kvm_hv_hcall *hc)
+> +{
+> +	int reg;
+> +
+> +	kvm_fpu_get();
+> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
+> +		_kvm_write_sse_reg(reg, &hc->xmm[reg]);
+> +	kvm_fpu_put();
+> +	hc->xmm_dirty = false;
+> +}
+> +
+>  int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_hv_hcall hc;
+> @@ -1926,6 +1991,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+>  	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
+>  
+> +	if (is_xmm_fast_hypercall(&hc))
+> +		kvm_hv_hypercall_read_xmm(&hc);
 
-Let's assume I'm a distribution and want to set CONFIG_CMA=n or want to 
-set CONFIG_DMA_CMA=n with CONFIG_CMA=y; there is no way to do that with 
-e.g., DRMA_ASPEED_GFX=y because it will always override my (user!) 
-setting -- even though it doesn't really always need it. Using "select" 
-is the problem here.
+is_xmm_fast_hypercall() check should probably be complemented with " &&
+hc.fast" as there's no point in reading this regs when the hypercall is
+not 'fast'.
 
-> 
-> This is something you could do using a hidden helper symbol like
-> 
-> config DRMA_ASPEED_GFX
->         bool "Aspeed display driver"
->         select DRM_WANT_CMA
-> 
-> config DRM_WANT_CMA
->         bool
->         help
->            Select this from any driver that benefits from CMA being enabled
-> 
-> config DMA_CMA
->         bool "Use CMA helpers for DRM"
->         default DRM_WANT_CMA
-> 
->           Arnd
-> 
+Also, we can probably defer kvm_hv_hypercall_read_xmm() until we know
+how many regs we actually need to not read them all (we will always
+need xmm[0] I guess so we can as well read it here).
 
-That's precisely what I had first, with an additional "WANT_CMA" --  but 
-looking at the number of such existing options (I was able to spot 1 !) 
-I wondered if there is a better approach to achieve the same; "imply" 
-sounded like a good candidate.
+> +
+>  	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
+>  			       hc.ingpa, hc.outgpa);
+>  
+> @@ -1961,28 +2029,28 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  				kvm_hv_hypercall_complete_userspace;
+>  		return 0;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
+> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
+> -		if (unlikely(hc.fast || hc.rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> -		if (unlikely(hc.fast || hc.rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> @@ -2035,6 +2103,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  		break;
+>  	}
+>  
+> +	if (hc.xmm_dirty)
+> +		kvm_hv_hypercall_write_xmm(&hc);
+> +
+>  	return kvm_hv_hypercall_complete(vcpu, ret);
+>  }
 
 -- 
-Thanks,
-
-David / dhildenb
+Vitaly
 
