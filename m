@@ -2,150 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E1E358389
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE5A358392
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhDHMpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhDHMp1 (ORCPT
+        id S231516AbhDHMq1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 08:46:27 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:60317 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhDHMq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:45:27 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C779C061764
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 05:45:16 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id e14so2773613ejz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:45:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
-        b=JXlbvdv6BKxL2QLt+A6EZMYCjKur7zKVGHA+SPjjhttU3LjU5J8CTsvMPL70CwGYsq
-         CUXz1jkKLkBNcttlxCmAirFDD+kjBSkQXhxTFfLF/zDE+suTqi1E02kHIf/SGivtkXXC
-         r7MEDlKMlo41vpb3rOrLkq/HnnmBY745AuXsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
-        b=iCKQH5gp5wWn0vOi33zaMQZ79CBIQs2i889MiiBqIxMGxIzAJ/MQV1frU5er1r/8pt
-         AknqQ8/RXJ3w3GrOIGdQYPB6GiDc2RwrXUxwNDpKqSWwdns/FarsDwrwtSgtNrVgyW0/
-         b+3HLj+xkxrTgy4b6rj/91xT+TC4qh/pN/aITwKX49Gp//5mTzyFuBlmZ5MRLWYdKNRq
-         fWaE4ULI3mipP0uTyOXzR5tE1pQzJqIvntCbnQr1z5H/FuWqUeqmjDiEz3votnZmG38G
-         GBggLi2/Gr2G2jGPFHBqyZ+OdDB4cGUxYAPh/wXeI7sMwgfwt4C80flnozMQ4SKcIbGi
-         qTfw==
-X-Gm-Message-State: AOAM531rGaR0t6oQACierpjjkulYoTDBBh2u82CxVKhGsHfFmrOVzivl
-        YYOialwrUwrHy1c9jMF9ehGJnA==
-X-Google-Smtp-Source: ABdhPJwq7QZNDA3D6CGhNZXcz6mj8YzK/fNHfbq7NkBvOdUqzkgcZZF3Ehka2wUefbZcZbtsp6oq8w==
-X-Received: by 2002:a17:906:1fd7:: with SMTP id e23mr400958ejt.528.1617885914623;
-        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id r4sm14262813ejd.125.2021.04.08.05.45.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <03be4ed9-8e8d-e2c2-611d-ac09c61d84f9@rasmusvillemoes.dk>
-Date:   Thu, 8 Apr 2021 14:45:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 8 Apr 2021 08:46:26 -0400
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 589EB100013;
+        Thu,  8 Apr 2021 12:46:12 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 14:46:10 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     <joern@lazybastard.org>, <richard@nod.at>, <vigneshr@ti.com>,
+        <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <yi.zhang@huawei.com>
+Subject: Re: [PATCH 3/3] mtd: phram: Fix error return code in phram_setup()
+Message-ID: <20210408144610.0c0686ae@xps13>
+In-Reply-To: <20210408111514.1011020-4-yukuai3@huawei.com>
+References: <20210408111514.1011020-1-yukuai3@huawei.com>
+        <20210408111514.1011020-4-yukuai3@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/2021 15.31, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
+Hi Yu,
 
-Yay.
+Yu Kuai <yukuai3@huawei.com> wrote on Thu, 8 Apr 2021 19:15:14 +0800:
 
-Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/mtd/devices/phram.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+> index 5b04ae6c3057..6ed6c51fac69 100644
+> --- a/drivers/mtd/devices/phram.c
+> +++ b/drivers/mtd/devices/phram.c
+> @@ -270,6 +270,7 @@ static int phram_setup(const char *val)
+>  	if (len == 0 || erasesize == 0 || erasesize > len
+>  	    || erasesize > UINT_MAX || rem) {
+>  		parse_err("illegal erasesize or len\n");
+> +		ret = -EINVAL;
+>  		goto error;
+>  	}
+>  
 
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
+It looks like you're doing the opposite of what you say.
 
-I think it would be good to have some place to note that "This #include
-is just for backwards compatibility, it will go away RealSoonNow, so if
-you rely on something from linux/panic.h, include that explicitly
-yourself TYVM. And if you're looking for a janitorial task, write a
-script to check that every file that uses some identifier defined in
-panic.h actually includes that file. When all offenders are found and
-dealt with, remove the #include and this note.".
-
-> +
-> +struct taint_flag {
-> +	char c_true;	/* character printed when tainted */
-> +	char c_false;	/* character printed when not tainted */
-> +	bool module;	/* also show as a per-module taint flag */
-> +};
-> +
-> +extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
-
-While you're doing this, nothing outside of kernel/panic.c cares about
-the definition of struct taint_flag or use the taint_flags array, so
-could you make the definition private to that file and make the array
-static? (Another patch, of course.)
-
-> +enum lockdep_ok {
-> +	LOCKDEP_STILL_OK,
-> +	LOCKDEP_NOW_UNRELIABLE,
-> +};
-> +
-> +extern const char *print_tainted(void);
-> +extern void add_taint(unsigned flag, enum lockdep_ok);
-> +extern int test_taint(unsigned flag);
-> +extern unsigned long get_taint(void);
-
-I know you're just moving code, but it would be a nice opportunity to
-drop the redundant externs.
-
-Rasmus
+Thanks,
+Miquèl
