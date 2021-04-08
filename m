@@ -2,69 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E97358855
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31624358856
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhDHP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhDHP0Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:26:16 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E28C061761;
-        Thu,  8 Apr 2021 08:26:03 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id a6so2568944wrw.8;
-        Thu, 08 Apr 2021 08:26:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ro0Cl2ZMCuXrJ9b0fwLjjBLrLgPpPx9T1CglyBY8Flg=;
-        b=P85wMwKSOkDlLreR0HNgYwJ1GmjO4jq9t5vfV7E89O+QZXOoYFAkX6SjMlB+uxsw+p
-         BoeunuwoUC81jaKLFHWHpr9SdclpMnmlDPI/LODZugl2ZakbfcBqoWogM0gIB4B5OY//
-         rYLHvt62VJheycqLfTRe+eZoL93Zl418mvZDWWrYt9R4q7VUzu1HSyR5KdK1YoSNNVOX
-         PisULAy8S8r3a3UdVT5MB82WlwWeSRb9/atdSk+V4fAYqOhCnGLbarrRh/W3lORYstW/
-         QjPJJZm26UY5xmh2S2rQlFnmrOjI4vbIGhZYMiK5rA5LqWLci+uCfcxEJufHEEO8mIzq
-         oTQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ro0Cl2ZMCuXrJ9b0fwLjjBLrLgPpPx9T1CglyBY8Flg=;
-        b=Zq8WJZdfsv6S0FAjPJf5Ylmv1feYHxn75aH+MGkX0QPej0Q8QDxAvSIVKib4UfKZ8j
-         Lzsam2fYufXvZv8/6jRZBJva/zJx8M/YM7sTG64BqnORvxxp0y5bAUPiCAK4htqs6HYA
-         q7XWn5s8KffQqvlhL/eg2Nf1gyZdKn8raJex6k3eWgTlPajupcT3jy1vrq3cYQZ0Gmfn
-         RaCuA1T+ye0Wm+IWQ4gdUtOzOEIFQosrQcmeUS4mf0CgqeZ9KqxgpwhRquUTH0cAFcgy
-         S57PwSjpGyyHoZL4kHetEE5inclPP6TDNVeuiLIemUI/oNlRWsWaYEHt9tTz9okLbkpZ
-         l2/Q==
-X-Gm-Message-State: AOAM5327z1tk5c9/lPtpyAA2yivPB5TWc7fLcxuqnCjPChKeL/ftvZl6
-        j1l6gS2X5kvnNXgoNDpcWnYWVmHvUVo=
-X-Google-Smtp-Source: ABdhPJzQTZpDMTEJAtpbeLvim8ocsgXHIy0vNqV+oCBbYFFS74wHPGylxgWdlTuc2AJXqKjZBhxbvQ==
-X-Received: by 2002:a5d:564a:: with SMTP id j10mr12047785wrw.120.1617895562259;
-        Thu, 08 Apr 2021 08:26:02 -0700 (PDT)
-Received: from [192.168.1.101] ([37.165.75.160])
-        by smtp.gmail.com with ESMTPSA id 91sm51459253wrl.20.2021.04.08.08.26.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 08:26:01 -0700 (PDT)
-Subject: Re: [PATCH] net: sched: sch_teql: fix null-pointer dereference
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0c385039-3780-b5d0-ba36-c1c51da9bc08@gmail.com>
-Date:   Thu, 8 Apr 2021 17:26:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232065AbhDHP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:26:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:51488 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231791AbhDHP0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:26:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1A68D6E;
+        Thu,  8 Apr 2021 08:26:27 -0700 (PDT)
+Received: from [10.37.8.4] (unknown [10.37.8.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE7E93F694;
+        Thu,  8 Apr 2021 08:26:26 -0700 (PDT)
+Subject: Re: [PATCH] arm64: mte: Move MTE TCF0 check in entry-common
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20210408143723.13024-1-vincenzo.frascino@arm.com>
+ <20210408151837.GB37165@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <cff8d16e-c1a9-3f10-7c7f-06fb569741ce@arm.com>
+Date:   Thu, 8 Apr 2021 16:26:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210408151431.9512-1-ptikhomirov@virtuozzo.com>
+In-Reply-To: <20210408151837.GB37165@C02TD0UTHF1T.local>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,36 +41,214 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/8/21 5:14 PM, Pavel Tikhomirov wrote:
-> Reproduce:
+On 4/8/21 4:18 PM, Mark Rutland wrote:
+> Hi Vincenzo,
 > 
->   modprobe sch_teql
->   tc qdisc add dev teql0 root teql0
+> On Thu, Apr 08, 2021 at 03:37:23PM +0100, Vincenzo Frascino wrote:
+>> The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+>> race with another CPU doing a set_tsk_thread_flag() and the flag can be
+>> lost in the process.
+>>
+>> Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+>> exit_to_user_mode() to address the problem.
 > 
-> This leads to (for instance in Centos 7 VM) OOPS:
+> Beware that these are called at critical points of the entry sequence,
+> so we need to take care that nothing is instrumented (e.g. we can only
+> safely use noinstr functions here).
 > 
->
+
+Sure, I will add noinstr in the next version of the patch.
+
+>> Note: Moving the check in entry-common allows to use set_thread_flag()
+>> which is safe.
+>>
+>> Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous
+>> tag check faults")
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Reported-by: Will Deacon <will@kernel.org>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  arch/arm64/include/asm/mte.h     |  8 ++++++++
+>>  arch/arm64/kernel/entry-common.c |  6 ++++++
+>>  arch/arm64/kernel/entry.S        | 30 ------------------------------
+>>  arch/arm64/kernel/mte.c          | 25 +++++++++++++++++++++++--
+>>  4 files changed, 37 insertions(+), 32 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+>> index 9b557a457f24..188f778c6f7b 100644
+>> --- a/arch/arm64/include/asm/mte.h
+>> +++ b/arch/arm64/include/asm/mte.h
+>> @@ -31,6 +31,8 @@ void mte_invalidate_tags(int type, pgoff_t offset);
+>>  void mte_invalidate_tags_area(int type);
+>>  void *mte_allocate_tag_storage(void);
+>>  void mte_free_tag_storage(char *storage);
+>> +void check_mte_async_tcf0(void);
+>> +void clear_mte_async_tcf0(void);
+>>  
+>>  #ifdef CONFIG_ARM64_MTE
+>>  
+>> @@ -83,6 +85,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+>>  {
+>>  	return -EIO;
+>>  }
+>> +void check_mte_async_tcf0(void)
+>> +{
+>> +}
+>> +void clear_mte_async_tcf0(void)
+>> +{
+>> +}
 > 
-> Null pointer dereference happens on master->slaves dereference in
-> teql_destroy() as master is null-pointer.
+> Were these meant to be static inline?
 > 
-> When qdisc_create() calls teql_qdisc_init() it imediately fails after
-> check "if (m->dev == dev)" because both devices are teql0, and it does
-> not set qdisc_priv(sch)->m leaving it zero on error path, then
-> qdisc_create() imediately calls teql_destroy() which does not expect
-> zero master pointer and we get OOPS.
+
+Agree, it definitely needs static inline here.
+
+>>  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>>  {
+>> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+>> index 9d3588450473..837d3624a1d5 100644
+>> --- a/arch/arm64/kernel/entry-common.c
+>> +++ b/arch/arm64/kernel/entry-common.c
+>> @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>>  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+>>  	user_exit_irqoff();
+>>  	trace_hardirqs_off_finish();
+>> +
+>> +	/* Check for asynchronous tag check faults in user space */
+>> +	check_mte_async_tcf0();
+>>  }
+>>  
+>>  asmlinkage void noinstr exit_to_user_mode(void)
+>>  {
+>> +	/* Ignore asynchronous tag check faults in the uaccess routines */
+>> +	clear_mte_async_tcf0();
+>> +
+>>  	trace_hardirqs_on_prepare();
+>>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+>>  	user_enter_irqoff();
+>> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+>> index a31a0a713c85..fafd74ae5021 100644
+>> --- a/arch/arm64/kernel/entry.S
+>> +++ b/arch/arm64/kernel/entry.S
+>> @@ -147,32 +147,6 @@ alternative_cb_end
+>>  .L__asm_ssbd_skip\@:
+>>  	.endm
+>>  
+>> -	/* Check for MTE asynchronous tag check faults */
+>> -	.macro check_mte_async_tcf, flgs, tmp
+>> -#ifdef CONFIG_ARM64_MTE
+>> -alternative_if_not ARM64_MTE
+>> -	b	1f
+>> -alternative_else_nop_endif
+>> -	mrs_s	\tmp, SYS_TFSRE0_EL1
+>> -	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
+>> -	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
+>> -	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
+>> -	str	\flgs, [tsk, #TSK_TI_FLAGS]
+>> -	msr_s	SYS_TFSRE0_EL1, xzr
+>> -1:
+>> -#endif
+>> -	.endm
+>> -
+>> -	/* Clear the MTE asynchronous tag check faults */
+>> -	.macro clear_mte_async_tcf
+>> -#ifdef CONFIG_ARM64_MTE
+>> -alternative_if ARM64_MTE
+>> -	dsb	ish
+>> -	msr_s	SYS_TFSRE0_EL1, xzr
+>> -alternative_else_nop_endif
+>> -#endif
+>> -	.endm
+>> -
+>>  	.macro mte_set_gcr, tmp, tmp2
+>>  #ifdef CONFIG_ARM64_MTE
+>>  	/*
+>> @@ -243,8 +217,6 @@ alternative_else_nop_endif
+>>  	ldr	x19, [tsk, #TSK_TI_FLAGS]
+>>  	disable_step_tsk x19, x20
+>>  
+>> -	/* Check for asynchronous tag check faults in user space */
+>> -	check_mte_async_tcf x19, x22
+>>  	apply_ssbd 1, x22, x23
+>>  
+>>  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+>> @@ -775,8 +747,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
+>>  	cbnz	x2, work_pending
+>>  finish_ret_to_user:
+>>  	user_enter_irqoff
+>> -	/* Ignore asynchronous tag check faults in the uaccess routines */
+>> -	clear_mte_async_tcf
+>>  	enable_step_tsk x19, x2
+>>  #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+>>  	bl	stackleak_erase
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index b3c70a612c7a..e759b0eca47e 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -166,14 +166,35 @@ static void set_gcr_el1_excl(u64 excl)
+>>  	 */
+>>  }
+>>  
+>> +void check_mte_async_tcf0(void)
 > 
-> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-> ---
+> As above, this'll need to be noinstr. I also reckon we should put this
+> in the header so that it can be inlined.
+> 
 
-This makes sense, thanks !
+Yes, I agree.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+>> +{
+>> +	/*
+>> +	 * dsb(ish) is not required before the register read
+>> +	 * because the TFSRE0_EL1 is automatically synchronized
+>> +	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
+>> +	 * is set.
+>> +	 */
+>> +	u64 tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
+> 
+> Shouldn't we have an MTE feature check first?
+> 
 
-I would think bug origin is 
+Indeed, I will add it in the next version.
 
-Fixes: 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
+>> +
+>> +	if (tcf0 & SYS_TFSR_EL1_TF0)
+>> +		set_thread_flag(TIF_MTE_ASYNC_FAULT);
+>> +
+>> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+>> +}
+>> +
+>> +void clear_mte_async_tcf0(void)
+>> +{
+>> +	dsb(ish);
+>> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+>> +}
+> 
+> Likewise here on all counts.
+> 
 
-Can you confirm you have this backported to 3.10.0-1062.7.1.el7.x86_64 ?
+I will add noinstr and the check in the next version.
 
+> Thanks,
+> Mark.
+> 
+>>  void flush_mte_state(void)
+>>  {
+>>  	if (!system_supports_mte())
+>>  		return;
+>>  
+>>  	/* clear any pending asynchronous tag fault */
+>> -	dsb(ish);
+>> -	write_sysreg_s(0, SYS_TFSRE0_EL1);
+>> +	clear_mte_async_tcf0();
+>>  	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
+>>  	/* disable tag checking */
+>>  	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+>> -- 
+>> 2.30.2
+>>
 
+-- 
+Regards,
+Vincenzo
