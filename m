@@ -2,152 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD4357BFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16B9357C0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhDHFwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:52:08 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:4398 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhDHFwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:52:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617861116; x=1649397116;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Oqy45qo/ydE60hzOQCjIJVyJy4Pme17GNiEuhCs7NWo=;
-  b=Ipww7TWzvhv71Ec6q6CaAUvcdbeA5FCcW5ujVWRSAoPrI+42woFFYSN9
-   OsC5uR/G1PwKARm2qPYokjXHkozcM00c6/hTKqcUg960ByMCFRjBfhyIC
-   AFOiVqJF0F+sUWY0rbMAytK9zNBy9YLKXV1LT69Np0sGc0BI8K4K6dD/s
-   dus0VpRfKn8ggl9VopEnOo7diVK3DAehbkLQeluEzpIoXd1PbA+DHAAnI
-   QUTq2Clll/JSdc0OEq+dREiP3hBhYv3Im69tsQMWaE3wrfT5g4FqHJ1eg
-   ZsgDN6xA6J6uZQf2obvpSdBLUe6MnRP2A7Tlmv1pXaSF5BBb+QgEggRCd
-   w==;
-IronPort-SDR: UHlVnh5JSmiJ0zGc/poEFKnIw9striAt6Kula3+DYP0iewoYOG0kCvkQsTAMab4LoQAT5Nudqu
- 6JWKpI0NzvLwLroUJnM7BS2Wr4v1udzgK6iYpXsURFoTUk5rNvdrTR78kLO7E8JjVc5vGYgxmX
- Xx3e7ETyU9f9iaebcgUJ/Eu0Gtw+BIi1QfHssHDyDG+F5ZkmscHnfNcZdtznFE46emfmAErViC
- HI5ERJ/AGNqyE1fZouDx2oapA0/fOOt1UXpkbkBl/3+4AUKPKDoYcWzIGKGzIALG+8x/d8QNuh
- CFo=
-X-IronPort-AV: E=Sophos;i="5.82,205,1613458800"; 
-   d="scan'208";a="122227415"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Apr 2021 22:51:56 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 7 Apr 2021 22:51:56 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Wed, 7 Apr 2021 22:51:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WVkZkmFlgNArm46nxOIzMb3P/kUZKmvGVNheajk0QmCS1Y+0qIXL8QRLWmnANKm1R4MI4SnnEbA7/ExUtTVin+uPFLO0wCnYG9iu6gF78VQew/tQn7mvoQbsYc9AhN6TZfuDGec450JvwRDVpGkhT6QcsSRVtgo7oc39nJEd6VpDG7a6dDkuf8+Mn5g30l+sq+5yYZaJhb5z3HVD4gsOSUdc3Mo1hmG4qGPFGnMqraiCOzPYeQPzOxQPv3k/65EhqMadlyrG2dPj/O6FYlvNwLmfM4wJ1LE1Hg8o7zji2wfxMHP6MUSwTon+iHlQiaoTS8NYRtBQS94aX8xMtkfMNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oqy45qo/ydE60hzOQCjIJVyJy4Pme17GNiEuhCs7NWo=;
- b=k7PBVIb1B+u6xsiXX0Osw/r/TMps3hXPHlbdkAtYC98mepBHnf7+G7zT+7A2Ny0rYELKGmZ/lMhNQvnTy4UMMuwdkzb8DIuUbJFFh5/lDHb7tHkoBPs10GjNj0Hha6DS5wdLvWEuWLw7m1uCqFMuAWUj2EoN/15Lz9yhC43KQboLdiqRS9zXjNNVO3KXvnLd4cN/Eig8Pa8A9si2YUtmPECXozO4nixYd8R2Ny5FNGANh/89S+u4buYg/za9V1la8DeLFjaFBAhpkW5wEHStVAmWw0KVcTesTwhEKkD9QpevWdmLvmDh32Ut8kaBAGwQe62Rg+NCipc4OZik87Gdwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oqy45qo/ydE60hzOQCjIJVyJy4Pme17GNiEuhCs7NWo=;
- b=aQUt+dXZlBnHwvrFDW63+pee/5xDuUiIzlmsntPcJ7P3OoCNwcd6wbNEXv+nadnQ5Jzcft1B9Gym/sd3+0uXryV+BruNL3lAIGuUXhATGGwy/Ls7DDikuXM9K4KdKxeIjCc+mDi25Q6Xgw5fYUBGcsqMjHxMnnJ/oRyL28GAyng=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB3296.namprd11.prod.outlook.com (2603:10b6:805:c3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Thu, 8 Apr
- 2021 05:51:54 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::49e5:8be7:95d:b6a9]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::49e5:8be7:95d:b6a9%4]) with mapi id 15.20.3999.034; Thu, 8 Apr 2021
- 05:51:54 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-Thread-Topic: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-Thread-Index: AQHXLDtHYGElZwFMaEKBlG4Kv5ieqw==
-Date:   Thu, 8 Apr 2021 05:51:54 +0000
-Message-ID: <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
-References: <20210303201819.2752-1-michael@walle.cc>
-In-Reply-To: <20210303201819.2752-1-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 194c192b-6c29-4ca0-5086-08d8fa526a1e
-x-ms-traffictypediagnostic: SN6PR11MB3296:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB3296139E04C1B6E9F58A9266F0749@SN6PR11MB3296.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vLmPKrL4wSKKn78rEMPM9mHVeO+otcY64y2Ag/OBXZnUiA0jwvRi7V9WJgc1l/WwZdLMpEA2OZiXazyOFqV3TO7qAuxSF0SF3lVz+zgcvDfsSZCMNmxwro5ibImXjOObcL5YckXTVg8nx0VV781ZfEm10IWwxGkmbNBFjObiUAPZ//0xn2QhbCkr8Si4XN7aSgUJyIHQVbaylBteBzw+pJ5s+rOwzTrNogn4epf8EiaZIFjUhHFGt5cGHyXqXgIyEfHcgZ9PZ6DJ8+U4szVz8dpLlCkUUrNcbjzBw1L9LFeb2gwV7mVyrRUDJSbFIQaIpYAbvpVUB3RPTtDdF+26k0y9858KShFdf1CKZU6vMj5P1BhlqCd2rKfWNxd1O+VNg5awZkJzMYggNNBulOD7nL/puzYTm2FUJePpIr/vXVG2pYfU/nesTyAo/8SoFLEiDIppVVgvaXDkQ5KKEoFQBnB5Yj5Y5MIczZE0NDipSgWpT2cvYPOtZJa35oFuNVyOg6F2XSyAOEtWDw48kmXKhlRKw69Gg1EpTeAo2DJlXVCjTPGU5F8KtOLw1Dtp9Mq6Hh/a7USHfUaEd6n5VCpDhNCDt2meM2cHO4rAHZ7mAtp+HrdjPmNrL0toiqEKLrl8OgP6MO6PK56z61/4p+RqZUGo4nFvsF+C5hkyKuMGdgV/vIc5fIkg4KNaHdRMJpftsj06LLgMkM1C+xmBJ8D6IDTtCK527U3hWcZ3468ymXw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(366004)(136003)(39860400002)(86362001)(31696002)(478600001)(186003)(6486002)(38100700001)(2616005)(26005)(110136005)(4326008)(8936002)(316002)(6506007)(54906003)(8676002)(6512007)(64756008)(66946007)(66446008)(558084003)(2906002)(91956017)(36756003)(31686004)(66556008)(66476007)(5660300002)(76116006)(71200400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?SVhTQlViaTFLSlRkdlJrNEtiTm5Zd0pBRkNib0hvUFBuNlZsbWNCcUNuZFBH?=
- =?utf-8?B?Q0piMWRuTEdFaWh3b2tWQ2UwUGFTS1JjSU1QZjBnRFJEZG9rYlJnR3FiSndW?=
- =?utf-8?B?VkpLaGRsbEd6S3Q1dGhiM3hvU1JuTWErZjQzY2k3UUZPcUJ2aDk4YnpTd2xH?=
- =?utf-8?B?WHNIdjQrRjZ1NDhxdnhHVUJRTThheUFFS1BDekQrRVVHK21md21DUThDdmRZ?=
- =?utf-8?B?ZmdwQmk3TnhOT05XM0lGY0xOOGFKaUNZbk53eCtjRUVNa1BTc2MxLy8wU1hT?=
- =?utf-8?B?VEhHRXVvT1BEcjc2SFh3TXhwV1d5c0NFdCtGelJHekFiTFdzWFBzWW5iKzY4?=
- =?utf-8?B?dWgxZ29raEJjUkFlWTlDWFFWRHc1cDVEdU1VeFczOGFwdTE5MitLYUZhOVBw?=
- =?utf-8?B?RWtFZEhXMEZiWEppNloxeUdpU2dxaFpOMW16NjJ3R1Ztd1lzVHNsTXF4cU1S?=
- =?utf-8?B?L1dkb20xWDBpbVlCczh6N05DS1VDOHBLUjNhNVBYaXdwemxtVU5OYVUrV1FT?=
- =?utf-8?B?NEtKR0FxeDVTR21lSmdHTElwMGVCVFJXa0ZPempodE1tcUt6dlhFRmJwSXdH?=
- =?utf-8?B?Wkh2eU5jM0RxRWlZakEvTE05QmFLVVlxODBZNmpybzE5dGtYRHRlSk1Jc0lZ?=
- =?utf-8?B?SzA5eEI2ZVR3dXZleXRZbG94NXZMQ2VlQ2hlVDg1cko1QldZS1ZiUk9RUnBy?=
- =?utf-8?B?WWkvOGxLUkVwY1BRUGE4ODlhaGpiRkh3NVlKVDNKbzAxSEttTUhvNnp2aWtI?=
- =?utf-8?B?Ykd6Q3grcjVTaFp2cGdwbXhIYm5VaGYzTWt0LzRnZlJGVG91aXNRYnMwZVJU?=
- =?utf-8?B?anFzRUNJOWJJeTRWdUN3MnJ5Um1uVmwvUjlpc2Z3ZURSQTNHbVlDRGdPTWdk?=
- =?utf-8?B?Y2dkOG5YR2h5cjV3M3ErRzBMSmhLQ2U5YVdnNnV6YTllZ3MyT1FXN1lEdGQ0?=
- =?utf-8?B?eVhkVDJXODFzY1REcFd1Q0FsQjN4alNhTWpab1FDRVF0WEl5SmtoVXlwTkFl?=
- =?utf-8?B?VUJ4M0U5Umo0N3o1Rkh2bnJwUk1JTWF0R1hyblUzOXdaWnhFSTE5dkdXZmJM?=
- =?utf-8?B?d1R5dHhnM3FKMTdnaHdnQmtqS2I5NjlPajU4c0dYbjZhbmI0cXVUVHpXZnl2?=
- =?utf-8?B?ZS83OFppWjFMODY5SzVIZ1BLeW9JUmREbDFBTW9YYktsMkxDOFJXd2Jza3Ra?=
- =?utf-8?B?L2MxaEFNRU54OFk1WmRueVRxMGxHQy9mdjd5WGp4QVZUTmYzVHpqNWo1cTN5?=
- =?utf-8?B?bzB3MkIyUkE3OTdlNWZCN2o5RFNXTFBmbVNNUjBqWE1BV1RHcDVzdm15M3ox?=
- =?utf-8?B?aGNRUUQyTUtuZStkSzN1clVZelN6QnpVOTh4NzJCRDRBaS80Y0JMME9udE5x?=
- =?utf-8?B?M29BSDQ2ci9sUWxlVzRXcFY2aVJET3hZVDRrQjdhUlZmQ3Z2MDFZb2tnUEph?=
- =?utf-8?B?RkNpMU5kQzVoSjlRYlA0OHRuQ25LR1B2TXRzbzg2M3pjRkE0REpDTEdXSWdK?=
- =?utf-8?B?dHZzdjdQaDZnR3ViU2F0bEJwZVg4L29MQkFjbkFKUHZNR1ZkNjlhWXIwVDlG?=
- =?utf-8?B?ZUhBR1d4R2dWNnJjQlhCSFlCb29ubE5hNG1wK25RRTh4L0tuMmtLSUtOR0hq?=
- =?utf-8?B?Y2I5d3N2QVBUUzhaNkxuZ05QZkxSbWdpTlVSREQ2dktzeFludnlJdmR6MUQr?=
- =?utf-8?B?bmkzdjJwL2JBNTBCaE56ZEFTbm83My94Q2Y3L3B4ZFAzTi9NVjhMVHJ4Z2ds?=
- =?utf-8?Q?BWlr1aXndEa/DFxLQE=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1B6339788A9BF54F8EEB32CEDE79062E@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S229749AbhDHF6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:58:12 -0400
+Received: from m12-14.163.com ([220.181.12.14]:48245 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhDHF6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 01:58:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=D0/8i
+        vkIdl9CSs7eo0BPYXmouHeJyBCfeSBdzmU3usM=; b=IYvLCVnUTf7e+Sjt2ooPq
+        /oZW/iGQ/w/HTcQ1z9CwWhY78HUJX/fFH2DUhbWR36vpxqHF7WithIlfHqWaSl6O
+        JnGMF+xHgy+6CJceHCsGsvlXcmShe65tDymC8TwPGhIOclsURo4C+oGANdxoeI9A
+        rkvfFdK99Fu2IPluVtsrVE=
+Received: from carlis (unknown [119.137.53.45])
+        by smtp10 (Coremail) with SMTP id DsCowACXr08km25g2l11CQ--.8298S2;
+        Thu, 08 Apr 2021 13:56:53 +0800 (CST)
+Date:   Thu, 8 Apr 2021 05:56:52 +0000
+From:   Carlis <llyz108@163.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Huang Rui <ray.huang@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Xuezhi Zhang <zhangxuezhi1@yulong.com>,
+        "Quan, Evan" <evan.quan@amd.com>
+Subject: Re: [PATCH] drm/amd/pm: convert sysfs snprintf to sysfs_emit
+Message-ID: <20210408055652.7e565289@carlis>
+In-Reply-To: <CADnq5_OYk1pBSG4PRqe+RZYtHyy-eYGYBn1=SM_tVLA_4tzK=A@mail.gmail.com>
+References: <20210406141148.64795-1-llyz108@163.com>
+        <CADnq5_OYk1pBSG4PRqe+RZYtHyy-eYGYBn1=SM_tVLA_4tzK=A@mail.gmail.com>
+Organization: yulong
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 194c192b-6c29-4ca0-5086-08d8fa526a1e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 05:51:54.6882
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VJb3WQNj8aFGqu/DXn7YZraQsfuujMUFcE8v11+ByqhTVfNcsz0J+Q78q9oPWe4fL0u1eA44jpu7N+lYnKwDrJrlm+cSZQEgKJ8c007DSdU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3296
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: DsCowACXr08km25g2l11CQ--.8298S2
+X-Coremail-Antispam: 1Uf129KBjvAXoW3CF1UGrW5WF1xuw17XrWDJwb_yoW8JFWDJo
+        Wfur1fXFWxGF1jyrn8Z3y7tasIqa48C3s3Cry5Kr4DGa97t3WFyr43JFs5Za1YgFWrWF48
+        Cr13tan5XFW7Wa4rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUwrcfUUUUU
+X-Originating-IP: [119.137.53.45]
+X-CM-SenderInfo: xoo16iiqy6il2tof0z/xtbBIg1uhV3l-HlsFAAAsB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TWljaGFlbCwNCg0KV291bGQgeW91IHBsZWFzZSByZXNlbmQgdGhpcyBwYXRjaCwgdG9nZXRoZXIg
-d2l0aCB0aGUgbXRkLXV0aWxzDQphbmQgdGhlIFNQSSBOT1IgcGF0Y2ggaW4gYSBzaW5nbGUgcGF0
-Y2ggc2V0PyBZb3UnbGwgaGVscCB1cyBhbGwNCmhhdmluZyBhbGwgaW4gYSBzaW5nbGUgcGxhY2Uu
-DQoNCkZvciB0aGUgbmV3IGlvY3RsIHdlJ2xsIG5lZWQgYWNrcyBmcm9tIGFsbCB0aGUgbXRkIG1h
-aW50YWluZXJzDQphbmQgYXQgbGVhc3QgYSB0ZXN0ZWQtYnkgdGFnLg0KDQpDaGVlcnMsDQp0YQ0K
+On Wed, 7 Apr 2021 16:30:01 -0400
+Alex Deucher <alexdeucher@gmail.com> wrote:
+
+> On Tue, Apr 6, 2021 at 10:13 AM Carlis <llyz108@163.com> wrote:
+> >
+> > From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> >
+> > Fix the following coccicheck warning:
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:1940:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:1978:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2022:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:294:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:154:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:496:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:512:9-17:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:1740:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:1667:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2074:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2047:9-17:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2768:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2738:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2442:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3246:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3253:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2458:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3047:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3133:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3209:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3216:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2410:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2496:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2470:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2426:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2965:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:2972:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3006:8-16:
+> > WARNING: use scnprintf or sprintf
+> > drivers/gpu/drm/amd/pm//amdgpu_pm.c:3013:8-16:
+> > WARNING: use scnprintf or sprintf
+> >
+> > Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>  
+> 
+> I already applied a similar patch last week.
+> 
+> Thanks,
+> 
+> Alex
+> 
+OK.
+Thanks,
+
+Xuezhi Zhang
+> 
+> > ---
+> >  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 58
+> > +++++++++++++++--------------- 1 file changed, 29 insertions(+), 29
+> > deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> > b/drivers/gpu/drm/amd/pm/amdgpu_pm.c index
+> > 5fa65f191a37..2777966ec1ca 100644 ---
+> > a/drivers/gpu/drm/amd/pm/amdgpu_pm.c +++
+> > b/drivers/gpu/drm/amd/pm/amdgpu_pm.c @@ -151,7 +151,7 @@ static
+> > ssize_t amdgpu_get_power_dpm_state(struct device *dev,
+> > pm_runtime_mark_last_busy(ddev->dev);
+> > pm_runtime_put_autosuspend(ddev->dev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%s\n",
+> > +       return sysfs_emit(buf, "%s\n",
+> >                         (pm == POWER_STATE_TYPE_BATTERY) ?
+> > "battery" : (pm == POWER_STATE_TYPE_BALANCED) ? "balanced" :
+> > "performance"); }
+> > @@ -291,7 +291,7 @@ static ssize_t
+> > amdgpu_get_power_dpm_force_performance_level(struct device *dev,
+> > pm_runtime_mark_last_busy(ddev->dev);
+> > pm_runtime_put_autosuspend(ddev->dev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%s\n",
+> > +       return sysfs_emit(buf, "%s\n",
+> >                         (level == AMD_DPM_FORCED_LEVEL_AUTO) ?
+> > "auto" : (level == AMD_DPM_FORCED_LEVEL_LOW) ? "low" :
+> >                         (level == AMD_DPM_FORCED_LEVEL_HIGH) ?
+> > "high" : @@ -493,7 +493,7 @@ static ssize_t
+> > amdgpu_get_pp_cur_state(struct device *dev, if (i == data.nums)
+> >                 i = -EINVAL;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", i);
+> > +       return sysfs_emit(buf, "%d\n", i);
+> >  }
+> >
+> >  static ssize_t amdgpu_get_pp_force_state(struct device *dev,
+> > @@ -509,7 +509,7 @@ static ssize_t amdgpu_get_pp_force_state(struct
+> > device *dev, if (adev->pp_force_state_enabled)
+> >                 return amdgpu_get_pp_cur_state(dev, attr, buf);
+> >         else
+> > -               return snprintf(buf, PAGE_SIZE, "\n");
+> > +               return sysfs_emit(buf, "\n");
+> >  }
+> >
+> >  static ssize_t amdgpu_set_pp_force_state(struct device *dev,
+> > @@ -1664,7 +1664,7 @@ static ssize_t amdgpu_get_pp_sclk_od(struct
+> > device *dev, pm_runtime_mark_last_busy(ddev->dev);
+> >         pm_runtime_put_autosuspend(ddev->dev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", value);
+> > +       return sysfs_emit(buf, "%d\n", value);
+> >  }
+> >
+> >  static ssize_t amdgpu_set_pp_sclk_od(struct device *dev,
+> > @@ -1737,7 +1737,7 @@ static ssize_t amdgpu_get_pp_mclk_od(struct
+> > device *dev, pm_runtime_mark_last_busy(ddev->dev);
+> >         pm_runtime_put_autosuspend(ddev->dev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", value);
+> > +       return sysfs_emit(buf, "%d\n", value);
+> >  }
+> >
+> >  static ssize_t amdgpu_set_pp_mclk_od(struct device *dev,
+> > @@ -1937,7 +1937,7 @@ static ssize_t
+> > amdgpu_get_gpu_busy_percent(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", value);
+> > +       return sysfs_emit(buf, "%d\n", value);
+> >  }
+> >
+> >  /**
+> > @@ -1975,7 +1975,7 @@ static ssize_t
+> > amdgpu_get_mem_busy_percent(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", value);
+> > +       return sysfs_emit(buf, "%d\n", value);
+> >  }
+> >
+> >  /**
+> > @@ -2019,7 +2019,7 @@ static ssize_t amdgpu_get_pcie_bw(struct
+> > device *dev, pm_runtime_mark_last_busy(ddev->dev);
+> >         pm_runtime_put_autosuspend(ddev->dev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%llu %llu %i\n",
+> > +       return sysfs_emit(buf,  "%llu %llu %i\n",
+> >                         count0, count1, pcie_get_mps(adev->pdev));
+> >  }
+> >
+> > @@ -2044,7 +2044,7 @@ static ssize_t amdgpu_get_unique_id(struct
+> > device *dev, return -EPERM;
+> >
+> >         if (adev->unique_id)
+> > -               return snprintf(buf, PAGE_SIZE, "%016llx\n",
+> > adev->unique_id);
+> > +               return sysfs_emit(buf, "%016llx\n",
+> > adev->unique_id);
+> >
+> >         return 0;
+> >  }
+> > @@ -2071,7 +2071,7 @@ static ssize_t
+> > amdgpu_get_thermal_throttling_logging(struct device *dev, struct
+> > drm_device *ddev = dev_get_drvdata(dev); struct amdgpu_device *adev
+> > = drm_to_adev(ddev);
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%s: thermal throttling
+> > logging %s, with interval %d seconds\n",
+> > +       return sysfs_emit(buf, "%s: thermal throttling logging %s,
+> > with interval %d seconds\n", adev_to_drm(adev)->unique,
+> >                         atomic_read(&adev->throttling_logging_enabled)
+> > ? "enabled" : "disabled", adev->throttling_logging_rs.interval / HZ
+> > + 1); @@ -2407,7 +2407,7 @@ static ssize_t
+> > amdgpu_hwmon_show_temp(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> > +       return sysfs_emit(buf, "%d\n", temp);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_temp_thresh(struct device *dev,
+> > @@ -2423,7 +2423,7 @@ static ssize_t
+> > amdgpu_hwmon_show_temp_thresh(struct device *dev, else
+> >                 temp = adev->pm.dpm.thermal.max_temp;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> > +       return sysfs_emit(buf, "%d\n", temp);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_hotspot_temp_thresh(struct device
+> > *dev, @@ -2439,7 +2439,7 @@ static ssize_t
+> > amdgpu_hwmon_show_hotspot_temp_thresh(struct device *dev, else
+> >                 temp = adev->pm.dpm.thermal.max_hotspot_crit_temp;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> > +       return sysfs_emit(buf, "%d\n", temp);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_mem_temp_thresh(struct device
+> > *dev, @@ -2455,7 +2455,7 @@ static ssize_t
+> > amdgpu_hwmon_show_mem_temp_thresh(struct device *dev, else
+> >                 temp = adev->pm.dpm.thermal.max_mem_crit_temp;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> > +       return sysfs_emit(buf, "%d\n", temp);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_temp_label(struct device *dev,
+> > @@ -2467,7 +2467,7 @@ static ssize_t
+> > amdgpu_hwmon_show_temp_label(struct device *dev, if (channel >=
+> > PP_TEMP_MAX) return -EINVAL;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%s\n",
+> > temp_label[channel].label);
+> > +       return sysfs_emit(buf, "%s\n", temp_label[channel].label);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_temp_emergency(struct device *dev,
+> > @@ -2493,7 +2493,7 @@ static ssize_t
+> > amdgpu_hwmon_show_temp_emergency(struct device *dev, break;
+> >         }
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", temp);
+> > +       return sysfs_emit(buf, "%d\n", temp);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_get_pwm1_enable(struct device *dev,
+> > @@ -2735,7 +2735,7 @@ static ssize_t
+> > amdgpu_hwmon_get_fan1_min(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", min_rpm);
+> > +       return sysfs_emit(buf, "%d\n", min_rpm);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_get_fan1_max(struct device *dev,
+> > @@ -2765,7 +2765,7 @@ static ssize_t
+> > amdgpu_hwmon_get_fan1_max(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", max_rpm);
+> > +       return sysfs_emit(buf, "%d\n", max_rpm);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_get_fan1_target(struct device *dev,
+> > @@ -2962,14 +2962,14 @@ static ssize_t
+> > amdgpu_hwmon_show_vddgfx(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", vddgfx);
+> > +       return sysfs_emit(buf, "%d\n", vddgfx);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_vddgfx_label(struct device *dev,
+> >                                               struct
+> > device_attribute *attr, char *buf)
+> >  {
+> > -       return snprintf(buf, PAGE_SIZE, "vddgfx\n");
+> > +       return sysfs_emit(buf, "vddgfx\n");
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_vddnb(struct device *dev,
+> > @@ -3003,14 +3003,14 @@ static ssize_t
+> > amdgpu_hwmon_show_vddnb(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%d\n", vddnb);
+> > +       return sysfs_emit(buf, "%d\n", vddnb);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_vddnb_label(struct device *dev,
+> >                                               struct
+> > device_attribute *attr, char *buf)
+> >  {
+> > -       return snprintf(buf, PAGE_SIZE, "vddnb\n");
+> > +       return sysfs_emit(buf, "vddnb\n");
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_power_avg(struct device *dev,
+> > @@ -3044,7 +3044,7 @@ static ssize_t
+> > amdgpu_hwmon_show_power_avg(struct device *dev, /* convert to
+> > microwatts */ uw = (query >> 8) * 1000000 + (query & 0xff) * 1000;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%u\n", uw);
+> > +       return sysfs_emit(buf, "%u\n", uw);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_power_cap_min(struct device *dev,
+> > @@ -3130,7 +3130,7 @@ static ssize_t
+> > amdgpu_hwmon_show_power_label(struct device *dev, {
+> >         int limit_type = to_sensor_dev_attr(attr)->index;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%s\n",
+> > +       return sysfs_emit(buf, "%s\n",
+> >                 limit_type == SMU_FAST_PPT_LIMIT ? "fastPPT" :
+> > "slowPPT"); }
+> >
+> > @@ -3206,14 +3206,14 @@ static ssize_t
+> > amdgpu_hwmon_show_sclk(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%u\n", sclk * 10 * 1000);
+> > +       return sysfs_emit(buf, "%u\n", sclk * 10 * 1000);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_sclk_label(struct device *dev,
+> >                                             struct device_attribute
+> > *attr, char *buf)
+> >  {
+> > -       return snprintf(buf, PAGE_SIZE, "sclk\n");
+> > +       return sysfs_emit(buf, "sclk\n");
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_mclk(struct device *dev,
+> > @@ -3243,14 +3243,14 @@ static ssize_t
+> > amdgpu_hwmon_show_mclk(struct device *dev, if (r)
+> >                 return r;
+> >
+> > -       return snprintf(buf, PAGE_SIZE, "%u\n", mclk * 10 * 1000);
+> > +       return sysfs_emit(buf, "%u\n", mclk * 10 * 1000);
+> >  }
+> >
+> >  static ssize_t amdgpu_hwmon_show_mclk_label(struct device *dev,
+> >                                             struct device_attribute
+> > *attr, char *buf)
+> >  {
+> > -       return snprintf(buf, PAGE_SIZE, "mclk\n");
+> > +       return sysfs_emit(buf, "mclk\n");
+> >  }
+> >
+> >  /**
+> > --
+> > 2.25.1
+> >
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel  
+
