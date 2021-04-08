@@ -2,84 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B72358C23
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B9358C27
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbhDHS0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHS0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:26:33 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D4FC061760;
-        Thu,  8 Apr 2021 11:26:22 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id w7-20020a1cdf070000b0290125f388fb34so933567wmg.0;
-        Thu, 08 Apr 2021 11:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2yYVECD1X30uGENzlM/iMQrCDbEjlIytowbLivMLjEA=;
-        b=gh5C65fmaDWyuod8vffEJHmef/WoEGHIpyvLdgEYdMZJiA9yWmLIB7D6y+J5wih1Ae
-         2VlC1+fa7w9mI0OM1aujQgseHto7LBqGf6aPuzfmoeaHvltijJzj51ip+eI85T1HZQsl
-         olfgFh+NJzV3uGHGfoSPi4vcMnS46g+TmTwtoi4cEbE4D7qOL6lR+Y02SfKPYwodNfBY
-         HRyE2Iz4KHvcrlOawnul4wgh2VLN/QcFRNXt7HOb8wjuGZtkSBawZ3JaI7nPaFAqML2J
-         sMQzM8E3XRrKrmjTHC6IrmyhkTUVXaMri9sf63zApPYDLW92p3r4QhSxbwXXJZAVnjyT
-         Y42w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2yYVECD1X30uGENzlM/iMQrCDbEjlIytowbLivMLjEA=;
-        b=MzXfT5mfBQaOToHxCbyV/VKFmWq5cw8ScG6ZUNIoW8r6xw0cb/bLYHvCP6j5Bxjnx0
-         /jdnvb+9VGEnL4569MD01CF5SdBz4Ee8Y8QXAoAJH4JvX9l772K1BHmZZ9niYOSow/Z2
-         8yCZxYZOx5aTd/EGsJKkyOugCmjRenTzrpf/PH2Zf4ePxm6r7n9F+0arpoEoQfRnrT1F
-         uh8IJWlxrkabJIu9RB4SEgPeiJxU+72hp7IBEFWH5rK+R1iNuOBzgmxLv9yrSwgqQj5Z
-         cz/ZnvP+5jU7sI4Q1xWkOAPC5YWr1WDurVjTugssU2eOnKcMWE25kFruTkx+ultu3OdV
-         018w==
-X-Gm-Message-State: AOAM5328wutlYVURUHSPWjlGDwqtbt23PxeQbnKkj/O2dpERvStV5RZ6
-        ybvKlDzQKnG0X7VMkOF3cJLH8Jzt61nCDl9dH2M=
-X-Google-Smtp-Source: ABdhPJy0U2G9uZmxZ298LlINBODzVz8nR/Q6bhFWdKM32tacyvo7pU4FU0fOOyICRq6qU3zPaWkBbahCHoM+xTKaGJs=
-X-Received: by 2002:a7b:c003:: with SMTP id c3mr10122956wmb.59.1617906380650;
- Thu, 08 Apr 2021 11:26:20 -0700 (PDT)
+        id S232784AbhDHS1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231676AbhDHS1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:27:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E424261130;
+        Thu,  8 Apr 2021 18:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617906457;
+        bh=u8aql/sJzoLOiadLfYe0IE5RE4mz3KvJIunknyJ2vXQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rirmF7A4kq97KuycIEArW8nCNyef2WaeHcH82KS8mGyjchofh5gRZwl0SQQXN5lJu
+         5yUP8FmCCuyIuOIuHvAG6o3bvqizQtsKFtC9G8dgE/9hy1l9qtOtwodeEPQi1tkYga
+         3TXgblU/eJNqnqNNCs1e7egLHWt8ttN1hlkbzA8RZluvLezYnBTZhLJEfLuveANxPx
+         XLLA3UAAHCUhV1khTDZoCU4KsQ4Ur5MYNAGaApf3hh6sUCyFxjZUwSVITJ/l9IlVTK
+         8dXAu7LI+sbh8PzXht7tVEN9FcZpZS2uHqaFXISfukpNKqxm9DlOrRr1mhov996zg7
+         mWTz/vpe3Q6Wg==
+Received: by mail-ej1-f43.google.com with SMTP id r9so4678965ejj.3;
+        Thu, 08 Apr 2021 11:27:36 -0700 (PDT)
+X-Gm-Message-State: AOAM531gSaLyHuaWI8oO2rv5lsd3srVJ7GFlf6nuGX7gCD6bRCvlhUI4
+        vGs160gJNB4ThHzPeebsAgesyGP5yPE0bdxc/w==
+X-Google-Smtp-Source: ABdhPJwbG4SEgxtUpPqKxwXQ9zqQvFLGpcoqxPDH/bxPctLsc0W5fglH5PbF8lajcF80i0u44qPYSf4Sgiwj2zRl5io=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr12287934ejw.341.1617906454992;
+ Thu, 08 Apr 2021 11:27:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210408172353.21143-1-TheSven73@gmail.com> <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
- <CAGngYiVg+XXScqTyUQP-H=dvLq84y31uATy4DDzzBvF1OWxm5g@mail.gmail.com>
- <CAFSKS=P3Skh4ddB0K_wUxVtQ5K9RtGgSYo1U070TP9TYrBerDQ@mail.gmail.com> <820ed30b-90f4-2cba-7197-6c6136d2e04e@gmail.com>
-In-Reply-To: <820ed30b-90f4-2cba-7197-6c6136d2e04e@gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 8 Apr 2021 14:26:09 -0400
-Message-ID: <CAGngYiU=v16Z3NHC0FyxcZqEJejKz5wn2hjLubQZKJKHg_qYhw@mail.gmail.com>
-Subject: Re: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
- just 2"
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     George McCollister <george.mccollister@gmail.com>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210408151736.2216238-1-frowand.list@gmail.com>
+In-Reply-To: <20210408151736.2216238-1-frowand.list@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 8 Apr 2021 13:27:22 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLJP5Q8R+4yQOhiG_xTA6CHLSWfu-0hFzmZtiv96Do_eA@mail.gmail.com>
+Message-ID: <CAL_JsqLJP5Q8R+4yQOhiG_xTA6CHLSWfu-0hFzmZtiv96Do_eA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiner,
-
-On Thu, Apr 8, 2021 at 2:22 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+On Thu, Apr 8, 2021 at 10:17 AM <frowand.list@gmail.com> wrote:
 >
-> Just an idea:
-> RX_HEAD_PADDING is an alias for NET_IP_ALIGN that can have two values:
-> 0 and 2
-> The two systems you use may have different NET_IP_ALIGN values.
-> This could explain the behavior. Then what I proposed should work
-> for both of you: frame_length - ETH_FCS_LEN
+> From: Frank Rowand <frank.rowand@sony.com>
+>
+> The Devicetree standard specifies an 8 byte alignment of the FDT.
+> Code in libfdt expects this alignment for an FDT image in memory.
+> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
+> with kmalloc(), align pointer, memcpy() to get proper alignment.
+>
+> The 4 byte alignment exposed a related bug which triggered a crash
+> on openrisc with:
+> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+> as reported in:
+> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+> ---
+>
+> changes since version 1:
+>   - use pointer from kmalloc() for kfree() instead of using pointer that
+>     has been modified for FDT alignment
+>
+> changes since version 2:
+>   - version 1 was a work in progress version, I failed to commit the following
+>     final changes
+>   - reorder first two arguments of of_overlay_apply()
+>
+>  drivers/of/of_private.h |  2 ++
+>  drivers/of/overlay.c    | 28 +++++++++++++++++-----------
+>  drivers/of/unittest.c   | 12 +++++++++---
+>  3 files changed, 28 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+> index d9e6a324de0a..d717efbd637d 100644
+> --- a/drivers/of/of_private.h
+> +++ b/drivers/of/of_private.h
+> @@ -8,6 +8,8 @@
+>   * Copyright (C) 1996-2005 Paul Mackerras.
+>   */
+>
+> +#define FDT_ALIGN_SIZE 8
+> +
+>  /**
+>   * struct alias_prop - Alias property in 'aliases' node
+>   * @link:      List node to link the structure in aliases_lookup list
+> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> index 50bbe0edf538..cf770452e1e5 100644
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -57,7 +57,7 @@ struct fragment {
+>   * struct overlay_changeset
+>   * @id:                        changeset identifier
+>   * @ovcs_list:         list on which we are located
+> - * @fdt:               FDT that was unflattened to create @overlay_tree
+> + * @fdt:               base of memory allocated to hold aligned FDT that was unflattened to create @overlay_tree
+>   * @overlay_tree:      expanded device tree that contains the fragment nodes
+>   * @count:             count of fragment structures
+>   * @fragments:         fragment nodes in the overlay expanded device tree
+> @@ -719,8 +719,8 @@ static struct device_node *find_target(struct device_node *info_node)
+>  /**
+>   * init_overlay_changeset() - initialize overlay changeset from overlay tree
+>   * @ovcs:      Overlay changeset to build
+> - * @fdt:       the FDT that was unflattened to create @tree
+> - * @tree:      Contains all the overlay fragments and overlay fixup nodes
+> + * @fdt:       base of memory allocated to hold aligned FDT that was unflattened to create @tree
+> + * @tree:      Contains the overlay fragments and overlay fixup nodes
+>   *
+>   * Initialize @ovcs.  Populate @ovcs->fragments with node information from
+>   * the top level of @tree.  The relevant top level nodes are the fragment
+> @@ -873,7 +873,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>   * internal documentation
+>   *
+>   * of_overlay_apply() - Create and apply an overlay changeset
+> - * @fdt:       the FDT that was unflattened to create @tree
+> + * @fdt:       base of memory allocated to hold *@fdt_align
+> + * @fdt_align: the FDT that was unflattened to create @tree, aligned
+>   * @tree:      Expanded overlay device tree
+>   * @ovcs_id:   Pointer to overlay changeset id
+>   *
+> @@ -912,8 +913,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>   * id is returned to *ovcs_id.
+>   */
+>
+> -static int of_overlay_apply(const void *fdt, struct device_node *tree,
+> -               int *ovcs_id)
+> +static int of_overlay_apply(const void *fdt, const void *fdt_align,
+> +               struct device_node *tree, int *ovcs_id)
 
-Yes, good point! I was thinking the exact same thing just now.
-Subtracting 2 + RX_HEAD_PADDING from the frame length made no sense.
+I think it's better if you move the kfree's out of this function. It
+would be a broken design if this function was public because you'd
+have no idea if 'fdt' could be freed or not. No reason to have that
+bad design just because it's static. If a function returns an error,
+then it should undo everything it did, but nothing more.
 
-George, I will send a patch for you to try shortly. Except if you're
-already ahead :)
+Rob
