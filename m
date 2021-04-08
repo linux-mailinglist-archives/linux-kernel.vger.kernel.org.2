@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0825A357CCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87612357CD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhDHGy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:54:56 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15964 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhDHGyy (ORCPT
+        id S229710AbhDHG4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhDHG4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:54:54 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGBlg3NC6zyNlN;
-        Thu,  8 Apr 2021 14:52:31 +0800 (CST)
-Received: from huawei.com (10.67.174.96) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 14:54:32 +0800
-From:   Zhang Jianhua <zhangjianhua18@huawei.com>
-To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <lyude@redhat.com>
-CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <zhangjianhua18@huawei.com>
-Subject: [PATCH -next] drm/nouveau/nvenc: delete redundant header file priv.h
-Date:   Thu, 8 Apr 2021 14:54:37 +0800
-Message-ID: <20210408065437.175608-1-zhangjianhua18@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 02:56:01 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5ACC061760;
+        Wed,  7 Apr 2021 23:55:50 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 8DBAE2224B;
+        Thu,  8 Apr 2021 08:55:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617864945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T/Ib6E1aHyQ0zhhtE0Z7gd1zjY5vFtQFqY5uVvY+Uv0=;
+        b=u/vC2TGnRp0P8lItXAZXWGe1sH6DNKY5I6Icz++fuvrfjfZiDtT/MvOWh6SduMAQimbj8h
+        Yx0AQQJz1lxWZKonpLYAznp+3VjVw3iLJWq+K96n3Tsj+9mZH75BHtJnYHhXQUsRDNR3vD
+        k8QXM8yPUYfIvo/rKPXE1U5MQebbBEg=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Apr 2021 08:55:42 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+In-Reply-To: <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
+References: <20210303201819.2752-1-michael@walle.cc>
+ <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <904d986fbd6f718cf8b7b9fc54b339d4@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The header file priv.h has been included two times in base.c,
-delete the redundant one.
+Hi Tudor,
 
-Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c | 1 -
- 1 file changed, 1 deletion(-)
+Am 2021-04-08 07:51, schrieb Tudor.Ambarus@microchip.com:
+> Would you please resend this patch, together with the mtd-utils
+> and the SPI NOR patch in a single patch set? You'll help us all
+> having all in a single place.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-index c39e797dc7c9..cf5dcfda7b25 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-@@ -21,7 +21,6 @@
-  */
- #include "priv.h"
- 
--#include "priv.h"
- #include <core/firmware.h>
- 
- static void *
--- 
-2.17.1
+This has already been picked-up:
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=mtd/next&id=e3c1f1c92d6ede3cfa09d6a103d3d1c1ef645e35
 
+Although, I didn't receive an email notice.
+
+-michael
