@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8FD357FCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB05F357FCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhDHJr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        id S231316AbhDHJrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhDHJrZ (ORCPT
+        with ESMTP id S230291AbhDHJrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:47:25 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F279CC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:47:12 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id k8so1032013pgf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:47:12 -0700 (PDT)
+        Thu, 8 Apr 2021 05:47:42 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173FDC061760;
+        Thu,  8 Apr 2021 02:47:30 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id t20so730072plr.13;
+        Thu, 08 Apr 2021 02:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wx8MYiZlUE5pbxRfwsCl1OlR8aGmQOE5tCtoCPsygq4=;
-        b=WeLkbj3r/iOMchz9Ce3Si5iRa44gWVC1uBW4P2AjedCLiiR5IDywCZtKbNfVGxlJOF
-         WD9GPotB4FQL3zeuaFfZpnE2e2bp9hRgFNWClt/Oe6yZrOLKtTcsesFXV90rJ3tPr7KD
-         nk2LC504BsusA3+aI7gJXgcCpM5gajTyNmzuj72cUolCvv+b+l52H3W4P4PAHHFg62II
-         iHEV5XNS9J3bqIhnAeoFDVfqBKFcl2XdhN5PEW1GxSqCrWTbgt/8YKG8fb+8FA8JrQmi
-         8b4sFrJf06fehM5AVFaAHV17MVqtGvm47q0soXCJpD68g0mghExq+rcBxv53PjTaiAVV
-         OxsQ==
+         :cc;
+        bh=PnV0J8nT4j9vAMnnAhfzCebkcqE6zUO4OM97+q9ZYAo=;
+        b=jG6sR68hkJd2v0SpFbAi4EkdDo37+pdAoRVaP9nRyzLun0VHwdC4rd9/3+xOM/FRQZ
+         Q/Ogc7aMDu1VEwHg1vhDN4CAzEVZoA3EXVCE5Ic9CMscyAFORtYmxTnW7aNsKN76VdKG
+         uPDSFnWyCkNVl/um6qVY9O7PC1Ri/Mdm7EbFUFm16b+C1Z9ro5PRNz1BtR8zi0/ZumhP
+         jFJhKL+K9xPqUrlIxydZv/iEj9AegtQG7M3NOh+oX4m7ncjmoDKG7LLSrBYwGbc3Nebf
+         PvdmGle4FC1+9+4agYNvw3ny2kmRKFwpOs29dcHCVtZng4zwhVDSNEsmPgbBfYGmxAUR
+         hPjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wx8MYiZlUE5pbxRfwsCl1OlR8aGmQOE5tCtoCPsygq4=;
-        b=ZS55p/kFc7kLlcgrNr6UXvVJZP9bp6ayDF9h+rIrU7PnlNcxv277YgAfJ42m5fNRZy
-         3ZO2Kz80aBeUW9CjvfTiVEq11x5OBHXzNqxTRcEWzDtXcg/rxISqPtV96oEiSFJnCM77
-         8jzKlOTwh5Fo6vaIPIYrXptkH9km2s48Tkyfn+9slE7IWIx/2ivn18ZDZD6hG6Aw0vJN
-         HhrA+o2/KAa/5sKtzg9Tq7oTB5O2gvfLbXKeZTCi9MpHWA3RPL0VHppaktELeSwEmwUj
-         14B9Mz4nE5WdLUsxB7w75cUz+cDDaX0HscDeyguSur1edQq3JHa6xZK2jiUZTTT4QFLg
-         RVGQ==
-X-Gm-Message-State: AOAM53043FhHsOrtIeTsOKTSHYGcS6y86vU4keIO6Za7hbk+LXCe94MQ
-        9HZ8NpgNiUEHwUmkfX1jcujSaE2URUIvHSVu5y+i8Q==
-X-Google-Smtp-Source: ABdhPJz3CqwRR9ZuK3onI97NXQdgaNEArs1YyVJb+6DWcf9Ktln4/0MEWwGfWIqhbOluU6wIPlrS61cbUOdbFLDaGMo=
-X-Received: by 2002:aa7:98c9:0:b029:242:18fc:562d with SMTP id
- e9-20020aa798c90000b029024218fc562dmr6369255pfm.39.1617875232450; Thu, 08 Apr
- 2021 02:47:12 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=PnV0J8nT4j9vAMnnAhfzCebkcqE6zUO4OM97+q9ZYAo=;
+        b=NLOEUhjOnQVSkhXxql0B05GygrF8dSlf8kju0jhfY0pw0Ipt/Aaq4yMsDjVokrnZop
+         PFzgMYtlDa2u84SZCZZGTr7IzDbTzncxcrLTjIWZA7kI/xwQVGF7aHFPeF74hUw+2lSC
+         Bf0+1jV3O+qmGRk4YCqQgOx32IC+mQRoqMJrPYthW2ScHcaLdVDMeX4KwOKLJPknDLm+
+         RghyX43w2ys1G90TksQBT2ovusA+K+bIVIZZd+GgykBzRuAuiXwTZNyVHOkWePv2zbjV
+         kRzYzrF5gGMvAtALmFoNJatgrE9ohoQQDTChzThc4lHzTnktZwOvq1Y+HGFz1mFP4hlc
+         /LEw==
+X-Gm-Message-State: AOAM533JqM02yzOGDZzMvv3FVfUYYKRpiltvoFu0WSIoAmshQb75lX5q
+        tDloLPO6DGOAR5upOp8MEkkudkVvbE5xDyVLW2U=
+X-Google-Smtp-Source: ABdhPJzONwCYTjNR9XF+/k3EFvV70hIKqAUs3+4MK2GVkd0ZfVW3JG4nQrVzkOHbs0w5xrv/TzTRM3yWg1v5W/GeDoo=
+X-Received: by 2002:a17:90a:156:: with SMTP id z22mr7815188pje.181.1617875249307;
+ Thu, 08 Apr 2021 02:47:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210408093822.207917-1-zhangjianhua18@huawei.com>
-In-Reply-To: <20210408093822.207917-1-zhangjianhua18@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 8 Apr 2021 11:47:01 +0200
-Message-ID: <CAG3jFysH0Ms_7oP0npKZAv7uXs+uAoO=+FBbCYyBV6dULe3dNg@mail.gmail.com>
-Subject: Re: [PATCH -next v3] drm/bridge: lt8912b: Add header file <linux/gpio/consumer.h>
-To:     Zhang Jianhua <zhangjianhua18@huawei.com>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        johnny.chenyi@huawei.com, heying24@huawei.com
+References: <CA+G9fYsiRYaE+y44ApDkvPvbDCdiJ+nnCMhiiaPVsg6p8m4+1Q@mail.gmail.com>
+ <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com> <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 8 Apr 2021 12:47:13 +0300
+Message-ID: <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com>
+Subject: Re: [next] [arm64] [gpio] BUG: key has not been registered! DEBUG_LOCKS_WARN_ON:
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Colin King <colin.king@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pushed to https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3D7513ce4902=
-7c8218a6fce7ec45c3289b903ba4bd
+On Thu, Apr 8, 2021 at 11:33 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+> On Thu, 8 Apr 2021 at 04:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Apr 8, 2021 at 12:38 AM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > While running kselftest recently added gpio gpio-sim.sh test case the following
+> > > warning was triggered on Linux next tag 20210330 tag running on arm64 juno
+> > > and hikey devices.
+> > >
+> > > GOOD: next-20210326
+> > > BAD: next-20210330
+> > >
+> > > This is still happening today on Linux next tag 20210407.
+> >
+> > Can you add the following
+> >
+> >   sysfs_attr_init(attrs[i]);
+> >
+> > to the end of the loop in gpio_sim_setup_sysfs()?
+>
+> Do you mean like this,
+>
+> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> index ea17289a869c..5fe67ccf45f7 100644
+> --- a/drivers/gpio/gpio-sim.c
+> +++ b/drivers/gpio/gpio-sim.c
+> @@ -296,6 +296,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+>                 dev_attr->store = gpio_sim_sysfs_line_store;
+>
+>                 attrs[i] = &dev_attr->attr;
+> +               sysfs_attr_init(attrs[i]);
+>         }
+>
+>         chip->attr_group.name = "line-ctrl";
 
+Precisely.
 
-On Thu, 8 Apr 2021 at 11:38, Zhang Jianhua <zhangjianhua18@huawei.com> wrot=
-e:
+> > If it fixes an issue I'll send a formal patch.
 >
-> If CONFIG_DRM_LONTIUM_LT8912B=3Dm, the following errors will be seen whil=
-e
-> compiling lontium-lt8912b.c
->
-> drivers/gpu/drm/bridge/lontium-lt8912b.c: In function
-> =E2=80=98lt8912_hard_power_on=E2=80=99:
-> drivers/gpu/drm/bridge/lontium-lt8912b.c:252:2: error: implicit
-> declaration of function =E2=80=98gpiod_set_value_cansleep=E2=80=99; did y=
-ou mean
-> =E2=80=98gpio_set_value_cansleep=E2=80=99? [-Werror=3Dimplicit-function-d=
-eclaration]
->   gpiod_set_value_cansleep(lt->gp_reset, 0);
->   ^~~~~~~~~~~~~~~~~~~~~~~~
->   gpio_set_value_cansleep
-> drivers/gpu/drm/bridge/lontium-lt8912b.c: In function =E2=80=98lt8912_par=
-se_dt=E2=80=99:
-> drivers/gpu/drm/bridge/lontium-lt8912b.c:628:13: error: implicit
-> declaration of function =E2=80=98devm_gpiod_get_optional=E2=80=99; did yo=
-u mean
-> =E2=80=98devm_gpio_request_one=E2=80=99? [-Werror=3Dimplicit-function-dec=
-laration]
->   gp_reset =3D devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
->              ^~~~~~~~~~~~~~~~~~~~~~~
->              devm_gpio_request_one
-> drivers/gpu/drm/bridge/lontium-lt8912b.c:628:51: error: =E2=80=98GPIOD_OU=
-T_HIGH=E2=80=99
-> undeclared (first use in this function); did you mean =E2=80=98GPIOF_INIT=
-_HIGH=E2=80=99?
->   gp_reset =3D devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
->                                                    ^~~~~~~~~~~~~~
->                                                    GPIOF_INIT_HIGH
->
-> Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> ---
-> v2:
-> - add header file <linux/gpio/consumer.h> for lontium-lt8912b.c instead
->   of add config dependence for CONFIG_DRM_LONTIUM_LT8912B
-> v3:
-> - change the #include in alphabetical order
-> ---
->  drivers/gpu/drm/bridge/lontium-lt8912b.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/b=
-ridge/lontium-lt8912b.c
-> index 61491615bad0..4f693123985b 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> @@ -5,6 +5,7 @@
->
->  #include <linux/device.h>
->  #include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/i2c.h>
->  #include <linux/gpio.h>
->  #include <linux/of_gpio.h>
-> --
-> 2.17.1
->
+> I will build and test this and report here.
+
+Thanks!
+
+-- 
+With Best Regards,
+Andy Shevchenko
