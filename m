@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCFC358512
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1603358515
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhDHNpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:45:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38928 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhDHNp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:45:28 -0400
-Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0C8D620B5680;
-        Thu,  8 Apr 2021 06:45:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0C8D620B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617889516;
-        bh=Yjl2ONg/hsAPuB8vE8frwvpHGc3vbwAmkdEQC+KpHT4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HHiA9g/+zaBctBpUyc+f5bDMKgQd2j3gvdzrctqOPXMlEFq5MJv1F9x1Oyq9AnVOX
-         5el4lwxdAmEmKs38+CT7AfVeyhhvB+9Axj2dUJDMrTPH2LJSqduvJQxgZbXf2NMxO0
-         7VC2VBITKPl3jNwIUGuVhvYVDYH/MSRQrqk5/bdY=
-Subject: Re: [PATCH 2/7] hyperv: SVM enlightened TLB flush support flag
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        vkuznets <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        KY Srinivasan <kys@microsoft.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        viremana@linux.microsoft.com
-References: <cover.1617804573.git.viremana@linux.microsoft.com>
- <2f896dc4e83197f4fe40c08c45e38bbdcc5c0dbe.1617804573.git.viremana@linux.microsoft.com>
- <MWHPR21MB159384D7BF8D845AE8085573D7759@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <22693445-d33c-d9c7-10fc-0c77573ffec4@linux.microsoft.com>
-Date:   Thu, 8 Apr 2021 09:45:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231741AbhDHNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:46:28 -0400
+Received: from mga12.intel.com ([192.55.52.136]:16989 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231621AbhDHNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:46:27 -0400
+IronPort-SDR: tiJHfpoaO+pQMYY2NPJu1vig1BALs31A4KS71HT4wGCqxT/I27PE2EaM5Xu8SzWpmBLLiAstWI
+ Rq8ucFToCDcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173019084"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="173019084"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:46:16 -0700
+IronPort-SDR: PFuqVYXQVDMRqvIwcoIv55qr11MROY/k3kS/4SijUECqUDT5YvCwG7rd5losMtsAnji4W+GcuE
+ /P1/Sjzi0x5A==
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="415776505"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:46:13 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Peter Xu" <peterx@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH -V2] NUMA balancing: reduce TLB flush via delaying
+ mapping on hint page fault
+References: <20210402082717.3525316-1-ying.huang@intel.com>
+        <20210407082728.GA15768@suse.de>
+Date:   Thu, 08 Apr 2021 21:46:11 +0800
+In-Reply-To: <20210407082728.GA15768@suse.de> (Mel Gorman's message of "Wed, 7
+        Apr 2021 09:27:28 +0100")
+Message-ID: <87lf9syjmk.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB159384D7BF8D845AE8085573D7759@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mel Gorman <mgorman@suse.de> writes:
 
-On 4/7/21 3:56 PM, Michael Kelley wrote:
-> From: Vineeth Pillai <viremana@linux.microsoft.com> Sent: Wednesday, April 7, 2021 7:41 AM
->> Bit 22 of HYPERV_CPUID_FEATURES.EDX is specific to SVM and specifies
->> support for enlightened TLB flush. With this enligtenment enabled,
-> s/enligtenment/enlightenment/
-Thanks for catching this, will fix.
+> On Fri, Apr 02, 2021 at 04:27:17PM +0800, Huang Ying wrote:
+>> With NUMA balancing, in hint page fault handler, the faulting page
+>> will be migrated to the accessing node if necessary.  During the
+>> migration, TLB will be shot down on all CPUs that the process has run
+>> on recently.  Because in the hint page fault handler, the PTE will be
+>> made accessible before the migration is tried.  The overhead of TLB
+>> shooting down can be high, so it's better to be avoided if possible.
+>> In fact, if we delay mapping the page until migration, that can be
+>> avoided.  This is what this patch doing.
+>> 
+>> <SNIP>
+>>
+>
+> Thanks, I think this is ok for Andrew to pick up to see if anything
+> bisects to this commit but it's a low risk.
+>
+> Reviewed-by: Mel Gorman <mgorman@suse.de>
+>
+> More notes;
+>
+> This is not a universal win given that not all workloads exhibit the
+> pattern where accesses occur in parallel threads between when a page
+> is marked accessible and when it is migrated. The impact of the patch
+> appears to be neutral for those workloads. For workloads that do exhibit
+> the pattern, there is a small gain with a reduction in interrupts as
+> advertised unlike v1 of the patch. Further tests are running to confirm
+> the reduction is in TLB shootdown interrupts but I'm reasonably confident
+> that will be the case. Gains are typically small and the load described in
+> the changelog appears to be a best case scenario but a 1-5% gain in some
+> other workloads is still an improvement. There is still the possibility
+> that some workloads will unnecessarily stall as a result of the patch
+> for slightly longer periods of time but that is a relatively low risk
+> and will be difficult to detect. If I'm wrong, a bisection will find it.
 
-Thanks,
-Vineeth
+Hi, Mel,
 
+Thanks!
+
+Hi, Andrew,
+
+I found that V2 cannot apply on top of latest mmotm, so I send V3 as
+follows.  In case you need it.
+
+https://lore.kernel.org/lkml/20210408132236.1175607-1-ying.huang@intel.com/
+
+Best Regards,
+Huang, Ying
