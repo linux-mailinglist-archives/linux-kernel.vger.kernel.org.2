@@ -2,182 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49AD358495
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08A235844C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhDHNZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:25:26 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:52834 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHNZZ (ORCPT
+        id S231570AbhDHNMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:12:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16098 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhDHNMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:25:25 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id F11186C01C6B;
-        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1617888312; bh=O2I5sRbsIGV6O7BRd81yBLGFZqvG4P4JnLPd6Ijeamg=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=WkugiplNaH4XCk6aVA2NznlBO0dCN+YN9BvN6Gu6tVb82IwiLGdY52NbzbrWikL7Z
-         nCn0ilSVtp6zVFqvcs6Hpt8z2FH1YBq0Fi9rCyXinFjhMesdZt48iFUC7pZlU+qFmu
-         /88sp16IKcOmTz+87ZCDc01atwu64Y7Q2CCLpEBc=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id E1F6B6C01C68;
-        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id cWmb_CTFk_k9; Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 571956C019FD;
-        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
-Received: from nas (unknown [45.87.95.33])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 4E5D91BE2271;
-        Thu,  8 Apr 2021 16:25:02 +0300 (EEST)
-References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
-User-agent: mu4e 1.5.8; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH v4 7/7] fs/xfs: Add dedupe support for fsdax
-Date:   Thu, 08 Apr 2021 21:12:00 +0800
-Message-ID: <czv4syut.fsf@damenly.su>
-In-reply-to: <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
+        Thu, 8 Apr 2021 09:12:50 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGM7j4Pfsz19L9X;
+        Thu,  8 Apr 2021 21:10:25 +0800 (CST)
+Received: from huawei.com (10.175.104.57) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 21:12:30 +0800
+From:   Peng Wu <wupeng58@huawei.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Peng Wu <wupeng58@huawei.com>
+Subject: [PATCH -next] sched/topology: Make some symbols static
+Date:   Thu, 8 Apr 2021 21:12:17 +0800
+Message-ID: <1617887537-38438-1-git-send-email-wupeng58@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6N1mlY5SaUCpygHhXxmqCAcxrytLVO7k/+GmqX1UmH7kOSmad00TUxOr7h97Nxyk
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The sparse tool complains as follows:
 
-On Thu 08 Apr 2021 at 20:04, Shiyang Ruan 
-<ruansy.fnst@fujitsu.com> wrote:
+kernel/sched/topology.c:211:1: warning:
+ symbol 'sched_energy_mutex' was not declared. Should it be static?
+kernel/sched/topology.c:212:6: warning:
+ symbol 'sched_energy_update' was not declared. Should it be static?
 
-> Add xfs_break_two_dax_layouts() to break layout for tow dax 
-> files.  Then
-> call compare range function only when files are both DAX or not.
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
->
-Not family with xfs code but reading code make my sleep better :)
-See bellow.
+This symbol is not used outside of topology.c, so this
+commit marks it static.
 
-> ---
->  fs/xfs/xfs_file.c    | 20 ++++++++++++++++++++
->  fs/xfs/xfs_inode.c   |  8 +++++++-
->  fs/xfs/xfs_inode.h   |  1 +
->  fs/xfs/xfs_reflink.c |  5 +++--
->  4 files changed, 31 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 5795d5d6f869..1fd457167c12 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -842,6 +842,26 @@ xfs_break_dax_layouts(
->  			0, 0, xfs_wait_dax_page(inode));
->  }
->
-> +int
-> +xfs_break_two_dax_layouts(
-> +	struct inode		*src,
-> +	struct inode		*dest)
-> +{
-> +	int			error;
-> +	bool			retry = false;
-> +
-> +retry:
->
-'retry = false;' ? since xfs_break_dax_layouts() won't
-set retry to false if there is no busy page in inode->i_mapping.
-Dead loop will happen if retry is true once.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Peng Wu <wupeng58@huawei.com>
+---
+ kernel/sched/topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +	error = xfs_break_dax_layouts(src, &retry);
-> +	if (error || retry)
-> +		goto retry;
-> +
-> +	error = xfs_break_dax_layouts(dest, &retry);
-> +	if (error || retry)
-> +		goto retry;
-> +
-> +	return error;
-> +}
-> +
->  int
->  xfs_break_layouts(
->  	struct inode		*inode,
-> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index f93370bd7b1e..c01786917eef 100644
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@ -3713,8 +3713,10 @@ xfs_ilock2_io_mmap(
->  	struct xfs_inode	*ip2)
->  {
->  	int			ret;
-> +	struct inode		*inode1 = VFS_I(ip1);
-> +	struct inode		*inode2 = VFS_I(ip2);
->
-> -	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), 
-> VFS_I(ip2));
-> +	ret = xfs_iolock_two_inodes_and_break_layout(inode1, inode2);
->  	if (ret)
->  		return ret;
->  	if (ip1 == ip2)
-> @@ -3722,6 +3724,10 @@ xfs_ilock2_io_mmap(
->  	else
->  		xfs_lock_two_inodes(ip1, XFS_MMAPLOCK_EXCL,
->  				    ip2, XFS_MMAPLOCK_EXCL);
-> +
-> +	if (IS_DAX(inode1) && IS_DAX(inode2))
-> +		ret = xfs_break_two_dax_layouts(inode1, inode2);
-> +
-ret is ignored here.
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index d1aec244c027..25c3f88d43cd 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -208,8 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+ #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+ DEFINE_STATIC_KEY_FALSE(sched_energy_present);
+ unsigned int sysctl_sched_energy_aware = 1;
+-DEFINE_MUTEX(sched_energy_mutex);
+-bool sched_energy_update;
++static DEFINE_MUTEX(sched_energy_mutex);
++static bool sched_energy_update;
+ 
+ void rebuild_sched_domains_energy(void)
+ {
 
---
-Su
->  	return 0;
->  }
->
-> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index 88ee4c3930ae..5ef21924dddc 100644
-> --- a/fs/xfs/xfs_inode.h
-> +++ b/fs/xfs/xfs_inode.h
-> @@ -435,6 +435,7 @@ enum xfs_prealloc_flags {
->
->  int	xfs_update_prealloc_flags(struct xfs_inode *ip,
->  				  enum xfs_prealloc_flags flags);
-> +int	xfs_break_two_dax_layouts(struct inode *inode1, struct 
-> inode *inode2);
->  int	xfs_break_layouts(struct inode *inode, uint *iolock,
->  		enum layout_break_reason reason);
->
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index a4cd6e8a7aa0..4426bcc8a985 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -29,6 +29,7 @@
->  #include "xfs_iomap.h"
->  #include "xfs_sb.h"
->  #include "xfs_ag_resv.h"
-> +#include <linux/dax.h>
->
->  /*
->   * Copy on Write of Shared Blocks
-> @@ -1324,8 +1325,8 @@ xfs_reflink_remap_prep(
->  	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
->  		goto out_unlock;
->
-> -	/* Don't share DAX file data for now. */
-> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-> +	/* Don't share DAX file data with non-DAX file. */
-> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
->  		goto out_unlock;
->
->  	if (!IS_DAX(inode_in))
