@@ -2,91 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D357E04
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585E1357E08
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhDHI1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:27:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52227 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229539AbhDHI1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:27:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617870421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tp5v2YH5Yi9li+KSzkJrd9m6gNC6HOE1WkYusKD5XUE=;
-        b=hFlA6QY2Dvv/iD8Bo64MaqHVwmMAmaP/5tjzOBx9jhdvL8cNPhfWORWW+vwX4VbOi3Xdkb
-        bojm6iOjGf3wTAvwKRDlO3l+wWjfBCU4HwJW+w+vfEIwi8OPVuVBbJD80093L9P1H5TO/R
-        CMDeC4fiT2EXFHalRwUPeQ0IhgNuPFM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-KQFmKFSkMIuDB2PSmWulJg-1; Thu, 08 Apr 2021 04:26:59 -0400
-X-MC-Unique: KQFmKFSkMIuDB2PSmWulJg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 687C36D241;
-        Thu,  8 Apr 2021 08:26:58 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-13-53.pek2.redhat.com [10.72.13.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 147DB5D9CC;
-        Thu,  8 Apr 2021 08:26:51 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     parav@nvidia.com, elic@nvidia.com
-Subject: [RFC PATCH] vdpa: mandate 1.0 device
-Date:   Thu,  8 Apr 2021 16:26:48 +0800
-Message-Id: <20210408082648.20145-1-jasowang@redhat.com>
+        id S229772AbhDHI2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:28:24 -0400
+Received: from mga04.intel.com ([192.55.52.120]:55274 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhDHI2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:28:23 -0400
+IronPort-SDR: +tgpD1L8WZdhec3W44xIKeMcix3GvUvbyTkY/R+L98xJnP9KxiGD73VmZn9yExNhCoga68iU2b
+ GgVigh/gH0Vw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="191332665"
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="191332665"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 01:28:12 -0700
+IronPort-SDR: GlAvcAPZuSIMQFgeRhWj7Qtb64brTKGxSvkBexW2plL6uEXg5UVBfWA08kDWZK+rpsPp9N+/t5
+ aMfR0cR21EUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="519766809"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Apr 2021 01:28:09 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Apr 2021 11:28:09 +0300
+Date:   Thu, 8 Apr 2021 11:28:09 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 1/1] usb: typec: tcpm: remove unused static variable
+ 'tcpm_altmode_ops'
+Message-ID: <YG6+mfqIc15rc9H1@kuha.fi.intel.com>
+References: <20210407091540.2815-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210407091540.2815-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch mandates 1.0 for vDPA devices. The goal is to have the
-semantic of normative statement in the virtio spec and eliminate the
-burden of transitional device for both vDPA bus and vDPA parent.
+On Wed, Apr 07, 2021 at 05:15:40PM +0800, Zhen Lei wrote:
+> Fixes the following W=1 kernel build warning:
+> 
+> drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> 
+> The reference to the variable 'tcpm_altmode_ops' is deleted by the
+> commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration
+> mechanism").
+> 
+> By the way, the static functions referenced only by the variable
+> 'tcpm_altmode_ops' are deleted accordingly.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-uAPI seems fine since all the vDPA parent mandates
-VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+Oh, I thought this was already fixed. Should this go into the stable
+trees as well?
 
-For legacy guests, it can still work since Qemu will mediate when
-necessary (e.g doing the endian conversion).
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- include/linux/vdpa.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 60 -------------------------------------------
+>  1 file changed, 60 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index ce7af398c7c1c1f..2f89bae29c0c297 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1365,14 +1365,6 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
+>  	mod_vdm_delayed_work(port, 0);
+>  }
+>  
+> -static void tcpm_queue_vdm_unlocked(struct tcpm_port *port, const u32 header,
+> -				    const u32 *data, int cnt)
+> -{
+> -	mutex_lock(&port->lock);
+> -	tcpm_queue_vdm(port, header, data, cnt);
+> -	mutex_unlock(&port->lock);
+> -}
+> -
+>  static void svdm_consume_identity(struct tcpm_port *port, const u32 *p, int cnt)
+>  {
+>  	u32 vdo = p[VDO_INDEX_IDH];
+> @@ -1705,8 +1697,6 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>  	 *
+>  	 * And we also have this ordering:
+>  	 * 1. alt-mode driver takes the alt-mode's lock
+> -	 * 2. alt-mode driver calls tcpm_altmode_enter which takes the
+> -	 *    tcpm port lock
+>  	 *
+>  	 * Dropping our lock here avoids this.
+>  	 */
+> @@ -2060,56 +2050,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
+>  	return 0;
+>  }
+>  
+> -static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -	int svdm_version;
+> -	u32 header;
+> -
+> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
+> -	if (svdm_version < 0)
+> -		return svdm_version;
+> -
+> -	header = VDO(altmode->svid, vdo ? 2 : 1, svdm_version, CMD_ENTER_MODE);
+> -	header |= VDO_OPOS(altmode->mode);
+> -
+> -	tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
+> -	return 0;
+> -}
+> -
+> -static int tcpm_altmode_exit(struct typec_altmode *altmode)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -	int svdm_version;
+> -	u32 header;
+> -
+> -	svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
+> -	if (svdm_version < 0)
+> -		return svdm_version;
+> -
+> -	header = VDO(altmode->svid, 1, svdm_version, CMD_EXIT_MODE);
+> -	header |= VDO_OPOS(altmode->mode);
+> -
+> -	tcpm_queue_vdm_unlocked(port, header, NULL, 0);
+> -	return 0;
+> -}
+> -
+> -static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+> -			    u32 header, const u32 *data, int count)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -
+> -	tcpm_queue_vdm_unlocked(port, header, data, count - 1);
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct typec_altmode_ops tcpm_altmode_ops = {
+> -	.enter = tcpm_altmode_enter,
+> -	.exit = tcpm_altmode_exit,
+> -	.vdm = tcpm_altmode_vdm,
+> -};
+> -
+>  /*
+>   * PD (data, control) command handling functions
+>   */
+> -- 
+> 1.8.3
+> 
 
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index 0fefeb976877..cfde4ec999b4 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -6,6 +6,7 @@
- #include <linux/device.h>
- #include <linux/interrupt.h>
- #include <linux/vhost_iotlb.h>
-+#include <uapi/linux/virtio_config.h>
- 
- /**
-  * vDPA callback definition.
-@@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
- {
-         const struct vdpa_config_ops *ops = vdev->config;
- 
-+        /* Mandating 1.0 to have semantics of normative statements in
-+         * the spec. */
-+        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
-+		return -EINVAL;
-+
- 	vdev->features_valid = true;
-         return ops->set_features(vdev, features);
- }
 -- 
-2.25.1
-
+heikki
