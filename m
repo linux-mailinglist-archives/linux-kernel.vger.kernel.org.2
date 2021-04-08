@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8273E3581C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756B63581CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhDHL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:29:27 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16094 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhDHL3Z (ORCPT
+        id S231297AbhDHLaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhDHLau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:29:25 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGJrP48krz19L3J;
-        Thu,  8 Apr 2021 19:27:01 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 19:29:06 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <zhengdejin5@gmail.com>, <wsa@kernel.org>,
-        <bjorn.andersson@linaro.org>, <andriy.shevchenko@linux.intel.com>,
-        <bgolaszewski@baylibre.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pulehui@huawei.com>
-Subject: [PATCH -next] i2c: img-scb: fix PM reference leak in img_i2c_xfer()
-Date:   Thu, 8 Apr 2021 19:29:10 +0800
-Message-ID: <20210408112910.212873-1-pulehui@huawei.com>
+        Thu, 8 Apr 2021 07:30:50 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4ADC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:30:40 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so4654792pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=idLyBB53a+zb7rBWXo0Xtc4Y2VYfNc3H3ETOy2Iv8JU=;
+        b=haLvNZtI2/mr3CY4J+ayFNZg2Zb3d9szad6P8KL5g1mtbbXrvfWZx+MLyRpAWCP3Mk
+         us3iS8EBJ4wfY0GZ5rbj1EU+7LFYsvH7Jjq7aRRB8ZCQsdOuLkBEB9+uz3uLdST8hMxz
+         wsxx1b/GWF9MI//5jJZDKn79rJOOZ736GoYJDjsWs2M+0t+Kp1guqw47GDstTCW7BfsR
+         c1bEmoPp5RTn/67fgDymzUY5U8n8l0tBpm1yR1GfcSTvx1BEcSxZRfFeh/qyd2UOIQhB
+         SlexiSoabIELDQ61SnkykN499yYR1tN/xlGL/6XC6BnKdwgz7jHVc25ncN40rrqWID4D
+         96Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=idLyBB53a+zb7rBWXo0Xtc4Y2VYfNc3H3ETOy2Iv8JU=;
+        b=IGrUxgxawwpsvt5EcK8Ql+OfD29+ldgnjxw6ZLkPC++gxj5XO2woqJ/wRjDPB/ak+P
+         /3WZW7oqQ/35ip2Qyxpgff0XoL1g8MMiig0LxdzVhYKDSXh9OkpMYqdvUrOPo1n6fwil
+         LOMamhUuxjI3uD79mxbUS5hQnbi2sko5QCTELx5m4nJ0FHvBsiaxzeYn9aA81q5RwhgY
+         wPHC6eRegg39c8Xmp2EB93CTQxVO5XDj7wG0kSmAvrAOy++iMwmkY0O/VuDHsH9cMFSA
+         36joCptrlnuDGF/juv1hHlvtE16LKLWvirLkfZd1ADLI/HZm34gZJup8xU3Cpt3Fdj8v
+         EZlg==
+X-Gm-Message-State: AOAM532v6+pn6Gw4UC4Ym938KhY53Z9elzP7pciNPpy3U8Yg5PDZSatl
+        e+RPxF7b9oNf90s+rX+HIJr6Ng==
+X-Google-Smtp-Source: ABdhPJxx3aj0+FumS5hLI1oRIvCZsO6w/JQp2J14V39WZ1ohHPEo50HXwT9OIwsmIeXRr+kT00pPBg==
+X-Received: by 2002:a17:90a:94cc:: with SMTP id j12mr8196394pjw.159.1617881439623;
+        Thu, 08 Apr 2021 04:30:39 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id x18sm7753267pfi.105.2021.04.08.04.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 04:30:39 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/2] brcmfmac: support parse country code map from DT
+Date:   Thu,  8 Apr 2021 19:30:20 +0800
+Message-Id: <20210408113022.18180-1-shawn.guo@linaro.org>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.98]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get() to keep usage
-counter balanced.
+This is a couple of patches adding optional brcm,ccode-map bindings for
+brcmfmac driver to parse country code map from DT.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- drivers/i2c/busses/i2c-img-scb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Shawn Guo (2):
+  dt-binding: bcm43xx-fmac: add optional brcm,ccode-map
+  brcmfmac: support parse country code map from DT
 
-diff --git a/drivers/i2c/busses/i2c-img-scb.c b/drivers/i2c/busses/i2c-img-scb.c
-index 98a89301ed2a..8e987945ed45 100644
---- a/drivers/i2c/busses/i2c-img-scb.c
-+++ b/drivers/i2c/busses/i2c-img-scb.c
-@@ -1057,7 +1057,7 @@ static int img_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 			atomic = true;
- 	}
- 
--	ret = pm_runtime_get_sync(adap->dev.parent);
-+	ret = pm_runtime_resume_and_get(adap->dev.parent);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1158,7 +1158,7 @@ static int img_i2c_init(struct img_i2c *i2c)
- 	u32 rev;
- 	int ret;
- 
--	ret = pm_runtime_get_sync(i2c->adap.dev.parent);
-+	ret = pm_runtime_resume_and_get(i2c->adap.dev.parent);
- 	if (ret < 0)
- 		return ret;
- 
+ .../net/wireless/brcm,bcm43xx-fmac.txt        |  7 +++
+ .../wireless/broadcom/brcm80211/brcmfmac/of.c | 53 +++++++++++++++++++
+ 2 files changed, 60 insertions(+)
+
 -- 
 2.17.1
 
