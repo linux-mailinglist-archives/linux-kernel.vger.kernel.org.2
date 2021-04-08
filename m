@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A88358463
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA2C35846C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhDHNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:16:03 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34986 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHNQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:16:01 -0400
-Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9246420B5680;
-        Thu,  8 Apr 2021 06:15:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9246420B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617887750;
-        bh=XZtRYq5agCaEslp2SkcIxFuSoTSHZxnoXDUN99ENL0M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GvyHAEg4gxRRvHJLEjU1/eh6x3wmXHkOv357f0YDONPqsL6y4qMEczVbayazjH1Bv
-         Hs3/RiSDu8+uCxF3bF1/76pzWb2368cfPni8KfxPghJB9zCyZ7AfQfJ/w+bSOOpGkG
-         Acj8eJwqkHh1BXE75Z4yWcBL1OG4d/w/HZ3dWvyM=
-Subject: Re: [PATCH 1/7] hyperv: Detect Nested virtualization support for SVM
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-References: <cover.1617804573.git.viremana@linux.microsoft.com>
- <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
- <87lf9tavci.fsf@vitty.brq.redhat.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <af87c25e-78c6-5859-e1c1-2aa07d087a25@linux.microsoft.com>
-Date:   Thu, 8 Apr 2021 09:15:47 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231697AbhDHNQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:16:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231527AbhDHNQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:16:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B296C61154;
+        Thu,  8 Apr 2021 13:16:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617887776;
+        bh=omPlu73KopU66ypRAh20u3JyYJa9RKvVBgANzppAeZQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fkLLl+czLc9LUX+d2br1Tl6Z67vByBL3CcPBBSmr2iip0IOqPTgyPA1iZuRWnEv4q
+         ev8SGQOp+r8fs9ZnAgHoxw21ynUiDj+lYpAjimM3OmXTrNLti+e38oJiqpXWy19RgZ
+         QRIrYorMvqF4BnRmD8Xnhv2uwkARWNRdOcIi3gMaPXI+AzAmdrNHD0YB9oDfpVK307
+         CqcHEi2s1LhEIQmrWljh1iE72V24WYilQ1sGkf29KuqkX/ai3QHE0of18zLdEZWU7b
+         Iu8Cl001yjoSRqKmWiOPAaSE13vOH8OUmx/0BWTtbIII3/0fKcV3kX/En4YaSnps5I
+         QRwoEzZz1HG7Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lUUW3-0007Hg-LV; Thu, 08 Apr 2021 15:16:12 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Anthony Mallet <anthony.mallet@laas.fr>
+Subject: [PATCH v2 0/3] TIOCSSERIAL fixes
+Date:   Thu,  8 Apr 2021 15:15:59 +0200
+Message-Id: <20210408131602.27956-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <87lf9tavci.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly,
+This series fixes up a few issues with cdc-acm TIOCSSERIAL
+implementation.
 
-On 4/8/21 7:06 AM, Vitaly Kuznetsov wrote:
-> -	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
-> +	/*
-> +	 * AMD does not need enlightened VMCS as VMCB is already a
-> +	 * datastructure in memory.
-> Well, VMCS is also a structure in memory, isn't it? It's just that we
-> don't have a 'clean field' concept for it and we can't use normal memory
-> accesses.
+Johan
 
-Yes, you are right. I was referring to the fact that we cant use normal
-memory accesses, but is a bit mis-worded.
+Changes in v2
+ - amend commit message to clarify that the 12 cs close_delay bug had
+   already been fixed by an earlier patch (1/3)
 
->
->> 	We need to get the nested
->> +	 * features if SVM is enabled.
->> +	 */
->> +	if (boot_cpu_has(X86_FEATURE_SVM) ||
->> +	    ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
-> Do I understand correctly that we can just look at CPUID.0x40000000.EAX
-> and in case it is >= 0x4000000A we can read HYPERV_CPUID_NESTED_FEATURES
-> leaf? I'd suggest we do that intead then.
-I agree, that is a better way to consolidate both the cases.
-Will change it in the next iteration. Probably the above code
-comment is not needed when we consolidate the cases here.
+ - amend commit message to clarify that the base clock rate isn't known
+   for CDC and that the current line speed can still be retrieved
+   through the standard termios interfaces (3/3)
 
-Thanks,
-Vineeth
+Johan Hovold (3):
+  Revert "USB: cdc-acm: fix rounding error in TIOCSSERIAL"
+  USB: cdc-acm: fix unprivileged TIOCCSERIAL
+  USB: cdc-acm: fix TIOCGSERIAL implementation
+
+ drivers/usb/class/cdc-acm.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+-- 
+2.26.3
 
