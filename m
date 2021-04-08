@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A153582EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0851F3582F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhDHMMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:12:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45945 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229837AbhDHMMu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:12:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Xu44vmvXtcO0C+M0wE7HV+vWKAd+2q5v3EmKc9PruFU=;
-        b=R4puSq5z39PnLAYbYcr45IIrGzxdRImjesL4AlzwDx6gBuBZBWuZzwqg5whKZOJNy3PxRM
-        wBSXo1GalaY7WYyXV79pqd6Y+DJrT5MoODBuSEWEJY6D2cGCKw4zwnPZ2xoQJrlYjmTYLo
-        h/oTAmgsW8dtyw7v0OKBlfBexggu9JI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-cOT3QhC2NvOluW83TzJeYg-1; Thu, 08 Apr 2021 08:12:37 -0400
-X-MC-Unique: cOT3QhC2NvOluW83TzJeYg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S231342AbhDHMNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:13:49 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39737 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhDHMNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:13:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 998B8107ACC7;
-        Thu,  8 Apr 2021 12:12:36 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 469E910013C1;
-        Thu,  8 Apr 2021 12:12:36 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM changes for 5.12-rc7
-Date:   Thu,  8 Apr 2021 08:12:34 -0400
-Message-Id: <20210408121234.3895999-1-pbonzini@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGKt73qT2z9sWH;
+        Thu,  8 Apr 2021 22:13:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617884015;
+        bh=DFSMspZoMbGeeJ8Z/m1UsfIlspBhwPmT2q1uu9lnu68=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f5tRjOQZXpdh877EkIifHSol3vz3b4OeEOC+PCsy0vUxGUpAFLCoR1akssDMUsMtC
+         t/xu+pllBcjlC012HhCObUoSJsfWm80jBosDjPhuHf6YRlhgl3T41+9nDW/WoRKN1L
+         Ai2NYMz/VUntnfVfoa+T+LzdnfmVDDV/Nb9OHsHqm0z23ZYNN1w48RwNpWaoKCvGJf
+         Vur362AbZAjuB3w2BZc16G2uUrZXrx1nvzm2bGcGK3xZ/RSIwP5eM1kco523vdSEfZ
+         3Z6BAbbdfgclsG9APFVpHuq8tUhaSMRggHuaRT+5QgMYLSJG4f89keEJ273w6PL/iC
+         bI/FvNCc8odWA==
+Date:   Thu, 8 Apr 2021 22:13:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the drivers-x86
+ tree
+Message-ID: <20210408221334.63262fbf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: multipart/signed; boundary="Sig_/bbWr1S3uwXZa2YpYdWncDo/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+--Sig_/bbWr1S3uwXZa2YpYdWncDo/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 55626ca9c6909d077eca71bccbe15fef6e5ad917:
+Hi all,
 
-  selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0) (2021-04-01 05:14:19 -0400)
+Commit
 
-are available in the Git repository at:
+  11cccec79c60 ("genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()")
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+is missing a Signed-off-by from its committer.
 
-for you to fetch changes up to 315f02c60d9425b38eb8ad7f21b8a35e40db23f9:
+--=20
+Cheers,
+Stephen Rothwell
 
-  KVM: x86/mmu: preserve pending TLB flush across calls to kvm_tdp_mmu_zap_sp (2021-04-08 07:48:18 -0400)
+--Sig_/bbWr1S3uwXZa2YpYdWncDo/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-----------------------------------------------------------------
-A lone x86 patch, for a bug found while developing a backport to
-stable versions.
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Paolo Bonzini (1):
-      KVM: x86/mmu: preserve pending TLB flush across calls to kvm_tdp_mmu_zap_sp
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBu824ACgkQAVBC80lX
+0Gz/DQf6Ajq3KDhe08Az2eLjoHVNyPuImCeE7iejvQC/xursD3N2SzlHQwiy9MqV
+sO3UW+w0UhMrsqSNMxw3Lkaz/9hXMCbPSUJOlJ9GE17CyUXhHTQNpI5oFOp2lfXF
+W2dLkGUoIg3BVjEEzM7sRyteo6VKpsTYCnRUAk+FRsuAP1HJ6opMaOd6rO7uVGEc
+ZOZNrXZuQUT79OgDspfA5g3YV2BuNeh6zdwi+51bCYUufd5a4g2Eg8OnC3DT9ZkF
+n+sz/C57sgbVpHBrklSzk+2eOBYhH4wMa4YWNLOTmviw8ptwQPu4IMQ425pjLJo1
+unGXZxxlpEttLU89Q7/HEZFmBms3tA==
+=7soO
+-----END PGP SIGNATURE-----
 
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
+--Sig_/bbWr1S3uwXZa2YpYdWncDo/--
