@@ -2,220 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A910D358CDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EAB358CE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbhDHSpH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 14:45:07 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:34850 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbhDHSpG (ORCPT
+        id S232879AbhDHSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232281AbhDHSqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:45:06 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lUZe5-00Ejb5-PM; Thu, 08 Apr 2021 12:44:50 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lUZe4-00A0nq-5p; Thu, 08 Apr 2021 12:44:49 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        "Huang\, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <7abe5ab608c61fc2363ba458bea21cf9a4a64588.1617814298.git.gladkov.alexey@gmail.com>
-        <20210408083026.GE1696@xsang-OptiPlex-9020>
-        <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
-Date:   Thu, 08 Apr 2021 13:44:43 -0500
-In-Reply-To: <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
-        (Linus Torvalds's message of "Thu, 8 Apr 2021 09:22:40 -0700")
-Message-ID: <m1im4wmx9g.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1lUZe4-00A0nq-5p;;;mid=<m1im4wmx9g.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19JLUsOtBvU+Hb1U0UwhyIZDve8LzlJSks=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_Unicode
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 785 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 12 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.21
-        (0.2%), extract_message_metadata: 18 (2.3%), get_uri_detail_list: 3.2
-        (0.4%), tests_pri_-1000: 15 (1.9%), tests_pri_-950: 1.55 (0.2%),
-        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 194 (24.7%), check_bayes:
-        179 (22.8%), b_tokenize: 13 (1.7%), b_tok_get_all: 14 (1.8%),
-        b_comp_prob: 4.5 (0.6%), b_tok_touch_all: 143 (18.2%), b_finish: 1.12
-        (0.1%), tests_pri_0: 529 (67.3%), check_dkim_signature: 0.71 (0.1%),
-        check_dkim_adsp: 2.5 (0.3%), poll_dns_idle: 0.77 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 8 (1.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: 08ed4efad6: stress-ng.sigsegv.ops_per_sec -41.9% regression
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Thu, 8 Apr 2021 14:46:50 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F62C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 11:46:39 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id h19so1881571qkk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=6gAnMk/3QmoHKKKOynZbE6ARTru22AXVPx9J9ennqYk=;
+        b=CsxGIoVitXO3OMbftljWu8Ki/FTK07cSA2VhLFY87N/obK/8HhQZTl3uWoLXcLQY+9
+         5XeUpzxisdaS1wXSrhGdjDUBgEN1xJqho2avlRpMrJ7x7wFuZZVox4bm9t8ME1fvefAB
+         73l3UAuQ3P/qkAZ3I0b8k8OxQAk/XlFrKuzbvy75sQxwVEfiGZu38eaC8C/qvX7fr3F4
+         wpBLuRw7iEovcshgem96DIb8CJLc4UWoFJ8pbS73TaWo3YhI1iQvwHvOsyTBv5bMBF4d
+         8BMw9g/iWrTuB6XFmPbApdr7P7ADW4iVgnCP/7uCEimfRvK7CcPlJ56vNkQfvR971+Nm
+         z5Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=6gAnMk/3QmoHKKKOynZbE6ARTru22AXVPx9J9ennqYk=;
+        b=goyLWMnNybNP1syh9nvnwxMAU7doXaJrcOSP6heYljj31VegwiB1JaP8FSRCahzNnb
+         koQ0XdDtBMCyrhUrVkXv4sD/aTbzTwOC4+fN6D4qPxSGOItnFe2XmGeoMW9fVdvUbQ+J
+         yJB0wroCMdM8gsdx9+3QGM/4FosNdivh4ULOmv3nLgNy7VYFI7QcffyQnQMnlOGY5EU5
+         WPwaVn+xmn0a6sk/yaUfZIYocoI3035ZK/JB5vm/IGK+63++r1omnnAQXkH4u0Hm7tn+
+         oEWTBbz0jwaHkzF2105Y/5I4GtipTzkq2/QRWS8Jw8VVgs53KArwKELN/SDWSUiIA64x
+         vP9g==
+X-Gm-Message-State: AOAM530bY5bX0djyX3/z+vAuVvMPdlUU9XW69TZOJ2cpme31yQNDIZNC
+        noLlcwM5GitNTJkibXLsTWyxYh8x7aDe9ydzK5w=
+X-Google-Smtp-Source: ABdhPJx+2L0KBR1ZPGbYTlVAcnVbbQqhcwdmzzAvpjnvX13zyvL6J85xqR1BgJt7Q//RHnzPLAzwNyrX2hirSOEK2yc=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:258e:3713:7415:ce58])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:2628:: with SMTP id
+ gv8mr10352013qvb.19.1617907598457; Thu, 08 Apr 2021 11:46:38 -0700 (PDT)
+Date:   Thu,  8 Apr 2021 11:46:31 -0700
+In-Reply-To: <20210407152621.3826f93e893c0cf9b327071f@linux-foundation.org>
+Message-Id: <20210408184631.1156669-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210407152621.3826f93e893c0cf9b327071f@linux-foundation.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v2] gcov: re-fix clang-11+ support
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     akpm@linux-foundation.org
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        maskray@google.com, nathan@kernel.org, ndesaulniers@google.com,
+        oberpar@linux.ibm.com, psodagud@quicinc.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+LLVM changed the expected function signature for
+llvm_gcda_emit_function() in the clang-11 release.  Users of clang-11 or
+newer may have noticed their kernels producing invalid coverage
+information:
 
-> On Thu, Apr 8, 2021 at 1:32 AM kernel test robot <oliver.sang@intel.com> wrote:
->>
->> FYI, we noticed a -41.9% regression of stress-ng.sigsegv.ops_per_sec due to commit
->> 08ed4efad684 ("[PATCH v10 6/9] Reimplement RLIMIT_SIGPENDING on top of ucounts")
->
-> Ouch.
+$ llvm-cov gcov -a -c -u -f -b <input>.gcda -- gcno=<input>.gcno
+1 <func>: checksum mismatch, \
+  (<lineno chksum A>, <cfg chksum B>) != (<lineno chksum A>, <cfg chksum C>)
+2 Invalid .gcda File!
+...
 
-We were cautiously optimistic when no test problems showed up from
-the last posting that there was nothing to look at here.
+Fix up the function signatures so calling this function interprets its
+parameters correctly and computes the correct cfg checksum. In
+particular, in clang-11, the additional checksum is no longer optional.
 
-Unfortunately it looks like the bots just missed the last posting. 
+Link: https://reviews.llvm.org/rG25544ce2df0daa4304c07e64b9c8b0f7df60c11d
+Cc: stable@vger.kernel.org #5.4+
+Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
+Tested-by: Prasad Sodagudi <psodagud@quicinc.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+---
+Changes V1 -> V2:
+* Carried Nathan's reviewed-by tag.
+* Rebased on mainline, as per Andrew.
+* Left off patch 2/2 from the series
+https://lore.kernel.org/lkml/20210407185456.41943-1-ndesaulniers@google.com/
+  I assume that dropping support for clang-10+GCOV will be held
+  separately for -next for 5.13, while this will be sent for 5.12?
 
-So it seems we are finally pretty much at correct code in need
-of performance tuning.
+ kernel/gcov/clang.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-> I *think* this test may be testing "send so many signals that it
-> triggers the signal queue overflow case".
->
-> And I *think* that the performance degradation may be due to lots of
-> unnecessary allocations, because ity looks like that commit changes
-> __sigqueue_alloc() to do
->
->         struct sigqueue *q = kmem_cache_alloc(sigqueue_cachep, flags);
->
-> *before* checking the signal limit, and then if the signal limit was
-> exceeded, it will just be free'd instead.
->
-> The old code would check the signal count against RLIMIT_SIGPENDING
-> *first*, and if there were m ore pending signals then it wouldn't do
-> anything at all (including not incrementing that expensive atomic
-> count).
+diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
+index 8743150db2ac..c466c7fbdece 100644
+--- a/kernel/gcov/clang.c
++++ b/kernel/gcov/clang.c
+@@ -70,7 +70,9 @@ struct gcov_fn_info {
+ 
+ 	u32 ident;
+ 	u32 checksum;
++#if CONFIG_CLANG_VERSION < 110000
+ 	u8 use_extra_checksum;
++#endif
+ 	u32 cfg_checksum;
+ 
+ 	u32 num_counters;
+@@ -145,10 +147,8 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
+ 
+ 	list_add_tail(&info->head, &current_info->functions);
+ }
+-EXPORT_SYMBOL(llvm_gcda_emit_function);
+ #else
+-void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
+-		u8 use_extra_checksum, u32 cfg_checksum)
++void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
+ {
+ 	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
+ 
+@@ -158,12 +158,11 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
+ 	INIT_LIST_HEAD(&info->head);
+ 	info->ident = ident;
+ 	info->checksum = func_checksum;
+-	info->use_extra_checksum = use_extra_checksum;
+ 	info->cfg_checksum = cfg_checksum;
+ 	list_add_tail(&info->head, &current_info->functions);
+ }
+-EXPORT_SYMBOL(llvm_gcda_emit_function);
+ #endif
++EXPORT_SYMBOL(llvm_gcda_emit_function);
+ 
+ void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
+ {
+@@ -293,11 +292,16 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
+ 		!list_is_last(&fn_ptr2->head, &info2->functions)) {
+ 		if (fn_ptr1->checksum != fn_ptr2->checksum)
+ 			return false;
++#if CONFIG_CLANG_VERSION < 110000
+ 		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
+ 			return false;
+ 		if (fn_ptr1->use_extra_checksum &&
+ 			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
+ 			return false;
++#else
++		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
++			return false;
++#endif
+ 		fn_ptr1 = list_next_entry(fn_ptr1, head);
+ 		fn_ptr2 = list_next_entry(fn_ptr2, head);
+ 	}
+@@ -529,17 +533,22 @@ static size_t convert_to_gcda(char *buffer, struct gcov_info *info)
+ 
+ 	list_for_each_entry(fi_ptr, &info->functions, head) {
+ 		u32 i;
+-		u32 len = 2;
+-
+-		if (fi_ptr->use_extra_checksum)
+-			len++;
+ 
+ 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
+-		pos += store_gcov_u32(buffer, pos, len);
++#if CONFIG_CLANG_VERSION < 110000
++		pos += store_gcov_u32(buffer, pos,
++			fi_ptr->use_extra_checksum ? 3 : 2);
++#else
++		pos += store_gcov_u32(buffer, pos, 3);
++#endif
+ 		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
+ 		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
++#if CONFIG_CLANG_VERSION < 110000
+ 		if (fi_ptr->use_extra_checksum)
+ 			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
++#else
++		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
++#endif
+ 
+ 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
+ 		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
 
-This is an interesting test in a lot of ways as it is testing the
-synchronous signal delivery path caused by an exception.  The test
-is either executing *ptr = 0 (where ptr points to a read-only page)
-or it executes an x86 instruction that is excessively long.
+base-commit: 3fb4f979b4fa1f92a02b538ae86e725b73e703d0
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
-I have found the code but I haven't figured out how it is being
-called yet.  The core loop is just:
-	for(;;) {
-		sigaction(SIGSEGV, &action, NULL);
-		sigaction(SIGILL, &action, NULL);
-		sigaction(SIGBUS, &action, NULL);
-
-		ret = sigsetjmp(jmp_env, 1);
-		if (done())
-                	break;
-		if (ret) {
-                	/* verify signal */
-                } else {
-                	*ptr = 0;
-                }
-	}
-
-Code like that fundamentally can not be multi-threaded.  So the only way
-the sigpending limit is being hit is if there are more processes running
-that code simultaneously than the size of the limit.
-
-Further it looks like stress-ng pushes RLIMIT_SIGPENDING as high as it
-will go before the test starts.
-
-
-> Also, the old code was very careful to only do the "get_user()" for
-> the *first* signal it added to the queue, and do the "put_user()" for
-> when removing the last signal. Exactly because those atomics are very
-> expensive.
->
-> The new code just does a lot of these atomics unconditionally.
-
-Yes. That seems a likely culprit.
-
-> I dunno. The profile data in there is a bit hard to read, but there's
-> a lot more cachee misses, and a *lot* of node crossers:
->
->>    5961544          +190.4%   17314361        perf-stat.i.cache-misses
->>   22107466          +119.2%   48457656        perf-stat.i.cache-references
->>     163292 ą  3%   +4582.0%    7645410        perf-stat.i.node-load-misses
->>     227388 ą  2%   +3708.8%    8660824        perf-stat.i.node-loads
->
-> and (probably as a result) average instruction costs have gone up enormously:
->
->>       3.47           +66.8%       5.79        perf-stat.overall.cpi
->>      22849           -65.6%       7866        perf-stat.overall.cycles-between-cache-misses
->
-> and it does seem to be at least partly about "put_ucounts()":
->
->>       0.00            +4.5        4.46        perf-profile.calltrace.cycles-pp.put_ucounts.__sigqueue_free.get_signal.arch_do_signal_or_restart.exit_to_user_mode_prepare
->
-> and a lot of "get_ucounts()".
->
-> But it may also be that the new "get sigpending" is just *so* much
-> more expensive than it used to be.
-
-That too is possible.
-
-That node-load-misses number does look like something is bouncing back
-and forth between the nodes a lot more.  So I suspect stress-ng is
-running multiple copies of the sigsegv test in different processes at
-once.
-
-
-
-That really suggests cache line ping pong from get_ucounts and
-incrementing sigpending.
-
-It surprises me that obtaining the cache lines exclusively is
-the dominant cost on this code path but obtaining two cache lines
-exclusively instead of one cache cache line exclusively is consistent
-with a causing the exception delivery to take nearly twice as long.
-
-For the optimization we only care about the leaf count so with a little
-care we can restore the optimization.  So that is probably the thing
-to do here.  The fewer changes to worry about the less likely to find
-surprises.
-
-
-
-That said for this specific case there is a lot of potential room for
-improvement.  As this is a per thread signal the code update sigpending
-in commit_cred and never worry about needing to pin the struct
-user_struct or struct ucounts.  As this is a synchronous signal we could
-skip the sigpending increment, skip the signal queue entirely, and
-deliver the signal to user-space immediately.  The removal of all cache
-ping pongs might make it worth it.
-
-There is also Thomas Gleixner's recent optimization to cache one
-sigqueue entry per task to give more predictable behavior.  That
-would remove the cost of the allocation.
-
-Eric
