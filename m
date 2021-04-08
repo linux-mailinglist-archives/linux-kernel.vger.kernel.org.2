@@ -2,92 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE5F358102
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D7D358106
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhDHKm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhDHKm4 (ORCPT
+        id S230223AbhDHKpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:45:18 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:42449 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhDHKpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:42:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8B5C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 03:42:44 -0700 (PDT)
-Date:   Thu, 08 Apr 2021 10:42:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617878562;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=REIpuV6gYx6eS5DpYJVoIv6/6yBIWsiP/f+DDQHXLTM=;
-        b=OJDS02IeLbavHNctW0NfdEATNzXmXKLHoW6S7ZJPYpph194hGfw7MYaTH2+DKdXXeZIwH0
-        eMfuavVHQRk5ihXdgnDzAJhdEWq4ZW6wijPMY1fr7GpAgTeSOkqhe/uAYv9u6PRJu2y/42
-        ItIo3dOnBqa8K3pTd4QvIdg199sg7JMYQ2ENMhP81639hNazUr2BUMEYIosvG2D/tKYuaV
-        yDj9flW383ohZgKRcVeFaEe9ctzxYtsyQHZGDHrfl7f8w32Ul+gdp6CkG6LPE3Hk/+4Knj
-        IaXG2ubmiz4cbKT9ik5TaHaZoMjb5sbRCIVfoEiTz8D2da5p86BDOBmSW94AMQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617878562;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=REIpuV6gYx6eS5DpYJVoIv6/6yBIWsiP/f+DDQHXLTM=;
-        b=4hVcNFqluQIO/kS6+duYH+Ni1xqX2IpkrGO2rlETZOrN508OC1zpl4ysH38HJJ9SY2vWWw
-        oROiZ/ZeLPYoEVCw==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/wpcm450: Drop COMPILE_TEST
-Cc:     j.neuschaefer@gmx.net, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+        Thu, 8 Apr 2021 06:45:15 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MZTVu-1l6kMj0BHi-00WYhw; Thu, 08 Apr 2021 12:45:03 +0200
+Received: by mail-wm1-f53.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so3793931wmq.1;
+        Thu, 08 Apr 2021 03:45:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532U5DmibPh5axgL06iKWCJDxcQM065UjrxcNOQs6UVtqhBfYMTK
+        I4eN57J54/L8hQgd75IY/BgJxXQnSZ6owHhCfrA=
+X-Google-Smtp-Source: ABdhPJytz/lV77i5o3bCVeCx28eGBRpFGJa3HAhceDBuu8+SNlIqf7YyHBd9MAcXBsV7ViVqwijCZWLATsW/w+YkaWY=
+X-Received: by 2002:a1c:4c0c:: with SMTP id z12mr7558571wmf.38.1617878702742;
+ Thu, 08 Apr 2021 03:45:02 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <161787856134.29796.13790161224686442471.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20210408092011.52763-1-david@redhat.com> <20210408092011.52763-3-david@redhat.com>
+ <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com> <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
+In-Reply-To: <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 8 Apr 2021 12:44:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
+Message-ID: <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
+ aspeed or etnaviv
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:01bNjQRf0DYjZTk/3T6t8Ul/ByuLNZHbaYNUKAIkE/wUn0iS+nJ
+ r+h1hTknz6RnJwK+4yvsSTTMDMfP0wL/SBleBUgrfq8H2feG3qdKiYvzS8OVk72H7KQScSR
+ knajtXwvzME3w0XfFP0a/6Wd30DjfL/sgcg7Bf7y7ZaQXKCU4GVJL2zM8mqHXzPWrBP2UHe
+ 10Efb4EJhESAXIRtFm2Zw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aDTbPNUdFEo=:vhAsJPTvzcLggZm9K/4Tpl
+ htY+I+Iu8AdJIb0v4563U2egO7I4kONwaespbZfWaJXeQWBb+fVkWGntATwNxaDywY24u4S3F
+ 94wUCL6AZJz0UEEHJm8NQeMUCts0nLcS73G0AUpXicJ9ovYIG1CQDXmqwLgkIOAxmsiEtFR6I
+ ULAL3i9ElfeRXPsX1QFTuDb0gmpskonTu6j+cpupC+3EoSedZWz3ERUyCwyzlpBBa67zwOqJL
+ KJ8x8miIl2o+cagsDe+3/iV7Y7SbCHne4zTfjmxDRarhU4OMIZBoNGUfCouWNQ/c9bvvVZ4nb
+ Y/srdzXinqVQGwisicSq7/fOhhcyCC5F9isVUG1OQ28VA+HSgI4HhM2ov6XmRXTnwwNCXWsNZ
+ Z+F4fMpsEOKMZope86rm/lIdg/JGRqWNEPHjw8tXgCh+eNkdIoVkJ0nqdhWSoxRT97T+fPvln
+ R5kuG+6wD0SkwOuMaBYimNtIYZ3GFF7Yt/Wgt8pewIjWrSBdpeIkkhpmGW5Vnk7H7g7/PdKA0
+ qlPWufSxFXKY/CCB2WSl6Y6xsMryR6lSxzD8BctnF1OwB1l0xAR0074Knkm1Bpy8JPWoylhgE
+ XXZnWjddIwV59gB0NeRvEsVNvLZJPK1T63
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqc=
-hip:
+On Thu, Apr 8, 2021 at 12:29 PM David Hildenbrand <david@redhat.com> wrote:
+> On 08.04.21 12:20, Arnd Bergmann wrote:
+> > On Thu, Apr 8, 2021 at 11:22 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> Random drivers should not override a user configuration of core knobs
+> >> (e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
+> >> dependencies and manual overrides.
+> >>
+> >> "This is similar to "select" as it enforces a lower limit on another
+> >>   symbol except that the "implied" symbol's value may still be set to n
+> >>   from a direct dependency or with a visible prompt."
+> >>
+> >> Implying DRM_CMA should be sufficient, as that depends on CMA.
+> >>
+> >> Note: If this is a real dependency, we should use "depends on DMA_CMA"
+> >> instead -  but I assume the driver can work without CMA just fine --
+> >> esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
+> >
+> > 'imply' is almost never the right solution, and it tends to cause more
+> > problems than it solves.
+>
+> I thought that was the case with "select" :)
 
-Commit-ID:     94bc94209a66f05532c065279f4a719058d447e4
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platfo=
-rms/94bc94209a66f05532c065279f4a719058d447e4
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 08 Apr 2021 08:56:27 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 08 Apr 2021 11:37:14 +01:00
+Yes, but that's a different set of problems
 
-irqchip/wpcm450: Drop COMPILE_TEST
+> >
+> > In particular, it does not prevent a configuration with 'DRM_CMA=m'
+>
+> I assume you meant "DRM_CMA=n" ? DRM_CMA cannot be built as a module.
 
-This driver is (for now) ARM specific, and currently doesn't
-build with a variety of architectures (ia64, RISC-V, x86_64
-at the very least).
+Ok, at least that makes it easier.
 
-Drop COMPILE_TEST from Kconfig until it gets sorted out.
+> > and 'DRMA_ASPEED_GFX=y', or any build failures from such
+> > a configuration.
+>
+> I don't follow. "DRM_CMA=n" and 'DRMA_ASPEED_GFX=y' is supposed to work
+> just fine (e.g., without HAVE_DMA_CONTIGUOUS) or what am I missing?
 
-Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/irqchip/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I thought you were trying to solve the problem where DRMA_ASPEED_GFX
+can optionally link against CMA but would fail to build when the CMA code
+is in a loadable module.
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 38ad9dc..715eb43 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -579,7 +579,7 @@ config MST_IRQ
-=20
- config WPCM450_AIC
- 	bool "Nuvoton WPCM450 Advanced Interrupt Controller"
--	depends on ARCH_WPCM450 || COMPILE_TEST
-+	depends on ARCH_WPCM450
- 	help
- 	  Support for the interrupt controller in the Nuvoton WPCM450 BMC SoC.
-=20
+If the problem you are trying to solve is a different one, you need a different
+solution, not what I posted above.
+
+> > If you want this kind of soft dependency, you need
+> > 'depends on DRM_CMA || !DRM_CMA'.
+>
+> Seriously? I think the point of imply is "please enable if possible and
+> not prevented by someone else".
+
+That used to be the meaning, but it changed a few years ago. Now
+it means "when a used manually turns on this symbol, turn on the
+implied one as well, but let them turn it off again if they choose".
+
+This is pretty much a NOP.
+
+> Your example looks more like a NOP - no?
+> Or will it have the same effect?
+
+The example I gave is only meaningful if both are tristate, which is
+not the case here as you explain.
+
+It is a somewhat awkward way to say "prevent this symbol from
+being =y if the dependency is =m".
+
+      Arnd
