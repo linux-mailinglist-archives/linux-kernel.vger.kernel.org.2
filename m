@@ -2,335 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFA135885E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A29C358863
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhDHP2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:28:23 -0400
-Received: from mail-bn8nam12on2121.outbound.protection.outlook.com ([40.107.237.121]:58113
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231630AbhDHP2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:28:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lMBdFn5+47f3c63Gifsk6StC0iBOIKp66OKmcM6KNT+1bSfqtIwcaeSj4NzvCeWRUOeEu13nvw9stZb114QW4Njd6uidJOnez+9Tqwq77/RhGgE2Qx3WxyXhjOpkkzsj/+5JybhaD1TRmLU0X9MZMPbMNlBC3vT22RADF4yOazitAQTuRDbSNFujzSwUjBQCCQvTbxx2z3CMK9yu2/6nb07vGab7JSpkLd6xplyUQuSEsENtXh8nN245p0ZL9pfPIrXrplNYYfnt5o+b1tbbRYFDMpMjBDJQheXBsZZG63B7mKSGZjMCB2WEVIvRoDDmmmyOpoFsSGUsB1OO7uYgww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Du9VkxET0U0ouS0RKD+RK+0P+3dPuLfCbKiOGz4JGns=;
- b=d0S8H9dbUaL9taLXGUl8bVoM5HR99jmaZCZonsD+fCuXs/wyKAZjUf/G43LNspe386hKbxvkZKLKDpex1/BWNZ6S7mlYdggtAjrxZgKeatxyd//+gHDygDSMqdZSEPc3jqBbWx9R/MLEMO8aXjxx7L9bvN2QAW9DWUljQTK6ej6JmKfG725n7WK97+DtOhsz5JjcthRAQ6HIFwRmiAJqy5KoI3IAURKN+bSdn5c7YMk0jIQEwjzdQgQMdcJaHGwReiz/RW3wSccdegJK6P+P8GS+EykyKxPgnNoOZSZ7gBskFK87nvgvuhgVOwZCa40o9Fve0eR/HgtYj3ndE+MpdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fortanix.com; dmarc=pass action=none header.from=fortanix.com;
- dkim=pass header.d=fortanix.com; arc=none
+        id S231931AbhDHP2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhDHP2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:28:32 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F8FC061760;
+        Thu,  8 Apr 2021 08:28:21 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso2632404oti.11;
+        Thu, 08 Apr 2021 08:28:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fortanix.onmicrosoft.com; s=selector2-fortanix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Du9VkxET0U0ouS0RKD+RK+0P+3dPuLfCbKiOGz4JGns=;
- b=W+RIHDoYH6p85eZLEp6uQOamelrszuFaU5XGgqNs8DcoPK23Dq/36Yaro/Pxunhdxxjg1IM504/lxfLx76/nGRr02CndABAzyIRDYZseoZS6yAVxHAR/HNo9xHXBDAxHCsVRW2NXPIYYsbOpVVIjxOX3g4M1ufc1unpxzQaIKTc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=fortanix.com;
-Received: from BY5PR11MB4260.namprd11.prod.outlook.com (2603:10b6:a03:1ba::30)
- by SJ0PR11MB5168.namprd11.prod.outlook.com (2603:10b6:a03:2dc::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Thu, 8 Apr
- 2021 15:28:08 +0000
-Received: from BY5PR11MB4260.namprd11.prod.outlook.com
- ([fe80::3ca5:41b6:52e:edc0]) by BY5PR11MB4260.namprd11.prod.outlook.com
- ([fe80::3ca5:41b6:52e:edc0%4]) with mapi id 15.20.4020.017; Thu, 8 Apr 2021
- 15:28:07 +0000
-Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Raoul Strackx <raoul.strackx@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
- <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
- <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
- <0498080e-6fdc-ed6d-8efa-d9c3265fe7e5@intel.com>
- <9d15aae0-078a-ed72-6c14-155cd1bf27c5@fortanix.com>
- <247ffbee-0ef6-1b6f-75aa-2dc06df42d5d@intel.com>
- <f94e05f7-e6d0-9253-d74c-09cd200702af@fortanix.com>
- <4a122198-054f-609e-e96c-b69ff941c8a7@intel.com>
- <9a841584-65e8-31e9-6bd4-0140b33434e8@fortanix.com>
- <5af533e2-5bfd-8edc-0eaa-6fd3ddebb211@intel.com>
- <3a8cec45-87e6-9192-e556-2f3c85ec16dd@fortanix.com>
- <3eaead9e-e197-4bbb-5666-a6fb24b2b349@intel.com>
- <619aad50-073d-b0a4-6dcd-3e222166c4a3@fortanix.com>
- <1eec29ab-b979-7919-677b-2cfa147c4c61@intel.com>
-From:   Jethro Beekman <jethro@fortanix.com>
-Message-ID: <2c38deba-47c1-2800-1215-a3a12cc06316@fortanix.com>
-Date:   Thu, 8 Apr 2021 17:27:59 +0200
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LsdRa6iy/xmQUw99x8SNZbDuHwi/i+r9ztnLBYDaBaI=;
+        b=eu6aTLkXfWL/kyIqpbrHPOO0vGIgodwXL2FhqotyqlU7X9igJV+Z/HoCErYgGGguk/
+         PE2/N9Lj+zbQB5OVjTWv2ZKp3aLdDUA1Tb6ZHTOlZVT5rg0G5/5QOMrfQR8XoBSxy7R0
+         Fbwo4A1DSLyMONn0khRS08zU496IZ7yA00X+jCmRagqTM29x0qervzGWx5gb9nB3Ah2r
+         UaAb9bw9zCvH+zor9oYZcWjf9A7oFsliZ5KEmrl2wSY2MncWHuSw9gLykmAobnIdzXAK
+         yUxKo9E+I6G6t6RlEzuD1Ux5DEPJ+zkHYrY+VigETUMGcQ3W6GanvqCedVyfWx7Xiq4o
+         IL7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LsdRa6iy/xmQUw99x8SNZbDuHwi/i+r9ztnLBYDaBaI=;
+        b=Lftn9EuB6ph9TjmZY7wWh5r0bEfseU5sIgejv+sq3gFSNFrCtsI7qyC6BF+cDFReHH
+         U6CYWB97PUq/UYi2u/GYnbu1lVrnlc1hxmjXFhq73DZho+4RKtP5DwYJ/bn/ilLuGt2w
+         FVv0E+lgCNhhcvVU2/ihSUduNNyOfeYEFbyADiVh9DG/T/kwkILZPfOf+Ze522WT1nJD
+         HBsNDVvl9AXv1NCZD27n7tg6fnRYH2OylqznofJVEZHEFS9h6tdjxfl6AnTtHj0aA4im
+         jdrUhYEn4cW8Fyl77wyRhgqOlksgf0lE3rPkjeqZfgUVSOkm7ZkpopI5bYSL+BqHB9kT
+         pIhA==
+X-Gm-Message-State: AOAM531UzFO79Dj9oZrRr4gv/I0zA6LHytOaazfRPR6GJzRk9La86u2M
+        cW9oBtyRWszNMOsZMwAP3soD8sShv5E=
+X-Google-Smtp-Source: ABdhPJxM+bJlJd3+TUlRebSyx4GmyjMnyyalwPI47uPwidHpOjwMTSiSfEdwga2U8fZ++w5Jk4Zkrg==
+X-Received: by 2002:a05:6830:1644:: with SMTP id h4mr8411698otr.349.1617895700301;
+        Thu, 08 Apr 2021 08:28:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w199sm5000908oif.41.2021.04.08.08.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 08:28:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     frowand.list@gmail.com, Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+References: <20210408144349.2215143-1-frowand.list@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <a17b77bd-9a1b-dc55-36ed-d2098f6d8c5d@roeck-us.net>
+Date:   Thu, 8 Apr 2021 08:28:17 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <1eec29ab-b979-7919-677b-2cfa147c4c61@intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms080205090505090008070807"
-X-Originating-IP: [213.127.124.30]
-X-ClientProxiedBy: AM4PR0701CA0015.eurprd07.prod.outlook.com
- (2603:10a6:200:42::25) To BY5PR11MB4260.namprd11.prod.outlook.com
- (2603:10b6:a03:1ba::30)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.4.219] (213.127.124.30) by AM4PR0701CA0015.eurprd07.prod.outlook.com (2603:10a6:200:42::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Thu, 8 Apr 2021 15:28:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d355b8d1-bb5a-429c-f39d-08d8faa2e91c
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB5168:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB5168DEAA58B2F0D5B21FF636AA749@SJ0PR11MB5168.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yK1thGOqaYzrXV/0HRfZjE5Ldgdt0MmPWpPyg9xwAH/B6A6L/jmGek4LPncs52dpY2f+4mPMon7l8Q+FYPMJyG2RfKPAYienmoKcdE341M2FeZKyzUai36OpcQGt3AWDhxfEppo7819ujSG5WZMGKibZrX/y5lDGstwEyRI7PeAdPsViSGOBk4J9X9hEaxsAGOw+SjaUbPiOzPDtvqby0ZRIl65ah5EsCf/CjErZ8OeIlxry46f8HwnY0aCB0pfncwR0bKq0R0caMSO0Vw2dBloeUYeuy59pHIi+vUEDanOEFpxEuiHzW6u4pfBPUoNWN1i/YiLN9pYwr+tepFK8C+vABPEVWut/r+rtskw77IrHp0MNpM+VaZK/BrmPUqsEHELknAWPu/R1ObVLBx+qAiX2KEmLBpJnhPj/vOVHBKybHcDrVs6YtRDH3Nybv4Mmw59giHvJiI9NwpF0oRb66sPptxMu4tFhRkxRyGgCT0qS4KIKCF3VL7oZW40lfEK5flwMQcUHNiXuqs6RQA1Q+5xU96987+hZ+bCzrLLk9WOU9/8a9YrwXVJ9IwObOLcTMs19CkgfXtfTVfAXQjwPj5ha2kXYxFR2yvn6Yps2DunsLNjdDcaB65fQnSCLbZ3IV+POGzdfQ1r5gzRf40n4qB7iu4mB6lqBrCB1IbpqE9bDj2IoZAofhqWE8zRXbtKJdNE3rQifGrFVrZ+Ak+bFoaCITvtrIs/h0U+StTHUa3SHtesB2sPTlBgQGvodakmjrmiTePv6HOrtLrnCNBfZSQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4260.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39840400004)(136003)(396003)(366004)(316002)(5660300002)(36756003)(31686004)(8676002)(16576012)(235185007)(2906002)(921005)(83380400001)(110136005)(956004)(2616005)(7416002)(53546011)(478600001)(66946007)(38350700001)(31696002)(6486002)(66556008)(33964004)(66476007)(26005)(6666004)(16526019)(186003)(8936002)(86362001)(38100700001)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UHJlMjVpMXp1SEs0NStYN0I5TlRXeFZxL0ZUaUNoY0EvRVFrVlFXMjRqNkM1?=
- =?utf-8?B?Y3g4WlBxSEdYNDVvemp2bnNZV3g2T2gyMW1MUjVwNE9lTmVuMVd0Z1ZQK3RM?=
- =?utf-8?B?VUlQNk1rd0RvUnEzSUdQRFozYWFrU3htWmlGTnBjdTh3RUs3Z3pLcjZNNnhY?=
- =?utf-8?B?NHNwaHBob2JBZ0ZWKzFQTCsxT3hJMmZiNGEwV0ZhNDlzVXFtNHFEUUtieGRF?=
- =?utf-8?B?dGFReHZrZlRseUJnYWZWemh5ZGV2cGdZYTllTUVVN2hnb3Y0K1VPWmpKb2FD?=
- =?utf-8?B?bSthWWdDejNKOGJyanNqNzk2YUFycnZsOGZBajZXeDVvMlNBRy9MNk1xbG9B?=
- =?utf-8?B?LzA3VTg1N2FKNDgyK1ZPNUlBMHI4SzRzNXNWRUtFWEF3SVRxOUpuV09zRkcv?=
- =?utf-8?B?M1M5VGJVdnpCTVVxYis0T3ZydThaSmdsakttZE9BVWJMaGQ2WTdlTFlSMW5J?=
- =?utf-8?B?ZTZUWVo2SjUzby9xTnlpUGRGQkN1alkrcE15QzlBVDZLVXNrait4WEJlT3BG?=
- =?utf-8?B?R2N2bk5CdENkUlNSRUhjK29DaG91clk4UWZQaGc4alhGV2JaYWloOHBIVkJu?=
- =?utf-8?B?SWNuQkNSOUFnVmMxSVM4bmh4NzVzVzJvM0pzN0g5YlEvajBrU3JHQkNUT2Zx?=
- =?utf-8?B?UjdoOUJQSUl0OHNIdFZOQmxRcTV5dnQ5bW5YcFNvWlZpS3pPYXdOeHE3OVI2?=
- =?utf-8?B?MHcwMmE1YnlTWVc5bEtCNTZWb21MM2xDZHBWU29iSzJTVElBNE90bGo3YnFS?=
- =?utf-8?B?alZnekJWU3pwQk5oR3psT0pQcHlydG5aWkk5elJtck85dUpnVEgybDhXMEt1?=
- =?utf-8?B?N1I2VWlKTjZ5Tng3dXBwd2hkWUIvS1UwVWNmYWJyNFlvcStYRERLQUNTN3Fs?=
- =?utf-8?B?YnNDcU9HWGlmbmt6R3U0bWx5UVhzV3owdTIvaWQxSXpXUk5vZkZTRVpiZnRN?=
- =?utf-8?B?Yjh1NU15OE9mS0g4ZHhTdkIvQlFuSnF5T283cDJEMGJpblJhNmFKaXgvTXFO?=
- =?utf-8?B?eXYraDJXSWpDUXB6VlhCcFhqek5jVWpodExGVGFPVFpxODcrMWNnazJaell2?=
- =?utf-8?B?b2p0OE41QmVOSDBHSEphLy9tY2h1Vm5mNzdhZDk0dEt3M3BxbjJKZlZCZFMr?=
- =?utf-8?B?Mm4rSWRvSGdCazVDbDZNMmNoQ3RXZVVyTElVb3IvZkdZUk83eWRieDZoNEdr?=
- =?utf-8?B?b05rZFhja2xObFVoemFWUEFKQnl2QjVlSldjN2pzdW0vVGNwbWJJdkdHTGJV?=
- =?utf-8?B?WEZYRi9rUXY5cnZJSDJJVXlPRUxCNnordTZUTUhkNUUrTGtPTGtyeFdNNklV?=
- =?utf-8?B?V1Q4VlB2YitMMnRjVkdNN1dQa3RET0FNVS91UVZmWndHU2FVc3U1dnRmYmt5?=
- =?utf-8?B?RXozVUxOMkphcmJsQnI3UU9zQi9QcEJ4NE9UODBQaVZ6S2FIQ3E5SzZMNjds?=
- =?utf-8?B?K2dYS1BQVjV4azQ5MVdtVDV3NHBFbStZV1BnVFJCT2N6YUxudlhUbWt0NUJ2?=
- =?utf-8?B?ZmN3cUpvS0tHZ2JXMG43YnhwMFA0cHpNa0h4dlBGcm04V0FCcTlUVFNLUW9H?=
- =?utf-8?B?Ymg1a2htcVg0TE1ZWEVYWEIxZXFjRmkwQXVRbysyQ0tDeGVqUGk5d3RHWWNP?=
- =?utf-8?B?VWoxVlJHQWRwNUpGZVRLS1h3NDNSaFBVOFcxQmdsMWI3KzFFdVZuN2syVHFp?=
- =?utf-8?B?MDcvaGNZMHhjS2FBWStLZ2FlQVYzblREM2hxT3RUeCsvNEVmU1hlMXBaRGlj?=
- =?utf-8?Q?vt0dRnd88lHPMhk4PBrcJwLwt1CuI2V1Voaj6pj?=
-X-OriginatorOrg: fortanix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d355b8d1-bb5a-429c-f39d-08d8faa2e91c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4260.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 15:28:07.8648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: de7becae-4883-43e8-82c7-7dbdbb988ae6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vM9NiRr8mMU3y5KjbgR7Q4F2Lm1mbdyTeSgPcCcUHXH/nypDI+cVrMk9qyUeQFQdPeJZckfB+8GOY13c+QFm0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5168
+In-Reply-To: <20210408144349.2215143-1-frowand.list@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------ms080205090505090008070807
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 4/8/21 7:43 AM, frowand.list@gmail.com wrote:
+> From: Frank Rowand <frank.rowand@sony.com>
+> 
+> The Devicetree standard specifies an 8 byte alignment of the FDT.
+> Code in libfdt expects this alignment for an FDT image in memory.
+> kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
+> with kmalloc(), align pointer, memcpy() to get proper alignment.
+> 
+> The 4 byte alignment exposed a related bug which triggered a crash
+> on openrisc with:
+> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+> as reported in:
+> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+> 
+> ---
+> 
+> Please review carefully, I am not yet fully awake...
+> 
+> changes since version 1:
+>   - use pointer from kmalloc() for kfree() instead of using pointer that
+>     has been modified for FDT alignment
+> 
+>  drivers/of/of_private.h |  2 ++
+>  drivers/of/overlay.c    | 28 +++++++++++++++++-----------
+>  drivers/of/unittest.c   | 12 +++++++++---
+>  3 files changed, 28 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+> index d9e6a324de0a..d717efbd637d 100644
+> --- a/drivers/of/of_private.h
+> +++ b/drivers/of/of_private.h
+> @@ -8,6 +8,8 @@
+>   * Copyright (C) 1996-2005 Paul Mackerras.
+>   */
+>  
+> +#define FDT_ALIGN_SIZE 8
+> +
 
-On 2021-04-02 22:48, Dave Hansen wrote:
-> On 4/2/21 1:20 PM, Jethro Beekman wrote:
->> On 2021-04-02 21:50, Dave Hansen wrote:
->>> Again, how does this save space?
->>>
->>> Are you literally talking about the temporary cost of allocating *one=
-* page?
->>
->> No I'm talking about the amount of disk space/network traffic needed
->> to distribute the application.
->=20
-> Am I just horribly confused about how executable formats work?
->=20
-> Executables go through an SGX loader that copies them into SGX memory
-> with the kernel's help.
->=20
-> That executable can have *ANY* format, really.
->=20
-> Then, a loader needs to read that format and turn it into data that can=
+Wasn't there a define for that elsewhere ?
 
-> be shoved into the kernel.
+>  /**
+>   * struct alias_prop - Alias property in 'aliases' node
+>   * @link:	List node to link the structure in aliases_lookup list
+> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> index 50bbe0edf538..e0397d70d531 100644
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -57,7 +57,7 @@ struct fragment {
+>   * struct overlay_changeset
+>   * @id:			changeset identifier
+>   * @ovcs_list:		list on which we are located
+> - * @fdt:		FDT that was unflattened to create @overlay_tree
+> + * @fdt:		base of memory allocated to hold aligned FDT that was unflattened to create @overlay_tree
+>   * @overlay_tree:	expanded device tree that contains the fragment nodes
+>   * @count:		count of fragment structures
+>   * @fragments:		fragment nodes in the overlay expanded device tree
+> @@ -719,8 +719,8 @@ static struct device_node *find_target(struct device_node *info_node)
+>  /**
+>   * init_overlay_changeset() - initialize overlay changeset from overlay tree
+>   * @ovcs:	Overlay changeset to build
+> - * @fdt:	the FDT that was unflattened to create @tree
+> - * @tree:	Contains all the overlay fragments and overlay fixup nodes
+> + * @fdt:	base of memory allocated to hold aligned FDT that was unflattened to create @tree
+> + * @tree:	Contains the overlay fragments and overlay fixup nodes
+>   *
+>   * Initialize @ovcs.  Populate @ovcs->fragments with node information from
+>   * the top level of @tree.  The relevant top level nodes are the fragment
+> @@ -873,7 +873,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>   * internal documentation
+>   *
+>   * of_overlay_apply() - Create and apply an overlay changeset
+> - * @fdt:	the FDT that was unflattened to create @tree
+> + * @fdt_align:	the FDT that was unflattened to create @tree, aligned
+> + * @fdt:	base of memory allocated to hold *@fdt_align
+>   * @tree:	Expanded overlay device tree
+>   * @ovcs_id:	Pointer to overlay changeset id
+>   *
+> @@ -912,8 +913,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
+>   * id is returned to *ovcs_id.
+>   */
+>  
+> -static int of_overlay_apply(const void *fdt, struct device_node *tree,
+> -		int *ovcs_id)
+> +static int of_overlay_apply(const void *fdt_align, const void *fdt,
+> +		struct device_node *tree, int *ovcs_id)
 
-Sure, you can define any compression format or conversion rules between e=
-xecutable formats. But the native =E2=80=9Cexecutable format=E2=80=9D for=
- SGX is very clearly defined in the Intel SDM as a specific sequence of E=
-CREATE, EADD, EEXTEND and EINIT calls. It's that sequence that's used for=
- loading the enclave and it's that sequence that's used for code signing.=
- So when I say save space I mean save space in the native format.
+Is fdt_align used anywhere in this function ?
 
-Not EEXTENDing unnecessarily also reduces enclave load time if you're loo=
-king for additional arguments.
+On a side note, it seems messy that of_overlay_apply() calls kfree on error.
+That would probably be better handled in the calling code.
 
-> The simplest way to do this is to just
-> mmap() the executable and point the kernel ioctl()'s at the executable'=
-s
-> pages one-by-one.
->=20
-> The other way a loader *could* work is to copy the data to a temporary
-> location and then hand the temporary location to the SGX ioctl()s.
->=20
-> Let's say the kernel *REQUIRED* page-aligned and page-sized ioctl()
-> arguments forever.  If an executable had a 256-byte-sized chunk of data=
-,
-> all the loader would have to do is allocate a page, copy the data in
-> there, and then pass that whole page into the ioctl().
->=20
-> In other words, the loading restrictions (page alignment) have little t=
-o
-> nothing to do with the format of the thing loading the executable.
->=20
-> But, in no way does a kernel page-size-based ABI *REQUIRE* that an
-> underlying binary format represent things only in page-sized chunks.
-> Look at how many page-sized executables there are in /bin.  Yet, they
-> can only be mapped into the address space in PAGE_SIZE increments.
->=20
->>>>> Does any actual, real-world enclave want this functionality?  Why?
->>>
->>> I didn't see an answer on this one.
->>
->> Yes, we have enclaves that use this functionality. They already exist
->> so they can't be changed (without changing the measurement) and we'd
->> like to stop using the out of tree driver as soon as possible.
->> However, we are not able to load the enclaves.
-> OK, so please give this series another shot.  Please explain why you
-> *ACTUALLY* need it and what the goals are.  Please explain why you can'=
-t
-> just relax the restrictions of the existing add ioctl() to take
-> <PAGE_SIZE arguments.
->=20
-> As far as I can tell, there are only two coherent arguments for this
-> functionality:
-> 1. It makes the loader simpler so that it doesn't need temporary pages
-> 2. It would allow old enclaves created with non-upstream-Linux SGX
->    implementations to end up with the same signatures on these
->    implementations as upstream Linux.
->=20
-> I find both of those pretty weak arguments.  Doing #2 just for the
-> out-of-tree Linux implementation also encourages folks to establish ABI=
+>  {
+>  	struct overlay_changeset *ovcs;
+>  	int ret = 0, ret_revert, ret_tmp;
+> @@ -953,7 +954,7 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>  	/*
+>  	 * after overlay_notify(), ovcs->overlay_tree related pointers may have
+>  	 * leaked to drivers, so can not kfree() tree, aka ovcs->overlay_tree;
+> -	 * and can not free fdt, aka ovcs->fdt
+> +	 * and can not free memory containing aligned fdt, aka ovcs->fdt
 
-> out of the tree and then foist it on upstream later.  That's not super =
-cool.
-> But, I guess this would be nice to the folks that have gone to the
-> trouble of building SGX enclaves for all these years with no upstream
-> support.
+fdt doesn't point to the aligned fdt, though. ovcs->fdt is the allocated fdt.
 
-Linux doesn't exist in a vacuum. People who write SGX applications write =
-those applications for SGX, not for Linux. For Linux to claim to support =
-SGX version 1, it should support all SGX version 1 applications. The curr=
-ent implementation is not SGX version 1, it's some limited subset of it.
+>  	 */
+>  	ret = overlay_notify(ovcs, OF_OVERLAY_PRE_APPLY);
+>  	if (ret) {
+> @@ -1014,7 +1015,8 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
+>  int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>  			 int *ovcs_id)
+>  {
+> -	const void *new_fdt;
+> +	void *new_fdt;
+> +	void *new_fdt_align;
+>  	int ret;
+>  	u32 size;
+>  	struct device_node *overlay_root;
+> @@ -1036,18 +1038,22 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>  	 * Must create permanent copy of FDT because of_fdt_unflatten_tree()
+>  	 * will create pointers to the passed in FDT in the unflattened tree.
+>  	 */
+> -	new_fdt = kmemdup(overlay_fdt, size, GFP_KERNEL);
+> +	size += FDT_ALIGN_SIZE;
+> +	new_fdt = kmalloc(size, GFP_KERNEL);
+>  	if (!new_fdt)
+>  		return -ENOMEM;
+>  
+> -	of_fdt_unflatten_tree(new_fdt, NULL, &overlay_root);
+> +	new_fdt_align = PTR_ALIGN(new_fdt, FDT_ALIGN_SIZE);
+> +	memcpy(new_fdt_align, overlay_fdt, size);
+> +
 
-The cost to Linux for supporting all of SGX version 1 seems excessively l=
-ow.
+size includes FDT_ALIGN_SIZE, so that copies beyond the end of the buffer
+(or I am missing something).
 
-SGX defines lots of things and you may not see the use case for all of th=
-is immediately. No one has a usecase for creating enclaves with SECS.SSAF=
-RAMESIZE =3D 1000 or TCS.NSSA =3D 3. Why did you not demand checks for th=
-is in the ECREATE/EADD ioctls?
+> +	of_fdt_unflatten_tree(new_fdt_align, NULL, &overlay_root);
+>  	if (!overlay_root) {
+>  		pr_err("unable to unflatten overlay_fdt\n");
+>  		ret = -EINVAL;
+>  		goto out_free_new_fdt;
+>  	}
+>  
+> -	ret = of_overlay_apply(new_fdt, overlay_root, ovcs_id);
+> +	ret = of_overlay_apply(new_fdt_align, new_fdt, overlay_root, ovcs_id);
+>  	if (ret < 0) {
+>  		/*
+>  		 * new_fdt and overlay_root now belong to the overlay
+> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+> index eb100627c186..29081a8b32e6 100644
+> --- a/drivers/of/unittest.c
+> +++ b/drivers/of/unittest.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/device.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/kernel.h>
+>  
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-mux.h>
+> @@ -1408,6 +1409,7 @@ static void attach_node_and_children(struct device_node *np)
+>  static int __init unittest_data_add(void)
+>  {
+>  	void *unittest_data;
+> +	void *unittest_data_align;
+>  	struct device_node *unittest_data_node, *np;
+>  	/*
+>  	 * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
+> @@ -1415,7 +1417,7 @@ static int __init unittest_data_add(void)
+>  	 */
+>  	extern uint8_t __dtb_testcases_begin[];
+>  	extern uint8_t __dtb_testcases_end[];
+> -	const int size = __dtb_testcases_end - __dtb_testcases_begin;
+> +	u32 size = __dtb_testcases_end - __dtb_testcases_begin;
+>  	int rc;
+>  
+>  	if (!size) {
+> @@ -1425,11 +1427,15 @@ static int __init unittest_data_add(void)
+>  	}
+>  
+>  	/* creating copy */
+> -	unittest_data = kmemdup(__dtb_testcases_begin, size, GFP_KERNEL);
+> +	size += FDT_ALIGN_SIZE;
+> +	unittest_data = kmalloc(size, GFP_KERNEL);
+>  	if (!unittest_data)
+>  		return -ENOMEM;
+>  
+> -	of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
+> +	unittest_data_align = PTR_ALIGN(unittest_data, FDT_ALIGN_SIZE);
+> +	memcpy(unittest_data_align, __dtb_testcases_begin, size);
 
->=20
-> I'll try to look at it with fresh eyes once this is in place.
->=20
+Unless I am missing something, this copies beyond the end of unittest_data
+because FDT_ALIGN_SIZE was added to size. Maybe leave size alone and
+allocate size + FDT_ALIGN_SIZE ?
 
---
-Jethro Beekman | Fortanix
+Same as above, really.
 
+> +
+> +	of_fdt_unflatten_tree(unittest_data_align, NULL, &unittest_data_node);
+>  	if (!unittest_data_node) {
+>  		pr_warn("%s: No tree to attach; not running tests\n", __func__);
+>  		kfree(unittest_data);
+> 
 
---------------ms080205090505090008070807
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-JTNkQWN0YWxpcyUyMFMucC5BLiUyZjAzMzU4NTIwOTY3LGMlM2RJVD9jZXJ0aWZpY2F0ZVJl
-dm9jYXRpb25MaXN0O2JpbmFyeTA9oDugOYY3aHR0cDovL2NybDA1LmFjdGFsaXMuaXQvUmVw
-b3NpdG9yeS9BVVRILVJPT1QvZ2V0TGFzdENSTDAdBgNVHQ4EFgQUvpepqoS/gL8QU30JMvnh
-LjIbz3cwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4ICAQAmm+cbWQ10sxID6edV
-94SAhc1CwzthHFfHpuYS30gisWUfWpgp43Dg1XzG2in3VGV7XrzCCGZh4JM/XQWp+4oxmyV4
-2Qjz9vc8GRksgo6X2nYObPYZzQjda9wxsCB38i4G3H33w8lf9sFvl0xm4ZXZ2s2bF/PdqvrK
-0ZgvF51+MoIPnli/wJBw3p72xbk5Sb1MneSO3tZ293WFzDmz7tuGU0PfytYUkG7O6annGqbU
-1I6CA6QVKUqeFLPodSODAFqJ3pimKD0vX9MuuSa0QinH7CkiPtZMD0mpwwzIsnSs3qOOl60t
-IZQOTc0I6lCe1LLhrz7Q75J6nNL9N5zVwZ1I3o2Lb8Dt7BA13VFuZvZIzapUGV83R7pmSVaj
-1Bik1nJ/R393e6mwppsT140KDVLh4Oenywmp2VpBDuEj9RgICAO0sibv8n379LbO7ARa0kw9
-y9pggFzN2PAX25b7w0n9m78kpv3z3vW65rs6wl7E8VEHNfv8+cnb81dxN3C51KElz+l31zch
-FTurD5HFEpyEhzO/fMS5AkweRJIzwozxNs7OL/S/SVTpJLJL1ukZ1lnHHX0d3xCzRy/5HqfK
-3uiG22LPB5+RjNDobPAjAz2BKMfkF/+v0pzn8mqqkopQaJzEAbLbMpgQYHRCjvrUxxwjJyUF
-b2Z+40UNtMF4MTK7zTGCA/MwggPvAgEBMIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwH
-QmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBT
-LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBu
-kmvE8GLB9+EYd88699DiMA0GCWCGSAFlAwQCAQUAoIICLTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA0MDgxNTI3NTlaMC8GCSqGSIb3DQEJBDEiBCDm
-0fqHfTKC2pRqg5ecPjKjXI+DR6kTPbwk8sGJs4Y9KDBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCG
-SAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
-SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGnBgkrBgEEAYI3EAQxgZkwgZYw
-gYExCzAJBgNVBAYTAklUMRAwDgYDVQQIDAdCZXJnYW1vMRkwFwYDVQQHDBBQb250ZSBTYW4g
-UGlldHJvMRcwFQYDVQQKDA5BY3RhbGlzIFMucC5BLjEsMCoGA1UEAwwjQWN0YWxpcyBDbGll
-bnQgQXV0aGVudGljYXRpb24gQ0EgRzMCEG6Sa8TwYsH34Rh3zzr30OIwgakGCyqGSIb3DQEJ
-EAILMYGZoIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQ
-UG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0Fj
-dGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBukmvE8GLB9+EYd88699DiMA0G
-CSqGSIb3DQEBAQUABIIBABFQsI//NzPxUz3MKBKXMbgrNREDIKHyOysGrsL0lHpFo1ZQ3pN3
-xk1tBKUMf2ejrLaYBMQreQF1/hBQrBphFVh1Q6Dyn5wJ63Te43Qci3Z08LF44VuOsnwE3jS3
-3sqfARhG5vMd+JHcMsM0pzpyndTs/ssmz0b5Rnp1hc94Kx/Z+f1m3+Hz1ogE+/FLG+DV01L8
-t9NkkHIMOu+9engtTfrbmA1YMgQXnDh/nLpyNp5av3F//hx4eiPLRlqiZGoCUGfxsJNkNbX8
-UEOQdY3TVogmyT8n7FINFzctj4wEuV9RGsXvHh+0tIjg/WPos3Krjn2wp5Yc7otFmKnWWlNC
-jRoAAAAAAAA=
-
---------------ms080205090505090008070807--
