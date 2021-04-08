@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0376357E02
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D357E04
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhDHIZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhDHIZF (ORCPT
+        id S229690AbhDHI1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:27:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229539AbhDHI1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:25:05 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0D8C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:24:53 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t7so632399plg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 01:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=lqMgkJQYoqUfp1WF2Os45zue5ybF7IcJCuRBI7bg4uQ=;
-        b=SZEDIXirS114Eb5GuJte8T+YJ1JDlEOJA+5LURSp3329dYgjNRwKOFe8hpzPorkHsd
-         6/fBAaKNwmmiZQ5FU41qlajiInFScWcb3dRvNPSFbwFAfWNI5WIwuBAeAGjdyOyoptYp
-         TgwJpZXSTRbzepwiPB3qsQ2cRhHLsX4YkKBF7aL2yvxwPYYYmcBWqd8/lodjLuwRny2g
-         tJBmGxe268XgBB04t4BTB+mzBx8xSJINkYBdk5w7r6hr2SrfOOxCfdL0vMEBEFZnmmOh
-         ckOV8W8Rp85n7F4fCleVO6ZnKUHzSVhJH0RFtojqfYBbqlGTm8SPYUM7cjj7LsTgiFWV
-         PjEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=lqMgkJQYoqUfp1WF2Os45zue5ybF7IcJCuRBI7bg4uQ=;
-        b=XLpSi09/1vv4bTEoBdnm7ufFd3jjdAJ2qj59jEoQXXo42LQahwqmAkOGMBjiXKpx4N
-         U8j6y1Fnf3YmodljG+Hxr4B2PlsPzRzQsySCUHq26n/stJkQu4scjKj1P652LqsEzHKQ
-         MeHO1VNE2/eYsj73qjIfhrxC99WZWGmAoEdRNDHIzxVOJvXSM9BC6445xR78QkkgP9SG
-         GLpIDWT+kiEGygWj4hZcCMF/7Lo/dBWZrVJxWPlZgWo6ZyH6gzlYFAuzm5GxlcLTpvoC
-         MYTrXFJtlNf9/l2KPNpUMWwXQesA78ygSiTs0/xxYkR9ScQGvYeHNA1eE/jNqzIcBvkq
-         Jg1g==
-X-Gm-Message-State: AOAM530KO/Cd4jO7qDpbXmrazI9w4qTRLz2BJ0XIj7lkvR16yMDRA+Tt
-        hfbb1WFAD3IZsyJJNDP8RYo=
-X-Google-Smtp-Source: ABdhPJw2QAU2YRijtKDvsrutrmbGTgXpCV+OXgSBNfEzuLUC0368gUUZciRAsm8sgJdM1C3pQkmNqA==
-X-Received: by 2002:a17:902:d645:b029:e8:ec90:d097 with SMTP id y5-20020a170902d645b02900e8ec90d097mr6680046plh.47.1617870293084;
-        Thu, 08 Apr 2021 01:24:53 -0700 (PDT)
-Received: from kali ([152.57.40.190])
-        by smtp.gmail.com with ESMTPSA id 205sm24424032pfc.201.2021.04.08.01.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 01:24:52 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 13:54:49 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH] staging: rtl8712: added spaces around '+'
-Message-ID: <YG690ZIRdCEcjoM6@kali>
+        Thu, 8 Apr 2021 04:27:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617870421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tp5v2YH5Yi9li+KSzkJrd9m6gNC6HOE1WkYusKD5XUE=;
+        b=hFlA6QY2Dvv/iD8Bo64MaqHVwmMAmaP/5tjzOBx9jhdvL8cNPhfWORWW+vwX4VbOi3Xdkb
+        bojm6iOjGf3wTAvwKRDlO3l+wWjfBCU4HwJW+w+vfEIwi8OPVuVBbJD80093L9P1H5TO/R
+        CMDeC4fiT2EXFHalRwUPeQ0IhgNuPFM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-KQFmKFSkMIuDB2PSmWulJg-1; Thu, 08 Apr 2021 04:26:59 -0400
+X-MC-Unique: KQFmKFSkMIuDB2PSmWulJg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 687C36D241;
+        Thu,  8 Apr 2021 08:26:58 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-53.pek2.redhat.com [10.72.13.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 147DB5D9CC;
+        Thu,  8 Apr 2021 08:26:51 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     parav@nvidia.com, elic@nvidia.com
+Subject: [RFC PATCH] vdpa: mandate 1.0 device
+Date:   Thu,  8 Apr 2021 16:26:48 +0800
+Message-Id: <20210408082648.20145-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up Check:spaces preferred around that '+' (ctx:VxV)
-Reported by checkpatch
+This patch mandates 1.0 for vDPA devices. The goal is to have the
+semantic of normative statement in the virtio spec and eliminate the
+burden of transitional device for both vDPA bus and vDPA parent.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+uAPI seems fine since all the vDPA parent mandates
+VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+
+For legacy guests, it can still work since Qemu will mediate when
+necessary (e.g doing the endian conversion).
+
+Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/staging/rtl8712/wlan_bssdef.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/vdpa.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/staging/rtl8712/wlan_bssdef.h b/drivers/staging/rtl8712/wlan_bssdef.h
-index b54ccaacc527..ec3749813728 100644
---- a/drivers/staging/rtl8712/wlan_bssdef.h
-+++ b/drivers/staging/rtl8712/wlan_bssdef.h
-@@ -176,7 +176,7 @@ struct NDIS_802_11_WEP {
- #define MIC_CHECK_TIME	60000000
+diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+index 0fefeb976877..cfde4ec999b4 100644
+--- a/include/linux/vdpa.h
++++ b/include/linux/vdpa.h
+@@ -6,6 +6,7 @@
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+ #include <linux/vhost_iotlb.h>
++#include <uapi/linux/virtio_config.h>
  
- #ifndef Ndis802_11APMode
--#define Ndis802_11APMode (Ndis802_11InfrastructureMax+1)
-+#define Ndis802_11APMode (Ndis802_11InfrastructureMax + 1)
- #endif
+ /**
+  * vDPA callback definition.
+@@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+ {
+         const struct vdpa_config_ops *ops = vdev->config;
  
- struct	wlan_network {
++        /* Mandating 1.0 to have semantics of normative statements in
++         * the spec. */
++        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
++		return -EINVAL;
++
+ 	vdev->features_valid = true;
+         return ops->set_features(vdev, features);
+ }
 -- 
-2.30.2
+2.25.1
 
