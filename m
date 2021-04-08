@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1603358515
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD629358518
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhDHNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:46:28 -0400
-Received: from mga12.intel.com ([192.55.52.136]:16989 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231621AbhDHNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:46:27 -0400
-IronPort-SDR: tiJHfpoaO+pQMYY2NPJu1vig1BALs31A4KS71HT4wGCqxT/I27PE2EaM5Xu8SzWpmBLLiAstWI
- Rq8ucFToCDcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173019084"
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="173019084"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:46:16 -0700
-IronPort-SDR: PFuqVYXQVDMRqvIwcoIv55qr11MROY/k3kS/4SijUECqUDT5YvCwG7rd5losMtsAnji4W+GcuE
- /P1/Sjzi0x5A==
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="415776505"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:46:13 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Peter Xu" <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH -V2] NUMA balancing: reduce TLB flush via delaying
- mapping on hint page fault
-References: <20210402082717.3525316-1-ying.huang@intel.com>
-        <20210407082728.GA15768@suse.de>
-Date:   Thu, 08 Apr 2021 21:46:11 +0800
-In-Reply-To: <20210407082728.GA15768@suse.de> (Mel Gorman's message of "Wed, 7
-        Apr 2021 09:27:28 +0100")
-Message-ID: <87lf9syjmk.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229741AbhDHNr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:47:58 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53837 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhDHNrz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:47:55 -0400
+Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 138DlP9k044243;
+        Thu, 8 Apr 2021 22:47:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
+ Thu, 08 Apr 2021 22:47:25 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 138DlPXr044239
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 8 Apr 2021 22:47:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 05/13] tty: remove tty_warn()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
+ <20210408125134.3016837-6-gregkh@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <92b1f39d-9c9c-c319-a351-f3cb9a1c0497@i-love.sakura.ne.jp>
+Date:   Thu, 8 Apr 2021 22:47:21 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20210408125134.3016837-6-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@suse.de> writes:
+On 2021/04/08 21:51, Greg Kroah-Hartman wrote:
+> Remove users of tty_warn() and replace them with calls to dev_warn()
+> which provides more information about the tty that has the error and
+> uses the standard formatting logic.
 
-> On Fri, Apr 02, 2021 at 04:27:17PM +0800, Huang Ying wrote:
->> With NUMA balancing, in hint page fault handler, the faulting page
->> will be migrated to the accessing node if necessary.  During the
->> migration, TLB will be shot down on all CPUs that the process has run
->> on recently.  Because in the hint page fault handler, the PTE will be
->> made accessible before the migration is tried.  The overhead of TLB
->> shooting down can be high, so it's better to be avoided if possible.
->> In fact, if we delay mapping the page until migration, that can be
->> avoided.  This is what this patch doing.
->> 
->> <SNIP>
->>
->
-> Thanks, I think this is ok for Andrew to pick up to see if anything
-> bisects to this commit but it's a low risk.
->
-> Reviewed-by: Mel Gorman <mgorman@suse.de>
->
-> More notes;
->
-> This is not a universal win given that not all workloads exhibit the
-> pattern where accesses occur in parallel threads between when a page
-> is marked accessible and when it is migrated. The impact of the patch
-> appears to be neutral for those workloads. For workloads that do exhibit
-> the pattern, there is a small gain with a reduction in interrupts as
-> advertised unlike v1 of the patch. Further tests are running to confirm
-> the reduction is in TLB shootdown interrupts but I'm reasonably confident
-> that will be the case. Gains are typically small and the load described in
-> the changelog appears to be a best case scenario but a 1-5% gain in some
-> other workloads is still an improvement. There is still the possibility
-> that some workloads will unnecessarily stall as a result of the patch
-> for slightly longer periods of time but that is a relatively low risk
-> and will be difficult to detect. If I'm wrong, a bisection will find it.
+Ouch. This series would be good for clean up, but this series might be
+bad for handling lockdep warning syzbot is reporting.
 
-Hi, Mel,
+Since tty_warn() is using plain printk(), we can avoid lockdep warning by
+using printk_deferred(). If we use dev_warn() instead, we need to modify
+__dev_printk() to use printk_deferred(), which means that all dev_*() users
+are affected by this change.
 
-Thanks!
+Also, we need to modify dev_printk_emit()/dev_vprintk_emit() callers to embed
+loglevel into the format string so that we pass LOGLEVEL_SCHED to vprintk_emit() ...
+maybe just change from "if (!in_sched)" to "if (!in_sched && !dev_info)" instead ?
 
-Hi, Andrew,
 
-I found that V2 cannot apply on top of latest mmotm, so I send V3 as
-follows.  In case you need it.
+Also, dev_vprintk_emit() need to start calling defer_console_output()
+after returning from vprintk_emit() in order to behave like printk_deferred().
 
-https://lore.kernel.org/lkml/20210408132236.1175607-1-ying.huang@intel.com/
-
-Best Regards,
-Huang, Ying
+I'm not sure whether this change is safe.
