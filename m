@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEF1358569
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA51358577
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhDHN6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhDHN6S (ORCPT
+        id S231731AbhDHOA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:00:57 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16847 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhDHOA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:58:18 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E173C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:58:07 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id v140so4206784lfa.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6tbn1tI2G3tBIgRayZS9aXICGu6KDbVjOAf0j/hQNiQ=;
-        b=CS/ErZC0v4wrWQNQ5hzG01iDbDSinO80SXg7GXfUcN2dF55XM/+XlP3IoAV6A0brt+
-         Sf7Fz5g7s0FLWq7zvH/koSgO4OpVStfDNd5GVg5Mdwk+gdmA6nCLivuQbyOzn60ZIZ4f
-         GjVrGRi9S/cCfDrbooUQA249kIWaU886GZZKS6wB2RKnLShV3gwjuMYwJEcRv35QHvR6
-         d7a521VUbO2ZQtZUxZ5lysGLrx1ZbZEo9H6BnGpCW8UTMFeS3uoHORCA6mGKWKCTn0Em
-         3IrCWCrecKOWmHd5vBOlrfxMOx3tsf23OLwDjRNzGfWCyE4GZ4Ft1YS9GmZCQD77i3wy
-         hkSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6tbn1tI2G3tBIgRayZS9aXICGu6KDbVjOAf0j/hQNiQ=;
-        b=ejykQ1kKFR98QgiMoicx79BGooj2Lf0PGZGaOUpuJcST20HBIndDueebmKRYTFST+2
-         WZXOLNnPZIkgnQFjG/vs66xqFQhvDKFpVk3BewdxiekxJKwGsgQi1GZOQiw9+Op6Isfg
-         Ri76+jwb36+2lmpdraPbuWxkGDO4ZkR/FvUSmatEaLrnfhx5oSVtd/0gb6D5M3Byp27Q
-         xkBFGCdJnIBHKgWKlKRsEJ1wzwSv7dOgxEw4ncqy0dw0GsfpQ12fLaaW82VvjFORpZh9
-         ljPhnk0flcWEc0HgRT0rJ3pdt2zL6U6Osb2uVg5dXdR+I5k55p2eBujIEKDoICmHno5X
-         sODQ==
-X-Gm-Message-State: AOAM530dAHZWT/BkT8AmDQEVf0tfqVDcCHdjHYJ/X/ge9bxAmBr9xVG8
-        //Tv+K26nrug4xevdsQeSG0oXawezz0pREoZF6JiKQ==
-X-Google-Smtp-Source: ABdhPJw1fFR7RAMMEQXftCBL2C/BR9NOHS4C5Noa0+fVfEGGST5YGXcioIWRzTYte6GP8x3fWB5YzK4bkVuDprX3Eeg=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr6083018lfa.157.1617890285813;
- Thu, 08 Apr 2021 06:58:05 -0700 (PDT)
+        Thu, 8 Apr 2021 10:00:56 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGNCC1GrHz9wsX;
+        Thu,  8 Apr 2021 21:58:31 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.175) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 22:00:36 +0800
+From:   Lu Jialin <lujialin4@huawei.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Lu Jialin <lujialin4@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Xiang Yang <xiangyang3@huawei.com>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Cui GaoSheng <cuigaosheng1@huawei.com>,
+        Gong Ruiqi <gongruiqi1@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: [PATCH -next] mm: Fix typos in comments
+Date:   Thu, 8 Apr 2021 22:00:27 +0800
+Message-ID: <20210408140027.60623-1-lujialin4@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210330062655.1027-1-angkery@163.com>
-In-Reply-To: <20210330062655.1027-1-angkery@163.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 8 Apr 2021 15:57:54 +0200
-Message-ID: <CACRpkdYs3m_OCF-JaLFwnSO-Zh6n41tjdjvwV3Ye1E8MYbwBDw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ti: fix error return code of ti_iodelay_dt_node_to_map()
-To:     angkery <angkery@163.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Junlin Yang <yangjunlin@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:39 AM angkery <angkery@163.com> wrote:
+succed -> succeed in mm/hugetlb.c
+wil -> will in mm/mempolicy.c
+wit -> with in mm/page_alloc.c
+Retruns -> Returns in mm/page_vma_mapped.c
+confict -> conflict in mm/secretmem.c
+No functionality changed.
 
-> From: Junlin Yang <yangjunlin@yulong.com>
->
-> when devm_kcalloc fails, use -ENOMEM instead of -EINVAL,
-> and consistent with other devm_kcalloc return values.
->
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+---
+ mm/hugetlb.c         | 2 +-
+ mm/mempolicy.c       | 2 +-
+ mm/page_alloc.c      | 2 +-
+ mm/page_vma_mapped.c | 2 +-
+ mm/secretmem.c       | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Patch applied.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index c22111f3da20..e414534e1fc4 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2304,7 +2304,7 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page,
+ 	} else if (!HPageFreed(old_page)) {
+ 		/*
+ 		 * Page's refcount is 0 but it has not been enqueued in the
+-		 * freelist yet. Race window is small, so we can succed here if
++		 * freelist yet. Race window is small, so we can succeed here if
+ 		 * we retry.
+ 		 */
+ 		spin_unlock(&hugetlb_lock);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 5690513c5668..d79fa299b70c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -994,7 +994,7 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+ 		if (flags & MPOL_F_ADDR) {
+ 			/*
+ 			 * Take a refcount on the mpol, lookup_node()
+-			 * wil drop the mmap_lock, so after calling
++			 * will drop the mmap_lock, so after calling
+ 			 * lookup_node() only "pol" remains valid, "vma"
+ 			 * is stale.
+ 			 */
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 604dcd69397b..b457cc316009 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4173,7 +4173,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+ }
+ 
+ /*
+- * Maximum number of compaction retries wit a progress before OOM
++ * Maximum number of compaction retries with a progress before OOM
+  * killer is consider as the only way to move forward.
+  */
+ #define MAX_COMPACT_RETRIES 16
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 86e3a3688d59..2cf01d933f13 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -134,7 +134,7 @@ static bool check_pte(struct page_vma_mapped_walk *pvmw)
+  * regardless of which page table level the page is mapped at. @pvmw->pmd is
+  * NULL.
+  *
+- * Retruns false if there are no more page table entries for the page in
++ * Returns false if there are no more page table entries for the page in
+  * the vma. @pvmw->ptl is unlocked and @pvmw->pte is unmapped.
+  *
+  * If you need to stop the walk before page_vma_mapped_walk() returned false,
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index 3b1ba3991964..38e22c45e482 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -204,7 +204,7 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
+ 	struct file *file;
+ 	int fd, err;
+ 
+-	/* make sure local flags do not confict with global fcntl.h */
++	/* make sure local flags do not conflict with global fcntl.h */
+ 	BUILD_BUG_ON(SECRETMEM_FLAGS_MASK & O_CLOEXEC);
+ 
+ 	if (!secretmem_enable)
+-- 
+2.17.1
 
-Yours,
-Linus Walleij
