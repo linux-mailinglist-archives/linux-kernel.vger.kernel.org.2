@@ -2,391 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93623357A4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42E9357A14
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhDHCX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:23:58 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:21190 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhDHCXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:23:55 -0400
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 1381gYXB042118
-        for <linux-kernel@vger.kernel.org>; Thu, 8 Apr 2021 09:42:34 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1381gJ1i042079;
-        Thu, 8 Apr 2021 09:42:19 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
- 2021 09:52:24 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
-Subject: [PATCH v1 2/2] mmc: sdhci-of-aspeed: Support toggling SD bus signal voltage by GPIO
-Date:   Thu, 8 Apr 2021 09:52:18 +0800
-Message-ID: <20210408015218.20560-3-steven_lee@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210408015218.20560-1-steven_lee@aspeedtech.com>
-References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
-MIME-Version: 1.0
+        id S229721AbhDHCJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:09:56 -0400
+Received: from mail-eopbgr40076.outbound.protection.outlook.com ([40.107.4.76]:9601
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhDHCJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 22:09:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YF5G+DH+3tHXsUS2ZGK5p7Qr4fE1QKLA2+IgGetUt8L+5rs7eIuGCKENws1/br7ktUTT1cY6BCP0ImADXdfbkNA95/xMTHUlCiRggxxjPp16C9k11JrwKcao960lzrHR2IE80V+78i+RhiHKQ0ASRyud/nOal9KHusoHmSfRwVJfxsvaKCspC5vfegxGwLjQ7G/5Xf0WJrUPSHFuUJ+rHb2LgCHursd2ws+12cTH+IKhKn+0TjtqgmbEvkJPlO3HZgqSPpwMpEAUoyYFdfpKBfs75NuBna2/q5sG5K8vvBmEDDnelkSeQvomlo0Cr0E8szDTdP6K3DXToibBlGXIJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qGebRVhJLo7Axy1v4E2uejbKQ1JhyRJN+tD1L+44xBE=;
+ b=MSEPZBkFFi8gpTzD/+e1OgYwJBdt5/z5xaIL46CQb3Xh4YFzMzDOeWcLH90V9PEoy5Sup7xwyU2qrMtee8adc9yTof3IuB17BF1nXuyzrcfACiOF25r96ZemE5ayx+h6e3lghMi8HqKF/jLOyM5mZl39e3LTiNx7FCuUENN0/2xuhhAdrJlDYV7l7+IAU2iaFmhl2+43pLKXNSmYhu/Ad97h2jMAK5ryVvWkp6+Ha1X5H/OKbfGZlpOcvCwbiAmfd2CWBSd/rxH6hEf6b/bu61Q2qTk9O49A/7zLvnEznEWukdsnRx8qUVIHEG/MJ9JBIZ87vHf89d4ZmnQ/1Vdqxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qGebRVhJLo7Axy1v4E2uejbKQ1JhyRJN+tD1L+44xBE=;
+ b=TozvyySffzd7Jctt9Tnb9qpaBWnm7Z4Vb85vIAVblsauk0Pxtztus+F4IxVGHDAiL2b/A2oYuApb2K533NlMOPQPadTJOd9Jf9cxFPJMpHU1F33FvE7uHWA4chNrtm9BBL/tAKVgQOgRospvh7NeVRmqOfuFQFyniIE2WBd5+II=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR04MB3128.eurprd04.prod.outlook.com (2603:10a6:6:10::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Thu, 8 Apr
+ 2021 02:09:42 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c57a:6964:f72c:21cf]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c57a:6964:f72c:21cf%11]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
+ 02:09:42 +0000
+From:   peng.fan@oss.nxp.com
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V3 0/8] remoteproc: imx_rproc: support i.MX7ULP/8MN/8MP
+Date:   Thu,  8 Apr 2021 09:54:50 +0800
+Message-Id: <1617846898-13662-1-git-send-email-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1381gJ1i042079
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2P15301CA0019.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::29) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2P15301CA0019.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4042.4 via Frontend Transport; Thu, 8 Apr 2021 02:09:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e06edce0-b1d1-4a75-6168-08d8fa335f08
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3128:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR04MB31285A2C15D16E4A039FC5CBC9749@DB6PR04MB3128.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pGMgm78Bjkh8s8ZU7naloxPYTNtxs3JJpqoVdBuumMIVY4FbjoR89XNPqEo08bKtAFRP0ShJVCRNiTZq0j1Ob80zn3UwieSIOFWuf5iGxPcDb6hxH8G4rSUoXtZuMinK401n9uXdC7oJzfm6hUsmYX+nvrwDiShGGRnXvG3NfnSLtS++LJQAQzTtRIgzmG1upUg39bZv1bY7HYYGgSqGA5qSy4h7ma+snGUtUgF8n4GBTTyoBQBBBwa5WmeqRKiaFD0EcPHXeeAWgmTCQd8WXU/y6ihdX3WOntQJuDGiySH6JCO6R75zJb1NJNqPtjWaGbj8D7m5MTwEJYXD6o2o/ZK8D6zhGDcNX9VfoRTGOekxg9AEtzgy2nQoThxsrQd8elLyHFzfTXpAl8bYdTY0oTI1QGDfNdw+mtOs4/QBeaHHZEOnp219VRkSoWHKICDQuxjjrZSGEgwVElptdx02HsUR6aVpXSeBqMiGs7Ujn8sczHCFnhAoPJ/dI/NrFQcrMCQovhnW7/GYAZmNdEO/ZdFtiV1seoQdba+2th4waw05R6HR6mX1WefArAzxaVm//nNmuhgawx5tdgvD9OVXs+mYURS1FZjloHx8xxEIxeA2zPAFkrzHg0kx7IQpkZG/dsMVqNx4z0zz417BaHJYrYoAiZcdQZuLXuvU7nGWkhS+/et++FsfGYXMhqIxmBTpFNNWLtAHepOc5rZ5M3v0Q6qXUim3J3kaeuQ6CmXVjH40xoyW3Q0lUQkSxdCdewfzHOY+PtUKkTV4XN0x7Pc3NjDOy0bo5h943cjsK81YHb0/OCyr0L8Trflv0tRZ1yGU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(366004)(346002)(6486002)(4326008)(478600001)(8676002)(966005)(6666004)(8936002)(26005)(16526019)(186003)(316002)(52116002)(66476007)(86362001)(2906002)(9686003)(6506007)(66556008)(66946007)(7416002)(38100700001)(2616005)(6512007)(956004)(38350700001)(5660300002)(83380400001)(69590400012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?8ZFsxMMEhJbpYhFTvPJ6eAg96isFqnq+uQX9bDIsf+/Hi9srUe8vMFW3QlWW?=
+ =?us-ascii?Q?lGevEQFel29pvCxostTQo3jzulo1Ly+Zd+2/Y28EKsmtalMTpktv9KGsRvXA?=
+ =?us-ascii?Q?Qy9EMEKuJaiPFhOdpbO/XxW1Stse8TI8QG/mn+9AeP34XBmkajUIB9IJFroj?=
+ =?us-ascii?Q?6ZqtBzpGbXIeOdULrPRXztKYwHXzAKWbl0jUjW2Tj86+ni5IgidcZXl0Zaif?=
+ =?us-ascii?Q?hSK6ZKwnwdANszZUk9wMcIafI/UFOTY+2QpF918IZ4566Rs+nPyfjKMLMst1?=
+ =?us-ascii?Q?VkhRT4+vXJMgNnhNX2RnH7e6LvSV3OyS/1SMIZfQjHlFxrHqc4nRGk+522gW?=
+ =?us-ascii?Q?WkA1VVzob5aYl055QS0bQZo04Aga8l/fjOM1BvfcTjEVDRNtiaA7HH+8cvff?=
+ =?us-ascii?Q?X+5BF/bWNz2BHs17Xyd76/JwSWc8+qu6xeScOK/Wok+zf8ktas3W3D00XaPd?=
+ =?us-ascii?Q?eWzZDG46AC2zpcdUAgW+WtZhRsagE7b085pww4DiGzezmwvfmWOUPvFiJ1hV?=
+ =?us-ascii?Q?2pJ6r85YNvCXU76qcmMp5T2uEsCk+spHfpstIpC+C7yCqjNuerj8oAjkASgv?=
+ =?us-ascii?Q?pX4XA1SH1/UOivQHCluTTIzyCKbHa+dGqzPIrGZFNfD26yTlVOqiM7mZITe6?=
+ =?us-ascii?Q?hn7TlVT1a4j8lGWM+gA0E1/qZCp2hCX+QK+PXEikRdCy8xzFJmw0cZXTclmR?=
+ =?us-ascii?Q?xZcnVCIH36HxoerT1J0047xKTpW8n+8VWIzLhAaqOZ8U8ZJLKAzznzbDthsz?=
+ =?us-ascii?Q?Zc6lawP6J0zeF72TsiuwYMscmJmAP0yhx/M5roE4cK7JkB6PFGShfzo8m7Nq?=
+ =?us-ascii?Q?wkfd0mg5vRdVaIkQlmq9G2udAflm29DTlkyif3A8e8zSSwJ1y+t0JGLCoxBZ?=
+ =?us-ascii?Q?6xGumjz5wXf6BqBrBZMYQcTbqC2Awe28kVMBQszKMf5Ra8DsLvh6fJz8FakU?=
+ =?us-ascii?Q?8jiMNW2qEYK06lJitp0kVU5lJ0Q5j6oJRVXGw00zdyQq0VnkO3UhcQOBeod/?=
+ =?us-ascii?Q?4uDApbEzpbcPeUZiet/nMCgI5G2DrYJ/nvwBt4bh/r9w4vBlvhTcSvWANqFo?=
+ =?us-ascii?Q?35VK+iU8+rcTrRkbXzCZpqkiaO0FEOzizwjyMVL+hN0WO03GNgP+1StmM9C/?=
+ =?us-ascii?Q?JiwB55WHvZlJnbSvFp8n1qvmTKjyCE5wNaRb+ZKu1Q1Uqxm4eh9ktUB1kL7r?=
+ =?us-ascii?Q?h4vW1vwQrE9Pm74EvAwXPVUSChEYrp192NM6z1AZUUJ3ay6gReGG8wYVrWhU?=
+ =?us-ascii?Q?u2yl3eOt7Mvdpdl7vJ3kDWYHQmnheIgq0GZMxzOJJXNocMLTpnS0UKBbUSwP?=
+ =?us-ascii?Q?1tqS/QBEl4qbxd0UQgM4ywM2zCC8bltnRqxBpRWX/OLtmw=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e06edce0-b1d1-4a75-6168-08d8fa335f08
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 02:09:42.1704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NpzPJgkXHBYzbKRNy36LVpFTRVbNGH8JGVvzoVKt+/A639/pFKDc36Gs1k5DI8P58RhJO4Iisk/+UK5Q8vmIXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AST2600-A2 EVB provides reference design to support toggling signal
-voltage between 3.3v and 1.8v by power-switch-gpio pin that defined in
-the device tree. It also supporting enabling/disabling SD bus power by
-power-gpio.
+From: Peng Fan <peng.fan@nxp.com>
 
-In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
-load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
-a 1.8v and a 3.3v power load switch that providing signal voltage to
-SD1 bus.
-If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-disabled.
-If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
-voltage is 3.3v, otherwise, 1.8v power load switch will be enabled, SD1
-signal voltage becomes 1.8v.
+V3:
+ Add A-b tag for Patch 1/2
+ Fix the checkpatch warning for Patch 6,8
 
-AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
-GPIOV3 as power-switch-gpio.
+V2:
+ Patch 1/8, use fsl as vendor, typo fix
+ Because patchset [1] has v2 version, patch 5,6,7,8 are adapted that
+ change.
 
-Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
----
- drivers/mmc/host/sdhci-of-aspeed.c | 155 +++++++++++++++++++++++++----
- 1 file changed, 137 insertions(+), 18 deletions(-)
+This patchset is to support i.MX7ULP/8MN/8MP, also includes a patch to
+parse fsl,auto-boot
+This patchset depends on [1]
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 7d8692e90996..a74a03d37915 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -5,6 +5,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/io.h>
- #include <linux/math64.h>
- #include <linux/mmc/host.h>
-@@ -30,6 +31,7 @@
- #define   ASPEED_SDC_S0_PHASE_IN_EN	BIT(2)
- #define   ASPEED_SDC_S0_PHASE_OUT_EN	GENMASK(1, 0)
- #define   ASPEED_SDC_PHASE_MAX		31
-+#define ASPEED_CLOCK_PHASE 0xf4
- 
- struct aspeed_sdc {
- 	struct clk *clk;
-@@ -58,18 +60,21 @@ struct aspeed_sdhci_phase_desc {
- 	struct aspeed_sdhci_tap_desc out;
- };
- 
--struct aspeed_sdhci_pdata {
-+struct aspeed_sdhci_data {
- 	unsigned int clk_div_start;
- 	const struct aspeed_sdhci_phase_desc *phase_desc;
- 	size_t nr_phase_descs;
-+	const struct sdhci_pltfm_data *pdata;
- };
- 
- struct aspeed_sdhci {
--	const struct aspeed_sdhci_pdata *pdata;
-+	const struct aspeed_sdhci_data *data;
- 	struct aspeed_sdc *parent;
- 	u32 width_mask;
- 	struct mmc_clk_phase_map phase_map;
- 	const struct aspeed_sdhci_phase_desc *phase_desc;
-+	struct gpio_desc *pwr_pin;
-+	struct gpio_desc *pwr_sw_pin;
- };
- 
- static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
-@@ -209,7 +214,6 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
- 	sdhci = sdhci_pltfm_priv(pltfm_host);
- 
- 	parent = clk_get_rate(pltfm_host->clk);
--
- 	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
- 
- 	if (clock == 0)
-@@ -234,14 +238,13 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
- 	 * supporting the value 0 in (EMMC12C[7:6], EMMC12C[15:8]), and capture
- 	 * the 0-value capability in clk_div_start.
- 	 */
--	for (div = sdhci->pdata->clk_div_start; div < 256; div *= 2) {
-+	for (div = sdhci->data->clk_div_start; div < 256; div *= 2) {
- 		bus = parent / div;
- 		if (bus <= clock)
- 			break;
- 	}
- 
- 	div >>= 1;
--
- 	clk = div << SDHCI_DIVIDER_SHIFT;
- 
- 	aspeed_sdhci_configure_phase(host, bus);
-@@ -292,8 +295,78 @@ static u32 aspeed_sdhci_readl(struct sdhci_host *host, int reg)
- 	return val;
- }
- 
-+static void sdhci_aspeed_set_power(struct sdhci_host *host, unsigned char mode,
-+				   unsigned short vdd)
-+{
-+	struct sdhci_pltfm_host *pltfm_priv = sdhci_priv(host);
-+	struct aspeed_sdhci *dev = sdhci_pltfm_priv(pltfm_priv);
-+	u8 pwr = 0;
-+
-+	if (!dev->pwr_pin)
-+		return sdhci_set_power(host, mode, vdd);
-+
-+	if (mode != MMC_POWER_OFF) {
-+		switch (1 << vdd) {
-+		case MMC_VDD_165_195:
-+		/*
-+		 * Without a regulator, SDHCI does not support 2.0v
-+		 * so we only get here if the driver deliberately
-+		 * added the 2.0v range to ocr_avail. Map it to 1.8v
-+		 * for the purpose of turning on the power.
-+		 */
-+		case MMC_VDD_20_21:
-+				pwr = SDHCI_POWER_180;
-+				break;
-+		case MMC_VDD_29_30:
-+		case MMC_VDD_30_31:
-+				pwr = SDHCI_POWER_300;
-+				break;
-+		case MMC_VDD_32_33:
-+		case MMC_VDD_33_34:
-+				pwr = SDHCI_POWER_330;
-+				break;
-+		default:
-+				WARN(1, "%s: Invalid vdd %#x\n",
-+				     mmc_hostname(host->mmc), vdd);
-+				break;
-+		}
-+	}
-+
-+	if (host->pwr == pwr)
-+		return;
-+
-+	host->pwr = pwr;
-+
-+	if (pwr == 0) {
-+		gpiod_set_value(dev->pwr_pin, 0);
-+		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
-+	} else {
-+		gpiod_set_value(dev->pwr_pin, 1);
-+
-+		if (dev->pwr_sw_pin) {
-+			if (pwr & SDHCI_POWER_330)
-+				gpiod_set_value(dev->pwr_sw_pin, 1);
-+			else if (pwr & SDHCI_POWER_180)
-+				gpiod_set_value(dev->pwr_sw_pin, 0);
-+		}
-+		pwr |= SDHCI_POWER_ON;
-+		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-+	}
-+}
-+
-+static void aspeed_sdhci_voltage_switch(struct sdhci_host *host)
-+{
-+	struct sdhci_pltfm_host *pltfm_priv = sdhci_priv(host);
-+	struct aspeed_sdhci *dev = sdhci_pltfm_priv(pltfm_priv);
-+
-+	if (dev->pwr_sw_pin)
-+		gpiod_set_value(dev->pwr_sw_pin, 0);
-+}
-+
- static const struct sdhci_ops aspeed_sdhci_ops = {
- 	.read_l = aspeed_sdhci_readl,
-+	.set_power = sdhci_aspeed_set_power,
-+	.voltage_switch = aspeed_sdhci_voltage_switch,
- 	.set_clock = aspeed_sdhci_set_clock,
- 	.get_max_clock = aspeed_sdhci_get_max_clock,
- 	.set_bus_width = aspeed_sdhci_set_bus_width,
-@@ -302,9 +375,14 @@ static const struct sdhci_ops aspeed_sdhci_ops = {
- 	.set_uhs_signaling = sdhci_set_uhs_signaling,
- };
- 
--static const struct sdhci_pltfm_data aspeed_sdhci_pdata = {
-+static const struct sdhci_pltfm_data ast2400_sdhci_pdata = {
- 	.ops = &aspeed_sdhci_ops,
- 	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-+	.quirks2 = SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN | SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-+};
-+
-+static const struct sdhci_pltfm_data ast2600_sdhci_pdata = {
-+	.ops = &aspeed_sdhci_ops,
- };
- 
- static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
-@@ -327,27 +405,28 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
- 
- static int aspeed_sdhci_probe(struct platform_device *pdev)
- {
--	const struct aspeed_sdhci_pdata *aspeed_pdata;
-+	const struct aspeed_sdhci_data *aspeed_data;
- 	struct sdhci_pltfm_host *pltfm_host;
- 	struct aspeed_sdhci *dev;
- 	struct sdhci_host *host;
- 	struct resource *res;
-+	u32 reg_val;
- 	int slot;
- 	int ret;
- 
--	aspeed_pdata = of_device_get_match_data(&pdev->dev);
--	if (!aspeed_pdata) {
-+	aspeed_data = of_device_get_match_data(&pdev->dev);
-+	if (!aspeed_data) {
- 		dev_err(&pdev->dev, "Missing platform configuration data\n");
- 		return -EINVAL;
- 	}
- 
--	host = sdhci_pltfm_init(pdev, &aspeed_sdhci_pdata, sizeof(*dev));
-+	host = sdhci_pltfm_init(pdev, aspeed_data->pdata, sizeof(*dev));
- 	if (IS_ERR(host))
- 		return PTR_ERR(host);
- 
- 	pltfm_host = sdhci_priv(host);
- 	dev = sdhci_pltfm_priv(pltfm_host);
--	dev->pdata = aspeed_pdata;
-+	dev->data = aspeed_data;
- 	dev->parent = dev_get_drvdata(pdev->dev.parent);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -358,8 +437,8 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	else if (slot >= 2)
- 		return -EINVAL;
- 
--	if (slot < dev->pdata->nr_phase_descs) {
--		dev->phase_desc = &dev->pdata->phase_desc[slot];
-+	if (slot < dev->data->nr_phase_descs) {
-+		dev->phase_desc = &dev->data->phase_desc[slot];
- 	} else {
- 		dev_info(&pdev->dev,
- 			 "Phase control not supported for slot %d\n", slot);
-@@ -372,6 +451,23 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 
- 	sdhci_get_of_property(pdev);
- 
-+	if (of_property_read_bool(pdev->dev.parent->of_node, "mmc-hs200-1_8v") ||
-+	    of_property_read_bool(pdev->dev.parent->of_node, "sd-uhs-sdr104")) {
-+		reg_val = readl(host->ioaddr + 0x40);
-+		/* support 1.8V */
-+		reg_val |= BIT(26);
-+		/* write to sdhci140 or sdhci240 mirror register */
-+		writel(reg_val, dev->parent->regs + (0x10 * (slot + 1)));
-+	}
-+
-+	if (of_property_read_bool(pdev->dev.parent->of_node, "sd-uhs-sdr104")) {
-+		reg_val = readl(host->ioaddr + 0x44);
-+		/* SDR104 */
-+		reg_val |= BIT(1);
-+		/* write to sdhci144 or sdhci244 mirror register */
-+		writel(reg_val, dev->parent->regs + (0x04 + (slot + 1) * 0x10));
-+	}
-+
- 	pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(pltfm_host->clk))
- 		return PTR_ERR(pltfm_host->clk);
-@@ -389,6 +485,22 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	if (dev->phase_desc)
- 		mmc_of_parse_clk_phase(host->mmc, &dev->phase_map);
- 
-+	dev->pwr_pin = devm_gpiod_get(&pdev->dev, "power", GPIOD_OUT_HIGH);
-+	if (!IS_ERR(dev->pwr_pin)) {
-+		gpiod_set_consumer_name(dev->pwr_pin, "mmc_pwr");
-+		gpiod_direction_output(dev->pwr_pin, 1);
-+	} else {
-+		dev->pwr_pin = NULL;
-+	}
-+
-+	dev->pwr_sw_pin = devm_gpiod_get(&pdev->dev, "power-switch", GPIOD_OUT_HIGH);
-+	if (!IS_ERR(dev->pwr_sw_pin)) {
-+		gpiod_set_consumer_name(dev->pwr_sw_pin, "mmc_pwr_sw");
-+		gpiod_direction_output(dev->pwr_sw_pin, 0);
-+	} else {
-+		dev->pwr_sw_pin = NULL;
-+	}
-+
- 	ret = sdhci_add_host(host);
- 	if (ret)
- 		goto err_sdhci_add;
-@@ -420,8 +532,9 @@ static int aspeed_sdhci_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct aspeed_sdhci_pdata ast2400_sdhci_pdata = {
-+static const struct aspeed_sdhci_data ast2400_sdhci_data = {
- 	.clk_div_start = 2,
-+	.pdata = &ast2400_sdhci_pdata,
- };
- 
- static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
-@@ -453,16 +566,17 @@ static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
- 	},
- };
- 
--static const struct aspeed_sdhci_pdata ast2600_sdhci_pdata = {
-+static const struct aspeed_sdhci_data ast2600_sdhci_data = {
- 	.clk_div_start = 1,
- 	.phase_desc = ast2600_sdhci_phase,
- 	.nr_phase_descs = ARRAY_SIZE(ast2600_sdhci_phase),
-+	.pdata = &ast2600_sdhci_pdata,
- };
- 
- static const struct of_device_id aspeed_sdhci_of_match[] = {
--	{ .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_pdata, },
--	{ .compatible = "aspeed,ast2500-sdhci", .data = &ast2400_sdhci_pdata, },
--	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_pdata, },
-+	{ .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_data, },
-+	{ .compatible = "aspeed,ast2500-sdhci", .data = &ast2400_sdhci_data, },
-+	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_data, },
- 	{ }
- };
- 
-@@ -482,6 +596,7 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
- 	struct device_node *parent, *child;
- 	struct aspeed_sdc *sdc;
- 	int ret;
-+	u32 timing_phase;
- 
- 	sdc = devm_kzalloc(&pdev->dev, sizeof(*sdc), GFP_KERNEL);
- 	if (!sdc)
-@@ -506,6 +621,10 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
- 		goto err_clk;
- 	}
- 
-+	if (!of_property_read_u32(pdev->dev.of_node,
-+				  "timing-phase", &timing_phase))
-+		writel(timing_phase, sdc->regs + ASPEED_CLOCK_PHASE);
-+
- 	dev_set_drvdata(&pdev->dev, sdc);
- 
- 	parent = pdev->dev.of_node;
+[1] https://patchwork.kernel.org/project/linux-remoteproc/cover/
+    1617846289-13496-1-git-send-email-peng.fan@oss.nxp.com/
+
+Peng Fan (8):
+  dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
+  dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
+  dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
+  remoteproc: imx_rproc: make clk optional
+  remoteproc: imx_rproc: parse fsl,auto-boot
+  remoteproc: imx_rproc: initial support for mutilple start/stop method
+  remoteproc: imx_rproc: support i.MX7ULP
+  remoteproc: imx_rproc: support i.MX8MN/P
+
+ .../bindings/remoteproc/fsl,imx-rproc.yaml    |  11 +-
+ drivers/remoteproc/imx_rproc.c                | 170 +++++++++++++++---
+ 2 files changed, 159 insertions(+), 22 deletions(-)
+
 -- 
-2.17.1
+2.30.0
 
