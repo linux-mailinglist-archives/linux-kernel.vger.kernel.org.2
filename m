@@ -2,155 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570EF358707
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0515835870D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhDHOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbhDHOUh (ORCPT
+        id S231520AbhDHOVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:21:39 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:57534 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhDHOVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:20:37 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7710C061760;
-        Thu,  8 Apr 2021 07:20:24 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g8so4281721lfv.12;
-        Thu, 08 Apr 2021 07:20:24 -0700 (PDT)
+        Thu, 8 Apr 2021 10:21:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6ZUCnaK/xfsxPOQ2rbUPGAW6lKLbLTcOBL5UmGQ3BRA=;
-        b=bMF34VHNGxUVn9JbInOqXPCz4CByZeQfYkeeFnl0kcfNHeCKviOxyjEzDdkywsQ2GF
-         zRUKduzjhd9RMG1AgnQ8IWMweHH8Twvq/U4Ni5sTEpyFyFMqbzj0HukEdCaewvqrsK8+
-         ngovfgYSgo8wMOAfxUJXmMj4v6WSAOWlGTdNdS6pOTsk1ePFaC6DdUv/vqAQfp6uswuH
-         2b+W55x4kie+Qm6Iime4EPsrw40AYESASX3VAQwxl+7duikXrCj4dqKg1SkNbLfy0ddg
-         ga105BfsBcCcXXWgTccIWnSKeRHnTQZw0GUX8oQTSFx+8zn0i74st1XQLpIhMSyuQT8R
-         mKcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6ZUCnaK/xfsxPOQ2rbUPGAW6lKLbLTcOBL5UmGQ3BRA=;
-        b=lCBTnb+ZCfLA5V521SXb6ArVNydRqofteT6wUTO/ecM0d+s40lAKqcHH7uwSsgHBvY
-         vve1X/ejD/BWmBI8L28SBVg+JkNXOpNHFFHFrUuOa4e/t/x6hyqCmMjdgzHsdbDrH/Cd
-         3RNuVKXvErWHihkTW8QJGsfaNagywZorBlWi2qB/+dxj37Q9K85asdgB1GJbu5iHZ2xm
-         39G+n/2pOJT6j3uBFOyHmh25rZH/JjkjSyt1XmFQIlxmoSfSw7Z075l60HRhLR6k8TTY
-         Wy5X9kjL+Pv8v2s/iHPcE4mW9yD9asDd0z/Ps5DPF9XsKPaU7DDv1oDEog1iBqUEzmYe
-         iteA==
-X-Gm-Message-State: AOAM530tTpeJHu3lAxiEKRp5pTgbBLrL7srJlWNWS7IJMxvkW26ZO8Ft
-        4ePvKacUsFhsIH55EMp6XTpyjw336zI=
-X-Google-Smtp-Source: ABdhPJxwOqizkMYPEJb5Y07w8gboGa1QxZdvdT15fW63P7IpYeBenOuiUMuuRcf7YmnyjiuytoptNg==
-X-Received: by 2002:ac2:4e6d:: with SMTP id y13mr3990767lfs.509.1617891623227;
-        Thu, 08 Apr 2021 07:20:23 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id l12sm2857687lji.122.2021.04.08.07.20.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 07:20:22 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] iommu/tegra-smmu: Defer attachment of display
- clients
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210328233256.20494-1-digetx@gmail.com>
- <20210408094241.GA31714@Asurada-Nvidia> <YG8EiUXkgPTZsfIY@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <44d67d66-d6d0-bd9a-9eb9-71d7acc07183@gmail.com>
-Date:   Thu, 8 Apr 2021 17:20:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1617891681; x=1649427681;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=dTvu0dXT7xw3uuDTIqR63vsmGvsn9MVKfGVQJlXp8PY=;
+  b=o57F5JCcsR9cgWlMc0oNe9ifrHLxQWZM9U22Ka7ueC2Jrnq0HismTQy/
+   Ajt8Do6UYuBuTASMAqn41SpkgAYpX1XL03n37Mne3qOVmS06cZM0zG5zC
+   L2PM7OBc/VUo61w0Ma7nVoV4aK6LD/U6LL9CDtE4bPOqAfsCTVwkIm1kP
+   A=;
+X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
+   d="scan'208";a="101951940"
+Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM hypercalls
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Apr 2021 14:21:12 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 6FB1DA03EB;
+        Thu,  8 Apr 2021 14:21:06 +0000 (UTC)
+Received: from u366d62d47e3651.ant.amazon.com (10.43.160.48) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 8 Apr 2021 14:20:58 +0000
+Date:   Thu, 8 Apr 2021 16:20:54 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+CC:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>
+Message-ID: <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
+References: <20210407211954.32755-1-sidcha@amazon.de>
+ <20210407211954.32755-5-sidcha@amazon.de>
+ <87blap7zha.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YG8EiUXkgPTZsfIY@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87blap7zha.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.48]
+X-ClientProxiedBy: EX13D24UWA002.ant.amazon.com (10.43.160.200) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.04.2021 16:26, Thierry Reding пишет:
-> On Thu, Apr 08, 2021 at 02:42:42AM -0700, Nicolin Chen wrote:
->> On Mon, Mar 29, 2021 at 02:32:55AM +0300, Dmitry Osipenko wrote:
->>> All consumer-grade Android and Chromebook devices show a splash screen
->>> on boot and then display is left enabled when kernel is booted. This
->>> behaviour is unacceptable in a case of implicit IOMMU domains to which
->>> devices are attached during kernel boot since devices, like display
->>> controller, may perform DMA at that time. We can work around this problem
->>> by deferring the enable of SMMU translation for a specific devices,
->>> like a display controller, until the first IOMMU mapping is created,
->>> which works good enough in practice because by that time h/w is already
->>> stopped.
->>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>
->> For both patches:
->> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
->> Tested-by: Nicolin Chen <nicoleotsuka@gmail.com>
->>
->> The WAR looks good to me. Perhaps Thierry would give some input.
+On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
+> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+>
+> > Now that all extant hypercalls that can use XMM registers (based on
+> > spec) for input/outputs are patched to support them, we can start
+> > advertising this feature to guests.
+> >
+> > Cc: Alexander Graf <graf@amazon.com>
+> > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
+> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> > ---
+> >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
+> >  arch/x86/kvm/hyperv.c              | 1 +
+> >  2 files changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> > index e6cd3fee562b..1f160ef60509 100644
+> > --- a/arch/x86/include/asm/hyperv-tlfs.h
+> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> > @@ -49,10 +49,10 @@
+> >  /* Support for physical CPU dynamic partitioning events is available*/
+> >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
+> >  /*
+> > - * Support for passing hypercall input parameter block via XMM
+> > + * Support for passing hypercall input and output parameter block via XMM
+> >   * registers is available
+> >   */
+> > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
+> > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
+>
+> TLFS 6.0b states that there are two distinct bits for input and output:
+>
+> CPUID Leaf 0x40000003.EDX:
+> Bit 4: support for passing hypercall input via XMM registers is available.
+> Bit 15: support for returning hypercall output via XMM registers is available.
+>
+> and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
+> anywhere, I'd suggest we just rename
+>
+> HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
+> and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
 
-Nicolin, thank you very much for the help!
+That is how I had it initially; but then noticed that we would never
+need to use either of them separately. So it seemed like a reasonable
+abstraction to put them together.
 
->> Another topic:
->> I think this may help work around the mc-errors, which we have
->> been facing on Tegra210 also when we enable IOMMU_DOMAIN_DMA.
->> (attached a test patch rebasing on these two)
-> 
-> Ugh... that's exactly what I was afraid of. Now everybody is going to
-> think that we can just work around this issue with driver-specific SMMU
-> hacks...
-> 
->> However, GPU would also report errors using DMA domain:
->>
->>  nouveau 57000000.gpu: acr: firmware unavailable
->>  nouveau 57000000.gpu: pmu: firmware unavailable
->>  nouveau 57000000.gpu: gr: firmware unavailable
->>  tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffbe200: Security violation (TrustZone violation)
->>  nouveau 57000000.gpu: DRM: failed to create kernel channel, -22
->>  tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffad000: Security violation (TrustZone violation)
->>  nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
->>  nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
->>
->> Looking at the address, seems that GPU allocated memory in 32-bit
->> physical address space behind SMMU, so a violation happened after
->> turning on DMA domain I guess... 
-> 
-> The problem with GPU is... extra complicated. You're getting these
-> faults because you're enabling the IOMMU-backed DMA API, which then
-> causes the Nouveau driver allocate buffers using the DMA API instead of
-> explicitly allocating pages and then mapping them using the IOMMU API.
-> However, there are additional patches needed to teach Nouveau about how
-> to deal with SMMU and those haven't been merged yet. I've got prototypes
-> of this, but before the whole framebuffer carveout passing work makes
-> progress there's little sense in moving individual pieces forward.
-> 
-> One more not to try and cut corners. We know what the right solution is,
-> even if it takes a lot of work. I'm willing to ack this patch, or some
-> version of it, but only as a way of working around things we have no
-> realistic chance of fixing properly anymore. I still think it would be
-> best if we could derive identity mappings from command-line arguments on
-> these platforms because I think most of them will actually set that, and
-> then the solution becomes at least uniform at the SMMU level.
-> 
-> For Tegra210 I've already laid out a path to a solution that's going to
-> be generic and extend to Tegra186 and later as well.
+~ Sid.
 
-We still have issues in the DRM and other drivers that don't allow us to
-flip ON the IOMMU_DOMAIN_DMA support.
 
-My patch addresses the issue with the ARM_DMA_USE_IOMMU option, which
-allocates the unmanaged domain for DMA purposes on ARM32, causing the
-trouble in the multiplatform kernel configuration since it's not
-possible to opt-out from ARM_DMA_USE_IOMMU in this case. Perhaps this
-needs to be clarified in the commit message.
 
-https://elixir.bootlin.com/linux/v5.12-rc6/source/arch/arm/mm/dma-mapping.c#L2078
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
 
-https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/iommu/iommu.c#L1929
+
+
