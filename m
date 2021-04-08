@@ -2,144 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38A2358B74
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED39B358B76
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhDHRf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:35:27 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2814 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232202AbhDHRfZ (ORCPT
+        id S232592AbhDHRf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:35:59 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:47079 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231566AbhDHRf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:35:25 -0400
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FGSvJ2sfVz686wN;
-        Fri,  9 Apr 2021 01:30:04 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 8 Apr 2021 19:35:11 +0200
-Received: from localhost (10.47.93.239) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 8 Apr 2021
- 18:35:11 +0100
-Date:   Thu, 8 Apr 2021 18:33:47 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>, <ira.weiny@intel.com>,
-        <vishal.l.verma@intel.com>, <alison.schofield@intel.com>,
-        <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/7] cxl/mem: Create a helper to setup device regs
-Message-ID: <20210408183347.00001a17@Huawei.com>
-In-Reply-To: <20210407222625.320177-7-ben.widawsky@intel.com>
-References: <20210407222625.320177-1-ben.widawsky@intel.com>
-        <20210407222625.320177-7-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 8 Apr 2021 13:35:57 -0400
+Received: by mail-ot1-f51.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso1165970otb.13;
+        Thu, 08 Apr 2021 10:35:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H+fSlnRPEdSZKgHQdXlMbx5JPJdYx/PLPtXPK2wwm7o=;
+        b=B8OnKVXy1WpUagAtYco7x+1ZAJYHjbKdt04ShsuuT/eUiFksCBVtP8aWHTSNtNd773
+         zPPJDVXc9B2Qpe6WGGuDOkhhOlUTR9Yq8vWzZQYHX8T8ifI9a0J8/jRaQjr+YEaJOMgn
+         ASa53vaW/HI5L+m/r636Ae6TyAEAFEAvAhzzZ9BmFmstcXIHyJBGNi+mnac6hC3kyCis
+         dw6rFWBXfZW5orH4CtxKW8N02EkvDdADBT7Lje7i5K6FCWNhhUYREBnW+RxCft9wCuzL
+         xQm1LY/UtXmWA6UNqTEYfCGrnPMJQLj0e0bcCoETKms6WXekseHaRjTnrsRKCp+CKKPr
+         7X4w==
+X-Gm-Message-State: AOAM530x/IT9y7e/KNt6v72bwZorLTSmDwn8Wpvy6BaaFkEkKTKc0O0R
+        g/Mku6uPCBGfA3LlMLkCIP/WfsWnKiNv533+9zg=
+X-Google-Smtp-Source: ABdhPJwa7hG8mV20XkU6Va9EP0WIZMhykAbYJ4c0IDZEo0LKXh5zFFmxI8IDFbRBxlpnPLSxPoxfUxKuCB/AjgpMf6w=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr8627869otb.260.1617903345582;
+ Thu, 08 Apr 2021 10:35:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.93.239]
-X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <CGME20210408061152epcas1p195531dcfe84ab8d4a8f15f7d550993cf@epcas1p1.samsung.com>
+ <3d4f6d28-5d8e-df33-882e-0e5dafe575b9@samsung.com>
+In-Reply-To: <3d4f6d28-5d8e-df33-882e-0e5dafe575b9@samsung.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Apr 2021 19:35:34 +0200
+Message-ID: <CAJZ5v0h9F9q6i6m40fmZpw79DbtJuzMFddAGfwn0W+-5__ZQCQ@mail.gmail.com>
+Subject: Re: [GIT PULL] devfreq next for v5.13
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Chanwoo Choi (samsung.com)" <chanwoo@kernel.org>,
+        Chanwoo Choi <cwchoi00@gmail.com>,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 15:26:24 -0700
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Thu, Apr 8, 2021 at 8:12 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>
+> Dear Rafael,
+>
+> This is devfreq-next pull request for v5.13-rc1. I add detailed description of
+> this pull request on the following tag. Please pull devfreq with following updates.
+> - tag name : devfreq-next-for-5.12
+>
+> This pull request contains the immutable branch to keep the immutable patch[1]
+> between devfreq and drm for gpu driver.
+> [1] https://patchwork.kernel.org/project/linux-pm/patch/20210308133041.10516-1-daniel.lezcano@linaro.org/
+>
+> Best Regards,
+> Chanwoo Choi
+>
+>
+> The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
+>
+>   Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.13
+>
+> for you to fetch changes up to 0a7dc8318c2817fb33dc50946f7ca6e0ff28f036:
+>
+>   PM / devfreq: imx8m-ddrc: Remove unneeded of_match_ptr() (2021-04-08 13:14:51 +0900)
 
-> Memory devices have a list of required register regions within the
-> register block, but this isn't required of all CXL components or
-> devices. To make things more tidy, and allow for easily setting up other
-> block types in this loop, the helper is introduced.
-
-Two things in here, the move and allowing it to be missing.
-I would call that out explicitly in the patch description.
-
-> 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c | 38 +++++++++++++++++++++++---------------
->  1 file changed, 23 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 49f651694cb0..b7342aaf38c4 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -974,6 +974,24 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  	return 0;
->  }
->  
-> +static int __cxl_setup_device_regs(struct cxl_mem *cxlm, void __iomem *base)
-
-Naming is a little unusual.   Normally __ would imply unlocked or something
-like that, whereas here it's mostly implying more error checks.
-
-I don't immediately have a good idea for a name however...
-
-> +{
-> +	struct cxl_regs *regs = &cxlm->regs;
-> +	struct pci_dev *pdev = cxlm->pdev;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	cxl_setup_device_regs(dev, base, &regs->device_regs);
-> +	if (!regs->status || !regs->mbox || !regs->memdev) {
-> +		dev_err(dev, "registers not found: %s%s%s\n",
-> +				!regs->status ? "status " : "",
-> +				!regs->mbox ? "mbox " : "",
-> +				!regs->memdev ? "memdev" : "");
-> +		return -ENXIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * cxl_mem_setup_regs() - Setup necessary MMIO.
->   * @cxlm: The CXL memory device to communicate with.
-> @@ -986,12 +1004,11 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->   */
->  static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  {
-> -	struct cxl_regs *regs = &cxlm->regs;
->  	struct pci_dev *pdev = cxlm->pdev;
->  	struct device *dev = &pdev->dev;
->  	u32 regloc_size, regblocks;
->  	void __iomem *base;
-> -	int regloc, i;
-> +	int regloc, i, rc;
->  
->  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_OFFSET);
->  	if (!regloc) {
-> @@ -1021,23 +1038,14 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  			if (IS_ERR(base))
->  				return PTR_ERR(base);
->  
-> -			cxl_setup_device_regs(dev, base, &regs->device_regs);
-> -			if (!regs->status || !regs->mbox || !regs->memdev) {
-> -				dev_err(dev, "registers not found: %s%s%s\n",
-> -						!regs->status ? "status " : "",
-> -						!regs->mbox ? "mbox " : "",
-> -						!regs->memdev ? "memdev" : "");
-> -				return -ENXIO;
-> -			}
-> +			rc = __cxl_setup_device_regs(cxlm, base);
-> +			if (rc)
-> +				return rc;
-> +
->  			break;
->  		}
->  	}
->  
-> -	if (i == regblocks) {
-> -		dev_err(dev, "Missing register locator for device registers\n");
-> -		return -ENXIO;
-> -	}
-> -
->  	return 0;
->  }
->  
-
+Pulled, thanks!
