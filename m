@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D389357A4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483FE357A4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhDHCXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:23:51 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:27413 "EHLO
+        id S230088AbhDHCXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:23:55 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:43984 "EHLO
         twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhDHCXu (ORCPT
+        with ESMTP id S229869AbhDHCXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:23:50 -0400
-X-Greylist: delayed 1868 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Apr 2021 22:23:49 EDT
+        Wed, 7 Apr 2021 22:23:52 -0400
 Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 1381gPml042092
-        for <linux-kernel@vger.kernel.org>; Thu, 8 Apr 2021 09:42:25 +0800 (GMT-8)
+        by twspam01.aspeedtech.com with ESMTP id 1381gTjg042105
+        for <linux-kernel@vger.kernel.org>; Thu, 8 Apr 2021 09:42:29 +0800 (GMT-8)
         (envelope-from steven_lee@aspeedtech.com)
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1381gIZX042076;
+        by twspam01.aspeedtech.com with ESMTP id 1381gIKx042077;
         Thu, 8 Apr 2021 09:42:18 +0800 (GMT-8)
         (envelope-from steven_lee@aspeedtech.com)
 Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
  (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
- 2021 09:52:22 +0800
+ 2021 09:52:23 +0800
 From:   Steven Lee <steven_lee@aspeedtech.com>
 To:     Andrew Jeffery <andrew@aj.id.au>,
         Ulf Hansson <ulf.hansson@linaro.org>,
@@ -40,45 +39,110 @@ To:     Andrew Jeffery <andrew@aj.id.au>,
         <linux-arm-kernel@lists.infradead.org>,
         open list <linux-kernel@vger.kernel.org>
 CC:     <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
-Subject: [PATCH v1 0/2] mmc: sdhci-of-aspeed: Support toggling SD bus signal
-Date:   Thu, 8 Apr 2021 09:52:16 +0800
-Message-ID: <20210408015218.20560-1-steven_lee@aspeedtech.com>
+Subject: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio and power-switch-gpio
+Date:   Thu, 8 Apr 2021 09:52:17 +0800
+Message-ID: <20210408015218.20560-2-steven_lee@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210408015218.20560-1-steven_lee@aspeedtech.com>
+References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [192.168.100.253]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1381gIZX042076
+X-MAIL: twspam01.aspeedtech.com 1381gIKx042077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+AST2600-A2 EVB provides the reference design for enabling SD bus power
+and toggling SD bus signal voltage by GPIO pins.
+Add the definition and example for power-gpio and power-switch-gpio
+properties.
 
-This series implements support for toggling SD bus signal voltage by
-GPIO pin.
+In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
+load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
+a 1.8v and a 3.3v power load switch that providing signal voltage to
+SD1 bus.
+If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+disabled.
+If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
+voltage is 3.3v. Otherwise, 1.8v power load switch will be enabled, SD1
+signal voltage becomes 1.8v.
 
-This series has been tested on AST2600-A2 EVB with APLL and 200MHz HCLK
-clock source with sdr104, sdr50, sdr25, sdr12 and high speed mode. 
-This series were also be tested on AST2600-A1 EVB and AST2500 EVB that
-don't have the design of signal voltage toggling by GPIO.
+AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and GPIOV3
+as power-switch-gpio.
 
-Please help to review.
+Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+---
+ .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-Regards,
-Steven
-
-Steven Lee (2):
-  dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio and
-    power-switch-gpio
-  mmc: sdhci-of-aspeed: Support toggling SD bus signal voltage by GPIO
-
- .../devicetree/bindings/mmc/aspeed,sdhci.yaml |  25 +++
- drivers/mmc/host/sdhci-of-aspeed.c            | 155 ++++++++++++++++--
- 2 files changed, 162 insertions(+), 18 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+index 987b287f3bff..515a74614f3c 100644
+--- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+@@ -37,6 +37,14 @@ properties:
+   clocks:
+     maxItems: 1
+     description: The SD/SDIO controller clock gate
++  power-gpio:
++    description:
++      The GPIO for enabling/disabling SD bus power.
++    maxItems: 1
++  power-switch-gpio:
++    description:
++      The GPIO for toggling the signal voltage between 3.3v and 1.8v.
++    maxItems: 1
+ 
+ patternProperties:
+   "^sdhci@[0-9a-f]+$":
+@@ -61,6 +69,14 @@ patternProperties:
+       sdhci,auto-cmd12:
+         type: boolean
+         description: Specifies that controller should use auto CMD12
++      power-gpio:
++        description:
++          The GPIO for enabling/disabling SD bus power.
++        maxItems: 1
++      power-switch-gpio:
++        description:
++          The GPIO for toggling the signal voltage between 3.3v and 1.8v.
++        maxItems: 1
+     required:
+       - compatible
+       - reg
+@@ -80,6 +96,7 @@ required:
+ examples:
+   - |
+     #include <dt-bindings/clock/aspeed-clock.h>
++    #include <dt-bindings/gpio/aspeed-gpio.h>
+     sdc@1e740000 {
+             compatible = "aspeed,ast2500-sd-controller";
+             reg = <0x1e740000 0x100>;
+@@ -94,6 +111,10 @@ examples:
+                     interrupts = <26>;
+                     sdhci,auto-cmd12;
+                     clocks = <&syscon ASPEED_CLK_SDIO>;
++                    power-gpio = <&gpio0 ASPEED_GPIO(V, 0)
++                                     GPIO_ACTIVE_HIGH>;
++                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 1)
++                                     GPIO_ACTIVE_HIGH>;
+             };
+ 
+             sdhci1: sdhci@200 {
+@@ -102,5 +123,9 @@ examples:
+                     interrupts = <26>;
+                     sdhci,auto-cmd12;
+                     clocks = <&syscon ASPEED_CLK_SDIO>;
++                    power-gpio = <&gpio0 ASPEED_GPIO(V, 2)
++                                     GPIO_ACTIVE_HIGH>;
++                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 3)
++                                     GPIO_ACTIVE_HIGH>;
+             };
+     };
 -- 
 2.17.1
 
