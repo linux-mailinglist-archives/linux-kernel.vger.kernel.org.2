@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21851357BA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC0B357BA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbhDHE6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 00:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhDHE6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 00:58:06 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92CC061760;
-        Wed,  7 Apr 2021 21:57:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FG8CJ3xPdz9sV5;
-        Thu,  8 Apr 2021 14:57:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617857869;
-        bh=1mwdPy0riEqigaxUtYaZ41Qx/2YCuxBzqsLf+zbkIp4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eKyQISAfgMalEy6ok1zIGiYZEsf8ggIGN45COflTKKv4P+bAE9L2db+4LtjjDu2Fr
-         uiL6vxqbp9CAfrMRSNP8rhoJ8PiA5qdGJLXiPtmKpU8k31CjikddkhKLBzsccl9T3d
-         YklLkk0TN49mZJqhFUWp+mSUIlX+xAelJNu4H/HlvPQ2eVw4gS5a9lWuHV/EC6vWW9
-         5z/z2eM/KwfEHJUeAXs619Et4ikzdP5TxaUnABqm0N0Okw4ORzoJ7s6VHRP+vaOAYU
-         ELYxxgoqz1K6OZeyEIeFSc+DYgIU2U2/JlDXmBZmzjBNx0EwK7hRj1OtusLnOMWPvk
-         Ffe5qg0dcmtVA==
-Date:   Thu, 8 Apr 2021 14:57:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Von Dentz, Luiz" <luiz.von.dentz@intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bluetooth tree
-Message-ID: <20210408145747.1ed7c57e@canb.auug.org.au>
-In-Reply-To: <PH0PR11MB5126EFEDB65650EFC3368981D3749@PH0PR11MB5126.namprd11.prod.outlook.com>
-References: <PH0PR11MB5126EFEDB65650EFC3368981D3749@PH0PR11MB5126.namprd11.prod.outlook.com>
+        id S229628AbhDHE6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 00:58:10 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:21060 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhDHE6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 00:58:04 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FG8CN0Vj9zB09ZH;
+        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id so05TY0S2tCo; Thu,  8 Apr 2021 06:57:51 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FG8CM6cxdzB09ZG;
+        Thu,  8 Apr 2021 06:57:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AEC0D8B7C0;
+        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FszZmx3-x-gr; Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 212808B75F;
+        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
+Subject: Re: [PATCH-next] powerpc/interrupt: Remove duplicate header file
+To:     johnny.chenyi@huawei.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        aneesh.kumar@linux.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        yuehaibing@huawei.com, heying24@huawei.com
+References: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <c42ebf38-c7ea-68bc-01ca-8352581bc33d@csgroup.eu>
+Date:   Thu, 8 Apr 2021 06:57:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4V.hV7W0JZuRwmTJ.gTX.4X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4V.hV7W0JZuRwmTJ.gTX.4X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Luiz,
 
-On Thu, 8 Apr 2021 04:47:04 +0000 "Von Dentz, Luiz" <luiz.von.dentz@intel.c=
-om> wrote:
->
-> I'd leave this for Marcel to comments, but there are quite many
-> instances of // comment like that, so I wonder what is going on, or
-> perhaps that is not allowed in include/uapi?
+Le 08/04/2021 à 05:56, johnny.chenyi@huawei.com a écrit :
+> From: Chen Yi <johnny.chenyi@huawei.com>
+> 
+> Delete one of the header files <asm/interrupt.h> that are included
+> twice.
 
-We only do these standalone compile checks on the uapi header files.
+Guys, we have been flooded with such tiny patches over the last weeks, some changes being sent 
+several times by different people.
 
---=20
-Cheers,
-Stephen Rothwell
+That one is included in 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210323062916.295346-1-wanjiabing@vivo.com/
 
---Sig_/4V.hV7W0JZuRwmTJ.gTX.4X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+And was already submitted a few hours earlier by someone else: 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1616464656-59372-1-git-send-email-zhouchuangao@vivo.com/
 
------BEGIN PGP SIGNATURE-----
+Could you work all together and cook an overall patch including all duplicate removal from 
+arch/powerpc/ files ?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBujUsACgkQAVBC80lX
-0GxjsAf/X2jRYLLEz+/16GpEYB1+EMCvq9ktvUJTS6zTuwkSWx/EkXSviF86tx0P
-HbF2c1+HF6CfazTqIW4HJlubM5LptJg1OUSOjExDcn6rqSTqP7vlWoHYQ08rBbDG
-xO6/ruCEowiXSgJKrCzGEIzDeXuHWpZuzvD5tNj3yNjmJgbv+XwV7jroNtKYCOPD
-D6b6Ats4CTsfoYzUzQCTp+ypvIwIYQqEAM2s9I2W67ohbG9nZb6cHYk2D9k0JnwD
-foelyXZvSxmlcPFW2qi6iNwFgXCrBEmMTfgy7NOJ/MkiL7wuJqwzlrmhQwwGkjij
-UrcCB/MHBNeO9qU86QIOyRqSnF91ow==
-=e3Bx
------END PGP SIGNATURE-----
+Best way would be I think to file an issue at https://github.com/linuxppc/issues/issues , then you 
+do a complete analysis and list in the issue all places to be modified, then once the analysis is 
+complete you send a full single patch.
 
---Sig_/4V.hV7W0JZuRwmTJ.gTX.4X--
+Thanks
+Christophe
+
+> 
+> Signed-off-by: Chen Yi <johnny.chenyi@huawei.com>
+> ---
+>   arch/powerpc/kernel/interrupt.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+> index c4dd4b8f9cfa..f64ace0208b7 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -7,7 +7,6 @@
+>   #include <asm/asm-prototypes.h>
+>   #include <asm/kup.h>
+>   #include <asm/cputime.h>
+> -#include <asm/interrupt.h>
+>   #include <asm/hw_irq.h>
+>   #include <asm/interrupt.h>
+>   #include <asm/kprobes.h>
+> 
