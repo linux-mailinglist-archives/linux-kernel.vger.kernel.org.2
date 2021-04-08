@@ -2,132 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7815D358BDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856ED358BDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbhDHSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbhDHSBV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:01:21 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC8CC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 11:01:10 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id o24so1394654edt.15
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=E42XR5KeRAoN2g3+y3om4yOJDcpHthzb/pVdZ1Nq0nk=;
-        b=ZP0k/DiFREpyUihVD3ELUkH578x3zA/bRYz+PWu1pA2BVRGnF1JE7GExXaazTvofGY
-         Y5NTt1zBOssn5pDsq/KxfyrTm7uYXt+mcEyZwm3ggJ/YqjgjP3eSHBVOkwITrqDatnf7
-         Iul2VKN1XZm+j9KOLua2FGd3+WtWlf2Tle9wxirmrSnqxAsT4+NRvBCgvUdC3lO6MHC8
-         eeTHW5Ds3xy2dxGM5NhUzXpWPbe2c6iymwVq7LJ6coNVjxdOaI9LvfsZrv5gzZ1fSB04
-         pa8lKAxXCxJm8YzfoW+yybynFtVejzLeTtq9mT61bBp4tNnPqG8G62gNUbh3ZJKytuwV
-         1ReA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=E42XR5KeRAoN2g3+y3om4yOJDcpHthzb/pVdZ1Nq0nk=;
-        b=sVSN7+avOpgqusBNFxB8ug2iS0a7/tZHl9QCXMVGp1l5tQ0DmyOV/tZ7aCdXsLFTNe
-         0krp0pMIDw17bXnzhIaPKUFWzxOfUlvnnH1ZejN3BhXI9TXFmHVt8oJsHMVLrKVpZjkj
-         zMyrLiHCpxJTmdGDLbJdX43gW4bcMbBZjBgAKah+ZvNAxNnHm7l2IknXVLuBOk49CM2g
-         V40kGWht27ZfXoGKkL4R/22GCZENFiujmjIQ12ge7H3HecvhGg4xz5HsFodaHIjnv4ov
-         UvvEqF8Dr4U86M+lqiXaspYJcfqkahnswBZh9nvXBLI/5jfSO5r3qK5V1HeTAmYEAvGg
-         vJhA==
-X-Gm-Message-State: AOAM531037KCzdjHobqt5GG6sepIW4rh6KpFYU27e3BhZSIC5Z65Lxvd
-        RpnmTtYujh4i4W5NNle5gMjy7HqrN0j8
-X-Google-Smtp-Source: ABdhPJzvw32aCQjkBYW8s07dKEC5VMqe580zpFKp4K3xpVcoW47nSi17gGd6UBEaY4BsM19RLTOXeJiPdsTq
-X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a17:906:814a:: with SMTP id
- z10mr12131886ejw.476.1617904868688; Thu, 08 Apr 2021 11:01:08 -0700 (PDT)
-Date:   Thu,  8 Apr 2021 18:01:05 +0000
-Message-Id: <20210408180105.2496212-1-qperret@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH] export: Make CRCs robust to symbol trimming
-From:   Quentin Perret <qperret@google.com>
-To:     gregkh@linuxfoundation.org, masahiroy@kernel.org
-Cc:     linux-kernel@vger.kernel.org, maennich@google.com,
-        gprocida@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        id S232787AbhDHSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:01:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232771AbhDHSBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDDF3610C8;
+        Thu,  8 Apr 2021 18:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617904871;
+        bh=+eaGpVC7iGbDCkxhs5YszeBxO/5SQpqKc8nZVWHLW+M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NS+ORlc71xvRJWrdZgr5W+1yFBVz0qppZNJgZa13261WJmnGl1YZNlmORPH1H7zPC
+         EgHgK39G02ztwrZFcrKu1+z5R8/7TrpPpOiyhVfu+bf4+3G5wnDQB6/ajUzBCMZuUf
+         SexeZbhm2W+RopYxcORoPUOS1ImPDv8xBgkLOFPY=
+Date:   Thu, 8 Apr 2021 20:01:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH 00/13] tty.h cleanups
+Message-ID: <YG9E5GpLljkXARDj@kroah.com>
+References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
+ <YG8SUl+B8+76JZwV@hovoldconsulting.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG8SUl+B8+76JZwV@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CRC calculation done by genksyms is triggered when the parser hits
-EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
-types, and uses that as the input for the CRC calculation. In the case
-of forward-declared structs, the type expands to 'UNKNOWN'. Next, the
-result of the expansion of each type is cached, and is re-used when/if
-the same type is seen again for another exported symbol in the file.
+On Thu, Apr 08, 2021 at 04:25:22PM +0200, Johan Hovold wrote:
+> On Thu, Apr 08, 2021 at 02:51:21PM +0200, Greg Kroah-Hartman wrote:
+> > Turns out there is a lot of tty-internal stuff in include/linux/tty.h
+> > that do not belong there.  Create a internal-to-the-tty-layer .h file
+> > for these types of things and move function prototypes to it instead of
+> > being in the system-wide header file.
+> > 
+> > Along the way clean up the use of some old tty-only debugging macros and
+> > use the in-kernel dev_*() calls instead.
+> 
+> I'm afraid that's not a good idea since not all ttys have a
+> corresponding class device. Notable exception include pseudo terminals
+> and serdev.
+> 
+> While dev_printk() can handle a NULL device argument without crashing,
+> we'll actually lose log information by removing the tty printk helpers.
 
-Unfortunately, this can cause CRC 'stability' issues when a struct
-definition becomes visible in the middle of a C file. For example, let's
-assume code with the following pattern:
+I think the same info will be printed here as before, just some NULL
+information at the beginning, right?  And the benifits overall (for real
+tty devices), should outweigh the few devices that do not have this
+information.
 
-    struct foo;
+But let me run some tests, on those devices to see just how this
+looks...
 
-    int bar(struct foo *arg)
-    {
-	/* Do work ... */
-    }
-    EXPORT_SYMBOL_GPL(bar);
+thanks,
 
-    /* This contains struct foo's definition */
-    #include "foo.h"
-
-    int baz(struct foo *arg)
-    {
-	/* Do more work ... */
-    }
-    EXPORT_SYMBOL_GPL(baz);
-
-Here, baz's CRC will be computed using the expansion of struct foo that
-was cached after bar's CRC calculation ('UNKOWN' here). But if
-EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
-trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
-late, during baz's CRC calculation, which now has visibility over the
-full struct definition, hence resulting in a different CRC for baz.
-
-This can cause annoying issues for distro kernel (such as the Android
-Generic Kernel Image) which use CONFIG_UNUSED_KSYMS_WHITELIST. Indeed,
-as per the above, adding a symbol to the whitelist can change the CRC of
-symbols that are already kept exported. As such, modules built against a
-kernel with a trimmed ABI may not load against the same kernel built
-with an extended whitelist, even though they are still strictly binary
-compatible. While rebuilding the modules would obviously solve the
-issue, I believe this classifies as an odd genksyms corner case, and it
-gets in the way of kernel updates in the GKI context.
-
-To work around the issue, make sure to keep issuing the
-__GENKSYMS_EXPORT_SYMBOL macros for all trimmed symbols, hence making
-the genksyms parsing insensitive to symbol trimming.
-
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- include/linux/export.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/linux/export.h b/include/linux/export.h
-index 6271a5d9c988..27d848712b90 100644
---- a/include/linux/export.h
-+++ b/include/linux/export.h
-@@ -140,7 +140,12 @@ struct kernel_symbol {
- #define ___cond_export_sym(sym, sec, ns, enabled)			\
- 	__cond_export_sym_##enabled(sym, sec, ns)
- #define __cond_export_sym_1(sym, sec, ns) ___EXPORT_SYMBOL(sym, sec, ns)
-+
-+#ifdef __GENKSYMS__
-+#define __cond_export_sym_0(sym, sec, ns) __GENKSYMS_EXPORT_SYMBOL(sym)
-+#else
- #define __cond_export_sym_0(sym, sec, ns) /* nothing */
-+#endif
- 
- #else
- 
--- 
-2.31.0.208.g409f899ff0-goog
-
+greg k-h
