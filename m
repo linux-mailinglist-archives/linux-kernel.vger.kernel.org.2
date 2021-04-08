@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE798358847
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBB3358846
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhDHPZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:25:55 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:10345 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231785AbhDHPZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:25:47 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FGQ7c23dGz9txdj;
-        Thu,  8 Apr 2021 17:25:32 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zsF4pkh7DYuh; Thu,  8 Apr 2021 17:25:32 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGQ7c0v8Xz9txdh;
-        Thu,  8 Apr 2021 17:25:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B4BD68B7D1;
-        Thu,  8 Apr 2021 17:25:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qTLohSVjcwj3; Thu,  8 Apr 2021 17:25:33 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 120BE8B7D0;
-        Thu,  8 Apr 2021 17:25:33 +0200 (CEST)
-Subject: Re: [PATCH v1 2/8] powerpc/mem: Remove address argument to
- flush_coherent_icache()
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <311235752428dacbee81728767aacc2bf4222384.1617816138.git.christophe.leroy@csgroup.eu>
- <8cbdcfc4446154bd3323cc68827f114aa9bbc5e7.1617816138.git.christophe.leroy@csgroup.eu>
- <87k0pdb1n6.fsf@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <8fdbc753-4ed6-ee3f-3317-f0ea5b95bbc9@csgroup.eu>
-Date:   Thu, 8 Apr 2021 17:25:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232139AbhDHPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:25:50 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:33467 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231803AbhDHPZn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:25:43 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 164BD2000F;
+        Thu,  8 Apr 2021 15:25:28 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 17:25:28 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linusw@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: New 'make dtbs_check W=1' warnings
+Message-ID: <YG8gaHqlJ+oCfkTt@piout.net>
+References: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0pdb1n6.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-Le 08/04/2021 à 10:50, Aneesh Kumar K.V a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On 08/04/2021 17:08:26+0200, Arnd Bergmann wrote:
+> arch/arm/boot/dts/at91-sama5d2_ptc_ek.dt.yaml: /: 'etm@73C000' does
+> not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$', '^[^@]+$',
+> 'pinctrl-[0-9]+'
+> arch/arm/boot/dts/at91-kizbox3-hs.dt.yaml: /: 'etm@73C000' does not
+> match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$', '^[^@]+$',
+> 'pinctrl-[0-9]+'
 > 
->> flush_coherent_icache() can use any valid address as mentionned
->> by the comment.
->>
->> Use PAGE_OFFSET as base address. This allows removing the
->> user access stuff.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/mm/mem.c | 13 +++++--------
->>   1 file changed, 5 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
->> index ce6c81ce4362..19f807b87697 100644
->> --- a/arch/powerpc/mm/mem.c
->> +++ b/arch/powerpc/mm/mem.c
->> @@ -342,10 +342,9 @@ void free_initmem(void)
->>   
->>   /**
->>    * flush_coherent_icache() - if a CPU has a coherent icache, flush it
->> - * @addr: The base address to use (can be any valid address, the whole cache will be flushed)
->>    * Return true if the cache was flushed, false otherwise
->>    */
->> -static inline bool flush_coherent_icache(unsigned long addr)
->> +static inline bool flush_coherent_icache(void)
->>   {
->>   	/*
->>   	 * For a snooping icache, we still need a dummy icbi to purge all the
->> @@ -355,9 +354,7 @@ static inline bool flush_coherent_icache(unsigned long addr)
->>   	 */
->>   	if (cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
->>   		mb(); /* sync */
->> -		allow_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
->> -		icbi((void *)addr);
->> -		prevent_read_from_user((const void __user *)addr, L1_CACHE_BYTES);
->> +		icbi((void *)PAGE_OFFSET);
->>   		mb(); /* sync */
->>   		isync();
->>   		return true;
-> 
-> do we need that followup sync? Usermanual suggest sync; icbi(any address);
-> isync sequence.
 
-I don't know.
+This was introduced by 4d930c421e3b ("ARM: dts: at91: sama5d2: add ETB
+and ETM unit name"), trying to fix another warning.
 
-The original implementation is here: https://github.com/linuxppc/linux/commit/0ce636700
+I guess this is because
+Documentation/devicetree/bindings/arm/coresight.txt is not yaml yet.
 
-Christophe
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
