@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAB7357D06
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225C8357D07
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhDHHKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:10:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53177 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229819AbhDHHKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:10:10 -0400
-IronPort-SDR: /TuYMs7M8N6vpQOPqY4fuFWWEDLLexc19rC1JaD5paiYA69P6/TRe2Nr1U8McPvGmZqHWTQBp7
- D1ECadlVS6EA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="190271869"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="190271869"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 00:10:00 -0700
-IronPort-SDR: tOzBnoNL/0LBoJOg9L8l6xsFJKJqpnYabAsM///bAwpBQJ1gsLBVeT6wVPNgstK84sSswIJaIr
- WxJFFSnEVT5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="519741633"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Apr 2021 00:09:57 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Apr 2021 10:09:56 +0300
-Date:   Thu, 8 Apr 2021 10:09:56 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v2 3/6] usb: typec: tcpm: update power supply once
- partner accepts
-Message-ID: <YG6sRLrseX7r930k@kuha.fi.intel.com>
-References: <20210407200723.1914388-1-badhri@google.com>
- <20210407200723.1914388-3-badhri@google.com>
+        id S229762AbhDHHLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:11:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15176 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhDHHLK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:11:10 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGC5l6YQ7zpVJ1;
+        Thu,  8 Apr 2021 15:08:11 +0800 (CST)
+Received: from [10.67.110.73] (10.67.110.73) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 15:10:49 +0800
+Subject: Re: [PATCH -next] drm/bridge: lt8912b: DRM_LONTIUM_LT8912B select
+ GPIOLIB
+From:   "zhangjianhua (E)" <zhangjianhua18@huawei.com>
+To:     Robert Foss <robert.foss@linaro.org>
+CC:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        "Jernej Skrabec" <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <johnny.chenyi@huawei.com>, <heying24@huawei.com>
+References: <20210406090733.169989-1-zhangjianhua18@huawei.com>
+ <CAG3jFyvC6ozPxQ=TPdPgLAugKky5AhOZGJSiw0Dc3Kn5Pba0cA@mail.gmail.com>
+ <d9bd5abf-0293-6155-dee0-20199fed1fc0@huawei.com>
+ <CAG3jFyu6YY5pr5bdvqAbzZu0GG0z=PWP+JHL59G26cg0P=563w@mail.gmail.com>
+ <a40abdd7-af43-28a3-1b79-0de6ca0c0093@huawei.com>
+Message-ID: <53492034-4cec-12ed-ae27-d693686084ee@huawei.com>
+Date:   Thu, 8 Apr 2021 15:10:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407200723.1914388-3-badhri@google.com>
+In-Reply-To: <a40abdd7-af43-28a3-1b79-0de6ca0c0093@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.73]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:07:20PM -0700, Badhri Jagan Sridharan wrote:
-> power_supply_changed needs to be called to notify clients
-> after the partner accepts the requested values for the pps
-> case.
-> 
-> Also, remove the redundant power_supply_changed at the end
-> of the tcpm_reset_port as power_supply_changed is already
-> called right after usb_type is changed.
-> 
-> Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through power_supply")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Hello Robert
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I am sorry that I make a mistake about the compiling error of lt8912b,
 
-> ---
-> Changes since V1:
-> * Updated commit description to clarify Guenter Roeck's concern.
-> * Added Reviewed-by tags
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index b4a40099d7e9..d1d03ee90d8f 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2568,6 +2568,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			port->pps_data.max_curr = port->pps_data.req_max_curr;
->  			port->req_supply_voltage = port->pps_data.req_out_volt;
->  			port->req_current_limit = port->pps_data.req_op_curr;
-> +			power_supply_changed(port->psy);
->  			tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
->  			break;
->  		case SOFT_RESET_SEND:
-> @@ -3136,7 +3137,6 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
->  						      port->pps_data.req_out_volt));
->  		port->pps_data.req_op_curr = min(port->pps_data.max_curr,
->  						 port->pps_data.req_op_curr);
-> -		power_supply_changed(port->psy);
->  	}
->  
->  	return src_pdo;
-> @@ -3561,8 +3561,6 @@ static void tcpm_reset_port(struct tcpm_port *port)
->  	port->sink_cap_done = false;
->  	if (port->tcpc->enable_frs)
->  		port->tcpc->enable_frs(port->tcpc, false);
-> -
-> -	power_supply_changed(port->psy);
->  }
->  
->  static void tcpm_detach(struct tcpm_port *port)
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
+the reason is that lt8912b miss the header file <linux/gpio/consumer.h>.
 
--- 
-heikki
+Although there are many files reference gpiod_set_value_cansleep() and
+
+devm_gpiod_get_optional(), they all include <linux/gpio/consumer.h>
+
+and not occur the compiling error like lt8912b. I have send the second
+
+version patch, please read.
+
+
+Best regards,
+
+Zhang Jianhua
+
+在 2021/4/7 17:50, zhangjianhua (E) 写道:
+> Thanks, I will do that.
+>
+> 在 2021/4/7 16:03, Robert Foss 写道:
+>>> Yes, you are right, there are many files reference
+>>> gpiod_set_value_cansleep() and
+>>>
+>>> devm_gpiod_get_optional(). How about add config dependencies for all
+>>> releated
+>> I think this is the way to go and roughly half of the drm bridge
+>> drivers seem to need this change.
+>>
+>> Do you mind submitting a series of patches adding this fix for all of
+>> the relevant bridge drivers?
+>>
+>>> configs or only add config dependencies for the top level config?
+>>>
+>> .
