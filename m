@@ -2,208 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67011358763
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C641F358769
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhDHOqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        id S231775AbhDHOsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhDHOqH (ORCPT
+        with ESMTP id S231526AbhDHOsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:46:07 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC0AC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 07:45:55 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id m3so2759133edv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 07:45:55 -0700 (PDT)
+        Thu, 8 Apr 2021 10:48:03 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F01C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 07:47:50 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id a6so2433525wrw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 07:47:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aP4+/wgY+aHLdP7WVG3wUuA56ODwMI83uK1g26CTxS8=;
-        b=F1ivaxkHYK3YNvEyXAkkE8EKfxCD4mHzwhZR3636bMbnjNCLztUSKrxvIQ3Az1Nn6p
-         +7KsTVnHIXWeKT/lFk6SZ68OJI2D77xsEtuCQthGOjtYqayd7ZAOazdA3z1Cg7z7YSKQ
-         fYWV+k/o2b/P7GbNKxMrNuvqYQl1zEnwl85OQbek0neUVu2dPqfzEOWiWkcd44kKyArJ
-         U3PrSDDMPLqNb10qWyaIe693BjDKwI3GBEQohd9lyOaGid2Oo/QWQZ9bnMgACofMc3Yt
-         U14uVl8d1YHsjph5Ppr2yHdzKRpM8xl5X8RbOS+qkJXYsD1poMUUh/okTM9rTIRxSDRB
-         aNKQ==
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=KmhaWajENDgR5BIM7h5/x6v7T2Cnn0jdRjB4r/hE72s=;
+        b=yGQyqePQPX5xRfG9D5muqGfSybBLR3PWxQ1bXRsOsjMGriTFmHHHDjDtgdyOtageqo
+         W1hTsqBAufoonYE8mtpIwF+GPV+EnelWx1EGlgIO/V5ndej99cgxjBAIZFtXY9GC/qkU
+         lwOq2SVUQrnopsiJcBVZcZoXf1jn3Apm2GodAuoSPa0K+NT4vkRgKZl9KMdHUImjkQGz
+         8Ebe4wDGtlKTkWtPm9TqBHla2qFow6OEUaFUtw8klD9e5KSm3UuW3fvRGobsUXt3k46P
+         +AY6GKzUpRRx44bxaceKEXuv5iTBS+BwJxISpvAIoKC+iyn5KjqEPMg7ic3beMh/kzUt
+         d6Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aP4+/wgY+aHLdP7WVG3wUuA56ODwMI83uK1g26CTxS8=;
-        b=G6m5ZwxMlKjQrF+KTAqqK38gxK/Fvy6vSlKoVIH18/eJ8hMf2wfCqjXY5H9YSWCDnl
-         8RuSO5UZ3HPSHBePLugVZSo3CmRGq6Lop91V96i44AkD+SMwaU/44o9+Xug4lTGwVjs5
-         S3jU23iIuUgiejpkWpJbhQtwXjyJquAOo9rW7IS59aGWNEuUq8YKZ2s//hry0oJX9hz6
-         XYylU61X/MFfTvyTMxzQ4mgUZUAX4RgAQOwMEXIGcOPKJshy31m4zy90kaUNGPk3hzuL
-         0pQvoOQ2CDa5cKSm8L42fsso80Yz6WAYFJjuITU9styee6Rsn7RJbM+SRcx/f1VUk3kQ
-         bwUg==
-X-Gm-Message-State: AOAM531/deTb7lPE0u932kXq23ByQnqQ+O6fa68La4wOSMEAgtfQO+uI
-        9s3uMMzlwc2BHJ6y0/4PfVvYV2DUZftR9hDnkU/CMA==
-X-Google-Smtp-Source: ABdhPJyLURUxZtiZnGe6SwWCgmcGWMa/94o5nttbjueSVkPKwhjmuYlwF2DAd125IPHmumPkvW62Dys0w+LVTnB9KF0=
-X-Received: by 2002:a05:6402:68a:: with SMTP id f10mr11938928edy.26.1617893154596;
- Thu, 08 Apr 2021 07:45:54 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=KmhaWajENDgR5BIM7h5/x6v7T2Cnn0jdRjB4r/hE72s=;
+        b=fr/4rpxYeEizvZFxoA2yYREWit7vaWy5fcWC9zKTTM7VSpjJhCWY02212I2ApApzqi
+         RBGuCIgZl8/qPbh0gpmvz41C2Qjn36apRoVjvtxbDsZnQ3aPk1u+sVUyAR6FMM0L/Poj
+         sAU9zeCu8bV6LvKRg6FYjcztiq6bremWbPqgwHBsoJdrp3OYQpnG368krzpaJniN9qSv
+         uQ6wSEKuPSrEEscvsW0L21nYn9BIc67eHcYBw3T9E83+IqqvOgPOVAm3X4/1141eBttN
+         6gui27CuMxd8OjSP3hCVB3DHbWzMdlpuL2MkHaMfe5Z2VTFdgNkMpsX02T8cYwCyjXGj
+         l66g==
+X-Gm-Message-State: AOAM530qLfg2rzdzAb3dgDPqPWWoceKESJLg0/tW+hlPGBhT8xjTCWvy
+        9lJEh4kAtqsWEccjxpp4o9ctY63v2gUUNV1g
+X-Google-Smtp-Source: ABdhPJzYbmZulyVKBBVwyNLrenlOwcP/6W+MtHA4mWVlyGGe5gbAvhnIAfZ4o49s9HMl6/bJ/ewdTQ==
+X-Received: by 2002:adf:e4ce:: with SMTP id v14mr12092206wrm.291.1617893268931;
+        Thu, 08 Apr 2021 07:47:48 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9407:6619:589b:441e? ([2a01:e34:ed2f:f020:9407:6619:589b:441e])
+        by smtp.googlemail.com with ESMTPSA id g189sm12442189wmf.14.2021.04.08.07.47.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 07:47:48 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Tony Lindgren <tony@atomide.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] timer drivers for v5.13
+Message-ID: <aa155f48-56ab-9a44-316e-cf1d33fe6d0d@linaro.org>
+Date:   Thu, 8 Apr 2021 16:47:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210408040537.2703241-1-pasha.tatashin@soleen.com>
- <20210408040537.2703241-4-pasha.tatashin@soleen.com> <480272f8fb3e46d24a0ee1418fb85809@kernel.org>
-In-Reply-To: <480272f8fb3e46d24a0ee1418fb85809@kernel.org>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 8 Apr 2021 10:45:18 -0400
-Message-ID: <CA+CK2bDc+9EsH_TLTgg9Pqv_-rZfZfPohdZEfsYjT8ss+8skjg@mail.gmail.com>
-Subject: Re: [PATCH v13 03/18] arm64: hyp-stub: Move el1_sync into the vectors
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Pingfan Liu <kernelfans@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 6:24 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2021-04-08 05:05, Pavel Tatashin wrote:
-> > From: James Morse <james.morse@arm.com>
-> >
-> > The hyp-stub's el1_sync code doesn't do very much, this can easily fit
-> > in the vectors.
-> >
-> > With this, all of the hyp-stubs behaviour is contained in its vectors.
-> > This lets kexec and hibernate copy the hyp-stub when they need its
-> > behaviour, instead of re-implementing it.
-> >
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> >
-> > [Fixed merging issues]
->
-> That's a pretty odd fix IMO.
->
-> >
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >  arch/arm64/kernel/hyp-stub.S | 59 ++++++++++++++++++------------------
-> >  1 file changed, 29 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/arch/arm64/kernel/hyp-stub.S
-> > b/arch/arm64/kernel/hyp-stub.S
-> > index ff329c5c074d..d1a73d0f74e0 100644
-> > --- a/arch/arm64/kernel/hyp-stub.S
-> > +++ b/arch/arm64/kernel/hyp-stub.S
-> > @@ -21,6 +21,34 @@ SYM_CODE_START_LOCAL(\label)
-> >       .align 7
-> >       b       \label
-> >  SYM_CODE_END(\label)
-> > +.endm
-> > +
-> > +.macro hyp_stub_el1_sync
-> > +SYM_CODE_START_LOCAL(hyp_stub_el1_sync)
-> > +     .align 7
-> > +     cmp     x0, #HVC_SET_VECTORS
-> > +     b.ne    2f
-> > +     msr     vbar_el2, x1
-> > +     b       9f
-> > +
-> > +2:   cmp     x0, #HVC_SOFT_RESTART
-> > +     b.ne    3f
-> > +     mov     x0, x2
-> > +     mov     x2, x4
-> > +     mov     x4, x1
-> > +     mov     x1, x3
-> > +     br      x4                              // no return
-> > +
-> > +3:   cmp     x0, #HVC_RESET_VECTORS
-> > +     beq     9f                              // Nothing to reset!
-> > +
-> > +     /* Someone called kvm_call_hyp() against the hyp-stub... */
-> > +     mov_q   x0, HVC_STUB_ERR
-> > +     eret
-> > +
-> > +9:   mov     x0, xzr
-> > +     eret
-> > +SYM_CODE_END(hyp_stub_el1_sync)
->
-> You said you tested this on a TX2. I guess you don't care whether
-> it runs VHE or not...
 
-Hi Marc,
+Hi Thomas,
 
-Thank you for noticing this. Not sure how this missmerge happened. I
-have added the missing case, and VHE is initialized correctly during
-boot.
-[   14.698175] kvm [1]: VHE mode initialized successfully
+please consider these changes for v5.13
 
-During normal boot, kexec reboot, and kdump reboot. I will respin the
-series and send the version 14 soon.
+Thanks
 
-Thanks,
-Pasha
+  -- Daniel
 
->
->          M.
->
-> >  .endm
-> >
-> >       .text
-> > @@ -39,7 +67,7 @@ SYM_CODE_START(__hyp_stub_vectors)
-> >       invalid_vector  hyp_stub_el2h_fiq_invalid       // FIQ EL2h
-> >       invalid_vector  hyp_stub_el2h_error_invalid     // Error EL2h
-> >
-> > -     ventry  el1_sync                        // Synchronous 64-bit EL1
-> > +     hyp_stub_el1_sync                               // Synchronous 64-bit EL1
-> >       invalid_vector  hyp_stub_el1_irq_invalid        // IRQ 64-bit EL1
-> >       invalid_vector  hyp_stub_el1_fiq_invalid        // FIQ 64-bit EL1
-> >       invalid_vector  hyp_stub_el1_error_invalid      // Error 64-bit EL1
-> > @@ -55,35 +83,6 @@ SYM_CODE_END(__hyp_stub_vectors)
-> >  # Check the __hyp_stub_vectors didn't overflow
-> >  .org . - (__hyp_stub_vectors_end - __hyp_stub_vectors) + SZ_2K
-> >
-> > -
-> > -SYM_CODE_START_LOCAL(el1_sync)
-> > -     cmp     x0, #HVC_SET_VECTORS
-> > -     b.ne    1f
-> > -     msr     vbar_el2, x1
-> > -     b       9f
-> > -
-> > -1:   cmp     x0, #HVC_VHE_RESTART
-> > -     b.eq    mutate_to_vhe
-> > -
-> > -2:   cmp     x0, #HVC_SOFT_RESTART
-> > -     b.ne    3f
-> > -     mov     x0, x2
-> > -     mov     x2, x4
-> > -     mov     x4, x1
-> > -     mov     x1, x3
-> > -     br      x4                              // no return
-> > -
-> > -3:   cmp     x0, #HVC_RESET_VECTORS
-> > -     beq     9f                              // Nothing to reset!
-> > -
-> > -     /* Someone called kvm_call_hyp() against the hyp-stub... */
-> > -     mov_q   x0, HVC_STUB_ERR
-> > -     eret
-> > -
-> > -9:   mov     x0, xzr
-> > -     eret
-> > -SYM_CODE_END(el1_sync)
-> > -
-> >  // nVHE? No way! Give me the real thing!
-> >  SYM_CODE_START_LOCAL(mutate_to_vhe)
-> >       // Sanity check: MMU *must* be off
->
-> --
-> Jazz is not dead. It just smells funny...
+The following changes since commit d4c7c28806616809e3baa0b7cd8c665516b2726d:
+
+  timekeeping: Allow runtime PM from change_clocksource() (2021-03-29
+16:41:59 +0200)
+
+are available in the Git repository at:
+
+  https://git.linaro.org/people/daniel.lezcano/linux tags/timers-v5.13-rc1
+
+for you to fetch changes up to 8120891105ba32b45bc35f7dc07e6d87a8314556:
+
+  dt-bindings: timer: nuvoton,npcm7xx: Add wpcm450-timer (2021-04-08
+16:41:20 +0200)
+
+----------------------------------------------------------------
+ - Add dt bindings for the wpcm450 and the timer declaration (Jonathan
+   Neuschäfer)
+
+ - Add dt bindings for the JZ4760, the timer declaration for the
+   ingenic ost and timer (Paul Cercueil)
+
+ - Add dt bindings for the cmt r8a779a0 (Wolfram Sang)
+
+ - Add dt bindings for the cmt r8a77961 (Niklas Söderlund)
+
+ - Add missing dt bindings for the tmu r8a7795, r8a7796, r8a77961, r8a77965,
+   r8a77990 and r8a77995 (Niklas Söderlund)
+
+ - Check pending post before writing a new post in register for the
+   timer TI dm and add the stopped callback ops to prevent any
+   spurious interrupt (Tony Lindgren)
+
+ - Fix return value check at init when calling device_node_to_regmap()
+   for the Ingenic OST timer (Wei Yongjun)
+
+ - Fix a trivial typo s/overflw/overflow/ for the pistachio timer (Drew
+Fustini)
+
+ - Don't use CMTOUT_IE with R-Car Gen2/3 (Wolfram Sang)
+
+ - Fix rollback when the initialization fails on the dw_apb timer (Dinh
+Nguyen)
+
+ - Switch to timer TI dm on dra7 in order to prevent using the bogus
+   architected timer which fails to wrap correctly after 388 days (Tony
+Lindgren)
+
+ - Add function annotation to optimize memory for the ARM architected
+   timer (Jisheng Zhang)
+
+----------------------------------------------------------------
+Dinh Nguyen (1):
+      clocksource/drivers/dw_apb_timer_of: Add handling for potential
+memory leak
+
+Drew Fustini (1):
+      clocksource/drivers/pistachio: Fix trivial typo
+
+Jisheng Zhang (1):
+      clocksource/drivers/arm_arch_timer: Add __ro_after_init and __init
+
+Jonathan Neuschäfer (2):
+      clocksource/drivers/npcm: Add support for WPCM450
+      dt-bindings: timer: nuvoton,npcm7xx: Add wpcm450-timer
+
+Niklas Söderlund (2):
+      dt-bindings: timer: renesas,tmu: Document missing Gen3 SoCs
+      dt-bindings: timer: renesas,cmt: Document R8A77961
+
+Paul Cercueil (3):
+      dt-bindings: timer: ingenic: Add compatible strings for JZ4760(B)
+      clocksource/drivers/ingenic: Add support for the JZ4760
+      clocksource/drivers/ingenic-ost: Add support for the JZ4760B
+
+Tony Lindgren (4):
+      clocksource/drivers/timer-ti-dm: Fix posted mode status check order
+      clocksource/drivers/timer-ti-dm: Add missing set_state_oneshot_stopped
+      clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap
+issue
+      clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
+
+Wei Yongjun (1):
+      clocksource/drivers/ingenic_ost: Fix return value check in
+ingenic_ost_probe()
+
+Wolfram Sang (2):
+      dt-bindings: timer: renesas,cmt: Add r8a779a0 CMT support
+      clocksource/drivers/sh_cmt: Don't use CMTOUT_IE with R-Car Gen2/3
+
+ .../devicetree/bindings/timer/ingenic,tcu.yaml     |  30 ++--
+ .../bindings/timer/nuvoton,npcm7xx-timer.txt       |   3 +-
+ .../devicetree/bindings/timer/renesas,cmt.yaml     |   4 +
+ .../devicetree/bindings/timer/renesas,tmu.yaml     |   6 +
+ arch/arm/boot/dts/dra7-l4.dtsi                     |   4 +-
+ arch/arm/boot/dts/dra7.dtsi                        |  20 +++
+ drivers/clocksource/arm_arch_timer.c               |  23 +--
+ drivers/clocksource/dw_apb_timer_of.c              |  26 +++-
+ drivers/clocksource/ingenic-ost.c                  |   9 +-
+ drivers/clocksource/ingenic-timer.c                |   2 +
+ drivers/clocksource/sh_cmt.c                       |   5 +-
+ drivers/clocksource/timer-npcm7xx.c                |   1 +
+ drivers/clocksource/timer-pistachio.c              |   4 +-
+ drivers/clocksource/timer-ti-dm-systimer.c         | 155
++++++++++++++++++----
+ include/linux/cpuhotplug.h                         |   1 +
+ 15 files changed, 229 insertions(+), 64 deletions(-)
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
