@@ -2,128 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD8C35805D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284EF35805E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhDHKNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:13:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53592 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229686AbhDHKNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:13:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617876800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yvidRElOU50/DcX6YopVHSEwI5Pj7b3vwtdUcMsLgWQ=;
-        b=lxB/nureVcPpVOz5bhdGBk5/E//r9Dqz/kkto4qDnHLS4yUoIVgy3kq99/9ii2G9LDFNVc
-        ruxT/RYaP93RQdW3cbrKgTSu0Mjz9WFagTgUaYkrvTi0Mxbg16Eu2R8+I3i5Kw74lXyKJB
-        kSBfjog2+rNBK5MQeGuCkK2zWgycXXc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5704AFF7;
-        Thu,  8 Apr 2021 10:13:20 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 12:13:20 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 03/12] dump_stack: Add vmlinux build ID to stack traces
-Message-ID: <YG7XQK1FCofMZsqM@alley>
-References: <20210331030520.3816265-1-swboyd@chromium.org>
- <20210331030520.3816265-4-swboyd@chromium.org>
- <YG27p1AhiOKJOm+y@alley>
- <161786283299.3790633.9395579294249054249@swboyd.mtv.corp.google.com>
+        id S230234AbhDHKNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhDHKNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 06:13:43 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411A4C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 03:13:32 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id f6so1485631wrv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 03:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ySqfjwEYIH9v0T/5ZEFK3YGLiqMJEr02neElvQ2cvsA=;
+        b=PkDRORcsDtVfj7ynfbmk4D6QY+xyClAY1udDmGwg6Nm+SsfNbIDaLnfUNPAtPo/pf/
+         1B2YHs2+QHHIVM0LeIDFkODzx7Wx/xXbqjUZAg9II283INay5JGlosS+qqJhPh5OvDB3
+         902ZWrO4hr/bmNcs1lFIvidLYVI0ZuYxdNJk1ZwDQ9v4YfIQHgZ+P1gCkP3H8BuzVjgT
+         xO3QG1jhRYzRe2uvVpbNJlhtcfqf6Q4VO/cEEkuR/ajTm+6dXs9g4fnL9IONA3UUrwzb
+         F5bW+pUqGLvs0eTaHwMkoZGtcmzS4DHqrpXOFeT86KpO0KJ9jiEjg1FTPk90w5Z99+0O
+         lagA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ySqfjwEYIH9v0T/5ZEFK3YGLiqMJEr02neElvQ2cvsA=;
+        b=l119XPtMItK9HqJ0lSt2QX2leYUUueDAprcX6nwEfKK48mPBhGc/9xS0HQBjQjImHw
+         WKBptpYpC/8sQM7SCzQ/cPftjNX1v1UjCP/V6lMdp58e9AHki3C7XMCe8pK9cIXx4DUY
+         WtBuCYHYFt1guQVmZEXMgFeaZKlyEjf26aq6pHEumCK98+/51rvz6AW/X7BrjgPQfAEO
+         UepGqJXfYSSVIOYICNOYvlHaCsTuYovT6U5d+S/duC3L03NAaaOMPB2ztDs12/Q5sbAc
+         fquh0YfsUChLIvgLM+KOP7WY4WW0OLxNDYrkpNOarTa4D15RoUyMV7b+nCrte9rVQc7B
+         uxIQ==
+X-Gm-Message-State: AOAM532jK7SrTKGZT+kGdTpjjHl4l96T+R3osPCNEhIb+8ZsK0tAEJgk
+        DihbV/5pjNmufrr0s7ROvZU=
+X-Google-Smtp-Source: ABdhPJx6+er9m7fHOJOvKhS1mLBuebdoyISgNk02O3mgsdy8PyLQuv/PLuugk9/ZzNIMhP+0gPNiTQ==
+X-Received: by 2002:a05:6000:18ab:: with SMTP id b11mr10102517wri.403.1617876810901;
+        Thu, 08 Apr 2021 03:13:30 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.167])
+        by smtp.gmail.com with ESMTPSA id t6sm12057923wro.36.2021.04.08.03.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 03:13:30 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 12:13:27 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     lkp@intel.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove unused variables
+Message-ID: <20210408101326.GA1648@agape.jhs>
+References: <20210408092702.25863-1-fabioaiuto83@gmail.com>
+ <YG7Q525hyhqzbXp/@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161786283299.3790633.9395579294249054249@swboyd.mtv.corp.google.com>
+In-Reply-To: <YG7Q525hyhqzbXp/@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-04-07 23:20:32, Stephen Boyd wrote:
-> Quoting Petr Mladek (2021-04-07 07:03:19)
-> > # readelf -Wn vmlinux-5.12.0-rc6-default+ 
-> > 
-> > Displaying notes found in: .notes
-> >   Owner                 Data size       Description
-> >   Xen                  0x00000006       Unknown note type: (0x00000006)    description data: 6c 69 6e 75 78 00 
-> >   Xen                  0x00000004       Unknown note type: (0x00000007)    description data: 32 2e 36 00 
-> >   Xen                  0x00000008       Unknown note type: (0x00000005)    description data: 78 65 6e 2d 33 2e 30 00 
-> >   Xen                  0x00000008       Unknown note type: (0x00000003)    description data: 00 00 00 ffffff80 ffffffff ffffffff ffffffff ffffffff 
-> > 
+On Thu, Apr 08, 2021 at 11:46:15AM +0200, Greg KH wrote:
+> On Thu, Apr 08, 2021 at 11:27:02AM +0200, Fabio Aiuto wrote:
+> > remove declared and assigned unused variables
 > 
-> Thanks for the readelf output. That was most helpful to see what's going
-> on. The buildid code isn't prepared for this it seems. We'll need to
-> check the note data to see if it starts with "GNU\0" and if it does then
-> we use it as the buildid. I'm not sure what this Xen note is that has a
-> type of 3 but I think that's OK, it won't have "GNU" in there so we
-> should ignore it. Does this patch work?
+> You need to be a lot more specific here.
+
+Shall I describe that some of these became unused
+after DBG_871X removal?
+
 > 
-> ----8<----
-> diff --git a/lib/buildid.c b/lib/buildid.c
-> index 483abf71eeec..f281dbe6fb83 100644
-> --- a/lib/buildid.c
-> +++ b/lib/buildid.c
-> @@ -25,6 +25,7 @@ static int parse_build_id_buf(unsigned char *build_id,
->  
->  		if (nhdr->n_type == BUILD_ID &&
->  		    nhdr->n_namesz == sizeof("GNU") &&
-> +		    !strcmp((char *)(nhdr + 1), "GNU") &&
->  		    nhdr->n_descsz > 0 &&
->  		    nhdr->n_descsz <= BUILD_ID_SIZE_MAX) {
->  			memcpy(build_id,
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> For all of these?
 
-It helped with the vmlinux buildid. I see the following:
+yes, actually, not just the ">>" marked ones, but also
+all others reported in automatic email.
 
-[  551.435942][ T1803] test_printf: loaded.
-[  551.436667][ T1803] ------------[ cut here ]------------
-[  551.437561][ T1803] kernel BUG at lib/test_printf.c:689!
-[  551.438352][ T1803] invalid opcode: 0000 [#1] SMP NOPTI
-[  551.438359][ T1803] CPU: 3 PID: 1803 Comm: modprobe Kdump: loaded Tainted: G            E     5.12.0-rc6-default+ #176 e51781e52aaf4d6dfea7a18574c104c8bfd7c37f
-[  551.438363][ T1803] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[  551.438365][ T1803] RIP: 0010:test_printf_init+0x561/0xc99 [test_printf c2388ff0552611501b4d2ad58d8e5ca441d9a350]
-[  551.443090][ T1803] Code: 00 48 c7 c7 b8 36 1b c0 e8 19 f9 ff ff b9 ab 00 00 00 48 c7 c2 93 36 1b c0 be 08 00 00 00 48 c7 c7 af 36 1b c0 e8 fc f8 ff ff <0f> 0b 8b 05 44 07 00 00 8b 35 3a 07 00 00 8b 1d 3c 07 00 00 85 c0
-[  551.443094][ T1803] RSP: 0018:ffffb62c0039bc78 EFLAGS: 00010282
-[  551.443096][ T1803] RAX: 0000000000000000 RBX: ffffb62c0039bc80 RCX: ffffd62bffc00b70
-[  551.443098][ T1803] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffa0352fd5
-[  551.443099][ T1803] RBP: ffffffffc01b7367 R08: 0000000000000001 R09: 0000000000000001
-[  551.443100][ T1803] R10: 0000000000000000 R11: 0000000000000001 R12: ffff9bc08c87c820
-[  551.443101][ T1803] R13: 0000000000000001 R14: ffff9bc0d2798480 R15: ffffb62c0039be90
-[  551.443102][ T1803] FS:  00007f5767485b80(0000) GS:ffff9bc0ffc00000(0000) knlGS:0000000000000000
-[  551.443103][ T1803] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  551.443105][ T1803] CR2: 00007f5766b36ef0 CR3: 0000000100368004 CR4: 0000000000370ee0
-[  551.443108][ T1803] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  551.443108][ T1803] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  551.443109][ T1803] Call Trace:
-[  551.443113][ T1803]  ? __test+0x13c/0x149 [test_printf]
-[  551.443116][ T1803]  ? rcu_read_lock_sched_held+0x52/0x80
-[  551.443120][ T1803]  do_one_initcall+0x5b/0x2d0
-[  551.443125][ T1803]  do_init_module+0x5b/0x21c
-[  551.443127][ T1803]  load_module+0x1eaa/0x23c0
-[  551.443130][ T1803]  ? show_modinfo_version+0x30/0x30
-[  551.443134][ T1803]  ? __do_sys_finit_module+0xad/0x110
-[  551.443135][ T1803]  __do_sys_finit_module+0xad/0x110
-[  551.443138][ T1803]  do_syscall_64+0x33/0x40
-[  551.443139][ T1803]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  551.443143][ T1803] RIP: 0033:0x7f5766b5b2a9
-[
+Shall I limit to the marked ones?
 
-Note that it still does not show the build id for the module. It fails
-in the module init call and the build id should be already initialized
-at this stage.
+Should I put in In-Reply-To the test robot email?
 
-One more thing. I am not familiar with the elf-related code.
-Is it safe to access (nhdr + 1)? Do we need a check that
-it is still withing the given section?
+Or just the output of the test robot in the changelog?
 
-Best Regards,
-Petr
+> 
+> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > ---
+> >  drivers/staging/rtl8723bs/core/rtw_cmd.c      |  3 ---
+> >  .../staging/rtl8723bs/include/rtw_security.h  | 18 -------------
+> >  .../staging/rtl8723bs/os_dep/ioctl_linux.c    | 26 +++----------------
+> >  3 files changed, 3 insertions(+), 44 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > index baf8b1e0f43c..e94eb1138cf1 100644
+> > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > @@ -387,7 +387,6 @@ int rtw_cmd_thread(void *context)
+> >  	u8 ret;
+> >  	struct cmd_obj *pcmd;
+> >  	u8 *pcmdbuf;
+> > -	unsigned long cmd_start_time;
+> >  	u8 (*cmd_hdl)(struct adapter *padapter, u8 *pbuf);
+> >  	void (*pcmd_callback)(struct adapter *dev, struct cmd_obj *pcmd);
+> >  	struct adapter *padapter = context;
+> > @@ -438,8 +437,6 @@ int rtw_cmd_thread(void *context)
+> >  			continue;
+> >  		}
+> >  
+> > -		cmd_start_time = jiffies;
+> > -
+> >  		if (rtw_cmd_filter(pcmdpriv, pcmd) == _FAIL) {
+> >  			pcmd->res = H2C_DROPPED;
+> >  			goto post_process;
+> 
+> How about one patch per variable that is being removed as this was fine,
+> but others below are not ok.
+
+so just one patch per variable removed, right?
+I will send a small patchset instead of this.
+
+> 
+> > diff --git a/drivers/staging/rtl8723bs/include/rtw_security.h b/drivers/staging/rtl8723bs/include/rtw_security.h
+> > index b71f0959108b..5c787e999aab 100644
+> > --- a/drivers/staging/rtl8723bs/include/rtw_security.h
+> > +++ b/drivers/staging/rtl8723bs/include/rtw_security.h
+> > @@ -332,24 +332,6 @@ static inline u32 rotr(u32 val, int bits)
+> >  /* This is based on SHA256 implementation in LibTomCrypt that was released into
+> >   * public domain by Tom St Denis. */
+> >  
+> > -/* the K array */
+> > -static const unsigned long K[64] = {
+> > -	0x428a2f98UL, 0x71374491UL, 0xb5c0fbcfUL, 0xe9b5dba5UL, 0x3956c25bUL,
+> > -	0x59f111f1UL, 0x923f82a4UL, 0xab1c5ed5UL, 0xd807aa98UL, 0x12835b01UL,
+> > -	0x243185beUL, 0x550c7dc3UL, 0x72be5d74UL, 0x80deb1feUL, 0x9bdc06a7UL,
+> > -	0xc19bf174UL, 0xe49b69c1UL, 0xefbe4786UL, 0x0fc19dc6UL, 0x240ca1ccUL,
+> > -	0x2de92c6fUL, 0x4a7484aaUL, 0x5cb0a9dcUL, 0x76f988daUL, 0x983e5152UL,
+> > -	0xa831c66dUL, 0xb00327c8UL, 0xbf597fc7UL, 0xc6e00bf3UL, 0xd5a79147UL,
+> > -	0x06ca6351UL, 0x14292967UL, 0x27b70a85UL, 0x2e1b2138UL, 0x4d2c6dfcUL,
+> > -	0x53380d13UL, 0x650a7354UL, 0x766a0abbUL, 0x81c2c92eUL, 0x92722c85UL,
+> > -	0xa2bfe8a1UL, 0xa81a664bUL, 0xc24b8b70UL, 0xc76c51a3UL, 0xd192e819UL,
+> > -	0xd6990624UL, 0xf40e3585UL, 0x106aa070UL, 0x19a4c116UL, 0x1e376c08UL,
+> > -	0x2748774cUL, 0x34b0bcb5UL, 0x391c0cb3UL, 0x4ed8aa4aUL, 0x5b9cca4fUL,
+> > -	0x682e6ff3UL, 0x748f82eeUL, 0x78a5636fUL, 0x84c87814UL, 0x8cc70208UL,
+> > -	0x90befffaUL, 0xa4506cebUL, 0xbef9a3f7UL, 0xc67178f2UL
+> > -};
+> > -
+> > -
+> >  /* Various logical functions */
+> >  #define RORc(x, y) \
+> >  (((((unsigned long) (x) & 0xFFFFFFFFUL) >> (unsigned long) ((y) & 31)) | \
+> > diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> > index a9820d813d8b..8d29ca9ba67f 100644
+> > --- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> > +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> > @@ -33,10 +33,6 @@
+> >  static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
+> >  	6000000, 9000000, 12000000, 18000000, 24000000, 36000000, 48000000, 54000000};
+> >  
+> > -static const char * const iw_operation_mode[] = {
+> > -	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater", "Secondary", "Monitor"
+> > -};
+> > -
+> >  void indicate_wx_scan_complete_event(struct adapter *padapter)
+> >  {
+> >  	union iwreq_data wrqu;
+> > @@ -1125,7 +1121,6 @@ static int rtw_wx_set_mlme(struct net_device *dev,
+> >  			     union iwreq_data *wrqu, char *extra)
+> >  {
+> >  	int ret = 0;
+> > -	u16 reason;
+> >  	struct adapter *padapter = rtw_netdev_priv(dev);
+> >  	struct iw_mlme *mlme = (struct iw_mlme *)extra;
+> >  
+> > @@ -1133,8 +1128,6 @@ static int rtw_wx_set_mlme(struct net_device *dev,
+> >  	if (mlme == NULL)
+> >  		return -1;
+> >  
+> > -	reason = mlme->reason_code;
+> > -
+> >  	switch (mlme->cmd) {
+> >  	case IW_MLME_DEAUTH:
+> >  		if (!rtw_set_802_11_disassociate(padapter))
+> > @@ -2440,7 +2433,6 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  	u8 major_cmd, minor_cmd;
+> >  	u16 arg;
+> >  	u32 extra_arg, *pdata, val32;
+> > -	struct sta_info *psta;
+> >  	struct adapter *padapter = rtw_netdev_priv(dev);
+> >  	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
+> >  	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+> > @@ -2542,15 +2534,7 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  
+> >  					break;
+> >  				case 0x05:
+> > -					psta = rtw_get_stainfo(pstapriv, cur_network->network.MacAddress);
+> > -					if (psta) {
+> > -						int i;
+> > -						struct recv_reorder_ctrl *preorder_ctrl;
+> > -
+> > -						for (i = 0; i < 16; i++)
+> > -							preorder_ctrl = &psta->recvreorder_ctrl[i];
+> > -
+> > -					}
+> > +					rtw_get_stainfo(pstapriv, cur_network->network.MacAddress);
+> 
+> Odd, but ok.
+> 
+> >  					break;
+> >  				case 0x06:
+> >  					{
+> > @@ -2568,9 +2552,8 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  					break;
+> >  				case 0x09:
+> >  					{
+> > -						int i, j;
+> > +						int i;
+> >  						struct list_head	*plist, *phead;
+> > -						struct recv_reorder_ctrl *preorder_ctrl;
+> >  
+> >  						spin_lock_bh(&pstapriv->sta_hash_lock);
+> >  
+> > @@ -2579,13 +2562,10 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  							plist = get_next(phead);
+> >  
+> >  							while (phead != plist) {
+> > -								psta = container_of(plist, struct sta_info, hash_list);
+> > +								container_of(plist, struct sta_info, hash_list);
+> 
+> Did that build???  If so, that's obviously not correct.
+>
+
+yes it builds..
+
+> >  
+> >  								plist = get_next(plist);
+> 
+> So you now have a loop that does nothing?
+>
+
+so will I remove the whole loop?
+ 
+> thanks,
+> 
+> greg k-h
+
+thank you,
+
+fabio
