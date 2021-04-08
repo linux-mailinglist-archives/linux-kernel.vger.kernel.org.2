@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E18357AF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 05:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F90D357AF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 05:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhDHDyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 23:54:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16072 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhDHDyx (ORCPT
+        id S229596AbhDHD5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 23:57:19 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16821 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhDHD5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 23:54:53 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG6lx1FR1z1BGNv;
-        Thu,  8 Apr 2021 11:52:29 +0800 (CST)
-Received: from huawei.com (10.67.174.96) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 11:54:30 +0800
-From:   Zhang Jianhua <zhangjianhua18@huawei.com>
-To:     <adrien.grassein@gmail.com>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <robert.foss@linaro.org>,
-        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <zhangjianhua18@huawei.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <johnny.chenyi@huawei.com>, <heying24@huawei.com>
-Subject: [PATCH -next v2] drm/bridge: lt8912b: Add header file <linux/gpio/consumer.h>
-Date:   Thu, 8 Apr 2021 11:54:35 +0800
-Message-ID: <20210408035435.250677-1-zhangjianhua18@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 7 Apr 2021 23:57:17 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FG6ph4Vh3z7tpg;
+        Thu,  8 Apr 2021 11:54:52 +0800 (CST)
+Received: from huawei.com (10.67.174.142) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 11:56:54 +0800
+From:   <johnny.chenyi@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <npiggin@gmail.com>,
+        <christophe.leroy@csgroup.eu>, <aneesh.kumar@linux.ibm.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <yuehaibing@huawei.com>, <heying24@huawei.com>
+Subject: [PATCH-next] powerpc/interrupt: Remove duplicate header file
+Date:   Thu, 8 Apr 2021 11:56:44 +0800
+Message-ID: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.96]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.142]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_DRM_LONTIUM_LT8912B=m, the following errors will be seen while
-compiling lontium-lt8912b.c
+From: Chen Yi <johnny.chenyi@huawei.com>
 
-drivers/gpu/drm/bridge/lontium-lt8912b.c: In function
-‘lt8912_hard_power_on’:
-drivers/gpu/drm/bridge/lontium-lt8912b.c:252:2: error: implicit
-declaration of function ‘gpiod_set_value_cansleep’; did you mean
-‘gpio_set_value_cansleep’? [-Werror=implicit-function-declaration]
-  gpiod_set_value_cansleep(lt->gp_reset, 0);
-  ^~~~~~~~~~~~~~~~~~~~~~~~
-  gpio_set_value_cansleep
-drivers/gpu/drm/bridge/lontium-lt8912b.c: In function ‘lt8912_parse_dt’:
-drivers/gpu/drm/bridge/lontium-lt8912b.c:628:13: error: implicit
-declaration of function ‘devm_gpiod_get_optional’; did you mean
-‘devm_gpio_request_one’? [-Werror=implicit-function-declaration]
-  gp_reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-             ^~~~~~~~~~~~~~~~~~~~~~~
-             devm_gpio_request_one
-drivers/gpu/drm/bridge/lontium-lt8912b.c:628:51: error: ‘GPIOD_OUT_HIGH’
-undeclared (first use in this function); did you mean ‘GPIOF_INIT_HIGH’?
-  gp_reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-                                                   ^~~~~~~~~~~~~~
-                                                   GPIOF_INIT_HIGH
+Delete one of the header files <asm/interrupt.h> that are included
+twice.
 
-Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
+Signed-off-by: Chen Yi <johnny.chenyi@huawei.com>
 ---
-v2:
-- add header file <linux/gpio/consumer.h> for lontium-lt8912b.c instead
-  of add config dependence for CONFIG_DRM_LONTIUM_LT8912B
----
- drivers/gpu/drm/bridge/lontium-lt8912b.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kernel/interrupt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-index 61491615bad0..79845b3b19e1 100644
---- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  */
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/device.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index c4dd4b8f9cfa..f64ace0208b7 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -7,7 +7,6 @@
+ #include <asm/asm-prototypes.h>
+ #include <asm/kup.h>
+ #include <asm/cputime.h>
+-#include <asm/interrupt.h>
+ #include <asm/hw_irq.h>
+ #include <asm/interrupt.h>
+ #include <asm/kprobes.h>
 -- 
-2.17.1
+2.31.0
 
