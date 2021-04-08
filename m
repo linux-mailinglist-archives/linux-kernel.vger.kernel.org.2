@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7251B357BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EB5357BEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhDHFiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:38:16 -0400
-Received: from ozlabs.org ([203.11.71.1]:60701 "EHLO ozlabs.org"
+        id S229763AbhDHFkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:40:08 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35620 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhDHFiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:38:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FG95h3Bvjz9sWC;
-        Thu,  8 Apr 2021 15:38:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1617860283;
-        bh=JiVj825bhXGerOdP3QAAJMvSLpKA8dLeyo8ezDkiuDg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=F3GBQPT4mEx/8UkzNuegEdJ28NhDHhgsr9HJvlDE7uXSSaAw6IdFqMAYZXDWV7+Eo
-         lxJ4CDT0qLPAjiMnAya9GMevNEnEFfqaAczcOBH3IRRegrMn8om4wumf8ie9Bw2ZJl
-         BUw3Mql7pGCEcwwoWufvaQ6QoSIKUUw1U60PLqSmXrBn8HCgwfSlxgCFv/9tcn62po
-         V3KvMBMHUe3Uio50BV5m5dJ1uos+qyNSt7kwUZruM3aRb0r+jUu+neItbrh7s2cRpX
-         sBhrC2+id98VPf+zzKZXQ8kI3T0TprP5wN59SOMfZ+lEQdMWrpmsUuzMfhFpjltdow
-         O+nx4sd3B6QBA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Leonardo Bras <leobras.c@gmail.com>, brking@linux.vnet.ibm.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] powerpc/iommu: Enable remaining IOMMU Pagesizes
- present in LoPAR
-In-Reply-To: <20210407195613.131140-1-leobras.c@gmail.com>
-References: <20210407195613.131140-1-leobras.c@gmail.com>
-Date:   Thu, 08 Apr 2021 15:37:59 +1000
-Message-ID: <87im4xe3pk.fsf@mpe.ellerman.id.au>
+        id S229512AbhDHFkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 01:40:07 -0400
+IronPort-SDR: 1NjWPzihncrvdfHrftvyxSL0CPpKrkdPfaq/lvoc3QOVi9hOp368Z6IUnJpA3dL6Lu7fsODx6d
+ 6qrBz6vgIbKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="213865231"
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="213865231"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 22:39:56 -0700
+IronPort-SDR: 1nFchG0VZE84cW6XjVn3o0HBS7z8MjplqzBG6Xp+pw4/ZQaO5x4nB9B+DBfeb0HsxmjRpFzKzP
+ rVqP6MDPNrXA==
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="458674706"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 22:39:51 -0700
+Subject: Re: [PATCH v4 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ manage guest DS buffer
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210329054137.120994-1-like.xu@linux.intel.com>
+ <20210329054137.120994-9-like.xu@linux.intel.com>
+ <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <610bfd14-3250-0542-2d93-cbd15f2b4e16@intel.com>
+Date:   Thu, 8 Apr 2021 13:39:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leonardo Bras <leobras.c@gmail.com> writes:
-> According to LoPAR, ibm,query-pe-dma-window output named "IO Page Sizes"
-> will let the OS know all possible pagesizes that can be used for creating a
-> new DDW.
+Hi Peter,
+
+Thanks for your detailed comments.
+
+If you have more comments for other patches, please let me know.
+
+On 2021/4/7 23:39, Peter Zijlstra wrote:
+> On Mon, Mar 29, 2021 at 01:41:29PM +0800, Like Xu wrote:
+>> @@ -3869,10 +3876,12 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>>   
+>>   		if (arr[1].guest)
+>>   			arr[0].guest |= arr[1].guest;
+>> -		else
+>> +		else {
+>>   			arr[1].guest = arr[1].host;
+>> +			arr[2].guest = arr[2].host;
+>> +		}
+> What's all this gibberish?
 >
-> Currently Linux will only try using 3 of the 8 available options:
-> 4K, 64K and 16M. According to LoPAR, Hypervisor may also offer 32M, 64M,
-> 128M, 256M and 16G.
-
-Do we know of any hardware & hypervisor combination that will actually
-give us bigger pages?
-
-> Enabling bigger pages would be interesting for direct mapping systems
-> with a lot of RAM, while using less TCE entries.
+> The way I read that it says:
 >
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->  arch/powerpc/platforms/pseries/iommu.c | 49 ++++++++++++++++++++++----
->  1 file changed, 42 insertions(+), 7 deletions(-)
+> 	if guest has PEBS_ENABLED
+> 		guest GLOBAL_CTRL |= PEBS_ENABLED
+> 	otherwise
+> 		guest PEBS_ENABLED = host PEBS_ENABLED
+> 		guest DS_AREA = host DS_AREA
 >
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index 9fc5217f0c8e..6cda1c92597d 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -53,6 +53,20 @@ enum {
->  	DDW_EXT_QUERY_OUT_SIZE = 2
->  };
+> which is just completely random garbage afaict. Why would you leak host
+> msrs into the guest?
 
-A comment saying where the values come from would be good.
+In fact, this is not a leak at all.
 
-> +#define QUERY_DDW_PGSIZE_4K	0x01
-> +#define QUERY_DDW_PGSIZE_64K	0x02
-> +#define QUERY_DDW_PGSIZE_16M	0x04
-> +#define QUERY_DDW_PGSIZE_32M	0x08
-> +#define QUERY_DDW_PGSIZE_64M	0x10
-> +#define QUERY_DDW_PGSIZE_128M	0x20
-> +#define QUERY_DDW_PGSIZE_256M	0x40
-> +#define QUERY_DDW_PGSIZE_16G	0x80
+When we do "arr[i].guest = arr[i].host;" assignment in the 
+intel_guest_get_msrs(),
+the KVM will check "if (msrs[i].host == msrs[i].guest)" and if so, it 
+disables the atomic
+switch for this msr during vmx transaction in the caller 
+atomic_switch_perf_msrs().
 
-I'm not sure the #defines really gain us much vs just putting the
-literal values in the array below?
+In that case, the msr value doesn't change and any guest write will be trapped.
+If the next check is "msrs[i].host != msrs[i].guest", the atomic switch 
+will be triggered again.
 
-> +struct iommu_ddw_pagesize {
-> +	u32 mask;
-> +	int shift;
-> +};
-> +
->  static struct iommu_table_group *iommu_pseries_alloc_group(int node)
->  {
->  	struct iommu_table_group *table_group;
-> @@ -1099,6 +1113,31 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
->  			 ret);
->  }
->  
-> +/* Returns page shift based on "IO Page Sizes" output at ibm,query-pe-dma-window. See LoPAR */
-> +static int iommu_get_page_shift(u32 query_page_size)
-> +{
-> +	const struct iommu_ddw_pagesize ddw_pagesize[] = {
-> +		{ QUERY_DDW_PGSIZE_16G,  __builtin_ctz(SZ_16G)  },
-> +		{ QUERY_DDW_PGSIZE_256M, __builtin_ctz(SZ_256M) },
-> +		{ QUERY_DDW_PGSIZE_128M, __builtin_ctz(SZ_128M) },
-> +		{ QUERY_DDW_PGSIZE_64M,  __builtin_ctz(SZ_64M)  },
-> +		{ QUERY_DDW_PGSIZE_32M,  __builtin_ctz(SZ_32M)  },
-> +		{ QUERY_DDW_PGSIZE_16M,  __builtin_ctz(SZ_16M)  },
-> +		{ QUERY_DDW_PGSIZE_64K,  __builtin_ctz(SZ_64K)  },
-> +		{ QUERY_DDW_PGSIZE_4K,   __builtin_ctz(SZ_4K)   }
-> +	};
+Compared to before, this part of the logic has not changed, which helps to 
+reduce overhead.
 
+> Why would you change guest GLOBAL_CTRL implicitly;
 
-cheers
+This is because in the early part of this function, we have operations:
+
+     if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+         arr[0].guest &= ~cpuc->pebs_enabled;
+     else
+         arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+
+and if guest has PEBS_ENABLED, we need these bits back for PEBS counters:
+
+     arr[0].guest |= arr[1].guest;
+
+> guest had better wrmsr that himself to control when stuff is enabled.
+
+When vm_entry, the msr value of GLOBAL_CTRL on the hardware may be
+different from trapped value "pmu->global_ctrl" written by the guest.
+
+If the perf scheduler cross maps guest counter X to the host counter Y,
+we have to enable the bit Y in GLOBAL_CTRL before vm_entry rather than X.
+
+>
+> This just cannot be right.
+
