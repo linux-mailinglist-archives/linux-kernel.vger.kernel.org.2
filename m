@@ -2,74 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1932358136
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E14358139
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhDHLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhDHLAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:00:25 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FC7C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:00:14 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id z10so1638718qkz.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p+TrzxkT4/pA7rMQQxNc7F6VDz/UlBkQcXIzCh88OTA=;
-        b=D3UR9940CV9rltT6/fFsIjXanARdK/eK85Xf8Au4dYngOeXc7iHwoqKr5YlY92TDdi
-         CmXxtFy95BqX1L1vdxjzhirGsSEIGHdcUg9yZmO/P5ndhRKF8zaIWNNzrfN47WbplYxL
-         QRWEG1Vgi7SjMC/TjOtT4DxcUq6mOfjvggdxqHnFZUMDIgex08jvXKif3futWNAznzUg
-         XH1XFsOmWn5tfKwiAl+JXxSYrT4WBiUR8EvQNd3QK8sjHoXWvV6YKchOHpeltywcqJf2
-         THIfUK5haKrl9jHE8k0VZ7/j3GeMF7/kTj2ePOmNO+HxZnQAf/MXUjinJrzUF4U4kTkH
-         dGfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p+TrzxkT4/pA7rMQQxNc7F6VDz/UlBkQcXIzCh88OTA=;
-        b=Z9H9HYRgpLA9OzBjJAmsntm+3u3MXa4nksJEBqDsZzALVTfTAK68VXR0mPWlk8rXqp
-         BbcpD42ZoDHGzjTbu4FkyU2dwAxM3K1DwVe1wkyYbnF5sLx/nBaY6Xp+2Fhw/VQznKbE
-         7pmrQOxPAlDs20p1hXYlEuNTk9C0GIe5RC8MT76FWzhC2a14hc+TVO4LWfR5uVSIIDmE
-         eW+SrfS+2QbxMLDb3c4C6afb1WulCvPnEmQwkie8bzaIYYgWoAGtyeXOxZeR9yJeHAsa
-         /8M7S6uplYY/d0m4wtS6KZW4GVIRdgzw0lg/rQc87s/w3GXBT2HpY1M8xAeI8EY7Cifl
-         OdQw==
-X-Gm-Message-State: AOAM533ibmi0dLRee7nZDaOeCDpktoa/odT/vi91eeb7Iz/JkwaAznL9
-        niAJc+t1a97qK4hNOjjDOGJO0lHY6POGKmXbsHQ=
-X-Google-Smtp-Source: ABdhPJwyvhz/YUOWJ7RzFYYV0oYX078qwfM/1ORcl08CB6mnDlEx7PbfhbtOQV3ArrOjadzM5yjVGggRhcCCEvPyx/8=
-X-Received: by 2002:a37:b947:: with SMTP id j68mr1922844qkf.108.1617879613854;
- Thu, 08 Apr 2021 04:00:13 -0700 (PDT)
+        id S230488AbhDHLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:00:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhDHLAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:00:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A950F608FE;
+        Thu,  8 Apr 2021 11:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617879636;
+        bh=Dkg7QdY5kyGAiD7cdHvYb+UjEUHo0BETWXZ37AlnuZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qXCAmq6HFhTrVPziAFYql6iYKhIBxFjkDXU+wRWjck2vSD1W9QJ8UKTvJsqEV0I7e
+         Fqd6KxdvFt9QIjZRwuyGBJheEHfGo09jfgCERdzrCRjIyo6wdJWqz+Lcj99rT61/6K
+         Mdo6MEDzYAhIVQl7wOR5yAhXNZvfTpyYo79ptbd8=
+Date:   Thu, 8 Apr 2021 13:00:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Cc:     John Youn <John.Youn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mian Yousaf Kaukab <yousaf.kaukab@intel.com>,
+        Gregory Herrero <gregory.herrero@intel.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Paul Zimmerman <paulz@synopsys.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Robert Baldyga <r.baldyga@samsung.com>,
+        Kever Yang <kever.yang@rock-chips.com>
+Subject: Re: [PATCH v2 00/14] usb: dwc2: Fix Partial Power down issues.
+Message-ID: <YG7iUey+Rtof+3Up@kroah.com>
+References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
+ <20210408072825.61347A022E@mailhost.synopsys.com>
+ <3625b740-b362-5ec6-8fba-cd7babcab35b@synopsys.com>
+ <af45ed18-2ce4-43da-f28c-d5cda0710b9f@synopsys.com>
 MIME-Version: 1.0
-References: <20210405152935.148129-1-rsalvaterra@gmail.com>
-In-Reply-To: <20210405152935.148129-1-rsalvaterra@gmail.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Thu, 8 Apr 2021 13:00:02 +0200
-Message-ID: <CAFLxGvwhtRY-6kT-sN=AgjvyssHb5qdTS6WQHkhKu3YrPuTkdw@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: default to zstd compression
-To:     Rui Salvaterra <rsalvaterra@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af45ed18-2ce4-43da-f28c-d5cda0710b9f@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 5:36 PM Rui Salvaterra <rsalvaterra@gmail.com> wrote:
->
-> Compared to lzo and zlib, zstd is the best all-around performer, both in terms
-> of speed and compression ratio. Set it as the default, if available.
+On Thu, Apr 08, 2021 at 10:09:20AM +0000, Artur Petrosyan wrote:
+> Hi Greg,
+> 
+> On 4/8/2021 13:17, Artur Petrosyan wrote:
+> > Hi Greg,
+> > 
+> > On 4/8/2021 11:28, Artur Petrosyan wrote:
+> >> This patch set fixes and improves the Partial Power Down mode for
+> >> dwc2 core.
+> >> It adds support for the following cases
+> >>       1. Entering and exiting partial power down when a port is
+> >>          suspended, resumed, port reset is asserted.
+> >>       2. Exiting the partial power down mode before removing driver.
+> >>       3. Exiting partial power down in wakeup detected interrupt handler.
+> >>       4. Exiting from partial power down mode when connector ID.
+> >>          status changes to "connId B
+> >>
+> >> It updates and fixes the implementation of dwc2 entering and
+> >> exiting partial power down mode when the system (PC) is suspended.
+> >>
+> >> The patch set also improves the implementation of function handlers
+> >> for entering and exiting host or device partial power down.
+> >>
+> >> NOTE: This is the second patch set in the power saving mode fixes
+> >> series.
+> >> This patch set is part of multiple series and is continuation
+> >> of the "usb: dwc2: Fix and improve power saving modes" patch set.
+> >> (Patch set link: https://urldefense.com/v3/__https://marc.info/?l=linux-usb&m=160379622403975&w=2__;!!A4F2R9G_pg!IJ-Xl1ZwQU2kmqHB3ITyWyno9BgpWUsC647AqK7GIlgzJu9BzT6VN7jt--__fGdMtgWF69M$ ).
+> >> The patches that were included in the "usb: dwc2:
+> >> Fix and improve power saving modes" which was submitted
+> >> earlier was too large and needed to be split up into
+> >> smaller patch sets.
+> >>
+> >> Changes since V1:
+> >> No changes in the patches or the source code.
+> >> Sending the second version of the patch set because the first version
+> >> was not received by vger.kernel.org.
+> >>
+> >>
+> >>
+> >> Artur Petrosyan (14):
+> >>     usb: dwc2: Add device partial power down functions
+> >>     usb: dwc2: Add host partial power down functions
+> >>     usb: dwc2: Update enter and exit partial power down functions
+> >>     usb: dwc2: Add partial power down exit flow in wakeup intr.
+> >>     usb: dwc2: Update port suspend/resume function definitions.
+> >>     usb: dwc2: Add enter partial power down when port is suspended
+> >>     usb: dwc2: Add exit partial power down when port is resumed
+> >>     usb: dwc2: Add exit partial power down when port reset is asserted
+> >>     usb: dwc2: Add part. power down exit from
+> >>       dwc2_conn_id_status_change().
+> >>     usb: dwc2: Allow exit partial power down in urb enqueue
+> >>     usb: dwc2: Fix session request interrupt handler
+> >>     usb: dwc2: Update partial power down entering by system suspend
+> >>     usb: dwc2: Fix partial power down exiting by system resume
+> >>     usb: dwc2: Add exit partial power down before removing driver
+> >>
+> >>    drivers/usb/dwc2/core.c      | 113 ++-------
+> >>    drivers/usb/dwc2/core.h      |  27 ++-
+> >>    drivers/usb/dwc2/core_intr.c |  46 ++--
+> >>    drivers/usb/dwc2/gadget.c    | 148 ++++++++++-
+> >>    drivers/usb/dwc2/hcd.c       | 458 +++++++++++++++++++++++++----------
+> >>    drivers/usb/dwc2/hw.h        |   1 +
+> >>    drivers/usb/dwc2/platform.c  |  11 +-
+> >>    7 files changed, 558 insertions(+), 246 deletions(-)
+> >>
+> >>
+> >> base-commit: e9fcb07704fcef6fa6d0333fd2b3a62442eaf45b
+> >>
+> > 
+> > Re sending as a "v2" did not work :(.
+> > The patches are not in lore again.
+> > 
+> > Could the issue be with a comma in the end of To: or Cc: list?
+> > Let me remove the comma in the end of those lists and try sending as "v3".
+> > 
+> > Regards,
+> > Artur
+> > 
+> 
+> I just removed the comma in the end of those lists and resent the patch 
+> set as a "v3" and they are already seen in lore.
+> There is one strange thing though on lore. Some patch titles are not 
+> fully visible.
+> 
+> For sure the issue was comma in the end of To: or Cc: lists.
+> Not working example.
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+> linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
 
-I was about to NACK this patch but by looking at the diff I realized
-that you change
-the default compressor only for the default filesystem as created by
-UBIFS itself.
-Queued for the merge window. :-)
+That's an invalid To: line for email.
 
--- 
-Thanks,
-//richard
+> Working example.
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+> linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+
+That's a correct line.
+
+> If the comma is at least in the end of one of those lists (To: or Cc:) 
+> vger.kernel.org mailing server will not accept them.
+
+I recommend using 'git send-email' with the --to="foo@bar.com" type
+options so that you don't have to hand-edit the lines to try to get
+stuff like this correct, as it is easy to get wrong.
+
+thanks,
+
+greg k-h
