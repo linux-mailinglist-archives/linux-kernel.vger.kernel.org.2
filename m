@@ -2,180 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D625B357937
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 02:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73F6357946
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhDHA6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 20:58:22 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57061 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229492AbhDHA6U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 20:58:20 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E52E8580811;
-        Wed,  7 Apr 2021 20:58:09 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 07 Apr 2021 20:58:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=JPUdlKMQjHPtG1cD72DyTfbFE4O/cJI
-        Usrpufhou+vk=; b=pAHIJEIcH7Nr+ehc+Sz8Juhx576O7heog4hPquD1narYRlz
-        oE2Pd5vl2RYPp4LMhshkQ/ca6vx4WC54FnRC7G93rMYibebQTX6T70ctYI9EkXHd
-        bh5aftI2qvf1LQAQ1qYOR0Vz/ikWJMEklcTe9gl5T1vSXbKECBG8f/q/e0z6DOMA
-        +3lIVwgrkLfweOcAaShMZxEc95oMj7ot55UydCRDistFiM618K4H2M/rOcOmAmFm
-        xIM1NUbjJ+wHhqs56TwUrvm5R7iagaISvI+X3MOYzPpqQiwa3y7HnH7EvMd5/buH
-        jqMWcr6kBHuLdxX+DkTdCfY5epLP1g3KPBEbcEg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=JPUdlK
-        MQjHPtG1cD72DyTfbFE4O/cJIUsrpufhou+vk=; b=jE7y9ZhewMvo/hKQD/7Xg+
-        /EJzRhGjpBM6OLpqLsJefcSqYTwokbCW90vOFQbiFOruU1/JGjTTlsEz6go9nHaz
-        DKMLsjBi+gUzCHGukZ1CsK9XNWzxkrlrMY2TvyrqINwqWn9vGJWER1DMbP5waf0o
-        rcNHGAifLEQ/eECtdrn97hJ6h92RYySd3MtYFMpWMSpW0uM0jTi/tVeAj7kN2s0V
-        oJQ4xbG27ISH8QUshCASJEjjWyxfZG6J/RUDpMbgsNsaxJTeAZsW6BzM+6lYxObE
-        CeLRnDTJgdXUGL0wSstMguTa90W4akIh+YtGNs4Q2vljuy+qlt5czWdm89gAAAUA
-        ==
-X-ME-Sender: <xms:H1VuYKSWbh_ppt2SwGYRTdci_zQysYvS-7qOG0rLJKrtuy3FjsiPqQ>
-    <xme:H1VuYPyXkxzlp9i8p2RsOC5gdrbuKuPNIakNsfPhd2aKsXtNO2OXn91jqxYhsqKug
-    BtVleAeTtC_zHHkww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejkedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepudfftddvveekfffgteffffeuveegjeelgefhffejtdehtdfhlefgkeef
-    hfefkeeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:H1VuYH12FGFZNoaScZzJQuoQy7UHEGCXTE3aXDv1GhoKj30HwETQVA>
-    <xmx:H1VuYGAtSp6-VHwWbzIWptPh62dQBvpyI3ipV727CR1rc9kp6Wollg>
-    <xmx:H1VuYDhWHVs5RVxqO97fhfVOOmaVx9Pj4JFgrjC5-X_mZmSwV1GLaA>
-    <xmx:IVVuYCRGg20FAF4k2MLWf4ZyJFHNhFoZLSXMf_UdTOeRrujnU-KMGQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6DDDFA00079; Wed,  7 Apr 2021 20:58:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <2db77e16-3f44-4c02-a7ba-a4fac8141ae3@www.fastmail.com>
-In-Reply-To: <20210319061952.145040-1-andrew@aj.id.au>
-References: <20210319061952.145040-1-andrew@aj.id.au>
-Date:   Thu, 08 Apr 2021 10:27:46 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Corey Minyard" <minyard@acm.org>
-Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>, devicetree@vger.kernel.org,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, "Tali Perry" <tali.perry1@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "Benjamin Fair" <benjaminfair@google.com>
-Subject: Re: [PATCH v2 00/21] ipmi: Allow raw access to KCS devices
-Content-Type: text/plain
+        id S230004AbhDHBBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 21:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhDHBBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 21:01:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDABE6121E;
+        Thu,  8 Apr 2021 01:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617843688;
+        bh=4u5tOpeCMncpEEQTHvI1+RnAHtrGNOf7zF8rhQ0eQbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f1IAmgDh/ajJXxqKR9vXpvbxKyFaWcCycgnCj0Czvr6yiCvIbQQqLEttUcyroC3iz
+         +b+B8zQ14heqrSnyfEi5fUdZyyJmW0vIMazvd2wIwAnoCcpMwd0k+tXBmDgOLi/8IJ
+         +AsOkm5cNi0GdTcNjikrbtPCvU5K/55cv6csvcuPqAtWDIXFB79v9Du4F4WiuO49Go
+         p0wTQekgcBuRylR/AP+Z+ncpt9dg2Ypv9RpIXnG+H3egdTZapV+MDYQLDhZ4ciHjlS
+         BdGYyUCH6GZ0C2BlVAP2EUdTP7SwusqsGPZFVNO8Mpg2L54LBtBbN8FCS3M+Rlytg8
+         PyJ1mhozAsknA==
+Date:   Wed, 7 Apr 2021 18:01:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v7 4/4] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YG5V5l2pD3DCiyVA@gmail.com>
+References: <20210407144845.53266-1-shreeya.patel@collabora.com>
+ <20210407144845.53266-5-shreeya.patel@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407144845.53266-5-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey,
+On Wed, Apr 07, 2021 at 08:18:45PM +0530, Shreeya Patel wrote:
+> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+> index 2c27b9a5cd6c..0c69800a2a37 100644
+> --- a/fs/unicode/Kconfig
+> +++ b/fs/unicode/Kconfig
+> @@ -2,13 +2,31 @@
+>  #
+>  # UTF-8 normalization
+>  #
+> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
+> +# is enabled. This config option adds the unicode subsystem layer which loads
+> +# the UTF-8 module whenever any filesystem needs it.
+>  config UNICODE
+> -	bool "UTF-8 normalization and casefolding support"
+> +	bool
+> +
+> +config UNICODE_UTF8
+> +	tristate "UTF-8 module"
+> +	select UNICODE
+>  	help
+> -	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+> -	  support.
+> +	  Say M here to enable UTF-8 NFD normalization and NFD+CF casefolding
+> +	  support as a loadable module or say Y for building it into the kernel.
+> +
+> +	  utf8data.h_shipped has a large database table which is an
+> +	  auto-generated decodification trie for the unicode normalization
+> +	  functions and it is not necessary to carry this large table in the
+> +	  kernel. Hence, enabling UNICODE_UTF8 as M will allow you to avoid
+> +	  carrying this large table into the kernel and module will only be
+> +	  loaded whenever required by any filesystem.
+> +	  Please note, in this case utf8 module will only be available after
+> +	  booting into the compiled kernel. If your filesystem requires it to
+> +	  have utf8 during boot time then you should have it built into the
+> +	  kernel by saying Y here to avoid boot failure.
 
-On Fri, 19 Mar 2021, at 16:49, Andrew Jeffery wrote:
-> Hello,
-> 
-> This series is a bit of a mix of things, but its primary purpose is to
-> expose BMC KCS IPMI devices to userspace in a way that enables userspace
-> to talk to host firmware using protocols that are not IPMI.
-> 
-> v1 can be found here:
-> 
-> https://lore.kernel.org/openbmc/20210219142523.3464540-1-andrew@aj.id.au/
-> 
-> Changes in v2 include:
-> 
-> * A rebase onto v5.12-rc2
-> * Incorporation of off-list feedback on SerIRQ configuration from
->   Chiawei
-> * Further validation on hardware for ASPEED KCS devices 2, 3 and 4
-> * Lifting the existing single-open constraint of the IPMI chardev
-> * Fixes addressing Rob's feedback on the conversion of the ASPEED KCS
->   binding to dt-schema
-> * Fixes addressing Rob's feedback on the new aspeed,lpc-interrupts
->   property definition for the ASPEED KCS binding
-> 
-> A new chardev device is added whose implementation exposes the Input
-> Data Register (IDR), Output Data Register (ODR) and Status Register
-> (STR) via read() and write(), and implements poll() for event
-> monitoring.
-> 
-> The existing /dev/ipmi-kcs* chardev interface exposes the KCS devices in
-> a way which encoded the IPMI protocol in its behaviour. However, as
-> LPC[0] KCS devices give us bi-directional interrupts between the host
-> and a BMC with both a data and status byte, they are useful for purposes
-> beyond IPMI.
-> 
-> As a concrete example, libmctp[1] implements a vendor-defined MCTP[2]
-> binding using a combination of LPC Firmware cycles for bulk data
-> transfer and a KCS device via LPC IO cycles for out-of-band protocol
-> control messages[3]. This gives a throughput improvement over the
-> standard KCS binding[4] while continuing to exploit the ease of setup of
-> the LPC bus for early boot firmware on the host processor.
-> 
-> The series takes a bit of a winding path to achieve its aim:
-> 
-> 1. It begins with patches 1-5 put together by Chia-Wei, which I've
-> rebased on v5.12-rc2. These fix the ASPEED LPC bindings and other
-> non-KCS LPC-related ASPEED device drivers in a way that enables the
-> SerIRQ patches at the end of the series. With Joel's review I'm hoping
-> these 5 can go through the aspeed tree, and that the rest can go through
-> the IPMI tree.
-> 
-> 2. Next, patches 6-13 fairly heavily refactor the KCS support in the
-> IPMI part of the tree, re-architecting things such that it's possible to
-> support multiple chardev implementations sitting on top of the ASPEED
-> and Nuvoton device drivers. However, the KCS code didn't really have
-> great separation of concerns as it stood, so even if we disregard the
-> multiple-chardev support I think the cleanups are worthwhile.
-> 
-> 3. Patch 14 adds some interrupt management capabilities to the KCS
-> device drivers in preparation for patch 16, which introduces the new
-> "raw" KCS device interface. I'm not stoked about the device name/path,
-> so if people are looking to bikeshed something then feel free to lay
-> into that.
-> 
-> 4. The remaining patches switch the ASPEED KCS devicetree binding to
-> dt-schema, add a new interrupt property to describe the SerIRQ behaviour
-> of the device and finally clean up Serial IRQ support in the ASPEED KCS
-> driver.
-> 
-> Rob: The dt-binding patches still come before the relevant driver
-> changes, I tried to keep the two close together in the series, hence the
-> bindings changes not being patches 1 and 2.
-> 
-> I've exercised the series under qemu with the rainier-bmc machine plus
-> additional patches for KCS support[5]. I've also substituted this series in
-> place of a hacky out-of-tree driver that we've been using for the
-> libmctp stack and successfully booted the host processor under our
-> internal full-platform simulation tools for a Rainier system.
-> 
-> Note that this work touches the Nuvoton driver as well as ASPEED's, but
-> I don't have the capability to test those changes or the IPMI chardev
-> path. Tested-by tags would be much appreciated if you can exercise one
-> or both.
-> 
-> Please review!
+This help text seems to contradict itself; it says "it is not necessary to carry
+this large table in the kernel", and then later it says that in some cases it is
+in fact necessary.
 
-Unfortunately the cover letter got detached from the rest of the series.
+It would also be helpful for the help text to mention which filesystems actually
+support this feature.
 
-Any chance you can take a look at the patches?
+> diff --git a/fs/unicode/unicode-core.c b/fs/unicode/unicode-core.c
+> index 730dbaedf593..d9e9e410893d 100644
+> --- a/fs/unicode/unicode-core.c
+> +++ b/fs/unicode/unicode-core.c
+> @@ -1,228 +1,132 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+> -#include <linux/string.h>
+>  #include <linux/slab.h>
+> -#include <linux/parser.h>
+>  #include <linux/errno.h>
+>  #include <linux/unicode.h>
+> -#include <linux/stringhash.h>
+> +#include <linux/spinlock.h>
+>  
+> -#include "utf8n.h"
+> +DEFINE_SPINLOCK(utf8mod_lock);
 
-https://lore.kernel.org/linux-arm-kernel/20210319062752.145730-1-andrew@aj.id.au/
+This spinlock should be 'static'.
 
-Cheers,
-
-Andrew
+- Eric
