@@ -2,119 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A49F357F03
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC4F357EFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhDHJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:20:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230351AbhDHJUu (ORCPT
+        id S230482AbhDHJUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:20:49 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:38501 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230351AbhDHJUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:20:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617873638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UVD5TiRVowOEwlanTU+u0spxJ8BlxpAWloXgCiVtay0=;
-        b=bxQsTATc0trocSay2BJ7USm49ucd3hpM5fIwWU8CGggRJ44PhjgVudyg0gfScz6rXTPc/c
-        f5oStc4wVQBlx0rF/SnQwfVtRWP/5nvYDbsAmjKCyUrlsjpst0rc+qpwGXNUGtXFCImpBj
-        8TOxEcRXSEeIoAaqDteUyHVt6w5hEtA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-m83rqXtVNYmboz8HyHTSQA-1; Thu, 08 Apr 2021 05:20:34 -0400
-X-MC-Unique: m83rqXtVNYmboz8HyHTSQA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4E8A1006C80;
-        Thu,  8 Apr 2021 09:20:31 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-231.ams2.redhat.com [10.36.114.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AB3B22C169;
-        Thu,  8 Apr 2021 09:20:27 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Joel Stanley <joel@jms.id.au>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        etnaviv@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from aspeed or etnaviv
-Date:   Thu,  8 Apr 2021 11:20:11 +0200
-Message-Id: <20210408092011.52763-3-david@redhat.com>
-In-Reply-To: <20210408092011.52763-1-david@redhat.com>
-References: <20210408092011.52763-1-david@redhat.com>
+        Thu, 8 Apr 2021 05:20:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUt9Xw0_1617873615;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUt9Xw0_1617873615)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 08 Apr 2021 17:20:20 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ide: Remove useless variable
+Date:   Thu,  8 Apr 2021 17:20:14 +0800
+Message-Id: <1617873614-14686-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Random drivers should not override a user configuration of core knobs
-(e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
-dependencies and manual overrides.
+Fix the following gcc warning:
 
-"This is similar to "select" as it enforces a lower limit on another
- symbol except that the "implied" symbol's value may still be set to n
- from a direct dependency or with a visible prompt."
+drivers/ide/ide-proc.c:457:37: warning: ‘ide_media_proc_fops’ defined
+but not used [-Wunused-const-variable=].
 
-Implying DRM_CMA should be sufficient, as that depends on CMA.
-
-Note: If this is a real dependency, we should use "depends on DMA_CMA"
-instead -  but I assume the driver can work without CMA just fine --
-esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/gpu/drm/aspeed/Kconfig  | 3 +--
- drivers/gpu/drm/etnaviv/Kconfig | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/ide/ide-proc.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/aspeed/Kconfig b/drivers/gpu/drm/aspeed/Kconfig
-index 5e95bcea43e9..a055f763d230 100644
---- a/drivers/gpu/drm/aspeed/Kconfig
-+++ b/drivers/gpu/drm/aspeed/Kconfig
-@@ -6,9 +6,8 @@ config DRM_ASPEED_GFX
- 	depends on MMU
- 	select DRM_KMS_HELPER
- 	select DRM_KMS_CMA_HELPER
--	select DMA_CMA if HAVE_DMA_CONTIGUOUS
--	select CMA if HAVE_DMA_CONTIGUOUS
- 	select MFD_SYSCON
-+	imply DRM_CMA
- 	help
- 	  Chose this option if you have an ASPEED AST2500 SOC Display
- 	  Controller (aka GFX).
-diff --git a/drivers/gpu/drm/etnaviv/Kconfig b/drivers/gpu/drm/etnaviv/Kconfig
-index faa7fc68b009..5f5576b7221a 100644
---- a/drivers/gpu/drm/etnaviv/Kconfig
-+++ b/drivers/gpu/drm/etnaviv/Kconfig
-@@ -9,9 +9,8 @@ config DRM_ETNAVIV
- 	select THERMAL if DRM_ETNAVIV_THERMAL
- 	select TMPFS
- 	select WANT_DEV_COREDUMP
--	select CMA if HAVE_DMA_CONTIGUOUS
--	select DMA_CMA if HAVE_DMA_CONTIGUOUS
- 	select DRM_SCHED
-+	imply DMA_CMA
- 	help
- 	  DRM driver for Vivante GPUs.
+diff --git a/drivers/ide/ide-proc.c b/drivers/ide/ide-proc.c
+index 15c17f3..2fad809 100644
+--- a/drivers/ide/ide-proc.c
++++ b/drivers/ide/ide-proc.c
+@@ -454,14 +454,6 @@ static int ide_media_proc_open(struct inode *inode, struct file *file)
+ 	return single_open(file, ide_media_proc_show, PDE_DATA(inode));
+ }
  
+-static const struct file_operations ide_media_proc_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= ide_media_proc_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
+-
+ static ide_proc_entry_t generic_drive_entries[] = {
+ 	{ "driver",	S_IFREG|S_IRUGO,	 ide_driver_proc_show	},
+ 	{ "identify",	S_IFREG|S_IRUSR,	 ide_identify_proc_show	},
 -- 
-2.30.2
+1.8.3.1
 
