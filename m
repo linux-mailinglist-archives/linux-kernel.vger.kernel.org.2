@@ -2,345 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3E2358969
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4D935896B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhDHQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbhDHQNy (ORCPT
+        id S232059AbhDHQOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:14:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32667 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231480AbhDHQOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:13:54 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF31C061760;
-        Thu,  8 Apr 2021 09:13:42 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hq27so3983189ejc.9;
-        Thu, 08 Apr 2021 09:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dLmbBYo1yGsc211Y5IH11JuH7LuOWCp+Fdd9cX545w4=;
-        b=ELUeQB40c9dkBlbawHGz0KdR+6wijinrVj41xLJ3gj1Hl1B32cUiC5gzps/j+/bDL/
-         S0/sDRfT5d1uVs5oBbR9rfa+UGoyU692k1ooCQ4PD9HTPnJTIAUFskVhjzFzyvhknSDs
-         zhuPn+HNFEuJEKCRRSy7MJwN2SSqLHYCXu04CuWH91xXk6D4uEVngHFDarn8rKbWlw2/
-         YVaEYZrW8rd6ygla4vYTR4v3mH+XVoTuGaZMDbtcLNY9kPxG0xtYvXlcyqcwXqDEb14G
-         rLKRLnTMooo5IOPsngnhc098KXaOCYvKotJzgMBXK4j3v/UgFl5/cLvabzu8kAcbdmaO
-         /OPw==
+        Thu, 8 Apr 2021 12:14:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617898472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=elXf7VW8mYYZHy/sU8ktzpg8oQGZMdhCA5JdOrUTKYM=;
+        b=ePTPm4NNNU74eXhhNNKetskDbjbKbiB2kgTTII/Ehhs5fDye1kC0qcsWC5ebLGNxZW+KOR
+        /peHU9FKntJY3jc/BsFJWwCer/5FLLUPF0wdGMXGR0Fy9xS4RJ8pkj6MuZHdg69s4gZYeZ
+        yPFW8dsoIzZlgJJcIAQ/YQV0j4OiNrk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-KbwdJxg1PPehvX6xTraz5Q-1; Thu, 08 Apr 2021 12:14:30 -0400
+X-MC-Unique: KbwdJxg1PPehvX6xTraz5Q-1
+Received: by mail-ed1-f72.google.com with SMTP id a8so1280338edt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:14:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dLmbBYo1yGsc211Y5IH11JuH7LuOWCp+Fdd9cX545w4=;
-        b=rXbNlF32LXBOR41ui5q3IELLpeX4OfXUPo0CML/DKjKYHhnvdpYJPuYsN4mlFA7A0W
-         lFDgvaYuno4SwvH12gCZCKKxhryjdRqmjUc2ySnrSKGhEoY1RYYCUOTRQKZ0bZS/Y/Cg
-         Ow01e6k/XycwVCsuOAXkDWd/0LZd7K0DFLZr/GriypqEoAbSaZJ9BuJBA6PVSAdcouMB
-         SkPIR5ymQ+A1o6axy8zHOLLDNuCWuVM0cOsizFJc+Aa3QHuC+9h5OcqPb2vdaKOuXOoS
-         8r0SnCobsSfDI+Ilaonr90oNcmtaq+oYSYdX9BGZmkxHmmTuUmQkVgXoTv+CXIL88dcF
-         3wew==
-X-Gm-Message-State: AOAM532qGVGOKwRcwdmq34RTytacNZqVkHhSskHM7CMhw8pna/aXqUF9
-        hNHPr8A/GW3/9si5sq++4mk8cyS9Dd6AKJXy
-X-Google-Smtp-Source: ABdhPJxrTMR6uP/M4BYRU+oCXzTkRViwn7yg8Ko5bHgv5zJn5J6Hpf3lQnbhX1yaCftimI3NDnujeg==
-X-Received: by 2002:a17:907:689:: with SMTP id wn9mr11256445ejb.485.1617898421048;
-        Thu, 08 Apr 2021 09:13:41 -0700 (PDT)
-Received: from anparri.mshome.net ([151.76.116.20])
-        by smtp.gmail.com with ESMTPSA id p22sm6782970eju.85.2021.04.08.09.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 09:13:40 -0700 (PDT)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, mikelley@microsoft.com,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [RFC PATCH hyperv-next] scsi: storvsc: Use blk_mq_unique_tag() to generate requestIDs
-Date:   Thu,  8 Apr 2021 18:13:15 +0200
-Message-Id: <20210408161315.341888-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=elXf7VW8mYYZHy/sU8ktzpg8oQGZMdhCA5JdOrUTKYM=;
+        b=nlqLmMWNpkOxdEssl9Igk0s5g5dKh56ngBq1hXlRDplvj+wVxhk+ciBMLkymbNqzSP
+         TbUHl2ZTQFj5xDblW3IlqfqWIpdaaiBdBL5NU0dgZsEXQVnYOpuqk+pt1fx+r0iUGaXc
+         znPBvnV50wajh9UyzfjtWzimMHoMUiFTpzUDyzMe2RL+c1a0XX1q8sDqBr7K2tU6mNpS
+         s0bk2LVHQ/AIETg0KSrZVVzXl2S55uc8/wpymqHtirsmIz1xZICBkD559numPFNFscFP
+         JNZ/2MWD8RP243vKv1umUD8lJ7H6jQpsU5QC4fUpla54gORqPYE6tizChjAB8zZwLeK6
+         4kyw==
+X-Gm-Message-State: AOAM530Or9jv8X9HqbWPYErqJtsULJXgpE+Sutqho/LELpDvb+mtLplL
+        qdKoR9/LieXL2OL5GK8qSSB+SL0zoT0Ec8/rtJ7D2R0KdBeN4mJfgm2Vz52vDGJc4dpeLeAtWUH
+        DvbbdG3ero06H8Yb9uoO/JO73
+X-Received: by 2002:a17:906:1453:: with SMTP id q19mr11664868ejc.76.1617898469489;
+        Thu, 08 Apr 2021 09:14:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2caDACYbDyFw8mNJVcybeWHcKDxGKJYs94P6XujvmFPa5vkdq9RAsvPNL5dt8BX/ewU7oYw==
+X-Received: by 2002:a17:906:1453:: with SMTP id q19mr11664838ejc.76.1617898469318;
+        Thu, 08 Apr 2021 09:14:29 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id bq18sm10535789ejb.27.2021.04.08.09.14.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 09:14:28 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Make sure GHCB is mapped before updating
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <03b349cb19b360d4c2bbeebdd171f99298082d28.1617820214.git.thomas.lendacky@amd.com>
+ <YG4RSl88TSPccRfj@google.com> <d46ee7c3-6c8c-1f06-605c-c4f2d1888ba4@amd.com>
+ <YG4fAeaTy0HdHCsT@google.com> <b1a6dddd-9485-c6f6-8af9-79f6e3505206@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2b282772-afaa-2fd4-0794-4449eda6fd02@redhat.com>
+Date:   Thu, 8 Apr 2021 18:14:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b1a6dddd-9485-c6f6-8af9-79f6e3505206@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use blk_mq_unique_tag() to generate requestIDs for StorVSC, avoiding
-all issues with allocating enough entries in the VMbus requestor.
+On 08/04/21 18:04, Tom Lendacky wrote:
+>>>> +       if (!err || !sev_es_guest(vcpu->kvm) || !WARN_ON_ONCE(svm->ghcb))
+>>> This should be WARN_ON_ONCE(!svm->ghcb), otherwise you'll get the right
+>>> result, but get a stack trace immediately.
+>> Doh, yep.
+> Actually, because of the "or's", this needs to be:
+> 
+> if (!err || !sev_es_guest(vcpu->kvm) || (sev_es_guest(vcpu->kvm) && WARN_ON_ONCE(!svm->ghcb)))
 
-Suggested-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
----
- drivers/hv/channel.c              | 14 +++---
- drivers/hv/ring_buffer.c          | 12 ++---
- drivers/net/hyperv/netvsc.c       |  8 ++--
- drivers/net/hyperv/rndis_filter.c |  2 +
- drivers/scsi/storvsc_drv.c        | 73 ++++++++++++++++++++++++++-----
- include/linux/hyperv.h            | 13 +++++-
- 6 files changed, 92 insertions(+), 30 deletions(-)
+No, || cuts the right-hand side if the left-hand side is true.  So:
 
-diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-index db30be8f9ccea..f78e02ace51e8 100644
---- a/drivers/hv/channel.c
-+++ b/drivers/hv/channel.c
-@@ -1121,15 +1121,14 @@ EXPORT_SYMBOL_GPL(vmbus_recvpacket_raw);
-  * vmbus_next_request_id - Returns a new request id. It is also
-  * the index at which the guest memory address is stored.
-  * Uses a spin lock to avoid race conditions.
-- * @rqstor: Pointer to the requestor struct
-+ * @channel: Pointer to the VMbus channel struct
-  * @rqst_add: Guest memory address to be stored in the array
-  */
--u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr)
-+u64 vmbus_next_request_id(struct vmbus_channel *channel, u64 rqst_addr)
- {
-+	struct vmbus_requestor *rqstor = &channel->requestor;
- 	unsigned long flags;
- 	u64 current_id;
--	const struct vmbus_channel *channel =
--		container_of(rqstor, const struct vmbus_channel, requestor);
- 
- 	/* Check rqstor has been initialized */
- 	if (!channel->rqstor_size)
-@@ -1163,16 +1162,15 @@ EXPORT_SYMBOL_GPL(vmbus_next_request_id);
- /*
-  * vmbus_request_addr - Returns the memory address stored at @trans_id
-  * in @rqstor. Uses a spin lock to avoid race conditions.
-- * @rqstor: Pointer to the requestor struct
-+ * @channel: Pointer to the VMbus channel struct
-  * @trans_id: Request id sent back from Hyper-V. Becomes the requestor's
-  * next request id.
-  */
--u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id)
-+u64 vmbus_request_addr(struct vmbus_channel *channel, u64 trans_id)
- {
-+	struct vmbus_requestor *rqstor = &channel->requestor;
- 	unsigned long flags;
- 	u64 req_addr;
--	const struct vmbus_channel *channel =
--		container_of(rqstor, const struct vmbus_channel, requestor);
- 
- 	/* Check rqstor has been initialized */
- 	if (!channel->rqstor_size)
-diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-index ecd82ebfd5bc4..46d8e038e4ee1 100644
---- a/drivers/hv/ring_buffer.c
-+++ b/drivers/hv/ring_buffer.c
-@@ -310,10 +310,12 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
- 	 */
- 
- 	if (desc->flags == VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
--		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
--		if (rqst_id == VMBUS_RQST_ERROR) {
--			spin_unlock_irqrestore(&outring_info->ring_lock, flags);
--			return -EAGAIN;
-+		if (channel->next_request_id_callback != NULL) {
-+			rqst_id = channel->next_request_id_callback(channel, requestid);
-+			if (rqst_id == VMBUS_RQST_ERROR) {
-+				spin_unlock_irqrestore(&outring_info->ring_lock, flags);
-+				return -EAGAIN;
-+			}
- 		}
- 	}
- 	desc = hv_get_ring_buffer(outring_info) + old_write;
-@@ -341,7 +343,7 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
- 	if (channel->rescind) {
- 		if (rqst_id != VMBUS_NO_RQSTOR) {
- 			/* Reclaim request ID to avoid leak of IDs */
--			vmbus_request_addr(&channel->requestor, rqst_id);
-+			channel->request_addr_callback(channel, rqst_id);
- 		}
- 		return -ENODEV;
- 	}
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index c64cc7639c39c..1a221ce2d6fdc 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -730,7 +730,7 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
- 	int queue_sends;
- 	u64 cmd_rqst;
- 
--	cmd_rqst = vmbus_request_addr(&channel->requestor, (u64)desc->trans_id);
-+	cmd_rqst = channel->request_addr_callback(channel, (u64)desc->trans_id);
- 	if (cmd_rqst == VMBUS_RQST_ERROR) {
- 		netdev_err(ndev, "Incorrect transaction id\n");
- 		return;
-@@ -790,8 +790,8 @@ static void netvsc_send_completion(struct net_device *ndev,
- 
- 	/* First check if this is a VMBUS completion without data payload */
- 	if (!msglen) {
--		cmd_rqst = vmbus_request_addr(&incoming_channel->requestor,
--					      (u64)desc->trans_id);
-+		cmd_rqst = incoming_channel->request_addr_callback(incoming_channel,
-+								   (u64)desc->trans_id);
- 		if (cmd_rqst == VMBUS_RQST_ERROR) {
- 			netdev_err(ndev, "Invalid transaction id\n");
- 			return;
-@@ -1602,6 +1602,8 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
- 		       netvsc_poll, NAPI_POLL_WEIGHT);
- 
- 	/* Open the channel */
-+	device->channel->next_request_id_callback = vmbus_next_request_id;
-+	device->channel->request_addr_callback = vmbus_request_addr;
- 	device->channel->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(device->channel, netvsc_ring_bytes,
- 			 netvsc_ring_bytes,  NULL, 0,
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index 123cc9d25f5ed..ebf34bf3f9075 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -1259,6 +1259,8 @@ static void netvsc_sc_open(struct vmbus_channel *new_sc)
- 	/* Set the channel before opening.*/
- 	nvchan->channel = new_sc;
- 
-+	new_sc->next_request_id_callback = vmbus_next_request_id;
-+	new_sc->request_addr_callback = vmbus_request_addr;
- 	new_sc->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(new_sc, netvsc_ring_bytes,
- 			 netvsc_ring_bytes, NULL, 0,
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 6bc5453cea8a7..1c05fabc06b04 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -684,6 +684,62 @@ static void storvsc_change_target_cpu(struct vmbus_channel *channel, u32 old,
- 	spin_unlock_irqrestore(&stor_device->lock, flags);
- }
- 
-+u64 storvsc_next_request_id(struct vmbus_channel *channel, u64 rqst_addr)
-+{
-+	struct storvsc_cmd_request *request =
-+		(struct storvsc_cmd_request *)(unsigned long)rqst_addr;
-+	struct storvsc_device *stor_device;
-+	struct hv_device *device;
-+
-+	device = (channel->primary_channel != NULL) ?
-+		channel->primary_channel->device_obj : channel->device_obj;
-+	if (device == NULL)
-+		return VMBUS_RQST_ERROR;
-+
-+	stor_device = get_out_stor_device(device);
-+	if (stor_device == NULL)
-+		return VMBUS_RQST_ERROR;
-+
-+	if (request == &stor_device->init_request)
-+		return VMBUS_RQST_INIT;
-+	if (request == &stor_device->reset_request)
-+		return VMBUS_RQST_RESET;
-+
-+	return blk_mq_unique_tag(request->cmd->request);
-+}
-+
-+u64 storvsc_request_addr(struct vmbus_channel *channel, u64 rqst_id)
-+{
-+	struct storvsc_cmd_request *request;
-+	struct storvsc_device *stor_device;
-+	struct hv_device *device;
-+	struct Scsi_Host *shost;
-+	struct scsi_cmnd *scmnd;
-+
-+	device = (channel->primary_channel != NULL) ?
-+		channel->primary_channel->device_obj : channel->device_obj;
-+	if (device == NULL)
-+		return VMBUS_RQST_ERROR;
-+
-+	stor_device = get_out_stor_device(device);
-+	if (stor_device == NULL)
-+		return VMBUS_RQST_ERROR;
-+
-+	if (rqst_id == VMBUS_RQST_INIT)
-+		return (unsigned long)&stor_device->init_request;
-+	if (rqst_id == VMBUS_RQST_RESET)
-+		return (unsigned long)&stor_device->reset_request;
-+
-+	shost = stor_device->host;
-+
-+	scmnd = scsi_host_find_tag(shost, rqst_id);
-+	if (scmnd == NULL)
-+		return VMBUS_RQST_ERROR;
-+
-+	request = (struct storvsc_cmd_request *)(unsigned long)scsi_cmd_priv(scmnd);
-+	return (unsigned long)request;
-+}
-+
- static void handle_sc_creation(struct vmbus_channel *new_sc)
- {
- 	struct hv_device *device = new_sc->primary_channel->device_obj;
-@@ -698,11 +754,8 @@ static void handle_sc_creation(struct vmbus_channel *new_sc)
- 
- 	memset(&props, 0, sizeof(struct vmstorage_channel_properties));
- 
--	/*
--	 * The size of vmbus_requestor is an upper bound on the number of requests
--	 * that can be in-progress at any one time across all channels.
--	 */
--	new_sc->rqstor_size = scsi_driver.can_queue;
-+	new_sc->next_request_id_callback = storvsc_next_request_id;
-+	new_sc->request_addr_callback = storvsc_request_addr;
- 
- 	ret = vmbus_open(new_sc,
- 			 storvsc_ringbuffer_size,
-@@ -1255,8 +1308,7 @@ static void storvsc_on_channel_callback(void *context)
- 		struct storvsc_cmd_request *request;
- 		u64 cmd_rqst;
- 
--		cmd_rqst = vmbus_request_addr(&channel->requestor,
--					      desc->trans_id);
-+		cmd_rqst = channel->request_addr_callback(channel, desc->trans_id);
- 		if (cmd_rqst == VMBUS_RQST_ERROR) {
- 			dev_err(&device->device,
- 				"Incorrect transaction id\n");
-@@ -1290,11 +1342,8 @@ static int storvsc_connect_to_vsp(struct hv_device *device, u32 ring_size,
- 
- 	memset(&props, 0, sizeof(struct vmstorage_channel_properties));
- 
--	/*
--	 * The size of vmbus_requestor is an upper bound on the number of requests
--	 * that can be in-progress at any one time across all channels.
--	 */
--	device->channel->rqstor_size = scsi_driver.can_queue;
-+	device->channel->next_request_id_callback = storvsc_next_request_id;
-+	device->channel->request_addr_callback = storvsc_request_addr;
- 
- 	ret = vmbus_open(device->channel,
- 			 ring_size,
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 2c18c8e768efe..5692ffa60e022 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -779,7 +779,11 @@ struct vmbus_requestor {
- 
- #define VMBUS_NO_RQSTOR U64_MAX
- #define VMBUS_RQST_ERROR (U64_MAX - 1)
-+/* NetVSC-specific */
- #define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 2)
-+/* StorVSC-specific */
-+#define VMBUS_RQST_INIT (U64_MAX - 2)
-+#define VMBUS_RQST_RESET (U64_MAX - 3)
- 
- struct vmbus_device {
- 	u16  dev_type;
-@@ -1007,13 +1011,18 @@ struct vmbus_channel {
- 	u32 fuzz_testing_interrupt_delay;
- 	u32 fuzz_testing_message_delay;
- 
-+	/* callback to generate a request ID from a request address */
-+	u64 (*next_request_id_callback)(struct vmbus_channel *channel, u64 rqst_addr);
-+	/* callback to retrieve a request address from a request ID */
-+	u64 (*request_addr_callback)(struct vmbus_channel *channel, u64 rqst_id);
-+
- 	/* request/transaction ids for VMBus */
- 	struct vmbus_requestor requestor;
- 	u32 rqstor_size;
- };
- 
--u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr);
--u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id);
-+u64 vmbus_next_request_id(struct vmbus_channel *channel, u64 rqst_addr);
-+u64 vmbus_request_addr(struct vmbus_channel *channel, u64 trans_id);
- 
- static inline bool is_hvsock_channel(const struct vmbus_channel *c)
- {
--- 
-2.25.1
+- if err == 0, the rest is not evaluated
+
+- if !sev_es_guest(vcpu->kvm), WARN_ON_ONCE(!svm->ghcb) is not evaluated
+
+Paolo
 
