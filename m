@@ -2,146 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2159C358211
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E99235821E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhDHLie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
+        id S231145AbhDHLko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHLid (ORCPT
+        with ESMTP id S229751AbhDHLkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:38:33 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E74C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:38:21 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x7so1758589wrw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:38:21 -0700 (PDT)
+        Thu, 8 Apr 2021 07:40:42 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD34C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:40:30 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id p19so1048408wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:40:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HNjO0LstTaF0YJ+tzxAFP4Syvm5fGCE8nxebVcvJLjU=;
-        b=eS60djC9Lqi8q7fWOXC+yuTwdoDdp/fK2d8XmHmBdVmsTRb7l+NFwK+960b7+jwa0f
-         FmsY22x6AYJ4yv6tWLC7INl0trTXzlztAcd+b0jK6akV35kkzli/s4AEGxnp0E9T3Hzm
-         WeCrdaOppkgKGi6FkMG4W1g5pPS3g8Esg94hM=
+        bh=FzJ5ukUAxMTdvYbU0dY36FSLXhgIfuX6wIMsxJm4zCk=;
+        b=D6vM216dt5Jl0WDf/SC04ZRKghV1KWZRChfBgm0QtNf9Q5QItQU7F5BdCtI5smfPMW
+         UKgJuvdpnNlHwF0e+RzCANvdJ//IQct2iMAlU94kwJIiTkyxmaj6BMYNn6aJ/B/3Lvfo
+         GD8YySotn1IwUwmP6vC0plhdhzT2OmFGcIzkI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=HNjO0LstTaF0YJ+tzxAFP4Syvm5fGCE8nxebVcvJLjU=;
-        b=X8o98sRy0rYuJ99tA23iRHrStvkKX5Rwnvcx87o33n+2qokZjJBJjSPLGWRESFb7Kj
-         H54Tj54meqxp08C8SI2iiaD7IMdCBy4UN96rmk9NEK5ulNWaJbrqqUDDUYLeryGtj9EK
-         xxj6q5FOlXztpvrGLulo0dfVmnMtWPtCBCX2tzqhHsj01ecNe9264vCCSgCJntO2F2D4
-         5lO3TyjadG5AvSsIlEEuzxfp7VpgUcDOm+U7jDUWenm/jo5TKZCj3+Zn+RBN5LDePqj3
-         7lqn1HlIlhXi5Xysi4Ldb99RSYFZf4RI0hsehtcTpljt8nXjMdJw55rJdJQcOAG3lX7h
-         IGvA==
-X-Gm-Message-State: AOAM532KfgZBCxm5HGBW06qbiLeYpULclSKyxsa+gBurRQgOF7m+qhRc
-        HKtI4n4z33ox9PGtI7o6anuZuA==
-X-Google-Smtp-Source: ABdhPJySG7qOaE9NShNXxHx9QrPK+umWifIaVL7kyUfSfMRMt7h7zvfu4kAyJkMeLpb8wsS1VXGRaA==
-X-Received: by 2002:a5d:6d0f:: with SMTP id e15mr9348009wrq.218.1617881900156;
-        Thu, 08 Apr 2021 04:38:20 -0700 (PDT)
+        bh=FzJ5ukUAxMTdvYbU0dY36FSLXhgIfuX6wIMsxJm4zCk=;
+        b=CI8scNU3SpNIXS4/xwA+h0o7Lphd2D499JO1Jr4yhB0Ph+nzH4I7w8QtAPwf5DPFSF
+         qBGYfUAUteO5jGLN+3sCpAbtxi6Mtn5yUSLNv/RYx2lGaNcNRKkc4Orl7D0x0CDulb/X
+         u0mcHFIUqE9xPGYhXFh1TjHJxNzJPsfuBndEntFvCZFQHWo8XLruP6MF1/GYhQri0c/2
+         JC0sLjYE33BuSuS/457+aZz8Wsv0G+ovVrK4BlhfPX11rA9lADxW5FegnbYgNBCx9lsp
+         xs0j/hWvH/ERuowR6HDbEumBDs4fjydLUzOQ7bxqYPlcholWKK4fgqm9WFVxCE+GTwwl
+         iAdg==
+X-Gm-Message-State: AOAM533sPPtV4DLNCuP2R6tWCaYy1M9+RKbcDrXwecRep2pegXbva+aS
+        uCHVVPLQGHmTBCSU+GDw5tGVrg==
+X-Google-Smtp-Source: ABdhPJw+0vxFoUCt5nv3uQx94h878yf10vKPhimJ14X7/Thn5YycOgjQ/Blicg9bVBkXY4gCjGs3nw==
+X-Received: by 2002:a1c:b689:: with SMTP id g131mr7717312wmf.138.1617882029495;
+        Thu, 08 Apr 2021 04:40:29 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id n5sm24657875wrp.50.2021.04.08.04.38.18
+        by smtp.gmail.com with ESMTPSA id e13sm51100126wrg.72.2021.04.08.04.40.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 04:38:19 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 13:38:17 +0200
+        Thu, 08 Apr 2021 04:40:28 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 13:40:26 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-Message-ID: <YG7rKfJkTDJorqvY@phenom.ffwll.local>
-Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>, Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] drm/syncobj: use newly allocated stub fences
+Message-ID: <YG7rqkzLRBubwtk4@phenom.ffwll.local>
+Mail-Followup-To: David Stevens <stevensd@chromium.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <20210408093448.3897988-1-stevensd@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
+In-Reply-To: <20210408093448.3897988-1-stevensd@google.com>
 X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 12:20:50PM +0200, Arnd Bergmann wrote:
-> On Thu, Apr 8, 2021 at 11:22 AM David Hildenbrand <david@redhat.com> wrote:
-> >
-> > Random drivers should not override a user configuration of core knobs
-> > (e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
-> > dependencies and manual overrides.
-> >
-> > "This is similar to "select" as it enforces a lower limit on another
-> >  symbol except that the "implied" symbol's value may still be set to n
-> >  from a direct dependency or with a visible prompt."
-> >
-> > Implying DRM_CMA should be sufficient, as that depends on CMA.
-> >
-> > Note: If this is a real dependency, we should use "depends on DMA_CMA"
-> > instead -  but I assume the driver can work without CMA just fine --
-> > esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
+On Thu, Apr 08, 2021 at 06:34:48PM +0900, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
 > 
-> 'imply' is almost never the right solution, and it tends to cause more
-> problems than it solves.
+> Allocate a new private stub fence in drm_syncobj_assign_null_handle,
+> instead of using a static stub fence.
 > 
-> In particular, it does not prevent a configuration with 'DRM_CMA=m'
-> and 'DRMA_ASPEED_GFX=y', or any build failures from such
-> a configuration.
+> When userspace creates a fence with DRM_SYNCOBJ_CREATE_SIGNALED or when
+> userspace signals a fence via DRM_IOCTL_SYNCOBJ_SIGNAL, the timestamp
+> obtained when the fence is exported and queried with SYNC_IOC_FILE_INFO
+> should match when the fence's status was changed from the perspective of
+> userspace, which is during the respective ioctl.
 > 
-> If you want this kind of soft dependency, you need
-> 'depends on DRM_CMA || !DRM_CMA'.
+> When a static stub fence started being used in by these ioctls, this
+> behavior changed. Instead, the timestamp returned by SYNC_IOC_FILE_INFO
+> became the first time anything used the static stub fence, which has no
+> meaning to userspace.
+> 
+> Signed-off-by: David Stevens <stevensd@chromium.org>
 
-The problem is that depends on is a real pain for users to find their
-drivers. This is why we have a ton of select, because the kconfig ui tends
-to suck.
-
-If you want to change this, we need automatic conflict resolution like apt
-and other package managers have, with suggestions how to fix the config if
-you want to enable a driver, but some of its requirements are missing. The
-current approach of hiding driver symbols complete if any of their
-dependencies are off is really not great.
+Is there also an igt patch to enforce this in the drm_syncobj testcases?
+Would be really good to have that too.
 -Daniel
+
+> ---
+>  drivers/dma-buf/dma-fence.c   | 33 ++++++++++++++++++++++++++++++++-
+>  drivers/gpu/drm/drm_syncobj.c | 28 ++++++++++++++++++++--------
+>  include/linux/dma-fence.h     |  1 +
+>  3 files changed, 53 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+> index d64fc03929be..6081eb962490 100644
+> --- a/drivers/dma-buf/dma-fence.c
+> +++ b/drivers/dma-buf/dma-fence.c
+> @@ -26,6 +26,11 @@ EXPORT_TRACEPOINT_SYMBOL(dma_fence_signaled);
+>  static DEFINE_SPINLOCK(dma_fence_stub_lock);
+>  static struct dma_fence dma_fence_stub;
+>  
+> +struct drm_fence_private_stub {
+> +	struct dma_fence base;
+> +	spinlock_t lock;
+> +};
+> +
+>  /*
+>   * fence context counter: each execution context should have its own
+>   * fence context, this allows checking if fences belong to the same
+> @@ -123,7 +128,9 @@ static const struct dma_fence_ops dma_fence_stub_ops = {
+>  /**
+>   * dma_fence_get_stub - return a signaled fence
+>   *
+> - * Return a stub fence which is already signaled.
+> + * Return a stub fence which is already signaled. The fence's
+> + * timestamp corresponds to the first time after boot this
+> + * function is called.
+>   */
+>  struct dma_fence *dma_fence_get_stub(void)
+>  {
+> @@ -141,6 +148,30 @@ struct dma_fence *dma_fence_get_stub(void)
+>  }
+>  EXPORT_SYMBOL(dma_fence_get_stub);
+>  
+> +/**
+> + * dma_fence_allocate_private_stub - return a private, signaled fence
+> + *
+> + * Return a newly allocated and signaled stub fence.
+> + */
+> +struct dma_fence *dma_fence_allocate_private_stub(void)
+> +{
+> +	struct drm_fence_private_stub *fence;
+> +
+> +	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
+> +	if (fence == NULL)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	spin_lock_init(&fence->lock);
+> +	dma_fence_init(&fence->base,
+> +		       &dma_fence_stub_ops,
+> +		       &fence->lock,
+> +		       0, 0);
+> +	dma_fence_signal(&fence->base);
+> +
+> +	return &fence->base;
+> +}
+> +EXPORT_SYMBOL(dma_fence_allocate_private_stub);
+> +
+>  /**
+>   * dma_fence_context_alloc - allocate an array of fence contexts
+>   * @num: amount of contexts to allocate
+> diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+> index 349146049849..c6125e57ae37 100644
+> --- a/drivers/gpu/drm/drm_syncobj.c
+> +++ b/drivers/gpu/drm/drm_syncobj.c
+> @@ -350,12 +350,15 @@ EXPORT_SYMBOL(drm_syncobj_replace_fence);
+>   *
+>   * Assign a already signaled stub fence to the sync object.
+>   */
+> -static void drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
+> +static int drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
+>  {
+> -	struct dma_fence *fence = dma_fence_get_stub();
+> +       struct dma_fence *fence = dma_fence_allocate_private_stub();
+> +       if (IS_ERR(fence))
+> +	       return PTR_ERR(fence);
+>  
+> -	drm_syncobj_replace_fence(syncobj, fence);
+> -	dma_fence_put(fence);
+> +       drm_syncobj_replace_fence(syncobj, fence);
+> +       dma_fence_put(fence);
+> +       return 0;
+>  }
+>  
+>  /* 5s default for wait submission */
+> @@ -469,6 +472,7 @@ EXPORT_SYMBOL(drm_syncobj_free);
+>  int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+>  		       struct dma_fence *fence)
+>  {
+> +	int ret;
+>  	struct drm_syncobj *syncobj;
+>  
+>  	syncobj = kzalloc(sizeof(struct drm_syncobj), GFP_KERNEL);
+> @@ -479,8 +483,13 @@ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+>  	INIT_LIST_HEAD(&syncobj->cb_list);
+>  	spin_lock_init(&syncobj->lock);
+>  
+> -	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED)
+> -		drm_syncobj_assign_null_handle(syncobj);
+> +	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED) {
+> +		ret = drm_syncobj_assign_null_handle(syncobj);
+> +		if (ret < 0) {
+> +			drm_syncobj_put(syncobj);
+> +			return ret;
+> +		}
+> +	}
+>  
+>  	if (fence)
+>  		drm_syncobj_replace_fence(syncobj, fence);
+> @@ -1322,8 +1331,11 @@ drm_syncobj_signal_ioctl(struct drm_device *dev, void *data,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	for (i = 0; i < args->count_handles; i++)
+> -		drm_syncobj_assign_null_handle(syncobjs[i]);
+> +	for (i = 0; i < args->count_handles; i++) {
+> +		ret = drm_syncobj_assign_null_handle(syncobjs[i]);
+> +		if (ret < 0)
+> +			break;
+> +	}
+>  
+>  	drm_syncobj_array_free(syncobjs, args->count_handles);
+>  
+> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> index 9f12efaaa93a..6ffb4b2c6371 100644
+> --- a/include/linux/dma-fence.h
+> +++ b/include/linux/dma-fence.h
+> @@ -587,6 +587,7 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+>  }
+>  
+>  struct dma_fence *dma_fence_get_stub(void);
+> +struct dma_fence *dma_fence_allocate_private_stub(void);
+>  u64 dma_fence_context_alloc(unsigned num);
+>  
+>  #define DMA_FENCE_TRACE(f, fmt, args...) \
+> -- 
+> 2.31.0.208.g409f899ff0-goog
+> 
+
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
