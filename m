@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7378A358B98
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84606358B9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhDHRoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:44:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42272 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231566AbhDHRn7 (ORCPT
+        id S232524AbhDHRoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:44:25 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:41529 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231566AbhDHRoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:43:59 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138HXY9U106869;
-        Thu, 8 Apr 2021 13:43:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=kqLUOibyhUwhuOKheUsaVeuC3WX6qO/UlKgURP8z3mU=;
- b=EGs51LcpoKr9wZ4w/fdAPtf9PGdG3YGtHNsidPuY0nQ7jFCYD7IjVbqrCYKdUZCE7H8f
- wKMbagkILbwV8V5LgeFCYdWEIr1Ld1/sXQXVT2XJrRezb3lzz/T3yBRBDlTZQKQwEpc4
- gnD0IphqtUnOtwMw8g2miUdIUdCjfohJN+a76k/x5+BebjUpF700uT0k56b1ZJtHyDGO
- 5Jl6n2DJExGDVSOZ5EFW6D3EukdPan7PpcgCZpqd4H4nmgKiXHnTOUTaKu/ZEYqhTmpL
- jxQW7g3u8r+1y3bo70MjQ8y/CnjcEURaXlq7VGqdPAYOcTFn4x40OTh1KhI6HTMLHkKf Sw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf1qcrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 13:43:45 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 138HXbjb107039;
-        Thu, 8 Apr 2021 13:43:45 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf1qcrk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 13:43:45 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138Hhipd006738;
-        Thu, 8 Apr 2021 17:43:44 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma04dal.us.ibm.com with ESMTP id 37rvc4aaxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 17:43:44 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138Hhgli23658798
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Apr 2021 17:43:42 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A087E7805E;
-        Thu,  8 Apr 2021 17:43:42 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3EDC17805C;
-        Thu,  8 Apr 2021 17:43:39 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.189.52])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Apr 2021 17:43:39 +0000 (GMT)
-Message-ID: <936fa1e7755687981bdbc3bad9ecf2354c748381.camel@linux.ibm.com>
-Subject: Re: [RFC v2] KVM: x86: Support KVM VMs sharing SEV context
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Nathan Tempelman <natet@google.com>
-Cc:     thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        seanjc@google.com, rientjes@google.com, brijesh.singh@amd.com,
-        dovmurik@linux.vnet.ibm.com, lersek@redhat.com, frankeh@us.ibm.com
-Date:   Thu, 08 Apr 2021 10:43:37 -0700
-In-Reply-To: <87bdd3a6-f5eb-91e4-9442-97dfef231640@redhat.com>
-References: <20210316014027.3116119-1-natet@google.com>
-         <20210402115813.GB17630@ashkalra_ubuntu_server>
-         <87bdd3a6-f5eb-91e4-9442-97dfef231640@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 8 Apr 2021 13:44:24 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id EFC15C0003;
+        Thu,  8 Apr 2021 17:44:10 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 19:44:10 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     Claudiu Beznea - M18063 <Claudiu.Beznea@microchip.com>,
+        Ludovic Desroches - M43218 <Ludovic.Desroches@microchip.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eugen Hristev - M18282 <Eugen.Hristev@microchip.com>
+Subject: Re: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
+Message-ID: <YG9A6gRAZTbUVb8+@piout.net>
+References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+ <20210331105908.23027-23-claudiu.beznea@microchip.com>
+ <YGSc1L8yW0KniOsx@piout.net>
+ <a908274a-c4d2-faab-54a4-31fd0ffeab7e@microchip.com>
+ <21bd4417-a754-8ee6-370e-4fb4e0f1fef9@microchip.com>
+ <51dbcf0b-4ee6-10c9-9598-a451cca16905@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9p72LhukfUR3FxXlfP-qIRKLLGEn7zHs
-X-Proofpoint-ORIG-GUID: Ozv8vcGwL_F7LkToS5aTi5Rbk6Gft_mR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-08_04:2021-04-08,2021-04-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104080117
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51dbcf0b-4ee6-10c9-9598-a451cca16905@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-02 at 16:20 +0200, Paolo Bonzini wrote:
-> On 02/04/21 13:58, Ashish Kalra wrote:
-> > Hi Nathan,
+On 08/04/2021 17:24:39+0200, Nicolas Ferre wrote:
+> On 01/04/2021 at 12:24, Claudiu Beznea - M18063 wrote:
+> > On 01.04.2021 12:38, Claudiu Beznea - M18063 wrote:
+> > > On 31.03.2021 19:01, Alexandre Belloni wrote:
+> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > > > 
+> > > > On 31/03/2021 13:59:06+0300, Claudiu Beznea wrote:
+> > > > > From: Eugen Hristev <eugen.hristev@microchip.com>
+> > > > > 
+> > > > > Introduce new family of SoCs, sama7, and first SoC, sama7g5.
+> > > > > 
+> > > > > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> > > > > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> > > > > ---
+> > > > >   arch/arm/mach-at91/Makefile |  1 +
+> > > > >   arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
+> > > > >   2 files changed, 49 insertions(+)
+> > > > >   create mode 100644 arch/arm/mach-at91/sama7.c
+> > > > > 
+> > > > > diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+> > > > > index f565490f1b70..6cc6624cddac 100644
+> > > > > --- a/arch/arm/mach-at91/Makefile
+> > > > > +++ b/arch/arm/mach-at91/Makefile
+> > > > > @@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)    += at91sam9.o
+> > > > >   obj-$(CONFIG_SOC_SAM9X60)    += sam9x60.o
+> > > > >   obj-$(CONFIG_SOC_SAMA5)              += sama5.o
+> > > > >   obj-$(CONFIG_SOC_SAMV7)              += samv7.o
+> > > > > +obj-$(CONFIG_SOC_SAMA7)              += sama7.o
+> > > > > 
+> > > > >   # Power Management
+> > > > >   obj-$(CONFIG_ATMEL_PM)               += pm.o pm_suspend.o
+> > > > > diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..e04cadb569ad
+> > > > > --- /dev/null
+> > > > > +++ b/arch/arm/mach-at91/sama7.c
+> > > > > @@ -0,0 +1,48 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > > > +/*
+> > > > > + * Setup code for SAMA7
+> > > > > + *
+> > > > > + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> > > > > + *
+> > > > > + */
+> > > > > +
+> > > > > +#include <linux/of.h>
+> > > > > +#include <linux/of_platform.h>
+> > > > > +
+> > > > > +#include <asm/mach/arch.h>
+> > > > > +#include <asm/system_misc.h>
+> > > > > +
+> > > > > +#include "generic.h"
+> > > > > +
+> > > > > +static void __init sama7_common_init(void)
+> > > > > +{
+> > > > > +     of_platform_default_populate(NULL, NULL, NULL);
+> > > > 
+> > > > Is this necessary? This is left as a workaround for the old SoCs using
+> > > > pinctrl-at91. I guess this will be using pio4 so this has to be removed.
+> > > 
+> > > OK, I'll have a look. BTW, SAMA5D2 which is also using PIO4 calls
+> > > of_platform_default_populate(NULL, NULL, NULL);
 > > 
-> > Will you be posting a corresponding Qemu patch for this ?
+> > Without this call the PM code (arch/arm/mach-at/pm.c) is not able to locate
+> > proper DT nodes:
+> > 
+> > [    0.194615] at91_pm_backup_init: failed to find securam device!
+> > [    0.201393] at91_pm_sram_init: failed to find sram device!
+> > [    0.207449] AT91: PM not supported, due to no SRAM allocated
 > 
-> Hi Ashish,
+> Okay, so we can't afford removing these calls to sama5d2 and upcoming
+> sama7g5 right now.
 > 
-> as far as I know IBM is working on QEMU patches for guest-based 
-> migration helpers.
+> Is it a common pattern to have to reach DT content in the early stages that
+> explicit call to of_platform_default_populate() tries to solve?
+> 
 
-Yes, that's right, we'll take on this part.
-
-> However, it would be nice to collaborate on the low-level (SEC/PEI) 
-> firmware patches to detect whether a CPU is part of the primary VM
-> or the mirror.  If Google has any OVMF patches already done for that,
-> it would be great to combine it with IBM's SEV migration code and
-> merge it into upstream OVMF.
-
-We've reached the stage with our prototyping where not having the OVMF
-support is blocking us from working on QEMU.  If we're going to have to
-reinvent the wheel in OVMF because Google is unwilling to publish the
-patches, can you at least give some hints about how you did it?
-
-Thanks,
-
-James
+That's fine, I didn't remember about that one, we can keep the call.
 
 
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
