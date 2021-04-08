@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB7935814D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B954D358151
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhDHLGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:06:53 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16407 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhDHLGw (ORCPT
+        id S231151AbhDHLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:07:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230344AbhDHLHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:06:52 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGJLr3mpgzkjXg;
-        Thu,  8 Apr 2021 19:04:52 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.149) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 19:06:34 +0800
-From:   Ye Weihua <yeweihua4@huawei.com>
-To:     <linux@rempel-privat.de>, <kernel@pengutronix.de>,
-        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
-        <festevam@gmail.com>, <linux-imx@nxp.com>
-CC:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
-        <zhangjinhao2@huawei.com>
-Subject: [PATCH -next] i2c: imx: Fix PM reference leak in i2c_imx_reg_slave()
-Date:   Thu, 8 Apr 2021 19:06:38 +0800
-Message-ID: <20210408110638.200761-1-yeweihua4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 07:07:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617880018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uqFnFnU+W5hoDYL4hIDIXsxj0nax+65fpHN1hSzXtQU=;
+        b=i5RFaEYOoBBVxgion5/FMLabt+iHjFmzycvPHnes5VOYfGVW67/TwK3wqaFaf/bHdfqLvh
+        EHfUTdt1lZJAwO1pjJb+KIZiCUycVdwulaXah9JDiPcZSkXGfs4hLp7j/tSLRGKhr7rMrO
+        4HxXGDwWIvjgPJPVvACL+2fi7AYE+uw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-r6J8R0nhMamvCNWQPT06iA-1; Thu, 08 Apr 2021 07:06:56 -0400
+X-MC-Unique: r6J8R0nhMamvCNWQPT06iA-1
+Received: by mail-wm1-f71.google.com with SMTP id b20so330337wmj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:06:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=uqFnFnU+W5hoDYL4hIDIXsxj0nax+65fpHN1hSzXtQU=;
+        b=lfYLG5Py+XEhmUbM73a7H5lwmW4OhvXAHknR+nb/9ewoqQmz6rbZcNeoemZAc2lYPy
+         YsO1cGSTwkscVnLrdEckss07AXFciTxa2ILTeiWcqpJ1ydis2RYMJVU49pChi84p6/+f
+         vU4R151srb8RJbKhSN2ip9PZjcvtqtQ7tqoEgSZrzbNPuLpZNjUN8QSBy4tKBIVmn2wi
+         lLUakFCjAx1lIjveT1cHmKXVRu2thrxydtAEgrEL5vO+5OK7kpHWlMIL5f3JZblZFMIy
+         qOdaWfVs/JkdNMNfLcYbGhQcxZUvVrM+MmuvIR59RVXEMm0iVmwmJ4WnbRP3TUVOlaGJ
+         BBNg==
+X-Gm-Message-State: AOAM532vD92fbBS6SV3Ik6v8I9RQFlWFaz04JbO01opPIKz2HRpXqQpr
+        T8E8rXH3CfmJ81jqUmRg/bG7ONTP7Ve91wRx0iR9NwSb+BZJQC6LnWOEjdWzQnfQg5PG8bi2WKl
+        rWqQc5Qq5eGmLwF0xmDFcNlba
+X-Received: by 2002:a1c:9dd5:: with SMTP id g204mr7810246wme.87.1617880015666;
+        Thu, 08 Apr 2021 04:06:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhTjY0W2FDvXVXeD2w+sxa4IvR8DiEXHT/hvQBvRN5BWI+R63DZx6H7rXpPawxMiiXKC0BMw==
+X-Received: by 2002:a1c:9dd5:: with SMTP id g204mr7810214wme.87.1617880015445;
+        Thu, 08 Apr 2021 04:06:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z15sm15469155wrw.38.2021.04.08.04.06.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 04:06:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH 1/7] hyperv: Detect Nested virtualization support for SVM
+In-Reply-To: <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
+References: <cover.1617804573.git.viremana@linux.microsoft.com>
+ <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
+Date:   Thu, 08 Apr 2021 13:06:53 +0200
+Message-ID: <87lf9tavci.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.67.174.149]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM reference count is not expected to be incremented on return in
-these functions.
+Vineeth Pillai <viremana@linux.microsoft.com> writes:
 
-However, pm_runtime_get_sync() will increment the PM reference count
-even on failure. forgetting to put the reference again will result in
-a leak.
+> Detect nested features exposed by Hyper-V if SVM is enabled.
+>
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 3546d3e21787..4d364acfe95d 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -325,9 +325,17 @@ static void __init ms_hyperv_init_platform(void)
+>  			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
+>  	}
+>  
+> -	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
+> +	/*
+> +	 * AMD does not need enlightened VMCS as VMCB is already a
+> +	 * datastructure in memory. 
 
-Replace it with pm_runtime_resume_and_get() to keep the usage counter
-balanced.
+Well, VMCS is also a structure in memory, isn't it? It's just that we
+don't have a 'clean field' concept for it and we can't use normal memory
+accesses.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Weihua <yeweihua4@huawei.com>
----
- drivers/i2c/busses/i2c-imx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> 	We need to get the nested
+> +	 * features if SVM is enabled.
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_SVM) ||
+> +	    ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
 
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index b80fdc1f0092..dc5ca71906db 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -801,7 +801,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
- 	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
- 
- 	/* Resume */
--	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
-+	ret = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
- 	if (ret < 0) {
- 		dev_err(&i2c_imx->adapter.dev, "failed to resume i2c controller");
- 		return ret;
-@@ -1253,7 +1253,7 @@ static int i2c_imx_xfer(struct i2c_adapter *adapter,
- 	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(adapter);
- 	int result;
- 
--	result = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
-+	result = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
- 	if (result < 0)
- 		return result;
- 
-@@ -1496,7 +1496,7 @@ static int i2c_imx_remove(struct platform_device *pdev)
- 	struct imx_i2c_struct *i2c_imx = platform_get_drvdata(pdev);
- 	int irq, ret;
- 
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0)
- 		return ret;
- 
+Do I understand correctly that we can just look at CPUID.0x40000000.EAX
+and in case it is >= 0x4000000A we can read HYPERV_CPUID_NESTED_FEATURES
+leaf? I'd suggest we do that intead then.
+
+>  		ms_hyperv.nested_features =
+>  			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
+> +		pr_info("Hyper-V nested_features: 0x%x\n",
+> +			ms_hyperv.nested_features);
+>  	}
+>  
+>  	/*
+
 -- 
-2.17.1
+Vitaly
 
