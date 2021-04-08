@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F33F358F19
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB13358F1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 23:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbhDHVVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 17:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDHVVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:21:24 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E250C061760;
-        Thu,  8 Apr 2021 14:21:11 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t140so2276226pgb.13;
-        Thu, 08 Apr 2021 14:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=7KQ9dgyFpGmrno3NBnr3xvBzKME75uzvWjBYKMlTxeM=;
-        b=GDc+O5ahwo0oKQQ/6akBDra6B3nJJ/iUovHy/hU4srnxmdKW9FsIN3hOg2CleNfyvU
-         PYJg4Ixki7oSoXUbVmJknOSp7P9gFwaxNXU3BFWRdZoVN90ZR9Olsm/VsWdshBFQ5Xy5
-         sMf7Nyfjxwg8Q1cpjAYlkFqrXFkp3KF4SR4IvE0+QzqCaIfTT33cYElCjmEctXL06sI+
-         yqQcrSzIo3/nKOdjrFmeUoIjQsvPnoFTEVbdTIqkOn080GC2+EtOefGfTGmIrVevihx5
-         Snj0Arn3ka4V2OCqn0vwI+p4uz1mqNMKIj9GUZo4La+l+2JBQ7F+246Vr9hq/yS21HdZ
-         zVsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=7KQ9dgyFpGmrno3NBnr3xvBzKME75uzvWjBYKMlTxeM=;
-        b=VBLpcwRmZiKu30W5MOQjsriYv9dn4mSveX5eIewDHMA2RBCBl37jKz6AFyhWZYAxZq
-         4MhZy42mjjeFwkE0jezc5GAK7uV25dOPUv6gawFW+cvqtjsxMwN3idoIqPKGQvsJK/SL
-         uaDcI2BcH/eeUcwWw2WWEVFANgeH6Xgxx4U29E51z0zWmnHeRHwDSD1DsiJBbgfJwnIa
-         3rAO3iO9/Sh0dGYOk2Us/3n+R5nwoi+WvhB1OGnI2qmfQpDhrqmpuc0lHX6QiOAkTKKl
-         vv9wI/3ffOSP+ksfKsSCgzswRTpfFy7ibHCYEVPJL6PLqXS3vCi4UfgqiOStdFRwWLy9
-         COVg==
-X-Gm-Message-State: AOAM531AHja0ttKF2v38kEVvGEzTcWYFPSdlpLvb6o0uSIi7B9PV0vOg
-        G0y6cGMzML7Sh81G26i3ryo=
-X-Google-Smtp-Source: ABdhPJwfinViQvp3s3C1Ztqe6bd0Xb92TsO8+3f8xSRMoFUH1NZcuef62xbT7jg4LCMRBPNZv9XXCg==
-X-Received: by 2002:aa7:8389:0:b029:209:da1c:17b5 with SMTP id u9-20020aa783890000b0290209da1c17b5mr9439756pfm.29.1617916870938;
-        Thu, 08 Apr 2021 14:21:10 -0700 (PDT)
-Received: from kali ([152.57.243.224])
-        by smtp.gmail.com with ESMTPSA id q2sm322538pfk.143.2021.04.08.14.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 14:21:10 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 02:51:00 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: [PATCH] staging: media: zoran: reduce length of a line
-Message-ID: <YG9zvMnYlZVbJhQn@kali>
+        id S232504AbhDHVXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 17:23:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231862AbhDHVXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:23:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C2916115B;
+        Thu,  8 Apr 2021 21:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617916975;
+        bh=usgujaDbzXIRYTYizJLHMzZlfLvuwu+IBbDi8a6scwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q0sU1bdl3LY852OxCfVxM+4TSUTgUjykpzUMC9RcivOTcikzuwZO66KUiUSZ2p/yF
+         XQe0ZQaLt/qeAIjHUqS6s3kfDbJt/Wl+gccpgHKlaWQrGIwbHccjvOBhuhQLCkZ7fF
+         2zMGqLjmwz5pjjOzql8BpyJntHuAGjkFyYReEt0myeY2cbKBVpyQMSFq7R2qCeqahh
+         owrr+uIsi7/tc0OPgwMd8+VxreLoGgGZETLI18AvDQG9qpYT5biJJEY/2dbH+DT1s5
+         ylD1tfP++/vi4ryPJRuVQWSvEYDlceFYh/ZXirgmcrIPFO7r+evqrpSVKtFGHdAT2b
+         bDL1rOZX/LFgQ==
+Date:   Thu, 8 Apr 2021 23:22:51 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Max Staudt <max@enpas.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/12] i2c: icy: Constify the software node
+Message-ID: <20210408212251.GJ1900@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>, Max Staudt <max@enpas.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
+ <20210329105047.51033-10-heikki.krogerus@linux.intel.com>
+ <20210330155856.3cf32fce.max@enpas.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="apbmkPN6Hu/1dI3g"
 Content-Disposition: inline
+In-Reply-To: <20210330155856.3cf32fce.max@enpas.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduced length of a line which exceed the 100 columns limit by splitting
-the line into two statements and commenting it with '*'
-Reported by checkpatch.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
- drivers/staging/media/zoran/zr36060.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+--apbmkPN6Hu/1dI3g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
-index 4f9eb9ff2c42..035634fc1c6d 100644
---- a/drivers/staging/media/zoran/zr36060.c
-+++ b/drivers/staging/media/zoran/zr36060.c
-@@ -249,7 +249,9 @@ static const char zr36060_ta[8] = { 0, 1, 1, 0, 0, 0, 0, 0 };	//table idx's AC
- static const char zr36060_decimation_h[8] = { 2, 1, 1, 0, 0, 0, 0, 0 };
- static const char zr36060_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
- 
--/* SOF (start of frame) segment depends on width, height and sampling ratio of each color component */
-+/* SOF (start of frame) segment depends on width,
-+ * height and sampling ratio of each color component
-+ */
- static int zr36060_set_sof(struct zr36060 *ptr)
- {
- 	char sof_data[34];	// max. size of register set
--- 
-2.30.2
+On Tue, Mar 30, 2021 at 03:58:56PM +0200, Max Staudt wrote:
+> This looks great, thank you for constifying this.
+>=20
+> Finally it's clean again, yet much more flexible than the original
+> platform_data approach when I first submitted the driver.
 
+I read this as "Reviewed-by" ;)
+
+
+--apbmkPN6Hu/1dI3g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBvdCsACgkQFA3kzBSg
+KbYn0g//Q7Ds6Iml2k/8B+V01/8h6pj8RlYMqtIefYNHN3TI5b7DOgXE/6WzwIs1
+GUfNwlSqCg2xjkdlKtVgc/LPnNRqTqUwHx1PbTpQG6QJ4nZJHkjl5okyMoaJVbXK
+aFWhrRDC0t+/KXcO+sheTAXj3nzAJFtrT7k5gqLKE7p1ZJCsgb2GmAEl1qO+wlYi
+z/tCAex/fBKLU9YX+H4pKVwbUkjiliTDonlUZ9MgayuUT1BmrwSeqmdrbeySJSq+
+gr6aI9i6numN4dpRYmcVUznewU2OSMVYmuVIDE5pUi2xzuQd71JjaH7So/oU46n8
+T1DTp/kOFNAchwmw9Sd2TxvysoDu8IQvdW0HcVEvCam9n+6X/qYAxLW5wZwUf56L
+nmowVU4z2AAuShElKKvS/pIi9tSBBMEr5WY8jG34Jf6anO5GIiuMtWuRei12ZWh5
+Rz8XPD7MTSyLJINH9YknBfjzdYp9Kcds4j1nvrVjhjOWQS/fTt1Jb4KacsCy6T+r
+JHTQQ/i/MW8grxzRhv6CA49fqA8nGitOBQS40/wCt1oQqMofi6s1LHRbH6OAZTQ/
+39qrmITOddI6p7gNRr7PvPpF9h3pQZ03AFR59CTmMvnRvmytg5JZVJMlursoGlJD
+pgg/8oQLVsl6bvv2vU1CKY29r8Q3Ff3GDgnMCAYMLS++lV7QYjU=
+=Y4sv
+-----END PGP SIGNATURE-----
+
+--apbmkPN6Hu/1dI3g--
