@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C3A358471
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C599358477
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhDHNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231610AbhDHNRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:17:09 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53C086113A;
-        Thu,  8 Apr 2021 13:16:57 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 09:16:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
+        id S231590AbhDHNSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:18:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35392 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhDHNSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:18:50 -0400
+Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A411B20B5680;
+        Thu,  8 Apr 2021 06:18:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A411B20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617887918;
+        bh=Uvq3RHp7zfj+SgleBAFg1sqKAQHQLyNq9zpMXhnErH8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=juVIgNa7Vc+ziH/Msl5xciwWFD1g6WdeZO+Nq6uKJ16YK5Si5OhGNAd/4RC27IN/L
+         pEB0SpdpoVetBRxgwjsbHAkyRNd2o2BoyNzd79dOnCXbw8+1EPCf1SheKLZzyMGPnp
+         Z8BDmRP1EvyCrpHV3b3FrgGZ8mkj63x7AReEExDc=
+Subject: Re: [PATCH 3/7] KVM: x86: hyper-v: Move the remote TLB flush logic
+ out of vmx
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210408091655.64905da9@gandalf.local.home>
-In-Reply-To: <YG6gLd9bnDsXhrNx@kroah.com>
-References: <YErOkGrvtQODXtB0@google.com>
-        <20210312183238.GW4332@42.do-not-panic.com>
-        <YEvA1dzDsFOuKdZ/@google.com>
-        <20210319190924.GK4332@42.do-not-panic.com>
-        <YFjHvUolScp3btJ9@google.com>
-        <20210322204156.GM4332@42.do-not-panic.com>
-        <YFkWMZ0m9nKCT69T@google.com>
-        <20210401235925.GR4332@42.do-not-panic.com>
-        <YGbNpLKXfWpy0ZZa@kroah.com>
-        <20210407201746.ueijmegmpbyq5quv@treble>
-        <YG6gLd9bnDsXhrNx@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+References: <cover.1617804573.git.viremana@linux.microsoft.com>
+ <bb757810c7b7c27ebbefe344c20b99d67524ee29.1617804573.git.viremana@linux.microsoft.com>
+ <87im4xav05.fsf@vitty.brq.redhat.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <88cf8856-6f72-9c50-6eca-4aca96419259@linux.microsoft.com>
+Date:   Thu, 8 Apr 2021 09:18:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87im4xav05.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 08:18:21 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
 
-> And I would love a taint for rmmod, but what is that going to help out
-> with?
+On 4/8/21 7:14 AM, Vitaly Kuznetsov wrote:
+> + /*
+>> +	 * Two Dimensional paging CR3
+>> +	 * EPTP for Intel
+>> +	 * nCR3 for AMD
+>> +	 */
+>> +	u64 tdp_pointer;
+>>   };
+> 'struct kvm_vcpu_hv' is only allocated when we emulate Hyper-V in KVM
+> (run Windows/Hyper-V guests on top of KVM). Remote TLB flush is used
+> when we run KVM on Hyper-V and this is a very different beast. Let's not
+> mix these things together. I understand that some unification is needed
+> to bring the AMD specific feature but let's do it differently.
+>
+> E.g. 'ept_pointer' and friends from 'struct kvm_vmx' can just go to
+> 'struct kvm_vcpu_arch' (in case they really need to be unified).
+Ahh yes, thanks for catching this. Will fix this in the next version.
 
-Just like any other taint. If a rmmod can cause the system to lose
-integrity, the rmmod could cause a subtle issue that manifests itself into
-something more serious and may look unrelated. If you have a bug report
-with the rmmod taint, one could ask to try to recreate the bug without
-doing rmmod. Or perhaps we have a similar bug reports that all show the
-rmmod taint. That would give us an impression that something was removed
-and caused the system to lose stability.
-
--- Steve
+Thanks,
+Vineeth
