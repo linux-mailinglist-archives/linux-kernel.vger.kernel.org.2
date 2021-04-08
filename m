@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA86C35840D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952DC358418
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhDHNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:02:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229751AbhDHNCH (ORCPT
+        id S231593AbhDHNEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:04:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15626 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDHNEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:02:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617886915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SC4hNMbbB4hm2+rL5qMmQKUw2dEFlVpMyX9e9hUazm0=;
-        b=i+tqxyV1cBD7G9ZwQYFrYyUt6DVuMjfmS5LzIWni8WNggGrVTlkPyIypCacZduOwcKiROY
-        EoknCSHBLktguJJzCf6pLF2ZEAbE8FkDlCjl7REoRY4ceCf5bqlxdjrKm6/4onsTOBhghQ
-        Mq1xTuA8Wv+T6PyAU7Wer6kayYI1crE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-eei0jnrKMlCu2J2fgu6mzA-1; Thu, 08 Apr 2021 09:01:53 -0400
-X-MC-Unique: eei0jnrKMlCu2J2fgu6mzA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD4A2DF8A3;
-        Thu,  8 Apr 2021 13:01:52 +0000 (UTC)
-Received: from ovpn-113-96.phx2.redhat.com (ovpn-113-96.phx2.redhat.com [10.3.113.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1186119CBF;
-        Thu,  8 Apr 2021 13:01:51 +0000 (UTC)
-Message-ID: <e22b105449b6970177d5907d9cbb9e7f55bc72bb.camel@redhat.com>
-Subject: Re: [PATCH v4 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-From:   Simo Sorce <simo@redhat.com>
-To:     Chris von Recklinghausen <crecklin@redhat.com>, ardb@kernel.org,
-        rafael@kernel.org, decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 08 Apr 2021 09:01:51 -0400
-In-Reply-To: <20210408104629.31357-1-crecklin@redhat.com>
-References: <20210408104629.31357-1-crecklin@redhat.com>
-Organization: Red Hat, Inc.
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+        Thu, 8 Apr 2021 09:04:13 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGLx54JQdzpWWL;
+        Thu,  8 Apr 2021 21:01:13 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 21:03:54 +0800
+Subject: Re: [PATCH v1 0/2] scsi: libsas: few clean up patches
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <john.garry@huawei.com>, <yanaijie@huawei.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiang66@hisilicon.com>, <linuxarm@openeuler.org>
+References: <1616675396-6108-1-git-send-email-luojiaxing@huawei.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <738d6d4a-0052-1b0c-e619-370f62506189@huawei.com>
+Date:   Thu, 8 Apr 2021 21:03:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+MIME-Version: 1.0
+In-Reply-To: <1616675396-6108-1-git-send-email-luojiaxing@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-08 at 06:46 -0400, Chris von Recklinghausen wrote:
-> Suspend fails on a system in fips mode because md5 is used for the e820
-> integrity check and is not available. Use crc32 instead.
-> 
-> Prior to this patch, MD5 is used only to create a digest to ensure integrity of
-> the region, no actual encryption is done. This patch set changes the integrity
-> check to use crc32 instead of md5 since crc32 is available in both FIPS and
-> non-FIPS modes.
-> 
-> Note that the digest is only used as an integrity check. No actual encryption
-> is done.
-> 
-> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
->        by md5 digest")
-> 
-> Tested-by: Dexuan Cui <decui@microsoft.com>
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
-
-Hi Chris,
-I would reword it this way:
-----------
-This patch(set) changes the integrity check algorithm from md5 to
-crc32. This integrity check is used only to verify accidental
-corruption of the hybernation data and is not intended as a
-cryptographic integrity check.
-Md5 is overkill in this case and also disabled in FIPS mode because it
-is known to be broken for cryptographic purposes.
-----------
-
-HTH,
-Simo.
-
--- 
-Simo Sorce
-RHEL Crypto Team
-Red Hat, Inc
+kindly ping
 
 
+Hi, jejb, martin, would you mind to take a look for these tiny clean up 
+patches.
 
+
+Thanks
+
+Jiaxing
+
+
+On 2021/3/25 20:29, Luo Jiaxing wrote:
+> Two types of errors are detected by the checkpatch.
+> 1. Alignment between switches and cases
+> 2. Improper use of some spaces
+>
+> Here are the clean up patches.
+>
+> Luo Jiaxing (2):
+>    scsi: libsas: make switch and case at the same indent in
+>      sas_to_ata_err()
+>    scsi: libsas: clean up for white spaces
+>
+>   drivers/scsi/libsas/sas_ata.c      | 74 ++++++++++++++++++--------------------
+>   drivers/scsi/libsas/sas_discover.c |  2 +-
+>   drivers/scsi/libsas/sas_expander.c | 15 ++++----
+>   3 files changed, 43 insertions(+), 48 deletions(-)
+>
 
