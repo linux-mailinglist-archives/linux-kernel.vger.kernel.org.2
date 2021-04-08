@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B6A357C4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85033357C6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhDHGSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:18:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhDHGSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:18:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67CA5610E6;
-        Thu,  8 Apr 2021 06:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617862704;
-        bh=LLpGNyyaEfTjFDfZsFVz/KgbgvxlPflrA1HYb4wICzU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fd2VC2NULo+VYsMZDFWiBsDRCAy1NIZrdJvFzcwcBasVpVgoGsqNl5DC0vx8THQQY
-         2OPW3R+idDLnTgAvMx5URPv2y/iU2Gzgi6D87dCRQfohRQi76ObCr4Bza/WbKLV93F
-         /M/yYa1hAcLugm0uENUa2/oKw7FEjHqlV8xGfnh0=
-Date:   Thu, 8 Apr 2021 08:18:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YG6gLd9bnDsXhrNx@kroah.com>
-References: <YErOkGrvtQODXtB0@google.com>
- <20210312183238.GW4332@42.do-not-panic.com>
- <YEvA1dzDsFOuKdZ/@google.com>
- <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <20210407201746.ueijmegmpbyq5quv@treble>
+        id S231135AbhDHGTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:19:55 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16035 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhDHGTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:19:30 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FG9y701fQzPp0P;
+        Thu,  8 Apr 2021 14:16:31 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.179.202) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 14:19:07 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "MPT-FusionLinux . pdl" <MPT-FusionLinux.pdl@broadcom.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/3] scsi: mptfusion: Clear the warnings indicating that the variable is not used
+Date:   Thu, 8 Apr 2021 14:18:48 +0800
+Message-ID: <20210408061851.3089-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407201746.ueijmegmpbyq5quv@treble>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 03:17:46PM -0500, Josh Poimboeuf wrote:
-> On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
-> > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
-> > > As for the syfs deadlock possible with drivers, this fixes it in a generic way:
-> > > 
-> > > commit fac43d8025727a74f80a183cc5eb74ed902a5d14
-> > > Author: Luis Chamberlain <mcgrof@kernel.org>
-> > > Date:   Sat Mar 27 14:58:15 2021 +0000
-> > > 
-> > >     sysfs: add optional module_owner to attribute
-> > >     
-> > >     This is needed as otherwise the owner of the attribute
-> > >     or group read/store might have a shared lock used on driver removal,
-> > >     and deadlock if we race with driver removal.
-> > >     
-> > >     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > 
-> > No, please no.  Module removal is a "best effort", if the system dies
-> > when it happens, that's on you.  I am not willing to expend extra energy
-> > and maintance of core things like sysfs for stuff like this that does
-> > not matter in any system other than a developer's box.
-> 
-> So I mentioned this on IRC, and some folks were surprised to hear that
-> module unloading is unsupported and is just a development aid.
-> 
-> Is this stance documented anywhere?
-> 
-> If we really believe this to be true, we should make rmmod taint the
-> kernel.
+Fix below warnings:
+drivers/message/fusion/mptctl.c: In function ‘mptctl_do_taskmgmt’:
+drivers/message/fusion/mptctl.c:324:17: warning: variable ‘time_count’ set but not used [-Wunused-but-set-variable]
+  324 |  unsigned long  time_count;
+      |                 ^~~~~~~~~~
+drivers/message/fusion/mptctl.c: In function ‘mptctl_gettargetinfo’:
+drivers/message/fusion/mptctl.c:1372:7: warning: variable ‘port’ set but not used [-Wunused-but-set-variable]
+ 1372 |  u8   port;
+      |       ^~~~
+drivers/message/fusion/mptctl.c: In function ‘mptctl_hp_hostinfo’:
+drivers/message/fusion/mptctl.c:2337:8: warning: variable ‘retval’ set but not used [-Wunused-but-set-variable]
+ 2337 |  int   retval;
+      |        ^~~~~~
 
-My throw-away comment here seems to have gotten way more attention than
-it deserved, sorry about that everyone.
 
-Nothing is supported for anything here, it's all "best effort" :)
+Zhen Lei (3):
+  scsi: mptfusion: Remove unused local variable 'time_count'
+  scsi: mptfusion: Remove unused local variable 'port'
+  scsi: mptfusion: Fix error return code of mptctl_hp_hostinfo()
 
-And I would love a taint for rmmod, but what is that going to help out
-with?
+ drivers/message/fusion/mptctl.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-thanks,
+-- 
+2.21.1
 
-greg k-h
+
