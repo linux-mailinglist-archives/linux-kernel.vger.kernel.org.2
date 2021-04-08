@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B973580B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B1E3580EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhDHKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhDHKgt (ORCPT
+        id S230294AbhDHKiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:38:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30281 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231318AbhDHKhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:36:49 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A28C061760;
-        Thu,  8 Apr 2021 03:36:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 8 Apr 2021 06:37:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617878232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qLjjLoz+QeRsQ1MOoIX2RgV24dAqIxs+wPP9bncu07U=;
+        b=aaNAU9CDlpk4dMcFbfT3TaK6v8gGrYl6XrwUrQYqgp16Ccal71HH9TXHpl6LhelycUwDA+
+        OOt5vgWq17kbPKdfOzfXgJEeR6z00HEXqgaQ7KDJE/MYUlrF6S7ixe+qsToyOSdOD/lEg2
+        S3c1zu3aNZKs2W64MkTPoerciGMgkho=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-2LSDVNSAMvy_w6wcmDZmyA-1; Thu, 08 Apr 2021 06:37:08 -0400
+X-MC-Unique: 2LSDVNSAMvy_w6wcmDZmyA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGHkB0jzFz9sW4;
-        Thu,  8 Apr 2021 20:36:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617878194;
-        bh=j4QGZTMJ7F8NZ7P4vtdLkL4aQEB5U/c62uThoHhiCGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g159QLykDclcupTbZf0sgGO8WyDYk5WWJumEdJHk9FlEw0M0EC1CugB/bD2j/VbYw
-         EphEFC1mgBey8m+QcP+ZxWhTMwcJdVyI6CI+jZ77EDx3SwxKCkmUOokVi2FdFBGFDK
-         Fis98f1Qv8KZ7sNTC4GdQM59khcL3vbarrKazuRBPI7Ct+geDo6/mJ6rfHj8JQRDix
-         pM6UFFZS8iyxzRevVb7AAzpe3w8TycSmAyLH/AEk6oAut3irrX2I77+M82q+MJFHzM
-         5A8eBVjFePTOXk6/L+ZnyTtVetuDl6AJd3DF9x1vPgkToBHjUNrcDCAdwHpvtKYCC3
-         0yk4oAo+2M0Ow==
-Date:   Thu, 8 Apr 2021 20:36:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 761D4CC622;
+        Thu,  8 Apr 2021 10:37:05 +0000 (UTC)
+Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A5151001B2C;
+        Thu,  8 Apr 2021 10:37:00 +0000 (UTC)
+Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
+ aspeed or etnaviv
+From:   David Hildenbrand <david@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- kbuild tree
-Message-ID: <20210408203633.08012e20@canb.auug.org.au>
-In-Reply-To: <20210408203449.58e5edf8@canb.auug.org.au>
-References: <20210408203449.58e5edf8@canb.auug.org.au>
+        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+References: <20210408092011.52763-1-david@redhat.com>
+ <20210408092011.52763-3-david@redhat.com>
+ <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
+ <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <0b1928a8-99c3-f1f1-ad66-40145199d9bc@redhat.com>
+Date:   Thu, 8 Apr 2021 12:36:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yFGNIYqX5JEHKFwlhGReMZO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yFGNIYqX5JEHKFwlhGReMZO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 08.04.21 12:27, David Hildenbrand wrote:
+> On 08.04.21 12:20, Arnd Bergmann wrote:
+>> On Thu, Apr 8, 2021 at 11:22 AM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> Random drivers should not override a user configuration of core knobs
+>>> (e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
+>>> dependencies and manual overrides.
+>>>
+>>> "This is similar to "select" as it enforces a lower limit on another
+>>>    symbol except that the "implied" symbol's value may still be set to n
+>>>    from a direct dependency or with a visible prompt."
+>>>
+>>> Implying DRM_CMA should be sufficient, as that depends on CMA.
+>>>
+>>> Note: If this is a real dependency, we should use "depends on DMA_CMA"
+>>> instead -  but I assume the driver can work without CMA just fine --
+>>> esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
+>>
+>> 'imply' is almost never the right solution, and it tends to cause more
+>> problems than it solves.
+> 
+> I thought that was the case with "select" :)
+> 
+>>
+>> In particular, it does not prevent a configuration with 'DRM_CMA=m'
+> 
+> I assume you meant "DRM_CMA=n" ? DRM_CMA cannot be built as a module.
+> 
+>> and 'DRMA_ASPEED_GFX=y', or any build failures from such
+>> a configuration.
+> 
+> I don't follow. "DRM_CMA=n" and 'DRMA_ASPEED_GFX=y' is supposed to work
+> just fine (e.g., without HAVE_DMA_CONTIGUOUS) or what am I missing?
+> 
+>>
+>> If you want this kind of soft dependency, you need
+>> 'depends on DRM_CMA || !DRM_CMA'.
+> 
+> Seriously? I think the point of imply is "please enable if possible and
+> not prevented by someone else". Your example looks more like a NOP - no?
+> Or will it have the same effect?
 
-Hi all,
+I just tried (remove CONFIG_DMA_CMA from .config followed by make) and 
+the default will be set to "N" (when querying the user). So it indeed 
+looks like a NOP - unless I am missing something.
 
-On Thu, 8 Apr 2021 20:34:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->=20
->   Makefile
+-- 
+Thanks,
 
-This also affected init/Kconfig
+David / dhildenb
 
-> between commit:
->=20
->   2f8864dbe668 ("kbuild: move module strip/compression code into scripts/=
-Makefile.modinst")
->=20
-> from the kbuild tree and commit:
->=20
->   7b35c1a01c2e ("init: add support for zstd compressed modules")
->=20
-> from the akpm-current tree.
->=20
-> Also commit
->=20
->   ee2305118fc3 ("kbuild: add support for zstd compressed modules")
->=20
-> from the kbuild tree seems to do the same as the akpm-current commit
-> above, so I just effectively reverted the akpm-current commit.
->=20
-> I fixed it up (see above) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yFGNIYqX5JEHKFwlhGReMZO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBu3LEACgkQAVBC80lX
-0Gw1Ewf/eSWpGlpJKPpX5u6VIv1QYDb3LfVuNAlAH+gUxHQJcVqjZMOQXHUyY4xf
-LblmeKvVFqdwSbDZC9TsjxGiXVSatJAwZ6W/Zu6J2DaXP+RTx/F82ppr34NJBSYR
-uLTXo5nZv8vG2HyjVjcq1BHmaVbYjwyxI6bUXjBZ3cOEyeBZJTTxFoc4q8c5UWjP
-HcqIxWIXCbvfAHdNEPxg+kpybZrlgkGof0bYVK+LJNZpzm6UKxfd9gSye7ehCoHD
-G0N3oC38YpUE1o3rJuRHhgNeAUfJuDGS3RH15ZCs0SHcUUkQEe9h8kAmJlxf/Pr/
-PVEcO0THmebB4D9nIPpeoaDh9/PyLA==
-=EzBd
------END PGP SIGNATURE-----
-
---Sig_/yFGNIYqX5JEHKFwlhGReMZO--
