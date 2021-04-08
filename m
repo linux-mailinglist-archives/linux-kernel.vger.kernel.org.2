@@ -2,205 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4350E357A61
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27EC357A68
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhDHC3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:29:49 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:13675 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhDHC3r (ORCPT
+        id S229638AbhDHCeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:34:22 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:47101 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhDHCeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:29:47 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210408022935epoutp027a450d17596b5809f9d5e43c94043f16~zwRJQXY7Z3150831508epoutp02v
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:29:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210408022935epoutp027a450d17596b5809f9d5e43c94043f16~zwRJQXY7Z3150831508epoutp02v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617848975;
-        bh=GHCiJRRXgyYY/VI/udSRwsYVBhPBw2Y9FbSwPwzxm+A=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=EcpgnmD/7JaeeraPVAKQwUH+GyE3+tYnWLa3xzMBT8xKrskcIC+K8EnB/AZnOIdbn
-         iqlNy4WkrJjp7Qa7a9OFyv8wtGhINRiQIQn5R/bStKVHG9evXIxgbBRNbWLbeaCNid
-         hVuLuu3mNCVa6jzewjDs87jAQ8tYHGSANF2RdMfs=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210408022934epcas1p4d6b9d4304851275e9306497ca17ac497~zwRIWcpH52026120261epcas1p4K;
-        Thu,  8 Apr 2021 02:29:34 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4FG4wD3SV6z4x9Pp; Thu,  8 Apr
-        2021 02:29:32 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8B.8B.02277.C8A6E606; Thu,  8 Apr 2021 11:29:32 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408022931epcas1p2538b7fe14b348daa7a0cadce2df09bff~zwRFRTwwV1887818878epcas1p2C;
-        Thu,  8 Apr 2021 02:29:31 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210408022931epsmtrp1ea2aa8050e2d88697ac7191ba591cf5b~zwRFQGHKZ0798907989epsmtrp1F;
-        Thu,  8 Apr 2021 02:29:31 +0000 (GMT)
-X-AuditID: b6c32a36-4edff700000108e5-9f-606e6a8cb42a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AE.D6.08745.A8A6E606; Thu,  8 Apr 2021 11:29:31 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408022930epsmtip2b035be9198e08bd52f262dc01076746e~zwRE3CVmx0676906769epsmtip2a;
-        Thu,  8 Apr 2021 02:29:30 +0000 (GMT)
-Subject: Re: [PATCH V8 1/8] PM / devfreq: Add cpu based scaling support to
- passive_governor
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     "andrew-sh.cheng" <andrew-sh.cheng@mediatek.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, Sibi Sankar <sibis@codeaurora.org>
-Organization: Samsung Electronics
-Message-ID: <cfdd3973-e4a7-8c09-8a7e-57118a7a3b9b@samsung.com>
-Date:   Thu, 8 Apr 2021 11:47:02 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 7 Apr 2021 22:34:20 -0400
+Received: by mail-io1-f45.google.com with SMTP id j26so585750iog.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 19:34:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D0i0J//0G8Aaxd3DIsF46N2+ARX5bagEX+gcAs1OlF0=;
+        b=p8fiogk4skR9bwKMPlkZLcOIeFxXOxzIp0DQla3b1w4VDMUE/uUFs+FAavspXMDTPw
+         FqDCsNyjrj6+rqDVGohrD9QxEubDU2rkyc+5czm4Hek/6UvttVqG9rcpWyVtO2V7j9FW
+         5SMP2LixYCydI+l8giDhfpqBNPGfjOcC71n5lpaONtwAa811dvxMCpRJQqtuu4kIdC3h
+         4eq1A/5Z1bmuHtlFlv2oy73GX2+KM1Azz7xJ9p3BbTIec+BYHyBKv4czu4cWetgI7w2V
+         Ld5GojdnhLw/BJTJNli/SprNHvEDahAHj+ypKewtY6iKUmOyUps50ilUADysV8zKny9N
+         gLQA==
+X-Gm-Message-State: AOAM530RgSYWjdKdk5WJjzmjCu312bSI8cnp47ApnOBsAuJvvqS6epqR
+        vsDGhk4vKgrt5+eXNz1o4e4=
+X-Google-Smtp-Source: ABdhPJwCMRLoceAAPTxPi1Au1jSo8saJxg0wpxHfIUPvTXh2An/dd3yxI36+i1R3Qc+lAdH2UnQhzA==
+X-Received: by 2002:a02:cd33:: with SMTP id h19mr6456988jaq.88.1617849249720;
+        Wed, 07 Apr 2021 19:34:09 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id k6sm3518903ilo.44.2021.04.07.19.34.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 19:34:09 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 02:34:08 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] percpu: implement partial chunk depopulation
+Message-ID: <YG5roL/l7qt+9WAM@google.com>
+References: <20210407182618.2728388-1-guro@fb.com>
+ <20210407182618.2728388-6-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <fbb6c44b-eb77-14ce-9175-3f06030e6e0c@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFJsWRmVeSWpSXmKPExsWy7bCmvm5PVl6Cwenpwhbb179gtZj68Amb
-        xfwj51gtzja9Ybf4dqWDyWLT42usFpd3zWGzuNx8kdHic+8RRoul1y8yWTS1GFvcblzBZvHm
-        x1kmizOnL7FatO49wm7x79pGFotrC9+zWky/K2Sx8auHg7DHmnlrGD0u9/UyeeycdZfdY9Oq
-        TjaPO9f2sHlsXlLv0XJyP4vHlqvtLB59W1Yxehy/sZ3J4/MmuQDuqGybjNTElNQihdS85PyU
-        zLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKDnlBTKEnNKgUIBicXFSvp2NkX5
-        pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGYfbX7MXdElVLGipb2Cc
-        JdbFyMkhIWAiMe39QRYQW0hgB6PEoVXqEPYnRoknbwS7GLmA7M+MEn9u7GPsYuQAa7izXhoi
-        votR4mfHJnYI5z2jxNa+ncwg3cICsRK/zt8Dm8omoCWx/8UNNhBbBKh5x8zZjCA2s0Avq8TM
-        Q4ogNr+AosTVH4/B4rwCdhKX39xgBbFZBFQklr49A9YrKhAmcXJbC1SNoMTJmU9YQA7iFLCX
-        aDkUDTFSXOLWk/lMELa8xPa3c5hBbpMQmM8pcbnnEAvExy4SS++/ZYKwhSVeHd/CDmFLSbzs
-        b4OyqyVWnjzCBtHcwSixZf8FVoiEscT+pZOZQBYzC2hKrN+lDxFWlNj5ey7UX3wS7772sEIC
-        i1eio00IokRZ4vKDu1BrJSUWt3eyTWBUmoXkm1lIXpiF5IVZCMsWMLKsYhRLLSjOTU8tNiww
-        Qo7pTYzgRK9ltoNx0tsPeocYmTgYDzFKcDArifDu6M1OEOJNSaysSi3Kjy8qzUktPsRoCgzf
-        icxSosn5wFyTVxJvaGpkbGxsYWJoZmpoqCTOm2jwIF5IID2xJDU7NbUgtQimj4mDU6qBye9y
-        ac1zlf5rpX4vK39FnQxyslJ4MO3a8dSdPN2vCyLmGFlNbGc+ItriIP0pvLcsU2XSZEsPjjV/
-        7me8DEnRdH7dUrT6/wy+Z/ukVyydafvm0MHCQ3V3jsdeqFAy7/zVtyl651mF5XMb95X2GZ49
-        2yNffrOZg0GzL+/0o83McTw5EwRzdM/9fs1i0sVi/tDXp+2I39J1y2uuv/KREq1M/nCFTf96
-        +ryj05YWbK7N2Vy9Qz1CXNJtneND88mGa9skmGM4M0oCTFb9zX7r6/peadEVFuurG1Zf+71u
-        7an6RWoKcaqWS1K+i7tEcy35WOjUyLHYdeq0tCPps5dpX+Bh01Bj7P7iL7+lYknzqcOlSizF
-        GYmGWsxFxYkAtQvSaX0EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGIsWRmVeSWpSXmKPExsWy7bCSvG53Vl6CwYJPzBbb179gtZj68Amb
-        xfwj51gtzja9Ybf4dqWDyWLT42usFpd3zWGzuNx8kdHic+8RRoul1y8yWTS1GFvcblzBZvHm
-        x1kmizOnL7FatO49wm7x79pGFotrC9+zWky/K2Sx8auHg7DHmnlrGD0u9/UyeeycdZfdY9Oq
-        TjaPO9f2sHlsXlLv0XJyP4vHlqvtLB59W1Yxehy/sZ3J4/MmuQDuKC6blNSczLLUIn27BK6M
-        w+2v2Qu6pCoWtNQ3MM4S62Lk4JAQMJG4s166i5GLQ0hgB6PE2fVHWLoYOYHikhLTLh5lhqgR
-        ljh8uBii5i2jxMH3q9lBaoQFYiV+nb8HVs8moCWx/8UNNhBbBGjmjpmzGUEamAX6WSVe/uhi
-        AkkICbSySNz/mAJi8wsoSlz98ZgRxOYVsJO4/OYGK4jNIqAisfTtGbBBogJhEjuXPGaCqBGU
-        ODnzCQvIQZwC9hIth6JBwswC6hJ/5l1ihrDFJW49mc8EYctLbH87h3kCo/AsJN2zkLTMQtIy
-        C0nLAkaWVYySqQXFuem5xYYFRnmp5XrFibnFpXnpesn5uZsYwVGvpbWDcc+qD3qHGJk4GA8x
-        SnAwK4nw7ujNThDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomD
-        U6qBSfrGmi13f98xf3fJULTVKCa+tHmi9p6iHmPnT7oJK9MCz+nL6E192TLNbdLFVN4b4t9f
-        7ri/6VzLuk3Vv/LnOtn0FHRUVkxsnTDB9r7e76m6GR9m7NTlXledymvicHP5lL9Hvp2b8ud1
-        xZ6o6qqTi8rE7707eS1TOTR/pcG7sN3hG/7YTXl8ZZagzspAHjlW3c8/wkv/x/6qTOV99ucW
-        8+Ub7hF1p7exNW1/Ijev7dLOUK36krce5qvepAiWm0esThasubFBQuas6dOLggFLz/9L3s17
-        VK6MpWdZ0NILPCHTjE4ekfn1kr1w+x71A3az2zdkzZ58pH0lX+uTt9v97sYUbdJdzn25tXGt
-        aWvwikQlluKMREMt5qLiRAAY7M4yaQMAAA==
-X-CMS-MailID: 20210408022931epcas1p2538b7fe14b348daa7a0cadce2df09bff
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67
-References: <1616499241-4906-1-git-send-email-andrew-sh.cheng@mediatek.com>
-        <CGME20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67@epcas1p3.samsung.com>
-        <1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com>
-        <233a3bd6-7ab1-5da2-9184-a745eb253d86@samsung.com>
-        <1617177820.15067.1.camel@mtksdaap41>
-        <2ae8604d-0da6-4243-1b92-81b3917d7d48@samsung.com>
-        <cad52436-b291-05bf-236f-7b7cb1fdbbff@samsung.com>
-        <1617195800.18432.3.camel@mtksdaap41>
-        <fbb6c44b-eb77-14ce-9175-3f06030e6e0c@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407182618.2728388-6-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 9:16 AM, Chanwoo Choi wrote:
-> On 3/31/21 10:03 PM, andrew-sh.cheng wrote:
->> On Wed, 2021-03-31 at 17:35 +0900, Chanwoo Choi wrote:
->>> On 3/31/21 5:27 PM, Chanwoo Choi wrote:
->>>> Hi,
->>>>
->>>> On 3/31/21 5:03 PM, andrew-sh.cheng wrote:
->>>>> On Thu, 2021-03-25 at 17:14 +0900, Chanwoo Choi wrote:
->>>>>> Hi,
->>>>>>
->>>>>> You are missing to add these patches to linux-pm mailing list.
->>>>>> Need to send them to linu-pm ML.
->>>>>>
->>>>>> Also, before received this series, I tried to clean-up these patches
->>>>>> on testing branch[1]. So that I add my comment with my clean-up case.
->>>>>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!zIrzeDp9vPnm1_SDzVPuzqdHn3zWie9DnfBXaA-j9-CSrVc6aR9_rJQQiw81_CgAPh9XRRs$ 
->>>>>>
->>>>>> And 'Saravana Kannan <skannan@codeaurora.org>' is wrong email address.
->>>>>> Please update the email or drop this email.
->>>>>
->>>>> Hi Chanwoo,
->>>>>
->>>>> Thank you for the advices.
->>>>> I will resend patch v9 (add to linux-pm ML), remove this patch, and note
->>>>> that my patch set base on
->>>>> https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$ 
->>>>
->>>> I has not yet test this patch[1] on devfreq-testing-passive-gov branch.
->>>> So that if possible, I'd like you to test your patches with this patch[1] 
->>>> and then if there is no problem, could you send the next patches with patch[1]?
->>>>
->>>> [1]https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/commit/?h=devfreq-testing-passive-gov&id=39c80d11a8f42dd63ecea1e0df595a0ceb83b454__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJR2cQqZs$ 
->>>
->>>
->>> Sorry for the confusion. I make the devfreq-testing-passive-gov[1]
->>> branch based on latest devfreq-next branch.
->>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$ 
->>>
->>> First of all, if possible, I want to test them[1] with your patches in this series.
->>> And then if there are no any problem, please let me know. After confirmed from you,
->>> I'll send the patches of devfreq-testing-passive-gov[1] branch.
->>> How about that?
->>>
->> Hi Chanwoo~
->>
->> We will use this on Google Chrome project.
->> Google Hsin-Yi has test your patch + my patch set v8 [2~8]
->>
->>     make sure cci devfreqs runs with cpufreq.
->>     suspend resume
->>     speedometer2 benchmark
->> It is okay.
->>
->> Please send the patches of devfreq-testing-passive-gov[1] branch.
->>
->> I will send patch v9 base on yours latter.
+Hello,
+
+On Wed, Apr 07, 2021 at 11:26:18AM -0700, Roman Gushchin wrote:
+> This patch implements partial depopulation of percpu chunks.
 > 
-> Thanks for your test. I'll send the patches today.
+> As now, a chunk can be depopulated only as a part of the final
+> destruction, if there are no more outstanding allocations. However
+> to minimize a memory waste it might be useful to depopulate a
+> partially filed chunk, if a small number of outstanding allocations
+> prevents the chunk from being fully reclaimed.
+> 
+> This patch implements the following depopulation process: it scans
+> over the chunk pages, looks for a range of empty and populated pages
+> and performs the depopulation. To avoid races with new allocations,
+> the chunk is previously isolated. After the depopulation the chunk is
+> sidelined to a special list or freed. New allocations can't be served
+> using a sidelined chunk. The chunk can be moved back to a corresponding
+> slot if there are not enough chunks with empty populated pages.
+> 
+> The depopulation is scheduled on the free path. Is the chunk:
+>   1) has more than 1/4 of total pages free and populated
+>   2) the system has enough free percpu pages aside of this chunk
+>   3) isn't the reserved chunk
+>   4) isn't the first chunk
+>   5) isn't entirely free
+> it's a good target for depopulation. If it's already depopulated
+> but got free populated pages, it's a good target too.
+> The chunk is moved to a special pcpu_depopulate_list, chunk->isolate
+> flag is set and the async balancing is scheduled.
+> 
+> The async balancing moves pcpu_depopulate_list to a local list
+> (because pcpu_depopulate_list can be changed when pcpu_lock is
+> releases), and then tries to depopulate each chunk.  The depopulation
+> is performed in the reverse direction to keep populated pages close to
+> the beginning, if the global number of empty pages is reached.
+> Depopulated chunks are sidelined to prevent further allocations.
+> Skipped and fully empty chunks are returned to the corresponding slot.
+> 
+> On the allocation path, if there are no suitable chunks found,
+> the list of sidelined chunks in scanned prior to creating a new chunk.
+> If there is a good sidelined chunk, it's placed back to the slot
+> and the scanning is restarted.
+> 
+> Many thanks to Dennis Zhou for his great ideas and a very constructive
+> discussion which led to many improvements in this patchset!
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/percpu-internal.h |   2 +
+>  mm/percpu.c          | 164 ++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 164 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+> index 095d7eaa0db4..8e432663c41e 100644
+> --- a/mm/percpu-internal.h
+> +++ b/mm/percpu-internal.h
+> @@ -67,6 +67,8 @@ struct pcpu_chunk {
+>  
+>  	void			*data;		/* chunk data */
+>  	bool			immutable;	/* no [de]population allowed */
+> +	bool			isolated;	/* isolated from chunk slot lists */
+> +	bool			depopulated;    /* sidelined after depopulation */
+>  	int			start_offset;	/* the overlap with the previous
+>  						   region to have a page aligned
+>  						   base_addr */
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index e20119668c42..0a5a5e84e0a4 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -181,6 +181,19 @@ static LIST_HEAD(pcpu_map_extend_chunks);
+>   */
+>  int pcpu_nr_empty_pop_pages[PCPU_NR_CHUNK_TYPES];
+>  
+> +/*
+> + * List of chunks with a lot of free pages.  Used to depopulate them
+> + * asynchronously.
+> + */
+> +static struct list_head pcpu_depopulate_list[PCPU_NR_CHUNK_TYPES];
+> +
+> +/*
+> + * List of previously depopulated chunks.  They are not usually used for new
+> + * allocations, but can be returned back to service if a need arises.
+> + */
+> +static struct list_head pcpu_sideline_list[PCPU_NR_CHUNK_TYPES];
+> +
+> +
+>  /*
+>   * The number of populated pages in use by the allocator, protected by
+>   * pcpu_lock.  This number is kept per a unit per chunk (i.e. when a page gets
+> @@ -542,6 +555,12 @@ static void pcpu_chunk_relocate(struct pcpu_chunk *chunk, int oslot)
+>  {
+>  	int nslot = pcpu_chunk_slot(chunk);
+>  
+> +	/*
+> +	 * Keep isolated and depopulated chunks on a sideline.
+> +	 */
+> +	if (chunk->isolated || chunk->depopulated)
+> +		return;
+> +
+>  	if (oslot != nslot)
+>  		__pcpu_chunk_move(chunk, nslot, oslot < nslot);
+>  }
+> @@ -1778,6 +1797,25 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
+>  		}
+>  	}
+>  
+> +	/* search through sidelined depopulated chunks */
+> +	list_for_each_entry(chunk, &pcpu_sideline_list[type], list) {
+> +		struct pcpu_block_md *chunk_md = &chunk->chunk_md;
+> +		int bit_off;
+> +
+> +		/*
+> +		 * If the allocation can fit in the chunk's contig hint,
+> +		 * place the chunk back into corresponding slot and restart
+> +		 * the scanning.
+> +		 */
+> +		bit_off = ALIGN(chunk_md->contig_hint_start, align) -
+> +			chunk_md->contig_hint_start;
+> +		if (bit_off + bits > chunk_md->contig_hint) {
+> +			chunk->depopulated = false;
+> +			pcpu_chunk_relocate(chunk, -1);
+> +			goto restart;
+> +		}
 
-I'm sorry for delay because when I tested the patches
-for devfreq parent type on Odroid-xu3, there are some problem
-related to lazy linking of OPP. So I'm trying to analyze them.
-Unfortunately, we need to postpone these patches to next linux
-version.
+This check should be bit_off + bits < chunk_md->contig_hint.
+Can you please factor that out to a function:
 
+pcpu_check_chunk_hint(chunk_md, bits)
+{
+  int bit_off = (ALIGN(chunk_md->contig_hint_start, align) -
+                 chunk_md->contig_hint_start);
 
-[snip]
+  return (bit_off + bits < chunk_md->contig_hint);
+}
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Then your use case can just call pcpu_check_chunk_hint() and the other
+user pcpu_find_block_fit() can use !pcpu_check_chunk_hint().
+
+> +	}
+> +
+>  	spin_unlock_irqrestore(&pcpu_lock, flags);
+>  
+>  	/*
+> @@ -2048,6 +2086,106 @@ static void pcpu_grow_populated(enum pcpu_chunk_type type, int nr_to_pop)
+>  	}
+>  }
+>  
+> +/**
+> + * pcpu_shrink_populated - scan chunks and release unused pages to the system
+> + * @type: chunk type
+> + *
+> + * Scan over chunks in the depopulate list, try to release unused populated
+> + * pages to the system.  Depopulated chunks are sidelined to prevent further
+> + * allocations without a need.  Skipped and fully free chunks are returned
+> + * to corresponding slots.  Stop depopulating if the number of empty populated
+> + * pages reaches the threshold.  Each chunk is scanned in the reverse order to
+> + * keep populated pages close to the beginning of the chunk.
+> + */
+> +static void pcpu_shrink_populated(enum pcpu_chunk_type type)
+> +{
+> +	struct pcpu_block_md *block;
+> +	struct pcpu_chunk *chunk, *tmp;
+> +	LIST_HEAD(to_depopulate);
+> +	bool depopulated;
+> +	int i, end;
+> +
+> +	spin_lock_irq(&pcpu_lock);
+> +
+> +	list_splice_init(&pcpu_depopulate_list[type], &to_depopulate);
+> +
+> +	list_for_each_entry_safe(chunk, tmp, &to_depopulate, list) {
+> +		WARN_ON(chunk->immutable);
+> +		depopulated = false;
+> +
+> +		/*
+> +		 * Scan chunk's pages in the reverse order to keep populated
+> +		 * pages close to the beginning of the chunk.
+> +		 */
+> +		for (i = chunk->nr_pages - 1, end = -1; i >= 0; i--) {
+> +			/*
+> +			 * If the chunk has no empty pages or
+> +			 * we're short on empty pages in general,
+> +			 * just put the chunk back into the original slot.
+> +			 */
+> +			if (!chunk->nr_empty_pop_pages ||
+> +			    pcpu_nr_empty_pop_pages[type] <=
+> +			    PCPU_EMPTY_POP_PAGES_HIGH)
+> +				break;
+> +
+> +			/*
+> +			 * If the page is empty and populated, start or
+> +			 * extend the (i, end) range.  If i == 0, decrease
+> +			 * i and perform the depopulation to cover the last
+> +			 * (first) page in the chunk.
+> +			 */
+> +			block = chunk->md_blocks + i;
+> +			if (block->contig_hint == PCPU_BITMAP_BLOCK_BITS &&
+> +			    test_bit(i, chunk->populated)) {
+> +				if (end == -1)
+> +					end = i;
+> +				if (i > 0)
+> +					continue;
+> +				i--;
+> +			}
+> +
+> +			/*
+> +			 * Otherwise check if there is an active range,
+> +			 * and if yes, depopulate it.
+> +			 */
+> +			if (end == -1)
+> +				continue;
+> +
+> +			depopulated = true;
+> +
+> +			spin_unlock_irq(&pcpu_lock);
+> +			pcpu_depopulate_chunk(chunk, i + 1, end + 1);
+> +			cond_resched();
+> +			spin_lock_irq(&pcpu_lock);
+> +
+> +			pcpu_chunk_depopulated(chunk, i + 1, end + 1);
+> +
+> +			/*
+> +			 * Reset the range and continue.
+> +			 */
+> +			end = -1;
+> +		}
+> +
+> +		chunk->isolated = false;
+> +		if (chunk->free_bytes == pcpu_unit_size || !depopulated) {
+> +			/*
+> +			 * If the chunk is empty or hasn't been depopulated,
+> +			 * return it to the original slot.
+> +			 */
+> +			pcpu_chunk_relocate(chunk, -1);
+> +		} else {
+> +			/*
+> +			 * Otherwise put the chunk to the list of depopulated
+> +			 * chunks.
+> +			 */
+> +			chunk->depopulated = true;
+> +			list_move(&chunk->list, &pcpu_sideline_list[type]);
+> +		}
+> +	}
+> +
+> +	spin_unlock_irq(&pcpu_lock);
+> +}
+> +
+>  /**
+>   * pcpu_balance_populated - manage the amount of populated pages
+>   * @type: chunk type
+> @@ -2078,6 +2216,8 @@ static void pcpu_balance_populated(enum pcpu_chunk_type type)
+>  	} else if (pcpu_nr_empty_pop_pages[type] < PCPU_EMPTY_POP_PAGES_HIGH) {
+>  		nr_to_pop = PCPU_EMPTY_POP_PAGES_HIGH - pcpu_nr_empty_pop_pages[type];
+>  		pcpu_grow_populated(type, nr_to_pop);
+> +	} else if (!list_empty(&pcpu_depopulate_list[type])) {
+> +		pcpu_shrink_populated(type);
+>  	}
+>  }
+>  
+> @@ -2135,7 +2275,13 @@ void free_percpu(void __percpu *ptr)
+>  
+>  	pcpu_memcg_free_hook(chunk, off, size);
+>  
+> -	/* if there are more than one fully free chunks, wake up grim reaper */
+> +	/*
+> +	 * If there are more than one fully free chunks, wake up grim reaper.
+> +	 * Otherwise if at least 1/4 of its pages are empty and there is no
+> +	 * system-wide shortage of empty pages aside from this chunk, isolate
+> +	 * the chunk and schedule an async depopulation.  If the chunk was
+> +	 * depopulated previously and got free pages, depopulate it too.
+> +	 */
+>  	if (chunk->free_bytes == pcpu_unit_size) {
+>  		struct pcpu_chunk *pos;
+>  
+> @@ -2144,6 +2290,16 @@ void free_percpu(void __percpu *ptr)
+>  				need_balance = true;
+>  				break;
+>  			}
+> +	} else if (chunk != pcpu_first_chunk && chunk != pcpu_reserved_chunk &&
+> +		   !chunk->isolated &&
+> +		   pcpu_nr_empty_pop_pages[pcpu_chunk_type(chunk)] >
+> +		   PCPU_EMPTY_POP_PAGES_HIGH + chunk->nr_empty_pop_pages &&
+
+nit: can you add parethesis around this condition?
+
+> +		   ((chunk->depopulated && chunk->nr_empty_pop_pages) ||
+> +		    (chunk->nr_empty_pop_pages >= chunk->nr_pages / 4))) {
+> +		list_move(&chunk->list, &pcpu_depopulate_list[pcpu_chunk_type(chunk)]);
+> +		chunk->isolated = true;
+> +		chunk->depopulated = false;
+> +		need_balance = true;
+>  	}
+>  
+>  	trace_percpu_free_percpu(chunk->base_addr, off, ptr);
+> @@ -2571,10 +2727,14 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+>  		      pcpu_nr_slots * sizeof(pcpu_chunk_lists[0]) *
+>  		      PCPU_NR_CHUNK_TYPES);
+>  
+> -	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++)
+> +	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++) {
+>  		for (i = 0; i < pcpu_nr_slots; i++)
+>  			INIT_LIST_HEAD(&pcpu_chunk_list(type)[i]);
+>  
+> +		INIT_LIST_HEAD(&pcpu_depopulate_list[type]);
+> +		INIT_LIST_HEAD(&pcpu_sideline_list[type]);
+> +	}
+> +
+>  	/*
+>  	 * The end of the static region needs to be aligned with the
+>  	 * minimum allocation size as this offsets the reserved and
+> -- 
+> 2.30.2
+> 
+
+Thanks,
+Dennis
