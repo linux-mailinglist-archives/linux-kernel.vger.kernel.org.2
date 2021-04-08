@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DB735886B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAAF35886D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhDHPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231630AbhDHPaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:30:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C927961108;
-        Thu,  8 Apr 2021 15:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617895813;
-        bh=ObSC29eEIMMYQErKHg+/HPZxQbS/5NvRx9UKVloQqZs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fKoN8GMHJU6D5ourC8Tj4kmhM+ANhLHVHkFY26bU6rNFfEQkfHfZ195bG7NveJi5W
-         OqxLiP68H5znnvcagrwb19JWVDBdyI7Na7UJEbRByq+TveIgfayqnZMEXuNt+v+V+z
-         Rf7bDUq2cUpr9RfvpSKR4LMCZCuqkCufhb7xNvtUGxEGP067tQwpT8dPf+f3ncgeiv
-         AuY37KNIERk2uH3SAcGksjiWCi9JWKrBhVXvu9V4+igKSUtVgfOnnK+o/WWWvp7c9W
-         AGNQzJVt7HKYjRRk/N+lPB1/lAJUKm9wBdQULenJp/1ZiB1lCtOc1E6W0FWbX18FG+
-         6axkT+V5BGULg==
-Date:   Thu, 8 Apr 2021 08:30:11 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Message-ID: <YG8hgzBPQAvov9Vz@sol.localdomain>
-References: <20210408131506.17941-1-crecklin@redhat.com>
+        id S231935AbhDHPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:30:34 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:56174 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231893AbhDHPa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:30:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617895817; x=1649431817;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=TT4D5obQiTEQmvL2iO1zE2BCc0Dx26vSve2ZLmK6gD4=;
+  b=1nEKCHyAD+6W/fXrNOFWkqYELvGDIhQgHQRlJeKQO/XlcFoPHucUf57L
+   ePwRdwnsvYyr4uewlUNSCm7kBW2joAxnHxpRKGLQnK14nATXS93Fw1ior
+   p6lUI7K6MjPGUcN4hqm6wjqulOEM9qksIEF22VoApxJexoHx71IocPxDc
+   6CzUs3LWxtksUmRokwKhLMWgHeYi5K8uTlILMBM9chsrIy1TlDX+mg1fZ
+   knrYu95xiN+rRMp0BAivV1nwIHTiA9yDsvjvs5DqU3REOtGTUAsbf4MMX
+   gXmsPvwElB7eKF4WAeH4GmzJoKoP06BqXoLh7tDtK0Sfyv2qx4pFk2tBN
+   g==;
+IronPort-SDR: IcSpApEGl6sfLKIm5uVk8URGJFWf3py7vxtdcAzIFqYgmHx1aJgQrGm2bXCpVfT8kir+tJaMtz
+ 4GgSED6ckLC6VYysnX2piTJgiYeJG66n5V76Cf8BEXd2E2+7Jerg0qpEfpx3B7SlPdEdcrdWxQ
+ 0SBqu0QBOsymJmvf3uEZo8pIaCSu0KW+TBzfLyElBWyZNrXQUc0O7T8Z3WWhXg/D5itqFBW1TA
+ /cBmnror+SzfnQ70SmmlKdfmplZONXzpmy0GjxW3fgZl7i8r+hkQrYgz9F+e1pvvBzeWdEyVjB
+ Ys8=
+X-IronPort-AV: E=Sophos;i="5.82,206,1613458800"; 
+   d="scan'208";a="112913761"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Apr 2021 08:30:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 8 Apr 2021 08:30:16 -0700
+Received: from [10.12.88.246] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Thu, 8 Apr 2021 08:30:14 -0700
+Subject: Re: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <robh+dt@kernel.org>, <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+ <20210331105908.23027-23-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <3d39d952-03f2-0952-72ee-b639fd4339f2@microchip.com>
+Date:   Thu, 8 Apr 2021 17:30:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408131506.17941-1-crecklin@redhat.com>
+In-Reply-To: <20210331105908.23027-23-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:15:06AM -0400, Chris von Recklinghausen wrote:
-> Suspend fails on a system in fips mode because md5 is used for the e820
-> integrity check and is not available. Use crc32 instead.
+Hi,
+
+On 31/03/2021 at 12:59, Claudiu Beznea wrote:
+> From: Eugen Hristev <eugen.hristev@microchip.com>
 > 
-> This patch changes the integrity check algorithm from md5 to
-> crc32. This integrity check is used only to verify accidental
-> corruption of the hybernation data and is not intended as a
-> cryptographic integrity check.
-> Md5 is overkill in this case and also disabled in FIPS mode because it
-> is known to be broken for cryptographic purposes.
+> Introduce new family of SoCs, sama7, and first SoC, sama7g5.
 > 
-> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
->        by md5 digest")
-> 
-> Tested-by: Dexuan Cui <decui@microsoft.com>
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
-> v1 -> v2
->    bump up RESTORE_MAGIC
-> v2 -> v3
->    move embelishment from cover letter to commit comments (no code change)
-> v3 -> v4
->    add note to comments that md5 isn't used for encryption here.
-> v4 -> v5
->    reword comment per Simo's suggestion
+>   arch/arm/mach-at91/Makefile |  1 +
+>   arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
+>   2 files changed, 49 insertions(+)
+>   create mode 100644 arch/arm/mach-at91/sama7.c
 > 
->  arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
->  1 file changed, 19 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-> index cd3914fc9f3d..b56172553275 100644
-> --- a/arch/x86/power/hibernate.c
-> +++ b/arch/x86/power/hibernate.c
-> @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
->  }
->  
->  
-> -#define MD5_DIGEST_SIZE 16
-> +#define CRC32_DIGEST_SIZE 16
->  
->  struct restore_data_record {
->  	unsigned long jump_address;
->  	unsigned long jump_address_phys;
->  	unsigned long cr3;
->  	unsigned long magic;
-> -	u8 e820_digest[MD5_DIGEST_SIZE];
-> +	u8 e820_digest[CRC32_DIGEST_SIZE];
->  };
->  
-> -#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
-> +#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
+> diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+> index f565490f1b70..6cc6624cddac 100644
+> --- a/arch/arm/mach-at91/Makefile
+> +++ b/arch/arm/mach-at91/Makefile
+> @@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
+>   obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+>   obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+>   obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
+> +obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
 
-Should CONFIG_CRYPTO_CRC32 be getting selected from somewhere?
+Nit: alphabetic order tells that it should be before samv7
 
-If that is too hard because it would pull in too much of the crypto API, maybe
-using the library interface to CRC-32 (lib/crc32.c) would be a better fit?
+>   
+>   # Power Management
+>   obj-$(CONFIG_ATMEL_PM)		+= pm.o pm_suspend.o
+> diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
+> new file mode 100644
+> index 000000000000..e04cadb569ad
+> --- /dev/null
+> +++ b/arch/arm/mach-at91/sama7.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Setup code for SAMA7
+> + *
+> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + */
+> +
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +
+> +#include <asm/mach/arch.h>
+> +#include <asm/system_misc.h>
+> +
+> +#include "generic.h"
+> +
+> +static void __init sama7_common_init(void)
+> +{
+> +	of_platform_default_populate(NULL, NULL, NULL);
+> +}
+> +
+> +static void __init sama7_dt_device_init(void)
+> +{
+> +	sama7_common_init();
+> +}
+> +
+> +static const char *const sama7_dt_board_compat[] __initconst = {
+> +	"microchip,sama7",
+> +	NULL
+> +};
+> +
+> +DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
+> +	/* Maintainer: Microchip */
+> +	.init_machine	= sama7_dt_device_init,
+> +	.dt_compat	= sama7_dt_board_compat,
+> +MACHINE_END
+> +
+> +static const char *const sama7g5_dt_board_compat[] __initconst = {
+> +	"microchip,sama7g5",
+> +	NULL
+> +};
+> +
+> +DT_MACHINE_START(sama7g5_dt, "Microchip SAMA7G5")
+> +	/* Maintainer: Microchip */
+> +	.init_machine	= sama7_dt_device_init,
+> +	.dt_compat	= sama7g5_dt_board_compat,
+> +MACHINE_END
 
-- Eric
+I'm not sure we need two DT_MACHINE_START() entries and associated 
+functions right now. Probably the most generic one is sufficient.
+We can add such distinction in the future if the need arises.
+
+Regards,
+   Nicolas
+
+-- 
+Nicolas Ferre
