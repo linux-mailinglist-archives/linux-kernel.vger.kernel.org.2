@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EB5357BEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613AE357BEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhDHFkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:40:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35620 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhDHFkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:40:07 -0400
-IronPort-SDR: 1NjWPzihncrvdfHrftvyxSL0CPpKrkdPfaq/lvoc3QOVi9hOp368Z6IUnJpA3dL6Lu7fsODx6d
- 6qrBz6vgIbKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="213865231"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="213865231"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 22:39:56 -0700
-IronPort-SDR: 1nFchG0VZE84cW6XjVn3o0HBS7z8MjplqzBG6Xp+pw4/ZQaO5x4nB9B+DBfeb0HsxmjRpFzKzP
- rVqP6MDPNrXA==
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="458674706"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 22:39:51 -0700
-Subject: Re: [PATCH v4 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
- manage guest DS buffer
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        andi@firstfloor.org, kan.liang@linux.intel.com,
-        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210329054137.120994-1-like.xu@linux.intel.com>
- <20210329054137.120994-9-like.xu@linux.intel.com>
- <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <610bfd14-3250-0542-2d93-cbd15f2b4e16@intel.com>
-Date:   Thu, 8 Apr 2021 13:39:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229778AbhDHFnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhDHFnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 01:43:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5BDC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:42:57 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id c6so789036lji.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WAbHD5FLaaImjGxxXZNniR8HkY+ORAvhOIs7PHZqNLk=;
+        b=Cw5mlMMpJ+/GY97BE2TxX6SQyUpuRnqetJyQSONYQsvtcWHLoLF7tEkT1vp2Pwm9mu
+         Rv87xjwrYSK9LA7H+VWDMNhQ+Jk2SXT+zb+WSc3QzWehwvBulvKlhxuVuoLFGYKWsWRL
+         V47Y6hhSYPfHOvWJ+HheFQ7T4crHxnsCaBUGl+O6xbdpK59UDkpIMh1b0IhtUP0MWNoY
+         GwdXcVB1yN+/IMXgfrhIRKTCNVFEBW4KB4KWwWoiYGaeHs+PT+Tqm22dDK3alz95A1c0
+         6WrHo3NHVjAleRbFeit5b3NgBP0UFcRXObCBBgoJqj2fuAEzoQQE2p4UXuw3XLJfrMus
+         nT/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WAbHD5FLaaImjGxxXZNniR8HkY+ORAvhOIs7PHZqNLk=;
+        b=l2HxECXoAjDa0YtAfhYYdQI5BqIUJeuWsgIy047XJiVKH3DWiF2HRvFpfFZvHLMq6x
+         eAKAPfMNeg+Dp75Zgh4HN3bbIe1h2eqcJkN/2id9UGweLqPk38Sqoa0c95/anzRh5zJ8
+         5NxwpLD4O0cYa8VQ1XCHjdYZiw2C7i6y3FJcUYrhFR4B322dIwzA0Q0wsLml7oBkwC09
+         RQMfaiVbRSgA0Ot57RO+oNbIrWzs0K62tcWjfBicOXY9uGGhNF9xkkpbQY6Aohnr2Zfo
+         4sv4I//f3cwte1GAeHEeObPST1FJBJwXb+f061s5nxyURx+i735pqrrDXxr+Rh+mKwxM
+         IcpQ==
+X-Gm-Message-State: AOAM532rdn8NiV1FIlLuQWEu8xta7QZRQ8MvKNquygzsVPTOJmNL6aox
+        DQB39TsrPAHTEIYhpi43roDS2BSv1hDwsfpmGkM=
+X-Google-Smtp-Source: ABdhPJw5egDHQEVfBkzJoq+dVf4KUFxlnAe9nJsBc3TAki5FfDnDXQP3ZaUZBqoeiMyDQWIdBA1gG14xEbf++TwrRDA=
+X-Received: by 2002:a2e:5747:: with SMTP id r7mr4423864ljd.227.1617860575808;
+ Wed, 07 Apr 2021 22:42:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
+ <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
+ <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com> <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
+In-Reply-To: <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Thu, 8 Apr 2021 13:41:47 +0800
+Message-ID: <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in eas
+To:     Pierre <pierre.gondois@arm.com>
+Cc:     Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ryan Y <xuewyan@foxmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi
 
-Thanks for your detailed comments.
-
-If you have more comments for other patches, please let me know.
-
-On 2021/4/7 23:39, Peter Zijlstra wrote:
-> On Mon, Mar 29, 2021 at 01:41:29PM +0800, Like Xu wrote:
->> @@ -3869,10 +3876,12 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->>   
->>   		if (arr[1].guest)
->>   			arr[0].guest |= arr[1].guest;
->> -		else
->> +		else {
->>   			arr[1].guest = arr[1].host;
->> +			arr[2].guest = arr[2].host;
->> +		}
-> What's all this gibberish?
+On Wed, Apr 7, 2021 at 10:11 PM Pierre <pierre.gondois@arm.com> wrote:
 >
-> The way I read that it says:
+> Hi,
+> > I test the patch, but the overflow still exists.
+> > In the "sched/fair: Use pd_cache to speed up find_energy_efficient_cpu()"
+> > I wonder why recompute the cpu util when cpu==dst_cpu in compute_energy(),
+> > when the dst_cpu's util change, it also would cause the overflow.
 >
-> 	if guest has PEBS_ENABLED
-> 		guest GLOBAL_CTRL |= PEBS_ENABLED
-> 	otherwise
-> 		guest PEBS_ENABLED = host PEBS_ENABLED
-> 		guest DS_AREA = host DS_AREA
+> The patches aim to cache the energy values for the CPUs whose
+> utilization is not modified (so we don't have to compute it multiple
+> times). The values cached are the 'base values' of the CPUs, i.e. when
+> the task is not placed on the CPU. When (cpu==dst_cpu) in
+> compute_energy(), it means the energy values need to be updated instead
+> of using the cached ones.
 >
-> which is just completely random garbage afaict. Why would you leak host
-> msrs into the guest?
+well, is it better to use the task_util(p) + cache values ? but in
+this case, the cache
+values may need more parameters.
 
-In fact, this is not a leak at all.
-
-When we do "arr[i].guest = arr[i].host;" assignment in the 
-intel_guest_get_msrs(),
-the KVM will check "if (msrs[i].host == msrs[i].guest)" and if so, it 
-disables the atomic
-switch for this msr during vmx transaction in the caller 
-atomic_switch_perf_msrs().
-
-In that case, the msr value doesn't change and any guest write will be trapped.
-If the next check is "msrs[i].host != msrs[i].guest", the atomic switch 
-will be triggered again.
-
-Compared to before, this part of the logic has not changed, which helps to 
-reduce overhead.
-
-> Why would you change guest GLOBAL_CTRL implicitly;
-
-This is because in the early part of this function, we have operations:
-
-     if (x86_pmu.flags & PMU_FL_PEBS_ALL)
-         arr[0].guest &= ~cpuc->pebs_enabled;
-     else
-         arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
-
-and if guest has PEBS_ENABLED, we need these bits back for PEBS counters:
-
-     arr[0].guest |= arr[1].guest;
-
-> guest had better wrmsr that himself to control when stuff is enabled.
-
-When vm_entry, the msr value of GLOBAL_CTRL on the hardware may be
-different from trapped value "pmu->global_ctrl" written by the guest.
-
-If the perf scheduler cross maps guest counter X to the host counter Y,
-we have to enable the bit Y in GLOBAL_CTRL before vm_entry rather than X.
-
+> You are right, there is still a possibility to have a negative delta
+> with the patches at:
+> https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129
+> Adding a check before subtracting the values, and bailing out in such
+> case would avoid this, such as at:
+> https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/
 >
-> This just cannot be right.
+In your patch, you bail out the case by "go to fail", that means you
+don't use eas in such
+case. However, in the actual scene, the case often occurr when select
+cpu for small task.
+As a result, the small task would not select cpu according to the eas,
+it may affect
+power consumption?
 
+> I think a similar modification should be done in your patch. Even though
+> this is a good idea to group the calls to compute_energy() to reduce the
+> chances of having updates of utilization values in between the
+> compute_energy() calls,
+> there is still a chance to have updates. I think it happened when I
+> applied your patch.
+>
+> About changing the delta(s) from 'unsigned long' to 'long', I am not
+> sure of the meaning of having a negative delta. I thing it would be
+> better to check and fail before it happens instead.
+>
+> Regards
+>
