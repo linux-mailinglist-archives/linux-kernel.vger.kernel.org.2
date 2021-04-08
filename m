@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F448358DF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902D3358DF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhDHT6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhDHT6i (ORCPT
+        id S232576AbhDHT6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:58:51 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:49760 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232469AbhDHT6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:58:38 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6984C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 12:58:26 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id g35so2150217pgg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 12:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=4N1kjjTn55rRbrrq/+KkyyeUWallp6st2fMntbajpqU=;
-        b=BCvpnIT9aDF246OVUAgc5nq8a6442rj3yQakx88oV2SsypMLWEG7w9vVgsHnCDFkJR
-         9cmz2xx8A9nSY/b4gwVsKPc+ZUFVKj8Y/KDwkwlec/2WMpwDX/rpqdPzjxpYAkjY5K3l
-         rZ3Tj9oMJft8ZtX+7QYPTcu6Hgt6sZKodgflw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=4N1kjjTn55rRbrrq/+KkyyeUWallp6st2fMntbajpqU=;
-        b=ln0h4xh6xy9Tz3iw8J5MaXoEoYZeh0x3DuyYVPLCb35QKX1lwBlR1YDissI1j8hzx3
-         IGWXS7OzmFwqApSNDteaOhdfGK8k/mKPWAfdGqxvgO9nZ5zAo6SQgA9oG0u5m6CWIvtM
-         iFiIk/QQAACWMnfEZLwSYwbJ3l3GJ7nlDPis/Ts93lbcWild4mHu8y7A1k/r0tnPKYa3
-         0n8SUnDXXP31h+ASDoU+13gA29YDMnId/2u3/Sm6ZDfJcDFBwSMqWZWwQivWrx+dkHn3
-         CeDwLjpFIxEtoMCUzdXvDsmryj/p517VY795FOyaFXJEx7gqke0Q27JtfkKT/80KP2Hu
-         DjCQ==
-X-Gm-Message-State: AOAM530pU8qv/DkbsUAFMM/iXFsAzt8gn9CJPFNNrEJ5Ol58G0thOrbh
-        i0b3IUhCGns4xqnXC+zEyUz2AA==
-X-Google-Smtp-Source: ABdhPJwqiFpgOMZvV25vaiurpiKlJiF7EbI5S8Ah7GbKPuDSnbspWHIUElJlAEgYwYHaOiDyJci5HA==
-X-Received: by 2002:a63:78cc:: with SMTP id t195mr9367700pgc.196.1617911906233;
-        Thu, 08 Apr 2021 12:58:26 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:44c3:3248:e7f5:1bbd])
-        by smtp.gmail.com with ESMTPSA id f187sm252780pfa.104.2021.04.08.12.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 12:58:25 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 8 Apr 2021 15:58:43 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d05 with ME
+        id qKyV240023g7mfN03KyVAX; Thu, 08 Apr 2021 21:58:30 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 08 Apr 2021 21:58:30 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/3] staging: rtl8712: remove struct rtl_ieee80211_ht_cap and ieee80211_ht_addt_info
+Date:   Thu,  8 Apr 2021 21:58:27 +0200
+Message-Id: <4291cb10744457cc12c89fc9fd414c37d732bc9d.1617911201.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210408101743.GB22237@MiWiFi-R3L-srv>
-References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-13-swboyd@chromium.org> <20210407170328.x7hgch37o7ezttb6@pathway.suse.cz> <20210408101743.GB22237@MiWiFi-R3L-srv>
-Subject: Re: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
-To:     Baoquan He <bhe@redhat.com>, Petr Mladek <pmladek@suse.com>
-Date:   Thu, 08 Apr 2021 12:58:24 -0700
-Message-ID: <161791190437.3790633.11239676305383366588@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Baoquan He (2021-04-08 03:17:43)
-> On 04/07/21 at 07:03pm, Petr Mladek wrote:
-> > On Tue 2021-03-30 20:05:20, Stephen Boyd wrote:
-> > > We can use the vmlinux_build_id array here now instead of open coding
-> > > it. This mostly consolidates code.
-> > >=20
-> > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Jessica Yu <jeyu@kernel.org>
-> > > Cc: Evan Green <evgreen@chromium.org>
-> > > Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-> > > Cc: Dave Young <dyoung@redhat.com>
-> > > Cc: Baoquan He <bhe@redhat.com>
-> > > Cc: Vivek Goyal <vgoyal@redhat.com>
-> > > Cc: <kexec@lists.infradead.org>
-> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > ---
-> > >  include/linux/crash_core.h |  6 +-----
-> > >  kernel/crash_core.c        | 41 ++----------------------------------=
---
-> > >  2 files changed, 3 insertions(+), 44 deletions(-)
-> > >=20
-> > > diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> > > index 206bde8308b2..fb8ab99bb2ee 100644
-> > > --- a/include/linux/crash_core.h
-> > > +++ b/include/linux/crash_core.h
-> > > @@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
-> > >  #define VMCOREINFO_OSRELEASE(value) \
-> > >     vmcoreinfo_append_str("OSRELEASE=3D%s\n", value)
-> > >  #define VMCOREINFO_BUILD_ID(value) \
-> > > -   vmcoreinfo_append_str("BUILD-ID=3D%s\n", value)
-> > > +   vmcoreinfo_append_str("BUILD-ID=3D%20phN\n", value)
->=20
-> I may miss something, wondering why we need add '20' here.
+struct 'ieee80211_ht_addt_info' is unused and can be removed.
 
-The build ID is an array of 20 bytes and this format is to print 20
-bytes in hex.
+struct 'rtl_ieee80211_ht_cap' can be replaced by 'ieee80211_ht_cap'
+defined in <linux/ieee80211.h> which has the same layout.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/staging/rtl8712/rtl871x_ht.h          |  2 +-
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c |  6 ++--
+ drivers/staging/rtl8712/rtl871x_mlme.c        | 10 +++---
+ drivers/staging/rtl8712/wifi.h                | 35 -------------------
+ 4 files changed, 9 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl871x_ht.h b/drivers/staging/rtl8712/rtl871x_ht.h
+index 4bcf5591c44d..ebd78665775d 100644
+--- a/drivers/staging/rtl8712/rtl871x_ht.h
++++ b/drivers/staging/rtl8712/rtl871x_ht.h
+@@ -26,7 +26,7 @@ struct ht_priv {
+ 	unsigned int	rx_ampdu_maxlen; /* for rx reordering ctrl win_sz,
+ 					  * updated when join_callback.
+ 					  */
+-	struct rtl_ieee80211_ht_cap ht_cap;
++	struct ieee80211_ht_cap ht_cap;
+ };
+ 
+ #endif	/*_RTL871X_HT_H_ */
+diff --git a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+index 14fe12eb930c..3b6926613257 100644
+--- a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
++++ b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+@@ -1389,7 +1389,7 @@ static int r8711_wx_get_rate(struct net_device *dev,
+ 	struct _adapter *padapter = netdev_priv(dev);
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
+-	struct rtl_ieee80211_ht_cap *pht_capie;
++	struct ieee80211_ht_cap *pht_capie;
+ 	unsigned char rf_type = padapter->registrypriv.rf_config;
+ 	int i;
+ 	u8 *p;
+@@ -1405,8 +1405,8 @@ static int r8711_wx_get_rate(struct net_device *dev,
+ 			 pcur_bss->IELength - 12);
+ 	if (p && ht_ielen > 0) {
+ 		ht_cap = true;
+-		pht_capie = (struct rtl_ieee80211_ht_cap *)(p + 2);
+-		memcpy(&mcs_rate, pht_capie->supp_mcs_set, 2);
++		pht_capie = (struct ieee80211_ht_cap *)(p + 2);
++		memcpy(&mcs_rate, &pht_capie->mcs, 2);
+ 		bw_40MHz = (le16_to_cpu(pht_capie->cap_info) &
+ 			    IEEE80211_HT_CAP_SUP_WIDTH_20_40) ? 1 : 0;
+ 		short_GI = (le16_to_cpu(pht_capie->cap_info) &
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index b377c0b94cfb..6328da8a498e 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -1640,7 +1640,7 @@ unsigned int r8712_restructure_ht_ie(struct _adapter *padapter, u8 *in_ie,
+ {
+ 	u32 ielen, out_len;
+ 	unsigned char *p;
+-	struct rtl_ieee80211_ht_cap ht_capie;
++	struct ieee80211_ht_cap ht_capie;
+ 	unsigned char WMM_IE[] = {0x00, 0x50, 0xf2, 0x02, 0x00, 0x01, 0x00};
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct qos_priv *pqospriv = &pmlmepriv->qospriv;
+@@ -1656,7 +1656,7 @@ unsigned int r8712_restructure_ht_ie(struct _adapter *padapter, u8 *in_ie,
+ 			pqospriv->qos_option = 1;
+ 		}
+ 		out_len = *pout_len;
+-		memset(&ht_capie, 0, sizeof(struct rtl_ieee80211_ht_cap));
++		memset(&ht_capie, 0, sizeof(struct ieee80211_ht_cap));
+ 		ht_capie.cap_info = cpu_to_le16(IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
+ 				    IEEE80211_HT_CAP_SGI_20 |
+ 				    IEEE80211_HT_CAP_SGI_40 |
+@@ -1666,7 +1666,7 @@ unsigned int r8712_restructure_ht_ie(struct _adapter *padapter, u8 *in_ie,
+ 		ht_capie.ampdu_params_info = (IEEE80211_HT_AMPDU_PARM_FACTOR &
+ 				0x03) | (IEEE80211_HT_AMPDU_PARM_DENSITY & 0x00);
+ 		r8712_set_ie(out_ie + out_len, WLAN_EID_HT_CAPABILITY,
+-			     sizeof(struct rtl_ieee80211_ht_cap),
++			     sizeof(struct ieee80211_ht_cap),
+ 			     (unsigned char *)&ht_capie, pout_len);
+ 		phtpriv->ht_option = 1;
+ 	}
+@@ -1680,7 +1680,7 @@ static void update_ht_cap(struct _adapter *padapter, u8 *pie, uint ie_len)
+ 	int i;
+ 	uint len;
+ 	struct sta_info *bmc_sta, *psta;
+-	struct rtl_ieee80211_ht_cap *pht_capie;
++	struct ieee80211_ht_cap *pht_capie;
+ 	struct recv_reorder_ctrl *preorder_ctrl;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
+@@ -1700,7 +1700,7 @@ static void update_ht_cap(struct _adapter *padapter, u8 *pie, uint ie_len)
+ 				&len, ie_len -
+ 				sizeof(struct NDIS_802_11_FIXED_IEs));
+ 	if (p && len > 0) {
+-		pht_capie = (struct rtl_ieee80211_ht_cap *)(p + 2);
++		pht_capie = (struct ieee80211_ht_cap *)(p + 2);
+ 		max_ampdu_sz = (pht_capie->ampdu_params_info &
+ 				IEEE80211_HT_AMPDU_PARM_FACTOR);
+ 		/* max_ampdu_sz (kbytes); */
+diff --git a/drivers/staging/rtl8712/wifi.h b/drivers/staging/rtl8712/wifi.h
+index c4e756316b5e..61ebc730427f 100644
+--- a/drivers/staging/rtl8712/wifi.h
++++ b/drivers/staging/rtl8712/wifi.h
+@@ -276,40 +276,5 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
+  */
+ #define _WMM_IE_Length_				7  /* for WMM STA */
+ 
+-/*-----------------------------------------------------------------------------
+- *			Below is the definition for 802.11n
+- *------------------------------------------------------------------------------
+- */
+-
+-/*
+- * struct rtl_ieee80211_ht_cap - HT capabilities
+- *
+- * This structure refers to "HT capabilities element" as
+- * described in 802.11n draft section 7.3.2.52
+- */
+-
+-struct rtl_ieee80211_ht_cap {
+-	__le16	cap_info;
+-	unsigned char	ampdu_params_info;
+-	unsigned char	supp_mcs_set[16];
+-	__le16	extended_ht_cap_info;
+-	__le32	tx_BF_cap_info;
+-	unsigned char	       antenna_selection_info;
+-} __packed;
+-
+-/**
+- * struct ieee80211_ht_addt_info - HT additional information
+- *
+- * This structure refers to "HT information element" as
+- * described in 802.11n draft section 7.3.2.53
+- */
+-struct ieee80211_ht_addt_info {
+-	unsigned char	control_chan;
+-	unsigned char		ht_param;
+-	__le16	operation_mode;
+-	__le16	stbc_param;
+-	unsigned char		basic_set[16];
+-} __packed;
+-
+ #endif /* _WIFI_H_ */
+ 
+-- 
+2.27.0
+
