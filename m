@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08A03583E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4F5358396
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhDHMys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:54:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16097 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhDHMys (ORCPT
+        id S231336AbhDHMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:47:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16049 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhDHMrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:54:48 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGLkv2wySz19L8g;
-        Thu,  8 Apr 2021 20:52:23 +0800 (CST)
-Received: from Ubuntu1804.huawei.com (10.67.174.169) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 20:54:24 +0800
-From:   Zhao Xuehui <zhaoxuehui1@huawei.com>
-To:     <gustavoars@kernel.org>, <sfr@canb.auug.org.au>,
-        <ojeda@kernel.org>, <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>,
-        <zhaoxuehui1@huawei.com>
-Subject: [PATCH -next] lib: zstd: Make symbol 'HUF_compressWeights_wksp' static
-Date:   Thu, 8 Apr 2021 20:54:29 +0800
-Message-ID: <20210408125429.199592-1-zhaoxuehui1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 08:47:43 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGLZ31d7zzNttM;
+        Thu,  8 Apr 2021 20:44:43 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 20:47:19 +0800
+From:   Chen Huang <chenhuang5@huawei.com>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>,
+        Chen Huang <chenhuang5@huawei.com>
+Subject: [PATCH -next] ALSA: virtio: use module_virtio_driver() to simplify the code
+Date:   Thu, 8 Apr 2021 12:54:29 +0000
+Message-ID: <20210408125429.1158703-1-chenhuang5@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.174.169]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The symbol 'HUF_compressWeights_wksp' is not used outside of
-huf_compress.c, so this commit marks it static.
+module_virtio_driver() makes the code simpler by eliminating
+boilerplate code.
 
-Signed-off-by: Zhao Xuehui <zhaoxuehui1@huawei.com>
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
 ---
- lib/zstd/huf_compress.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/virtio/virtio_card.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/lib/zstd/huf_compress.c b/lib/zstd/huf_compress.c
-index fd32838c185f..1e5e001c3d41 100644
---- a/lib/zstd/huf_compress.c
-+++ b/lib/zstd/huf_compress.c
-@@ -79,7 +79,8 @@ unsigned HUF_optimalTableLog(unsigned maxTableLog, size_t srcSize, unsigned maxS
-  * Note : all elements within weightTable are supposed to be <= HUF_TABLELOG_MAX.
-  */
- #define MAX_FSE_TABLELOG_FOR_HUFF_HEADER 6
--size_t HUF_compressWeights_wksp(void *dst, size_t dstSize, const void *weightTable, size_t wtSize, void *workspace, size_t workspaceSize)
-+static size_t HUF_compressWeights_wksp(void *dst, size_t dstSize, const void *weightTable,
-+				       size_t wtSize, void *workspace, size_t workspaceSize)
- {
- 	BYTE *const ostart = (BYTE *)dst;
- 	BYTE *op = ostart;
+diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+index ae9128063917..150ab3e37013 100644
+--- a/sound/virtio/virtio_card.c
++++ b/sound/virtio/virtio_card.c
+@@ -432,17 +432,7 @@ static struct virtio_driver virtsnd_driver = {
+ #endif
+ };
+ 
+-static int __init init(void)
+-{
+-	return register_virtio_driver(&virtsnd_driver);
+-}
+-module_init(init);
+-
+-static void __exit fini(void)
+-{
+-	unregister_virtio_driver(&virtsnd_driver);
+-}
+-module_exit(fini);
++module_virtio_driver(virtsnd_driver);
+ 
+ MODULE_DEVICE_TABLE(virtio, id_table);
+ MODULE_DESCRIPTION("Virtio sound card driver");
+-- 
+2.17.1
 
