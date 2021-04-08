@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422843582A1
+	by mail.lfdr.de (Postfix) with ESMTP id E146F3582A3
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhDHMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:01:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42797 "EHLO
+        id S231194AbhDHMBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:01:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47462 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231337AbhDHMBb (ORCPT
+        by vger.kernel.org with ESMTP id S231372AbhDHMBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:01:31 -0400
+        Thu, 8 Apr 2021 08:01:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883280;
+        s=mimecast20190719; t=1617883285;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zWfFSpWGFp11S+v5Pnk2LNZUzDm7DSVLpGFzZCfF4Do=;
-        b=hf+z7jEjeYzsejqg45nL2NQwuUXsb5TpEAnvFjvnVzLibrMjPevNhX5mKsdSXfwvSRlgCC
-        cMfSFM8cCWFpgGrlm2EC0jfIJC11cNlo9UV7UBUaYdECAuCDPC6eAmKDlNKi+6zD1B/rf+
-        k31pj27ULCYufiLf7rx0RbWdJYrVbgg=
+        bh=9w9YC3zCV/phM+v6dbwLtZQB2bWMLSUUDF9CJsBj118=;
+        b=SYQQ6b5Ab1oPrYJTG3R7VJEj2KMCrIS76KAJEADW5MVN4rQANjVmXdhErcGbG4z7iEFgwy
+        IdXnoZXf0qnVtMFmPX7uBTjK+PrISvbsFIkXt89lQcdsD2ywGB8u7RiQa7fUPhur6gL8jb
+        FduycXLXb0kAI1NJbqeqIAD5dl97UWs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-lUxhqULDOW2UihqoZlIxzA-1; Thu, 08 Apr 2021 08:01:17 -0400
-X-MC-Unique: lUxhqULDOW2UihqoZlIxzA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-507-ipUMHffwO8qCjSquithB5A-1; Thu, 08 Apr 2021 08:01:20 -0400
+X-MC-Unique: ipUMHffwO8qCjSquithB5A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE6BC10074D3;
-        Thu,  8 Apr 2021 12:00:58 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BBDF17B2B;
-        Thu,  8 Apr 2021 12:00:58 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 9011F41807CE; Thu,  8 Apr 2021 09:00:21 -0300 (-03)
-Date:   Thu, 8 Apr 2021 09:00:21 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, dwmw@amazon.co.uk
-Subject: Re: [PATCH 1/2] KVM: x86: reduce pvclock_gtod_sync_lock critical
- sections
-Message-ID: <20210408120021.GA65315@fuller.cnet>
-References: <20210330165958.3094759-1-pbonzini@redhat.com>
- <20210330165958.3094759-2-pbonzini@redhat.com>
- <20210407174021.GA30046@fuller.cnet>
- <51cae826-8973-5113-7e12-8163eab36cb7@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E741F8710FD;
+        Thu,  8 Apr 2021 12:00:54 +0000 (UTC)
+Received: from [10.36.112.70] (ovpn-112-70.ams2.redhat.com [10.36.112.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4480460853;
+        Thu,  8 Apr 2021 12:00:49 +0000 (UTC)
+Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
+ aspeed or etnaviv
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+References: <20210408092011.52763-1-david@redhat.com>
+ <20210408092011.52763-3-david@redhat.com>
+ <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
+ <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
+ <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
+ <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
+ <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3a2d64a7-8425-8daf-17ee-95b9f0c635f9@redhat.com>
+Date:   Thu, 8 Apr 2021 14:00:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51cae826-8973-5113-7e12-8163eab36cb7@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
-
-On Thu, Apr 08, 2021 at 10:15:16AM +0200, Paolo Bonzini wrote:
-> On 07/04/21 19:40, Marcelo Tosatti wrote:
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index fe806e894212..0a83eff40b43 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -2562,10 +2562,12 @@ static void kvm_gen_update_masterclock(struct kvm *kvm)
-> > >   	kvm_hv_invalidate_tsc_page(kvm);
-> > > -	spin_lock(&ka->pvclock_gtod_sync_lock);
-> > >   	kvm_make_mclock_inprogress_request(kvm);
-> > > +
-> > Might be good to serialize against two kvm_gen_update_masterclock
-> > callers? Otherwise one caller could clear KVM_REQ_MCLOCK_INPROGRESS,
-> > while the other is still at pvclock_update_vm_gtod_copy().
+On 08.04.21 13:44, Arnd Bergmann wrote:
+> On Thu, Apr 8, 2021 at 1:00 PM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> It is a somewhat awkward way to say "prevent this symbol from
+>>> being =y if the dependency is =m".
+>>
+>> What would be the right thing to do in the case here then to achieve the
+>> "if DRMA_ASPEED_GFX is enabled, also enable DMA_CMA id possible"?
+>>
+>> One approach could be to have for DMA_CMA
+>>
+>> default y if DRMA_ASPEED_GFX
+>>
+>> but it feels like the wrong way to tackle this.
 > 
-> Makes sense, but this stuff has always seemed unnecessarily complicated to
-> me.
->
-> KVM_REQ_MCLOCK_INPROGRESS is only needed to kick running vCPUs out of the
-> execution loop; 
+> I'm still not sure what you are trying to achieve. Is the idea only to provide
+> a useful default for DMA_CMA depending on which drivers are enabled?
 
-We do not want vcpus with different system_timestamp/tsc_timestamp
-pair:
+"Random drivers should not override a user configuration of core knobs
+(e.g., CONFIG_DMA_CMA=n)."
 
- * To avoid that problem, do not allow visibility of distinct
- * system_timestamp/tsc_timestamp values simultaneously: use a master
- * copy of host monotonic time values. Update that master copy
- * in lockstep.
+Let's assume I'm a distribution and want to set CONFIG_CMA=n or want to 
+set CONFIG_DMA_CMA=n with CONFIG_CMA=y; there is no way to do that with 
+e.g., DRMA_ASPEED_GFX=y because it will always override my (user!) 
+setting -- even though it doesn't really always need it. Using "select" 
+is the problem here.
 
-So KVM_REQ_MCLOCK_INPROGRESS also ensures that no vcpu enters 
-guest mode (via vcpu->requests check before VM-entry) with a 
-different system_timestamp/tsc_timestamp pair.
-
-> clearing it in kvm_gen_update_masterclock is unnecessary,
-> because KVM_REQ_CLOCK_UPDATE takes pvclock_gtod_sync_lock too and thus will
-> already wait for pvclock_update_vm_gtod_copy to end.
 > 
-> I think it's possible to use a seqcount in KVM_REQ_CLOCK_UPDATE instead of
-> KVM_REQ_MCLOCK_INPROGRESS.  Both cause the vCPUs to spin. I'll take a look.
+> This is something you could do using a hidden helper symbol like
 > 
-> Paolo
+> config DRMA_ASPEED_GFX
+>         bool "Aspeed display driver"
+>         select DRM_WANT_CMA
+> 
+> config DRM_WANT_CMA
+>         bool
+>         help
+>            Select this from any driver that benefits from CMA being enabled
+> 
+> config DMA_CMA
+>         bool "Use CMA helpers for DRM"
+>         default DRM_WANT_CMA
+> 
+>           Arnd
+> 
+
+That's precisely what I had first, with an additional "WANT_CMA" --  but 
+looking at the number of such existing options (I was able to spot 1 !) 
+I wondered if there is a better approach to achieve the same; "imply" 
+sounded like a good candidate.
+
+-- 
+Thanks,
+
+David / dhildenb
 
