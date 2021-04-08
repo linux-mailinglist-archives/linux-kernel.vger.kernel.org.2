@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBB3358846
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5DB35884A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhDHPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:25:50 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:33467 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbhDHPZn (ORCPT
+        id S232244AbhDHPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:25:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232177AbhDHPZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:25:43 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 164BD2000F;
-        Thu,  8 Apr 2021 15:25:28 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 17:25:28 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linusw@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: New 'make dtbs_check W=1' warnings
-Message-ID: <YG8gaHqlJ+oCfkTt@piout.net>
-References: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
+        Thu, 8 Apr 2021 11:25:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617895546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGwlC/hESn7y7qGIlb10fpokHrJdwvIGgWjnr/18nGE=;
+        b=TiLMDIBiS/jlzQQ+rwUi5xeSqhxE8lRoYgpGQQEbBvYft7De7oHz+jrYtmWIrvlL2dZ95D
+        VeLgWH8Xy/obp0lDe5lTm4YqNSbSe/JkyJUeLDGo5WX36NNV3qxt+ItGByLuSL7qhQ87es
+        9u8EtPYxU27jTWcSpK7lfHvSYXPJt7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-fI44sw60N3C0hNH1bdmEJA-1; Thu, 08 Apr 2021 11:25:45 -0400
+X-MC-Unique: fI44sw60N3C0hNH1bdmEJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D75CE8189C8;
+        Thu,  8 Apr 2021 15:25:41 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DD1710013C1;
+        Thu,  8 Apr 2021 15:25:35 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210408145057.GN2531743@casper.infradead.org>
+References: <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 02/30] mm: Add set/end/wait functions for PG_private_2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <14839.1617895534.1@warthog.procyon.org.uk>
+Date:   Thu, 08 Apr 2021 16:25:34 +0100
+Message-ID: <14840.1617895534@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Matthew Wilcox <willy@infradead.org> wrote:
 
-On 08/04/2021 17:08:26+0200, Arnd Bergmann wrote:
-> arch/arm/boot/dts/at91-sama5d2_ptc_ek.dt.yaml: /: 'etm@73C000' does
-> not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$', '^[^@]+$',
-> 'pinctrl-[0-9]+'
-> arch/arm/boot/dts/at91-kizbox3-hs.dt.yaml: /: 'etm@73C000' does not
-> match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$', '^[^@]+$',
-> 'pinctrl-[0-9]+'
+> > +void end_page_private_2(struct page *page)
+> > +{
+> > +	page = compound_head(page);
+> > +	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
+> > +	clear_bit_unlock(PG_private_2, &page->flags);
+> > +	wake_up_page_bit(page, PG_private_2);
 > 
+> ... but when we try to end on a tail, we actually wake up the head ...
 
-This was introduced by 4d930c421e3b ("ARM: dts: at91: sama5d2: add ETB
-and ETM unit name"), trying to fix another warning.
+Question is, should I remove compound_head() here or add it into the other
+functions?
 
-I guess this is because
-Documentation/devicetree/bindings/arm/coresight.txt is not yaml yet.
+David
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
