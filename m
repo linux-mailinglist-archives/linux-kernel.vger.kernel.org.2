@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B4D357D1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D5F357D1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbhDHHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhDHHPB (ORCPT
+        id S229641AbhDHHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:17:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16079 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhDHHR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:15:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F827C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=StYLePuuoo1XC5Jko4tHPSj6QF8XVGj1hCI5fOcFvEc=; b=RRv4czO5rzvVATFiqXAps7RsW6
-        U4WwkGaM9mOoALv0NcI86/xEWPYkqM4bfyTW+eqcTAObBaP4w3ADY74z4gvaiajNzOIT+Sq/jH9qP
-        dLLBUJREVeH+776kGJROdFQZB7tV9cMx86ol4ZDkcxB3Rr+WO+/WgVPUnSWf8ELSWHmkCRxlpVYz3
-        t1Ivtbuhz8GLTWhXF50p7wjnPUFZKqaSuySfKnwJNz6/1FJeJgq0p+dfZPrHWIS79pQjev3LiQzHB
-        NJKnAPlrvW8r7QJSoU84vjetAc4wWhIkkSRl6+IAs9YYRFt61qoh9qeXYq13teBMeNO2Ut/9dUh/v
-        skrHz/Fw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUOrI-00FkEw-0D; Thu, 08 Apr 2021 07:13:49 +0000
-Date:   Thu, 8 Apr 2021 08:13:43 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 24/37] mm: implement speculative handling in
- __do_fault()
-Message-ID: <20210408071343.GJ2531743@casper.infradead.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-25-michel@lespinasse.org>
- <YG3EYjVDrZ54QCLq@hirez.programming.kicks-ass.net>
- <20210407212027.GE25738@lespinasse.org>
- <20210407212712.GH2531743@casper.infradead.org>
- <YG6qCtRcz2ESUiFy@hirez.programming.kicks-ass.net>
+        Thu, 8 Apr 2021 03:17:29 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGCFj44JWz1BGL8;
+        Thu,  8 Apr 2021 15:15:05 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 15:17:07 +0800
+Subject: Re: [PATCH v6 3/5] i2c: add support for HiSilicon I2C controller
+To:     Wolfram Sang <wsa@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <Sergey.Semin@baikalelectronics.ru>,
+        <linux-kernel@vger.kernel.org>, <digetx@gmail.com>,
+        <treding@nvidia.com>, <rmk+kernel@armlinux.org.uk>,
+        <song.bao.hua@hisilicon.com>, <john.garry@huawei.com>,
+        <mika.westerberg@linux.intel.com>, <prime.zeng@huawei.com>,
+        <linuxarm@huawei.com>
+References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
+ <1617197790-30627-4-git-send-email-yangyicong@hisilicon.com>
+ <f1d50200-93f5-2c35-933a-01a1e7622983@linux.intel.com>
+ <20210407230421.GB860@kunai>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <5c478c9b-fc2a-2dd7-6191-8f68e265c2f7@hisilicon.com>
+Date:   Thu, 8 Apr 2021 15:17:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG6qCtRcz2ESUiFy@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210407230421.GB860@kunai>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:00:26AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 07, 2021 at 10:27:12PM +0100, Matthew Wilcox wrote:
-> > Doing I/O without any lock held already works; it just uses the file
-> > refcount.  It would be better to use a vma refcount, as I already said.
+On 2021/4/8 7:04, Wolfram Sang wrote:
 > 
-> The original workload that I developed SPF for (waaaay back when) was
-> prefaulting a single huge vma. Using a vma refcount was a total loss
-> because it resulted in the same cacheline contention that down_read()
-> was having.
+>> Reason for temp variable is for me it's confusing to see statement like
+>> "rate_khz = rate_khz / 1000".
 > 
-> As such, I'm always incredibly sad to see mention of vma refcounts.
-> They're fundamentally not solving the problem :/
+> Yes. And with this clearer calculation, we can maybe skip the HZ_PER_KHZ
+> define completely and just use plain '1000' as a factor/divider because
+> it then becomes obvious. I still find the define more confusing than
+> helpful TBH. But I'll leave the final decision to Yicong Yang.
+> 
 
-OK, let me outline my locking scheme because I think it's rather better
-than Michel's.  The vma refcount is the slow path.
+HZ_PER_KHZ macro are defined separately in other places of the kernel.
+Andy suggested to have this defined and used so that one day we can factor
+this macro out to the public. :)
 
-1. take the RCU read lock
-2. walk the pgd/p4d/pud/pmd
-3. allocate page tables if necessary.  *handwave GFP flags*.
-4. walk the vma tree
-5. call ->map_pages
-6. take ptlock
-7. insert page(s)
-8. drop ptlock
-if this all worked out, we're done, drop the RCU read lock and return.
-9. increment vma refcount
-10. drop RCU read lock
-11. call ->fault
-12. decrement vma refcount
-
-Compared to today, where we bump the refcount on the file underlying the
-vma, this is _better_ scalability -- different mappings of the same file
-will not contend on the file's refcount.
-
-I suspect your huge VMA was anon, and that wouldn't need a vma refcount
-as faulting in new pages doesn't need to do I/O, just drop the RCU
-lock, allocate and retry.
