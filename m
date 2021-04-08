@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1B2358A14
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354F3358A0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhDHQtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S232419AbhDHQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbhDHQtF (ORCPT
+        with ESMTP id S232416AbhDHQr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:49:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB68C061760;
-        Thu,  8 Apr 2021 09:48:53 -0700 (PDT)
+        Thu, 8 Apr 2021 12:47:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CAFC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fEz0qL5rgd1VzfLvTxSwEHMutEn6GIS7JQ+Kp9M1gJI=; b=bVkLffvLTZgMgl+d5wzDgWDKrR
-        O76Mtw0cqfFyPmETXybZGjHNWl/ovIvE8ZSum8LgbTrRXxxigYYMB4lKFULUY8nNWyMrIR7S3yACy
-        NQlbmpL1t2BEInc4NeQcB3MiWHy1umdmTpZiu8kDWVAgqomOw2nV1AQKmuqES6qJjbeESOl82QsbI
-        WWvyCB08gebpFdI2m2BJncq/fWpcdNH4ECoP8RNgdPPOznALlcSox6G6kihbuCwh6E1mo2wJ7xg5d
-        GAavrpzBUbEL/9RWesYeCzjYeWl9MUsJ5dTkoK/k/NmbAoXDuA+GTxyVs26WvN4091q8NwjKLeGq2
-        7Wwzw/iw==;
+        bh=JBQCrEQpJXA35QmMh4iDu6rMe60DVzt8Dr0EBOiGeZ4=; b=bFKy4l5dt1Rx5mH1LbL9A12RZp
+        0YVsCNRUPKvhC6R9+pA8e2z6Kp3F9r/kdEJhgOF0ZpL/YG7lAo8vsTfY/xAHKljmFZvZ29Kc12VSR
+        waihz3kMswD/jjEIwwCFxdYwF4XeWd05BQ6RlNcMVEFaX54FtpcyKYabXotiwrb3JaFRXlmTbGzG8
+        p9mFk/jdxh5eE9Kd+asi0+oqSbvi2TvbHAvVQMf4aMdN+5KrXyyfxVH4yu9zwCzutmiev1TbmKPZU
+        lbapyXQ/yreqzzBGOsrNVk4NOu/eQf/hcqX9T0AKvEQkNymlwrPmM2F5rXrPdz+N32xl+s/h46d0p
+        kVL4UW9g==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUXnx-00GXdE-2u; Thu, 08 Apr 2021 16:47:06 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUXnx-008g4s-39; Thu, 08 Apr 2021 16:46:53 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 600723001D8;
-        Thu,  8 Apr 2021 18:46:30 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3C583001C0;
+        Thu,  8 Apr 2021 18:46:29 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 32EA32B71A271; Thu,  8 Apr 2021 12:56:01 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 12:56:01 +0200
+        id 44DA92B71A276; Thu,  8 Apr 2021 13:10:39 +0200 (CEST)
+Date:   Thu, 8 Apr 2021 13:10:39 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 0/11 v2] Use local_lock for pcp protection and reduce
- stat overhead
-Message-ID: <YG7hQeOthUbPBU86@hirez.programming.kicks-ass.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 3/4] sched/fair: Consider SMT in ASYM_PACKING load balance
+Message-ID: <YG7kr0Gyj86sMBF8@hirez.programming.kicks-ass.net>
+References: <20210406041108.7416-1-ricardo.neri-calderon@linux.intel.com>
+ <20210406041108.7416-4-ricardo.neri-calderon@linux.intel.com>
+ <YGxDSMorjMADJGIT@hirez.programming.kicks-ass.net>
+ <20210406231710.GB27195@ranerica-svr.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407202423.16022-1-mgorman@techsingularity.net>
+In-Reply-To: <20210406231710.GB27195@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:24:12PM +0100, Mel Gorman wrote:
-> Why local_lock? PREEMPT_RT considers the following sequence to be unsafe
-> as documented in Documentation/locking/locktypes.rst
+On Tue, Apr 06, 2021 at 04:17:10PM -0700, Ricardo Neri wrote:
+> On Tue, Apr 06, 2021 at 01:17:28PM +0200, Peter Zijlstra wrote:
+> > On Mon, Apr 05, 2021 at 09:11:07PM -0700, Ricardo Neri wrote:
+> > > @@ -8507,6 +8619,10 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+> > >  	if (!sgs->sum_h_nr_running)
+> > >  		return false;
+> > >  
+> > > +	if (sgs->group_type == group_asym_packing &&
+> > > +	    !asym_can_pull_tasks(env->dst_cpu, sds, sgs, sg))
+> > > +		return false;
+> > 
+> > All of this makes my head hurt; but afaict this isn't right.
+> > 
+> > Your update_sg_lb_stats() change makes that we unconditionally set
+> > sgs->group_asym_packing, and then this is to undo that. But it's not
+> > clear this covers all cases right.
 > 
->    local_irq_disable();
->    raw_spin_lock(&lock);
+> We could not make a decision to set sgs->group_asym_packing in
+> update_sg_lb_stats() because we don't have information about the dst_cpu
+> and its SMT siblings if any. That is the reason I proposed to delay the
+> decision to update_sd_pick_busiest(), where we can compare local and
+> sgs.
 
-Almost, the above is actually OK on RT. The problematic one is:
+Yeah, I sorta got that.
 
-	local_irq_disable();
-	spin_lock(&lock);
+> > Even if !sched_asym_prefer(), we could end up selecting this sg as
+> > busiest, but you're just bailing out here.
+> 
+> Even if sgs->group_asym_packing is unconditionally set, sgs can still
+> be classified as group_overloaded and group_imbalanced. In such cases
+> we wouldn't bailout. sgs could not be classified as group_fully_busy
+> or group_has_spare and we would bailout, though. Is your concern about
+> these? I can fixup these two cases.
 
-That doesn't work on RT since spin_lock() turns into a PI-mutex which
-then obviously explodes if it tries to block with IRQs disabled.
+Yes. Either explain (in a comment) why those cases are not relevant, or
+handle them properly.
 
-And it so happens, that's exactly the one at hand.
+Because when reading this, it wasn't at all obvious that this is correct
+or as intended.
