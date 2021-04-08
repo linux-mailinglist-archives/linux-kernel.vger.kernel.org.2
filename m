@@ -2,124 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1171358B88
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0B0358B8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhDHRit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:38:49 -0400
-Received: from mail-eopbgr1400128.outbound.protection.outlook.com ([40.107.140.128]:31557
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232658AbhDHRip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:38:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nWxzbLiVA2VI+OVncEMzzUtcJ7yV7W/AgRpY1gaamlwlSlRn638qjZ+p489N3DfX1NTDTefirkAZo4+/KTBRRpvDtwGPBhlHxuROGXF+nfDp9OtMQYKPXKbd9AqE2ublpavVWv1ATgXayZxTjXBVLBMXQDhY2W0Y3A37gJ4AAmyCgi5ya52St4oJVbCPlP+Sz8MpnGcj1/ciQOKFSZmcL9gEuvTHzHkgI5mTN4ZnHeqfnc9sF1h99G7SIFMVhCTEcWhvSZYCGYyT2Zn6/mlObNwAgwDhcjzL3f9N7S72o4XGOd3na4iwl6WOgbg6M/fRm23GK2O3LqUOegZWs9SS0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=APyk/pSPIcdQosIrdmhHlCKW1c24CbnGkC2gDhc1mFQ=;
- b=PrHQLmhz63P/oZPhm57ulUuoaPbFRBXLJf9b4GCC9RMcVAplxJIfAMed/RYQiniGcaeSkbsasYqiNhorJmQBtPcdIIRn+Mb3bafNuMh+q4ddWAcW5MNEcufgLKmmP42OSH5LHJa8VL030nahkFjGq4gWRAPVYU8yrP0mAdL40kYIAr1Av9ZjHhF9mjPSBmtAGFxvNXPEOWol4dyo364Oxu1U6jnqvMdGjbNi5Q4RD1P12/q8RUx7ZpzpKALB7OPl1drashCF+yV5VFSg32ZI1kAUaL+kPENCM5PV0ENlbZiLg01uQWCbB+ZCM6UBqt+TSBBFqctLvqnfIHmbQHnO8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=APyk/pSPIcdQosIrdmhHlCKW1c24CbnGkC2gDhc1mFQ=;
- b=hAVbY2AaCGbIevRBJXc/ZRdZpfWBGk4YUu1OQ0giuBVK0te7EnOgMlgTTvUBx6QbcrfKuBtJ9TsTOM2FjMAivD9HBgADqXQbcgrGhj8huTewvdZk3tycHGc4es/zhm25yznIvIlDBQygdEqpDo6s0+J9GSBAcyIGesWRs9KFiGc=
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
- by OSZPR01MB6216.jpnprd01.prod.outlook.com (2603:1096:604:ee::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 8 Apr
- 2021 17:38:32 +0000
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::f04d:9261:4793:3433]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::f04d:9261:4793:3433%7]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
- 17:38:32 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v3 1/2] mfd: Add Renesas Synchronization
- Management Unit (SMU) support
-Thread-Topic: [PATCH net-next v3 1/2] mfd: Add Renesas Synchronization
- Management Unit (SMU) support
-Thread-Index: AQHXLBphMmpyIdnLSkKcpoovCRWuzaqqM6eAgACvi9A=
-Date:   Thu, 8 Apr 2021 17:38:32 +0000
-Message-ID: <OSBPR01MB4773DF588214D8B9E613E074BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-References: <1617846650-10058-1-git-send-email-min.li.xe@renesas.com>
- <20210408070809.GD2961413@dell>
-In-Reply-To: <20210408070809.GD2961413@dell>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b33aa76a-2715-4ec1-d438-08d8fab520f7
-x-ms-traffictypediagnostic: OSZPR01MB6216:
-x-microsoft-antispam-prvs: <OSZPR01MB6216EC119EE8D49A723EE40CBA749@OSZPR01MB6216.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qcOrdu+/PlhTKERwu8r575EvL+BV81m/VOxmBoZViQ1c3cTy8fiktZqw2Ac7Puim9Fd/EVMAcvQc1bv0hxpPT40wzJWL+hstA1YxF9l/PuscPhbwywp0c1RPjFN/qzRkv5+axBbuk69VU6VGkGdY38WM/qD0I7Fum7vPzYJQGkBpPI+AjH5vO1itl6yw1KKzeCvsqQcqyXjLY+9Gxg7XvLgKU6rDKNyjkAGxJ55c6szMr6GOIX64K0wYjC4ped5BZLlQQlmC6RfqfEdqSmIAgLzjQC+GI1gkXT0wCCcC6vSXYO5QpQDS0AETuCSPeXKVBDmjkRdsBSXzDerMnlJEzaCqGyy4ZGDBoxlyuD0C/sKyIp78C1w8Ao32HrgHssabGofeFucGN8JriTjjRLDAwXKaRDp8Z5vGzziZAiMNDkw4fadF0iBtqJYjNflJKyRsNTP4yAs/JnttbsGZRHUuAfphoeVIfXkuHG/GoEwqYYDDgh4iVUV0DM3bq5JLvN3kV172wu+KPVmbwx87oDcXlIC/iRGQepOH7viRYDRLVsICZ+2cGYfcL+kQ7ALOTShjsbkxIFBEJz4ph6WmDaYeZbU1iIZinIAuf2OXGsTTNgnE90Emdv7Tm5Eo5+amlAk1LFfIHUdZZj9+QPeIO49m2WpHMipEFDivnOKCA5HRvHw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(136003)(396003)(66946007)(76116006)(9686003)(26005)(38100700001)(316002)(478600001)(186003)(33656002)(8676002)(66446008)(64756008)(8936002)(66556008)(66476007)(558084003)(2906002)(54906003)(4326008)(71200400001)(6916009)(55016002)(7696005)(5660300002)(86362001)(6506007)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dm9KS1lMcFAyei91K3FIanNad2lYMUtuUTdxaWxpd0llUkVGRWxaRVFCZ1c4?=
- =?utf-8?B?ZVdSNkcwdGR4QlZyT3UwZTBVVS9mTDlrV2Q1Z1FIVWVaZmhKbjllNThVS20v?=
- =?utf-8?B?YmxGZi8zeXNwK0FWK0xZZ3NwUGtvVmsvdk1xL1pDdkFtTFBFTndtd243K3V6?=
- =?utf-8?B?b1ljNmtBUTlCRjFsVzNoV3JJRVljSmlUd0V1eEFQbERiMldZQ3VoWEhNRkIz?=
- =?utf-8?B?UDl2VnRPa2RJbGRNb2t2SUFNKzMrMjFNRGFCUlZQaVAwcDVrdlA0MGVFcTlK?=
- =?utf-8?B?enRSbmFCZ2JnR28vV1V0ZUt2L0d0STRzNzI3NTFYL1M4bTh4RS9uZTJRNjln?=
- =?utf-8?B?RG55Q1lnMHNRSFhoRG1vN3ZrbWRpZUFPdml1dzlOU1UzcXZ5L2lGWW1CZmNK?=
- =?utf-8?B?NDZ4eEdlRHpINXlZM003U0RXZTNueWIvTUhXVVRhNnA4aGVNS2M3NnhCUVpi?=
- =?utf-8?B?dmU3Ly9nOGFCNlNIT1VLVm5Ba1NueXBKZC9Ra1N1K3FreHlkemxYSnJUaTBz?=
- =?utf-8?B?OGVZMUU0Uk50VHdkV2laaVhTRjFFVzBjdWN3ZllwTHQxQkEweEtER0MwblVO?=
- =?utf-8?B?MXNjUG1vcEVGKzVLSlRjZUZ4bklQN0VGTUFReGhXQlhiZTV6SGtDaE51TERi?=
- =?utf-8?B?TXI0RlI4bndUeWlCdFU0dU10R1JlVFJJOTFrTzk4T21hV1JEQ0R3dVU3ZWVM?=
- =?utf-8?B?RERxMVBEQjZGYnZpelE1QnpITThxaEx3YmlTMTRlN3YzWkxrVDhNV3VMN05h?=
- =?utf-8?B?czM0MUNESlZpQVphbE5ydHJycGNOYTN5OFNPcTBNemc1d3UrcE5JbXhjMmY5?=
- =?utf-8?B?LzhEVGc4Z3dPVlNSdnNFQmJqcldvMG5Vb1NtQnl1QnkxZVVnLzBhdG1MYVQ1?=
- =?utf-8?B?aU14OHlYdStXZ0NIcTBsaWFlWWZwK0h5WC9KVEY3ZWtXck1lMEdDMWZtcVVz?=
- =?utf-8?B?RXdzSmJNQkhhNlllWk40M2U4SDFRamlqUUUrNmp4dk1qNGFhNVU5Rnh6K2Yy?=
- =?utf-8?B?R04zd2sxQ0ljdlMzS1V3azdMMEhVMWFUelVlSnJhWkh4eWFxUllMdStXb2g0?=
- =?utf-8?B?K2pFbHRTQVBQekdBYk1jdmRlemdRb0pXUGY1V3hEL1owTXdrVnJiVkpjV2RI?=
- =?utf-8?B?bmNtZEZJcE8zT2ZZU2JVbEZDa2VwQUVGNjZBTTFnNmEyRDMzZi9lRGlhelRv?=
- =?utf-8?B?TGJDK3FLbzZ4RFJCbTd0WW1XTlozc2dpN3NKMmsweXdPazNldWxNUVptQXdG?=
- =?utf-8?B?YXh0WDZ6d2d5WnpJd3hQSjVsZm0vQU1CY1UyRVIyOXdydXdRVHRMeHhFVS9Z?=
- =?utf-8?B?SDRSM00rbFNTVnA5RS9tcGphNk9BMmc0ZmtsaFZOUWNmY1RRZDZuVEMyMERn?=
- =?utf-8?B?L0pqeHBlMEpPdGhwZnZiclJEbkNRQ1B4Q1plNTJoWEhHYzhnOG52ekFWU3NC?=
- =?utf-8?B?ZXlWUXFQMndMVEUrRGhuQVZ2VXkvS3ZGRlduNDlEL09KZkF5T0g4dm1XTXVu?=
- =?utf-8?B?TWdmRXFFdVpkRGhYTzM3cDFZN09BQ085Q1NaMDZRRkVtd0RaME1QQVNSR1lx?=
- =?utf-8?B?Y0JYWGd6b0QwNWNham50aStVMmZpSmErcVQ1QjBmZ1BjM0FIY044NE96UzNk?=
- =?utf-8?B?U3ViTkEyWG93b3NoOVZETVJxQlhuQ284TWFrWllzYi81VzN1eUhYejRqdnhi?=
- =?utf-8?B?ZWFWT2E1a3o4U2FEajZGRVFoVHFza1ZBclh0M1BhQ2NBT0c1R0pTczU0cWVY?=
- =?utf-8?Q?PAIgkZVYRQiSa4sZ+6EljyoFx8eMs4kOLS9ZVHR?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232240AbhDHRk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:40:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:6857 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231566AbhDHRk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:40:57 -0400
+IronPort-SDR: ZZDAyA0Uh0e4nDU3C1n3v64ye4y4W3YIF06tB3fQHktOxK4NIWPBZPmTsLAvOEaeohVanS4H15
+ rgMvfq3Fljsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193637922"
+X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
+   d="scan'208";a="193637922"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 10:40:44 -0700
+IronPort-SDR: 81E9GSAgEvkmavuU6Aw6RU+0/+kij4PrrrjbmqmdpL9y3c0livHeQyoVh1uwvi8n7ECx5mhfuD
+ v2eo48zQbtNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
+   d="scan'208";a="598860598"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 08 Apr 2021 10:40:44 -0700
+Received: from [10.209.60.104] (kliang2-MOBL.ccr.corp.intel.com [10.209.60.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 498AB580812;
+        Thu,  8 Apr 2021 10:40:43 -0700 (PDT)
+Subject: Re: [PATCH V5 04/25] perf/x86/intel: Hybrid PMU support for perf
+ capabilities
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        ricardo.neri-calderon@linux.intel.com
+References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+ <1617635467-181510-5-git-send-email-kan.liang@linux.intel.com>
+ <YG82scZuZAsxj2js@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <42ca6320-dca8-ae58-a764-037a46936d78@linux.intel.com>
+Date:   Thu, 8 Apr 2021 13:40:41 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b33aa76a-2715-4ec1-d438-08d8fab520f7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 17:38:32.0363
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9yMXyMrZ+BOe065i34/ZmGTKcuEOodZQPKwGZ6noTV918V2fmYzl8km7N741VcrX7YdEQU3Pzj7+mwIEhYeNVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB6216
+In-Reply-To: <YG82scZuZAsxj2js@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gSWYgdGhpcyBpcyB2MywgdGhlcmUgc2hvdWxkIGJlIGEgY2hhbmdlbG9nIGhlcmUuDQo+
-IA0KSGkgTGVlDQoNClRoZXJlIGlzIG5vIGNoYW5nZSBpbiB2MyBmb3IgTUZEIHBhcnQgb2YgY29k
-ZSwgdjMgaXMgb25seSBmb3IgbWlzYyBwYXJ0LiANCkJ1dCBJIGhhdmUgdG8gZm9ybWF0IDIgcGF0
-Y2hlcyB0b2dldGhlciBhbmQgdGhhdCBpcyB3aHkgbWZkIHBhcnQgZ290IHYzIGFzIHdlbGwuDQpC
-dXQgaXQgaXMgYWN0dWFsbHkgaWRlbnRpY2FsIHRvIHYyDQo=
+
+
+On 4/8/2021 1:00 PM, Peter Zijlstra wrote:
+> On Mon, Apr 05, 2021 at 08:10:46AM -0700, kan.liang@linux.intel.com wrote:
+>> +#define is_hybrid()			(!!x86_pmu.num_hybrid_pmus)
+> 
+> Given this is sprinkled all over the place, can you make this a
+> static_key_false + static_branch_unlikely() such that the hybrid case is
+> out-of-line?
+> 
+
+Sure, I will add a new static_key_false "perf_is_hybrid" to indicate a 
+hybrid system as below (not test yet).
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index f8d1222..bd6412e 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -54,6 +54,7 @@ DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events) = {
+
+  DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
+  DEFINE_STATIC_KEY_FALSE(rdpmc_always_available_key);
++DEFINE_STATIC_KEY_FALSE(perf_is_hybrid);
+
+  /*
+   * This here uses DEFINE_STATIC_CALL_NULL() to get a static_call defined
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 2b553d9..7cef3cd 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -6119,6 +6119,7 @@ __init int intel_pmu_init(void)
+  					     GFP_KERNEL);
+  		if (!x86_pmu.hybrid_pmu)
+  			return -ENOMEM;
++		static_branch_enable(&perf_is_hybrid);
+  		x86_pmu.num_hybrid_pmus = X86_HYBRID_NUM_PMUS;
+
+  		x86_pmu.late_ack = true;
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index bfbecde..d6383d1 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -663,8 +663,8 @@ static __always_inline struct x86_hybrid_pmu 
+*hybrid_pmu(struct pmu *pmu)
+  	return container_of(pmu, struct x86_hybrid_pmu, pmu);
+  }
+
+-/* The number of hybrid PMUs implies whether it's a hybrid system */
+-#define is_hybrid()			(!!x86_pmu.num_hybrid_pmus)
++extern struct static_key_false perf_is_hybrid;
++#define is_hybrid()		static_branch_unlikely(&perf_is_hybrid)
+
+  #define hybrid(_pmu, _field)				\
+  ({							\
+
+Thanks,
+Kan
