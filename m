@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87612357CD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DF6357CD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhDHG4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhDHG4B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:56:01 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5ACC061760;
-        Wed,  7 Apr 2021 23:55:50 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8DBAE2224B;
-        Thu,  8 Apr 2021 08:55:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1617864945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T/Ib6E1aHyQ0zhhtE0Z7gd1zjY5vFtQFqY5uVvY+Uv0=;
-        b=u/vC2TGnRp0P8lItXAZXWGe1sH6DNKY5I6Icz++fuvrfjfZiDtT/MvOWh6SduMAQimbj8h
-        Yx0AQQJz1lxWZKonpLYAznp+3VjVw3iLJWq+K96n3Tsj+9mZH75BHtJnYHhXQUsRDNR3vD
-        k8QXM8yPUYfIvo/rKPXE1U5MQebbBEg=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 08 Apr 2021 08:55:42 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-In-Reply-To: <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
-References: <20210303201819.2752-1-michael@walle.cc>
- <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <904d986fbd6f718cf8b7b9fc54b339d4@walle.cc>
-X-Sender: michael@walle.cc
+        id S229634AbhDHG5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:57:33 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:21632 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhDHG5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:57:32 -0400
+Received: from localhost.localdomain (unknown [10.192.24.118])
+        by mail-app4 (Coremail) with SMTP id cS_KCgDXKQ5DqW5gpSabAA--.11409S4;
+        Thu, 08 Apr 2021 14:57:10 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: Fix error handling in atomisp_open
+Date:   Thu,  8 Apr 2021 14:56:59 +0800
+Message-Id: <20210408065706.9681-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgDXKQ5DqW5gpSabAA--.11409S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFy7uF4kuF4Utr17urWrAFb_yoWkKwb_Gr
+        Wqvw1UWrZ8Gr4UWw1UtF1Yvr92vwsIqr18Xw40vF4jyanrZFZ8GrWvvrykJws7Ww13Kr9I
+        yryrWF1rCrnrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOgACsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+Some error paths in atomisp_open will execute PM runtime
+decrement and unregister hmm pool even before we increase
+the PM refcount and registration. Fix this by adjusting
+jump labels on error.
 
-Am 2021-04-08 07:51, schrieb Tudor.Ambarus@microchip.com:
-> Would you please resend this patch, together with the mtd-utils
-> and the SPI NOR patch in a single patch set? You'll help us all
-> having all in a single place.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/staging/media/atomisp/pci/atomisp_fops.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-This has already been picked-up:
-https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=mtd/next&id=e3c1f1c92d6ede3cfa09d6a103d3d1c1ef645e35
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+index 453bb6913550..8f552d6f1f19 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+@@ -837,7 +837,7 @@ static int atomisp_open(struct file *file)
+ 	ret = pm_runtime_get_sync(vdev->v4l2_dev->dev);
+ 	if (ret < 0) {
+ 		dev_err(isp->dev, "Failed to power on device\n");
+-		goto error;
++		goto pm_error;
+ 	}
+ 
+ 	if (dypool_enable) {
+@@ -878,9 +878,10 @@ static int atomisp_open(struct file *file)
+ 
+ css_error:
+ 	atomisp_css_uninit(isp);
+-error:
+ 	hmm_pool_unregister(HMM_POOL_TYPE_DYNAMIC);
++pm_error:
+ 	pm_runtime_put(vdev->v4l2_dev->dev);
++error:
+ 	rt_mutex_unlock(&isp->mutex);
+ 	return ret;
+ }
+-- 
+2.17.1
 
-Although, I didn't receive an email notice.
-
--michael
