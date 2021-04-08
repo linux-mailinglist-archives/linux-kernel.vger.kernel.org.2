@@ -2,193 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138AC357A8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AE7357A8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhDHCtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhDHCtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:49:20 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE70C061760;
-        Wed,  7 Apr 2021 19:49:09 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id k8so617771iop.12;
-        Wed, 07 Apr 2021 19:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VSBB6TlL4KOiUXjfb7F26RoHjiHWr0eGjTCodR8brho=;
-        b=PG2lTgObOhRJwYgEbG/o2m2sHSFnsKBPH81OnTpenYWOxvF3fNu+9bWpNqeQPl73Vc
-         ZU96/2Wrvboh/Xxentp51/x4k5Cqa5xmPE4BcIhzzxg4Yt98IhBYCy+Eny6BYUvHdgr3
-         9l6CjVZo9XJWjjXtVlnFVrKZN52CQkh/Vq8+DBlnY/tfiAYZpQ4Oo5Tu2SIqxMdiML8i
-         YQ6YOCaKvabbBw0YgNQnAltvExIxgW6UNnA9pIeciNuErdBiTGkLKQmjX23qy4Hk0B6V
-         3FdHQHinnetaBIIClulkVdH3clqFj1evnkDRLUDgsKrEro/dxdw8fG9i5T5OcwMyF77g
-         as+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VSBB6TlL4KOiUXjfb7F26RoHjiHWr0eGjTCodR8brho=;
-        b=F9kkrXFO0y49hv9NHM+4EBj6ecQLCWeGwOX/ATpnUsiz2NFVUgxAbzCLqo0Q/dyn9m
-         dnTSNj3K1BvcIjo736aG6QxZL8bkR45rdQO8ypxDAmWOoXN4evikJ6HZzvnijBdRDRkq
-         DdWGp9YgS8KLCZhdh1+kZp/Ni+9XHZ0uDPp1zCn4JMcI8rIySWNQqqheCyc9tmNeiwkJ
-         skGYx1iWsi4iCEI7KGaLp68Qz/IQK1NSSzzbi01lUKuBpSGvip5Fk0DJpELQkrhu+OQ9
-         ktJdGM79E3ojAOal2lhA/HGocMWcDx4v1LYMNYovkObNW2R0jTYKCAUzgYLD/dNSHwID
-         0vTQ==
-X-Gm-Message-State: AOAM5323jdtJBDnDBwF5UP9M3x7BtwIxPbQICvw4XmqU8s/KS+VS97pF
-        UnQfOzEZldOrygGa4RR5V2E=
-X-Google-Smtp-Source: ABdhPJxZm0U/uviAGN+G1EaR50eBMtqIIL8kIR/FrZmSizMn0b9eD2R/YStaRQE92/JM5zxaFA4NYA==
-X-Received: by 2002:a6b:6e06:: with SMTP id d6mr4884662ioh.116.1617850148440;
-        Wed, 07 Apr 2021 19:49:08 -0700 (PDT)
-Received: from Ubu (97-116-48-27.mpls.qwest.net. [97.116.48.27])
-        by smtp.gmail.com with ESMTPSA id j6sm14542973ila.31.2021.04.07.19.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 19:49:08 -0700 (PDT)
-From:   Barney Goette <barneygoette@gmail.com>
-To:     vilhelm.gray@gmail.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Barney Goette <barneygoette@gmail.com>
-Subject: [PATCH] gpio: gpio-104-dio-48e: Fixed coding style issues
-Date:   Wed,  7 Apr 2021 21:49:00 -0500
-Message-Id: <20210408024900.1937-1-barneygoette@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S229777AbhDHCuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:50:07 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42877 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhDHCuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 22:50:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FG5Mh2YWjz9sWC;
+        Thu,  8 Apr 2021 12:49:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617850193;
+        bh=tFrRRUHWBWHDMHiksNGUJeEfJl/zE07+4IvQbpl0H5E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sHG3bdgtRJnuHGRBUZBs3U7zD5OpJy8cU+hteUtLSANc3HepQXAedzGghdxzyuDY+
+         DNj8/oP70hZygW6/ydgLcWcQRfsafzQ5U5edEYrEXfAiVq6lmnd8u/GfFvxIPwZCPF
+         JxFPTK8IWa81jUy4Kl1eVPC+AmCVRyxgpQj+qUCrVhuci7S0R0+U3coMAfQ6GRPH1v
+         ZJ0Ide439pFiaou16126TS/uAZu9XVSDda7YEhOfKKQCXxDD2YFegd61awYU/uPgh8
+         XaXaDJl5tjE5iNXRDUzB3COtdqWLaSPQhNpMh1u3fqbCZhleSAx2QIOFKdsbvZpXdh
+         ndq19E5glRs6A==
+Date:   Thu, 8 Apr 2021 12:49:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210408124951.2f9941e6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/XugG1y.a2CQY2vZAp/UzqRq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed multiple bare uses of 'unsigned' without 'int'.
-Fixed space around '*' operator.
-Fixed function parameter alignment to opening parenthesis.
-Reported by checkpatch.
+--Sig_/XugG1y.a2CQY2vZAp/UzqRq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Barney Goette <barneygoette@gmail.com>
----
- drivers/gpio/gpio-104-dio-48e.c | 53 +++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 26 deletions(-)
+Hi all,
 
-diff --git a/drivers/gpio/gpio-104-dio-48e.c b/drivers/gpio/gpio-104-dio-48e.c
-index 7a9021c4fa48..38badc421c32 100644
---- a/drivers/gpio/gpio-104-dio-48e.c
-+++ b/drivers/gpio/gpio-104-dio-48e.c
-@@ -49,15 +49,15 @@ struct dio48e_gpio {
- 	unsigned char out_state[6];
- 	unsigned char control[2];
- 	raw_spinlock_t lock;
--	unsigned base;
-+	unsigned int base;
- 	unsigned char irq_mask;
- };
- 
--static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
-+static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
--	const unsigned port = offset / 8;
--	const unsigned mask = BIT(offset % 8);
-+	const unsigned int port = offset / 8;
-+	const unsigned int mask = BIT(offset % 8);
- 
- 	if (dio48egpio->io_state[port] & mask)
- 		return  GPIO_LINE_DIRECTION_IN;
-@@ -65,14 +65,15 @@ static int dio48e_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
- 	return GPIO_LINE_DIRECTION_OUT;
- }
- 
--static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
-+static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
--	const unsigned io_port = offset / 8;
-+	const unsigned int io_port = offset / 8;
- 	const unsigned int control_port = io_port / 3;
--	const unsigned control_addr = dio48egpio->base + 3 + control_port*4;
--	unsigned long flags;
--	unsigned control;
-+	const unsigned int control_addr = dio48egpio->base + 3 + control_port * 4;
-+
-+	unsigned int long flags;
-+	unsigned int control;
- 
- 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
- 
-@@ -104,17 +105,17 @@ static int dio48e_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
- 	return 0;
- }
- 
--static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
--	int value)
-+static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned int offset,
-+					int value)
- {
- 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
--	const unsigned io_port = offset / 8;
-+	const unsigned int io_port = offset / 8;
- 	const unsigned int control_port = io_port / 3;
--	const unsigned mask = BIT(offset % 8);
--	const unsigned control_addr = dio48egpio->base + 3 + control_port*4;
--	const unsigned out_port = (io_port > 2) ? io_port + 1 : io_port;
-+	const unsigned int mask = BIT(offset % 8);
-+	const unsigned int control_addr = dio48egpio->base + 3 + control_port * 4;
-+	const unsigned int out_port = (io_port > 2) ? io_port + 1 : io_port;
- 	unsigned long flags;
--	unsigned control;
-+	unsigned int control;
- 
- 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
- 
-@@ -154,14 +155,14 @@ static int dio48e_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
- 	return 0;
- }
- 
--static int dio48e_gpio_get(struct gpio_chip *chip, unsigned offset)
-+static int dio48e_gpio_get(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
--	const unsigned port = offset / 8;
--	const unsigned mask = BIT(offset % 8);
--	const unsigned in_port = (port > 2) ? port + 1 : port;
-+	const unsigned int port = offset / 8;
-+	const unsigned int mask = BIT(offset % 8);
-+	const unsigned int in_port = (port > 2) ? port + 1 : port;
- 	unsigned long flags;
--	unsigned port_state;
-+	unsigned int port_state;
- 
- 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
- 
-@@ -202,12 +203,12 @@ static int dio48e_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
- 	return 0;
- }
- 
--static void dio48e_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
-+static void dio48e_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
- {
- 	struct dio48e_gpio *const dio48egpio = gpiochip_get_data(chip);
--	const unsigned port = offset / 8;
--	const unsigned mask = BIT(offset % 8);
--	const unsigned out_port = (port > 2) ? port + 1 : port;
-+	const unsigned int port = offset / 8;
-+	const unsigned int mask = BIT(offset % 8);
-+	const unsigned int out_port = (port > 2) ? port + 1 : port;
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
-@@ -306,7 +307,7 @@ static void dio48e_irq_unmask(struct irq_data *data)
- 	raw_spin_unlock_irqrestore(&dio48egpio->lock, flags);
- }
- 
--static int dio48e_irq_set_type(struct irq_data *data, unsigned flow_type)
-+static int dio48e_irq_set_type(struct irq_data *data, unsigned int flow_type)
- {
- 	const unsigned long offset = irqd_to_hwirq(data);
- 
--- 
-2.25.1
+Today's linux-next merge of the net-next tree got a conflict in:
 
+  include/linux/ethtool.h
+
+between commit:
+
+  a975d7d8a356 ("ethtool: Remove link_mode param and derive link params fro=
+m driver")
+
+from the net tree and commit:
+
+  7888fe53b706 ("ethtool: Add common function for filling out strings")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/ethtool.h
+index cdca84e6dd6b,5c631a298994..000000000000
+--- a/include/linux/ethtool.h
++++ b/include/linux/ethtool.h
+@@@ -573,12 -573,13 +575,22 @@@ struct ethtool_phy_ops=20
+   */
+  void ethtool_set_ethtool_phy_ops(const struct ethtool_phy_ops *ops);
+ =20
+ +/*
+ + * ethtool_params_from_link_mode - Derive link parameters from a given li=
+nk mode
+ + * @link_ksettings: Link parameters to be derived from the link mode
+ + * @link_mode: Link mode
+ + */
+ +void
+ +ethtool_params_from_link_mode(struct ethtool_link_ksettings *link_ksettin=
+gs,
+ +			      enum ethtool_link_mode_bit_indices link_mode);
+++
++ /**
++  * ethtool_sprintf - Write formatted string to ethtool string data
++  * @data: Pointer to start of string to update
++  * @fmt: Format of string to write
++  *
++  * Write formatted string to data. Update data to point at start of
++  * next string.
++  */
++ extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt, ..=
+.);
+  #endif /* _LINUX_ETHTOOL_H */
+
+--Sig_/XugG1y.a2CQY2vZAp/UzqRq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBub08ACgkQAVBC80lX
+0Gz9ZQf8DF8M6ktYa8BHkGHp7acx7b7Q7den+tpMGI+x3Ub9gBxZ2diVDXeLzRVf
+olYlUCGGYEJyKOVGPMvHEK3z+JQXKQ7kTn6+iUq7IRv8wo1e9YDZv3TePLOAxfrm
+CC4TteWR6s/HGB0621LdJABVbHQOlnipDXL+HTbkzDJ4Y3phb8mfuwEoLM/eHzl+
+gz3p4wMfXYQboSwYoH5+ofPZB9ce/9BAifKqIhVtC1k2Fc/d+2pESGHiVt/V5naq
+OJijmvltNrhO2DF5nbiS4hAwEZlcZ6WV/Lw4Px2t1p74uaW9EK54dL95q3kc+cqJ
+5PkO97ISv5dcW2rYJGxjVwJizkT27A==
+=YpTz
+-----END PGP SIGNATURE-----
+
+--Sig_/XugG1y.a2CQY2vZAp/UzqRq--
