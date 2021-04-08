@@ -2,83 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733ED358746
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2160358749
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhDHOja convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 10:39:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:54887 "EHLO mga03.intel.com"
+        id S231744AbhDHOkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:40:10 -0400
+Received: from ned.t-8ch.de ([212.47.237.191]:41998 "EHLO ned.t-8ch.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhDHOj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:39:29 -0400
-IronPort-SDR: NH1/JSunqwBSMdgdwtmMDF2Y2ZLVxzt7FYQpaupl0Ky/KxXpCgw/droPlaK74/tnhb54HEAoUv
- iEF5MzxsiULw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193595515"
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="193595515"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 07:39:10 -0700
-IronPort-SDR: X/kVjaTo9Okcc1DAfz/wFhJ8An0Rv4xFM/Puw+ACxQ4c7BCphuDDsJZtyZ4gUzu0UlRuHiSw1c
- i5JL2hJOS22g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="380276511"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga003.jf.intel.com with ESMTP; 08 Apr 2021 07:39:10 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 8 Apr 2021 07:39:09 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 8 Apr 2021 07:39:09 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Thu, 8 Apr 2021 07:39:09 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>, Borislav Petkov <bp@alien8.de>
-CC:     "x86@kernel.org" <x86@kernel.org>,
+        id S231370AbhDHOkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:40:05 -0400
+Date:   Thu, 8 Apr 2021 16:39:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1617892789;
+        bh=eawHhWnZrhj3EwvJjSXCOh9KssxWRfjXIYrC8hWM9Q4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nR5KXRCmNmogKrWvoW7jwDcIWxva0F0RH3oGPMuigRneVHQabY63jpFKpXtYHyvU4
+         9vTp/1XQpNVAlFjaBhX9CszJznbyHvqh/7gmCaZGP7hAOA0qPD3EZ0hHD9Q40J3Ib1
+         NBLnXD0r22F69ktd6qgYTQ4CntG/pPGuhrR8/2c4=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKCAbJEJLWTh9ISFEPkxpGyhCKQ==?= 
-        <naoya.horiguchi@nec.com>
-Subject: RE: [RFC 0/4] Fix machine check recovery for copy_from_user
-Thread-Topic: [RFC 0/4] Fix machine check recovery for copy_from_user
-Thread-Index: AQHXIdNYiHm6dP/RhkeqE8lsAeByWKqqa0GAgABaGyA=
-Date:   Thu, 8 Apr 2021 14:39:09 +0000
-Message-ID: <595ed0ac4fbb470ca9cfd256aaf1810e@intel.com>
-References: <20210326000235.370514-1-tony.luck@intel.com>
- <20210408101335.28fd3692@alex-virtual-machine>
-In-Reply-To: <20210408101335.28fd3692@alex-virtual-machine>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH v2] platform/x86: add Gigabyte WMI temperature driver
+Message-ID: <0c3ef6d2-6e95-4dd9-b9d4-41f5e70bc574@t-8ch.de>
+References: <N6sOrC__lJeA1mtEKUtB18DPy9hp5bSjL9rq1TfOXiRE7IAO5aih5oyPEpq-vyqdZZsF4W8FIe-9GWB15lO-3fQlqjWQrMTlTJvqLBBGYOQ=@protonmail.com>
+ <20210405204810.339763-1-linux@weissschuh.net>
+ <eAi-yoXOCIOZAGOkYXGYZrUI6OuRrL5Fn9xBzHI1tJSgURTkMRifhlz9OHPB5FUxYLLzMARFmIP0HHR5oPgQMS0LJkga6deoVol0MYQuceA=@protonmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eAi-yoXOCIOZAGOkYXGYZrUI6OuRrL5Fn9xBzHI1tJSgURTkMRifhlz9OHPB5FUxYLLzMARFmIP0HHR5oPgQMS0LJkga6deoVol0MYQuceA=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I have one scenario, may you take into account:
->
-> If one copyin case occurs, write() returned by your patch, the user process may
-> check the return values, for errors, it may exit the process, then the error page
-> will be freed, and then the page maybe alloced to other process or to kernel itself,
-> then code will initialize it and this will trigger one SRAO, if it's used by kernel,
-> we may do nothing for this, and kernel may still touch it, and lead to one panic.
+Hi,
 
-In this case kill_me_never() calls memory_failure() with flags == 0. I think (hope!)
-that means that it will unmap the page from the task, but will not send a signal.
+On Mi, 2021-04-07T18:27+0000, Barnabás Pőcze wrote:
+> 2021. április 5., hétfő 22:48 keltezéssel, Thomas Weißschuh írta:
+> > Tested with a X570 I Aorus Pro Wifi.
+> > The mainboard contains an ITE IT8688E chip for management.
+> > This chips is also handled by drivers/hwmon/i87.c but as it is also used
+> > by the firmware itself it needs an ACPI driver.
+> 
+> I gather this means you're getting the
+> 
+>   ACPI Warning: SystemIO range ... conflicts with ...
+>   ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
+> 
+> warning?
 
-When the task exits the PTE for this page has the swap/poison signature, so the
-page is not freed for re-use.
+Exactly.
 
--Tony
+> > +struct gigabyte_wmi_args {
+> > +	u32 arg1;
+> > +};
+> > +
+> > +static int gigabyte_wmi_perform_query(enum gigabyte_wmi_commandtype command,
+> > +		struct gigabyte_wmi_args *args, struct acpi_buffer *out)
+> > +{
+> > +	const struct acpi_buffer in = {
+> > +		.length = sizeof(*args),
+> > +		.pointer = args,
+> > +	};
+> > +
+> > +	acpi_status ret = wmi_evaluate_method(GIGABYTE_WMI_GUID, 0x0, command, &in, out);
+> 
+> Ideally, you'd use the WMI device that was passed to the probe method to do the query
+> using `wmidev_evaluate_method()`. You can pass the WMI device pointer
+> to `devm_hwmon_device_register_with_info()` in the `drvdata` argument,
+> then in the ->read() callback you can retrieve it:
+> 
+>   static int gigabyte_wmi_hwmon_read(struct device *dev, ...)
+>   {
+>     struct wmi_device *wdev = dev_get_drvdata(dev);
+> 
+> and then you can pass that to the other functions.
+
+Done.
+
+> > +	if (ret == AE_OK) {
+> > +		return 0;
+> > +	} else {
+> > +		return -EIO;
+> > +	};
+> 
+> The `;` is not needed. And please use `ACPI_FAILURE()` or `ACPI_SUCCESS()`
+> to check the returned value. For example:
+> 
+>   acpi_status ret = ...;
+>   if (ACPI_FAILURE(ret))
+>     return -EIO;
+> 
+>   return 0;
+
+Done.
+
+> > +}
+> > +
+> > +static int gigabyte_wmi_query_integer(enum gigabyte_wmi_commandtype command,
+> > +		struct gigabyte_wmi_args *args, u64 *res)
+> > +{
+> > +	union acpi_object *obj;
+> > +	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
+> > +	int ret;
+> > +
+> > +	ret = gigabyte_wmi_perform_query(command, args, &result);
+> > +	if (ret) {
+> > +		goto out;
+> 
+> I believe if this branch is taken, no buffer is allocated (due to the failure),
+> so you can just `return ret;` here and do away with the goto completely - if I'm not mistaken.
+
+Done.
+
+> > +static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
+> > +	HWMON_CHANNEL_INFO(temp,
+> > +			HWMON_T_INPUT,
+> > +			HWMON_T_INPUT,
+> > +			HWMON_T_INPUT,
+> > +			HWMON_T_INPUT,
+> > +			HWMON_T_INPUT,
+> > +			HWMON_T_INPUT),
+> > +	NULL,
+>             ^
+> Minor thing: usually commas after sentinel values are omitted.
+
+Done.
+
+> > +static const struct wmi_device_id gigabyte_wmi_id_table[] = {
+> > +	{ GIGABYTE_WMI_GUID, NULL },
+> > +	{ },
+>            ^
+> Same here.
+
+Done.
+
+> 
+> > +};
+> > +
+> > +static struct wmi_driver gigabyte_wmi_driver = {
+> > +	.driver = {
+> > +		.name = "gigabyte-wmi",
+> > +	},
+> > +	.id_table = gigabyte_wmi_id_table,
+> > +	.probe = gigabyte_wmi_probe,
+> > +};
+> > +module_wmi_driver(gigabyte_wmi_driver);
+> > +
+> > +MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
+> > +MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
+> > +MODULE_DESCRIPTION("Gigabyte Temperature WMI Driver");
+> 
+> It's a very minor thing, but could you please
+> synchronize this description with the Kconfig?
+
+Of course.
+
+Thanks again for the review!
+
+Thomas
