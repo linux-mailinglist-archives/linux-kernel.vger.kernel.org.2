@@ -2,136 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D098357DEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE885357DF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhDHIT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhDHIT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:19:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492FCC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 01:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IymSJi3wLgOG0IzE9yca3IGjFJaMyWTnXOUsfwmn+KU=; b=EvYBSYjkUjg5S2KM24uOJSh5Ka
-        AhZmRkDaREim8RiokpMJcaNURrWh1juhBQW8NMbfYJ3kbVocstKff/OJt6UBaH9ZW2Xi0AJ7cJB3b
-        6TX3q9ItDKKsDK1yJFx5Tu4US+5gQCofeqxDJedhLE52MyIlCoQV9Ee9PUlFS2XBkX5O8Uqs01nE1
-        5fqzdBzlHDVGDPOtQaVcNKvxodIf1D1x9RAdQF5vZ3/KfLk13c6XrByNbCpgNEkQVAvOaeavXSmN2
-        TJG2ku5+Y5zRGUhzM3HRfGce6mnTkmp3YjGa7QFMopPZv6gldk3Tv/nc77QF982O+WrnYNCEx9xmi
-        L5ZGYXlA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUPsQ-007K0q-5s; Thu, 08 Apr 2021 08:18:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 563F830069C;
-        Thu,  8 Apr 2021 10:18:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 40DD52BE3AEB4; Thu,  8 Apr 2021 10:18:57 +0200 (CEST)
-Date:   Thu, 8 Apr 2021 10:18:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 24/37] mm: implement speculative handling in
- __do_fault()
-Message-ID: <YG68cRmRjsU+Tv6+@hirez.programming.kicks-ass.net>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-25-michel@lespinasse.org>
- <YG3EYjVDrZ54QCLq@hirez.programming.kicks-ass.net>
- <20210407212027.GE25738@lespinasse.org>
- <20210407212712.GH2531743@casper.infradead.org>
- <YG6qCtRcz2ESUiFy@hirez.programming.kicks-ass.net>
- <20210408071343.GJ2531743@casper.infradead.org>
+        id S230072AbhDHITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhDHITv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:19:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5519B61154;
+        Thu,  8 Apr 2021 08:19:38 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 10:19:35 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com, Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
+Message-ID: <20210408081935.b3xollrzl6lejbyf@wittgenstein>
+References: <cover.1617831474.git.dxu@dxuuu.xyz>
+ <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210408071343.GJ2531743@casper.infradead.org>
+In-Reply-To: <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:13:43AM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 08, 2021 at 09:00:26AM +0200, Peter Zijlstra wrote:
-> > On Wed, Apr 07, 2021 at 10:27:12PM +0100, Matthew Wilcox wrote:
-> > > Doing I/O without any lock held already works; it just uses the file
-> > > refcount.  It would be better to use a vma refcount, as I already said.
-> > 
-> > The original workload that I developed SPF for (waaaay back when) was
-> > prefaulting a single huge vma. Using a vma refcount was a total loss
-> > because it resulted in the same cacheline contention that down_read()
-> > was having.
-> > 
-> > As such, I'm always incredibly sad to see mention of vma refcounts.
-> > They're fundamentally not solving the problem :/
+On Wed, Apr 07, 2021 at 02:46:11PM -0700, Daniel Xu wrote:
+> This commit introduces the bpf page cache iterator. This iterator allows
+> users to run a bpf prog against each page in the "page cache".
+> Internally, the "page cache" is extremely tied to VFS superblock + inode
+> combo. Because of this, iter_pagecache will only examine pages in the
+> caller's mount namespace.
 > 
-> OK, let me outline my locking scheme because I think it's rather better
-> than Michel's.  The vma refcount is the slow path.
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  kernel/bpf/Makefile         |   2 +-
+>  kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 294 insertions(+), 1 deletion(-)
+>  create mode 100644 kernel/bpf/pagecache_iter.c
 > 
-> 1. take the RCU read lock
-> 2. walk the pgd/p4d/pud/pmd
-> 3. allocate page tables if necessary.  *handwave GFP flags*.
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 7f33098ca63f..3deb6a8d3f75 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
+>  endif
+>  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
+>  
+> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
+> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o pagecache_iter.o map_iter.o task_iter.o prog_iter.o
+>  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+>  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+> diff --git a/kernel/bpf/pagecache_iter.c b/kernel/bpf/pagecache_iter.c
+> new file mode 100644
+> index 000000000000..8442ab0d4221
+> --- /dev/null
+> +++ b/kernel/bpf/pagecache_iter.c
+> @@ -0,0 +1,293 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/init.h>
+> +#include <linux/mm_types.h>
+> +#include <linux/mnt_namespace.h>
+> +#include <linux/nsproxy.h>
+> +#include <linux/pagemap.h>
+> +#include <linux/radix-tree.h>
+> +#include <linux/seq_file.h>
+> +#include "../../fs/mount.h"
 
-The problem with allocating page-tables was that you can race with
-zap_page_range() if you're not holding mmap_sem, and as such can install
-a page-table after, in which case it leaks.
+This is a private header on purpose. Outside of fs/ poking around in
+struct mount or struct mount_namespace should not be done.
 
-IIRC that was solvable, but it did need a bit of care.
+> +
+> +struct bpf_iter_seq_pagecache_info {
+> +	struct mnt_namespace *ns;
+> +	struct radix_tree_root superblocks;
+> +	struct super_block *cur_sb;
+> +	struct inode *cur_inode;
+> +	unsigned long cur_page_idx;
+> +};
+> +
+> +static struct super_block *goto_next_sb(struct bpf_iter_seq_pagecache_info *info)
+> +{
+> +	struct super_block *sb = NULL;
+> +	struct radix_tree_iter iter;
+> +	void **slot;
+> +
+> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter,
+> +				 ((unsigned long)info->cur_sb + 1)) {
+> +		sb = (struct super_block *)iter.index;
+> +		break;
+> +	}
+> +
+> +	info->cur_sb = sb;
+> +	info->cur_inode = NULL;
+> +	info->cur_page_idx = 0;
+> +	return sb;
+> +}
+> +
+> +static bool inode_unusual(struct inode *inode) {
+> +	return ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
+> +		(inode->i_mapping->nrpages == 0));
+> +}
+> +
+> +static struct inode *goto_next_inode(struct bpf_iter_seq_pagecache_info *info)
+> +{
+> +	struct inode *prev_inode = info->cur_inode;
+> +	struct inode *inode;
+> +
+> +retry:
+> +	BUG_ON(!info->cur_sb);
+> +	spin_lock(&info->cur_sb->s_inode_list_lock);
+> +
+> +	if (!info->cur_inode) {
+> +		list_for_each_entry(inode, &info->cur_sb->s_inodes, i_sb_list) {
+> +			spin_lock(&inode->i_lock);
+> +			if (inode_unusual(inode)) {
+> +				spin_unlock(&inode->i_lock);
+> +				continue;
+> +			}
+> +			__iget(inode);
+> +			spin_unlock(&inode->i_lock);
+> +			info->cur_inode = inode;
+> +			break;
+> +		}
+> +	} else {
+> +		inode = info->cur_inode;
+> +		info->cur_inode = NULL;
+> +		list_for_each_entry_continue(inode, &info->cur_sb->s_inodes,
+> +					     i_sb_list) {
+> +			spin_lock(&inode->i_lock);
+> +			if (inode_unusual(inode)) {
+> +				spin_unlock(&inode->i_lock);
+> +				continue;
+> +			}
+> +			__iget(inode);
+> +			spin_unlock(&inode->i_lock);
+> +			info->cur_inode = inode;
+> +			break;
+> +		}
+> +	}
+> +
+> +	/* Seen all inodes in this superblock */
+> +	if (!info->cur_inode) {
+> +		spin_unlock(&info->cur_sb->s_inode_list_lock);
+> +		if (!goto_next_sb(info)) {
+> +			inode = NULL;
+> +			goto out;
+> +		}
+> +
+> +		goto retry;
+> +	}
+> +
+> +	spin_unlock(&info->cur_sb->s_inode_list_lock);
+> +	info->cur_page_idx = 0;
+> +out:
+> +	iput(prev_inode);
+> +	return info->cur_inode;
+> +}
+> +
+> +static struct page *goto_next_page(struct bpf_iter_seq_pagecache_info *info)
+> +{
+> +	struct page *page, *ret = NULL;
+> +	unsigned long idx;
+> +
+> +	rcu_read_lock();
+> +retry:
+> +	BUG_ON(!info->cur_inode);
+> +	ret = NULL;
+> +	xa_for_each_start(&info->cur_inode->i_data.i_pages, idx, page,
+> +			  info->cur_page_idx) {
+> +		if (!page_cache_get_speculative(page))
+> +			continue;
+> +
+> +		ret = page;
+> +		info->cur_page_idx = idx + 1;
+> +		break;
+> +	}
+> +
+> +	if (!ret) {
+> +		/* Seen all inodes and superblocks */
+> +		if (!goto_next_inode(info))
+> +			goto out;
+> +
+> +		goto retry;
+> +	}
+> +
+> +out:
+> +	rcu_read_unlock();
+> +	return ret;
+> +}
+> +
+> +static void *pagecache_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
+> +	struct page *page;
+> +
+> +	if (!info->cur_sb && !goto_next_sb(info))
+> +		return NULL;
+> +	if (!info->cur_inode && !goto_next_inode(info))
+> +		return NULL;
+> +
+> +	page = goto_next_page(info);
+> +	if (!page)
+> +		return NULL;
+> +
+> +	if (*pos == 0)
+> +		++*pos;
+> +
+> +	return page;
+> +
+> +}
+> +
+> +static void *pagecache_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
+> +	struct page *page;
+> +
+> +	++*pos;
+> +	put_page((struct page *)v);
+> +	page = goto_next_page(info);
+> +	if (!page)
+> +		return NULL;
+> +
+> +	return page;
+> +}
+> +
+> +struct bpf_iter__pagecache {
+> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +	__bpf_md_ptr(struct page *, page);
+> +};
+> +
+> +DEFINE_BPF_ITER_FUNC(pagecache, struct bpf_iter_meta *meta, struct page *page)
+> +
+> +static int __pagecache_seq_show(struct seq_file *seq, struct page *page,
+> +				bool in_stop)
+> +{
+> +	struct bpf_iter_meta meta;
+> +	struct bpf_iter__pagecache ctx;
+> +	struct bpf_prog *prog;
+> +
+> +	meta.seq = seq;
+> +	prog = bpf_iter_get_info(&meta, in_stop);
+> +	if (!prog)
+> +		return 0;
+> +
+> +	meta.seq = seq;
+> +	ctx.meta = &meta;
+> +	ctx.page = page;
+> +	return bpf_iter_run_prog(prog, &ctx);
+> +}
+> +
+> +static int pagecache_seq_show(struct seq_file *seq, void *v)
+> +{
+> +	return __pagecache_seq_show(seq, v, false);
+> +}
+> +
+> +static void pagecache_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +	(void)__pagecache_seq_show(seq, v, true);
+> +	if (v)
+> +		put_page((struct page *)v);
+> +}
+> +
+> +static int init_seq_pagecache(void *priv_data, struct bpf_iter_aux_info *aux)
+> +{
+> +	struct bpf_iter_seq_pagecache_info *info = priv_data;
+> +	struct radix_tree_iter iter;
+> +	struct super_block *sb;
+> +	struct mount *mnt;
+> +	void **slot;
+> +	int err;
+> +
+> +	info->ns = current->nsproxy->mnt_ns;
+> +	get_mnt_ns(info->ns);
+> +	INIT_RADIX_TREE(&info->superblocks, GFP_KERNEL);
+> +
+> +	spin_lock(&info->ns->ns_lock);
+> +	list_for_each_entry(mnt, &info->ns->list, mnt_list) {
 
-> 4. walk the vma tree
-> 5. call ->map_pages
+Not just are there helpers for taking ns_lock
+static inline void lock_ns_list(struct mnt_namespace *ns)
+static inline void unlock_ns_list(struct mnt_namespace *ns)
+they are private to fs/namespace.c because it's the only place that
+should ever walk this list.
 
-I can't remember ->map_pages().. I think that's 'new'. git-blame tells
-me that's 2014, and I did the original SPF in 2010.
+This seems buggy: why is it ok here to only take ns_lock and not also
+namespace_sem like mnt_already_visible() and __is_local_mountpoint() or
+the relevant proc iterators? I might be missing something.
 
-Yes, that looks like a useful thing to have, it does the non-blocking
-part of ->fault().
+> +		sb = mnt->mnt.mnt_sb;
+> +
+> +		/* The same mount may be mounted in multiple places */
+> +		if (radix_tree_lookup(&info->superblocks, (unsigned long)sb))
+> +			continue;
+> +
+> +		err = radix_tree_insert(&info->superblocks,
+> +				        (unsigned long)sb, (void *)1);
+> +		if (err)
+> +			goto out;
+> +	}
+> +
+> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
+> +		sb = (struct super_block *)iter.index;
+> +		atomic_inc(&sb->s_active);
 
-I suppose the thing missing here is that if ->map_pages() does not
-return a page, we have:
+It also isn't nice that you mess with sb->s_active directly.
 
-  goto 9
+Imho, this is poking around in a lot of fs/ specific stuff that other
+parts of the kernel should not care about or have access to.
 
-> 6. take ptlock
-> 7. insert page(s)
-> 8. drop ptlock
-> if this all worked out, we're done, drop the RCU read lock and return.
-
-> 9. increment vma refcount
-> 10. drop RCU read lock
-> 11. call ->fault
-> 12. decrement vma refcount
-
-And here we do 6-8 again, right?
-
-> Compared to today, where we bump the refcount on the file underlying the
-> vma, this is _better_ scalability -- different mappings of the same file
-> will not contend on the file's refcount.
->
-> I suspect your huge VMA was anon, and that wouldn't need a vma refcount
-> as faulting in new pages doesn't need to do I/O, just drop the RCU
-> lock, allocate and retry.
-
-IIRC yes, it was either a huge matrix setup or some database thing, I
-can't remember. But the thing was, we didn't have that ->map_pages(), so
-we had to call ->fault(), which can sleep, so I had to use SRCU across
-the whole thing (or rather, I hacked up preemptible-rcu, because SRCU
-was super primitive back then). It did kick start significant SRCU
-rework IIRC. Anyway, that's all ancient history.
+Christian
