@@ -2,114 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0F3358CBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECEF358CC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhDHSfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHSfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:35:53 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF4BC061760;
-        Thu,  8 Apr 2021 11:35:41 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id j5so2193072wrn.4;
-        Thu, 08 Apr 2021 11:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YdkqUAqRAdKWRhs+z7FovfLbmEEQLSGL3bUMENm8fL8=;
-        b=rVjR2kb2flCiKSmMVDladc7+gTWkhxbapYth3dJcRsrf4QQxQkhJECupTrRn5WoBNN
-         ZSVWfyvCuyjAlAm7Q+5pUCvEu4mOhQ6ngDoVTD3VZHt9kmtLeR3dHRXnkXv6Vy1OfZ9I
-         BcjJQCr9sJ+63RSy37YH5Xq/9TmgtdZ+1+rlu+x2UKiXU7FAQerTbXf5sF9BfBJBOH7+
-         HSyHk65hlU8Cj7K3Y01JNPcXj9ResLBys/wgNn4DdMx4ogbxtAMQtSmoaiJfMaXo1a5e
-         bwPA/i2cV0mI04B9F1jYF+Pf3qlzLF50yYtHB5rZOdfIfusC8HTBmQJbpDCqsRo27A1S
-         wIYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YdkqUAqRAdKWRhs+z7FovfLbmEEQLSGL3bUMENm8fL8=;
-        b=CbU5XtCa4c71Wa9cVu2g1gDkjC/JmImkJptqGrJp4PY2TyCSBSyhle0eTsiHy3amTy
-         rvvOp6PY7tm8aeMrlCtOJJYjV9BTaaquUrVDnjuiF04u74DzT1l9G81XOda8V26kTHZl
-         FqKmpCsP3XDNFq1mFrCqLcvAAl1UtOm7yngpjGGFUNSdUGGqzZUCjwqoiJxvk3yFPLDJ
-         L6UCa/Cud46bV3jBoD9SA9eaaaUQaNNaD1O4j8i3Zof3xUCMhEatB1Cmcgxkn6AQEHHY
-         a2OEQQq9r5cv7+Y5iV5ew/nOSGPmKRpGaRUp6fWFzhtfIiJfAOpgd8AvR26TyEC6C30V
-         gX2A==
-X-Gm-Message-State: AOAM533iK5bPjuh8wxl50HA5zrLnLiXAv0xWTHGyWWyIW7uqXMzPP/HA
-        JKmaBP4N/jrVGLNiPorGomcoHQgGF9eAac4aRcpJ9GrsRb5+yg==
-X-Google-Smtp-Source: ABdhPJzKNmIOZvqyBLFGJdhepG/E74G/6l4BfMor6aCd2A7iVpr40wwezc/BhPTzN81givfID2uD6NpZra00SOK6MNU=
-X-Received: by 2002:adf:e48f:: with SMTP id i15mr13552227wrm.197.1617906940268;
- Thu, 08 Apr 2021 11:35:40 -0700 (PDT)
+        id S232814AbhDHSiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231676AbhDHSin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:38:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050CA6113A
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 18:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617907112;
+        bh=eFzHf51U5luHJHHIT+EzCxofnc4C9Q/qr5YD8mH+tzY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fUsuCezIVkzXoG1q+ZJJu4tDezH+CxpEFLjbyNib4Ui5VwMBLpxWeAfoE/v4VlW5e
+         FGd+Sz6TtKJphj7XD8tPK8wnZhS2NeTdkPcq+NW++5pc01XzrjmiQm9jh9rjf9AnU4
+         lDR+mzSIgzx6Wlwb6VrWY54IGene5wPHFlop6W08uopaFCJ9bE+vuGWD3caXkoDaps
+         8mAJNuXXk/9DVbHMem7g9NE/h3KbokSZD4ZHSR4Ffz221Ccijv7tiBEi8elcvK09Wt
+         yeBQXOu2h/Yd33iltrDITLJLG2lfpI4VVf7+iE5pQOzN4dSBhIoq97CTRo8FL48VXs
+         YkQBgIU7Ccflg==
+Received: by mail-ed1-f51.google.com with SMTP id m3so3624399edv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:38:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531r5bfxCUQ6xGj9rPFUzX7YJ7z4We9KYmWUtIgLyKw64v+AvH2I
+        ToqDUqz5h35M2j9S007REG+42S+DPIS5JHqfKw==
+X-Google-Smtp-Source: ABdhPJwQVvZUqQi3NeevrsgJYQi6WLV6Puz9Ne7f37tq3Sbjx6Eg1zWhV0JxTnYmzfs+ZNNx5mMqYWFmY3YymbBRjKU=
+X-Received: by 2002:a50:fd12:: with SMTP id i18mr7719021eds.137.1617907110474;
+ Thu, 08 Apr 2021 11:38:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210408172353.21143-1-TheSven73@gmail.com> <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
- <CAGngYiVg+XXScqTyUQP-H=dvLq84y31uATy4DDzzBvF1OWxm5g@mail.gmail.com>
- <CAFSKS=P3Skh4ddB0K_wUxVtQ5K9RtGgSYo1U070TP9TYrBerDQ@mail.gmail.com>
- <820ed30b-90f4-2cba-7197-6c6136d2e04e@gmail.com> <CAGngYiU=v16Z3NHC0FyxcZqEJejKz5wn2hjLubQZKJKHg_qYhw@mail.gmail.com>
-In-Reply-To: <CAGngYiU=v16Z3NHC0FyxcZqEJejKz5wn2hjLubQZKJKHg_qYhw@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 8 Apr 2021 14:35:29 -0400
-Message-ID: <CAGngYiXH8WsK347ekOZau+oLtKa4RFF8RCc5dAoSsKFvZAFbTw@mail.gmail.com>
-Subject: Re: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
- just 2"
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     George McCollister <george.mccollister@gmail.com>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-3-robh@kernel.org>
+ <20210330153125.GC6567@willie-the-truck> <CAL_JsqKN4=T4tHofEoBoWVEZSQEj_m=561_kEdEEkz5szHszhQ@mail.gmail.com>
+ <20210331160059.GD7815@willie-the-truck> <CAL_Jsq+ga_-5=UBTAn4eGhpL6j2aWFVh9CdxR4XSG7WpYfxNsA@mail.gmail.com>
+ <20210407124437.GA15622@willie-the-truck> <20210408110800.GA32792@C02TD0UTHF1T.local>
+In-Reply-To: <20210408110800.GA32792@C02TD0UTHF1T.local>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 8 Apr 2021 13:38:17 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+H_asWWrHiCk-PBS8xDEGpBL1__dRyrPXdBYgRBBw2vA@mail.gmail.com>
+Message-ID: <CAL_Jsq+H_asWWrHiCk-PBS8xDEGpBL1__dRyrPXdBYgRBBw2vA@mail.gmail.com>
+Subject: Re: [PATCH v6 02/10] arm64: perf: Enable PMU counter direct access
+ for perf event
+To:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
-
-On Thu, Apr 8, 2021 at 2:26 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+On Thu, Apr 8, 2021 at 6:08 AM Mark Rutland <mark.rutland@arm.com> wrote:
 >
-> George, I will send a patch for you to try shortly. Except if you're
-> already ahead :)
+> On Wed, Apr 07, 2021 at 01:44:37PM +0100, Will Deacon wrote:
+> > [Moving Mark to To: since I'd like his view on this]
+> >
+> > On Thu, Apr 01, 2021 at 02:45:21PM -0500, Rob Herring wrote:
+> > > On Wed, Mar 31, 2021 at 11:01 AM Will Deacon <will@kernel.org> wrote:
+> > > >
+> > > > On Tue, Mar 30, 2021 at 12:09:38PM -0500, Rob Herring wrote:
+> > > > > On Tue, Mar 30, 2021 at 10:31 AM Will Deacon <will@kernel.org> wrote:
+> > > > > >
+> > > > > > On Wed, Mar 10, 2021 at 05:08:29PM -0700, Rob Herring wrote:
+> > > > > > > From: Raphael Gault <raphael.gault@arm.com>
+>
+> > > > > > > +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+> > > > > > > +{
+> > > > > > > +     struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+> > > > > > > +
+> > > > > > > +     if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
+> > > > > > > +             return;
+> > > > > > > +
+> > > > > > > +     if (atomic_dec_and_test(&mm->context.pmu_direct_access))
+> > > > > > > +             on_each_cpu_mask(&armpmu->supported_cpus, refresh_pmuserenr, mm, 1);
+> > > > > >
+> > > > > > Given that the pmu_direct_access field is global per-mm, won't this go
+> > > > > > wrong if multiple PMUs are opened by the same process but only a subset
+> > > > > > are exposed to EL0? Perhaps pmu_direct_access should be treated as a mask
+> > > > > > rather than a counter, so that we can 'and' it with the supported_cpus for
+> > > > > > the PMU we're dealing with.
+> > > > >
+> > > > > It needs to be a count to support multiple events on the same PMU. If
+> > > > > the event is not enabled for EL0, then we'd exit out on the
+> > > > > ARMPMU_EL0_RD_CNTR check. So I think we're fine.
+> > > >
+> > > > I'm still not convinced; pmu_direct_access is shared between PMUs, so
+> > > > testing the result of atomic_dec_and_test() just doesn't make sense to
+> > > > me, as another PMU could be playing with the count.
+> > >
+> > > How is that a problem? Let's make a concrete example:
+> > >
+> > > map PMU1:event2 -> pmu_direct_access = 1 -> enable access
+> > > map PMU2:event3 -> pmu_direct_access = 2
+> > > map PMU1:event4 -> pmu_direct_access = 3
+> > > unmap PMU2:event3 -> pmu_direct_access = 2
+> > > unmap PMU1:event2 -> pmu_direct_access = 1
+> > > unmap PMU1:event4 -> pmu_direct_access = 0 -> disable access
+> > >
+> > > The only issue I can see is PMU2 remains enabled for user access until
+> > > the last unmap. But we're sharing the mm, so who cares? Also, in this
+> > > scenario it is the user's problem to pin themselves to cores sharing a
+> > > PMU. If the user doesn't do that, they get to keep the pieces.
+> >
+> > I guess I'm just worried about exposing the counters to userspace after
+> > the PMU driver (or perf core?) thinks that they're no longer exposed in
+> > case we leak other events.
+>
+> IMO that's not practically different from the single-PMU case (i.e.
+> multi-PMU isn't material, either we have a concern with leaking or we
+> don't); more on that below.
+>
+> While it looks odd to place this on the mm, I don't think it's the end
+> of the world.
+>
+> > However, I'm not sure how this is supposed to work normally: what
+> > happens if e.g. a privileged user has a per-cpu counter for a kernel
+> > event while a task has a counter with direct access -- can that task
+> > read the kernel event out of the PMU registers from userspace?
+>
+> Yes -- userspace could go read any counters even though it isn't
+> supposed to, and could potentially infer information from those. It
+> won't have access to the config registers or kernel data structures, so
+> it isn't guaranteed to know what the even is or when it is
+> context-switched/reprogrammed/etc.
+>
+> If we believe that's a problem, then it's difficult to do anything
+> robust other than denying userspace access entirely, since disabling
+> userspace access while in use would surprise applications, and denying
+> privileged events would need some global state that we consult at event
+> creation time (in addition to being an inversion of privilege).
+>
+> IIRC there was some fuss about this a while back on x86; I'll go dig and
+> see what I can find, unless Peter has a memory...
 
-Would this work for you? It does for me.
+Maybe this one[1].
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c
-b/drivers/net/ethernet/microchip/lan743x_main.c
-index dbdfabff3b00..7b6794aa8ea9 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -885,8 +885,8 @@ static int lan743x_mac_set_mtu(struct
-lan743x_adapter *adapter, int new_mtu)
-        }
+Rob
 
-        mac_rx &= ~(MAC_RX_MAX_SIZE_MASK_);
--       mac_rx |= (((new_mtu + ETH_HLEN + 4) << MAC_RX_MAX_SIZE_SHIFT_) &
--                 MAC_RX_MAX_SIZE_MASK_);
-+       mac_rx |= (((new_mtu + ETH_HLEN + ETH_FCS_LEN)
-+                 << MAC_RX_MAX_SIZE_SHIFT_) & MAC_RX_MAX_SIZE_MASK_);
-        lan743x_csr_write(adapter, MAC_RX, mac_rx);
-
-        if (enabled) {
-@@ -1944,7 +1944,7 @@ static int lan743x_rx_init_ring_element(struct
-lan743x_rx *rx, int index)
-        struct sk_buff *skb;
-        dma_addr_t dma_ptr;
-
--       buffer_length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
-+       buffer_length = netdev->mtu + ETH_HLEN + ETH_FCS_LEN + RX_HEAD_PADDING;
-
-        descriptor = &rx->ring_cpu_ptr[index];
-        buffer_info = &rx->buffer_info[index];
-@@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
-                dev_kfree_skb_irq(skb);
-                return NULL;
-        }
--       frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 2);
-+       frame_length = max_t(int, 0, frame_length - ETH_FCS_LEN);
-        if (skb->len > frame_length) {
-                skb->tail -= skb->len - frame_length;
-                skb->len = frame_length;
+[1] https://lore.kernel.org/lkml/20200730123815.18518-1-kan.liang@linux.intel.com/
