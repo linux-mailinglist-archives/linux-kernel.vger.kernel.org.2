@@ -2,96 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523DA3582E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5E03582E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhDHMIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhDHMIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:08:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8066461164;
-        Thu,  8 Apr 2021 12:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617883682;
-        bh=CsoPgNcV3Hlu6+SPa15r83WWFyZ4xy+mR+J4x0wp6a0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a2tXcNAQLC7RNFviqgmj1TIAuavR48MEvUi17tzr+8v6074QqXAM7Vm2fKP5EZaGY
-         gbajnd636UMQ2Yfz88XDlQ5E9pzwlGqIkCRmKLj6UBJEhS80ZKXPVPNFotUr+YCw8u
-         wJY8itsiPggejsR3XSfO3eBAX6zl4Pe7uxYSBrho=
-Date:   Thu, 8 Apr 2021 14:07:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] USB: cdc-acm: fix TIOCGSERIAL implementation
-Message-ID: <YG7yH1FzGsyOCefB@kroah.com>
-References: <20210407102845.32720-1-johan@kernel.org>
- <20210407102845.32720-4-johan@kernel.org>
- <a1a94db2d373c4c7b8841908d8e6133ab022232e.camel@suse.com>
- <YG7RiLoscS6VXG7n@hovoldconsulting.com>
- <0049152ce9da85c50fda91c1b77ca233ba0fef3d.camel@suse.com>
- <YG7vEQa53AhN+piv@hovoldconsulting.com>
- <61df47f6708fc4bc9add8d42aff6edcbad6e9618.camel@suse.com>
+        id S231337AbhDHMJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:09:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57894 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229921AbhDHMJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:09:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617883755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rdpdfQzM446muxH6P5CozRuSvNifAeX4ooK3/0ZCJss=;
+        b=VqbPv+PEuMVu47frx+3xVkyrCLP91Nv23NVvxtbGrFmzQsmiacFmQLrtREAnjQsjAAyiK1
+        ITGqu7ON2+k3k4JkxWqYaTYV+qJAfWZnqUAfji3frNWXXk6qyPBAW7BtRszFUmx81m3p1w
+        315T1n4hM843df/Kh5Xh5wN+DPAzp/w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-515-mTCrQS6gOcmkLPDDheRclA-1; Thu, 08 Apr 2021 08:09:12 -0400
+X-MC-Unique: mTCrQS6gOcmkLPDDheRclA-1
+Received: by mail-ej1-f69.google.com with SMTP id pj13so747139ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:09:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rdpdfQzM446muxH6P5CozRuSvNifAeX4ooK3/0ZCJss=;
+        b=DjI/jADzH0tHj7iWszKeiJGUF+yRIGx56JBTfjL/38p9rMvr6ENzg+MTIMiFLH+H3p
+         Fjp3rkaoH72LLiAfA0rqyBAaCTnpm80epfDJ5NTMkxGnMivc41KTG3WaSGuV2RwWxz0o
+         b9b/Y+8aEseP+mtwBPxj9dL/65i7kxM6+LLI1GKxOKs905yeyrrZsrqENubE60aQKmg2
+         huf22eSVvEdGrrx5vrNFV2POCmCprOtXuqVP28aL1RHSnyp0iggQoMnYXWx2bK1dSP8e
+         iJixoIVA2yKrBgHGbtVeIC5rxJnjit1Mfz+Ir+ZvsnmYMhz3EJ14Tt5eZFtpo1vo9Ema
+         vmNA==
+X-Gm-Message-State: AOAM530S6EZYNnT+Lh4iyil3cnbmIB6XmUwRFGaMAypmtT/LhuZjyXbd
+        Z8MHqkFCL8YaDvWs4gyPKPuOGSfIU7V9U0CrlXFs7o4dNfKoUZ7+ixVcWvYLDJC9niq2sS4CBSV
+        s150HtYtbDPH0KlHm0dbCoV3c
+X-Received: by 2002:a17:906:958f:: with SMTP id r15mr9954077ejx.450.1617883751554;
+        Thu, 08 Apr 2021 05:09:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwE1OEbopDmkYK5v4FDEcViOLJemUWoKVpGTwpGGwnEEY68wRznkBYOfU9GHvneFj/l7+bdow==
+X-Received: by 2002:a17:906:958f:: with SMTP id r15mr9954052ejx.450.1617883751407;
+        Thu, 08 Apr 2021 05:09:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o26sm7272353ejx.90.2021.04.08.05.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 05:09:10 -0700 (PDT)
+Subject: Re: [PATCH v2 07/17] KVM: x86/mmu: Check PDPTRs before allocating PAE
+ roots
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210305011101.3597423-1-seanjc@google.com>
+ <20210305011101.3597423-8-seanjc@google.com>
+ <CANRm+CzUAzR+D3BtkYpe71sHf_nmtm_Qmh4neqc=US2ETauqyQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f6ae3dbb-cfa5-4d8b-26bf-92db6fc9eab1@redhat.com>
+Date:   Thu, 8 Apr 2021 14:09:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61df47f6708fc4bc9add8d42aff6edcbad6e9618.camel@suse.com>
+In-Reply-To: <CANRm+CzUAzR+D3BtkYpe71sHf_nmtm_Qmh4neqc=US2ETauqyQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:59:43PM +0200, Oliver Neukum wrote:
-> Am Donnerstag, den 08.04.2021, 13:54 +0200 schrieb Johan Hovold:
-> > On Thu, Apr 08, 2021 at 01:34:12PM +0200, Oliver Neukum wrote:
-> > > Am Donnerstag, den 08.04.2021, 11:48 +0200 schrieb Johan Hovold:
-> > > > On Thu, Apr 08, 2021 at 10:36:46AM +0200, Oliver Neukum wrote:
-> > > > > Am Mittwoch, den 07.04.2021, 12:28 +0200 schrieb Johan Hovold:
-> > > > > Well, the devices report it. It is part of the standard.
-> > > > 
-> > > > No, the standard doesn't include anything about a baud-base clock
-> > > > AFAICT.
-> > > 
-> > > Unfortunately it does.
-> > > dwDTERate - chapter 6.3.11 - table 17
-> > 
-> > That's not the base clock rate, that's just the currently configured
-> > line speed which you can read from termios 
-> > > If we does this wrongly, we should certainly fix it, but just removing
-> > > the reporting doesn't look right to me.
-> > 
-> > The driver got its interpretation of baud_base wrong, and CDC doesn't
-> > even have a concept of base clock rate so removing it is the right thing
-> > to do.
-> > 
-> > Again, baud_base is really only relevant with legacy UARTs and when
-> > using the deprecated ASYNC_SPD_CUST.
-> > 
-> > And if the user wants to knows the current line speed we have a
-> > different interface for that.
+On 08/04/21 13:15, Wanpeng Li wrote:
+> I saw this splatting:
 > 
-> Hi,
+>   BUG: sleeping function called from invalid context at
+> arch/x86/kvm/kvm_cache_regs.h:115
+>    kvm_pdptr_read+0x20/0x60 [kvm]
+>    kvm_mmu_load+0x3bd/0x540 [kvm]
 > 
-> thank you, that clarifies things. I am happy with the patch itself,
-> but could I ask you to do two things:
-> 
-> 1. Edit the commit description
-> making clear that the difference
-> between the base clock rate and the line speed.
-> 
-> 2. Mark the patch specially to NOT be included in stable. We may
-> have
-> users misusing the current API.
+> There is a might_sleep() in kvm_pdptr_read(), however, the original
+> commit didn't explain more. I can send a formal one if the below fix
+> is acceptable.
 
-That doesn't matter, if there are misusers then their use will "break"
-on newer kernels.  And if so, then it doesn't deserve to be in any
-release.
+I think we can just push make_mmu_pages_available down into
+kvm_mmu_load's callees.  This way it's not necessary to hold the lock
+until after the PDPTR check:
 
-If a change is good enough for Linus's tree, that means it is good
-enough for a stable tree, the requirements are exactly the same when it
-comes to userspace interactions.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 0d92a269c5fa..f92c3695bfeb 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3244,6 +3244,12 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+  	u8 shadow_root_level = mmu->shadow_root_level;
+  	hpa_t root;
+  	unsigned i;
++	int r;
++
++	write_lock(&vcpu->kvm->mmu_lock);
++	r = make_mmu_pages_available(vcpu);
++	if (r < 0)
++		goto out_unlock;
+  
+  	if (is_tdp_mmu_enabled(vcpu->kvm)) {
+  		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
+@@ -3266,13 +3272,16 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+  		mmu->root_hpa = __pa(mmu->pae_root);
+  	} else {
+  		WARN_ONCE(1, "Bad TDP root level = %d\n", shadow_root_level);
+-		return -EIO;
++		r = -EIO;
+  	}
+  
++out_unlock:
++	write_unlock(&vcpu->kvm->mmu_lock);
++
+  	/* root_pgd is ignored for direct MMUs. */
+  	mmu->root_pgd = 0;
+  
+-	return 0;
++	return r;
+  }
+  
+  static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+@@ -3282,6 +3291,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+  	gfn_t root_gfn, root_pgd;
+  	hpa_t root;
+  	int i;
++	int r;
+  
+  	root_pgd = mmu->get_guest_pgd(vcpu);
+  	root_gfn = root_pgd >> PAGE_SHIFT;
+@@ -3300,6 +3310,11 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+  		}
+  	}
+  
++	write_lock(&vcpu->kvm->mmu_lock);
++	r = make_mmu_pages_available(vcpu);
++	if (r < 0)
++		goto out_unlock;
++
+  	/*
+  	 * Do we shadow a long mode page table? If so we need to
+  	 * write-protect the guests page table root.
+@@ -3308,7 +3323,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+  		root = mmu_alloc_root(vcpu, root_gfn, 0,
+  				      mmu->shadow_root_level, false);
+  		mmu->root_hpa = root;
+-		goto set_root_pgd;
++		goto out_unlock;
+  	}
+  
+  	if (WARN_ON_ONCE(!mmu->pae_root))
+@@ -3350,7 +3365,8 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+  	else
+  		mmu->root_hpa = __pa(mmu->pae_root);
+  
+-set_root_pgd:
++out_unlock:
++	write_unlock(&vcpu->kvm->mmu_lock);
+  	mmu->root_pgd = root_pgd;
+  
+  	return 0;
+@@ -4852,14 +4868,10 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
+  	r = mmu_alloc_special_roots(vcpu);
+  	if (r)
+  		goto out;
+-	write_lock(&vcpu->kvm->mmu_lock);
+-	if (make_mmu_pages_available(vcpu))
+-		r = -ENOSPC;
+-	else if (vcpu->arch.mmu->direct_map)
++	if (vcpu->arch.mmu->direct_map)
+  		r = mmu_alloc_direct_roots(vcpu);
+  	else
+  		r = mmu_alloc_shadow_roots(vcpu);
+-	write_unlock(&vcpu->kvm->mmu_lock);
+  	if (r)
+  		goto out;
+  
 
-thanks,
+Paolo
 
-greg k-h
