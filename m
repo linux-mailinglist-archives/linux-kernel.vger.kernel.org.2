@@ -2,102 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC03357A76
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6551357A83
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhDHChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhDHChL (ORCPT
+        id S229640AbhDHCoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:44:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16070 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhDHCob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:37:11 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4BDC061763
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 19:37:00 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so155702oor.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 19:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sNt0N9k5A/iZhS6mLH3QqBzCSSb0518KO9+l8szb88c=;
-        b=LUf8Eiojwyx3AkSHJqCIk3X+PIGMeWOQGjVQfUNYCrrKhnGPtxvNMeITP4theeZA4s
-         TXvOTOWeYg9JjM4Q1J8GpAKIT9XqTZrCzvb7I5vwvfLR6j/RESBDguI0jSK1LEIuxZrf
-         p6cSNv43h8Lp43xBgDvkuR1HanutyH1eCekF9EKytvEAkmjjUsyAPiG3NEZpk32F7UV/
-         l3WRmf8e9Eb9ov6gjNMcAkuWOQjxZRR7O69/xXXVIV532y7tLSXjQtBn1XX4Z0GO3TZC
-         HYCx0wNGD0llxL3YX20aku6rh3xYYZTPyRcpzkGPg2gPKaywceMWIxfh/53o77I7XJlU
-         mCaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sNt0N9k5A/iZhS6mLH3QqBzCSSb0518KO9+l8szb88c=;
-        b=m5mkm1oGDyc3Bdg0aQjZ1p52J6rUtIoZgf0szrlfakmIBeD1KwSBzkX7/OU+AvfSsK
-         8zRl2gz983DIsKzMQpfOkH+uiSH9wwA8HH7OOxb0HZIrqfENOiN1hKTxA+yC9biPd0VX
-         c0aL3ie04LSUywMdCszJllItNo9IAnOvptV59M7ujT4z1AXhuYjnlSPyZbVmuB+3HDT6
-         dPF92+bbpfMe0iz+W/WKWLNczrD9f/SjjgDSFfkohFkEJDbPbE1TGliusiejx+YucfYw
-         Hp4fHjvSl2K2oeBo7JDZyhidZ12fVxTU98+/6j9yUfSg1zf+6xLBgtIZ1wtNQHIpObMB
-         2Zbw==
-X-Gm-Message-State: AOAM5312VLeEi73A8fZkFRF2LwUKJVgf12NnMzZ3jH9ei0QiRt+igDs2
-        uhXtBXJXdcYIw77lEfFX/OSJhQ==
-X-Google-Smtp-Source: ABdhPJxwHieceqi2i/XhpJhh/5S87/OOgtYfASCGY0aWMHBjw4edQyRluei4ZPIjwLYRu5LlhzIbpA==
-X-Received: by 2002:a4a:d24c:: with SMTP id e12mr5522553oos.73.1617849419360;
-        Wed, 07 Apr 2021 19:36:59 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 3sm4532103oti.30.2021.04.07.19.36.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 19:36:58 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 21:36:56 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     skakit@codeaurora.org, Rob Herring <robh+dt@kernel.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Gross <agross@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH 2/3] dt-bindings: mfd: Convert pm8xxx bindings to yaml
-Message-ID: <20210408023656.GM904837@yoga>
-References: <1615447798-6959-1-git-send-email-skakit@codeaurora.org>
- <1615447798-6959-3-git-send-email-skakit@codeaurora.org>
- <YEpNV55KR2nlAXMP@builder.lan>
- <86f8d5dbdb8d5d6627b9deece1978d07@codeaurora.org>
+        Wed, 7 Apr 2021 22:44:31 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG5Bl4KGzz1BGPn;
+        Thu,  8 Apr 2021 10:42:07 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 10:44:17 +0800
+Subject: Re: [PATCH 2/4] mm/hugeltb: simplify the return code of
+ __vma_reservation_common()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210402093249.25137-1-linmiaohe@huawei.com>
+ <20210402093249.25137-3-linmiaohe@huawei.com>
+ <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
+ <40114ff5-ba3d-ca66-3338-25db80a015da@huawei.com>
+ <aaea15d4-c8e0-ee37-8ceb-35326b7ad1ae@oracle.com>
+ <1926967f-3805-2baf-6b86-24039c6513ca@huawei.com>
+ <de625a4c-b5d2-696f-33c7-7876e0f81435@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <178a2b05-ab9b-3d38-36c5-3950a3859322@huawei.com>
+Date:   Thu, 8 Apr 2021 10:44:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86f8d5dbdb8d5d6627b9deece1978d07@codeaurora.org>
+In-Reply-To: <de625a4c-b5d2-696f-33c7-7876e0f81435@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07 Apr 10:37 CDT 2021, skakit@codeaurora.org wrote:
-
-> Hi Bjorn,
+On 2021/4/8 5:23, Mike Kravetz wrote:
+> On 4/6/21 8:09 PM, Miaohe Lin wrote:
+>> On 2021/4/7 10:37, Mike Kravetz wrote:
+>>> On 4/6/21 7:05 PM, Miaohe Lin wrote:
+>>>> Hi:
+>>>> On 2021/4/7 8:53, Mike Kravetz wrote:
+>>>>> On 4/2/21 2:32 AM, Miaohe Lin wrote:
+>>>>>> It's guaranteed that the vma is associated with a resv_map, i.e. either
+>>>>>> VM_MAYSHARE or HPAGE_RESV_OWNER, when the code reaches here or we would
+>>>>>> have returned via !resv check above. So ret must be less than 0 in the
+>>>>>> 'else' case. Simplify the return code to make this clear.
+>>>>>
+>>>>> I believe we still neeed that ternary operator in the return statement.
+>>>>> Why?
+>>>>>
+>>>>> There are two basic types of mappings to be concerned with:
+>>>>> shared and private.
+>>>>> For private mappings, a task can 'own' the mapping as indicated by
+>>>>> HPAGE_RESV_OWNER.  Or, it may not own the mapping.  The most common way
+>>>>> to create a non-owner private mapping is to have a task with a private
+>>>>> mapping fork.  The parent process will have HPAGE_RESV_OWNER set, the
+>>>>> child process will not.  The idea is that since the child has a COW copy
+>>>>> of the mapping it should not consume reservations made by the parent.
+>>>>
+>>>> The child process will not have HPAGE_RESV_OWNER set because at fork time, we do:
+>>>> 		/*
+>>>> 		 * Clear hugetlb-related page reserves for children. This only
+>>>> 		 * affects MAP_PRIVATE mappings. Faults generated by the child
+>>>> 		 * are not guaranteed to succeed, even if read-only
+>>>> 		 */
+>>>> 		if (is_vm_hugetlb_page(tmp))
+>>>> 			reset_vma_resv_huge_pages(tmp);
+>>>> i.e. we have vma->vm_private_data = (void *)0; for child process and vma_resv_map() will
+>>>> return NULL in this case.
+>>>> Or am I missed something?
+>>>>
+>>>>> Only the parent (HPAGE_RESV_OWNER) is allowed to consume the
+>>>>> reservations.
+>>>>> Hope that makens sense?
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>> ---
+>>>>>>  mm/hugetlb.c | 2 +-
+>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>>>> index a03a50b7c410..b7864abded3d 100644
+>>>>>> --- a/mm/hugetlb.c
+>>>>>> +++ b/mm/hugetlb.c
+>>>>>> @@ -2183,7 +2183,7 @@ static long __vma_reservation_common(struct hstate *h,
+>>>>>>  			return 1;
+>>>>>>  	}
+>>>>>>  	else
+>>>>>
+>>>>> This else also handles the case !HPAGE_RESV_OWNER.  In this case, we
+>>>>
+>>>> IMO, for the case !HPAGE_RESV_OWNER, we won't reach here. What do you think?
+>>>>
+>>>
+>>> I think you are correct.
+>>>
+>>> However, if this is true we should be able to simply the code even
+>>> further.  There is no need to check for HPAGE_RESV_OWNER because we know
+>>> it must be set.  Correct?  If so, the code could look something like:
+>>>
+>>> 	if (vma->vm_flags & VM_MAYSHARE)
+>>> 		return ret;
+>>>
+>>> 	/* We know private mapping with HPAGE_RESV_OWNER */
+>>> 	 * ...						 *
+>>> 	 * Add that existing comment                     */
+>>>
+>>> 	if (ret > 0)
+>>> 		return 0;
+>>> 	if (ret == 0)
+>>> 		return 1;
+>>> 	return ret;
+>>>
+>>
+>> Many thanks for good suggestion! What do you mean is this ?
 > 
-> On 2021-03-11 22:33, Bjorn Andersson wrote:
-> > On Thu 11 Mar 01:29 CST 2021, satya priya wrote:
-[..]
-> > > +patternProperties:
-> > > +  "rtc@[0-9a-f]+$":
-> > 
-> > Can we somehow link this to individual binding docs instead of listing
-> > all the possible functions here?
-> > 
+> I think the below changes would work fine.
 > 
-> you mean we should split this into two:
-> qcom-pm8xxx.yaml and qcom-pm8xxx-rtc.yaml
-> Please correct me if wrong.
+> However, this patch/discussion has made me ask the question.  Do we need
+> the HPAGE_RESV_OWNER flag?  Is the followng true?
+> !(vm_flags & VM_MAYSHARE) && vma_resv_map()  ===> HPAGE_RESV_OWNER
+> !(vm_flags & VM_MAYSHARE) && !vma_resv_map() ===> !HPAGE_RESV_OWNER
 > 
 
-Right, I'm worried that it will be quite hard to maintain this document
-once we start adding all the various pmic blocks to it. So if we somehow
-can maintain a series of qcom-pm8xxx-<func>.yaml and just ref them into
-the main PMIC definition.
+I agree with you.
 
-@Rob, can you give us some guidance on how to structure this binding,
-with the various PMICs described will have some defined subset of a
-larger set of hardware blocks that's often shared between versions?
+HPAGE_RESV_OWNER is set in hugetlb_reserve_pages() and there's no way to clear it
+in the owner process. The child process can not inherit both HPAGE_RESV_OWNER and
+resv_map. So for !HPAGE_RESV_OWNER vma, it knows nothing about resv_map.
 
-Regards,
-Bjorn
+IMO, in !(vm_flags & VM_MAYSHARE) case, we must have:
+	!!vma_resv_map() == !!HPAGE_RESV_OWNER
+
+> I am not suggesting we eliminate the flag and make corresponding
+> changes.  Just curious if you believe we 'could' remove the flag and
+> depend on the above conditions.
+> 
+> One reason for NOT removing the flag is that that flag itself and
+> supporting code and commnets help explain what happens with hugetlb
+> reserves for COW mappings.  That code is hard to understand and the
+> existing code and coments around HPAGE_RESV_OWNER help with
+> understanding.
+
+Agree. These codes took me several days to understand...
+
+> 
+
+Thanks.
