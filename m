@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010D8357C32
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7BD357C26
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhDHGNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:13:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhDHGNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E337610A2;
-        Thu,  8 Apr 2021 06:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617862400;
-        bh=idCIivqrohs+8XI7ShOK104EL8SmXh5vn2poLxMFrcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q8H36JkMAoIsA3GGZmzDcC8UV8kiitjCODQfDEhCJCVRCYaLH2zaV9NgHAY6zJqVS
-         rM+Wo7wDVIdVuXHEUPLSdyfjimfu+m3fyK1+vlQUO28BWF8eGWIwp2vog5eXQwiA1z
-         9yBuP/SnuAthHLUGcWW218KIyjEU9CulxHq9l4GY=
-Date:   Thu, 8 Apr 2021 08:09:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Cc:     John Youn <John.Youn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mian Yousaf Kaukab <yousaf.kaukab@intel.com>,
-        Gregory Herrero <gregory.herrero@intel.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Paul Zimmerman <paulz@synopsys.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Robert Baldyga <r.baldyga@samsung.com>,
-        Kever Yang <kever.yang@rock-chips.com>
-Subject: Re: [PATCH 00/14] usb: dwc2: Fix Partial Power down issues.
-Message-ID: <YG6eFEv8JfE3qSdV@kroah.com>
-References: <cover.1617782102.git.Arthur.Petrosyan@synopsys.com>
- <60f356b2-e465-48e7-ad37-f1021e3581ff@synopsys.com>
+        id S229821AbhDHGJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:09:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45282 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229534AbhDHGJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:09:50 -0400
+X-UUID: 8d8b8fd3c0cf4307ba5ed5db2872e22e-20210408
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=EJEGrtJeH59qQNQHwYtSxuFXpFKOfiBvVZE4IMKw+UI=;
+        b=UsTCpPMvfYiOkL2VHzgv6WKbUAMQH6RFhyRvvqDhgiIv6Bi/AAMMH4w3EqIS6isiMjpthY8Ed+UtZ4MxUoiOsqDQBMq5m5P+KCfHesA8/ndodQtV4/QUBrVyxm1TD1FT1A6TVbnxWEgRHG8rZMeQ+0uyq+lVubnCnF50C22Ki5Q=;
+X-UUID: 8d8b8fd3c0cf4307ba5ed5db2872e22e-20210408
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <nina-cm.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1071343655; Thu, 08 Apr 2021 14:09:36 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 8 Apr 2021 14:09:28 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 8 Apr 2021 14:09:28 +0800
+Message-ID: <1617862168.8874.13.camel@mtksdccf07>
+Subject: Re: [PATCH v2 5/6] soc: mediatek: devapc: add debug register for
+ new IC support
+From:   Nina Wu <nina-cm.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
+Date:   Thu, 8 Apr 2021 14:09:28 +0800
+In-Reply-To: <23c0d15c-6cc2-dc40-e45a-c2fb749cec1f@gmail.com>
+References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+         <1617259087-5502-5-git-send-email-nina-cm.wu@mediatek.com>
+         <23c0d15c-6cc2-dc40-e45a-c2fb749cec1f@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60f356b2-e465-48e7-ad37-f1021e3581ff@synopsys.com>
+X-TM-SNTS-SMTP: 7CAFF274F06E74740FF1A0901266ECC9C36F1710CE7BB4806B874DD48507ED1D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 05:57:57AM +0000, Artur Petrosyan wrote:
-> Hi Greg,
-> 
-> On 4/7/2021 14:00, Artur Petrosyan wrote:
-> > This patch set fixes and improves the Partial Power Down mode for
-> > dwc2 core.
-> > It adds support for the following cases
-> >      1. Entering and exiting partial power down when a port is
-> >         suspended, resumed, port reset is asserted.
-> >      2. Exiting the partial power down mode before removing driver.
-> >      3. Exiting partial power down in wakeup detected interrupt handler.
-> >      4. Exiting from partial power down mode when connector ID.
-> >         status changes to "connId B
-> > 
-> > It updates and fixes the implementation of dwc2 entering and
-> > exiting partial power down mode when the system (PC) is suspended.
-> > 
-> > The patch set also improves the implementation of function handlers
-> > for entering and exiting host or device partial power down.
-> > 
-> > NOTE: This is the second patch set in the power saving mode fixes
-> > series.
-> > This patch set is part of multiple series and is continuation
-> > of the "usb: dwc2: Fix and improve power saving modes" patch set.
-> > (Patch set link: https://marc.info/?l=linux-usb&m=160379622403975&w=2).
-> > The patches that were included in the "usb: dwc2:
-> > Fix and improve power saving modes" which was submitted
-> > earlier was too large and needed to be split up into
-> > smaller patch sets.
-> > 
-> > 
-> > Artur Petrosyan (14):
-> >    usb: dwc2: Add device partial power down functions
-> >    usb: dwc2: Add host partial power down functions
-> >    usb: dwc2: Update enter and exit partial power down functions
-> >    usb: dwc2: Add partial power down exit flow in wakeup intr.
-> >    usb: dwc2: Update port suspend/resume function definitions.
-> >    usb: dwc2: Add enter partial power down when port is suspended
-> >    usb: dwc2: Add exit partial power down when port is resumed
-> >    usb: dwc2: Add exit partial power down when port reset is asserted
-> >    usb: dwc2: Add part. power down exit from
-> >      dwc2_conn_id_status_change().
-> >    usb: dwc2: Allow exit partial power down in urb enqueue
-> >    usb: dwc2: Fix session request interrupt handler
-> >    usb: dwc2: Update partial power down entering by system suspend
-> >    usb: dwc2: Fix partial power down exiting by system resume
-> >    usb: dwc2: Add exit partial power down before removing driver
-> > 
-> >   drivers/usb/dwc2/core.c      | 113 ++-------
-> >   drivers/usb/dwc2/core.h      |  27 ++-
-> >   drivers/usb/dwc2/core_intr.c |  46 ++--
-> >   drivers/usb/dwc2/gadget.c    | 148 ++++++++++-
-> >   drivers/usb/dwc2/hcd.c       | 458 +++++++++++++++++++++++++----------
-> >   drivers/usb/dwc2/hw.h        |   1 +
-> >   drivers/usb/dwc2/platform.c  |  11 +-
-> >   7 files changed, 558 insertions(+), 246 deletions(-)
-> > 
-> > 
-> > base-commit: e9fcb07704fcef6fa6d0333fd2b3a62442eaf45b
-> > 
-> I have submitted this patch set yesterday. It contains 14 patches. But 
-> only 2 of those patches were received by LKML only the cover letter and 
-> the 13th patch. 
-> (https://lore.kernel.org/linux-usb/cover.1617782102.git.Arthur.Petrosyan@synopsys.com/T/#t)
-> 
-> I checked here at Synopsys, Minas did receive all the patches as his 
-> email is in To list. Could this be an issue of vger.kernel.org mailing 
-> server?
-> 
-> Because I checked every local possibility that could result to such 
-> behavior. The patch 13 which was received by LKML has the similar 
-> content as the other patches.
-> 
-> The mailing tool that was used is ssmtp, checked all the configurations 
-> everything is fine.
-> 
-> Could you please suggest what should I do in this situation?
+SGksIE1hdHRoaWFzDQoNCk9uIFR1ZSwgMjAyMS0wNC0wNiBhdCAxNTo1MyArMDIwMCwgTWF0dGhp
+YXMgQnJ1Z2dlciB3cm90ZToNCj4gDQo+IE9uIDAxLzA0LzIwMjEgMDg6MzgsIE5pbmEgV3Ugd3Jv
+dGU6DQo+ID4gRnJvbTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRlay5jb20+DQo+ID4gDQo+
+ID4gVGhlcmUgYXJlIDMgZGVidWcgaW5mbyByZWdpc3RlcnMgaW4gbmV3IElDcyB3aGlsZSBpbiBs
+ZWdhY3kgb25lcywNCj4gPiB3ZSBoYXZlIG9ubHkgMi4gV2hlbiBkdW1waW5nIHRoZSBkZWJ1ZyBp
+bmZvLCB3ZSBuZWVkIHRvIGNoZWNrIGZpcnN0DQo+ID4gaWYgdGhlIDNyZCBkZWJ1ZyByZWdpc3Rl
+ciBleGlzdHMgYW5kIHRoZW4gd2UgY2FuIGtvbncgaG93IHRvIGRlY2lwaGVyDQo+ID4gdGhlIGRl
+YnVnIGluZm8uDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTmluYSBXdSA8TmluYS1DTS5XdUBt
+ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZh
+cGMuYyB8IDMxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0NCj4gPiAgMSBmaWxlIGNo
+YW5nZWQsIDI5IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZhcGMuYyBiL2RyaXZlcnMvc29jL21l
+ZGlhdGVrL210ay1kZXZhcGMuYw0KPiA+IGluZGV4IGJjZjZlM2MuLmFmNTVjMDEgMTAwNjQ0DQo+
+ID4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4gKysrIGIvZHJp
+dmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4gQEAgLTI2LDkgKzI2LDE5IEBAIHN0
+cnVjdCBtdGtfZGV2YXBjX3Zpb19kYmdzIHsNCj4gPiAgCQkJdTMyIGFkZHJfaDo0Ow0KPiA+ICAJ
+CQl1MzIgcmVzdjo0Ow0KPiA+ICAJCX0gZGJnMF9iaXRzOw0KPiA+ICsNCj4gPiArCQkvKiBOb3Qg
+dXNlZCwgcmVmZXJlbmNlIG9ubHkgKi8NCj4gPiArCQlzdHJ1Y3Qgew0KPiA+ICsJCQl1MzIgZG1u
+aWQ6NjsNCj4gPiArCQkJdTMyIHZpb193OjE7DQo+ID4gKwkJCXUzMiB2aW9fcjoxOw0KPiA+ICsJ
+CQl1MzIgYWRkcl9oOjQ7DQo+ID4gKwkJCXUzMiByZXN2OjIwOw0KPiA+ICsJCX0gZGJnMF9iaXRz
+X3ZlcjI7DQo+ID4gIAl9Ow0KPiA+ICANCj4gPiAgCXUzMiB2aW9fZGJnMTsNCj4gPiArCXUzMiB2
+aW9fZGJnMjsNCj4gPiAgfTsNCj4gPiAgDQo+ID4gIHN0cnVjdCBtdGtfZGV2YXBjX2RhdGEgew0K
+PiA+IEBAIC0zNyw2ICs0Nyw3IEBAIHN0cnVjdCBtdGtfZGV2YXBjX2RhdGEgew0KPiA+ICAJdTMy
+IHZpb19zdGFfb2Zmc2V0Ow0KPiA+ICAJdTMyIHZpb19kYmcwX29mZnNldDsNCj4gPiAgCXUzMiB2
+aW9fZGJnMV9vZmZzZXQ7DQo+ID4gKwl1MzIgdmlvX2RiZzJfb2Zmc2V0Ow0KPiA+ICAJdTMyIGFw
+Y19jb25fb2Zmc2V0Ow0KPiA+ICAJdTMyIHZpb19zaGlmdF9zdGFfb2Zmc2V0Ow0KPiA+ICAJdTMy
+IHZpb19zaGlmdF9zZWxfb2Zmc2V0Ow0KPiA+IEBAIC0xNTgsMTIgKzE2OSwyOSBAQCBzdGF0aWMg
+dm9pZCBkZXZhcGNfZXh0cmFjdF92aW9fZGJnKHN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0
+eCkNCj4gPiAgCXN0cnVjdCBtdGtfZGV2YXBjX3Zpb19kYmdzIHZpb19kYmdzOw0KPiA+ICAJdm9p
+ZCBfX2lvbWVtICp2aW9fZGJnMF9yZWc7DQo+ID4gIAl2b2lkIF9faW9tZW0gKnZpb19kYmcxX3Jl
+ZzsNCj4gPiArCXZvaWQgX19pb21lbSAqdmlvX2RiZzJfcmVnOw0KPiA+ICsJdTMyIHZpb19hZGRy
+LCBidXNfaWQ7DQo+ID4gIA0KPiA+ICAJdmlvX2RiZzBfcmVnID0gY3R4LT5iYXNlICsgY3R4LT5k
+YXRhLT52aW9fZGJnMF9vZmZzZXQ7DQo+ID4gIAl2aW9fZGJnMV9yZWcgPSBjdHgtPmJhc2UgKyBj
+dHgtPmRhdGEtPnZpb19kYmcxX29mZnNldDsNCj4gPiArCXZpb19kYmcyX3JlZyA9IGN0eC0+YmFz
+ZSArIGN0eC0+ZGF0YS0+dmlvX2RiZzJfb2Zmc2V0Ow0KPiANCj4gV2Ugc2hvdWxkIHJlYWQgdGhp
+cyBvbmx5IGlmIHdlIGhhdmUgdmVyc2lvbjIgb2YgdGhlIGRldmFwYy4NCj4gDQoNCllvdSdyZSBy
+aWdodC4NCkl0IGlzIG5vdCBnb29kIHRvIHJlYWQgdmlvX2RiZzJfcmVnIGluIHZlcnNpb24gb25l
+LiBFdmVuIHRob3VnaCB3ZSB3aWxsDQpvbmx5IGdldCB0aGUgdmFsdWUgZnJvbSBvZmZzZXQgMCAo
+d2hpY2ggaXMgbm90IGV4cGVjdGVkKSBpbnN0ZWFkIG9mDQpkb2luZyBhbnkgcmVhbCBoYXJtLiAo
+bGlrZSBjYXVzaW5nIGJ1cyBoYW5nKQ0KDQoNCj4gPiAgDQo+ID4gIAl2aW9fZGJncy52aW9fZGJn
+MCA9IHJlYWRsKHZpb19kYmcwX3JlZyk7DQo+ID4gIAl2aW9fZGJncy52aW9fZGJnMSA9IHJlYWRs
+KHZpb19kYmcxX3JlZyk7DQo+ID4gKwl2aW9fZGJncy52aW9fZGJnMiA9IHJlYWRsKHZpb19kYmcy
+X3JlZyk7DQo+ID4gKw0KPiA+ICsJaWYgKCFjdHgtPmRhdGEtPnZpb19kYmcyX29mZnNldCkgew0K
+PiANCj4gSSB0aGluayB3ZSBzaG91bGQgYWRkIGEgdmVyc2lvbiBmaWVsZCB0byBtdGtfZGV2YXBj
+X2RhdGEgdG8gZGlzdGluZ3Vpc2ggdGhlIHR3bw0KPiBvZiB0aGVtLg0KDQpPSy4NCkkgd2lsbCB0
+cnkgdG8gYWRkIHRoaXMgZmllbGQgaW4gdGhlIG5leHQgdmVyc2lvbg0KDQo+IA0KPiA+ICsJCS8q
+IGFyY2ggdmVyc2lvbiAxICovDQo+ID4gKwkJYnVzX2lkID0gdmlvX2RiZ3MuZGJnMF9iaXRzLm1z
+dGlkOw0KPiA+ICsJCXZpb19hZGRyID0gdmlvX2RiZ3MudmlvX2RiZzE7DQo+ID4gKwl9IGVsc2Ug
+ew0KPiA+ICsJCS8qIGFyY2ggdmVyc2lvbiAyICovDQo+ID4gKwkJYnVzX2lkID0gdmlvX2RiZ3Mu
+dmlvX2RiZzE7DQo+ID4gKwkJdmlvX2FkZHIgPSB2aW9fZGJncy52aW9fZGJnMjsNCj4gPiArDQo+
+ID4gKwkJLyogVG8gYWxpZ24gd2l0aCB0aGUgYml0IGRlZmluaXRpb24gb2YgYXJjaF92ZXIgMSAq
+Lw0KPiA+ICsJCXZpb19kYmdzLnZpb19kYmcwID0gKHZpb19kYmdzLnZpb19kYmcwIDw8IDE2KTsN
+Cj4gDQo+IFRoYXQncyBtYWdpYywgYmV0dGVyIGFkZCBhbm90aGVyIHZhcmlhYmxlIGRvbWFpbl9p
+ZCBhbmQgZG8gaGVyZToNCj4gZG9tYWluX2lkID0gdmlvX2RnYnMuZGJnMF9iaXRzX3ZlcjIuZG1u
+aWQ7DQo+IA0KDQpPSy4NCkkgd2lsbCBmaXggaXQgdXAgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0K
+VGhhbmtzDQoNCj4gPiArCX0NCj4gPiAgDQo+ID4gIAkvKiBQcmludCB2aW9sYXRpb24gaW5mb3Jt
+YXRpb24gKi8NCj4gPiAgCWlmICh2aW9fZGJncy5kYmcwX2JpdHMudmlvX3cpDQo+ID4gQEAgLTE3
+Miw4ICsyMDAsNyBAQCBzdGF0aWMgdm9pZCBkZXZhcGNfZXh0cmFjdF92aW9fZGJnKHN0cnVjdCBt
+dGtfZGV2YXBjX2NvbnRleHQgKmN0eCkNCj4gPiAgCQlkZXZfaW5mbyhjdHgtPmRldiwgIlJlYWQg
+VmlvbGF0aW9uXG4iKTsNCj4gPiAgDQo+ID4gIAlkZXZfaW5mbyhjdHgtPmRldiwgIkJ1cyBJRDow
+eCV4LCBEb20gSUQ6MHgleCwgVmlvIEFkZHI6MHgleFxuIiwNCj4gPiAtCQkgdmlvX2RiZ3MuZGJn
+MF9iaXRzLm1zdGlkLCB2aW9fZGJncy5kYmcwX2JpdHMuZG1uaWQsDQo+ID4gLQkJIHZpb19kYmdz
+LnZpb19kYmcxKTsNCj4gPiArCQkgYnVzX2lkLCB2aW9fZGJncy5kYmcwX2JpdHMuZG1uaWQsIHZp
+b19hZGRyKTsNCj4gPiAgfQ0KPiA+ICANCj4gPiAgLyoNCj4gPiANCg0K
 
-Odd, I got them here, but lore seems to not have them :(
-
-Can you just resend them as a "v2" series so we know which to review and
-let's see if that works better...
-
-thanks,
-
-greg k-h
