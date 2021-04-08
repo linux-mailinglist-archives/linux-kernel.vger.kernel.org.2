@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF8C3589C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15883589C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbhDHQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhDHQ3b (ORCPT
+        id S232307AbhDHQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:29:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231893AbhDHQ3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:29:31 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855EBC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:29:19 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id w3so4091182ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q+BA7pPnB/AN+gDj3+d2nQVCNRxMwStn1XIx/naXyYk=;
-        b=jJ59X6GbzIkozVa+JnPx5FldU2Q0BlyvkSQ0IuBYuW/IZ3Nsu7EBSvN+5dg6TzWMFT
-         Y55Jnv/ug8+MvQ9iJQx7pxGUbGS4llHUK3sovPUaJAPu/ArXF+7cDcbwqIK/mX3czmlr
-         kswuRA4d6DfN7Rn/PjRUgrUlHgITPwbQ+SVPySThjcrzZRAgmrZoG2aYvpS62eLxW1PF
-         xA0cNwrdXu0o4R68JSZbGpmQK1lNrD0HiNJhqhQI9YMZdxjjQmJeQzgMZPkn2TCVjaD/
-         /9F/4mcZMnmbYDYciz1LUTTNgnZ6eXxO4qAIp3zQ9b3hfly0hsjKkaP3hIa4tDpAOSrp
-         N48A==
+        Thu, 8 Apr 2021 12:29:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617899330;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5wrbAOZjrEmBl3SUhRJwLLYwLvrtd7NpWnCWVbIkN2Q=;
+        b=WNV0rfN2mXXhVinwtYwmfXdYFkRCUta3Nm0DgNqYTRR+Fw58IivYRRrG4p5E3LM2zCVW4p
+        I6ICCol5d+WyLWYmlYYkbOfxFl4IzCunxS56jFQoUgNDz3v4O/3UmZBtIeXDtpImHrDb+d
+        qgAlXb+L/aGOVUnWxT1F443cnpPfcZs=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-jhXsuluFPaauzq6QKzldjA-1; Thu, 08 Apr 2021 12:28:48 -0400
+X-MC-Unique: jhXsuluFPaauzq6QKzldjA-1
+Received: by mail-ej1-f70.google.com with SMTP id jo6so1099105ejb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:28:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q+BA7pPnB/AN+gDj3+d2nQVCNRxMwStn1XIx/naXyYk=;
-        b=Jdi3B/1Tbe8ixowXLik7YQzxIwZi63A0yzoRQvopWpgnw/4aWgBtPt6JDIdwfjikG5
-         TPorQge/5THuTEHB3yD12ZgaGyDCpFaycFe7GqzyNduqDLzfKNjiEetA/e/kpU1UowRM
-         uIjVI+7rQ1B3Soc2W+q+xue8A4fNYkB6/87o2UipBrr7jKO+Ho8LHfzxHjNG9cWPJW5G
-         be6WNzkOK3aUDNZxKkGpNqZrOZBvM5+xMjgw2E73VNZRpBjuZtzoQUamObM32418tfAN
-         KxnAtbQjlYVC3isT9onA+Y6SLNUf+W8pnoeNATGdDVOHSOLaU0vnL2QVA+xnrR2pVF49
-         BpvA==
-X-Gm-Message-State: AOAM530Oe6JjAHm3XOrt/2ZhVQeJbegyqTt9RCMDztp85he4o9C16Ja7
-        X+8wULRIjUC4pdKwsy8UPWo/A/hLctM6kQDoqRaAhA==
-X-Google-Smtp-Source: ABdhPJwpz3Agsds4CltanV5MPnJBwQjNh2MBfp8OMb0UzlYbHSSr47QG76XN9/9v3vJMeoGQPasQ9VO7vWzBb7To3dc=
-X-Received: by 2002:a17:906:94c9:: with SMTP id d9mr11343799ejy.314.1617899358268;
- Thu, 08 Apr 2021 09:29:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5wrbAOZjrEmBl3SUhRJwLLYwLvrtd7NpWnCWVbIkN2Q=;
+        b=ojG2RTb9RBjkuVl/5dqhojUF7Yb5KimePAnqJnORmD3GRx6urHMJ0uhFDq0IIE5OLw
+         A86vU/bQor4awQATlC1c5IUuQmFrX8qk2Bgjwt3sED9GwiCcojw0Ozhj1zXWlVUFq6AR
+         hzo8gEcsokQTEAtBiEI//CYIa+8qbZeqSmYsJe1dVbZXrBXEsoEtaPzeqoFx2gLQ4ccM
+         reH1QcUibgcSF7VJLWtlNsK3soTmoKGgYb0dcOQ2ezdoBVTSdZPpzhCoOyyEdydccxaH
+         VSS5gjlPDFNNWNaBptIYOqL0kyNJFtJoz1sgi5oAayVXUQEfNrWgO6NoDe3zdr2dZjFZ
+         dEKg==
+X-Gm-Message-State: AOAM532yIwyoodwsErohLyQNyjfzgf3zP/togbcUG+bV5D2bQKdo1kuQ
+        hTljDShsUx8/FARpcBeTiZnmhiIs4esHE1RbTGz3FceZD1SOYAJhEZMufKDeEUyFZ4nVYCyyPRK
+        tK+QtAX80gm5YD7VJqF9jMIA9
+X-Received: by 2002:a50:ff13:: with SMTP id a19mr8705265edu.300.1617899327693;
+        Thu, 08 Apr 2021 09:28:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRv3PJSwaeiHkKwTDMJVVmVj8qxGMjV4KPxbuV0IsMXJsgngLozjwulkFyEEMQZpwz0bE3kw==
+X-Received: by 2002:a50:ff13:: with SMTP id a19mr8705244edu.300.1617899327555;
+        Thu, 08 Apr 2021 09:28:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id r26sm6685065edc.43.2021.04.08.09.28.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 09:28:47 -0700 (PDT)
+Subject: Re: [PATCH] KVM: vmx: add mismatched size in vmcs_check32
+To:     Sean Christopherson <seanjc@google.com>, lihaiwei.kernel@gmail.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
+References: <20210408075436.13829-1-lihaiwei.kernel@gmail.com>
+ <YG8pwERmjxYQoquP@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c24c9d96-37c5-cfb4-8b84-cb3f8daee500@redhat.com>
+Date:   Thu, 8 Apr 2021 18:28:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210408040537.2703241-1-pasha.tatashin@soleen.com>
- <20210408040537.2703241-4-pasha.tatashin@soleen.com> <480272f8fb3e46d24a0ee1418fb85809@kernel.org>
- <CA+CK2bDc+9EsH_TLTgg9Pqv_-rZfZfPohdZEfsYjT8ss+8skjg@mail.gmail.com> <87v98wom5n.wl-maz@kernel.org>
-In-Reply-To: <87v98wom5n.wl-maz@kernel.org>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 8 Apr 2021 12:28:42 -0400
-Message-ID: <CA+CK2bB9M05UKfvu66_wMK1u_HBvRws4R0KxPgTu4vPdKuGy9w@mail.gmail.com>
-Subject: Re: [PATCH v13 03/18] arm64: hyp-stub: Move el1_sync into the vectors
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Pingfan Liu <kernelfans@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YG8pwERmjxYQoquP@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Thank you for noticing this. Not sure how this missmerge happened. I
-> > have added the missing case, and VHE is initialized correctly during
-> > boot.
-> > [   14.698175] kvm [1]: VHE mode initialized successfully
-> >
-> > During normal boot, kexec reboot, and kdump reboot. I will respin the
-> > series and send the version 14 soon.
->
-> Please give people a chance to review this lot first. This isn't code
-> that is easy to digest, and immediate re-spinning does more harm than
-> good (this isn't targeting 5.13, I would assume).
->
+On 08/04/21 18:05, Sean Christopherson wrote:
+>    Add compile-time assertions in vmcs_check32() to disallow accesses to
+>    64-bit and 64-bit high fields via vmcs_{read,write}32().  Upper level
+>    KVM code should never do partial accesses to VMCS fields.  KVM handles
+>    the split accesses automatically in vmcs_{read,write}64() when running
+>    as a 32-bit kernel.
 
-There are people who are testing this series, this is why I wanted to
-respin. But, I will wait for review comments before sending the next
-version. In the meantime I will send a fixed version of this patch as
-a reply to this thread instead.
+KVM also uses raw vmread/vmwrite (__vmcs_readl/__vmcs_writel) when 
+copying to and from the shadow VMCS, so that path will not go through 
+vmcs_check32 either.
 
-Thanks,
-Pasha
+Paolo
+
