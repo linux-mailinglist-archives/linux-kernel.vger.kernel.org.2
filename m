@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0FE358AF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E59358AFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhDHRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S232726AbhDHRKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbhDHRKF (ORCPT
+        with ESMTP id S232660AbhDHRKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:10:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B21C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:09:54 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id t7so1377938plg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 10:09:54 -0700 (PDT)
+        Thu, 8 Apr 2021 13:10:11 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704A9C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:09:57 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q5so2295148pfh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 10:09:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hsVpapqIjp7CiSFT8fhwxm6WDX91yn65qSgcrfEuhWM=;
-        b=dYU9jCs3NDGiCyR4OPYV+1Zl9XGFcZYdDDg4gt/3M7Sf8kXTkhOeFKrCD13PrK72TJ
-         9/Z/fmFsKT25ZFc8V2guW/2hDoSZkLTwn7ayMSvtC2pZZNcyQ6d2huyxspl9l9jwdP/+
-         5vEMcHbOF/x0e/wYFXjLSYyu+D3rbitInWDuKJ2UEwIg8wIqHTXrSG45xx0G17nn7Wjq
-         W1Opz5qx7sA/aw1D7Z5lxpOXNyFl+s9qOQu8iykr+klaRQbBBOyKaqJhITEMvb29eMN3
-         tEQebE5Fn0iWsfr+AnunDdXVYzyVxO1ib7rvJZJpRr3x2KX6YqbmBmALzz7sr1x8otmz
-         knWw==
+        bh=CUOMofHjk38C1yfeP5pPsHggdprA8rEZ0lTypJr6+M8=;
+        b=yWgRNh7J7cBViL6JLdnkdqw8iGZS46SCIu+PO+DkowazbZDUlejMriOOooCbgCeSdX
+         6XALehGHmutYM9y/0Z5sRrVAOrMNcjpgLgvKQdvT4ROo0dloHV1iLbQXuwOeW9KD1M89
+         mEGrQ2LxCwvGtmkHwzPSmsRD50CVqPlvoR23Jbn+WOhGVUeNxYKsPN1IHzFBNhRb91yq
+         Cdh3GHVcCaTqB1KZy9fOoZYbqnLYSkeVmFVZL4Vlb/3ocJ6ZmxV8YB7LXchWfJavCyFi
+         3E2ANHzcXRWHPTxeDDzzeP06GsZMeWBtn4UH6baMTRt0dsz4DgIPOKc92UIwWJFY46wK
+         rluw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hsVpapqIjp7CiSFT8fhwxm6WDX91yn65qSgcrfEuhWM=;
-        b=bK+Xjefc4BGPuwkgV7BIZDobyu6cqq44vpYv6PTDCYrpWgPZuEzS9WiWaGfJ3G0o7f
-         v9cJo0D4DkzwiDg2OYGBv2Iy8BngcKIKu3gtua542szBHGv+KKWwuVhsD1UBLb/y6+Cw
-         Q8F0KrvGjz+ITpIG/lyWKPN5jODW2yYXJ271GLCLKubLUSkBkmw43zpUnt16OQlOkoBf
-         vflilm0SkkCPzBQk/02/1OKbKyQ31J7KN5iCKjk9wv+g+ZTJ3Wk8InJ6SXYvas5x2H1f
-         JSDi83Y2XkGucNqE+N29Z9xctMnzu3OuiXjxnzzeL9Xf8kKJvsDDUYmixRTZh40jrB6n
-         2NOQ==
-X-Gm-Message-State: AOAM530LIBMx2bmZlNySm6aNG3kf9Gtt6N78MmeEUnwm6iBXG3nIFkV7
-        IpXeqk73pBj6MuVJilghSQtx
-X-Google-Smtp-Source: ABdhPJzSfA2XPcEZLjDyuH/0sDU6wuj8yT3wExa0BHvI+q0gNChg+qh3XLkeOUVhqek1J9MTAfMhkQ==
-X-Received: by 2002:a17:90a:bf06:: with SMTP id c6mr6478111pjs.186.1617901794132;
-        Thu, 08 Apr 2021 10:09:54 -0700 (PDT)
+        bh=CUOMofHjk38C1yfeP5pPsHggdprA8rEZ0lTypJr6+M8=;
+        b=YutWi6q+4dcukVJ5khEwy2IEhmhcHJZrGF82p93rSOrbujLCvBAnKp6RsNkA2wQJxX
+         gz1vyKglNQTpRIFwooniwW+sN4fTpcK0RKZ8UzVChsDgyO4u+qKIeyNlbxp2VUvBfow3
+         sBnKbK1+pHRcEUqJJldnROn+9blZvd5E3Kv0wX7TATS+kx6ziYNMuqNvChAbXskWq2dA
+         xuf/RjECPVRhckGY0v3THdYMvWoe/gXzbp6Tx9VBN5fU5H84WJLDjIAOk/L5YnG5n8ZY
+         UMjJF+iFVcbz228DgDi0m8irYPB2sZGv7ThVNIP7kSop2dXhwxHLZ3UOE6aDPslMfZDj
+         Vpzw==
+X-Gm-Message-State: AOAM533TdNN+3Vt6neW8o5Ei6aS2aFD7PiYtphOQJNzq9lJmVVvSpFCI
+        MHD17VeY81/nnl3V4pl3E5Ew1MyzhvCC
+X-Google-Smtp-Source: ABdhPJy/DNdUcOGFNWsbdCkw3U8Gw+pvB33hKgLoiskXN8DX//TkDYgakNYqoXovVhXjfcElFo4aqw==
+X-Received: by 2002:a63:a62:: with SMTP id z34mr4196042pgk.189.1617901796877;
+        Thu, 08 Apr 2021 10:09:56 -0700 (PDT)
 Received: from localhost.localdomain ([103.77.37.191])
-        by smtp.gmail.com with ESMTPSA id a191sm57921pfa.115.2021.04.08.10.09.51
+        by smtp.gmail.com with ESMTPSA id a191sm57921pfa.115.2021.04.08.10.09.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 10:09:53 -0700 (PDT)
+        Thu, 08 Apr 2021 10:09:56 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     bjorn.andersson@linaro.org
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 4/7] ARM: configs: qcom_defconfig: Enable Q6V5_PAS remoteproc driver
-Date:   Thu,  8 Apr 2021 22:39:27 +0530
-Message-Id: <20210408170930.91834-5-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 5/7] ARM: configs: qcom_defconfig: Enable SDX55 interconnect driver
+Date:   Thu,  8 Apr 2021 22:39:28 +0530
+Message-Id: <20210408170930.91834-6-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210408170930.91834-1-manivannan.sadhasivam@linaro.org>
 References: <20210408170930.91834-1-manivannan.sadhasivam@linaro.org>
@@ -64,8 +64,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the Qualcomm Q6V5_PAS (Peripheral Authentication Service)
-remoteproc driver to manage the modem co-processor in SDX55 platform.
+Enable interconnect driver for SDX55 platform to manage the interconnect
+providers.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
@@ -73,17 +73,17 @@ Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
-index 47343d0ea586..695612829503 100644
+index 695612829503..5955aeb0646e 100644
 --- a/arch/arm/configs/qcom_defconfig
 +++ b/arch/arm/configs/qcom_defconfig
-@@ -237,6 +237,7 @@ CONFIG_MAILBOX=y
- CONFIG_QCOM_APCS_IPC=y
- CONFIG_REMOTEPROC=y
- CONFIG_QCOM_ADSP_PIL=y
-+CONFIG_QCOM_Q6V5_PAS=y
- CONFIG_QCOM_Q6V5_PIL=y
- CONFIG_QCOM_WCNSS_PIL=y
- CONFIG_RPMSG_CHAR=y
+@@ -277,6 +277,7 @@ CONFIG_QCOM_QFPROM=y
+ CONFIG_INTERCONNECT=y
+ CONFIG_INTERCONNECT_QCOM=y
+ CONFIG_INTERCONNECT_QCOM_MSM8974=m
++CONFIG_INTERCONNECT_QCOM_SDX55=m
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT2_FS_XATTR=y
+ CONFIG_EXT3_FS=y
 -- 
 2.25.1
 
