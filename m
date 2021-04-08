@@ -2,164 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4491D358708
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570EF358707
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhDHOUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:20:44 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:33648 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhDHOUi (ORCPT
+        id S231924AbhDHOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhDHOUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:20:38 -0400
-Received: by mail-oi1-f172.google.com with SMTP id w70so2380484oie.0;
-        Thu, 08 Apr 2021 07:20:26 -0700 (PDT)
+        Thu, 8 Apr 2021 10:20:37 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7710C061760;
+        Thu,  8 Apr 2021 07:20:24 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id g8so4281721lfv.12;
+        Thu, 08 Apr 2021 07:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6ZUCnaK/xfsxPOQ2rbUPGAW6lKLbLTcOBL5UmGQ3BRA=;
+        b=bMF34VHNGxUVn9JbInOqXPCz4CByZeQfYkeeFnl0kcfNHeCKviOxyjEzDdkywsQ2GF
+         zRUKduzjhd9RMG1AgnQ8IWMweHH8Twvq/U4Ni5sTEpyFyFMqbzj0HukEdCaewvqrsK8+
+         ngovfgYSgo8wMOAfxUJXmMj4v6WSAOWlGTdNdS6pOTsk1ePFaC6DdUv/vqAQfp6uswuH
+         2b+W55x4kie+Qm6Iime4EPsrw40AYESASX3VAQwxl+7duikXrCj4dqKg1SkNbLfy0ddg
+         ga105BfsBcCcXXWgTccIWnSKeRHnTQZw0GUX8oQTSFx+8zn0i74st1XQLpIhMSyuQT8R
+         mKcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MsFKUDXqph4UphRjAOoi8Pkkb5/3oXYisYAvqQ430Dc=;
-        b=KdY9q2R99IkCk3N8NyFQ/YbYzRYtmAi+2bKbuLZ4LTTjlTJAil4dHFyiIdndEQffpN
-         +w9AVbBMCiZ4k8G9xVhA48HRafPxa5rTBihg5pLIWTvHS3cT6PJ4dwGEEheWP36Gq3d1
-         PKqcdgEnQcphDnulJQtPGIYOxAH40wmqB6vMFtcCGYYPaMZX3LrW/rHXoKIixPYfmht0
-         z0hD03uLEdX0RwiZ9mE1XtCuAhqsH/QWejc0t3N/DrvXcjt4Bdzyrf0Dhl9E8zLWZorx
-         vEhE2mY6ArSgqqNe9nvAEGgG6Mtsj6b9yHNTHPdj9heS+EIsbezXNZvTt+RzvEm9JbFy
-         +Sxg==
-X-Gm-Message-State: AOAM531TRp6zmgH69/AQG5UsVdOqxZTdeMZNhTiiCZDB6eIXRqDGOLnm
-        qh/RPDwHLWahfp0yA5dWBkOQKc5rHBIjzcwOBf1SiBgd
-X-Google-Smtp-Source: ABdhPJzoPAi6bD2oyaqBuyerEt3z82p57zsddaqu1bPgKwIJKYrzZUAQ8w/Vux5oQc0FH4LD8jf8dI4TOws8WvB4nGE=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6093138oib.69.1617891626106;
- Thu, 08 Apr 2021 07:20:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6ZUCnaK/xfsxPOQ2rbUPGAW6lKLbLTcOBL5UmGQ3BRA=;
+        b=lCBTnb+ZCfLA5V521SXb6ArVNydRqofteT6wUTO/ecM0d+s40lAKqcHH7uwSsgHBvY
+         vve1X/ejD/BWmBI8L28SBVg+JkNXOpNHFFHFrUuOa4e/t/x6hyqCmMjdgzHsdbDrH/Cd
+         3RNuVKXvErWHihkTW8QJGsfaNagywZorBlWi2qB/+dxj37Q9K85asdgB1GJbu5iHZ2xm
+         39G+n/2pOJT6j3uBFOyHmh25rZH/JjkjSyt1XmFQIlxmoSfSw7Z075l60HRhLR6k8TTY
+         Wy5X9kjL+Pv8v2s/iHPcE4mW9yD9asDd0z/Ps5DPF9XsKPaU7DDv1oDEog1iBqUEzmYe
+         iteA==
+X-Gm-Message-State: AOAM530tTpeJHu3lAxiEKRp5pTgbBLrL7srJlWNWS7IJMxvkW26ZO8Ft
+        4ePvKacUsFhsIH55EMp6XTpyjw336zI=
+X-Google-Smtp-Source: ABdhPJxwOqizkMYPEJb5Y07w8gboGa1QxZdvdT15fW63P7IpYeBenOuiUMuuRcf7YmnyjiuytoptNg==
+X-Received: by 2002:ac2:4e6d:: with SMTP id y13mr3990767lfs.509.1617891623227;
+        Thu, 08 Apr 2021 07:20:23 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id l12sm2857687lji.122.2021.04.08.07.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 07:20:22 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] iommu/tegra-smmu: Defer attachment of display
+ clients
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210328233256.20494-1-digetx@gmail.com>
+ <20210408094241.GA31714@Asurada-Nvidia> <YG8EiUXkgPTZsfIY@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <44d67d66-d6d0-bd9a-9eb9-71d7acc07183@gmail.com>
+Date:   Thu, 8 Apr 2021 17:20:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1616816821-39369-1-git-send-email-tanxiaofei@huawei.com>
-In-Reply-To: <1616816821-39369-1-git-send-email-tanxiaofei@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 16:20:15 +0200
-Message-ID: <CAJZ5v0hfHASSY_MM8WQ35hzyn6ohdGPX=F65Q-sB+_RMqTZgGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: AC: fix some coding style issues
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YG8EiUXkgPTZsfIY@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 4:50 AM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
->
-> Fix some coding style issues reported by checkpatch.pl, including
-> following types:
->
-> ERROR: "foo * bar" should be "foo *bar"
-> ERROR: code indent should use tabs where possible
-> WARNING: Block comments use a trailing */ on a separate line
-> WARNING: braces {} are not necessary for single statement blocks
-> WARNING: void function return statements are not generally useful
-> WARNING: CVS style keyword markers, these will _not_ be updated
->
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
->  drivers/acpi/ac.c | 28 ++++++++--------------------
->  1 file changed, 8 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-> index b86ee6e..b0cb662 100644
-> --- a/drivers/acpi/ac.c
-> +++ b/drivers/acpi/ac.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - *  acpi_ac.c - ACPI AC Adapter Driver ($Revision: 27 $)
-> + *  acpi_ac.c - ACPI AC Adapter Driver (Revision: 27)
->   *
->   *  Copyright (C) 2001, 2002 Andy Grover <andrew.grover@intel.com>
->   *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
-> @@ -78,17 +78,14 @@ static struct acpi_driver acpi_ac_driver = {
->  struct acpi_ac {
->         struct power_supply *charger;
->         struct power_supply_desc charger_desc;
-> -       struct acpi_device * device;
-> +       struct acpi_device *device;
->         unsigned long long state;
->         struct notifier_block battery_nb;
->  };
->
->  #define to_acpi_ac(x) power_supply_get_drvdata(x)
->
-> -/* --------------------------------------------------------------------------
-> -                               AC Adapter Management
-> -   -------------------------------------------------------------------------- */
-> -
-> +/* AC Adapter Management */
->  static int acpi_ac_get_state(struct acpi_ac *ac)
->  {
->         acpi_status status = AE_OK;
-> @@ -109,9 +106,7 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
->         return 0;
->  }
->
-> -/* --------------------------------------------------------------------------
-> -                            sysfs I/F
-> -   -------------------------------------------------------------------------- */
-> +/* sysfs I/F */
->  static int get_ac_property(struct power_supply *psy,
->                            enum power_supply_property psp,
->                            union power_supply_propval *val)
-> @@ -138,10 +133,7 @@ static enum power_supply_property ac_props[] = {
->         POWER_SUPPLY_PROP_ONLINE,
->  };
->
-> -/* --------------------------------------------------------------------------
-> -                                   Driver Model
-> -   -------------------------------------------------------------------------- */
-> -
-> +/* Driver Model */
->  static void acpi_ac_notify(struct acpi_device *device, u32 event)
->  {
->         struct acpi_ac *ac = acpi_driver_data(device);
-> @@ -174,8 +166,6 @@ static void acpi_ac_notify(struct acpi_device *device, u32 event)
->                 acpi_notifier_call_chain(device, event, (u32) ac->state);
->                 kobject_uevent(&ac->charger->dev.kobj, KOBJ_CHANGE);
->         }
-> -
-> -       return;
->  }
->
->  static int acpi_ac_battery_notify(struct notifier_block *nb,
-> @@ -282,9 +272,8 @@ static int acpi_ac_add(struct acpi_device *device)
->         ac->battery_nb.notifier_call = acpi_ac_battery_notify;
->         register_acpi_notifier(&ac->battery_nb);
->  end:
-> -       if (result) {
-> +       if (result)
->                 kfree(ac);
-> -       }
->
->         return result;
->  }
-> @@ -293,7 +282,7 @@ static int acpi_ac_add(struct acpi_device *device)
->  static int acpi_ac_resume(struct device *dev)
->  {
->         struct acpi_ac *ac;
-> -       unsigned old_state;
-> +       unsigned int old_state;
->
->         if (!dev)
->                 return -EINVAL;
-> @@ -352,9 +341,8 @@ static int __init acpi_ac_init(void)
->         }
->
->         result = acpi_bus_register_driver(&acpi_ac_driver);
-> -       if (result < 0) {
-> +       if (result < 0)
->                 return -ENODEV;
-> -       }
->
->         return 0;
->  }
-> --
+08.04.2021 16:26, Thierry Reding пишет:
+> On Thu, Apr 08, 2021 at 02:42:42AM -0700, Nicolin Chen wrote:
+>> On Mon, Mar 29, 2021 at 02:32:55AM +0300, Dmitry Osipenko wrote:
+>>> All consumer-grade Android and Chromebook devices show a splash screen
+>>> on boot and then display is left enabled when kernel is booted. This
+>>> behaviour is unacceptable in a case of implicit IOMMU domains to which
+>>> devices are attached during kernel boot since devices, like display
+>>> controller, may perform DMA at that time. We can work around this problem
+>>> by deferring the enable of SMMU translation for a specific devices,
+>>> like a display controller, until the first IOMMU mapping is created,
+>>> which works good enough in practice because by that time h/w is already
+>>> stopped.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>
+>> For both patches:
+>> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+>> Tested-by: Nicolin Chen <nicoleotsuka@gmail.com>
+>>
+>> The WAR looks good to me. Perhaps Thierry would give some input.
 
-Applied as 5.13 material, thanks!
+Nicolin, thank you very much for the help!
+
+>> Another topic:
+>> I think this may help work around the mc-errors, which we have
+>> been facing on Tegra210 also when we enable IOMMU_DOMAIN_DMA.
+>> (attached a test patch rebasing on these two)
+> 
+> Ugh... that's exactly what I was afraid of. Now everybody is going to
+> think that we can just work around this issue with driver-specific SMMU
+> hacks...
+> 
+>> However, GPU would also report errors using DMA domain:
+>>
+>>  nouveau 57000000.gpu: acr: firmware unavailable
+>>  nouveau 57000000.gpu: pmu: firmware unavailable
+>>  nouveau 57000000.gpu: gr: firmware unavailable
+>>  tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffbe200: Security violation (TrustZone violation)
+>>  nouveau 57000000.gpu: DRM: failed to create kernel channel, -22
+>>  tegra-mc 70019000.memory-controller: gpusrd: read @0x00000000fffad000: Security violation (TrustZone violation)
+>>  nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
+>>  nouveau 57000000.gpu: fifo: SCHED_ERROR 20 []
+>>
+>> Looking at the address, seems that GPU allocated memory in 32-bit
+>> physical address space behind SMMU, so a violation happened after
+>> turning on DMA domain I guess... 
+> 
+> The problem with GPU is... extra complicated. You're getting these
+> faults because you're enabling the IOMMU-backed DMA API, which then
+> causes the Nouveau driver allocate buffers using the DMA API instead of
+> explicitly allocating pages and then mapping them using the IOMMU API.
+> However, there are additional patches needed to teach Nouveau about how
+> to deal with SMMU and those haven't been merged yet. I've got prototypes
+> of this, but before the whole framebuffer carveout passing work makes
+> progress there's little sense in moving individual pieces forward.
+> 
+> One more not to try and cut corners. We know what the right solution is,
+> even if it takes a lot of work. I'm willing to ack this patch, or some
+> version of it, but only as a way of working around things we have no
+> realistic chance of fixing properly anymore. I still think it would be
+> best if we could derive identity mappings from command-line arguments on
+> these platforms because I think most of them will actually set that, and
+> then the solution becomes at least uniform at the SMMU level.
+> 
+> For Tegra210 I've already laid out a path to a solution that's going to
+> be generic and extend to Tegra186 and later as well.
+
+We still have issues in the DRM and other drivers that don't allow us to
+flip ON the IOMMU_DOMAIN_DMA support.
+
+My patch addresses the issue with the ARM_DMA_USE_IOMMU option, which
+allocates the unmanaged domain for DMA purposes on ARM32, causing the
+trouble in the multiplatform kernel configuration since it's not
+possible to opt-out from ARM_DMA_USE_IOMMU in this case. Perhaps this
+needs to be clarified in the commit message.
+
+https://elixir.bootlin.com/linux/v5.12-rc6/source/arch/arm/mm/dma-mapping.c#L2078
+
+https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/iommu/iommu.c#L1929
