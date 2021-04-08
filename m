@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1576358B3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1948A358B42
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhDHRVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:21:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:55416 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231716AbhDHRVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:21:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B0A7106F;
-        Thu,  8 Apr 2021 10:20:48 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 129FF3F792;
-        Thu,  8 Apr 2021 10:20:45 -0700 (PDT)
-Subject: Re: [PATCH v2 02/24] x86/resctrl: Split struct rdt_domain
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        id S232016AbhDHRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232374AbhDHRYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:24:09 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3591FC061760;
+        Thu,  8 Apr 2021 10:23:58 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c4so3022220qkg.3;
+        Thu, 08 Apr 2021 10:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=eA2l4I7YtdtmIbE4ltx15DBrtYgk6xPqSlQ/gnRZkAc=;
+        b=JYu0NkPE/XBp5dGZP75GvGBeqW+o5MefYszOWo5drZIAnguSQoyJrITQU/i0Ikhjis
+         EfLsqLvAqiug9ZBobDGjt7VBPew7AXnFPhT8UYyHlZZYf/5cM2dShu4kd/MJ9/PIYa77
+         x4y1y1FHo2euABmUZ8QIctNNPh/grB52XbTeypNuLuMLAj1hfkNcaoKc/bxNh4OnU4qd
+         uSEA0946sZKprL0z2W4QHQpVTpkOCjWRPaY4Rdze5uJBTxlmVQVkvTLa7ofwP6pRBWh5
+         v3FvngLirAmXimkt3eDFsQPjw3ZUsjp9DOLp/aM+7xh9W+gjpo/FFhw7/ZHwZRM4hXUz
+         rLZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=eA2l4I7YtdtmIbE4ltx15DBrtYgk6xPqSlQ/gnRZkAc=;
+        b=kuEWZWHx/BzvixH8HAPeLAP82gDw6z8ADHVTRFlrvL+/D9avUREtmsa4AHsf0ds2li
+         IJqEcO6AGd2pzd7NSVITWYGwSTpd2zu7Q7tdnc9E+6p3OnSCs6ELN9PFICmATWyGzXkm
+         cfCyLiK9UZzny0UqekcVBqi493X/3F5slQ8zavBY8UzgaPvPmqVtnUsBu5d41BRIBRsE
+         cgLAa2txzOEjoXbm2HEMc+4iaPMwTEbi6ROVa2bLVEWlGAoK5B83QUdsdnPdOUTU0t9J
+         RledYabrDIyWFvmBygV7XOsRC3xxN/e2aWpgpJSPisStX4YwUjBNkHp2NMLKpKqb4vej
+         3IBQ==
+X-Gm-Message-State: AOAM533/LJ63erOMAjzTuGsDmEKf7CusnNL1mz+QxsGBUIKyzCf9WxA/
+        tPvlL/c5ItL58bELVrKRwZ7CblZu4TyShw==
+X-Google-Smtp-Source: ABdhPJz7AVao6IUeETblVXD2p8w1ggqOsoC1X3zJG9GRY1tKEx9obeJmM0n1TYvbqS+hdPAV/zz+pQ==
+X-Received: by 2002:a05:620a:126d:: with SMTP id b13mr9840471qkl.122.1617902637234;
+        Thu, 08 Apr 2021 10:23:57 -0700 (PDT)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id v7sm21054702qkv.86.2021.04.08.10.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 10:23:56 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20210312175849.8327-1-james.morse@arm.com>
- <20210312175849.8327-3-james.morse@arm.com>
- <9cb3f9c9-8295-6e40-9f98-1944b9b3c59b@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <c8c1a559-9045-a28c-46c0-dddeb9b38a14@arm.com>
-Date:   Thu, 8 Apr 2021 18:20:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <9cb3f9c9-8295-6e40-9f98-1944b9b3c59b@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not just 2"
+Date:   Thu,  8 Apr 2021 13:23:53 -0400
+Message-Id: <20210408172353.21143-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-On 31/03/2021 22:36, Reinette Chatre wrote:
-> On 3/12/2021 9:58 AM, James Morse wrote:
->> resctrl is the defacto Linux ABI for SoC resource partitioning features.
->> To support it on another architecture, it needs to be abstracted from
->> the features provided by Intel RDT and AMD PQoS, and moved to /fs/.
->>
->> Split struct rdt_domain up too. Move everything that that is particular
-> 
-> s/that that/that/
-> 
->> to resctrl into a new header file. resctrl code paths touching a 'hw'
->> struct indicates where an abstraction is needed.
-> 
-> Similar to previous patch it would help to explain how this split was chosen. For example,
-> why are the CPUs to which a resource is associated not considered a hardware property?
+This reverts commit 3e21a10fdea3c2e4e4d1b72cb9d720256461af40.
 
-Similarly, because the meaning of those CPUs doesn't differ or change between architectures.
+The reverted patch completely breaks all network connectivity on the
+lan7430. tcpdump indicates missing bytes when receiving ping
+packets from an external host:
 
-I've expanded the middle paragraph in the commit message to explain why the arch specific
-things are arch specific:
-| Continue by splitting struct rdt_domain, into an architecture private
-| 'hw' struct, which contains the common resctrl structure that would be
-| used by any architecture.
-|
-| The hardware values in ctrl_val and mbps_val need to be accessed via
-| helpers to allow another architecture to convert these into a different
-| format if necessary.
-|
-| After this split, filesystem code code paths touching a 'hw' struct
-| indicates where an abstraction is needed.
+host$ ping $lan7430_ip
+lan7430$ tcpdump -v
+IP truncated-ip - 2 bytes missing! (tos 0x0, ttl 64, id 21715,
+    offset 0, flags [DF], proto ICMP (1), length 84)
 
-and similarly changed the kernel doc comment.
+Fixes: 3e21a10fdea3 ("lan743x: trim all 4 bytes of the FCS; not just 2")
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
 
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+To: George McCollister <george.mccollister@gmail.com>
+Cc: UNGLinuxDriver@microchip.com
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Let me know if you prefer some other struct name.
+ drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 1c3e204d727c..dbdfabff3b00 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
+ 		dev_kfree_skb_irq(skb);
+ 		return NULL;
+ 	}
+-	frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 4);
++	frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 2);
+ 	if (skb->len > frame_length) {
+ 		skb->tail -= skb->len - frame_length;
+ 		skb->len = frame_length;
+-- 
+2.17.1
 
-Thanks,
-
-James
