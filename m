@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7E6358013
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6446358016
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhDHJ5a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 05:57:30 -0400
-Received: from smtp.asem.it ([151.1.184.197]:58903 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231451AbhDHJ53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:57:29 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 8.0.0)
-        with ESMTP id 387cdbc5c84c4bbc94fbe1691073a758.MSG
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:57:15 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Apr
- 2021 11:57:12 +0200
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.2176.009; Thu, 8 Apr 2021 11:57:12 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2 0/5] net: pch: fix and a few cleanups
-Thread-Topic: [PATCH net-next v2 0/5] net: pch: fix and a few cleanups
-Thread-Index: AQHXIZ1I+hIGDbheQ0mjeo1QOr5hoqqa90yAgAE1elCACw/7AIADMTcA
-Date:   Thu, 8 Apr 2021 09:57:12 +0000
-Message-ID: <fe865a23dfd04b7daab5d8325f5eaba2@asem.it>
-References: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
- <YGHuhbe/+9cjPdFH@smile.fi.intel.com>
- <92353220370542c7acdabbd269269d80@asem.it>
- <YGw5xFdczcKGqW1v@smile.fi.intel.com>
-In-Reply-To: <YGw5xFdczcKGqW1v@smile.fi.intel.com>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231512AbhDHJ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:57:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21667 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231407AbhDHJ5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:57:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617875862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5qRbCj/1Pw0sbqnFA7cAFN0KaHJ1niBYvUatQLNt7yA=;
+        b=ALb58AOwBwYK8A7HXNk0ZWUrNaJeeHWvTMAN6gIOEl4lTYeKuY7pp7iLmYkl5oCBAVqeME
+        Q9qxFD21gOvcIyZo20Uy0RYHLOna8MsMcj4b6uAjz9RfqpawpqoR8y3OvryR+mu+v8oV3h
+        H8OZv7Nl7WUtty44R8z9YGigPjAQibs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-NppAuqKfOUeFeTzIB7gHeQ-1; Thu, 08 Apr 2021 05:57:39 -0400
+X-MC-Unique: NppAuqKfOUeFeTzIB7gHeQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8F5987A83A;
+        Thu,  8 Apr 2021 09:57:36 +0000 (UTC)
+Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5501E5D9CA;
+        Thu,  8 Apr 2021 09:57:32 +0000 (UTC)
+Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
+ aspeed or etnaviv
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Joel Stanley <joel@jms.id.au>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+References: <20210408092011.52763-1-david@redhat.com>
+ <20210408092011.52763-3-david@redhat.com> <YG7TZa8VP458QS5y@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9826d7ef-7f7e-987e-c305-7ae3c533d591@redhat.com>
+Date:   Thu, 8 Apr 2021 11:57:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F27.606ED379.0033,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <YG7TZa8VP458QS5y@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-> > > On Thu, Mar 25, 2021 at 07:34:07PM +0200, Andy Shevchenko wrote:
-> > > > The series provides one fix (patch 1) for GPIO to be able to wait for
-> > > > the GPIO driver to appear. This is separated from the conversion to
-> > > > the GPIO descriptors (patch 2) in order to have a possibility for
-> > > > backporting. Patches 3 and 4 fix a minor warnings from Sparse while
-> > > > moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
-> > > >
-> > > > Tested on Intel Minnowboard (v1).
-> > >
-> > > Anything should I do here?
-> >
-> > it's ok for me
+On 08.04.21 11:56, Mike Rapoport wrote:
+> On Thu, Apr 08, 2021 at 11:20:11AM +0200, David Hildenbrand wrote:
+>> Random drivers should not override a user configuration of core knobs
+>> (e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
+>> dependencies and manual overrides.
+>>
+>> "This is similar to "select" as it enforces a lower limit on another
+>>   symbol except that the "implied" symbol's value may still be set to n
+>>   from a direct dependency or with a visible prompt."
+>>
+>> Implying DRM_CMA should be sufficient, as that depends on CMA.
 > 
-> Thanks!
-> Who may apply them?
-
-I used your patches on kernel net-next 5.12.0-rc2, on a board with an
-Intel(R) Atom(TM) CPU E640   @ 1.00GHz and an EG20T PCH.
-I used the built-in OKI gigabit ethernet controller:
-
-02:00.1 Ethernet controller: Intel Corporation Platform Controller Hub EG20T Gigabit Ethernet Controller (rev 02)
-	Kernel driver in use: pch_gbe
-
-with a simple iperf test and all works fine:
-
-ht-700 ~ # iperf -c 192.168.200.1
-------------------------------------------------------------
-Client connecting to 192.168.200.1, TCP port 5001
-TCP window size: 45.0 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.200.159 port 38638 connected with 192.168.200.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec   178 MBytes   149 Mbits/sec
-ht-700 ~ # iperf -c 192.168.200.1
-------------------------------------------------------------
-Client connecting to 192.168.200.1, TCP port 5001
-TCP window size: 45.0 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.200.159 port 38640 connected with 192.168.200.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec   178 MBytes   149 Mbits/sec
-ht-700 ~ # iperf -c 192.168.200.1 -u
-------------------------------------------------------------
-Client connecting to 192.168.200.1, UDP port 5001
-Sending 1470 byte datagrams
-UDP buffer size:  208 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.200.159 port 58364 connected with 192.168.200.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec  1.25 MBytes  1.05 Mbits/sec
-[  3] Sent 893 datagrams
-ht-700 ~ # iperf -c 192.168.200.1 -u
-------------------------------------------------------------
-Client connecting to 192.168.200.1, UDP port 5001
-Sending 1470 byte datagrams
-UDP buffer size:  208 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.200.159 port 32778 connected with 192.168.200.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec  1.25 MBytes  1.05 Mbits/sec
-[  3] Sent 893 datagrams
-ht-700 ~ # uname -a
-Linux ht-700 5.12.0-rc2-watchdog+ #12 SMP Thu Apr 8 11:08:49 CEST 2021 x86_64 x86_64 x86_64 GNU/Linux
-ht-700 ~ # 
-
-I hope this can help you.
-
+>            ^ DMA_CMA
+>>
+>> Note: If this is a real dependency, we should use "depends on DMA_CMA"
+>> instead -  but I assume the driver can work without CMA just fine --
+>> esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   drivers/gpu/drm/aspeed/Kconfig  | 3 +--
+>>   drivers/gpu/drm/etnaviv/Kconfig | 3 +--
+>>   2 files changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/aspeed/Kconfig b/drivers/gpu/drm/aspeed/Kconfig
+>> index 5e95bcea43e9..a055f763d230 100644
+>> --- a/drivers/gpu/drm/aspeed/Kconfig
+>> +++ b/drivers/gpu/drm/aspeed/Kconfig
+>> @@ -6,9 +6,8 @@ config DRM_ASPEED_GFX
+>>   	depends on MMU
+>>   	select DRM_KMS_HELPER
+>>   	select DRM_KMS_CMA_HELPER
+>> -	select DMA_CMA if HAVE_DMA_CONTIGUOUS
+>> -	select CMA if HAVE_DMA_CONTIGUOUS
+>>   	select MFD_SYSCON
+>> +	imply DRM_CMA
 > 
+> Ditto
 
-Tested-by: Flavio Suligoi <f.suligoi@asem.it>
+Gah, thanks!
 
-> --
-> With Best Regards,
-> Andy Shevchenko
-> 
-Best regards,
-Flavio Suligoi
+
+-- 
+Thanks,
+
+David / dhildenb
 
