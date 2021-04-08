@@ -2,68 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6563587C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEB53587CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhDHPGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:06:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231848AbhDHPGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:06:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617894364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E0p3yL+ASSb4kIMFODsQ6OMg+WKi8voPSOQ8W8M/8ng=;
-        b=QbyAKFNfbF1BV/+pYhkvKO0PS60SJjePP4xf528CEDXgb1Ivi9scQZnvbr/GJjP6nBfriY
-        aFQWy4PN40lA4Rs3tOmRi42n97399T/CxzXZZet8kZIssEjVRxGYmcdX24VrmSWkaI/Yhc
-        qzRcOE8EHuC41C74bj7tZvo6sIANK7A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-IwbuC1WfO5CGdjKUhQ1UIg-1; Thu, 08 Apr 2021 11:06:02 -0400
-X-MC-Unique: IwbuC1WfO5CGdjKUhQ1UIg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75E4D6D581;
-        Thu,  8 Apr 2021 15:05:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFA2819C66;
-        Thu,  8 Apr 2021 15:05:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210408141516.11369-19-varad.gautam@suse.com>
-References: <20210408141516.11369-19-varad.gautam@suse.com> <20210408141516.11369-1-varad.gautam@suse.com>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vt@altlinux.org,
-        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM)
-Subject: Re: [PATCH v2 18/18] keyctl_pkey: Add pkey parameters slen and mgfhash for PSS
+        id S232052AbhDHPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:06:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:50700 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231990AbhDHPGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:06:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD7CAD6E;
+        Thu,  8 Apr 2021 08:06:34 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21EBB3F694;
+        Thu,  8 Apr 2021 08:06:32 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 16:06:23 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH] arm64: mte: Move MTE TCF0 check in entry-common
+Message-ID: <20210408150612.GA37165@C02TD0UTHF1T.local>
+References: <20210408143723.13024-1-vincenzo.frascino@arm.com>
+ <20210408145604.GB18211@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <12845.1617894354.1@warthog.procyon.org.uk>
-Date:   Thu, 08 Apr 2021 16:05:55 +0100
-Message-ID: <12846.1617894355@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408145604.GB18211@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Varad Gautam <varad.gautam@suse.com> wrote:
+On Thu, Apr 08, 2021 at 03:56:04PM +0100, Will Deacon wrote:
+> On Thu, Apr 08, 2021 at 03:37:23PM +0100, Vincenzo Frascino wrote:
+> > The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+> > race with another CPU doing a set_tsk_thread_flag() and the flag can be
+> > lost in the process.
+> 
+> Actually, it's all the *other* flags that get lost!
+> 
+> > Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+> > exit_to_user_mode() to address the problem.
+> > 
+> > Note: Moving the check in entry-common allows to use set_thread_flag()
+> > which is safe.
+> > 
+> > Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous
+> > tag check faults")
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Reported-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > ---
+> >  arch/arm64/include/asm/mte.h     |  8 ++++++++
+> >  arch/arm64/kernel/entry-common.c |  6 ++++++
+> >  arch/arm64/kernel/entry.S        | 30 ------------------------------
+> >  arch/arm64/kernel/mte.c          | 25 +++++++++++++++++++++++--
+> >  4 files changed, 37 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > index 9b557a457f24..188f778c6f7b 100644
+> > --- a/arch/arm64/include/asm/mte.h
+> > +++ b/arch/arm64/include/asm/mte.h
+> > @@ -31,6 +31,8 @@ void mte_invalidate_tags(int type, pgoff_t offset);
+> >  void mte_invalidate_tags_area(int type);
+> >  void *mte_allocate_tag_storage(void);
+> >  void mte_free_tag_storage(char *storage);
+> > +void check_mte_async_tcf0(void);
+> > +void clear_mte_async_tcf0(void);
+> >  
+> >  #ifdef CONFIG_ARM64_MTE
+> >  
+> > @@ -83,6 +85,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+> >  {
+> >  	return -EIO;
+> >  }
+> > +void check_mte_async_tcf0(void)
+> > +{
+> > +}
+> > +void clear_mte_async_tcf0(void)
+> > +{
+> > +}
+> >  
+> >  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+> >  {
+> > diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> > index 9d3588450473..837d3624a1d5 100644
+> > --- a/arch/arm64/kernel/entry-common.c
+> > +++ b/arch/arm64/kernel/entry-common.c
+> > @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+> >  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+> >  	user_exit_irqoff();
+> >  	trace_hardirqs_off_finish();
+> > +
+> > +	/* Check for asynchronous tag check faults in user space */
+> > +	check_mte_async_tcf0();
+> >  }
+> 
+> Is enter_from_user_mode() always called when we enter the kernel from EL0?
+> afaict, some paths (e.g. el0_irq()) only end up calling it if
+> CONTEXT_TRACKING or TRACE_IRQFLAGS are enabled.
 
-> +	Opt_slen,		/* "slen=<salt-length>" eg. "slen=32" */
+Currently everything that's in {enter,exit}_from_user_mode() only
+matters when either CONTEXT_TRACKING or TRACE_IRQFLAGS is selected (and
+expands to an empty stub otherwise).
 
-"slen" seems a bit unobvious.  Maybe "saltlen=..."?
+We could drop the ifdeffery in user_{enter,exit}_irqoff() to have them
+called regardless, or add CONFIG_MTE to the list.
 
-David
+> >  asmlinkage void noinstr exit_to_user_mode(void)
+> >  {
+> > +	/* Ignore asynchronous tag check faults in the uaccess routines */
+> > +	clear_mte_async_tcf0();
+> > +
+> 
+> and this one seems to be called even less often.
 
+This is always done in ret_to_user, so (modulo ifdeferry above) all
+returns to EL0 call this.
+
+Thanks,
+Mark.
