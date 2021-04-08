@@ -2,94 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99129358271
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF343358278
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhDHLvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHLva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:51:30 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071B0C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:51:18 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id p12so1219836pgj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=i9s9BkLvRdlumIZwdRHabgMYGpHTAnHPSYT3zj0wSJ4=;
-        b=Rz7Wb35MSnfgOdBmx+0oOrmFk7TaMhak5y/1PKg7A63DQqMc7bao3B4L//s4n8ViUB
-         My65OmynzFNM0EP1ctF+nOY97dx7RnG0yWcpVP2/PnP+qSVHsRW2PTCt+JpM50qjW96F
-         e7X0Km1r3NN7MRrafpZ3sAFD0LNoyzhiagsdpP5ZSk5GYqczy8F1cCVHPDk3PCL/co7U
-         YNXHyLekJyiH/HKKbxNpVdAzgUTzJ4cue9/jfofhYGit2btwMVKhIePRBe1x/DjGX6Ca
-         rqAR/1lVp05cyQrOPRTHLmY4dgXxAmF/y7synx2PzBxX32pd3ebaQ/wf9q9ne0uHCowO
-         Zxzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=i9s9BkLvRdlumIZwdRHabgMYGpHTAnHPSYT3zj0wSJ4=;
-        b=GtlHGj0SfftgIA5pEO/4awu6/k9iySAUJvw3joq/kIBtumBh2Lqr51+SooCUk+vP70
-         i0kJWdXzq6s6t20CnxcUawE8cDqOrNZmkYcIbsbpiFfa961VbzarcbVJSGQh+zfb/OP6
-         UYzZuLrttGJ3IKsJO4xG2Tk89hfyNzgN28l7XFFWpVAG0XXkkq8Nk2P09tzt6DuU/1im
-         UoXEf8kov1mt/5NnIfaiVn61xYuND1gdlUmxUBalx1c3TIsr6dMzh1OD/WgwGxqTxQhM
-         sYwc0NU5iS6sGxfA9PMesRkXYgpcdcltLm77yUrjEDRNPyI2tPYchjr2ThMuuFcqYStP
-         ggVA==
-X-Gm-Message-State: AOAM533L38a0aNUN1/XSuYLH2wMkfqY7GHIzSLgg25gZ40/ODETsGnCt
-        L2pKpfY8rX4SnJ/k/+LZejA=
-X-Google-Smtp-Source: ABdhPJzR3XqFhA1vwKnkhKlm5OxIy/0gKl/K1Z+6z14beckg1VSoE/A+MPHleyo6rAYfpRyqqOaMiA==
-X-Received: by 2002:a63:d153:: with SMTP id c19mr7601140pgj.311.1617882678294;
-        Thu, 08 Apr 2021 04:51:18 -0700 (PDT)
-Received: from kali ([152.57.11.236])
-        by smtp.gmail.com with ESMTPSA id c9sm22688550pfl.169.2021.04.08.04.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 04:51:17 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 17:21:09 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH v2] staging: rtl8712: add spaces around '+'
-Message-ID: <YG7uLQLGmAh97xB1@kali>
+        id S231289AbhDHLws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:52:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47882 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231244AbhDHLwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:52:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617882754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Vxf/Rtqoq9cSHpyTLbA+D/Tz1bK6eTu2aX5QUqZu3s=;
+        b=byyTyOdY+AS9gT2WSkbCuGKS135Due4isvhpfxgM4HuYBanvO/ML3RrZ/mPrT+DV0wAtu9
+        aaqsWKNPcs/YgwjJLv8d5LxDyIGAhS7dryABfKL86abWEO49l1n2HadFwVXL+Cvn4ovBYI
+        7kc5ho0cbjGcBg6cxziVvRTCA8pJDtw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D197BB090;
+        Thu,  8 Apr 2021 11:52:33 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 13:52:33 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+Message-ID: <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
+ <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added spaces around '+' to improve readability and adhere to linux
-kernel coding style.
-Reported by checkpatch
+On Wed 07-04-21 15:33:26, Tim Chen wrote:
+> 
+> 
+> On 4/6/21 2:08 AM, Michal Hocko wrote:
+> > On Mon 05-04-21 10:08:24, Tim Chen wrote:
+> > [...]
+> >> To make fine grain cgroup based management of the precious top tier
+> >> DRAM memory possible, this patchset adds a few new features:
+> >> 1. Provides memory monitors on the amount of top tier memory used per cgroup 
+> >>    and by the system as a whole.
+> >> 2. Applies soft limits on the top tier memory each cgroup uses 
+> >> 3. Enables kswapd to demote top tier pages from cgroup with excess top
+> >>    tier memory usages.
+> > 
+> 
+> Michal,
+> 
+> Thanks for giving your feedback.  Much appreciated.
+> 
+> > Could you be more specific on how this interface is supposed to be used?
+> 
+> We created a README section on the cgroup control part of this patchset:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vishal/tiering.git/commit/?h=tiering-0.71&id=20f20be02671384470c7cd8f66b56a9061a4071f
+> to illustrate how this interface should be used.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
+I have to confess I didn't get to look at demotion patches yet.
 
-Changes from v1: No changes in the code, but only to subject description
-and patch body. 
-Changed the subject decription according to PatchPhilosophy and made
-patch body more clearer.
+> The top tier memory used is reported in
+> 
+> memory.toptier_usage_in_bytes
+> 
+> The amount of top tier memory usable by each cgroup without
+> triggering page reclaim is controlled by the
+> 
+> memory.toptier_soft_limit_in_bytes 
 
-drivers/staging/rtl8712/wlan_bssdef.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Are you trying to say that soft limit acts as some sort of guarantee?
+Does that mean that if the memcg is under memory pressure top tiear
+memory is opted out from any reclaim if the usage is not in excess?
 
-diff --git a/drivers/staging/rtl8712/wlan_bssdef.h b/drivers/staging/rtl8712/wlan_bssdef.h
-index b54ccaacc527..ec3749813728 100644
---- a/drivers/staging/rtl8712/wlan_bssdef.h
-+++ b/drivers/staging/rtl8712/wlan_bssdef.h
-@@ -176,7 +176,7 @@ struct NDIS_802_11_WEP {
- #define MIC_CHECK_TIME	60000000
+From you previous email it sounds more like the limit is evaluated on
+the global memory pressure to balance specific memcgs which are in
+excess when trying to reclaim/demote a toptier numa node.
+
+Soft limit reclaim has several problems. Those are historical and
+therefore the behavior cannot be changed. E.g. go after the biggest
+excessed memcg (with priority 0 - aka potential full LRU scan) and then
+continue with a normal reclaim. This can be really disruptive to the top
+user.
+
+So you can likely define a more sane semantic. E.g. push back memcgs
+proporitional to their excess but then we have two different soft limits
+behavior which is bad as well. I am not really sure there is a sensible
+way out by (ab)using soft limit here.
+
+Also I am not really sure how this is going to be used in practice.
+There is no soft limit by default. So opting in would effectivelly
+discriminate those memcgs. There has been a similar problem with the
+soft limit we have in general. Is this really what you are looing for?
+What would be a typical usecase?
+
+[...]
+> >> The patchset is based on cgroup v1 interface. One shortcoming of the v1
+> >> interface is the limit on the cgroup is a soft limit, so a cgroup can
+> >> exceed the limit quite a bit before reclaim before page demotion reins
+> >> it in. 
+> > 
+> > I have to say that I dislike abusing soft limit reclaim for this. In the
+> > past we have learned that the existing implementation is unfixable and
+> > changing the existing semantic impossible due to backward compatibility.
+> > So I would really prefer the soft limit just find its rest rather than
+> > see new potential usecases.
+> 
+> Do you think we can reuse some of the existing soft reclaim machinery
+> for the v2 interface?
+> 
+> More particularly, can we treat memory_toptier.high in cgroup v2 as a soft limit?
+
+No, you should follow existing limits semantics. High limit acts as a
+allocation throttling interface.
+
+> We sort how much each mem cgroup exceeds memory_toptier.high and
+> go after the cgroup that have largest excess first for page demotion.
+> Will appreciate if you can shed some insights on what could go wrong
+> with such an approach. 
+
+This cannot work as a thorttling interface.
  
- #ifndef Ndis802_11APMode
--#define Ndis802_11APMode (Ndis802_11InfrastructureMax+1)
-+#define Ndis802_11APMode (Ndis802_11InfrastructureMax + 1)
- #endif
+> > I haven't really looked into details of this patchset but from a cursory
+> > look it seems like you are actually introducing a NUMA aware limits into
+> > memcg that would control consumption from some nodes differently than
+> > other nodes. This would be rather alien concept to the existing memcg
+> > infrastructure IMO. It looks like it is fusing borders between memcg and
+> > cputset controllers.
+> 
+> Want to make sure I understand what you mean by NUMA aware limits.
+> Yes, in the patch set, it does treat the NUMA nodes differently.
+> We are putting constraint on the "top tier" RAM nodes vs the lower
+> tier PMEM nodes.  Is this what you mean?
+
+What I am trying to say (and I have brought that up when demotion has been
+discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
+The specific technology shouldn't be imprinted into the interface.
+Fundamentally you are trying to balance memory among NUMA nodes as we do
+not have other abstraction to use. So rather than talking about top,
+secondary, nth tier we have different NUMA nodes with different
+characteristics and you want to express your "priorities" for them.
+
+> I can see it does has
+> some flavor of cpuset controller.  In this case, it doesn't explicitly
+> set a node as allowed or forbidden as in cpuset, but put some constraints
+> on the usage of a group of nodes.  
+> 
+> Do you have suggestions on alternative controller for allocating tiered memory resource?
  
- struct	wlan_network {
+I am not really sure what would be the best interface to be honest.
+Maybe we want to carve this into memcg in some form of node priorities
+for the reclaim. Any of the existing limits is numa aware so far. Maybe
+we want to say hammer this node more than others if there is a memory
+pressure. Not sure that would help you particular usecase though.
+
+> > You also seem to be basing the interface on the very specific usecase.
+> > Can we expect that there will be many different tiers requiring their
+> > own balancing?
+> > 
+> 
+> You mean more than two tiers of memory? We did think a bit about system
+> that has stuff like high bandwidth memory that's faster than DRAM.
+> Our thought is usage and freeing of those memory will require 
+> explicit assignment (not used by default), so will be outside the
+> realm of auto balancing.  So at this point, we think two tiers will be good.
+
+Please keep in mind that once there is an interface it will be
+impossible to change in the future. So do not bind yourself to the 2
+tier setups that you have in hands right now.
+
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
