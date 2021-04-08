@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E330357AF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 05:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E54357AF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 05:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhDHD6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 23:58:03 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57714 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229506AbhDHD56 (ORCPT
+        id S229843AbhDHD6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 23:58:12 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43990 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229691AbhDHD6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 23:57:58 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1383uMGZ008445
-        for <linux-kernel@vger.kernel.org>; Wed, 7 Apr 2021 20:57:48 -0700
+        Wed, 7 Apr 2021 23:58:00 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1383v3Rp004715
+        for <linux-kernel@vger.kernel.org>; Wed, 7 Apr 2021 20:57:49 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=4vZaaBFsaOB4F8XygoHlUQdcYtLDpiQQyW830Fvwijw=;
- b=KWiObgVqOxfkfQkH1qAh7b5fYEAlSnSYcTTE8iRyF0B4mgOIvljh3uRP+QOTqdRLIxT5
- njVsxBaUwod7byvxvrYBuiV0HAgdtsncXakWZ7Fp/zSYFsrheB3eaZxJPoiIs0Rw1Q1L
- Idt34p0xB0X/ptTKxOCPc2D858YX19KrNBw= 
+ bh=qAEXwgccNCJwApJKnF3tbkjWwzvQ4ovmNeHysDx48R0=;
+ b=TfTrvIPmSEVVOhwoeNCdym6WDTkE78AKcIQ9bQBQjWD4WQOH6CdiVBg1mYQN9lnbrex3
+ /+c47xj9y/GdviCPlzd7pjQrQMIfYTRHiT2xYuXp0b/zVRobSo6uxjYDdCIUneBCstpg
+ jFiXI8R4ljHGEIsl8E5/OM/7IlNcCbMW/Mk= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37sg04kmv5-3
+        by mx0a-00082601.pphosted.com with ESMTP id 37sfq63qnn-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 20:57:48 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 20:57:49 -0700
+Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Wed, 7 Apr 2021 20:57:47 -0700
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 61F75602B010; Wed,  7 Apr 2021 20:57:41 -0700 (PDT)
+        id 67A4E602B012; Wed,  7 Apr 2021 20:57:41 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Dennis Zhou <dennis@kernel.org>
 CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH v3 3/6] percpu: make pcpu_nr_empty_pop_pages per chunk type
-Date:   Wed, 7 Apr 2021 20:57:33 -0700
-Message-ID: <20210408035736.883861-4-guro@fb.com>
+Subject: [PATCH v3 4/6] percpu: generalize pcpu_balance_populated()
+Date:   Wed, 7 Apr 2021 20:57:34 -0700
+Message-ID: <20210408035736.883861-5-guro@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210408035736.883861-1-guro@fb.com>
 References: <20210408035736.883861-1-guro@fb.com>
@@ -48,146 +48,147 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: MSBdqoRxc97nSY0EkfyXMNXRNreq_-hl
-X-Proofpoint-GUID: MSBdqoRxc97nSY0EkfyXMNXRNreq_-hl
+X-Proofpoint-ORIG-GUID: cV6pVpILZ_wiyHnyG28UX5b5AqoZl6P8
+X-Proofpoint-GUID: cV6pVpILZ_wiyHnyG28UX5b5AqoZl6P8
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-08_01:2021-04-07,2021-04-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 phishscore=0 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104080023
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nr_empty_pop_pages is used to guarantee that there are some free
-populated pages to satisfy atomic allocations. Accounted and
-non-accounted allocations are using separate sets of chunks,
-so both need to have a surplus of empty pages.
+To prepare for the depopulation of percpu chunks, split out the
+populating part of the pcpu_balance_populated() into the new
+pcpu_grow_populated() (with an intention to add
+pcpu_shrink_populated() in the next commit).
 
-This commit makes pcpu_nr_empty_pop_pages and the corresponding logic
-per chunk type.
+The goal of pcpu_balance_populated() is to determine whether
+there is a shortage or an excessive amount of empty percpu pages
+and call into the corresponding function.
+
+pcpu_grow_populated() takes a desired number of pages as an argument
+(nr_to_pop). If it creates a new chunk, nr_to_pop should be updated
+to reflect that the new chunk could be created already populated.
+Otherwise an infinite loop might appear.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 ---
- mm/percpu-internal.h |  2 +-
- mm/percpu-stats.c    |  9 +++++++--
- mm/percpu.c          | 14 +++++++-------
- 3 files changed, 15 insertions(+), 10 deletions(-)
+ mm/percpu.c | 63 +++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 39 insertions(+), 24 deletions(-)
 
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index 18b768ac7dca..095d7eaa0db4 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -87,7 +87,7 @@ extern spinlock_t pcpu_lock;
-=20
- extern struct list_head *pcpu_chunk_lists;
- extern int pcpu_nr_slots;
--extern int pcpu_nr_empty_pop_pages;
-+extern int pcpu_nr_empty_pop_pages[];
-=20
- extern struct pcpu_chunk *pcpu_first_chunk;
- extern struct pcpu_chunk *pcpu_reserved_chunk;
-diff --git a/mm/percpu-stats.c b/mm/percpu-stats.c
-index c8400a2adbc2..f6026dbcdf6b 100644
---- a/mm/percpu-stats.c
-+++ b/mm/percpu-stats.c
-@@ -145,6 +145,7 @@ static int percpu_stats_show(struct seq_file *m, void=
- *v)
- 	int slot, max_nr_alloc;
- 	int *buffer;
- 	enum pcpu_chunk_type type;
-+	int nr_empty_pop_pages;
-=20
- alloc_buffer:
- 	spin_lock_irq(&pcpu_lock);
-@@ -165,7 +166,11 @@ static int percpu_stats_show(struct seq_file *m, voi=
-d *v)
- 		goto alloc_buffer;
- 	}
-=20
--#define PL(X) \
-+	nr_empty_pop_pages =3D 0;
-+	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++)
-+		nr_empty_pop_pages +=3D pcpu_nr_empty_pop_pages[type];
-+
-+#define PL(X)								\
- 	seq_printf(m, "  %-20s: %12lld\n", #X, (long long int)pcpu_stats_ai.X)
-=20
- 	seq_printf(m,
-@@ -196,7 +201,7 @@ static int percpu_stats_show(struct seq_file *m, void=
- *v)
- 	PU(nr_max_chunks);
- 	PU(min_alloc_size);
- 	PU(max_alloc_size);
--	P("empty_pop_pages", pcpu_nr_empty_pop_pages);
-+	P("empty_pop_pages", nr_empty_pop_pages);
- 	seq_putc(m, '\n');
-=20
- #undef PU
 diff --git a/mm/percpu.c b/mm/percpu.c
-index 7e31e1b8725f..61339b3d9337 100644
+index 61339b3d9337..e20119668c42 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -176,10 +176,10 @@ struct list_head *pcpu_chunk_lists __ro_after_init;=
- /* chunk list slots */
- static LIST_HEAD(pcpu_map_extend_chunks);
-=20
- /*
-- * The number of empty populated pages, protected by pcpu_lock.  The
-- * reserved chunk doesn't contribute to the count.
-+ * The number of empty populated pages by chunk type, protected by pcpu_=
-lock.
-+ * The reserved chunk doesn't contribute to the count.
-  */
--int pcpu_nr_empty_pop_pages;
-+int pcpu_nr_empty_pop_pages[PCPU_NR_CHUNK_TYPES];
-=20
- /*
-  * The number of populated pages in use by the allocator, protected by
-@@ -559,7 +559,7 @@ static inline void pcpu_update_empty_pages(struct pcp=
-u_chunk *chunk, int nr)
- {
- 	chunk->nr_empty_pop_pages +=3D nr;
- 	if (chunk !=3D pcpu_reserved_chunk)
--		pcpu_nr_empty_pop_pages +=3D nr;
-+		pcpu_nr_empty_pop_pages[pcpu_chunk_type(chunk)] +=3D nr;
+@@ -1979,7 +1979,7 @@ static void pcpu_balance_free(enum pcpu_chunk_type =
+type)
  }
 =20
- /*
-@@ -1835,7 +1835,7 @@ static void __percpu *pcpu_alloc(size_t size, size_=
-t align, bool reserved,
- 		mutex_unlock(&pcpu_alloc_mutex);
+ /**
+- * pcpu_balance_populated - manage the amount of populated pages
++ * pcpu_grow_populated - populate chunk(s) to satisfy atomic allocations
+  * @type: chunk type
+  *
+  * Maintain a certain amount of populated pages to satisfy atomic alloca=
+tions.
+@@ -1988,35 +1988,15 @@ static void pcpu_balance_free(enum pcpu_chunk_typ=
+e type)
+  * allocation causes the failure as it is possible that requests can be
+  * serviced from already backed regions.
+  */
+-static void pcpu_balance_populated(enum pcpu_chunk_type type)
++static void pcpu_grow_populated(enum pcpu_chunk_type type, int nr_to_pop=
+)
+ {
+ 	/* gfp flags passed to underlying allocators */
+ 	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+ 	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
+ 	struct pcpu_chunk *chunk;
+-	int slot, nr_to_pop, ret;
++	int slot, ret;
+=20
+-	/*
+-	 * Ensure there are certain number of free populated pages for
+-	 * atomic allocs.  Fill up from the most packed so that atomic
+-	 * allocs don't increase fragmentation.  If atomic allocation
+-	 * failed previously, always populate the maximum amount.  This
+-	 * should prevent atomic allocs larger than PAGE_SIZE from keeping
+-	 * failing indefinitely; however, large atomic allocs are not
+-	 * something we support properly and can be highly unreliable and
+-	 * inefficient.
+-	 */
+ retry_pop:
+-	if (pcpu_atomic_alloc_failed) {
+-		nr_to_pop =3D PCPU_EMPTY_POP_PAGES_HIGH;
+-		/* best effort anyway, don't worry about synchronization */
+-		pcpu_atomic_alloc_failed =3D false;
+-	} else {
+-		nr_to_pop =3D clamp(PCPU_EMPTY_POP_PAGES_HIGH -
+-				  pcpu_nr_empty_pop_pages[type],
+-				  0, PCPU_EMPTY_POP_PAGES_HIGH);
+-	}
+-
+ 	for (slot =3D pcpu_size_to_slot(PAGE_SIZE); slot < pcpu_nr_slots; slot+=
++) {
+ 		unsigned int nr_unpop =3D 0, rs, re;
+=20
+@@ -2060,12 +2040,47 @@ static void pcpu_balance_populated(enum pcpu_chun=
+k_type type)
+ 		if (chunk) {
+ 			spin_lock_irq(&pcpu_lock);
+ 			pcpu_chunk_relocate(chunk, -1);
++			nr_to_pop =3D max_t(int, 0, nr_to_pop - chunk->nr_populated);
+ 			spin_unlock_irq(&pcpu_lock);
+-			goto retry_pop;
++			if (nr_to_pop)
++				goto retry_pop;
+ 		}
  	}
+ }
 =20
--	if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_LOW)
-+	if (pcpu_nr_empty_pop_pages[type] < PCPU_EMPTY_POP_PAGES_LOW)
- 		pcpu_schedule_balance_work();
-=20
- 	/* clear the areas and return address relative to base address */
-@@ -2013,7 +2013,7 @@ static void pcpu_balance_populated(enum pcpu_chunk_=
-type type)
- 		pcpu_atomic_alloc_failed =3D false;
- 	} else {
- 		nr_to_pop =3D clamp(PCPU_EMPTY_POP_PAGES_HIGH -
--				  pcpu_nr_empty_pop_pages,
-+				  pcpu_nr_empty_pop_pages[type],
- 				  0, PCPU_EMPTY_POP_PAGES_HIGH);
- 	}
-=20
-@@ -2595,7 +2595,7 @@ void __init pcpu_setup_first_chunk(const struct pcp=
-u_alloc_info *ai,
-=20
- 	/* link the first chunk in */
- 	pcpu_first_chunk =3D chunk;
--	pcpu_nr_empty_pop_pages =3D pcpu_first_chunk->nr_empty_pop_pages;
-+	pcpu_nr_empty_pop_pages[PCPU_CHUNK_ROOT] =3D pcpu_first_chunk->nr_empty=
-_pop_pages;
- 	pcpu_chunk_relocate(pcpu_first_chunk, -1);
-=20
- 	/* include all regions of the first chunk */
++/**
++ * pcpu_balance_populated - manage the amount of populated pages
++ * @type: chunk type
++ *
++ * Populate or depopulate chunks to maintain a certain amount
++ * of free pages to satisfy atomic allocations, but not waste
++ * large amounts of memory.
++ */
++static void pcpu_balance_populated(enum pcpu_chunk_type type)
++{
++	int nr_to_pop;
++
++	/*
++	 * Ensure there are certain number of free populated pages for
++	 * atomic allocs.  Fill up from the most packed so that atomic
++	 * allocs don't increase fragmentation.  If atomic allocation
++	 * failed previously, always populate the maximum amount.  This
++	 * should prevent atomic allocs larger than PAGE_SIZE from keeping
++	 * failing indefinitely; however, large atomic allocs are not
++	 * something we support properly and can be highly unreliable and
++	 * inefficient.
++	 */
++	if (pcpu_atomic_alloc_failed) {
++		nr_to_pop =3D PCPU_EMPTY_POP_PAGES_HIGH;
++		/* best effort anyway, don't worry about synchronization */
++		pcpu_atomic_alloc_failed =3D false;
++		pcpu_grow_populated(type, nr_to_pop);
++	} else if (pcpu_nr_empty_pop_pages[type] < PCPU_EMPTY_POP_PAGES_HIGH) {
++		nr_to_pop =3D PCPU_EMPTY_POP_PAGES_HIGH - pcpu_nr_empty_pop_pages[type=
+];
++		pcpu_grow_populated(type, nr_to_pop);
++	}
++}
++
+ /**
+  * pcpu_balance_workfn - manage the amount of free chunks and populated =
+pages
+  * @work: unused
 --=20
 2.30.2
 
