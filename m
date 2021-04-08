@@ -2,114 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A692A357DB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C906B357DBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhDHH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhDHH7p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:59:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5649AC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:59:33 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUPZU-0002a4-DU; Thu, 08 Apr 2021 09:59:24 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lUPZQ-0005CS-Vf; Thu, 08 Apr 2021 09:59:20 +0200
-Date:   Thu, 8 Apr 2021 09:59:20 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        devicetree@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        kernel@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
- support
-Message-ID: <20210408075920.rfrcqxec2yvepj3y@pengutronix.de>
-References: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210212131910.557581-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210212164144.wcvy7jkxmrysqxux@pengutronix.de>
- <20210407231548.4paov2fb33cpxxui@toshiba.co.jp>
+        id S230413AbhDHIAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhDHIAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE5661130;
+        Thu,  8 Apr 2021 08:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617868835;
+        bh=La09tBMP61eg7G3Ah/my2WS/uG2b2GzYj7sKoOh7eI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cn6iX9I2/kDg5WooyL7rw5G4hutUhw+YzplY2JHgNP8fihvYqyxqtdwmyUvsIEroz
+         7HuFD6P1P8/D4uULzuNZr/n1236u10UfmObPj9l0c6FI8Kyu4S3Lv2Z9+wwy2dpTnU
+         KjVTH5igpaygoOa8amufxmS7FanIkXFRU480xJpA9Tqha2bcMovMpn2KN99Vq1kbR0
+         V1azs1zLZoisE4BpNAThBB4q3YyM4A/T+MLdD35+bHxTBvzWaUvuyp386UtQQLxChV
+         RxIYSlMlRr/h71kULhL9dDQYOpM/o0YHW314RqR8Bd/wXYr9t7U73ASqBhd0/hM2RB
+         sIuqCaeitmlkQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lUPaX-0002dV-CS; Thu, 08 Apr 2021 10:00:30 +0200
+Date:   Thu, 8 Apr 2021 10:00:29 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] USB: serial: closing-wait cleanups
+Message-ID: <YG64HZ5IBsAaAimw@hovoldconsulting.com>
+References: <20210407104529.1110-1-johan@kernel.org>
+ <YG3OxNDPBw8NeRBd@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="geu5564gy6ryykgp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407231548.4paov2fb33cpxxui@toshiba.co.jp>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YG3OxNDPBw8NeRBd@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 07, 2021 at 05:24:52PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 07, 2021 at 12:45:25PM +0200, Johan Hovold wrote:
+> > Now that all USB serial drivers supports changing the closing_wait
+> > parameter through TIOCSSERIAL (setserial), we can remove the related
+> > driver-specific module parameters and settings.
+> > 
+> > These depend on the recently posted TIOCSSERIAL series.
+> 
+> Yes!  Getting rid of the module parameter is so good...
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
---geu5564gy6ryykgp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for reviewing these. All three sets now applied.
 
-Hello Nobuhiro,
-
-On Thu, Apr 08, 2021 at 08:15:48AM +0900, Nobuhiro Iwamatsu wrote:
-> > > +	/*
-> > > +	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
-> > > +	 * When the settings of the PWM are modified, the new values are sh=
-adowed in hardware until
-> > > +	 * the period register (PCSR) is written and the currently running =
-period is completed. This
-> > > +	 * way the hardware switches atomically from the old setting to the=
- new.
-> > > +	 * Also, disabling the hardware completes the currently running per=
-iod and keeps the output
-> > > +	 * at low level at all times.
-> >=20
-> > Did you just copy my optimal description or is your hardware really that
-> > nice?
->=20
-> Yes, this hardware works as you wrote.
-> And I added about the state if the sinnal when this hardware disabled.
->=20
-> >=20
-> > Do you know scripts/checkpatch.pl? I bet it will tell you to limit your
-> > lines to approx. 80 chars where sensible.
->=20
-> Yes, I know. I ran scripts/checkpatch.pl before send patch.
-> I understand that the number of characters per line has been changed to
-> 100 characters. Does the pwm driver recommend 80 characters?
-
-For free-text comments I'd still recommend 80, yes. For code lines I'd
-be indeed more lax, as a line break in function calls reduces readability.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---geu5564gy6ryykgp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBut9MACgkQwfwUeK3K
-7AlwEwf+LOf+gfIUqpelOcF+8SK6n10H1NShUmwZh32SQfCI6WR7zeuehzeR3f2r
-ujKiNUDTbhTyqUUV8FKZL0ezCJkW8LGiVMzMLnmS3xJkfPkLzaiJfRwtRksWJlRU
-KIyrRmN2c2sQsEBqZNX++V1QYjorEMAieBJfq442oePYvToBW1EsIXC+/FZ2SNec
-mZfVX6SqYvMCHZ5hLxIveAhseJ+LE+QRwQNoWQNanYPRlXf2QfN4H6GLQXTqNyw/
-BxGNekeiyyXlUPovaHgdiCYiph6t4AqhPq0q9AG/kSjGeQDyhmWnxSjRtUHs1li4
-mr2MPB0qxKRjT5876znW5v2bOWw/9g==
-=aMAV
------END PGP SIGNATURE-----
-
---geu5564gy6ryykgp--
+Johan
