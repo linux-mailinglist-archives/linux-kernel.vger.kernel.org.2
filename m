@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B1E3580EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36703580F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhDHKiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:38:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30281 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231318AbhDHKhX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617878232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLjjLoz+QeRsQ1MOoIX2RgV24dAqIxs+wPP9bncu07U=;
-        b=aaNAU9CDlpk4dMcFbfT3TaK6v8gGrYl6XrwUrQYqgp16Ccal71HH9TXHpl6LhelycUwDA+
-        OOt5vgWq17kbPKdfOzfXgJEeR6z00HEXqgaQ7KDJE/MYUlrF6S7ixe+qsToyOSdOD/lEg2
-        S3c1zu3aNZKs2W64MkTPoerciGMgkho=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-2LSDVNSAMvy_w6wcmDZmyA-1; Thu, 08 Apr 2021 06:37:08 -0400
-X-MC-Unique: 2LSDVNSAMvy_w6wcmDZmyA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 761D4CC622;
-        Thu,  8 Apr 2021 10:37:05 +0000 (UTC)
-Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A5151001B2C;
-        Thu,  8 Apr 2021 10:37:00 +0000 (UTC)
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-From:   David Hildenbrand <david@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <0b1928a8-99c3-f1f1-ad66-40145199d9bc@redhat.com>
-Date:   Thu, 8 Apr 2021 12:36:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231206AbhDHKjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:39:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:36563 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230395AbhDHKjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 06:39:00 -0400
+IronPort-SDR: 2XvttMdx8Zn6KW7j7SFCWDH/QqRU+RYClrXKxR0AH6cnJ8Lvam7Vu+fFQzV5ZM/VnHkvk0SWKJ
+ wRO+vJZMIzcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193051850"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="193051850"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 03:37:57 -0700
+IronPort-SDR: ea0POFNkY8XFK651JtSQc02AGpne06BendBs3KTPKoSaCQYN+X+edsLVo/RFVAz2ZwdbWcoHFt
+ TF0aBdj4BYtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="441706505"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Apr 2021 03:37:56 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lUS2t-000EqN-Bq; Thu, 08 Apr 2021 10:37:55 +0000
+Date:   Thu, 08 Apr 2021 18:37:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 420d9384a0b98b51e74684d55d7853dfc113d660
+Message-ID: <606edce8.3YbIOKhUfi3a3rxl%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.21 12:27, David Hildenbrand wrote:
-> On 08.04.21 12:20, Arnd Bergmann wrote:
->> On Thu, Apr 8, 2021 at 11:22 AM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> Random drivers should not override a user configuration of core knobs
->>> (e.g., CONFIG_DMA_CMA=n). Use "imply" instead, to still respect
->>> dependencies and manual overrides.
->>>
->>> "This is similar to "select" as it enforces a lower limit on another
->>>    symbol except that the "implied" symbol's value may still be set to n
->>>    from a direct dependency or with a visible prompt."
->>>
->>> Implying DRM_CMA should be sufficient, as that depends on CMA.
->>>
->>> Note: If this is a real dependency, we should use "depends on DMA_CMA"
->>> instead -  but I assume the driver can work without CMA just fine --
->>> esp. when we wouldn't have HAVE_DMA_CONTIGUOUS right now.
->>
->> 'imply' is almost never the right solution, and it tends to cause more
->> problems than it solves.
-> 
-> I thought that was the case with "select" :)
-> 
->>
->> In particular, it does not prevent a configuration with 'DRM_CMA=m'
-> 
-> I assume you meant "DRM_CMA=n" ? DRM_CMA cannot be built as a module.
-> 
->> and 'DRMA_ASPEED_GFX=y', or any build failures from such
->> a configuration.
-> 
-> I don't follow. "DRM_CMA=n" and 'DRMA_ASPEED_GFX=y' is supposed to work
-> just fine (e.g., without HAVE_DMA_CONTIGUOUS) or what am I missing?
-> 
->>
->> If you want this kind of soft dependency, you need
->> 'depends on DRM_CMA || !DRM_CMA'.
-> 
-> Seriously? I think the point of imply is "please enable if possible and
-> not prevented by someone else". Your example looks more like a NOP - no?
-> Or will it have the same effect?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 420d9384a0b98b51e74684d55d7853dfc113d660  rcu: Reject RCU_LOCKDEP_WARN() false positives
 
-I just tried (remove CONFIG_DMA_CMA from .config followed by make) and 
-the default will be set to "N" (when querying the user). So it indeed 
-looks like a NOP - unless I am missing something.
+elapsed time: 728m
 
--- 
-Thanks,
+configs tested: 127
+configs skipped: 3
 
-David / dhildenb
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+riscv                            allyesconfig
+m68k                         amcore_defconfig
+alpha                            allyesconfig
+powerpc                   currituck_defconfig
+sh                            hp6xx_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+mips                             allyesconfig
+i386                                defconfig
+powerpc                     mpc5200_defconfig
+arm                       omap2plus_defconfig
+csky                                defconfig
+arm                        mvebu_v7_defconfig
+arm                        neponset_defconfig
+m68k                        stmark2_defconfig
+arm                        spear3xx_defconfig
+arm                            zeus_defconfig
+openrisc                  or1klitex_defconfig
+arm                         at91_dt_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                  colibri_pxa300_defconfig
+sh                          kfr2r09_defconfig
+arm                      footbridge_defconfig
+arm                          iop32x_defconfig
+xtensa                           alldefconfig
+mips                      loongson3_defconfig
+powerpc                      chrp32_defconfig
+arm                         axm55xx_defconfig
+mips                      fuloong2e_defconfig
+arm                            pleb_defconfig
+sh                        sh7757lcr_defconfig
+parisc                              defconfig
+arm                           omap1_defconfig
+openrisc                 simple_smp_defconfig
+sh                         ecovec24_defconfig
+m68k                            q40_defconfig
+sparc                       sparc32_defconfig
+mips                        nlm_xlr_defconfig
+sh                          rsk7201_defconfig
+mips                           gcw0_defconfig
+sh                               alldefconfig
+m68k                       m5249evb_defconfig
+sh                        sh7763rdp_defconfig
+h8300                               defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                     tqm8541_defconfig
+mips                            ar7_defconfig
+powerpc                        fsp2_defconfig
+um                               allyesconfig
+sh                         ap325rxa_defconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                      bamboo_defconfig
+mips                      pistachio_defconfig
+arm                        trizeps4_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210407
+i386                 randconfig-a003-20210407
+i386                 randconfig-a001-20210407
+i386                 randconfig-a004-20210407
+i386                 randconfig-a002-20210407
+i386                 randconfig-a005-20210407
+x86_64               randconfig-a014-20210407
+x86_64               randconfig-a015-20210407
+x86_64               randconfig-a013-20210407
+x86_64               randconfig-a011-20210407
+x86_64               randconfig-a012-20210407
+x86_64               randconfig-a016-20210407
+i386                 randconfig-a014-20210407
+i386                 randconfig-a011-20210407
+i386                 randconfig-a016-20210407
+i386                 randconfig-a012-20210407
+i386                 randconfig-a015-20210407
+i386                 randconfig-a013-20210407
+x86_64               randconfig-a004-20210408
+x86_64               randconfig-a005-20210408
+x86_64               randconfig-a003-20210408
+x86_64               randconfig-a001-20210408
+x86_64               randconfig-a002-20210408
+x86_64               randconfig-a006-20210408
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
