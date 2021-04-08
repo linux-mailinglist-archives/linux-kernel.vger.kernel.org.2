@@ -2,123 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DF2358299
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D158C35827F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhDHMAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:00:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230434AbhDHMAd (ORCPT
+        id S231321AbhDHLyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDHLyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:00:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jNA22ts4sXV+GUF1Wj8QCzAfhn+4bY8EmKVJ9s6OPc=;
-        b=V4c+W//WzCryb56+roQbsVfEpi5UmTVo+3Ihbc/cN8lPT3xmOa3iOQNZbLsQOC9hVZe01b
-        JoBOmtpcC2MGNrXB6GsHcyqkaq+N9fiOq+c2CP0hir39FoPueTIfS03r7Ny94Nm22epFiS
-        6RuuLmdwQASEa15E1lHJRjkXW0VqNdE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-o9EpDbClNLmR9QdZHXCmFQ-1; Thu, 08 Apr 2021 08:00:20 -0400
-X-MC-Unique: o9EpDbClNLmR9QdZHXCmFQ-1
-Received: by mail-ej1-f70.google.com with SMTP id jt26so739030ejc.18
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:00:20 -0700 (PDT)
+        Thu, 8 Apr 2021 07:54:09 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76A4C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:53:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i190so1603265pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8N5/slbOHKAsMgxg+NRLYuuOFp0gJPAj2masL5iJQo=;
+        b=M/4KlLXaQmDVKI5QcskXqIJ7oHrc6YdEGB8lSeS6LRMfvbwxSLDBgcIQmWDu+Cf0WS
+         EMCuik8LrSYeWHHWhdx9W3oMrQ6Ntcsq+lTm8WyNA4j2Un8sq2EHOQNcois4gnICluP7
+         OpcNYz4ByVanAVKY2wjQzxooLpp3f1O4XcU3MGADFxJXSM9pV4vDeNxkaSDVaiBR9Hwk
+         HsbR/Yy5ZzrWWkdhXgoa6GiMtgLV/vpwGYdiEUVDaLIw1mi3puVLtK1o/vjEny6kED+C
+         gCpeKBZSUyjlQ9u2dti7Ptt9gC6iWkYRB2M30X/sCwYzBwY3C3NpnmlsfSJBEBFf9q2U
+         QJBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4jNA22ts4sXV+GUF1Wj8QCzAfhn+4bY8EmKVJ9s6OPc=;
-        b=iCvrLPAZbb27JnMEqtK4GMhwY5wATHdU+PzFjvnscU3CyF2NYAX02McGgwGzQC78kL
-         EZAiOSrZv3IF5W/bBaK9aiIj+ClyQmFsEGm794MeP4XimDEAdkh7h/gr38ASVB7Y+ayk
-         i+rF6GrrAsUzm3swQ02rk3QFk4iyBrkd1wrrSojRCmav1VRSA4vpzgjgSyMPPuRNFDvI
-         TPRxAVr3xrK2sxmv/c7aXaWcJywZpDnjsQ/yQbd8vTwyOadK97PyOTir8NAJn5O4FMaK
-         LUNNiV9DrQ2OtTFAUql8FjRK8wa5IvNJOdhzynKuEsIbTMpGjbca+jw5BwrUtY6ythIy
-         gJtQ==
-X-Gm-Message-State: AOAM532vPoGtOFYB97/mizB0RcFQVGlIaBPiYrK4ZRhpkcN859vup0o6
-        5ATgWVMUVbZfSiRex8TDnnL6fSCfat0yw+4h/5+VPvIEEiWDVqAFZdrtWCmH0r6EOG1XGfqI40r
-        U/DQCjIB5Gx0SQTXUE43SAWQQ
-X-Received: by 2002:a17:906:2594:: with SMTP id m20mr9661936ejb.124.1617883216660;
-        Thu, 08 Apr 2021 05:00:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCaXWiCiY1qRqSDTSV8wOLTIbsQEr6KIundxcbgi9SLmCTjbsZRz+/AN4KDzZ5Shtv+a3bng==
-X-Received: by 2002:a17:906:2594:: with SMTP id m20mr9661393ejb.124.1617883213903;
-        Thu, 08 Apr 2021 05:00:13 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a9sm4209509eda.13.2021.04.08.05.00.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 05:00:13 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: Explicitly use GFP_KERNEL_ACCOUNT for 'struct
- kvm_vcpu' allocations
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <kernellwp@gmail.com>
-References: <20210406190740.4055679-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bf29a3f3-cb55-dbfd-36da-708cc67d1d1a@redhat.com>
-Date:   Thu, 8 Apr 2021 14:00:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b8N5/slbOHKAsMgxg+NRLYuuOFp0gJPAj2masL5iJQo=;
+        b=Ne5fSqufv2dlUGFYuUGlR55yUF0DxWriaPZ75u79bpKf1d7ko7QxqZOVAeGmx7CbTa
+         fBmnHyaQmcSvJHUl9/7c3Ip+gKNFb5NvUWj9SucL/XhXQfPnLSeVmru4L3poCc9rDKyy
+         S/2h08OYetnbcmYc/67+DbqBEXoymbsqSyrLLD1Oslf8BNi5nZFHuTXllD7J/Qnhukf/
+         uuQx96VFBwmuN2b0ah78gOjnImw7TojmSiFi1lbi//kNuwnkPT5m+fw1PoJQHOEZJA/r
+         nWxnwgbnzsj8CtX2hdwSC2dhS3w6blOtZwsMnI6FFQrs910YpzCgnjXxELk1/3KmQozd
+         xqwg==
+X-Gm-Message-State: AOAM532JaWz9NkaBQb06wa7eh7bO2d00HnGL/UsJ0OMWobisf1rujHBT
+        14BJ1aSQTZnuT2lEQjAmiIqI814gytFYqXIWPZaOJA==
+X-Google-Smtp-Source: ABdhPJz0qUkCKTy05reSZEe+kiUIPr/5B8Rtgl6DQI4KJWPoIg598td1fqF9xh9yKC3PLZwwfHc0SOhuvUNzF3gNKrA=
+X-Received: by 2002:a63:62c4:: with SMTP id w187mr7472449pgb.173.1617882837913;
+ Thu, 08 Apr 2021 04:53:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406190740.4055679-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210408095524.3559-1-jarvis.w.jiang@gmail.com>
+In-Reply-To: <20210408095524.3559-1-jarvis.w.jiang@gmail.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 8 Apr 2021 14:02:07 +0200
+Message-ID: <CAMZdPi-qkQS7MW2Uc5EO7e_oraXvF6W8WxsWYfi4ydHyB15=-Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] [v2] bus: mhi: pci_generic: Introduce Foxconn T99W175 support
+To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        cchen50@lenovo.com, mpearson@lenovo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/21 21:07, Sean Christopherson wrote:
-> Use GFP_KERNEL_ACCOUNT when allocating vCPUs to make it more obvious that
-> that the allocations are accounted, to make it easier to audit KVM's
-> allocations in the future, and to be consistent with other cache usage in
-> KVM.
-> 
-> When using SLAB/SLUB, this is a nop as the cache itself is created with
-> SLAB_ACCOUNT.
-> 
-> When using SLOB, there are caveats within caveats.  SLOB doesn't honor
-> SLAB_ACCOUNT, so passing GFP_KERNEL_ACCOUNT will result in vCPU
-> allocations now being accounted.   But, even that depends on internal
-> SLOB details as SLOB will only go to the page allocator when its cache is
-> depleted.  That just happens to be extremely likely for vCPUs because the
-> size of kvm_vcpu is larger than the a page for almost all combinations of
-> architecture and page size.  Whether or not the SLOB behavior is by
-> design is unknown; it's just as likely that no SLOB users care about
-> accounding and so no one has bothered to implemented support in SLOB.
-> Regardless, accounting vCPU allocations will not break SLOB+KVM+cgroup
-> users, if any exist.
-> 
-> Cc: Wanpeng Li <kernellwp@gmail.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Thu, 8 Apr 2021 at 11:56, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+>
+> Add support for T99W175 modems, this modem series is based on SDX55
+> qcom chip. The modem is mainly based on MBIM protocol for both the
+> data and control path.
+>
+> This patch adds support for below modems:
+>
+>  - T99W175(based on sdx55), Both for eSIM and Non-eSIM
+>  - DW5930e(based on sdx55), With eSIM, It's also T99W175
+>  - DW5930e(based on sdx55), Non-eSIM, It's also T99W175
+>
+> This patch was tested with Ubuntu 20.04 X86_64 PC as host
+>
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+
+It looks good, I assume that for now, you're relying on additional
+patches for the control path, like mhi_uci or mhi_wwan_ctrl.
+
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+
+
+
 > ---
-> 
-> v2: Drop the Fixes tag and rewrite the changelog since this is a nop when
->      using SLUB or SLAB. [Wanpeng]
-> 
->   virt/kvm/kvm_main.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 0a481e7780f0..580f98386b42 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3192,7 +3192,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
->   	if (r)
->   		goto vcpu_decrement;
->   
-> -	vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL);
-> +	vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL_ACCOUNT);
->   	if (!vcpu) {
->   		r = -ENOMEM;
->   		goto vcpu_decrement;
-> 
-
-Queued, thanks.
-
-Paolo
-
+>  drivers/bus/mhi/pci_generic.c | 47 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 544853c67e02..c66fb73e47ad 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -269,6 +269,44 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+>         .dma_data_width = 32
+>  };
+>
+> +static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+> +       MHI_CHANNEL_CONFIG_UL(0, "LOOPBACK", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(1, "LOOPBACK", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(4, "DIAG", 32, 1),
+> +       MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+> +       MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+> +       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
+> +       MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+> +       MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+> +};
+> +
+> +static struct mhi_event_config mhi_foxconn_sdx55_events[] = {
+> +       MHI_EVENT_CONFIG_CTRL(0, 128),
+> +       MHI_EVENT_CONFIG_DATA(1, 128),
+> +       MHI_EVENT_CONFIG_HW_DATA(2, 1024, 100),
+> +       MHI_EVENT_CONFIG_HW_DATA(3, 1024, 101)
+> +};
+> +
+> +static struct mhi_controller_config modem_foxconn_sdx55_config = {
+> +       .max_channels = 128,
+> +       .timeout_ms = 20000,
+> +       .num_channels = ARRAY_SIZE(mhi_foxconn_sdx55_channels),
+> +       .ch_cfg = mhi_foxconn_sdx55_channels,
+> +       .num_events = ARRAY_SIZE(mhi_foxconn_sdx55_events),
+> +       .event_cfg = mhi_foxconn_sdx55_events,
+> +};
+> +
+> +static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
+> +       .name = "foxconn-sdx55",
+> +       .fw = "qcom/sdx55m/sbl1.mbn",
+> +       .edl = "qcom/sdx55m/edl.mbn",
+> +       .config = &modem_foxconn_sdx55_config,
+> +       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> +       .dma_data_width = 32
+> +};
+> +
+>  static const struct pci_device_id mhi_pci_id_table[] = {
+>         { PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+>                 .driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+> @@ -280,6 +318,15 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>                 .driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+>         { PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+>                 .driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
+> +       /* T99W175 (sdx55), Both for eSIM and Non-eSIM */
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0ab),
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       /* DW5930e (sdx55), With eSIM, It's also T99W175 */
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b0),
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +       /* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
+> +       { PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
+> +               .driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+>         {  }
+>  };
+>  MODULE_DEVICE_TABLE(pci, mhi_pci_id_table);
+> --
+> 2.25.1
+>
