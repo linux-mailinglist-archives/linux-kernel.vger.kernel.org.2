@@ -2,117 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B56F358FA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE384358FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhDHWKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:10:51 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:19179 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232376AbhDHWKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:10:50 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AdNCeYKmHYVYKa97vmccqIKCzYUPpDfLN3DAb?=
- =?us-ascii?q?vn1ZSRFFG/GwvcaogfgdyFvImC8cMUtQ/eyoFaGcTRrnnqJdzpIWOd6ZNjXOmG?=
- =?us-ascii?q?ztF4166Jun/juIIUzD38p88YslTKRkEt33CjFB/KPHyS21CcwpztXC0I3Av4fj?=
- =?us-ascii?q?5kxgRw1rdK1shj0RYjqzKUF4SBJLApA0DvOnl6l6jgC9cncaZNnTPBc4dtXEzu?=
- =?us-ascii?q?emqLvbexIcQzYo5A6S5AnYioLSIlyomi0TVD5C2t4ZnFTtmQaR3Mqej80=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,207,1613430000"; 
-   d="scan'208";a="502299129"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 00:10:06 +0200
-Date:   Fri, 9 Apr 2021 00:10:06 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH 2/2] media: zoran: replace bit shifts
- by BIT() macro
-In-Reply-To: <YG95l9b++d+RFrDa@kali>
-Message-ID: <alpine.DEB.2.22.394.2104090009220.21785@hadrien>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com> <ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810@gmail.com> <alpine.DEB.2.22.394.2104082314090.21785@hadrien> <YG95l9b++d+RFrDa@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S232748AbhDHWLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232265AbhDHWLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C668361107;
+        Thu,  8 Apr 2021 22:11:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617919893;
+        bh=JHtxDsKdHaTfSByGIt0LBvw1nnygzJIyZWR4wvxXFYU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDiatDdZBUiYkGFU31JmrQVsKVFW+mN8umpeZ/t6bTNxSRnI5VgIPtNZ0MqMtEDqS
+         vilyR6P1dNLbbfLdTouNeKeSrC2k04mpG8ByCKDq/o+Ygtyj/AKYpYSD6Fbnz5oe7y
+         pkn3Xw+QZS8m0zNkxyRlaIeSJa5zWPvsxTYUxeExxOugb3cD79zY4yodH+5lpUWA56
+         s+G4R/UyRUko2Lw4YPpOwRyprb3A5jk4wbKXMlSAQ+dtkvuCalCzujDGYGQUy0I+DF
+         S2h8jZiMahtkDhjLIK7CDFpWe7FLBYBDXAItu5WnWcA93WgFhkFAr6NpuD/ZebOjsA
+         kNL51WVseojZQ==
+Date:   Thu, 8 Apr 2021 15:11:31 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v4 2/7] fsdax: Replace mmap entry in case of CoW
+Message-ID: <20210408221131.GZ3957620@magnolia>
+References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
+ <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 08, 2021 at 08:04:27PM +0800, Shiyang Ruan wrote:
+> We replace the existing entry to the newly allocated one in case of CoW.
+> Also, we mark the entry as PAGECACHE_TAG_TOWRITE so writeback marks this
+> entry as writeprotected.  This helps us snapshots so new write
+> pagefaults after snapshots trigger a CoW.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/dax.c | 39 ++++++++++++++++++++++++++++-----------
+>  1 file changed, 28 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index b4fd3813457a..e6c1354b27a8 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -722,6 +722,10 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
+>  	return 0;
+>  }
+>  
+> +/* DAX Insert Flag for the entry we insert */
 
+Might be worth mentioning that these are xarray marks for the inserted
+entry, since this comment didn't help much.
 
-On Fri, 9 Apr 2021, Mitali Borkar wrote:
+> +#define DAX_IF_DIRTY		(1 << 0)
+> +#define DAX_IF_COW		(1 << 1)
+> +
+>  /*
+>   * By this point grab_mapping_entry() has ensured that we have a locked entry
+>   * of the appropriate size so we don't have to worry about downgrading PMDs to
+> @@ -729,16 +733,19 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
+>   * already in the tree, we will skip the insertion and just dirty the PMD as
+>   * appropriate.
+>   */
+> -static void *dax_insert_entry(struct xa_state *xas,
+> -		struct address_space *mapping, struct vm_fault *vmf,
+> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
+> +static void *dax_insert_entry(struct xa_state *xas, struct vm_fault *vmf,
+> +		void *entry, pfn_t pfn, unsigned long flags,
+> +		unsigned int insert_flags)
 
-> On Thu, Apr 08, 2021 at 11:15:07PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Fri, 9 Apr 2021, Mitali Borkar wrote:
-> >
-> > > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
-> > > This BIT() macro from linux/bitops.h is used to define ZR36057_VFESPFR_* bitmasks.
-> > > Use of macro is better and neater. It maintains consistency.
-> > > Reported by checkpatch.
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/media/zoran/zr36057.h | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > > index a2a75fd9f535..93075459f910 100644
-> > > --- a/drivers/staging/media/zoran/zr36057.h
-> > > +++ b/drivers/staging/media/zoran/zr36057.h
-> > > @@ -8,6 +8,8 @@
-> > >  #ifndef _ZR36057_H_
-> > >  #define _ZR36057_H_
-> > >
-> > > +#include <linux/bitops.h>
-> > > +
-> > >  /* Zoran ZR36057 registers */
-> > >
-> > >  #define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-> > > @@ -31,12 +33,12 @@
-> > >  #define ZR36057_VFESPFR_VER_DCM          8
-> > >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > >  #define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > > -#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > > +#define ZR36057_VFESPFR_RGB888          BIT(3)
-> >
-> > Uniformity is generally considered to be more important than using BIT.
-> > Having only a few constants defined using BIT is a bit strange.
-> >
-> Okay Ma'am. Can you please tell me on how to proceed now? I am not sure
-> how to proceed.
+Urk, two flags arguments.  Oh, I see.  We insert (shifted) pfn_t values
+into the mapping as xarray values, so @flags determines the state flags
+of the new entry value, whereas @insert_flags determines what xarray
+mark we're going to attach (if any) to the inserted value.
 
-I think that this code should just be left as is.
+--D
 
-Checkpatch makes suggestions.  Its suggestions are not always appropriate
-for the context.
-
-julia
-
->
-> > julia
-> >
-> > >  #define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > >  #define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > > -#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > > -#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> > > +#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
-> > > +#define ZR36057_VFESPFR_PACK24          BIT(1)
-> > > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
-> > >
-> > >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > >
-> > > --
-> > > 2.30.2
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810%40gmail.com.
-> > >
->
+>  {
+> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+>  	void *new_entry = dax_make_entry(pfn, flags);
+> +	bool dirty = insert_flags & DAX_IF_DIRTY;
+> +	bool cow = insert_flags & DAX_IF_COW;
+>  
+>  	if (dirty)
+>  		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
+>  
+> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
+> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
+>  		unsigned long index = xas->xa_index;
+>  		/* we are replacing a zero page with block mapping */
+>  		if (dax_is_pmd_entry(entry))
+> @@ -750,7 +757,7 @@ static void *dax_insert_entry(struct xa_state *xas,
+>  
+>  	xas_reset(xas);
+>  	xas_lock_irq(xas);
+> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
+> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
+>  		void *old;
+>  
+>  		dax_disassociate_entry(entry, mapping, false);
+> @@ -774,6 +781,9 @@ static void *dax_insert_entry(struct xa_state *xas,
+>  	if (dirty)
+>  		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
+>  
+> +	if (cow)
+> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
+> +
+>  	xas_unlock_irq(xas);
+>  	return entry;
+>  }
+> @@ -1109,8 +1119,7 @@ static vm_fault_t dax_load_hole(struct xa_state *xas,
+>  	pfn_t pfn = pfn_to_pfn_t(my_zero_pfn(vaddr));
+>  	vm_fault_t ret;
+>  
+> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
+> -			DAX_ZERO_PAGE, false);
+> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, DAX_ZERO_PAGE, 0);
+>  
+>  	ret = vmf_insert_mixed(vmf->vma, vaddr, pfn);
+>  	trace_dax_load_hole(inode, vmf, ret);
+> @@ -1137,8 +1146,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+>  		goto fallback;
+>  
+>  	pfn = page_to_pfn_t(zero_page);
+> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
+> -			DAX_PMD | DAX_ZERO_PAGE, false);
+> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn,
+> +				  DAX_PMD | DAX_ZERO_PAGE, 0);
+>  
+>  	if (arch_needs_pgtable_deposit()) {
+>  		pgtable = pte_alloc_one(vma->vm_mm);
+> @@ -1444,6 +1453,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
+>  	bool write = vmf->flags & FAULT_FLAG_WRITE;
+>  	bool sync = dax_fault_is_synchronous(flags, vmf->vma, iomap);
+>  	unsigned long entry_flags = pmd ? DAX_PMD : 0;
+> +	unsigned int insert_flags = 0;
+>  	int err = 0;
+>  	pfn_t pfn;
+>  	void *kaddr;
+> @@ -1466,8 +1476,15 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
+>  	if (err)
+>  		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
+>  
+> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn, entry_flags,
+> -				  write && !sync);
+> +	if (write) {
+> +		if (!sync)
+> +			insert_flags |= DAX_IF_DIRTY;
+> +		if (iomap->flags & IOMAP_F_SHARED)
+> +			insert_flags |= DAX_IF_COW;
+> +	}
+> +
+> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, entry_flags,
+> +				  insert_flags);
+>  
+>  	if (write &&
+>  	    srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
+> -- 
+> 2.31.0
+> 
+> 
+> 
