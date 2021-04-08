@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F72358BB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5DF358BBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhDHRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        id S232314AbhDHRyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:54:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232086AbhDHRvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:51:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C6B86102A;
-        Thu,  8 Apr 2021 17:51:08 +0000 (UTC)
+        id S231676AbhDHRyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:54:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B5761105;
+        Thu,  8 Apr 2021 17:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617904268;
-        bh=KuQ2NPcI8Eyge55YipbH8V/VzAUdZA9IO6cGEES+FEQ=;
+        s=korg; t=1617904447;
+        bh=LGu89Nt2dhReu7dyzA/zwL5c1xULE9DtTJXEEFM9FAU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=weCQZbLDItw3wP41Mo7TQsWaBwqakf19IjFJwKNN3KU3/d7FoZEcxM/htFGBrQvgI
-         cj6ixTgj3MzQbl4tjbOnMpnWR0ZbLhtf/aL5WsJE3JTQ4Htu7doKnsCfUG6KNuGtX9
-         OnE8CfDWUvThr8ySHk3hrvZHytFMxXQwXFTAo6s4=
-Date:   Thu, 8 Apr 2021 19:51:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH 13/13] tty: clean include/linux/tty.h up
-Message-ID: <YG9CiV+CwGo2CFsN@kroah.com>
-References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
- <20210408125134.3016837-14-gregkh@linuxfoundation.org>
+        b=W8toxZeD9903P30RCtxrgYTbt01OvkXVNW6RByPqXeMns0gP8sZuM+itTjFBOtQGb
+         Q+z0aotmKGB6Kb0chNTTZKQ0BF4CS5TvKNMvyFKNYE6WxGQZV/k3H7Tr+X+lb3hQ3b
+         4wWOW8kiapoTTfrTOT5ZZOxWzCUT8FxdzgKCyel4=
+Date:   Thu, 8 Apr 2021 19:54:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Message-ID: <YG9DPEyOIXqS2Vss@kroah.com>
+References: <1617846650-10058-1-git-send-email-min.li.xe@renesas.com>
+ <1617846650-10058-2-git-send-email-min.li.xe@renesas.com>
+ <YG6hOuOO5EL9xTwH@kroah.com>
+ <OSBPR01MB4773182AF8FD263D65D52949BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408125134.3016837-14-gregkh@linuxfoundation.org>
+In-Reply-To: <OSBPR01MB4773182AF8FD263D65D52949BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 02:51:34PM +0200, Greg Kroah-Hartman wrote:
-> There are a lot of tty-core-only functions that are listed in
-> include/linux/tty.h.  Move them to drivers/tty/tty.h so that no one else
-> can accidentally call them or think that they are public functions.
-> 
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/tty/n_gsm.c  |  1 +
->  drivers/tty/n_hdlc.c |  1 +
->  drivers/tty/tty.h    | 37 +++++++++++++++++++++++++++++++++++++
->  include/linux/tty.h  | 34 ----------------------------------
->  4 files changed, 39 insertions(+), 34 deletions(-)
+On Thu, Apr 08, 2021 at 05:26:40PM +0000, Min Li wrote:
+> > 
+> > Again, please make this only one file.
+> > 
+> Hi Greg, the 2 boards have some same named registers in idt82p33_reg.h and idt8a340_reg.h
+> so if I put them all in the same file, there will be name conflicts. 
 
-This needs a "tty.h" inclusion into drivers/tty/tty_baudrate.c,
-otherwise it's a build warning, I missed that, sorry.  Will add that to
-the next revision if it's needed, or just fix it up when committing it.
+That does not make sense, this is only one kernel module, with one .h
+file in this patch, I do not see those other files you are talking
+about...
+
+And if you have named registers that are identical, and yet you only
+work on one device, that feels like a design flaw somewhere :)
 
 thanks,
 
