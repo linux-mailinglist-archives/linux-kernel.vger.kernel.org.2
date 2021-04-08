@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C12358270
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99129358271
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhDHLtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:49:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16095 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHLtW (ORCPT
+        id S230503AbhDHLvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDHLva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:49:22 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGKHP5yJSz19L6C;
-        Thu,  8 Apr 2021 19:46:57 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 19:49:00 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-        <chunfeng.yun@mediatek.com>, <kishon@ti.com>, <vkoul@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <heying24@huawei.com>
-Subject: [PATCH v2 -next] phy: phy-mtk-mipi-dsi: Remove redundant dev_err call in mtk_mipi_tx_probe()
-Date:   Thu, 8 Apr 2021 07:48:50 -0400
-Message-ID: <20210408114850.14422-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 07:51:30 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071B0C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 04:51:18 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id p12so1219836pgj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=i9s9BkLvRdlumIZwdRHabgMYGpHTAnHPSYT3zj0wSJ4=;
+        b=Rz7Wb35MSnfgOdBmx+0oOrmFk7TaMhak5y/1PKg7A63DQqMc7bao3B4L//s4n8ViUB
+         My65OmynzFNM0EP1ctF+nOY97dx7RnG0yWcpVP2/PnP+qSVHsRW2PTCt+JpM50qjW96F
+         e7X0Km1r3NN7MRrafpZ3sAFD0LNoyzhiagsdpP5ZSk5GYqczy8F1cCVHPDk3PCL/co7U
+         YNXHyLekJyiH/HKKbxNpVdAzgUTzJ4cue9/jfofhYGit2btwMVKhIePRBe1x/DjGX6Ca
+         rqAR/1lVp05cyQrOPRTHLmY4dgXxAmF/y7synx2PzBxX32pd3ebaQ/wf9q9ne0uHCowO
+         Zxzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=i9s9BkLvRdlumIZwdRHabgMYGpHTAnHPSYT3zj0wSJ4=;
+        b=GtlHGj0SfftgIA5pEO/4awu6/k9iySAUJvw3joq/kIBtumBh2Lqr51+SooCUk+vP70
+         i0kJWdXzq6s6t20CnxcUawE8cDqOrNZmkYcIbsbpiFfa961VbzarcbVJSGQh+zfb/OP6
+         UYzZuLrttGJ3IKsJO4xG2Tk89hfyNzgN28l7XFFWpVAG0XXkkq8Nk2P09tzt6DuU/1im
+         UoXEf8kov1mt/5NnIfaiVn61xYuND1gdlUmxUBalx1c3TIsr6dMzh1OD/WgwGxqTxQhM
+         sYwc0NU5iS6sGxfA9PMesRkXYgpcdcltLm77yUrjEDRNPyI2tPYchjr2ThMuuFcqYStP
+         ggVA==
+X-Gm-Message-State: AOAM533L38a0aNUN1/XSuYLH2wMkfqY7GHIzSLgg25gZ40/ODETsGnCt
+        L2pKpfY8rX4SnJ/k/+LZejA=
+X-Google-Smtp-Source: ABdhPJzR3XqFhA1vwKnkhKlm5OxIy/0gKl/K1Z+6z14beckg1VSoE/A+MPHleyo6rAYfpRyqqOaMiA==
+X-Received: by 2002:a63:d153:: with SMTP id c19mr7601140pgj.311.1617882678294;
+        Thu, 08 Apr 2021 04:51:18 -0700 (PDT)
+Received: from kali ([152.57.11.236])
+        by smtp.gmail.com with ESMTPSA id c9sm22688550pfl.169.2021.04.08.04.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 04:51:17 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 17:21:09 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: [PATCH v2] staging: rtl8712: add spaces around '+'
+Message-ID: <YG7uLQLGmAh97xB1@kali>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Added spaces around '+' to improve readability and adhere to linux
+kernel coding style.
+Reported by checkpatch
 
-Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
 ---
-v2:
-- Use 'return PTR_ERR();' instead of 'ret = PTR_ERR();return ret;'.
 
- drivers/phy/mediatek/phy-mtk-mipi-dsi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Changes from v1: No changes in the code, but only to subject description
+and patch body. 
+Changed the subject decription according to PatchPhilosophy and made
+patch body more clearer.
 
-diff --git a/drivers/phy/mediatek/phy-mtk-mipi-dsi.c b/drivers/phy/mediatek/phy-mtk-mipi-dsi.c
-index c51114d8e437..01cf31633019 100644
---- a/drivers/phy/mediatek/phy-mtk-mipi-dsi.c
-+++ b/drivers/phy/mediatek/phy-mtk-mipi-dsi.c
-@@ -151,9 +151,7 @@ static int mtk_mipi_tx_probe(struct platform_device *pdev)
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	mipi_tx->regs = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(mipi_tx->regs)) {
--		ret = PTR_ERR(mipi_tx->regs);
--		dev_err(dev, "Failed to get memory resource: %d\n", ret);
--		return ret;
-+		return PTR_ERR(mipi_tx->regs);
- 	}
+drivers/staging/rtl8712/wlan_bssdef.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8712/wlan_bssdef.h b/drivers/staging/rtl8712/wlan_bssdef.h
+index b54ccaacc527..ec3749813728 100644
+--- a/drivers/staging/rtl8712/wlan_bssdef.h
++++ b/drivers/staging/rtl8712/wlan_bssdef.h
+@@ -176,7 +176,7 @@ struct NDIS_802_11_WEP {
+ #define MIC_CHECK_TIME	60000000
  
- 	ref_clk = devm_clk_get(dev, NULL);
+ #ifndef Ndis802_11APMode
+-#define Ndis802_11APMode (Ndis802_11InfrastructureMax+1)
++#define Ndis802_11APMode (Ndis802_11InfrastructureMax + 1)
+ #endif
+ 
+ struct	wlan_network {
 -- 
-2.17.1
+2.30.2
 
