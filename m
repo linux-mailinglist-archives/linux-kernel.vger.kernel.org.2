@@ -2,254 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBB3358E3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D64358E40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhDHUVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:21:52 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:36814 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhDHUVv (ORCPT
+        id S232342AbhDHUWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231940AbhDHUWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:21:51 -0400
-Received: by mail-ot1-f46.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso3586851otq.3;
-        Thu, 08 Apr 2021 13:21:39 -0700 (PDT)
+        Thu, 8 Apr 2021 16:22:16 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63432C061760;
+        Thu,  8 Apr 2021 13:22:05 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id n8so3475436oie.10;
+        Thu, 08 Apr 2021 13:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VOWgnrqe6dG34R865cUpVW4ElMNZrPNCAgULeE4PIGE=;
+        b=gpa145t1NxGlB6yMrsMCTzjPpi3JdymFjzSwqdGJWHi3QmpQLN1QMXkMOn1VCWcYdN
+         axpMsuSCztA8f0jb2wCOwkW7Dqdv8dyUeR9VCeBIl2ddMsYdEHY0QOkKGA1ZNfrnnRkJ
+         EDpkb7ukXnCEuMKrxHKhwnpQrkrpOyxWLzBY0ast9sF4mDLbNv0PCdW/XNrekBQ8oitx
+         l83UrT56Rm/wxjtytKLwTMl51z6hNk0nggE51yrP0MT48gdpoL2zjPXwkDCKyO/9su8F
+         JO/gmv2A1BppEduDFm20LhzWVWWXANpK6F22vSq44VuQCs3s3SsOwiFFPia25sUZbPn9
+         UF9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NZK03VGL3VDmR5gE9NkY9ogiVrwv9YJIwF5/GzsBsPo=;
-        b=iUzlsAYb/3XTZ/6cYljqPwq3VkDm3X6LSSfCcJSTpmIA7XTJTa8X4HGa60ndv5f5Yp
-         6aVeVy7K7Xii6k4SxMazIyPK+p71UYtP2TjM3SzT76PrnpWAvpdc7FQT9ro1/ZNGxHJh
-         Int9Sf/swV/L3ofO72StUOHXMMdr84TP1W/QxNj8vKtUbQLewKndAI+TdnrqIRBC6KoG
-         fyduvI/MfnsHtZBdJuke1wJ2GYuM6T+HzSo2ktNTo/VaFxaGqrPWl6x0Li3TMwDcCcAG
-         P/bExWhFrpsCXl6bBJ1mZ5uUMrJVNJJBrj2BWBhdAc8Pzvs8T6uzurmJs26nxIlgbONp
-         KKvA==
-X-Gm-Message-State: AOAM531z3sZF3lDUxtILpO9W/br6WWSF/PfDWJJqu1H7dxfuhAqyaNyJ
-        LvP07WuWkp3JrcbKrbr2KQ==
-X-Google-Smtp-Source: ABdhPJx1Ce8UviwE+BYESAWpewySwAqhw1vUls2A7geYvtKK44fsPnS0fzSbyjCwNCgQJdj7By+cjA==
-X-Received: by 2002:a05:6830:908:: with SMTP id v8mr9621186ott.217.1617913299103;
-        Thu, 08 Apr 2021 13:21:39 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y11sm99647ots.80.2021.04.08.13.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 13:21:38 -0700 (PDT)
-Received: (nullmailer pid 1897309 invoked by uid 1000);
-        Thu, 08 Apr 2021 20:21:37 -0000
-Date:   Thu, 8 Apr 2021 15:21:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VOWgnrqe6dG34R865cUpVW4ElMNZrPNCAgULeE4PIGE=;
+        b=uFTS8UxUDeL3/9zbrCpAqzkRrP8sLSCkmiPUJZeOeMH4p5WHyb5YYv9ljhs7Y6kssp
+         738W/dy9fjQaa1RWIgqAiFRdHbHGA79/BBwEDFuTOONfMO/aDX5hz7yQFQotQ/m6idK3
+         wvUQwANRTC+tLbhDc1otODTBllBj7syIP9oB4Xxydgmc27ZzztV61ysZM6VjsH1qDp3K
+         KJs3zVI8bNYvEQiMhkphjp8yLNCgE+8EPn19+RyB2qqXlnrYuXNYktx330MCCRsyk7Fu
+         1ETzRiT3BSMstyeYG3c9FraNMXoDD3fFSyR6W5MO9aFkS9NzGFVsk/LgLgBSvwIugGES
+         4Avw==
+X-Gm-Message-State: AOAM532DVUFXuvO0fNytmB+k813JZ50HLIkewbw7M2dKybtjOODLralz
+        vExww2xGmDgQYhnLylgMnO/Tl3Cn+R4=
+X-Google-Smtp-Source: ABdhPJw7JdidDSS7WNF+038qPK41PYYWXx4gdC8WX/9AD0jVGCdH919rdmBtQKO6o0nLuhIDmx5wnA==
+X-Received: by 2002:aca:5ec6:: with SMTP id s189mr7626703oib.112.1617913324633;
+        Thu, 08 Apr 2021 13:22:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d97sm90604otb.78.2021.04.08.13.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 13:22:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: touchscreen: Add HY46XX bindings
-Message-ID: <20210408202137.GA1890401@robh.at.kernel.org>
-References: <YGxkB6icZSJfx/VB@latitude>
- <20210407174909.1475150-1-giulio.benetti@benettiengineering.com>
- <20210407174909.1475150-3-giulio.benetti@benettiengineering.com>
+References: <20210408151736.2216238-1-frowand.list@gmail.com>
+ <c49c026d-d168-68b5-35ec-80ce66857bca@roeck-us.net>
+ <baee7388-5183-cf98-2cf4-52cf338a0cbb@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <df760aa2-6446-f8b2-b0a4-0102a5ac138d@roeck-us.net>
+Date:   Thu, 8 Apr 2021 13:22:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210407174909.1475150-3-giulio.benetti@benettiengineering.com>
+In-Reply-To: <baee7388-5183-cf98-2cf4-52cf338a0cbb@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:49:08PM +0200, Giulio Benetti wrote:
-> This adds device tree bindings for the Hycon HY46XX touchscreen series.
+On 4/8/21 1:06 PM, Frank Rowand wrote:
+
+>>> +#define FDT_ALIGN_SIZE 8
+>>> +
+>>
+>> Use existing define ? Or was that local in libfdt ?
 > 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> ---
-> V1->V2:
-> As suggested by Rob Herring:
-> * fixed $id: address
-> * added "hycon," in front of every custom property
-> * changed all possible property to boolean type
-> * removed proximity-sensor-switch property since it's not handled in driver
-> V2->V3:
-> As suggested by Jonathan Neuschäfer:
-> * fixed some typo
-> * fixed description indentation
-> * improved boolean properties descriptions
-> * improved hycon,report-speed description
-> V3->V4:
-> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
-> ---
->  .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 126 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> I don't see a define in libfdt.  If anyone finds one,
+> I'll switch to it.
 > 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> new file mode 100644
-> index 000000000000..8860613a12ad
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> @@ -0,0 +1,120 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/hycon,hy46xx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Hycon HY46XX series touchscreen controller bindings
-> +
-> +description: |
-> +  There are 6 variants of the chip for various touch panel sizes and cover lens material
-> +   Glass: 0.3mm--4.0mm
-> +    PET/PMMA: 0.2mm--2.0mm
-> +    HY4613(B)-N048  < 6"
-> +    HY4614(B)-N068  7" .. 10.1"
-> +    HY4621-NS32  < 5"
-> +    HY4623-NS48  5.1" .. 7"
-> +   Glass: 0.3mm--8.0mm
-> +    PET/PMMA: 0.2mm--4.0mm
-> +    HY4633(B)-N048  < 6"
-> +    HY4635(B)-N048  < 7" .. 10.1"
-> +
-> +maintainers:
-> +  - Giulio Benetti <giulio.benetti@benettiengineering.com>
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - hycon,hycon-hy4613
-> +      - hycon,hycon-hy4614
-> +      - hycon,hycon-hy4621
-> +      - hycon,hycon-hy4623
-> +      - hycon,hycon-hy4633
-> +      - hycon,hycon-hy4635
 
-As suggested earlier, drop the 2nd 'hycon'.
+Turns out that was hardcoded in scripts/dtc/libfdt/fdt.c
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  vcc-supply: true
-> +
-> +  hycon,threshold:
-> +    description: Allows setting the sensitivity in the range from 0 to 255.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 255
-> +
-> +  hycon,glove-enable:
-> +    type: boolean
-> +    description: Allows enabling glove setting.
-> +
-> +  hycon,report-speed:
-> +    description: Allows setting the report speed in Hertz.
++       /* The device tree must be at an 8-byte aligned address */
++       if ((uintptr_t)fdt & 7)
++               return -FDT_ERR_ALIGNMENT;
++
 
-If in Hertz, use standard unit suffix.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-And then you can drop this.
-
-> +    minimum: 0
-
-0Hz doesn't seem to useful?
-
-> +    maximum: 255
-> +
-> +  hycon,power-noise-enable:
-
-hycon,noise-filter-enable
-
-No one wants to enable power noise. :)
-
-> +    type: boolean
-> +    description: Allows enabling power noise filter.
-> +
-> +  hycon,filter-data:
-> +    description: Allows setting the filtering data before reporting touch
-> +                 in the range from 0 to 5.
-
-This is averaging samples? Sounds like something common perhaps.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +
-> +  hycon,gain:
-> +    description: Allows setting the sensitivity distance in the range from 0 to 5.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +
-> +  hycon,edge-offset:
-> +    description: Allows setting the edge compensation in the range from 0 to 16.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 16
-> +
-> +  touchscreen-size-x: true
-> +  touchscreen-size-y: true
-> +  touchscreen-fuzz-x: true
-> +  touchscreen-fuzz-y: true
-> +  touchscreen-inverted-x: true
-> +  touchscreen-inverted-y: true
-> +  touchscreen-swapped-x-y: true
-> +  interrupt-controller: true
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      hycon-hy4633@1c {
-
-touchscreen@1c
-
-> +        compatible = "hycon,hycon-hy4633";
-> +        reg = <0x1c>;
-> +        interrupt-parent = <&gpio2>;
-> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
-> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
-> +      };
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c80ad735b384..d022ff09e609 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8243,6 +8243,12 @@ S:	Maintained
->  F:	mm/hwpoison-inject.c
->  F:	mm/memory-failure.c
->  
-> +HYCON HY46XX TOUCHSCREEN SUPPORT
-> +M:	Giulio Benetti <giulio.benetti@benettiengineering.com>
-> +L:	linux-input@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> +
->  HYGON PROCESSOR SUPPORT
->  M:	Pu Wen <puwen@hygon.cn>
->  L:	linux-kernel@vger.kernel.org
-> -- 
-> 2.25.1
-> 
+Guenter
