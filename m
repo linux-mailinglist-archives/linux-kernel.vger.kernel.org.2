@@ -2,198 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D981358266
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E94A358257
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhDHLol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:44:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28233 "EHLO
+        id S231476AbhDHLoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 07:44:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54461 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231466AbhDHLoa (ORCPT
+        by vger.kernel.org with ESMTP id S231381AbhDHLoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:44:30 -0400
+        Thu, 8 Apr 2021 07:44:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617882259;
+        s=mimecast20190719; t=1617882246;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=huJU/7eTGA9L+HVGecfG2Pp+AIuWsVkRoZrlV5LSukk=;
-        b=V3EfR85R0luhSxZPoqF7kN7kE798zt0ssIMVjr5pp29BFWljvT+Zwpe1lLb4bIccMsKT69
-        TbhD/LL5fr2ZABQ403ZqDP4E3PyseVHCeh1vLvB9k/sGOct2U3k7Yjiv9c/el+3Lcw8KMV
-        FX0REUG5VYHdSmrs7FE/CheRVCelB+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-0b_Rs50mOt6XjvqH1P6FWQ-1; Thu, 08 Apr 2021 07:44:17 -0400
-X-MC-Unique: 0b_Rs50mOt6XjvqH1P6FWQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A0DF10054F6;
-        Thu,  8 Apr 2021 11:44:15 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-113-155.ams2.redhat.com [10.36.113.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6BC9F5B4A8;
-        Thu,  8 Apr 2021 11:44:07 +0000 (UTC)
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v4 4/4] selftests: KVM: extend get_cpuid_test to include KVM_GET_EMULATED_CPUID
-Date:   Thu,  8 Apr 2021 13:43:03 +0200
-Message-Id: <20210408114303.30310-5-eesposit@redhat.com>
-In-Reply-To: <20210408114303.30310-1-eesposit@redhat.com>
-References: <20210408114303.30310-1-eesposit@redhat.com>
+        bh=ojI36GqCcSZZKDE7ZJzPVmk370WGjalSRm35dXXJjG4=;
+        b=cP/38F0Ig561h9crlZ7dPXsSrvSLlzzPpn996I9h/JgowVF3rGQaroA1//Dka/XISWeE4p
+        1/p1Y4M8Wgj+FQc3BTlwCjpJ+53/QO1KVR02ziTofeXFV4qo0GntDr/L3YDBNbsh3er0ax
+        PtgJZjaDhhI5EwDNDCcn7OiabWIobF4=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-DCbWhX_ENIm8IPgZKFEe5w-1; Thu, 08 Apr 2021 07:44:04 -0400
+X-MC-Unique: DCbWhX_ENIm8IPgZKFEe5w-1
+Received: by mail-pg1-f198.google.com with SMTP id p64so1225410pga.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 04:44:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ojI36GqCcSZZKDE7ZJzPVmk370WGjalSRm35dXXJjG4=;
+        b=lvFGkaWloL34GSai9DBKTwRlBXHL3h3nLkJq2YdyrIRsiali6nW8C7jMzShpFda26j
+         MU6ruWhTC58vnfABMX5ibwxsjB9yasyZEvWVYPufNrGROldkKRBwChZlQk8cEWOKpPTu
+         Bi37ZCxWA4+XSjAlx9/HYpQYGiUpDD2t3nyj02mLuN/awNVk+0OiKZRYHzdeYsk2YGLW
+         zkE1iHF8zmYjCOfAYFCVKK2hhzYEtSd6Say9zWGpvfiDdYTmHUvtNi/CbuNClKAVWZY6
+         RyUORajUfvwIgebsvSZKw2B6Ia+i4DQoM6MACksZcDjmx3lJq8erzLWSzekT/ZaHqrCT
+         yNlw==
+X-Gm-Message-State: AOAM531LcO+wBRflRw0qOjVVo9++DUWzp5xBQarvCJAuv++PvyHQlisl
+        JI4itJ7jYCiiWB/M8i9C7D783aKV5y4VC/BRA8mdUnOYVu/0ON1+n2Sp3vo7eaXt2Va42TFkJ2p
+        SqGCOIwh2N8uW8G+OnOnyh5HqquiRIKSTczktfdup
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr8097129pjr.234.1617882243164;
+        Thu, 08 Apr 2021 04:44:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXWoD4uZFLjX3W//O+WsdPii+AkkUpUkXJnA0RNfYAyKcsVoeyvydz2BlU3advUFqA9gChFbY15nQwPpfmGv8=
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr8097093pjr.234.1617882242926;
+ Thu, 08 Apr 2021 04:44:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210326143458.508959-1-lee.jones@linaro.org> <20210406085605.GS2916463@dell>
+ <CAO-hwJ+5Vd6jC2+0pfHLOw3opdXzKoc9pUWzxmBVhSvQvNWMsQ@mail.gmail.com> <20210408070605.GC2961413@dell>
+In-Reply-To: <20210408070605.GC2961413@dell>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Thu, 8 Apr 2021 13:43:52 +0200
+Message-ID: <CAO-hwJJrn4mzPwzYvusGNa6KhLZ+kCn=svzgGJD=6q+Urz=YsA@mail.gmail.com>
+Subject: Re: [RESEND 00/25] Rid W=1 warnings from HID
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Anssi Hannula <anssi.hannula@gmail.com>,
+        =?UTF-8?Q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Drubin <daniel.drubin@intel.com>,
+        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        Lopez Casado <nlopezcasad@logitech.com>,
+        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
+        Masaki Ota <masaki.ota@jp.alps.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        message to <vojtech@ucw.cz>,
+        Michael Haboustak <mike-@cinci.rr.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Vojtech Pavlik <vojtech@suse.cz>,
+        Zhang Lixu <lixu.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the get_cpuid_test.c selftest to include the KVM_GET_EMULATED_CPUID
-ioctl. Since the behavior and functionality is similar to
-KVM_GET_SUPPORTED_CPUID, we only check additionally:
+On Thu, Apr 8, 2021 at 9:06 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 07 Apr 2021, Benjamin Tissoires wrote:
+>
+> > On Tue, Apr 6, 2021 at 10:56 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Fri, 26 Mar 2021, Lee Jones wrote:
+> > >
+> > > > This set is part of a larger effort attempting to clean-up W=1
+> > > > kernel builds, which are currently overwhelmingly riddled with
+> > > > niggly little warnings.
+> > > >
+> > > > Lee Jones (25):
+> > > >   HID: intel-ish-hid: Remove unused variable 'err'
+> > > >   HID: ishtp-hid-client: Move variable to where it's actually used
+> > > >   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
+> > > >   HID: intel-ish: Supply some missing param descriptions
+> > > >   HID: intel-ish: Fix a naming disparity and a formatting error
+> > > >   HID: usbhid: Repair a formatting issue in a struct description
+> > > >   HID: intel-ish-hid: Fix a little doc-rot
+> > > >   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
+> > > >   HID: hid-alps: Correct struct misnaming
+> > > >   HID: intel-ish-hid: Fix potential copy/paste error
+> > > >   HID: hid-core: Fix incorrect function name in header
+> > > >   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
+> > > >     header
+> > > >   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
+> > > >   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
+> > > >   HID: hid-picolcd_core: Remove unused variable 'ret'
+> > > >   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
+> > > >     abuses
+> > > >   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
+> > > >   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
+> > > >   HID: hid-uclogic-params: Ensure function names are present and correct
+> > > >     in kernel-doc headers
+> > > >   HID: hid-sensor-custom: Remove unused variable 'ret'
+> > > >   HID: wacom_sys: Demote kernel-doc abuse
+> > > >   HID: hid-sensor-hub: Remove unused struct member 'quirks'
+> > > >   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
+> > > >     definition
+> > > >   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
+> > > >   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
+> > >
+> > > These have been on the list for a couple of weeks now.
+> > >
+> > > Is there anything I can do to help expedite their merge?
+> > >
+> > > I'm concerned since -rc6 has just been released.
+> >
+> > Sorry for the delay.
+> >
+> > I am currently queuing them locally and running a few tests on them. I
+> > don't expect anything to happen, but better be safe than anything.
+> >
+> > FWIW, I am splitting the series in 3:
+> > - 11 patches for intel ish are going to be queued in for-5.13/intel-ish
+> > - the thrustmaster one in for-5.13/thrustmaster
+> > - the rest (13 patches) will be sent in for-5.13/warnings.
+>
+> Sounds good to me.  Thanks Benjamin.
+>
+After a few attempts at fixing my CI, I have now pushed this series as
+mentioned previously.
 
-1) checks for corner case in the nent field of the struct kvm_cpuid2.
-2) sets and gets it as cpuid from the guest VM
-
-Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
----
- .../selftests/kvm/x86_64/get_cpuid_test.c     | 90 ++++++++++++++++++-
- 1 file changed, 88 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c b/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-index 9b78e8889638..b9f0fba1b0ea 100644
---- a/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-@@ -13,6 +13,7 @@
- #include "processor.h"
- 
- #define VCPU_ID 0
-+#define MAX_NENT 1000
- 
- /* CPUIDs known to differ */
- struct {
-@@ -137,7 +138,8 @@ static void run_vcpu(struct kvm_vm *vm, uint32_t vcpuid, int stage)
- 	}
- }
- 
--struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva, struct kvm_cpuid2 *cpuid)
-+static struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva,
-+					struct kvm_cpuid2 *cpuid)
- {
- 	int size = sizeof(*cpuid) + cpuid->nent * sizeof(cpuid->entries[0]);
- 	vm_vaddr_t gva = vm_vaddr_alloc(vm, size,
-@@ -150,9 +152,84 @@ struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva, struct
- 	return guest_cpuids;
- }
- 
-+static struct kvm_cpuid2 *alloc_custom_kvm_cpuid2(int nent)
-+{
-+	struct kvm_cpuid2 *cpuid;
-+	size_t size;
-+
-+	size = sizeof(*cpuid);
-+	size += nent * sizeof(struct kvm_cpuid_entry2);
-+	cpuid = calloc(1, size);
-+	if (!cpuid) {
-+		perror("malloc");
-+		abort();
-+	}
-+
-+	cpuid->nent = nent;
-+
-+	return cpuid;
-+}
-+
-+static void clean_entries_kvm_cpuid2(struct kvm_cpuid2 *cpuid)
-+{
-+	size_t size;
-+	int old_nent = cpuid->nent;
-+
-+	size = sizeof(*cpuid);
-+	size += MAX_NENT * sizeof(struct kvm_cpuid_entry2);
-+	memset(cpuid, 0, size);
-+	cpuid->nent = old_nent;
-+}
-+
-+static void test_emulated_entries(struct kvm_vm *vm)
-+{
-+	int res, right_nent;
-+	struct kvm_cpuid2 *cpuid;
-+
-+	cpuid = alloc_custom_kvm_cpuid2(MAX_NENT);
-+
-+	/* 0 nent, return E2BIG */
-+	cpuid->nent = 0;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == -1 && errno == E2BIG, "nent=0 should fail as E2BIG");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* high nent, set the entries and adjust */
-+	cpuid->nent = MAX_NENT;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent > actual nent should not fail");
-+	right_nent = cpuid->nent;
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* high nent, set the entries and adjust */
-+	cpuid->nent++;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent > actual nent should not fail");
-+	TEST_ASSERT(right_nent == cpuid->nent, "nent should be always the same");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* low nent, return E2BIG */
-+	if (right_nent > 1) {
-+		cpuid->nent = 1;
-+		res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+		TEST_ASSERT(res == -1 && errno == E2BIG, "nent=1 should fail");
-+		clean_entries_kvm_cpuid2(cpuid);
-+	}
-+
-+	/* exact nent */
-+	cpuid->nent = right_nent;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent == actual nent should not fail");
-+	TEST_ASSERT(cpuid->nent == right_nent,
-+		"KVM_GET_EMULATED_CPUID should be invaried when nent is exact");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	free(cpuid);
-+}
-+
- int main(void)
- {
--	struct kvm_cpuid2 *supp_cpuid, *cpuid2;
-+	struct kvm_cpuid2 *supp_cpuid, *emul_cpuid, *cpuid2;
- 	vm_vaddr_t cpuid_gva;
- 	struct kvm_vm *vm;
- 	int stage;
-@@ -171,5 +248,14 @@ int main(void)
- 	for (stage = 0; stage < 3; stage++)
- 		run_vcpu(vm, VCPU_ID, stage);
- 
-+	if (kvm_check_cap(KVM_CAP_EXT_EMUL_CPUID)) {
-+		emul_cpuid = kvm_get_emulated_cpuid();
-+		vcpu_set_cpuid(vm, VCPU_ID, emul_cpuid);
-+		cpuid2 = vcpu_get_cpuid(vm, VCPU_ID);
-+
-+		test_emulated_entries(vm);
-+		compare_cpuids(emul_cpuid, cpuid2);
-+	}
-+
- 	kvm_vm_free(vm);
- }
--- 
-2.30.2
+Cheers,
+Benjamin
 
