@@ -2,122 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662C0358CD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A910D358CDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhDHSnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHSnW (ORCPT
+        id S232864AbhDHSpH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 14:45:07 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:34850 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232281AbhDHSpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:43:22 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21B3C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 11:43:10 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id m13so3176540oiw.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xz3WWuK9ivXqRhBUKbaDFsjSTwxUZn+PwdntH13EvCw=;
-        b=DbBileZum6NPWyRUsnKHXhoKhh2fInnvgwtIvDU/8h7plDhuw9afWA8Z5GD/CQHEFK
-         1ETTbXqNveHagQMeZ/gFmjL5PW+9qPqh1GWSPJ5X9AHDqN4xefCLYUqJ9sFp+XG21ixP
-         VwCA8OBYbqgLhVJHTlyTDA488oquEbtHKdE/4wOUmtAt2/YDKYufenBjhbIcWAqDR1gW
-         ALUomhvjTYTcQdtF5Hn1QBtRlQGimHsfhy4Am02P/bJrtVgnNUIiaP5T3swyOXWpNaRO
-         1nDGNslFuwfXpR/k1P2Y1Af+4tVgYy9ek6zLLMb7BhFvtrqPeuv5Ub2K2JPyUrdw/mts
-         7S9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xz3WWuK9ivXqRhBUKbaDFsjSTwxUZn+PwdntH13EvCw=;
-        b=Srq6rQyHVGCUqQr0XFGVUa9/x6LSSvmgUXxH0nFl+Mh7s0XfZ2dUVwHEqg6pp3bxsX
-         T/TwWxh9farKypLoww+FOD/76QZ9C29qFlYHUF+AM/uQ3n+/m7PAJqUTvQieTAXiSACc
-         4GY0iFQrQN4SrpZw/JEiwQUJ3QXHYsITqmoDBDbxCwQCZoDodBNZmjDW+AQ0PoOFlrlN
-         bMa+aFKMrnsOAkA1A8uh1nzTWq/YlbWN6DS0h5DO06zcBWVYdQ3zVRbc//sJhz1I0A4F
-         6vEXxHYivIPoqUk+iihqnLtgT60gcaM4oq3kaT4ZGOJE0u/u8yhcaboKhcyUGIu1rlwZ
-         IVJg==
-X-Gm-Message-State: AOAM533q8mc/jtu9wze6x/TFdlbXCkRRqybuHuqBoFIhArqJACiXUhcx
-        d1+IvkNa2FOjEvwVNPj8BAr1cXf4hoT74H750mUVAw==
-X-Google-Smtp-Source: ABdhPJy9Ku3eTj9dWwFpWk3KqO98Kfjyb5zklca3BbhqxQRoWIUDqAOjDX5ELf/1GOFSJJBLXNtG3a0e18eWBL6X8rE=
-X-Received: by 2002:aca:2b07:: with SMTP id i7mr7444647oik.66.1617907389872;
- Thu, 08 Apr 2021 11:43:09 -0700 (PDT)
+        Thu, 8 Apr 2021 14:45:06 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lUZe5-00Ejb5-PM; Thu, 08 Apr 2021 12:44:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lUZe4-00A0nq-5p; Thu, 08 Apr 2021 12:44:49 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        "Huang\, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <7abe5ab608c61fc2363ba458bea21cf9a4a64588.1617814298.git.gladkov.alexey@gmail.com>
+        <20210408083026.GE1696@xsang-OptiPlex-9020>
+        <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
+Date:   Thu, 08 Apr 2021 13:44:43 -0500
+In-Reply-To: <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 8 Apr 2021 09:22:40 -0700")
+Message-ID: <m1im4wmx9g.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210330230249.709221-1-jiancai@google.com> <20210330232946.m5p7426macyjduzm@archlinux-ax161>
- <114a5697-9b5c-daf1-f0fc-dc190d4db74d@roeck-us.net> <CA+SOCLKbrOS9HJHLqRrdeq2ene_Rjs42ak9UzA=jtYb0hqWY1g@mail.gmail.com>
- <CA+SOCLLBgKtTz732O5zcrNs_F=iS6C2bE4HBmJfoPTum3Yu1oQ@mail.gmail.com>
- <20210331215802.r4rp6wynjqutdoup@archlinux-ax161> <CAKwvOdmoud9=Uf2xN7q1c1gP06ZNU4K2-Q5PDD-LTynHC+qOMA@mail.gmail.com>
- <CA+SOCLL67K=reMX=pBQzRV6dYbbS6EPVeOxZ8Xdw90P91Zb8Zw@mail.gmail.com> <20210408181210.u7cudatr7zcmbmb2@archlinux-ax161>
-In-Reply-To: <20210408181210.u7cudatr7zcmbmb2@archlinux-ax161>
-From:   Jian Cai <jiancai@google.com>
-Date:   Thu, 8 Apr 2021 11:42:58 -0700
-Message-ID: <CA+SOCLKC+7BS+-Cd+y9PQsfKADMQeYrzumRzb=oCuQmmxR6TPw@mail.gmail.com>
-Subject: Re: [PATCH] blk-mq: fix alignment mismatch.
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Christopher Di Bella <cjdb@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1lUZe4-00A0nq-5p;;;mid=<m1im4wmx9g.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19JLUsOtBvU+Hb1U0UwhyIZDve8LzlJSks=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_Unicode
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 785 ms - load_scoreonly_sql: 0.08 (0.0%),
+        signal_user_changed: 12 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.21
+        (0.2%), extract_message_metadata: 18 (2.3%), get_uri_detail_list: 3.2
+        (0.4%), tests_pri_-1000: 15 (1.9%), tests_pri_-950: 1.55 (0.2%),
+        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 194 (24.7%), check_bayes:
+        179 (22.8%), b_tokenize: 13 (1.7%), b_tok_get_all: 14 (1.8%),
+        b_comp_prob: 4.5 (0.6%), b_tok_touch_all: 143 (18.2%), b_finish: 1.12
+        (0.1%), tests_pri_0: 529 (67.3%), check_dkim_signature: 0.71 (0.1%),
+        check_dkim_adsp: 2.5 (0.3%), poll_dns_idle: 0.77 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 8 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: 08ed4efad6: stress-ng.sigsegv.ops_per_sec -41.9% regression
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sounds good! Thanks for the help and the link.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-On Thu, Apr 8, 2021 at 11:12 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> On Thu, Apr 8, 2021 at 1:32 AM kernel test robot <oliver.sang@intel.com> wrote:
+>>
+>> FYI, we noticed a -41.9% regression of stress-ng.sigsegv.ops_per_sec due to commit
+>> 08ed4efad684 ("[PATCH v10 6/9] Reimplement RLIMIT_SIGPENDING on top of ucounts")
 >
-> Hi Jian,
+> Ouch.
+
+We were cautiously optimistic when no test problems showed up from
+the last posting that there was nothing to look at here.
+
+Unfortunately it looks like the bots just missed the last posting. 
+
+So it seems we are finally pretty much at correct code in need
+of performance tuning.
+
+> I *think* this test may be testing "send so many signals that it
+> triggers the signal queue overflow case".
 >
-> On Thu, Apr 08, 2021 at 10:57:54AM -0700, Jian Cai wrote:
-> > So this issue is blocking the LLVM upgrading on ChromeOS. Nathan, do
-> > you mind sending out the smaller patch like Nick suggested just to see
-> > what feedback we could get? I could send it for you if you are busy,
-> > and please let me know what tags I should use in that case.
-> >
-> > Thanks,
-> > Jian
+> And I *think* that the performance degradation may be due to lots of
+> unnecessary allocations, because ity looks like that commit changes
+> __sigqueue_alloc() to do
 >
-> I will go ahead and send the smaller patch at some point today.
+>         struct sigqueue *q = kmem_cache_alloc(sigqueue_cachep, flags);
 >
-> For what it's worth, Nick brought up https://reviews.llvm.org/D100037,
-> which may be relevant here.
+> *before* checking the signal limit, and then if the signal limit was
+> exceeded, it will just be free'd instead.
 >
-> Cheers,
-> Nathan
+> The old code would check the signal count against RLIMIT_SIGPENDING
+> *first*, and if there were m ore pending signals then it wouldn't do
+> anything at all (including not incrementing that expensive atomic
+> count).
+
+This is an interesting test in a lot of ways as it is testing the
+synchronous signal delivery path caused by an exception.  The test
+is either executing *ptr = 0 (where ptr points to a read-only page)
+or it executes an x86 instruction that is excessively long.
+
+I have found the code but I haven't figured out how it is being
+called yet.  The core loop is just:
+	for(;;) {
+		sigaction(SIGSEGV, &action, NULL);
+		sigaction(SIGILL, &action, NULL);
+		sigaction(SIGBUS, &action, NULL);
+
+		ret = sigsetjmp(jmp_env, 1);
+		if (done())
+                	break;
+		if (ret) {
+                	/* verify signal */
+                } else {
+                	*ptr = 0;
+                }
+	}
+
+Code like that fundamentally can not be multi-threaded.  So the only way
+the sigpending limit is being hit is if there are more processes running
+that code simultaneously than the size of the limit.
+
+Further it looks like stress-ng pushes RLIMIT_SIGPENDING as high as it
+will go before the test starts.
+
+
+> Also, the old code was very careful to only do the "get_user()" for
+> the *first* signal it added to the queue, and do the "put_user()" for
+> when removing the last signal. Exactly because those atomics are very
+> expensive.
 >
-> > On Wed, Mar 31, 2021 at 3:06 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Wed, Mar 31, 2021 at 2:58 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> > > >
-> > > > On Wed, Mar 31, 2021 at 02:27:03PM -0700, Jian Cai wrote:
-> > > > >
-> > > > > I just realized you already proposed solutions for skipping the check
-> > > > > in https://lore.kernel.org/linux-block/20210310225240.4epj2mdmzt4vurr3@archlinux-ax161/#t.
-> > > > > Do you have any plans to send them for review?
-> > > >
-> > > > I was hoping to gather some feedback on which option would be preferred
-> > > > by Jens and the other ClangBuiltLinux folks before I sent them along. I
-> > > > can send the first just to see what kind of feedback I can gather.
-> > >
-> > > Either approach is fine by me. The smaller might be easier to get
-> > > accepted into stable. The larger approach will probably become more
-> > > useful in the future (having the diag infra work properly with clang).
-> > > I think the ball is kind of in Jens' court to decide.  Would doing
-> > > both be appropriate, Jens? Have the smaller patch tagged for stable
-> > > disabling it for the whole file, then another commit on top not tagged
-> > > for stable that adds the diag infra, and a third on top replacing the
-> > > file level warning disablement with local diags to isolate this down
-> > > to one case?  It's a fair but small amount of churn IMO; but if Jens
-> > > is not opposed it seems fine?
-> > > --
-> > > Thanks,
-> > > ~Nick Desaulniers
+> The new code just does a lot of these atomics unconditionally.
+
+Yes. That seems a likely culprit.
+
+> I dunno. The profile data in there is a bit hard to read, but there's
+> a lot more cachee misses, and a *lot* of node crossers:
+>
+>>    5961544          +190.4%   17314361        perf-stat.i.cache-misses
+>>   22107466          +119.2%   48457656        perf-stat.i.cache-references
+>>     163292 ą  3%   +4582.0%    7645410        perf-stat.i.node-load-misses
+>>     227388 ą  2%   +3708.8%    8660824        perf-stat.i.node-loads
+>
+> and (probably as a result) average instruction costs have gone up enormously:
+>
+>>       3.47           +66.8%       5.79        perf-stat.overall.cpi
+>>      22849           -65.6%       7866        perf-stat.overall.cycles-between-cache-misses
+>
+> and it does seem to be at least partly about "put_ucounts()":
+>
+>>       0.00            +4.5        4.46        perf-profile.calltrace.cycles-pp.put_ucounts.__sigqueue_free.get_signal.arch_do_signal_or_restart.exit_to_user_mode_prepare
+>
+> and a lot of "get_ucounts()".
+>
+> But it may also be that the new "get sigpending" is just *so* much
+> more expensive than it used to be.
+
+That too is possible.
+
+That node-load-misses number does look like something is bouncing back
+and forth between the nodes a lot more.  So I suspect stress-ng is
+running multiple copies of the sigsegv test in different processes at
+once.
+
+
+
+That really suggests cache line ping pong from get_ucounts and
+incrementing sigpending.
+
+It surprises me that obtaining the cache lines exclusively is
+the dominant cost on this code path but obtaining two cache lines
+exclusively instead of one cache cache line exclusively is consistent
+with a causing the exception delivery to take nearly twice as long.
+
+For the optimization we only care about the leaf count so with a little
+care we can restore the optimization.  So that is probably the thing
+to do here.  The fewer changes to worry about the less likely to find
+surprises.
+
+
+
+That said for this specific case there is a lot of potential room for
+improvement.  As this is a per thread signal the code update sigpending
+in commit_cred and never worry about needing to pin the struct
+user_struct or struct ucounts.  As this is a synchronous signal we could
+skip the sigpending increment, skip the signal queue entirely, and
+deliver the signal to user-space immediately.  The removal of all cache
+ping pongs might make it worth it.
+
+There is also Thomas Gleixner's recent optimization to cache one
+sigqueue entry per task to give more predictable behavior.  That
+would remove the cost of the allocation.
+
+Eric
