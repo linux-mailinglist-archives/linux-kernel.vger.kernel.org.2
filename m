@@ -2,253 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684F035904F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17F6359054
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhDHX3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 19:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDHX3X (ORCPT
+        id S232973AbhDHXah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 19:30:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56694 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDHXaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:29:23 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B918FC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 16:29:11 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id h25so2492307pgm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 16:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aMEgyuur9qC8Rpemjb7G4PaSGh4YNOC/aXAMpJX/sQg=;
-        b=mCre33MgGBGuuoUA3U1XFRwvbYQ1cjbLlg1oojueIhPjQeDIpLgWToJZX7QfnBG8sp
-         0AAV96diXVHmifVsJ0xnJ1O+0874DngKv73kxBfkJ4JZM65el80pTq8QwO10QEX39E7g
-         E8C+uCwQwPHbC2Dr4DQnWHhz7t7eVd4vdMbw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aMEgyuur9qC8Rpemjb7G4PaSGh4YNOC/aXAMpJX/sQg=;
-        b=MJpbpOE8Hk//rzA1s+o0ietw3oiPx3gDUXCuDgZbyOc1lAn8CfoZMOVlXpDU2o0GhY
-         Dbleg5P/0brEaBSKOutPVGu57fuylmgcUKhRBBk96qceSS4u3BTxRAhKnnAH6Jx5KLjv
-         HGxHlbJ0kr6aYYSn/TzGpvW77Q3ErX9Z275jyeWip4OuHv8QqI7Z1ow/WQZRdL2PoS7O
-         xmgQgyXbQqOE+hfG3hayJ23DlajXUxu/D5O70E0xjVmtinUIUU4JGmf4snOiIMKHgu5M
-         21HiktEr1toi8nOgx8siwpzeX/McPeL7wkg1TqxZ250u27Z1CcEbRwgi98UoO2pVttlq
-         7okA==
-X-Gm-Message-State: AOAM533iPXGq1eSOdEdFHsCR0qTc/2X34APCRpID+CZE5VdUGlSkQrur
-        b9LWfLblo6x9apfy3oWTjtXHbg==
-X-Google-Smtp-Source: ABdhPJxfxrXHnC7s9Dd5yQRxqTHtOygKm0XPxiKdxhHqnqL/8cjon8l6fDVbMaa5Ysd/w3lIEkxAjA==
-X-Received: by 2002:a65:4887:: with SMTP id n7mr10262449pgs.14.1617924551162;
-        Thu, 08 Apr 2021 16:29:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y66sm371293pgb.78.2021.04.08.16.29.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 16:29:10 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>
-Subject: [PATCH] LoadPin: Allow filesystem switch when not enforcing
-Date:   Thu,  8 Apr 2021 16:28:56 -0700
-Message-Id: <20210408232856.1697972-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 8 Apr 2021 19:30:35 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5D01120B5680;
+        Thu,  8 Apr 2021 16:30:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5D01120B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617924623;
+        bh=rtX0nhS8f8A+Scs1O/M+oFYTu3Ey1F1VPqr0kIGuauo=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=s7Fj9Oh/qTR3tDYtSlFsbfbuzjpBXCHTp0H+Qe/7TzrQDT0lwxfy/8k85nDza/hyG
+         0AwiTOIAKOUpUr0vAWduwMbcn7oXKOnjQ18iTrWHnIo0kbhdVQECjk3QDpS83etQbR
+         WlztKMgU0sqU0F26wL38rykVg628AMmiJoAuzNNs=
+Subject: Re: [RFC PATCH v2 1/4] arm64: Implement infrastructure for stack
+ trace reliability checks
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210405204313.21346-2-madvenka@linux.microsoft.com>
+ <20210408171715.GQ4516@sirena.org.uk>
+ <69b6924b-88f6-6c40-7b18-8cdf15d92bd1@linux.microsoft.com>
+Message-ID: <eb905f70-a963-6257-c597-89e008675539@linux.microsoft.com>
+Date:   Thu, 8 Apr 2021 18:30:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=cf21ff2cc7c5321481efd2844f5f4803d595e358; i=sxtRD1DI+VktMwvXHDndmH3YdUWEJvGf0n/4AbnGWps=; m=+T8NnhTQZYd8XijaeBTdeSfRIfOyyyvOS4LtXhzFv14=; p=9MtPpY5fBp9Rp++zHuqEJ21QZAkxT32nZNDagWooTnI=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBvkbcACgkQiXL039xtwCYtjw//Zn/ xaXVaWZZJpxY949nsIEkdYF6guogXEqil86vhni3qrJltJPYEKbwvdNGz2+JfXHcDg8JrduVPzHOD p3b6JPVkIBBUIKxPRCwozR21B2DQLS8C9JtwV4itRSbI/fxZdtIm2q2AcSnSEUt27JlwiY8IHRnoD ku5C4VJyzpwnGga2toqOVyDsvhAhyRa/oiI6I7/6vvuchpqHVvIIOMZwBOgZ3UBQS5HzkZRxVGDCy xezaPtWOn7sQYaxFFWVPruhJgKWpvkBLz3tVsqfEM33mev0Hmy4ITrEeotKaRkF5J3hSu25gHdusk MDV5k7y0zD0Zj+hVPKu27OEGSvRaPbWJ9LQJ4EThd5/ivHdIpzcS0ZMDq/7dwa7B4hgt2xKaTpR9C DTuo75/fJ0tTR8RJCkq+l21wEzthGN9oPKNObSO0j35SeDQetCllqUehVBF2rx6H6igABHDDaKAwE fa4Wy9Cw5ii1huAO0iZLueAeEnAvYxRT6hP3raSKKlnITKMcrV+4OWZLi0WfFbBuLwBuLCSS2bA8S j4CNvuHP54AsKkZGVLW/jj1TEu7UJmD169hyB2vh5tszto54a8pX4MBoPQA48AfuUIWC+n58sPFF9 IU5inleFTFnHD2bpJxpraoqWo+nFMhUcZTMdTVoQ0O/PkkCAAPk7NT9jbcp9+Nj4=
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <69b6924b-88f6-6c40-7b18-8cdf15d92bd1@linux.microsoft.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For LoadPin to be used at all in a classic distro environment, it needs
-to allow for switching filesystems (from the initramfs to the "real"
-root filesystem). If the "enforce" mode is not set, reset the pinned
-filesystem tracking when the pinned filesystem gets unmounted.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- security/loadpin/loadpin.c | 110 +++++++++++++++++++++----------------
- 1 file changed, 63 insertions(+), 47 deletions(-)
 
-diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
-index b12f7d986b1e..ca1bbfe4a44b 100644
---- a/security/loadpin/loadpin.c
-+++ b/security/loadpin/loadpin.c
-@@ -45,7 +45,6 @@ static struct super_block *pinned_root;
- static DEFINE_SPINLOCK(pinned_root_spinlock);
- 
- #ifdef CONFIG_SYSCTL
--
- static struct ctl_path loadpin_sysctl_path[] = {
- 	{ .procname = "kernel", },
- 	{ .procname = "loadpin", },
-@@ -59,69 +58,81 @@ static struct ctl_table loadpin_sysctl_table[] = {
- 		.maxlen         = sizeof(int),
- 		.mode           = 0644,
- 		.proc_handler   = proc_dointvec_minmax,
--		.extra1         = SYSCTL_ZERO,
-+		.extra1         = SYSCTL_ONE,
- 		.extra2         = SYSCTL_ONE,
- 	},
- 	{ }
- };
- 
--/*
-- * This must be called after early kernel init, since then the rootdev
-- * is available.
-- */
--static void check_pinning_enforcement(struct super_block *mnt_sb)
-+static void set_sysctl(bool is_writable)
- {
--	bool ro = false;
--
- 	/*
- 	 * If load pinning is not enforced via a read-only block
- 	 * device, allow sysctl to change modes for testing.
- 	 */
--	if (mnt_sb->s_bdev) {
--		char bdev[BDEVNAME_SIZE];
--
--		ro = bdev_read_only(mnt_sb->s_bdev);
--		bdevname(mnt_sb->s_bdev, bdev);
--		pr_info("%s (%u:%u): %s\n", bdev,
--			MAJOR(mnt_sb->s_bdev->bd_dev),
--			MINOR(mnt_sb->s_bdev->bd_dev),
--			ro ? "read-only" : "writable");
--	} else
--		pr_info("mnt_sb lacks block device, treating as: writable\n");
--
--	if (!ro) {
--		if (!register_sysctl_paths(loadpin_sysctl_path,
--					   loadpin_sysctl_table))
--			pr_notice("sysctl registration failed!\n");
--		else
--			pr_info("enforcement can be disabled.\n");
--	} else
--		pr_info("load pinning engaged.\n");
-+	if (is_writable)
-+		loadpin_sysctl_table[0].extra1 = SYSCTL_ZERO;
-+	else
-+		loadpin_sysctl_table[0].extra1 = SYSCTL_ONE;
- }
- #else
--static void check_pinning_enforcement(struct super_block *mnt_sb)
-+static bool set_sysctl(bool is_writable) { }
-+#endif
-+
-+/*
-+ * This must be called after early kernel init, since then the rootdev
-+ * is available.
-+ */
-+static bool sb_is_writable(struct super_block *mnt_sb, struct block_device **bdev)
-+{
-+	bool writable = true;
-+
-+	*bdev = mnt_sb->s_bdev;
-+	if (*bdev)
-+		writable = !bdev_read_only(*bdev);
-+
-+	return writable;
-+}
-+
-+static void report_writable(struct block_device *bdev)
- {
--	pr_info("load pinning engaged.\n");
-+	if (bdev) {
-+		char name[BDEVNAME_SIZE];
-+
-+		bdevname(bdev, name);
-+		pr_info("%s (%u:%u): %s\n", name,
-+			MAJOR(bdev->bd_dev),
-+			MINOR(bdev->bd_dev),
-+			load_root_writable ? "writable" : "read-only");
-+	} else {
-+		pr_info("pinned filesystem lacks block device, treating as: writable\n");
-+	}
- }
--#endif
- 
- static void loadpin_sb_free_security(struct super_block *mnt_sb)
- {
- 	/*
- 	 * When unmounting the filesystem we were using for load
- 	 * pinning, we acknowledge the superblock release, but make sure
--	 * no other modules or firmware can be loaded.
-+	 * no other modules or firmware can be loaded when we are in
-+	 * enforcing mode. Otherwise, allow the root to be reestablished.
- 	 */
- 	if (!IS_ERR_OR_NULL(pinned_root) && mnt_sb == pinned_root) {
--		pinned_root = ERR_PTR(-EIO);
--		pr_info("umount pinned fs: refusing further loads\n");
-+		if (enforced) {
-+			pinned_root = ERR_PTR(-EIO);
-+			pr_info("umount pinned fs: refusing further loads\n");
-+		} else {
-+			pinned_root = NULL;
-+		}
- 	}
- }
- 
- static int loadpin_read_file(struct file *file, enum kernel_read_file_id id,
- 			     bool contents)
- {
-+	struct block_device *bdev = NULL;
- 	struct super_block *load_root;
-+	bool load_root_writable, first_root_pin, sysctl_needed;
- 	const char *origin = kernel_read_file_id_str(id);
- 
- 	/*
-@@ -152,26 +163,27 @@ static int loadpin_read_file(struct file *file, enum kernel_read_file_id id,
- 	}
- 
- 	load_root = file->f_path.mnt->mnt_sb;
-+	load_root_writable = sb_is_writable(load_root, &bdev);
-+	sysctl_needed = false;
-+	first_root_pin = false;
- 
- 	/* First loaded module/firmware defines the root for all others. */
- 	spin_lock(&pinned_root_spinlock);
- 	/*
--	 * pinned_root is only NULL at startup. Otherwise, it is either
--	 * a valid reference, or an ERR_PTR.
-+	 * pinned_root is only NULL at startup or when the pinned root has
-+	 * been unmounted while we are not in enforcing mode. Otherwise, it
-+	 * is either a valid reference, or an ERR_PTR.
- 	 */
- 	if (!pinned_root) {
- 		pinned_root = load_root;
--		/*
--		 * Unlock now since it's only pinned_root we care about.
--		 * In the worst case, we will (correctly) report pinning
--		 * failures before we have announced that pinning is
--		 * enforcing. This would be purely cosmetic.
--		 */
--		spin_unlock(&pinned_root_spinlock);
--		check_pinning_enforcement(pinned_root);
-+		first_root_pin = true;
-+	}
-+	spin_unlock(&pinned_root_spinlock);
-+
-+	if (first_root_pin) {
-+		report_writable(bdev);
-+		set_sysctl(load_root_writable);
- 		report_load(origin, file, "pinned");
--	} else {
--		spin_unlock(&pinned_root_spinlock);
- 	}
- 
- 	if (IS_ERR_OR_NULL(pinned_root) || load_root != pinned_root) {
-@@ -239,6 +251,10 @@ static int __init loadpin_init(void)
- 	pr_info("ready to pin (currently %senforcing)\n",
- 		enforce ? "" : "not ");
- 	parse_exclude();
-+#ifdef CONFIG_SYSCTL
-+	if (!register_sysctl_paths(loadpin_sysctl_path, loadpin_sysctl_table))
-+		pr_notice("sysctl registration failed!\n");
-+#endif
- 	security_add_hooks(loadpin_hooks, ARRAY_SIZE(loadpin_hooks), "loadpin");
- 	return 0;
- }
--- 
-2.25.1
+On 4/8/21 2:30 PM, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 4/8/21 12:17 PM, Mark Brown wrote:
+>> On Mon, Apr 05, 2021 at 03:43:10PM -0500, madvenka@linux.microsoft.com wrote:
+>>
+>>> These checks will involve checking the return PC to see if it falls inside
+>>> any special functions where the stack trace is considered unreliable.
+>>> Implement the infrastructure needed for this.
+>>
+>> Following up again based on an off-list discussion with Mark Rutland:
+>> while I think this is a reasonable implementation for specifically
+>> listing functions that cause problems we could make life easier for
+>> ourselves by instead using annotations at the call sites to put things
+>> into sections which indicate that they're unsafe for unwinding, we can
+>> then check for any address in one of those sections (or possibly do the
+>> reverse and check for any address in a section we specifically know is
+>> safe) rather than having to enumerate problematic functions in the
+>> unwinder.  This also has the advantage of not having a list that's
+>> separate to the functions themselves so it's less likely that the
+>> unwinder will get out of sync with the rest of the code as things evolve.
+>>
+>> We already have SYM_CODE_START() annotations in the code for assembly
+>> functions that aren't using the standard calling convention which should
+>> help a lot here, we could add a variant of that for things that we know
+>> are safe on stacks (like those we expect to find at the bottom of
+>> stacks).
+>>
+> 
+> As I already mentioned before, I like the idea of sections. The only reason that I did
+> not try it was that I have to address FTRACE trampolines and the kretprobe_trampoline
+> (and optprobes in the future).
+> 
+> I have the following options:
+> 
+> 1. Create a common section (I will have to come up with an appropriate name) and put
+>    all such functions in that one section.
+> 
+> 2. Create one section for each logical type (exception section, ftrace section and
+>    kprobe section) or some such.
+> 
 
+For now, I will start with idea 2. I will create a special section for each class of
+functions (EL1 exception handlers, FTRACE trampolines, KPROBE trampolines). Instead of a
+special functions array, I will implement a special_sections array. The rest of the code
+should just fall into place.
+
+Let me know if you prefer something different.
+
+Thanks.
+
+Madhavan
+
+> 3. Use the section idea only for the el1 exceptions. For the others use the current
+>    special_functions[] approach.
+> 
+> Which one do you and Mark Rutland prefer? Or, is there another choice?
+> 
+> Madhavan
+> 
