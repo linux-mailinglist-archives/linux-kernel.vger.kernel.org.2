@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E97358ECE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3640C358ED3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhDHUzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:55:23 -0400
-Received: from mail-dm6nam10on2088.outbound.protection.outlook.com ([40.107.93.88]:57057
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231897AbhDHUzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:55:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YwvgO19qknv5AIRorJLS22lzo0fk2TG9ZujWKoUakiXCuoGxGTnCDwmeHhsrlQg9OOFMnPu0wHmodojxhAZNS4tZ9fTjBSrHkwQW/RbU5kQQ5dRJgAiVCZ7UYk5l5dKtF4p2+4V40MkOYkyHu2VqexMJW1Mx7tJVArYlJTZM+u773rN5KFsZWfgwhhY+3tSooI1gpo/7wsoRP3YoGeE9Dn1y4vAnhinCamyCBQVxmw1lKjhl/uBfvUwg64wyO53XB6WrjWrKX3LZvyydaT0N6ztsxr3L1qPFjmATaqKOdjbuupeJvXvyyIQp8MBZ50vWCCo0ag+0hpuoHHTuTuzA5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nsHD62F4rrlzTZQ3QAgoAGUDmkPqsNUS+LxK3YE/Gts=;
- b=RLG2L8tJIt0ucWINLeGA1fXr/2//B3ywEuTfUTQ2lnpeMWQKpwHkJAPetmBbg9ZoRsg938JcBcLcZs6uaKEmiH4Gxhmbm2H2z5QPPjK2A5hqbEBydQDFHw2W7G+Akx2vXH9tEsG5hrqWaMWv7XgZWXIHQ5eFZgWH6g48TvpL+kiQV6G9u8zyVb0nvOqkpO9jmj4goWBxFC8wlQfjaPchV2ZCSJblNiq/iby0NY3sGMvajn2GlmCOqVM21GXNUE5Bh3Psjz1d5hCzX6esjWc8AueQ/CUb2Kn5Yx0Dffm61E5w/d22T4Lsi8G1/jzxJUu5+e3GuZMgraJGD+ZC1suLdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nsHD62F4rrlzTZQ3QAgoAGUDmkPqsNUS+LxK3YE/Gts=;
- b=MJ88fwhFO2IMnntuIv7Y/n1Yuxcr+/ogsNznvUsZkMEoXavoJ8jgqY2PjZ/4cLRkodR0m350R9TP1WkvsvSWi4lLfkjMFL0ZXwQ4bwT4Z/AYKpvI+X3dzxzoVCUyTOXEw8JZ/4Dk03dn6uiwsVEfxmgqGL/i/w9UtJk3v1/HnOGgVAY86zZ+Vjr2SgJ8QcWt+3qy/tfN01IJKsjdCljF167Ktvtzh4oxZ0LX5jhHYlmSltSEsKcO7OR6/3QliwRXF4MoKgo9uzEHzl83O4KWPsXXejB3prO01UhHAdFrxxn0LuYerLucAAAjuogoUbWXrfTHLYYQ+FEg7SQXnDQJcQ==
-Received: from BN9PR03CA0040.namprd03.prod.outlook.com (2603:10b6:408:fb::15)
- by BY5PR12MB4226.namprd12.prod.outlook.com (2603:10b6:a03:203::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Thu, 8 Apr
- 2021 20:55:06 +0000
-Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fb:cafe::b7) by BN9PR03CA0040.outlook.office365.com
- (2603:10b6:408:fb::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21 via Frontend
- Transport; Thu, 8 Apr 2021 20:55:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 20:55:06 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
- 2021 20:55:05 +0000
-Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 8 Apr 2021 13:55:05 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <axboe@kernel.dk>,
-        <thierry.reding@gmail.com>, <digetx@gmail.com>
-CC:     <jonathanh@nvidia.com>, <linux-ide@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ata: ahci_tegra: call tegra_powergate_power_off only when PM domain is not present
-Date:   Thu, 8 Apr 2021 13:55:15 -0700
-Message-ID: <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617915315-13639-1-git-send-email-skomatineni@nvidia.com>
-References: <1617915315-13639-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S232509AbhDHU4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231862AbhDHU4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 16:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C142B6113C;
+        Thu,  8 Apr 2021 20:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617915355;
+        bh=dTju1tcCBQi5uHJ2quaUpPwZN0c8X8zDfQuDNWLJN1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=huftAJCfOXkCEOFAopxujRwEgRQulkipRCwlT0VmplZJluZSdFbmyNYkUMNj9q0fj
+         cAHAnHJlgE0ySpsKeWz99m4vfVa/xlgRj4uGgO8UEWnqI6wYGbOJ5EIanp8NKDWvrO
+         vc/dcEoQPDuCsKUdifmKwrXh4aAbaPyw+i8KYHzncEIEBFJH1cZVPgpNFML7yRK7sq
+         IZfYFQiNhSY2j+IK+mscHzVNhNel4MLGhPCbmOIJoWnDB4UlCa6ivWvWjiH9APyHsg
+         9ESgMPstO3kD3yc3aIh1FD4A3uMy2pVgqOtjYNkkkuTxeAP9BYVfL6Tu2hBiAjTvzd
+         v1kRSlyCqQknw==
+Date:   Thu, 8 Apr 2021 22:55:51 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
+        digetx@gmail.com, treding@nvidia.com,
+        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
+        song.bao.hua@hisilicon.com, john.garry@huawei.com,
+        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v7 2/5] i2c: core: add api to provide frequency mode
+ strings
+Message-ID: <20210408205551.GD1900@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org,
+        digetx@gmail.com, treding@nvidia.com, jarkko.nikula@linux.intel.com,
+        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
+        john.garry@huawei.com, mika.westerberg@linux.intel.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com
+References: <1617880641-664-1-git-send-email-yangyicong@hisilicon.com>
+ <1617880641-664-3-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90c90018-5d92-4686-4af6-08d8fad096d3
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4226:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB422662521115B73D44774118C2749@BY5PR12MB4226.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:758;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1hQpDm4WMQEgLKt7M3rhvo9/ZaY0e9SfpNWTDtPM1Oi7p135B1Mp9eaci+1NNRYxLRFYJZoacBBO2kxZz7Z7Uu1jKQ8FeeZvbNCtQ8Ug2v3ykyeOfOrkNr7al+pnIQt7uCzUjeuAoulhL5yOym6i3sFfKYGPJH+nbIBgmXa+mgev+zSasxmAY6hDCMKFcr7vg1u0895QwNVU/Fq7fc6hnOdP3HtdEDbuEW2s84KJmVuOBlmhH/YSyWS5ACjtD3tkkUdhk7eTFrigPBdLf/4GjTnMF1ZZRTsAH3RMaKsWAaTRAtpayK/bAO1Wpr1T2qvDy3Hrvy1sHMCgGyHxHVVkf+QZht645e/MMVrg5woDSckTImO1u8FqgyF4F8LyA6BHHK39rgfzsy+eFCCu1/GB1OY2wYt6pVgfkhyyZFdp389wfLVCEchVYTD4kmLtHr/YIAGVfmez/5coqSxjLdftu1frQnaCWbExHf/lO6jjr8pMZqWxLiobeFNJQgwAxGaPnMBmSXdR+8I4U4Qm+3DUlq8QgS9L+rjZsGEWxG7G+qJmSwv15WCGlT9VlS2mu3ziD/QZCbvIfhygaINzOkN+IJld65up9X9cSPbPS/KA4v2DA6n/f9FKS68JS9oXtrhLPDv0g6yedZ5zl2ADJeloipIPuRKGr7oJUgIqFhDXCMg=
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(46966006)(36840700001)(336012)(316002)(70586007)(54906003)(36860700001)(110136005)(6666004)(426003)(5660300002)(4326008)(82310400003)(8936002)(83380400001)(8676002)(36756003)(36906005)(356005)(82740400003)(47076005)(2906002)(86362001)(186003)(478600001)(26005)(70206006)(2616005)(7636003)(7696005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 20:55:06.1737
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90c90018-5d92-4686-4af6-08d8fad096d3
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4226
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hxkXGo8AKqTJ+9QI"
+Content-Disposition: inline
+In-Reply-To: <1617880641-664-3-git-send-email-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds check to call legacy power domain API
-tegra_powergate_power_off() only when PM domain is not present.
 
-This is a follow-up patch to Tegra186 AHCI support patch series.
----
- drivers/ata/ahci_tegra.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+--hxkXGo8AKqTJ+9QI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index 56612af..4fb94db 100644
---- a/drivers/ata/ahci_tegra.c
-+++ b/drivers/ata/ahci_tegra.c
-@@ -268,7 +268,8 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
- disable_power:
- 	clk_disable_unprepare(tegra->sata_clk);
- 
--	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
-+	if (!tegra->pdev->dev.pm_domain)
-+		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
- 
- disable_regulators:
- 	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
-@@ -287,7 +288,8 @@ static void tegra_ahci_power_off(struct ahci_host_priv *hpriv)
- 	reset_control_assert(tegra->sata_cold_rst);
- 
- 	clk_disable_unprepare(tegra->sata_clk);
--	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
-+	if (!tegra->pdev->dev.pm_domain)
-+		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
- 
- 	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
- }
--- 
-2.7.4
 
+> +const char *i2c_freq_mode_string(u32 bus_freq_hz)
+> +{
+> +	switch (bus_freq_hz) {
+> +	case I2C_MAX_STANDARD_MODE_FREQ:
+> +		return "Standard Mode (100 kHz)";
+
+Sorry, I just noticed just now. Shouldn't we also support lower
+frequencies than the maximum one? I.e.
+
+	if (bus_freq_hz <= I2C_MAX_STANDARD_MODE_FREQ)
+ 		return "Standard Mode (max 100 kHz)";
+	else if (bus_freq_hz <= ... )
+
+?
+
+
+--hxkXGo8AKqTJ+9QI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBvbdcACgkQFA3kzBSg
+KbYWUxAAiUxx48wgtmttceezaLABx+UJm/5sIu9mbfHHa5tfi4j/MOw/40CSxE2e
+fz9lupkjZHBokVzeURVghdECZiRkRVmCITk68Q3HPG2x25ESaHF5abLFD5eOucnw
+shyGjerudG9LmDAj9/yjFJf0u8yXC7CSJ7/NFF46WUHihATnhPlRwywMbV7Td978
+KqMF3ha/Hf2+iyiOv9vXe5Te9Cr7F4u2M4BbR8X9sBy2NqK9TRiXBhJtpZ8rsiGl
+kP4U1RHl2k4JNawH3zM1nV6ST9JRHByQzPERUyjEawGI60Qy1W0YWe3Oz093dkwf
+oGVDr6wUlZiwLHb7aFFCK6UaIHwH/J/Cwz+j+ho4yi0w7D0bfYn5di5fpGqh4IIg
+Tcl+lDrHfu4QoU+e1mWrLVd2/yLVMzbGLNy0pvoaFLSqk8vFDHsi3I4xbVNeJsGD
+T6S06wTNUVMKPIb5xskyvG4e8WyJL8NTwEDRovlSKSl8dMrE0Vu/rOqMyl1ohzPC
+X7Frkke3rtzgts1gT9j7A34CNRk23xeG3XhyxeEVSwFl2dzOsE+sb11stbne//gO
+NQdPG21jX9TeaKZqtNa+zoowTZG8h8jAtlfleV7KCeTBhfZ6ALnpy/lGFY2KdYmx
+y4utJfbka2d1QpX/45HP40H6Gjaxtv//wcYtAy+icNugIeyz5jg=
+=6xkz
+-----END PGP SIGNATURE-----
+
+--hxkXGo8AKqTJ+9QI--
