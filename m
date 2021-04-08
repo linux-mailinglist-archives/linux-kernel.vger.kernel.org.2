@@ -2,181 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94970357B1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D26357B6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhDHEGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 00:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhDHEGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 00:06:15 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ED6C0613D8
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 21:06:03 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g15so943565qkl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 21:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=KXQ+yohNMyyqRPEeNONrEzPBCefWBOBuVaWouKl2Q04=;
-        b=hEpX6glagkFAuErJ7yQUGxGTKuEwhpiBYJUVY+mF4vPQ9e8cKN4TsDEZ5/+iZBwsv5
-         iB7RU8pOFfBpYoimzL4WA8WK8J/rXapc5IOLHDQb+zE0bhEap5LZlBQxZuFhwcGMK63S
-         2DQBTm9SWhcwg2HWWqUv827UrKERhGot15yaSZtIj1uQK6RO2b2ktv7D9pO2jne7A5vv
-         ioXYlqv1fYjtRrxVNgpy9PO4FG3bavAsYW2etVeizyl2QlU2er0E3nb45su4gKMq6UJc
-         NOMZiK2RWQiRXhdFaS78R4rXW+aveD9Z/y6CN3XhfaGVu+dSgOYUiObLZaVkrWU6WsSz
-         c4Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KXQ+yohNMyyqRPEeNONrEzPBCefWBOBuVaWouKl2Q04=;
-        b=iAUkY+T+ymtb6vGiayPP2ong0+HSAqNUtPtOr9M00vJs5jZPHlIZSMha1zUSDBAQwN
-         gaPJu1ECPHFrbmh/TQKFt9yfWWcLI7O9x1pl03ks8ldBllTNoAjTwgKYsOw7phBQ55Y3
-         UFFyccXwVj7jD5HWAl80lKZ+AyVArAJU3mrtVvrd3hucdC2yUJzHWaA+7VHks+Pdz5qC
-         MopDhaT90TkfABtCyceZSNfB7AFV8mPnUvDmwj6H0zddMOSAeFPCVRiEGM/UEz3wFIuC
-         0RFWAPDXImoiQMpTJrdNwpXS9zA7OmNz2V5EuxG6+V40uL2DzLZJotu1a2UclNV+DKwJ
-         JHSA==
-X-Gm-Message-State: AOAM533pxJ8cXePYk2DpVcUrlAe+8vwOWbX00TlPlvmQYnKWwVpe0aOG
-        hWuikp2oI0gse2kqMXAQUx9+Ig==
-X-Google-Smtp-Source: ABdhPJxRILjhMfqmrTfTbUSlaG1IKDkZR0nrqdNhTJMhzMiqtQkU7L/C22a+USt80/gnZrWOBcd4Zg==
-X-Received: by 2002:a37:9a05:: with SMTP id c5mr6549116qke.16.1617854762799;
-        Wed, 07 Apr 2021 21:06:02 -0700 (PDT)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id 207sm18177874qkl.125.2021.04.07.21.06.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 21:06:02 -0700 (PDT)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
-        ebiederm@xmission.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        james.morse@arm.com, vladimir.murzin@arm.com,
-        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
-        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
-        selindag@gmail.com, tyhicks@linux.microsoft.com,
-        kernelfans@gmail.com
-Subject: [PATCH v13 18/18] arm64/mm: remove useless trans_pgd_map_page()
-Date:   Thu,  8 Apr 2021 00:05:37 -0400
-Message-Id: <20210408040537.2703241-19-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210408040537.2703241-1-pasha.tatashin@soleen.com>
-References: <20210408040537.2703241-1-pasha.tatashin@soleen.com>
+        id S229638AbhDHElv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 00:41:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61665 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhDHElt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 00:41:49 -0400
+IronPort-SDR: 3VL4maFV30pzj2eUvSx2iU9YkSTKjBr5Y3TGrqoaHunoGY8OU7vwgQcdTkYRPOeMTVjr6clkc+
+ +rDkcLR3vb7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193571820"
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="193571820"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 21:41:37 -0700
+IronPort-SDR: QgPTai8qsRYIxJB9cbtKU0LEEXQs+NQgzGRSdiEGaXLNexM8ZyQelHMsG8jBf96vTyWuqDDSEN
+ wLeSpg7g+6LA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="441590560"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Apr 2021 21:41:34 -0700
+Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
+ superpage
+To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210401071834.1639-1-longpeng2@huawei.com>
+ <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
+ <611cb5849c9a497b8289004dddb71150@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <808394ea-9ff0-7a6d-72e7-f037e5cd3110@linux.intel.com>
+Date:   Thu, 8 Apr 2021 12:32:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <611cb5849c9a497b8289004dddb71150@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+Hi Longpeng,
 
-The intend of trans_pgd_map_page() was to map contigous range of VA
-memory to the memory that is getting relocated during kexec. However,
-since we are now using linear map instead of contigous range this
-function is not needed
+On 4/7/21 2:35 PM, Longpeng (Mike, Cloud Infrastructure Service Product 
+Dept.) wrote:
+> Hi Baolu,
+> 
+>> -----Original Message-----
+>> From: Lu Baolu [mailto:baolu.lu@linux.intel.com]
+>> Sent: Friday, April 2, 2021 12:44 PM
+>> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+>> <longpeng2@huawei.com>; iommu@lists.linux-foundation.org;
+>> linux-kernel@vger.kernel.org
+>> Cc: baolu.lu@linux.intel.com; David Woodhouse <dwmw2@infradead.org>; Nadav
+>> Amit <nadav.amit@gmail.com>; Alex Williamson <alex.williamson@redhat.com>;
+>> Kevin Tian <kevin.tian@intel.com>; Gonglei (Arei) <arei.gonglei@huawei.com>;
+>> stable@vger.kernel.org
+>> Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating superpage
+>>
+>> Hi Longpeng,
+>>
+>> On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
+>>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>>> index ee09323..cbcb434 100644
+>>> --- a/drivers/iommu/intel/iommu.c
+>>> +++ b/drivers/iommu/intel/iommu.c
+>>> @@ -2342,9 +2342,20 @@ static inline int hardware_largepage_caps(struct
+>> dmar_domain *domain,
+>>>    				 * removed to make room for superpage(s).
+>>>    				 * We're adding new large pages, so make sure
+>>>    				 * we don't remove their parent tables.
+>>> +				 *
+>>> +				 * We also need to flush the iotlb before creating
+>>> +				 * superpage to ensure it does not perserves any
+>>> +				 * obsolete info.
+>>>    				 */
+>>> -				dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
+>>> -						       largepage_lvl + 1);
+>>> +				if (dma_pte_present(pte)) {
+>>
+>> The dma_pte_free_pagetable() clears a batch of PTEs. So checking current PTE is
+>> insufficient. How about removing this check and always performing cache
+>> invalidation?
+>>
+> 
+> Um...the PTE here may be present( e.g. 4K mapping --> superpage mapping ) orNOT-present ( e.g. create a totally new superpage mapping ), but we only need to call free_pagetable and flush_iotlb in the former case, right ?
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-[Changed commit message]
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- arch/arm64/include/asm/trans_pgd.h |  5 +--
- arch/arm64/mm/trans_pgd.c          | 57 ------------------------------
- 2 files changed, 1 insertion(+), 61 deletions(-)
+But this code covers multiple PTEs and perhaps crosses the page
+boundary.
 
-diff --git a/arch/arm64/include/asm/trans_pgd.h b/arch/arm64/include/asm/trans_pgd.h
-index e0760e52d36d..234353df2f13 100644
---- a/arch/arm64/include/asm/trans_pgd.h
-+++ b/arch/arm64/include/asm/trans_pgd.h
-@@ -15,7 +15,7 @@
- /*
-  * trans_alloc_page
-  *	- Allocator that should return exactly one zeroed page, if this
-- *	  allocator fails, trans_pgd_create_copy() and trans_pgd_map_page()
-+ *	  allocator fails, trans_pgd_create_copy() and trans_pgd_idmap_page()
-  *	  return -ENOMEM error.
-  *
-  * trans_alloc_arg
-@@ -30,9 +30,6 @@ struct trans_pgd_info {
- int trans_pgd_create_copy(struct trans_pgd_info *info, pgd_t **trans_pgd,
- 			  unsigned long start, unsigned long end);
- 
--int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
--		       void *page, unsigned long dst_addr, pgprot_t pgprot);
--
- int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
- 			 unsigned long *t0sz, void *page);
- 
-diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-index 61549451ed3a..e24a749013c1 100644
---- a/arch/arm64/mm/trans_pgd.c
-+++ b/arch/arm64/mm/trans_pgd.c
-@@ -217,63 +217,6 @@ int trans_pgd_create_copy(struct trans_pgd_info *info, pgd_t **dst_pgdp,
- 	return rc;
- }
- 
--/*
-- * Add map entry to trans_pgd for a base-size page at PTE level.
-- * info:	contains allocator and its argument
-- * trans_pgd:	page table in which new map is added.
-- * page:	page to be mapped.
-- * dst_addr:	new VA address for the page
-- * pgprot:	protection for the page.
-- *
-- * Returns 0 on success, and -ENOMEM on failure.
-- */
--int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
--		       void *page, unsigned long dst_addr, pgprot_t pgprot)
--{
--	pgd_t *pgdp;
--	p4d_t *p4dp;
--	pud_t *pudp;
--	pmd_t *pmdp;
--	pte_t *ptep;
--
--	pgdp = pgd_offset_pgd(trans_pgd, dst_addr);
--	if (pgd_none(READ_ONCE(*pgdp))) {
--		p4dp = trans_alloc(info);
--		if (!pgdp)
--			return -ENOMEM;
--		pgd_populate(NULL, pgdp, p4dp);
--	}
--
--	p4dp = p4d_offset(pgdp, dst_addr);
--	if (p4d_none(READ_ONCE(*p4dp))) {
--		pudp = trans_alloc(info);
--		if (!pudp)
--			return -ENOMEM;
--		p4d_populate(NULL, p4dp, pudp);
--	}
--
--	pudp = pud_offset(p4dp, dst_addr);
--	if (pud_none(READ_ONCE(*pudp))) {
--		pmdp = trans_alloc(info);
--		if (!pmdp)
--			return -ENOMEM;
--		pud_populate(NULL, pudp, pmdp);
--	}
--
--	pmdp = pmd_offset(pudp, dst_addr);
--	if (pmd_none(READ_ONCE(*pmdp))) {
--		ptep = trans_alloc(info);
--		if (!ptep)
--			return -ENOMEM;
--		pmd_populate_kernel(NULL, pmdp, ptep);
--	}
--
--	ptep = pte_offset_kernel(pmdp, dst_addr);
--	set_pte(ptep, pfn_pte(virt_to_pfn(page), pgprot));
--
--	return 0;
--}
--
- /*
-  * The page we want to idmap may be outside the range covered by VA_BITS that
-  * can be built using the kernel's p?d_populate() helpers. As a one off, for a
--- 
-2.25.1
+How about moving this code into a separated function and check PTE
+presence there. A sample code could look like below: [compiled but not
+tested!]
 
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index d334f5b4e382..0e04d450c38a 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -2300,6 +2300,41 @@ static inline int hardware_largepage_caps(struct 
+dmar_domain *domain,
+         return level;
+  }
+
++/*
++ * Ensure that old small page tables are removed to make room for 
+superpage(s).
++ * We're going to add new large pages, so make sure we don't remove 
+their parent
++ * tables. The IOTLB/devTLBs should be flushed if any PDE/PTEs are cleared.
++ */
++static void switch_to_super_page(struct dmar_domain *domain,
++                                unsigned long start_pfn,
++                                unsigned long end_pfn, int level)
++{
++       unsigned long lvl_pages = lvl_to_nr_pages(level);
++       struct dma_pte *pte = NULL;
++       int i;
++
++       while (start_pfn <= end_pfn) {
++               if (!pte)
++                       pte = pfn_to_dma_pte(domain, start_pfn, &level);
++
++               if (dma_pte_present(pte)) {
++                       dma_pte_free_pagetable(domain, start_pfn,
++                                              start_pfn + lvl_pages - 1,
++                                              level + 1);
++
++                       for_each_domain_iommu(i, domain)
++                               iommu_flush_iotlb_psi(g_iommus[i], domain,
++                                                     start_pfn, lvl_pages,
++                                                     0, 0);
++               }
++
++               pte++;
++               start_pfn += lvl_pages;
++               if (first_pte_in_page(pte))
++                       pte = NULL;
++       }
++}
++
+  static int
+  __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
+                  unsigned long phys_pfn, unsigned long nr_pages, int prot)
+@@ -2341,22 +2376,11 @@ __domain_mapping(struct dmar_domain *domain, 
+unsigned long iov_pfn,
+                                 return -ENOMEM;
+                         /* It is large page*/
+                         if (largepage_lvl > 1) {
+-                               unsigned long nr_superpages, end_pfn;
++                               unsigned long end_pfn;
+
+                                 pteval |= DMA_PTE_LARGE_PAGE;
+-                               lvl_pages = lvl_to_nr_pages(largepage_lvl);
+-
+-                               nr_superpages = nr_pages / lvl_pages;
+-                               end_pfn = iov_pfn + nr_superpages * 
+lvl_pages - 1;
+-
+-                               /*
+-                                * Ensure that old small page tables are
+-                                * removed to make room for superpage(s).
+-                                * We're adding new large pages, so make 
+sure
+-                                * we don't remove their parent tables.
+-                                */
+-                               dma_pte_free_pagetable(domain, iov_pfn, 
+end_pfn,
+-                                                      largepage_lvl + 1);
++                               end_pfn = ((iov_pfn + nr_pages) & 
+level_mask(largepage_lvl)) - 1;
++                               switch_to_super_page(domain, iov_pfn, 
+end_pfn, largepage_lvl);
+                         } else {
+                                 pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
+                         }
+
+I will send you the diff patch off list. Any thoughts?
+
+Best regards,
+baolu
+
+> 
+>>> +					int i;
+>>> +
+>>> +					dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
+>>> +							       largepage_lvl + 1);
+>>> +					for_each_domain_iommu(i, domain)
+>>> +						iommu_flush_iotlb_psi(g_iommus[i], domain,
+>>> +								      iov_pfn, nr_pages, 0, 0);
+>>> +
+>>
+>> Best regards,
+>> baolu
