@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACD5358A29
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95628358A2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhDHQwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        id S231909AbhDHQxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbhDHQwm (ORCPT
+        with ESMTP id S231699AbhDHQxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:52:42 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E708C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 09:52:31 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id d5-20020a17090a2a45b029014d934553c4so2567374pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 09:52:31 -0700 (PDT)
+        Thu, 8 Apr 2021 12:53:10 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66608C061760;
+        Thu,  8 Apr 2021 09:52:57 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id y5so2873404qkl.9;
+        Thu, 08 Apr 2021 09:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WqqqwkLOfCRl875fdfkuq1m+FN8h7ZOmheOUlv625bA=;
-        b=tiZGMQua9VIvpsm7HVYgK8ftpZIHdgHfiA3P2PYs6P7mr292Yxg4iIeJl3ZkeOFBug
-         Qo3oh8gs50Sir4jCp56smUOu/rL81lE0MkwCX7Lun2f2Oew4HFVtRc1sLMRbLtT3KbTD
-         EsOYJWqY+lEB/CWudnD1hFh24PglpTD0IHZLT6PMuclziMDfcOSyZGis6Jcye4E7gyCo
-         wkfQfZfMVAgbecZ/rkt8IG8V9saPhMl1qZDZdWvXpi7ZjhGsWDOd1IZEmulAz7ggMPSf
-         8xKvBF/1d1vozq7/4gkh5qSxqLZqhKQIXbj1/ri9WnWTxi4+LM0k6mQQA9GiLtzzCvns
-         WMpA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Peqg9+DN2xDTvABOSV5xd4jxeGrojR9AJ8MkT215+f8=;
+        b=Av0kWGFRKustfWNyGATPKHlwJJNxZerOktWVJZcex6eUn6KJvEXoDhrgg5vmVzclOa
+         om2btBkdBjUj5Jta+3Szk0J33+LQqYj5oIscDrVrHK5VxfdUAYN/I0MGuHSlVcfhUuFa
+         kcon9cLCCG1VDIx4vVeQqG1OWIGR8Ottb2clg4XB9kv1VFwCNhDnYuaZL0ktGS7gVrBe
+         CpbOH1SoGPn/APrNUKF1q14u7MQ5juQk9iD/dN+pwdLoFKlSG8MIAlM2R8x2Qd3eEFjD
+         mbPJam+u6UDFCUdha22S/Bk2Dov9zv5nZQ2v8LKA0bSqVrnamGuPGsorP1P4VgW41tYA
+         Y0XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WqqqwkLOfCRl875fdfkuq1m+FN8h7ZOmheOUlv625bA=;
-        b=QkkcBcpDjpPeGOTLGwySnehC2eTQ+PDWC0ELdECob00S277A2QRQ3viMskP5V+z0X6
-         gyOfnVLXAsVI4O1sCJMip1MI6GCDODC8dGtQ3B1A2ys8+f5Tkf9OUaHSBKmPXMP2+So4
-         SCrBB6d20TFGPc8MzT6+axkdUww8bDKDakGXrEfLiG6Zj3AOKoh97nhQycR9QdCk0PXW
-         oLXWFcDVMZYwVEM/c7kEM252lC/Qcp6lFgbn9JzcJcaxJzy7ZPvPRbKAlhMqbaK4eGMq
-         d1TlUUt9eNrXSEElfH5lvzjicWKHGxj4xb5caxrerWq0poa768qYTGmXDXQq9MFAUUzq
-         HckQ==
-X-Gm-Message-State: AOAM530Q80T5xeHLmGSyH+kncYFdJSso9gcponpI3hoRMogk5l/6yfd+
-        CtLSURDn9VkXzs0eyGxC6ljMUg==
-X-Google-Smtp-Source: ABdhPJxuz9gP91XS8/PUeXXqBQBhP4MXiiMrL8L3BGaHVarhHbXmEM98R7kXiK8SkLW/JbU+5phlXw==
-X-Received: by 2002:a17:902:6f10:b029:e9:7fdf:4902 with SMTP id w16-20020a1709026f10b02900e97fdf4902mr5660032plk.41.1617900750441;
-        Thu, 08 Apr 2021 09:52:30 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id g3sm23910pfk.186.2021.04.08.09.52.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Peqg9+DN2xDTvABOSV5xd4jxeGrojR9AJ8MkT215+f8=;
+        b=H3uBwbwSkZg9hsCG2TXKQlb/UE1r/o3NW1XsyNeCXVfm58tlptjyqhGCM7BEkPoD3i
+         VBB3mJjIF4cqeB0hDliJ2PXSNGL2LXuswp/+kKYjR8if5PntUDxGLKp1WClZSGk5zLDm
+         HG5z1IGpHFO4SBOGRY4w+TLEyoW+IXHGiEv3BofATX7XYteyITJFEXhdyC7+tLcR3KQ9
+         v3VjxCTVb3+0JXYeN7RhFofTJYeMp+JtYxSIBMsbiEgY+lD0+AhQ8ctNEo+17nQb4PUK
+         0J1J79EXrVl/21WxMmU92/NznNqPx97J4Bwf29G5eaa+Hrdx6ZjVjv6eede2XaS9hvcz
+         wquQ==
+X-Gm-Message-State: AOAM532kjR1uGePBbR0uYCHbtmhcHrsyrNs4yw2dhvjHnu+Tp+E6jwoh
+        qTQXyHuCfxVEOx3cxapmoHA=
+X-Google-Smtp-Source: ABdhPJxrxGlmXWR0qPQZrPJ3seGTzEpltbmaw7AEilMnmCNaLg7YMvIBQRnLkQyb/bXOKO/TMgmSoQ==
+X-Received: by 2002:a05:620a:2095:: with SMTP id e21mr9454310qka.135.1617900776480;
+        Thu, 08 Apr 2021 09:52:56 -0700 (PDT)
+Received: from localhost ([73.19.182.124])
+        by smtp.gmail.com with ESMTPSA id e3sm7506qtj.28.2021.04.08.09.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 09:52:30 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 09:52:22 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     decui@microsoft.com, davem@davemloft.net, kuba@kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, liuwe@microsoft.com, netdev@vger.kernel.org,
-        leon@kernel.org, andrew@lunn.ch, bernd@petrovitsch.priv.at,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <20210408095222.058022d0@hermes.local>
-In-Reply-To: <a44419b3-8ae9-ae42-f1fc-24e308499263@infradead.org>
-References: <20210408091543.22369-1-decui@microsoft.com>
-        <a44419b3-8ae9-ae42-f1fc-24e308499263@infradead.org>
+        Thu, 08 Apr 2021 09:52:55 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 09:52:54 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        vilhelm.gray@gmail.com
+Subject: Re: [PATCH v1 1/5] bitmap: Make bitmap_remap() and bitmap_bitremap()
+ available to users
+Message-ID: <20210408165254.GA1186882@yury-ThinkPad>
+References: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
+ <20210408145601.68651-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408145601.68651-2-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 09:22:57 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> On 4/8/21 2:15 AM, Dexuan Cui wrote:
-> > diff --git a/drivers/net/ethernet/microsoft/Kconfig b/drivers/net/ethernet/microsoft/Kconfig
-> > new file mode 100644
-> > index 000000000000..12ef6b581566
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/microsoft/Kconfig
-> > @@ -0,0 +1,30 @@
-> > +#
-> > +# Microsoft Azure network device configuration
-> > +#
-> > +
-> > +config NET_VENDOR_MICROSOFT
-> > +	bool "Microsoft Azure Network Device"  
+On Thu, Apr 08, 2021 at 05:55:57PM +0300, Andy Shevchenko wrote:
+> Currently the bitmap_remap() and bitmap_bitremap() are available
+> only for CONFIG_NUMA=y case, while some users may benefit out of it
+> and being independent to NUMA code. Make them available to users
+> by moving out of ifdeffery and exporting for modules.
 > 
-> Seems to me that should be generalized, more like:
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  lib/bitmap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> 	bool "Microsoft Network Devices"
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 74ceb02f45e3..7b6b2a67a6a6 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -784,8 +784,6 @@ int bitmap_parse(const char *start, unsigned int buflen,
+>  }
+>  EXPORT_SYMBOL(bitmap_parse);
+>  
+> -
+> -#ifdef CONFIG_NUMA
+>  /**
+>   * bitmap_pos_to_ord - find ordinal of set bit at given position in bitmap
+>   *	@buf: pointer to a bitmap
+> @@ -894,6 +892,7 @@ void bitmap_remap(unsigned long *dst, const unsigned long *src,
+>  			set_bit(bitmap_ord_to_pos(new, n % w, nbits), dst);
+>  	}
+>  }
+> +EXPORT_SYMBOL(bitmap_remap);
+>  
+>  /**
+>   * bitmap_bitremap - Apply map defined by a pair of bitmaps to a single bit
+> @@ -931,7 +930,9 @@ int bitmap_bitremap(int oldbit, const unsigned long *old,
+>  	else
+>  		return bitmap_ord_to_pos(new, n % w, bits);
+>  }
+> +EXPORT_SYMBOL(bitmap_bitremap);
+>  
+> +#ifdef CONFIG_NUMA
+>  /**
+>   * bitmap_onto - translate one bitmap relative to another
+>   *	@dst: resulting translated bitmap
+> -- 
+> 2.30.2
 
-Yes, that is what it should be at this level.
-
-> 
-> 
-> > +	default y
-
-This follows the existing policy for network vendor level
-
-> > +	help
-> > +	  If you have a network (Ethernet) device belonging to this class, say Y.
-> > +
-> > +	  Note that the answer to this question doesn't directly affect the
-> > +	  kernel: saying N will just cause the configurator to skip the
-> > +	  question about Microsoft Azure network device. If you say Y, you  
-> 
-> 	           about Microsoft networking devices.
-> 
-> > +	  will be asked for your specific device in the following question.
-> > +
-> > +if NET_VENDOR_MICROSOFT
-> > +
-> > +config MICROSOFT_MANA
-> > +	tristate "Microsoft Azure Network Adapter (MANA) support"
-> > +	default m  
-> 
-> Please drop the default m. We don't randomly add drivers to be built.
-
-Yes, it should be no (or no default which is the default for default)
-
-> Or leave this as is and change NET_VENDOR_MICROSOFT to be default n.
-> 
-> 
-> > +	depends on PCI_MSI && X86_64
-> > +	select PCI_HYPERV
-> > +	help
-> > +	  This driver supports Microsoft Azure Network Adapter (MANA).
-> > +	  So far, the driver is only validated on X86_64.  
-> 
-> validated how?
-
-Maybe change validated to supported?
-
-
+Acked-by: Yury Norov <yury.norov@gmail.com>
