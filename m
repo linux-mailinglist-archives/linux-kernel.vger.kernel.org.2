@@ -2,167 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE2E35874E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88746358754
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhDHOlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhDHOlf (ORCPT
+        id S231784AbhDHOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:42:28 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:40450 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhDHOmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:41:35 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C190EC061760;
-        Thu,  8 Apr 2021 07:41:23 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id d13so4442416lfg.7;
-        Thu, 08 Apr 2021 07:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nQy8MLan9FVitDAGtlGUNA7rO1yc07hKRiQL0kl4NUc=;
-        b=oDpJxbqfgCz3VM2m4ZljlARuHLcN5D/nLcuT01NlqHakXynltNCSbCQ/fXkKVmLJ6S
-         uhSZok2mShKj+altpRFHuqkt5w1jPa9yrHB5acd87CkeU/sDMLl2oZtwB1Sn2P12fF5R
-         udMu7LPs/1UEFThSUxB43qm9PuBF8pQcCN4fEy5VtSdzfN6H73K/W6GJPqiQTLNrbC+m
-         g9gLtN5GAeXKujzUKqfAau1lJwOrs674osmiDIqGzqW+xkpJTFKUXQCFbyxupU50GOdW
-         wSxG6bjkls9XBdfMdG3Hfjd9ymLRJDpwc32YUF2kVtVu8GD3lhSDEQ3wPVk2uTj03o8Y
-         gvzQ==
+        Thu, 8 Apr 2021 10:42:24 -0400
+Received: by mail-il1-f197.google.com with SMTP id y15so490145ill.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 07:42:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nQy8MLan9FVitDAGtlGUNA7rO1yc07hKRiQL0kl4NUc=;
-        b=LzlX1Be1lEp94mFIxy1Itip2mr6WpAp9YvJj+hJeMp4uJSyt9oZ74eT09iJR6UVKb7
-         f5p5lhnjvceefC5YQ8734Lmp/ZFdoCD89b9tW44fk9Ga7VNnxWOtPEjT+efQfbF4tXQB
-         6TXJmlryV2NJ1Wzvmhd9armPP9hu0RSXuYump4pt67qaPXw/6Ry6bNp10xc9FacEjy7m
-         f27FIeXA/AbnkGqgVS9dGgOHwpx05GoMNcejrgC+zLpGqjFZkCatHk1JkOtOU61n8Je6
-         Z/I2z9nL5XDD6mtw7MNRRS5hk1HrlXXlEFXgU9KbJwSraT+FuVKuhba0f/tKyH782GEo
-         oKsQ==
-X-Gm-Message-State: AOAM532vtHCDBdEw8UBh7AFKr4/uCth1V+9cmN9uo2adgL45v8QZEWgY
-        LLZ+4orAkaPfGaaaip3rSOB7KTemBek=
-X-Google-Smtp-Source: ABdhPJwBFQ8ADKo07Q+gjxhb9Gs15OFUfzYiitQPx4MftXy5iPUaYDqJTT51syi6TAltR7abt/V31Q==
-X-Received: by 2002:ac2:5f9a:: with SMTP id r26mr6462253lfe.624.1617892882147;
-        Thu, 08 Apr 2021 07:41:22 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id 3sm33155lfy.238.2021.04.08.07.41.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 07:41:21 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
-        jonathanh@nvidia.com, robh+dt@kernel.org, pchandru@nvidia.com,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
- <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
- <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
- <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
- <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
- <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
- <YG7/xPVoA4gPrMBf@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c05f6f69-b355-857a-1fe7-6c68596d141f@gmail.com>
-Date:   Thu, 8 Apr 2021 17:41:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=omWXKOI+6Y8Uu1OPaxNuoex04esEAItjZ32ZmdFimmw=;
+        b=WO3S/tqeJyO6DdiHLi6icIvUdMGxJUacbPjkgyh+BhSPYlozRTRctg1y3otiPClUeg
+         7OUYHM2a93HroWx+xATk9h8CYKRtE9bhaVAOx9cN0woj14N/PmSTUsahsN3prR8S9iD0
+         KypjC+mcN2VpN767AHnZrJQ1ogvoNlZT6brvCGXQ09tH6vA1ouS2TeBcXYHv5zKWenQy
+         D7NwCHbze9DTkumAyAtUeBlrBRN1Tv3lpM5fzIjNi6VUOiYHku5sFUu2EDIvKKFQ3loT
+         O/eAYyaj9EUO5Knis9ljjVM9bRuvI5108sxfD7D+jhQ66pFFmgpWtx4PQY9o2iDPXpNc
+         jMUw==
+X-Gm-Message-State: AOAM530zdHrCG48ujuqj8vpI0MlL4WU9wcS4MxIJBPI2UnsxCaTqNlsW
+        kkZEE3SXef6NTFp/hwFD99fsHSG8QwqbUUwxtxbHDcsvuuM4
+X-Google-Smtp-Source: ABdhPJxT4mVuv0smV/u0E+2/BNXePBlc2qm71w8Ei4gtIMnXhxIoO1l841fQD80v+mhg1g7hQOoSD2BRAO6vX0trzrZ2iHsUzVsX
 MIME-Version: 1.0
-In-Reply-To: <YG7/xPVoA4gPrMBf@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:6654:: with SMTP id l20mr9360186jaf.55.1617892932933;
+ Thu, 08 Apr 2021 07:42:12 -0700 (PDT)
+Date:   Thu, 08 Apr 2021 07:42:12 -0700
+In-Reply-To: <346fb87c-6fae-284d-62a0-edafde451861@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008d622905bf770dd6@google.com>
+Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
+From:   syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.04.2021 16:06, Thierry Reding пишет:
-> On Thu, Apr 08, 2021 at 02:25:19AM +0300, Dmitry Osipenko wrote:
->> 08.04.2021 02:00, Sowjanya Komatineni пишет:
->>>
->>> On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
->>>>
->>>> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
->>>>> 07.04.2021 04:25, Sowjanya Komatineni пишет:
->>>>>> +    if (!tegra->pdev->dev.pm_domain) {
->>>>>> +        ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
->>>>>> +                            tegra->sata_clk,
->>>>>> +                            tegra->sata_rst);
->>>>>> +        if (ret)
->>>>>> +            goto disable_regulators;
->>>>>> +    }
->>>>> Hi,
->>>>>
->>>>> Why you haven't added condition for tegra_powergate_power_off()? I think
->>>>> it should break GENPD and legacy PD API isn't not supported by T186
->>>>> at all.
->>>>>
->>>>> I'm also not sure whether the power up/down sequence is correct using
->>>>> GENPD.
->>>>>
->>>>> Moreover the driver doesn't support runtime PM, so GENPD should be
->>>>> always off?
->>>>
->>>> This driver already using legacy PD API's so thought its supported and
->>>> added power domain device check during powergate_sequence_power_up and
->>>> yes same should apply for powergate_power_off as well. But if legacy
->>>> PD is not supported by T186 then not sure why original driver even
->>>> using these API's.
->>>>
->>>>
->>> Sorry just took a look and driver supports T210 and prior tegra as well.
->>> T210 and prior supports legacy PD and this check is applicable for
->>> those. So we should add power domain device check for power off as well.
->>
->> You could fix it with a follow up patch. Please try to test that
->> power-off works properly, at least try to unload the driver module and
->> re-load it.
-> 
-> Agreed, this should have the same check as above for
-> tegra_powergate_power_off(). It currently works fine because on Tegra186
-> tegra_powergate_power_off() (and all the other legacy APIs for that
-> matter) will abort early since no power gates are implemented. The AHCI
-> driver doesn't check for errors, so this will just fail silently. It's
-> better to be symmetric, though, and add the check in both paths.
+Hello,
 
-I missed that tegra_powergate_power_off() usage isn't fatal if GENPD is
-used, thank you for the clarification.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in io_ring_exit_work
 
->>> But for T186, we should have GENPD working once we add runtime PM
->>> support to driver.
->>>
->>> Preetham/Thierry, Can you confirm where SATA is un powergated prior to
->>> kernel?
->>>
->>>
->>>> But as RPM is not implemented yet for this driver, GENPD will be OFF
->>>> but SATA is not in power-gate by the time kernel starts and
->>>> functionally works.
->>>>
->>>> But with RPM implementation, I guess we can do proper power gate on/off.
->>>>
->>
->> I now recalled that GENPD turns ON all domains by default and then turns
->> them OFF only when driver entered into the RPM-suspended state. This
->> means that AHCI GENPD should be always-ON for T186, which should be okay
->> if this doesn't break power sequences.
-> 
-> Yeah, the generic PM domain will just stay enabled after probe and until
-> remove. This does not impact the power sequences because they have to be
-> completely implemented in the power domains code anyway. With the legacy
-> API we used to need more rigorous sequences in the individual drivers,
-> but with generic PM domains none of that should be necessary, though it
-> also doesn't hurt, so some of the unnecessary clock enablement code is
-> kept for simplicity.
-> 
-> To be honest, I'm not sure if it's worth adding runtime PM support for
-> this driver. If this top-level layer has a way of getting notification
-> when no device was detected, then it might make some sense to turn off
-> the power domain and the regulators again, but I'm not sure if that's
-> the case. tegra_ahci_host_stop() seems like it might be usable for that
-> so yeah, that might work. We currently do turn off the powergate in that
-> case, so extending that power optimization to Tegra186 using runtime PM
-> makes sense.
+INFO: task kworker/u4:0:9 blocked for more than 143 seconds.
+      Not tainted 5.12.0-rc2-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:0    state:D stack:26056 pid:    9 ppid:     2 flags:0x00004000
+Workqueue: events_unbound io_ring_exit_work
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x911/0x21b0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+ io_ring_exit_work+0x4e8/0x12d0 fs/io_uring.c:8616
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+INFO: task kworker/u4:1:25 blocked for more than 143 seconds.
+      Not tainted 5.12.0-rc2-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:1    state:D stack:25560 pid:   25 ppid:     2 flags:0x00004000
+Workqueue: events_unbound io_ring_exit_work
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x911/0x21b0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x14a/0x250 kernel/time/timer.c:1892
 
-Alright, then this all should be good as-is.
+
+Tested on:
+
+commit:         a2a68d4c io_uring: signalling fun / syz test
+git tree:       https://github.com/isilence/linux.git syz_test3
+console output: https://syzkaller.appspot.com/x/log.txt?x=12eed711d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86318203e865a02b
+dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
+compiler:       
 
