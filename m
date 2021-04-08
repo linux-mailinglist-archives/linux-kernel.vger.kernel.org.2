@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1375C358E2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BC2358E31
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhDHUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:16:36 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38409 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhDHUQe (ORCPT
+        id S232255AbhDHUQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:16:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42280 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232198AbhDHUQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:16:34 -0400
-Received: by mail-ot1-f50.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so3564689otk.5;
-        Thu, 08 Apr 2021 13:16:21 -0700 (PDT)
+        Thu, 8 Apr 2021 16:16:39 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lUb4k-0005dg-Gu
+        for linux-kernel@vger.kernel.org; Thu, 08 Apr 2021 20:16:26 +0000
+Received: by mail-wm1-f70.google.com with SMTP id p11-20020a05600c358bb029011630279b61so53443wmq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 13:16:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CLvREP8cSkaXDbZqsQ3pwOZ5gunBfoSYtS8rLqMUnRE=;
-        b=d8uTKvacWqmKDnSOw8ohZmzXnY1wIPlwr1dWDzmsdcehMa4T/mpMVWTWgbQWz1kihb
-         yCsG31+vA4He4WNAYSxc8vobUbdsza8RpVLxldNRL39xKtsiYSUC4LIizlfKw7ffXQIP
-         vCk2hYj1oq2jxoEwpH3is4+zgy3sw8JGBiB09rG5lfm7FWrO76JW0LMWmR5qQO95NPbr
-         enU8ITG9lBDDdmLm+3jMpqeHIyl2DSPW447qt1chgTRpe4NKJhCpNq/h4sExFSMcW1c7
-         mCHRYDkNYdjHOnLQiKGlOXtD72HowukJV17w+FPlm107s5uaeLUy241PMcBxz2+iToPq
-         LBsQ==
-X-Gm-Message-State: AOAM531jiv3EaVKQX6h4GmoflmSoSOCtS8ZtNDuMeZRyEoAxftLMLbOW
-        8FSk/A79dpBt3Mu09aeehw==
-X-Google-Smtp-Source: ABdhPJwHE1KAxgeUupVEo1jaKtlfkwHjdF92MHNCbyWYv6lX+CBk8bl+YGNNxTyOTZZ8wNLtYHQrJg==
-X-Received: by 2002:a9d:928:: with SMTP id 37mr2802691otp.98.1617912981480;
-        Thu, 08 Apr 2021 13:16:21 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l71sm96104oib.30.2021.04.08.13.16.20
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jMABrCg2yQSz0NJfTRJiCfa17aCfiZuFRJh5dj2jnZI=;
+        b=KplNFOEFyn38kRA59eKY0cLN+qMEEfWNRcdJkqbOatQZijhHQjMq/Xlc+rIjGI0qgx
+         667My7cdgOivOjzHgOY60lK4X7o2gK+Uv5gPZ8Qy7RGRignMg0d+Z/VKjrWEdO42w01g
+         zme19IgkzHGdVPNO7EV1INtOyR6yVnv3KWc532Ks90VP+aK4zU3Si8z2Di0/5DkhM/Ov
+         Xr0nX0yD2sm40+Qe9vNPlTIaI+CXVao9UzWrSiFdIfGoMMGDHQBn8r8sw0LT2F7gc4G0
+         qnG2VSXaTM/tT1mpZ1YSLywKvYbCxEY5irBAcJf6bnRfuaXdzTL1k1q4AddKApDPid3Z
+         /zvw==
+X-Gm-Message-State: AOAM531YkKJXO/x/yIS9q7d2Cye1HUPFUJgli+PwLFrLEzvc1/H4kltr
+        4iJ2fBmsTrCT+8YjItk+uuq7Tv2yPbCKoMJQ9PLPXGvE8JAwSm3TbUh8M77c181o8ut/loy5Qkt
+        RJlvWZPHEaO2HqQ+V4TxmxCGI93PBKYd8z0bnysI40Q==
+X-Received: by 2002:adf:fb0e:: with SMTP id c14mr14429553wrr.140.1617912985385;
+        Thu, 08 Apr 2021 13:16:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIwIaAo5oCPu118XWrKhGbQi+Nic/eanTaCnDGq7QIZYT+he+8z9GdaAve8WhKurUn3nUuoA==
+X-Received: by 2002:adf:fb0e:: with SMTP id c14mr14429534wrr.140.1617912985197;
+        Thu, 08 Apr 2021 13:16:25 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id o62sm22690337wmo.3.2021.04.08.13.16.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 13:16:20 -0700 (PDT)
-Received: (nullmailer pid 1890250 invoked by uid 1000);
-        Thu, 08 Apr 2021 20:16:19 -0000
-Date:   Thu, 8 Apr 2021 15:16:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: Add Hycon Technology vendor prefix
-Message-ID: <20210408201619.GA1890216@robh.at.kernel.org>
-References: <YGxkB6icZSJfx/VB@latitude>
- <20210407174909.1475150-1-giulio.benetti@benettiengineering.com>
- <20210407174909.1475150-2-giulio.benetti@benettiengineering.com>
+        Thu, 08 Apr 2021 13:16:24 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu: exynos: remove unneeded local variable initialization
+Date:   Thu,  8 Apr 2021 22:16:22 +0200
+Message-Id: <20210408201622.78009-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210407174909.1475150-2-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Apr 2021 19:49:07 +0200, Giulio Benetti wrote:
-> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
-> include "hycon" as a vendor prefix for "Hycon Technology".
-> Company website: https://www.hycontek.com/
-> 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+The initialization of 'fault_addr' local variable is not needed as it is
+shortly after overwritten.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Addresses-Coverity: Unused value
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/iommu/exynos-iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+index de324b4eedfe..8fa9a591fb96 100644
+--- a/drivers/iommu/exynos-iommu.c
++++ b/drivers/iommu/exynos-iommu.c
+@@ -407,7 +407,7 @@ static irqreturn_t exynos_sysmmu_irq(int irq, void *dev_id)
+ 	struct sysmmu_drvdata *data = dev_id;
+ 	const struct sysmmu_fault_info *finfo;
+ 	unsigned int i, n, itype;
+-	sysmmu_iova_t fault_addr = -1;
++	sysmmu_iova_t fault_addr;
+ 	unsigned short reg_status, reg_clear;
+ 	int ret = -ENOSYS;
+ 
+-- 
+2.25.1
+
