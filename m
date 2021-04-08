@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FBF357C7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60630357C80
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhDHGUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231166AbhDHGUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:20:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C28B561178;
-        Thu,  8 Apr 2021 06:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617862841;
-        bh=7hFowIWUdB1Lgit5lHIa9J9UinB7xnpzVMK6aSXV2e8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oRGWIc5ODA1lw+fHM5PaAJFIXs5k90Br1GwXl1y9CKRCjBDP8h2dsULB7NT8sNLeg
-         GO+jBSu8aR4jWvorcwHj7lmdcTCAX7mm0YXB7izjYKGOy7ny+rsVUiKR2tafnZ8Tk6
-         Ml7QbkbgQJ3e45mUht2o5l6qmdH51WtLscJg/urU=
-Date:   Thu, 8 Apr 2021 08:20:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
- Management Unit (SMU) support
-Message-ID: <YG6gtoOtqJSv63fg@kroah.com>
-References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
- <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
- <YG3wRJnootNdV0cc@kroah.com>
- <OSBPR01MB4773A83DF7D1CDA4DBFD9E84BA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+        id S230161AbhDHGWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:22:20 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:38714 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhDHGWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:22:17 -0400
+Received: by mail-lf1-f51.google.com with SMTP id j18so2040871lfg.5;
+        Wed, 07 Apr 2021 23:22:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZWPFU3Bu5VUh+Nh5BTbIhbmq1hKiLogKUeJyuTQRjIg=;
+        b=Wx19294Cv5HKQqVeKLgphkMIMS96TY0LVESgOUK3qyBEs/hX9EQC1RAVlI8v2rgS+T
+         bRhyYe9CbAL/CyCNOKs7y7Xs5p70O3irEr8ZQ6xRSjSmWhfsRw4lja28eJ04CifWUZ/h
+         szUTeShKcsbYoNCcn9AaH1lPeGl8AO+tzyaXR5XFg7MLA96QC6fkhYwqT+WEfhwtIrAB
+         vmAOrG+sPFb0/UuDD6DoCBpNrIb8+hlvY5hOHVKZDwMNPeK+aDpUeas0N09oyU8gyhSS
+         iwjgcgPOXZOX3Q4Mjjs5xr/W1YehdBEM4zfOVRt+ph+g5K8Ah4MSP4OpKH7EiUo04W5V
+         AFeg==
+X-Gm-Message-State: AOAM533+XNDt1mwSeI4XkjM5Ac+kO6OqDikXI89bpR5kYuezq1tqKZGH
+        kRVnLyy2QtHllHF8/nlLxRY=
+X-Google-Smtp-Source: ABdhPJyg9d+lxMZ/XM8In34VrK6USVTKp02AHW8+9f0c29jLKh3SeMW1ICdK8DG2XAMpYxtKBpXdOw==
+X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr4983244lfe.106.1617862924211;
+        Wed, 07 Apr 2021 23:22:04 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id p8sm226890lfu.125.2021.04.07.23.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 23:22:03 -0700 (PDT)
+Subject: Re: [PATCH] inotify: fix minmax.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>, Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+References: <alpine.DEB.2.22.394.2104062246500.19097@hadrien>
+ <20210407160546.GA3271@quack2.suse.cz>
+ <alpine.DEB.2.22.394.2104071901260.11549@hadrien>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <bd17554f-a8d8-3fd8-b3b6-e3c2d86d7f99@linux.com>
+Date:   Thu, 8 Apr 2021 09:22:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB4773A83DF7D1CDA4DBFD9E84BA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <alpine.DEB.2.22.394.2104071901260.11549@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:00:38PM +0000, Min Li wrote:
-> > 
-> > Do you really meen "+" here?  (sorry, have to ask.)
-> > 
+
+
+On 4/7/21 8:02 PM, Julia Lawall wrote:
 > 
-> I don't know. All of our Linux kernel code has GPL-2.0+ and I just blindly inherit it.
-
-You should ask your managers :)
-
 > 
-> > > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > 
-> > You should not need this as it's a driver, so you should only use the
-> > dev_dbg() family of print message functions, no need for pr_*() calls.
-> > 
-> I have one call to pr_err in rsmu_init
+> On Wed, 7 Apr 2021, Jan Kara wrote:
 > 
-> pr_err("Unabled to register %s platform driver", DRIVER_NAME); 
+>> On Tue 06-04-21 22:49:26, Julia Lawall wrote:
+>>> From: kernel test robot <lkp@intel.com>
+>>>
+>>> Opportunity for min().
+>>>
+>>> Generated by: scripts/coccinelle/misc/minmax.cocci
+>>>
+>>> Fixes: 8636e3295ce3 ("coccinelle: misc: add minmax script")
+>>> CC: Denis Efremov <efremov@linux.com>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+>> ...
+>>> --- a/fs/notify/inotify/inotify_user.c
+>>> +++ b/fs/notify/inotify/inotify_user.c
+>>> @@ -382,7 +382,7 @@ static int inotify_add_to_idr(struct idr
+>>>
+>>>  	spin_unlock(idr_lock);
+>>>  	idr_preload_end();
+>>> -	return ret < 0 ? ret : 0;
+>>> +	return min(ret, 0);
+>>>  }
+>>
+>> Honestly, while previous expression is a standard idiom for "if 'ret' holds
+>> an error, return it", the new expression is harder to understand for me. So
+>> I prefer to keep things as they are in this particular case...
 > 
+> OK, I had doubts about it as well, but I forwarded it because I found them
+> equally obscure...
+> 
+> Denis, maybe the semantic patch should be updated to avoid this case.
 
-My recommendation in another email shows that the line above is not
-needed...
+No problem, I'll send an update.
 
-thanks,
-
-greg k-h
+Thanks,
+Denis
