@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA64F358906
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849C835890E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhDHP56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:57:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39118 "EHLO
+        id S232191AbhDHP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:58:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21800 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231526AbhDHP5z (ORCPT
+        by vger.kernel.org with ESMTP id S232080AbhDHP6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:57:55 -0400
+        Thu, 8 Apr 2021 11:58:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617897464;
+        s=mimecast20190719; t=1617897479;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NinlbVPhwGdJcoVcBt2udn4w5X18/v4CvahbnKLeeMI=;
-        b=NEdeqkDHiTCWJJwaZxmkSrX/82crujOncZicm/U1g2O2KiPxUtDQwgSRpHdduYvi8paM+w
-        2KpRuzyOlPja2/pba5L/L3g+U1eLfDts5DYyuRhlmlAnNVVaoBZcFwQl5ymSC1OyyFiyo5
-        xLkxwnSmSzVKWi6CleVnNHQKHylabfY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-0tkXerksNmuLEQR_9ITDFg-1; Thu, 08 Apr 2021 11:57:42 -0400
-X-MC-Unique: 0tkXerksNmuLEQR_9ITDFg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B2A107ACC7;
-        Thu,  8 Apr 2021 15:57:39 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DE165C1C4;
-        Thu,  8 Apr 2021 15:57:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210408145057.GN2531743@casper.infradead.org>
-References: <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/30] mm: Add set/end/wait functions for PG_private_2
+        bh=ACCpYNy34LXQczCbdAnQ7GVKiaThMHFtlrJymfX8bwY=;
+        b=SLrALUhaza8cAteLysI47iBGndKAOWVCyjDuE5QkB3gfFYtv2/GzzbknpXjyNLsdZoGqkC
+        cLYd1wSt9svJl/kNzX20kghscCFuid8aG5ccig5p6w/jS9cLcoM+Itb4XbuMX9wxMUqGf4
+        HFmdzlARCRit50cs0AzqBHttnRPUleg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-m3Nf4B8aNTahjkJ9vBkqTQ-1; Thu, 08 Apr 2021 11:57:57 -0400
+X-MC-Unique: m3Nf4B8aNTahjkJ9vBkqTQ-1
+Received: by mail-ej1-f72.google.com with SMTP id jx20so1063015ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 08:57:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ACCpYNy34LXQczCbdAnQ7GVKiaThMHFtlrJymfX8bwY=;
+        b=VbcoFm8qFfjq07syHHIOQjovQn0rdcwhiXa54Wr//K3gzdTnkr8WyH3GlJCiWojYIZ
+         pd43OOvZb3y8fFsxUGyfwVf3UQjuEL0Tj2wmrFHNFIAFjceRzMMz4YuClecwRFrNdeJW
+         JWo/0qlPqtNQNis2gDIXT2dqtr2V/fUThr6aXbbP/oe5P8TdCF/6XPJNjKbNz3GSa6ox
+         Bo0OMa6UsynadNR8Z1Qn8poteIGo/gMwaThhvsaVUTzswHZvcC7mPycgF2NLtU1Im5Oo
+         i5KhrhUN7iIIXpt3lb2YR1Ksf8LVDSQS7Nxbj2r0es1DcDO2oamTEgkv1Fuc603KveDv
+         YyaQ==
+X-Gm-Message-State: AOAM532QhYDzFXlFQg6XNOereClipx31sGpiqjv5/jLNy2s7j2u/zvAX
+        1SrVORrKrPhySWjDoeG0vKMfQCR7hc+89Jn7k4ZCl0YVnnUNW8X1sc60OJFokF1LFegn8y54G6i
+        412Ntu3iHGThlo/6EEARfApcK
+X-Received: by 2002:a05:6402:549:: with SMTP id i9mr12650717edx.379.1617897476539;
+        Thu, 08 Apr 2021 08:57:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV6NWwN+mXHIeXUGOfCO9TR6I7joRCTF+lo5s5DG8sC41x6ccsTzvpalgBRd3zqbwvECvRWg==
+X-Received: by 2002:a05:6402:549:: with SMTP id i9mr12650694edx.379.1617897476305;
+        Thu, 08 Apr 2021 08:57:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id eo22sm14566576ejc.0.2021.04.08.08.57.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 08:57:55 -0700 (PDT)
+Subject: Re: [PATCH v2 07/17] KVM: x86/mmu: Check PDPTRs before allocating PAE
+ roots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210305011101.3597423-1-seanjc@google.com>
+ <20210305011101.3597423-8-seanjc@google.com>
+ <CANRm+CzUAzR+D3BtkYpe71sHf_nmtm_Qmh4neqc=US2ETauqyQ@mail.gmail.com>
+ <f6ae3dbb-cfa5-4d8b-26bf-92db6fc9eab1@redhat.com>
+ <YG8lzKqL32+JhY0Z@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8b7129ed-0377-7b91-c741-44ac2202081a@redhat.com>
+Date:   Thu, 8 Apr 2021 17:57:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <46016.1617897451.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 08 Apr 2021 16:57:31 +0100
-Message-ID: <46017.1617897451@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YG8lzKqL32+JhY0Z@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's a partial change, but we still need to deal with the assumption tha=
-t
-page_has_private() makes that its output can be used to count the number o=
-f
-refs held for PG_private *and* PG_private_2 - which isn't true for my code
-here.
+On 08/04/21 17:48, Sean Christopherson wrote:
+> Freaking PDPTRs.  I was really hoping we could keep the lock and pages_available()
+> logic outside of the helpers.  What if kvm_mmu_load() reads the PDPTRs and
+> passes them into mmu_alloc_shadow_roots()?  Or is that too ugly?
 
-David
----
-commit e7c28d83b84b972c3faa0dd86020548aa50eda75
-Author: David Howells <dhowells@redhat.com>
-Date:   Thu Apr 8 16:33:20 2021 +0100
+The patch I have posted (though untested) tries to do that in a slightly 
+less ugly way by pushing make_mmu_pages_available down to mmu_alloc_*_roots.
 
-    netfs: Fix PG_private_2 helper functions to consistently use compound_=
-head()
+Paolo
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index ef511364cc0c..63ca6430aef5 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -699,6 +699,7 @@ void page_endio(struct page *page, bool is_write, int =
-err);
-  */
- static inline void set_page_private_2(struct page *page)
- {
-+	page =3D compound_head(page);
- 	get_page(page);
- 	SetPagePrivate2(page);
- }
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 0ce93c8799ca..46e0321ba87a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1461,6 +1461,7 @@ EXPORT_SYMBOL(end_page_private_2);
-  */
- void wait_on_page_private_2(struct page *page)
- {
-+	page =3D compound_head(page);
- 	while (PagePrivate2(page))
- 		wait_on_page_bit(page, PG_private_2);
- }
-@@ -1481,6 +1482,7 @@ int wait_on_page_private_2_killable(struct page *pag=
-e)
- {
- 	int ret =3D 0;
- =
-
-+	page =3D compound_head(page);
- 	while (PagePrivate2(page)) {
- 		ret =3D wait_on_page_bit_killable(page, PG_private_2);
- 		if (ret < 0)
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index efb41f31e80a..e3c4938cd665 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3275,11 +3275,11 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+>          return 0;
+>   }
+> 
+> -static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+> +static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu, u64 pdptrs[4])
+>   {
+>          struct kvm_mmu *mmu = vcpu->arch.mmu;
+> -       u64 pdptrs[4], pm_mask;
+>          gfn_t root_gfn, root_pgd;
+> +       u64 pm_mask;
+>          hpa_t root;
+>          int i;
+> 
+> @@ -3291,11 +3291,8 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+> 
+>          if (mmu->root_level == PT32E_ROOT_LEVEL) {
+>                  for (i = 0; i < 4; ++i) {
+> -                       pdptrs[i] = mmu->get_pdptr(vcpu, i);
+> -                       if (!(pdptrs[i] & PT_PRESENT_MASK))
+> -                               continue;
+> -
+> -                       if (mmu_check_root(vcpu, pdptrs[i] >> PAGE_SHIFT))
+> +                       if ((pdptrs[i] & PT_PRESENT_MASK) &&
+> +                           mmu_check_root(vcpu, pdptrs[i] >> PAGE_SHIFT))
+>                                  return 1;
+>                  }
+>          }
+> @@ -4844,21 +4841,33 @@ EXPORT_SYMBOL_GPL(kvm_mmu_reset_context);
+> 
+>   int kvm_mmu_load(struct kvm_vcpu *vcpu)
+>   {
+> -       int r;
+> +       struct kvm_mmu *mmu = vcpu->arch.mmu;
+> +       u64 pdptrs[4];
+> +       int r, i;
+> 
+> -       r = mmu_topup_memory_caches(vcpu, !vcpu->arch.mmu->direct_map);
+> +       r = mmu_topup_memory_caches(vcpu, !mmu->direct_map);
+>          if (r)
+>                  goto out;
+>          r = mmu_alloc_special_roots(vcpu);
+>          if (r)
+>                  goto out;
+> +
+> +       /*
+> +        * On SVM, reading PDPTRs might access guest memory, which might fault
+> +        * and thus might sleep.  Grab the PDPTRs before acquiring mmu_lock.
+> +        */
+> +       if (!mmu->direct_map && mmu->root_level == PT32E_ROOT_LEVEL) {
+> +               for (i = 0; i < 4; ++i)
+> +                       pdptrs[i] = mmu->get_pdptr(vcpu, i);
+> +       }
+> +
+>          write_lock(&vcpu->kvm->mmu_lock);
+>          if (make_mmu_pages_available(vcpu))
+>                  r = -ENOSPC;
+>          else if (vcpu->arch.mmu->direct_map)
+>                  r = mmu_alloc_direct_roots(vcpu);
+>          else
+> -               r = mmu_alloc_shadow_roots(vcpu);
+> +               r = mmu_alloc_shadow_roots(vcpu, pdptrs);
+>          write_unlock(&vcpu->kvm->mmu_lock);
+>          if (r)
+>                  goto out;
+> 
 
