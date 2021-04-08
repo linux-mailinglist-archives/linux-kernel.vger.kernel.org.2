@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0DF358811
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81512358819
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhDHPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:20:16 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:35365 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhDHPUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:20:13 -0400
-Received: by mail-ot1-f50.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so2659702oto.2;
-        Thu, 08 Apr 2021 08:20:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1l55izRQ8nY+x+SOR4VHV/Ao5jxbNbjMrx+sLpOPjK4=;
-        b=C/Kn71JmLdyyBkzm3e3O8lWwiXV086yiusM7P4Sct0QvdYGto2uthly5S9TRBps6tf
-         QfhXJq30s4vUOIrxzxIlgYKS3dH0wjgTmJE3i8YGjSbdh+C2o/e5RAjY24nogAQqvC4h
-         r0ErSIqtFOSGXkeR485VdFcyjVCfKUuYefSbxSmOjpkKaN9m6oiqC+507pw8FlERbZnb
-         DHn0PZJeKte2MxUUz1mLGajjJeSAVVnVvczKEXRZyHiNwKe/8crqzN12AFp4YCX/Tn5R
-         AyO/0haN4h9rE1YVMY6ofVO3QNNcoJDMWUrpDxEAx3rMLy0Ccms1VeQK4y0yAXQLtXkv
-         3G9A==
-X-Gm-Message-State: AOAM531ASOKpR2LimvjoIbzJm0O7/axoeKjA1c+dCWk73zC5E0QHkNLQ
-        vYxzK3syVnwS+kefrT7mguCWtdMB4P3sOlBZKoo=
-X-Google-Smtp-Source: ABdhPJzXTh1xK/TXuaFzcfuDiP0bRY81Ch5oD1yLb+clFYHQuyc9IeAmu6+se8lJ0br1jyreWUfN8c4PgxAA/bj3kzM=
-X-Received: by 2002:a9d:4811:: with SMTP id c17mr8347014otf.206.1617895202303;
- Thu, 08 Apr 2021 08:20:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <YGRXmOMfCTxy31Rj@kuha.fi.intel.com> <CAJZ5v0jJCYD9+j57-CL-OqiZKL7bBQ7NetcewE_37wODOG_Jkg@mail.gmail.com>
- <YG8YSPHMBbBJadvp@smile.fi.intel.com> <CAJZ5v0j0XpD6mbaCxAjBARsiScSG2T0v_2m8NdrnoQVmsqDDXQ@mail.gmail.com>
- <YG8evZfHNyBmTJu7@smile.fi.intel.com>
-In-Reply-To: <YG8evZfHNyBmTJu7@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 17:19:51 +0200
-Message-ID: <CAJZ5v0g32KqeyWM-pzXj6hvD1EixAuz9_QgYXBYZTQC+z2DKyA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] software node: Free resources explicitly when
- swnode_register() fails
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
+        id S231916AbhDHPVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:21:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:27094 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231765AbhDHPVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:21:16 -0400
+IronPort-SDR: 7GkFQeC0e6fIB3ehObjCr06lySG6X9BKCSOsqlUTjlW3P9XVC6UVfyTDMTNtv9YVhjL8242Ypq
+ Q70oYli78XAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="190361512"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="190361512"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:21:05 -0700
+IronPort-SDR: hehMe0RGXXMFw71hVQc9LJCLAVsJL/rHzwvYyTth7IUperK74tJa9PJ3/86FKrUMveYF4OBzB0
+ NK0ypqZMLKYA==
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="613372126"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:21:02 -0700
+Date:   Thu, 8 Apr 2021 18:20:59 +0300
+From:   Imre Deak <imre.deak@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-intel-fixes tree
+Message-ID: <20210408152059.GC2374391@ideak-desk.fi.intel.com>
+References: <20210326195838.5ad4973b@canb.auug.org.au>
+ <20210329090117.6b224931@canb.auug.org.au>
+ <20210329182335.GE233691@ideak-desk.fi.intel.com>
+ <YG7dPD8NWbHLrFck@phenom.ffwll.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YG7dPD8NWbHLrFck@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 5:18 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Apr 08, 2021 at 05:04:32PM +0200, Rafael J. Wysocki wrote:
-> > On Thu, Apr 8, 2021 at 4:50 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Apr 08, 2021 at 04:15:37PM +0200, Rafael J. Wysocki wrote:
-> > > > On Wed, Mar 31, 2021 at 1:06 PM Heikki Krogerus
-> > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > >
-> > > > > On Mon, Mar 29, 2021 at 06:12:02PM +0300, Andy Shevchenko wrote:
-> > > > > > Currently we have a slightly twisted logic in swnode_register().
-> > > > > > It frees resources that it doesn't allocate on error path and
-> > > > > > in once case it relies on the ->release() implementation.
-> > > > > >
-> > > > > > Untwist the logic by freeing resources explicitly when swnode_register()
-> > > > > > fails. Currently it happens only in fwnode_create_software_node().
-> > > > > >
-> > > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > >
-> > > > > It all looks OK to me. FWIW, for the whole series:
-> > > > >
-> > > > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+On Thu, Apr 08, 2021 at 12:38:52PM +0200, Daniel Vetter wrote:
+> On Mon, Mar 29, 2021 at 09:23:35PM +0300, Imre Deak wrote:
+> > Hi Stephen,
+> > 
+> > thanks for the report.
+> > 
+> > On Mon, Mar 29, 2021 at 09:01:17AM +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > On Fri, 26 Mar 2021 19:58:38 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 > > > >
-> > > > Whole series applied (with some minor changelog edits) as 5.13 material, thanks!
-> > >
-> > > It seems Greg applied it already. Was it dropped there?
-> >
-> > Did he?
-> >
-> > OK, so please let me know if it's still there in the Greg's tree.
->
-> Here [1] what I see. Seems still there.
->
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=6e11b376fd74356e32d842be588e12dc9bf6e197
+> > > > After merging the drm-intel-fixes tree, today's linux-next build
+> > > > (htmldocs) produced this warning:
+> > > > 
+> > > > Documentation/gpu/i915:22: /drivers/gpu/drm/i915/intel_runtime_pm.c:423: WARNING: Inline strong start-string without end-string.
+> > 
+> > The problem seems to be the
+> > 
+> > 	@ignore_usecount=true
+> > 
+> > part in __intel_runtime_pm_get_if_active()'s docbook documentation. I
+> > can't see the problem with it, it was meant as a reference to the
+> > function parameter, granted I'm not sure what's the proper markup syntax
+> > for this.
+> > 
+> > I will follow up with the following change which suppresses the warning
+> > and renders the html as expected unless someone can suggest a better
+> > way:
+> > 
+> > - * If @ignore_usecount=true, a reference will be acquired even if there is no
+> > + * If @ignore_usecount is true, a reference will be acquired even if there is no
+> 
+> Yeah you can't just use most pseudo-code in kerneldoc because it's
+> interpreted as raw .rst. So would need some .rst quoting of some sorts to
+> make it render correctly.
+> 
+> Usually for pseudo-code I go with blockquotes (started with :: at the end
+> of the previous line, plus indenting), that gives you also a nice
+> fixed-width font and everything.
 
-I will not be applying it then, sorry for the confusion.
+Thanks for the info, will read up on the .rst docs and will try to check
+make htmldocs before sending patches.
+
+> Aside from the hyperlink stuff plain English works best in the text parts.
+> -Daniel
+> 
+> > 
+> > --Imre
+> > 
+> > > > 
+> > > > Introduced by commit
+> > > > 
+> > > >   8840e3bd981f ("drm/i915: Fix the GT fence revocation runtime PM logic")
+> > > 
+> > > This warning now exists in Linus' tree.
+> > > 
+> > > -- 
+> > > Cheers,
+> > > Stephen Rothwell
+> > 
+> > 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
