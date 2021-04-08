@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAFB358DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E263358DDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhDHT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        id S232487AbhDHT5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhDHT5O (ORCPT
+        with ESMTP id S232387AbhDHT5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:57:14 -0400
+        Thu, 8 Apr 2021 15:57:16 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13EBC061761;
-        Thu,  8 Apr 2021 12:57:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F50EC061760;
+        Thu,  8 Apr 2021 12:57:04 -0700 (PDT)
 Received: from ipservice-092-217-074-086.092.217.pools.vodafone-ip.de ([92.217.74.86] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1lUalu-0005PV-MC; Thu, 08 Apr 2021 21:56:58 +0200
+        id 1lUalw-0005PV-78; Thu, 08 Apr 2021 21:57:00 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 08/12] staging: rtl8188eu: move another static array from .h to .c
-Date:   Thu,  8 Apr 2021 21:55:57 +0200
-Message-Id: <20210408195601.4762-8-martin@kaiser.cx>
+Subject: [PATCH 09/12] staging: rtl8188eu: always free cmd_obj in the cmd thread
+Date:   Thu,  8 Apr 2021 21:55:58 +0200
+Message-Id: <20210408195601.4762-9-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210408195601.4762-1-martin@kaiser.cx>
 References: <20210408195601.4762-1-martin@kaiser.cx>
@@ -37,83 +37,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the declaration of the rtw_cmd_callback array from rtw_cmd.h to
-rtw_cmd.c.
+The rtl8188 driver starts a command thread that reads commands from a queue
+and processes them. Each command consists of a struct cmd_obj. The command
+thread may call a function to process the current command and optionally a
+post-processing function. Eventually, the command's cmd_obj must be freed.
 
-The _RTW_CMD_C_ symbol is now obsolete and can be removed.
+At the moment, if there's a post-processing function for the current
+command, this function has to free the cmd_obj. If there's no
+post-processing function, the command thread frees cmd_obj.
+
+It's much simpler if we always leave it to the command thread to free
+cmd_obj.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/staging/rtl8188eu/core/rtw_cmd.c    | 19 ++++++++++++++++++-
- drivers/staging/rtl8188eu/include/rtw_cmd.h | 20 --------------------
- 2 files changed, 18 insertions(+), 21 deletions(-)
+ drivers/staging/rtl8188eu/core/rtw_cmd.c | 24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c b/drivers/staging/rtl8188eu/core/rtw_cmd.c
-index bf1e49404e64..0bbe5ee918ce 100644
+index 0bbe5ee918ce..4e4cac1ad6be 100644
 --- a/drivers/staging/rtl8188eu/core/rtw_cmd.c
 +++ b/drivers/staging/rtl8188eu/core/rtw_cmd.c
-@@ -4,7 +4,6 @@
-  * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
-  *
-  ******************************************************************************/
--#define _RTW_CMD_C_
+@@ -235,17 +235,16 @@ int rtw_cmd_thread(void *context)
+ 				RT_TRACE(_module_rtl871x_cmd_c_, _drv_info_,
+ 					 ("mlme_cmd_hdl(): pcmd_callback = 0x%p, cmdcode = 0x%x\n",
+ 					  pcmd_callback, pcmd->cmdcode));
+-				rtw_free_cmd_obj(pcmd);
+ 			} else {
+ 				/* todo: !!! fill rsp_buf to pcmd->rsp if (pcmd->rsp!= NULL) */
+-				pcmd_callback(pcmd->padapter, pcmd);/* need consider that free cmd_obj in rtw_cmd_callback */
++				pcmd_callback(pcmd->padapter, pcmd);
+ 			}
+ 		} else {
+ 			RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_,
+ 				 ("%s: cmdcode = 0x%x callback not defined!\n",
+ 				  __func__, pcmd->cmdcode));
+-			rtw_free_cmd_obj(pcmd);
+ 		}
++		rtw_free_cmd_obj(pcmd);
  
- #include <osdep_service.h>
- #include <drv_types.h>
-@@ -30,6 +29,24 @@ static struct cmd_hdl wlancmds[] = {
- 	{sizeof(struct SetChannelPlan_param), set_chplan_hdl}
- };
- 
-+static struct _cmd_callback rtw_cmd_callback[] = {
-+	{_JoinBss_CMD_, &rtw_joinbss_cmd_callback},
-+	{_DisConnect_CMD_, &rtw_disassoc_cmd_callback},
-+	{_CreateBss_CMD_, &rtw_createbss_cmd_callback},
-+	{_SetOpMode_CMD_, NULL},
-+	{_SiteSurvey_CMD_, &rtw_survey_cmd_callback},
-+	{_SetAuth_CMD_, NULL},
-+	{_SetKey_CMD_, NULL},
-+	{_SetStaKey_CMD_, &rtw_setstaKey_cmdrsp_callback},
-+	{_SetAssocSta_CMD_, &rtw_setassocsta_cmdrsp_callback},
-+	{_AddBAReq_CMD_, NULL},
-+	{_SetChannel_CMD_, NULL},
-+	{_TX_Beacon_CMD_, NULL},
-+	{_Set_MLME_EVT_CMD_, NULL},
-+	{_Set_Drv_Extra_CMD_, NULL},
-+	{_SetChannelPlan_CMD_, NULL},
-+};
-+
- /*
-  * Caller and the rtw_cmd_thread can protect cmd_q by spin_lock.
-  * No irqsave is necessary.
-diff --git a/drivers/staging/rtl8188eu/include/rtw_cmd.h b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-index 002a797c6d0a..68b8ad1a412f 100644
---- a/drivers/staging/rtl8188eu/include/rtw_cmd.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-@@ -361,24 +361,4 @@ enum rtw_h2c_cmd {
- 	MAX_H2CCMD
- };
- 
--#ifdef _RTW_CMD_C_
--static struct _cmd_callback	rtw_cmd_callback[] = {
--	{_JoinBss_CMD_, &rtw_joinbss_cmd_callback},
--	{_DisConnect_CMD_, &rtw_disassoc_cmd_callback},
--	{_CreateBss_CMD_, &rtw_createbss_cmd_callback},
--	{_SetOpMode_CMD_, NULL},
--	{_SiteSurvey_CMD_, &rtw_survey_cmd_callback},
--	{_SetAuth_CMD_, NULL},
--	{_SetKey_CMD_, NULL},
--	{_SetStaKey_CMD_, &rtw_setstaKey_cmdrsp_callback},
--	{_SetAssocSta_CMD_, &rtw_setassocsta_cmdrsp_callback},
--	{_AddBAReq_CMD_, NULL},
--	{_SetChannel_CMD_, NULL},
--	{_TX_Beacon_CMD_, NULL},
--	{_Set_MLME_EVT_CMD_, NULL},
--	{_Set_Drv_Extra_CMD_, NULL},
--	{_SetChannelPlan_CMD_, NULL},
--};
--#endif
+ 		if (signal_pending(current))
+ 			flush_signals(current);
+@@ -1186,9 +1185,6 @@ void rtw_survey_cmd_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
+ 		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_,
+ 			 ("\n ********Error: MgntActrtw_set_802_11_bssid_LIST_SCAN Fail ************\n\n."));
+ 	}
 -
- #endif /*  _CMD_H_ */
+-	/*  free cmd */
+-	rtw_free_cmd_obj(pcmd);
+ }
+ 
+ void rtw_disassoc_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
+@@ -1202,11 +1198,7 @@ void rtw_disassoc_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
+ 
+ 		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_,
+ 			 ("\n ***Error: disconnect_cmd_callback Fail ***\n."));
+-		return;
+ 	}
+-
+-	/*  free cmd */
+-	rtw_free_cmd_obj(pcmd);
+ }
+ 
+ void rtw_joinbss_cmd_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
+@@ -1224,8 +1216,6 @@ void rtw_joinbss_cmd_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
+ 		mod_timer(&pmlmepriv->assoc_timer,
+ 			  jiffies + msecs_to_jiffies(1));
+ 	}
+-
+-	rtw_free_cmd_obj(pcmd);
+ }
+ 
+ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
+@@ -1292,8 +1282,6 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
+ createbss_cmd_fail:
+ 
+ 	spin_unlock_bh(&pmlmepriv->lock);
+-
+-	rtw_free_cmd_obj(pcmd);
+ }
+ 
+ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
+@@ -1305,10 +1293,7 @@ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pc
+ 	if (!psta) {
+ 		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_,
+ 			 ("\nERROR: %s => can't get sta_info\n\n", __func__));
+-		goto exit;
+ 	}
+-exit:
+-	rtw_free_cmd_obj(pcmd);
+ }
+ 
+ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
+@@ -1322,7 +1307,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
+ 	if (!psta) {
+ 		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_,
+ 			 ("\nERROR: %s => can't get sta_info\n\n", __func__));
+-		goto exit;
++		return;
+ 	}
+ 
+ 	psta->aid = passocsta_rsp->cam_id;
+@@ -1332,7 +1317,4 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
+ 
+ 	set_fwstate(pmlmepriv, _FW_LINKED);
+ 	spin_unlock_bh(&pmlmepriv->lock);
+-
+-exit:
+-	rtw_free_cmd_obj(pcmd);
+ }
 -- 
 2.20.1
 
