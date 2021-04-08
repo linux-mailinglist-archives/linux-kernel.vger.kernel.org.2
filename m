@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F1835887D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4A2358882
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhDHPb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:31:27 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:17481 "EHLO pegase1.c-s.fr"
+        id S232233AbhDHPbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:31:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26865 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232055AbhDHPaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:30:46 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FGQFN2s1tz9txf2;
-        Thu,  8 Apr 2021 17:30:32 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id pEdBiU3HbjFY; Thu,  8 Apr 2021 17:30:32 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGQFN1z0Dz9txfD;
-        Thu,  8 Apr 2021 17:30:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A87AB8B7D6;
-        Thu,  8 Apr 2021 17:30:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nh5wg_E2XZCY; Thu,  8 Apr 2021 17:30:33 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 67E3F8B7D4;
-        Thu,  8 Apr 2021 17:30:33 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 43C03679BA; Thu,  8 Apr 2021 15:30:33 +0000 (UTC)
-Message-Id: <b6a880ea0ec7886b51edbb4979c188be549231c0.1617895813.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <7bf6f1600acad146e541a4e220940062f2e5b03d.1617895813.git.christophe.leroy@csgroup.eu>
-References: <7bf6f1600acad146e541a4e220940062f2e5b03d.1617895813.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 9/9] powerpc/mem: Use kmap_local_page() in flushing
- functions
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  8 Apr 2021 15:30:33 +0000 (UTC)
+        id S232245AbhDHPbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 11:31:31 -0400
+IronPort-SDR: 0VPPR/EsZg0ViJ85bCbiX5HlOBSD7Dqax6S0QYdbzXERrFdzY5VOv8kXU5FXae/UbeyW5QS5Qg
+ bT/vlPfPNq/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="254903592"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="254903592"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 08:31:02 -0700
+IronPort-SDR: AMoFeEDi9BjzfvhdZSHH6j8m5Z0sEJmZNKIeFJjDniEURWfLQ0S3WyI+m2gfml+P5TqU9xGpeO
+ 33A7tocTJeug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="422295421"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 08 Apr 2021 08:30:56 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id ABBCFFC; Thu,  8 Apr 2021 18:31:12 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        vilhelm.gray@gmail.com
+Subject: [PATCH 1/1] drivers/gpio/gpio-xilinx.c (updated): bitmap-fix
+Date:   Thu,  8 Apr 2021 18:31:08 +0300
+Message-Id: <20210408153108.81738-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <YG8cWBkcF8ulHW0D@smile.fi.intel.com>
+References: <YG8cWBkcF8ulHW0D@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flushing functions don't rely on preemption being disabled, so
-use kmap_local_page() instead of kmap_atomic().
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/powerpc/mm/cacheflush.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/gpio/gpio-xilinx.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
-index d9eafa077c09..63363787e000 100644
---- a/arch/powerpc/mm/cacheflush.c
-+++ b/arch/powerpc/mm/cacheflush.c
-@@ -152,16 +152,16 @@ static void flush_dcache_icache_hugepage(struct page *page)
- {
- 	int i;
- 	int nr = compound_nr(page);
--	void *start;
+diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
+index d5a08dcdd677..109b32104867 100644
+--- a/drivers/gpio/gpio-xilinx.c
++++ b/drivers/gpio/gpio-xilinx.c
+@@ -75,9 +75,14 @@ struct xgpio_instance {
+ 	struct clk *clk;
+ };
  
- 	if (!PageHighMem(page)) {
- 		for (i = 0; i < nr; i++)
- 			__flush_dcache_icache(lowmem_page_address(page + i));
- 	} else {
- 		for (i = 0; i < nr; i++) {
--			start = kmap_atomic(page+i);
-+			void *start = kmap_local_page(page + i);
++static inline int xgpio_from_bit(struct xgpio_instance *chip, int bit)
++{
++	return bitmap_bitremap(bit, chip->hw_map, chip->sw_map, 64);
++}
 +
- 			__flush_dcache_icache(start);
--			kunmap_atomic(start);
-+			kunmap_local(start);
- 		}
- 	}
+ static inline int xgpio_to_bit(struct xgpio_instance *chip, int gpio)
+ {
+-	return bitmap_bitremap(gpio, chip->sw_map, chip->hw_map, chip->gc.ngpio);
++	return bitmap_bitremap(gpio, chip->sw_map, chip->hw_map, 64);
  }
-@@ -177,9 +177,10 @@ void flush_dcache_icache_page(struct page *page)
- 	if (!PageHighMem(page)) {
- 		__flush_dcache_icache(lowmem_page_address(page));
- 	} else if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
--		void *start = kmap_atomic(page);
-+		void *start = kmap_local_page(page);
-+
- 		__flush_dcache_icache(start);
--		kunmap_atomic(start);
-+		kunmap_local(start);
- 	} else {
- 		flush_dcache_icache_phys(page_to_phys(page));
- 	}
-@@ -225,9 +226,9 @@ void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
- void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
- 			     unsigned long addr, int len)
- {
--	unsigned long maddr;
-+	void *maddr;
  
--	maddr = (unsigned long) kmap(page) + (addr & ~PAGE_MASK);
--	flush_icache_range(maddr, maddr + len);
--	kunmap(page);
-+	maddr = kmap_local_page(page) + (addr & ~PAGE_MASK);
-+	flush_icache_range((unsigned long)maddr, (unsigned long)maddr + len);
-+	kunmap_local(maddr);
+ static inline u32 xgpio_get_value32(const unsigned long *map, int bit)
+@@ -207,11 +212,11 @@ static void xgpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,
+ 
+ 	spin_lock_irqsave(&chip->gpio_lock, flags);
+ 
+-	bitmap_replace(state, chip->state, hw_bits, hw_mask, gc->ngpio);
++	bitmap_replace(state, chip->state, hw_bits, hw_mask, 64);
+ 
+ 	xgpio_write_ch_all(chip, XGPIO_DATA_OFFSET, state);
+ 
+-	bitmap_copy(chip->state, state, gc->ngpio);
++	bitmap_copy(chip->state, state, 64);
+ 
+ 	spin_unlock_irqrestore(&chip->gpio_lock, flags);
+ }
+@@ -501,6 +506,7 @@ static void xgpio_irqhandler(struct irq_desc *desc)
+ 	DECLARE_BITMAP(rising, 64);
+ 	DECLARE_BITMAP(falling, 64);
+ 	DECLARE_BITMAP(all, 64);
++	int irq_offset;
+ 	u32 status;
+ 	u32 bit;
+ 
+@@ -530,8 +536,10 @@ static void xgpio_irqhandler(struct irq_desc *desc)
+ 
+ 	dev_dbg(gc->parent, "IRQ rising %*pb falling %*pb\n", 64, rising, 64, falling);
+ 
+-	for_each_set_bit(bit, all, 64)
+-		generic_handle_irq(irq_find_mapping(gc->irq.domain, bit));
++	for_each_set_bit(bit, all, 64) {
++		irq_offset = xgpio_from_bit(chip, bit);
++		generic_handle_irq(irq_find_mapping(gc->irq.domain, irq_offset));
++	}
+ 
+ 	chained_irq_exit(irqchip, desc);
  }
 -- 
-2.25.0
+2.30.2
 
