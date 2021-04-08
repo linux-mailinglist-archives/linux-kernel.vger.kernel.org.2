@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B802E357DB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A692A357DB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhDHH4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhDHH4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:56:31 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A888F61157;
-        Thu,  8 Apr 2021 07:56:20 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lUPWU-006FTf-NC; Thu, 08 Apr 2021 08:56:18 +0100
+        id S229885AbhDHH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhDHH7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:59:45 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5649AC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:59:33 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lUPZU-0002a4-DU; Thu, 08 Apr 2021 09:59:24 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lUPZQ-0005CS-Vf; Thu, 08 Apr 2021 09:59:20 +0200
+Date:   Thu, 8 Apr 2021 09:59:20 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        devicetree@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        kernel@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+Message-ID: <20210408075920.rfrcqxec2yvepj3y@pengutronix.de>
+References: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210212131910.557581-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210212164144.wcvy7jkxmrysqxux@pengutronix.de>
+ <20210407231548.4paov2fb33cpxxui@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 08 Apr 2021 08:56:18 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the irqchip tree
-In-Reply-To: <20210408163528.180240af@canb.auug.org.au>
-References: <20210408163528.180240af@canb.auug.org.au>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <8171969ffe92eed0013fe3900ba0526f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sfr@canb.auug.org.au, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="geu5564gy6ryykgp"
+Content-Disposition: inline
+In-Reply-To: <20210407231548.4paov2fb33cpxxui@toshiba.co.jp>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On 2021-04-08 07:35, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the irqchip tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> drivers/irqchip/irq-wpcm450-aic.c:9:10: fatal error: asm/exception.h:
-> No such file or directory
->     9 | #include <asm/exception.h>
->       |          ^~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   fead4dd49663 ("irqchip: Add driver for WPCM450 interrupt controller")
-> 
-> I have used the irqchip tree from next-20210407 for today.
+--geu5564gy6ryykgp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the heads up. I guess that's the effect of COMPILE_TEST
-which was apparently not very well tested... I'll drop it from Kconfig.
+Hello Nobuhiro,
 
-Jonathan, feel free to submit something re-enabling COMPILE_TEST once
-you've worked out the missing dependencies.
+On Thu, Apr 08, 2021 at 08:15:48AM +0900, Nobuhiro Iwamatsu wrote:
+> > > +	/*
+> > > +	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
+> > > +	 * When the settings of the PWM are modified, the new values are sh=
+adowed in hardware until
+> > > +	 * the period register (PCSR) is written and the currently running =
+period is completed. This
+> > > +	 * way the hardware switches atomically from the old setting to the=
+ new.
+> > > +	 * Also, disabling the hardware completes the currently running per=
+iod and keeps the output
+> > > +	 * at low level at all times.
+> >=20
+> > Did you just copy my optimal description or is your hardware really that
+> > nice?
+>=20
+> Yes, this hardware works as you wrote.
+> And I added about the state if the sinnal when this hardware disabled.
+>=20
+> >=20
+> > Do you know scripts/checkpatch.pl? I bet it will tell you to limit your
+> > lines to approx. 80 chars where sensible.
+>=20
+> Yes, I know. I ran scripts/checkpatch.pl before send patch.
+> I understand that the number of characters per line has been changed to
+> 100 characters. Does the pwm driver recommend 80 characters?
 
-Thanks,
+For free-text comments I'd still recommend 80, yes. For code lines I'd
+be indeed more lax, as a line break in function calls reduces readability.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--geu5564gy6ryykgp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBut9MACgkQwfwUeK3K
+7AlwEwf+LOf+gfIUqpelOcF+8SK6n10H1NShUmwZh32SQfCI6WR7zeuehzeR3f2r
+ujKiNUDTbhTyqUUV8FKZL0ezCJkW8LGiVMzMLnmS3xJkfPkLzaiJfRwtRksWJlRU
+KIyrRmN2c2sQsEBqZNX++V1QYjorEMAieBJfq442oePYvToBW1EsIXC+/FZ2SNec
+mZfVX6SqYvMCHZ5hLxIveAhseJ+LE+QRwQNoWQNanYPRlXf2QfN4H6GLQXTqNyw/
+BxGNekeiyyXlUPovaHgdiCYiph6t4AqhPq0q9AG/kSjGeQDyhmWnxSjRtUHs1li4
+mr2MPB0qxKRjT5876znW5v2bOWw/9g==
+=aMAV
+-----END PGP SIGNATURE-----
+
+--geu5564gy6ryykgp--
