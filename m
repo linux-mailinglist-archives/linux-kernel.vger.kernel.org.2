@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F733580F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B973580B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhDHKie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:38:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51176 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhDHKhv (ORCPT
+        id S230421AbhDHKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhDHKgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:37:51 -0400
-Received: from ip5f5bf209.dynamic.kabel-deutschland.de ([95.91.242.9] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lUS2d-0004fv-0b; Thu, 08 Apr 2021 10:37:39 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] close_range fix
-Date:   Thu,  8 Apr 2021 12:36:18 +0200
-Message-Id: <20210408103618.1206025-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 8 Apr 2021 06:36:49 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A28C061760;
+        Thu,  8 Apr 2021 03:36:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGHkB0jzFz9sW4;
+        Thu,  8 Apr 2021 20:36:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617878194;
+        bh=j4QGZTMJ7F8NZ7P4vtdLkL4aQEB5U/c62uThoHhiCGA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g159QLykDclcupTbZf0sgGO8WyDYk5WWJumEdJHk9FlEw0M0EC1CugB/bD2j/VbYw
+         EphEFC1mgBey8m+QcP+ZxWhTMwcJdVyI6CI+jZ77EDx3SwxKCkmUOokVi2FdFBGFDK
+         Fis98f1Qv8KZ7sNTC4GdQM59khcL3vbarrKazuRBPI7Ct+geDo6/mJ6rfHj8JQRDix
+         pM6UFFZS8iyxzRevVb7AAzpe3w8TycSmAyLH/AEk6oAut3irrX2I77+M82q+MJFHzM
+         5A8eBVjFePTOXk6/L+ZnyTtVetuDl6AJd3DF9x1vPgkToBHjUNrcDCAdwHpvtKYCC3
+         0yk4oAo+2M0Ow==
+Date:   Thu, 8 Apr 2021 20:36:32 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ kbuild tree
+Message-ID: <20210408203633.08012e20@canb.auug.org.au>
+In-Reply-To: <20210408203449.58e5edf8@canb.auug.org.au>
+References: <20210408203449.58e5edf8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/yFGNIYqX5JEHKFwlhGReMZO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/yFGNIYqX5JEHKFwlhGReMZO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-/* Summary */
-Syzbot reported a bug in close_range. Debugging this showed we didn't
-recalculate the current maximum fd number for CLOSE_RANGE_UNSHARE |
-CLOSE_RANGE_CLOEXEC after we unshared the file descriptors table.
+Hi all,
 
-So max_fd could exceed the current fdtable maximum causing us to set excessive
-bits. As a concrete example, let's say the user requested everything from fd 4
-to ~0UL to be closed and their current fdtable size is 256 with their highest
-open fd being 4. With CLOSE_RANGE_UNSHARE the caller will end up with a new
-fdtable which has room for 64 file descriptors since that is the lowest fdtable
-size we accept. But now max_fd will still point to 255 and needs to be
-adjusted. Fix this by retrieving the correct maximum fd value in
-__range_cloexec().
+On Thu, 8 Apr 2021 20:34:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   Makefile
 
-I've carried this fix for a little while but since there was no linux-next
-release over easter I waited until now.
+This also affected init/Kconfig
 
-With this change close_range() can be simplified a bit but imho we are in no
-hurry to do that and so I'll defer this for the 5.13 merge window.
+> between commit:
+>=20
+>   2f8864dbe668 ("kbuild: move module strip/compression code into scripts/=
+Makefile.modinst")
+>=20
+> from the kbuild tree and commit:
+>=20
+>   7b35c1a01c2e ("init: add support for zstd compressed modules")
+>=20
+> from the akpm-current tree.
+>=20
+> Also commit
+>=20
+>   ee2305118fc3 ("kbuild: add support for zstd compressed modules")
+>=20
+> from the kbuild tree seems to do the same as the akpm-current commit
+> above, so I just effectively reverted the akpm-current commit.
+>=20
+> I fixed it up (see above) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-(Fwiw, the two follow-up patches sit in
- https://git.kernel.org/brauner/h/fs/close_range.)
+--=20
+Cheers,
+Stephen Rothwell
 
-/* Testing */
-All patches have seen exposure in linux-next and are based on v5.12-rc4.
-The selftests pass and the reproducer provided by syzbot did not trigger. The
-patch also has a Tested-by from Dmitry but I had already pushed it out by the
-time that came in so it's missing from the patch itself.
+--Sig_/yFGNIYqX5JEHKFwlhGReMZO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-/* Conflicts */
-At the time of creating this pr no merge conflicts were reported. A test merge
-and build with today's master 2021-04-08 12:20:00 CET worked fine.
+-----BEGIN PGP SIGNATURE-----
 
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBu3LEACgkQAVBC80lX
+0Gw1Ewf/eSWpGlpJKPpX5u6VIv1QYDb3LfVuNAlAH+gUxHQJcVqjZMOQXHUyY4xf
+LblmeKvVFqdwSbDZC9TsjxGiXVSatJAwZ6W/Zu6J2DaXP+RTx/F82ppr34NJBSYR
+uLTXo5nZv8vG2HyjVjcq1BHmaVbYjwyxI6bUXjBZ3cOEyeBZJTTxFoc4q8c5UWjP
+HcqIxWIXCbvfAHdNEPxg+kpybZrlgkGof0bYVK+LJNZpzm6UKxfd9gSye7ehCoHD
+G0N3oC38YpUE1o3rJuRHhgNeAUfJuDGS3RH15ZCs0SHcUUkQEe9h8kAmJlxf/Pr/
+PVEcO0THmebB4D9nIPpeoaDh9/PyLA==
+=EzBd
+-----END PGP SIGNATURE-----
 
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2021-04-08
-
-for you to fetch changes up to 9b5b872215fe6d1ca6a1ef411f130bd58e269012:
-
-  file: fix close_range() for unshare+cloexec (2021-04-02 14:11:10 +0200)
-
-Please consider pulling these changes from the signed for-linus-2021-04-08 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-for-linus-2021-04-08
-
-----------------------------------------------------------------
-Christian Brauner (1):
-      file: fix close_range() for unshare+cloexec
-
- fs/file.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+--Sig_/yFGNIYqX5JEHKFwlhGReMZO--
