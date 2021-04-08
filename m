@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C82A35893D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421E7358940
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhDHQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:05:57 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:44000 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbhDHQFz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:05:55 -0400
-Received: by mail-oo1-f53.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so621861ooa.10;
-        Thu, 08 Apr 2021 09:05:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=89GBzc2bbepFcIw25Q1AatCj5mIj6s7KJYpVy/c3qPA=;
-        b=P0t8He/1VAEjZ7GKaTsvjk/ibBrjeSyB1+JRlXczLxC3pLPfeSdH90fsqsugwyFk09
-         lKr2Dj6WyOim0F7CVlSLfraAwKjUi9+u6+RAu+7TTBA0NGAOU0B4Nk8WjwKoNyYbA4+M
-         1nm44J6lSFfkYILeSKdUK5YM+wGPmfFA04/76QBY8MQZaY9DnlsagVKxJxlzlOYut0o1
-         d4fKjHqRrdFh44zQiR8iMjiIEVf87ExPcllkqm5qd8xFMHbXU+VmVcMCZik+SifkDLMi
-         q0njsoEc2j1Tb79nW0UQlmqbk/bBq/W3M4NEeSRi3lQuK6xg2KPieIZJ6IXihy5rMF55
-         9YeA==
-X-Gm-Message-State: AOAM531I8Zqa8n8k3dLoVW/klZv6g72QU36fxwrTkT0HY4glPrxaSxaQ
-        /XDC/0xMwJGVjy1Z7on4cxLbychzpO46HnqpDzY=
-X-Google-Smtp-Source: ABdhPJzEV++CuhlA2YB8TcryrXXxfR5W+L9v5/DP3P/8iIkl8mXys5IFjX8yHkHEpgm9HpOWMh5BKf7s03p90uLLd18=
-X-Received: by 2002:a4a:d781:: with SMTP id c1mr8131686oou.44.1617897944147;
- Thu, 08 Apr 2021 09:05:44 -0700 (PDT)
+        id S232200AbhDHQGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:06:47 -0400
+Received: from mga07.intel.com ([134.134.136.100]:14786 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231791AbhDHQGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:06:42 -0400
+IronPort-SDR: yjMgLflof8+oeXmJekZrXeztLihzUGPkLXmMwoxkbvcVfA+enYkzoVA5ib6mbDYncSDWMKVc8q
+ WHKHC2HKXIRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="257556225"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="257556225"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 09:06:12 -0700
+IronPort-SDR: Zxu39MFZ5xVlK8mdv1U81FsVCage3qyw9f6VIuKaxGhRrTjAGJkq51Qk/erDzNmGGG8Wa+NXVv
+ 9mYfmFTOxvSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="381774424"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP; 08 Apr 2021 09:06:11 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 09:06:11 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 8 Apr 2021 09:06:10 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 8 Apr 2021 09:06:10 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKCDloIDlj6PjgIDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Subject: RE: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Thread-Topic: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Thread-Index: AQHXIdN9Uq2ZPuUUNUmBuOc9O6imO6qrKhCA//+g2gA=
+Date:   Thu, 8 Apr 2021 16:06:10 +0000
+Message-ID: <89a1b424a211459ab522c0d2c3e8fc98@intel.com>
+References: <20210326000235.370514-1-tony.luck@intel.com>
+ <20210326000235.370514-5-tony.luck@intel.com>
+ <20210408133631.GJ10192@zn.tnic>
+In-Reply-To: <20210408133631.GJ10192@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210408131506.17941-1-crecklin@redhat.com> <CAJZ5v0ib+jmbsD9taGW0RujY5c9BCK8yLHv065u44mb0AwO9vQ@mail.gmail.com>
- <YG8gqZoZGutPmROz@sol.localdomain>
-In-Reply-To: <YG8gqZoZGutPmROz@sol.localdomain>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 18:05:33 +0200
-Message-ID: <CAJZ5v0g65irXKmy7pdgD8-5KWrxdtwiWbJsBD2A=PKf1D3RVZg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Simo Sorce <simo@redhat.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 5:26 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Thu, Apr 08, 2021 at 03:32:38PM +0200, Rafael J. Wysocki wrote:
-> > On Thu, Apr 8, 2021 at 3:15 PM Chris von Recklinghausen
-> > <crecklin@redhat.com> wrote:
-> > >
-> > > Suspend fails on a system in fips mode because md5 is used for the e820
-> > > integrity check and is not available. Use crc32 instead.
-> > >
-> > > This patch changes the integrity check algorithm from md5 to
-> > > crc32. This integrity check is used only to verify accidental
-> > > corruption of the hybernation data
-> >
-> > It isn't used for that.
-> >
-> > In fact, it is used to detect differences between the memory map used
-> > before hibernation and the one made available by the BIOS during the
-> > subsequent resume.  And the check is there, because it is generally
-> > unsafe to load the hibernation image into memory if the current memory
-> > map doesn't match the one used when the image was created.
->
-> So what types of "differences" are you trying to detect?  If you need to detect
-> differences caused by someone who maliciously made changes ("malicious" implies
-> they may try to avoid detection), then you need to use a cryptographic hash
-> function (or a cryptographic MAC if the hash value isn't stored separately).  If
-> you only need to detect non-malicious changes (normally these would be called
-> "accidental" changes, but sure, it could be changes that are "intentionally"
-> made provided that the other side can be trusted to not try to avoid
-> detection...)
-
-That's the case here.
-
-> then a non-cryptographic checksum would be sufficient.
+PiBXaGF0IEknbSBzdGlsbCB1bmNsZWFyIG9uLCBkb2VzIHRoaXMgbmV3IHZlcnNpb24gYWRkcmVz
+cyB0aGF0DQo+ICJteXN0ZXJpb3VzIiBoYW5nIG9yIHBhbmljIHdoaWNoIHRoZSB2YWxpZGF0aW9u
+IHRlYW0gdHJpZ2dlcmVkIG9yIHlvdQ0KPiBoYXZlbid0IGNoZWNrZWQgeWV0Pw0KDQpObyA6LSgN
+Cg0KVGhleSBhcmUgdHJpZ2dlcmluZyBzb21lIGNhc2Ugd2hlcmUgbXVsdGlwbGUgdGhyZWFkcyBp
+biBhIHByb2Nlc3MgaGl0IHRoZSBzYW1lDQpwb2lzb24sIGFuZCBzb21laG93IG1lbW9yeV9mYWls
+dXJlKCkgZmFpbHMgdG8gY29tcGxldGUgb2ZmbGluaW5nIHRoZSBwYWdlLiBBdCB0aGlzDQpwb2lu
+dCBhbnkgb3RoZXIgdGhyZWFkcyB0aGF0IGhpdCB0aGF0IHBhZ2UgZ2V0IHRoZSBlYXJseSByZXR1
+cm4gZnJvbSBtZW1vcnlfZmFpbHVyZQ0KKGJlY2F1c2UgdGhlIHBhZ2UgZmxhZ3Mgc2F5IGl0IGlz
+IHBvaXNvbmVkKSAuLi4gYW5kIHNvIHdlIGxvb3AuDQoNCkJ1dCB0aGUgInJlY292ZXIgZnJvbSBj
+YXNlcyB3aGVyZSBtdWx0aXBsZSBtYWNoaW5lIGNoZWNrcyBoYXBwZW4NCnNpbXVsdGFuZW91c2x5
+IiBjYXNlIGlzIG9ydGhvZ29uYWwgdG8gdGhlICJkbyB0aGUgcmlnaHQgdGhpbmcgdG8gcmVjb3Zl
+cg0Kd2hlbiB0aGUga2VybmVsIHRvdWNoZXMgcG9pc29uIGF0IGEgdXNlciBhZGRyZXNzIi4gU28g
+SSB0aGluayB3ZSBjYW4NCnRhY2tsZSB0aGVtIHNlcGFyYXRlbHkNCg0KLVRvbnkNCg==
