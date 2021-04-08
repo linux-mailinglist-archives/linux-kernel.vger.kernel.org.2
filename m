@@ -2,161 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6551357A83
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D27357A87
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbhDHCoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:44:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16070 "EHLO
+        id S229634AbhDHCsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 22:48:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16071 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhDHCob (ORCPT
+        with ESMTP id S229510AbhDHCsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 22:44:31 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG5Bl4KGzz1BGPn;
-        Thu,  8 Apr 2021 10:42:07 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 10:44:17 +0800
-Subject: Re: [PATCH 2/4] mm/hugeltb: simplify the return code of
- __vma_reservation_common()
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210402093249.25137-1-linmiaohe@huawei.com>
- <20210402093249.25137-3-linmiaohe@huawei.com>
- <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
- <40114ff5-ba3d-ca66-3338-25db80a015da@huawei.com>
- <aaea15d4-c8e0-ee37-8ceb-35326b7ad1ae@oracle.com>
- <1926967f-3805-2baf-6b86-24039c6513ca@huawei.com>
- <de625a4c-b5d2-696f-33c7-7876e0f81435@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <178a2b05-ab9b-3d38-36c5-3950a3859322@huawei.com>
-Date:   Thu, 8 Apr 2021 10:44:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 7 Apr 2021 22:48:12 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG5H12lN2z1BGPn;
+        Thu,  8 Apr 2021 10:45:49 +0800 (CST)
+Received: from [10.174.178.140] (10.174.178.140) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 10:47:53 +0800
+Subject: Re: [PATCH] s390/pci: move
+ ioremap/ioremap_prot/ioremap_wc/ioremap_wt/iounmap to arch/s390/mm/ioremap.c
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>
+CC:     <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
+        <john.wanghui@huawei.com>
+References: <20210401124611.49917-1-cuibixuan@huawei.com>
+ <a3005d2871d6571a436dacca2d93eb10cca54bed.camel@linux.ibm.com>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <d87946d9-dfa6-e279-e9e6-89f6276dc03c@huawei.com>
+Date:   Thu, 8 Apr 2021 10:47:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <de625a4c-b5d2-696f-33c7-7876e0f81435@oracle.com>
+In-Reply-To: <a3005d2871d6571a436dacca2d93eb10cca54bed.camel@linux.ibm.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.140]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/8 5:23, Mike Kravetz wrote:
-> On 4/6/21 8:09 PM, Miaohe Lin wrote:
->> On 2021/4/7 10:37, Mike Kravetz wrote:
->>> On 4/6/21 7:05 PM, Miaohe Lin wrote:
->>>> Hi:
->>>> On 2021/4/7 8:53, Mike Kravetz wrote:
->>>>> On 4/2/21 2:32 AM, Miaohe Lin wrote:
->>>>>> It's guaranteed that the vma is associated with a resv_map, i.e. either
->>>>>> VM_MAYSHARE or HPAGE_RESV_OWNER, when the code reaches here or we would
->>>>>> have returned via !resv check above. So ret must be less than 0 in the
->>>>>> 'else' case. Simplify the return code to make this clear.
->>>>>
->>>>> I believe we still neeed that ternary operator in the return statement.
->>>>> Why?
->>>>>
->>>>> There are two basic types of mappings to be concerned with:
->>>>> shared and private.
->>>>> For private mappings, a task can 'own' the mapping as indicated by
->>>>> HPAGE_RESV_OWNER.  Or, it may not own the mapping.  The most common way
->>>>> to create a non-owner private mapping is to have a task with a private
->>>>> mapping fork.  The parent process will have HPAGE_RESV_OWNER set, the
->>>>> child process will not.  The idea is that since the child has a COW copy
->>>>> of the mapping it should not consume reservations made by the parent.
->>>>
->>>> The child process will not have HPAGE_RESV_OWNER set because at fork time, we do:
->>>> 		/*
->>>> 		 * Clear hugetlb-related page reserves for children. This only
->>>> 		 * affects MAP_PRIVATE mappings. Faults generated by the child
->>>> 		 * are not guaranteed to succeed, even if read-only
->>>> 		 */
->>>> 		if (is_vm_hugetlb_page(tmp))
->>>> 			reset_vma_resv_huge_pages(tmp);
->>>> i.e. we have vma->vm_private_data = (void *)0; for child process and vma_resv_map() will
->>>> return NULL in this case.
->>>> Or am I missed something?
->>>>
->>>>> Only the parent (HPAGE_RESV_OWNER) is allowed to consume the
->>>>> reservations.
->>>>> Hope that makens sense?
->>>>>
->>>>>>
->>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>>> ---
->>>>>>  mm/hugetlb.c | 2 +-
->>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>>>> index a03a50b7c410..b7864abded3d 100644
->>>>>> --- a/mm/hugetlb.c
->>>>>> +++ b/mm/hugetlb.c
->>>>>> @@ -2183,7 +2183,7 @@ static long __vma_reservation_common(struct hstate *h,
->>>>>>  			return 1;
->>>>>>  	}
->>>>>>  	else
->>>>>
->>>>> This else also handles the case !HPAGE_RESV_OWNER.  In this case, we
->>>>
->>>> IMO, for the case !HPAGE_RESV_OWNER, we won't reach here. What do you think?
->>>>
->>>
->>> I think you are correct.
->>>
->>> However, if this is true we should be able to simply the code even
->>> further.  There is no need to check for HPAGE_RESV_OWNER because we know
->>> it must be set.  Correct?  If so, the code could look something like:
->>>
->>> 	if (vma->vm_flags & VM_MAYSHARE)
->>> 		return ret;
->>>
->>> 	/* We know private mapping with HPAGE_RESV_OWNER */
->>> 	 * ...						 *
->>> 	 * Add that existing comment                     */
->>>
->>> 	if (ret > 0)
->>> 		return 0;
->>> 	if (ret == 0)
->>> 		return 1;
->>> 	return ret;
->>>
->>
->> Many thanks for good suggestion! What do you mean is this ?
-> 
-> I think the below changes would work fine.
-> 
-> However, this patch/discussion has made me ask the question.  Do we need
-> the HPAGE_RESV_OWNER flag?  Is the followng true?
-> !(vm_flags & VM_MAYSHARE) && vma_resv_map()  ===> HPAGE_RESV_OWNER
-> !(vm_flags & VM_MAYSHARE) && !vma_resv_map() ===> !HPAGE_RESV_OWNER
-> 
 
-I agree with you.
 
-HPAGE_RESV_OWNER is set in hugetlb_reserve_pages() and there's no way to clear it
-in the owner process. The child process can not inherit both HPAGE_RESV_OWNER and
-resv_map. So for !HPAGE_RESV_OWNER vma, it knows nothing about resv_map.
+On 2021/4/6 19:14, Niklas Schnelle wrote:
+> and move the have_mio variable out of the PCI only code or use a raw
+> "#ifdef CONFIG_PCI". Obviously we don't have any actual users of
+> ioremap() that don't depend on CONFIG_PCI but it would make it so that
+> ioremap() exists and should actually function without CONFIG_PCI.
+> The weird part though is that for anyone using it without CONFIG_PCI it
+> would stop working if that is set and the machine doesn't have MIO
+> support but would work if it does.
+Well, Maybe it's better not to change it.And thank you for the explanation.
 
-IMO, in !(vm_flags & VM_MAYSHARE) case, we must have:
-	!!vma_resv_map() == !!HPAGE_RESV_OWNER
-
-> I am not suggesting we eliminate the flag and make corresponding
-> changes.  Just curious if you believe we 'could' remove the flag and
-> depend on the above conditions.
-> 
-> One reason for NOT removing the flag is that that flag itself and
-> supporting code and commnets help explain what happens with hugetlb
-> reserves for COW mappings.  That code is hard to understand and the
-> existing code and coments around HPAGE_RESV_OWNER help with
-> understanding.
-
-Agree. These codes took me several days to understand...
-
-> 
-
-Thanks.
+Thanks，
+Bixuan Cui
