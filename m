@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5A035828A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC4A358295
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 13:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhDHL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 07:56:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16096 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHL43 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:56:29 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGKRc3Ky4z19KPl;
-        Thu,  8 Apr 2021 19:54:04 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 19:56:10 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-        <chunfeng.yun@mediatek.com>, <kishon@ti.com>, <vkoul@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <heying24@huawei.com>
-Subject: [PATCH v2 -next] phy: phy-mtk-hdmi: Remove redundant dev_err call in mtk_hdmi_phy_probe()
-Date:   Thu, 8 Apr 2021 07:55:30 -0400
-Message-ID: <20210408115530.15673-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231259AbhDHMAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:00:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52398 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhDHMAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:00:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617883195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XUNP4Nw5sr24LzcfuQv0sN/hk7neBIq1pmawF1Cb7yg=;
+        b=tQptUgx8Yh6OCrueztIsbWC+2bN1wyt5UTv1KiYYlYCoDgJUerCWtq3LwzjIaFNDDGG4id
+        YcuwuOUCxqo3EPoVvyOz/jPj0BU/DnkA1cKY/JPS5tFFytTmL67kY3nbI0R6j3Cn9Sktwi
+        fhzoLHmyP+2OGdLczeNK28+dU0XWB48=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51E17B0B6;
+        Thu,  8 Apr 2021 11:59:55 +0000 (UTC)
+Message-ID: <61df47f6708fc4bc9add8d42aff6edcbad6e9618.camel@suse.com>
+Subject: Re: [PATCH 3/3] USB: cdc-acm: fix TIOCGSERIAL implementation
+From:   Oliver Neukum <oneukum@suse.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 08 Apr 2021 13:59:43 +0200
+In-Reply-To: <YG7vEQa53AhN+piv@hovoldconsulting.com>
+References: <20210407102845.32720-1-johan@kernel.org>
+         <20210407102845.32720-4-johan@kernel.org>
+         <a1a94db2d373c4c7b8841908d8e6133ab022232e.camel@suse.com>
+         <YG7RiLoscS6VXG7n@hovoldconsulting.com>
+         <0049152ce9da85c50fda91c1b77ca233ba0fef3d.camel@suse.com>
+         <YG7vEQa53AhN+piv@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Am Donnerstag, den 08.04.2021, 13:54 +0200 schrieb Johan Hovold:
+> On Thu, Apr 08, 2021 at 01:34:12PM +0200, Oliver Neukum wrote:
+> > Am Donnerstag, den 08.04.2021, 11:48 +0200 schrieb Johan Hovold:
+> > > On Thu, Apr 08, 2021 at 10:36:46AM +0200, Oliver Neukum wrote:
+> > > > Am Mittwoch, den 07.04.2021, 12:28 +0200 schrieb Johan Hovold:
+> > > > Well, the devices report it. It is part of the standard.
+> > > 
+> > > No, the standard doesn't include anything about a baud-base clock
+> > > AFAICT.
+> > 
+> > Unfortunately it does.
+> > dwDTERate - chapter 6.3.11 - table 17
+> 
+> That's not the base clock rate, that's just the currently configured
+> line speed which you can read from termios 
+> > If we does this wrongly, we should certainly fix it, but just removing
+> > the reporting doesn't look right to me.
+> 
+> The driver got its interpretation of baud_base wrong, and CDC doesn't
+> even have a concept of base clock rate so removing it is the right thing
+> to do.
+> 
+> Again, baud_base is really only relevant with legacy UARTs and when
+> using the deprecated ASYNC_SPD_CUST.
+> 
+> And if the user wants to knows the current line speed we have a
+> different interface for that.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
----
-v2:
-- Use 'return PTR_ERR()' instead of 'ret = PTR_ERR();return ret;'.
+Hi,
 
- drivers/phy/mediatek/phy-mtk-hdmi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+thank you, that clarifies things. I am happy with the patch itself,
+but could I ask you to do two things:
 
-diff --git a/drivers/phy/mediatek/phy-mtk-hdmi.c b/drivers/phy/mediatek/phy-mtk-hdmi.c
-index 8313bd517e4c..8ad8f717ef43 100644
---- a/drivers/phy/mediatek/phy-mtk-hdmi.c
-+++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
-@@ -119,9 +119,7 @@ static int mtk_hdmi_phy_probe(struct platform_device *pdev)
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	hdmi_phy->regs = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(hdmi_phy->regs)) {
--		ret = PTR_ERR(hdmi_phy->regs);
--		dev_err(dev, "Failed to get memory resource: %d\n", ret);
--		return ret;
-+		return PTR_ERR(hdmi_phy->regs);
- 	}
- 
- 	ref_clk = devm_clk_get(dev, "pll_ref");
--- 
-2.17.1
+1. Edit the commit description
+making clear that the difference
+between the base clock rate and the line speed.
+
+2. Mark the patch specially to NOT be included in stable. We may
+have
+users misusing the current API.
+
+	Regards
+		Oliver
+
 
