@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438CF358901
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA64F358906
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhDHP5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:57:10 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:45251 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhDHP5I (ORCPT
+        id S232135AbhDHP56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:57:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231526AbhDHP5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:57:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1617897418; x=1649433418;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=7PBS5e2WyJ69c6rfp53RALIlaSpOGlnG+OF+BW1TqaQ=;
-  b=f2D5zbUqCCavbex5zny1t7OjGYnnpu9i681VvzGrMezI1eusc/HoJDKg
-   VDXG5/nbaWFvLvEDmKJuThsUKdbFbP5aKUFWddT8XYZSr2ytmuxgTidks
-   WRctx7hMhjPGnseH4UzWTUZd7IIOz9Q4KwKT5A078YZBu1oh8y1BEBP0y
-   4=;
-X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
-   d="scan'208";a="126144841"
-Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM hypercalls
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Apr 2021 15:56:50 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 81305A196F;
-        Thu,  8 Apr 2021 15:56:43 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.161.102) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 8 Apr 2021 15:56:35 +0000
-Date:   Thu, 8 Apr 2021 17:56:31 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Wei Liu <wei.liu@kernel.org>
-CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "Stephen Hemminger" <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Message-ID: <20210408155630.GD32315@u366d62d47e3651.ant.amazon.com>
-References: <20210407211954.32755-1-sidcha@amazon.de>
- <20210407211954.32755-5-sidcha@amazon.de>
- <87blap7zha.fsf@vitty.brq.redhat.com>
- <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
- <20210408154446.mtatlrheoq7hpoaq@liuwe-devbox-debian-v2>
+        Thu, 8 Apr 2021 11:57:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617897464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NinlbVPhwGdJcoVcBt2udn4w5X18/v4CvahbnKLeeMI=;
+        b=NEdeqkDHiTCWJJwaZxmkSrX/82crujOncZicm/U1g2O2KiPxUtDQwgSRpHdduYvi8paM+w
+        2KpRuzyOlPja2/pba5L/L3g+U1eLfDts5DYyuRhlmlAnNVVaoBZcFwQl5ymSC1OyyFiyo5
+        xLkxwnSmSzVKWi6CleVnNHQKHylabfY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-0tkXerksNmuLEQR_9ITDFg-1; Thu, 08 Apr 2021 11:57:42 -0400
+X-MC-Unique: 0tkXerksNmuLEQR_9ITDFg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B2A107ACC7;
+        Thu,  8 Apr 2021 15:57:39 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DE165C1C4;
+        Thu,  8 Apr 2021 15:57:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210408145057.GN2531743@casper.infradead.org>
+References: <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 02/30] mm: Add set/end/wait functions for PG_private_2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210408154446.mtatlrheoq7hpoaq@liuwe-devbox-debian-v2>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D29UWC001.ant.amazon.com (10.43.162.143) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Content-ID: <46016.1617897451.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 08 Apr 2021 16:57:31 +0100
+Message-ID: <46017.1617897451@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 03:44:46PM +0000, Wei Liu wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Thu, Apr 08, 2021 at 04:20:54PM +0200, Siddharth Chandrasekaran wrote:
-> > On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
-> > > Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-> > >
-> > > > Now that all extant hypercalls that can use XMM registers (based on
-> > > > spec) for input/outputs are patched to support them, we can start
-> > > > advertising this feature to guests.
-> > > >
-> > > > Cc: Alexander Graf <graf@amazon.com>
-> > > > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
-> > > > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> > > > ---
-> > > >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
-> > > >  arch/x86/kvm/hyperv.c              | 1 +
-> > > >  2 files changed, 3 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> > > > index e6cd3fee562b..1f160ef60509 100644
-> > > > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> > > > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> > > > @@ -49,10 +49,10 @@
-> > > >  /* Support for physical CPU dynamic partitioning events is available*/
-> > > >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
-> > > >  /*
-> > > > - * Support for passing hypercall input parameter block via XMM
-> > > > + * Support for passing hypercall input and output parameter block via XMM
-> > > >   * registers is available
-> > > >   */
-> > > > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
-> > > > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
-> > >
-> > > TLFS 6.0b states that there are two distinct bits for input and output:
-> > >
-> > > CPUID Leaf 0x40000003.EDX:
-> > > Bit 4: support for passing hypercall input via XMM registers is available.
-> > > Bit 15: support for returning hypercall output via XMM registers is available.
-> > >
-> > > and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
-> > > anywhere, I'd suggest we just rename
-> > >
-> > > HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
-> > > and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
-> >
-> > That is how I had it initially; but then noticed that we would never
-> > need to use either of them separately. So it seemed like a reasonable
-> > abstraction to put them together.
-> >
->
-> They are two separate things in TLFS. Please use two macros here.
+Here's a partial change, but we still need to deal with the assumption tha=
+t
+page_has_private() makes that its output can be used to count the number o=
+f
+refs held for PG_private *and* PG_private_2 - which isn't true for my code
+here.
 
-Ack, will split them.
+David
+---
+commit e7c28d83b84b972c3faa0dd86020548aa50eda75
+Author: David Howells <dhowells@redhat.com>
+Date:   Thu Apr 8 16:33:20 2021 +0100
 
-~ Sid.
+    netfs: Fix PG_private_2 helper functions to consistently use compound_=
+head()
 
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index ef511364cc0c..63ca6430aef5 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -699,6 +699,7 @@ void page_endio(struct page *page, bool is_write, int =
+err);
+  */
+ static inline void set_page_private_2(struct page *page)
+ {
++	page =3D compound_head(page);
+ 	get_page(page);
+ 	SetPagePrivate2(page);
+ }
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 0ce93c8799ca..46e0321ba87a 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1461,6 +1461,7 @@ EXPORT_SYMBOL(end_page_private_2);
+  */
+ void wait_on_page_private_2(struct page *page)
+ {
++	page =3D compound_head(page);
+ 	while (PagePrivate2(page))
+ 		wait_on_page_bit(page, PG_private_2);
+ }
+@@ -1481,6 +1482,7 @@ int wait_on_page_private_2_killable(struct page *pag=
+e)
+ {
+ 	int ret =3D 0;
+ =
 
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
++	page =3D compound_head(page);
+ 	while (PagePrivate2(page)) {
+ 		ret =3D wait_on_page_bit_killable(page, PG_private_2);
+ 		if (ret < 0)
 
